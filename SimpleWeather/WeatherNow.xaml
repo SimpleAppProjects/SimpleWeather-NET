@@ -1,0 +1,171 @@
+﻿<Page
+    x:Class="SimpleWeather.WeatherNow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SimpleWeather"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Page.TopAppBar>
+        <CommandBar Margin="50,0,0,0" RequestedTheme="Dark" Background="#FF1F336C" Foreground="White">
+            <CommandBar.Content>
+                <Grid Height="50">
+                    <TextBlock Text="SimpleWeather" Margin="10,0,0,0" CharacterSpacing="10" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="18" FontWeight="Bold"/>
+                </Grid>
+            </CommandBar.Content>
+            <AppBarButton Icon="Refresh" Label="Refresh" Click="RefreshButton_Click"/>
+        </CommandBar>
+    </Page.TopAppBar>
+
+    <SplitView x:Name="HamBurgerMenu" DisplayMode="CompactOverlay"  IsPaneOpen="False" 
+               CompactPaneLength="50" OpenPaneLength="250" Margin="0,-50,0,0">
+        <SplitView.Pane>
+            <StackPanel Background="Black">
+                <Button x:Name="HamburgerButton" FontFamily="Segoe MDL2 Assets" Content="&#xE700;" ClickMode="Press"
+                    Width="50" Height="50" Click="HamburgerButton_Click" Background="#FF1F336C" RequestedTheme="Dark" />
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="LocationsButton" FontFamily="Segoe MDL2 Assets" Content="&#xEA37;"
+                    Width="50" Height="50" RequestedTheme="Dark" Background="Transparent"/>
+                    <TextBlock Text="Locations" RequestedTheme="Dark" FontSize="18" VerticalAlignment="Center" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="SettingsButton" FontFamily="Segoe MDL2 Assets" Content="&#xE713;"
+                        Width="50" Height="50" RequestedTheme="Dark" Background="Transparent"/>
+                    <TextBlock Text="Settings" RequestedTheme="Dark" FontSize="18" VerticalAlignment="Center" />
+                </StackPanel>
+            </StackPanel>
+        </SplitView.Pane>
+        <SplitView.Content>
+            <ScrollViewer x:Name="MainViewer" Margin="0,50,0,0" VerticalScrollMode="Auto">
+                <ScrollViewer.Background>
+                    <ImageBrush Stretch="Fill" ImageSource="Assets/Backgrounds/DaySky.jpg"/>
+                </ScrollViewer.Background>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="400"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Name="Location" Text="Location" FontSize="48" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,0,0,0" Grid.Row="0"/>
+                    <TextBlock Name="UpdateDate" Text="Day Time" FontSize="12" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,75,0,0" Grid.Row="0"/>
+                    <Viewbox VerticalAlignment="Top" Height="150" Width="150" Grid.Row="1">
+                        <Image x:Name="WeatherIcon"/>
+                    </Viewbox>
+                    <TextBlock Name="CurTemp" Text="Temp" FontSize="24" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,165,0,0" Grid.Row="1"/>
+                    <TextBlock Name="CurCondition" Text="Condition" FontSize="18" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,100,0,0" Grid.Row="1"/>
+                    <TextBlock Text="Forecast" FontSize="24" Foreground="White" Margin="25,10,0,0" Grid.Row="2"
+                               HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    <ScrollViewer Grid.Row="2" Height="350" Margin="0,50,0,0" HorizontalScrollMode="Auto" HorizontalScrollBarVisibility="Auto">
+                        <Grid Margin="10,0,10,50" Background="#3F808080">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="200"/>
+                                <ColumnDefinition Width="200"/>
+                                <ColumnDefinition Width="200"/>
+                                <ColumnDefinition Width="200"/>
+                                <ColumnDefinition Width="200"/>
+                                <ColumnDefinition Width="200"/>
+                                <ColumnDefinition Width="200"/>
+                            </Grid.ColumnDefinitions>
+                            <Border BorderThickness="1" BorderBrush="White" Grid.Column="0">
+                                <Grid>
+                                    <Viewbox VerticalAlignment="Top" Height="150" Width="150" Margin="0,50,0,0">
+                                        <Image x:Name="WeatherIcon1"/>
+                                    </Viewbox>
+                                    <TextBlock Name="Date1" Text="Date" FontSize="24" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,250"/>
+                                    <RichTextBlock Name="Temp1" FontSize="24" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,220,0,0"/>
+                                    <TextBlock Name="Condition1" Text="Condition" FontSize="18" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,140,0,0" TextAlignment="Center" TextWrapping="Wrap"/>
+                                </Grid>
+                            </Border>
+                            <Border BorderThickness="1" BorderBrush="White" Grid.Column="1">
+                                <Grid>
+                                    <Viewbox VerticalAlignment="Top" Height="150" Width="150" Margin="0,50,0,0">
+                                        <Image x:Name="WeatherIcon2"/>
+                                    </Viewbox>
+                                    <TextBlock Name="Date2" Text="Date" FontSize="24" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,250"/>
+                                    <RichTextBlock Name="Temp2" FontSize="24" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,220,0,0"/>
+                                    <TextBlock Name="Condition2" Text="Condition" FontSize="18" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,140,0,0" TextAlignment="Center" TextWrapping="Wrap"/>
+                                </Grid>
+                            </Border>
+                            <Border BorderThickness="1" BorderBrush="White" Grid.Column="2">
+                                <Grid>
+                                    <Viewbox VerticalAlignment="Top" Height="150" Width="150" Margin="0,50,0,0">
+                                        <Image x:Name="WeatherIcon3"/>
+                                    </Viewbox>
+                                    <TextBlock Name="Date3" Text="Date" FontSize="24" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,250"/>
+                                    <RichTextBlock Name="Temp3" FontSize="24" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,220,0,0"/>
+                                    <TextBlock Name="Condition3" Text="Condition" FontSize="18" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,140,0,0" TextAlignment="Center" TextWrapping="Wrap"/>
+                                </Grid>
+                            </Border>
+                            <Border BorderThickness="1" BorderBrush="White" Grid.Column="3">
+                                <Grid>
+                                    <Viewbox VerticalAlignment="Top" Height="150" Width="150" Margin="0,50,0,0">
+                                        <Image x:Name="WeatherIcon4"/>
+                                    </Viewbox>
+                                    <TextBlock Name="Date4" Text="Date" FontSize="24" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,250"/>
+                                    <RichTextBlock Name="Temp4" FontSize="24" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,220,0,0"/>
+                                    <TextBlock Name="Condition4" Text="Condition" FontSize="18" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,140,0,0" TextAlignment="Center" TextWrapping="Wrap"/>
+                                </Grid>
+                            </Border>
+                            <Border BorderThickness="1" BorderBrush="White" Grid.Column="4">
+                                <Grid>
+                                    <Viewbox VerticalAlignment="Top" Height="150" Width="150" Margin="0,50,0,0">
+                                        <Image x:Name="WeatherIcon5"/>
+                                    </Viewbox>
+                                    <TextBlock Name="Date5" Text="Date" FontSize="24" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,250"/>
+                                    <RichTextBlock Name="Temp5" FontSize="24" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,220,0,0"/>
+                                    <TextBlock Name="Condition5" Text="Condition" FontSize="18" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,140,0,0" TextAlignment="Center" TextWrapping="Wrap"/>
+                                </Grid>
+                            </Border>
+                            <Border BorderThickness="1" BorderBrush="White" Grid.Column="5">
+                                <Grid>
+                                    <Viewbox VerticalAlignment="Top" Height="150" Width="150" Margin="0,50,0,0">
+                                        <Image x:Name="WeatherIcon6"/>
+                                    </Viewbox>
+                                    <TextBlock Name="Date6" Text="Date" FontSize="24" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,250"/>
+                                    <RichTextBlock Name="Temp6" FontSize="24" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,220,0,0"/>
+                                    <TextBlock Name="Condition6" Text="Condition" FontSize="18" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,140,0,0" TextAlignment="Center" TextWrapping="Wrap"/>
+                                </Grid>
+                            </Border>
+                            <Border BorderThickness="1" BorderBrush="White" Grid.Column="6">
+                                <Grid>
+                                    <Viewbox VerticalAlignment="Top" Height="150" Width="150" Margin="0,50,0,0">
+                                        <Image x:Name="WeatherIcon7"/>
+                                    </Viewbox>
+                                    <TextBlock Name="Date7" Text="Date" FontSize="24" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,250"/>
+                                    <RichTextBlock Name="Temp7" FontSize="24" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,220,0,0"/>
+                                    <TextBlock Name="Condition7" Text="Condition" FontSize="18" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,140,0,0" TextAlignment="Center" TextWrapping="Wrap"/>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </ScrollViewer>
+                </Grid>
+            </ScrollViewer>
+        </SplitView.Content>
+    </SplitView>
+</Page>

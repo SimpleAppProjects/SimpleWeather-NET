@@ -7,7 +7,19 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
+    <Grid Background="#006FBF" Padding="0">
+        <Grid Height="150" Margin="0,0,0,350" RequestedTheme="Dark">
+            <Image x:Name="AppLogo" VerticalAlignment="Center" Margin="0,0,0,0" Source="Assets/Square150x150Logo.png" />
+        </Grid>
+        <Grid Height="80" Margin="0,0,0,0" Padding="25,0" RequestedTheme="Dark" Name="SearchGrid">
+            <TextBox x:Name="Location" FontSize="24" PlaceholderText="Enter Location..." Margin="0,0,50,0" RequestedTheme="Light" VerticalAlignment="Center" KeyDown="Location_KeyDown"/>
+            <Button Name="GPS" Height="44" Margin="0,0,6,0" Width="44" Click="GPS_Click" HorizontalAlignment="Right" ToolTipService.ToolTip="Find Location via GPS" VerticalAlignment="Center">
+                <Viewbox>
+                    <SymbolIcon Symbol="MapPin" RequestedTheme="Dark"/>
+                </Viewbox>
+            </Button>
+        </Grid>
+        <!--Button x:Name="Search" Click="Search_Click" HorizontalAlignment="Center" Content="Search" FontSize="24" Margin="0,200,0,0" RequestedTheme="Dark" FontWeight="SemiBold"/-->
+        <ProgressRing x:Name="LoadingRing"  HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Width="50" Margin="0,200,0,0" Foreground="White"/>
     </Grid>
 </Page>
