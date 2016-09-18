@@ -78,6 +78,9 @@
                                 <ColumnDefinition Width="200"/>
                                 <ColumnDefinition Width="200"/>
                                 <ColumnDefinition Width="200"/>
+                                <ColumnDefinition Width="200"/>
+                                <ColumnDefinition Width="200"/>
+                                <ColumnDefinition Width="200"/>
                             </Grid.ColumnDefinitions>
                             <Border BorderThickness="1" BorderBrush="White" Grid.Column="0">
                                 <Grid>
@@ -167,6 +170,45 @@
                                     <RichTextBlock Name="Temp7" FontSize="24" Foreground="White"
                            HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,220,0,0"/>
                                     <TextBlock Name="Condition7" Text="Condition" FontSize="18" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,140,0,0" TextAlignment="Center" TextWrapping="Wrap"/>
+                                </Grid>
+                            </Border>
+                            <Border BorderThickness="1" BorderBrush="White" Grid.Column="7">
+                                <Grid>
+                                    <Viewbox VerticalAlignment="Top" Height="150" Width="150" Margin="0,50,0,0">
+                                        <TextBlock x:Name="WeatherIcon8" Style="{StaticResource WeatherIcon}" />
+                                    </Viewbox>
+                                    <TextBlock Name="Date8" Text="Date" FontSize="24" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,250"/>
+                                    <RichTextBlock Name="Temp8" FontSize="24" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,220,0,0"/>
+                                    <TextBlock Name="Condition8" Text="Condition" FontSize="18" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,140,0,0" TextAlignment="Center" TextWrapping="Wrap"/>
+                                </Grid>
+                            </Border>
+                            <Border BorderThickness="1" BorderBrush="White" Grid.Column="8">
+                                <Grid>
+                                    <Viewbox VerticalAlignment="Top" Height="150" Width="150" Margin="0,50,0,0">
+                                        <TextBlock x:Name="WeatherIcon9" Style="{StaticResource WeatherIcon}" />
+                                    </Viewbox>
+                                    <TextBlock Name="Date9" Text="Date" FontSize="24" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,250"/>
+                                    <RichTextBlock Name="Temp9" FontSize="24" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,220,0,0"/>
+                                    <TextBlock Name="Condition9" Text="Condition" FontSize="18" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,140,0,0" TextAlignment="Center" TextWrapping="Wrap"/>
+                                </Grid>
+                            </Border>
+                            <Border BorderThickness="1" BorderBrush="White" Grid.Column="9">
+                                <Grid>
+                                    <Viewbox VerticalAlignment="Top" Height="150" Width="150" Margin="0,50,0,0">
+                                        <TextBlock x:Name="WeatherIcon10" Style="{StaticResource WeatherIcon}" />
+                                    </Viewbox>
+                                    <TextBlock Name="Date10" Text="Date" FontSize="24" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,250"/>
+                                    <RichTextBlock Name="Temp10" FontSize="24" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,220,0,0"/>
+                                    <TextBlock Name="Condition10" Text="Condition" FontSize="18" Foreground="White"
                            HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,140,0,0" TextAlignment="Center" TextWrapping="Wrap"/>
                                 </Grid>
                             </Border>

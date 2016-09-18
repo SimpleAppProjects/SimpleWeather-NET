@@ -180,6 +180,47 @@ namespace SimpleWeather
             Temp7.Blocks.Add(p7);
             Condition7.Text = weather.forecasts[6].text;
 
+            Date8.Text = DateTime.Parse(weather.forecasts[7].date).ToString("dddd dd");
+            updateWeatherIcon(WeatherIcon8, int.Parse(weather.forecasts[7].code));
+            Windows.UI.Xaml.Documents.Run Hi8 = new Windows.UI.Xaml.Documents.Run();
+            Windows.UI.Xaml.Documents.Run Lo8 = new Windows.UI.Xaml.Documents.Run();
+            Lo8.FontSize = 18;
+            Hi8.Text = weather.forecasts[7].high + "º | ";
+            Lo8.Text = weather.forecasts[7].low + "º";
+            Windows.UI.Xaml.Documents.Paragraph p8 = new Windows.UI.Xaml.Documents.Paragraph();
+            p8.Inlines.Add(Hi8);
+            p8.Inlines.Add(Lo8);
+            Temp8.Blocks.Clear();
+            Temp8.Blocks.Add(p8);
+            Condition8.Text = weather.forecasts[7].text;
+
+            Date9.Text = DateTime.Parse(weather.forecasts[8].date).ToString("dddd dd");
+            updateWeatherIcon(WeatherIcon9, int.Parse(weather.forecasts[8].code));
+            Windows.UI.Xaml.Documents.Run Hi9 = new Windows.UI.Xaml.Documents.Run();
+            Windows.UI.Xaml.Documents.Run Lo9 = new Windows.UI.Xaml.Documents.Run();
+            Lo9.FontSize = 18;
+            Hi9.Text = weather.forecasts[8].high + "º | ";
+            Lo9.Text = weather.forecasts[8].low + "º";
+            Windows.UI.Xaml.Documents.Paragraph p9 = new Windows.UI.Xaml.Documents.Paragraph();
+            p9.Inlines.Add(Hi9);
+            p9.Inlines.Add(Lo9);
+            Temp9.Blocks.Clear();
+            Temp9.Blocks.Add(p9);
+            Condition9.Text = weather.forecasts[8].text;
+
+            Date10.Text = DateTime.Parse(weather.forecasts[9].date).ToString("dddd dd");
+            updateWeatherIcon(WeatherIcon10, int.Parse(weather.forecasts[9].code));
+            Windows.UI.Xaml.Documents.Run Hi10 = new Windows.UI.Xaml.Documents.Run();
+            Windows.UI.Xaml.Documents.Run Lo10 = new Windows.UI.Xaml.Documents.Run();
+            Lo10.FontSize = 18;
+            Hi10.Text = weather.forecasts[9].high + "º | ";
+            Lo10.Text = weather.forecasts[9].low + "º";
+            Windows.UI.Xaml.Documents.Paragraph p10 = new Windows.UI.Xaml.Documents.Paragraph();
+            p10.Inlines.Add(Hi10);
+            p10.Inlines.Add(Lo10);
+            Temp10.Blocks.Clear();
+            Temp10.Blocks.Add(p10);
+            Condition10.Text = weather.forecasts[9].text;
             updateBg(weather);
         }
 
