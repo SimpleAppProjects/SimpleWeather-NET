@@ -89,6 +89,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <Content Include="Assets\WeatherIcons\weathericons-regular-webfont.ttf" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
@@ -127,19 +128,6 @@
     <Content Include="Assets\StoreLogo.scale-100.png" />
     <Content Include="Assets\StoreLogo.scale-200.png" />
     <Content Include="Assets\StoreLogo.scale-400.png" />
-    <Content Include="Assets\WeatherIcons\Breezy.png" />
-    <Content Include="Assets\WeatherIcons\Clear-Night.png" />
-    <Content Include="Assets\WeatherIcons\Cloudy.png" />
-    <Content Include="Assets\WeatherIcons\Fair-Day.png" />
-    <Content Include="Assets\WeatherIcons\IsolatedT-Storms.png" />
-    <Content Include="Assets\WeatherIcons\MostlyCloudy-Day.png" />
-    <Content Include="Assets\WeatherIcons\MostlyCloudy-Night.png" />
-    <Content Include="Assets\WeatherIcons\PartlyCloudy-Day.png" />
-    <Content Include="Assets\WeatherIcons\PartlyCloudy-Night.png" />
-    <Content Include="Assets\WeatherIcons\ScatteredShowers.png" />
-    <Content Include="Assets\WeatherIcons\Sunny.png" />
-    <Content Include="Assets\WeatherIcons\Thunderstorms.png" />
-    <Content Include="Assets\WeatherIcons\Tornado.png" />
     <Content Include="Assets\Wide310x150Logo.scale-100.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
     <Content Include="Properties\Default.rd.xml" />

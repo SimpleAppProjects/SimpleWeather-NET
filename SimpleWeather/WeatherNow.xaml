@@ -6,6 +6,14 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
+    <Page.Resources>
+        <Style x:Key="WeatherIcon" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontFamily" Value="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons" />
+            <Setter Property="FontStyle" Value="Normal" />
+        </Style>
+    </Page.Resources>
 
     <Page.TopAppBar>
         <CommandBar Margin="50,0,0,0" RequestedTheme="Dark" Background="#FF1F336C" Foreground="White">
@@ -52,7 +60,7 @@
                     <TextBlock Name="UpdateDate" Text="Day Time" FontSize="12" Foreground="White"
                            HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,75,0,0" Grid.Row="0"/>
                     <Viewbox VerticalAlignment="Top" Height="150" Width="150" Grid.Row="1">
-                        <Image x:Name="WeatherIcon"/>
+                        <TextBlock x:Name="WeatherIcon" Style="{StaticResource WeatherIcon}" Text="&#xf00d;" />
                     </Viewbox>
                     <TextBlock Name="CurTemp" Text="Temp" FontSize="24" Foreground="White"
                            HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,165,0,0" Grid.Row="1"/>
@@ -74,7 +82,7 @@
                             <Border BorderThickness="1" BorderBrush="White" Grid.Column="0">
                                 <Grid>
                                     <Viewbox VerticalAlignment="Top" Height="150" Width="150" Margin="0,50,0,0">
-                                        <Image x:Name="WeatherIcon1"/>
+                                        <TextBlock x:Name="WeatherIcon1" Style="{StaticResource WeatherIcon}" />
                                     </Viewbox>
                                     <TextBlock Name="Date1" Text="Date" FontSize="24" Foreground="White"
                            HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,250"/>
@@ -87,7 +95,7 @@
                             <Border BorderThickness="1" BorderBrush="White" Grid.Column="1">
                                 <Grid>
                                     <Viewbox VerticalAlignment="Top" Height="150" Width="150" Margin="0,50,0,0">
-                                        <Image x:Name="WeatherIcon2"/>
+                                        <TextBlock x:Name="WeatherIcon2" Style="{StaticResource WeatherIcon}" />
                                     </Viewbox>
                                     <TextBlock Name="Date2" Text="Date" FontSize="24" Foreground="White"
                            HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,250"/>
@@ -100,7 +108,7 @@
                             <Border BorderThickness="1" BorderBrush="White" Grid.Column="2">
                                 <Grid>
                                     <Viewbox VerticalAlignment="Top" Height="150" Width="150" Margin="0,50,0,0">
-                                        <Image x:Name="WeatherIcon3"/>
+                                        <TextBlock x:Name="WeatherIcon3" Style="{StaticResource WeatherIcon}" />
                                     </Viewbox>
                                     <TextBlock Name="Date3" Text="Date" FontSize="24" Foreground="White"
                            HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,250"/>
@@ -113,7 +121,7 @@
                             <Border BorderThickness="1" BorderBrush="White" Grid.Column="3">
                                 <Grid>
                                     <Viewbox VerticalAlignment="Top" Height="150" Width="150" Margin="0,50,0,0">
-                                        <Image x:Name="WeatherIcon4"/>
+                                        <TextBlock x:Name="WeatherIcon4" Style="{StaticResource WeatherIcon}" />
                                     </Viewbox>
                                     <TextBlock Name="Date4" Text="Date" FontSize="24" Foreground="White"
                            HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,250"/>
@@ -126,7 +134,7 @@
                             <Border BorderThickness="1" BorderBrush="White" Grid.Column="4">
                                 <Grid>
                                     <Viewbox VerticalAlignment="Top" Height="150" Width="150" Margin="0,50,0,0">
-                                        <Image x:Name="WeatherIcon5"/>
+                                        <TextBlock x:Name="WeatherIcon5" Style="{StaticResource WeatherIcon}" />
                                     </Viewbox>
                                     <TextBlock Name="Date5" Text="Date" FontSize="24" Foreground="White"
                            HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,250"/>
@@ -139,7 +147,7 @@
                             <Border BorderThickness="1" BorderBrush="White" Grid.Column="5">
                                 <Grid>
                                     <Viewbox VerticalAlignment="Top" Height="150" Width="150" Margin="0,50,0,0">
-                                        <Image x:Name="WeatherIcon6"/>
+                                        <TextBlock x:Name="WeatherIcon6" Style="{StaticResource WeatherIcon}" />
                                     </Viewbox>
                                     <TextBlock Name="Date6" Text="Date" FontSize="24" Foreground="White"
                            HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,250"/>
@@ -152,7 +160,7 @@
                             <Border BorderThickness="1" BorderBrush="White" Grid.Column="6">
                                 <Grid>
                                     <Viewbox VerticalAlignment="Top" Height="150" Width="150" Margin="0,50,0,0">
-                                        <Image x:Name="WeatherIcon7"/>
+                                        <TextBlock x:Name="WeatherIcon7" Style="{StaticResource WeatherIcon}" />
                                     </Viewbox>
                                     <TextBlock Name="Date7" Text="Date" FontSize="24" Foreground="White"
                            HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,250"/>

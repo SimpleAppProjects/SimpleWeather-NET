@@ -183,84 +183,106 @@ namespace SimpleWeather
             updateBg(weather);
         }
 
-        private void updateWeatherIcon(Windows.UI.Xaml.Controls.Image WeatherIcon, int weatherCode)
+        private void updateWeatherIcon(TextBlock textBlock, int weatherCode)
         {
             switch (weatherCode)
             {
                 case 0: // Tornado
-                    WeatherIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/WeatherIcons/Tornado.png"));
+                    textBlock.Text = "\uf056";
                     break;
                 case 1: // Tropical Storm
+                case 37:
+                case 38: // Scattered Thunderstorms/showers
+                case 39:
+                case 45:
+                case 47:
+                    textBlock.Text = "\uf00e";
                     break;
                 case 2: // Hurricane
+                    textBlock.Text = "\uf073";
                     break;
                 case 3:
-                case 4:
-                case 47: // Thunderstorms
-                    WeatherIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/WeatherIcons/Thunderstorms.png"));
+                case 4: // Scattered Thunderstorms
+                    textBlock.Text = "\uf01e";
                     break;
                 case 5: // Mixed Rain/Snow
-                    break;
                 case 6: // Mixed Rain/Sleet
-                    break;
                 case 7: // Mixed Snow/Sleet
+                case 18: // Sleet
+                case 35: // Mixed Rain/Hail
+                    textBlock.Text = "\uf017";
                     break;
                 case 8: // Freezing Drizzle
+                case 10: // Freezing Rain
+                case 17: // Hail
+                    textBlock.Text = "\uf015";
                     break;
                 case 9: // Drizzle
-                    break;
-                case 10: // Freezing Rain
-                    break;
-                case 11:
+                case 11: // Showers
                 case 12:
-                case 39:
-                case 40:
-                case 45: // Scattered Showers
-                    WeatherIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/WeatherIcons/ScatteredShowers.png"));
+                case 40: // Scattered Showers
+                    textBlock.Text = "\uf01a";
                     break;
-                case 23: // Breezy
-                    WeatherIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/WeatherIcons/Breezy.png"));
+                case 13: // Snow Flurries
+                case 16: // Snow
+                case 42: // Scattered Snow Showers
+                case 46: // Snow Showers
+                    textBlock.Text = "\uf01b";
                     break;
-                case 26: // Cloudy
-                    WeatherIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/WeatherIcons/Cloudy.png"));
-                    break;
-                case 27: // Mostly Cloudy (Night)
-                    WeatherIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/WeatherIcons/MostlyCloudy-Night.png"));
-                    break;
-                case 28: // Mostly Cloudy (Day)
-                    WeatherIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/WeatherIcons/MostlyCloudy-Day.png"));
-                    break;
-                case 29: // Partly Cloudy (Night)
-                    WeatherIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/WeatherIcons/PartlyCloudy-Night.png"));
-                    break;
-                case 30: // Partly Cloudy (Day)
-                case 44:
-                    WeatherIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/WeatherIcons/PartlyCloudy-Day.png"));
-                    break;
-                case 31:
-                case 33: // Clear (Night)
-                    WeatherIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/WeatherIcons/Clear-Night.png"));
-                    break;
-                case 32: // Sunny
-                    WeatherIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/WeatherIcons/Sunny.png"));
-                    break;
-                case 34: // Fair (Day)
-                    WeatherIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/WeatherIcons/Fair-Day.png"));
-                    break;
-                case 35: // Mixed Rain/Hail
-                    break;
-                case 36: // HOT
-                    break;
-                case 37:
-                case 38: // Isolated Thunderstorms
-                    WeatherIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/WeatherIcons/IsolatedT-Storms.png"));
-                    break;
+                case 15: // Blowing Snow
                 case 41: // Heavy Snow
                 case 43:
+                    textBlock.Text = "\uf064";
                     break;
-                case 42: // Scattered Snow Showers
+                case 19: // Dust
+                    textBlock.Text = "\uf063";
                     break;
-                case 46: // Snow Showers
+                case 20: // Foggy
+                    textBlock.Text = "\uf014";
+                    break;
+                case 21: // Haze
+                    textBlock.Text = "\uf021";
+                    break;
+                case 22: // Smoky
+                    textBlock.Text = "\uf062";
+                    break;
+                case 23: // Blustery
+                case 24: // Windy
+                    textBlock.Text = "\uf050";
+                    break;
+                case 25: // Cold
+                    textBlock.Text = "\uf076";
+                    break;
+                case 26: // Cloudy
+                    textBlock.Text = "\uf013";
+                    break;
+                case 27: // Mostly Cloudy (Night)
+                case 29: // Partly Cloudy (Night)
+                    textBlock.Text = "\uf031";
+                    break;
+                case 28: // Mostly Cloudy (Day)
+                case 30: // Partly Cloudy (Day)
+                    textBlock.Text = "\uf002";
+                    break;
+                case 31: // Clear (Night)
+                    textBlock.Text = "\uf02e";
+                    break;
+                case 32: // Sunny
+                    textBlock.Text = "\uf00d";
+                    break;
+                case 33: // Fair (Night)
+                    textBlock.Text = "\uf083";
+                    break;
+                case 34: // Fair (Day)
+                case 44: // Partly Cloudy
+                    textBlock.Text = "\uf00c";
+                    break;
+                case 36: // HOT
+                    textBlock.Text = "\uf072";
+                    break;
+                case 3200: // Not Available
+                default:
+                    textBlock.Text = "\uf077";
                     break;
             }
         }
