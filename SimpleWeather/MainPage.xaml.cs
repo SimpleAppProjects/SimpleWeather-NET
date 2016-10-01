@@ -57,7 +57,7 @@ namespace SimpleWeather
                     Coordinate local = new Coordinate(ApplicationData.Current.LocalSettings.Values["HomeLocation"].ToString());
                     wLoader = new WeatherDataLoader(local.ToString());
 
-                    await wLoader.loadWeatherData(false).ContinueWith(async (t) =>
+                    await wLoader.loadWeatherData(true).ContinueWith(async (t) =>
                     {
                         if (wLoader.getWeather() != null)
                         {

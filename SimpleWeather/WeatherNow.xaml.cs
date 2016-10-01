@@ -342,11 +342,12 @@ namespace SimpleWeather
                     break;
             }
 
-            // If NULL check time to see if its night time
+            // If NULL check time to see if its night
             if (bg.ImageSource == null)
             {
-                // If its past 7PM (19:00) its probably night out
-                if (DateTime.Now.Hour >= 19)
+                // Set background based using sunset/rise times
+                if (DateTime.Now < DateTime.Parse(weather.astronomy.sunrise)
+                    || DateTime.Now > DateTime.Parse(weather.astronomy.sunset))
                     bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/NightSky.jpg"));
                 else
                     bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/DaySky.jpg"));
@@ -358,6 +359,35 @@ namespace SimpleWeather
         private void HamburgerButton_Click(object sender, RoutedEventArgs e)
         {
             HamBurgerMenu.IsPaneOpen = !HamBurgerMenu.IsPaneOpen;
+        }
+
+        private void LeftButton_Click(object sender, RoutedEventArgs e)
+        {
+            ForecastViewer.ScrollToHorizontalOffset(ForecastViewer.HorizontalOffset - 150);
+        }
+
+        private void RightButton_Click(object sender, RoutedEventArgs e)
+        {
+            ForecastViewer.ScrollToHorizontalOffset(ForecastViewer.HorizontalOffset + 150);
+        }
+
+        private void ForecastViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        {
+            if (ForecastViewer.HorizontalOffset == 0)
+            {
+                LeftButton.IsEnabled = false;
+            }
+            else if (ForecastViewer.HorizontalOffset == ForecastViewer.ScrollableWidth)
+            {
+                RightButton.IsEnabled = false;
+            }
+            else
+            {
+                if (!LeftButton.IsEnabled)
+                    LeftButton.IsEnabled = true;
+                if (!RightButton.IsEnabled)
+                    RightButton.IsEnabled = true;
+            }
         }
     }
 }

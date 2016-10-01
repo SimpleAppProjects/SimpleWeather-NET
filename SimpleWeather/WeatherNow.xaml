@@ -9,9 +9,106 @@
     <Page.Resources>
         <Style x:Key="WeatherIcon" TargetType="TextBlock">
             <Setter Property="Foreground" Value="White" />
-            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontSize" Value="12" />
             <Setter Property="FontFamily" Value="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons" />
             <Setter Property="FontStyle" Value="Normal" />
+            <Setter Property="TextAlignment" Value="Center" />
+        </Style>
+        <Style x:Key="ForecastIcon" TargetType="Viewbox">
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="Height" Value="100" />
+            <Setter Property="Width" Value="100" />
+            <Setter Property="Margin" Value="0,35,0,0" />
+        </Style>
+        <Style x:Key="ForecastDate" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="Text" Value="Date" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0,0,0,200" />
+        </Style>
+        <Style x:Key="ForecastCondition" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="Text" Value="Condition" />
+            <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0,75,0,0" />
+        </Style>
+        <Style x:Key="ArrowButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="RequestedTheme" Value="Dark"/>
+            <Setter Property="BorderBrush" Value="{ThemeResource SystemControlForegroundTransparentBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,4,8,4"/>
+            <Setter Property="Margin" Value="0,25,0,0"/>
+            <Setter Property="Width" Value="50"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="UseSystemFocusVisuals" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid x:Name="RootGrid" Background="{TemplateBinding Background}">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal">
+                                        <Storyboard>
+                                            <PointerUpThemeAnimation Storyboard.TargetName="RootGrid"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="PointerOver">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="ContentPresenter">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseMediumLowBrush}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentPresenter">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseHighBrush}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <PointerUpThemeAnimation Storyboard.TargetName="RootGrid"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="RootGrid">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlBackgroundBaseMediumLowBrush}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="ContentPresenter">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightTransparentBrush}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentPresenter">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseHighBrush}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <PointerDownThemeAnimation Storyboard.TargetName="RootGrid"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Disabled">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="RootGrid">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledTransparentBrush}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentPresenter">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseMediumLowBrush}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="ContentPresenter">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledTransparentBrush}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <ContentPresenter x:Name="ContentPresenter" AutomationProperties.AccessibilityView="Raw" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" Content="{TemplateBinding Content}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Padding="{TemplateBinding Padding}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </Page.Resources>
 
@@ -19,14 +116,14 @@
         <CommandBar Margin="50,0,0,0" RequestedTheme="Dark" Background="#FF1F336C" Foreground="White">
             <CommandBar.Content>
                 <Grid Height="50">
-                    <TextBlock Text="SimpleWeather" Margin="10,0,0,0" CharacterSpacing="10" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="18" FontWeight="Bold"/>
+                    <TextBlock Text="SimpleWeather" Margin="10,0,0,0" CharacterSpacing="10" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold"/>
                 </Grid>
             </CommandBar.Content>
             <AppBarButton Icon="Refresh" Label="Refresh" Click="RefreshButton_Click"/>
         </CommandBar>
     </Page.TopAppBar>
 
-    <SplitView x:Name="HamBurgerMenu" DisplayMode="CompactOverlay"  IsPaneOpen="False" 
+    <SplitView x:Name="HamBurgerMenu" DisplayMode="CompactOverlay" IsPaneOpen="False" 
                CompactPaneLength="50" OpenPaneLength="250" Margin="0,-50,0,0">
         <SplitView.Pane>
             <StackPanel Background="Black">
@@ -51,25 +148,28 @@
                 </ScrollViewer.Background>
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="400"/>
+                        <RowDefinition Height="100"/>
+                        <RowDefinition Height="200"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Name="Location" Text="Location" FontSize="48" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,0,0,0" Grid.Row="0"/>
+                    <TextBlock Name="Location" Text="Location" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Top" Margin="15"  Grid.Row="0" TextAlignment="Center" FontSize="36"/>
                     <TextBlock Name="UpdateDate" Text="Day Time" FontSize="12" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,75,0,0" Grid.Row="0"/>
+                           HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,70,0,0" Grid.Row="0"/>
                     <Viewbox VerticalAlignment="Top" Height="150" Width="150" Grid.Row="1">
                         <TextBlock x:Name="WeatherIcon" Style="{StaticResource WeatherIcon}" Text="&#xf00d;" />
                     </Viewbox>
-                    <TextBlock Name="CurTemp" Text="Temp" FontSize="24" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,165,0,0" Grid.Row="1"/>
                     <TextBlock Name="CurCondition" Text="Condition" FontSize="18" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,100,0,0" Grid.Row="1"/>
-                    <TextBlock Text="Forecast" FontSize="24" Foreground="White" Margin="25,10,0,0" Grid.Row="2"
+                           HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="30" Padding="5" Grid.Row="1"/>
+                    <TextBlock Name="CurTemp" Text="Temp" FontSize="24" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Bottom" Padding="5" Grid.Row="1"/>
+                    <TextBlock Text="Forecast" FontSize="24" Foreground="White" Margin="50,0,0,0" Grid.Row="2"
                                HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                    <ScrollViewer Grid.Row="2" Height="350" Margin="0,50,0,0" HorizontalScrollMode="Auto" HorizontalScrollBarVisibility="Auto">
-                        <Grid Margin="10,0,10,50" Background="#3F808080">
+                    <Button x:Name="LeftButton" Grid.Row="2" Content="&#xE00E;" HorizontalAlignment="Left" Click="LeftButton_Click" IsEnabled="False" Style="{StaticResource ArrowButton}" />
+                    <Button x:Name="RightButton" Grid.Row="2" Content="&#xE00F;" HorizontalAlignment="Right" Click="RightButton_Click" Style="{StaticResource ArrowButton}" />
+
+                    <ScrollViewer Name="ForecastViewer" Grid.Row="2" Margin="50,35,50,0" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden" VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Hidden" ViewChanged="ForecastViewer_ViewChanged">
+                        <Grid Height="250" Background="#25808080">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="200"/>
                                 <ColumnDefinition Width="200"/>
@@ -84,132 +184,112 @@
                             </Grid.ColumnDefinitions>
                             <Border BorderThickness="1" BorderBrush="White" Grid.Column="0">
                                 <Grid>
-                                    <Viewbox VerticalAlignment="Top" Height="150" Width="150" Margin="0,50,0,0">
+                                    <Viewbox Style="{StaticResource ForecastIcon}">
                                         <TextBlock x:Name="WeatherIcon1" Style="{StaticResource WeatherIcon}" />
                                     </Viewbox>
-                                    <TextBlock Name="Date1" Text="Date" FontSize="24" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,250"/>
+                                    <TextBlock Name="Date1" Style="{StaticResource ForecastDate}"/>
                                     <RichTextBlock Name="Temp1" FontSize="24" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,220,0,0"/>
-                                    <TextBlock Name="Condition1" Text="Condition" FontSize="18" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,140,0,0" TextAlignment="Center" TextWrapping="Wrap"/>
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,150,0,0"/>
+                                    <TextBlock Name="Condition1" Style="{StaticResource ForecastCondition}" />
                                 </Grid>
                             </Border>
                             <Border BorderThickness="1" BorderBrush="White" Grid.Column="1">
                                 <Grid>
-                                    <Viewbox VerticalAlignment="Top" Height="150" Width="150" Margin="0,50,0,0">
+                                    <Viewbox Style="{StaticResource ForecastIcon}">
                                         <TextBlock x:Name="WeatherIcon2" Style="{StaticResource WeatherIcon}" />
                                     </Viewbox>
-                                    <TextBlock Name="Date2" Text="Date" FontSize="24" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,250"/>
+                                    <TextBlock Name="Date2" Style="{StaticResource ForecastDate}"/>
                                     <RichTextBlock Name="Temp2" FontSize="24" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,220,0,0"/>
-                                    <TextBlock Name="Condition2" Text="Condition" FontSize="18" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,140,0,0" TextAlignment="Center" TextWrapping="Wrap"/>
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,150,0,0"/>
+                                    <TextBlock Name="Condition2" Style="{StaticResource ForecastCondition}" />
                                 </Grid>
                             </Border>
                             <Border BorderThickness="1" BorderBrush="White" Grid.Column="2">
                                 <Grid>
-                                    <Viewbox VerticalAlignment="Top" Height="150" Width="150" Margin="0,50,0,0">
+                                    <Viewbox Style="{StaticResource ForecastIcon}">
                                         <TextBlock x:Name="WeatherIcon3" Style="{StaticResource WeatherIcon}" />
                                     </Viewbox>
-                                    <TextBlock Name="Date3" Text="Date" FontSize="24" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,250"/>
+                                    <TextBlock Name="Date3" Style="{StaticResource ForecastDate}"/>
                                     <RichTextBlock Name="Temp3" FontSize="24" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,220,0,0"/>
-                                    <TextBlock Name="Condition3" Text="Condition" FontSize="18" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,140,0,0" TextAlignment="Center" TextWrapping="Wrap"/>
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,150,0,0"/>
+                                    <TextBlock Name="Condition3" Style="{StaticResource ForecastCondition}" />
                                 </Grid>
                             </Border>
                             <Border BorderThickness="1" BorderBrush="White" Grid.Column="3">
                                 <Grid>
-                                    <Viewbox VerticalAlignment="Top" Height="150" Width="150" Margin="0,50,0,0">
+                                    <Viewbox Style="{StaticResource ForecastIcon}">
                                         <TextBlock x:Name="WeatherIcon4" Style="{StaticResource WeatherIcon}" />
                                     </Viewbox>
-                                    <TextBlock Name="Date4" Text="Date" FontSize="24" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,250"/>
+                                    <TextBlock Name="Date4" Style="{StaticResource ForecastDate}"/>
                                     <RichTextBlock Name="Temp4" FontSize="24" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,220,0,0"/>
-                                    <TextBlock Name="Condition4" Text="Condition" FontSize="18" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,140,0,0" TextAlignment="Center" TextWrapping="Wrap"/>
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,150,0,0"/>
+                                    <TextBlock Name="Condition4" Style="{StaticResource ForecastCondition}" />
                                 </Grid>
                             </Border>
                             <Border BorderThickness="1" BorderBrush="White" Grid.Column="4">
                                 <Grid>
-                                    <Viewbox VerticalAlignment="Top" Height="150" Width="150" Margin="0,50,0,0">
+                                    <Viewbox Style="{StaticResource ForecastIcon}">
                                         <TextBlock x:Name="WeatherIcon5" Style="{StaticResource WeatherIcon}" />
                                     </Viewbox>
-                                    <TextBlock Name="Date5" Text="Date" FontSize="24" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,250"/>
+                                    <TextBlock Name="Date5" Style="{StaticResource ForecastDate}"/>
                                     <RichTextBlock Name="Temp5" FontSize="24" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,220,0,0"/>
-                                    <TextBlock Name="Condition5" Text="Condition" FontSize="18" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,140,0,0" TextAlignment="Center" TextWrapping="Wrap"/>
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,150,0,0"/>
+                                    <TextBlock Name="Condition5" Style="{StaticResource ForecastCondition}" />
                                 </Grid>
                             </Border>
                             <Border BorderThickness="1" BorderBrush="White" Grid.Column="5">
                                 <Grid>
-                                    <Viewbox VerticalAlignment="Top" Height="150" Width="150" Margin="0,50,0,0">
+                                    <Viewbox Style="{StaticResource ForecastIcon}">
                                         <TextBlock x:Name="WeatherIcon6" Style="{StaticResource WeatherIcon}" />
                                     </Viewbox>
-                                    <TextBlock Name="Date6" Text="Date" FontSize="24" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,250"/>
+                                    <TextBlock Name="Date6" Style="{StaticResource ForecastDate}"/>
                                     <RichTextBlock Name="Temp6" FontSize="24" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,220,0,0"/>
-                                    <TextBlock Name="Condition6" Text="Condition" FontSize="18" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,140,0,0" TextAlignment="Center" TextWrapping="Wrap"/>
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,150,0,0"/>
+                                    <TextBlock Name="Condition6" Style="{StaticResource ForecastCondition}" />
                                 </Grid>
                             </Border>
                             <Border BorderThickness="1" BorderBrush="White" Grid.Column="6">
                                 <Grid>
-                                    <Viewbox VerticalAlignment="Top" Height="150" Width="150" Margin="0,50,0,0">
+                                    <Viewbox Style="{StaticResource ForecastIcon}">
                                         <TextBlock x:Name="WeatherIcon7" Style="{StaticResource WeatherIcon}" />
                                     </Viewbox>
-                                    <TextBlock Name="Date7" Text="Date" FontSize="24" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,250"/>
+                                    <TextBlock Name="Date7" Style="{StaticResource ForecastDate}"/>
                                     <RichTextBlock Name="Temp7" FontSize="24" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,220,0,0"/>
-                                    <TextBlock Name="Condition7" Text="Condition" FontSize="18" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,140,0,0" TextAlignment="Center" TextWrapping="Wrap"/>
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,150,0,0"/>
+                                    <TextBlock Name="Condition7" Style="{StaticResource ForecastCondition}" />
                                 </Grid>
                             </Border>
                             <Border BorderThickness="1" BorderBrush="White" Grid.Column="7">
                                 <Grid>
-                                    <Viewbox VerticalAlignment="Top" Height="150" Width="150" Margin="0,50,0,0">
+                                    <Viewbox Style="{StaticResource ForecastIcon}">
                                         <TextBlock x:Name="WeatherIcon8" Style="{StaticResource WeatherIcon}" />
                                     </Viewbox>
-                                    <TextBlock Name="Date8" Text="Date" FontSize="24" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,250"/>
+                                    <TextBlock Name="Date8" Style="{StaticResource ForecastDate}"/>
                                     <RichTextBlock Name="Temp8" FontSize="24" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,220,0,0"/>
-                                    <TextBlock Name="Condition8" Text="Condition" FontSize="18" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,140,0,0" TextAlignment="Center" TextWrapping="Wrap"/>
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,150,0,0"/>
+                                    <TextBlock Name="Condition8" Style="{StaticResource ForecastCondition}" />
                                 </Grid>
                             </Border>
                             <Border BorderThickness="1" BorderBrush="White" Grid.Column="8">
                                 <Grid>
-                                    <Viewbox VerticalAlignment="Top" Height="150" Width="150" Margin="0,50,0,0">
+                                    <Viewbox Style="{StaticResource ForecastIcon}">
                                         <TextBlock x:Name="WeatherIcon9" Style="{StaticResource WeatherIcon}" />
                                     </Viewbox>
-                                    <TextBlock Name="Date9" Text="Date" FontSize="24" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,250"/>
+                                    <TextBlock Name="Date9" Style="{StaticResource ForecastDate}"/>
                                     <RichTextBlock Name="Temp9" FontSize="24" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,220,0,0"/>
-                                    <TextBlock Name="Condition9" Text="Condition" FontSize="18" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,140,0,0" TextAlignment="Center" TextWrapping="Wrap"/>
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,150,0,0"/>
+                                    <TextBlock Name="Condition9" Style="{StaticResource ForecastCondition}" />
                                 </Grid>
                             </Border>
                             <Border BorderThickness="1" BorderBrush="White" Grid.Column="9">
                                 <Grid>
-                                    <Viewbox VerticalAlignment="Top" Height="150" Width="150" Margin="0,50,0,0">
+                                    <Viewbox Style="{StaticResource ForecastIcon}">
                                         <TextBlock x:Name="WeatherIcon10" Style="{StaticResource WeatherIcon}" />
                                     </Viewbox>
-                                    <TextBlock Name="Date10" Text="Date" FontSize="24" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,250"/>
+                                    <TextBlock Name="Date10" Style="{StaticResource ForecastDate}"/>
                                     <RichTextBlock Name="Temp10" FontSize="24" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,220,0,0"/>
-                                    <TextBlock Name="Condition10" Text="Condition" FontSize="18" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,140,0,0" TextAlignment="Center" TextWrapping="Wrap"/>
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,150,0,0"/>
+                                    <TextBlock Name="Condition10" Style="{StaticResource ForecastCondition}" />
                                 </Grid>
                             </Border>
                         </Grid>
