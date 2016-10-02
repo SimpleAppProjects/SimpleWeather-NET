@@ -20,14 +20,12 @@ namespace SimpleWeather
         public WeatherDataLoader(string Location)
         {
             location = Location;
-            //loadWeatherData(false);
         }
 
         public WeatherDataLoader(Geoposition geoPosition)
         {
             location = "(" + geoPosition.Coordinate.Point.Position.Latitude + ", "
                 + geoPosition.Coordinate.Point.Position.Longitude + ")";
-            //loadWeatherData(false);
         }
 
         private async Task getWeatherData()
@@ -66,8 +64,6 @@ namespace SimpleWeather
             if (forceRefresh || (span.TotalHours > 6) || (weatherFileInfo.Length == 0))
             {
                 await getWeatherData();
-                // DEBUG
-                System.Diagnostics.Debug.WriteLine("Refreshing weather data...");
             }
             else if (weather == null)
             {
@@ -75,8 +71,6 @@ namespace SimpleWeather
                 DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Rootobject));
                 Stream fileStream = await weatherFile.OpenStreamForReadAsync();
                 weather = new Weather((Rootobject)serializer.ReadObject(fileStream));
-                // DEBUG
-                System.Diagnostics.Debug.WriteLine("Loading weather data...");
             }
         }
 

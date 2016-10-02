@@ -12,6 +12,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
@@ -80,147 +81,63 @@ namespace SimpleWeather
             CurCondition.Text = weather.condition.text;
             updateWeatherIcon(WeatherIcon, int.Parse(weather.condition.code));
 
-            // Update forecasts - manually b/c im dumb
-            // TODO: simplify this...
-            Date1.Text = DateTime.Parse(weather.forecasts[0].date).ToString("dddd dd");
-            updateWeatherIcon(WeatherIcon1, int.Parse(weather.forecasts[0].code));
-            Windows.UI.Xaml.Documents.Run Hi1 = new Windows.UI.Xaml.Documents.Run();
-            Windows.UI.Xaml.Documents.Run Lo1 = new Windows.UI.Xaml.Documents.Run();
-            Lo1.FontSize = 18;
-            Hi1.Text = weather.forecasts[0].high + "º | ";
-            Lo1.Text = weather.forecasts[0].low+ "º";
-            Windows.UI.Xaml.Documents.Paragraph p1 = new Windows.UI.Xaml.Documents.Paragraph();
-            p1.Inlines.Add(Hi1);
-            p1.Inlines.Add(Lo1);
-            Temp1.Blocks.Clear();
-            Temp1.Blocks.Add(p1);
-            Condition1.Text = weather.forecasts[0].text;
+            // Clear panel before we begin
+            ForecastPanel.Children.Clear();
 
-            Date2.Text = DateTime.Parse(weather.forecasts[1].date).ToString("dddd dd");
-            updateWeatherIcon(WeatherIcon2, int.Parse(weather.forecasts[1].code));
-            Windows.UI.Xaml.Documents.Run Hi2 = new Windows.UI.Xaml.Documents.Run();
-            Windows.UI.Xaml.Documents.Run Lo2 = new Windows.UI.Xaml.Documents.Run();
-            Lo2.FontSize = 18;
-            Hi2.Text = weather.forecasts[1].high + "º | ";
-            Lo2.Text = weather.forecasts[1].low+ "º";
-            Windows.UI.Xaml.Documents.Paragraph p2 = new Windows.UI.Xaml.Documents.Paragraph();
-            p2.Inlines.Add(Hi2);
-            p2.Inlines.Add(Lo2);
-            Temp2.Blocks.Clear();
-            Temp2.Blocks.Add(p2);
-            Condition2.Text = weather.forecasts[1].text;
+            // Add UI elements
+            foreach(Forecast forecast in weather.forecasts)
+            {
+                // Add border
+                Border border = new Border();
+                border.Style = this.Resources["ForecastBorder"] as Style;
 
-            Date3.Text = DateTime.Parse(weather.forecasts[2].date).ToString("dddd dd");
-            updateWeatherIcon(WeatherIcon3, int.Parse(weather.forecasts[2].code));
-            Windows.UI.Xaml.Documents.Run Hi3 = new Windows.UI.Xaml.Documents.Run();
-            Windows.UI.Xaml.Documents.Run Lo3 = new Windows.UI.Xaml.Documents.Run();
-            Lo3.FontSize = 18;
-            Hi3.Text = weather.forecasts[2].high + "º | ";
-            Lo3.Text = weather.forecasts[2].low+ "º";
-            Windows.UI.Xaml.Documents.Paragraph p3 = new Windows.UI.Xaml.Documents.Paragraph();
-            p3.Inlines.Add(Hi3);
-            p3.Inlines.Add(Lo3);
-            Temp3.Blocks.Clear();
-            Temp3.Blocks.Add(p3);
-            Condition3.Text = weather.forecasts[2].text;
+                // Add inner grid
+                Grid grid = new Grid();
 
-            Date4.Text = DateTime.Parse(weather.forecasts[3].date).ToString("dddd dd");
-            updateWeatherIcon(WeatherIcon4, int.Parse(weather.forecasts[3].code));
-            Windows.UI.Xaml.Documents.Run Hi4 = new Windows.UI.Xaml.Documents.Run();
-            Windows.UI.Xaml.Documents.Run Lo4 = new Windows.UI.Xaml.Documents.Run();
-            Lo4.FontSize = 18;
-            Hi4.Text = weather.forecasts[3].high + "º | ";
-            Lo4.Text = weather.forecasts[3].low+ "º";
-            Windows.UI.Xaml.Documents.Paragraph p4 = new Windows.UI.Xaml.Documents.Paragraph();
-            p4.Inlines.Add(Hi4);
-            p4.Inlines.Add(Lo4);
-            Temp4.Blocks.Clear();
-            Temp4.Blocks.Add(p4);
-            Condition4.Text = weather.forecasts[3].text;
+                // Add weather elements
+                TextBlock weatherIcon = new TextBlock();
+                weatherIcon.Style = this.Resources["WeatherIcon"] as Style;
+                updateWeatherIcon(weatherIcon, int.Parse(forecast.code));
+                Viewbox box = new Viewbox();
+                box.Style = this.Resources["ForecastIcon"] as Style;
+                box.Child = weatherIcon;
 
-            Date5.Text = DateTime.Parse(weather.forecasts[4].date).ToString("dddd dd");
-            updateWeatherIcon(WeatherIcon5, int.Parse(weather.forecasts[4].code));
-            Windows.UI.Xaml.Documents.Run Hi5 = new Windows.UI.Xaml.Documents.Run();
-            Windows.UI.Xaml.Documents.Run Lo5 = new Windows.UI.Xaml.Documents.Run();
-            Lo5.FontSize = 18;
-            Hi5.Text = weather.forecasts[4].high + "º | ";
-            Lo5.Text = weather.forecasts[4].low+ "º";
-            Windows.UI.Xaml.Documents.Paragraph p5 = new Windows.UI.Xaml.Documents.Paragraph();
-            p5.Inlines.Add(Hi5);
-            p5.Inlines.Add(Lo5);
-            Temp5.Blocks.Clear();
-            Temp5.Blocks.Add(p5);
-            Condition5.Text = weather.forecasts[4].text;
+                TextBlock date = new TextBlock();
+                date.Style = this.Resources["ForecastDate"] as Style;
+                date.Text = DateTime.Parse(forecast.date).ToString("dddd dd");
 
-            Date6.Text = DateTime.Parse(weather.forecasts[5].date).ToString("dddd dd");
-            updateWeatherIcon(WeatherIcon6, int.Parse(weather.forecasts[5].code));
-            Windows.UI.Xaml.Documents.Run Hi6 = new Windows.UI.Xaml.Documents.Run();
-            Windows.UI.Xaml.Documents.Run Lo6 = new Windows.UI.Xaml.Documents.Run();
-            Lo6.FontSize = 18;
-            Hi6.Text = weather.forecasts[5].high + "º | ";
-            Lo6.Text = weather.forecasts[5].low+ "º";
-            Windows.UI.Xaml.Documents.Paragraph p6 = new Windows.UI.Xaml.Documents.Paragraph();
-            p6.Inlines.Add(Hi6);
-            p6.Inlines.Add(Lo6);
-            Temp6.Blocks.Clear();
-            Temp6.Blocks.Add(p6);
-            Condition6.Text = weather.forecasts[5].text;
+                TextBlock condition = new TextBlock();
+                condition.Style = this.Resources["ForecastCondition"] as Style;
+                condition.Text = forecast.text;
 
-            Date7.Text = DateTime.Parse(weather.forecasts[6].date).ToString("dddd dd");
-            updateWeatherIcon(WeatherIcon7, int.Parse(weather.forecasts[6].code));
-            Windows.UI.Xaml.Documents.Run Hi7 = new Windows.UI.Xaml.Documents.Run();
-            Windows.UI.Xaml.Documents.Run Lo7 = new Windows.UI.Xaml.Documents.Run();
-            Lo7.FontSize = 18;
-            Hi7.Text = weather.forecasts[6].high + "º | ";
-            Lo7.Text = weather.forecasts[6].low+ "º";
-            Windows.UI.Xaml.Documents.Paragraph p7 = new Windows.UI.Xaml.Documents.Paragraph();
-            p7.Inlines.Add(Hi7);
-            p7.Inlines.Add(Lo7);
-            Temp7.Blocks.Clear();
-            Temp7.Blocks.Add(p7);
-            Condition7.Text = weather.forecasts[6].text;
+                RichTextBlock temp = new RichTextBlock();
+                temp.Style = this.Resources["ForecastTemp"] as Style;
 
-            Date8.Text = DateTime.Parse(weather.forecasts[7].date).ToString("dddd dd");
-            updateWeatherIcon(WeatherIcon8, int.Parse(weather.forecasts[7].code));
-            Windows.UI.Xaml.Documents.Run Hi8 = new Windows.UI.Xaml.Documents.Run();
-            Windows.UI.Xaml.Documents.Run Lo8 = new Windows.UI.Xaml.Documents.Run();
-            Lo8.FontSize = 18;
-            Hi8.Text = weather.forecasts[7].high + "º | ";
-            Lo8.Text = weather.forecasts[7].low + "º";
-            Windows.UI.Xaml.Documents.Paragraph p8 = new Windows.UI.Xaml.Documents.Paragraph();
-            p8.Inlines.Add(Hi8);
-            p8.Inlines.Add(Lo8);
-            Temp8.Blocks.Clear();
-            Temp8.Blocks.Add(p8);
-            Condition8.Text = weather.forecasts[7].text;
+                Run HiTemp = new Run();
+                Run LoTemp = new Run();
+                LoTemp.FontSize = 18;
+                HiTemp.Text = forecast.high + "º | ";
+                LoTemp.Text = forecast.low + "º";
+                Paragraph p = new Paragraph();
+                p.Inlines.Add(HiTemp);
+                p.Inlines.Add(LoTemp);
+                temp.Blocks.Clear();
+                temp.Blocks.Add(p);
 
-            Date9.Text = DateTime.Parse(weather.forecasts[8].date).ToString("dddd dd");
-            updateWeatherIcon(WeatherIcon9, int.Parse(weather.forecasts[8].code));
-            Windows.UI.Xaml.Documents.Run Hi9 = new Windows.UI.Xaml.Documents.Run();
-            Windows.UI.Xaml.Documents.Run Lo9 = new Windows.UI.Xaml.Documents.Run();
-            Lo9.FontSize = 18;
-            Hi9.Text = weather.forecasts[8].high + "º | ";
-            Lo9.Text = weather.forecasts[8].low + "º";
-            Windows.UI.Xaml.Documents.Paragraph p9 = new Windows.UI.Xaml.Documents.Paragraph();
-            p9.Inlines.Add(Hi9);
-            p9.Inlines.Add(Lo9);
-            Temp9.Blocks.Clear();
-            Temp9.Blocks.Add(p9);
-            Condition9.Text = weather.forecasts[8].text;
+                // Add all elements to grid
+                grid.Children.Add(box);
+                grid.Children.Add(date);
+                grid.Children.Add(condition);
+                grid.Children.Add(temp);
 
-            Date10.Text = DateTime.Parse(weather.forecasts[9].date).ToString("dddd dd");
-            updateWeatherIcon(WeatherIcon10, int.Parse(weather.forecasts[9].code));
-            Windows.UI.Xaml.Documents.Run Hi10 = new Windows.UI.Xaml.Documents.Run();
-            Windows.UI.Xaml.Documents.Run Lo10 = new Windows.UI.Xaml.Documents.Run();
-            Lo10.FontSize = 18;
-            Hi10.Text = weather.forecasts[9].high + "º | ";
-            Lo10.Text = weather.forecasts[9].low + "º";
-            Windows.UI.Xaml.Documents.Paragraph p10 = new Windows.UI.Xaml.Documents.Paragraph();
-            p10.Inlines.Add(Hi10);
-            p10.Inlines.Add(Lo10);
-            Temp10.Blocks.Clear();
-            Temp10.Blocks.Add(p10);
-            Condition10.Text = weather.forecasts[9].text;
+                // Add grid to border
+                border.Child = grid;
+
+                // Add border to panel
+                ForecastPanel.Children.Add(border);
+            }
+
+            // Update background
             updateBg(weather);
         }
 
