@@ -115,8 +115,11 @@ namespace SimpleWeather
 
                 Run HiTemp = new Run();
                 Run LoTemp = new Run();
-                LoTemp.FontSize = 18;
-                HiTemp.Text = forecast.high + "º | ";
+                LoTemp.FontSize = 16;
+                LoTemp.Foreground = new SolidColorBrush(Windows.UI.Colors.LightGray);
+                LoTemp.FontWeight = Windows.UI.Text.FontWeights.SemiBold;
+                HiTemp.FontWeight = Windows.UI.Text.FontWeights.SemiBold;
+                HiTemp.Text = forecast.high + "º ";
                 LoTemp.Text = forecast.low + "º";
                 Paragraph p = new Paragraph();
                 p.Inlines.Add(HiTemp);
@@ -248,29 +251,119 @@ namespace SimpleWeather
         private void updateBg(Weather weather)
         {
             ImageBrush bg = new ImageBrush();
+            bg.Stretch = Stretch.UniformToFill;
+            bg.AlignmentX = AlignmentX.Right;
+
+            // Apply background based on weather condition
             switch (int.Parse(weather.condition.code))
             {
-                // Apply Night Bkgrnd based on weather condition
-                case 27:
-                case 29:
+                // Night
                 case 31:
                 case 33:
                     bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/NightSky.jpg"));
                     break;
+                // Rain 
+                case 9:
+                case 11:
+                case 12:
+                case 40:
+                // (Mixed) Rain/Snow/Sleet
+                case 5:
+                case 6:
+                case 7:
+                case 18:
+                // Hail / Freezing Rain
+                case 8:
+                case 10:
+                case 17:
+                case 35:
+                    bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/RainySky.jpg"));
+                    break;
+                // Tornado / Hurricane / Thunderstorm / Tropical Storm
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 37:
+                case 38:
+                case 39:
+                    bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/StormySky.jpg"));
+                    break;
+                // Dust
+                case 19:
+                    bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/Dust.jpg"));
+                    break;
+                // Foggy / Haze
+                case 20:
+                case 21:
+                case 22:
+                    bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/FoggySky.jpg"));
+                    break;
+                // Snow / Snow Showers/Storm
+                case 13:
+                case 14:
+                case 15:
+                case 16:
+                case 41:
+                case 42:
+                case 43:
+                case 46:
+                    bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/Snow.jpg"));
+                    break;
+                // Partly Cloudy (Day)
+                case 30:
+                    bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/PartlyCloudy-Day.jpg"));
+                    break;
+                // Partly Cloudy (Night)
+                case 29:
+                    bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/PartlyCloudy-Night.jpg"));
+                    break;
+                // (Mostly) Cloudy (Day)
+                case 28:
+                    bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/MostlyCloudy-Day.jpg"));
+                    break;
+                // (Mostly) Cloudy (Night)
+                case 27:
+                    bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/MostlyCloudy-Night.jpg"));
+                    break;
+                /* Ambigious weather conditions */
+                // Cloudy
+                case 26:
+                    if (isNight(weather))
+                        bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/MostlyCloudy-Night.jpg"));
+                    else
+                        bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/MostlyCloudy-Day.jpg"));
+                    break;
+                // Partly Cloudy
+                case 44:
+                    if (isNight(weather))
+                        bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/PartlyCloudy-Night.jpg"));
+                    else
+                        bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/PartlyCloudy-Day.jpg"));
+                    break;
             }
 
-            // If NULL check time to see if its night
             if (bg.ImageSource == null)
             {
                 // Set background based using sunset/rise times
-                if (DateTime.Now < DateTime.Parse(weather.astronomy.sunrise)
-                    || DateTime.Now > DateTime.Parse(weather.astronomy.sunset))
+                if (isNight(weather))
                     bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/NightSky.jpg"));
                 else
                     bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/DaySky.jpg"));
             }
 
             MainViewer.Background = bg;
+        }
+
+        private bool isNight(Weather weather)
+        {
+            // Determine whether its night using sunset/rise times
+            if (DateTime.Now < DateTime.Parse(weather.astronomy.sunrise)
+                    || DateTime.Now > DateTime.Parse(weather.astronomy.sunset))
+                return true;
+            else
+                return false;
         }
 
         private void HamburgerButton_Click(object sender, RoutedEventArgs e)

@@ -29,7 +29,7 @@
         </Style>
         <Style x:Key="ForecastDate" TargetType="TextBlock">
             <Setter Property="Foreground" Value="White" />
-            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontSize" Value="16" />
             <Setter Property="Text" Value="Date" />
             <Setter Property="HorizontalAlignment" Value="Left" />
             <Setter Property="VerticalAlignment" Value="Top" />
@@ -38,7 +38,7 @@
         </Style>
         <Style x:Key="ForecastTemp" TargetType="RichTextBlock">
             <Setter Property="Foreground" Value="White" />
-            <Setter Property="FontSize" Value="24" />
+            <Setter Property="FontSize" Value="20" />
             <Setter Property="HorizontalAlignment" Value="Left" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Margin" Value="0,150,0,0" />
@@ -46,7 +46,7 @@
         </Style>
         <Style x:Key="ForecastCondition" TargetType="TextBlock">
             <Setter Property="Foreground" Value="White" />
-            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontSize" Value="14" />
             <Setter Property="Text" Value="Condition" />
             <Setter Property="TextAlignment" Value="Center" />
             <Setter Property="TextWrapping" Value="Wrap" />
@@ -161,7 +161,7 @@
         <SplitView.Content>
             <ScrollViewer x:Name="MainViewer" Margin="0,50,0,0" VerticalScrollMode="Auto">
                 <ScrollViewer.Background>
-                    <ImageBrush Stretch="Fill" ImageSource="Assets/Backgrounds/DaySky.jpg"/>
+                    <ImageBrush ImageSource="Assets/Backgrounds/DaySky.jpg" Stretch="UniformToFill" AlignmentX="Right"/>
                 </ScrollViewer.Background>
                 <Grid>
                     <Grid.RowDefinitions>
@@ -170,7 +170,7 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <TextBlock Name="Location" Text="Location" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Top" Margin="15"  Grid.Row="0" TextAlignment="Center" FontSize="36"/>
+                           HorizontalAlignment="Center" VerticalAlignment="Top" Margin="15" Grid.Row="0" TextAlignment="Center" FontSize="36" FontWeight="SemiBold"/>
                     <TextBlock Name="UpdateDate" Text="Day Time" FontSize="12" Foreground="White"
                            HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,70,0,0" Grid.Row="0"/>
                     <Viewbox VerticalAlignment="Top" Height="150" Width="150" Grid.Row="1">
@@ -180,8 +180,8 @@
                            HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="30" Padding="5" Grid.Row="1"/>
                     <TextBlock Name="CurTemp" Text="Temp" FontSize="24" Foreground="White"
                            HorizontalAlignment="Center" VerticalAlignment="Bottom" Padding="5" Grid.Row="1"/>
-                    <TextBlock Text="Forecast" FontSize="24" Foreground="White" Margin="50,0,0,0" Grid.Row="2"
-                               HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    <TextBlock Text="Forecast" FontSize="18" Foreground="White" Margin="50,0,0,0" Padding="5"  Grid.Row="2"
+                               HorizontalAlignment="Left" VerticalAlignment="Top" FontWeight="SemiBold"/>
                     <Button x:Name="LeftButton" Grid.Row="2" Content="&#xE00E;" HorizontalAlignment="Left" Click="LeftButton_Click" IsEnabled="False" Style="{StaticResource ArrowButton}" />
                     <Button x:Name="RightButton" Grid.Row="2" Content="&#xE00F;" HorizontalAlignment="Right" Click="RightButton_Click" Style="{StaticResource ArrowButton}" />
 

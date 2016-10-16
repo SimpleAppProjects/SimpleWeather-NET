@@ -89,6 +89,15 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <Content Include="Assets\Backgrounds\Dust.jpg" />
+    <Content Include="Assets\Backgrounds\FoggySky.jpg" />
+    <Content Include="Assets\Backgrounds\MostlyCloudy-Day.jpg" />
+    <Content Include="Assets\Backgrounds\MostlyCloudy-Night.jpg" />
+    <Content Include="Assets\Backgrounds\PartlyCloudy-Day.jpg" />
+    <Content Include="Assets\Backgrounds\PartlyCloudy-Night.jpg" />
+    <Content Include="Assets\Backgrounds\RainySky.jpg" />
+    <Content Include="Assets\Backgrounds\Snow.jpg" />
+    <Content Include="Assets\Backgrounds\StormySky.jpg" />
     <Content Include="Assets\WeatherIcons\weathericons-regular-webfont.ttf" />
     <None Include="project.json" />
   </ItemGroup>
