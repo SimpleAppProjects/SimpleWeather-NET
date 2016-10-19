@@ -66,20 +66,33 @@ namespace SimpleWeather
 
         private void updateUI(Weather weather)
         {
+            // Update background
+            updateBg(weather);
+
             // Location
             Location.Text = weather.location.city + "," + weather.location.region;
 
             // Date Updated
-            // ex. "2016-08-22T04:53:07Z"
-            CultureInfo provider = CultureInfo.InvariantCulture;
-            DateTime updateTime = DateTime.ParseExact(weather.lastBuildDate,
-                "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'", provider).ToLocalTime();
-            UpdateDate.Text = "Updated on " + updateTime.DayOfWeek.ToString() + " " + updateTime.ToString("t");
+            UpdateDate.Text = updateLastBuildDate(weather);
 
             // Update Current Condition
-            CurTemp.Text = weather.condition.temp + "º";
+            CurTemp.Text = weather.condition.temp + "\uf045";
             CurCondition.Text = weather.condition.text;
             updateWeatherIcon(WeatherIcon, int.Parse(weather.condition.code));
+
+            // WeatherDetails
+            // Astronomy
+            Sunrise.Text = DateTime.Parse(weather.astronomy.sunrise).ToString("h:mm tt");
+            Sunset.Text = DateTime.Parse(weather.astronomy.sunset).ToString("h:mm tt");
+            // Wind
+            Chill.Text = weather.wind.chill + "º";
+            updateWindDirection(int.Parse(weather.wind.direction));
+            Speed.Text = ConversionMethods.kphTomph(weather.wind.speed) + " " + weather.units.speed;
+            // Atmosphere
+            Humidity.Text = weather.atmosphere.humidity + "%";
+            Pressure.Text = ConversionMethods.mbToInHg(weather.atmosphere.pressure) + " " + weather.units.pressure;
+            updatePressureState(int.Parse(weather.atmosphere.rising));
+            Visibility.Text = ConversionMethods.kmToMi(weather.atmosphere.visibility) + " " + weather.units.distance;
 
             // Clear panel before we begin
             ForecastPanel.Children.Clear();
@@ -139,9 +152,6 @@ namespace SimpleWeather
                 // Add border to panel
                 ForecastPanel.Children.Add(border);
             }
-
-            // Update background
-            updateBg(weather);
         }
 
         private void updateWeatherIcon(TextBlock textBlock, int weatherCode)
@@ -248,6 +258,53 @@ namespace SimpleWeather
             }
         }
 
+        private String updateLastBuildDate(Weather weather)
+        {
+            String date;
+
+            // ex. "2016-08-22T04:53:07Z"
+            CultureInfo provider = CultureInfo.InvariantCulture;
+            DateTime updateTime = DateTime.ParseExact(weather.lastBuildDate,
+                "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'", provider).ToLocalTime();
+
+            if (updateTime.DayOfWeek == DateTime.Today.DayOfWeek)
+            {
+                date = "Updated at " + updateTime.ToString("t");
+            }
+            else
+                date = "Updated on " + updateTime.ToString("ddd") + " " + updateTime.ToString("t");
+
+            return date;
+        }
+
+        private void updateWindDirection(int angle)
+        {
+            RotateTransform rotation = new RotateTransform();
+            rotation.Angle = angle;
+            WindDirection.RenderTransformOrigin = new Point(0.5, 0.5);
+            WindDirection.RenderTransform = rotation;
+        }
+
+        private void updatePressureState(int rising)
+        {
+            switch (rising)
+            {
+                // Steady
+                case 0:
+                default:
+                    Rising.Text = "\u2500\u2500";
+                    break;
+                // Rising
+                case 1:
+                    Rising.Text = "\uf058\uf058";
+                    break;
+                // Falling
+                case 2:
+                    Rising.Text = "\uf044\uf044";
+                    break;
+            }
+        }
+
         private void updateBg(Weather weather)
         {
             ImageBrush bg = new ImageBrush();
@@ -311,25 +368,11 @@ namespace SimpleWeather
                 case 46:
                     bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/Snow.jpg"));
                     break;
-                // Partly Cloudy (Day)
-                case 30:
-                    bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/PartlyCloudy-Day.jpg"));
-                    break;
-                // Partly Cloudy (Night)
-                case 29:
-                    bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/PartlyCloudy-Night.jpg"));
-                    break;
-                // (Mostly) Cloudy (Day)
-                case 28:
-                    bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/MostlyCloudy-Day.jpg"));
-                    break;
-                // (Mostly) Cloudy (Night)
-                case 27:
-                    bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/MostlyCloudy-Night.jpg"));
-                    break;
                 /* Ambigious weather conditions */
-                // Cloudy
+                // (Mostly) Cloudy
+                case 28:
                 case 26:
+                case 27:
                     if (isNight(weather))
                         bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/MostlyCloudy-Night.jpg"));
                     else
@@ -337,6 +380,8 @@ namespace SimpleWeather
                     break;
                 // Partly Cloudy
                 case 44:
+                case 29:
+                case 30:
                     if (isNight(weather))
                         bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/PartlyCloudy-Night.jpg"));
                     else

@@ -62,13 +62,12 @@
             <Setter Property="BorderBrush" Value="{ThemeResource SystemControlForegroundTransparentBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="8,4,8,4"/>
-            <Setter Property="Margin" Value="0,25,0,0"/>
             <Setter Property="Width" Value="50"/>
             <Setter Property="Height" Value="50"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
-            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontSize" Value="16"/>
             <Setter Property="UseSystemFocusVisuals" Value="True"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -127,6 +126,11 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="WeatherDetails" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Padding" Value="5" />
+        </Style>
     </Page.Resources>
 
     <Page.TopAppBar>
@@ -144,7 +148,7 @@
                CompactPaneLength="50" OpenPaneLength="250" Margin="0,-50,0,0">
         <SplitView.Pane>
             <StackPanel Background="Black">
-                <Button x:Name="HamburgerButton" FontFamily="Segoe MDL2 Assets" Content="&#xE700;" ClickMode="Press"
+                <Button x:Name="HamburgerButton" FontFamily="Segoe MDL2 Assets" Content="&#xE700;"
                     Width="50" Height="50" Click="HamburgerButton_Click" Background="#FF1F336C" RequestedTheme="Dark" />
                 <StackPanel Orientation="Horizontal">
                     <Button x:Name="LocationsButton" FontFamily="Segoe MDL2 Assets" Content="&#xEA37;"
@@ -165,29 +169,131 @@
                 </ScrollViewer.Background>
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="100"/>
-                        <RowDefinition Height="200"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Name="Location" Text="Location" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Top" Margin="15" Grid.Row="0" TextAlignment="Center" FontSize="36" FontWeight="SemiBold"/>
-                    <TextBlock Name="UpdateDate" Text="Day Time" FontSize="12" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,70,0,0" Grid.Row="0"/>
-                    <Viewbox VerticalAlignment="Top" Height="150" Width="150" Grid.Row="1">
-                        <TextBlock x:Name="WeatherIcon" Style="{StaticResource WeatherIcon}" Text="&#xf00d;" />
-                    </Viewbox>
-                    <TextBlock Name="CurCondition" Text="Condition" FontSize="18" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="30" Padding="5" Grid.Row="1"/>
-                    <TextBlock Name="CurTemp" Text="Temp" FontSize="24" Foreground="White"
-                           HorizontalAlignment="Center" VerticalAlignment="Bottom" Padding="5" Grid.Row="1"/>
-                    <TextBlock Text="Forecast" FontSize="18" Foreground="White" Margin="50,0,0,0" Padding="5"  Grid.Row="2"
-                               HorizontalAlignment="Left" VerticalAlignment="Top" FontWeight="SemiBold"/>
-                    <Button x:Name="LeftButton" Grid.Row="2" Content="&#xE00E;" HorizontalAlignment="Left" Click="LeftButton_Click" IsEnabled="False" Style="{StaticResource ArrowButton}" />
-                    <Button x:Name="RightButton" Grid.Row="2" Content="&#xE00F;" HorizontalAlignment="Right" Click="RightButton_Click" Style="{StaticResource ArrowButton}" />
+                    <Grid Grid.Row="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Name="Location" Text="Location" Foreground="White" FontSize="36" FontWeight="SemiBold"
+                                   HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,15,0,0" Grid.Row="0" />
+                        <TextBlock Name="UpdateDate" Text="Updated on Day Time" FontSize="12" Foreground="White"
+                                   HorizontalAlignment="Center" VerticalAlignment="Bottom" Padding="5" Grid.Row="1"/>
+                    </Grid>
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Viewbox VerticalAlignment="Top" Height="150" Width="150" Grid.Row="0">
+                            <TextBlock x:Name="WeatherIcon" Style="{StaticResource WeatherIcon}" Text="&#xf00d;" />
+                        </Viewbox>
+                        <TextBlock Name="CurCondition" Text="Condition" FontSize="18" HorizontalAlignment="Center" Foreground="White" Grid.Row="1"/>
+                        <TextBlock Name="CurTemp" Text="Temp" FontSize="24" Foreground="White" Style="{StaticResource WeatherIcon}" HorizontalAlignment="Center" Margin="5,0,0,0" Grid.Row="2"/>
+                    </Grid>
 
-                    <ScrollViewer Name="ForecastViewer" Grid.Row="2" Margin="50,35,50,0" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden" VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Hidden" ViewChanged="ForecastViewer_ViewChanged">
-                        <StackPanel Name="ForecastPanel" Height="200" Background="#20808080" Orientation="Horizontal" />
-                    </ScrollViewer>
+                    <Grid Name="DetailsPanel" Background="#10808080" Grid.Row="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid HorizontalAlignment="Center" Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid Grid.Column="0" Padding="5,0,5,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Humidity:" Style="{StaticResource WeatherDetails}" Grid.Column="0" />
+                                <TextBlock Name="Humidity" Text="100%" Style="{StaticResource WeatherDetails}" Grid.Column="1" />
+                            </Grid>
+                            <Grid Grid.Column="1" Padding="5,0,5,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Pressure:" Style="{StaticResource WeatherDetails}" Grid.Column="0" />
+                                <TextBlock Name="Rising" FontSize="14" Foreground="White" Style="{StaticResource WeatherIcon}" Text="&#x2500;&#x2500;" Padding="5" Grid.Column="1" />
+                                <TextBlock Name="Pressure" Text="10.00 in" Style="{StaticResource WeatherDetails}" Grid.Column="2" />
+                            </Grid>
+                            <Grid Grid.Column="2" Padding="5,0,5,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Visibility:" Style="{StaticResource WeatherDetails}" Grid.Column="0" />
+                                <TextBlock Name="Visibility" Text="14 mi." Style="{StaticResource WeatherDetails}" Grid.Column="1" />
+                            </Grid>
+                        </Grid>
+                        <Grid HorizontalAlignment="Center" Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="125"/>
+                                <ColumnDefinition Width="125"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid Grid.Column="0" Padding="5,0,5,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Feels Like:" Style="{StaticResource WeatherDetails}" Grid.Column="0" />
+                                <TextBlock Name="Chill" Text="Chill" Style="{StaticResource WeatherDetails}" Grid.Column="1" />
+                            </Grid>
+                            <Grid Grid.Column="1" Padding="5,0,5,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Wind:" Style="{StaticResource WeatherDetails}" Grid.Column="0" />
+                                <TextBlock Name="WindDirection" FontSize="14" Foreground="White" Style="{StaticResource WeatherIcon}" Text="&#xf058;" Padding="5" Grid.Column="1" />
+                                <TextBlock Name="Speed" Text="14 mph" Style="{StaticResource WeatherDetails}" Grid.Column="2" />
+                            </Grid>
+                        </Grid>
+                        <Grid HorizontalAlignment="Center" Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid Grid.Column="0" Padding="5,0,10,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock FontSize="18" Foreground="White" Style="{StaticResource WeatherIcon}" Text="&#xf051;" Padding="5" Grid.Column="0" />
+                                <TextBlock Name="Sunrise" Text="7:00 AM" Style="{StaticResource WeatherDetails}" FontSize="16" Grid.Column="1" />
+                            </Grid>
+                            <Grid Grid.Column="1" Padding="5,0,10,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock FontSize="18" Foreground="White" Style="{StaticResource WeatherIcon}" Text="&#xf052;" Padding="5" Grid.Column="0" />
+                                <TextBlock Name="Sunset" Text="7:00 PM" Style="{StaticResource WeatherDetails}" FontSize="16" Grid.Column="1"/>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+
+                    <TextBlock Text="Forecast" FontSize="18" Foreground="White" Margin="50,0,0,0" Padding="5" Grid.Row="3"
+                               HorizontalAlignment="Left" VerticalAlignment="Top" FontWeight="SemiBold"/>
+                    <Grid Background="#10808080" Margin="0,35,0,0" Grid.Row="3">
+                        <Button x:Name="LeftButton" Content="&#xE00E;" HorizontalAlignment="Left" Click="LeftButton_Click" IsEnabled="False" Style="{StaticResource ArrowButton}" />
+                        <Button x:Name="RightButton" Content="&#xE00F;" HorizontalAlignment="Right" Click="RightButton_Click" IsEnabled="True" Style="{StaticResource ArrowButton}" />
+                        <ScrollViewer Name="ForecastViewer" Margin="50,0,50,0" HorizontalAlignment="Center" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden"
+                                      VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Hidden" ViewChanged="ForecastViewer_ViewChanged">
+                            <StackPanel Name="ForecastPanel" Height="200" Orientation="Horizontal" />
+                        </ScrollViewer>
+                    </Grid>
                 </Grid>
             </ScrollViewer>
         </SplitView.Content>
