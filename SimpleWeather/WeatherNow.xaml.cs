@@ -32,8 +32,6 @@ namespace SimpleWeather
         {
             this.InitializeComponent();
 
-            ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(640, 480));
-
             // Try to get saved WeatherLoader
             object outValue;
             if (!CoreApplication.Properties.TryGetValue("WeatherLoader", out outValue)) { }
@@ -292,14 +290,16 @@ namespace SimpleWeather
                 // Steady
                 case 0:
                 default:
-                    Rising.Text = "\u2500\u2500";
+                    Rising.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                     break;
                 // Rising
                 case 1:
+                    Rising.Visibility = Windows.UI.Xaml.Visibility.Visible;
                     Rising.Text = "\uf058\uf058";
                     break;
                 // Falling
                 case 2:
+                    Rising.Visibility = Windows.UI.Xaml.Visibility.Visible;
                     Rising.Text = "\uf044\uf044";
                     break;
             }

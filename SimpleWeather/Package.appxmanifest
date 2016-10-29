@@ -23,10 +23,6 @@
           </uap:ShowNameOnTiles>
         </uap:DefaultTile>
         <uap:SplashScreen Image="Assets\SplashScreen.png" BackgroundColor="#006FBF" />
-        <uap:InitialRotationPreference>
-          <uap:Rotation Preference="landscape" />
-          <uap:Rotation Preference="landscapeFlipped" />
-        </uap:InitialRotationPreference>
       </uap:VisualElements>
     </Application>
   </Applications>

@@ -32,8 +32,20 @@ namespace SimpleWeather
         {
             this.InitializeComponent();
 
-            ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(640, 480));
-            
+            // TitleBar
+            if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            {
+                // Mobile
+                ApplicationView.GetForCurrentView().TryEnterFullScreenMode();
+            }
+            else
+            {
+                // Desktop
+                var titlebar = ApplicationView.GetForCurrentView().TitleBar;
+                titlebar.BackgroundColor = Windows.UI.Color.FromArgb(1, 0, 111, 191);
+                titlebar.ButtonBackgroundColor = titlebar.BackgroundColor;
+            }
+
             // Restore Weather if Location already set
             Restore();
         }
