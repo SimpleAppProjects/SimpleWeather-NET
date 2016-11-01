@@ -345,6 +345,8 @@ namespace SimpleWeather
                 case 37:
                 case 38:
                 case 39:
+                case 45:
+                case 47:
                     bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/StormySky.jpg"));
                     break;
                 // Dust
