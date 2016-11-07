@@ -28,11 +28,12 @@ namespace SimpleWeather
                 + geoPosition.Coordinate.Point.Position.Longitude + ")";
         }
 
-        private async Task getWeatherData()
+        private async Task getWeatherData(bool useFarenheit)
         {
             string yahooAPI = "https://query.yahooapis.com/v1/public/yql?q=";
+            string unit = (useFarenheit ? " and u='F'" : " and u='C'");
             string query = "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text=\""
-                + location + "\")&format=json";
+                + location + "\")" + unit + "&format=json";
             Uri weatherURL = new Uri(yahooAPI + query);
 
             // Connect to webstream
@@ -51,27 +52,17 @@ namespace SimpleWeather
             DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Rootobject));
             Stream fileStream = await weatherFile.OpenStreamForReadAsync();
             weather = new Weather((Rootobject)serializer.ReadObject(fileStream));
+            fileStream.Flush();
         }
 
-        public async Task loadWeatherData(bool forceRefresh)
+        public async Task loadWeatherData(bool useFarenheit)
         {
             weatherFile = await appDataFolder.CreateFileAsync("weather.json",
                 CreationCollisionOption.OpenIfExists);
             FileInfo weatherFileInfo = new FileInfo(weatherFile.Path);
             TimeSpan span = DateTime.Now - weatherFileInfo.LastWriteTime;
 
-            /* TODO: make span check an app property setting */
-            if (forceRefresh || (span.TotalHours > 6) || (weatherFileInfo.Length == 0))
-            {
-                await getWeatherData();
-            }
-            else if (weather == null)
-            {
-                // Load weather from file
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Rootobject));
-                Stream fileStream = await weatherFile.OpenStreamForReadAsync();
-                weather = new Weather((Rootobject)serializer.ReadObject(fileStream));
-            }
+            await getWeatherData(useFarenheit);
         }
 
         public Weather getWeather()

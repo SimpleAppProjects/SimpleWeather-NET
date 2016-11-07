@@ -26,7 +26,6 @@ namespace SimpleWeather
             location = root.query.results.channel.location;
             location.lat = root.query.results.channel.item.lat;
             location._long = root.query.results.channel.item._long;
-            location.description = root.query.results.channel.description;
 
             wind = root.query.results.channel.wind;
             atmosphere = root.query.results.channel.atmosphere;
@@ -119,7 +118,7 @@ namespace SimpleWeather
 
         public string lat { get; set; }
         public string _long { get; set; }
-        public string description { get; set; }
+        public string description { get { return city + "," + region; } }
     }
 
     [DataContract]
@@ -129,30 +128,39 @@ namespace SimpleWeather
         public string chill { get; set; }
         [DataMember]
         public string direction { get; set; }
-        [DataMember]
-        public string speed { get; set; }
+        [DataMember(Name = "speed")]
+        private string _speed { get; set; }
+
+        public string speed { get { return ConversionMethods.kphTomph(_speed); } set { _speed = value; } }
     }
 
     [DataContract]
     public class Atmosphere
     {
-        [DataMember]
-        public string humidity { get; set; }
-        [DataMember]
-        public string pressure { get; set; }
+        [DataMember(Name = "humidity")]
+        private string _humidity { get; set; }
+        [DataMember(Name = "pressure")]
+        private string _pressure { get; set; }
         [DataMember]
         public string rising { get; set; }
-        [DataMember]
-        public string visibility { get; set; }
+        [DataMember(Name = "visibility")]
+        private string _visibility { get; set; }
+
+        public string humidity { get { return _humidity + "%"; } set { _humidity = value; } }
+        public string pressure { get { return ConversionMethods.mbToInHg(_pressure); } set { _pressure = value; } }
+        public string visibility { get { return ConversionMethods.kmToMi(_visibility); } set { _visibility = value; } }
     }
 
     [DataContract]
     public class Astronomy
     {
-        [DataMember]
-        public string sunrise { get; set; }
-        [DataMember]
-        public string sunset { get; set; }
+        [DataMember(Name = "sunrise")]
+        private string _sunrise { get; set; }
+        [DataMember(Name = "sunset")]
+        private string _sunset { get; set; }
+
+        public string sunrise { get { return DateTime.Parse(_sunrise).ToString("h:mm tt"); } set { _sunrise = value; } }
+        public string sunset { get { return DateTime.Parse(_sunset).ToString("h:mm tt"); } set { _sunset = value; } }
     }
 
     [DataContract]
@@ -218,8 +226,8 @@ namespace SimpleWeather
     {
         [DataMember]
         public string code { get; set; }
-        [DataMember]
-        public string date { get; set; }
+        [DataMember(Name = "date")]
+        private string _date { get; set; }
         [DataMember]
         public string day { get; set; }
         [DataMember]
@@ -228,6 +236,8 @@ namespace SimpleWeather
         public string low { get; set; }
         [DataMember]
         public string text { get; set; }
+
+        public string date { get { return DateTime.Parse(_date).ToString("dddd dd"); } set { _date = value; } }
     }
 
     public class Coordinate

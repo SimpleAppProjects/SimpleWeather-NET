@@ -27,6 +27,7 @@ namespace SimpleWeather
     public sealed partial class MainPage : Page
     {
         WeatherDataLoader wLoader = null;
+        public static Windows.UI.Color AppColor = Windows.UI.Color.FromArgb(255, 0, 111, 191);
 
         public MainPage()
         {
@@ -42,12 +43,26 @@ namespace SimpleWeather
             {
                 // Desktop
                 var titlebar = ApplicationView.GetForCurrentView().TitleBar;
-                titlebar.BackgroundColor = Windows.UI.Color.FromArgb(1, 0, 111, 191);
+                titlebar.BackgroundColor = AppColor;
                 titlebar.ButtonBackgroundColor = titlebar.BackgroundColor;
             }
 
             // Restore Weather if Location already set
             Restore();
+        }
+
+        private bool useFarenheit()
+        {
+            var Settings = ApplicationData.Current.LocalSettings;
+            if (!Settings.Values.ContainsKey("Units") || Settings.Values["Units"] == null)
+            {
+                Settings.Values["Units"] = "F";
+                return true;
+            }
+            else if (Settings.Values["Units"].Equals("C"))
+                return false;
+
+            return true;
         }
 
         private async void Restore()
@@ -69,7 +84,7 @@ namespace SimpleWeather
                     Coordinate local = new Coordinate(ApplicationData.Current.LocalSettings.Values["HomeLocation"].ToString());
                     wLoader = new WeatherDataLoader(local.ToString());
 
-                    await wLoader.loadWeatherData(true).ContinueWith(async (t) =>
+                    await wLoader.loadWeatherData(useFarenheit()).ContinueWith(async (t) =>
                     {
                         if (wLoader.getWeather() != null)
                         {
@@ -81,7 +96,7 @@ namespace SimpleWeather
                                 }
                                 CoreApplication.Properties.Add("WeatherLoader", wLoader);
 
-                                this.Frame.Navigate(typeof(WeatherNow));
+                                this.Frame.Navigate(typeof(Shell));
                             });
                         }
                     });
@@ -108,7 +123,7 @@ namespace SimpleWeather
                     GPS.IsEnabled = false;
 
                     wLoader = new WeatherDataLoader(Location.Text);
-                    await wLoader.loadWeatherData(false).ContinueWith(async (t) =>
+                    await wLoader.loadWeatherData(useFarenheit()).ContinueWith(async (t) =>
                     {
                         if (wLoader.getWeather() != null)
                         {
@@ -118,7 +133,7 @@ namespace SimpleWeather
                                 ApplicationData.Current.LocalSettings.Values["HomeLocation"] =
                                         string.Join(",", wLoader.getWeather().location.lat, wLoader.getWeather().location._long);
 
-                                Location.Text = wLoader.getWeather().location.city + ", " + wLoader.getWeather().location.region;
+                                Location.Text = ApplicationData.Current.LocalSettings.Values["HomeLocation"].ToString();
 
                                 if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
                                 {
@@ -127,7 +142,7 @@ namespace SimpleWeather
                                 CoreApplication.Properties.Add("WeatherLoader", wLoader);
 
                                 ApplicationData.Current.LocalSettings.Values["weatherLoaded"] = "true";
-                                this.Frame.Navigate(typeof(WeatherNow), Location.Tag);
+                                this.Frame.Navigate(typeof(Shell), Location.Tag);
                             });
                         }
                     });
@@ -148,7 +163,7 @@ namespace SimpleWeather
             Windows.Devices.Geolocation.Geoposition geoPos = await geolocal.GetGeopositionAsync();
 
             wLoader = new WeatherDataLoader(geoPos);
-            await wLoader.loadWeatherData(false).ContinueWith(async (t) =>
+            await wLoader.loadWeatherData(useFarenheit()).ContinueWith(async (t) =>
             {
                 if (wLoader.getWeather() != null)
                 {
@@ -158,7 +173,7 @@ namespace SimpleWeather
                         ApplicationData.Current.LocalSettings.Values["HomeLocation"] = 
                                 string.Join(",", wLoader.getWeather().location.lat, wLoader.getWeather().location._long);
 
-                        Location.Text = wLoader.getWeather().location.city + ", " + wLoader.getWeather().location.region;
+                        Location.Text = ApplicationData.Current.LocalSettings.Values["HomeLocation"].ToString();
 
                         if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
                         {
@@ -167,7 +182,7 @@ namespace SimpleWeather
                         CoreApplication.Properties.Add("WeatherLoader", wLoader);
 
                         ApplicationData.Current.LocalSettings.Values["weatherLoaded"] = "true";
-                        this.Frame.Navigate(typeof(WeatherNow), GPS.Tag);
+                        this.Frame.Navigate(typeof(Shell), GPS.Tag);
                     });
                 }
             });

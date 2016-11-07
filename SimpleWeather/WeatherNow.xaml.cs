@@ -7,7 +7,6 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -32,20 +31,41 @@ namespace SimpleWeather
         {
             this.InitializeComponent();
 
+            Windows.UI.Core.SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = Windows.UI.Core.AppViewBackButtonVisibility.Collapsed;
+
             // Try to get saved WeatherLoader
             object outValue;
             if (!CoreApplication.Properties.TryGetValue("WeatherLoader", out outValue)) { }
             wLoader = (WeatherDataLoader)outValue;
 
-            updateUI(wLoader.getWeather());
+            RefreshWeather();
         }
 
-        private async void RefreshButton_Click(object sender, RoutedEventArgs e)
+        private bool useFarenheit()
+        {
+            var Settings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            if (!Settings.Values.ContainsKey("Units") || Settings.Values["Units"] == null)
+            {
+                Settings.Values["Units"] = "F";
+                return true;
+            }
+            else if (Settings.Values["Units"].Equals("C"))
+                return false;
+
+            return true;
+        }
+
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            RefreshWeather();
+        }
+
+        private async void RefreshWeather()
         {
             // For UI Thread
             Windows.UI.Core.CoreDispatcher dispatcher = Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher;
 
-            await wLoader.loadWeatherData(true).ContinueWith(async (t) =>
+            await wLoader.loadWeatherData(useFarenheit()).ContinueWith(async (t) =>
             {
                 if (wLoader.getWeather() != null)
                 {
@@ -68,35 +88,41 @@ namespace SimpleWeather
             updateBg(weather);
 
             // Location
-            Location.Text = weather.location.city + "," + weather.location.region;
+            Location.Text = weather.location.description;
 
             // Date Updated
             UpdateDate.Text = updateLastBuildDate(weather);
 
             // Update Current Condition
-            CurTemp.Text = weather.condition.temp + "\uf045";
+            CurTemp.Text = weather.condition.temp +
+                (weather.units.temperature == "F" ? "\uf045" : "\uf03c");
             CurCondition.Text = weather.condition.text;
             updateWeatherIcon(WeatherIcon, int.Parse(weather.condition.code));
 
             // WeatherDetails
             // Astronomy
-            Sunrise.Text = DateTime.Parse(weather.astronomy.sunrise).ToString("h:mm tt");
-            Sunset.Text = DateTime.Parse(weather.astronomy.sunset).ToString("h:mm tt");
+            Sunrise.Text = weather.astronomy.sunrise;
+            Sunset.Text = weather.astronomy.sunset;
             // Wind
-            Chill.Text = weather.wind.chill + "º";
+            Chill.Text = (weather.units.temperature == "F" ? weather.wind.chill : ConversionMethods.FtoC(weather.wind.chill)) + "º";
             updateWindDirection(int.Parse(weather.wind.direction));
-            Speed.Text = ConversionMethods.kphTomph(weather.wind.speed) + " " + weather.units.speed;
+            Speed.Text = weather.wind.speed;
+            SpeedUnit.Text = weather.units.speed;
+
             // Atmosphere
-            Humidity.Text = weather.atmosphere.humidity + "%";
-            Pressure.Text = ConversionMethods.mbToInHg(weather.atmosphere.pressure) + " " + weather.units.pressure;
+            Humidity.Text = weather.atmosphere.humidity;
+            Pressure.Text = (weather.units.temperature == "F" ?
+                weather.atmosphere.pressure : Math.Round(double.Parse(weather.atmosphere.pressure)).ToString());
+            PressureUnit.Text = weather.units.pressure;
             updatePressureState(int.Parse(weather.atmosphere.rising));
-            Visibility.Text = ConversionMethods.kmToMi(weather.atmosphere.visibility) + " " + weather.units.distance;
+            Visibility.Text = weather.atmosphere.visibility;
+            VisibilityUnit.Text = weather.units.distance;
 
             // Clear panel before we begin
             ForecastPanel.Children.Clear();
 
             // Add UI elements
-            foreach(Forecast forecast in weather.forecasts)
+            foreach (Forecast forecast in weather.forecasts)
             {
                 // Add border
                 Border border = new Border();
@@ -115,7 +141,7 @@ namespace SimpleWeather
 
                 TextBlock date = new TextBlock();
                 date.Style = this.Resources["ForecastDate"] as Style;
-                date.Text = DateTime.Parse(forecast.date).ToString("dddd dd");
+                date.Text = forecast.date;
 
                 TextBlock condition = new TextBlock();
                 condition.Style = this.Resources["ForecastCondition"] as Style;
@@ -411,11 +437,6 @@ namespace SimpleWeather
                 return true;
             else
                 return false;
-        }
-
-        private void HamburgerButton_Click(object sender, RoutedEventArgs e)
-        {
-            HamBurgerMenu.IsPaneOpen = !HamBurgerMenu.IsPaneOpen;
         }
 
         private void LeftButton_Click(object sender, RoutedEventArgs e)
