@@ -86,69 +86,67 @@
     </Page.Resources>
 
     <Grid>
-        <SplitView x:Name="HamBurgerMenu" DisplayMode="CompactOverlay" IsPaneOpen="False" 
-                   CompactPaneLength="50" OpenPaneLength="250" Margin="0,0,0,0" PaneBackground="Transparent">
-            <SplitView.Pane>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Border Grid.Row="0" Background="#FF1F336C" Width="50" HorizontalAlignment="Left">
-                        <Button x:Name="HamburgerButton" Style="{StaticResource BurgerButton}" FontFamily="Segoe MDL2 Assets" Content="&#xE700;" 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Border Background="#FF1F336C" Width="50" HorizontalAlignment="Left" Grid.Row="0" Canvas.ZIndex="100">
+            <Button x:Name="HamburgerButton" Style="{StaticResource BurgerButton}" FontFamily="Segoe MDL2 Assets" Content="&#xE700;" 
                             Width="50" Height="48" Click="HamburgerButton_Click" />
-                    </Border>
-                    <StackPanel Background="Black" Grid.Row="1">
-                        <StackPanel Orientation="Horizontal">
-                            <Button x:Name="WeatherButton" Click="WeatherButton_Click" Style="{StaticResource BurgerButton}">
-                                <Grid Height="48" Width="250">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="50"/>
-                                        <ColumnDefinition/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="&#xf00d;" Style="{StaticResource WeatherIcon}" Grid.Column="0"/>
-                                    <TextBlock Text="Weather" RequestedTheme="Dark" FontSize="18" VerticalAlignment="Center" Padding="5" Grid.Column="1" />
-                                </Grid>
-                            </Button>
-                            <StackPanel.Background>
-                                <SolidColorBrush Color="{Binding ElementName=WeatherButton, Path=Background.Color}" />
-                            </StackPanel.Background>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Button x:Name="LocationsButton" Style="{StaticResource BurgerButton}">
-                                <Grid Height="48" Width="250">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="50"/>
-                                        <ColumnDefinition/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="&#xEA37;" Style="{StaticResource BurgerIcon}" Grid.Column="0"/>
-                                    <TextBlock Text="Locations" RequestedTheme="Dark" FontSize="18" VerticalAlignment="Center" Padding="5" Grid.Column="1" />
-                                </Grid>
-                            </Button>
-                            <StackPanel.Background>
-                                <SolidColorBrush Color="{Binding ElementName=LocationsButton, Path=Background.Color}" />
-                            </StackPanel.Background>
-                        </StackPanel>
-                        <StackPanel x:Name="SettingsPanel" Orientation="Horizontal">
-                            <Button x:Name="SettingsButton" Click="SettingsButton_Click" Style="{StaticResource BurgerButton}">
-                                <Grid Height="48" Width="250">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="50"/>
-                                        <ColumnDefinition/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="&#xE713;" Style="{StaticResource BurgerIcon}" Grid.Column="0" />
-                                    <TextBlock Text="Settings" RequestedTheme="Dark" FontSize="18" VerticalAlignment="Center" Padding="5" Grid.Column="1" />
-                                </Grid>
-                            </Button>
-                            <StackPanel.Background>
-                                <SolidColorBrush Color="{Binding ElementName=SettingsButton, Path=Background.Color}" />
-                            </StackPanel.Background>
-                        </StackPanel>
+        </Border>
+        <SplitView x:Name="HamBurgerMenu" DisplayMode="CompactOverlay" IsPaneOpen="False" 
+                   CompactPaneLength="50" OpenPaneLength="250" PaneBackground="Transparent" Grid.Row="1">
+            <SplitView.Pane>
+                <StackPanel Background="Black">
+                    <StackPanel Orientation="Horizontal">
+                        <Button x:Name="WeatherButton" Click="WeatherButton_Click" Style="{StaticResource BurgerButton}">
+                            <Grid Height="48" Width="250">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="&#xf00d;" Style="{StaticResource WeatherIcon}" Grid.Column="0"/>
+                                <TextBlock Text="Weather" RequestedTheme="Dark" FontSize="18" VerticalAlignment="Center" Padding="5" Grid.Column="1" />
+                            </Grid>
+                        </Button>
+                        <StackPanel.Background>
+                            <SolidColorBrush Color="{Binding ElementName=WeatherButton, Path=Background.Color}" />
+                        </StackPanel.Background>
                     </StackPanel>
-                </Grid>
+                    <StackPanel Orientation="Horizontal">
+                        <Button x:Name="LocationsButton" Style="{StaticResource BurgerButton}">
+                            <Grid Height="48" Width="250">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="&#xEA37;" Style="{StaticResource BurgerIcon}" Grid.Column="0"/>
+                                <TextBlock Text="Locations" RequestedTheme="Dark" FontSize="18" VerticalAlignment="Center" Padding="5" Grid.Column="1" />
+                            </Grid>
+                        </Button>
+                        <StackPanel.Background>
+                            <SolidColorBrush Color="{Binding ElementName=LocationsButton, Path=Background.Color}" />
+                        </StackPanel.Background>
+                    </StackPanel>
+                    <StackPanel x:Name="SettingsPanel" Orientation="Horizontal">
+                        <Button x:Name="SettingsButton" Click="SettingsButton_Click" Style="{StaticResource BurgerButton}">
+                            <Grid Height="48" Width="250">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="&#xE713;" Style="{StaticResource BurgerIcon}" Grid.Column="0" />
+                                <TextBlock Text="Settings" RequestedTheme="Dark" FontSize="18" VerticalAlignment="Center" Padding="5" Grid.Column="1" />
+                            </Grid>
+                        </Button>
+                        <StackPanel.Background>
+                            <SolidColorBrush Color="{Binding ElementName=SettingsButton, Path=Background.Color}" />
+                        </StackPanel.Background>
+                    </StackPanel>
+                </StackPanel>
             </SplitView.Pane>
             <SplitView.Content>
-                <Frame x:Name="Content"/>
+                <Frame x:Name="Content" Margin="0,-48,0,0"/>
             </SplitView.Content>
         </SplitView>
         <VisualStateManager.VisualStateGroups>
@@ -163,7 +161,7 @@
                 </VisualState>
                 <VisualState x:Name="Desktop">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="500"/>
+                        <AdaptiveTrigger MinWindowWidth="600"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="HamBurgerMenu.DisplayMode" Value="CompactOverlay"/>

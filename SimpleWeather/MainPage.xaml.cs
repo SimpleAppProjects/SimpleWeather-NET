@@ -27,7 +27,6 @@ namespace SimpleWeather
     public sealed partial class MainPage : Page
     {
         WeatherDataLoader wLoader = null;
-        public static Windows.UI.Color AppColor = Windows.UI.Color.FromArgb(255, 0, 111, 191);
 
         public MainPage()
         {
@@ -43,7 +42,7 @@ namespace SimpleWeather
             {
                 // Desktop
                 var titlebar = ApplicationView.GetForCurrentView().TitleBar;
-                titlebar.BackgroundColor = AppColor;
+                titlebar.BackgroundColor = App.AppColor;
                 titlebar.ButtonBackgroundColor = titlebar.BackgroundColor;
             }
 

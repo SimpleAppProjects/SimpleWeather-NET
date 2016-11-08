@@ -12,34 +12,10 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <CommandBar Background="#FFE6E6E6" RequestedTheme="Dark" Foreground="White" Grid.Row="0">
-            <CommandBar.Resources>
-                <Style x:Key="CommandBarStyle1" TargetType="CommandBar">
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="CommandBar">
-                                <Grid x:Name="LayoutRoot" Background="{TemplateBinding Background}">
-                                    <Grid x:Name="ContentRoot" Background="{TemplateBinding Background}" Height="{TemplateBinding Height}" Margin="{TemplateBinding Padding}" Opacity="{TemplateBinding Opacity}" VerticalAlignment="Top">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <ContentControl x:Name="ContentControl" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" IsTabStop="False" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </CommandBar.Resources>
-            <CommandBar.Style>
-                <StaticResource ResourceKey="CommandBarStyle1"/>
-            </CommandBar.Style>
+        <CommandBar x:Name="CommandBar" RequestedTheme="Dark" Background="#FF1F336C" Foreground="White" Style="{StaticResource NoOverflow}" Grid.Row="0">
             <CommandBar.Content>
                 <Grid Height="48">
-                    <TextBlock Text="Settings" Margin="10,0,0,0" RequestedTheme="Light" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" />
+                    <TextBlock Text="Settings" Style="{StaticResource CommandBarLabel}"/>
                 </Grid>
             </CommandBar.Content>
         </CommandBar>
@@ -56,5 +32,25 @@
                 </StackPanel>
             </StackPanel>
         </Grid>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="Mobile">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="CommandBar.Margin" Value="50,0,0,0"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Desktop">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="600"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="CommandBar.Margin" Value="0,0,0,0"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
     </Grid>
 </Page>

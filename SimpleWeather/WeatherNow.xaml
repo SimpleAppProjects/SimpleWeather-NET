@@ -138,10 +138,10 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <CommandBar RequestedTheme="Dark" Background="#FF1F336C" Foreground="White" Grid.Row="0">
+        <CommandBar x:Name="CommandBar" RequestedTheme="Dark" Background="#FF1F336C" Foreground="White" Style="{StaticResource NoOverflow}" Grid.Row="0">
             <CommandBar.Content>
                 <Grid Height="48">
-                    <TextBlock Text="SimpleWeather" Margin="10,0,0,0" CharacterSpacing="10" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold"/>
+                    <TextBlock Text="SimpleWeather" Style="{StaticResource CommandBarLabel}"/>
                 </Grid>
             </CommandBar.Content>
             <AppBarButton Icon="Refresh" Label="Refresh" Click="RefreshButton_Click"/>
@@ -292,38 +292,39 @@
                 </Grid>
             </Grid>
         </ScrollViewer>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="Mobile">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="CommandBar.Margin" Value="50,0,0,0"/>
+                        <Setter Target="WeatherBox.Height" Value="125"/>
+                        <Setter Target="WeatherBox.Width" Value="125"/>
+                        <Setter Target="LeftButton.Visibility" Value="Collapsed"/>
+                        <Setter Target="RightButton.Visibility" Value="Collapsed"/>
+                        <Setter Target="ForecastViewer.Margin" Value="0,0,0,0"/>
+                        <Setter Target="ForecastPanel.Padding" Value="35,0,0,0"/>
+                        <Setter Target="Location.FontSize" Value="32"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Desktop">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="600"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="CommandBar.Margin" Value="0,0,0,0"/>
+                        <Setter Target="WeatherBox.Height" Value="150"/>
+                        <Setter Target="WeatherBox.Width" Value="150"/>
+                        <Setter Target="LeftButton.Visibility" Value="Visible"/>
+                        <Setter Target="RightButton.Visibility" Value="Visible"/>
+                        <Setter Target="ForecastViewer.Margin" Value="50,0,50,0"/>
+                        <Setter Target="ForecastPanel.Padding" Value="0,0,0,0"/>
+                        <Setter Target="Location.FontSize" Value="36"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
     </Grid>
-
-    <VisualStateManager.VisualStateGroups>
-        <VisualStateGroup>
-            <VisualState x:Name="Mobile">
-                <VisualState.StateTriggers>
-                    <AdaptiveTrigger MinWindowWidth="0"/>
-                </VisualState.StateTriggers>
-                <VisualState.Setters>
-                    <Setter Target="WeatherBox.Height" Value="125"/>
-                    <Setter Target="WeatherBox.Width" Value="125"/>
-                    <Setter Target="LeftButton.Visibility" Value="Collapsed"/>
-                    <Setter Target="RightButton.Visibility" Value="Collapsed"/>
-                    <Setter Target="ForecastViewer.Margin" Value="0,0,0,0"/>
-                    <Setter Target="ForecastPanel.Padding" Value="35,0,0,0"/>
-                    <Setter Target="Location.FontSize" Value="32"/>
-                </VisualState.Setters>
-            </VisualState>
-            <VisualState x:Name="Desktop">
-                <VisualState.StateTriggers>
-                    <AdaptiveTrigger MinWindowWidth="500"/>
-                </VisualState.StateTriggers>
-                <VisualState.Setters>
-                    <Setter Target="WeatherBox.Height" Value="150"/>
-                    <Setter Target="WeatherBox.Width" Value="150"/>
-                    <Setter Target="LeftButton.Visibility" Value="Visible"/>
-                    <Setter Target="RightButton.Visibility" Value="Visible"/>
-                    <Setter Target="ForecastViewer.Margin" Value="50,0,50,0"/>
-                    <Setter Target="ForecastPanel.Padding" Value="0,0,0,0"/>
-                    <Setter Target="Location.FontSize" Value="36"/>
-                </VisualState.Setters>
-            </VisualState>
-        </VisualStateGroup>
-    </VisualStateManager.VisualStateGroups>
 </Page>

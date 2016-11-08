@@ -31,8 +31,6 @@ namespace SimpleWeather
         {
             this.InitializeComponent();
 
-            Windows.UI.Core.SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = Windows.UI.Core.AppViewBackButtonVisibility.Collapsed;
-
             // Try to get saved WeatherLoader
             object outValue;
             if (!CoreApplication.Properties.TryGetValue("WeatherLoader", out outValue)) { }
