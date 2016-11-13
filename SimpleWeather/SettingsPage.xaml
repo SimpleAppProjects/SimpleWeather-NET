@@ -12,7 +12,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <CommandBar x:Name="CommandBar" RequestedTheme="Dark" Background="#FF1F336C" Foreground="White" Style="{StaticResource NoOverflow}" Grid.Row="0">
+        <CommandBar x:Name="CommandBar" RequestedTheme="Dark" Background="#FF1F336C" Style="{StaticResource NoOverflow}" Grid.Row="0">
             <CommandBar.Content>
                 <Grid Height="48">
                     <TextBlock Text="Settings" Style="{StaticResource CommandBarLabel}"/>
@@ -20,12 +20,12 @@
             </CommandBar.Content>
         </CommandBar>
 
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" RequestedTheme="Light">
             <StackPanel Width="500" HorizontalAlignment="Left" Padding="35,25,0,0">
                 <StackPanel>
-                    <TextBlock Text="Temperature" FontSize="36" Padding="10" />
-                    <TextBlock Text="Display units in:" FontSize="18" Padding="10" />
-                    <StackPanel Padding="10">
+                    <TextBlock Text="Temperature" FontSize="32" Padding="5" />
+                    <TextBlock Text="Display units in:" FontSize="18" Padding="10,5" />
+                    <StackPanel Padding="10,5">
                         <RadioButton x:Name="Fahrenheit" Content="Fahrenheit" Checked="Fahrenheit_Checked"/>
                         <RadioButton x:Name="Celsius" Content="Celsius" Checked="Celsius_Checked"/>
                     </StackPanel>
