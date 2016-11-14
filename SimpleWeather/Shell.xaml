@@ -114,7 +114,7 @@
                         </StackPanel.Background>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <Button x:Name="LocationsButton" Style="{StaticResource BurgerButton}">
+                        <Button x:Name="LocationsButton" Click="LocationsButton_Click" Style="{StaticResource BurgerButton}">
                             <Grid Height="48" Width="250">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="50"/>

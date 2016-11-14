@@ -27,6 +27,7 @@ namespace SimpleWeather
     public sealed partial class MainPage : Page
     {
         WeatherDataLoader wLoader = null;
+        int homeIdx = 0;
 
         public MainPage()
         {
@@ -50,20 +51,6 @@ namespace SimpleWeather
             Restore();
         }
 
-        private bool useFarenheit()
-        {
-            var Settings = ApplicationData.Current.LocalSettings;
-            if (!Settings.Values.ContainsKey("Units") || Settings.Values["Units"] == null)
-            {
-                Settings.Values["Units"] = "F";
-                return true;
-            }
-            else if (Settings.Values["Units"].Equals("C"))
-                return false;
-
-            return true;
-        }
-
         private async void Restore()
         {
             // For UI Thread
@@ -74,32 +61,31 @@ namespace SimpleWeather
             // Show Loading Ring
             LoadingRing.IsActive = true;
 
-            var localSettings = ApplicationData.Current.LocalSettings;
-            if (localSettings.Values["weatherLoaded"] != null)
+            if (Settings.WeatherLoaded)
             {
-                if (localSettings.Values["weatherLoaded"].Equals("true"))
+                // Weather was loaded before. Lets load it up...
+                var localSettings = ApplicationData.Current.LocalSettings;
+                List<Coordinate> locations = await Settings.getLocations();
+                Coordinate local = locations[homeIdx];
+
+                wLoader = new WeatherDataLoader(local.ToString(), homeIdx);
+
+                await wLoader.loadWeatherData().ContinueWith(async (t) =>
                 {
-                    // Weather was loaded before. Lets load it up...
-                    Coordinate local = new Coordinate(ApplicationData.Current.LocalSettings.Values["HomeLocation"].ToString());
-                    wLoader = new WeatherDataLoader(local.ToString());
-
-                    await wLoader.loadWeatherData(useFarenheit()).ContinueWith(async (t) =>
+                    if (wLoader.getWeather() != null)
                     {
-                        if (wLoader.getWeather() != null)
+                        await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                         {
-                            await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                            if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
                             {
-                                if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
-                                {
-                                    CoreApplication.Properties.Remove("WeatherLoader");
-                                }
-                                CoreApplication.Properties.Add("WeatherLoader", wLoader);
+                                CoreApplication.Properties.Remove("WeatherLoader");
+                            }
+                            CoreApplication.Properties.Add("WeatherLoader", wLoader);
 
-                                this.Frame.Navigate(typeof(Shell));
-                            });
-                        }
-                    });
-                }
+                            this.Frame.Navigate(typeof(Shell));
+                        });
+                    }
+                });
             }
             else
             {
@@ -110,6 +96,8 @@ namespace SimpleWeather
 
         private async void Location_KeyDown(object sender, KeyRoutedEventArgs e)
         {
+            Location.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Gray);
+
             if (e.Key == Windows.System.VirtualKey.Enter)
             {
                 // For UI Thread
@@ -121,27 +109,49 @@ namespace SimpleWeather
                     LoadingRing.IsActive = true;
                     GPS.IsEnabled = false;
 
-                    wLoader = new WeatherDataLoader(Location.Text);
-                    await wLoader.loadWeatherData(useFarenheit()).ContinueWith(async (t) =>
+                    wLoader = new WeatherDataLoader(Location.Text, homeIdx);
+                    await wLoader.loadWeatherData(true).ContinueWith(async (t) =>
                     {
                         if (wLoader.getWeather() != null)
                         {
                             // Show location name
                             await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                             {
-                                ApplicationData.Current.LocalSettings.Values["HomeLocation"] =
-                                        string.Join(",", wLoader.getWeather().location.lat, wLoader.getWeather().location._long);
+                                Coordinate location = new Coordinate(
+                                    string.Join(",", wLoader.getWeather().location.lat, wLoader.getWeather().location._long));
+                                Location.Text = location.ToString();
 
-                                Location.Text = ApplicationData.Current.LocalSettings.Values["HomeLocation"].ToString();
+                                // Save coords to List
+                                List<Coordinate> locations = new List<Coordinate>();
+                                locations.Add(location);
+                                Settings.saveLocations(locations);
 
+                                // Save WeatherLoader
                                 if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
                                 {
                                     CoreApplication.Properties.Remove("WeatherLoader");
                                 }
                                 CoreApplication.Properties.Add("WeatherLoader", wLoader);
 
-                                ApplicationData.Current.LocalSettings.Values["weatherLoaded"] = "true";
+                                Settings.WeatherLoaded = true;
                                 this.Frame.Navigate(typeof(Shell), Location.Tag);
+                            });
+                        }
+                        else
+                        {
+                            await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                            {
+                                LoadingRing.IsActive = false;
+                                SearchGrid.Visibility = Visibility.Visible;
+                                GPS.IsEnabled = true;
+
+                                /*
+                                String errorMSG = "Unable to get weather data! Try again or enter a different location.";
+                                Windows.UI.Popups.MessageDialog error = new Windows.UI.Popups.MessageDialog(errorMSG);
+                                await error.ShowAsync();
+                                */
+
+                                Location.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Red);
                             });
                         }
                     });
@@ -151,6 +161,8 @@ namespace SimpleWeather
 
         private async void GPS_Click(object sender, RoutedEventArgs e)
         {
+            Location.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Gray);
+
             // For UI Thread
             Windows.UI.Core.CoreDispatcher dispatcher = Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher;
 
@@ -161,27 +173,49 @@ namespace SimpleWeather
             Windows.Devices.Geolocation.Geolocator geolocal = new Windows.Devices.Geolocation.Geolocator();
             Windows.Devices.Geolocation.Geoposition geoPos = await geolocal.GetGeopositionAsync();
 
-            wLoader = new WeatherDataLoader(geoPos);
-            await wLoader.loadWeatherData(useFarenheit()).ContinueWith(async (t) =>
+            wLoader = new WeatherDataLoader(geoPos, homeIdx);
+            await wLoader.loadWeatherData(true).ContinueWith(async (t) =>
             {
                 if (wLoader.getWeather() != null)
                 {
                     // Show location name
                     await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                     {
-                        ApplicationData.Current.LocalSettings.Values["HomeLocation"] = 
-                                string.Join(",", wLoader.getWeather().location.lat, wLoader.getWeather().location._long);
+                        Coordinate location = new Coordinate(
+                            string.Join(",", wLoader.getWeather().location.lat, wLoader.getWeather().location._long));
+                        Location.Text = location.ToString();
 
-                        Location.Text = ApplicationData.Current.LocalSettings.Values["HomeLocation"].ToString();
+                        // Save coords to List
+                        List<Coordinate> locations = new List<Coordinate>();
+                        locations.Add(location);
+                        Settings.saveLocations(locations);
 
+                        // Save WeatherLoader
                         if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
                         {
                             CoreApplication.Properties.Remove("WeatherLoader");
                         }
                         CoreApplication.Properties.Add("WeatherLoader", wLoader);
 
-                        ApplicationData.Current.LocalSettings.Values["weatherLoaded"] = "true";
+                        Settings.WeatherLoaded = true;
                         this.Frame.Navigate(typeof(Shell), GPS.Tag);
+                    });
+                }
+                else
+                {
+                    await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                    {
+                        LoadingRing.IsActive = false;
+                        SearchGrid.Visibility = Visibility.Visible;
+                        GPS.IsEnabled = true;
+
+                        /*
+                        String errorMSG = "Unable to get weather data! Try again...";
+                        Windows.UI.Popups.MessageDialog error = new Windows.UI.Popups.MessageDialog(errorMSG);
+                        await error.ShowAsync();
+                        */
+
+                        Location.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Red);
                     });
                 }
             });

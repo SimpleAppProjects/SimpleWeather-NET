@@ -36,34 +36,20 @@ namespace SimpleWeather
             if (!CoreApplication.Properties.TryGetValue("WeatherLoader", out outValue)) { }
             wLoader = (WeatherDataLoader)outValue;
 
-            RefreshWeather();
-        }
-
-        private bool useFarenheit()
-        {
-            var Settings = Windows.Storage.ApplicationData.Current.LocalSettings;
-            if (!Settings.Values.ContainsKey("Units") || Settings.Values["Units"] == null)
-            {
-                Settings.Values["Units"] = "F";
-                return true;
-            }
-            else if (Settings.Values["Units"].Equals("C"))
-                return false;
-
-            return true;
+            RefreshWeather(false);
         }
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            RefreshWeather();
+            RefreshWeather(true);
         }
 
-        private async void RefreshWeather()
+        private async void RefreshWeather(bool forceRefresh)
         {
             // For UI Thread
             Windows.UI.Core.CoreDispatcher dispatcher = Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher;
 
-            await wLoader.loadWeatherData(useFarenheit()).ContinueWith(async (t) =>
+            await wLoader.loadWeatherData(forceRefresh).ContinueWith(async (t) =>
             {
                 if (wLoader.getWeather() != null)
                 {

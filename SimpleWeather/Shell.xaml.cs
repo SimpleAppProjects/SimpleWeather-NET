@@ -70,12 +70,21 @@ namespace SimpleWeather
                 WeatherButton.Background = new SolidColorBrush(App.AppColor);
 
                 SettingsButton.Background = new SolidColorBrush(Windows.UI.Colors.Transparent);
+                LocationsButton.Background = new SolidColorBrush(Windows.UI.Colors.Transparent);
             }
             else if (e.SourcePageType == typeof(SettingsPage))
             {
                 SettingsButton.Background = new SolidColorBrush(App.AppColor);
 
                 WeatherButton.Background = new SolidColorBrush(Windows.UI.Colors.Transparent);
+                LocationsButton.Background = new SolidColorBrush(Windows.UI.Colors.Transparent);
+            }
+            else if (e.SourcePageType == typeof(LocationsPage))
+            {
+                LocationsButton.Background = new SolidColorBrush(App.AppColor);
+
+                WeatherButton.Background = new SolidColorBrush(Windows.UI.Colors.Transparent);
+                SettingsButton.Background = new SolidColorBrush(Windows.UI.Colors.Transparent);
             }
 
             if (HamBurgerMenu.IsPaneOpen)
@@ -97,6 +106,12 @@ namespace SimpleWeather
         {
             if (AppFrame.SourcePageType != typeof(WeatherNow))
                 AppFrame.Navigate(typeof(WeatherNow), WeatherButton.Tag);
+        }
+
+        private void LocationsButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (AppFrame.SourcePageType != typeof(LocationsPage))
+                AppFrame.Navigate(typeof(LocationsPage), LocationsButton.Tag);
         }
     }
 }

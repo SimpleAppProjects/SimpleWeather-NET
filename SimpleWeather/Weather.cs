@@ -7,16 +7,28 @@ using System.Threading.Tasks;
 
 namespace SimpleWeather
 {
+    [DataContract]
     public class Weather
     {
+        [DataMember]
         public string lastBuildDate;
+        [DataMember]
         public Units units;
+        [DataMember]
         public Location location;
+        [DataMember]
         public Wind wind;
+        [DataMember]
         public Atmosphere atmosphere;
+        [DataMember]
         public Astronomy astronomy;
+        [DataMember]
         public Condition condition;
+        [DataMember]
         public Forecast[] forecasts;
+
+        [DataMember]
+        public string ttl;
 
         public Weather(Rootobject root)
         {
@@ -32,6 +44,8 @@ namespace SimpleWeather
             astronomy = root.query.results.channel.astronomy;
             condition = root.query.results.channel.item.condition;
             forecasts = root.query.results.channel.item.forecast;
+
+            ttl = root.query.results.channel.ttl;
         }
     }
 
@@ -240,9 +254,12 @@ namespace SimpleWeather
         public string date { get { return DateTime.Parse(_date).ToString("dddd dd"); } set { _date = value; } }
     }
 
+    [DataContract]
     public class Coordinate
     {
+        [DataMember]
         private double lat = 0;
+        [DataMember]
         private double _long = 0;
 
         public Coordinate(string coordinatePair)
