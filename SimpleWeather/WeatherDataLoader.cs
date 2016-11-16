@@ -134,6 +134,9 @@ namespace SimpleWeather
                 memStream.Dispose();
             }
 
+            if (weather == null)
+                return false;
+
             // Check ttl
             int ttl = int.Parse(weather.ttl);
 
@@ -144,7 +147,7 @@ namespace SimpleWeather
                 "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'", provider).ToLocalTime();
 
             TimeSpan span = DateTime.Now - updateTime;
-            if (span.Minutes < ttl)
+            if (span.TotalMinutes < ttl)
                 return true;
             else
                 return false;

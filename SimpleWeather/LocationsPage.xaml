@@ -104,7 +104,7 @@
 
         <ScrollViewer Grid.Row="1" RequestedTheme="Light" Name="theGrid" HorizontalScrollMode="Disabled" VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto">
             <RelativePanel>
-                <TextBlock Name="Label" Text="Launch Location" FontSize="28" Padding="15,10" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" />
+                <TextBlock Name="Label" Text="Favorite Location" FontSize="28" Padding="15,10" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" />
                 <Button Name="HomeLocation" Height="100" Background="LightGray" Margin="10" Padding="0" RequestedTheme="Dark" HorizontalAlignment="Stretch"
                         RelativePanel.Below="Label" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" Style="{StaticResource LocationButtonStyle}">
                     <Grid>
@@ -112,23 +112,38 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Name="HomeLocationName" Text="Home Location, Local" FontSize="24" Grid.Column="0" VerticalAlignment="Center" Padding="10" />
+                        <TextBlock Name="HomeLocationName" FontSize="24" Grid.Column="0" VerticalAlignment="Center" Padding="10" />
                         <Grid Grid.Column="1">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="100"/>
                                 <ColumnDefinition Width="100"/>
                             </Grid.ColumnDefinitions>
                             <Viewbox VerticalAlignment="Stretch" Width="60" Height="60" Grid.Column="0">
-                                <TextBlock Name="HomeCurrTemp" Text="70º" FontSize="24" Padding="10"/>
+                                <TextBlock Name="HomeCurrTemp" FontSize="24" Padding="10"/>
                             </Viewbox>
                             <Viewbox VerticalAlignment="Stretch" Width="60" Height="60" Grid.Column="1">
-                                <TextBlock x:Name="HomeWeatherIcon" Style="{StaticResource WeatherIcon}" Text="&#xf00d;" />
+                                <TextBlock x:Name="HomeWeatherIcon" Style="{StaticResource WeatherIcon}" />
                             </Viewbox>
                         </Grid>
                     </Grid>
                 </Button>
+                <Grid x:Name="ChangeHomePanel" Margin="10,0" Visibility="Collapsed"
+                            RelativePanel.Below="HomeLocation" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="NewHomeLocation" FontSize="24" PlaceholderText="Enter Location..." KeyUp="NewHomeLocation_KeyUp" Grid.Column="0"/>
+                    <Button Name="HomeGPS" Height="48" Width="48" Click="HomeGPS_Click" HorizontalAlignment="Right" ToolTipService.ToolTip="Find Location via GPS" VerticalAlignment="Center" Grid.Column="1">
+                        <Viewbox>
+                            <SymbolIcon Symbol="MapPin" RequestedTheme="Dark"/>
+                        </Viewbox>
+                    </Button>
+                    <Button x:Name="NewHome_Cancel" Content="Cancel" Margin="1,0" FontSize="18" Width="75" Height="48" Click="NewHome_Cancel_Click" Grid.Column="2"/>
+                </Grid>
                 <TextBlock Name="OtherLabel" Text="Other Locations" FontSize="28" Padding="15,10" Margin="0,5"
-                           RelativePanel.Below="HomeLocation" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" />
+                           RelativePanel.Below="ChangeHomePanel" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" />
                 <StackPanel Name="OtherLocationsPanel"
                             RelativePanel.Below="OtherLabel" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" />
                 <Grid x:Name="AddLocationPanel" Margin="10,0" Visibility="Collapsed"
@@ -136,9 +151,15 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <TextBox x:Name="Location" FontSize="24" PlaceholderText="Enter Location..." KeyUp="Location_KeyUp" Grid.Column="0"/>
-                    <Button x:Name="Cancel" Content="Cancel" FontSize="18" Width="75" Height="48" Click="Cancel_Click" Grid.Column="1"/>
+                    <Button Name="OtherGPS" Height="48" Width="48" Click="OtherGPS_Click" HorizontalAlignment="Right" ToolTipService.ToolTip="Find Location via GPS" VerticalAlignment="Center" Grid.Column="1">
+                        <Viewbox>
+                            <SymbolIcon Symbol="MapPin" RequestedTheme="Dark"/>
+                        </Viewbox>
+                    </Button>
+                    <Button x:Name="Cancel" Content="Cancel" Margin="1,0" FontSize="18" Width="75" Height="48" Click="Cancel_Click" Grid.Column="2"/>
                 </Grid>
                 <Button x:Name="AddLocationsButton" HorizontalAlignment="Stretch" Margin="10,5" Click="AddLocationsButton_Click"
                         RelativePanel.Below="AddLocationPanel" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True">

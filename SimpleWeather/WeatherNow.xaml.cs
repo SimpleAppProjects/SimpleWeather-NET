@@ -57,12 +57,14 @@ namespace SimpleWeather
 
             await wLoader.loadWeatherData(forceRefresh).ContinueWith(async (t) =>
             {
-                if (wLoader.getWeather() != null)
+                Weather weather = wLoader.getWeather();
+
+                if (weather != null)
                 {
                     // Update Weather Data on UI
                     await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                     {
-                        updateUI(wLoader.getWeather());
+                        updateUI(weather);
                     });
                 }
                 else

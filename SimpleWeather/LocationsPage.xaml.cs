@@ -64,7 +64,7 @@ namespace SimpleWeather
                                 updatePanel(HomeLocation, weather);
 
                                 // Register event handlers
-                                //HomeLocation.PointerReleased += OtherLocationButton_PointerReleased;
+                                HomeLocation.PointerReleased += HomeLocation_PointerReleased;
                                 HomeLocation.Holding += LocationButton_Holding;
 
                                 // Save index to tag (to easily retreive)
@@ -110,6 +110,101 @@ namespace SimpleWeather
             CoreApplication.Properties.Add("WeatherLoader", wLoader);
 
             this.Frame.Navigate(typeof(WeatherNow));
+        }
+
+        private async void NewHomeLocation_KeyUp(object sender, KeyRoutedEventArgs e)
+        {
+            NewHomeLocation.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Gray);
+            NewHomeLocation.BorderThickness = new Thickness(2);
+
+            if (e.Key == Windows.System.VirtualKey.Enter)
+            {
+                // For UI Thread
+                Windows.UI.Core.CoreDispatcher dispatcher = Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher;
+                List<Coordinate> locations = await Settings.getLocations();
+                int index = 0; // Home Location
+
+                if (!String.IsNullOrWhiteSpace(NewHomeLocation.Text))
+                {
+                    wLoader = new WeatherDataLoader(NewHomeLocation.Text, index);
+                    await wLoader.loadWeatherData(true).ContinueWith(async (t) =>
+                    {
+                        Weather weather = wLoader.getWeather();
+
+                        if (weather != null)
+                        {
+                            // Show location name
+                            await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                            {
+                                Coordinate location = new Coordinate(
+                                    string.Join(",", wLoader.getWeather().location.lat, wLoader.getWeather().location._long));
+
+                                // Save coords to List
+                                locations[0] = location;
+                                Settings.saveLocations(locations);
+
+                                // TODO: Just Re-load locations ^^??
+                                updatePanel(HomeLocation, weather);
+
+                                // Register event handlers
+                                // Save index to tag (to easily retreive)
+                                KeyValuePair<int, Coordinate> pair = new KeyValuePair<int, Coordinate>(index, location);
+                                HomeLocation.Tag = pair;
+
+                                // Hide add locations panel
+                                NewHome_Cancel_Click(sender, e);
+                            });
+                        }
+                        else
+                        {
+                            await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                            {
+                                /*
+                                String errorMSG = "Unable to get weather data! Try again or enter a different location.";
+                                Windows.UI.Popups.MessageDialog error = new Windows.UI.Popups.MessageDialog(errorMSG);
+                                await error.ShowAsync();
+                                */
+                                NewHomeLocation.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Red);
+                                NewHomeLocation.BorderThickness = new Thickness(5);
+                            });
+                        }
+                    });
+                }
+
+                e.Handled = true;
+            }
+        }
+
+        private void NewHome_Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO: Put this in a function?
+            // Hide Textbox
+            ChangeHomePanel.Visibility = Visibility.Collapsed;
+            // Show HomeLocation Panel
+            HomeLocation.Visibility = Visibility.Visible;
+            NewHomeLocation.Text = string.Empty;
+        }
+
+        private async void HomeLocation_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            Button panel = sender as Button;
+
+            Windows.UI.Popups.PopupMenu menu = new Windows.UI.Popups.PopupMenu();
+            menu.Commands.Add(new Windows.UI.Popups.UICommand("Change Favorite Location", (command) =>
+            {
+                // Hide HomeLocation Panel
+                HomeLocation.Visibility = Visibility.Collapsed;
+                // Show Textbox
+                ChangeHomePanel.Visibility = Visibility.Visible;
+            }));
+
+            Windows.UI.Popups.IUICommand chosenCommand = await menu.ShowForSelectionAsync(GetElementRect(panel));
+            if (chosenCommand == null) // The command is null if no command was invoked. 
+            {
+                //Context menu dismissed
+            }
+
+            e.Handled = true;
         }
 
         private async void OtherLocationButton_PointerReleased(object sender, PointerRoutedEventArgs e)
@@ -453,6 +548,7 @@ namespace SimpleWeather
         private async void Location_KeyUp(object sender, KeyRoutedEventArgs e)
         {
             Location.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Gray);
+            Location.BorderThickness = new Thickness(2);
 
             if (e.Key == Windows.System.VirtualKey.Enter)
             {
@@ -510,6 +606,7 @@ namespace SimpleWeather
                                 await error.ShowAsync();
                                 */
                                 Location.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Red);
+                                Location.BorderThickness = new Thickness(5);
                             });
                         }
                     });
@@ -525,6 +622,137 @@ namespace SimpleWeather
             AddLocationsButton.Visibility = Visibility.Visible;
             AddLocationPanel.Visibility = Visibility.Collapsed;
             Location.Text = string.Empty;
+        }
+
+        private async void HomeGPS_Click(object sender, RoutedEventArgs e)
+        {
+            NewHomeLocation.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Gray);
+            NewHomeLocation.BorderThickness = new Thickness(2);
+
+            // For UI Thread
+            Windows.UI.Core.CoreDispatcher dispatcher = Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher;
+
+            // Set window items
+            HomeGPS.IsEnabled = false;
+
+            Windows.Devices.Geolocation.Geolocator geolocal = new Windows.Devices.Geolocation.Geolocator();
+            Windows.Devices.Geolocation.Geoposition geoPos = await geolocal.GetGeopositionAsync();
+            List<Coordinate> locations = await Settings.getLocations();
+            int index = 0; // Home Location
+
+            wLoader = new WeatherDataLoader(geoPos, index);
+            await wLoader.loadWeatherData(true).ContinueWith(async (t) =>
+            {
+                Weather weather = wLoader.getWeather();
+
+                if (weather != null)
+                {
+                    // Show location name
+                    await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                    {
+                        Coordinate location = new Coordinate(
+                            string.Join(",", wLoader.getWeather().location.lat, wLoader.getWeather().location._long));
+
+                        // Save coords to List
+                        locations[0] = location;
+                        Settings.saveLocations(locations);
+
+                        // TODO: Just Re-load locations ^^??
+                        updatePanel(HomeLocation, weather);
+
+                        // Register event handlers
+                        // Save index to tag (to easily retreive)
+                        KeyValuePair<int, Coordinate> pair = new KeyValuePair<int, Coordinate>(index, location);
+                        HomeLocation.Tag = pair;
+
+                        // Hide add locations panel
+                        NewHome_Cancel_Click(sender, e);
+                    });
+                }
+                else
+                {
+                    await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                    {
+                        /*
+                        String errorMSG = "Unable to get weather data! Try again or enter a different location.";
+                        Windows.UI.Popups.MessageDialog error = new Windows.UI.Popups.MessageDialog(errorMSG);
+                        await error.ShowAsync();
+                        */
+                        NewHomeLocation.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Red);
+                        NewHomeLocation.BorderThickness = new Thickness(5);
+                        HomeGPS.IsEnabled = true;
+                    });
+                }
+            });
+        }
+
+        private async void OtherGPS_Click(object sender, RoutedEventArgs e)
+        {
+            Location.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Gray);
+            Location.BorderThickness = new Thickness(2);
+
+            // For UI Thread
+            Windows.UI.Core.CoreDispatcher dispatcher = Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher;
+            List<Coordinate> locations = await Settings.getLocations();
+
+            // Set window items
+            OtherGPS.IsEnabled = false;
+
+            Windows.Devices.Geolocation.Geolocator geolocal = new Windows.Devices.Geolocation.Geolocator();
+            Windows.Devices.Geolocation.Geoposition geoPos = await geolocal.GetGeopositionAsync();
+            int index = locations.Count;
+
+            wLoader = new WeatherDataLoader(geoPos, index);
+            await wLoader.loadWeatherData(true).ContinueWith(async (t) =>
+            {
+                Weather weather = wLoader.getWeather();
+
+                if (weather != null)
+                {
+                    // Show location name
+                    await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                    {
+                        Coordinate location = new Coordinate(
+                            string.Join(",", wLoader.getWeather().location.lat, wLoader.getWeather().location._long));
+
+                        // Save coords to List
+                        locations.Add(location);
+                        Settings.saveLocations(locations);
+
+                        // TODO: Just Re-load locations ^^??
+                        Button otherLocal = new Button();
+                        updatePanel(otherLocal, weather);
+
+                        // Register event handlers
+                        otherLocal.PointerReleased += OtherLocationButton_PointerReleased;
+                        otherLocal.Holding += LocationButton_Holding;
+
+                        // Save index to tag (to easily retreive)
+                        KeyValuePair<int, Coordinate> pair = new KeyValuePair<int, Coordinate>(index, location);
+                        otherLocal.Tag = pair;
+                        otherLocal.Click += LocationButton_Click;
+
+                        // Add to panel
+                        OtherLocationsPanel.Children.Add(otherLocal);
+
+                        // Hide add locations panel
+                        Cancel_Click(sender, e);
+                    });
+                }
+                else
+                {
+                    await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                    {
+                        /*
+                        String errorMSG = "Unable to get weather data! Try again or enter a different location.";
+                        Windows.UI.Popups.MessageDialog error = new Windows.UI.Popups.MessageDialog(errorMSG);
+                        await error.ShowAsync();
+                        */
+                        Location.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Red);
+                        Location.BorderThickness = new Thickness(5);
+                    });
+                }
+            });
         }
     }
 }

@@ -97,6 +97,7 @@ namespace SimpleWeather
         private async void Location_KeyUp(object sender, KeyRoutedEventArgs e)
         {
             Location.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Gray);
+            Location.BorderThickness = new Thickness(2);
 
             if (e.Key == Windows.System.VirtualKey.Enter)
             {
@@ -152,6 +153,7 @@ namespace SimpleWeather
                                 */
 
                                 Location.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Red);
+                                Location.BorderThickness = new Thickness(5);
                             });
                         }
                     });
@@ -218,6 +220,7 @@ namespace SimpleWeather
                         */
 
                         Location.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Red);
+                        Location.BorderThickness = new Thickness(5);
                     });
                 }
             });
