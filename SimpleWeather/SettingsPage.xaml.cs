@@ -32,21 +32,13 @@ namespace SimpleWeather
 
         private void RestoreSettings()
         {
-            var Settings = ApplicationData.Current.LocalSettings;
-
             // Temperature
-            if (!Settings.Values.ContainsKey("Units") || Settings.Values["Units"] == null)
-            {
-                Settings.Values["Units"] = "F";
-                Fahrenheit.IsChecked = true;
-                Celsius.IsChecked = false;
-            }
-            else if (Settings.Values["Units"].Equals("F"))
+            if (Settings.Unit == "F")
             {
                 Fahrenheit.IsChecked = true;
                 Celsius.IsChecked = false;
             }
-            else if (Settings.Values["Units"].Equals("C"))
+            else
             {
                 Fahrenheit.IsChecked = false;
                 Celsius.IsChecked = true;
@@ -55,12 +47,12 @@ namespace SimpleWeather
 
         private void Fahrenheit_Checked(object sender, RoutedEventArgs e)
         {
-            ApplicationData.Current.LocalSettings.Values["Units"] = "F";
+            Settings.Unit = "F";
         }
 
         private void Celsius_Checked(object sender, RoutedEventArgs e)
         {
-            ApplicationData.Current.LocalSettings.Values["Units"] = "C";
+            Settings.Unit = "C";
         }
     }
 }

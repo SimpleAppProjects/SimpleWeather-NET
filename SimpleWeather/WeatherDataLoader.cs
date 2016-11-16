@@ -36,9 +36,8 @@ namespace SimpleWeather
         private async Task getWeatherData()
         {
             string yahooAPI = "https://query.yahooapis.com/v1/public/yql?q=";
-            string unit = (Settings.useFarenheit() ? " and u='F'" : " and u='C'");
             string query = "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text=\""
-                + location + "\")" + unit + "&format=json";
+                + location + "\") and u='" + Settings.Unit + "'&format=json";
             Uri weatherURL = new Uri(yahooAPI + query);
 
             // Connect to webstream
@@ -93,13 +92,13 @@ namespace SimpleWeather
                 weatherFile = await appDataFolder.CreateFileAsync("weather" + locationIdx + ".json", CreationCollisionOption.OpenIfExists);
 
             /*
-             * If unable to retrieve saved data or data is old
+             * If unable to retrieve saved data, data is old, or units don't match
              * Refresh weather data
             */
 
             bool gotData = await loadSavedWeatherData(weatherFile);
 
-            if (!gotData)
+            if (!gotData || weather.units.temperature != Settings.Unit)
             {
                 await getWeatherData();
             }
@@ -114,18 +113,26 @@ namespace SimpleWeather
                 return false;
             }
 
-            while (IsFileLocked(file).Result)
+            while (FileUtils.IsFileLocked(weatherFile).GetAwaiter().GetResult())
             {
                 await Task.Delay(100);
             }
 
             // Load weather data
-            DataContractJsonSerializer deSerializer = new DataContractJsonSerializer(typeof(Weather));
-            Stream fileStream = await file.OpenStreamForReadAsync();
+            using (FileRandomAccessStream fileStream = (await weatherFile.OpenAsync(FileAccessMode.Read).AsTask().ConfigureAwait(false)) as FileRandomAccessStream)
+            {
+                DataContractJsonSerializer deSerializer = new DataContractJsonSerializer(typeof(Weather));
+                MemoryStream memStream = new MemoryStream();
+                fileStream.AsStreamForRead().CopyTo(memStream);
+                memStream.Seek(0, 0);
 
-            weather = (Weather)deSerializer.ReadObject(fileStream);
-            fileStream.Flush();
-            fileStream.Dispose();
+                weather = (Weather)deSerializer.ReadObject(memStream);
+
+                await fileStream.AsStream().FlushAsync();
+                fileStream.Dispose();
+                await memStream.FlushAsync();
+                memStream.Dispose();
+            }
 
             // Check ttl
             int ttl = int.Parse(weather.ttl);
@@ -145,60 +152,32 @@ namespace SimpleWeather
 
         private async void saveWeatherData()
         {
-            MemoryStream memStream = new MemoryStream();
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Weather));
-            serializer.WriteObject(memStream, weather);
+            if (weatherFile == null)
+                weatherFile = await appDataFolder.CreateFileAsync("weather" + locationIdx + ".json", CreationCollisionOption.OpenIfExists);
 
-            weatherFile = await appDataFolder.CreateFileAsync("weather" + locationIdx + ".json",
-                CreationCollisionOption.OpenIfExists);
-
-            while (IsFileLocked(weatherFile).Result)
+            while (FileUtils.IsFileLocked(weatherFile).GetAwaiter().GetResult())
             {
                 await Task.Delay(100);
             }
 
-            FileRandomAccessStream fileStream = (await weatherFile.OpenAsync(FileAccessMode.ReadWrite)) as FileRandomAccessStream;
-            fileStream.Size = 0;
-            memStream.WriteTo(fileStream.AsStream());
+            using (FileRandomAccessStream fileStream = (await weatherFile.OpenAsync(FileAccessMode.ReadWrite).AsTask().ConfigureAwait(false)) as FileRandomAccessStream)
+            {
+                MemoryStream memStream = new MemoryStream();
+                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Weather));
+                serializer.WriteObject(memStream, weather);
+                fileStream.Size = 0;
+                memStream.WriteTo(fileStream.AsStream());
 
-            await fileStream.AsStream().FlushAsync();
-            fileStream.Dispose();
-            await memStream.FlushAsync();
-            memStream.Dispose();
+                await memStream.FlushAsync();
+                memStream.Dispose();
+                await fileStream.AsStream().FlushAsync();
+                fileStream.Dispose();
+            }
         }
 
         public Weather getWeather()
         {
             return weather;
-        }
-
-        private static async Task<bool> IsFileLocked(StorageFile file)
-        {
-            if (!File.Exists(file.Name))
-                return false;
-
-            IRandomAccessStream stream = null;
-
-            try
-            {
-                stream = await file.OpenAsync(FileAccessMode.Read);
-            }
-            catch (IOException)
-            {
-                //the file is unavailable because it is:
-                //still being written to
-                //or being processed by another thread
-                //or does not exist (has already been processed)
-                return true;
-            }
-            finally
-            {
-                if (stream != null)
-                    stream.Dispose();
-            }
-
-            //file is not locked
-            return false;
         }
     }
 }

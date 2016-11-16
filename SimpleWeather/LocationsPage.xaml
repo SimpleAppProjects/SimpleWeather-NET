@@ -137,7 +137,7 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <TextBox x:Name="Location" FontSize="24" PlaceholderText="Enter Location..." KeyDown="Location_KeyDown" Grid.Column="0"/>
+                    <TextBox x:Name="Location" FontSize="24" PlaceholderText="Enter Location..." KeyUp="Location_KeyUp" Grid.Column="0"/>
                     <Button x:Name="Cancel" Content="Cancel" FontSize="18" Width="75" Height="48" Click="Cancel_Click" Grid.Column="1"/>
                 </Grid>
                 <Button x:Name="AddLocationsButton" HorizontalAlignment="Stretch" Margin="10,5" Click="AddLocationsButton_Click"

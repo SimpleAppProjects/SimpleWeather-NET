@@ -106,6 +106,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="ConversionMethods.cs" />
+    <Compile Include="FileUtils.cs" />
     <Compile Include="LocationsPage.xaml.cs">
       <DependentUpon>LocationsPage.xaml</DependentUpon>
     </Compile>

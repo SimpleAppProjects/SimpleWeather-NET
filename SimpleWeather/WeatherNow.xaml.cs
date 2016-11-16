@@ -31,11 +31,17 @@ namespace SimpleWeather
         {
             this.InitializeComponent();
 
-            // Try to get saved WeatherLoader
+            Restore();
+        }
+
+        private void Restore()
+        {
+            // Restore weather loader
             object outValue;
             if (!CoreApplication.Properties.TryGetValue("WeatherLoader", out outValue)) { }
             wLoader = (WeatherDataLoader)outValue;
 
+            // Load up weather data
             RefreshWeather(false);
         }
 
@@ -61,7 +67,8 @@ namespace SimpleWeather
                 }
                 else
                 {
-                    // unable to load weather data
+                    // unable to load weather data; Refresh
+                    RefreshWeather(true);
                 }
             });
         }

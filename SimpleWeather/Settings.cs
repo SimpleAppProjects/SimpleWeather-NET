@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
 using Windows.Storage;
 using Windows.Storage.Streams;
 
@@ -13,26 +14,44 @@ namespace SimpleWeather
     public static class Settings
     {
         public static bool WeatherLoaded { get { return isWeatherLoaded(); } set { setWeatherLoaded(value); } }
+        public static string Unit { get { return getTempUnit(); } set { setTempUnit(value); } }
 
         private static StorageFolder appDataFolder = ApplicationData.Current.LocalFolder;
         private static StorageFile locationsFile;
 
-        public static bool useFarenheit()
+        private static string Farenheit = "F";
+        private static string Celsius = "C";
+
+        private static string getTempUnit()
         {
             var localSettings = ApplicationData.Current.LocalSettings;
             if (!localSettings.Values.ContainsKey("Units") || localSettings.Values["Units"] == null)
             {
-                localSettings.Values["Units"] = "F";
-                return true;
+                return Farenheit;
             }
             else if (localSettings.Values["Units"].Equals("C"))
-                return false;
+                return Celsius;
 
-            return true;
+            return Farenheit;
+        }
+
+        private static void setTempUnit(string value)
+        {
+            var localSettings = ApplicationData.Current.LocalSettings;
+
+            if (value == Celsius)
+                ApplicationData.Current.LocalSettings.Values["Units"] = Celsius;
+            else
+                ApplicationData.Current.LocalSettings.Values["Units"] = Farenheit;
         }
 
         private static bool isWeatherLoaded()
         {
+            FileInfo fileinfo = new FileInfo(appDataFolder.Path + "\\locations.json");
+
+            if (fileinfo.Length == 0 || !fileinfo.Exists)
+                return false;
+
             var localSettings = ApplicationData.Current.LocalSettings;
 
             if (localSettings.Values["weatherLoaded"] == null)
@@ -65,81 +84,64 @@ namespace SimpleWeather
 
         public static async Task<List<Coordinate>> getLocations()
         {
-            locationsFile = await appDataFolder.CreateFileAsync("locations.json", CreationCollisionOption.OpenIfExists);
+            if (locationsFile == null)
+                locationsFile = await appDataFolder.CreateFileAsync("locations.json", CreationCollisionOption.OpenIfExists);
+
             FileInfo fileinfo = new FileInfo(locationsFile.Path);
 
             if (fileinfo.Length == 0)
                 return null;
 
-            List<Coordinate> locations;
-
-            // Load locations
-            DataContractJsonSerializer deSerializer = new DataContractJsonSerializer(typeof(List<Coordinate>));
-            Stream fileStream = await locationsFile.OpenStreamForReadAsync();
-
-            while (IsFileLocked(locationsFile).Result)
+            while (FileUtils.IsFileLocked(locationsFile).GetAwaiter().GetResult())
             {
                 await Task.Delay(100);
             }
 
-            locations = ((List<Coordinate>)deSerializer.ReadObject(fileStream));
-            fileStream.Flush();
-            fileStream.Dispose();
+            List<Coordinate> locations;
+
+            // Load locations
+            using (FileRandomAccessStream fileStream = (await locationsFile.OpenAsync(FileAccessMode.Read).AsTask().ConfigureAwait(false)) as FileRandomAccessStream)
+            {
+                DataContractJsonSerializer deSerializer = new DataContractJsonSerializer(typeof(List<Coordinate>));
+                MemoryStream memStream = new MemoryStream();
+                fileStream.AsStreamForRead().CopyTo(memStream);
+                memStream.Seek(0, 0);
+
+                locations = ((List<Coordinate>)deSerializer.ReadObject(memStream));
+
+                await fileStream.AsStream().FlushAsync();
+                fileStream.Dispose();
+                await memStream.FlushAsync();
+                memStream.Dispose();
+            }
 
             return locations;
         }
 
         public static async void saveLocations(List<Coordinate> locations)
         {
-            MemoryStream memStream = new MemoryStream();
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(List<Coordinate>));
-            serializer.WriteObject(memStream, locations);
+            if (locationsFile == null)
+                locationsFile = await appDataFolder.CreateFileAsync("locations.json", CreationCollisionOption.OpenIfExists);
 
-            locationsFile = await appDataFolder.CreateFileAsync("locations.json",
-                CreationCollisionOption.OpenIfExists);
-
-            while (IsFileLocked(locationsFile).Result)
+            while (FileUtils.IsFileLocked(locationsFile).GetAwaiter().GetResult())
             {
                 await Task.Delay(100);
             }
 
-            FileRandomAccessStream fileStream = (await locationsFile.OpenAsync(FileAccessMode.ReadWrite)) as FileRandomAccessStream;
-            fileStream.Size = 0;
-            memStream.WriteTo(fileStream.AsStream());
-
-            await fileStream.AsStream().FlushAsync();
-            fileStream.Dispose();
-            await memStream.FlushAsync();
-            memStream.Dispose();
-        }
-
-        private static async Task<bool> IsFileLocked(StorageFile file)
-        {
-            if (!File.Exists(file.Name))
-                return false;
-
-            IRandomAccessStream stream = null;
-
-            try
+            using (FileRandomAccessStream fileStream = (await locationsFile.OpenAsync(FileAccessMode.ReadWrite).AsTask().ConfigureAwait(false)) as FileRandomAccessStream)
             {
-                stream = await file.OpenAsync(FileAccessMode.Read);
-            }
-            catch (IOException)
-            {
-                //the file is unavailable because it is:
-                //still being written to
-                //or being processed by another thread
-                //or does not exist (has already been processed)
-                return true;
-            }
-            finally
-            {
-                if (stream != null)
-                    stream.Dispose();
-            }
+                MemoryStream memStream = new MemoryStream();
+                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(List<Coordinate>));
+                serializer.WriteObject(memStream, locations);
 
-            //file is not locked
-            return false;
+                fileStream.Size = 0;
+                memStream.WriteTo(fileStream.AsStream());
+
+                await memStream.FlushAsync();
+                memStream.Dispose();
+                await fileStream.AsStream().FlushAsync();
+                fileStream.Dispose();
+            }
         }
     }
 }

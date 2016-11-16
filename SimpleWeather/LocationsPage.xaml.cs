@@ -29,20 +29,12 @@ namespace SimpleWeather
         {
             this.InitializeComponent();
 
+            // Get locations and load up weather data
             LoadLocations();
         }
 
         private async void LoadLocations()
         {
-            /* 
-             * TODO:
-             * Load locations from list
-             * Get Home Location (first one)
-             * Update Location card
-             * Find other locations
-             * Add cards for each (stack panel)
-             * Update layout for card
-            */
             // For UI Thread
             Windows.UI.Core.CoreDispatcher dispatcher = Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher;
 
@@ -458,7 +450,7 @@ namespace SimpleWeather
             AddLocationPanel.Visibility = Visibility.Visible;
         }
 
-        private async void Location_KeyDown(object sender, KeyRoutedEventArgs e)
+        private async void Location_KeyUp(object sender, KeyRoutedEventArgs e)
         {
             Location.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Gray);
 
@@ -522,6 +514,8 @@ namespace SimpleWeather
                         }
                     });
                 }
+
+                e.Handled = true;
             }
         }
 

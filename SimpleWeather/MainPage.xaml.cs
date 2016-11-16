@@ -94,7 +94,7 @@ namespace SimpleWeather
             }
         }
 
-        private async void Location_KeyDown(object sender, KeyRoutedEventArgs e)
+        private async void Location_KeyUp(object sender, KeyRoutedEventArgs e)
         {
             Location.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Gray);
 
@@ -156,6 +156,8 @@ namespace SimpleWeather
                         }
                     });
                 }
+
+                e.Handled = true;
             }
         }
 
