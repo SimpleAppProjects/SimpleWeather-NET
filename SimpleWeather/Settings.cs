@@ -47,7 +47,10 @@ namespace SimpleWeather
 
         private static bool isWeatherLoaded()
         {
-            FileInfo fileinfo = new FileInfo(appDataFolder.Path + "\\locations.json");
+            if (locationsFile == null)
+                locationsFile = appDataFolder.CreateFileAsync("locations.json", CreationCollisionOption.OpenIfExists).AsTask().GetAwaiter().GetResult();
+
+            FileInfo fileinfo = new FileInfo(locationsFile.Path);
 
             if (fileinfo.Length == 0 || !fileinfo.Exists)
                 return false;
@@ -89,7 +92,7 @@ namespace SimpleWeather
 
             FileInfo fileinfo = new FileInfo(locationsFile.Path);
 
-            if (fileinfo.Length == 0)
+            if (fileinfo.Length == 0 || !fileinfo.Exists)
                 return null;
 
             while (FileUtils.IsFileLocked(locationsFile).GetAwaiter().GetResult())
