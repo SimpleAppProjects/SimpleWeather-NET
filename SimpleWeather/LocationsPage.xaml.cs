@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -24,6 +25,7 @@ namespace SimpleWeather
     public sealed partial class LocationsPage : Page
     {
         WeatherDataLoader wLoader = null;
+        public ObservableCollection<LocationPanelView> LocationPanels { get; set; }
 
         public LocationsPage()
         {
@@ -40,10 +42,8 @@ namespace SimpleWeather
 
             // Lets load it up...
             List<Coordinate> locations = await Settings.getLocations();
-            Coordinate favorite = locations[0];
-
-            // Clear Panel
-            OtherLocationsPanel.Children.Clear();
+            LocationPanels = new ObservableCollection<LocationPanelView>();
+            OtherLocationsPanel.ItemsSource = LocationPanels;
 
             foreach (Coordinate location in locations)
             {
@@ -58,37 +58,17 @@ namespace SimpleWeather
                     {
                         await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                         {
-                            if (location.Equals(favorite))
+                            LocationPanelView panelView = new LocationPanelView(weather);
+                            // Save index to tag (to easily retreive)
+                            panelView.Pair = new KeyValuePair<int, Coordinate>(index, location);
+
+                            if (index == 0)
                             {
-                                // Home Location
-                                updatePanel(HomeLocation, weather);
-
-                                // Register event handlers
-                                HomeLocation.PointerReleased += HomeLocation_PointerReleased;
-                                HomeLocation.Holding += LocationButton_Holding;
-
-                                // Save index to tag (to easily retreive)
-                                KeyValuePair<int, Coordinate> pair = new KeyValuePair<int, Coordinate>(index, location);
-                                HomeLocation.Tag = pair;
-                                HomeLocation.Click += LocationButton_Click;
+                                HomeLocation.DataContext = panelView;
                             }
                             else
                             {
-                                // Other Locations
-                                Button otherLocal = new Button();
-                                updatePanel(otherLocal, weather);
-
-                                // Register event handlers
-                                otherLocal.PointerReleased += OtherLocationButton_PointerReleased;
-                                otherLocal.Holding += LocationButton_Holding;
-
-                                // Save index to tag (to easily retreive)
-                                KeyValuePair<int, Coordinate> pair = new KeyValuePair<int, Coordinate>(index, location);
-                                otherLocal.Tag = pair;
-                                otherLocal.Click += LocationButton_Click;
-
-                                // Add to panel
-                                OtherLocationsPanel.Children.Add(otherLocal);
+                                LocationPanels.Add(panelView);
                             }
                         });
                     }
@@ -98,7 +78,7 @@ namespace SimpleWeather
 
         private void LocationButton_Click(object sender, RoutedEventArgs e)
         {
-            Button panel = sender as Button;
+            LocationPanel panel = sender as LocationPanel;
             KeyValuePair<int, Coordinate> pair = (KeyValuePair<int, Coordinate>)panel.Tag;
             wLoader = new WeatherDataLoader(pair.Value.ToString(), pair.Key);
 
@@ -143,27 +123,20 @@ namespace SimpleWeather
                                 locations[0] = location;
                                 Settings.saveLocations(locations);
 
-                                // TODO: Just Re-load locations ^^??
-                                updatePanel(HomeLocation, weather);
-
-                                // Register event handlers
+                                LocationPanelView panelView = new LocationPanelView(weather);
                                 // Save index to tag (to easily retreive)
-                                KeyValuePair<int, Coordinate> pair = new KeyValuePair<int, Coordinate>(index, location);
-                                HomeLocation.Tag = pair;
+                                panelView.Pair = new KeyValuePair<int, Coordinate>(index, location);
+                                // Set Context for Home LocationPanel
+                                HomeLocation.DataContext = panelView;
 
-                                // Hide add locations panel
-                                NewHome_Cancel_Click(sender, e);
+                                // Hide change location panel
+                                ShowChangeHomePanel(false);
                             });
                         }
                         else
                         {
                             await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                             {
-                                /*
-                                String errorMSG = "Unable to get weather data! Try again or enter a different location.";
-                                Windows.UI.Popups.MessageDialog error = new Windows.UI.Popups.MessageDialog(errorMSG);
-                                await error.ShowAsync();
-                                */
                                 NewHomeLocation.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Red);
                                 NewHomeLocation.BorderThickness = new Thickness(5);
                             });
@@ -175,14 +148,20 @@ namespace SimpleWeather
             }
         }
 
+        private void ShowChangeHomePanel(bool show)
+        {
+            // Hide Textbox
+            ChangeHomePanel.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+            // Show HomeLocation Panel
+            HomeLocation.Visibility = show ? Visibility.Collapsed : Visibility.Visible;
+
+            if (!show)
+                NewHomeLocation.Text = string.Empty;
+        }
+
         private void NewHome_Cancel_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: Put this in a function?
-            // Hide Textbox
-            ChangeHomePanel.Visibility = Visibility.Collapsed;
-            // Show HomeLocation Panel
-            HomeLocation.Visibility = Visibility.Visible;
-            NewHomeLocation.Text = string.Empty;
+            ShowChangeHomePanel(false);
         }
 
         private async void HomeLocation_PointerReleased(object sender, PointerRoutedEventArgs e)
@@ -192,30 +171,25 @@ namespace SimpleWeather
             Windows.UI.Popups.PopupMenu menu = new Windows.UI.Popups.PopupMenu();
             menu.Commands.Add(new Windows.UI.Popups.UICommand("Change Favorite Location", (command) =>
             {
-                // Hide HomeLocation Panel
-                HomeLocation.Visibility = Visibility.Collapsed;
-                // Show Textbox
-                ChangeHomePanel.Visibility = Visibility.Visible;
+                ShowChangeHomePanel(true);
             }));
 
             Windows.UI.Popups.IUICommand chosenCommand = await menu.ShowForSelectionAsync(GetElementRect(panel));
-            if (chosenCommand == null) // The command is null if no command was invoked. 
-            {
-                //Context menu dismissed
-            }
+            if (chosenCommand == null) { } // The command is null if no command was invoked. 
 
             e.Handled = true;
         }
 
         private async void OtherLocationButton_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            Button panel = sender as Button;
+            LocationPanel panel = sender as LocationPanel;
 
             Windows.UI.Popups.PopupMenu menu = new Windows.UI.Popups.PopupMenu();
             menu.Commands.Add(new Windows.UI.Popups.UICommand("Delete Location", async (command) =>
             {
                 // Get panel index
-                int idx = OtherLocationsPanel.Children.IndexOf(panel) + 1;
+                KeyValuePair<int, Coordinate> pair = (KeyValuePair<int, Coordinate>)panel.Tag;
+                int idx = pair.Key;
 
                 // Remove location from list
                 List<Coordinate> locations = await Settings.getLocations();
@@ -223,14 +197,11 @@ namespace SimpleWeather
                 Settings.saveLocations(locations);
 
                 // Remove panel
-                OtherLocationsPanel.Children.Remove(panel);
+                LocationPanels.RemoveAt(idx - 1);
             }));
 
             Windows.UI.Popups.IUICommand chosenCommand = await menu.ShowForSelectionAsync(GetElementRect(panel));
-            if (chosenCommand == null) // The command is null if no command was invoked. 
-            {
-                //Context menu dismissed
-            }
+            if (chosenCommand == null) { } // The command is null if no command was invoked. 
 
             e.Handled = true;
         }
@@ -252,297 +223,18 @@ namespace SimpleWeather
             return new Rect(point, new Size(element.ActualWidth, element.ActualHeight));
         }
 
-        private void updatePanel(Button weatherPanel, Weather weather)
+        private void ShowAddLocationsPanel(bool show)
         {
-            // Update background
-            updateBg(weatherPanel, weather);
+            AddLocationsButton.Visibility = show ? Visibility.Collapsed : Visibility.Visible;
+            AddLocationPanel.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
 
-            weatherPanel.Style = this.Resources["LocationButtonStyle"] as Style;
-
-            Grid outergrid = new Grid();
-            outergrid.Height = weatherPanel.Height;
-
-            // Columns
-            ColumnDefinition gridCol1 = new ColumnDefinition();
-            gridCol1.Width = new GridLength(1, GridUnitType.Star);
-            ColumnDefinition gridCol2 = new ColumnDefinition();
-            gridCol2.Width = GridLength.Auto;
-            outergrid.ColumnDefinitions.Add(gridCol1);
-            outergrid.ColumnDefinitions.Add(gridCol2);
-
-            TextBlock locationName = new TextBlock();
-            locationName.Text = weather.location.description;
-            locationName.FontSize = 24;
-            locationName.VerticalAlignment = VerticalAlignment.Center;
-            locationName.Padding = new Thickness(10);
-            Grid.SetColumn(locationName, 0);
-
-            Grid innergrid = new Grid();
-            ColumnDefinition innerGridCol1 = new ColumnDefinition();
-            innerGridCol1.Width = new GridLength(100);
-            ColumnDefinition innerGridCol2 = new ColumnDefinition();
-            innerGridCol2.Width = new GridLength(100);
-            innergrid.ColumnDefinitions.Add(innerGridCol1);
-            innergrid.ColumnDefinitions.Add(innerGridCol2);
-            Grid.SetColumn(innergrid, 1);
-
-            TextBlock currTemp = new TextBlock();
-            currTemp.Text = weather.condition.temp + "º";
-            currTemp.FontSize = 24;
-            currTemp.Padding = new Thickness(10);
-
-            TextBlock weatherIcon = new TextBlock();
-            weatherIcon.Style = this.Resources["WeatherIcon"] as Style;
-            updateWeatherIcon(weatherIcon, int.Parse(weather.condition.code));
-
-            Viewbox temp = new Viewbox();
-            temp.VerticalAlignment = VerticalAlignment.Stretch;
-            temp.Width = 60;
-            temp.Height = temp.Width;
-
-            Viewbox icon = new Viewbox();
-            icon.VerticalAlignment = VerticalAlignment.Stretch;
-            icon.Width = 60;
-            icon.Height = icon.Width;
-
-            // Add to viewboxes
-            temp.Child = currTemp;
-            icon.Child = weatherIcon;
-
-            // Set Columns for boxes
-            Grid.SetColumn(temp, 0);
-            Grid.SetColumn(icon, 1);
-
-            // Add to innergrid
-            innergrid.Children.Add(temp);
-            innergrid.Children.Add(icon);
-
-            // Add to outergrids
-            outergrid.Children.Add(locationName);
-            outergrid.Children.Add(innergrid);
-
-            // Add to panel
-            weatherPanel.Content = outergrid;
-        }
-
-        private void updateWeatherIcon(TextBlock textBlock, int weatherCode)
-        {
-            switch (weatherCode)
-            {
-                case 0: // Tornado
-                    textBlock.Text = "\uf056";
-                    break;
-                case 1: // Tropical Storm
-                case 37:
-                case 38: // Scattered Thunderstorms/showers
-                case 39:
-                case 45:
-                case 47:
-                    textBlock.Text = "\uf00e";
-                    break;
-                case 2: // Hurricane
-                    textBlock.Text = "\uf073";
-                    break;
-                case 3:
-                case 4: // Scattered Thunderstorms
-                    textBlock.Text = "\uf01e";
-                    break;
-                case 5: // Mixed Rain/Snow
-                case 6: // Mixed Rain/Sleet
-                case 7: // Mixed Snow/Sleet
-                case 18: // Sleet
-                case 35: // Mixed Rain/Hail
-                    textBlock.Text = "\uf017";
-                    break;
-                case 8: // Freezing Drizzle
-                case 10: // Freezing Rain
-                case 17: // Hail
-                    textBlock.Text = "\uf015";
-                    break;
-                case 9: // Drizzle
-                case 11: // Showers
-                case 12:
-                case 40: // Scattered Showers
-                    textBlock.Text = "\uf01a";
-                    break;
-                case 13: // Snow Flurries
-                case 16: // Snow
-                case 42: // Scattered Snow Showers
-                case 46: // Snow Showers
-                    textBlock.Text = "\uf01b";
-                    break;
-                case 15: // Blowing Snow
-                case 41: // Heavy Snow
-                case 43:
-                    textBlock.Text = "\uf064";
-                    break;
-                case 19: // Dust
-                    textBlock.Text = "\uf063";
-                    break;
-                case 20: // Foggy
-                    textBlock.Text = "\uf014";
-                    break;
-                case 21: // Haze
-                    textBlock.Text = "\uf021";
-                    break;
-                case 22: // Smoky
-                    textBlock.Text = "\uf062";
-                    break;
-                case 23: // Blustery
-                case 24: // Windy
-                    textBlock.Text = "\uf050";
-                    break;
-                case 25: // Cold
-                    textBlock.Text = "\uf076";
-                    break;
-                case 26: // Cloudy
-                    textBlock.Text = "\uf013";
-                    break;
-                case 27: // Mostly Cloudy (Night)
-                case 29: // Partly Cloudy (Night)
-                    textBlock.Text = "\uf031";
-                    break;
-                case 28: // Mostly Cloudy (Day)
-                case 30: // Partly Cloudy (Day)
-                    textBlock.Text = "\uf002";
-                    break;
-                case 31: // Clear (Night)
-                    textBlock.Text = "\uf02e";
-                    break;
-                case 32: // Sunny
-                    textBlock.Text = "\uf00d";
-                    break;
-                case 33: // Fair (Night)
-                    textBlock.Text = "\uf083";
-                    break;
-                case 34: // Fair (Day)
-                case 44: // Partly Cloudy
-                    textBlock.Text = "\uf00c";
-                    break;
-                case 36: // HOT
-                    textBlock.Text = "\uf072";
-                    break;
-                case 3200: // Not Available
-                default:
-                    textBlock.Text = "\uf077";
-                    break;
-            }
-        }
-
-
-        private void updateBg(Button weatherPanel, Weather weather)
-        {
-            ImageBrush bg = new ImageBrush();
-            bg.Stretch = Stretch.UniformToFill;
-            bg.AlignmentX = AlignmentX.Right;
-            bg.AlignmentY = AlignmentY.Center;
-
-            // Apply background based on weather condition
-            switch (int.Parse(weather.condition.code))
-            {
-                // Night
-                case 31:
-                case 33:
-                    bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/NightSky.jpg"));
-                    break;
-                // Rain 
-                case 9:
-                case 11:
-                case 12:
-                case 40:
-                // (Mixed) Rain/Snow/Sleet
-                case 5:
-                case 6:
-                case 7:
-                case 18:
-                // Hail / Freezing Rain
-                case 8:
-                case 10:
-                case 17:
-                case 35:
-                    bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/RainySky.jpg"));
-                    break;
-                // Tornado / Hurricane / Thunderstorm / Tropical Storm
-                case 0:
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                case 37:
-                case 38:
-                case 39:
-                case 45:
-                case 47:
-                    bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/StormySky.jpg"));
-                    break;
-                // Dust
-                case 19:
-                    bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/Dust.jpg"));
-                    break;
-                // Foggy / Haze
-                case 20:
-                case 21:
-                case 22:
-                    bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/FoggySky.jpg"));
-                    break;
-                // Snow / Snow Showers/Storm
-                case 13:
-                case 14:
-                case 15:
-                case 16:
-                case 41:
-                case 42:
-                case 43:
-                case 46:
-                    bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/Snow.jpg"));
-                    break;
-                /* Ambigious weather conditions */
-                // (Mostly) Cloudy
-                case 28:
-                case 26:
-                case 27:
-                    if (isNight(weather))
-                        bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/MostlyCloudy-Night.jpg"));
-                    else
-                        bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/MostlyCloudy-Day.jpg"));
-                    break;
-                // Partly Cloudy
-                case 44:
-                case 29:
-                case 30:
-                    if (isNight(weather))
-                        bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/PartlyCloudy-Night.jpg"));
-                    else
-                        bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/PartlyCloudy-Day.jpg"));
-                    break;
-            }
-
-            if (bg.ImageSource == null)
-            {
-                // Set background based using sunset/rise times
-                if (isNight(weather))
-                    bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/NightSky.jpg"));
-                else
-                    bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/DaySky.jpg"));
-            }
-
-            weatherPanel.Background = bg;
-        }
-
-        private bool isNight(Weather weather)
-        {
-            // Determine whether its night using sunset/rise times
-            if (DateTime.Now < DateTime.Parse(weather.astronomy.sunrise)
-                    || DateTime.Now > DateTime.Parse(weather.astronomy.sunset))
-                return true;
-            else
-                return false;
+            if (!show)
+                Location.Text = string.Empty;
         }
 
         private void AddLocationsButton_Click(object sender, RoutedEventArgs e)
         {
-            AddLocationsButton.Visibility = Visibility.Collapsed;
-            AddLocationPanel.Visibility = Visibility.Visible;
+            ShowAddLocationsPanel(true);
         }
 
         private async void Location_KeyUp(object sender, KeyRoutedEventArgs e)
@@ -576,35 +268,21 @@ namespace SimpleWeather
                                 locations.Add(location);
                                 Settings.saveLocations(locations);
 
-                                // TODO: Just Re-load locations ^^??
-                                Button otherLocal = new Button();
-                                updatePanel(otherLocal, weather);
-
-                                // Register event handlers
-                                otherLocal.PointerReleased += OtherLocationButton_PointerReleased;
-                                otherLocal.Holding += LocationButton_Holding;
-
+                                LocationPanelView panelView = new LocationPanelView(weather);
                                 // Save index to tag (to easily retreive)
-                                KeyValuePair<int, Coordinate> pair = new KeyValuePair<int, Coordinate>(index, location);
-                                otherLocal.Tag = pair;
-                                otherLocal.Click += LocationButton_Click;
+                                panelView.Pair = new KeyValuePair<int, Coordinate>(index, location);
 
-                                // Add to panel
-                                OtherLocationsPanel.Children.Add(otherLocal);
+                                // Add to collection
+                                LocationPanels.Add(panelView);
 
                                 // Hide add locations panel
-                                Cancel_Click(sender, e);
+                                ShowAddLocationsPanel(false);
                             });
                         }
                         else
                         {
                             await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                             {
-                                /*
-                                String errorMSG = "Unable to get weather data! Try again or enter a different location.";
-                                Windows.UI.Popups.MessageDialog error = new Windows.UI.Popups.MessageDialog(errorMSG);
-                                await error.ShowAsync();
-                                */
                                 Location.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Red);
                                 Location.BorderThickness = new Thickness(5);
                             });
@@ -618,10 +296,7 @@ namespace SimpleWeather
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: Put this in a function?
-            AddLocationsButton.Visibility = Visibility.Visible;
-            AddLocationPanel.Visibility = Visibility.Collapsed;
-            Location.Text = string.Empty;
+            ShowAddLocationsPanel(false);
         }
 
         private async void HomeGPS_Click(object sender, RoutedEventArgs e)
@@ -657,27 +332,20 @@ namespace SimpleWeather
                         locations[0] = location;
                         Settings.saveLocations(locations);
 
-                        // TODO: Just Re-load locations ^^??
-                        updatePanel(HomeLocation, weather);
-
-                        // Register event handlers
+                        LocationPanelView panelView = new LocationPanelView(weather);
                         // Save index to tag (to easily retreive)
-                        KeyValuePair<int, Coordinate> pair = new KeyValuePair<int, Coordinate>(index, location);
-                        HomeLocation.Tag = pair;
+                        panelView.Pair = new KeyValuePair<int, Coordinate>(index, location);
+                        // Set Context for Home LocationPanel
+                        HomeLocation.DataContext = panelView;
 
                         // Hide add locations panel
-                        NewHome_Cancel_Click(sender, e);
+                        ShowChangeHomePanel(false);
                     });
                 }
                 else
                 {
                     await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                     {
-                        /*
-                        String errorMSG = "Unable to get weather data! Try again or enter a different location.";
-                        Windows.UI.Popups.MessageDialog error = new Windows.UI.Popups.MessageDialog(errorMSG);
-                        await error.ShowAsync();
-                        */
                         NewHomeLocation.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Red);
                         NewHomeLocation.BorderThickness = new Thickness(5);
                         HomeGPS.IsEnabled = true;
@@ -719,35 +387,21 @@ namespace SimpleWeather
                         locations.Add(location);
                         Settings.saveLocations(locations);
 
-                        // TODO: Just Re-load locations ^^??
-                        Button otherLocal = new Button();
-                        updatePanel(otherLocal, weather);
-
-                        // Register event handlers
-                        otherLocal.PointerReleased += OtherLocationButton_PointerReleased;
-                        otherLocal.Holding += LocationButton_Holding;
-
+                        LocationPanelView panelView = new LocationPanelView(weather);
                         // Save index to tag (to easily retreive)
-                        KeyValuePair<int, Coordinate> pair = new KeyValuePair<int, Coordinate>(index, location);
-                        otherLocal.Tag = pair;
-                        otherLocal.Click += LocationButton_Click;
+                        panelView.Pair = new KeyValuePair<int, Coordinate>(index, location);
 
-                        // Add to panel
-                        OtherLocationsPanel.Children.Add(otherLocal);
+                        // Add to collection
+                        LocationPanels.Add(panelView);
 
                         // Hide add locations panel
-                        Cancel_Click(sender, e);
+                        ShowAddLocationsPanel(false);
                     });
                 }
                 else
                 {
                     await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                     {
-                        /*
-                        String errorMSG = "Unable to get weather data! Try again or enter a different location.";
-                        Windows.UI.Popups.MessageDialog error = new Windows.UI.Popups.MessageDialog(errorMSG);
-                        await error.ShowAsync();
-                        */
                         Location.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Red);
                         Location.BorderThickness = new Thickness(5);
                     });
