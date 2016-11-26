@@ -110,6 +110,7 @@
     <Compile Include="Controls\LocationPanel.xaml.cs">
       <DependentUpon>LocationPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utils\WeatherUtils.cs" />
     <Compile Include="WeatherNowView.cs" />
     <Compile Include="Controls\ForecastItem.xaml.cs">
       <DependentUpon>ForecastItem.xaml</DependentUpon>
