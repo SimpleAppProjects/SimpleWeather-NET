@@ -34,15 +34,30 @@ namespace SimpleWeather
         {
             this.InitializeComponent();
 
+            LocationPanels = new ObservableCollection<LocationPanelView>();
+            LocationPanels.CollectionChanged += LocationPanels_CollectionChanged;
+
             // Get locations and load up weather data
             LoadLocations();
+        }
+
+        private void LocationPanels_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            foreach(LocationPanelView panelView in LocationPanels)
+            {
+                int index = LocationPanels.IndexOf(panelView) + 1;
+                panelView.Pair = new KeyValuePair<int, Coordinate>(index, panelView.Pair.Value);
+            }
+
+            // Refresh ItemsSource
+            OtherLocationsPanel.ItemsSource = null;
+            OtherLocationsPanel.ItemsSource = LocationPanels;
         }
 
         private async void LoadLocations()
         {
             // Lets load it up...
             List<Coordinate> locations = await Settings.getLocations();
-            LocationPanels = new ObservableCollection<LocationPanelView>();
             OtherLocationsPanel.ItemsSource = LocationPanels;
 
             foreach (Coordinate location in locations)
