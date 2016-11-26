@@ -29,6 +29,9 @@ namespace SimpleWeather
         WeatherDataLoader wLoader = null;
         WeatherNowView weatherView = null;
 
+        // For UI Thread
+        Windows.UI.Core.CoreDispatcher dispatcher = Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher;
+
         public WeatherNow()
         {
             this.InitializeComponent();
@@ -54,9 +57,6 @@ namespace SimpleWeather
 
         private async void RefreshWeather(bool forceRefresh)
         {
-            // For UI Thread
-            Windows.UI.Core.CoreDispatcher dispatcher = Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher;
-
             await wLoader.loadWeatherData(forceRefresh).ContinueWith(async (t) =>
             {
                 Weather weather = wLoader.getWeather();

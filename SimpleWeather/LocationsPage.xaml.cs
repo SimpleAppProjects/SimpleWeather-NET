@@ -27,6 +27,9 @@ namespace SimpleWeather
         WeatherDataLoader wLoader = null;
         public ObservableCollection<LocationPanelView> LocationPanels { get; set; }
 
+        // For UI Thread
+        Windows.UI.Core.CoreDispatcher dispatcher = Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher;
+
         public LocationsPage()
         {
             this.InitializeComponent();
@@ -37,9 +40,6 @@ namespace SimpleWeather
 
         private async void LoadLocations()
         {
-            // For UI Thread
-            Windows.UI.Core.CoreDispatcher dispatcher = Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher;
-
             // Lets load it up...
             List<Coordinate> locations = await Settings.getLocations();
             LocationPanels = new ObservableCollection<LocationPanelView>();
@@ -99,8 +99,6 @@ namespace SimpleWeather
 
             if (e.Key == Windows.System.VirtualKey.Enter)
             {
-                // For UI Thread
-                Windows.UI.Core.CoreDispatcher dispatcher = Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher;
                 List<Coordinate> locations = await Settings.getLocations();
                 int index = 0; // Home Location
 
@@ -244,8 +242,6 @@ namespace SimpleWeather
 
             if (e.Key == Windows.System.VirtualKey.Enter)
             {
-                // For UI Thread
-                Windows.UI.Core.CoreDispatcher dispatcher = Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher;
                 List<Coordinate> locations = await Settings.getLocations();
                 int index = locations.Count;
 
@@ -304,9 +300,6 @@ namespace SimpleWeather
             NewHomeLocation.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Gray);
             NewHomeLocation.BorderThickness = new Thickness(2);
 
-            // For UI Thread
-            Windows.UI.Core.CoreDispatcher dispatcher = Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher;
-
             // Set window items
             HomeGPS.IsEnabled = false;
 
@@ -359,8 +352,6 @@ namespace SimpleWeather
             Location.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Gray);
             Location.BorderThickness = new Thickness(2);
 
-            // For UI Thread
-            Windows.UI.Core.CoreDispatcher dispatcher = Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher;
             List<Coordinate> locations = await Settings.getLocations();
 
             // Set window items

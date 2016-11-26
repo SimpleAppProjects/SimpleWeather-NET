@@ -29,6 +29,9 @@ namespace SimpleWeather
         WeatherDataLoader wLoader = null;
         int homeIdx = 0;
 
+        // For UI Thread
+        Windows.UI.Core.CoreDispatcher dispatcher = Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher;
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -53,9 +56,6 @@ namespace SimpleWeather
 
         private async void Restore()
         {
-            // For UI Thread
-            Windows.UI.Core.CoreDispatcher dispatcher = Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher;
-
             // Hide UIElements
             SearchGrid.Visibility = Visibility.Collapsed;
             // Show Loading Ring
@@ -101,9 +101,6 @@ namespace SimpleWeather
 
             if (e.Key == Windows.System.VirtualKey.Enter)
             {
-                // For UI Thread
-                Windows.UI.Core.CoreDispatcher dispatcher = Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher;
-
                 if (!String.IsNullOrWhiteSpace(Location.Text))
                 {
                     // Set window items
@@ -146,12 +143,6 @@ namespace SimpleWeather
                                 SearchGrid.Visibility = Visibility.Visible;
                                 GPS.IsEnabled = true;
 
-                                /*
-                                String errorMSG = "Unable to get weather data! Try again or enter a different location.";
-                                Windows.UI.Popups.MessageDialog error = new Windows.UI.Popups.MessageDialog(errorMSG);
-                                await error.ShowAsync();
-                                */
-
                                 Location.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Red);
                                 Location.BorderThickness = new Thickness(5);
                             });
@@ -166,9 +157,6 @@ namespace SimpleWeather
         private async void GPS_Click(object sender, RoutedEventArgs e)
         {
             Location.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Gray);
-
-            // For UI Thread
-            Windows.UI.Core.CoreDispatcher dispatcher = Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher;
 
             // Set window items
             LoadingRing.IsActive = true;
@@ -212,12 +200,6 @@ namespace SimpleWeather
                         LoadingRing.IsActive = false;
                         SearchGrid.Visibility = Visibility.Visible;
                         GPS.IsEnabled = true;
-
-                        /*
-                        String errorMSG = "Unable to get weather data! Try again...";
-                        Windows.UI.Popups.MessageDialog error = new Windows.UI.Popups.MessageDialog(errorMSG);
-                        await error.ShowAsync();
-                        */
 
                         Location.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Red);
                         Location.BorderThickness = new Thickness(5);
