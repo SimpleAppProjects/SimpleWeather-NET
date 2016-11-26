@@ -3,16 +3,20 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
+using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
 namespace SimpleWeather
@@ -23,6 +27,7 @@ namespace SimpleWeather
     sealed partial class App : Application
     {
         public static Windows.UI.Color AppColor = Windows.UI.Color.FromArgb(255, 0, 111, 191);
+        public static Dictionary<String,BitmapImage> backgroundImages;
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -79,6 +84,39 @@ namespace SimpleWeather
                 // Ensure the current window is active
                 Window.Current.Activate();
             }
+
+            preloadBackgrounds();
+        }
+
+        private async void preloadBackgrounds()
+        {
+            // For UI Thread
+            Windows.UI.Core.CoreDispatcher dispatcher = Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher;
+
+            await Task.Factory.StartNew(async () =>
+            {
+                if (backgroundImages == null || backgroundImages.Count == 0)
+                {
+                    backgroundImages = new Dictionary<string, BitmapImage>();
+
+                    StorageFolder installFolder = Package.Current.InstalledLocation;
+                    StorageFolder AssetsFolder = await installFolder.GetFolderAsync("Assets\\Backgrounds");
+                    IReadOnlyList<StorageFile> files = await AssetsFolder.GetFilesAsync();
+                    foreach (StorageFile file in files)
+                    {
+                        IRandomAccessStream imgStream = await file.OpenReadAsync();
+                        // Preload image at path and add to list
+                        await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
+                        {
+                            BitmapImage bmp = new BitmapImage();
+                            bmp.CreateOptions = BitmapCreateOptions.None;
+                            bmp.DecodePixelWidth = 960;
+                            await bmp.SetSourceAsync(imgStream);
+                            backgroundImages.Add(file.DisplayName, bmp);
+                        });
+                    }
+                }
+            });
         }
 
         /// <summary>

@@ -124,6 +124,7 @@ namespace SimpleWeather
             ImageBrush bg = new ImageBrush();
             bg.Stretch = Stretch.UniformToFill;
             bg.AlignmentX = AlignmentX.Right;
+            Windows.UI.Xaml.Media.Imaging.BitmapImage img;
 
             // Apply background based on weather condition
             switch (int.Parse(weather.condition.code))
@@ -131,7 +132,8 @@ namespace SimpleWeather
                 // Night
                 case 31:
                 case 33:
-                    bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/NightSky.jpg"));
+                    App.backgroundImages.TryGetValue("NightSky", out img);
+                    bg.ImageSource = img;
                     break;
                 // Rain 
                 case 9:
@@ -148,7 +150,8 @@ namespace SimpleWeather
                 case 10:
                 case 17:
                 case 35:
-                    bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/RainySky.jpg"));
+                    App.backgroundImages.TryGetValue("RainySky", out img);
+                    bg.ImageSource = img;
                     break;
                 // Tornado / Hurricane / Thunderstorm / Tropical Storm
                 case 0:
@@ -161,17 +164,20 @@ namespace SimpleWeather
                 case 39:
                 case 45:
                 case 47:
-                    bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/StormySky.jpg"));
+                    App.backgroundImages.TryGetValue("StormySky", out img);
+                    bg.ImageSource = img;
                     break;
                 // Dust
                 case 19:
-                    bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/Dust.jpg"));
+                    App.backgroundImages.TryGetValue("Dust", out img);
+                    bg.ImageSource = img;
                     break;
                 // Foggy / Haze
                 case 20:
                 case 21:
                 case 22:
-                    bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/FoggySky.jpg"));
+                    App.backgroundImages.TryGetValue("FoggySky", out img);
+                    bg.ImageSource = img;
                     break;
                 // Snow / Snow Showers/Storm
                 case 13:
@@ -182,7 +188,8 @@ namespace SimpleWeather
                 case 42:
                 case 43:
                 case 46:
-                    bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/Snow.jpg"));
+                    App.backgroundImages.TryGetValue("Snow", out img);
+                    bg.ImageSource = img;
                     break;
                 /* Ambigious weather conditions */
                 // (Mostly) Cloudy
@@ -190,18 +197,30 @@ namespace SimpleWeather
                 case 26:
                 case 27:
                     if (isNight(weather))
-                        bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/MostlyCloudy-Night.jpg"));
+                    {
+                        App.backgroundImages.TryGetValue("MostlyCloudy-Night", out img);
+                        bg.ImageSource = img;
+                    }
                     else
-                        bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/MostlyCloudy-Day.jpg"));
+                    {
+                        App.backgroundImages.TryGetValue("MostlyCloudy-Day", out img);
+                        bg.ImageSource = img;
+                    }
                     break;
                 // Partly Cloudy
                 case 44:
                 case 29:
                 case 30:
                     if (isNight(weather))
-                        bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/PartlyCloudy-Night.jpg"));
+                    {
+                        App.backgroundImages.TryGetValue("PartlyCloudy-Night", out img);
+                        bg.ImageSource = img;
+                    }
                     else
-                        bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/PartlyCloudy-Day.jpg"));
+                    {
+                        App.backgroundImages.TryGetValue("PartlyCloudy-Day", out img);
+                        bg.ImageSource = img;
+                    }
                     break;
             }
 
@@ -209,9 +228,15 @@ namespace SimpleWeather
             {
                 // Set background based using sunset/rise times
                 if (isNight(weather))
-                    bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/NightSky.jpg"));
+                {
+                    App.backgroundImages.TryGetValue("NightSky", out img);
+                    bg.ImageSource = img;
+                }
                 else
-                    bg.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/Backgrounds/DaySky.jpg"));
+                {
+                    App.backgroundImages.TryGetValue("DaySky", out img);
+                    bg.ImageSource = img;
+                }
             }
 
             return bg;
