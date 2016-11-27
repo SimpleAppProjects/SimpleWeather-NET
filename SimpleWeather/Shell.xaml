@@ -59,7 +59,6 @@
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentPresenter">
                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseHighBrush}"/>
                                             </ObjectAnimationUsingKeyFrames>
-                                            <PointerDownThemeAnimation Storyboard.TargetName="RootGrid"/>
                                         </Storyboard>
                                     </VisualState>
                                     <VisualState x:Name="Disabled">
