@@ -23,6 +23,20 @@ namespace SimpleWeather
         public LocationPanel()
         {
             this.InitializeComponent();
+
+            LoadIt();
+        }
+
+        private async void LoadIt()
+        {
+            LoadingRing.IsActive = true;
+
+            while (this.LocalName.Text == null || this.LocalName.Text == string.Empty)
+            {
+                await System.Threading.Tasks.Task.Delay(200);
+            }
+
+            LoadingRing.IsActive = false;
         }
     }
 }

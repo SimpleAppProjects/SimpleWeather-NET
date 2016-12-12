@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-
+    
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -22,7 +22,7 @@
 
         <ScrollViewer Grid.Row="1" RequestedTheme="Light" Name="theGrid" HorizontalScrollMode="Disabled" VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto">
             <RelativePanel>
-                <TextBlock Name="Label" Text="Favorite Location" FontSize="28" Padding="15,10" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" />
+                <TextBlock Name="Label" Text="Favorite Location" FontSize="24" Padding="15,5,0,0" Margin="0,5,0,0" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" />
                 <local:LocationPanel x:Name="HomeLocation" Holding="LocationButton_Holding" PointerReleased="HomeLocation_PointerReleased" Click="LocationButton_Click"
                                      RelativePanel.Below="Label" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True"/>
                 <Grid x:Name="ChangeHomePanel" Margin="10,0" Visibility="Collapsed"
@@ -40,7 +40,7 @@
                     </Button>
                     <Button x:Name="NewHome_Cancel" Content="Cancel" Margin="1,0" FontSize="18" Width="75" Height="48" Click="NewHome_Cancel_Click" Grid.Column="2"/>
                 </Grid>
-                <TextBlock Name="OtherLabel" Text="Other Locations" FontSize="28" Padding="15,10" Margin="0,5"
+                <TextBlock Name="OtherLabel" Text="Other Locations" FontSize="24" Padding="15,0" Margin="0,5"
                            RelativePanel.Below="ChangeHomePanel" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" />
                 <ItemsControl x:Name="OtherLocationsPanel"
                                 RelativePanel.Below="OtherLabel" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True">

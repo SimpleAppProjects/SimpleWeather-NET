@@ -15,9 +15,18 @@ namespace SimpleWeather
         public KeyValuePair<int, Coordinate> Pair { get; set; }
 
         // Background
-        public ImageBrush Background { get; set; }
+        public Brush Background { get; set; }
+
+        public LocationPanelView()
+        {
+        }
 
         public LocationPanelView(Weather weather)
+        {
+            setWeather(weather);
+        }
+
+        public void setWeather(Weather weather)
         {
             // Update background
             Background = WeatherUtils.GetBackground(weather);

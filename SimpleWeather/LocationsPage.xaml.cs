@@ -25,6 +25,7 @@ namespace SimpleWeather
     public sealed partial class LocationsPage : Page
     {
         WeatherDataLoader wLoader = null;
+        public LocationPanelView HomePanel { get; set; }
         public ObservableCollection<LocationPanelView> LocationPanels { get; set; }
 
         // For UI Thread
@@ -59,6 +60,17 @@ namespace SimpleWeather
             // Lets load it up...
             List<Coordinate> locations = await Settings.getLocations();
             OtherLocationsPanel.ItemsSource = LocationPanels;
+            HomePanel = new LocationPanelView();
+
+            for(int i = 0; i < locations.Count - 1; i++)
+            {
+                LocationPanelView panel = new LocationPanelView();
+                panel.Background = new SolidColorBrush(App.AppColor);
+                LocationPanels.Add(panel);
+            }
+
+            // Animation Delay
+            await System.Threading.Tasks.Task.Delay(500);
 
             foreach (Coordinate location in locations)
             {
@@ -73,22 +85,34 @@ namespace SimpleWeather
                     {
                         await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                         {
-                            LocationPanelView panelView = new LocationPanelView(weather);
-                            // Save index to tag (to easily retreive)
-                            panelView.Pair = new KeyValuePair<int, Coordinate>(index, location);
-
                             if (index == 0)
                             {
-                                HomeLocation.DataContext = panelView;
+                                HomePanel.setWeather(weather);
+                                HomePanel.Pair = new KeyValuePair<int, Coordinate>(index, location);
+                                HomeLocation.DataContext = HomePanel;
                             }
                             else
                             {
-                                LocationPanels.Add(panelView);
+                                LocationPanelView panelView = LocationPanels[index - 1];
+                                panelView.setWeather(weather);
+
+                                // Save index to tag (to easily retreive)
+                                panelView.Pair = new KeyValuePair<int, Coordinate>(index, location);
                             }
                         });
                     }
+                    else
+                    {
+                        // Reload
+                        await System.Threading.Tasks.Task.Delay(1000);
+                        LoadLocations();
+                    }
                 });
             }
+
+            // Refresh
+            OtherLocationsPanel.ItemsSource = null;
+            OtherLocationsPanel.ItemsSource = LocationPanels;
         }
 
         private void LocationButton_Click(object sender, RoutedEventArgs e)
@@ -105,6 +129,80 @@ namespace SimpleWeather
             CoreApplication.Properties.Add("WeatherLoader", wLoader);
 
             this.Frame.Navigate(typeof(WeatherNow));
+        }
+
+        private void ShowAddLocationsPanel(bool show)
+        {
+            AddLocationsButton.Visibility = show ? Visibility.Collapsed : Visibility.Visible;
+            AddLocationPanel.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+
+            if (!show)
+                Location.Text = string.Empty;
+        }
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            ShowAddLocationsPanel(false);
+        }
+
+        public static Rect GetElementRect(FrameworkElement element)
+        {
+            GeneralTransform buttonTransform = element.TransformToVisual(null);
+            Point point = buttonTransform.TransformPoint(new Point());
+            return new Rect(point, new Size(element.ActualWidth, element.ActualHeight));
+        }
+
+        #region LocationsPage HomePanelFunctions
+        private async void HomeGPS_Click(object sender, RoutedEventArgs e)
+        {
+            NewHomeLocation.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Gray);
+            NewHomeLocation.BorderThickness = new Thickness(2);
+
+            // Set window items
+            HomeGPS.IsEnabled = false;
+
+            Windows.Devices.Geolocation.Geolocator geolocal = new Windows.Devices.Geolocation.Geolocator();
+            Windows.Devices.Geolocation.Geoposition geoPos = await geolocal.GetGeopositionAsync();
+            List<Coordinate> locations = await Settings.getLocations();
+            int index = 0; // Home Location
+
+            wLoader = new WeatherDataLoader(geoPos, index);
+            await wLoader.loadWeatherData(true).ContinueWith(async (t) =>
+            {
+                Weather weather = wLoader.getWeather();
+
+                if (weather != null)
+                {
+                    // Show location name
+                    await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                    {
+                        Coordinate location = new Coordinate(
+                            string.Join(",", wLoader.getWeather().location.lat, wLoader.getWeather().location._long));
+
+                        // Save coords to List
+                        locations[0] = location;
+                        Settings.saveLocations(locations);
+
+                        HomePanel.setWeather(weather);
+                        // Save index to tag (to easily retreive)
+                        HomePanel.Pair = new KeyValuePair<int, Coordinate>(index, location);
+                        // Set Context for Home LocationPanel
+                        HomeLocation.DataContext = HomePanel;
+
+                        // Hide add locations panel
+                        ShowChangeHomePanel(false);
+                    });
+                }
+                else
+                {
+                    await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                    {
+                        NewHomeLocation.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Red);
+                        NewHomeLocation.BorderThickness = new Thickness(5);
+                        HomeGPS.IsEnabled = true;
+                    });
+                }
+            });
         }
 
         private async void NewHomeLocation_KeyUp(object sender, KeyRoutedEventArgs e)
@@ -136,11 +234,11 @@ namespace SimpleWeather
                                 locations[0] = location;
                                 Settings.saveLocations(locations);
 
-                                LocationPanelView panelView = new LocationPanelView(weather);
+                                HomePanel.setWeather(weather);
                                 // Save index to tag (to easily retreive)
-                                panelView.Pair = new KeyValuePair<int, Coordinate>(index, location);
+                                HomePanel.Pair = new KeyValuePair<int, Coordinate>(index, location);
                                 // Set Context for Home LocationPanel
-                                HomeLocation.DataContext = panelView;
+                                HomeLocation.DataContext = HomePanel;
 
                                 // Hide change location panel
                                 ShowChangeHomePanel(false);
@@ -192,7 +290,9 @@ namespace SimpleWeather
 
             e.Handled = true;
         }
+        #endregion
 
+        #region LocationsPage OtherLocationPanelFunctions
         private async void OtherLocationButton_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
             LocationPanel panel = sender as LocationPanel;
@@ -227,22 +327,6 @@ namespace SimpleWeather
                 panel.ReleasePointerCaptures();
                 e.Handled = true;
             }
-        }
-
-        public static Rect GetElementRect(FrameworkElement element)
-        {
-            GeneralTransform buttonTransform = element.TransformToVisual(null);
-            Point point = buttonTransform.TransformPoint(new Point());
-            return new Rect(point, new Size(element.ActualWidth, element.ActualHeight));
-        }
-
-        private void ShowAddLocationsPanel(bool show)
-        {
-            AddLocationsButton.Visibility = show ? Visibility.Collapsed : Visibility.Visible;
-            AddLocationPanel.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
-
-            if (!show)
-                Location.Text = string.Empty;
         }
 
         private void AddLocationsButton_Click(object sender, RoutedEventArgs e)
@@ -305,63 +389,6 @@ namespace SimpleWeather
             }
         }
 
-        private void Cancel_Click(object sender, RoutedEventArgs e)
-        {
-            ShowAddLocationsPanel(false);
-        }
-
-        private async void HomeGPS_Click(object sender, RoutedEventArgs e)
-        {
-            NewHomeLocation.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Gray);
-            NewHomeLocation.BorderThickness = new Thickness(2);
-
-            // Set window items
-            HomeGPS.IsEnabled = false;
-
-            Windows.Devices.Geolocation.Geolocator geolocal = new Windows.Devices.Geolocation.Geolocator();
-            Windows.Devices.Geolocation.Geoposition geoPos = await geolocal.GetGeopositionAsync();
-            List<Coordinate> locations = await Settings.getLocations();
-            int index = 0; // Home Location
-
-            wLoader = new WeatherDataLoader(geoPos, index);
-            await wLoader.loadWeatherData(true).ContinueWith(async (t) =>
-            {
-                Weather weather = wLoader.getWeather();
-
-                if (weather != null)
-                {
-                    // Show location name
-                    await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                    {
-                        Coordinate location = new Coordinate(
-                            string.Join(",", wLoader.getWeather().location.lat, wLoader.getWeather().location._long));
-
-                        // Save coords to List
-                        locations[0] = location;
-                        Settings.saveLocations(locations);
-
-                        LocationPanelView panelView = new LocationPanelView(weather);
-                        // Save index to tag (to easily retreive)
-                        panelView.Pair = new KeyValuePair<int, Coordinate>(index, location);
-                        // Set Context for Home LocationPanel
-                        HomeLocation.DataContext = panelView;
-
-                        // Hide add locations panel
-                        ShowChangeHomePanel(false);
-                    });
-                }
-                else
-                {
-                    await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                    {
-                        NewHomeLocation.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Red);
-                        NewHomeLocation.BorderThickness = new Thickness(5);
-                        HomeGPS.IsEnabled = true;
-                    });
-                }
-            });
-        }
-
         private async void OtherGPS_Click(object sender, RoutedEventArgs e)
         {
             Location.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Gray);
@@ -414,5 +441,6 @@ namespace SimpleWeather
                 }
             });
         }
+        #endregion
     }
 }
