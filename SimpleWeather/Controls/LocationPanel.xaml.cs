@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -31,9 +32,9 @@ namespace SimpleWeather
         {
             LoadingRing.IsActive = true;
 
-            while (this.LocalName.Text == null || this.LocalName.Text == string.Empty)
+            while (this.LocationName.Text == null || this.LocationName.Text == string.Empty)
             {
-                await System.Threading.Tasks.Task.Delay(200);
+                await Task.Delay(100);
             }
 
             LoadingRing.IsActive = false;

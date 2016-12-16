@@ -23,9 +23,21 @@
         <ScrollViewer Grid.Row="1" RequestedTheme="Light" Name="theGrid" HorizontalScrollMode="Disabled" VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto">
             <RelativePanel>
                 <TextBlock Name="Label" Text="Favorite Location" FontSize="24" Padding="15,5,0,0" Margin="0,5,0,0" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" />
-                <local:LocationPanel x:Name="HomeLocation" Holding="LocationButton_Holding" PointerReleased="HomeLocation_PointerReleased" Click="LocationButton_Click"
-                                     RelativePanel.Below="Label" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True"/>
-                <Grid x:Name="ChangeHomePanel" Margin="10,0" Visibility="Collapsed"
+                <!-- Panel Animation Workaround -->
+                <ItemsControl x:Name="HomeLocation"
+                                RelativePanel.Below="Label" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <local:LocationPanel Holding="LocationButton_Holding" PointerReleased="HomeLocation_PointerReleased" Click="LocationButton_Click" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+                <Grid x:Name="ChangeHomePanel" Margin="10,0" Padding="0,10,0,0" Visibility="Collapsed"
                             RelativePanel.Below="HomeLocation" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />

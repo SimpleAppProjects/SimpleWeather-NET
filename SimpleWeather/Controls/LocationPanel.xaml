@@ -91,6 +91,9 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <TransitionCollection x:Name="TextTransitions">
+            <AddDeleteThemeTransition/>
+        </TransitionCollection>
     </Button.Resources>
     
     <Button.Style>
@@ -103,35 +106,17 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <ProgressRing x:Name="LoadingRing" Grid.ColumnSpan="2" IsActive="False" Foreground="White"/>
-        <TextBlock x:Name="LocalName" Text="{Binding LocationName}" FontSize="24" Grid.Column="0" VerticalAlignment="Center" Padding="10">
-            <TextBlock.Transitions>
-                <TransitionCollection>
-                    <EntranceThemeTransition/>
-                </TransitionCollection>
-            </TextBlock.Transitions>
-        </TextBlock>
+        <TextBlock x:Name="LocationName" Text="{Binding LocationName}" FontSize="24" Grid.Column="0" VerticalAlignment="Center" Padding="10" Transitions="{StaticResource TextTransitions}"/>
         <Grid Grid.Column="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="100"/>
             </Grid.ColumnDefinitions>
             <Viewbox VerticalAlignment="Stretch" Width="60" Height="60" Grid.Column="0">
-                <TextBlock Text="{Binding CurrTemp}" FontSize="24" Padding="10">
-                    <TextBlock.Transitions>
-                        <TransitionCollection>
-                            <EntranceThemeTransition/>
-                        </TransitionCollection>
-                    </TextBlock.Transitions>
-                </TextBlock>
+                <TextBlock x:Name="CurrentTemp" Text="{Binding CurrTemp}" FontSize="24" Padding="10" Transitions="{StaticResource TextTransitions}"/>
             </Viewbox>
             <Viewbox VerticalAlignment="Stretch" Width="60" Height="60" Grid.Column="1">
-                <TextBlock Text="{Binding WeatherIcon}" Style="{StaticResource WeatherIcon}">
-                    <TextBlock.Transitions>
-                        <TransitionCollection>
-                            <EntranceThemeTransition/>
-                        </TransitionCollection>
-                    </TextBlock.Transitions>
-                </TextBlock>
+                <TextBlock x:Name="WeatherIcon" Text="{Binding WeatherIcon}" Style="{StaticResource WeatherIcon}" Transitions="{StaticResource TextTransitions}"/>
             </Viewbox>
         </Grid>
     </Grid>
