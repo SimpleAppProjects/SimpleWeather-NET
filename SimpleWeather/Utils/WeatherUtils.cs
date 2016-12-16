@@ -54,6 +54,7 @@ namespace SimpleWeather
                     WeatherIcon = "\uf01a";
                     break;
                 case 13: // Snow Flurries
+                case 14: // Light Snow Showers
                 case 16: // Snow
                 case 42: // Scattered Snow Showers
                 case 46: // Snow Showers
