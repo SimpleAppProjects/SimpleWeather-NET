@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 
 namespace SimpleWeather
@@ -23,10 +24,13 @@ namespace SimpleWeather
         public string Humidity { get; set; }
         public string Pressure { get; set; }
         public string PressureUnit { get; set; }
-        public string Visibility { get; set; }
+        public Visibility RisingVisiblity { get; set; }
+        public string RisingIcon { get; set; }
+        public string _Visibility { get; set; }
         public string VisibilityUnit { get; set; }
-        public string Chill { get; set; }
-        public string Speed { get; set; }
+        public string WindChill { get; set; }
+        public Transform WindDirection { get; set; }
+        public string WindSpeed { get; set; }
         public string SpeedUnit { get; set; }
         public string Sunrise { get; set; }
         public string Sunset { get; set; }
@@ -68,16 +72,18 @@ namespace SimpleWeather
             Sunrise = weather.astronomy.sunrise;
             Sunset = weather.astronomy.sunset;
             // Wind
-            Chill = (weather.units.temperature == "F" ? weather.wind.chill : ConversionMethods.FtoC(weather.wind.chill)) + "º";
-            Speed = weather.wind.speed;
+            WindChill = (weather.units.temperature == "F" ? weather.wind.chill : ConversionMethods.FtoC(weather.wind.chill)) + "º";
+            WindSpeed = weather.wind.speed;
             SpeedUnit = weather.units.speed;
+            updateWindDirection(int.Parse(weather.wind.direction));
 
             // Atmosphere
             Humidity = weather.atmosphere.humidity;
             Pressure = (weather.units.temperature == "F" ?
                 weather.atmosphere.pressure : Math.Round(double.Parse(weather.atmosphere.pressure)).ToString());
             PressureUnit = weather.units.pressure;
-            Visibility = weather.atmosphere.visibility;
+            updatePressureState(int.Parse(weather.atmosphere.rising));
+            _Visibility = weather.atmosphere.visibility;
             VisibilityUnit = weather.units.distance;
 
             // Add UI elements
@@ -87,6 +93,36 @@ namespace SimpleWeather
                 ForecastItemView forecastView = new ForecastItemView(forecast);
                 Forecasts.Add(forecastView);
             }
+        }
+
+        private void updatePressureState(int rising)
+        {
+            switch (rising)
+            {
+                // Steady
+                case 0:
+                default:
+                    RisingVisiblity = Visibility.Collapsed;
+                    RisingIcon = string.Empty;
+                    break;
+                // Rising
+                case 1:
+                    RisingVisiblity = Visibility.Visible;
+                    RisingIcon = "\uf058\uf058";
+                    break;
+                // Falling
+                case 2:
+                    RisingVisiblity = Visibility.Visible;
+                    RisingIcon = "\uf044\uf044";
+                    break;
+            }
+        }
+
+        private void updateWindDirection(int angle)
+        {
+            RotateTransform rotation = new RotateTransform();
+            rotation.Angle = angle;
+            WindDirection = rotation;
         }
     }
 }

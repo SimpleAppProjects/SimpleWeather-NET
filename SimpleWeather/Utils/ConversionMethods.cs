@@ -47,7 +47,7 @@ namespace SimpleWeather
             return Math.Round(result).ToString();
         }
 
-        public static string CtoF(string input)
+        public static string CtoF(String input)
         {
             double result = (double.Parse(input) * ((double)9 /5)) + 32;
             return Math.Round(result).ToString();

@@ -16,6 +16,7 @@
             <Setter Property="FontFamily" Value="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons" />
             <Setter Property="FontStyle" Value="Normal" />
             <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="Transitions" Value="{StaticResource TextTransitions}" />
         </Style>
         <Style x:Key="ForecastBorder" TargetType="Border">
             <Setter Property="Width" Value="175" />
@@ -29,6 +30,7 @@
             <Setter Property="Height" Value="75" />
             <Setter Property="Width" Value="75" />
             <Setter Property="Margin" Value="20,45,0,0" />
+            <Setter Property="Transitions" Value="{StaticResource TextTransitions}" />
         </Style>
         <Style x:Key="ForecastDate" TargetType="TextBlock">
             <Setter Property="Foreground" Value="White" />
@@ -38,6 +40,7 @@
             <Setter Property="VerticalAlignment" Value="Top" />
             <Setter Property="Margin" Value="0,0,0,0" />
             <Setter Property="Padding" Value="20,10,0,0" />
+            <Setter Property="Transitions" Value="{StaticResource TextTransitions}" />
         </Style>
         <Style x:Key="ForecastTemp" TargetType="RichTextBlock">
             <Setter Property="Foreground" Value="White" />
@@ -46,6 +49,7 @@
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Margin" Value="0,150,0,0" />
             <Setter Property="Padding" Value="20,0,0,10" />
+            <Setter Property="Transitions" Value="{StaticResource TextTransitions}" />
         </Style>
         <Style x:Key="ForecastCondition" TargetType="TextBlock">
             <Setter Property="Foreground" Value="White" />
@@ -57,6 +61,7 @@
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Margin" Value="0,75,0,0" />
             <Setter Property="Padding" Value="20,0,0,0" />
+            <Setter Property="Transitions" Value="{StaticResource TextTransitions}" />
         </Style>
         <Style x:Key="ArrowButton" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
@@ -133,7 +138,11 @@
             <Setter Property="Foreground" Value="White" />
             <Setter Property="FontSize" Value="14" />
             <Setter Property="Padding" Value="5" />
+            <Setter Property="Transitions" Value="{StaticResource TextTransitions}" />
         </Style>
+        <TransitionCollection x:Name="TextTransitions">
+            <EntranceThemeTransition />
+        </TransitionCollection>
     </Page.Resources>
 
     <Grid Background="#FF006FBF">
@@ -151,7 +160,7 @@
         </CommandBar>
 
         <ScrollViewer x:Name="MainViewer" VerticalScrollMode="Auto" Grid.Row="1" Background="{Binding Background}">
-            <Grid>
+            <Grid x:Name="MainGrid" Visibility="Collapsed">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -164,9 +173,9 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <TextBlock Name="Location" Text="{Binding Location}" Foreground="White" FontSize="36" FontWeight="SemiBold"
-                                            HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,15,0,0" Grid.Row="0" />
+                                            HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,15,0,0" Grid.Row="0" Transitions="{StaticResource TextTransitions}"/>
                     <TextBlock Name="UpdateDate" Text="{Binding UpdateDate}" FontSize="12" Foreground="White"
-                                            HorizontalAlignment="Center" VerticalAlignment="Bottom" Padding="5" Grid.Row="1"/>
+                                            HorizontalAlignment="Center" VerticalAlignment="Bottom" Padding="5" Grid.Row="1" Transitions="{StaticResource TextTransitions}"/>
                 </Grid>
                 <Grid Grid.Row="1">
                     <Grid.RowDefinitions>
@@ -177,7 +186,7 @@
                     <Viewbox x:Name="WeatherBox" VerticalAlignment="Top" Height="150" Width="150" Grid.Row="0">
                         <TextBlock x:Name="WeatherIcon" Style="{StaticResource WeatherIcon}" Text="{Binding WeatherIcon}" />
                     </Viewbox>
-                    <TextBlock Name="CurCondition" Text="{Binding CurCondition}" FontSize="18" HorizontalAlignment="Center" Foreground="White" Grid.Row="1"/>
+                    <TextBlock Name="CurCondition" Text="{Binding CurCondition}" FontSize="18" HorizontalAlignment="Center" Foreground="White" Grid.Row="1" Transitions="{StaticResource TextTransitions}"/>
                     <TextBlock Name="CurTemp" Text="{Binding CurTemp}" FontSize="24" Foreground="White" Style="{StaticResource WeatherIcon}" HorizontalAlignment="Center" Margin="5,0,0,0" Grid.Row="2"/>
                 </Grid>
 
@@ -210,7 +219,8 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="Pressure:" Style="{StaticResource WeatherDetails}" Grid.Column="0" />
-                                <TextBlock Name="Rising" FontSize="14" Foreground="White" Style="{StaticResource WeatherIcon}" Visibility="Collapsed" Padding="5" Grid.Column="1" />
+                                <TextBlock Name="Rising" FontSize="14" Foreground="White" Style="{StaticResource WeatherIcon}" 
+                                           Text="{Binding RisingIcon}" Visibility="{Binding RisingVisiblity}" Padding="5" Grid.Column="1" />
                                 <TextBlock Name="Pressure" Text="{Binding Pressure}" Style="{StaticResource WeatherDetails}" Grid.Column="2" Padding="5,5,0,5" />
                                 <TextBlock Name="PressureUnit" Text="{Binding PressureUnit}" Style="{StaticResource WeatherDetails}" Grid.Column="3" Padding="3,5,0,0" />
                             </Grid>
@@ -221,7 +231,7 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="Visibility:" Style="{StaticResource WeatherDetails}" Grid.Column="0" />
-                                <TextBlock Name="Visibility" Text="{Binding Visibility}" Style="{StaticResource WeatherDetails}" Grid.Column="1" Padding="5,5,0,5" />
+                                <TextBlock Name="Visibility" Text="{Binding _Visibility}" Style="{StaticResource WeatherDetails}" Grid.Column="1" Padding="5,5,0,5" />
                                 <TextBlock Name="VisibilityUnit" Text="{Binding VisibilityUnit}" Style="{StaticResource WeatherDetails}" Grid.Column="2" Padding="3,5,0,0" />
                             </Grid>
                         </Grid>
@@ -238,7 +248,7 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="Feels Like:" Style="{StaticResource WeatherDetails}" Grid.Column="0" />
-                                <TextBlock Name="Chill" Text="{Binding Chill}" Style="{StaticResource WeatherDetails}" Grid.Column="1" />
+                                <TextBlock Name="Chill" Text="{Binding WindChill}" Style="{StaticResource WeatherDetails}" Grid.Column="1" />
                             </Grid>
                             <Grid Grid.Column="1" Padding="5,0,5,0">
                                 <Grid.ColumnDefinitions>
@@ -248,8 +258,9 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="Wind:" Style="{StaticResource WeatherDetails}" Grid.Column="0" />
-                                <TextBlock Name="WindDirection" FontSize="14" Foreground="White" Style="{StaticResource WeatherIcon}" Text="&#xf058;" Padding="5" Grid.Column="1" />
-                                <TextBlock Name="Speed" Text="{Binding Speed}" Style="{StaticResource WeatherDetails}" Grid.Column="2" Padding="5,5,0,5" />
+                                <TextBlock Name="WindDirection" FontSize="14" Foreground="White" Style="{StaticResource WeatherIcon}" Text="&#xf058;" Padding="5" Grid.Column="1" 
+                                           RenderTransformOrigin="0.5,0.5" RenderTransform="{Binding WindDirection}"/>
+                                <TextBlock Name="Speed" Text="{Binding WindSpeed}" Style="{StaticResource WeatherDetails}" Grid.Column="2" Padding="5,5,0,5" />
                                 <TextBlock Name="SpeedUnit" Text="{Binding SpeedUnit}" Style="{StaticResource WeatherDetails}" Grid.Column="3" Padding="3,5,0,0" />
                             </Grid>
                         </Grid>
@@ -295,7 +306,7 @@
                             </ItemsControl.ItemTemplate>
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <StackPanel x:Name="ForecastPanel" Height="200" Orientation="Horizontal" />
+                                    <StackPanel x:Name="ForecastPanel" Height="200" Orientation="Horizontal" Transitions="{StaticResource TextTransitions}"/>
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                         </ItemsControl>
@@ -303,6 +314,9 @@
                 </Grid>
             </Grid>
         </ScrollViewer>
+        <Grid Grid.Row="1" x:Name="LoadingGrid">
+            <ProgressRing x:Name="LoadingRing" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Width="50" Foreground="White" IsActive="True"/>
+        </Grid>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
                 <VisualState x:Name="Mobile">

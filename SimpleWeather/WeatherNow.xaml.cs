@@ -5,9 +5,11 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -30,7 +32,7 @@ namespace SimpleWeather
         WeatherNowView weatherView = null;
 
         // For UI Thread
-        Windows.UI.Core.CoreDispatcher dispatcher = Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher;
+        CoreDispatcher dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
 
         public WeatherNow()
         {
@@ -57,67 +59,48 @@ namespace SimpleWeather
 
         private async void RefreshWeather(bool forceRefresh)
         {
+            ShowLoadingGrid(true);
+
             await wLoader.loadWeatherData(forceRefresh).ContinueWith(async (t) =>
             {
                 Weather weather = wLoader.getWeather();
 
                 if (weather != null)
                 {
-                    await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                      {
                          weatherView = new WeatherNowView(weather);
                          this.DataContext = weatherView;
-                         updateWindDirection(int.Parse(weather.wind.direction));
-                         updatePressureState(int.Parse(weather.atmosphere.rising));
                          StackControl.ItemsSource = weatherView.Forecasts;
                      });
                 }
                 else
                 {
-                    // unable to load weather data; Refresh
-                    RefreshWeather(true);
+                    throw new NullReferenceException();
                 }
-            });
+            }).ConfigureAwait(false);
+
+            ShowLoadingGrid(false);
         }
 
-        private void updateWindDirection(int angle)
+        private async void ShowLoadingGrid(bool show)
         {
-            RotateTransform rotation = new RotateTransform();
-            rotation.Angle = angle;
-            WindDirection.RenderTransformOrigin = new Point(0.5, 0.5);
-            WindDirection.RenderTransform = rotation;
-        }
-
-        private void updatePressureState(int rising)
-        {
-            switch (rising)
+            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                // Steady
-                case 0:
-                default:
-                    Rising.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                    break;
-                // Rising
-                case 1:
-                    Rising.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                    Rising.Text = "\uf058\uf058";
-                    break;
-                // Falling
-                case 2:
-                    Rising.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                    Rising.Text = "\uf044\uf044";
-                    break;
-            }
+                LoadingRing.IsActive = show;
+                LoadingGrid.Visibility = show ? Windows.UI.Xaml.Visibility.Visible : Windows.UI.Xaml.Visibility.Collapsed;
+                MainGrid.Visibility = show ? Windows.UI.Xaml.Visibility.Collapsed : Windows.UI.Xaml.Visibility.Visible;
+            });
         }
 
         private void LeftButton_Click(object sender, RoutedEventArgs e)
         {
-            ForecastViewer.ScrollToHorizontalOffset(ForecastViewer.HorizontalOffset - 150);
+            ScrollLeft();
         }
 
         private void RightButton_Click(object sender, RoutedEventArgs e)
         {
-            ForecastViewer.ScrollToHorizontalOffset(ForecastViewer.HorizontalOffset + 150);
+            ScrollRight();
         }
 
         private void ForecastViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
@@ -137,6 +120,44 @@ namespace SimpleWeather
                 if (!RightButton.IsEnabled)
                     RightButton.IsEnabled = true;
             }
+        }
+
+        private void ScrollLeft()
+        {
+            int counter = 0; // 128, 64, 32, 16, 8, 4, 2, 1
+            int max_count = (int)ForecastViewer.HorizontalOffset / 64;
+            DispatcherTimer timer = new DispatcherTimer();
+            timer.Interval = new TimeSpan(0, 0, 0, 0, 5);
+            timer.Tick += ((sender, e) =>
+            {
+                counter++;
+                ForecastViewer.ScrollToHorizontalOffset(
+                    ForecastViewer.HorizontalOffset - 128 / counter);
+                if (ForecastViewer.HorizontalOffset == 0) // can't scroll any more
+                    ((DispatcherTimer)sender).Stop();
+                if (counter >= max_count)
+                    ((DispatcherTimer)sender).Stop();
+            });
+            timer.Start();
+        }
+
+        private void ScrollRight()
+        {
+            int counter = 0; // 128, 64, 32, 16, 8, 4, 2, 1
+            int max_count = (int)(ForecastViewer.ScrollableWidth - ForecastViewer.HorizontalOffset) / 64;
+            DispatcherTimer timer = new DispatcherTimer();
+            timer.Interval = new TimeSpan(0, 0, 0, 0, 5);
+            timer.Tick += ((sender, e) =>
+            {
+                counter++;
+                ForecastViewer.ScrollToHorizontalOffset(
+                    ForecastViewer.HorizontalOffset + 128 / counter);
+                if (ForecastViewer.HorizontalOffset >= ForecastViewer.ScrollableWidth) // can't scroll any more
+                    ((DispatcherTimer)sender).Stop();
+                if (counter >= max_count)
+                    ((DispatcherTimer)sender).Stop();
+            });
+            timer.Start();
         }
     }
 }

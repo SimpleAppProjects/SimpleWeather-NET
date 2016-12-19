@@ -5,9 +5,11 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
+using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
+using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -30,7 +32,7 @@ namespace SimpleWeather
         int homeIdx = 0;
 
         // For UI Thread
-        Windows.UI.Core.CoreDispatcher dispatcher = Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher;
+        CoreDispatcher dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
 
         public MainPage()
         {
@@ -74,7 +76,7 @@ namespace SimpleWeather
                 {
                     if (wLoader.getWeather() != null)
                     {
-                        await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                        await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
                             if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
                             {
@@ -85,7 +87,11 @@ namespace SimpleWeather
                             this.Frame.Navigate(typeof(Shell));
                         });
                     }
-                });
+                    else
+                    {
+                        throw new NullReferenceException();
+                    }
+                }).ConfigureAwait(false);
             }
             else
             {
@@ -113,7 +119,7 @@ namespace SimpleWeather
                         if (wLoader.getWeather() != null)
                         {
                             // Show location name
-                            await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                             {
                                 Coordinate location = new Coordinate(
                                     string.Join(",", wLoader.getWeather().location.lat, wLoader.getWeather().location._long));
@@ -137,7 +143,7 @@ namespace SimpleWeather
                         }
                         else
                         {
-                            await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                             {
                                 LoadingRing.IsActive = false;
                                 SearchGrid.Visibility = Visibility.Visible;
@@ -147,7 +153,7 @@ namespace SimpleWeather
                                 Location.BorderThickness = new Thickness(5);
                             });
                         }
-                    });
+                    }).ConfigureAwait(false);
                 }
 
                 e.Handled = true;
@@ -162,8 +168,8 @@ namespace SimpleWeather
             LoadingRing.IsActive = true;
             GPS.IsEnabled = false;
 
-            Windows.Devices.Geolocation.Geolocator geolocal = new Windows.Devices.Geolocation.Geolocator();
-            Windows.Devices.Geolocation.Geoposition geoPos = await geolocal.GetGeopositionAsync();
+            Geolocator geolocal = new Geolocator();
+            Geoposition geoPos = await geolocal.GetGeopositionAsync();
 
             wLoader = new WeatherDataLoader(geoPos, homeIdx);
             await wLoader.loadWeatherData(true).ContinueWith(async (t) =>
@@ -171,7 +177,7 @@ namespace SimpleWeather
                 if (wLoader.getWeather() != null)
                 {
                     // Show location name
-                    await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     {
                         Coordinate location = new Coordinate(
                             string.Join(",", wLoader.getWeather().location.lat, wLoader.getWeather().location._long));
@@ -195,7 +201,7 @@ namespace SimpleWeather
                 }
                 else
                 {
-                    await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     {
                         LoadingRing.IsActive = false;
                         SearchGrid.Visibility = Visibility.Visible;
@@ -205,7 +211,7 @@ namespace SimpleWeather
                         Location.BorderThickness = new Thickness(5);
                     });
                 }
-            });
+            }).ConfigureAwait(false);
         }
     }
 }
