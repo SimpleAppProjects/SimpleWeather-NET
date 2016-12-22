@@ -61,24 +61,28 @@ namespace SimpleWeather
         {
             ShowLoadingGrid(true);
 
-            await wLoader.loadWeatherData(forceRefresh).ContinueWith(async (t) =>
+            // Loop until we get weather data
+            do
             {
-                Weather weather = wLoader.getWeather();
+                await wLoader.loadWeatherData(forceRefresh).ContinueWith(async (t) =>
+                {
+                    Weather weather = wLoader.getWeather();
 
-                if (weather != null)
-                {
-                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                     {
-                         weatherView = new WeatherNowView(weather);
-                         this.DataContext = weatherView;
-                         StackControl.ItemsSource = weatherView.Forecasts;
-                     });
-                }
-                else
-                {
-                    throw new NullReferenceException();
-                }
-            }).ConfigureAwait(false);
+                    if (weather != null)
+                    {
+                        await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        {
+                            weatherView = new WeatherNowView(weather);
+                            this.DataContext = weatherView;
+                            StackControl.ItemsSource = weatherView.Forecasts;
+                        });
+                    }
+                }).ConfigureAwait(false);
+
+                if (wLoader.getWeather() == null)
+                    await Task.Delay(1000);
+
+            } while (wLoader.getWeather() == null);
 
             ShowLoadingGrid(false);
         }

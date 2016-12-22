@@ -72,26 +72,30 @@ namespace SimpleWeather
 
                 wLoader = new WeatherDataLoader(local.ToString(), homeIdx);
 
-                await wLoader.loadWeatherData().ContinueWith(async (t) =>
+                // Loop until we get weather data
+                do
                 {
-                    if (wLoader.getWeather() != null)
+                    await wLoader.loadWeatherData().ContinueWith(async (t) =>
                     {
-                        await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        if (wLoader.getWeather() != null)
                         {
-                            if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
+                            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                             {
-                                CoreApplication.Properties.Remove("WeatherLoader");
-                            }
-                            CoreApplication.Properties.Add("WeatherLoader", wLoader);
+                                if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
+                                {
+                                    CoreApplication.Properties.Remove("WeatherLoader");
+                                }
+                                CoreApplication.Properties.Add("WeatherLoader", wLoader);
 
-                            this.Frame.Navigate(typeof(Shell));
-                        });
-                    }
-                    else
-                    {
-                        throw new NullReferenceException();
-                    }
-                }).ConfigureAwait(false);
+                                this.Frame.Navigate(typeof(Shell));
+                            });
+                        }
+                    }).ConfigureAwait(false);
+
+                    if (wLoader.getWeather() == null)
+                        await Task.Delay(1000);
+
+                } while (wLoader.getWeather() == null);
             }
             else
             {

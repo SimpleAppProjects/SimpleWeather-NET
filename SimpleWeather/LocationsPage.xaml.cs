@@ -86,34 +86,39 @@ namespace SimpleWeather
                 int index = locations.IndexOf(location);
 
                 wLoader = new WeatherDataLoader(location.ToString(), index);
-                await wLoader.loadWeatherData().ContinueWith(async (t) =>
+
+                // Loop until we get weather data
+                do
                 {
-                    Weather weather = wLoader.getWeather();
-
-                    if (weather != null)
+                    await wLoader.loadWeatherData().ContinueWith(async (t) =>
                     {
-                        await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        Weather weather = wLoader.getWeather();
+
+                        if (weather != null)
                         {
-                            if (index == 0)
+                            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                             {
-                                HomePanel.First().setWeather(weather);
-                                HomePanel.First().Pair = new KeyValuePair<int, Coordinate>(index, location);
-                            }
-                            else
-                            {
-                                LocationPanelView panelView = LocationPanels[index - 1];
-                                panelView.setWeather(weather);
+                                if (index == 0)
+                                {
+                                    HomePanel.First().setWeather(weather);
+                                    HomePanel.First().Pair = new KeyValuePair<int, Coordinate>(index, location);
+                                }
+                                else
+                                {
+                                    LocationPanelView panelView = LocationPanels[index - 1];
+                                    panelView.setWeather(weather);
 
-                                // Save index to tag (to easily retreive)
-                                panelView.Pair = new KeyValuePair<int, Coordinate>(index, location);
-                            }
-                        });
-                    }
-                    else
-                    {
-                        throw new NullReferenceException();
-                    }
-                }).ConfigureAwait(false);
+                                    // Save index to tag (to easily retreive)
+                                    panelView.Pair = new KeyValuePair<int, Coordinate>(index, location);
+                                }
+                            });
+                        }
+                    }).ConfigureAwait(false);
+
+                    if (wLoader.getWeather() == null)
+                        await Task.Delay(1000);
+
+                } while (wLoader.getWeather() == null);
             }
 
             // Refresh
