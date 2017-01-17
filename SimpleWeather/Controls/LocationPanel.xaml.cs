@@ -31,6 +31,7 @@ namespace SimpleWeather
         private async void LoadIt()
         {
             LoadingRing.IsActive = true;
+            this.IsEnabled = false;
 
             while (this.LocationName.Text == null || this.LocationName.Text == string.Empty)
             {
@@ -38,6 +39,7 @@ namespace SimpleWeather
             }
 
             LoadingRing.IsActive = false;
+            this.IsEnabled = true;
         }
     }
 }
