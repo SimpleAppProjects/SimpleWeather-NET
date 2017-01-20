@@ -10,6 +10,9 @@
         <local:WeatherNowView />
     </Page.DataContext>
     <Page.Resources>
+        <TransitionCollection x:Name="TextTransitions">
+            <EntranceThemeTransition />
+        </TransitionCollection>
         <Style x:Key="WeatherIcon" TargetType="TextBlock">
             <Setter Property="Foreground" Value="White" />
             <Setter Property="FontSize" Value="12" />
@@ -140,9 +143,6 @@
             <Setter Property="Padding" Value="5" />
             <Setter Property="Transitions" Value="{StaticResource TextTransitions}" />
         </Style>
-        <TransitionCollection x:Name="TextTransitions">
-            <EntranceThemeTransition />
-        </TransitionCollection>
     </Page.Resources>
 
     <Grid Background="#FF006FBF">
@@ -160,7 +160,7 @@
         </CommandBar>
 
         <ScrollViewer x:Name="MainViewer" VerticalScrollMode="Auto" Grid.Row="1" Background="{Binding Background}">
-            <Grid x:Name="MainGrid" Visibility="Collapsed">
+            <Grid x:Name="MainGrid" Visibility="Visible">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -291,13 +291,20 @@
                     </Viewbox>
                 </Grid>
 
-                <TextBlock Text="Forecast" FontSize="18" Foreground="White" Margin="50,0,0,0" Padding="5" Grid.Row="3"
+                <TextBlock Name="ForecastLabel" Text="Forecast" FontSize="18" Foreground="White" Margin="50,0,0,0" Padding="5" Grid.Row="3"
                                         HorizontalAlignment="Left" VerticalAlignment="Top" FontWeight="SemiBold"/>
                 <Grid Background="#10808080" Margin="0,35,0,0" Grid.Row="3">
-                    <Button x:Name="LeftButton" Content="&#xE00E;" HorizontalAlignment="Left" Click="LeftButton_Click" IsEnabled="False" Style="{StaticResource ArrowButton}" />
-                    <Button x:Name="RightButton" Content="&#xE00F;" HorizontalAlignment="Right" Click="RightButton_Click" IsEnabled="True" Style="{StaticResource ArrowButton}" />
-                    <ScrollViewer Name="ForecastViewer" Margin="50,0,50,0" HorizontalAlignment="Center" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden"
-                                                VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Hidden" ViewChanged="ForecastViewer_ViewChanged">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="LeftButton" Content="&#xE00E;" Click="LeftButton_Click" IsEnabled="False" Style="{StaticResource ArrowButton}"
+                            HorizontalAlignment="Left" Grid.Column="0"/>
+                    <Button x:Name="RightButton" Content="&#xE00F;" Click="RightButton_Click" IsEnabled="True" Style="{StaticResource ArrowButton}"
+                            HorizontalAlignment="Right" Grid.Column="2"/>
+                    <ScrollViewer Name="ForecastViewer" HorizontalAlignment="Center" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden"
+                            VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Hidden" ViewChanged="ForecastViewer_ViewChanged" Grid.Column="1">
                         <ItemsControl x:Name="StackControl">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
@@ -306,7 +313,7 @@
                             </ItemsControl.ItemTemplate>
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <StackPanel x:Name="ForecastPanel" Height="200" Orientation="Horizontal" Transitions="{StaticResource TextTransitions}"/>
+                                    <StackPanel Height="200" Orientation="Horizontal" Transitions="{StaticResource TextTransitions}"/>
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                         </ItemsControl>
@@ -329,8 +336,8 @@
                         <Setter Target="WeatherBox.Width" Value="125"/>
                         <Setter Target="LeftButton.Visibility" Value="Collapsed"/>
                         <Setter Target="RightButton.Visibility" Value="Collapsed"/>
-                        <Setter Target="ForecastViewer.Margin" Value="0,0,0,0"/>
-                        <Setter Target="ForecastPanel.Padding" Value="35,0,0,0"/>
+                        <Setter Target="ForecastLabel.Margin" Value="30,0,0,0"/>
+                        <Setter Target="StackControl.Margin" Value="25,0,0,0"/>
                         <Setter Target="Location.FontSize" Value="32"/>
                     </VisualState.Setters>
                 </VisualState>
@@ -344,8 +351,8 @@
                         <Setter Target="WeatherBox.Width" Value="150"/>
                         <Setter Target="LeftButton.Visibility" Value="Visible"/>
                         <Setter Target="RightButton.Visibility" Value="Visible"/>
-                        <Setter Target="ForecastViewer.Margin" Value="50,0,50,0"/>
-                        <Setter Target="ForecastPanel.Padding" Value="0,0,0,0"/>
+                        <Setter Target="ForecastLabel.Margin" Value="50,0,0,0"/>
+                        <Setter Target="StackControl.Margin" Value="0,0,0,0"/>
                         <Setter Target="Location.FontSize" Value="36"/>
                     </VisualState.Setters>
                 </VisualState>

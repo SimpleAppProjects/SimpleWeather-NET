@@ -37,6 +37,7 @@ namespace SimpleWeather
         public WeatherNow()
         {
             this.InitializeComponent();
+            MainGrid.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
 
             Restore();
         }
