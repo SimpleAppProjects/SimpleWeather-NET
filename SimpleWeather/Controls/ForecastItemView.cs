@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SimpleWeather
+﻿namespace SimpleWeather.Controls
 {
     public class ForecastItemView
     {
@@ -14,13 +8,24 @@ namespace SimpleWeather
         public string HiTemp { get; set; }
         public string LoTemp { get; set; }
 
-        public ForecastItemView(Forecast forecast)
+        public ForecastItemView(WeatherYahoo.Forecast forecast)
         {
-            WeatherIcon = WeatherUtils.GetWeatherIcon(forecast.code);
+            WeatherIcon = WeatherUtils.GetWeatherIcon(int.Parse(forecast.code));
             Date = forecast.date;
             Condition = forecast.text;
             HiTemp = forecast.high + "º ";
             LoTemp = forecast.low + "º";
+        }
+
+        public ForecastItemView(WeatherUnderground.Forecastday1 forecast)
+        {
+            WeatherIcon = WeatherUtils.GetWeatherIcon(forecast.icon_url);
+            Date = string.Format("{0} {1}", forecast.date.weekday, forecast.date.day);
+            Condition = forecast.conditions;
+            HiTemp = (Settings.Unit == "F" ? 
+                forecast.high.fahrenheit : forecast.high.celsius) + "º ";
+            LoTemp = (Settings.Unit == "F" ?
+                forecast.low.fahrenheit : forecast.low.celsius) + "º ";
         }
     }
 }

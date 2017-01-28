@@ -1,21 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.UI.Xaml.Media;
 
 namespace SimpleWeather
 {
     public static class WeatherUtils
     {
-        public static String GetWeatherIcon(string weather_code)
+        #region Yahoo Weather
+        public static String GetWeatherIcon(int yahoo_weather_code)
         {
-            int weatherCode = int.Parse(weather_code);
             string WeatherIcon;
 
-            switch (weatherCode)
+            switch (yahoo_weather_code)
             {
                 case 0: // Tornado
                     WeatherIcon = "\uf056";
@@ -120,7 +116,7 @@ namespace SimpleWeather
             return WeatherIcon;
         }
 
-        public static ImageBrush GetBackground(Weather weather)
+        public static ImageBrush GetBackground(WeatherYahoo.Weather weather)
         {
             ImageBrush bg = new ImageBrush();
             bg.Stretch = Stretch.UniformToFill;
@@ -243,7 +239,7 @@ namespace SimpleWeather
             return bg;
         }
 
-        private static bool isNight(Weather weather)
+        private static bool isNight(WeatherYahoo.Weather weather)
         {
             // Determine whether its night using sunset/rise times
             if (DateTime.Now < DateTime.Parse(weather.astronomy.sunrise)
@@ -253,7 +249,7 @@ namespace SimpleWeather
                 return false;
         }
 
-        public static String GetLastBuildDate(Weather weather)
+        public static String GetLastBuildDate(WeatherYahoo.Weather weather)
         {
             String date;
 
@@ -271,5 +267,161 @@ namespace SimpleWeather
 
             return date;
         }
+        #endregion
+
+        #region WeatherUnderground
+        public static String GetWeatherIcon(string wundergrnd_icon)
+        {
+            string WeatherIcon;
+
+            if (wundergrnd_icon.Contains("nt_clear") || wundergrnd_icon.Contains("nt_mostlysunny") 
+                || wundergrnd_icon.Contains("nt_partlysunny") || wundergrnd_icon.Contains("nt_sunny"))
+                WeatherIcon = "\uf02e";
+            else if (wundergrnd_icon.Contains("nt_mostlycloudy") || wundergrnd_icon.Contains("nt_partlycloudy"))
+                WeatherIcon = "\uf031";
+            else if (wundergrnd_icon.Contains("mostlysunny") || wundergrnd_icon.Contains("partlysunny"))
+                WeatherIcon = "\uf00d";
+            else if (wundergrnd_icon.Contains("mostlycloudy") || wundergrnd_icon.Contains("partlycloudy"))
+                WeatherIcon = "\uf002";
+            else if (wundergrnd_icon.Contains("flurries"))
+                WeatherIcon = "\uf064";
+            else if (wundergrnd_icon.Contains("hazy"))
+                WeatherIcon = "\uf0b6";
+            else if (wundergrnd_icon.Contains("rain"))
+                WeatherIcon = "\uf01a";
+            else if (wundergrnd_icon.Contains("sleat"))
+                WeatherIcon = "\uf0b5";
+            else if (wundergrnd_icon.Contains("snow"))
+                WeatherIcon = "\uf01b";
+            else if (wundergrnd_icon.Contains("tstorms"))
+                WeatherIcon = "\uf01e";
+            else if (wundergrnd_icon.Contains("cloudy"))
+                WeatherIcon = "\uf002";
+            else if (wundergrnd_icon.Contains("clear") || wundergrnd_icon.Contains("sunny"))
+                WeatherIcon = "\uf00d";
+            else
+                WeatherIcon = "\uf00d";
+
+            return WeatherIcon;
+        }
+
+        public static ImageBrush GetBackground(WeatherUnderground.Weather weather)
+        {
+            ImageBrush bg = new ImageBrush();
+            bg.Stretch = Stretch.UniformToFill;
+            bg.AlignmentX = AlignmentX.Right;
+            Windows.UI.Xaml.Media.Imaging.BitmapImage img;
+
+            // Apply background based on weather condition
+            switch (weather.condition.icon)
+            {
+                case "cloudy":
+                case "mostlycloudy":
+                    if (isNight(weather))
+                    {
+                        App.backgroundImages.TryGetValue("MostlyCloudy-Night", out img);
+                        bg.ImageSource = img;
+                    }
+                    else
+                    {
+                        App.backgroundImages.TryGetValue("MostlyCloudy-Day", out img);
+                        bg.ImageSource = img;
+                    }
+                    break;
+                case "mostlysunny":
+                case "partlysunny":
+                case "partlycloudy":
+                    if (isNight(weather))
+                    {
+                        App.backgroundImages.TryGetValue("PartlyCloudy-Night", out img);
+                        bg.ImageSource = img;
+                    }
+                    else
+                    {
+                        App.backgroundImages.TryGetValue("PartlyCloudy-Day", out img);
+                        bg.ImageSource = img;
+                    }
+                    break;
+                case "chancerain":
+                case "chancesleat":
+                case "rain":
+                case "sleat":
+                    App.backgroundImages.TryGetValue("RainySky", out img);
+                    bg.ImageSource = img;
+                    break;
+                case "chanceflurries":
+                case "chancesnow":
+                case "flurries":
+                case "snow":
+                    App.backgroundImages.TryGetValue("Snow", out img);
+                    bg.ImageSource = img;
+                    break;
+                case "chancetstorms":
+                case "tstorms":
+                    App.backgroundImages.TryGetValue("StormySky", out img);
+                    bg.ImageSource = img;
+                    break;
+                case "hazy":
+                    App.backgroundImages.TryGetValue("FoggySky", out img);
+                    bg.ImageSource = img;
+                    break;
+                case "sunny":
+                case "clear":
+                case "unknown":
+                default:
+                    // Set background based using sunset/rise times
+                    if (isNight(weather))
+                    {
+                        App.backgroundImages.TryGetValue("NightSky", out img);
+                        bg.ImageSource = img;
+                    }
+                    else
+                    {
+                        App.backgroundImages.TryGetValue("DaySky", out img);
+                        bg.ImageSource = img;
+                    }
+                    break;
+            }
+
+            return bg;
+        }
+
+        private static bool isNight(WeatherUnderground.Weather weather)
+        {
+            string format = "H:mm zzz";
+            WeatherUnderground.Sunset1 sunsetInfo = weather.sun_phase.sunset;
+            WeatherUnderground.Sunrise1 sunriseInfo = weather.sun_phase.sunrise;
+
+            string sunset_string = 
+                string.Format("{0}:{1} {2}", sunsetInfo.hour, sunsetInfo.minute, weather.condition.local_tz_offset);
+            string sunrise_string = 
+                string.Format("{0}:{1} {2}", sunriseInfo.hour, sunriseInfo.minute, weather.condition.local_tz_offset);
+
+            DateTime sunset = DateTime.ParseExact(sunset_string, format, null);
+            DateTime sunrise = DateTime.ParseExact(sunrise_string, format, null);
+
+            // Determine whether its night using sunset/rise times
+            if (DateTime.Now < sunrise || DateTime.Now > sunset)
+                return true;
+            else
+                return false;
+        }
+
+        public static String GetLastBuildDate(WeatherUnderground.Weather weather)
+        {
+            String date;
+
+            DateTime updateTime = weather.update_time.ToLocalTime();
+
+            if (updateTime.DayOfWeek == DateTime.Today.DayOfWeek)
+            {
+                date = "Updated at " + updateTime.ToString("t");
+            }
+            else
+                date = "Updated on " + updateTime.ToString("ddd") + " " + updateTime.ToString("t");
+
+            return date;
+        }
+        #endregion
     }
 }

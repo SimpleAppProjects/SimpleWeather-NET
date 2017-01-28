@@ -1,23 +1,16 @@
-﻿using System;
+﻿using SimpleWeather.Controls;
+using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.Devices.Geolocation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -28,15 +21,22 @@ namespace SimpleWeather
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        WeatherDataLoader wLoader = null;
+        WeatherYahoo.WeatherDataLoader wLoader = null;
+        WeatherUnderground.WeatherDataLoader wu_Loader = null;
         int homeIdx = 0;
 
         // For UI Thread
         CoreDispatcher dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
 
+        public ObservableCollection<LocationQueryView> LocationQuerys { get; set; }
+        private string selected_query = string.Empty;
+
         public MainPage()
         {
             this.InitializeComponent();
+
+            // Views
+            LocationQuerys = new ObservableCollection<LocationQueryView>();
 
             // TitleBar
             if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
@@ -56,6 +56,124 @@ namespace SimpleWeather
             Restore();
         }
 
+        private async void Location_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        {
+            if (!String.IsNullOrWhiteSpace(sender.Text) && args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+            {
+                List<WeatherUnderground.AC_Location> results = await WeatherUnderground.AutoCompleteQuery.getLocations(sender.Text).ConfigureAwait(false);
+
+                await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    LocationQuerys.Clear();
+
+                    // Show message if no results are found
+                    if (results.Count == 0)
+                    {
+                        LocationQueryView noresults = new LocationQueryView();
+                        noresults.LocationName = "No results found";
+                        LocationQuerys.Add(noresults);
+                    }
+                    else
+                    {
+                        // Limit amount of results shown
+                        int maxResults = 10;
+
+                        foreach (WeatherUnderground.AC_Location location in results)
+                        {
+                            LocationQueryView view = new LocationQueryView(location);
+                            LocationQuerys.Add(view);
+
+                            // Limit amount of results
+                            maxResults--;
+                            if (maxResults <= 0)
+                                break;
+                        }
+                    }
+
+                    // Refresh list
+                    Location.ItemsSource = null;
+                    Location.ItemsSource = LocationQuerys;
+
+                    sender.IsSuggestionListOpen = true;
+                });
+            }
+            else if (String.IsNullOrWhiteSpace(sender.Text))
+            {
+                // Hide flyout if query is empty or null
+                sender.IsSuggestionListOpen = false;
+            }
+        }
+
+        private void Location_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+        {
+            LocationQueryView theChosenOne = args.SelectedItem as LocationQueryView;
+
+            if (theChosenOne != null)
+            {
+                if (String.IsNullOrEmpty(theChosenOne.LocationQuery))
+                    sender.Text = String.Empty;
+                else
+                    sender.Text = theChosenOne.LocationName;
+            }
+
+            sender.IsSuggestionListOpen = false;
+        }
+
+        private async void Location_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        {
+            if (args.ChosenSuggestion != null)
+            {
+                // User selected an item from the suggestion list, take an action on it here.
+                LocationQueryView theChosenOne = args.ChosenSuggestion as LocationQueryView;
+
+                if (!String.IsNullOrEmpty(theChosenOne.LocationQuery))
+                    selected_query = theChosenOne.LocationQuery;
+            }
+            else if (!String.IsNullOrEmpty(args.QueryText))
+            {
+                // Use args.QueryText to determine what to do.
+                List<WeatherUnderground.AC_Location> results = await WeatherUnderground.AutoCompleteQuery.getLocations(args.QueryText).ConfigureAwait(false);
+
+                await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    if (results.Count > 0)
+                    {
+                        sender.Text = results.First().name;
+                        selected_query = results.First().l;
+                    }
+                });
+            }
+
+            // Save location query to List
+            List<string> locations = new List<string>();
+            locations.Add(selected_query);
+            Settings.saveLocations(locations);
+
+            wu_Loader = new WeatherUnderground.WeatherDataLoader(selected_query, homeIdx);
+
+            await wu_Loader.loadWeatherData().ConfigureAwait(false);
+
+            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                if (wu_Loader.getWeather() != null)
+                {
+                    // Save WeatherLoader
+                    if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
+                    {
+                        CoreApplication.Properties.Remove("WeatherLoader");
+                    }
+                    CoreApplication.Properties.Add("WeatherLoader", wu_Loader);
+
+                    Settings.WeatherLoaded = true;
+                    this.Frame.Navigate(typeof(Shell));
+                }
+                else
+                    throw new Exception("Weather is null");
+
+                sender.IsSuggestionListOpen = false;
+            });
+        }
+
         private async void Restore()
         {
             // Hide UIElements
@@ -67,35 +185,55 @@ namespace SimpleWeather
             {
                 // Weather was loaded before. Lets load it up...
                 var localSettings = ApplicationData.Current.LocalSettings;
-                List<Coordinate> locations = await Settings.getLocations();
-                Coordinate local = locations[homeIdx];
+                List<string> locations = await Settings.getLocations_WU();
+                string local = locations[homeIdx];
 
-                wLoader = new WeatherDataLoader(local.ToString(), homeIdx);
+                wu_Loader = new WeatherUnderground.WeatherDataLoader(local, homeIdx);
 
-                // Loop until we get weather data
-                do
+                await wu_Loader.loadWeatherData().ConfigureAwait(false);
+
+                if (wu_Loader.getWeather() != null)
                 {
-                    await wLoader.loadWeatherData().ContinueWith(async (t) =>
+                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     {
-                        if (wLoader.getWeather() != null)
+                        if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
                         {
-                            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                            {
-                                if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
-                                {
-                                    CoreApplication.Properties.Remove("WeatherLoader");
-                                }
-                                CoreApplication.Properties.Add("WeatherLoader", wLoader);
-
-                                this.Frame.Navigate(typeof(Shell));
-                            });
+                            CoreApplication.Properties.Remove("WeatherLoader");
                         }
-                    }).ConfigureAwait(false);
+                        CoreApplication.Properties.Add("WeatherLoader", wu_Loader);
 
-                    if (wLoader.getWeather() == null)
-                        await Task.Delay(1000);
+                        this.Frame.Navigate(typeof(Shell));
+                    });
+                }
+                else
+                    throw new Exception("Weather is null");
 
-                } while (wLoader.getWeather() == null);
+                /* Yahoo Code
+                                // Weather was loaded before. Lets load it up...
+                                var localSettings = ApplicationData.Current.LocalSettings;
+                                List<Coordinate> locations = await Settings.getLocations();
+                                Coordinate local = locations[homeIdx];
+
+                                wLoader = new WeatherDataLoader(local.ToString(), homeIdx);
+
+                                await wLoader.loadWeatherData().ConfigureAwait(false);
+
+                                if (wLoader.getWeather() != null)
+                                {
+                                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                                    {
+                                        if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
+                                        {
+                                            CoreApplication.Properties.Remove("WeatherLoader");
+                                        }
+                                        CoreApplication.Properties.Add("WeatherLoader", wLoader);
+
+                                        this.Frame.Navigate(typeof(Shell));
+                                    });
+                                }
+                                else
+                                    throw new Exception("Weather is null");
+                */
             }
             else
             {
@@ -104,22 +242,35 @@ namespace SimpleWeather
             }
         }
 
-        private async void Location_KeyUp(object sender, KeyRoutedEventArgs e)
+        private async void GPS_Click(object sender, RoutedEventArgs e)
         {
-            Location.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Gray);
-            Location.BorderThickness = new Thickness(2);
+            // Set window items
+            //            LoadingRing.IsActive = true;
+            //            GPSButton.IsEnabled = false;
+            Button button = sender as Button;
+            button.IsEnabled = false;
 
-            if (e.Key == Windows.System.VirtualKey.Enter)
-            {
-                if (!String.IsNullOrWhiteSpace(Location.Text))
-                {
-                    // Set window items
-                    LoadingRing.IsActive = true;
-                    GPS.IsEnabled = false;
+            Geolocator geolocal = new Geolocator();
+            Geoposition geoPos = await geolocal.GetGeopositionAsync();
 
-                    wLoader = new WeatherDataLoader(Location.Text, homeIdx);
-                    await wLoader.loadWeatherData(true).ContinueWith(async (t) =>
-                    {
+            button.IsEnabled = false;
+
+            WeatherUnderground.location gpsLocation = await WeatherUnderground.GeopositionQuery.getLocation(geoPos);
+            LocationQueryView view = new LocationQueryView(gpsLocation);
+
+            LocationQuerys.Clear();
+            LocationQuerys.Add(view);
+
+            // Refresh list
+            Location.ItemsSource = null;
+            Location.ItemsSource = LocationQuerys;
+
+            Location.IsSuggestionListOpen = true;
+            button.IsEnabled = true;
+            /* Yahoo Code
+                        wLoader = new WeatherDataLoader(geoPos, homeIdx);
+                        await wLoader.loadWeatherData(true).ConfigureAwait(false);
+
                         if (wLoader.getWeather() != null)
                         {
                             // Show location name
@@ -142,7 +293,7 @@ namespace SimpleWeather
                                 CoreApplication.Properties.Add("WeatherLoader", wLoader);
 
                                 Settings.WeatherLoaded = true;
-                                this.Frame.Navigate(typeof(Shell), Location.Tag);
+                                this.Frame.Navigate(typeof(Shell));
                             });
                         }
                         else
@@ -151,71 +302,14 @@ namespace SimpleWeather
                             {
                                 LoadingRing.IsActive = false;
                                 SearchGrid.Visibility = Visibility.Visible;
-                                GPS.IsEnabled = true;
+            //                        GPS.IsEnabled = true;
 
                                 Location.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Red);
                                 Location.BorderThickness = new Thickness(5);
                             });
                         }
-                    }).ConfigureAwait(false);
-                }
 
-                e.Handled = true;
-            }
-        }
-
-        private async void GPS_Click(object sender, RoutedEventArgs e)
-        {
-            Location.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Gray);
-
-            // Set window items
-            LoadingRing.IsActive = true;
-            GPS.IsEnabled = false;
-
-            Geolocator geolocal = new Geolocator();
-            Geoposition geoPos = await geolocal.GetGeopositionAsync();
-
-            wLoader = new WeatherDataLoader(geoPos, homeIdx);
-            await wLoader.loadWeatherData(true).ContinueWith(async (t) =>
-            {
-                if (wLoader.getWeather() != null)
-                {
-                    // Show location name
-                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        Coordinate location = new Coordinate(
-                            string.Join(",", wLoader.getWeather().location.lat, wLoader.getWeather().location._long));
-                        Location.Text = location.ToString();
-
-                        // Save coords to List
-                        List<Coordinate> locations = new List<Coordinate>();
-                        locations.Add(location);
-                        Settings.saveLocations(locations);
-
-                        // Save WeatherLoader
-                        if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
-                        {
-                            CoreApplication.Properties.Remove("WeatherLoader");
-                        }
-                        CoreApplication.Properties.Add("WeatherLoader", wLoader);
-
-                        Settings.WeatherLoaded = true;
-                        this.Frame.Navigate(typeof(Shell), GPS.Tag);
-                    });
-                }
-                else
-                {
-                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        LoadingRing.IsActive = false;
-                        SearchGrid.Visibility = Visibility.Visible;
-                        GPS.IsEnabled = true;
-
-                        Location.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Red);
-                        Location.BorderThickness = new Thickness(5);
-                    });
-                }
-            }).ConfigureAwait(false);
+            */
         }
     }
 }

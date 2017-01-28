@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Runtime.Serialization.Json;
@@ -10,7 +7,7 @@ using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.Web.Http;
 
-namespace SimpleWeather
+namespace SimpleWeather.WeatherYahoo
 {
     public class WeatherDataLoader
     {
@@ -40,34 +37,45 @@ namespace SimpleWeather
                 + location + "\") and u='" + Settings.Unit + "'&format=json";
             Uri weatherURL = new Uri(yahooAPI + query);
 
-            // Connect to webstream
             HttpClient webClient = new HttpClient();
-            HttpResponseMessage response = await webClient.GetAsync(weatherURL);
-            response.EnsureSuccessStatusCode();
-            IBuffer buff = await response.Content.ReadAsBufferAsync();
-
-            // Write array/buffer to memorystream
             MemoryStream memStream = new MemoryStream();
-            await memStream.AsOutputStream().WriteAsync(buff);
-            memStream.Seek(0, 0);
+            DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(Rootobject));
+            int counter = 0;
+
+            do
+            {
+                // Get response
+                HttpResponseMessage response = await webClient.GetAsync(weatherURL);
+                response.EnsureSuccessStatusCode();
+                IBuffer buff = await response.Content.ReadAsBufferAsync();
+
+                // Write array/buffer to memorystream
+                memStream.SetLength(0);
+                await memStream.AsOutputStream().WriteAsync(buff);
+                memStream.Seek(0, 0);
+
+                try
+                {
+                    // Load weather
+                    weather = new Weather((Rootobject)deserializer.ReadObject(memStream));
+                }
+                catch (Exception e)
+                {
+                    /* TODO: DEBUG - remove logging */
+                    weather = null;
+                    System.Diagnostics.Debug.WriteLine(e.HResult + ": " + e.Message);
+                    System.Diagnostics.Debug.WriteLine(e.StackTrace);
+                }
+
+                // If we can't load data, delay and try again
+                if (weather == null)
+                    await Task.Delay(1000);
+
+                counter++;
+            } while (weather == null && counter < 5);
 
             // End Stream
             webClient.Dispose();
-
-            // Load weather
-            DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(Rootobject));
-
-            try
-            {
-                weather = new Weather((Rootobject)deserializer.ReadObject(memStream));
-            }
-            catch (Exception e)
-            {
-                /* TODO: DEBUG - remove logging */
-                weather = null;
-                System.Diagnostics.Debug.WriteLine(e.HResult + ": " + e.Message);
-                System.Diagnostics.Debug.WriteLine(e.StackTrace);
-            }
 
             await memStream.FlushAsync();
             memStream.Dispose();

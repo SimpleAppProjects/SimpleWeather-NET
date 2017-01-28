@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using SimpleWeather.Controls;
+using System;
 using System.Collections.ObjectModel;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 
@@ -45,12 +41,13 @@ namespace SimpleWeather
         {
         }
 
-        public WeatherNowView(Weather weather)
+        #region Yahoo Weather
+        public WeatherNowView(WeatherYahoo.Weather weather)
         {
             updateView(weather);
         }
 
-        private void updateView(Weather weather)
+        private void updateView(WeatherYahoo.Weather weather)
         {
             // Update background
             Background = WeatherUtils.GetBackground(weather); 
@@ -65,7 +62,7 @@ namespace SimpleWeather
             CurTemp = weather.condition.temp +
                 (weather.units.temperature == "F" ? "\uf045" : "\uf03c");
             CurCondition = weather.condition.text;
-            WeatherIcon = WeatherUtils.GetWeatherIcon(weather.condition.code);
+            WeatherIcon = WeatherUtils.GetWeatherIcon(int.Parse(weather.condition.code));
 
             // WeatherDetails
             // Astronomy
@@ -88,7 +85,68 @@ namespace SimpleWeather
 
             // Add UI elements
             Forecasts = new ObservableCollection<ForecastItemView>();
-            foreach (Forecast forecast in weather.forecasts)
+            foreach (WeatherYahoo.Forecast forecast in weather.forecasts)
+            {
+                ForecastItemView forecastView = new ForecastItemView(forecast);
+                Forecasts.Add(forecastView);
+            }
+        }
+        #endregion
+
+        public WeatherNowView(WeatherUnderground.Weather weather)
+        {
+            updateView(weather);
+        }
+
+        private void updateView(WeatherUnderground.Weather weather)
+        {
+            // Update background
+            Background = WeatherUtils.GetBackground(weather);
+
+            // Location
+            Location = weather.location.full_name;
+
+            // Date Updated
+            UpdateDate = WeatherUtils.GetLastBuildDate(weather);
+
+            // Update Current Condition
+            CurTemp = Settings.Unit == "F" ?
+                Math.Round(weather.condition.temp_f) + "\uf045" : Math.Round(weather.condition.temp_c) + "\uf03c";
+            CurCondition = weather.condition.weather;
+            WeatherIcon = WeatherUtils.GetWeatherIcon(weather.condition.icon_url);
+
+            // WeatherDetails
+            // Astronomy
+            Sunrise = DateTime.Parse(weather.sun_phase.sunrise.hour + ":" + weather.sun_phase.sunrise.minute).ToString("hh:mm tt");
+            Sunset = DateTime.Parse(weather.sun_phase.sunset.hour + ":" + weather.sun_phase.sunset.minute).ToString("hh:mm tt");
+            // Wind
+            WindChill = Settings.Unit == "F" ?
+                weather.condition.windchill_f + "º" : weather.condition.windchill_c + "º";
+            WindSpeed = Settings.Unit == "F" ?
+                weather.condition.wind_mph.ToString() : weather.condition.wind_kph.ToString();
+            SpeedUnit = Settings.Unit == "F" ? "mph" : "kph";
+            updateWindDirection(weather.condition.wind_degrees);
+
+            // Atmosphere
+            Humidity = weather.condition.relative_humidity;
+            Pressure = Settings.Unit == "F" ?
+                weather.condition.pressure_in : weather.condition.pressure_mb;
+            PressureUnit = Settings.Unit == "F" ? "in" : "mb";
+
+            if (weather.condition.pressure_trend == "+")
+                updatePressureState(1);
+            else if (weather.condition.pressure_trend == "-")
+                updatePressureState(2);
+            else
+                updatePressureState(0);
+
+            _Visibility = Settings.Unit == "F" ? 
+                weather.condition.visibility_mi : weather.condition.visibility_km;
+            VisibilityUnit = Settings.Unit == "F" ? "mi" : "km";
+
+            // Add UI elements
+            Forecasts = new ObservableCollection<ForecastItemView>();
+            foreach (WeatherUnderground.Forecastday1 forecast in weather.forecast.forecastday)
             {
                 ForecastItemView forecastView = new ForecastItemView(forecast);
                 Forecasts.Add(forecastView);

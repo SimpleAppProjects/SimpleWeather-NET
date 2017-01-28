@@ -1,23 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -28,7 +14,8 @@ namespace SimpleWeather
     /// </summary>
     public sealed partial class WeatherNow : Page
     {
-        WeatherDataLoader wLoader = null;
+        WeatherYahoo.WeatherDataLoader wLoader = null;
+        WeatherUnderground.WeatherDataLoader wu_Loader = null;
         WeatherNowView weatherView = null;
 
         // For UI Thread
@@ -47,7 +34,8 @@ namespace SimpleWeather
             // Restore weather loader
             object outValue;
             if (!CoreApplication.Properties.TryGetValue("WeatherLoader", out outValue)) { }
-            wLoader = (WeatherDataLoader)outValue;
+            //wLoader = (WeatherDataLoader)outValue;
+            wu_Loader = (WeatherUnderground.WeatherDataLoader)outValue;
 
             // Load up weather data
             RefreshWeather(false);
@@ -62,28 +50,22 @@ namespace SimpleWeather
         {
             ShowLoadingGrid(true);
 
-            // Loop until we get weather data
-            do
+            await wu_Loader.loadWeatherData(forceRefresh).ConfigureAwait(false);
+
+            //WeatherYahoo.Weather weather = wLoader.getWeather();
+            WeatherUnderground.Weather weather = wu_Loader.getWeather();
+
+            if (weather != null)
             {
-                await wLoader.loadWeatherData(forceRefresh).ContinueWith(async (t) =>
+                await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
-                    Weather weather = wLoader.getWeather();
-
-                    if (weather != null)
-                    {
-                        await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                        {
-                            weatherView = new WeatherNowView(weather);
-                            this.DataContext = weatherView;
-                            StackControl.ItemsSource = weatherView.Forecasts;
-                        });
-                    }
-                }).ConfigureAwait(false);
-
-                if (wLoader.getWeather() == null)
-                    await Task.Delay(1000);
-
-            } while (wLoader.getWeather() == null);
+                    weatherView = new WeatherNowView(weather);
+                    this.DataContext = weatherView;
+                    StackControl.ItemsSource = weatherView.Forecasts;
+                });
+            }
+            else
+                throw new Exception("Weather is null");
 
             ShowLoadingGrid(false);
         }

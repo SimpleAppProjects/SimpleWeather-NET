@@ -89,6 +89,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <Content Include="API_KEY.txt" />
     <Content Include="Assets\Backgrounds\Dust.jpg" />
     <Content Include="Assets\Backgrounds\FoggySky.jpg" />
     <Content Include="Assets\Backgrounds\MostlyCloudy-Day.jpg" />
@@ -110,6 +111,13 @@
     <Compile Include="Controls\LocationPanel.xaml.cs">
       <DependentUpon>LocationPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\LocationQuery.xaml.cs">
+      <DependentUpon>LocationQuery.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\LocationQueryView.cs" />
+    <Compile Include="LocationsPage.xaml.cs">
+      <DependentUpon>LocationsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utils\WeatherUtils.cs" />
     <Compile Include="WeatherNowView.cs" />
     <Compile Include="Controls\ForecastItem.xaml.cs">
@@ -117,9 +125,6 @@
     </Compile>
     <Compile Include="Utils\ConversionMethods.cs" />
     <Compile Include="Utils\FileUtils.cs" />
-    <Compile Include="LocationsPage.xaml.cs">
-      <DependentUpon>LocationsPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -128,8 +133,12 @@
     <Compile Include="SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Weather.cs" />
-    <Compile Include="Utils\WeatherDataLoader.cs" />
+    <Compile Include="WeatherUnderground\AutoCompleteQuery.cs" />
+    <Compile Include="WeatherUnderground\GeopositionQuery.cs" />
+    <Compile Include="WeatherUnderground\Weather.cs" />
+    <Compile Include="WeatherUnderground\WeatherDataLoader.cs" />
+    <Compile Include="YahooWeather\Weather.cs" />
+    <Compile Include="YahooWeather\WeatherDataLoader.cs" />
     <Compile Include="Shell.xaml.cs">
       <DependentUpon>Shell.xaml</DependentUpon>
     </Compile>
@@ -169,15 +178,16 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="Controls\ForecastItem.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\LocationPanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\LocationQuery.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="LocationsPage.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MainPage.xaml">
@@ -185,7 +195,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="SettingsPage.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Shell.xaml">
@@ -193,10 +202,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="WeatherNow.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

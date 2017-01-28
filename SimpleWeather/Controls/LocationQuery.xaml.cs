@@ -4,9 +4,9 @@
 
 namespace SimpleWeather.Controls
 {
-    public sealed partial class ForecastItem : UserControl
+    public sealed partial class LocationQuery : UserControl
     {
-        public ForecastItem()
+        public LocationQuery()
         {
             this.InitializeComponent();
         }
