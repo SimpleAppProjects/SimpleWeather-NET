@@ -34,8 +34,11 @@ namespace SimpleWeather
             // Restore weather loader
             object outValue;
             if (!CoreApplication.Properties.TryGetValue("WeatherLoader", out outValue)) { }
-            //wLoader = (WeatherDataLoader)outValue;
-            wu_Loader = (WeatherUnderground.WeatherDataLoader)outValue;
+
+            if (Settings.API == "WUnderground")
+                wu_Loader = (WeatherUnderground.WeatherDataLoader)outValue;
+            else
+                wLoader = (WeatherYahoo.WeatherDataLoader)outValue;
 
             // Load up weather data
             RefreshWeather(false);
@@ -50,16 +53,28 @@ namespace SimpleWeather
         {
             ShowLoadingGrid(true);
 
-            await wu_Loader.loadWeatherData(forceRefresh).ConfigureAwait(false);
+            object weather;
 
-            //WeatherYahoo.Weather weather = wLoader.getWeather();
-            WeatherUnderground.Weather weather = wu_Loader.getWeather();
+            if (Settings.API == "WUnderground")
+            {
+                await wu_Loader.loadWeatherData(forceRefresh).ConfigureAwait(false);
+                weather = wu_Loader.getWeather();
+            }
+            else
+            {
+                await wLoader.loadWeatherData(forceRefresh).ConfigureAwait(false);
+                weather = wLoader.getWeather();
+            }
 
             if (weather != null)
             {
                 await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
-                    weatherView = new WeatherNowView(weather);
+                    if (Settings.API == "WUnderground")
+                        weatherView = new WeatherNowView(weather as WeatherUnderground.Weather);
+                    else
+                        weatherView = new WeatherNowView(weather as WeatherYahoo.Weather);
+
                     this.DataContext = weatherView;
                     StackControl.ItemsSource = weatherView.Forecasts;
                 });

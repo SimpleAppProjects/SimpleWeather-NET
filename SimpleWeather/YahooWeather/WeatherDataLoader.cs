@@ -72,7 +72,7 @@ namespace SimpleWeather.WeatherYahoo
                     await Task.Delay(1000);
 
                 counter++;
-            } while (weather == null && counter < 5);
+            } while (weather == null && counter < 10);
 
             // End Stream
             webClient.Dispose();

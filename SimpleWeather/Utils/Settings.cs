@@ -12,6 +12,7 @@ namespace SimpleWeather
     {
         public static bool WeatherLoaded { get { return isWeatherLoaded(); } set { setWeatherLoaded(value); } }
         public static string Unit { get { return getTempUnit(); } set { setTempUnit(value); } }
+        public static string API { get { return getAPI(); } set { setAPI(value); } }
         public static string API_KEY { get { return getAPIKEY(); } set { setAPIKEY(value); } }
 
         private static StorageFolder appDataFolder = ApplicationData.Current.LocalFolder;
@@ -38,9 +39,9 @@ namespace SimpleWeather
             var localSettings = ApplicationData.Current.LocalSettings;
 
             if (value == Celsius)
-                ApplicationData.Current.LocalSettings.Values["Units"] = Celsius;
+                localSettings.Values["Units"] = Celsius;
             else
-                ApplicationData.Current.LocalSettings.Values["Units"] = Farenheit;
+                localSettings.Values["Units"] = Farenheit;
         }
 
         private static bool isWeatherLoaded()
@@ -81,6 +82,24 @@ namespace SimpleWeather
             {
                 localSettings.Values["weatherLoaded"] = "false";
             }
+        }
+
+        private static string getAPI()
+        {
+            var localSettings = ApplicationData.Current.LocalSettings;
+            if (!localSettings.Values.ContainsKey("API") || localSettings.Values["API"] == null)
+            {
+                setAPI("WUnderground");
+                return "WUnderground";
+            }
+            else
+                return (string)localSettings.Values["API"];
+        }
+
+        private static void setAPI(string value)
+        {
+            var localSettings = ApplicationData.Current.LocalSettings;
+            localSettings.Values["API"] = value;
         }
 
         #region Yahoo Weather

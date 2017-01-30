@@ -144,31 +144,67 @@ namespace SimpleWeather
                 });
             }
 
-            // Save location query to List
-            List<string> locations = new List<string>();
-            locations.Add(selected_query);
-            Settings.saveLocations(locations);
+            if (Settings.API == "WUnderground")
+            {
+                // Save location query to List
+                List<string> locations = new List<string>();
+                locations.Add(selected_query);
+                Settings.saveLocations(locations);
 
-            wu_Loader = new WeatherUnderground.WeatherDataLoader(selected_query, homeIdx);
+                wu_Loader = new WeatherUnderground.WeatherDataLoader(selected_query, homeIdx);
 
-            await wu_Loader.loadWeatherData().ConfigureAwait(false);
+                await wu_Loader.loadWeatherData().ConfigureAwait(false);
+            }
+            else
+            {
+                // Save location query to List
+                List<WeatherYahoo.Coordinate> locations = new List<WeatherYahoo.Coordinate>();
+
+                wLoader = new WeatherYahoo.WeatherDataLoader(sender.Text, homeIdx);
+                await wLoader.loadWeatherData().ConfigureAwait(false);
+                WeatherYahoo.Coordinate local = new WeatherYahoo.Coordinate(
+                    String.Format("{0}, {1}", wLoader.getWeather().location.lat, wLoader.getWeather().location._long));
+
+                locations.Add(local);
+                Settings.saveLocations(locations);
+            }
 
             await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                if (wu_Loader.getWeather() != null)
+                if (Settings.API == "WUnderground")
                 {
-                    // Save WeatherLoader
-                    if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
+                    if (wu_Loader.getWeather() != null)
                     {
-                        CoreApplication.Properties.Remove("WeatherLoader");
-                    }
-                    CoreApplication.Properties.Add("WeatherLoader", wu_Loader);
+                        // Save WeatherLoader
+                        if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
+                        {
+                            CoreApplication.Properties.Remove("WeatherLoader");
+                        }
+                        CoreApplication.Properties.Add("WeatherLoader", wu_Loader);
 
-                    Settings.WeatherLoaded = true;
-                    this.Frame.Navigate(typeof(Shell));
+                        Settings.WeatherLoaded = true;
+                        this.Frame.Navigate(typeof(Shell));
+                    }
+                    else
+                        throw new Exception("Weather is null");
                 }
                 else
-                    throw new Exception("Weather is null");
+                {
+                    if (wLoader.getWeather() != null)
+                    {
+                        // Save WeatherLoader
+                        if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
+                        {
+                            CoreApplication.Properties.Remove("WeatherLoader");
+                        }
+                        CoreApplication.Properties.Add("WeatherLoader", wLoader);
+
+                        Settings.WeatherLoaded = true;
+                        this.Frame.Navigate(typeof(Shell));
+                    }
+                    else
+                        throw new Exception("Weather is null");
+                }
 
                 sender.IsSuggestionListOpen = false;
             });
@@ -181,59 +217,67 @@ namespace SimpleWeather
             // Show Loading Ring
             LoadingRing.IsActive = true;
 
+            // Check for key
+            if (!String.IsNullOrEmpty(Settings.API_KEY))
+            {
+                KeyEntry.IsEnabled = false;
+                KeyEntry.Text = Settings.API_KEY;
+            }
+
             if (Settings.WeatherLoaded)
             {
                 // Weather was loaded before. Lets load it up...
                 var localSettings = ApplicationData.Current.LocalSettings;
-                List<string> locations = await Settings.getLocations_WU();
-                string local = locations[homeIdx];
-
-                wu_Loader = new WeatherUnderground.WeatherDataLoader(local, homeIdx);
-
-                await wu_Loader.loadWeatherData().ConfigureAwait(false);
-
-                if (wu_Loader.getWeather() != null)
+                if (Settings.API == "WUnderground")
                 {
-                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
-                        {
-                            CoreApplication.Properties.Remove("WeatherLoader");
-                        }
-                        CoreApplication.Properties.Add("WeatherLoader", wu_Loader);
+                    List<string> locations = await Settings.getLocations_WU();
+                    string local = locations[homeIdx];
 
-                        this.Frame.Navigate(typeof(Shell));
-                    });
+                    wu_Loader = new WeatherUnderground.WeatherDataLoader(local, homeIdx);
+
+                    await wu_Loader.loadWeatherData().ConfigureAwait(false);
+
+                    if (wu_Loader.getWeather() != null)
+                    {
+                        await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        {
+                            if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
+                            {
+                                CoreApplication.Properties.Remove("WeatherLoader");
+                            }
+                            CoreApplication.Properties.Add("WeatherLoader", wu_Loader);
+
+                            this.Frame.Navigate(typeof(Shell));
+                        });
+                    }
+                    else
+                        throw new Exception("Weather is null");
                 }
                 else
-                    throw new Exception("Weather is null");
+                {
+                    List<WeatherYahoo.Coordinate> locations = await Settings.getLocations();
+                    WeatherYahoo.Coordinate local = locations[homeIdx];
 
-                /* Yahoo Code
-                                // Weather was loaded before. Lets load it up...
-                                var localSettings = ApplicationData.Current.LocalSettings;
-                                List<Coordinate> locations = await Settings.getLocations();
-                                Coordinate local = locations[homeIdx];
+                    wLoader = new WeatherYahoo.WeatherDataLoader(local.ToString(), homeIdx);
 
-                                wLoader = new WeatherDataLoader(local.ToString(), homeIdx);
+                    await wLoader.loadWeatherData().ConfigureAwait(false);
 
-                                await wLoader.loadWeatherData().ConfigureAwait(false);
+                    if (wLoader.getWeather() != null)
+                    {
+                        await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        {
+                            if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
+                            {
+                                CoreApplication.Properties.Remove("WeatherLoader");
+                            }
+                            CoreApplication.Properties.Add("WeatherLoader", wLoader);
 
-                                if (wLoader.getWeather() != null)
-                                {
-                                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                                    {
-                                        if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
-                                        {
-                                            CoreApplication.Properties.Remove("WeatherLoader");
-                                        }
-                                        CoreApplication.Properties.Add("WeatherLoader", wLoader);
-
-                                        this.Frame.Navigate(typeof(Shell));
-                                    });
-                                }
-                                else
-                                    throw new Exception("Weather is null");
-                */
+                            this.Frame.Navigate(typeof(Shell));
+                        });
+                    }
+                    else
+                        throw new Exception("Weather is null");
+                }
             }
             else
             {
@@ -244,9 +288,6 @@ namespace SimpleWeather
 
         private async void GPS_Click(object sender, RoutedEventArgs e)
         {
-            // Set window items
-            //            LoadingRing.IsActive = true;
-            //            GPSButton.IsEnabled = false;
             Button button = sender as Button;
             button.IsEnabled = false;
 
@@ -267,49 +308,33 @@ namespace SimpleWeather
 
             Location.IsSuggestionListOpen = true;
             button.IsEnabled = true;
-            /* Yahoo Code
-                        wLoader = new WeatherDataLoader(geoPos, homeIdx);
-                        await wLoader.loadWeatherData(true).ConfigureAwait(false);
+        }
 
-                        if (wLoader.getWeather() != null)
-                        {
-                            // Show location name
-                            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                            {
-                                Coordinate location = new Coordinate(
-                                    string.Join(",", wLoader.getWeather().location.lat, wLoader.getWeather().location._long));
-                                Location.Text = location.ToString();
+        private void APIComboBox_DropDownClosed(object sender, object e)
+        {
+            ComboBox box = sender as ComboBox;
+            int index = box.SelectedIndex;
 
-                                // Save coords to List
-                                List<Coordinate> locations = new List<Coordinate>();
-                                locations.Add(location);
-                                Settings.saveLocations(locations);
+            if (index == 0)
+            {
+                // WeatherUnderground
+                if (KeyEntry != null)
+                    KeyEntry.Visibility = Visibility.Visible;
+                Settings.API = "WUnderground";
+            }
+            else if (index == 1)
+            {
+                // Yahoo Weather
+                if (KeyEntry != null)
+                    KeyEntry.Visibility = Visibility.Collapsed;
+                Settings.API = "Yahoo";
+            }
+        }
 
-                                // Save WeatherLoader
-                                if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
-                                {
-                                    CoreApplication.Properties.Remove("WeatherLoader");
-                                }
-                                CoreApplication.Properties.Add("WeatherLoader", wLoader);
-
-                                Settings.WeatherLoaded = true;
-                                this.Frame.Navigate(typeof(Shell));
-                            });
-                        }
-                        else
-                        {
-                            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                            {
-                                LoadingRing.IsActive = false;
-                                SearchGrid.Visibility = Visibility.Visible;
-            //                        GPS.IsEnabled = true;
-
-                                Location.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Red);
-                                Location.BorderThickness = new Thickness(5);
-                            });
-                        }
-
-            */
+        private void KeyEntry_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!String.IsNullOrWhiteSpace(KeyEntry.Text) && KeyEntry.IsEnabled)
+                Settings.API_KEY = KeyEntry.Text;
         }
     }
 }
