@@ -30,6 +30,7 @@ namespace SimpleWeather
 
         public ObservableCollection<LocationQueryView> LocationQuerys { get; set; }
         private string selected_query = string.Empty;
+        private string key = string.Empty;
 
         public MainPage()
         {
@@ -144,6 +145,16 @@ namespace SimpleWeather
                 });
             }
 
+            // Stop if using WeatherUnderground and API Key is empty
+            if (String.IsNullOrWhiteSpace(Settings.API_KEY) && Settings.API == "WUnderground")
+            {
+                TextBlock header = KeyEntry.Header as TextBlock;
+                header.Visibility = Visibility.Visible;
+                KeyEntry.BorderBrush = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Red);
+                KeyEntry.BorderThickness = new Thickness(2);
+                return;
+            }
+
             if (Settings.API == "WUnderground")
             {
                 // Save location query to List
@@ -175,6 +186,9 @@ namespace SimpleWeather
                 {
                     if (wu_Loader.getWeather() != null)
                     {
+                        // Save API_KEY
+                        Settings.API_KEY = key;
+
                         // Save WeatherLoader
                         if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
                         {
@@ -219,10 +233,7 @@ namespace SimpleWeather
 
             // Check for key
             if (!String.IsNullOrEmpty(Settings.API_KEY))
-            {
-                KeyEntry.IsEnabled = false;
                 KeyEntry.Text = Settings.API_KEY;
-            }
 
             if (Settings.WeatherLoaded)
             {
@@ -334,7 +345,12 @@ namespace SimpleWeather
         private void KeyEntry_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (!String.IsNullOrWhiteSpace(KeyEntry.Text) && KeyEntry.IsEnabled)
-                Settings.API_KEY = KeyEntry.Text;
+                key = KeyEntry.Text;
+        }
+
+        private void KeyEntry_GotFocus(object sender, RoutedEventArgs e)
+        {
+            KeyEntry.BorderThickness = new Thickness(0);
         }
     }
 }

@@ -336,7 +336,11 @@
             </ComboBox>
             <TextBox x:Name="KeyEntry" HorizontalAlignment="Center" Width="300" Grid.Row="1" FontSize="12"
                  BorderThickness="0" PlaceholderText="API Key" Padding="10,7" Visibility="Visible"
-                     TextChanged="KeyEntry_TextChanged"/>
+                     TextChanged="KeyEntry_TextChanged" GotFocus="KeyEntry_GotFocus">
+                <TextBox.Header>
+                    <TextBlock Text="Please enter an API key" Foreground="White" Padding="5,0" FontSize="12" Visibility="Collapsed" />
+                </TextBox.Header>
+            </TextBox>
         </Grid>
         <ProgressRing x:Name="LoadingRing" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Width="50" Grid.Row="3" Foreground="White"/>
     </Grid>
