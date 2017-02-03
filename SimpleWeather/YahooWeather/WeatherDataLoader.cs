@@ -6,6 +6,7 @@ using Windows.Devices.Geolocation;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.Web.Http;
+using static SimpleWeather.WeatherUtils;
 
 namespace SimpleWeather.WeatherYahoo
 {
@@ -30,7 +31,7 @@ namespace SimpleWeather.WeatherYahoo
             locationIdx = idx;
         }
 
-        private async Task getWeatherData()
+        private async Task<ErrorStatus> getWeatherData()
         {
             string yahooAPI = "https://query.yahooapis.com/v1/public/yql?q=";
             string query = "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text=\""
@@ -41,30 +42,33 @@ namespace SimpleWeather.WeatherYahoo
             MemoryStream memStream = new MemoryStream();
             DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(Rootobject));
             int counter = 0;
+            ErrorStatus ret = ErrorStatus.UNKNOWN;
 
             do
             {
-                // Get response
-                HttpResponseMessage response = await webClient.GetAsync(weatherURL);
-                response.EnsureSuccessStatusCode();
-                IBuffer buff = await response.Content.ReadAsBufferAsync();
-
-                // Write array/buffer to memorystream
-                memStream.SetLength(0);
-                await memStream.AsOutputStream().WriteAsync(buff);
-                memStream.Seek(0, 0);
-
                 try
                 {
+                    // Get response
+                    HttpResponseMessage response = await webClient.GetAsync(weatherURL);
+                    response.EnsureSuccessStatusCode();
+                    IBuffer buff = await response.Content.ReadAsBufferAsync();
+
+                    // Write array/buffer to memorystream
+                    memStream.SetLength(0);
+                    await memStream.AsOutputStream().WriteAsync(buff);
+                    memStream.Seek(0, 0);
+
                     // Load weather
                     weather = new Weather((Rootobject)deserializer.ReadObject(memStream));
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    /* TODO: DEBUG - remove logging */
                     weather = null;
-                    System.Diagnostics.Debug.WriteLine(e.HResult + ": " + e.Message);
-                    System.Diagnostics.Debug.WriteLine(e.StackTrace);
+                    if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
+                    {
+                        ret = ErrorStatus.NETWORKERROR;
+                        break;
+                    }
                 }
 
                 // If we can't load data, delay and try again
@@ -74,28 +78,50 @@ namespace SimpleWeather.WeatherYahoo
                 counter++;
             } while (weather == null && counter < 10);
 
+            // Load old data if available and we can't get new data
+            if (weather == null)
+            {
+                await loadSavedWeatherData(weatherFile, true);
+            }
+
             // End Stream
             webClient.Dispose();
 
             await memStream.FlushAsync();
             memStream.Dispose();
 
-            saveWeatherData();
+            if (weather == null && ret == ErrorStatus.UNKNOWN)
+            {
+                ret = ErrorStatus.NOWEATHER;
+            }
+            else if (weather != null)
+            {
+                saveWeatherData();
+                ret = ErrorStatus.SUCCESS;
+            }
+
+            return ret;
         }
 
-        public async Task loadWeatherData(bool forceRefresh)
+        public async Task<ErrorStatus> loadWeatherData(bool forceRefresh)
         {
+            ErrorStatus ret = ErrorStatus.UNKNOWN;
+
             if (weatherFile == null)
                 weatherFile = await appDataFolder.CreateFileAsync("weather" + locationIdx + ".json", CreationCollisionOption.OpenIfExists);
 
             if (forceRefresh)
-                await getWeatherData();
+                ret = await getWeatherData();
             else
-                await loadWeatherData();
+                ret = await loadWeatherData();
+
+            return ret;
         }
 
-        public async Task loadWeatherData()
+        public async Task<ErrorStatus> loadWeatherData()
         {
+            ErrorStatus ret = ErrorStatus.UNKNOWN;
+
             if (weatherFile == null)
                 weatherFile = await appDataFolder.CreateFileAsync("weather" + locationIdx + ".json", CreationCollisionOption.OpenIfExists);
 
@@ -108,8 +134,53 @@ namespace SimpleWeather.WeatherYahoo
 
             if (!gotData || weather.units.temperature != Settings.Unit)
             {
-                await getWeatherData();
+                ret = await getWeatherData();
             }
+            else
+                ret = ErrorStatus.SUCCESS;
+
+            return ret;
+        }
+
+        private async Task<bool> loadSavedWeatherData(StorageFile file, bool _override)
+        {
+            if (_override)
+            {
+                FileInfo fileInfo = new FileInfo(file.Path);
+
+                if (!fileInfo.Exists || fileInfo.Length == 0)
+                {
+                    return false;
+                }
+
+                while (FileUtils.IsFileLocked(weatherFile).GetAwaiter().GetResult())
+                {
+                    await Task.Delay(100);
+                }
+
+                // Load weather data
+                using (FileRandomAccessStream fileStream = (await weatherFile.OpenAsync(FileAccessMode.Read).AsTask().ConfigureAwait(false)) as FileRandomAccessStream)
+                {
+                    DataContractJsonSerializer deSerializer = new DataContractJsonSerializer(typeof(Weather));
+                    MemoryStream memStream = new MemoryStream();
+                    fileStream.AsStreamForRead().CopyTo(memStream);
+                    memStream.Seek(0, 0);
+
+                    weather = (Weather)deSerializer.ReadObject(memStream);
+
+                    await fileStream.AsStream().FlushAsync();
+                    fileStream.Dispose();
+                    await memStream.FlushAsync();
+                    memStream.Dispose();
+                }
+
+                if (weather == null)
+                    return false;
+
+                return true;
+            }
+            else
+                return await loadSavedWeatherData(file);
         }
 
         private async Task<bool> loadSavedWeatherData(StorageFile file)

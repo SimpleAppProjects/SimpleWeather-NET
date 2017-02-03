@@ -8,6 +8,7 @@ using Windows.ApplicationModel.Core;
 using Windows.Devices.Geolocation;
 using Windows.Storage;
 using Windows.UI.Core;
+using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -61,7 +62,22 @@ namespace SimpleWeather
         {
             if (!String.IsNullOrWhiteSpace(sender.Text) && args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
             {
-                List<WeatherUnderground.AC_Location> results = await WeatherUnderground.AutoCompleteQuery.getLocations(sender.Text).ConfigureAwait(false);
+                List<WeatherUnderground.AC_Location> results = new List<WeatherUnderground.AC_Location>(0);
+                try
+                {
+                    results = await WeatherUnderground.AutoCompleteQuery.getLocations(sender.Text).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
+                    {
+                        await dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+                        {
+                            MessageDialog error = new MessageDialog("Network Connection Error!!", "Error");
+                            await error.ShowAsync();
+                        });
+                    }
+                }
 
                 await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
@@ -133,7 +149,24 @@ namespace SimpleWeather
             else if (!String.IsNullOrEmpty(args.QueryText))
             {
                 // Use args.QueryText to determine what to do.
-                List<WeatherUnderground.AC_Location> results = await WeatherUnderground.AutoCompleteQuery.getLocations(args.QueryText).ConfigureAwait(false);
+                List<WeatherUnderground.AC_Location> results = new List<WeatherUnderground.AC_Location>(0);
+                try
+                {
+                    results = await WeatherUnderground.AutoCompleteQuery.getLocations(args.QueryText).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
+                    {
+                        await dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+                        {
+                            MessageDialog error =
+                            new MessageDialog("Network Connection Error!!", "Error");
+                            await error.ShowAsync();
+                        });
+                    }
+                    return;
+                }
 
                 await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
@@ -146,7 +179,7 @@ namespace SimpleWeather
             }
 
             // Stop if using WeatherUnderground and API Key is empty
-            if (String.IsNullOrWhiteSpace(Settings.API_KEY) && Settings.API == "WUnderground")
+            if (String.IsNullOrWhiteSpace(key) && Settings.API == "WUnderground")
             {
                 TextBlock header = KeyEntry.Header as TextBlock;
                 header.Visibility = Visibility.Visible;
@@ -163,8 +196,30 @@ namespace SimpleWeather
                 Settings.saveLocations(locations);
 
                 wu_Loader = new WeatherUnderground.WeatherDataLoader(selected_query, homeIdx);
+                WeatherUtils.ErrorStatus ret = await wu_Loader.loadWeatherData().ConfigureAwait(false);
 
-                await wu_Loader.loadWeatherData().ConfigureAwait(false);
+                // Error?
+                if(wu_Loader.getWeather() == null)
+                {
+                    MessageDialog error = 
+                        new MessageDialog("Unable to load weather data!!", "Error");
+                    switch (ret)
+                    {
+                        case WeatherUtils.ErrorStatus.NETWORKERROR:
+                            error.Content = "Network Connection Error!!";
+                            break;
+                        case WeatherUtils.ErrorStatus.QUERYNOTFOUND:
+                            error.Content = "No cities match your search query";
+                            break;
+                        case WeatherUtils.ErrorStatus.INVALIDAPIKEY:
+                            error.Content = "Invalid API Key";
+                            break;
+                        default:
+                            break;
+                    }
+                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => await error.ShowAsync());
+                    return;
+                }
             }
             else
             {
@@ -172,7 +227,31 @@ namespace SimpleWeather
                 List<WeatherYahoo.Coordinate> locations = new List<WeatherYahoo.Coordinate>();
 
                 wLoader = new WeatherYahoo.WeatherDataLoader(sender.Text, homeIdx);
-                await wLoader.loadWeatherData().ConfigureAwait(false);
+                WeatherUtils.ErrorStatus ret = await wLoader.loadWeatherData().ConfigureAwait(false);
+
+                // Error?
+                if (wLoader.getWeather() == null)
+                {
+                    MessageDialog error =
+                        new MessageDialog("Unable to load weather data!!", "Error");
+                    switch (ret)
+                    {
+                        case WeatherUtils.ErrorStatus.NETWORKERROR:
+                            error.Content = "Network Connection Error!!";
+                            break;
+                        case WeatherUtils.ErrorStatus.QUERYNOTFOUND:
+                            error.Content = "No cities match your search query";
+                            break;
+                        case WeatherUtils.ErrorStatus.INVALIDAPIKEY:
+                            error.Content = "Invalid API Key";
+                            break;
+                        default:
+                            break;
+                    }
+                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => await error.ShowAsync());
+                    return;
+                }
+
                 WeatherYahoo.Coordinate local = new WeatherYahoo.Coordinate(
                     String.Format("{0}, {1}", wLoader.getWeather().location.lat, wLoader.getWeather().location._long));
 
@@ -199,8 +278,6 @@ namespace SimpleWeather
                         Settings.WeatherLoaded = true;
                         this.Frame.Navigate(typeof(Shell));
                     }
-                    else
-                        throw new Exception("Weather is null");
                 }
                 else
                 {
@@ -216,8 +293,6 @@ namespace SimpleWeather
                         Settings.WeatherLoaded = true;
                         this.Frame.Navigate(typeof(Shell));
                     }
-                    else
-                        throw new Exception("Weather is null");
                 }
 
                 sender.IsSuggestionListOpen = false;
@@ -233,7 +308,7 @@ namespace SimpleWeather
 
             // Check for key
             if (!String.IsNullOrEmpty(Settings.API_KEY))
-                KeyEntry.Text = Settings.API_KEY;
+                KeyEntry.Text = key = Settings.API_KEY;
 
             if (Settings.WeatherLoaded)
             {
@@ -246,23 +321,16 @@ namespace SimpleWeather
 
                     wu_Loader = new WeatherUnderground.WeatherDataLoader(local, homeIdx);
 
-                    await wu_Loader.loadWeatherData().ConfigureAwait(false);
-
-                    if (wu_Loader.getWeather() != null)
+                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     {
-                        await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
                         {
-                            if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
-                            {
-                                CoreApplication.Properties.Remove("WeatherLoader");
-                            }
-                            CoreApplication.Properties.Add("WeatherLoader", wu_Loader);
+                            CoreApplication.Properties.Remove("WeatherLoader");
+                        }
+                        CoreApplication.Properties.Add("WeatherLoader", wu_Loader);
 
-                            this.Frame.Navigate(typeof(Shell));
-                        });
-                    }
-                    else
-                        throw new Exception("Weather is null");
+                        this.Frame.Navigate(typeof(Shell));
+                    });
                 }
                 else
                 {
@@ -271,23 +339,16 @@ namespace SimpleWeather
 
                     wLoader = new WeatherYahoo.WeatherDataLoader(local.ToString(), homeIdx);
 
-                    await wLoader.loadWeatherData().ConfigureAwait(false);
-
-                    if (wLoader.getWeather() != null)
+                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     {
-                        await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
                         {
-                            if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
-                            {
-                                CoreApplication.Properties.Remove("WeatherLoader");
-                            }
-                            CoreApplication.Properties.Add("WeatherLoader", wLoader);
+                            CoreApplication.Properties.Remove("WeatherLoader");
+                        }
+                        CoreApplication.Properties.Add("WeatherLoader", wLoader);
 
-                            this.Frame.Navigate(typeof(Shell));
-                        });
-                    }
-                    else
-                        throw new Exception("Weather is null");
+                        this.Frame.Navigate(typeof(Shell));
+                    });
                 }
             }
             else
@@ -302,22 +363,80 @@ namespace SimpleWeather
             Button button = sender as Button;
             button.IsEnabled = false;
 
+            GeolocationAccessStatus geoStatus = await Geolocator.RequestAccessAsync();
             Geolocator geolocal = new Geolocator();
-            Geoposition geoPos = await geolocal.GetGeopositionAsync();
+            Geoposition geoPos = null;
 
-            button.IsEnabled = false;
+            // Setup error just in case
+            MessageDialog error = null;
 
-            WeatherUnderground.location gpsLocation = await WeatherUnderground.GeopositionQuery.getLocation(geoPos);
-            LocationQueryView view = new LocationQueryView(gpsLocation);
+            switch (geoStatus)
+            {
+                case GeolocationAccessStatus.Allowed:
+                    try
+                    {
+                        geoPos = await geolocal.GetGeopositionAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
+                            error = new MessageDialog("Network Connection Error!!", "Error");
+                        else
+                            error = new MessageDialog("Unable to retrieve location status", "Location access error");
+                        await error.ShowAsync();
+                    }
+                    break;
+                case GeolocationAccessStatus.Denied:
+                    error = new MessageDialog("Access to location was denied. Please enable in Settings.", "Location access denied");
+                    error.Commands.Add(new UICommand("Settings", async (command) =>
+                    {
+                        await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:privacy-location"));
+                    }, 0));
+                    error.Commands.Add(new UICommand("Cancel", null, 1));
+                    error.DefaultCommandIndex = 0;
+                    error.CancelCommandIndex = 1;
+                    await error.ShowAsync();
+                    break;
+                case GeolocationAccessStatus.Unspecified:
+                    error = new MessageDialog("Unable to retrieve location status", "Location access error");
+                    await error.ShowAsync();
+                    break;
+            }
+            
+            // Access to location granted
+            if (geoPos != null)
+            {
+                button.IsEnabled = false;
 
-            LocationQuerys.Clear();
-            LocationQuerys.Add(view);
+                WeatherUnderground.location gpsLocation = null;
+                try
+                {
+                    gpsLocation = await WeatherUnderground.GeopositionQuery.getLocation(geoPos);
+                }
+                catch (Exception ex)
+                {
+                    if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
+                    {
+                        error = new MessageDialog("Network Connection Error!!", "Error");
+                        await dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => await error.ShowAsync());
+                    }
+                }
 
-            // Refresh list
-            Location.ItemsSource = null;
-            Location.ItemsSource = LocationQuerys;
+                if (gpsLocation != null)
+                {
+                    LocationQueryView view = new LocationQueryView(gpsLocation);
 
-            Location.IsSuggestionListOpen = true;
+                    LocationQuerys.Clear();
+                    LocationQuerys.Add(view);
+
+                    // Refresh list
+                    Location.ItemsSource = null;
+                    Location.ItemsSource = LocationQuerys;
+
+                    Location.IsSuggestionListOpen = true;
+                }
+            }
+
             button.IsEnabled = true;
         }
 

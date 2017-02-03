@@ -50,12 +50,7 @@ namespace SimpleWeather.WeatherUnderground
                     locationResults.Add(location);
                 }
             }
-            catch (Exception e)
-            {
-                /* TODO: DEBUG - remove logging */
-                System.Diagnostics.Debug.WriteLine(e.HResult + ": " + e.Message);
-                System.Diagnostics.Debug.WriteLine(e.StackTrace);
-            }
+            catch (Exception) { }
 
             return locationResults;
         }

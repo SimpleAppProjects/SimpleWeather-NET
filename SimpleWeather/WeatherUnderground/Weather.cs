@@ -64,6 +64,7 @@ namespace SimpleWeather.WeatherUnderground
         public string version { get; set; }
         public string termsofService { get; set; }
         public Features features { get; set; }
+        public Error error { get; set; }
     }
 
     public class Features
@@ -380,5 +381,11 @@ namespace SimpleWeather.WeatherUnderground
     {
         public string hour { get; set; }
         public string minute { get; set; }
+    }
+
+    public class Error
+    {
+        public string type { get; set; }
+        public string description { get; set; }
     }
 }

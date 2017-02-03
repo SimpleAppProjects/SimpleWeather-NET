@@ -41,12 +41,9 @@ namespace SimpleWeather.WeatherUnderground
             {
                 result = (location)deserializer.Deserialize(memStream);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 result = new location();
-                /* TODO: DEBUG - remove logging */
-                System.Diagnostics.Debug.WriteLine(e.HResult + ": " + e.Message);
-                System.Diagnostics.Debug.WriteLine(e.StackTrace);
             }
 
             return result;

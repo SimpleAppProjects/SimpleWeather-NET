@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -54,15 +55,16 @@ namespace SimpleWeather
             ShowLoadingGrid(true);
 
             object weather;
+            WeatherUtils.ErrorStatus ret;
 
             if (Settings.API == "WUnderground")
             {
-                await wu_Loader.loadWeatherData(forceRefresh).ConfigureAwait(false);
+                ret = await wu_Loader.loadWeatherData(forceRefresh).ConfigureAwait(false);
                 weather = wu_Loader.getWeather();
             }
             else
             {
-                await wLoader.loadWeatherData(forceRefresh).ConfigureAwait(false);
+                ret = await wLoader.loadWeatherData(forceRefresh).ConfigureAwait(false);
                 weather = wLoader.getWeather();
             }
 
@@ -80,7 +82,14 @@ namespace SimpleWeather
                 });
             }
             else
-                throw new Exception("Weather is null");
+            {
+                MessageDialog error = new MessageDialog("Unable to load weather data!!", "Error");
+
+                if (ret == WeatherUtils.ErrorStatus.NETWORKERROR)
+                    error.Content = "Network Connection Error!!";
+
+                await dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => await error.ShowAsync());
+            }
 
             ShowLoadingGrid(false);
         }

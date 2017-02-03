@@ -91,11 +91,11 @@ namespace SimpleWeather
                     backgroundImages = new Dictionary<string, BitmapImage>();
 
                     StorageFolder installFolder = Package.Current.InstalledLocation;
-                    StorageFolder AssetsFolder = await installFolder.GetFolderAsync("Assets\\Backgrounds");
-                    IReadOnlyList<StorageFile> files = await AssetsFolder.GetFilesAsync();
+                    StorageFolder AssetsFolder = await installFolder.GetFolderAsync("Assets\\Backgrounds").AsTask().ConfigureAwait(false);
+                    IReadOnlyList<StorageFile> files = await AssetsFolder.GetFilesAsync().AsTask().ConfigureAwait(false);
                     foreach (StorageFile file in files)
                     {
-                        IRandomAccessStream imgStream = await file.OpenReadAsync();
+                        IRandomAccessStream imgStream = await file.OpenReadAsync().AsTask().ConfigureAwait(false);
                         // Preload image at path and add to list
                         await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
                         {
@@ -104,10 +104,10 @@ namespace SimpleWeather
                             bmp.DecodePixelWidth = 960;
                             await bmp.SetSourceAsync(imgStream);
                             backgroundImages.Add(file.DisplayName, bmp);
-                        });
+                        }).AsTask().ConfigureAwait(false);
                     }
                 }
-            });
+            }).ConfigureAwait(false);
         }
 
         /// <summary>

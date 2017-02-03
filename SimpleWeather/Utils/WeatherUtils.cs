@@ -423,5 +423,15 @@ namespace SimpleWeather
             return date;
         }
         #endregion
+
+        public enum ErrorStatus
+        {
+            UNKNOWN = -1,
+            SUCCESS,
+            NOWEATHER,
+            NETWORKERROR,
+            INVALIDAPIKEY,
+            QUERYNOTFOUND,
+        }
     }
 }
