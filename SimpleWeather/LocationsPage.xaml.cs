@@ -66,9 +66,6 @@ namespace SimpleWeather
         private async void LoadLocations()
         {
             // Lets load it up...
-            HomeLocation.ItemsSource = HomePanel;
-            OtherLocationsPanel.ItemsSource = LocationPanels;
-
             if (Settings.API == "WUnderground")
             {
                 List<string> locations = await Settings.getLocations_WU();
@@ -84,6 +81,9 @@ namespace SimpleWeather
                     else
                         LocationPanels.Add(panel);
                 }
+
+                // Refresh
+                RefreshPanels();
 
                 foreach (string location in locations)
                 {
@@ -132,6 +132,9 @@ namespace SimpleWeather
                         LocationPanels.Add(panel);
                 }
 
+                // Refresh
+                RefreshPanels();
+
                 foreach (WeatherYahoo.Coordinate location in locations)
                 {
                     int index = locations.IndexOf(location);
@@ -165,11 +168,17 @@ namespace SimpleWeather
             }
 
             // Refresh
+            RefreshPanels();
+        }
+
+        private async void RefreshPanels()
+        {
+            // Refresh
             await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 HomeLocation.ItemsSource = null;
-                HomeLocation.ItemsSource = HomePanel;
                 OtherLocationsPanel.ItemsSource = null;
+                HomeLocation.ItemsSource = HomePanel;
                 OtherLocationsPanel.ItemsSource = LocationPanels;
             });
         }
@@ -473,8 +482,8 @@ namespace SimpleWeather
                             ShowChangeHomePanel(false);
 
                             // Refresh
-                            sender.ItemsSource = null;
-                            sender.ItemsSource = HomePanel;
+                            HomeLocation.ItemsSource = null;
+                            HomeLocation.ItemsSource = HomePanel;
                         }
                         else
                         {
@@ -538,8 +547,8 @@ namespace SimpleWeather
                             ShowChangeHomePanel(false);
 
                             // Refresh
-                            sender.ItemsSource = null;
-                            sender.ItemsSource = HomePanel;
+                            HomeLocation.ItemsSource = null;
+                            HomeLocation.ItemsSource = HomePanel;
                         }
                         else
                         {

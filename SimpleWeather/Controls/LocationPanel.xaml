@@ -106,18 +106,22 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <ProgressRing x:Name="LoadingRing" Grid.ColumnSpan="2" IsActive="False" Foreground="White"/>
-        <TextBlock x:Name="LocationName" Text="{Binding LocationName}" FontSize="24" Grid.Column="0" VerticalAlignment="Center" Padding="10" Transitions="{StaticResource TextTransitions}"/>
-        <Grid Grid.Column="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="100"/>
-            </Grid.ColumnDefinitions>
-            <Viewbox VerticalAlignment="Stretch" Width="60" Height="60" Grid.Column="0">
-                <TextBlock x:Name="CurrentTemp" Text="{Binding CurrTemp}" FontSize="24" Padding="10" Transitions="{StaticResource TextTransitions}"/>
-            </Viewbox>
-            <Viewbox VerticalAlignment="Stretch" Width="60" Height="60" Grid.Column="1">
-                <TextBlock x:Name="WeatherIcon" Text="{Binding WeatherIcon}" Style="{StaticResource WeatherIcon}" Transitions="{StaticResource TextTransitions}"/>
-            </Viewbox>
-        </Grid>
+        <Viewbox Height="55" HorizontalAlignment="Left" Grid.Column="0">
+            <TextBlock x:Name="LocationName" Text="{Binding LocationName}" FontSize="24" VerticalAlignment="Center" Padding="10" Transitions="{StaticResource TextTransitions}"/>
+        </Viewbox>
+        <Viewbox Height="55" VerticalAlignment="Center" Grid.Column="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="90"/>
+                    <ColumnDefinition Width="90"/>
+                </Grid.ColumnDefinitions>
+                <Viewbox Height="55" Width="55" Grid.Column="0">
+                    <TextBlock x:Name="CurrentTemp" Text="{Binding CurrTemp}" FontSize="24" Padding="10" Transitions="{StaticResource TextTransitions}"/>
+                </Viewbox>
+                <Viewbox Height="55" Width="55" Grid.Column="1">
+                    <TextBlock x:Name="WeatherIcon" Text="{Binding WeatherIcon}" Style="{StaticResource WeatherIcon}" Transitions="{StaticResource TextTransitions}"/>
+                </Viewbox>
+            </Grid>
+        </Viewbox>
     </Grid>
 </Button>
