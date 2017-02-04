@@ -7,6 +7,8 @@ namespace SimpleWeather.WeatherYahoo
     public class Weather
     {
         [DataMember]
+        public string created;
+        [DataMember]
         public string lastBuildDate;
         [DataMember]
         public Units units;
@@ -28,7 +30,8 @@ namespace SimpleWeather.WeatherYahoo
 
         public Weather(Rootobject root)
         {
-            lastBuildDate = root.query.created;
+            created = root.query.created;
+            lastBuildDate = root.query.results.channel.lastBuildDate;
             units = root.query.results.channel.units;
 
             location = root.query.results.channel.location;
@@ -129,6 +132,9 @@ namespace SimpleWeather.WeatherYahoo
         public string lat { get; set; }
         public string _long { get; set; }
         public string description { get { return city + "," + region; } }
+
+        [DataMember]
+        public TimeSpan offset { get; set; }
     }
 
     [DataContract]

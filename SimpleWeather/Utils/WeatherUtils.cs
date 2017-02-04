@@ -241,9 +241,12 @@ namespace SimpleWeather
 
         private static bool isNight(WeatherYahoo.Weather weather)
         {
+            TimeSpan sunrise = DateTime.Parse(weather.astronomy.sunrise).TimeOfDay;
+            TimeSpan sunset = DateTime.Parse(weather.astronomy.sunset).TimeOfDay;
+            TimeSpan now = DateTimeOffset.UtcNow.ToOffset(weather.location.offset).TimeOfDay;
+
             // Determine whether its night using sunset/rise times
-            if (DateTime.Now < DateTime.Parse(weather.astronomy.sunrise)
-                    || DateTime.Now > DateTime.Parse(weather.astronomy.sunset))
+            if (now < sunrise || now > sunset)
                 return true;
             else
                 return false;
@@ -255,7 +258,7 @@ namespace SimpleWeather
 
             // ex. "2016-08-22T04:53:07Z"
             CultureInfo provider = CultureInfo.InvariantCulture;
-            DateTime updateTime = DateTime.ParseExact(weather.lastBuildDate,
+            DateTime updateTime = DateTime.ParseExact(weather.created,
                 "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'", provider).ToLocalTime();
 
             if (updateTime.DayOfWeek == DateTime.Today.DayOfWeek)
@@ -388,20 +391,24 @@ namespace SimpleWeather
 
         private static bool isNight(WeatherUnderground.Weather weather)
         {
-            string format = "H:mm zzz";
             WeatherUnderground.Sunset1 sunsetInfo = weather.sun_phase.sunset;
             WeatherUnderground.Sunrise1 sunriseInfo = weather.sun_phase.sunrise;
 
             string sunset_string = 
-                string.Format("{0}:{1} {2}", sunsetInfo.hour, sunsetInfo.minute, weather.condition.local_tz_offset);
+                string.Format("{0}:{1}", sunsetInfo.hour, sunsetInfo.minute);
             string sunrise_string = 
-                string.Format("{0}:{1} {2}", sunriseInfo.hour, sunriseInfo.minute, weather.condition.local_tz_offset);
+                string.Format("{0}:{1}", sunriseInfo.hour, sunriseInfo.minute);
 
-            DateTime sunset = DateTime.ParseExact(sunset_string, format, null);
-            DateTime sunrise = DateTime.ParseExact(sunrise_string, format, null);
+            TimeSpan sunset = TimeSpan.Parse(sunset_string);
+            TimeSpan sunrise = TimeSpan.Parse(sunrise_string);
+            TimeSpan now;
+            if (weather.condition.local_tz_offset.StartsWith("-"))
+                now = DateTimeOffset.UtcNow.ToOffset(-TimeSpan.ParseExact(weather.condition.local_tz_offset, "\\-hhmm", null)).TimeOfDay;
+            else
+                now = DateTimeOffset.UtcNow.ToOffset(TimeSpan.ParseExact(weather.condition.local_tz_offset, "\\+hhmm", null)).TimeOfDay;
 
             // Determine whether its night using sunset/rise times
-            if (DateTime.Now < sunrise || DateTime.Now > sunset)
+            if (now < sunrise || now > sunset)
                 return true;
             else
                 return false;

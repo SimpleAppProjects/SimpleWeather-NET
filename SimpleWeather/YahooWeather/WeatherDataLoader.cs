@@ -96,11 +96,27 @@ namespace SimpleWeather.WeatherYahoo
             }
             else if (weather != null)
             {
+                saveTimeZone();
                 saveWeatherData();
                 ret = ErrorStatus.SUCCESS;
             }
 
             return ret;
+        }
+
+        private void saveTimeZone()
+        {
+            // Now
+            DateTime utc = DateTime.ParseExact(weather.created,
+                "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'", null);
+
+            // There
+            string tz = weather.lastBuildDate.Substring(weather.lastBuildDate.Length - 3);
+            DateTime there = DateTime.ParseExact(weather.lastBuildDate,
+                "ddd, dd MMM yyyy hh:mm tt " + tz, null);
+            TimeSpan offset = there - utc;
+
+            weather.location.offset = TimeSpan.Parse(string.Format("{0}:{1}", offset.Hours, offset.Minutes));
         }
 
         public async Task<ErrorStatus> loadWeatherData(bool forceRefresh)
@@ -222,7 +238,7 @@ namespace SimpleWeather.WeatherYahoo
             // Check file age
             // ex. "2016-08-22T04:53:07Z"
             System.Globalization.CultureInfo provider = System.Globalization.CultureInfo.InvariantCulture;
-            DateTime updateTime = DateTime.ParseExact(weather.lastBuildDate,
+            DateTime updateTime = DateTime.ParseExact(weather.created,
                 "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'", provider).ToLocalTime();
 
             TimeSpan span = DateTime.Now - updateTime;
