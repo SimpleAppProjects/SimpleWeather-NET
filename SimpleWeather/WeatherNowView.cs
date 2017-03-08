@@ -126,7 +126,7 @@ namespace SimpleWeather
             Sunset = DateTime.Parse(weather.sun_phase.sunset.hour + ":" + weather.sun_phase.sunset.minute).ToString("hh:mm tt");
             // Wind
             WindChill = Settings.Unit == "F" ?
-                weather.condition.windchill_f + "º" : weather.condition.windchill_c + "º";
+                Math.Round(weather.condition.feelslike_f) + "º" : Math.Round(weather.condition.feelslike_c) + "º";
             WindSpeed = Settings.Unit == "F" ?
                 weather.condition.wind_mph.ToString() : weather.condition.wind_kph.ToString();
             SpeedUnit = Settings.Unit == "F" ? "mph" : "kph";

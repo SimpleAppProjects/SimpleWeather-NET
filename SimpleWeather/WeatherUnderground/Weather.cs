@@ -114,8 +114,8 @@ namespace SimpleWeather.WeatherUnderground
         public string windchill_f { get; set; }
         public string windchill_c { get; set; }
         public string feelslike_string { get; set; }
-        public string feelslike_f { get; set; }
-        public string feelslike_c { get; set; }
+        public float feelslike_f { get; set; }
+        public float feelslike_c { get; set; }
         public string visibility_mi { get; set; }
         public string visibility_km { get; set; }
         public string solarradiation { get; set; }
