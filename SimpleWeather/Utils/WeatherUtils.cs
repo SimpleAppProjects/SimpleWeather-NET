@@ -239,7 +239,7 @@ namespace SimpleWeather
             return bg;
         }
 
-        private static bool isNight(WeatherYahoo.Weather weather)
+        public static bool isNight(WeatherYahoo.Weather weather)
         {
             TimeSpan sunrise = DateTime.Parse(weather.astronomy.sunrise).TimeOfDay;
             TimeSpan sunset = DateTime.Parse(weather.astronomy.sunset).TimeOfDay;
@@ -392,7 +392,7 @@ namespace SimpleWeather
             return bg;
         }
 
-        private static bool isNight(WeatherUnderground.Weather weather)
+        public static bool isNight(WeatherUnderground.Weather weather)
         {
             WeatherUnderground.Sunset1 sunsetInfo = weather.sun_phase.sunset;
             WeatherUnderground.Sunrise1 sunriseInfo = weather.sun_phase.sunrise;

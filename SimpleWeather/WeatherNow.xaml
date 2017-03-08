@@ -191,7 +191,7 @@
                     <TextBlock Name="CurTemp" Text="{Binding CurTemp}" FontSize="24" Foreground="White" Style="{StaticResource WeatherIcon}" HorizontalAlignment="Center" Margin="5,0,0,0" Grid.Row="2"/>
                 </Grid>
 
-                <Grid Name="DetailsPanel" Background="#10808080" Grid.Row="2">
+                <Grid Name="DetailsPanel" Background="{Binding PanelBackground}" Grid.Row="2">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
@@ -294,7 +294,7 @@
 
                 <TextBlock Name="ForecastLabel" Text="Forecast" FontSize="18" Foreground="White" Margin="50,0,0,0" Padding="5" Grid.Row="3"
                                         HorizontalAlignment="Left" VerticalAlignment="Top" FontWeight="SemiBold"/>
-                <Grid Background="#10808080" Margin="0,35,0,0" Grid.Row="3">
+                <Grid Name="ForecastGrid" Background="{Binding PanelBackground}" Margin="0,35,0,0" Grid.Row="3">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>

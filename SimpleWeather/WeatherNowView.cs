@@ -36,6 +36,7 @@ namespace SimpleWeather
 
         // Background
         public ImageBrush Background { get; set; }
+        public SolidColorBrush PanelBackground { get; set; }
 
         public WeatherNowView()
         {
@@ -50,7 +51,9 @@ namespace SimpleWeather
         private void updateView(WeatherYahoo.Weather weather)
         {
             // Update background
-            Background = WeatherUtils.GetBackground(weather); 
+            Background = WeatherUtils.GetBackground(weather);
+            PanelBackground = new SolidColorBrush(WeatherUtils.isNight(weather) ?
+                Windows.UI.Color.FromArgb(15, 128, 128, 128) : Windows.UI.Color.FromArgb(15, 8, 8, 8));
 
             // Location
             Location = weather.location.description;
@@ -100,8 +103,10 @@ namespace SimpleWeather
 
         private void updateView(WeatherUnderground.Weather weather)
         {
-            // Update background
+            // Update backgrounds
             Background = WeatherUtils.GetBackground(weather);
+            PanelBackground = new SolidColorBrush(WeatherUtils.isNight(weather) ?
+                Windows.UI.Color.FromArgb(15, 128, 128, 128) : Windows.UI.Color.FromArgb(15, 8, 8, 8));
 
             // Location
             Location = weather.location.full_name;
