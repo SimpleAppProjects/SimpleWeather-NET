@@ -280,7 +280,8 @@ namespace SimpleWeather
             if (wundergrnd_icon.Contains("nt_clear") || wundergrnd_icon.Contains("nt_mostlysunny") 
                 || wundergrnd_icon.Contains("nt_partlysunny") || wundergrnd_icon.Contains("nt_sunny"))
                 WeatherIcon = "\uf02e";
-            else if (wundergrnd_icon.Contains("nt_mostlycloudy") || wundergrnd_icon.Contains("nt_partlycloudy"))
+            else if (wundergrnd_icon.Contains("nt_mostlycloudy") || wundergrnd_icon.Contains("nt_partlycloudy")
+                || wundergrnd_icon.Contains("nt_cloudy"))
                 WeatherIcon = "\uf031";
             else if (wundergrnd_icon.Contains("mostlysunny") || wundergrnd_icon.Contains("partlysunny"))
                 WeatherIcon = "\uf00d";
@@ -290,9 +291,11 @@ namespace SimpleWeather
                 WeatherIcon = "\uf064";
             else if (wundergrnd_icon.Contains("hazy"))
                 WeatherIcon = "\uf0b6";
+            else if (wundergrnd_icon.Contains("fog"))
+                WeatherIcon = "\uf014";
             else if (wundergrnd_icon.Contains("rain"))
                 WeatherIcon = "\uf01a";
-            else if (wundergrnd_icon.Contains("sleat"))
+            else if (wundergrnd_icon.Contains("sleet"))
                 WeatherIcon = "\uf0b5";
             else if (wundergrnd_icon.Contains("snow"))
                 WeatherIcon = "\uf01b";
