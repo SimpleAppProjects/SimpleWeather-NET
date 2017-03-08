@@ -18,7 +18,7 @@ namespace SimpleWeather
         private static StorageFolder appDataFolder = ApplicationData.Current.LocalFolder;
         private static StorageFile locationsFile;
 
-        private static string Farenheit = "F";
+        private static string Fahrenheit = "F";
         private static string Celsius = "C";
 
         private static string getTempUnit()
@@ -26,12 +26,12 @@ namespace SimpleWeather
             var localSettings = ApplicationData.Current.LocalSettings;
             if (!localSettings.Values.ContainsKey("Units") || localSettings.Values["Units"] == null)
             {
-                return Farenheit;
+                return Fahrenheit;
             }
             else if (localSettings.Values["Units"].Equals("C"))
                 return Celsius;
 
-            return Farenheit;
+            return Fahrenheit;
         }
 
         private static void setTempUnit(string value)
@@ -41,7 +41,7 @@ namespace SimpleWeather
             if (value == Celsius)
                 localSettings.Values["Units"] = Celsius;
             else
-                localSettings.Values["Units"] = Farenheit;
+                localSettings.Values["Units"] = Fahrenheit;
         }
 
         private static bool isWeatherLoaded()
