@@ -8,7 +8,7 @@ namespace SimpleWeather.Utils
 {
     public static class FileUtils
     {
-        public static async Task<bool> IsFileLocked(StorageFile file)
+        public static bool IsFileLocked(StorageFile file)
         {
             if (!File.Exists(file.Path))
                 return false;
@@ -17,7 +17,7 @@ namespace SimpleWeather.Utils
 
             try
             {
-                stream = await file.OpenAsync(FileAccessMode.Read).AsTask().ConfigureAwait(false);
+                stream = file.OpenAsync(FileAccessMode.Read).AsTask().GetAwaiter().GetResult();
             }
             catch (IOException)
             {

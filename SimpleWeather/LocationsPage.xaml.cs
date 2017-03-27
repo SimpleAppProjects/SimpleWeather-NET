@@ -91,7 +91,7 @@ namespace SimpleWeather
                     int index = locations.IndexOf(location);
 
                     wu_Loader = new WeatherUnderground.WeatherDataLoader(location, index);
-                    await wu_Loader.loadWeatherData().ConfigureAwait(false);
+                    await wu_Loader.loadWeatherData();
 
                     WeatherUnderground.Weather weather = wu_Loader.getWeather();
 
@@ -141,7 +141,7 @@ namespace SimpleWeather
                     int index = locations.IndexOf(location);
 
                     wLoader = new WeatherYahoo.WeatherDataLoader(location.ToString(), index);
-                    await wLoader.loadWeatherData().ConfigureAwait(false);
+                    await wLoader.loadWeatherData();
                     
                     WeatherYahoo.Weather weather = wLoader.getWeather();
 
@@ -314,7 +314,7 @@ namespace SimpleWeather
                     }));
                 }
 
-                IUICommand chosenCommand = await menu.ShowForSelectionAsync(GetElementRect(panel)).AsTask().ConfigureAwait(false);
+                IUICommand chosenCommand = await menu.ShowForSelectionAsync(GetElementRect(panel));
                 if (chosenCommand == null) { } // The command is null if no command was invoked. 
             });
             e.Handled = true;
@@ -341,7 +341,7 @@ namespace SimpleWeather
         {
             if (!String.IsNullOrWhiteSpace(sender.Text) && args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
             {
-                List<WeatherUnderground.AC_Location> results = await WeatherUnderground.AutoCompleteQuery.getLocations(sender.Text).ConfigureAwait(false);
+                List<WeatherUnderground.AC_Location> results = await WeatherUnderground.AutoCompleteQuery.getLocations(sender.Text);
 
                 await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
@@ -413,7 +413,7 @@ namespace SimpleWeather
             else if (!String.IsNullOrEmpty(args.QueryText))
             {
                 // Use args.QueryText to determine what to do.
-                List<WeatherUnderground.AC_Location> results = await WeatherUnderground.AutoCompleteQuery.getLocations(args.QueryText).ConfigureAwait(false);
+                List<WeatherUnderground.AC_Location> results = await WeatherUnderground.AutoCompleteQuery.getLocations(args.QueryText);
 
                 await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
@@ -435,7 +435,7 @@ namespace SimpleWeather
                     index = locations.Count;
 
                 wu_Loader = new WeatherUnderground.WeatherDataLoader(selected_query, index);
-                WeatherUtils.ErrorStatus ret = await wu_Loader.loadWeatherData(true).ConfigureAwait(false);
+                WeatherUtils.ErrorStatus ret = await wu_Loader.loadWeatherData(true);
 
                 // Error?
                 if (wu_Loader.getWeather() == null)
@@ -510,7 +510,7 @@ namespace SimpleWeather
                     index = locations.Count;
 
                 wLoader = new WeatherYahoo.WeatherDataLoader(sender.Text, index);
-                await wLoader.loadWeatherData(true).ConfigureAwait(false);
+                await wLoader.loadWeatherData(true);
 
                 // Error?
                 if (wLoader.getWeather() == null)

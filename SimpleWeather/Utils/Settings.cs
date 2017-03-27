@@ -113,7 +113,7 @@ namespace SimpleWeather.Utils
             if (fileinfo.Length == 0 || !fileinfo.Exists)
                 return null;
 
-            while (FileUtils.IsFileLocked(locationsFile).GetAwaiter().GetResult())
+            while (FileUtils.IsFileLocked(locationsFile))
             {
                 await Task.Delay(100);
             }
@@ -121,7 +121,7 @@ namespace SimpleWeather.Utils
             List<WeatherUtils.Coordinate> locations;
 
             // Load locations
-            using (FileRandomAccessStream fileStream = (await locationsFile.OpenAsync(FileAccessMode.Read).AsTask().ConfigureAwait(false)) as FileRandomAccessStream)
+            using (FileRandomAccessStream fileStream = (await locationsFile.OpenAsync(FileAccessMode.Read)) as FileRandomAccessStream)
             {
                 DataContractJsonSerializer deSerializer = new DataContractJsonSerializer(typeof(List<WeatherUtils.Coordinate>));
                 MemoryStream memStream = new MemoryStream();
@@ -144,12 +144,12 @@ namespace SimpleWeather.Utils
             if (locationsFile == null)
                 locationsFile = await appDataFolder.CreateFileAsync("locations.json", CreationCollisionOption.OpenIfExists);
 
-            while (FileUtils.IsFileLocked(locationsFile).GetAwaiter().GetResult())
+            while (FileUtils.IsFileLocked(locationsFile))
             {
                 await Task.Delay(100);
             }
 
-            using (FileRandomAccessStream fileStream = (await locationsFile.OpenAsync(FileAccessMode.ReadWrite).AsTask().ConfigureAwait(false)) as FileRandomAccessStream)
+            using (FileRandomAccessStream fileStream = (await locationsFile.OpenAsync(FileAccessMode.ReadWrite)) as FileRandomAccessStream)
             {
                 MemoryStream memStream = new MemoryStream();
                 DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(List<WeatherUtils.Coordinate>));
@@ -177,7 +177,7 @@ namespace SimpleWeather.Utils
             if (fileinfo.Length == 0 || !fileinfo.Exists)
                 return null;
 
-            while (FileUtils.IsFileLocked(locationsFile).GetAwaiter().GetResult())
+            while (FileUtils.IsFileLocked(locationsFile))
             {
                 await Task.Delay(100);
             }
@@ -185,7 +185,7 @@ namespace SimpleWeather.Utils
             List<string> locations;
 
             // Load locations
-            using (FileRandomAccessStream fileStream = (await locationsFile.OpenAsync(FileAccessMode.Read).AsTask().ConfigureAwait(false)) as FileRandomAccessStream)
+            using (FileRandomAccessStream fileStream = (await locationsFile.OpenAsync(FileAccessMode.Read)) as FileRandomAccessStream)
             {
                 DataContractJsonSerializer deSerializer = new DataContractJsonSerializer(typeof(List<string>));
                 MemoryStream memStream = new MemoryStream();
@@ -208,12 +208,12 @@ namespace SimpleWeather.Utils
             if (locationsFile == null)
                 locationsFile = await appDataFolder.CreateFileAsync("locations.json", CreationCollisionOption.OpenIfExists);
 
-            while (FileUtils.IsFileLocked(locationsFile).GetAwaiter().GetResult())
+            while (FileUtils.IsFileLocked(locationsFile))
             {
                 await Task.Delay(100);
             }
 
-            using (FileRandomAccessStream fileStream = (await locationsFile.OpenAsync(FileAccessMode.ReadWrite).AsTask().ConfigureAwait(false)) as FileRandomAccessStream)
+            using (FileRandomAccessStream fileStream = (await locationsFile.OpenAsync(FileAccessMode.ReadWrite)) as FileRandomAccessStream)
             {
                 MemoryStream memStream = new MemoryStream();
                 DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(List<string>));
@@ -235,7 +235,7 @@ namespace SimpleWeather.Utils
             if (!localSettings.Values.ContainsKey("API_KEY") || localSettings.Values["API_KEY"] == null)
             {
                 String key = String.Empty;
-                key = readAPIKEYfile().ConfigureAwait(false).GetAwaiter().GetResult();
+                key = readAPIKEYfile().GetAwaiter().GetResult();
 
                 if (!String.IsNullOrWhiteSpace(key))
                     setAPIKEY(key);
@@ -252,7 +252,7 @@ namespace SimpleWeather.Utils
             String key = String.Empty;
             try
             {
-                StorageFile keyFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///API_KEY.txt")).AsTask().ConfigureAwait(false);
+                StorageFile keyFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///API_KEY.txt"));
                 FileInfo fileinfo = new FileInfo(keyFile.Path);
 
                 if (fileinfo.Length != 0 || fileinfo.Exists)

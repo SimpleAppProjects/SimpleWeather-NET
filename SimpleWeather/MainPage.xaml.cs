@@ -66,7 +66,7 @@ namespace SimpleWeather
                 List<WeatherUnderground.AC_Location> results = new List<WeatherUnderground.AC_Location>(0);
                 try
                 {
-                    results = await WeatherUnderground.AutoCompleteQuery.getLocations(sender.Text).ConfigureAwait(false);
+                    results = await WeatherUnderground.AutoCompleteQuery.getLocations(sender.Text);
                 }
                 catch (Exception ex)
                 {
@@ -153,7 +153,7 @@ namespace SimpleWeather
                 List<WeatherUnderground.AC_Location> results = new List<WeatherUnderground.AC_Location>(0);
                 try
                 {
-                    results = await WeatherUnderground.AutoCompleteQuery.getLocations(args.QueryText).ConfigureAwait(false);
+                    results = await WeatherUnderground.AutoCompleteQuery.getLocations(args.QueryText);
                 }
                 catch (Exception ex)
                 {
@@ -197,7 +197,7 @@ namespace SimpleWeather
                 Settings.saveLocations(locations);
 
                 wu_Loader = new WeatherUnderground.WeatherDataLoader(selected_query, homeIdx);
-                WeatherUtils.ErrorStatus ret = await wu_Loader.loadWeatherData().ConfigureAwait(false);
+                WeatherUtils.ErrorStatus ret = await wu_Loader.loadWeatherData();
 
                 // Error?
                 if(wu_Loader.getWeather() == null)
@@ -228,7 +228,7 @@ namespace SimpleWeather
                 List<WeatherUtils.Coordinate> locations = new List<WeatherUtils.Coordinate>();
 
                 wLoader = new WeatherYahoo.WeatherDataLoader(sender.Text, homeIdx);
-                WeatherUtils.ErrorStatus ret = await wLoader.loadWeatherData().ConfigureAwait(false);
+                WeatherUtils.ErrorStatus ret = await wLoader.loadWeatherData();
 
                 // Error?
                 if (wLoader.getWeather() == null)

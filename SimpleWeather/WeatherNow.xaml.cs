@@ -60,12 +60,12 @@ namespace SimpleWeather
 
             if (Settings.API == "WUnderground")
             {
-                ret = await wu_Loader.loadWeatherData(forceRefresh).ConfigureAwait(false);
+                ret = await wu_Loader.loadWeatherData(forceRefresh);
                 weather = wu_Loader.getWeather();
             }
             else
             {
-                ret = await wLoader.loadWeatherData(forceRefresh).ConfigureAwait(false);
+                ret = await wLoader.loadWeatherData(forceRefresh);
                 weather = wLoader.getWeather();
             }
 
