@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Streams;
 
-namespace SimpleWeather
+namespace SimpleWeather.Utils
 {
     public static class FileUtils
     {

@@ -1,4 +1,5 @@
 ﻿using SimpleWeather.Controls;
+using SimpleWeather.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -118,8 +119,8 @@ namespace SimpleWeather
             }
             else
             {
-                List<WeatherYahoo.Coordinate> locations = await Settings.getLocations();
-                foreach(WeatherYahoo.Coordinate location in locations)
+                List<WeatherUtils.Coordinate> locations = await Settings.getLocations();
+                foreach(WeatherUtils.Coordinate location in locations)
                 {
                     int index = locations.IndexOf(location);
 
@@ -135,7 +136,7 @@ namespace SimpleWeather
                 // Refresh
                 RefreshPanels();
 
-                foreach (WeatherYahoo.Coordinate location in locations)
+                foreach (WeatherUtils.Coordinate location in locations)
                 {
                     int index = locations.IndexOf(location);
 
@@ -303,7 +304,7 @@ namespace SimpleWeather
                         }
                         else
                         {
-                            List<WeatherYahoo.Coordinate> locations = await Settings.getLocations();
+                            List<WeatherUtils.Coordinate> locations = await Settings.getLocations();
                             locations.RemoveAt(idx);
                             Settings.saveLocations(locations);
                         }
@@ -502,7 +503,7 @@ namespace SimpleWeather
             }
             else
             {
-                List<WeatherYahoo.Coordinate> locations = await Settings.getLocations();
+                List<WeatherUtils.Coordinate> locations = await Settings.getLocations();
                 if (sender.Name == "NewHomeLocation")
                     index = 0;
                 else
@@ -527,7 +528,7 @@ namespace SimpleWeather
                     if (weather != null)
                     {
                         // Show location name
-                        WeatherYahoo.Coordinate location = new WeatherYahoo.Coordinate(
+                        WeatherUtils.Coordinate location = new WeatherUtils.Coordinate(
                             string.Join(",", wLoader.getWeather().location.lat, wLoader.getWeather().location._long));
 
                         // Save coords to List

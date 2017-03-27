@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimpleWeather.Utils;
+using System;
 using System.Runtime.Serialization;
 
 namespace SimpleWeather.WeatherYahoo

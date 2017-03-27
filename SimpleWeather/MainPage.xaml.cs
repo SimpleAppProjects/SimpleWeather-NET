@@ -1,4 +1,5 @@
 ﻿using SimpleWeather.Controls;
+using SimpleWeather.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -224,7 +225,7 @@ namespace SimpleWeather
             else
             {
                 // Save location query to List
-                List<WeatherYahoo.Coordinate> locations = new List<WeatherYahoo.Coordinate>();
+                List<WeatherUtils.Coordinate> locations = new List<WeatherUtils.Coordinate>();
 
                 wLoader = new WeatherYahoo.WeatherDataLoader(sender.Text, homeIdx);
                 WeatherUtils.ErrorStatus ret = await wLoader.loadWeatherData().ConfigureAwait(false);
@@ -252,7 +253,7 @@ namespace SimpleWeather
                     return;
                 }
 
-                WeatherYahoo.Coordinate local = new WeatherYahoo.Coordinate(
+                WeatherUtils.Coordinate local = new WeatherUtils.Coordinate(
                     String.Format("{0}, {1}", wLoader.getWeather().location.lat, wLoader.getWeather().location._long));
 
                 locations.Add(local);
@@ -334,8 +335,8 @@ namespace SimpleWeather
                 }
                 else
                 {
-                    List<WeatherYahoo.Coordinate> locations = await Settings.getLocations();
-                    WeatherYahoo.Coordinate local = locations[homeIdx];
+                    List<WeatherUtils.Coordinate> locations = await Settings.getLocations();
+                    WeatherUtils.Coordinate local = locations[homeIdx];
 
                     wLoader = new WeatherYahoo.WeatherDataLoader(local.ToString(), homeIdx);
 

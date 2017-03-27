@@ -1,4 +1,6 @@
-﻿namespace SimpleWeather.Controls
+﻿using SimpleWeather.Utils;
+
+namespace SimpleWeather.Controls
 {
     public class ForecastItemView
     {

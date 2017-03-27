@@ -1,4 +1,5 @@
 ﻿using SimpleWeather.Controls;
+using SimpleWeather.Utils;
 using System;
 using System.Collections.ObjectModel;
 using Windows.UI.Xaml;

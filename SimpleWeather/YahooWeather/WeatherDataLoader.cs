@@ -6,7 +6,7 @@ using Windows.Devices.Geolocation;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.Web.Http;
-using static SimpleWeather.WeatherUtils;
+using SimpleWeather.Utils;
 
 namespace SimpleWeather.WeatherYahoo
 {
@@ -31,7 +31,7 @@ namespace SimpleWeather.WeatherYahoo
             locationIdx = idx;
         }
 
-        private async Task<ErrorStatus> getWeatherData()
+        private async Task<WeatherUtils.ErrorStatus> getWeatherData()
         {
             string yahooAPI = "https://query.yahooapis.com/v1/public/yql?q=";
             string query = "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text=\""
@@ -42,7 +42,7 @@ namespace SimpleWeather.WeatherYahoo
             MemoryStream memStream = new MemoryStream();
             DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(Rootobject));
             int counter = 0;
-            ErrorStatus ret = ErrorStatus.UNKNOWN;
+            WeatherUtils.ErrorStatus ret = WeatherUtils.ErrorStatus.UNKNOWN;
 
             do
             {
@@ -66,7 +66,7 @@ namespace SimpleWeather.WeatherYahoo
                     weather = null;
                     if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
                     {
-                        ret = ErrorStatus.NETWORKERROR;
+                        ret = WeatherUtils.ErrorStatus.NETWORKERROR;
                         break;
                     }
                 }
@@ -90,15 +90,15 @@ namespace SimpleWeather.WeatherYahoo
             await memStream.FlushAsync();
             memStream.Dispose();
 
-            if (weather == null && ret == ErrorStatus.UNKNOWN)
+            if (weather == null && ret == WeatherUtils.ErrorStatus.UNKNOWN)
             {
-                ret = ErrorStatus.NOWEATHER;
+                ret = WeatherUtils.ErrorStatus.NOWEATHER;
             }
             else if (weather != null)
             {
                 saveTimeZone();
                 saveWeatherData();
-                ret = ErrorStatus.SUCCESS;
+                ret = WeatherUtils.ErrorStatus.SUCCESS;
             }
 
             return ret;
@@ -119,9 +119,9 @@ namespace SimpleWeather.WeatherYahoo
             weather.location.offset = TimeSpan.Parse(string.Format("{0}:{1}", offset.Hours, offset.Minutes));
         }
 
-        public async Task<ErrorStatus> loadWeatherData(bool forceRefresh)
+        public async Task<WeatherUtils.ErrorStatus> loadWeatherData(bool forceRefresh)
         {
-            ErrorStatus ret = ErrorStatus.UNKNOWN;
+            WeatherUtils.ErrorStatus ret = WeatherUtils.ErrorStatus.UNKNOWN;
 
             if (weatherFile == null)
                 weatherFile = await appDataFolder.CreateFileAsync("weather" + locationIdx + ".json", CreationCollisionOption.OpenIfExists);
@@ -134,9 +134,9 @@ namespace SimpleWeather.WeatherYahoo
             return ret;
         }
 
-        public async Task<ErrorStatus> loadWeatherData()
+        public async Task<WeatherUtils.ErrorStatus> loadWeatherData()
         {
-            ErrorStatus ret = ErrorStatus.UNKNOWN;
+            WeatherUtils.ErrorStatus ret = WeatherUtils.ErrorStatus.UNKNOWN;
 
             if (weatherFile == null)
                 weatherFile = await appDataFolder.CreateFileAsync("weather" + locationIdx + ".json", CreationCollisionOption.OpenIfExists);
@@ -153,7 +153,7 @@ namespace SimpleWeather.WeatherYahoo
                 ret = await getWeatherData();
             }
             else
-                ret = ErrorStatus.SUCCESS;
+                ret = WeatherUtils.ErrorStatus.SUCCESS;
 
             return ret;
         }

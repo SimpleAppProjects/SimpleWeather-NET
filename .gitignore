@@ -243,4 +243,4 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
-/SimpleWeather/API_KEY.txt
+API_KEY.txt

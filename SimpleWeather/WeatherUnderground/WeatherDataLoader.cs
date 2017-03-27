@@ -5,7 +5,7 @@ using System.Runtime.Serialization.Json;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.Web.Http;
-using static SimpleWeather.WeatherUtils;
+using SimpleWeather.Utils;
 
 namespace SimpleWeather.WeatherUnderground
 {
@@ -23,7 +23,7 @@ namespace SimpleWeather.WeatherUnderground
             locationIdx = idx;
         }
 
-        private async Task<ErrorStatus> getWeatherData()
+        private async Task<WeatherUtils.ErrorStatus> getWeatherData()
         {
             string queryAPI = "http://api.wunderground.com/api/" + Settings.API_KEY + "/astronomy/conditions/forecast10day";
             string options = ".json";
@@ -33,7 +33,7 @@ namespace SimpleWeather.WeatherUnderground
             MemoryStream memStream = new MemoryStream();
             DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(Rootobject));
             int counter = 0;
-            ErrorStatus ret = ErrorStatus.UNKNOWN;
+            WeatherUtils.ErrorStatus ret = WeatherUtils.ErrorStatus.UNKNOWN;
 
             do
             {
@@ -58,10 +58,10 @@ namespace SimpleWeather.WeatherUnderground
                         switch (root.response.error.type)
                         {
                             case "querynotfound":
-                                ret = ErrorStatus.QUERYNOTFOUND;
+                                ret = WeatherUtils.ErrorStatus.QUERYNOTFOUND;
                                 break;
                             case "keynotfound":
-                                ret = ErrorStatus.INVALIDAPIKEY;
+                                ret = WeatherUtils.ErrorStatus.INVALIDAPIKEY;
                                 break;
                             default:
                                 break;
@@ -76,7 +76,7 @@ namespace SimpleWeather.WeatherUnderground
                     weather = null;
                     if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
                     {
-                        ret = ErrorStatus.NETWORKERROR;
+                        ret = WeatherUtils.ErrorStatus.NETWORKERROR;
                         break;
                     }
                 }
@@ -100,22 +100,22 @@ namespace SimpleWeather.WeatherUnderground
             await memStream.FlushAsync();
             memStream.Dispose();
 
-            if (weather == null && ret == ErrorStatus.UNKNOWN)
+            if (weather == null && ret == WeatherUtils.ErrorStatus.UNKNOWN)
             {
-                ret = ErrorStatus.NOWEATHER;
+                ret = WeatherUtils.ErrorStatus.NOWEATHER;
             }
             else if (weather != null)
             {
                 saveWeatherData();
-                ret = ErrorStatus.SUCCESS;
+                ret = WeatherUtils.ErrorStatus.SUCCESS;
             }
 
             return ret;
         }
 
-        public async Task<ErrorStatus> loadWeatherData(bool forceRefresh)
+        public async Task<WeatherUtils.ErrorStatus> loadWeatherData(bool forceRefresh)
         {
-            ErrorStatus ret = ErrorStatus.UNKNOWN;
+            WeatherUtils.ErrorStatus ret = WeatherUtils.ErrorStatus.UNKNOWN;
 
             if (weatherFile == null)
                 weatherFile = await appDataFolder.CreateFileAsync("weather" + locationIdx + ".json", CreationCollisionOption.OpenIfExists);
@@ -128,9 +128,9 @@ namespace SimpleWeather.WeatherUnderground
             return ret;
         }
 
-        public async Task<ErrorStatus> loadWeatherData()
+        public async Task<WeatherUtils.ErrorStatus> loadWeatherData()
         {
-            ErrorStatus ret = ErrorStatus.UNKNOWN;
+            WeatherUtils.ErrorStatus ret = WeatherUtils.ErrorStatus.UNKNOWN;
 
             if (weatherFile == null)
                 weatherFile = await appDataFolder.CreateFileAsync("weather" + locationIdx + ".json", CreationCollisionOption.OpenIfExists);
@@ -147,7 +147,7 @@ namespace SimpleWeather.WeatherUnderground
                 ret = await getWeatherData();
             }
             else
-                ret = ErrorStatus.SUCCESS;
+                ret = WeatherUtils.ErrorStatus.SUCCESS;
 
             return ret;
         }

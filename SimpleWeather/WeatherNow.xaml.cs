@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimpleWeather.Utils;
+using System;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
@@ -142,8 +143,8 @@ namespace SimpleWeather
             timer.Tick += ((sender, e) =>
             {
                 counter++;
-                ForecastViewer.ScrollToHorizontalOffset(
-                    ForecastViewer.HorizontalOffset - 128 / counter);
+                ForecastViewer.ChangeView(
+                    ForecastViewer.HorizontalOffset - 128 / counter, null, null);
                 if (ForecastViewer.HorizontalOffset == 0) // can't scroll any more
                     ((DispatcherTimer)sender).Stop();
                 if (counter >= max_count)
@@ -161,8 +162,8 @@ namespace SimpleWeather
             timer.Tick += ((sender, e) =>
             {
                 counter++;
-                ForecastViewer.ScrollToHorizontalOffset(
-                    ForecastViewer.HorizontalOffset + 128 / counter);
+                ForecastViewer.ChangeView(
+                    ForecastViewer.HorizontalOffset + 128 / counter, null, null);
                 if (ForecastViewer.HorizontalOffset >= ForecastViewer.ScrollableWidth) // can't scroll any more
                     ((DispatcherTimer)sender).Stop();
                 if (counter >= max_count)

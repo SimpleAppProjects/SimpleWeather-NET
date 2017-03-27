@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SimpleWeather
+namespace SimpleWeather.Utils
 {
     public static class ConversionMethods
     {

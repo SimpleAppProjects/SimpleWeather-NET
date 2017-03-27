@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Streams;
 
-namespace SimpleWeather
+namespace SimpleWeather.Utils
 {
     public static class Settings
     {
@@ -103,7 +103,7 @@ namespace SimpleWeather
         }
 
         #region Yahoo Weather
-        public static async Task<List<WeatherYahoo.Coordinate>> getLocations()
+        public static async Task<List<WeatherUtils.Coordinate>> getLocations()
         {
             if (locationsFile == null)
                 locationsFile = await appDataFolder.CreateFileAsync("locations.json", CreationCollisionOption.OpenIfExists);
@@ -118,17 +118,17 @@ namespace SimpleWeather
                 await Task.Delay(100);
             }
 
-            List<WeatherYahoo.Coordinate> locations;
+            List<WeatherUtils.Coordinate> locations;
 
             // Load locations
             using (FileRandomAccessStream fileStream = (await locationsFile.OpenAsync(FileAccessMode.Read).AsTask().ConfigureAwait(false)) as FileRandomAccessStream)
             {
-                DataContractJsonSerializer deSerializer = new DataContractJsonSerializer(typeof(List<WeatherYahoo.Coordinate>));
+                DataContractJsonSerializer deSerializer = new DataContractJsonSerializer(typeof(List<WeatherUtils.Coordinate>));
                 MemoryStream memStream = new MemoryStream();
                 fileStream.AsStreamForRead().CopyTo(memStream);
                 memStream.Seek(0, 0);
 
-                locations = ((List<WeatherYahoo.Coordinate>)deSerializer.ReadObject(memStream));
+                locations = ((List<WeatherUtils.Coordinate>)deSerializer.ReadObject(memStream));
 
                 await fileStream.AsStream().FlushAsync();
                 fileStream.Dispose();
@@ -139,7 +139,7 @@ namespace SimpleWeather
             return locations;
         }
 
-        public static async void saveLocations(List<WeatherYahoo.Coordinate> locations)
+        public static async void saveLocations(List<WeatherUtils.Coordinate> locations)
         {
             if (locationsFile == null)
                 locationsFile = await appDataFolder.CreateFileAsync("locations.json", CreationCollisionOption.OpenIfExists);
@@ -152,7 +152,7 @@ namespace SimpleWeather
             using (FileRandomAccessStream fileStream = (await locationsFile.OpenAsync(FileAccessMode.ReadWrite).AsTask().ConfigureAwait(false)) as FileRandomAccessStream)
             {
                 MemoryStream memStream = new MemoryStream();
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(List<WeatherYahoo.Coordinate>));
+                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(List<WeatherUtils.Coordinate>));
                 serializer.WriteObject(memStream, locations);
 
                 fileStream.Size = 0;

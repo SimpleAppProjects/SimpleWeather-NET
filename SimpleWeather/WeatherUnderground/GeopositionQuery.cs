@@ -15,7 +15,7 @@ namespace SimpleWeather.WeatherUnderground
 
         public static async Task<location> getLocation(Geoposition geoPos)
         {
-            string query = string.Format("{0},{1}", geoPos.Coordinate.Latitude, geoPos.Coordinate.Longitude);
+            string query = string.Format("{0},{1}", geoPos.Coordinate.Point.Position.Latitude, geoPos.Coordinate.Point.Position.Longitude);
             Uri queryURL = new Uri(queryAPI + query + options);
 
             // Connect to webstream

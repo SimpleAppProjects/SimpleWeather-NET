@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Globalization;
+using System.Runtime.Serialization;
 using Windows.UI.Xaml.Media;
 
-namespace SimpleWeather
+namespace SimpleWeather.Utils
 {
     public static class WeatherUtils
     {
@@ -433,6 +434,45 @@ namespace SimpleWeather
             return date;
         }
         #endregion
+
+        [DataContract]
+        public class Coordinate
+        {
+            public double Latitude { get => lat; set { setLat(value); } }
+            public double Longitude { get => _long; set { setLong(value); } }
+
+            [DataMember]
+            private double lat = 0;
+            [DataMember]
+            private double _long = 0;
+
+            private void setLat(double value) { lat = value; }
+
+            private void setLong(double value) { _long = value; }
+
+            public Coordinate(string coordinatePair)
+            {
+                setCoordinate(coordinatePair);
+            }
+
+            public Coordinate(double latitude, double longitude)
+            {
+                lat = latitude;
+                _long = longitude;
+            }
+
+            public void setCoordinate(string coordinatePair)
+            {
+                string[] coord = coordinatePair.Split(',');
+                lat = double.Parse(coord[0]);
+                _long = double.Parse(coord[1]);
+            }
+
+            public override string ToString()
+            {
+                return "(" + lat + ", " + _long + ")";
+            }
+        }
 
         public enum ErrorStatus
         {
