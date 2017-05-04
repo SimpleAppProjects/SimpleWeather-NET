@@ -316,7 +316,7 @@ namespace SimpleWeather.Utils
         {
             ImageBrush bg = new ImageBrush();
             bg.Stretch = Stretch.UniformToFill;
-            bg.AlignmentX = AlignmentX.Right;
+            bg.AlignmentX = AlignmentX.Center;
             Windows.UI.Xaml.Media.Imaging.BitmapImage img;
 
             // Apply background based on weather condition

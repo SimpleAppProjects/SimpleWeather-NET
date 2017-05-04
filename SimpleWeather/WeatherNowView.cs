@@ -20,15 +20,12 @@ namespace SimpleWeather
         // Weather Details
         public string Humidity { get; set; }
         public string Pressure { get; set; }
-        public string PressureUnit { get; set; }
         public Visibility RisingVisiblity { get; set; }
         public string RisingIcon { get; set; }
         public string _Visibility { get; set; }
-        public string VisibilityUnit { get; set; }
         public string WindChill { get; set; }
         public Transform WindDirection { get; set; }
         public string WindSpeed { get; set; }
-        public string SpeedUnit { get; set; }
         public string Sunrise { get; set; }
         public string Sunset { get; set; }
 
@@ -74,18 +71,16 @@ namespace SimpleWeather
             Sunset = weather.astronomy.sunset;
             // Wind
             WindChill = (weather.units.temperature == "F" ? weather.wind.chill : ConversionMethods.FtoC(weather.wind.chill)) + "º";
-            WindSpeed = weather.wind.speed;
-            SpeedUnit = weather.units.speed;
+            WindSpeed = weather.wind.speed + " " + weather.units.speed;
             updateWindDirection(int.Parse(weather.wind.direction));
 
             // Atmosphere
             Humidity = weather.atmosphere.humidity;
             Pressure = (weather.units.temperature == "F" ?
-                weather.atmosphere.pressure : Math.Round(double.Parse(weather.atmosphere.pressure)).ToString());
-            PressureUnit = weather.units.pressure;
+                weather.atmosphere.pressure : Math.Round(double.Parse(weather.atmosphere.pressure)).ToString())
+                + " " + weather.units.pressure;
             updatePressureState(int.Parse(weather.atmosphere.rising));
-            _Visibility = weather.atmosphere.visibility;
-            VisibilityUnit = weather.units.distance;
+            _Visibility = weather.atmosphere.visibility + " " + weather.units.distance;
 
             // Add UI elements
             Forecasts = new ObservableCollection<ForecastItemView>();
@@ -129,15 +124,13 @@ namespace SimpleWeather
             WindChill = Settings.Unit == "F" ?
                 Math.Round(weather.condition.feelslike_f) + "º" : Math.Round(weather.condition.feelslike_c) + "º";
             WindSpeed = Settings.Unit == "F" ?
-                weather.condition.wind_mph.ToString() : weather.condition.wind_kph.ToString();
-            SpeedUnit = Settings.Unit == "F" ? "mph" : "kph";
+                weather.condition.wind_mph.ToString() + " mph" : weather.condition.wind_kph.ToString() + " kph";
             updateWindDirection(weather.condition.wind_degrees);
 
             // Atmosphere
             Humidity = weather.condition.relative_humidity;
             Pressure = Settings.Unit == "F" ?
-                weather.condition.pressure_in : weather.condition.pressure_mb;
-            PressureUnit = Settings.Unit == "F" ? "in" : "mb";
+                weather.condition.pressure_in + " in" : weather.condition.pressure_mb + " mb";
 
             if (weather.condition.pressure_trend == "+")
                 updatePressureState(1);
@@ -147,8 +140,7 @@ namespace SimpleWeather
                 updatePressureState(0);
 
             _Visibility = Settings.Unit == "F" ? 
-                weather.condition.visibility_mi : weather.condition.visibility_km;
-            VisibilityUnit = Settings.Unit == "F" ? "mi" : "km";
+                weather.condition.visibility_mi + " mi" : weather.condition.visibility_km + " km";
 
             // Add UI elements
             Forecasts = new ObservableCollection<ForecastItemView>();

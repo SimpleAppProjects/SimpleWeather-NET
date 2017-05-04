@@ -173,10 +173,14 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Name="Location" Text="{Binding Location}" Foreground="White" FontSize="36" FontWeight="SemiBold"
-                                            HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,15,0,0" Grid.Row="0" Transitions="{StaticResource TextTransitions}"/>
+                    <Viewbox Margin="25,10,25,0" Grid.Row="0" Height="50">
+                        <TextBlock Name="Location" Text="{Binding Location}" Foreground="White" FontWeight="SemiBold" TextAlignment="Center"
+                                   Height="{Binding Path=Parent.Height, RelativeSource={RelativeSource Self}}"
+                                   Width="{Binding Path=Parent.Width, RelativeSource={RelativeSource Self}}"
+                                   Padding="5" Transitions="{StaticResource TextTransitions}"/>
+                    </Viewbox>
                     <TextBlock Name="UpdateDate" Text="{Binding UpdateDate}" FontSize="12" Foreground="White"
-                                            HorizontalAlignment="Center" VerticalAlignment="Bottom" Padding="5" Grid.Row="1" Transitions="{StaticResource TextTransitions}"/>
+                               HorizontalAlignment="Center" VerticalAlignment="Bottom" Padding="5" Grid.Row="1" Transitions="{StaticResource TextTransitions}"/>
                 </Grid>
                 <Grid Grid.Row="1">
                     <Grid.RowDefinitions>
@@ -217,23 +221,19 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="Pressure:" Style="{StaticResource WeatherDetails}" Grid.Column="0" />
                                 <TextBlock Name="Rising" FontSize="14" Foreground="White" Style="{StaticResource WeatherIcon}" 
                                            Text="{Binding RisingIcon}" Visibility="{Binding RisingVisiblity}" Padding="5" Grid.Column="1" />
                                 <TextBlock Name="Pressure" Text="{Binding Pressure}" Style="{StaticResource WeatherDetails}" Grid.Column="2" Padding="5,5,0,5" />
-                                <TextBlock Name="PressureUnit" Text="{Binding PressureUnit}" Style="{StaticResource WeatherDetails}" Grid.Column="3" Padding="3,5,0,0" />
                             </Grid>
                             <Grid Grid.Column="2" Padding="5,0,5,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="Visibility:" Style="{StaticResource WeatherDetails}" Grid.Column="0" />
                                 <TextBlock Name="Visibility" Text="{Binding _Visibility}" Style="{StaticResource WeatherDetails}" Grid.Column="1" Padding="5,5,0,5" />
-                                <TextBlock Name="VisibilityUnit" Text="{Binding VisibilityUnit}" Style="{StaticResource WeatherDetails}" Grid.Column="2" Padding="3,5,0,0" />
                             </Grid>
                         </Grid>
                     </Viewbox>
@@ -256,13 +256,11 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="Wind:" Style="{StaticResource WeatherDetails}" Grid.Column="0" />
                                 <TextBlock Name="WindDirection" FontSize="14" Foreground="White" Style="{StaticResource WeatherIcon}" Text="&#xf058;" Padding="5" Grid.Column="1" 
                                            RenderTransformOrigin="0.5,0.5" RenderTransform="{Binding WindDirection}"/>
                                 <TextBlock Name="Speed" Text="{Binding WindSpeed}" Style="{StaticResource WeatherDetails}" Grid.Column="2" Padding="5,5,0,5" />
-                                <TextBlock Name="SpeedUnit" Text="{Binding SpeedUnit}" Style="{StaticResource WeatherDetails}" Grid.Column="3" Padding="3,5,0,0" />
                             </Grid>
                         </Grid>
                     </Viewbox>
