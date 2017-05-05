@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimpleWeather.Utils;
+using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,33 +18,40 @@ namespace SimpleWeather.WeatherUnderground
         {
             string query = string.Format("{0},{1}", geoPos.Coordinate.Point.Position.Latitude, geoPos.Coordinate.Point.Position.Longitude);
             Uri queryURL = new Uri(queryAPI + query + options);
-
-            // Connect to webstream
-            HttpClient webClient = new HttpClient();
-            HttpResponseMessage response = await webClient.GetAsync(queryURL);
-            response.EnsureSuccessStatusCode();
-            string content = await response.Content.ReadAsStringAsync();
-            byte[] buff = Encoding.UTF8.GetBytes(content);
-
-            // Write array/buffer to memorystream
-            MemoryStream memStream = new MemoryStream();
-            memStream.Write(buff, 0, buff.Length);
-            memStream.Seek(0, 0);
-
-            // End Stream
-            webClient.Dispose();
-
-            // Load data
-            XmlSerializer deserializer = new XmlSerializer(typeof(location), null, null, new XmlRootAttribute("location"), "");
             location result;
+            WeatherException wEx = null;
 
             try
             {
+                // Connect to webstream
+                HttpClient webClient = new HttpClient();
+                HttpResponseMessage response = await webClient.GetAsync(queryURL);
+                response.EnsureSuccessStatusCode();
+                string content = await response.Content.ReadAsStringAsync();
+                byte[] buff = Encoding.UTF8.GetBytes(content);
+
+                // Write array/buffer to memorystream
+                MemoryStream memStream = new MemoryStream();
+                memStream.Write(buff, 0, buff.Length);
+                memStream.Seek(0, 0);
+
+                // End Stream
+                webClient.Dispose();
+
+                // Load data
+                XmlSerializer deserializer = new XmlSerializer(typeof(location), null, null, new XmlRootAttribute("location"), "");
                 result = (location)deserializer.Deserialize(memStream);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 result = new location();
+                if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NETWORKERROR);
+                    await Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(
+                        Windows.UI.Core.CoreDispatcherPriority.Normal,
+                        async () => await new Windows.UI.Popups.MessageDialog(wEx.Message).ShowAsync());
+                }
             }
 
             return result;

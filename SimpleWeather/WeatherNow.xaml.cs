@@ -14,14 +14,27 @@ namespace SimpleWeather
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class WeatherNow : Page
+    public sealed partial class WeatherNow : Page, WeatherLoadedListener
     {
         WeatherYahoo.WeatherDataLoader wLoader = null;
         WeatherUnderground.WeatherDataLoader wu_Loader = null;
         WeatherNowView weatherView = null;
 
-        // For UI Thread
-        CoreDispatcher dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
+        public void onWeatherLoaded(int locationIdx, object weather)
+        {
+            if (weather != null)
+            {
+                if (Settings.API == "WUnderground")
+                    weatherView = new WeatherNowView(weather as WeatherUnderground.Weather);
+                else
+                    weatherView = new WeatherNowView(weather as WeatherYahoo.Weather);
+
+                this.DataContext = weatherView;
+                StackControl.ItemsSource = weatherView.Forecasts;
+            }
+
+            ShowLoadingGrid(false);
+        }
 
         public WeatherNow()
         {
@@ -38,9 +51,15 @@ namespace SimpleWeather
             if (!CoreApplication.Properties.TryGetValue("WeatherLoader", out outValue)) { }
 
             if (Settings.API == "WUnderground")
+            {
                 wu_Loader = (WeatherUnderground.WeatherDataLoader)outValue;
+                wu_Loader.setWeatherLoadedListener(this);
+            }
             else
+            {
                 wLoader = (WeatherYahoo.WeatherDataLoader)outValue;
+                wLoader.setWeatherLoadedListener(this);
+            }
 
             // Load up weather data
             RefreshWeather(false);
@@ -55,54 +74,17 @@ namespace SimpleWeather
         {
             ShowLoadingGrid(true);
 
-            object weather;
-            WeatherUtils.ErrorStatus ret;
-
             if (Settings.API == "WUnderground")
-            {
-                ret = await wu_Loader.loadWeatherData(forceRefresh);
-                weather = wu_Loader.getWeather();
-            }
+                await wu_Loader.loadWeatherData(forceRefresh);
             else
-            {
-                ret = await wLoader.loadWeatherData(forceRefresh);
-                weather = wLoader.getWeather();
-            }
-
-            if (weather != null)
-            {
-                await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                {
-                    if (Settings.API == "WUnderground")
-                        weatherView = new WeatherNowView(weather as WeatherUnderground.Weather);
-                    else
-                        weatherView = new WeatherNowView(weather as WeatherYahoo.Weather);
-
-                    this.DataContext = weatherView;
-                    StackControl.ItemsSource = weatherView.Forecasts;
-                });
-            }
-            else
-            {
-                MessageDialog error = new MessageDialog("Unable to load weather data!!", "Error");
-
-                if (ret == WeatherUtils.ErrorStatus.NETWORKERROR)
-                    error.Content = "Network Connection Error!!";
-
-                await dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => await error.ShowAsync());
-            }
-
-            ShowLoadingGrid(false);
+                await wLoader.loadWeatherData(forceRefresh);
         }
 
-        private async void ShowLoadingGrid(bool show)
+        private void ShowLoadingGrid(bool show)
         {
-            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-                LoadingRing.IsActive = show;
-                LoadingGrid.Visibility = show ? Windows.UI.Xaml.Visibility.Visible : Windows.UI.Xaml.Visibility.Collapsed;
-                MainGrid.Visibility = show ? Windows.UI.Xaml.Visibility.Collapsed : Windows.UI.Xaml.Visibility.Visible;
-            });
+            LoadingRing.IsActive = show;
+            LoadingGrid.Visibility = show ? Windows.UI.Xaml.Visibility.Visible : Windows.UI.Xaml.Visibility.Collapsed;
+            MainGrid.Visibility = show ? Windows.UI.Xaml.Visibility.Collapsed : Windows.UI.Xaml.Visibility.Visible;
         }
 
         private void LeftButton_Click(object sender, RoutedEventArgs e)

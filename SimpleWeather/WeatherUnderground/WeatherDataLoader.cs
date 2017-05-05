@@ -11,19 +11,26 @@ namespace SimpleWeather.WeatherUnderground
 {
     public class WeatherDataLoader
     {
+        private WeatherLoadedListener callback;
         private string location_query = null;
         private Weather weather = null;
         private static StorageFolder appDataFolder = ApplicationData.Current.LocalFolder;
         private StorageFile weatherFile;
         private int locationIdx = 0;
 
-        public WeatherDataLoader(string query, int idx)
+        public WeatherDataLoader(WeatherLoadedListener listener, string query, int idx)
         {
+            callback = listener;
             location_query = query;
             locationIdx = idx;
         }
 
-        private async Task<WeatherUtils.ErrorStatus> getWeatherData()
+        public void setWeatherLoadedListener(WeatherLoadedListener listener)
+        {
+            callback = listener;
+        }
+
+        private async Task getWeatherData()
         {
             string queryAPI = "http://api.wunderground.com/api/" + Settings.API_KEY + "/astronomy/conditions/forecast10day";
             string options = ".json";
@@ -33,7 +40,7 @@ namespace SimpleWeather.WeatherUnderground
             MemoryStream memStream = new MemoryStream();
             DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(Rootobject));
             int counter = 0;
-            WeatherUtils.ErrorStatus ret = WeatherUtils.ErrorStatus.UNKNOWN;
+            WeatherException wEx = null;
 
             do
             {
@@ -43,6 +50,8 @@ namespace SimpleWeather.WeatherUnderground
                     HttpResponseMessage response = await webClient.GetAsync(weatherURL);
                     response.EnsureSuccessStatusCode();
                     IBuffer buff = await response.Content.ReadAsBufferAsync();
+                    // Reset exception
+                    wEx = null;
 
                     // Write array/buffer to memorystream
                     memStream.SetLength(0);
@@ -58,10 +67,10 @@ namespace SimpleWeather.WeatherUnderground
                         switch (root.response.error.type)
                         {
                             case "querynotfound":
-                                ret = WeatherUtils.ErrorStatus.QUERYNOTFOUND;
+                                wEx = new WeatherException(WeatherUtils.ErrorStatus.QUERYNOTFOUND);
                                 break;
                             case "keynotfound":
-                                ret = WeatherUtils.ErrorStatus.INVALIDAPIKEY;
+                                wEx = new WeatherException(WeatherUtils.ErrorStatus.INVALIDAPIKEY);
                                 break;
                             default:
                                 break;
@@ -76,7 +85,7 @@ namespace SimpleWeather.WeatherUnderground
                     weather = null;
                     if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
                     {
-                        ret = WeatherUtils.ErrorStatus.NETWORKERROR;
+                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NETWORKERROR);
                         break;
                     }
                 }
@@ -93,6 +102,10 @@ namespace SimpleWeather.WeatherUnderground
             {
                 await loadSavedWeatherData(weatherFile, true);
             }
+            else if (weather != null)
+            {
+                saveWeatherData();
+            }
 
             // End Stream
             webClient.Dispose();
@@ -100,38 +113,42 @@ namespace SimpleWeather.WeatherUnderground
             await memStream.FlushAsync();
             memStream.Dispose();
 
-            if (weather == null && ret == WeatherUtils.ErrorStatus.UNKNOWN)
+            if (weather == null && wEx != null)
             {
-                ret = WeatherUtils.ErrorStatus.NOWEATHER;
+                throw wEx;
             }
-            else if (weather != null)
+            else if (weather == null && wEx == null)
             {
-                saveWeatherData();
-                ret = WeatherUtils.ErrorStatus.SUCCESS;
+                throw new WeatherException(WeatherUtils.ErrorStatus.NOWEATHER);
             }
-
-            return ret;
         }
 
-        public async Task<WeatherUtils.ErrorStatus> loadWeatherData(bool forceRefresh)
+        public async Task loadWeatherData(bool forceRefresh)
         {
-            WeatherUtils.ErrorStatus ret = WeatherUtils.ErrorStatus.UNKNOWN;
-
             if (weatherFile == null)
                 weatherFile = await appDataFolder.CreateFileAsync("weather" + locationIdx + ".json", CreationCollisionOption.OpenIfExists);
 
             if (forceRefresh)
-                ret = await getWeatherData();
+            {
+                try
+                {
+                    await getWeatherData();
+                }
+                catch (WeatherException wEx)
+                {
+                    await Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(
+                        Windows.UI.Core.CoreDispatcherPriority.Normal,
+                        async () => await new Windows.UI.Popups.MessageDialog(wEx.Message).ShowAsync());
+                }
+            }
             else
-                ret = await loadWeatherData();
+                await loadWeatherData();
 
-            return ret;
+            callback.onWeatherLoaded(locationIdx, weather);
         }
 
-        public async Task<WeatherUtils.ErrorStatus> loadWeatherData()
+        private async Task loadWeatherData()
         {
-            WeatherUtils.ErrorStatus ret = WeatherUtils.ErrorStatus.UNKNOWN;
-
             if (weatherFile == null)
                 weatherFile = await appDataFolder.CreateFileAsync("weather" + locationIdx + ".json", CreationCollisionOption.OpenIfExists);
 
@@ -144,12 +161,17 @@ namespace SimpleWeather.WeatherUnderground
 
             if (!gotData)
             {
-                ret = await getWeatherData();
+                try
+                {
+                    await getWeatherData();
+                }
+                catch (WeatherException wEx)
+                {
+                    await Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(
+                        Windows.UI.Core.CoreDispatcherPriority.Normal,
+                        async () => await new Windows.UI.Popups.MessageDialog(wEx.Message).ShowAsync());
+                }
             }
-            else
-                ret = WeatherUtils.ErrorStatus.SUCCESS;
-
-            return ret;
         }
 
         private async Task<bool> loadSavedWeatherData(StorageFile file, bool _override)
@@ -163,26 +185,8 @@ namespace SimpleWeather.WeatherUnderground
                     return false;
                 }
 
-                while (FileUtils.IsFileLocked(weatherFile))
-                {
-                    await Task.Delay(100);
-                }
-
                 // Load weather data
-                using (FileRandomAccessStream fileStream = (await weatherFile.OpenAsync(FileAccessMode.Read)) as FileRandomAccessStream)
-                {
-                    DataContractJsonSerializer deSerializer = new DataContractJsonSerializer(typeof(Weather));
-                    MemoryStream memStream = new MemoryStream();
-                    fileStream.AsStreamForRead().CopyTo(memStream);
-                    memStream.Seek(0, 0);
-
-                    weather = (Weather)deSerializer.ReadObject(memStream);
-
-                    await fileStream.AsStream().FlushAsync();
-                    fileStream.Dispose();
-                    await memStream.FlushAsync();
-                    memStream.Dispose();
-                }
+                weather = (Weather) JSONParser.Deserializer(await FileUtils.ReadFile(weatherFile), typeof(Weather));
 
                 if (weather == null)
                     return false;
@@ -202,26 +206,8 @@ namespace SimpleWeather.WeatherUnderground
                 return false;
             }
 
-            while (FileUtils.IsFileLocked(weatherFile))
-            {
-                await Task.Delay(100);
-            }
-
             // Load weather data
-            using (FileRandomAccessStream fileStream = (await weatherFile.OpenAsync(FileAccessMode.Read)) as FileRandomAccessStream)
-            {
-                DataContractJsonSerializer deSerializer = new DataContractJsonSerializer(typeof(Weather));
-                MemoryStream memStream = new MemoryStream();
-                fileStream.AsStreamForRead().CopyTo(memStream);
-                memStream.Seek(0, 0);
-
-                weather = (Weather)deSerializer.ReadObject(memStream);
-
-                await fileStream.AsStream().FlushAsync();
-                fileStream.Dispose();
-                await memStream.FlushAsync();
-                memStream.Dispose();
-            }
+            weather = (Weather)JSONParser.Deserializer(await FileUtils.ReadFile(weatherFile), typeof(Weather));
 
             if (weather == null)
                 return false;
@@ -244,28 +230,102 @@ namespace SimpleWeather.WeatherUnderground
             if (weatherFile == null)
                 weatherFile = await appDataFolder.CreateFileAsync("weather" + locationIdx + ".json", CreationCollisionOption.OpenIfExists);
 
-            while (FileUtils.IsFileLocked(weatherFile))
-            {
-                await Task.Delay(100);
-            }
-
-            using (FileRandomAccessStream fileStream = (await weatherFile.OpenAsync(FileAccessMode.ReadWrite)) as FileRandomAccessStream)
-            {
-                MemoryStream memStream = new MemoryStream();
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Weather));
-                serializer.WriteObject(memStream, weather);
-                fileStream.Size = 0;
-                memStream.WriteTo(fileStream.AsStream());
-
-                await memStream.FlushAsync();
-                memStream.Dispose();
-                await fileStream.AsStream().FlushAsync();
-                fileStream.Dispose();
-            }
+            JSONParser.Serializer(weather, weatherFile);
         }
 
         public Weather getWeather()
         {
+            return weather;
+        }
+    }
+
+    public static class WeatherLoaderTask
+    {
+        private static Weather weather = null;
+
+        public static async Task<Weather> getWeather(string location)
+        {
+            string queryAPI = "http://api.wunderground.com/api/" + Settings.API_KEY + "/astronomy/conditions/forecast10day";
+            string options = ".json";
+            Uri weatherURL = new Uri(queryAPI + location + options);
+
+            HttpClient webClient = new HttpClient();
+            MemoryStream memStream = new MemoryStream();
+            DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(Rootobject));
+            int counter = 0;
+            WeatherException wEx = null;
+
+            do
+            {
+                try
+                {
+                    // Get response
+                    HttpResponseMessage response = await webClient.GetAsync(weatherURL);
+                    response.EnsureSuccessStatusCode();
+                    IBuffer buff = await response.Content.ReadAsBufferAsync();
+                    // Reset exception
+                    wEx = null;
+
+                    // Write array/buffer to memorystream
+                    memStream.SetLength(0);
+                    await memStream.AsOutputStream().WriteAsync(buff);
+                    memStream.Seek(0, 0);
+
+                    // Load weather
+                    Rootobject root = (Rootobject)deserializer.ReadObject(memStream);
+
+                    // Check for errors
+                    if (root.response.error != null)
+                    {
+                        switch (root.response.error.type)
+                        {
+                            case "querynotfound":
+                                wEx = new WeatherException(WeatherUtils.ErrorStatus.QUERYNOTFOUND);
+                                break;
+                            case "keynotfound":
+                                wEx = new WeatherException(WeatherUtils.ErrorStatus.INVALIDAPIKEY);
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                    }
+
+                    weather = new Weather(root);
+                }
+                catch (Exception ex)
+                {
+                    weather = null;
+                    if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
+                    {
+                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NETWORKERROR);
+                        break;
+                    }
+                }
+
+                // If we can't load data, delay and try again
+                if (weather == null)
+                    await Task.Delay(1000);
+
+                counter++;
+            } while (weather == null && counter < 5);
+
+            // End Stream
+            webClient.Dispose();
+
+            await memStream.FlushAsync();
+            memStream.Dispose();
+
+            if (weather == null && wEx == null)
+            {
+                wEx = new WeatherException(WeatherUtils.ErrorStatus.NOWEATHER);
+                throw wEx;
+            }
+            else if (weather == null && wEx != null)
+            {
+                throw wEx;
+            }
+
             return weather;
         }
     }

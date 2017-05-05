@@ -52,7 +52,10 @@ namespace SimpleWeather.Utils
             FileInfo fileinfo = new FileInfo(locationsFile.Path);
 
             if (fileinfo.Length == 0 || !fileinfo.Exists)
+            {
+                setWeatherLoaded(false);
                 return false;
+            }
 
             var localSettings = ApplicationData.Current.LocalSettings;
 
@@ -113,29 +116,7 @@ namespace SimpleWeather.Utils
             if (fileinfo.Length == 0 || !fileinfo.Exists)
                 return null;
 
-            while (FileUtils.IsFileLocked(locationsFile))
-            {
-                await Task.Delay(100);
-            }
-
-            List<WeatherUtils.Coordinate> locations;
-
-            // Load locations
-            using (FileRandomAccessStream fileStream = (await locationsFile.OpenAsync(FileAccessMode.Read)) as FileRandomAccessStream)
-            {
-                DataContractJsonSerializer deSerializer = new DataContractJsonSerializer(typeof(List<WeatherUtils.Coordinate>));
-                MemoryStream memStream = new MemoryStream();
-                fileStream.AsStreamForRead().CopyTo(memStream);
-                memStream.Seek(0, 0);
-
-                locations = ((List<WeatherUtils.Coordinate>)deSerializer.ReadObject(memStream));
-
-                await fileStream.AsStream().FlushAsync();
-                fileStream.Dispose();
-                await memStream.FlushAsync();
-                memStream.Dispose();
-            }
-
+            List<WeatherUtils.Coordinate> locations = (List<WeatherUtils.Coordinate>) JSONParser.Deserializer(await FileUtils.ReadFile(locationsFile), typeof(List<WeatherUtils.Coordinate>));
             return locations;
         }
 
@@ -144,25 +125,7 @@ namespace SimpleWeather.Utils
             if (locationsFile == null)
                 locationsFile = await appDataFolder.CreateFileAsync("locations.json", CreationCollisionOption.OpenIfExists);
 
-            while (FileUtils.IsFileLocked(locationsFile))
-            {
-                await Task.Delay(100);
-            }
-
-            using (FileRandomAccessStream fileStream = (await locationsFile.OpenAsync(FileAccessMode.ReadWrite)) as FileRandomAccessStream)
-            {
-                MemoryStream memStream = new MemoryStream();
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(List<WeatherUtils.Coordinate>));
-                serializer.WriteObject(memStream, locations);
-
-                fileStream.Size = 0;
-                memStream.WriteTo(fileStream.AsStream());
-
-                await memStream.FlushAsync();
-                memStream.Dispose();
-                await fileStream.AsStream().FlushAsync();
-                fileStream.Dispose();
-            }
+            JSONParser.Serializer(locations, locationsFile);
         }
         #endregion
 
@@ -177,29 +140,7 @@ namespace SimpleWeather.Utils
             if (fileinfo.Length == 0 || !fileinfo.Exists)
                 return null;
 
-            while (FileUtils.IsFileLocked(locationsFile))
-            {
-                await Task.Delay(100);
-            }
-
-            List<string> locations;
-
-            // Load locations
-            using (FileRandomAccessStream fileStream = (await locationsFile.OpenAsync(FileAccessMode.Read)) as FileRandomAccessStream)
-            {
-                DataContractJsonSerializer deSerializer = new DataContractJsonSerializer(typeof(List<string>));
-                MemoryStream memStream = new MemoryStream();
-                fileStream.AsStreamForRead().CopyTo(memStream);
-                memStream.Seek(0, 0);
-
-                locations = ((List<string>)deSerializer.ReadObject(memStream));
-
-                await fileStream.AsStream().FlushAsync();
-                fileStream.Dispose();
-                await memStream.FlushAsync();
-                memStream.Dispose();
-            }
-
+            List<string> locations = (List<string>) JSONParser.Deserializer(await FileUtils.ReadFile(locationsFile), typeof(List<string>));
             return locations;
         }
 
@@ -208,25 +149,7 @@ namespace SimpleWeather.Utils
             if (locationsFile == null)
                 locationsFile = await appDataFolder.CreateFileAsync("locations.json", CreationCollisionOption.OpenIfExists);
 
-            while (FileUtils.IsFileLocked(locationsFile))
-            {
-                await Task.Delay(100);
-            }
-
-            using (FileRandomAccessStream fileStream = (await locationsFile.OpenAsync(FileAccessMode.ReadWrite)) as FileRandomAccessStream)
-            {
-                MemoryStream memStream = new MemoryStream();
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(List<string>));
-                serializer.WriteObject(memStream, locations);
-
-                fileStream.Size = 0;
-                memStream.WriteTo(fileStream.AsStream());
-
-                await memStream.FlushAsync();
-                memStream.Dispose();
-                await fileStream.AsStream().FlushAsync();
-                fileStream.Dispose();
-            }
+            JSONParser.Serializer(locations, locationsFile);
         }
 
         private static string getAPIKEY()

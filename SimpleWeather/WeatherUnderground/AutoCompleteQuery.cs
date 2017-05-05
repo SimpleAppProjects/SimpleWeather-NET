@@ -5,6 +5,7 @@ using System.Runtime.Serialization.Json;
 using Windows.Web.Http;
 using System.Collections.Generic;
 using System.Text;
+using SimpleWeather.Utils;
 
 namespace SimpleWeather.WeatherUnderground
 {
@@ -16,28 +17,30 @@ namespace SimpleWeather.WeatherUnderground
         public static async Task<List<AC_Location>> getLocations(string query)
         {
             Uri queryURL = new Uri(queryAPI + query + options);
-
-            // Connect to webstream
-            HttpClient webClient = new HttpClient();
-            HttpResponseMessage response = await webClient.GetAsync(queryURL);
-            response.EnsureSuccessStatusCode();
-            string content = await response.Content.ReadAsStringAsync();
-            byte[] buff = Encoding.UTF8.GetBytes(content);
-
-            // Write array/buffer to memorystream
-            MemoryStream memStream = new MemoryStream();
-            memStream.Write(buff, 0, buff.Length);
-            memStream.Seek(0, 0);
-
-            // End Stream
-            webClient.Dispose();
-
-            // Load data
-            DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(AC_Rootobject));
-            List<AC_Location> locationResults = new List<AC_Location>();
+            List<AC_Location> locationResults = null;
+            WeatherException wEx = null;
 
             try
             {
+                // Connect to webstream
+                HttpClient webClient = new HttpClient();
+                HttpResponseMessage response = await webClient.GetAsync(queryURL);
+                response.EnsureSuccessStatusCode();
+                string content = await response.Content.ReadAsStringAsync();
+                byte[] buff = Encoding.UTF8.GetBytes(content);
+
+                // Write array/buffer to memorystream
+                MemoryStream memStream = new MemoryStream();
+                memStream.Write(buff, 0, buff.Length);
+                memStream.Seek(0, 0);
+
+                // End Stream
+                webClient.Dispose();
+
+                // Load data
+                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(AC_Rootobject));
+                locationResults = new List<AC_Location>();
+
                 AC_Rootobject root = (AC_Rootobject)deserializer.ReadObject(memStream);
 
                 foreach (AC_RESULT result in root.RESULTS)
@@ -50,7 +53,17 @@ namespace SimpleWeather.WeatherUnderground
                     locationResults.Add(location);
                 }
             }
-            catch (Exception) { }
+            catch (Exception ex)
+            {
+                locationResults = new List<AC_Location>();
+                if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NETWORKERROR);
+                    await Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(
+                        Windows.UI.Core.CoreDispatcherPriority.Normal,
+                        async () => await new Windows.UI.Popups.MessageDialog(wEx.Message).ShowAsync());
+                }
+            }
 
             return locationResults;
         }

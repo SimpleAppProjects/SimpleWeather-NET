@@ -72,48 +72,42 @@ namespace SimpleWeather
                 {
                     if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
                     {
-                        await dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
-                        {
-                            MessageDialog error = new MessageDialog("Network Connection Error!!", "Error");
-                            await error.ShowAsync();
-                        });
+                        MessageDialog error = new MessageDialog("Network Connection Error!!", "Error");
+                        await error.ShowAsync();
                     }
                 }
 
-                await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                LocationQuerys.Clear();
+
+                // Show message if no results are found
+                if (results.Count == 0)
                 {
-                    LocationQuerys.Clear();
+                    LocationQueryView noresults = new LocationQueryView();
+                    noresults.LocationName = "No results found";
+                    LocationQuerys.Add(noresults);
+                }
+                else
+                {
+                    // Limit amount of results shown
+                    int maxResults = 10;
 
-                    // Show message if no results are found
-                    if (results.Count == 0)
+                    foreach (WeatherUnderground.AC_Location location in results)
                     {
-                        LocationQueryView noresults = new LocationQueryView();
-                        noresults.LocationName = "No results found";
-                        LocationQuerys.Add(noresults);
+                        LocationQueryView view = new LocationQueryView(location);
+                        LocationQuerys.Add(view);
+
+                        // Limit amount of results
+                        maxResults--;
+                        if (maxResults <= 0)
+                            break;
                     }
-                    else
-                    {
-                        // Limit amount of results shown
-                        int maxResults = 10;
+                }
 
-                        foreach (WeatherUnderground.AC_Location location in results)
-                        {
-                            LocationQueryView view = new LocationQueryView(location);
-                            LocationQuerys.Add(view);
+                // Refresh list
+                Location.ItemsSource = null;
+                Location.ItemsSource = LocationQuerys;
 
-                            // Limit amount of results
-                            maxResults--;
-                            if (maxResults <= 0)
-                                break;
-                        }
-                    }
-
-                    // Refresh list
-                    Location.ItemsSource = null;
-                    Location.ItemsSource = LocationQuerys;
-
-                    sender.IsSuggestionListOpen = true;
-                });
+                sender.IsSuggestionListOpen = true;
             }
             else if (String.IsNullOrWhiteSpace(sender.Text))
             {
@@ -159,24 +153,16 @@ namespace SimpleWeather
                 {
                     if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
                     {
-                        await dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
-                        {
-                            MessageDialog error =
-                            new MessageDialog("Network Connection Error!!", "Error");
-                            await error.ShowAsync();
-                        });
+                        await new MessageDialog("Network Connection Error!!", "Error").ShowAsync();
                     }
                     return;
                 }
 
-                await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                if (results.Count > 0)
                 {
-                    if (results.Count > 0)
-                    {
-                        sender.Text = results.First().name;
-                        selected_query = results.First().l;
-                    }
-                });
+                    sender.Text = results.First().name;
+                    selected_query = results.First().l;
+                }
             }
 
             // Stop if using WeatherUnderground and API Key is empty
@@ -194,110 +180,57 @@ namespace SimpleWeather
                 // Save location query to List
                 List<string> locations = new List<string>();
                 locations.Add(selected_query);
-                Settings.saveLocations(locations);
 
-                wu_Loader = new WeatherUnderground.WeatherDataLoader(selected_query, homeIdx);
-                WeatherUtils.ErrorStatus ret = await wu_Loader.loadWeatherData();
+                WeatherUnderground.Weather weather = await WeatherUnderground.WeatherLoaderTask.getWeather(selected_query);
 
-                // Error?
-                if(wu_Loader.getWeather() == null)
-                {
-                    MessageDialog error = 
-                        new MessageDialog("Unable to load weather data!!", "Error");
-                    switch (ret)
-                    {
-                        case WeatherUtils.ErrorStatus.NETWORKERROR:
-                            error.Content = "Network Connection Error!!";
-                            break;
-                        case WeatherUtils.ErrorStatus.QUERYNOTFOUND:
-                            error.Content = "No cities match your search query";
-                            break;
-                        case WeatherUtils.ErrorStatus.INVALIDAPIKEY:
-                            error.Content = "Invalid API Key";
-                            break;
-                        default:
-                            break;
-                    }
-                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => await error.ShowAsync());
+                if (weather == null)
                     return;
+
+                // Save API_KEY
+                Settings.API_KEY = key;
+                Settings.saveLocations(locations);
+                // Save weather data
+                JSONParser.Serializer(weather,
+                    await ApplicationData.Current.LocalFolder.CreateFileAsync("weather.json", CreationCollisionOption.OpenIfExists));
+
+                // Save WeatherLoader
+                if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
+                {
+                    CoreApplication.Properties.Remove("WeatherLoader");
                 }
+                CoreApplication.Properties.Add("WeatherLoader", wu_Loader);
             }
             else
             {
                 // Save location query to List
                 List<WeatherUtils.Coordinate> locations = new List<WeatherUtils.Coordinate>();
 
-                wLoader = new WeatherYahoo.WeatherDataLoader(sender.Text, homeIdx);
-                WeatherUtils.ErrorStatus ret = await wLoader.loadWeatherData();
+                WeatherYahoo.Weather weather = await WeatherYahoo.WeatherLoaderTask.getWeather(sender.Text);
 
-                // Error?
-                if (wLoader.getWeather() == null)
-                {
-                    MessageDialog error =
-                        new MessageDialog("Unable to load weather data!!", "Error");
-                    switch (ret)
-                    {
-                        case WeatherUtils.ErrorStatus.NETWORKERROR:
-                            error.Content = "Network Connection Error!!";
-                            break;
-                        case WeatherUtils.ErrorStatus.QUERYNOTFOUND:
-                            error.Content = "No cities match your search query";
-                            break;
-                        case WeatherUtils.ErrorStatus.INVALIDAPIKEY:
-                            error.Content = "Invalid API Key";
-                            break;
-                        default:
-                            break;
-                    }
-                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => await error.ShowAsync());
+                if (weather == null)
                     return;
-                }
 
                 WeatherUtils.Coordinate local = new WeatherUtils.Coordinate(
-                    String.Format("{0}, {1}", wLoader.getWeather().location.lat, wLoader.getWeather().location._long));
+                    String.Format("{0}, {1}", weather.location.lat, weather.location._long));
 
                 locations.Add(local);
                 Settings.saveLocations(locations);
+                // Save weather data
+                JSONParser.Serializer(weather,
+                    await ApplicationData.Current.LocalFolder.CreateFileAsync("weather0.json", CreationCollisionOption.OpenIfExists));
+
+                // Save WeatherLoader
+                wLoader = new WeatherYahoo.WeatherDataLoader(null, sender.Text, homeIdx);
+                if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
+                {
+                    CoreApplication.Properties.Remove("WeatherLoader");
+                }
+                CoreApplication.Properties.Add("WeatherLoader", wLoader);
             }
 
-            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-                if (Settings.API == "WUnderground")
-                {
-                    if (wu_Loader.getWeather() != null)
-                    {
-                        // Save API_KEY
-                        Settings.API_KEY = key;
-
-                        // Save WeatherLoader
-                        if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
-                        {
-                            CoreApplication.Properties.Remove("WeatherLoader");
-                        }
-                        CoreApplication.Properties.Add("WeatherLoader", wu_Loader);
-
-                        Settings.WeatherLoaded = true;
-                        this.Frame.Navigate(typeof(Shell));
-                    }
-                }
-                else
-                {
-                    if (wLoader.getWeather() != null)
-                    {
-                        // Save WeatherLoader
-                        if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
-                        {
-                            CoreApplication.Properties.Remove("WeatherLoader");
-                        }
-                        CoreApplication.Properties.Add("WeatherLoader", wLoader);
-
-                        Settings.WeatherLoaded = true;
-                        this.Frame.Navigate(typeof(Shell));
-                    }
-                }
-
-                sender.IsSuggestionListOpen = false;
-            });
+            Settings.WeatherLoaded = true;
+            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(Shell)));
+            sender.IsSuggestionListOpen = false;
         }
 
         private async void Restore()
@@ -320,36 +253,30 @@ namespace SimpleWeather
                     List<string> locations = await Settings.getLocations_WU();
                     string local = locations[homeIdx];
 
-                    wu_Loader = new WeatherUnderground.WeatherDataLoader(local, homeIdx);
+                    wu_Loader = new WeatherUnderground.WeatherDataLoader(null, local, homeIdx);
 
-                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
                     {
-                        if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
-                        {
-                            CoreApplication.Properties.Remove("WeatherLoader");
-                        }
-                        CoreApplication.Properties.Add("WeatherLoader", wu_Loader);
+                        CoreApplication.Properties.Remove("WeatherLoader");
+                    }
+                    CoreApplication.Properties.Add("WeatherLoader", wu_Loader);
 
-                        this.Frame.Navigate(typeof(Shell));
-                    });
+                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(Shell)));
                 }
                 else
                 {
                     List<WeatherUtils.Coordinate> locations = await Settings.getLocations();
                     WeatherUtils.Coordinate local = locations[homeIdx];
 
-                    wLoader = new WeatherYahoo.WeatherDataLoader(local.ToString(), homeIdx);
+                    wLoader = new WeatherYahoo.WeatherDataLoader(null, local.ToString(), homeIdx);
 
-                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
                     {
-                        if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
-                        {
-                            CoreApplication.Properties.Remove("WeatherLoader");
-                        }
-                        CoreApplication.Properties.Add("WeatherLoader", wLoader);
+                        CoreApplication.Properties.Remove("WeatherLoader");
+                    }
+                    CoreApplication.Properties.Add("WeatherLoader", wLoader);
 
-                        this.Frame.Navigate(typeof(Shell));
-                    });
+                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(Shell)));
                 }
             }
             else
@@ -419,7 +346,7 @@ namespace SimpleWeather
                     if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
                     {
                         error = new MessageDialog("Network Connection Error!!", "Error");
-                        await dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => await error.ShowAsync());
+                        await error.ShowAsync();
                     }
                 }
 

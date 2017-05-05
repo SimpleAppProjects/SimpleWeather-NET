@@ -8,6 +8,38 @@ namespace SimpleWeather.Utils
 {
     public static class FileUtils
     {
+        public async static Task<String> ReadFile(StorageFile file)
+        {
+            while (IsFileLocked(file))
+            {
+                await Task.Delay(100);
+            }
+
+            String data = await FileIO.ReadTextAsync(file);
+
+            return data;
+        }
+
+        public static async void WriteFile(String data, StorageFile file)
+        {
+            while(IsFileLocked(file))
+            {
+                await Task.Delay(100);
+            }
+
+            await FileIO.WriteTextAsync(file, data);
+        }
+
+        public static async void WriteFile(Byte[] data, StorageFile file)
+        {
+            while (IsFileLocked(file))
+            {
+                await Task.Delay(100);
+            }
+
+            await FileIO.WriteBytesAsync(file, data);
+        }
+
         public static bool IsFileLocked(StorageFile file)
         {
             if (!File.Exists(file.Path))

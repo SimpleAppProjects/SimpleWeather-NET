@@ -119,7 +119,10 @@
     <Compile Include="LocationsPage.xaml.cs">
       <DependentUpon>LocationsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utils\JSONParser.cs" />
     <Compile Include="Utils\WeatherUtils.cs" />
+    <Compile Include="Utils\WeatherException.cs" />
+    <Compile Include="WeatherLoadedListener.cs" />
     <Compile Include="WeatherNowView.cs" />
     <Compile Include="Controls\ForecastItem.xaml.cs">
       <DependentUpon>ForecastItem.xaml</DependentUpon>

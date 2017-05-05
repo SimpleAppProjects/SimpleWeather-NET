@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.Devices.Geolocation;
 using Windows.Foundation;
+using Windows.Storage;
 using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
@@ -22,7 +23,7 @@ namespace SimpleWeather
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class LocationsPage : Page
+    public sealed partial class LocationsPage : Page, WeatherLoadedListener
     {
         WeatherYahoo.WeatherDataLoader wLoader = null;
         WeatherUnderground.WeatherDataLoader wu_Loader = null;
@@ -33,8 +34,28 @@ namespace SimpleWeather
         public ObservableCollection<LocationQueryView> LocationQuerys { get; set; }
         private string selected_query = string.Empty;
 
-        // For UI Thread
-        CoreDispatcher dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
+        public void onWeatherLoaded(int locationIdx, object weather)
+        {
+            if (weather != null)
+            {
+                if (locationIdx == 0)
+                {
+                    if (weather.GetType() == typeof(WeatherUnderground.Weather))
+                        HomePanel.First().setWeather(weather as WeatherUnderground.Weather);
+                    else if (weather.GetType() == typeof(WeatherYahoo.Weather))
+                        HomePanel.First().setWeather(weather as WeatherYahoo.Weather);
+                }
+                else
+                {
+                    LocationPanelView panelView = LocationPanels[locationIdx - 1];
+
+                    if (weather.GetType() == typeof(WeatherUnderground.Weather))
+                        panelView.setWeather(weather as WeatherUnderground.Weather);
+                    else if (weather.GetType() == typeof(WeatherYahoo.Weather))
+                        panelView.setWeather(weather as WeatherYahoo.Weather);
+                }
+            }
+        }
 
         public LocationsPage()
         {
@@ -76,6 +97,8 @@ namespace SimpleWeather
 
                     LocationPanelView panel = new LocationPanelView();
                     panel.Background = new SolidColorBrush(App.AppColor);
+                    // Save index to tag (to easily retreive)
+                    panel.Pair = new KeyValuePair<int, object>(index, location);
 
                     if (index == 0) // Home
                         HomePanel.Add(panel);
@@ -90,31 +113,8 @@ namespace SimpleWeather
                 {
                     int index = locations.IndexOf(location);
 
-                    wu_Loader = new WeatherUnderground.WeatherDataLoader(location, index);
-                    await wu_Loader.loadWeatherData();
-
-                    WeatherUnderground.Weather weather = wu_Loader.getWeather();
-
-                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        if (index == 0)
-                        {
-                            if (weather != null)
-                                HomePanel.First().setWeather(weather);
-
-                            HomePanel.First().Pair = new KeyValuePair<int, object>(index, location);
-                        }
-                        else
-                        {
-                            LocationPanelView panelView = LocationPanels[index - 1];
-
-                            if (weather != null)
-                                panelView.setWeather(weather);
-
-                            // Save index to tag (to easily retreive)
-                            panelView.Pair = new KeyValuePair<int, object>(index, location);
-                        }
-                    });
+                    wu_Loader = new WeatherUnderground.WeatherDataLoader(this, location, index);
+                    await wu_Loader.loadWeatherData(false);
                 }
             }
             else
@@ -126,6 +126,8 @@ namespace SimpleWeather
 
                     LocationPanelView panel = new LocationPanelView();
                     panel.Background = new SolidColorBrush(App.AppColor);
+                    // Save index to tag (to easily retreive)
+                    panel.Pair = new KeyValuePair<int, object>(index, location);
 
                     if (index == 0) // Home
                         HomePanel.Add(panel);
@@ -140,31 +142,8 @@ namespace SimpleWeather
                 {
                     int index = locations.IndexOf(location);
 
-                    wLoader = new WeatherYahoo.WeatherDataLoader(location.ToString(), index);
-                    await wLoader.loadWeatherData();
-                    
-                    WeatherYahoo.Weather weather = wLoader.getWeather();
-
-                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        if (index == 0)
-                        {
-                            if (weather != null)
-                                HomePanel.First().setWeather(weather);
-
-                            HomePanel.First().Pair = new KeyValuePair<int, object>(index, location);
-                        }
-                        else
-                        {
-                            LocationPanelView panelView = LocationPanels[index - 1];
-
-                            if (weather != null)
-                                panelView.setWeather(weather);
-
-                            // Save index to tag (to easily retreive)
-                            panelView.Pair = new KeyValuePair<int, object>(index, location);
-                        }
-                    });
+                    wLoader = new WeatherYahoo.WeatherDataLoader(this, location.ToString(), index);
+                    await wLoader.loadWeatherData(false);
                 }
             }
 
@@ -172,16 +151,13 @@ namespace SimpleWeather
             RefreshPanels();
         }
 
-        private async void RefreshPanels()
+        private void RefreshPanels()
         {
             // Refresh
-            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-                HomeLocation.ItemsSource = null;
-                OtherLocationsPanel.ItemsSource = null;
-                HomeLocation.ItemsSource = HomePanel;
-                OtherLocationsPanel.ItemsSource = LocationPanels;
-            });
+            HomeLocation.ItemsSource = null;
+            OtherLocationsPanel.ItemsSource = null;
+            HomeLocation.ItemsSource = HomePanel;
+            OtherLocationsPanel.ItemsSource = LocationPanels;
         }
 
         private void LocationButton_Click(object sender, RoutedEventArgs e)
@@ -194,13 +170,13 @@ namespace SimpleWeather
 
             if (Settings.API == "WUnderground")
             {
-                wu_Loader = new WeatherUnderground.WeatherDataLoader(pair.Value.ToString(), pair.Key);
+                wu_Loader = new WeatherUnderground.WeatherDataLoader(null, pair.Value.ToString(), pair.Key);
                 // Save WeatherLoader
                 CoreApplication.Properties.Add("WeatherLoader", wu_Loader);
             }
             else
             {
-                wLoader = new WeatherYahoo.WeatherDataLoader(pair.Value.ToString(), pair.Key);
+                wLoader = new WeatherYahoo.WeatherDataLoader(null, pair.Value.ToString(), pair.Key);
                 // Save WeatherLoader
                 CoreApplication.Properties.Add("WeatherLoader", wLoader);
             }
@@ -280,43 +256,41 @@ namespace SimpleWeather
             KeyValuePair<int, object> pair = (KeyValuePair<int, object>)panel.Tag;
             int idx = pair.Key;
 
-            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+            PopupMenu menu = new PopupMenu();
+
+            if (idx == 0)
             {
-                PopupMenu menu = new PopupMenu();
-
-                if (idx == 0)
+                menu.Commands.Add(new UICommand("Change Favorite Location", (command) =>
                 {
-                    menu.Commands.Add(new UICommand("Change Favorite Location", (command) =>
-                    {
-                        ShowChangeHomePanel(true);
-                    }));
-                }
-                else
+                    ShowChangeHomePanel(true);
+                }));
+            }
+            else
+            {
+                menu.Commands.Add(new UICommand("Delete Location", async (command) =>
                 {
-                    menu.Commands.Add(new UICommand("Delete Location", async (command) =>
+                    // Remove location from list
+                    if (Settings.API == "WUnderground")
                     {
-                        // Remove location from list
-                        if (Settings.API == "WUnderground")
-                        {
-                            List<string> locations = await Settings.getLocations_WU();
-                            locations.RemoveAt(idx);
-                            Settings.saveLocations(locations);
-                        }
-                        else
-                        {
-                            List<WeatherUtils.Coordinate> locations = await Settings.getLocations();
-                            locations.RemoveAt(idx);
-                            Settings.saveLocations(locations);
-                        }
+                        List<string> locations = await Settings.getLocations_WU();
+                        locations.RemoveAt(idx);
+                        Settings.saveLocations(locations);
+                    }
+                    else
+                    {
+                        List<WeatherUtils.Coordinate> locations = await Settings.getLocations();
+                        locations.RemoveAt(idx);
+                        Settings.saveLocations(locations);
+                    }
 
-                        // Remove panel
-                        LocationPanels.RemoveAt(idx - 1);
-                    }));
-                }
+                    // Remove panel
+                    LocationPanels.RemoveAt(idx - 1);
+                }));
+            }
 
-                IUICommand chosenCommand = await menu.ShowForSelectionAsync(GetElementRect(panel));
-                if (chosenCommand == null) { } // The command is null if no command was invoked. 
-            });
+            IUICommand chosenCommand = await menu.ShowForSelectionAsync(GetElementRect(panel));
+            if (chosenCommand == null) { } // The command is null if no command was invoked. 
+
             e.Handled = true;
         }
 
@@ -343,40 +317,37 @@ namespace SimpleWeather
             {
                 List<WeatherUnderground.AC_Location> results = await WeatherUnderground.AutoCompleteQuery.getLocations(sender.Text);
 
-                await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                LocationQuerys.Clear();
+
+                // Show message if no results are found
+                if (results.Count == 0)
                 {
-                    LocationQuerys.Clear();
+                    LocationQueryView noresults = new LocationQueryView();
+                    noresults.LocationName = "No results found";
+                    LocationQuerys.Add(noresults);
+                }
+                else
+                {
+                    // Limit amount of results shown
+                    int maxResults = 10;
 
-                    // Show message if no results are found
-                    if (results.Count == 0)
+                    foreach (WeatherUnderground.AC_Location location in results)
                     {
-                        LocationQueryView noresults = new LocationQueryView();
-                        noresults.LocationName = "No results found";
-                        LocationQuerys.Add(noresults);
+                        LocationQueryView view = new LocationQueryView(location);
+                        LocationQuerys.Add(view);
+
+                        // Limit amount of results
+                        maxResults--;
+                        if (maxResults <= 0)
+                            break;
                     }
-                    else
-                    {
-                        // Limit amount of results shown
-                        int maxResults = 10;
+                }
 
-                        foreach (WeatherUnderground.AC_Location location in results)
-                        {
-                            LocationQueryView view = new LocationQueryView(location);
-                            LocationQuerys.Add(view);
+                // Refresh list
+                sender.ItemsSource = null;
+                sender.ItemsSource = LocationQuerys;
 
-                            // Limit amount of results
-                            maxResults--;
-                            if (maxResults <= 0)
-                                break;
-                        }
-                    }
-
-                    // Refresh list
-                    sender.ItemsSource = null;
-                    sender.ItemsSource = LocationQuerys;
-
-                    sender.IsSuggestionListOpen = true;
-                });
+                sender.IsSuggestionListOpen = true;
             }
             else if (String.IsNullOrWhiteSpace(sender.Text))
             {
@@ -415,14 +386,11 @@ namespace SimpleWeather
                 // Use args.QueryText to determine what to do.
                 List<WeatherUnderground.AC_Location> results = await WeatherUnderground.AutoCompleteQuery.getLocations(args.QueryText);
 
-                await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                if (results.Count > 0)
                 {
-                    if (results.Count > 0)
-                    {
-                        sender.Text = results.First().name;
-                        selected_query = results.First().l;
-                    }
-                });
+                    sender.Text = results.First().name;
+                    selected_query = results.First().l;
+                }
             }
 
             int index = 0;
@@ -434,72 +402,49 @@ namespace SimpleWeather
                 else
                     index = locations.Count;
 
-                wu_Loader = new WeatherUnderground.WeatherDataLoader(selected_query, index);
-                WeatherUtils.ErrorStatus ret = await wu_Loader.loadWeatherData(true);
+                WeatherUnderground.Weather weather = await WeatherUnderground.WeatherLoaderTask.getWeather(selected_query);
 
-                // Error?
-                if (wu_Loader.getWeather() == null)
-                {
-                    MessageDialog error =
-                        new MessageDialog("Unable to load weather data!!", "Error");
-                    switch (ret)
-                    {
-                        case WeatherUtils.ErrorStatus.NETWORKERROR:
-                            error.Content = "Network Connection Error!!";
-                            break;
-                        case WeatherUtils.ErrorStatus.QUERYNOTFOUND:
-                            error.Content = "No cities match your search query";
-                            break;
-                        case WeatherUtils.ErrorStatus.INVALIDAPIKEY:
-                            error.Content = "Invalid API Key";
-                            break;
-                        default:
-                            break;
-                    }
-                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => await error.ShowAsync());
+                if (weather == null)
                     return;
-                }
 
-                WeatherUnderground.Weather weather = wu_Loader.getWeather();
-
-                await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                if (weather != null)
                 {
-                    if (weather != null)
+                    // Save coords to List
+                    if (sender.Name == "NewHomeLocation")
+                        locations[index] = selected_query;
+                    else
+                        locations.Add(selected_query);
+                    Settings.saveLocations(locations);
+                    // Save weather data
+                    JSONParser.Serializer(weather,
+                        await ApplicationData.Current.LocalFolder.CreateFileAsync("weather" + index + ".json", CreationCollisionOption.OpenIfExists));
+
+                    if (index == 0)
                     {
-                        // Save coords to List
-                        if (sender.Name == "NewHomeLocation")
-                            locations[index] = selected_query;
-                        else
-                            locations.Add(selected_query);
-                        Settings.saveLocations(locations);
+                        HomePanel.First().setWeather(weather);
+                        // Save index to tag (to easily retreive)
+                        HomePanel.First().Pair = new KeyValuePair<int, object>(index, selected_query);
 
-                        if (index == 0)
-                        {
-                            HomePanel.First().setWeather(weather);
-                            // Save index to tag (to easily retreive)
-                            HomePanel.First().Pair = new KeyValuePair<int, object>(index, /*location*/selected_query);
+                        // Hide change location panel
+                        ShowChangeHomePanel(false);
 
-                            // Hide change location panel
-                            ShowChangeHomePanel(false);
-
-                            // Refresh
-                            HomeLocation.ItemsSource = null;
-                            HomeLocation.ItemsSource = HomePanel;
-                        }
-                        else
-                        {
-                            LocationPanelView panelView = new LocationPanelView(weather);
-                            // Save index to tag (to easily retreive)
-                            panelView.Pair = new KeyValuePair<int, object>(index, /*location*/selected_query);
-
-                            // Add to collection
-                            LocationPanels.Add(panelView);
-
-                            // Hide add locations panel
-                            ShowAddLocationsPanel(false);
-                        }
+                        // Refresh
+                        HomeLocation.ItemsSource = null;
+                        HomeLocation.ItemsSource = HomePanel;
                     }
-                });
+                    else
+                    {
+                        LocationPanelView panelView = new LocationPanelView(weather);
+                        // Save index to tag (to easily retreive)
+                        panelView.Pair = new KeyValuePair<int, object>(index, selected_query);
+
+                        // Add to collection
+                        LocationPanels.Add(panelView);
+
+                        // Hide add locations panel
+                        ShowAddLocationsPanel(false);
+                    }
+                }
             }
             else
             {
@@ -509,69 +454,57 @@ namespace SimpleWeather
                 else
                     index = locations.Count;
 
-                wLoader = new WeatherYahoo.WeatherDataLoader(sender.Text, index);
-                await wLoader.loadWeatherData(true);
+                WeatherYahoo.Weather weather = await WeatherYahoo.WeatherLoaderTask.getWeather(sender.Text);
 
-                // Error?
-                if (wLoader.getWeather() == null)
-                {
-                    MessageDialog error =
-                        new MessageDialog("Unable to load weather data!!", "Error");
-                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => await error.ShowAsync());
+                if (weather == null)
                     return;
-                }
 
-                WeatherYahoo.Weather weather = wLoader.getWeather();
-
-                await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                if (weather != null)
                 {
-                    if (weather != null)
+                    // Show location name
+                    WeatherUtils.Coordinate location = new WeatherUtils.Coordinate(
+                        string.Join(",", wLoader.getWeather().location.lat, wLoader.getWeather().location._long));
+
+                    // Save coords to List
+                    if (sender.Name == "NewHomeLocation")
+                        locations[index] = location;
+                    else
+                        locations.Add(location);
+                    Settings.saveLocations(locations);
+                    // Save weather data
+                    JSONParser.Serializer(weather,
+                        await ApplicationData.Current.LocalFolder.CreateFileAsync("weather" + index + ".json", CreationCollisionOption.OpenIfExists));
+
+                    if (index == 0)
                     {
-                        // Show location name
-                        WeatherUtils.Coordinate location = new WeatherUtils.Coordinate(
-                            string.Join(",", wLoader.getWeather().location.lat, wLoader.getWeather().location._long));
+                        HomePanel.First().setWeather(weather);
+                        // Save index to tag (to easily retreive)
+                        HomePanel.First().Pair = new KeyValuePair<int, object>(index, /*location*/selected_query);
 
-                        // Save coords to List
-                        if (sender.Name == "NewHomeLocation")
-                            locations[index] = location;
-                        else
-                            locations.Add(location);
-                        Settings.saveLocations(locations);
+                        // Hide change location panel
+                        ShowChangeHomePanel(false);
 
-                        if (index == 0)
-                        {
-                            HomePanel.First().setWeather(weather);
-                            // Save index to tag (to easily retreive)
-                            HomePanel.First().Pair = new KeyValuePair<int, object>(index, /*location*/selected_query);
-
-                            // Hide change location panel
-                            ShowChangeHomePanel(false);
-
-                            // Refresh
-                            HomeLocation.ItemsSource = null;
-                            HomeLocation.ItemsSource = HomePanel;
-                        }
-                        else
-                        {
-                            LocationPanelView panelView = new LocationPanelView(weather);
-                            // Save index to tag (to easily retreive)
-                            panelView.Pair = new KeyValuePair<int, object>(index, /*location*/selected_query);
-
-                            // Add to collection
-                            LocationPanels.Add(panelView);
-
-                            // Hide add locations panel
-                            ShowAddLocationsPanel(false);
-                        }
+                        // Refresh
+                        HomeLocation.ItemsSource = null;
+                        HomeLocation.ItemsSource = HomePanel;
                     }
-                });
+                    else
+                    {
+                        LocationPanelView panelView = new LocationPanelView(weather);
+                        // Save index to tag (to easily retreive)
+                        panelView.Pair = new KeyValuePair<int, object>(index, /*location*/selected_query);
+
+                        // Add to collection
+                        LocationPanels.Add(panelView);
+
+                        // Hide add locations panel
+                        ShowAddLocationsPanel(false);
+                    }
+                }
             }
 
 
-            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-                sender.IsSuggestionListOpen = false;
-            });
+            sender.IsSuggestionListOpen = false;
         }
 
         #region LocationsPage HomePanelFunctions
