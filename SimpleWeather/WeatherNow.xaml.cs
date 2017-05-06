@@ -58,7 +58,7 @@ namespace SimpleWeather
                     else
                         wLoader = new WeatherYahoo.WeatherDataLoader(this, pair.Value.ToString(), pair.Key);
 
-                    if (pair.Key == 0/*homeIdx*/)
+                    if (pair.Key == App.HomeIdx)
                     {
                         // Clear backstack since we're home
                         Frame.BackStack.Clear();
@@ -78,16 +78,16 @@ namespace SimpleWeather
                 if (Settings.API == "WUnderground")
                 {
                     List<string> locations = await Settings.getLocations_WU();
-                    string local = locations[0/*homeIdx*/];
+                    string local = locations[App.HomeIdx];
 
-                    wu_Loader = new WeatherUnderground.WeatherDataLoader(this, local, 0/*homeIdx*/);
+                    wu_Loader = new WeatherUnderground.WeatherDataLoader(this, local, App.HomeIdx);
                 }
                 else
                 {
                     List<WeatherUtils.Coordinate> locations = await Settings.getLocations();
-                    WeatherUtils.Coordinate local = locations[0/*homeIdx*/];
+                    WeatherUtils.Coordinate local = locations[App.HomeIdx];
 
-                    wLoader = new WeatherYahoo.WeatherDataLoader(this, local.ToString(), 0/*homeIdx*/);
+                    wLoader = new WeatherYahoo.WeatherDataLoader(this, local.ToString(), App.HomeIdx);
                 }
 
                 // Clear backstack since we're home

@@ -19,6 +19,7 @@ namespace SimpleWeather
     {
         public static Windows.UI.Color AppColor = Windows.UI.Color.FromArgb(255, 0, 111, 191);
         public static Dictionary<String,BitmapImage> backgroundImages;
+        public const int HomeIdx = 0;
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code

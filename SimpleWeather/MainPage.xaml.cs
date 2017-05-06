@@ -23,8 +23,6 @@ namespace SimpleWeather
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        int homeIdx = 0;
-
         // For UI Thread
         CoreDispatcher dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
 
@@ -193,7 +191,7 @@ namespace SimpleWeather
                 JSONParser.Serializer(weather,
                     await ApplicationData.Current.LocalFolder.CreateFileAsync("weather.json", CreationCollisionOption.OpenIfExists));
 
-                pair = new KeyValuePair<int, object>(homeIdx, selected_query);
+                pair = new KeyValuePair<int, object>(App.HomeIdx, selected_query);
             }
             else
             {
@@ -214,7 +212,7 @@ namespace SimpleWeather
                 JSONParser.Serializer(weather,
                     await ApplicationData.Current.LocalFolder.CreateFileAsync("weather0.json", CreationCollisionOption.OpenIfExists));
 
-                pair = new KeyValuePair<int, object>(homeIdx, local.ToString());
+                pair = new KeyValuePair<int, object>(App.HomeIdx, local.ToString());
             }
 
             Settings.WeatherLoaded = true;
