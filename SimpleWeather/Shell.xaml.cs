@@ -23,10 +23,26 @@ namespace SimpleWeather
             SystemNavigationManager.GetForCurrentView().BackRequested += Shell_BackRequested;
 
             AppFrame.Navigating += AppFrame_Navigating;
+            AppFrame.Navigated += AppFrame_Navigated;
+        }
 
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
             if (AppFrame.Content == null)
             {
-                AppFrame.Navigate(typeof(WeatherNow));
+                AppFrame.Navigate(typeof(WeatherNow), e.Parameter);
+            }
+        }
+
+        private void AppFrame_Navigated(object sender, NavigationEventArgs e)
+        {
+            if (AppFrame.CanGoBack)
+            {
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+            }
+            else
+            {
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
             }
         }
 
@@ -37,7 +53,7 @@ namespace SimpleWeather
 
             // Navigate back if possible, and if the event has not 
             // already been handled .
-            if (AppFrame.CanGoBack && (AppFrame.SourcePageType != typeof(WeatherNow)) && e.Handled == false)
+            if (AppFrame.CanGoBack && e.Handled == false)
             {
                 e.Handled = true;
                 AppFrame.GoBack();
@@ -46,11 +62,6 @@ namespace SimpleWeather
 
         private void AppFrame_Navigating(object sender, NavigatingCancelEventArgs e)
         {
-            if (e.SourcePageType != typeof(WeatherNow))
-                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
-            else
-                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-
             if (e.SourcePageType == typeof(WeatherNow))
             {
                 WeatherButton.Background = new SolidColorBrush(App.AppColor);
@@ -85,19 +96,19 @@ namespace SimpleWeather
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
             if (AppFrame.SourcePageType != typeof(SettingsPage))
-                AppFrame.Navigate(typeof(SettingsPage), SettingsButton.Tag);
+                AppFrame.Navigate(typeof(SettingsPage));
         }
 
         private void WeatherButton_Click(object sender, RoutedEventArgs e)
         {
             if (AppFrame.SourcePageType != typeof(WeatherNow))
-                AppFrame.Navigate(typeof(WeatherNow), WeatherButton.Tag);
+                AppFrame.Navigate(typeof(WeatherNow));
         }
 
         private void LocationsButton_Click(object sender, RoutedEventArgs e)
         {
             if (AppFrame.SourcePageType != typeof(LocationsPage))
-                AppFrame.Navigate(typeof(LocationsPage), LocationsButton.Tag);
+                AppFrame.Navigate(typeof(LocationsPage));
         }
     }
 }

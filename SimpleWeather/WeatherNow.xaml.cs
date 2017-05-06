@@ -1,11 +1,13 @@
 ﻿using SimpleWeather.Utils;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -39,26 +41,58 @@ namespace SimpleWeather
         public WeatherNow()
         {
             this.InitializeComponent();
+
             MainGrid.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            if (e.Parameter != null)
+            {
+                if (e.Parameter.GetType() == typeof(KeyValuePair<int, object>))
+                {
+                    KeyValuePair<int, object> pair = (KeyValuePair<int, object>)e.Parameter;
+
+                    if (Settings.API == "WUnderground")
+                        wu_Loader = new WeatherUnderground.WeatherDataLoader(this, pair.Value.ToString(), pair.Key);
+                    else
+                        wLoader = new WeatherYahoo.WeatherDataLoader(this, pair.Value.ToString(), pair.Key);
+
+                    if (pair.Key == 0/*homeIdx*/)
+                    {
+                        // Clear backstack since we're home
+                        Frame.BackStack.Clear();
+                        SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                    }
+                }
+            }
 
             Restore();
         }
 
-        private void Restore()
+        private async void Restore()
         {
-            // Restore weather loader
-            object outValue;
-            if (!CoreApplication.Properties.TryGetValue("WeatherLoader", out outValue)) { }
+            if (wLoader == null && wu_Loader == null)
+            {
+                // Weather was loaded before. Lets load it up...
+                if (Settings.API == "WUnderground")
+                {
+                    List<string> locations = await Settings.getLocations_WU();
+                    string local = locations[0/*homeIdx*/];
 
-            if (Settings.API == "WUnderground")
-            {
-                wu_Loader = (WeatherUnderground.WeatherDataLoader)outValue;
-                wu_Loader.setWeatherLoadedListener(this);
-            }
-            else
-            {
-                wLoader = (WeatherYahoo.WeatherDataLoader)outValue;
-                wLoader.setWeatherLoadedListener(this);
+                    wu_Loader = new WeatherUnderground.WeatherDataLoader(this, local, 0/*homeIdx*/);
+                }
+                else
+                {
+                    List<WeatherUtils.Coordinate> locations = await Settings.getLocations();
+                    WeatherUtils.Coordinate local = locations[0/*homeIdx*/];
+
+                    wLoader = new WeatherYahoo.WeatherDataLoader(this, local.ToString(), 0/*homeIdx*/);
+                }
+
+                // Clear backstack since we're home
+                Frame.BackStack.Clear();
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
             }
 
             // Load up weather data

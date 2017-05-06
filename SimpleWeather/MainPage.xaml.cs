@@ -23,8 +23,6 @@ namespace SimpleWeather
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        WeatherYahoo.WeatherDataLoader wLoader = null;
-        WeatherUnderground.WeatherDataLoader wu_Loader = null;
         int homeIdx = 0;
 
         // For UI Thread
@@ -175,6 +173,8 @@ namespace SimpleWeather
                 return;
             }
 
+            KeyValuePair<int, object> pair;
+
             if (Settings.API == "WUnderground")
             {
                 // Save location query to List
@@ -193,12 +193,7 @@ namespace SimpleWeather
                 JSONParser.Serializer(weather,
                     await ApplicationData.Current.LocalFolder.CreateFileAsync("weather.json", CreationCollisionOption.OpenIfExists));
 
-                // Save WeatherLoader
-                if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
-                {
-                    CoreApplication.Properties.Remove("WeatherLoader");
-                }
-                CoreApplication.Properties.Add("WeatherLoader", wu_Loader);
+                pair = new KeyValuePair<int, object>(homeIdx, selected_query);
             }
             else
             {
@@ -219,17 +214,11 @@ namespace SimpleWeather
                 JSONParser.Serializer(weather,
                     await ApplicationData.Current.LocalFolder.CreateFileAsync("weather0.json", CreationCollisionOption.OpenIfExists));
 
-                // Save WeatherLoader
-                wLoader = new WeatherYahoo.WeatherDataLoader(null, sender.Text, homeIdx);
-                if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
-                {
-                    CoreApplication.Properties.Remove("WeatherLoader");
-                }
-                CoreApplication.Properties.Add("WeatherLoader", wLoader);
+                pair = new KeyValuePair<int, object>(homeIdx, local.ToString());
             }
 
             Settings.WeatherLoaded = true;
-            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(Shell)));
+            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(Shell), pair));
             sender.IsSuggestionListOpen = false;
         }
 
@@ -246,38 +235,7 @@ namespace SimpleWeather
 
             if (Settings.WeatherLoaded)
             {
-                // Weather was loaded before. Lets load it up...
-                var localSettings = ApplicationData.Current.LocalSettings;
-                if (Settings.API == "WUnderground")
-                {
-                    List<string> locations = await Settings.getLocations_WU();
-                    string local = locations[homeIdx];
-
-                    wu_Loader = new WeatherUnderground.WeatherDataLoader(null, local, homeIdx);
-
-                    if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
-                    {
-                        CoreApplication.Properties.Remove("WeatherLoader");
-                    }
-                    CoreApplication.Properties.Add("WeatherLoader", wu_Loader);
-
-                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(Shell)));
-                }
-                else
-                {
-                    List<WeatherUtils.Coordinate> locations = await Settings.getLocations();
-                    WeatherUtils.Coordinate local = locations[homeIdx];
-
-                    wLoader = new WeatherYahoo.WeatherDataLoader(null, local.ToString(), homeIdx);
-
-                    if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
-                    {
-                        CoreApplication.Properties.Remove("WeatherLoader");
-                    }
-                    CoreApplication.Properties.Add("WeatherLoader", wLoader);
-
-                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(Shell)));
-                }
+                await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(Shell)));
             }
             else
             {

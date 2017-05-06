@@ -91,9 +91,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <TransitionCollection x:Name="TextTransitions">
-            <AddDeleteThemeTransition/>
-        </TransitionCollection>
     </Button.Resources>
     
     <Button.Style>
@@ -107,7 +104,7 @@
         </Grid.ColumnDefinitions>
         <ProgressRing x:Name="LoadingRing" Grid.ColumnSpan="2" IsActive="False" Foreground="White"/>
         <Viewbox Height="55" HorizontalAlignment="Left" Grid.Column="0">
-            <TextBlock x:Name="LocationName" Text="{Binding LocationName}" FontSize="24" VerticalAlignment="Center" Padding="10" Transitions="{StaticResource TextTransitions}"/>
+            <TextBlock x:Name="LocationName" Text="{Binding LocationName}" FontSize="24" VerticalAlignment="Center" Padding="10"/>
         </Viewbox>
         <Viewbox Height="55" VerticalAlignment="Center" Grid.Column="1">
             <Grid>
@@ -116,10 +113,10 @@
                     <ColumnDefinition Width="90"/>
                 </Grid.ColumnDefinitions>
                 <Viewbox Height="55" Width="55" Grid.Column="0">
-                    <TextBlock x:Name="CurrentTemp" Text="{Binding CurrTemp}" FontSize="24" Padding="10" Transitions="{StaticResource TextTransitions}"/>
+                    <TextBlock x:Name="CurrentTemp" Text="{Binding CurrTemp}" FontSize="24" Padding="10"/>
                 </Viewbox>
                 <Viewbox Height="55" Width="55" Grid.Column="1">
-                    <TextBlock x:Name="WeatherIcon" Text="{Binding WeatherIcon}" Style="{StaticResource WeatherIcon}" Transitions="{StaticResource TextTransitions}"/>
+                    <TextBlock x:Name="WeatherIcon" Text="{Binding WeatherIcon}" Style="{StaticResource WeatherIcon}"/>
                 </Viewbox>
             </Grid>
         </Viewbox>

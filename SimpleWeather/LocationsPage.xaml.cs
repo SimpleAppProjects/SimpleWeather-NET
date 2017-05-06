@@ -15,6 +15,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -60,6 +61,7 @@ namespace SimpleWeather
         public LocationsPage()
         {
             this.InitializeComponent();
+            this.NavigationCacheMode = NavigationCacheMode.Enabled;
 
             /* Panel Animation Workaround */
             HomePanel = new List<LocationPanelView>(1);
@@ -165,23 +167,7 @@ namespace SimpleWeather
             LocationPanel panel = sender as LocationPanel;
             KeyValuePair<int, object> pair = (KeyValuePair<int, object>)panel.Tag;
 
-            if (CoreApplication.Properties.ContainsKey("WeatherLoader"))
-                CoreApplication.Properties.Remove("WeatherLoader");
-
-            if (Settings.API == "WUnderground")
-            {
-                wu_Loader = new WeatherUnderground.WeatherDataLoader(null, pair.Value.ToString(), pair.Key);
-                // Save WeatherLoader
-                CoreApplication.Properties.Add("WeatherLoader", wu_Loader);
-            }
-            else
-            {
-                wLoader = new WeatherYahoo.WeatherDataLoader(null, pair.Value.ToString(), pair.Key);
-                // Save WeatherLoader
-                CoreApplication.Properties.Add("WeatherLoader", wLoader);
-            }
-
-            this.Frame.Navigate(typeof(WeatherNow));
+            this.Frame.Navigate(typeof(WeatherNow), pair);
         }
 
         private async void GPS_Click(object sender, RoutedEventArgs e)
