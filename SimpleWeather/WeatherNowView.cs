@@ -48,7 +48,7 @@ namespace SimpleWeather
 
         private void updateView(WeatherYahoo.Weather weather)
         {
-            // Update background
+            // Update backgrounds
             Background = WeatherUtils.GetBackground(weather);
             PanelBackground = new SolidColorBrush(WeatherUtils.isNight(weather) ?
                 Windows.UI.Color.FromArgb(15, 128, 128, 128) : Windows.UI.Color.FromArgb(15, 8, 8, 8));
