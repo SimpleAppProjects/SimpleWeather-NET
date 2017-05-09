@@ -3,6 +3,7 @@ using SimpleWeather.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
@@ -175,9 +176,8 @@ namespace SimpleWeather
 
             if (Settings.API == "WUnderground")
             {
-                // Save location query to List
-                List<string> locations = new List<string>();
-                locations.Add(selected_query);
+                // Weather Data
+                OrderedDictionary weatherData = await Settings.getWeatherData();
 
                 WeatherUnderground.Weather weather = await WeatherUnderground.WeatherLoaderTask.getWeather(selected_query);
 
@@ -186,17 +186,19 @@ namespace SimpleWeather
 
                 // Save API_KEY
                 Settings.API_KEY = key;
-                Settings.saveLocations(locations);
                 // Save weather data
-                JSONParser.Serializer(weather,
-                    await ApplicationData.Current.LocalFolder.CreateFileAsync("weather.json", CreationCollisionOption.OpenIfExists));
+                if (weatherData.Contains(selected_query))
+                    weatherData[selected_query] = weather;
+                else
+                    weatherData.Add(selected_query, weather);
+                Settings.saveWeatherData(weatherData);
 
                 pair = new KeyValuePair<int, object>(App.HomeIdx, selected_query);
             }
             else
             {
-                // Save location query to List
-                List<WeatherUtils.Coordinate> locations = new List<WeatherUtils.Coordinate>();
+                // Weather Data
+                OrderedDictionary weatherData = await Settings.getWeatherData();
 
                 WeatherYahoo.Weather weather = await WeatherYahoo.WeatherLoaderTask.getWeather(sender.Text);
 
@@ -206,11 +208,12 @@ namespace SimpleWeather
                 WeatherUtils.Coordinate local = new WeatherUtils.Coordinate(
                     String.Format("{0}, {1}", weather.location.lat, weather.location._long));
 
-                locations.Add(local);
-                Settings.saveLocations(locations);
                 // Save weather data
-                JSONParser.Serializer(weather,
-                    await ApplicationData.Current.LocalFolder.CreateFileAsync("weather0.json", CreationCollisionOption.OpenIfExists));
+                if (weatherData.Contains(local.ToString()))
+                    weatherData[local.ToString()] = weather;
+                else
+                    weatherData.Add(local.ToString(), weather);
+                Settings.saveWeatherData(weatherData);
 
                 pair = new KeyValuePair<int, object>(App.HomeIdx, local.ToString());
             }

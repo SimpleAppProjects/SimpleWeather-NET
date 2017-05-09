@@ -26,11 +26,37 @@ namespace SimpleWeather.Utils
             return obj;
         }
 
+        public static Object Deserializer(String response, Type type, List<Type> knownTypes)
+        {
+            Object obj = null;
+
+            using (MemoryStream memStream = new MemoryStream(Encoding.UTF8.GetBytes(response)))
+            {
+                memStream.Seek(0, 0);
+
+                DataContractJsonSerializer deSerializer = new DataContractJsonSerializer(type, knownTypes);
+                obj = deSerializer.ReadObject(memStream);
+            }
+
+            return obj;
+        }
+
         public static void Serializer(Object obj, StorageFile file)
         {
             using (MemoryStream memStream = new MemoryStream())
             {
                 DataContractJsonSerializer serializer = new DataContractJsonSerializer(obj.GetType());
+                serializer.WriteObject(memStream, obj);
+                FileUtils.WriteFile(memStream.ToArray(), file);
+                memStream.Dispose();
+            }
+        }
+
+        public static void Serializer(Object obj, StorageFile file, List<Type> types)
+        {
+            using (MemoryStream memStream = new MemoryStream())
+            {
+                DataContractJsonSerializer serializer = new DataContractJsonSerializer(obj.GetType(), types);
                 serializer.WriteObject(memStream, obj);
                 FileUtils.WriteFile(memStream.ToArray(), file);
                 memStream.Dispose();

@@ -75,20 +75,13 @@ namespace SimpleWeather
             if (wLoader == null && wu_Loader == null)
             {
                 // Weather was loaded before. Lets load it up...
+                List<string> locations = await Settings.getLocations();
+                string local = locations[App.HomeIdx];
+
                 if (Settings.API == "WUnderground")
-                {
-                    List<string> locations = await Settings.getLocations_WU();
-                    string local = locations[App.HomeIdx];
-
                     wu_Loader = new WeatherUnderground.WeatherDataLoader(this, local, App.HomeIdx);
-                }
                 else
-                {
-                    List<WeatherUtils.Coordinate> locations = await Settings.getLocations();
-                    WeatherUtils.Coordinate local = locations[App.HomeIdx];
-
-                    wLoader = new WeatherYahoo.WeatherDataLoader(this, local.ToString(), App.HomeIdx);
-                }
+                    wLoader = new WeatherYahoo.WeatherDataLoader(this, local, App.HomeIdx);
 
                 // Clear backstack since we're home
                 Frame.BackStack.Clear();

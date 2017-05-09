@@ -7,6 +7,8 @@ using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.Web.Http;
 using SimpleWeather.Utils;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace SimpleWeather.WeatherYahoo
 {
@@ -15,8 +17,6 @@ namespace SimpleWeather.WeatherYahoo
         private WeatherLoadedListener callback;
         private string location = null;
         private Weather weather = null;
-        private static StorageFolder appDataFolder = ApplicationData.Current.LocalFolder;
-        private StorageFile weatherFile;
         private int locationIdx = 0;
 
         public WeatherDataLoader(WeatherLoadedListener listener, string Location, int idx)
@@ -83,7 +83,7 @@ namespace SimpleWeather.WeatherYahoo
             // Load old data if available and we can't get new data
             if (weather == null)
             {
-                await loadSavedWeatherData(weatherFile, true);
+                await loadSavedWeatherData(true);
             }
             else if (weather != null)
             {
@@ -124,9 +124,6 @@ namespace SimpleWeather.WeatherYahoo
 
         public async Task loadWeatherData(bool forceRefresh)
         {
-            if (weatherFile == null)
-                weatherFile = await appDataFolder.CreateFileAsync("weather" + locationIdx + ".json", CreationCollisionOption.OpenIfExists);
-
             if (forceRefresh)
             {
                 try
@@ -148,15 +145,12 @@ namespace SimpleWeather.WeatherYahoo
 
         private async Task loadWeatherData()
         {
-            if (weatherFile == null)
-                weatherFile = await appDataFolder.CreateFileAsync("weather" + locationIdx + ".json", CreationCollisionOption.OpenIfExists);
-
             /*
              * If unable to retrieve saved data, data is old, or units don't match
              * Refresh weather data
             */
 
-            bool gotData = await loadSavedWeatherData(weatherFile);
+            bool gotData = await loadSavedWeatherData();
 
             if (!gotData || weather.units.temperature != Settings.Unit)
             {
@@ -173,19 +167,19 @@ namespace SimpleWeather.WeatherYahoo
             }
         }
 
-        private async Task<bool> loadSavedWeatherData(StorageFile file, bool _override)
+        private async Task<bool> loadSavedWeatherData(bool _override)
         {
             if (_override)
             {
-                FileInfo fileInfo = new FileInfo(file.Path);
-
-                if (!fileInfo.Exists || fileInfo.Length == 0)
-                {
-                    return false;
-                }
-
                 // Load weather data
-                weather = (Weather)JSONParser.Deserializer(await FileUtils.ReadFile(weatherFile), typeof(Weather));
+                try
+                {
+                    weather = (await Settings.getWeatherData())[locationIdx] as Weather;
+                }
+                catch (Exception)
+                {
+                    weather = null;
+                }
 
                 if (weather == null)
                     return false;
@@ -193,20 +187,20 @@ namespace SimpleWeather.WeatherYahoo
                 return true;
             }
             else
-                return await loadSavedWeatherData(file);
+                return await loadSavedWeatherData();
         }
 
-        private async Task<bool> loadSavedWeatherData(StorageFile file)
+        private async Task<bool> loadSavedWeatherData()
         {
-            FileInfo fileInfo = new FileInfo(file.Path);
-
-            if (!fileInfo.Exists || fileInfo.Length == 0)
-            {
-                return false;
-            }
-
             // Load weather data
-            weather = (Weather)JSONParser.Deserializer(await FileUtils.ReadFile(weatherFile), typeof(Weather));
+            try
+            {
+                weather = (await Settings.getWeatherData())[locationIdx] as Weather;
+            }
+            catch (Exception)
+            {
+                weather = null;
+            }
 
             if (weather == null)
                 return false;
@@ -229,10 +223,12 @@ namespace SimpleWeather.WeatherYahoo
 
         private async void saveWeatherData()
         {
-            if (weatherFile == null)
-                weatherFile = await appDataFolder.CreateFileAsync("weather" + locationIdx + ".json", CreationCollisionOption.OpenIfExists);
-
-            JSONParser.Serializer(weather, weatherFile);
+            OrderedDictionary weatherData = await Settings.getWeatherData();
+            if (locationIdx > weatherData.Count - 1)
+                weatherData.Insert(locationIdx, location, weather);
+            else
+                weatherData[locationIdx] = weather;
+            Settings.saveWeatherData(weatherData);
         }
 
         public Weather getWeather()

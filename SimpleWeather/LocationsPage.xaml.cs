@@ -3,6 +3,7 @@ using SimpleWeather.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
@@ -26,8 +27,6 @@ namespace SimpleWeather
     /// </summary>
     public sealed partial class LocationsPage : Page, WeatherLoadedListener
     {
-        WeatherYahoo.WeatherDataLoader wLoader = null;
-        WeatherUnderground.WeatherDataLoader wu_Loader = null;
         /* Panel Animation Workaround */
         public List<LocationPanelView> HomePanel { get; set; }
         public ObservableCollection<LocationPanelView> LocationPanels { get; set; }
@@ -90,26 +89,29 @@ namespace SimpleWeather
         private async void LoadLocations()
         {
             // Lets load it up...
+            List<string> locations = await Settings.getLocations();
+
+            foreach (string location in locations)
+            {
+                int index = locations.IndexOf(location);
+
+                LocationPanelView panel = new LocationPanelView();
+                panel.Background = new SolidColorBrush(App.AppColor);
+                // Save index to tag (to easily retreive)
+                panel.Pair = new KeyValuePair<int, object>(index, location);
+
+                if (index == 0) // Home
+                    HomePanel.Add(panel);
+                else
+                    LocationPanels.Add(panel);
+            }
+
+            // Refresh
+            RefreshPanels();
+
             if (Settings.API == "WUnderground")
             {
-                List<string> locations = await Settings.getLocations_WU();
-                foreach (string location in locations)
-                {
-                    int index = locations.IndexOf(location);
-
-                    LocationPanelView panel = new LocationPanelView();
-                    panel.Background = new SolidColorBrush(App.AppColor);
-                    // Save index to tag (to easily retreive)
-                    panel.Pair = new KeyValuePair<int, object>(index, location);
-
-                    if (index == 0) // Home
-                        HomePanel.Add(panel);
-                    else
-                        LocationPanels.Add(panel);
-                }
-
-                // Refresh
-                RefreshPanels();
+                WeatherUnderground.WeatherDataLoader wu_Loader = null;
 
                 foreach (string location in locations)
                 {
@@ -121,30 +123,13 @@ namespace SimpleWeather
             }
             else
             {
-                List<WeatherUtils.Coordinate> locations = await Settings.getLocations();
-                foreach(WeatherUtils.Coordinate location in locations)
+                WeatherYahoo.WeatherDataLoader wLoader = null;
+
+                foreach (string location in locations)
                 {
                     int index = locations.IndexOf(location);
 
-                    LocationPanelView panel = new LocationPanelView();
-                    panel.Background = new SolidColorBrush(App.AppColor);
-                    // Save index to tag (to easily retreive)
-                    panel.Pair = new KeyValuePair<int, object>(index, location);
-
-                    if (index == 0) // Home
-                        HomePanel.Add(panel);
-                    else
-                        LocationPanels.Add(panel);
-                }
-
-                // Refresh
-                RefreshPanels();
-
-                foreach (WeatherUtils.Coordinate location in locations)
-                {
-                    int index = locations.IndexOf(location);
-
-                    wLoader = new WeatherYahoo.WeatherDataLoader(this, location.ToString(), index);
+                    wLoader = new WeatherYahoo.WeatherDataLoader(this, location, index);
                     await wLoader.loadWeatherData(false);
                 }
             }
@@ -256,18 +241,9 @@ namespace SimpleWeather
                 menu.Commands.Add(new UICommand("Delete Location", async (command) =>
                 {
                     // Remove location from list
-                    if (Settings.API == "WUnderground")
-                    {
-                        List<string> locations = await Settings.getLocations_WU();
-                        locations.RemoveAt(idx);
-                        Settings.saveLocations(locations);
-                    }
-                    else
-                    {
-                        List<WeatherUtils.Coordinate> locations = await Settings.getLocations();
-                        locations.RemoveAt(idx);
-                        Settings.saveLocations(locations);
-                    }
+                    OrderedDictionary weatherData = await Settings.getWeatherData();
+                    weatherData.RemoveAt(idx);
+                    Settings.saveWeatherData(weatherData);
 
                     // Remove panel
                     LocationPanels.RemoveAt(idx - 1);
@@ -382,11 +358,12 @@ namespace SimpleWeather
             int index = 0;
             if (Settings.API == "WUnderground")
             {
-                List<string> locations = await Settings.getLocations_WU();
+                OrderedDictionary weatherData = await Settings.getWeatherData();
+
                 if (sender.Name == "NewHomeLocation")
                     index = 0;
                 else
-                    index = locations.Count;
+                    index = weatherData.Keys.Count;
 
                 WeatherUnderground.Weather weather = await WeatherUnderground.WeatherLoaderTask.getWeather(selected_query);
 
@@ -397,13 +374,16 @@ namespace SimpleWeather
                 {
                     // Save coords to List
                     if (sender.Name == "NewHomeLocation")
-                        locations[index] = selected_query;
+                    {
+                        weatherData.RemoveAt(0);
+                        weatherData.Insert(0, selected_query, weather);
+                    }
                     else
-                        locations.Add(selected_query);
-                    Settings.saveLocations(locations);
-                    // Save weather data
-                    JSONParser.Serializer(weather,
-                        await ApplicationData.Current.LocalFolder.CreateFileAsync("weather" + index + ".json", CreationCollisionOption.OpenIfExists));
+                    {
+                        weatherData.Add(selected_query, weather);
+                    }
+                    // Save data
+                    Settings.saveWeatherData(weatherData);
 
                     if (index == 0)
                     {
@@ -434,11 +414,12 @@ namespace SimpleWeather
             }
             else
             {
-                List<WeatherUtils.Coordinate> locations = await Settings.getLocations();
+                OrderedDictionary weatherData = await Settings.getWeatherData();
+
                 if (sender.Name == "NewHomeLocation")
                     index = 0;
                 else
-                    index = locations.Count;
+                    index = weatherData.Keys.Count;
 
                 WeatherYahoo.Weather weather = await WeatherYahoo.WeatherLoaderTask.getWeather(sender.Text);
 
@@ -449,17 +430,20 @@ namespace SimpleWeather
                 {
                     // Show location name
                     WeatherUtils.Coordinate location = new WeatherUtils.Coordinate(
-                        string.Join(",", wLoader.getWeather().location.lat, wLoader.getWeather().location._long));
+                        string.Join(",", weather.location.lat, weather.location._long));
 
                     // Save coords to List
                     if (sender.Name == "NewHomeLocation")
-                        locations[index] = location;
+                    {
+                        weatherData.RemoveAt(0);
+                        weatherData.Insert(0, location.ToString(), weather);
+                    }
                     else
-                        locations.Add(location);
-                    Settings.saveLocations(locations);
-                    // Save weather data
-                    JSONParser.Serializer(weather,
-                        await ApplicationData.Current.LocalFolder.CreateFileAsync("weather" + index + ".json", CreationCollisionOption.OpenIfExists));
+                    {
+                        weatherData.Add(location.ToString(), weather);
+                    }
+                    // Save data
+                    Settings.saveWeatherData(weatherData);
 
                     if (index == 0)
                     {
@@ -488,7 +472,6 @@ namespace SimpleWeather
                     }
                 }
             }
-
 
             sender.IsSuggestionListOpen = false;
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Runtime.Serialization.Json;
 using System.Threading.Tasks;
@@ -16,10 +17,12 @@ namespace SimpleWeather.Utils
         public static string API_KEY { get { return getAPIKEY(); } set { setAPIKEY(value); } }
 
         private static StorageFolder appDataFolder = ApplicationData.Current.LocalFolder;
-        private static StorageFile locationsFile;
+        private static StorageFile dataFile;
 
         private static string Fahrenheit = "F";
         private static string Celsius = "C";
+
+        private static List<Type> knownTypes = new List<Type> { typeof(WeatherYahoo.Weather), typeof(WeatherUnderground.Weather) };
 
         private static string getTempUnit()
         {
@@ -46,10 +49,10 @@ namespace SimpleWeather.Utils
 
         private static bool isWeatherLoaded()
         {
-            if (locationsFile == null)
-                locationsFile = appDataFolder.CreateFileAsync("locations.json", CreationCollisionOption.OpenIfExists).AsTask().GetAwaiter().GetResult();
+            if (dataFile == null)
+                dataFile = appDataFolder.CreateFileAsync("data.json", CreationCollisionOption.OpenIfExists).AsTask().GetAwaiter().GetResult();
 
-            FileInfo fileinfo = new FileInfo(locationsFile.Path);
+            FileInfo fileinfo = new FileInfo(dataFile.Path);
 
             if (fileinfo.Length == 0 || !fileinfo.Exists)
             {
@@ -105,53 +108,40 @@ namespace SimpleWeather.Utils
             localSettings.Values["API"] = value;
         }
 
-        #region Yahoo Weather
-        public static async Task<List<WeatherUtils.Coordinate>> getLocations()
+        public static async Task<List<string>> getLocations()
         {
-            if (locationsFile == null)
-                locationsFile = await appDataFolder.CreateFileAsync("locations.json", CreationCollisionOption.OpenIfExists);
+            OrderedDictionary dict = await getWeatherData();
+            List<string> locations = new List<string>();
+            foreach (string location in dict.Keys)
+            {
+                locations.Add(location);
+            }
 
-            FileInfo fileinfo = new FileInfo(locationsFile.Path);
-
-            if (fileinfo.Length == 0 || !fileinfo.Exists)
-                return null;
-
-            List<WeatherUtils.Coordinate> locations = (List<WeatherUtils.Coordinate>) JSONParser.Deserializer(await FileUtils.ReadFile(locationsFile), typeof(List<WeatherUtils.Coordinate>));
             return locations;
         }
 
-        public static async void saveLocations(List<WeatherUtils.Coordinate> locations)
+        public static async Task<OrderedDictionary> getWeatherData()
         {
-            if (locationsFile == null)
-                locationsFile = await appDataFolder.CreateFileAsync("locations.json", CreationCollisionOption.OpenIfExists);
+            if (dataFile == null)
+                dataFile = await appDataFolder.CreateFileAsync("data.json", CreationCollisionOption.OpenIfExists);
 
-            JSONParser.Serializer(locations, locationsFile);
+            FileInfo fileinfo = new FileInfo(dataFile.Path);
+
+            if (fileinfo.Length == 0 || !fileinfo.Exists)
+                return new OrderedDictionary();
+
+            return (OrderedDictionary)JSONParser.Deserializer(await FileUtils.ReadFile(dataFile), typeof(OrderedDictionary), knownTypes);
         }
-        #endregion
+
+        public static async void saveWeatherData(OrderedDictionary weatherData)
+        {
+            if (dataFile == null)
+                dataFile = await appDataFolder.CreateFileAsync("data.json", CreationCollisionOption.OpenIfExists);
+
+            JSONParser.Serializer(weatherData, dataFile, knownTypes);
+        }
 
         #region WeatherUnderground
-        public static async Task<List<string>> getLocations_WU()
-        {
-            if (locationsFile == null)
-                locationsFile = await appDataFolder.CreateFileAsync("locations.json", CreationCollisionOption.OpenIfExists);
-
-            FileInfo fileinfo = new FileInfo(locationsFile.Path);
-
-            if (fileinfo.Length == 0 || !fileinfo.Exists)
-                return null;
-
-            List<string> locations = (List<string>) JSONParser.Deserializer(await FileUtils.ReadFile(locationsFile), typeof(List<string>));
-            return locations;
-        }
-
-        public static async void saveLocations(List<string> locations)
-        {
-            if (locationsFile == null)
-                locationsFile = await appDataFolder.CreateFileAsync("locations.json", CreationCollisionOption.OpenIfExists);
-
-            JSONParser.Serializer(locations, locationsFile);
-        }
-
         private static string getAPIKEY()
         {
             var localSettings = ApplicationData.Current.LocalSettings;
