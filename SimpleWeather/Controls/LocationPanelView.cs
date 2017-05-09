@@ -32,7 +32,7 @@ namespace SimpleWeather.Controls
 
             LocationName = weather.location.description;
             CurrTemp = weather.condition.temp + "º";
-            WeatherIcon = WeatherUtils.GetWeatherIcon(weather.condition.code);
+            WeatherIcon = WeatherUtils.GetWeatherIcon(int.Parse(weather.condition.code));
         }
         #endregion
 
