@@ -208,14 +208,18 @@ namespace SimpleWeather
                 LocationQuerys.Clear();
                 LocationQuerys.Add(view);
 
-                // Refresh list
-                NewHomeLocation.ItemsSource = null;
-                Location.ItemsSource = null;
-                NewHomeLocation.ItemsSource = LocationQuerys;
-                Location.ItemsSource = LocationQuerys;
+                AutoSuggestBox box = null;
+                DependencyObject parent = button.Parent;
+                while (!(parent is AutoSuggestBox))
+                {
+                    parent = VisualTreeHelper.GetParent(parent);
+                }
+                box = parent as AutoSuggestBox;
 
-                NewHomeLocation.IsSuggestionListOpen = true;
-                Location.IsSuggestionListOpen = true;
+                // Refresh list
+                box.ItemsSource = null;
+                box.ItemsSource = LocationQuerys;
+                box.IsSuggestionListOpen = true;
             }
 
             button.IsEnabled = true;
