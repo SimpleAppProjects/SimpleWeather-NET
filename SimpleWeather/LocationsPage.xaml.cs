@@ -365,6 +365,21 @@ namespace SimpleWeather
                 else
                     index = weatherData.Keys.Count;
 
+                // Check if location already exists
+                if (index == 0)
+                {
+                    if (weatherData.Keys.Cast<string>().First().Equals(selected_query))
+                    {
+                        ShowChangeHomePanel(false);
+                        return;
+                    }
+                }
+                else if (weatherData.Contains(selected_query))
+                {
+                    ShowAddLocationsPanel(false);
+                    return;
+                }
+
                 WeatherUnderground.Weather weather = await WeatherUnderground.WeatherLoaderTask.getWeather(selected_query);
 
                 if (weather == null)
@@ -431,6 +446,21 @@ namespace SimpleWeather
                     // Show location name
                     WeatherUtils.Coordinate location = new WeatherUtils.Coordinate(
                         string.Join(",", weather.location.lat, weather.location._long));
+
+                    // Check if location already exists
+                    if (index == 0)
+                    {
+                        if (weatherData.Keys.Cast<string>().First().Equals(location.ToString()))
+                        {
+                            ShowChangeHomePanel(false);
+                            return;
+                        }
+                    }
+                    else if (weatherData.Contains(location.ToString()))
+                    {
+                        ShowAddLocationsPanel(false);
+                        return;
+                    }
 
                     // Save coords to List
                     if (sender.Name == "NewHomeLocation")
