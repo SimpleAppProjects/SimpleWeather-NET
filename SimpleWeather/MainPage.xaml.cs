@@ -29,7 +29,6 @@ namespace SimpleWeather
 
         public ObservableCollection<LocationQueryView> LocationQuerys { get; set; }
         private string selected_query = string.Empty;
-        private string key = string.Empty;
 
         public MainPage()
         {
@@ -163,7 +162,7 @@ namespace SimpleWeather
             }
 
             // Stop if using WeatherUnderground and API Key is empty
-            if (String.IsNullOrWhiteSpace(key) && Settings.API == "WUnderground")
+            if (String.IsNullOrWhiteSpace(Settings.API_KEY) && Settings.API == "WUnderground")
             {
                 TextBlock header = KeyEntry.Header as TextBlock;
                 header.Visibility = Visibility.Visible;
@@ -184,8 +183,6 @@ namespace SimpleWeather
                 if (weather == null)
                     return;
 
-                // Save API_KEY
-                Settings.API_KEY = key;
                 // Save weather data
                 if (weatherData.Contains(selected_query))
                     weatherData[selected_query] = weather;
@@ -232,7 +229,7 @@ namespace SimpleWeather
 
             // Check for key
             if (!String.IsNullOrEmpty(Settings.API_KEY))
-                KeyEntry.Text = key = Settings.API_KEY;
+                KeyEntry.Text = Settings.API_KEY;
 
             if (Settings.WeatherLoaded)
             {
@@ -242,6 +239,8 @@ namespace SimpleWeather
             {
                 LoadingRing.IsActive = false;
                 SearchGrid.Visibility = Visibility.Visible;
+                // Set WUnderground as default API
+                APIComboBox.SelectedIndex = 0;
             }
         }
 
@@ -327,7 +326,7 @@ namespace SimpleWeather
             button.IsEnabled = true;
         }
 
-        private void APIComboBox_DropDownClosed(object sender, object e)
+        private void APIComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBox box = sender as ComboBox;
             int index = box.SelectedIndex;
@@ -351,7 +350,7 @@ namespace SimpleWeather
         private void KeyEntry_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (!String.IsNullOrWhiteSpace(KeyEntry.Text) && KeyEntry.IsEnabled)
-                key = KeyEntry.Text;
+                Settings.API_KEY = KeyEntry.Text;
         }
 
         private void KeyEntry_GotFocus(object sender, RoutedEventArgs e)
