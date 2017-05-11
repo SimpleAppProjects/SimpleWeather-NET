@@ -38,7 +38,7 @@ namespace SimpleWeather
         {
             if (weather != null)
             {
-                if (locationIdx == 0)
+                if (locationIdx == App.HomeIdx)
                 {
                     if (weather.GetType() == typeof(WeatherUnderground.Weather))
                         HomePanel.First().setWeather(weather as WeatherUnderground.Weather);
@@ -100,7 +100,7 @@ namespace SimpleWeather
                 // Save index to tag (to easily retreive)
                 panel.Pair = new KeyValuePair<int, object>(index, location);
 
-                if (index == 0) // Home
+                if (index == App.HomeIdx) // Home
                     HomePanel.Add(panel);
                 else
                     LocationPanels.Add(panel);
@@ -233,7 +233,7 @@ namespace SimpleWeather
 
             PopupMenu menu = new PopupMenu();
 
-            if (idx == 0)
+            if (idx == App.HomeIdx)
             {
                 menu.Commands.Add(new UICommand("Change Favorite Location", (command) =>
                 {
@@ -365,12 +365,12 @@ namespace SimpleWeather
                 OrderedDictionary weatherData = await Settings.getWeatherData();
 
                 if (sender.Name == "NewHomeLocation")
-                    index = 0;
+                    index = App.HomeIdx;
                 else
                     index = weatherData.Keys.Count;
 
                 // Check if location already exists
-                if (index == 0)
+                if (index == App.HomeIdx)
                 {
                     if (weatherData.Keys.Cast<string>().First().Equals(selected_query))
                     {
@@ -404,7 +404,7 @@ namespace SimpleWeather
                     // Save data
                     Settings.saveWeatherData(weatherData);
 
-                    if (index == 0)
+                    if (index == App.HomeIdx)
                     {
                         HomePanel.First().setWeather(weather);
                         // Save index to tag (to easily retreive)
@@ -436,7 +436,7 @@ namespace SimpleWeather
                 OrderedDictionary weatherData = await Settings.getWeatherData();
 
                 if (sender.Name == "NewHomeLocation")
-                    index = 0;
+                    index = App.HomeIdx;
                 else
                     index = weatherData.Keys.Count;
 
@@ -452,7 +452,7 @@ namespace SimpleWeather
                         string.Join(",", weather.location.lat, weather.location._long));
 
                     // Check if location already exists
-                    if (index == 0)
+                    if (index == App.HomeIdx)
                     {
                         if (weatherData.Keys.Cast<string>().First().Equals(location.ToString()))
                         {
@@ -479,7 +479,7 @@ namespace SimpleWeather
                     // Save data
                     Settings.saveWeatherData(weatherData);
 
-                    if (index == 0)
+                    if (index == App.HomeIdx)
                     {
                         HomePanel.First().setWeather(weather);
                         // Save index to tag (to easily retreive)
