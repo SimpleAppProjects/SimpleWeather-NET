@@ -46,7 +46,7 @@ namespace SimpleWeather
             updateView(weather);
         }
 
-        private void updateView(WeatherYahoo.Weather weather)
+        public void updateView(WeatherYahoo.Weather weather)
         {
             // Update backgrounds
             Background = WeatherUtils.GetBackground(weather);
@@ -97,7 +97,7 @@ namespace SimpleWeather
             updateView(weather);
         }
 
-        private void updateView(WeatherUnderground.Weather weather)
+        public void updateView(WeatherUnderground.Weather weather)
         {
             // Update backgrounds
             Background = WeatherUtils.GetBackground(weather);

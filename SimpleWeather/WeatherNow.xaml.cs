@@ -22,15 +22,28 @@ namespace SimpleWeather
         WeatherUnderground.WeatherDataLoader wu_Loader = null;
         WeatherNowView weatherView = null;
 
+        KeyValuePair<int, object> pair;
+
         public void onWeatherLoaded(int locationIdx, object weather)
         {
             if (weather != null)
             {
                 if (Settings.API == "WUnderground")
-                    weatherView = new WeatherNowView(weather as WeatherUnderground.Weather);
+                {
+                    if (weatherView == null)
+                        weatherView = new WeatherNowView(weather as WeatherUnderground.Weather);
+                    else
+                        weatherView.updateView(weather as WeatherUnderground.Weather);
+                }
                 else
-                    weatherView = new WeatherNowView(weather as WeatherYahoo.Weather);
+                {
+                    if (weatherView == null)
+                        weatherView = new WeatherNowView(weather as WeatherYahoo.Weather);
+                    else
+                        weatherView.updateView(weather as WeatherYahoo.Weather);
+                }
 
+                this.DataContext = null;
                 this.DataContext = weatherView;
                 StackControl.ItemsSource = weatherView.Forecasts;
             }
@@ -41,17 +54,62 @@ namespace SimpleWeather
         public WeatherNow()
         {
             this.InitializeComponent();
+            NavigationCacheMode = NavigationCacheMode.Enabled;
 
             MainGrid.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
         }
 
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            base.OnNavigatingFrom(e);
+
+            // Clear cache if nav'ing back
+            if (e.NavigationMode == NavigationMode.Back)
+                NavigationCacheMode = NavigationCacheMode.Disabled;
+        }
+
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            if (e.Parameter != null)
+            base.OnNavigatedTo(e);
+
+            // Update view on resume
+            // ex. If temperature unit changed
+            if ((wLoader != null || wu_Loader != null) && e.NavigationMode != NavigationMode.New)
+            {
+                if (wu_Loader != null)
+                {
+                    if (wu_Loader.getWeather() != null)
+                        weatherView.updateView(wu_Loader.getWeather());
+                }
+                else if (wLoader != null)
+                {
+                    if (wLoader.getWeather() != null)
+                        weatherView.updateView(wLoader.getWeather());
+                }
+
+                if (pair.Key == App.HomeIdx)
+                {
+                    // Clear backstack since we're home
+                    Frame.BackStack.Clear();
+                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                }
+
+                return;
+            }
+
+            // Reset loaders if new page instance created
+            if (e.NavigationMode == NavigationMode.New)
+            {
+                wLoader = null;
+                wu_Loader = null;
+            }
+
+            // New page instance created, so restore
+            if (e.Parameter != null && (wLoader == null && wu_Loader == null || e.NavigationMode == NavigationMode.New))
             {
                 if (e.Parameter.GetType() == typeof(KeyValuePair<int, object>))
                 {
-                    KeyValuePair<int, object> pair = (KeyValuePair<int, object>)e.Parameter;
+                    pair = (KeyValuePair<int, object>)e.Parameter;
 
                     if (Settings.API == "WUnderground")
                         wu_Loader = new WeatherUnderground.WeatherDataLoader(this, pair.Value.ToString(), pair.Key);
