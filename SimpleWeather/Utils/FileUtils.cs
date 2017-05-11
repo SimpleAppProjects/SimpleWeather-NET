@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Streams;
@@ -15,7 +16,22 @@ namespace SimpleWeather.Utils
                 await Task.Delay(100);
             }
 
-            String data = await FileIO.ReadTextAsync(file);
+            String data;
+
+            using (StreamReader reader = new StreamReader((await file.OpenAsync(FileAccessMode.Read)).AsStreamForRead()))
+            {
+                String line = await reader.ReadLineAsync();
+                StringBuilder sBuilder = new StringBuilder();
+
+                while (line != null)
+                {
+                    sBuilder.Append(line).Append("\n");
+                    line = await reader.ReadLineAsync();
+                }
+
+                reader.Dispose();
+                data = sBuilder.ToString();
+            }
 
             return data;
         }
@@ -27,7 +43,14 @@ namespace SimpleWeather.Utils
                 await Task.Delay(100);
             }
 
-            await FileIO.WriteTextAsync(file, data);
+            using (Stream stream = (await file.OpenAsync(FileAccessMode.ReadWrite)).AsStreamForWrite())
+            using (StreamWriter writer = new StreamWriter(stream))
+            {
+                stream.SetLength(0);
+                await writer.WriteAsync(data);
+                await writer.FlushAsync();
+                writer.Dispose();
+            }
         }
 
         public static async void WriteFile(Byte[] data, StorageFile file)
@@ -37,7 +60,14 @@ namespace SimpleWeather.Utils
                 await Task.Delay(100);
             }
 
-            await FileIO.WriteBytesAsync(file, data);
+            using (Stream stream = (await file.OpenAsync(FileAccessMode.ReadWrite)).AsStreamForWrite())
+            using (StreamWriter writer = new StreamWriter(stream))
+            {
+                stream.SetLength(0);
+                await writer.WriteAsync(Encoding.UTF8.GetString(data));
+                await writer.FlushAsync();
+                writer.Dispose();
+            }
         }
 
         public static bool IsFileLocked(StorageFile file)
