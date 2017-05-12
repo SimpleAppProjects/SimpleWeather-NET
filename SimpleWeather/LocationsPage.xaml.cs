@@ -68,9 +68,22 @@ namespace SimpleWeather
             LocationPanels.CollectionChanged += LocationPanels_CollectionChanged;
 
             LocationQuerys = new ObservableCollection<LocationQueryView>();
+        }
 
-            // Get locations and load up weather data
-            LoadLocations();
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+
+            if (HomePanel.Count < 1 && LocationPanels.Count == 0)
+            {
+                // New instance; Get locations and load up weather data
+                LoadLocations();
+            }
+            else
+            {
+                // Refresh view
+                RefreshLocations();
+            }
         }
 
         private void LocationPanels_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -130,6 +143,28 @@ namespace SimpleWeather
                     int index = locations.IndexOf(location);
 
                     wLoader = new WeatherYahoo.WeatherDataLoader(this, location, index);
+                    await wLoader.loadWeatherData(false);
+                }
+            }
+
+            // Refresh
+            RefreshPanels();
+        }
+
+        private async void RefreshLocations()
+        {
+            foreach (LocationPanelView view in HomePanel.Concat(LocationPanels))
+            {
+                if (Settings.API == "WUnderground")
+                {
+                    WeatherUnderground.WeatherDataLoader wu_Loader = 
+                        new WeatherUnderground.WeatherDataLoader(this, view.Pair.Value.ToString(), view.Pair.Key);
+                    await wu_Loader.loadWeatherData(false);
+                }
+                else
+                {
+                    WeatherYahoo.WeatherDataLoader wLoader =
+                        new WeatherYahoo.WeatherDataLoader(this, view.Pair.Value.ToString(), view.Pair.Key);
                     await wLoader.loadWeatherData(false);
                 }
             }
@@ -483,7 +518,7 @@ namespace SimpleWeather
                     {
                         HomePanel.First().setWeather(weather);
                         // Save index to tag (to easily retreive)
-                        HomePanel.First().Pair = new KeyValuePair<int, object>(index, /*location*/selected_query);
+                        HomePanel.First().Pair = new KeyValuePair<int, object>(index, location.ToString());
 
                         // Hide change location panel
                         ShowChangeHomePanel(false);
@@ -496,7 +531,7 @@ namespace SimpleWeather
                     {
                         LocationPanelView panelView = new LocationPanelView(weather);
                         // Save index to tag (to easily retreive)
-                        panelView.Pair = new KeyValuePair<int, object>(index, /*location*/selected_query);
+                        panelView.Pair = new KeyValuePair<int, object>(index, location.ToString());
 
                         // Add to collection
                         LocationPanels.Add(panelView);

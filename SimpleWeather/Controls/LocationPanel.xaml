@@ -10,7 +10,10 @@
     d:DesignWidth="400"
     Background="#FF006FBF"
     BorderBrush="White"
-    Tag="{Binding Pair}">
+    IsEnabled="{Binding IsEnabled}"
+    Tag="{Binding Pair}"
+    d:DataContext="{d:DesignInstance Type=local:LocationPanelView, IsDesignTimeCreatable=True}">
+    
     <Button.Resources>
         <Style x:Key="WeatherIcon" TargetType="TextBlock">
             <Setter Property="FontSize" Value="12" />
@@ -102,7 +105,7 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <ProgressRing x:Name="LoadingRing" Grid.ColumnSpan="2" IsActive="False" Foreground="White"/>
+        <ProgressRing x:Name="LoadingRing" Grid.ColumnSpan="2" IsActive="{Binding ShowLoading}" Foreground="White"/>
         <Viewbox Height="55" HorizontalAlignment="Left" Grid.Column="0">
             <TextBlock x:Name="LocationName" Text="{Binding LocationName}" FontSize="24" VerticalAlignment="Center" Padding="10"/>
         </Viewbox>

@@ -10,22 +10,6 @@ namespace SimpleWeather.Controls
         public LocationPanel()
         {
             this.InitializeComponent();
-
-            LoadIt();
-        }
-
-        private async void LoadIt()
-        {
-            LoadingRing.IsActive = true;
-            this.IsEnabled = false;
-
-            while (this.LocationName.Text == null || this.LocationName.Text == string.Empty)
-            {
-                await Task.Delay(100);
-            }
-
-            LoadingRing.IsActive = false;
-            this.IsEnabled = true;
         }
     }
 }

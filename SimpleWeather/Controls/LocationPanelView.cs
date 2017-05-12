@@ -15,13 +15,30 @@ namespace SimpleWeather.Controls
         // Background
         public Brush Background { get; set; }
 
+        public bool ShowLoading
+        {
+            get
+            {
+                return isLoading;
+            }
+            set
+            {
+                isLoading = value;
+                IsEnabled = !value;
+            }
+        }
+        public bool IsEnabled { get; set; }
+        private bool isLoading = false;
+
         public LocationPanelView()
         {
+            ShowLoading = true;
         }
 
         #region Yahoo Weather
         public LocationPanelView(WeatherYahoo.Weather weather)
         {
+            ShowLoading = true;
             setWeather(weather);
         }
 
@@ -33,12 +50,15 @@ namespace SimpleWeather.Controls
             LocationName = weather.location.description;
             CurrTemp = weather.condition.temp + "º";
             WeatherIcon = WeatherUtils.GetWeatherIcon(int.Parse(weather.condition.code));
+
+            ShowLoading = false;
         }
         #endregion
 
         #region WeatherUnderground
         public LocationPanelView(WeatherUnderground.Weather weather)
         {
+            ShowLoading = true;
             setWeather(weather);
         }
 
@@ -51,6 +71,8 @@ namespace SimpleWeather.Controls
             CurrTemp = (Settings.Unit == "F" ?
                 Math.Round(weather.condition.temp_f) : Math.Round(weather.condition.temp_c)) + "º";
             WeatherIcon = WeatherUtils.GetWeatherIcon(weather.condition.icon_url);
+
+            ShowLoading = false;
         }
         #endregion
     }
