@@ -114,9 +114,12 @@ namespace SimpleWeather.WeatherYahoo
                 "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'", null);
 
             // There
-            string tz = weather.lastBuildDate.Substring(weather.lastBuildDate.Length - 3);
-            DateTime there = DateTime.ParseExact(weather.lastBuildDate,
-                "ddd, dd MMM yyyy hh:mm tt " + tz, null);
+            int AMPMidx = weather.lastBuildDate.LastIndexOf(" AM ");
+            if (AMPMidx < 0)
+                AMPMidx = weather.lastBuildDate.LastIndexOf(" PM ");
+
+            DateTime there = DateTime.ParseExact(weather.lastBuildDate.Substring(0, AMPMidx + 4),
+                "ddd, dd MMM yyyy hh:mm tt ", null);
             TimeSpan offset = there - utc;
 
             weather.location.offset = TimeSpan.Parse(string.Format("{0}:{1}", offset.Hours, offset.Minutes));
@@ -305,6 +308,10 @@ namespace SimpleWeather.WeatherYahoo
             {
                 throw wEx;
             }
+            else if (weather != null)
+            {
+                saveTimeZone();
+            }
 
             return weather;
         }
@@ -316,9 +323,12 @@ namespace SimpleWeather.WeatherYahoo
                 "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'", null);
 
             // There
-            string tz = weather.lastBuildDate.Substring(weather.lastBuildDate.Length - 3);
-            DateTime there = DateTime.ParseExact(weather.lastBuildDate,
-                "ddd, dd MMM yyyy hh:mm tt " + tz, null);
+            int AMPMidx = weather.lastBuildDate.LastIndexOf(" AM ");
+            if (AMPMidx < 0)
+                AMPMidx = weather.lastBuildDate.LastIndexOf(" PM ");
+
+            DateTime there = DateTime.ParseExact(weather.lastBuildDate.Substring(0, AMPMidx + 4),
+                "ddd, dd MMM yyyy hh:mm tt ", null);
             TimeSpan offset = there - utc;
 
             weather.location.offset = TimeSpan.Parse(string.Format("{0}:{1}", offset.Hours, offset.Minutes));
