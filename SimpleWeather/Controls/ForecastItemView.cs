@@ -10,6 +10,10 @@ namespace SimpleWeather.Controls
         public string HiTemp { get; set; }
         public string LoTemp { get; set; }
 
+        public ForecastItemView()
+        {
+        }
+
         public ForecastItemView(WeatherYahoo.Forecast forecast)
         {
             WeatherIcon = WeatherUtils.GetWeatherIcon(int.Parse(forecast.code));

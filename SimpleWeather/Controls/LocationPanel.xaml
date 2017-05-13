@@ -13,7 +13,7 @@
     IsEnabled="{Binding IsEnabled}"
     Tag="{Binding Pair}"
     d:DataContext="{d:DesignInstance Type=local:LocationPanelView, IsDesignTimeCreatable=True}">
-    
+
     <Button.Resources>
         <Style x:Key="WeatherIcon" TargetType="TextBlock">
             <Setter Property="FontSize" Value="12" />

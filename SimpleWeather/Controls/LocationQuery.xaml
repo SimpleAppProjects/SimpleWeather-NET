@@ -8,6 +8,7 @@
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
+    d:DataContext="{d:DesignInstance Type=local:LocationQueryView, IsDesignTimeCreatable=True}"
     Background="White">
     <UserControl.Resources>
         <Style x:Key="LocationQueryControlStyle" TargetType="UserControl">

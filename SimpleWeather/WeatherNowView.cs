@@ -38,18 +38,25 @@ namespace SimpleWeather
 
         public WeatherNowView()
         {
+            Background = new ImageBrush();
+            Background.Stretch = Stretch.UniformToFill;
+            Background.AlignmentX = AlignmentX.Center;
         }
 
         #region Yahoo Weather
         public WeatherNowView(WeatherYahoo.Weather weather)
         {
+            Background = new ImageBrush();
+            Background.Stretch = Stretch.UniformToFill;
+            Background.AlignmentX = AlignmentX.Center;
+
             updateView(weather);
         }
 
         public void updateView(WeatherYahoo.Weather weather)
         {
             // Update backgrounds
-            Background = WeatherUtils.GetBackground(weather);
+            WeatherUtils.SetBackground(Background, weather);
             PanelBackground = new SolidColorBrush(WeatherUtils.isNight(weather) ?
                 Windows.UI.Color.FromArgb(15, 128, 128, 128) : Windows.UI.Color.FromArgb(15, 8, 8, 8));
 
@@ -94,13 +101,17 @@ namespace SimpleWeather
 
         public WeatherNowView(WeatherUnderground.Weather weather)
         {
+            Background = new ImageBrush();
+            Background.Stretch = Stretch.UniformToFill;
+            Background.AlignmentX = AlignmentX.Center;
+
             updateView(weather);
         }
 
         public void updateView(WeatherUnderground.Weather weather)
         {
             // Update backgrounds
-            Background = WeatherUtils.GetBackground(weather);
+            WeatherUtils.SetBackground(Background, weather);
             PanelBackground = new SolidColorBrush(WeatherUtils.isNight(weather) ?
                 Windows.UI.Color.FromArgb(15, 128, 128, 128) : Windows.UI.Color.FromArgb(15, 8, 8, 8));
 

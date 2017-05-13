@@ -118,15 +118,9 @@ namespace SimpleWeather.Utils
             return WeatherIcon;
         }
 
-        public static ImageBrush GetBackground(WeatherYahoo.Weather weather)
+        public static void SetBackground(ImageBrush bg, WeatherYahoo.Weather weather)
         {
-            ImageBrush bg = new ImageBrush();
-            bg.Stretch = Stretch.UniformToFill;
-            bg.AlignmentX = AlignmentX.Center;
-
-            BitmapImage img = new BitmapImage();
-            img.CreateOptions = BitmapCreateOptions.None;
-            img.DecodePixelWidth = 960;
+            Uri imgURI = null;
 
             // Apply background based on weather condition
             switch (int.Parse(weather.condition.code))
@@ -134,8 +128,7 @@ namespace SimpleWeather.Utils
                 // Night
                 case 31:
                 case 33:
-                    img.UriSource = new Uri("ms-appx:///Assets/Backgrounds/NightSky.jpg");
-                    bg.ImageSource = img;
+                    imgURI = new Uri("ms-appx:///Assets/Backgrounds/NightSky.jpg");
                     break;
                 // Rain 
                 case 9:
@@ -152,8 +145,7 @@ namespace SimpleWeather.Utils
                 case 10:
                 case 17:
                 case 35:
-                    img.UriSource = new Uri("ms-appx:///Assets/Backgrounds/RainySky.jpg");
-                    bg.ImageSource = img;
+                    imgURI = new Uri("ms-appx:///Assets/Backgrounds/RainySky.jpg");
                     break;
                 // Tornado / Hurricane / Thunderstorm / Tropical Storm
                 case 0:
@@ -166,20 +158,17 @@ namespace SimpleWeather.Utils
                 case 39:
                 case 45:
                 case 47:
-                    img.UriSource = new Uri("ms-appx:///Assets/Backgrounds/StormySky.jpg");
-                    bg.ImageSource = img;
+                    imgURI = new Uri("ms-appx:///Assets/Backgrounds/StormySky.jpg");
                     break;
                 // Dust
                 case 19:
-                    img.UriSource = new Uri("ms-appx:///Assets/Backgrounds/Dust.jpg");
-                    bg.ImageSource = img;
+                    imgURI = new Uri("ms-appx:///Assets/Backgrounds/Dust.jpg");
                     break;
                 // Foggy / Haze
                 case 20:
                 case 21:
                 case 22:
-                    img.UriSource = new Uri("ms-appx:///Assets/Backgrounds/FoggySky.jpg");
-                    bg.ImageSource = img;
+                    imgURI = new Uri("ms-appx:///Assets/Backgrounds/FoggySky.jpg");
                     break;
                 // Snow / Snow Showers/Storm
                 case 13:
@@ -190,8 +179,7 @@ namespace SimpleWeather.Utils
                 case 42:
                 case 43:
                 case 46:
-                    img.UriSource = new Uri("ms-appx:///Assets/Backgrounds/Snow.jpg");
-                    bg.ImageSource = img;
+                    imgURI = new Uri("ms-appx:///Assets/Backgrounds/Snow.jpg");
                     break;
                 /* Ambigious weather conditions */
                 // (Mostly) Cloudy
@@ -200,13 +188,11 @@ namespace SimpleWeather.Utils
                 case 27:
                     if (isNight(weather))
                     {
-                        img.UriSource = new Uri("ms-appx:///Assets/Backgrounds/MostlyCloudy-Night.jpg");
-                        bg.ImageSource = img;
+                        imgURI = new Uri("ms-appx:///Assets/Backgrounds/MostlyCloudy-Night.jpg");
                     }
                     else
                     {
-                        img.UriSource = new Uri("ms-appx:///Assets/Backgrounds/MostlyCloudy-Day.jpg");
-                        bg.ImageSource = img;
+                        imgURI = new Uri("ms-appx:///Assets/Backgrounds/MostlyCloudy-Day.jpg");
                     }
                     break;
                 // Partly Cloudy
@@ -215,33 +201,41 @@ namespace SimpleWeather.Utils
                 case 30:
                     if (isNight(weather))
                     {
-                        img.UriSource = new Uri("ms-appx:///Assets/Backgrounds/PartlyCloudy-Night.jpg");
-                        bg.ImageSource = img;
+                        imgURI = new Uri("ms-appx:///Assets/Backgrounds/PartlyCloudy-Night.jpg");
                     }
                     else
                     {
-                        img.UriSource = new Uri("ms-appx:///Assets/Backgrounds/PartlyCloudy-Day.jpg");
-                        bg.ImageSource = img;
+                        imgURI = new Uri("ms-appx:///Assets/Backgrounds/PartlyCloudy-Day.jpg");
+                    }
+                    break;
+                default:
+                    // Set background based using sunset/rise times
+                    if (isNight(weather))
+                    {
+                        imgURI = new Uri("ms-appx:///Assets/Backgrounds/NightSky.jpg");
+                    }
+                    else
+                    {
+                        imgURI = new Uri("ms-appx:///Assets/Backgrounds/DaySky.jpg");
                     }
                     break;
             }
 
-            if (bg.ImageSource == null)
+            if (bg != null && bg.ImageSource != null)
             {
-                // Set background based using sunset/rise times
-                if (isNight(weather))
+                BitmapImage bmp = bg.ImageSource as BitmapImage;
+
+                if (bmp != null && bmp.UriSource == imgURI)
                 {
-                    img.UriSource = new Uri("ms-appx:///Assets/Backgrounds/NightSky.jpg");
-                    bg.ImageSource = img;
-                }
-                else
-                {
-                    img.UriSource = new Uri("ms-appx:///Assets/Backgrounds/DaySky.jpg");
-                    bg.ImageSource = img;
+                    System.Diagnostics.Debug.WriteLine("Skipping...");
+                    return;
                 }
             }
 
-            return bg;
+            BitmapImage img = new BitmapImage(imgURI);
+            img.CreateOptions = BitmapCreateOptions.None;
+            img.DecodePixelWidth = 960;
+            bg.ImageSource = img;
         }
 
         public static bool isNight(WeatherYahoo.Weather weather)
@@ -316,15 +310,9 @@ namespace SimpleWeather.Utils
             return WeatherIcon;
         }
 
-        public static ImageBrush GetBackground(WeatherUnderground.Weather weather)
+        public static void SetBackground(ImageBrush bg, WeatherUnderground.Weather weather)
         {
-            ImageBrush bg = new ImageBrush();
-            bg.Stretch = Stretch.UniformToFill;
-            bg.AlignmentX = AlignmentX.Center;
-
-            BitmapImage img = new BitmapImage();
-            img.CreateOptions = BitmapCreateOptions.None;
-            img.DecodePixelWidth = 960;
+            Uri imgURI = null;
 
             // Apply background based on weather condition
             switch (weather.condition.icon)
@@ -333,13 +321,11 @@ namespace SimpleWeather.Utils
                 case "mostlycloudy":
                     if (isNight(weather))
                     {
-                        img.UriSource = new Uri("ms-appx:///Assets/Backgrounds/MostlyCloudy-Night.jpg");
-                        bg.ImageSource = img;
+                        imgURI = new Uri("ms-appx:///Assets/Backgrounds/MostlyCloudy-Night.jpg");
                     }
                     else
                     {
-                        img.UriSource = new Uri("ms-appx:///Assets/Backgrounds/MostlyCloudy-Day.jpg");
-                        bg.ImageSource = img;
+                        imgURI = new Uri("ms-appx:///Assets/Backgrounds/MostlyCloudy-Day.jpg");
                     }
                     break;
                 case "mostlysunny":
@@ -347,37 +333,31 @@ namespace SimpleWeather.Utils
                 case "partlycloudy":
                     if (isNight(weather))
                     {
-                        img.UriSource = new Uri("ms-appx:///Assets/Backgrounds/PartlyCloudy-Night.jpg");
-                        bg.ImageSource = img;
+                        imgURI = new Uri("ms-appx:///Assets/Backgrounds/PartlyCloudy-Night.jpg");
                     }
                     else
                     {
-                        img.UriSource = new Uri("ms-appx:///Assets/Backgrounds/PartlyCloudy-Day.jpg");
-                        bg.ImageSource = img;
+                        imgURI = new Uri("ms-appx:///Assets/Backgrounds/PartlyCloudy-Day.jpg");
                     }
                     break;
                 case "chancerain":
                 case "chancesleat":
                 case "rain":
                 case "sleat":
-                    img.UriSource = new Uri("ms-appx:///Assets/Backgrounds/RainySky.jpg");
-                    bg.ImageSource = img;
+                    imgURI = new Uri("ms-appx:///Assets/Backgrounds/RainySky.jpg");
                     break;
                 case "chanceflurries":
                 case "chancesnow":
                 case "flurries":
                 case "snow":
-                    img.UriSource = new Uri("ms-appx:///Assets/Backgrounds/Snow.jpg");
-                    bg.ImageSource = img;
+                    imgURI = new Uri("ms-appx:///Assets/Backgrounds/Snow.jpg");
                     break;
                 case "chancetstorms":
                 case "tstorms":
-                    img.UriSource = new Uri("ms-appx:///Assets/Backgrounds/StormySky.jpg");
-                    bg.ImageSource = img;
+                    imgURI = new Uri("ms-appx:///Assets/Backgrounds/StormySky.jpg");
                     break;
                 case "hazy":
-                    img.UriSource = new Uri("ms-appx:///Assets/Backgrounds/FoggySky.jpg");
-                    bg.ImageSource = img;
+                    imgURI = new Uri("ms-appx:///Assets/Backgrounds/FoggySky.jpg");
                     break;
                 case "sunny":
                 case "clear":
@@ -386,18 +366,30 @@ namespace SimpleWeather.Utils
                     // Set background based using sunset/rise times
                     if (isNight(weather))
                     {
-                        img.UriSource = new Uri("ms-appx:///Assets/Backgrounds/NightSky.jpg");
-                        bg.ImageSource = img;
+                        imgURI = new Uri("ms-appx:///Assets/Backgrounds/NightSky.jpg");
                     }
                     else
                     {
-                        img.UriSource = new Uri("ms-appx:///Assets/Backgrounds/DaySky.jpg");
-                        bg.ImageSource = img;
+                        imgURI = new Uri("ms-appx:///Assets/Backgrounds/DaySky.jpg");
                     }
                     break;
             }
 
-            return bg;
+            if (bg != null && bg.ImageSource != null)
+            {
+                BitmapImage bmp = bg.ImageSource as BitmapImage;
+
+                if (bmp != null && bmp.UriSource == imgURI)
+                {
+                    System.Diagnostics.Debug.WriteLine("Skipping...");
+                    return;
+                }
+            }
+
+            BitmapImage img = new BitmapImage(imgURI);
+            img.CreateOptions = BitmapCreateOptions.None;
+            img.DecodePixelWidth = 960;
+            bg.ImageSource = img;
         }
 
         public static bool isNight(WeatherUnderground.Weather weather)

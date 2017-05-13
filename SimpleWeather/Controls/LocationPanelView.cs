@@ -13,7 +13,7 @@ namespace SimpleWeather.Controls
         public KeyValuePair<int, object> Pair { get; set; }
 
         // Background
-        public Brush Background { get; set; }
+        public ImageBrush Background { get; set; }
 
         public bool ShowLoading
         {
@@ -33,19 +33,28 @@ namespace SimpleWeather.Controls
         public LocationPanelView()
         {
             ShowLoading = true;
+
+            Background = new ImageBrush();
+            Background.Stretch = Stretch.UniformToFill;
+            Background.AlignmentX = AlignmentX.Center;
         }
 
         #region Yahoo Weather
         public LocationPanelView(WeatherYahoo.Weather weather)
         {
             ShowLoading = true;
+
+            Background = new ImageBrush();
+            Background.Stretch = Stretch.UniformToFill;
+            Background.AlignmentX = AlignmentX.Center;
+
             setWeather(weather);
         }
 
         public void setWeather(WeatherYahoo.Weather weather)
         {
             // Update background
-            Background = WeatherUtils.GetBackground(weather);
+            WeatherUtils.SetBackground(Background, weather);
 
             LocationName = weather.location.description;
             CurrTemp = weather.condition.temp + "º";
@@ -59,13 +68,16 @@ namespace SimpleWeather.Controls
         public LocationPanelView(WeatherUnderground.Weather weather)
         {
             ShowLoading = true;
+            Background.Stretch = Stretch.UniformToFill;
+            Background.AlignmentX = AlignmentX.Center;
+
             setWeather(weather);
         }
 
         public void setWeather(WeatherUnderground.Weather weather)
         {
             // Update background
-            Background = WeatherUtils.GetBackground(weather);
+            WeatherUtils.SetBackground(Background, weather);
 
             LocationName = weather.location.full_name;
             CurrTemp = (Settings.Unit == "F" ?

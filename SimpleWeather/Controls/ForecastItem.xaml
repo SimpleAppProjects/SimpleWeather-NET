@@ -7,7 +7,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     d:DesignHeight="200"
-    d:DesignWidth="155">
+    d:DesignWidth="155"
+    d:DataContext="{d:DesignInstance Type=local:ForecastItemView, IsDesignTimeCreatable=True}">
     <UserControl.Resources>
         <Style x:Key="WeatherIcon" TargetType="TextBlock">
             <Setter Property="Foreground" Value="White" />
@@ -58,7 +59,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Viewbox Style="{StaticResource ForecastIcon}" Grid.Row="1">
+            <Viewbox Style="{StaticResource ForecastIcon}" Height="Auto" Grid.Row="1">
                 <TextBlock Style="{StaticResource WeatherIcon}" Text="{Binding WeatherIcon}" />
             </Viewbox>
             <TextBlock Style="{StaticResource ForecastDate}" Text="{Binding Date}" Grid.Row="0"/>

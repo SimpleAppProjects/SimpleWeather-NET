@@ -6,10 +6,8 @@
     xmlns:local="using:SimpleWeather"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
-    <Page.DataContext>
-        <local:WeatherNowView />
-    </Page.DataContext>
+    mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance Type=local:WeatherNowView, IsDesignTimeCreatable=True}">
     <Page.Resources>
         <TransitionCollection x:Name="TextTransitions">
             <EntranceThemeTransition />
@@ -188,7 +186,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <Viewbox x:Name="WeatherBox" VerticalAlignment="Top" Height="150" Width="150" Grid.Row="0">
+                    <Viewbox x:Name="WeatherBox" VerticalAlignment="Top" Height="Auto" Grid.Row="0">
                         <TextBlock x:Name="WeatherIcon" Style="{StaticResource WeatherIcon}" Text="{Binding WeatherIcon}" />
                     </Viewbox>
                     <TextBlock Name="CurCondition" Text="{Binding CurCondition}" FontSize="18" HorizontalAlignment="Center" Foreground="White" Grid.Row="1" Transitions="{StaticResource TextTransitions}"/>

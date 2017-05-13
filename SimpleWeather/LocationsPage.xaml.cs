@@ -109,7 +109,6 @@ namespace SimpleWeather
                 int index = locations.IndexOf(location);
 
                 LocationPanelView panel = new LocationPanelView();
-                panel.Background = new SolidColorBrush(App.AppColor);
                 // Save index to tag (to easily retreive)
                 panel.Pair = new KeyValuePair<int, object>(index, location);
 
