@@ -18,7 +18,6 @@ namespace SimpleWeather.WeatherUnderground
         {
             Uri queryURL = new Uri(queryAPI + query + options);
             List<AC_Location> locationResults = null;
-            WeatherException wEx = null;
 
             try
             {
@@ -53,16 +52,9 @@ namespace SimpleWeather.WeatherUnderground
                     locationResults.Add(location);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 locationResults = new List<AC_Location>();
-                if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
-                {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NETWORKERROR);
-                    await Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(
-                        Windows.UI.Core.CoreDispatcherPriority.Normal,
-                        async () => await new Windows.UI.Popups.MessageDialog(wEx.Message).ShowAsync());
-                }
             }
 
             return locationResults;

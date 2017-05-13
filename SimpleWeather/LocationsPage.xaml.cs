@@ -393,6 +393,11 @@ namespace SimpleWeather
                     selected_query = results.First().l;
                 }
             }
+            else if (String.IsNullOrWhiteSpace(args.QueryText))
+            {
+                // Stop since there is no valid query
+                return;
+            }
 
             int index = 0;
             if (Settings.API == "WUnderground")

@@ -299,14 +299,14 @@ namespace SimpleWeather.WeatherYahoo
             await memStream.FlushAsync();
             memStream.Dispose();
 
-            if (weather == null && wEx == null)
+            if (weather == null)
             {
-                wEx = new WeatherException(WeatherUtils.ErrorStatus.NOWEATHER);
-                throw wEx;
-            }
-            else if (weather == null && wEx != null)
-            {
-                throw wEx;
+                if (wEx == null)
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NOWEATHER);
+
+                await Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(
+                    Windows.UI.Core.CoreDispatcherPriority.Normal,
+                    async () => await new Windows.UI.Popups.MessageDialog(wEx.Message).ShowAsync());
             }
             else if (weather != null)
             {

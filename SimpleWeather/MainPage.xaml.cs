@@ -160,6 +160,11 @@ namespace SimpleWeather
                     selected_query = results.First().l;
                 }
             }
+            else if (String.IsNullOrWhiteSpace(args.QueryText))
+            {
+                // Stop since there is no valid query
+                return;
+            }
 
             // Stop if using WeatherUnderground and API Key is empty
             if (String.IsNullOrWhiteSpace(Settings.API_KEY) && Settings.API == "WUnderground")
