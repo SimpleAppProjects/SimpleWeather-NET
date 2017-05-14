@@ -256,36 +256,4 @@ namespace SimpleWeather.WeatherYahoo
 
         public string date { get { return DateTime.Parse(_date).ToString("dddd dd"); } set { _date = value; } }
     }
-
-    [DataContract]
-    public class Coordinate
-    {
-        [DataMember]
-        private double lat = 0;
-        [DataMember]
-        private double _long = 0;
-
-        public Coordinate(string coordinatePair)
-        {
-            setCoordinate(coordinatePair);
-        }
-
-        public Coordinate(double latitude, double longitude)
-        {
-            lat = latitude;
-            _long = longitude;
-        }
-
-        public void setCoordinate(string coordinatePair)
-        {
-            string[] coord = coordinatePair.Split(',');
-            lat = double.Parse(coord[0]);
-            _long = double.Parse(coord[1]);
-        }
-
-        public override string ToString()
-        {
-            return "(" + lat + ", " + _long + ")";
-        }
-    }
 }

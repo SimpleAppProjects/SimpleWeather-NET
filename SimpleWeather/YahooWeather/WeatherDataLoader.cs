@@ -34,7 +34,8 @@ namespace SimpleWeather.WeatherYahoo
         private async Task getWeatherData()
         {
             string yahooAPI = "https://query.yahooapis.com/v1/public/yql?q=";
-            string query = "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text=\""
+            //string query = "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text=\""
+            string query = "select * from weather.forecast where woeid=\""
                 + location + "\") and u='" + Settings.Unit + "'&format=json";
             Uri weatherURL = new Uri(yahooAPI + query);
 
@@ -247,8 +248,9 @@ namespace SimpleWeather.WeatherYahoo
         public static async Task<Weather> getWeather(string location)
         {
             string yahooAPI = "https://query.yahooapis.com/v1/public/yql?q=";
-            string query = "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text=\""
-                + location + "\") and u='" + Settings.Unit + "'&format=json";
+            //string query = "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text=\""
+            string query = "select * from weather.forecast where woeid=\""
+                + location + "\" and u='" + Settings.Unit + "'&format=json";
             Uri weatherURL = new Uri(yahooAPI + query);
 
             HttpClient webClient = new HttpClient();

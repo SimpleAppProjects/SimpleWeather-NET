@@ -1,4 +1,5 @@
 ﻿using SimpleWeather.WeatherUnderground;
+using SimpleWeather.WeatherYahoo;
 
 namespace SimpleWeather.Controls
 {
@@ -15,6 +16,7 @@ namespace SimpleWeather.Controls
             LocationQuery = string.Empty;
         }
 
+        #region WeatherUnderground
         public LocationQueryView(AC_Location location)
         {
             setLocation(location);
@@ -38,5 +40,34 @@ namespace SimpleWeather.Controls
             LocationCountry = location.country;
             LocationQuery = location.query;
         }
+        #endregion
+
+        #region Yahoo Weather
+        public LocationQueryView(place location)
+        {
+            setLocation(location);
+        }
+
+        public void setLocation(place location)
+        {
+            string town, region;
+
+            if (location.locality1 != null)
+                town = location.locality1.Value;
+            else
+                town = location.name;
+
+            if (location.admin1 != null)
+                region = location.admin1.Value;
+            else if (location.admin2 != null)
+                region = location.admin2.Value;
+            else
+                region = location.country.Value;
+
+            LocationName = string.Format("{0}, {1}", town, region);
+            LocationCountry = location.country.code;
+            LocationQuery = location.woeid;
+        }
+        #endregion
     }
 }

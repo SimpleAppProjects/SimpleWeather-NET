@@ -59,49 +59,70 @@ namespace SimpleWeather
         {
             if (!String.IsNullOrWhiteSpace(sender.Text) && args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
             {
-                List<WeatherUnderground.AC_Location> results = new List<WeatherUnderground.AC_Location>(0);
-                try
+                if (Settings.API == "WUnderground")
                 {
-                    results = await WeatherUnderground.AutoCompleteQuery.getLocations(sender.Text);
-                }
-                catch (Exception ex)
-                {
-                    if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
+                    List<WeatherUnderground.AC_Location> results = await WeatherUnderground.AutoCompleteQuery.getLocations(sender.Text);
+
+                    LocationQuerys.Clear();
+
+                    // Show message if no results are found
+                    if (results.Count == 0)
                     {
-                        MessageDialog error = new MessageDialog("Network Connection Error!!", "Error");
-                        await error.ShowAsync();
+                        LocationQueryView noresults = new LocationQueryView();
+                        noresults.LocationName = "No results found";
+                        LocationQuerys.Add(noresults);
                     }
-                }
+                    else
+                    {
+                        // Limit amount of results shown
+                        int maxResults = 10;
 
-                LocationQuerys.Clear();
+                        foreach (WeatherUnderground.AC_Location location in results)
+                        {
+                            LocationQueryView view = new LocationQueryView(location);
+                            LocationQuerys.Add(view);
 
-                // Show message if no results are found
-                if (results.Count == 0)
-                {
-                    LocationQueryView noresults = new LocationQueryView();
-                    noresults.LocationName = "No results found";
-                    LocationQuerys.Add(noresults);
+                            // Limit amount of results
+                            maxResults--;
+                            if (maxResults <= 0)
+                                break;
+                        }
+                    }
                 }
                 else
                 {
-                    // Limit amount of results shown
-                    int maxResults = 10;
+                    List<WeatherYahoo.place> results = await WeatherYahoo.AutoCompleteQuery.getLocations(sender.Text);
 
-                    foreach (WeatherUnderground.AC_Location location in results)
+                    LocationQuerys.Clear();
+
+                    // Show message if no results are found
+                    if (results.Count == 0)
                     {
-                        LocationQueryView view = new LocationQueryView(location);
-                        LocationQuerys.Add(view);
+                        LocationQueryView noresults = new LocationQueryView();
+                        noresults.LocationName = "No results found";
+                        LocationQuerys.Add(noresults);
+                    }
+                    else
+                    {
+                        // Limit amount of results shown
+                        int maxResults = 10;
 
-                        // Limit amount of results
-                        maxResults--;
-                        if (maxResults <= 0)
-                            break;
+                        foreach (WeatherYahoo.place location in results)
+                        {
+                            LocationQueryView view = new LocationQueryView(location);
+                            LocationQuerys.Add(view);
+
+                            // Limit amount of results
+                            maxResults--;
+                            if (maxResults <= 0)
+                                break;
+                        }
                     }
                 }
 
                 // Refresh list
-                Location.ItemsSource = null;
-                Location.ItemsSource = LocationQuerys;
+                sender.ItemsSource = null;
+                sender.ItemsSource = LocationQuerys;
 
                 sender.IsSuggestionListOpen = true;
             }
@@ -136,31 +157,41 @@ namespace SimpleWeather
 
                 if (!String.IsNullOrEmpty(theChosenOne.LocationQuery))
                     selected_query = theChosenOne.LocationQuery;
+                else
+                    selected_query = string.Empty;
             }
             else if (!String.IsNullOrEmpty(args.QueryText))
             {
-                // Use args.QueryText to determine what to do.
-                List<WeatherUnderground.AC_Location> results = new List<WeatherUnderground.AC_Location>(0);
-                try
+                if (Settings.API == "WUnderground")
                 {
-                    results = await WeatherUnderground.AutoCompleteQuery.getLocations(args.QueryText);
-                }
-                catch (Exception ex)
-                {
-                    if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
-                    {
-                        await new MessageDialog("Network Connection Error!!", "Error").ShowAsync();
-                    }
-                    return;
-                }
+                    // Use args.QueryText to determine what to do.
+                    List<WeatherUnderground.AC_Location> results = await WeatherUnderground.AutoCompleteQuery.getLocations(args.QueryText);
 
-                if (results.Count > 0)
+                    if (results.Count > 0)
+                    {
+                        sender.Text = results.First().name;
+                        selected_query = results.First().l;
+                    }
+                }
+                else
                 {
-                    sender.Text = results.First().name;
-                    selected_query = results.First().l;
+                    // Use args.QueryText to determine what to do.
+                    List<WeatherYahoo.place> results = await WeatherYahoo.AutoCompleteQuery.getLocations(args.QueryText);
+
+                    if (results.Count > 0)
+                    {
+                        sender.Text = results.First().name;
+                        selected_query = results.First().woeid;
+                    }
                 }
             }
             else if (String.IsNullOrWhiteSpace(args.QueryText))
+            {
+                // Stop since there is no valid query
+                return;
+            }
+
+            if (String.IsNullOrWhiteSpace(selected_query))
             {
                 // Stop since there is no valid query
                 return;
@@ -177,48 +208,27 @@ namespace SimpleWeather
             }
 
             KeyValuePair<int, object> pair;
+            object weather = null;
+
+            // Weather Data
+            OrderedDictionary weatherData = await Settings.getWeatherData();
 
             if (Settings.API == "WUnderground")
-            {
-                // Weather Data
-                OrderedDictionary weatherData = await Settings.getWeatherData();
-
-                WeatherUnderground.Weather weather = await WeatherUnderground.WeatherLoaderTask.getWeather(selected_query);
-
-                if (weather == null)
-                    return;
-
-                // Save weather data
-                if (weatherData.Contains(selected_query))
-                    weatherData[selected_query] = weather;
-                else
-                    weatherData.Add(selected_query, weather);
-                Settings.saveWeatherData(weatherData);
-
-                pair = new KeyValuePair<int, object>(App.HomeIdx, selected_query);
-            }
+                weather = await WeatherUnderground.WeatherLoaderTask.getWeather(selected_query);
             else
-            {
-                // Weather Data
-                OrderedDictionary weatherData = await Settings.getWeatherData();
+                weather = await WeatherYahoo.WeatherLoaderTask.getWeather(selected_query);
 
-                WeatherYahoo.Weather weather = await WeatherYahoo.WeatherLoaderTask.getWeather(sender.Text);
+            if (weather == null)
+                return;
 
-                if (weather == null)
-                    return;
+            // Save weather data
+            if (weatherData.Contains(selected_query))
+                weatherData[selected_query] = weather;
+            else
+                weatherData.Add(selected_query, weather);
+            Settings.saveWeatherData(weatherData);
 
-                WeatherUtils.Coordinate local = new WeatherUtils.Coordinate(
-                    String.Format("{0}, {1}", weather.location.lat, weather.location._long));
-
-                // Save weather data
-                if (weatherData.Contains(local.ToString()))
-                    weatherData[local.ToString()] = weather;
-                else
-                    weatherData.Add(local.ToString(), weather);
-                Settings.saveWeatherData(weatherData);
-
-                pair = new KeyValuePair<int, object>(App.HomeIdx, local.ToString());
-            }
+            pair = new KeyValuePair<int, object>(App.HomeIdx, selected_query);
 
             Settings.WeatherLoaded = true;
             await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(Shell), pair));
@@ -299,32 +309,69 @@ namespace SimpleWeather
             {
                 button.IsEnabled = false;
 
-                WeatherUnderground.location gpsLocation = null;
-                try
+                if (Settings.API == "WUnderground")
                 {
-                    gpsLocation = await WeatherUnderground.GeopositionQuery.getLocation(geoPos);
-                }
-                catch (Exception ex)
-                {
-                    if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
+                    WeatherUnderground.location gpsLocation = await WeatherUnderground.GeopositionQuery.getLocation(geoPos);
+
+                    if (gpsLocation != null)
                     {
-                        error = new MessageDialog("Network Connection Error!!", "Error");
-                        await error.ShowAsync();
+                        LocationQueryView view = new LocationQueryView(gpsLocation);
+
+                        LocationQuerys.Clear();
+                        LocationQuerys.Add(view);
+
+                        // Refresh list
+                        Location.ItemsSource = null;
+                        Location.ItemsSource = LocationQuerys;
+
+                        Location.IsSuggestionListOpen = true;
+                    }
+                    else
+                    {
+                        LocationQueryView noresults = new LocationQueryView();
+                        noresults.LocationName = "No results found";
+
+                        LocationQuerys.Clear();
+                        LocationQuerys.Add(noresults);
+
+                        // Refresh list
+                        Location.ItemsSource = null;
+                        Location.ItemsSource = LocationQuerys;
+
+                        Location.IsSuggestionListOpen = true;
                     }
                 }
-
-                if (gpsLocation != null)
+                else
                 {
-                    LocationQueryView view = new LocationQueryView(gpsLocation);
+                    WeatherYahoo.place gpsLocation = await WeatherYahoo.GeopositionQuery.getLocation(geoPos);
 
-                    LocationQuerys.Clear();
-                    LocationQuerys.Add(view);
+                    if (gpsLocation != null)
+                    {
+                        LocationQueryView view = new LocationQueryView(gpsLocation);
 
-                    // Refresh list
-                    Location.ItemsSource = null;
-                    Location.ItemsSource = LocationQuerys;
+                        LocationQuerys.Clear();
+                        LocationQuerys.Add(view);
 
-                    Location.IsSuggestionListOpen = true;
+                        // Refresh list
+                        Location.ItemsSource = null;
+                        Location.ItemsSource = LocationQuerys;
+
+                        Location.IsSuggestionListOpen = true;
+                    }
+                    else
+                    {
+                        LocationQueryView noresults = new LocationQueryView();
+                        noresults.LocationName = "No results found";
+
+                        LocationQuerys.Clear();
+                        LocationQuerys.Add(noresults);
+
+                        // Refresh list
+                        Location.ItemsSource = null;
+                        Location.ItemsSource = LocationQuerys;
+
+                        Location.IsSuggestionListOpen = true;
+                    }
                 }
             }
 

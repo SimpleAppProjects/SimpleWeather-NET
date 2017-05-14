@@ -141,6 +141,8 @@
     <Compile Include="WeatherUnderground\GeopositionQuery.cs" />
     <Compile Include="WeatherUnderground\Weather.cs" />
     <Compile Include="WeatherUnderground\WeatherDataLoader.cs" />
+    <Compile Include="YahooWeather\GeopositionQuery.cs" />
+    <Compile Include="YahooWeather\AutoCompleteQuery.cs" />
     <Compile Include="YahooWeather\Weather.cs" />
     <Compile Include="YahooWeather\WeatherDataLoader.cs" />
     <Compile Include="Shell.xaml.cs">
