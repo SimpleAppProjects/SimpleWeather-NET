@@ -10,12 +10,14 @@ namespace SimpleWeather.WeatherYahoo
 {
     public static class AutoCompleteQuery
     {
-        public static async Task<List<place>> getLocations(string location_query)
+        public static async Task<List<Controls.LocationQueryView>> getLocations(string location_query)
         {
             string yahooAPI = "https://query.yahooapis.com/v1/public/yql?q=";
             string query = "select * from geo.places where text=\"" + location_query + "\"";
             Uri queryURL = new Uri(yahooAPI + query);
-            List<place> locationResults = null;
+            List<Controls.LocationQueryView> locationResults = null;
+            // Limit amount of results shown
+            int maxResults = 10;
 
             try
             {
@@ -35,7 +37,7 @@ namespace SimpleWeather.WeatherYahoo
                 webClient.Dispose();
 
                 // Load data
-                locationResults = new List<place>();
+                locationResults = new List<Controls.LocationQueryView>();
                 XmlSerializer deserializer = new XmlSerializer(typeof(query), null, null, new XmlRootAttribute("query"), "");
                 query root = (query)deserializer.Deserialize(memStream);
 
@@ -44,14 +46,19 @@ namespace SimpleWeather.WeatherYahoo
                     // Filter: only store city results
                     if (result.placeTypeName.Value == "Town"
                         || result.placeTypeName.Value == "Suburb")
-                        locationResults.Add(result);
+                        locationResults.Add(new Controls.LocationQueryView(result));
                     else
                         continue;
+
+                    // Limit amount of results
+                    maxResults--;
+                    if (maxResults <= 0)
+                        break;
                 }
             }
             catch (Exception)
             {
-                locationResults = new List<place>();
+                locationResults = new List<Controls.LocationQueryView>();
             }
 
             return locationResults;

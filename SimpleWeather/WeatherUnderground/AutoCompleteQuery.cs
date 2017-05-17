@@ -11,13 +11,14 @@ namespace SimpleWeather.WeatherUnderground
 {
     public static class AutoCompleteQuery
     {
-        private static string queryAPI = "http://autocomplete.wunderground.com/aq?query=";
-        private static string options = "&h=0&cities=1";
-
-        public static async Task<List<AC_Location>> getLocations(string query)
+        public static async Task<List<Controls.LocationQueryView>> getLocations(string query)
         {
+            string queryAPI = "http://autocomplete.wunderground.com/aq?query=";
+            string options = "&h=0&cities=1";
             Uri queryURL = new Uri(queryAPI + query + options);
-            List<AC_Location> locationResults = null;
+            List<Controls.LocationQueryView> locationResults = null;
+            // Limit amount of results shown
+            int maxResults = 10;
 
             try
             {
@@ -38,7 +39,7 @@ namespace SimpleWeather.WeatherUnderground
 
                 // Load data
                 DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(AC_Rootobject));
-                locationResults = new List<AC_Location>();
+                locationResults = new List<Controls.LocationQueryView>();
 
                 AC_Rootobject root = (AC_Rootobject)deserializer.ReadObject(memStream);
 
@@ -48,13 +49,17 @@ namespace SimpleWeather.WeatherUnderground
                     if (result.type != "city")
                         continue;
 
-                    AC_Location location = new AC_Location(result);
-                    locationResults.Add(location);
+                    locationResults.Add(new Controls.LocationQueryView(result));
+
+                    // Limit amount of results
+                    maxResults--;
+                    if (maxResults <= 0)
+                        break;
                 }
             }
             catch (Exception)
             {
-                locationResults = new List<AC_Location>();
+                locationResults = new List<Controls.LocationQueryView>();
             }
 
             return locationResults;
@@ -77,25 +82,5 @@ namespace SimpleWeather.WeatherUnderground
         public string l { get; set; }
         public string lat { get; set; }
         public string lon { get; set; }
-    }
-
-    public class AC_Location
-    {
-        public string name;
-        public string c { get; set; }
-        public string zmw { get; set; }
-        public string l { get; set; }
-        public string lat { get; set; }
-        public string lon { get; set; }
-
-        public AC_Location(AC_RESULT result)
-        {
-            name = result.name;
-            c = result.c;
-            zmw = result.zmw;
-            l = result.l;
-            lat = result.lat;
-            lon = result.lon;
-        }
     }
 }

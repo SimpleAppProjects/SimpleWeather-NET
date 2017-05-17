@@ -122,7 +122,9 @@
     <Compile Include="Utils\JSONParser.cs" />
     <Compile Include="Utils\WeatherUtils.cs" />
     <Compile Include="Utils\WeatherException.cs" />
-    <Compile Include="WeatherLoadedListener.cs" />
+    <Compile Include="WeatherData\GeopositionQuery.cs" />
+    <Compile Include="WeatherData\AutoCompleteQuery.cs" />
+    <Compile Include="WeatherData\WeatherLoadedListener.cs" />
     <Compile Include="WeatherNowView.cs" />
     <Compile Include="Controls\ForecastItem.xaml.cs">
       <DependentUpon>ForecastItem.xaml</DependentUpon>
@@ -140,11 +142,11 @@
     <Compile Include="WeatherUnderground\AutoCompleteQuery.cs" />
     <Compile Include="WeatherUnderground\GeopositionQuery.cs" />
     <Compile Include="WeatherUnderground\Weather.cs" />
-    <Compile Include="WeatherUnderground\WeatherDataLoader.cs" />
+    <Compile Include="WeatherData\Weather.cs" />
+    <Compile Include="WeatherData\WeatherDataLoader.cs" />
     <Compile Include="YahooWeather\GeopositionQuery.cs" />
     <Compile Include="YahooWeather\AutoCompleteQuery.cs" />
     <Compile Include="YahooWeather\Weather.cs" />
-    <Compile Include="YahooWeather\WeatherDataLoader.cs" />
     <Compile Include="Shell.xaml.cs">
       <DependentUpon>Shell.xaml</DependentUpon>
     </Compile>

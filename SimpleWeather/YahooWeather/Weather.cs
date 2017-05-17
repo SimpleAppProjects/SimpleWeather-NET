@@ -5,51 +5,6 @@ using System.Runtime.Serialization;
 namespace SimpleWeather.WeatherYahoo
 {
     [DataContract]
-    public class Weather
-    {
-        [DataMember]
-        public string created;
-        [DataMember]
-        public string lastBuildDate;
-        [DataMember]
-        public Units units;
-        [DataMember]
-        public Location location;
-        [DataMember]
-        public Wind wind;
-        [DataMember]
-        public Atmosphere atmosphere;
-        [DataMember]
-        public Astronomy astronomy;
-        [DataMember]
-        public Condition condition;
-        [DataMember]
-        public Forecast[] forecasts;
-
-        [DataMember]
-        public string ttl;
-
-        public Weather(Rootobject root)
-        {
-            created = root.query.created;
-            lastBuildDate = root.query.results.channel.lastBuildDate;
-            units = root.query.results.channel.units;
-
-            location = root.query.results.channel.location;
-            location.lat = root.query.results.channel.item.lat;
-            location._long = root.query.results.channel.item._long;
-
-            wind = root.query.results.channel.wind;
-            atmosphere = root.query.results.channel.atmosphere;
-            astronomy = root.query.results.channel.astronomy;
-            condition = root.query.results.channel.item.condition;
-            forecasts = root.query.results.channel.item.forecast;
-
-            ttl = root.query.results.channel.ttl;
-        }
-    }
-
-    [DataContract]
     public class Rootobject
     {
         [DataMember]
@@ -129,13 +84,6 @@ namespace SimpleWeather.WeatherYahoo
         public string country { get; set; }
         [DataMember]
         public string region { get; set; }
-
-        public string lat { get; set; }
-        public string _long { get; set; }
-        public string description { get { return city + "," + region; } }
-
-        [DataMember]
-        public TimeSpan offset { get; set; }
     }
 
     [DataContract]
@@ -145,10 +93,8 @@ namespace SimpleWeather.WeatherYahoo
         public string chill { get; set; }
         [DataMember]
         public string direction { get; set; }
-        [DataMember(Name = "speed")]
-        private string _speed { get; set; }
-
-        public string speed { get { return ConversionMethods.kphTomph(_speed); } set { _speed = value; } }
+        [DataMember]
+        public string speed { get; set; }
     }
 
     [DataContract]
@@ -156,28 +102,23 @@ namespace SimpleWeather.WeatherYahoo
     {
         [DataMember(Name = "humidity")]
         private string _humidity { get; set; }
-        [DataMember(Name = "pressure")]
-        private string _pressure { get; set; }
+        [DataMember]
+        public string pressure { get; set; }
         [DataMember]
         public string rising { get; set; }
-        [DataMember(Name = "visibility")]
-        private string _visibility { get; set; }
+        [DataMember]
+        public string visibility { get; set; }
 
         public string humidity { get { return _humidity + "%"; } set { _humidity = value; } }
-        public string pressure { get { return ConversionMethods.mbToInHg(_pressure); } set { _pressure = value; } }
-        public string visibility { get { return ConversionMethods.kmToMi(_visibility); } set { _visibility = value; } }
     }
 
     [DataContract]
     public class Astronomy
     {
-        [DataMember(Name = "sunrise")]
-        private string _sunrise { get; set; }
-        [DataMember(Name = "sunset")]
-        private string _sunset { get; set; }
-
-        public string sunrise { get { return DateTime.Parse(_sunrise).ToString("h:mm tt"); } set { _sunrise = value; } }
-        public string sunset { get { return DateTime.Parse(_sunset).ToString("h:mm tt"); } set { _sunset = value; } }
+        [DataMember]
+        public string sunrise { get; set; }
+        [DataMember]
+        public string sunset { get; set; }
     }
 
     [DataContract]
@@ -243,8 +184,8 @@ namespace SimpleWeather.WeatherYahoo
     {
         [DataMember]
         public string code { get; set; }
-        [DataMember(Name = "date")]
-        private string _date { get; set; }
+        [DataMember]
+        public string date { get; set; }
         [DataMember]
         public string day { get; set; }
         [DataMember]
@@ -253,7 +194,5 @@ namespace SimpleWeather.WeatherYahoo
         public string low { get; set; }
         [DataMember]
         public string text { get; set; }
-
-        public string date { get { return DateTime.Parse(_date).ToString("dddd dd"); } set { _date = value; } }
     }
 }

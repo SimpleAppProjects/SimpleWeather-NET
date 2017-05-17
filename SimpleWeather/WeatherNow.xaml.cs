@@ -1,10 +1,8 @@
 ﻿using SimpleWeather.Utils;
+using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
-using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -18,30 +16,19 @@ namespace SimpleWeather
     /// </summary>
     public sealed partial class WeatherNow : Page, WeatherLoadedListener
     {
-        WeatherYahoo.WeatherDataLoader wLoader = null;
-        WeatherUnderground.WeatherDataLoader wu_Loader = null;
+        WeatherDataLoader wLoader = null;
         WeatherNowView weatherView = null;
 
-        KeyValuePair<int, object> pair;
+        KeyValuePair<int, string> pair;
 
-        public void onWeatherLoaded(int locationIdx, object weather)
+        public void onWeatherLoaded(int locationIdx, Weather weather)
         {
             if (weather != null)
             {
-                if (Settings.API == "WUnderground")
-                {
-                    if (weatherView == null)
-                        weatherView = new WeatherNowView(weather as WeatherUnderground.Weather);
-                    else
-                        weatherView.updateView(weather as WeatherUnderground.Weather);
-                }
+                if (weatherView == null)
+                    weatherView = new WeatherNowView(weather);
                 else
-                {
-                    if (weatherView == null)
-                        weatherView = new WeatherNowView(weather as WeatherYahoo.Weather);
-                    else
-                        weatherView.updateView(weather as WeatherYahoo.Weather);
-                }
+                    weatherView.updateView(weather);
 
                 this.DataContext = null;
                 this.DataContext = weatherView;
@@ -74,14 +61,9 @@ namespace SimpleWeather
 
             // Update view on resume
             // ex. If temperature unit changed
-            if ((wLoader != null || wu_Loader != null) && e.NavigationMode != NavigationMode.New)
+            if ((wLoader != null) && e.NavigationMode != NavigationMode.New)
             {
-                if (wu_Loader != null)
-                {
-                    if (wu_Loader.getWeather() != null)
-                        weatherView.updateView(wu_Loader.getWeather());
-                }
-                else if (wLoader != null)
+                if (wLoader != null)
                 {
                     if (wLoader.getWeather() != null)
                         weatherView.updateView(wLoader.getWeather());
@@ -97,24 +79,20 @@ namespace SimpleWeather
                 return;
             }
 
-            // Reset loaders if new page instance created
+            // Reset loader if new page instance created
             if (e.NavigationMode == NavigationMode.New)
             {
                 wLoader = null;
-                wu_Loader = null;
             }
 
             // New page instance created, so restore
-            if (e.Parameter != null && (wLoader == null && wu_Loader == null || e.NavigationMode == NavigationMode.New))
+            if (e.Parameter != null && (wLoader == null || e.NavigationMode == NavigationMode.New))
             {
-                if (e.Parameter.GetType() == typeof(KeyValuePair<int, object>))
+                if (e.Parameter.GetType() == typeof(KeyValuePair<int, string>))
                 {
-                    pair = (KeyValuePair<int, object>)e.Parameter;
+                    pair = (KeyValuePair<int, string>)e.Parameter;
 
-                    if (Settings.API == "WUnderground")
-                        wu_Loader = new WeatherUnderground.WeatherDataLoader(this, pair.Value.ToString(), pair.Key);
-                    else
-                        wLoader = new WeatherYahoo.WeatherDataLoader(this, pair.Value.ToString(), pair.Key);
+                    wLoader = new WeatherDataLoader(this, pair.Value, pair.Key);
 
                     if (pair.Key == App.HomeIdx)
                     {
@@ -130,16 +108,13 @@ namespace SimpleWeather
 
         private async void Restore()
         {
-            if (wLoader == null && wu_Loader == null)
+            if (wLoader == null)
             {
                 // Weather was loaded before. Lets load it up...
                 List<string> locations = await Settings.getLocations();
                 string local = locations[App.HomeIdx];
 
-                if (Settings.API == "WUnderground")
-                    wu_Loader = new WeatherUnderground.WeatherDataLoader(this, local, App.HomeIdx);
-                else
-                    wLoader = new WeatherYahoo.WeatherDataLoader(this, local, App.HomeIdx);
+                wLoader = new WeatherDataLoader(this, local, App.HomeIdx);
 
                 // Clear backstack since we're home
                 Frame.BackStack.Clear();
@@ -159,10 +134,7 @@ namespace SimpleWeather
         {
             ShowLoadingGrid(true);
 
-            if (Settings.API == "WUnderground")
-                await wu_Loader.loadWeatherData(forceRefresh);
-            else
-                await wLoader.loadWeatherData(forceRefresh);
+            await wLoader.loadWeatherData(forceRefresh);
         }
 
         private void ShowLoadingGrid(bool show)

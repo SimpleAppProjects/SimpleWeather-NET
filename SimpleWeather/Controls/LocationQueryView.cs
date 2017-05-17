@@ -11,18 +11,18 @@ namespace SimpleWeather.Controls
 
         public LocationQueryView()
         {
-            LocationName = string.Empty;
+            LocationName = "No results found";
             LocationCountry = string.Empty;
             LocationQuery = string.Empty;
         }
 
         #region WeatherUnderground
-        public LocationQueryView(AC_Location location)
+        public LocationQueryView(AC_RESULT location)
         {
             setLocation(location);
         }
 
-        public void setLocation(AC_Location location)
+        public void setLocation(AC_RESULT location)
         {
             LocationName = location.name;
             LocationCountry = location.c;

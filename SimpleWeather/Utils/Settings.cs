@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
-using System.Runtime.Serialization.Json;
 using System.Threading.Tasks;
 using Windows.Storage;
-using Windows.Storage.Streams;
 
 namespace SimpleWeather.Utils
 {
@@ -22,7 +20,7 @@ namespace SimpleWeather.Utils
         private static string Fahrenheit = "F";
         private static string Celsius = "C";
 
-        private static List<Type> knownTypes = new List<Type> { typeof(WeatherYahoo.Weather), typeof(WeatherUnderground.Weather) };
+        private static List<Type> knownTypes = new List<Type> { typeof(WeatherData.Weather) };
 
         private static string getTempUnit()
         {

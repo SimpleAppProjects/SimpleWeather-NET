@@ -6,10 +6,18 @@ namespace SimpleWeather.Utils
     {
         private const double KM_TO_MI = 0.621371192;
         private const double MI_TO_KM = 1.609344;
+        private const double INHG_TO_MB = 1013.25 / 29.92;
+        private const double MB_TO_INHG = 29.92 / 1013.25;
 
-        public static string mbToInHg(String input)
+        public static string MBToInHg(String input)
         {
-            double result = 29.92 * double.Parse(input) / 1013.25;
+            double result = MB_TO_INHG * double.Parse(input);
+            return Math.Round(result, 2).ToString();
+        }
+
+        public static string InHgToMB(String input)
+        {
+            double result = INHG_TO_MB * double.Parse(input);
             return Math.Round(result, 2).ToString();
         }
 
@@ -47,6 +55,12 @@ namespace SimpleWeather.Utils
         {
             double result = (double.Parse(input) * ((double)9 /5)) + 32;
             return Math.Round(result).ToString();
+        }
+
+        public static DateTime ToEpochDateTime(string epoch_time)
+        {
+            return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+                .AddSeconds(long.Parse(epoch_time));
         }
     }
 }

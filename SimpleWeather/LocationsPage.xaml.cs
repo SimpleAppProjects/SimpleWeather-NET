@@ -1,16 +1,13 @@
 ﻿using SimpleWeather.Controls;
 using SimpleWeather.Utils;
+using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Threading.Tasks;
-using Windows.ApplicationModel.Core;
 using Windows.Devices.Geolocation;
 using Windows.Foundation;
-using Windows.Storage;
-using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -34,25 +31,18 @@ namespace SimpleWeather
         public ObservableCollection<LocationQueryView> LocationQuerys { get; set; }
         private string selected_query = string.Empty;
 
-        public void onWeatherLoaded(int locationIdx, object weather)
+        public void onWeatherLoaded(int locationIdx, Weather weather)
         {
             if (weather != null)
             {
                 if (locationIdx == App.HomeIdx)
                 {
-                    if (weather.GetType() == typeof(WeatherUnderground.Weather))
-                        HomePanel.First().setWeather(weather as WeatherUnderground.Weather);
-                    else if (weather.GetType() == typeof(WeatherYahoo.Weather))
-                        HomePanel.First().setWeather(weather as WeatherYahoo.Weather);
+                    HomePanel.First().setWeather(weather);
                 }
                 else
                 {
                     LocationPanelView panelView = LocationPanels[locationIdx - 1];
-
-                    if (weather.GetType() == typeof(WeatherUnderground.Weather))
-                        panelView.setWeather(weather as WeatherUnderground.Weather);
-                    else if (weather.GetType() == typeof(WeatherYahoo.Weather))
-                        panelView.setWeather(weather as WeatherYahoo.Weather);
+                    panelView.setWeather(weather);
                 }
             }
         }
@@ -91,7 +81,7 @@ namespace SimpleWeather
             foreach(LocationPanelView panelView in LocationPanels)
             {
                 int index = LocationPanels.IndexOf(panelView) + 1;
-                panelView.Pair = new KeyValuePair<int, object>(index, panelView.Pair.Value);
+                panelView.Pair = new KeyValuePair<int, string>(index, panelView.Pair.Value);
             }
 
             // Refresh ItemsSource
@@ -110,7 +100,7 @@ namespace SimpleWeather
 
                 LocationPanelView panel = new LocationPanelView();
                 // Save index to tag (to easily retreive)
-                panel.Pair = new KeyValuePair<int, object>(index, location);
+                panel.Pair = new KeyValuePair<int, string>(index, location);
 
                 if (index == App.HomeIdx) // Home
                     HomePanel.Add(panel);
@@ -121,29 +111,14 @@ namespace SimpleWeather
             // Refresh
             RefreshPanels();
 
-            if (Settings.API == "WUnderground")
+            WeatherDataLoader wLoader = null;
+
+            foreach (string location in locations)
             {
-                WeatherUnderground.WeatherDataLoader wu_Loader = null;
+                int index = locations.IndexOf(location);
 
-                foreach (string location in locations)
-                {
-                    int index = locations.IndexOf(location);
-
-                    wu_Loader = new WeatherUnderground.WeatherDataLoader(this, location, index);
-                    await wu_Loader.loadWeatherData(false);
-                }
-            }
-            else
-            {
-                WeatherYahoo.WeatherDataLoader wLoader = null;
-
-                foreach (string location in locations)
-                {
-                    int index = locations.IndexOf(location);
-
-                    wLoader = new WeatherYahoo.WeatherDataLoader(this, location, index);
-                    await wLoader.loadWeatherData(false);
-                }
+                wLoader = new WeatherDataLoader(this, location, index);
+                await wLoader.loadWeatherData(false);
             }
 
             // Refresh
@@ -154,18 +129,9 @@ namespace SimpleWeather
         {
             foreach (LocationPanelView view in HomePanel.Concat(LocationPanels))
             {
-                if (Settings.API == "WUnderground")
-                {
-                    WeatherUnderground.WeatherDataLoader wu_Loader = 
-                        new WeatherUnderground.WeatherDataLoader(this, view.Pair.Value.ToString(), view.Pair.Key);
-                    await wu_Loader.loadWeatherData(false);
-                }
-                else
-                {
-                    WeatherYahoo.WeatherDataLoader wLoader =
-                        new WeatherYahoo.WeatherDataLoader(this, view.Pair.Value.ToString(), view.Pair.Key);
-                    await wLoader.loadWeatherData(false);
-                }
+                WeatherDataLoader wLoader =
+                    new WeatherDataLoader(this, view.Pair.Value, view.Pair.Key);
+                await wLoader.loadWeatherData(false);
             }
 
             // Refresh
@@ -184,7 +150,7 @@ namespace SimpleWeather
         private void LocationButton_Click(object sender, RoutedEventArgs e)
         {
             LocationPanel panel = sender as LocationPanel;
-            KeyValuePair<int, object> pair = (KeyValuePair<int, object>)panel.Tag;
+            KeyValuePair<int, string> pair = (KeyValuePair<int, string>)panel.Tag;
 
             this.Frame.Navigate(typeof(WeatherNow), pair);
         }
@@ -235,37 +201,8 @@ namespace SimpleWeather
             if (geoPos != null)
             {
                 button.IsEnabled = false;
-                LocationQueryView view;
 
-                if (Settings.API == "WUnderground")
-                {
-                    WeatherUnderground.location gpsLocation = await WeatherUnderground.GeopositionQuery.getLocation(geoPos);
-
-                    if (gpsLocation != null)
-                    {
-                        view = new LocationQueryView(gpsLocation);
-                    }
-                    else
-                    {
-                        view = new LocationQueryView();
-                        view.LocationName = "No results found";
-                    }
-                }
-                else
-                {
-                    WeatherYahoo.place gpsLocation = await WeatherYahoo.GeopositionQuery.getLocation(geoPos);
-
-                    if (gpsLocation != null)
-                    {
-                        view = new LocationQueryView(gpsLocation);
-                    }
-                    else
-                    {
-                        view = new LocationQueryView();
-                        view.LocationName = "No results found";
-                    }
-                }
-
+                LocationQueryView view = await GeopositionQuery.getLocation(geoPos);
                 LocationQuerys.Clear();
                 LocationQuerys.Add(view);
 
@@ -342,66 +279,7 @@ namespace SimpleWeather
         {
             if (!String.IsNullOrWhiteSpace(sender.Text) && args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
             {
-                if (Settings.API == "WUnderground")
-                {
-                    List<WeatherUnderground.AC_Location> results = await WeatherUnderground.AutoCompleteQuery.getLocations(sender.Text);
-
-                    LocationQuerys.Clear();
-
-                    // Show message if no results are found
-                    if (results.Count == 0)
-                    {
-                        LocationQueryView noresults = new LocationQueryView();
-                        noresults.LocationName = "No results found";
-                        LocationQuerys.Add(noresults);
-                    }
-                    else
-                    {
-                        // Limit amount of results shown
-                        int maxResults = 10;
-
-                        foreach (WeatherUnderground.AC_Location location in results)
-                        {
-                            LocationQueryView view = new LocationQueryView(location);
-                            LocationQuerys.Add(view);
-
-                            // Limit amount of results
-                            maxResults--;
-                            if (maxResults <= 0)
-                                break;
-                        }
-                    }
-                }
-                else
-                {
-                    List<WeatherYahoo.place> results = await WeatherYahoo.AutoCompleteQuery.getLocations(sender.Text);
-
-                    LocationQuerys.Clear();
-
-                    // Show message if no results are found
-                    if (results.Count == 0)
-                    {
-                        LocationQueryView noresults = new LocationQueryView();
-                        noresults.LocationName = "No results found";
-                        LocationQuerys.Add(noresults);
-                    }
-                    else
-                    {
-                        // Limit amount of results shown
-                        int maxResults = 10;
-
-                        foreach (WeatherYahoo.place location in results)
-                        {
-                            LocationQueryView view = new LocationQueryView(location);
-                            LocationQuerys.Add(view);
-
-                            // Limit amount of results
-                            maxResults--;
-                            if (maxResults <= 0)
-                                break;
-                        }
-                    }
-                }
+                LocationQuerys = await AutoCompleteQuery.getLocations(sender.Text);
 
                 // Refresh list
                 sender.ItemsSource = null;
@@ -412,6 +290,7 @@ namespace SimpleWeather
             else if (String.IsNullOrWhiteSpace(sender.Text))
             {
                 // Hide flyout if query is empty or null
+                LocationQuerys.Clear();
                 sender.IsSuggestionListOpen = false;
             }
         }
@@ -445,27 +324,13 @@ namespace SimpleWeather
             }
             else if (!String.IsNullOrEmpty(args.QueryText))
             {
-                if (Settings.API == "WUnderground")
-                {
-                    // Use args.QueryText to determine what to do.
-                    List<WeatherUnderground.AC_Location> results = await WeatherUnderground.AutoCompleteQuery.getLocations(args.QueryText);
+                // Use args.QueryText to determine what to do.
+                LocationQueryView result = (await AutoCompleteQuery.getLocations(args.QueryText)).First();
 
-                    if (results.Count > 0)
-                    {
-                        sender.Text = results.First().name;
-                        selected_query = results.First().l;
-                    }
-                }
-                else
+                if (result != null && String.IsNullOrWhiteSpace(result.LocationQuery))
                 {
-                    // Use args.QueryText to determine what to do.
-                    List<WeatherYahoo.place> results = await WeatherYahoo.AutoCompleteQuery.getLocations(args.QueryText);
-
-                    if (results.Count > 0)
-                    {
-                        sender.Text = results.First().name;
-                        selected_query = results.First().woeid;
-                    }
+                    sender.Text = result.LocationName;
+                    selected_query = result.LocationQuery;
                 }
             }
             else if (String.IsNullOrWhiteSpace(args.QueryText))
@@ -481,141 +346,70 @@ namespace SimpleWeather
             }
 
             int index = 0;
-            if (Settings.API == "WUnderground")
+            OrderedDictionary weatherData = await Settings.getWeatherData();
+
+            if (sender.Name == "NewHomeLocation")
+                index = App.HomeIdx;
+            else
+                index = weatherData.Keys.Count;
+
+            // Check if location already exists
+            if (index == App.HomeIdx)
             {
-                OrderedDictionary weatherData = await Settings.getWeatherData();
-
-                if (sender.Name == "NewHomeLocation")
-                    index = App.HomeIdx;
-                else
-                    index = weatherData.Keys.Count;
-
-                // Check if location already exists
-                if (index == App.HomeIdx)
+                if (weatherData.Keys.Cast<string>().First().Equals(selected_query))
                 {
-                    if (weatherData.Keys.Cast<string>().First().Equals(selected_query))
-                    {
-                        ShowChangeHomePanel(false);
-                        return;
-                    }
-                }
-                else if (weatherData.Contains(selected_query))
-                {
-                    ShowAddLocationsPanel(false);
-                    return;
-                }
-
-                WeatherUnderground.Weather weather = await WeatherUnderground.WeatherLoaderTask.getWeather(selected_query);
-
-                if (weather == null)
-                    return;
-
-                // Save coords to List
-                if (sender.Name == "NewHomeLocation")
-                {
-                    weatherData.RemoveAt(0);
-                    weatherData.Insert(0, selected_query, weather);
-                }
-                else
-                {
-                    weatherData.Add(selected_query, weather);
-                }
-                // Save data
-                Settings.saveWeatherData(weatherData);
-
-                if (index == App.HomeIdx)
-                {
-                    HomePanel.First().setWeather(weather);
-                    // Save index to tag (to easily retreive)
-                    HomePanel.First().Pair = new KeyValuePair<int, object>(index, selected_query);
-
-                    // Hide change location panel
                     ShowChangeHomePanel(false);
-
-                    // Refresh
-                    HomeLocation.ItemsSource = null;
-                    HomeLocation.ItemsSource = HomePanel;
+                    return;
                 }
-                else
-                {
-                    LocationPanelView panelView = new LocationPanelView(weather);
-                    // Save index to tag (to easily retreive)
-                    panelView.Pair = new KeyValuePair<int, object>(index, selected_query);
+            }
+            else if (weatherData.Contains(selected_query))
+            {
+                ShowAddLocationsPanel(false);
+                return;
+            }
 
-                    // Add to collection
-                    LocationPanels.Add(panelView);
+            Weather weather = await WeatherLoaderTask.getWeather(selected_query);
 
-                    // Hide add locations panel
-                    ShowAddLocationsPanel(false);
-                }
+            if (weather == null)
+                return;
+
+            // Save coords to List
+            if (sender.Name == "NewHomeLocation")
+            {
+                weatherData.RemoveAt(0);
+                weatherData.Insert(0, selected_query, weather);
             }
             else
             {
-                OrderedDictionary weatherData = await Settings.getWeatherData();
+                weatherData.Add(selected_query, weather);
+            }
+            // Save data
+            Settings.saveWeatherData(weatherData);
 
-                if (sender.Name == "NewHomeLocation")
-                    index = App.HomeIdx;
-                else
-                    index = weatherData.Keys.Count;
+            if (index == App.HomeIdx)
+            {
+                HomePanel.First().setWeather(weather);
+                // Save index to tag (to easily retreive)
+                HomePanel.First().Pair = new KeyValuePair<int, string>(index, selected_query);
 
-                WeatherYahoo.Weather weather = await WeatherYahoo.WeatherLoaderTask.getWeather(selected_query);
+                // Hide change location panel
+                ShowChangeHomePanel(false);
 
-                if (weather == null)
-                    return;
+                // Refresh
+                HomeLocation.ItemsSource = null;
+                HomeLocation.ItemsSource = HomePanel;
+            }
+            else
+            {
+                LocationPanelView panelView = new LocationPanelView(weather);
+                // Save index to tag (to easily retreive)
+                panelView.Pair = new KeyValuePair<int, string>(index, selected_query);
 
-                // Check if location already exists
-                if (index == App.HomeIdx)
-                {
-                    if (weatherData.Keys.Cast<string>().First().Equals(selected_query))
-                    {
-                        ShowChangeHomePanel(false);
-                        return;
-                    }
-                }
-                else if (weatherData.Contains(selected_query))
-                {
-                    ShowAddLocationsPanel(false);
-                    return;
-                }
+                // Add to collection
+                LocationPanels.Add(panelView);
 
-                // Save coords to List
-                if (sender.Name == "NewHomeLocation")
-                {
-                    weatherData.RemoveAt(0);
-                    weatherData.Insert(0, selected_query, weather);
-                }
-                else
-                {
-                    weatherData.Add(selected_query, weather);
-                }
-                // Save data
-                Settings.saveWeatherData(weatherData);
-
-                if (index == App.HomeIdx)
-                {
-                    HomePanel.First().setWeather(weather);
-                    // Save index to tag (to easily retreive)
-                    HomePanel.First().Pair = new KeyValuePair<int, object>(index, selected_query);
-
-                    // Hide change location panel
-                    ShowChangeHomePanel(false);
-
-                    // Refresh
-                    HomeLocation.ItemsSource = null;
-                    HomeLocation.ItemsSource = HomePanel;
-                }
-                else
-                {
-                    LocationPanelView panelView = new LocationPanelView(weather);
-                    // Save index to tag (to easily retreive)
-                    panelView.Pair = new KeyValuePair<int, object>(index, selected_query);
-
-                    // Add to collection
-                    LocationPanels.Add(panelView);
-
-                    // Hide add locations panel
-                    ShowAddLocationsPanel(false);
-                }
+                // Hide add locations panel
+                ShowAddLocationsPanel(false);
             }
 
             sender.IsSuggestionListOpen = false;

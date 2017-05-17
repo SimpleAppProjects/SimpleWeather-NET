@@ -1,5 +1,6 @@
 ﻿using SimpleWeather.Controls;
 using SimpleWeather.Utils;
+using SimpleWeather.WeatherData;
 using System;
 using System.Collections.ObjectModel;
 using Windows.UI.Xaml;
@@ -43,8 +44,7 @@ namespace SimpleWeather
             Background.AlignmentX = AlignmentX.Center;
         }
 
-        #region Yahoo Weather
-        public WeatherNowView(WeatherYahoo.Weather weather)
+        public WeatherNowView(Weather weather)
         {
             Background = new ImageBrush();
             Background.Stretch = Stretch.UniformToFill;
@@ -53,7 +53,7 @@ namespace SimpleWeather
             updateView(weather);
         }
 
-        public void updateView(WeatherYahoo.Weather weather)
+        public void updateView(Weather weather)
         {
             // Update backgrounds
             WeatherUtils.SetBackground(Background, weather);
@@ -61,62 +61,7 @@ namespace SimpleWeather
                 Windows.UI.Color.FromArgb(15, 128, 128, 128) : Windows.UI.Color.FromArgb(15, 8, 8, 8));
 
             // Location
-            Location = weather.location.description;
-
-            // Date Updated
-            UpdateDate = WeatherUtils.GetLastBuildDate(weather);
-
-            // Update Current Condition
-            CurTemp = weather.condition.temp +
-                (weather.units.temperature == "F" ? "\uf045" : "\uf03c");
-            CurCondition = weather.condition.text;
-            WeatherIcon = WeatherUtils.GetWeatherIcon(int.Parse(weather.condition.code));
-
-            // WeatherDetails
-            // Astronomy
-            Sunrise = weather.astronomy.sunrise;
-            Sunset = weather.astronomy.sunset;
-            // Wind
-            WindChill = (weather.units.temperature == "F" ? weather.wind.chill : ConversionMethods.FtoC(weather.wind.chill)) + "º";
-            WindSpeed = weather.wind.speed + " " + weather.units.speed;
-            updateWindDirection(int.Parse(weather.wind.direction));
-
-            // Atmosphere
-            Humidity = weather.atmosphere.humidity;
-            Pressure = (weather.units.temperature == "F" ?
-                weather.atmosphere.pressure : Math.Round(double.Parse(weather.atmosphere.pressure)).ToString())
-                + " " + weather.units.pressure;
-            updatePressureState(int.Parse(weather.atmosphere.rising));
-            _Visibility = weather.atmosphere.visibility + " " + weather.units.distance;
-
-            // Add UI elements
-            Forecasts = new ObservableCollection<ForecastItemView>();
-            foreach (WeatherYahoo.Forecast forecast in weather.forecasts)
-            {
-                ForecastItemView forecastView = new ForecastItemView(forecast);
-                Forecasts.Add(forecastView);
-            }
-        }
-        #endregion
-
-        public WeatherNowView(WeatherUnderground.Weather weather)
-        {
-            Background = new ImageBrush();
-            Background.Stretch = Stretch.UniformToFill;
-            Background.AlignmentX = AlignmentX.Center;
-
-            updateView(weather);
-        }
-
-        public void updateView(WeatherUnderground.Weather weather)
-        {
-            // Update backgrounds
-            WeatherUtils.SetBackground(Background, weather);
-            PanelBackground = new SolidColorBrush(WeatherUtils.isNight(weather) ?
-                Windows.UI.Color.FromArgb(15, 128, 128, 128) : Windows.UI.Color.FromArgb(15, 8, 8, 8));
-
-            // Location
-            Location = weather.location.full_name;
+            Location = weather.location.name;
 
             // Date Updated
             UpdateDate = WeatherUtils.GetLastBuildDate(weather);
@@ -125,12 +70,13 @@ namespace SimpleWeather
             CurTemp = Settings.Unit == "F" ?
                 Math.Round(weather.condition.temp_f) + "\uf045" : Math.Round(weather.condition.temp_c) + "\uf03c";
             CurCondition = weather.condition.weather;
-            WeatherIcon = WeatherUtils.GetWeatherIcon(weather.condition.icon_url);
+            WeatherIcon = WeatherUtils.GetWeatherIcon(weather.condition.icon);
 
             // WeatherDetails
             // Astronomy
-            Sunrise = DateTime.Parse(weather.sun_phase.sunrise.hour + ":" + weather.sun_phase.sunrise.minute).ToString("hh:mm tt");
-            Sunset = DateTime.Parse(weather.sun_phase.sunset.hour + ":" + weather.sun_phase.sunset.minute).ToString("hh:mm tt");
+            Sunrise = weather.astronomy.sunrise.ToString("h:mm tt");
+            Sunset = weather.astronomy.sunset.ToString("h:mm tt");
+
             // Wind
             WindChill = Settings.Unit == "F" ?
                 Math.Round(weather.condition.feelslike_f) + "º" : Math.Round(weather.condition.feelslike_c) + "º";
@@ -139,46 +85,41 @@ namespace SimpleWeather
             updateWindDirection(weather.condition.wind_degrees);
 
             // Atmosphere
-            Humidity = weather.condition.relative_humidity;
+            Humidity = weather.atmosphere.humidity;
             Pressure = Settings.Unit == "F" ?
-                weather.condition.pressure_in + " in" : weather.condition.pressure_mb + " mb";
-
-            if (weather.condition.pressure_trend == "+")
-                updatePressureState(1);
-            else if (weather.condition.pressure_trend == "-")
-                updatePressureState(2);
-            else
-                updatePressureState(0);
-
-            _Visibility = Settings.Unit == "F" ? 
-                weather.condition.visibility_mi + " mi" : weather.condition.visibility_km + " km";
+                weather.atmosphere.pressure_in + " in" : weather.atmosphere.pressure_mb + " mb";
+            updatePressureState(weather.atmosphere.pressure_trend);
+            _Visibility = Settings.Unit == "F" ?
+                weather.atmosphere.visibility_mi + " mi" : weather.atmosphere.visibility_km + " km";
 
             // Add UI elements
             Forecasts = new ObservableCollection<ForecastItemView>();
-            foreach (WeatherUnderground.Forecastday1 forecast in weather.forecast.forecastday)
+            foreach (WeatherData.Forecast forecast in weather.forecast)
             {
                 ForecastItemView forecastView = new ForecastItemView(forecast);
                 Forecasts.Add(forecastView);
             }
         }
 
-        private void updatePressureState(int rising)
+        private void updatePressureState(string state)
         {
-            switch (rising)
+            switch (state)
             {
                 // Steady
-                case 0:
+                case "0":
                 default:
                     RisingVisiblity = Visibility.Collapsed;
                     RisingIcon = string.Empty;
                     break;
                 // Rising
-                case 1:
+                case "1":
+                case "+":
                     RisingVisiblity = Visibility.Visible;
                     RisingIcon = "\uf058\uf058";
                     break;
                 // Falling
-                case 2:
+                case "2":
+                case "-":
                     RisingVisiblity = Visibility.Visible;
                     RisingIcon = "\uf044\uf044";
                     break;

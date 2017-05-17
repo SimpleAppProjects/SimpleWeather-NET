@@ -2,27 +2,24 @@
 using System.Threading.Tasks;
 using System.IO;
 using System.Runtime.Serialization.Json;
-using Windows.Devices.Geolocation;
-using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.Web.Http;
 using SimpleWeather.Utils;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 
-namespace SimpleWeather.WeatherYahoo
+namespace SimpleWeather.WeatherData
 {
     public class WeatherDataLoader
     {
         private WeatherLoadedListener callback;
-        private string location = null;
+        private string location_query = null;
         private Weather weather = null;
         private int locationIdx = 0;
 
-        public WeatherDataLoader(WeatherLoadedListener listener, string Location, int idx)
+        public WeatherDataLoader(WeatherLoadedListener listener, string query, int idx)
         {
             callback = listener;
-            location = Location;
+            location_query = query;
             locationIdx = idx;
         }
 
@@ -33,15 +30,26 @@ namespace SimpleWeather.WeatherYahoo
 
         private async Task getWeatherData()
         {
-            string yahooAPI = "https://query.yahooapis.com/v1/public/yql?q=";
-            //string query = "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text=\""
-            string query = "select * from weather.forecast where woeid=\""
-                + location + "\") and u='" + Settings.Unit + "'&format=json";
-            Uri weatherURL = new Uri(yahooAPI + query);
+            string queryAPI = null;
+            Uri weatherURL = null;
+
+            if (Settings.API == "WUnderground")
+            {
+                queryAPI = "http://api.wunderground.com/api/" + Settings.API_KEY + "/astronomy/conditions/forecast10day";
+                string options = ".json";
+                weatherURL = new Uri(queryAPI + location_query + options);
+            }
+            else
+            {
+                queryAPI = "https://query.yahooapis.com/v1/public/yql?q=";
+                string query = "select * from weather.forecast where woeid=\""
+                    + location_query + "\" and u='F'&format=json";
+                weatherURL = new Uri(queryAPI + query);
+            }
 
             HttpClient webClient = new HttpClient();
             MemoryStream memStream = new MemoryStream();
-            DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(Rootobject));
+            DataContractJsonSerializer deserializer = null;
             int counter = 0;
             WeatherException wEx = null;
 
@@ -62,7 +70,36 @@ namespace SimpleWeather.WeatherYahoo
                     memStream.Seek(0, 0);
 
                     // Load weather
-                    weather = new Weather((Rootobject)deserializer.ReadObject(memStream));
+                    if (Settings.API == "WUnderground")
+                    {
+                        deserializer = new DataContractJsonSerializer(typeof(WeatherUnderground.Rootobject));
+                        WeatherUnderground.Rootobject root = (WeatherUnderground.Rootobject)deserializer.ReadObject(memStream);
+
+                        // Check for errors
+                        if (root.response.error != null)
+                        {
+                            switch (root.response.error.type)
+                            {
+                                case "querynotfound":
+                                    wEx = new WeatherException(WeatherUtils.ErrorStatus.QUERYNOTFOUND);
+                                    break;
+                                case "keynotfound":
+                                    wEx = new WeatherException(WeatherUtils.ErrorStatus.INVALIDAPIKEY);
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        }
+
+                        weather = new Weather(root);
+                    }
+                    else
+                    {
+                        deserializer = new DataContractJsonSerializer(typeof(WeatherYahoo.Rootobject));
+                        WeatherYahoo.Rootobject root = (WeatherYahoo.Rootobject)deserializer.ReadObject(memStream);
+                        weather = new Weather(root);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -88,7 +125,6 @@ namespace SimpleWeather.WeatherYahoo
             }
             else if (weather != null)
             {
-                saveTimeZone();
                 saveWeatherData();
             }
 
@@ -106,24 +142,6 @@ namespace SimpleWeather.WeatherYahoo
             {
                 throw new WeatherException(WeatherUtils.ErrorStatus.NOWEATHER);
             }
-        }
-
-        private void saveTimeZone()
-        {
-            // Now
-            DateTime utc = DateTime.ParseExact(weather.created,
-                "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'", null);
-
-            // There
-            int AMPMidx = weather.lastBuildDate.LastIndexOf(" AM ");
-            if (AMPMidx < 0)
-                AMPMidx = weather.lastBuildDate.LastIndexOf(" PM ");
-
-            DateTime there = DateTime.ParseExact(weather.lastBuildDate.Substring(0, AMPMidx + 4),
-                "ddd, dd MMM yyyy hh:mm tt ", null);
-            TimeSpan offset = there - utc;
-
-            weather.location.offset = TimeSpan.Parse(string.Format("{0}:{1}", offset.Hours, offset.Minutes));
         }
 
         public async Task loadWeatherData(bool forceRefresh)
@@ -156,7 +174,7 @@ namespace SimpleWeather.WeatherYahoo
 
             bool gotData = await loadSavedWeatherData();
 
-            if (!gotData || weather.units.temperature != Settings.Unit)
+            if (!gotData)
             {
                 try
                 {
@@ -209,14 +227,11 @@ namespace SimpleWeather.WeatherYahoo
             if (weather == null)
                 return false;
 
-            // Check ttl
+            // Weather data expiration
             int ttl = int.Parse(weather.ttl);
 
             // Check file age
-            // ex. "2016-08-22T04:53:07Z"
-            System.Globalization.CultureInfo provider = System.Globalization.CultureInfo.InvariantCulture;
-            DateTime updateTime = DateTime.ParseExact(weather.created,
-                "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'", provider).ToLocalTime();
+            DateTime updateTime = weather.update_time;
 
             TimeSpan span = DateTime.Now - updateTime;
             if (span.TotalMinutes < ttl)
@@ -229,7 +244,7 @@ namespace SimpleWeather.WeatherYahoo
         {
             OrderedDictionary weatherData = await Settings.getWeatherData();
             if (locationIdx > weatherData.Count - 1)
-                weatherData.Insert(locationIdx, location, weather);
+                weatherData.Insert(locationIdx, location_query, weather);
             else
                 weatherData[locationIdx] = weather;
             Settings.saveWeatherData(weatherData);
@@ -245,17 +260,28 @@ namespace SimpleWeather.WeatherYahoo
     {
         private static Weather weather = null;
 
-        public static async Task<Weather> getWeather(string location)
+        public static async Task<Weather> getWeather(string location_query)
         {
-            string yahooAPI = "https://query.yahooapis.com/v1/public/yql?q=";
-            //string query = "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text=\""
-            string query = "select * from weather.forecast where woeid=\""
-                + location + "\" and u='" + Settings.Unit + "'&format=json";
-            Uri weatherURL = new Uri(yahooAPI + query);
+            string queryAPI = null;
+            Uri weatherURL = null;
+
+            if (Settings.API == "WUnderground")
+            {
+                queryAPI = "http://api.wunderground.com/api/" + Settings.API_KEY + "/astronomy/conditions/forecast10day";
+                string options = ".json";
+                weatherURL = new Uri(queryAPI + location_query + options);
+            }
+            else
+            {
+                queryAPI = "https://query.yahooapis.com/v1/public/yql?q=";
+                string query = "select * from weather.forecast where woeid=\""
+                    + location_query + "\" and u='F'&format=json";
+                weatherURL = new Uri(queryAPI + query);
+            }
 
             HttpClient webClient = new HttpClient();
             MemoryStream memStream = new MemoryStream();
-            DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(Rootobject));
+            DataContractJsonSerializer deserializer = null;
             int counter = 0;
             WeatherException wEx = null;
 
@@ -276,7 +302,36 @@ namespace SimpleWeather.WeatherYahoo
                     memStream.Seek(0, 0);
 
                     // Load weather
-                    weather = new Weather((Rootobject)deserializer.ReadObject(memStream));
+                    if (Settings.API == "WUnderground")
+                    {
+                        deserializer = new DataContractJsonSerializer(typeof(WeatherUnderground.Rootobject));
+                        WeatherUnderground.Rootobject root = (WeatherUnderground.Rootobject)deserializer.ReadObject(memStream);
+
+                        // Check for errors
+                        if (root.response.error != null)
+                        {
+                            switch (root.response.error.type)
+                            {
+                                case "querynotfound":
+                                    wEx = new WeatherException(WeatherUtils.ErrorStatus.QUERYNOTFOUND);
+                                    break;
+                                case "keynotfound":
+                                    wEx = new WeatherException(WeatherUtils.ErrorStatus.INVALIDAPIKEY);
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        }
+
+                        weather = new Weather(root);
+                    }
+                    else
+                    {
+                        deserializer = new DataContractJsonSerializer(typeof(WeatherYahoo.Rootobject));
+                        WeatherYahoo.Rootobject root = (WeatherYahoo.Rootobject)deserializer.ReadObject(memStream);
+                        weather = new Weather(root);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -310,30 +365,8 @@ namespace SimpleWeather.WeatherYahoo
                     Windows.UI.Core.CoreDispatcherPriority.Normal,
                     async () => await new Windows.UI.Popups.MessageDialog(wEx.Message).ShowAsync());
             }
-            else if (weather != null)
-            {
-                saveTimeZone();
-            }
 
             return weather;
-        }
-
-        private static void saveTimeZone()
-        {
-            // Now
-            DateTime utc = DateTime.ParseExact(weather.created,
-                "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'", null);
-
-            // There
-            int AMPMidx = weather.lastBuildDate.LastIndexOf(" AM ");
-            if (AMPMidx < 0)
-                AMPMidx = weather.lastBuildDate.LastIndexOf(" PM ");
-
-            DateTime there = DateTime.ParseExact(weather.lastBuildDate.Substring(0, AMPMidx + 4),
-                "ddd, dd MMM yyyy hh:mm tt ", null);
-            TimeSpan offset = there - utc;
-
-            weather.location.offset = TimeSpan.Parse(string.Format("{0}:{1}", offset.Hours, offset.Minutes));
         }
     }
 }
