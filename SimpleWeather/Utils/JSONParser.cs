@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Json;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Newtonsoft.Json;
+using System;
+#if WINDOWS_UWP
 using Windows.Storage;
+#elif __ANDROID__
+using Java.IO;
+#endif
 
 namespace SimpleWeather.Utils
 {
@@ -13,54 +12,16 @@ namespace SimpleWeather.Utils
     {
         public static Object Deserializer(String response, Type type)
         {
-            Object obj = null;
-
-            using (MemoryStream memStream = new MemoryStream(Encoding.UTF8.GetBytes(response)))
-            {
-                memStream.Seek(0, 0);
-
-                DataContractJsonSerializer deSerializer = new DataContractJsonSerializer(type);
-                obj = deSerializer.ReadObject(memStream);
-            }
-
-            return obj;
+            return JsonConvert.DeserializeObject(response, type);
         }
 
-        public static Object Deserializer(String response, Type type, List<Type> knownTypes)
-        {
-            Object obj = null;
-
-            using (MemoryStream memStream = new MemoryStream(Encoding.UTF8.GetBytes(response)))
-            {
-                memStream.Seek(0, 0);
-
-                DataContractJsonSerializer deSerializer = new DataContractJsonSerializer(type, knownTypes);
-                obj = deSerializer.ReadObject(memStream);
-            }
-
-            return obj;
-        }
-
+#if WINDOWS_UWP
         public static void Serializer(Object obj, StorageFile file)
+#elif __ANDROID__
+        public static void Serializer(Object obj, File file)
+#endif
         {
-            using (MemoryStream memStream = new MemoryStream())
-            {
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(obj.GetType());
-                serializer.WriteObject(memStream, obj);
-                FileUtils.WriteFile(memStream.ToArray(), file);
-                memStream.Dispose();
-            }
-        }
-
-        public static void Serializer(Object obj, StorageFile file, List<Type> types)
-        {
-            using (MemoryStream memStream = new MemoryStream())
-            {
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(obj.GetType(), types);
-                serializer.WriteObject(memStream, obj);
-                FileUtils.WriteFile(memStream.ToArray(), file);
-                memStream.Dispose();
-            }
+            FileUtils.WriteFile(JsonConvert.SerializeObject(obj), file);
         }
     }
 }

@@ -1,19 +1,23 @@
 ﻿using SimpleWeather.Utils;
 using System;
 using System.Threading.Tasks;
-using Windows.Devices.Geolocation;
 
 namespace SimpleWeather.WeatherData
 {
     public static class GeopositionQuery
     {
-        public static async Task<Controls.LocationQueryView> getLocation(Geoposition geoPos)
+#if WINDOWS_UWP
+        public static async Task<Controls.LocationQueryView> getLocation(Windows.Devices.Geolocation.Geoposition geoPos)
+#elif __ANDROID__
+        public static async Task<Controls.LocationQueryView> getLocation(Android.Locations.Location geoPos)
+#endif
         {
             Controls.LocationQueryView location = null;
 
             if (Settings.API == "WUnderground")
             {
-                WeatherUnderground.location geoLocation = await WeatherUnderground.GeopositionQuery.getLocation(geoPos);
+                WeatherUnderground.location geoLocation = 
+                    await WeatherUnderground.GeopositionQuery.getLocation(new WeatherUtils.Coordinate(geoPos));
 
                 if (geoLocation != null && !String.IsNullOrWhiteSpace(geoLocation.query))
                     location = new Controls.LocationQueryView(geoLocation);
@@ -22,7 +26,7 @@ namespace SimpleWeather.WeatherData
             }
             else
             {
-                WeatherYahoo.place geoLocation = await WeatherYahoo.GeopositionQuery.getLocation(geoPos);
+                WeatherYahoo.place geoLocation = await WeatherYahoo.GeopositionQuery.getLocation(new WeatherUtils.Coordinate(geoPos));
 
                 if (geoLocation != null && !String.IsNullOrWhiteSpace(geoLocation.woeid))
                     location = new Controls.LocationQueryView(geoLocation);

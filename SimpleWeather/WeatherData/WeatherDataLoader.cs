@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.IO;
-using System.Runtime.Serialization.Json;
-using Windows.Storage.Streams;
-using Windows.Web.Http;
 using SimpleWeather.Utils;
 using System.Collections.Specialized;
+using System.Text;
+using Newtonsoft.Json;
+#if WINDOWS_UWP
+using Windows.Storage.Streams;
+using Windows.Web.Http;
+#elif __ANDROID__
+using Android.Widget;
+using System.Net.Http;
+using SimpleWeather.Droid;
+#endif
 
 namespace SimpleWeather.WeatherData
 {
@@ -48,8 +55,6 @@ namespace SimpleWeather.WeatherData
             }
 
             HttpClient webClient = new HttpClient();
-            MemoryStream memStream = new MemoryStream();
-            DataContractJsonSerializer deserializer = null;
             int counter = 0;
             WeatherException wEx = null;
 
@@ -60,20 +65,18 @@ namespace SimpleWeather.WeatherData
                     // Get response
                     HttpResponseMessage response = await webClient.GetAsync(weatherURL);
                     response.EnsureSuccessStatusCode();
-                    IBuffer buff = await response.Content.ReadAsBufferAsync();
+                    string content = await response.Content.ReadAsStringAsync();
                     // Reset exception
                     wEx = null;
-
-                    // Write array/buffer to memorystream
-                    memStream.SetLength(0);
-                    await memStream.AsOutputStream().WriteAsync(buff);
-                    memStream.Seek(0, 0);
 
                     // Load weather
                     if (Settings.API == "WUnderground")
                     {
-                        deserializer = new DataContractJsonSerializer(typeof(WeatherUnderground.Rootobject));
-                        WeatherUnderground.Rootobject root = (WeatherUnderground.Rootobject)deserializer.ReadObject(memStream);
+                        WeatherUnderground.Rootobject root = null;
+                        await Task.Run(() =>
+                        {
+                            root = (WeatherUnderground.Rootobject)JsonConvert.DeserializeObject(content, typeof(WeatherUnderground.Rootobject));
+                        });
 
                         // Check for errors
                         if (root.response.error != null)
@@ -96,15 +99,21 @@ namespace SimpleWeather.WeatherData
                     }
                     else
                     {
-                        deserializer = new DataContractJsonSerializer(typeof(WeatherYahoo.Rootobject));
-                        WeatherYahoo.Rootobject root = (WeatherYahoo.Rootobject)deserializer.ReadObject(memStream);
-                        weather = new Weather(root);
+                        WeatherYahoo.Rootobject root = null;
+                        await Task.Run(() =>
+                        {
+                            root = (WeatherYahoo.Rootobject)JsonConvert.DeserializeObject(content, typeof(WeatherYahoo.Rootobject));
+                        });
                     }
                 }
                 catch (Exception ex)
                 {
                     weather = null;
+#if WINDOWS_UWP
                     if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
+#elif __ANDROID__
+                    if (ex is System.Net.WebException)
+#endif
                     {
                         wEx = new WeatherException(WeatherUtils.ErrorStatus.NETWORKERROR);
                         break;
@@ -131,9 +140,6 @@ namespace SimpleWeather.WeatherData
             // End Stream
             webClient.Dispose();
 
-            await memStream.FlushAsync();
-            memStream.Dispose();
-
             if (weather == null && wEx != null)
             {
                 throw wEx;
@@ -154,9 +160,13 @@ namespace SimpleWeather.WeatherData
                 }
                 catch (WeatherException wEx)
                 {
+#if WINDOWS_UWP
                     await Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(
                         Windows.UI.Core.CoreDispatcherPriority.Normal,
                         async () => await new Windows.UI.Popups.MessageDialog(wEx.Message).ShowAsync());
+#elif __ANDROID__
+                    Toast.MakeText(App.Context, wEx.Message, ToastLength.Short);
+#endif
                 }
             }
             else
@@ -182,9 +192,13 @@ namespace SimpleWeather.WeatherData
                 }
                 catch (WeatherException wEx)
                 {
+#if WINDOWS_UWP
                     await Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(
                         Windows.UI.Core.CoreDispatcherPriority.Normal,
                         async () => await new Windows.UI.Popups.MessageDialog(wEx.Message).ShowAsync());
+#elif __ANDROID__
+                    Toast.MakeText(App.Context, wEx.Message, ToastLength.Short);
+#endif
                 }
             }
         }
@@ -280,8 +294,6 @@ namespace SimpleWeather.WeatherData
             }
 
             HttpClient webClient = new HttpClient();
-            MemoryStream memStream = new MemoryStream();
-            DataContractJsonSerializer deserializer = null;
             int counter = 0;
             WeatherException wEx = null;
 
@@ -292,20 +304,18 @@ namespace SimpleWeather.WeatherData
                     // Get response
                     HttpResponseMessage response = await webClient.GetAsync(weatherURL);
                     response.EnsureSuccessStatusCode();
-                    IBuffer buff = await response.Content.ReadAsBufferAsync();
+                    string content = await response.Content.ReadAsStringAsync();
                     // Reset exception
                     wEx = null;
-
-                    // Write array/buffer to memorystream
-                    memStream.SetLength(0);
-                    await memStream.AsOutputStream().WriteAsync(buff);
-                    memStream.Seek(0, 0);
 
                     // Load weather
                     if (Settings.API == "WUnderground")
                     {
-                        deserializer = new DataContractJsonSerializer(typeof(WeatherUnderground.Rootobject));
-                        WeatherUnderground.Rootobject root = (WeatherUnderground.Rootobject)deserializer.ReadObject(memStream);
+                        WeatherUnderground.Rootobject root = null;
+                        await Task.Run(() => 
+                        {
+                            root = (WeatherUnderground.Rootobject)JsonConvert.DeserializeObject(content, typeof(WeatherUnderground.Rootobject));
+                        });
 
                         // Check for errors
                         if (root.response.error != null)
@@ -328,15 +338,22 @@ namespace SimpleWeather.WeatherData
                     }
                     else
                     {
-                        deserializer = new DataContractJsonSerializer(typeof(WeatherYahoo.Rootobject));
-                        WeatherYahoo.Rootobject root = (WeatherYahoo.Rootobject)deserializer.ReadObject(memStream);
+                        WeatherYahoo.Rootobject root = null;
+                        await Task.Run(() =>
+                        {
+                            root = (WeatherYahoo.Rootobject)JsonConvert.DeserializeObject(content, typeof(WeatherYahoo.Rootobject));
+                        });
                         weather = new Weather(root);
                     }
                 }
                 catch (Exception ex)
                 {
                     weather = null;
+#if WINDOWS_UWP
                     if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
+#elif __ANDROID__
+                    if (ex is System.Net.WebException)
+#endif
                     {
                         wEx = new WeatherException(WeatherUtils.ErrorStatus.NETWORKERROR);
                         break;
@@ -353,17 +370,18 @@ namespace SimpleWeather.WeatherData
             // End Stream
             webClient.Dispose();
 
-            await memStream.FlushAsync();
-            memStream.Dispose();
-
             if (weather == null)
             {
                 if (wEx == null)
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NOWEATHER);
 
+#if WINDOWS_UWP
                 await Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(
                     Windows.UI.Core.CoreDispatcherPriority.Normal,
                     async () => await new Windows.UI.Popups.MessageDialog(wEx.Message).ShowAsync());
+#elif __ANDROID__
+                Toast.MakeText(App.Context, wEx.Message, ToastLength.Short);
+#endif
             }
 
             return weather;

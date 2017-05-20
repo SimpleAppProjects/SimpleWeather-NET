@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.IO;
-using System.Runtime.Serialization.Json;
-using Windows.Web.Http;
 using System.Collections.Generic;
-using System.Text;
-using SimpleWeather.Utils;
+using Newtonsoft.Json;
+#if WINDOWS_UWP
+using Windows.Storage.Streams;
+using Windows.Web.Http;
+#elif __ANDROID__
+using System.Net.Http;
+#endif
 
 namespace SimpleWeather.WeatherUnderground
 {
@@ -27,21 +29,14 @@ namespace SimpleWeather.WeatherUnderground
                 HttpResponseMessage response = await webClient.GetAsync(queryURL);
                 response.EnsureSuccessStatusCode();
                 string content = await response.Content.ReadAsStringAsync();
-                byte[] buff = Encoding.UTF8.GetBytes(content);
-
-                // Write array/buffer to memorystream
-                MemoryStream memStream = new MemoryStream();
-                memStream.Write(buff, 0, buff.Length);
-                memStream.Seek(0, 0);
 
                 // End Stream
                 webClient.Dispose();
 
                 // Load data
-                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(AC_Rootobject));
                 locationResults = new List<Controls.LocationQueryView>();
 
-                AC_Rootobject root = (AC_Rootobject)deserializer.ReadObject(memStream);
+                AC_Rootobject root = (AC_Rootobject)JsonConvert.DeserializeObject(content, typeof(AC_Rootobject));
 
                 foreach (AC_RESULT result in root.RESULTS)
                 {

@@ -5,22 +5,14 @@ using System.Runtime.Serialization;
 
 namespace SimpleWeather.WeatherData
 {
-    [DataContract]
     public class Weather
     {
-        [DataMember]
         public Location location { get; set; }
-        [DataMember]
         public DateTime update_time { get; set; }
-        [DataMember]
         public Forecast[] forecast { get; set; }
-        [DataMember]
         public Condition condition { get; set; }
-        [DataMember]
         public Atmosphere atmosphere { get; set; }
-        [DataMember]
         public Astronomy astronomy { get; set; }
-        [DataMember]
         public string ttl { get; set; }
 
         public Weather(WeatherYahoo.Rootobject root)
@@ -55,16 +47,11 @@ namespace SimpleWeather.WeatherData
         }
     }
 
-    [DataContract]
     public class Location
     {
-        [DataMember]
         public string name { get; set; }
-        [DataMember]
         public string latitude { get; set; }
-        [DataMember]
         public string longitude { get; set; }
-        [DataMember]
         public TimeSpan tz_offset { get; set; }
 
         public Location(WeatherUnderground.Current_Observation condition)
@@ -105,22 +92,14 @@ namespace SimpleWeather.WeatherData
         }
     }
 
-    [DataContract]
     public class Forecast
     {
-        [DataMember]
         public DateTime date { get; set; }
-        [DataMember]
         public string high_f { get; set; }
-        [DataMember]
         public string high_c { get; set; }
-        [DataMember]
         public string low_f { get; set; }
-        [DataMember]
         public string low_c { get; set; }
-        [DataMember]
         public string condition { get; set; }
-        [DataMember]
         public string icon { get; set; }
 
         public Forecast(WeatherYahoo.Forecast forecast)
@@ -147,27 +126,18 @@ namespace SimpleWeather.WeatherData
         }
     }
 
-    [DataContract]
     public class Condition
     {
-        [DataMember]
         public string weather { get; set; }
-        [DataMember]
         public float temp_f { get; set; }
-        [DataMember]
         public float temp_c { get; set; }
-        [DataMember]
         public int wind_degrees { get; set; }
-        [DataMember]
         public float wind_mph { get; set; }
-        [DataMember]
         public float wind_kph { get; set; }
-        [DataMember]
         public float feelslike_f { get; set; }
-        [DataMember]
         public float feelslike_c { get; set; }
-        [DataMember]
         public string icon { get; set; }
+        public string icon_url { get; set; }
 
         public Condition(WeatherUnderground.Current_Observation condition)
         {
@@ -179,7 +149,8 @@ namespace SimpleWeather.WeatherData
             wind_kph = condition.wind_kph;
             feelslike_f = condition.feelslike_f;
             feelslike_c = condition.feelslike_c;
-            icon = condition.icon_url;
+            icon = condition.icon;
+            icon_url = condition.icon_url.Replace("http://icons.wxug.com/i/c/k/", "").Replace(".gif", "");
         }
 
         public Condition(WeatherYahoo.Channel channel)
@@ -193,23 +164,17 @@ namespace SimpleWeather.WeatherData
             feelslike_f = float.Parse(channel.wind.chill);
             feelslike_c = float.Parse(ConversionMethods.FtoC(channel.wind.chill));
             icon = channel.item.condition.code;
+            icon_url = channel.item.condition.code;
         }
     }
 
-    [DataContract]
     public class Atmosphere
     {
-        [DataMember]
         public string humidity { get; set; }
-        [DataMember]
         public string pressure_mb { get; set; }
-        [DataMember]
         public string pressure_in { get; set; }
-        [DataMember]
         public string pressure_trend { get; set; }
-        [DataMember]
         public string visibility_mi { get; set; }
-        [DataMember]
         public string visibility_km { get; set; }
 
         public Atmosphere(WeatherUnderground.Current_Observation condition)
@@ -233,12 +198,9 @@ namespace SimpleWeather.WeatherData
         }
     }
 
-    [DataContract]
     public class Astronomy
     {
-        [DataMember]
         public DateTime sunrise { get; set; }
-        [DataMember]
         public DateTime sunset { get; set; }
 
         public Astronomy(WeatherUnderground.Sun_Phase sun_phase)

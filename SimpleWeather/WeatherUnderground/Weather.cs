@@ -213,49 +213,49 @@ namespace SimpleWeather.WeatherUnderground
 
     public class Qpf_Allday
     {
-        [IgnoreDataMember]
+        [Newtonsoft.Json.JsonIgnore]
         public float _in { get; set; }
-        [IgnoreDataMember]
+        [Newtonsoft.Json.JsonIgnore]
         public int mm { get; set; }
     }
 
     public class Qpf_Day
     {
-        [IgnoreDataMember]
+        [Newtonsoft.Json.JsonIgnore]
         public float _in { get; set; }
-        [IgnoreDataMember]
+        [Newtonsoft.Json.JsonIgnore]
         public int mm { get; set; }
     }
 
     public class Qpf_Night
     {
-        [IgnoreDataMember]
+        [Newtonsoft.Json.JsonIgnore]
         public float _in { get; set; }
-        [IgnoreDataMember]
+        [Newtonsoft.Json.JsonIgnore]
         public int mm { get; set; }
     }
 
     public class Snow_Allday
     {
-        [IgnoreDataMember]
+        [Newtonsoft.Json.JsonIgnore]
         public float _in { get; set; }
-        [IgnoreDataMember]
+        [Newtonsoft.Json.JsonIgnore]
         public float cm { get; set; }
     }
 
     public class Snow_Day
     {
-        [IgnoreDataMember]
+        [Newtonsoft.Json.JsonIgnore]
         public float _in { get; set; }
-        [IgnoreDataMember]
+        [Newtonsoft.Json.JsonIgnore]
         public float cm { get; set; }
     }
 
     public class Snow_Night
     {
-        [IgnoreDataMember]
+        [Newtonsoft.Json.JsonIgnore]
         public float _in { get; set; }
-        [IgnoreDataMember]
+        [Newtonsoft.Json.JsonIgnore]
         public float cm { get; set; }
     }
 

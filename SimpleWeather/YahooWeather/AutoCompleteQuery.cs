@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.IO;
-using Windows.Web.Http;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
+#if WINDOWS_UWP
+using Windows.Storage.Streams;
+using Windows.Web.Http;
+#elif __ANDROID__
+using System.Net.Http;
+#endif
 
 namespace SimpleWeather.WeatherYahoo
 {

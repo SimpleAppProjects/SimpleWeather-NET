@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="75dp">
+
+    <android.support.v7.widget.GridLayout
+        android:id="@+id/main_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary"
+        app:columnCount="2">
+
+        <me.grantland.widget.AutofitTextView
+            android:id="@+id/location_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_column="0"
+            app:layout_columnWeight="1"
+            app:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:maxLines="2"
+            android:padding="10dp"
+            android:textAppearance="@android:style/TextAppearance.Material.Inverse"
+            android:textSize="20sp"
+            tools:text="New York, NY" />
+
+        <LinearLayout
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            app:layout_column="1">
+
+            <me.grantland.widget.AutofitTextView
+                android:id="@+id/weather_temp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:textAlignment="center"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_margin="5dp"
+                android:textAppearance="@android:style/TextAppearance.Material.Inverse"
+                android:textSize="20sp"
+                tools:text="50*" />
+
+            <me.grantland.widget.AutofitLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical">
+
+                <SimpleWeather.Droid.Controls.WeatherIcon
+                    android:id="@+id/weather_icon"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:layout_margin="5dp"
+                    android:textAppearance="@android:style/TextAppearance.Material.Inverse"
+                    android:textSize="30sp"
+                    tools:text="@string/wi_night_cloudy" />
+            </me.grantland.widget.AutofitLayout>
+        </LinearLayout>
+    </android.support.v7.widget.GridLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@android:style/Widget.Material.Light.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:indeterminateTint="@android:color/white"
+        android:visibility="visible" />
+
+</android.support.v7.widget.CardView>
