@@ -6,7 +6,7 @@ using Android.App;
 using Android.Content;
 using Android.OS;
 using Android.Support.V7.App;
-using Android.Util;
+using SimpleWeather.Droid.Utils;
 
 namespace SimpleWeather.Droid
 {
@@ -22,21 +22,16 @@ namespace SimpleWeather.Droid
 
             // Create your application here
             Intent intent = null;
-            int homeIdx = 0;
-
-            String ARG_QUERY = "query";
-            String ARG_INDEX = "index";
 
             try
             {
                 if (Settings.WeatherLoaded)
                 {
                     List<String> locations = await Settings.getLocations();
-                    String local = locations[homeIdx];
+                    String local = locations[App.HomeIdx];
 
                     intent = new Intent(this, typeof(MainActivity));
-                    intent.PutExtra(ARG_QUERY, local);
-                    intent.PutExtra(ARG_INDEX, homeIdx);
+                    intent.PutExtra("pair", JSONParser.Serializer(new Pair<int, string>(App.HomeIdx, local), typeof(Pair<int, string>)));
                 }
                 else
                 {
@@ -45,7 +40,7 @@ namespace SimpleWeather.Droid
             }
             catch (Exception e)
             {
-                Log.WriteLine(LogPriority.Error, "LaunchActivity", e.StackTrace);
+                Android.Util.Log.WriteLine(Android.Util.LogPriority.Error, "LaunchActivity", e.StackTrace);
             }
             finally
             {

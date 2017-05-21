@@ -9,6 +9,8 @@ using Android.Support.V4.App;
 using Android.Support.V4.View;
 using Android.Views;
 using Android.Content;
+using SimpleWeather.Droid.Utils;
+using SimpleWeather.Utils;
 
 namespace SimpleWeather.Droid
 {
@@ -16,9 +18,6 @@ namespace SimpleWeather.Droid
         Name = "SimpleWeather.Droid.MainActivity", Theme = "@style/AppTheme")]
     public class MainActivity : AppCompatActivity, NavigationView.IOnNavigationItemSelectedListener
     {
-        private String ARG_QUERY = "query";
-        private String ARG_INDEX = "index";
-
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -45,10 +44,8 @@ namespace SimpleWeather.Droid
             // Check if fragment exists
             if (fragment == null)
             {
-                int idx = Intent.GetIntExtra(ARG_INDEX, -1);
-                String qry = Intent.GetStringExtra(ARG_QUERY);
-
-                fragment = WeatherNowFragment.NewInstance(qry, idx);
+                Pair<int, string> pair = JSONParser.Deserializer(Intent.GetStringExtra("pair"), typeof(Pair<int, string>)) as Pair<int, string>;
+                fragment = WeatherNowFragment.NewInstance(pair);
 
                 // Navigate to WeatherNowFragment
                 SupportFragmentManager.BeginTransaction().Replace(
@@ -106,15 +103,14 @@ namespace SimpleWeather.Droid
                     if ((fragment as WeatherNowFragment) != null)
                     {
                         // Pop all since we're going home
-                        SupportFragmentManager.PopBackStack(null, (int)Android.App.PopBackStackFlags.Inclusive);
+                        transaction.Commit();
+                        SupportFragmentManager.PopBackStackImmediate(null, (int)Android.App.PopBackStackFlags.Inclusive);
                     }
                     else
                     {
-                        transaction.AddToBackStack(null);
+                        // Commit the transaction
+                        transaction.AddToBackStack(null).Commit();
                     }
-
-                    // Commit the transaction
-                    transaction.Commit();
                 }
             }
 

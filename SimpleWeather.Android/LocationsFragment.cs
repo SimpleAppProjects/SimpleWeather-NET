@@ -54,9 +54,8 @@ namespace SimpleWeather.Droid
         {
             if (weather != null)
             {
-
                 // Home Panel
-                if (locationIdx == 0)
+                if (locationIdx == App.HomeIdx)
                 {
                     // TODO: make lpv local
                     // OR Make HomePanel a recyclerview
@@ -101,11 +100,22 @@ namespace SimpleWeather.Droid
                 LocationPanel v = (LocationPanel)view;
                 Pair<int, string> pair = (Pair<int, string>)view.Tag;
 
-                Fragment fragment = WeatherNowFragment.NewInstance(pair.Value, pair.Key);
+                Fragment fragment = WeatherNowFragment.NewInstance(pair);
                 // Navigate to WeatherNowFragment
                 AppCompatActivity activity = (AppCompatActivity)Activity;
-                activity.SupportFragmentManager.BeginTransaction().Add(
-                    Resource.Id.fragment_container, fragment).AddToBackStack(null).Commit();
+                if (pair.Key == App.HomeIdx)
+                {
+                    activity.SupportFragmentManager.BeginTransaction().Replace(
+                        Resource.Id.fragment_container, fragment).Commit();
+
+                    // Pop all since we're going home
+                    activity.SupportFragmentManager.PopBackStack(null, (int)Android.App.PopBackStackFlags.Inclusive);
+                }
+                else
+                {
+                    activity.SupportFragmentManager.BeginTransaction().Add(
+                        Resource.Id.fragment_container, fragment).AddToBackStack(null).Commit();
+                }
             }
         }
 
@@ -210,7 +220,7 @@ namespace SimpleWeather.Droid
             {
                 int index = locations.IndexOf(location);
 
-                if (index == 0) // Home
+                if (index == App.HomeIdx)
                 {
                     // Nothing
                     HomePanel.Tag = new Pair<int, string>(index, location);
@@ -280,12 +290,12 @@ namespace SimpleWeather.Droid
                 OrderedDictionary weatherData = await Settings.getWeatherData();
 
                 if (mActionMode.Tag != null && (int)mActionMode.Tag == Resource.Id.home_panel)
-                    index = 0;
+                    index = App.HomeIdx;
                 else
                     index = weatherData.Keys.Count;
 
                 // Check if location already exists
-                if (index == 0)
+                if (index == App.HomeIdx)
                 {
                     if (weatherData.Keys.Cast<string>().First().Equals(selected_query))
                     {
@@ -319,7 +329,7 @@ namespace SimpleWeather.Droid
                 // Save data
                 Settings.saveWeatherData(weatherData);
 
-                if (index == 0)
+                if (index == App.HomeIdx)
                 {
                     // ProgressBar
                     HomePanel.ShowLoading(true);

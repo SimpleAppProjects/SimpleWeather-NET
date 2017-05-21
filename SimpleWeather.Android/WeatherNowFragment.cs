@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 
 using Android.Content;
 using Android.OS;
@@ -13,17 +12,16 @@ using SimpleWeather.Controls;
 using Android.Graphics;
 using Android.Graphics.Drawables;
 using Android.Media;
+using SimpleWeather.Droid.Utils;
+using SimpleWeather.Utils;
+using System.Collections.Generic;
 
 namespace SimpleWeather.Droid
 {
     public class WeatherNowFragment : Fragment, WeatherLoadedListener
     {
-        private static String ARG_QUERY = "query";
-        private static String ARG_INDEX = "index";
-
-        private String mQuery;
-        private int mIndex;
         private Context context;
+        private Pair<int, string> pair;
 
         WeatherDataLoader wLoader = null;
         WeatherNowView weatherView = null;
@@ -80,12 +78,11 @@ namespace SimpleWeather.Droid
          * @param index Location index.
          * @return A new instance of fragment WeatherNowFragment.
          */
-        public static WeatherNowFragment NewInstance(String query, int index)
+        public static WeatherNowFragment NewInstance(Pair<int, string> pair)
         {
             WeatherNowFragment fragment = new WeatherNowFragment();
             Bundle args = new Bundle();
-            args.PutString(ARG_QUERY, query);
-            args.PutInt(ARG_INDEX, index);
+            args.PutString("pair", JSONParser.Serializer(pair, typeof(Pair<int, string>)));
             fragment.Arguments = args;
             return fragment;
         }
@@ -97,8 +94,10 @@ namespace SimpleWeather.Droid
             // Create your fragment here
             if (Arguments != null)
             {
-                mQuery = Arguments.GetString(ARG_QUERY, null);
-                mIndex = Arguments.GetInt(ARG_INDEX, -1);
+                pair = JSONParser.Deserializer(Arguments.GetString("pair"), typeof(Pair<int, string>)) as Pair<int, string>;
+
+                if (pair != null && wLoader == null)
+                    wLoader = new WeatherDataLoader(this, pair.Value, pair.Key);
             }
 
             context = Activity.ApplicationContext;
@@ -134,7 +133,7 @@ namespace SimpleWeather.Droid
 
             view.Post(() => Restore());
 
-        return view;
+            return view;
         }
 
         public override bool OnOptionsItemSelected(IMenuItem item)
@@ -174,11 +173,18 @@ namespace SimpleWeather.Droid
             activity.SupportActionBar.Title = GetString(Resource.String.title_activity_weather_now);
         }
 
-        private void Restore()
+        private async void Restore()
         {
             if (wLoader == null)
-                wLoader = new WeatherDataLoader(this, mQuery, mIndex);
+            {
+                // Weather was loaded before. Lets load it up...
+                List<string> locations = await Settings.getLocations();
+                string local = locations[App.HomeIdx];
 
+                wLoader = new WeatherDataLoader(this, local, App.HomeIdx);
+            }
+
+            // Load up weather data
             RefreshWeather(false);
         }
 

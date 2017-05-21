@@ -31,9 +31,6 @@ namespace SimpleWeather.Droid
 
         private const int PERMISSION_LOCATION_REQUEST_CODE = 0;
 
-        private String ARG_QUERY = "query";
-        private String ARG_INDEX = "index";
-
         private String selected_query = String.Empty;
 
         public LocationSearchFragment()
@@ -52,7 +49,7 @@ namespace SimpleWeather.Droid
         private async void LocationSearchFragment_clickListener(object sender, RecyclerClickEventArgs e)
         {
             LocationQuery v = (LocationQuery)e.View;
-            int homeIdx = 0;
+
             if (!String.IsNullOrEmpty(mAdapter.Dataset[e.Position].LocationQuery))
                 selected_query = mAdapter.Dataset[e.Position].LocationQuery;
             else
@@ -89,11 +86,10 @@ namespace SimpleWeather.Droid
                 weatherData.Add(selected_query, weather);
             Settings.saveWeatherData(weatherData);
 
-            pair = new Pair<int, string>(homeIdx, selected_query);
+            pair = new Pair<int, string>(App.HomeIdx, selected_query);
 
             Intent intent = new Intent(Activity, typeof(MainActivity));
-            intent.PutExtra(ARG_QUERY, pair.Value);
-            intent.PutExtra(ARG_INDEX, pair.Key);
+            intent.PutExtra("pair", JSONParser.Serializer(pair, typeof(Pair<int, string>)));
 
             Settings.WeatherLoaded = true;
             Activity.StartActivity(intent);

@@ -23,5 +23,10 @@ namespace SimpleWeather.Utils
         {
             FileUtils.WriteFile(JsonConvert.SerializeObject(obj), file);
         }
+
+        public static string Serializer(Object obj, Type type)
+        {
+            return JsonConvert.SerializeObject(obj, type, null);
+        }
     }
 }

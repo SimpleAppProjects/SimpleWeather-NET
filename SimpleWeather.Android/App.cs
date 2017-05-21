@@ -14,6 +14,8 @@ namespace SimpleWeather.Droid
         Label = "@string/app_name", SupportsRtl = true, Theme = "@style/AppTheme.Launcher")]
     public class App : Application, Application.IActivityLifecycleCallbacks
     {
+        public const int HomeIdx = 0;
+
         public App(IntPtr handle, JniHandleOwnership transer)
           :base(handle, transer)
         {
