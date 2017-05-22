@@ -104,6 +104,8 @@ namespace SimpleWeather.WeatherData
                         {
                             root = (WeatherYahoo.Rootobject)JsonConvert.DeserializeObject(content, typeof(WeatherYahoo.Rootobject));
                         });
+
+                        weather = new Weather(root);
                     }
                 }
                 catch (Exception ex)
