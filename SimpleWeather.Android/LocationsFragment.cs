@@ -186,15 +186,20 @@ namespace SimpleWeather.Droid
             }
             else if (item.TitleFormatted.ToString() == "Delete Location")
             {
-                // Remove location from list
-                OrderedDictionary weatherData = Settings.getWeatherData().ConfigureAwait(false).GetAwaiter().GetResult();
-                weatherData.RemoveAt(item.ItemId - 1);
-                Settings.saveWeatherData(weatherData);
-
-                // Remove panel
-                mAdapter.Remove(item.ItemId);
+                removeLocation(item.ItemId);
             }
             return base.OnContextItemSelected(item);
+        }
+
+        private async void removeLocation(int ItemId)
+        {
+            // Remove location from list
+            OrderedDictionary weatherData = await Settings.getWeatherData();
+            weatherData.RemoveAt(ItemId + 1);
+            Settings.saveWeatherData(weatherData);
+
+            // Remove panel
+            mAdapter.Remove(ItemId);
         }
 
         public override void OnResume()

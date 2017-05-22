@@ -73,7 +73,7 @@ namespace SimpleWeather.Droid
 
         public void Add(int position, LocationPanelView item)
         {
-            mDataset.Add(/*position, */item);
+            mDataset.Insert(position, item);
             NotifyDataSetChanged();
         }
 
@@ -83,6 +83,11 @@ namespace SimpleWeather.Droid
             NotifyItemRemoved(position);
 
             // Update pair
+            foreach(LocationPanelView panelView in mDataset)
+            {
+                int index = mDataset.IndexOf(panelView) + 1;
+                panelView.Pair = new Utils.Pair<int, string>(index, panelView.Pair.Value);
+            }
         }
 
         public LocationPanelView Get(int position)
