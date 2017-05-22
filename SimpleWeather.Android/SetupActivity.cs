@@ -27,7 +27,6 @@ namespace SimpleWeather.Droid
         private ImageView clearButtonView;
         private ImageView locationButtonView;
         private bool inSearchUI;
-        private String query;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -72,7 +71,7 @@ namespace SimpleWeather.Droid
 
             keyEntry.TextChanged += (object sender, TextChangedEventArgs e) =>
             {
-                if (String.IsNullOrWhiteSpace(e.Text.ToString()))
+                if (!String.IsNullOrWhiteSpace(e.Text.ToString()))
                 {
                     Settings.API_KEY = e.Text.ToString();
                 }
@@ -180,19 +179,10 @@ namespace SimpleWeather.Droid
 
             searchView.TextChanged += (object sender, TextChangedEventArgs e) =>
             {
-                String newText = e.Text.ToString();
-                if (newText.Equals(query))
-                {
-                    // If the query hasn't changed (perhaps due to activity being destroyed
-                    // and restored, or user launching the same DIAL intent twice), then there is
-                    // no need to do anything here.
-                    return;
-                }
-                query = newText;
                 if (mSearchFragment != null)
                 {
                     clearButtonView.Visibility = String.IsNullOrEmpty(e.Text.ToString()) ? ViewStates.Gone : ViewStates.Visible;
-                    mSearchFragment.fetchLocations(query);
+                    mSearchFragment.fetchLocations(e.Text.ToString());
                 }
             };
             clearButtonView.Visibility = ViewStates.Gone;
@@ -208,14 +198,14 @@ namespace SimpleWeather.Droid
                     HideInputMethod(v);
                 }
             };
-            searchView.EditorAction += (s, e) =>
+            searchView.EditorAction += (object s, TextView.EditorActionEventArgs e) =>
             {
                 TextView v = s as TextView;
                 if (e.ActionId == ImeAction.Search)
                 {
                     if (mSearchFragment != null)
                     {
-                        mSearchFragment.fetchLocations(query);
+                        mSearchFragment.fetchLocations(v.Text);
                         HideInputMethod(v);
                     }
                     e.Handled = true;
