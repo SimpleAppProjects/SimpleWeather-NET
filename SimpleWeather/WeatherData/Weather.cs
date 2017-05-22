@@ -15,6 +15,11 @@ namespace SimpleWeather.WeatherData
         public Astronomy astronomy { get; set; }
         public string ttl { get; set; }
 
+        [Newtonsoft.Json.JsonConstructor]
+        private Weather()
+        {
+        }
+
         public Weather(WeatherYahoo.Rootobject root)
         {
             location = new Location(root.query);
@@ -53,6 +58,11 @@ namespace SimpleWeather.WeatherData
         public string latitude { get; set; }
         public string longitude { get; set; }
         public TimeSpan tz_offset { get; set; }
+
+        [Newtonsoft.Json.JsonConstructor]
+        private Location()
+        {
+        }
 
         public Location(WeatherUnderground.Current_Observation condition)
         {
@@ -102,6 +112,11 @@ namespace SimpleWeather.WeatherData
         public string condition { get; set; }
         public string icon { get; set; }
 
+        [Newtonsoft.Json.JsonConstructor]
+        private Forecast()
+        {
+        }
+
         public Forecast(WeatherYahoo.Forecast forecast)
         {
             date = DateTime.Parse(forecast.date, 
@@ -137,6 +152,11 @@ namespace SimpleWeather.WeatherData
         public float feelslike_f { get; set; }
         public float feelslike_c { get; set; }
         public string icon { get; set; }
+
+        [Newtonsoft.Json.JsonConstructor]
+        private Condition()
+        {
+        }
 
         public Condition(WeatherUnderground.Current_Observation condition)
         {
@@ -174,6 +194,11 @@ namespace SimpleWeather.WeatherData
         public string visibility_mi { get; set; }
         public string visibility_km { get; set; }
 
+        [Newtonsoft.Json.JsonConstructor]
+        private Atmosphere()
+        {
+        }
+
         public Atmosphere(WeatherUnderground.Current_Observation condition)
         {
             humidity = condition.relative_humidity;
@@ -199,6 +224,11 @@ namespace SimpleWeather.WeatherData
     {
         public DateTime sunrise { get; set; }
         public DateTime sunset { get; set; }
+
+        [Newtonsoft.Json.JsonConstructor]
+        private Astronomy()
+        {
+        }
 
         public Astronomy(WeatherUnderground.Sun_Phase sun_phase)
         {
