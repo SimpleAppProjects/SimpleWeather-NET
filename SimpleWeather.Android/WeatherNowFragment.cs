@@ -202,18 +202,15 @@ namespace SimpleWeather.Droid
             progressBar.Visibility = show ? ViewStates.Visible : ViewStates.Gone;
         }
 
-        private async void SetView(WeatherNowView weatherView)
+        private void SetView(WeatherNowView weatherView)
         {
-            // BackgRound
-            try
+            // Background
+            if (View != null && View.Width > 0)
             {
-                View.Background = new BitmapDrawable(App.Context.Resources, ThumbnailUtils.ExtractThumbnail(
-                    await BitmapFactory.DecodeStreamAsync(weatherView.Background), View.Width, View.Height, ThumnailExtractOptions.RecycleInput));
+                View.Background = new BitmapDrawable(this.Activity.Resources, ThumbnailUtils.ExtractThumbnail(
+                    weatherView.Background, View.Width, View.Height, ThumnailExtractOptions.RecycleInput));
             }
-            catch (Exception e)
-            {
-                //e.printStackTrace();
-            }
+
             LinearLayout forecastPanel = (LinearLayout)contentView.FindViewById(Resource.Id.forecast_panel);
             forecastPanel.SetBackgroundColor(weatherView.PanelBackground);
             detailsPanel.SetBackgroundColor(weatherView.PanelBackground);

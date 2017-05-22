@@ -42,9 +42,9 @@ namespace SimpleWeather.Utils
                 WeatherIcon = "\uf00d";
 
             /* Yahoo Weather */
-            if (String.IsNullOrWhiteSpace(WeatherIcon))
+            if (String.IsNullOrWhiteSpace(WeatherIcon) && int.TryParse(icon, out int code))
             {
-                switch (int.Parse(icon))
+                switch (code)
                 {
                     case 0: // Tornado
                         WeatherIcon = "\uf056";
@@ -172,7 +172,7 @@ namespace SimpleWeather.Utils
                 date = string.Format("Updated at {0}", weather.update_time.ToString("t"));
             }
             else
-                date = string.Format("Updated on {0}", weather.update_time.ToString("ddd t"));
+                date = string.Format("Updated on {0} {1}", weather.update_time.ToString("ddd"), weather.update_time.ToString("t"));
 
             return date;
         }

@@ -122,7 +122,7 @@ namespace SimpleWeather.WeatherData
             low_f = forecast.low.fahrenheit;
             low_c = forecast.low.celsius;
             condition = forecast.conditions;
-            icon = forecast.icon_url;
+            icon = forecast.icon_url.Replace("http://icons.wxug.com/i/c/k/", "").Replace(".gif", "");
         }
     }
 
@@ -137,7 +137,6 @@ namespace SimpleWeather.WeatherData
         public float feelslike_f { get; set; }
         public float feelslike_c { get; set; }
         public string icon { get; set; }
-        public string icon_url { get; set; }
 
         public Condition(WeatherUnderground.Current_Observation condition)
         {
@@ -149,8 +148,7 @@ namespace SimpleWeather.WeatherData
             wind_kph = condition.wind_kph;
             feelslike_f = condition.feelslike_f;
             feelslike_c = condition.feelslike_c;
-            icon = condition.icon;
-            icon_url = condition.icon_url.Replace("http://icons.wxug.com/i/c/k/", "").Replace(".gif", "");
+            icon = condition.icon_url.Replace("http://icons.wxug.com/i/c/k/", "").Replace(".gif", "");
         }
 
         public Condition(WeatherYahoo.Channel channel)
@@ -164,7 +162,6 @@ namespace SimpleWeather.WeatherData
             feelslike_f = float.Parse(channel.wind.chill);
             feelslike_c = float.Parse(ConversionMethods.FtoC(channel.wind.chill));
             icon = channel.item.condition.code;
-            icon_url = channel.item.condition.code;
         }
     }
 

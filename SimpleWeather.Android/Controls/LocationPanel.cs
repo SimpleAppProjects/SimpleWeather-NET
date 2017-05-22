@@ -59,17 +59,13 @@ namespace SimpleWeather.Droid.Controls
             ShowLoading(true);
         }
 
-        public async void SetWeather(LocationPanelView panelView)
+        public void SetWeather(LocationPanelView panelView)
         {
             // Background
-            try
+            if (mainLayout != null && Width > 0)
             {
                 mainLayout.Background = new BitmapDrawable(App.Context.Resources, ThumbnailUtils.ExtractThumbnail(
-                    await BitmapFactory.DecodeStreamAsync(panelView.Background), Width, Height, ThumnailExtractOptions.RecycleInput));
-            }
-            catch (Exception e)
-            {
-                //e.printStackTrace();
+                    panelView.Background, Width, Height, ThumnailExtractOptions.RecycleInput));
             }
 
             locationNameView.Text = panelView.LocationName;

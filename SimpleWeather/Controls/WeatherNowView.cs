@@ -51,7 +51,7 @@ namespace SimpleWeather.Controls
         public ImageBrush Background { get; set; }
         public SolidColorBrush PanelBackground { get; set; }
 #elif __ANDROID__
-        public System.IO.Stream Background { get; set; }
+        public Bitmap Background { get; set; }
         public Color PanelBackground { get; set; }
 #endif
 
@@ -83,7 +83,7 @@ namespace SimpleWeather.Controls
             PanelBackground = new SolidColorBrush(WeatherUtils.isNight(weather) ?
                 Windows.UI.Color.FromArgb(15, 128, 128, 128) : Windows.UI.Color.FromArgb(15, 8, 8, 8));
 #elif __ANDROID__
-            Background = WeatherUtils.GetBackgroundStream(weather);
+            Background = WeatherUtils.GetBackground(weather);
             PanelBackground = WeatherUtils.isNight(weather) ? new Color(15, 128, 128, 128) : new Color(15, 8, 8, 8);
 #endif
 

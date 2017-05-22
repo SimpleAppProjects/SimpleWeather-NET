@@ -2,6 +2,7 @@
 using Android.Graphics;
 using Android.Graphics.Drawables;
 using Android.Media;
+using Android.Views;
 using Java.IO;
 using SimpleWeather.Droid;
 using SimpleWeather.WeatherData;
@@ -11,67 +12,59 @@ namespace SimpleWeather.Utils
 {
     public static partial class WeatherUtils
     {
-        private static Resources res = App.Context.Resources;
         private static AssetManager am = App.Context.Assets;
 
-        public static System.IO.Stream GetBackgroundStream(Weather weather)
+        public static Bitmap GetBackground(Weather weather)
         {
+            String icon = weather.condition.icon;
             System.IO.Stream imgStream = null;
 
             // Apply background based on weather condition
             /* WeatherUnderground */
-            switch (weather.condition.icon)
+            if (icon.Contains("mostlysunny") || icon.Contains("partlysunny") ||
+                icon.Contains("partlycloudy"))
             {
-                case "cloudy":
-                case "mostlycloudy":
-                    if (isNight(weather))
-                        
-                        imgStream = am.Open("backgrounds/MostlyCloudy-Night.jpg");
-                    else
-                        imgStream = am.Open("backgrounds/MostlyCloudy-Day.jpg");
-                    break;
-                case "mostlysunny":
-                case "partlysunny":
-                case "partlycloudy":
-                    if (isNight(weather))
-                        imgStream = am.Open("backgrounds/PartlyCloudy-Night.jpg");
-                    else
-                        imgStream = am.Open("backgrounds/PartlyCloudy-Day.jpg");
-                    break;
-                case "chancerain":
-                case "chancesleat":
-                case "rain":
-                case "sleat":
-                    imgStream = am.Open("backgrounds/RainySky.jpg");
-                    break;
-                case "chanceflurries":
-                case "chancesnow":
-                case "flurries":
-                case "snow":
-                    imgStream = am.Open("backgrounds/Snow.jpg");
-                    break;
-                case "chancetstorms":
-                case "tstorms":
-                    imgStream = am.Open("backgrounds/StormySky.jpg");
-                    break;
-                case "hazy":
-                    imgStream = am.Open("backgrounds/FoggySky.jpg");
-                    break;
-                case "sunny":
-                case "clear":
-                case "unknown":
-                    // Set background based using sunset/rise times
-                    if (isNight(weather))
-                        imgStream = am.Open("backgrounds/NightSky.jpg");
-                    else
-                        imgStream = am.Open("backgrounds/DaySky.jpg");
-                    break;
+                if (isNight(weather))
+                    imgStream = am.Open("backgrounds/PartlyCloudy-Night.jpg");
+                else
+                    imgStream = am.Open("backgrounds/PartlyCloudy-Day.jpg");
+            }
+            if (icon.Contains("cloudy"))
+            {
+                if (isNight(weather))
+                    imgStream = am.Open("backgrounds/MostlyCloudy-Night.jpg");
+                else
+                    imgStream = am.Open("backgrounds/MostlyCloudy-Day.jpg");
+            }
+            else if (icon.Contains("rain") || icon.Contains("sleet"))
+            {
+                imgStream = am.Open("backgrounds/RainySky.jpg");
+            }
+            else if (icon.Contains("flurries") || icon.Contains("snow"))
+            {
+                imgStream = am.Open("backgrounds/Snow.jpg");
+            }
+            else if (icon.Contains("tstorms"))
+            {
+                imgStream = am.Open("backgrounds/StormySky.jpg");
+            }
+            else if (icon.Contains("hazy") || icon.Contains("fog"))
+            {
+                imgStream = am.Open("backgrounds/FoggySky.jpg");
+            }
+            else if (icon.Contains("clear") || icon.Contains("sunny"))
+            {
+                // Set background based using sunset/rise times
+                if (isNight(weather))
+                    imgStream = am.Open("backgrounds/NightSky.jpg");
+                else
+                    imgStream = am.Open("backgrounds/DaySky.jpg");
             }
 
             /* Yahoo Weather */
-            if (imgStream == null)
+            if (imgStream == null && int.TryParse(icon, out int code))
             {
-                switch (int.Parse(weather.condition.icon))
+                switch (code)
                 {
                     // Night
                     case 31:
@@ -148,6 +141,7 @@ namespace SimpleWeather.Utils
                         else
                             imgStream = am.Open("backgrounds/PartlyCloudy-Day.jpg");
                         break;
+                    case 3200:
                     default:
                         // Set background based using sunset/rise times
                         if (isNight(weather))
@@ -158,7 +152,17 @@ namespace SimpleWeather.Utils
                 }
             }
 
-            return imgStream;//return new BitmapDrawable(res, ThumbnailUtils.ExtractThumbnail(BitmapFactory.DecodeStream(imgStream), width, height, ThumnailExtractOptions.RecycleInput));
+            // Just in case
+            if (imgStream == null)
+            {
+                // Set background based using sunset/rise times
+                if (isNight(weather))
+                    imgStream = am.Open("backgrounds/NightSky.jpg");
+                else
+                    imgStream = am.Open("backgrounds/DaySky.jpg");
+            }
+
+            return BitmapFactory.DecodeStream(imgStream);
         }
     }
 }

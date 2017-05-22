@@ -2,6 +2,7 @@
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using SimpleWeather.Droid.Utils;
+using Android.Graphics;
 
 namespace SimpleWeather.Droid.Controls
 {
@@ -13,7 +14,7 @@ namespace SimpleWeather.Droid.Controls
         public Pair<int, string> Pair { get; set; }
 
         // Background
-        public System.IO.Stream Background { get; set; }
+        public Bitmap Background { get; set; }
 
         public LocationPanelView()
         {
@@ -27,7 +28,7 @@ namespace SimpleWeather.Droid.Controls
         public void setWeather(Weather weather)
         {
             // Update background
-            Background = WeatherUtils.GetBackgroundStream(weather);
+            Background = WeatherUtils.GetBackground(weather);
 
             LocationName = weather.location.name;
             CurrTemp = (Settings.Unit == "F" ?
