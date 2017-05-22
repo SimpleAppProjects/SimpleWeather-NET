@@ -286,7 +286,17 @@ namespace SimpleWeather.Droid
                 LocationQuery v = (LocationQuery)e.View;
                 int index = 0;
 
-                selected_query = adapter.Dataset[e.Position].LocationQuery;
+                if (!String.IsNullOrEmpty(adapter.Dataset[e.Position].LocationQuery))
+                    selected_query = adapter.Dataset[e.Position].LocationQuery;
+                else
+                    selected_query = string.Empty;
+
+                if (String.IsNullOrWhiteSpace(selected_query))
+                {
+                    // Stop since there is no valid query
+                    return;
+                }
+
                 OrderedDictionary weatherData = await Settings.getWeatherData();
 
                 if (mActionMode.Tag != null && (int)mActionMode.Tag == Resource.Id.home_panel)
@@ -363,19 +373,10 @@ namespace SimpleWeather.Droid
             clearButtonView.Click += delegate { searchView.Text = String.Empty; };
             searchView.TextChanged += (object sender, TextChangedEventArgs e) =>
             {
-                String newText = e.Text.ToString();
-                if (newText.Equals(selected_query))
-                {
-                    // If the query hasn't changed (perhaps due to activity being destroyed
-                    // and restored, or user launching the same DIAL intent twice), then there is
-                    // no need to do anything here.
-                    return;
-                }
-                selected_query = newText;
                 if (mSearchFragment != null)
                 {
                     clearButtonView.Visibility = String.IsNullOrEmpty(e.Text.ToString()) ? ViewStates.Gone : ViewStates.Visible;
-                    mSearchFragment.fetchLocations(selected_query);
+                    mSearchFragment.fetchLocations(e.Text.ToString());
                 }
             };
             clearButtonView.Visibility = ViewStates.Gone;
