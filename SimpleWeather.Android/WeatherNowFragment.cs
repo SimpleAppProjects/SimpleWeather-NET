@@ -136,6 +136,13 @@ namespace SimpleWeather.Droid
             return view;
         }
 
+        public override void OnCreateOptionsMenu(IMenu menu, MenuInflater inflater)
+        {
+            // Inflate the menu; this adds items to the action bar if it is present.
+            menu.Clear();
+            inflater.Inflate(Resource.Menu.weather_now, menu);
+        }
+
         public override bool OnOptionsItemSelected(IMenuItem item)
         {
             // Handle action bar item clicks here. The action bar will
