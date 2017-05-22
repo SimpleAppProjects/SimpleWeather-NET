@@ -67,7 +67,7 @@ namespace SimpleWeather.WeatherYahoo
                     if (webEx.Status > System.Net.WebExceptionStatus.Success)
                     {
                         wEx = new WeatherException(WeatherUtils.ErrorStatus.NETWORKERROR);
-                        Toast.MakeText(App.Context, wEx.Message, ToastLength.Short);
+                        Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
                     }
                 }
 #endif

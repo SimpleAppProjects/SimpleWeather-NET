@@ -165,7 +165,7 @@ namespace SimpleWeather.WeatherData
                         Windows.UI.Core.CoreDispatcherPriority.Normal,
                         async () => await new Windows.UI.Popups.MessageDialog(wEx.Message).ShowAsync());
 #elif __ANDROID__
-                    Toast.MakeText(App.Context, wEx.Message, ToastLength.Short);
+                    Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
 #endif
                 }
             }
@@ -197,7 +197,7 @@ namespace SimpleWeather.WeatherData
                         Windows.UI.Core.CoreDispatcherPriority.Normal,
                         async () => await new Windows.UI.Popups.MessageDialog(wEx.Message).ShowAsync());
 #elif __ANDROID__
-                    Toast.MakeText(App.Context, wEx.Message, ToastLength.Short);
+                    Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
 #endif
                 }
             }
@@ -380,7 +380,7 @@ namespace SimpleWeather.WeatherData
                     Windows.UI.Core.CoreDispatcherPriority.Normal,
                     async () => await new Windows.UI.Popups.MessageDialog(wEx.Message).ShowAsync());
 #elif __ANDROID__
-                Toast.MakeText(App.Context, wEx.Message, ToastLength.Short);
+                Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
 #endif
             }
 
