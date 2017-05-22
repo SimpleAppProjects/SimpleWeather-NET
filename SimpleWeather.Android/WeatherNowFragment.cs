@@ -215,7 +215,7 @@ namespace SimpleWeather.Droid
             if (View != null && View.Width > 0)
             {
                 View.Background = new BitmapDrawable(this.Activity.Resources, ThumbnailUtils.ExtractThumbnail(
-                    weatherView.Background, View.Width, View.Height, ThumnailExtractOptions.RecycleInput));
+                    weatherView.Background, View.Width, View.Height, ThumnailExtractOptions.None));
             }
 
             LinearLayout forecastPanel = (LinearLayout)contentView.FindViewById(Resource.Id.forecast_panel);

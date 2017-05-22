@@ -65,7 +65,7 @@ namespace SimpleWeather.Droid.Controls
             if (mainLayout != null && Width > 0)
             {
                 mainLayout.Background = new BitmapDrawable(App.Context.Resources, ThumbnailUtils.ExtractThumbnail(
-                    panelView.Background, Width, Height, ThumnailExtractOptions.RecycleInput));
+                    panelView.Background, Width, Height, ThumnailExtractOptions.None));
             }
 
             locationNameView.Text = panelView.LocationName;
