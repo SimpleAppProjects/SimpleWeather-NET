@@ -14,7 +14,7 @@ namespace SimpleWeather.Droid.Controls
         public Pair<int, string> Pair { get; set; }
 
         // Background
-        public Bitmap Background { get; set; }
+        public string Background { get; set; }
 
         public LocationPanelView()
         {
@@ -28,7 +28,7 @@ namespace SimpleWeather.Droid.Controls
         public void setWeather(Weather weather)
         {
             // Update background
-            Background = WeatherUtils.GetBackground(weather);
+            Background = WeatherUtils.GetBackgroundURI(weather);
 
             LocationName = weather.location.name;
             CurrTemp = (Settings.Unit == "F" ?

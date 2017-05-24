@@ -15,6 +15,7 @@ using Android.Media;
 using SimpleWeather.Droid.Utils;
 using SimpleWeather.Utils;
 using System.Collections.Generic;
+using Com.Nostra13.Universalimageloader.Core;
 
 namespace SimpleWeather.Droid
 {
@@ -46,6 +47,8 @@ namespace SimpleWeather.Droid
         private TextView windSpeed;
         private TextView sunrise;
         private TextView sunset;
+
+        private ImageLoader loader = ImageLoader.Instance;
 
         private String fahrenheit = App.Context.GetString(Resource.String.wi_fahrenheit);
         private String celsius = App.Context.GetString(Resource.String.wi_celsius);
@@ -211,53 +214,52 @@ namespace SimpleWeather.Droid
 
         private void SetView(WeatherNowView weatherView)
         {
-            // Background
-            if (View != null && View.Width > 0)
+            View.Post(() => 
             {
-                View.Background = new BitmapDrawable(this.Activity.Resources, ThumbnailUtils.ExtractThumbnail(
-                    weatherView.Background, View.Width, View.Height, ThumnailExtractOptions.None));
-            }
+                // Background
+                loader.DisplayImage(weatherView.Background, new CustomViewAware(View), ImageUtils.CenterCropConfig(View.Width, View.Height));
 
-            LinearLayout forecastPanel = (LinearLayout)contentView.FindViewById(Resource.Id.forecast_panel);
-            forecastPanel.SetBackgroundColor(weatherView.PanelBackground);
-            detailsPanel.SetBackgroundColor(weatherView.PanelBackground);
+                LinearLayout forecastPanel = (LinearLayout)contentView.FindViewById(Resource.Id.forecast_panel);
+                forecastPanel.SetBackgroundColor(weatherView.PanelBackground);
+                detailsPanel.SetBackgroundColor(weatherView.PanelBackground);
 
-            // Location
-            locationName.Text = weatherView.Location;
+                // Location
+                locationName.Text = weatherView.Location;
 
-            // Date Updated
-            updateTime.Text = weatherView.UpdateDate;
+                // Date Updated
+                updateTime.Text = weatherView.UpdateDate;
 
-            // Update Current Condition
-            weatherTemp.Text = weatherView.CurTemp;
-            weatherCondition.Text = weatherView.CurCondition;
-            weatherIcon.Text = weatherView.WeatherIcon;
+                // Update Current Condition
+                weatherTemp.Text = weatherView.CurTemp;
+                weatherCondition.Text = weatherView.CurCondition;
+                weatherIcon.Text = weatherView.WeatherIcon;
 
-            // WeatherDetails
-            // Astronomy
-            sunrise.Text = weatherView.Sunrise;
-            sunset.Text = weatherView.Sunset;
+                // WeatherDetails
+                // Astronomy
+                sunrise.Text = weatherView.Sunrise;
+                sunset.Text = weatherView.Sunset;
 
-            // Wind
-            feelslike.Text = weatherView.WindChill;
-            windSpeed.Text = weatherView.WindSpeed;
-            windDirection.Rotation = weatherView.WindDirection;
+                // Wind
+                feelslike.Text = weatherView.WindChill;
+                windSpeed.Text = weatherView.WindSpeed;
+                windDirection.Rotation = weatherView.WindDirection;
 
-            // Atmosphere
-            humidity.Text = weatherView.Humidity;
-            pressure.Text = weatherView.Pressure;
+                // Atmosphere
+                humidity.Text = weatherView.Humidity;
+                pressure.Text = weatherView.Pressure;
 
-            pressureState.Visibility = weatherView.RisingVisiblity;
-            pressureState.Text = weatherView.RisingIcon;
+                pressureState.Visibility = weatherView.RisingVisiblity;
+                pressureState.Text = weatherView.RisingIcon;
 
-            visiblity.Text = weatherView._Visibility;
+                visiblity.Text = weatherView._Visibility;
 
-            // Add UI elements
-            forecastPanel.RemoveAllViews();
-            foreach (ForecastItemView forecast in weatherView.Forecasts)
-            {
-                forecastPanel.AddView(new ForecastItem(Activity, forecast));
-            }
+                // Add UI elements
+                forecastPanel.RemoveAllViews();
+                foreach (ForecastItemView forecast in weatherView.Forecasts)
+                {
+                    forecastPanel.AddView(new ForecastItem(Activity, forecast));
+                }
+            });
         }
     }
 }

@@ -7,6 +7,9 @@ using Android.Support.V7.Widget;
 using Android.Graphics;
 using Android.Graphics.Drawables;
 using Android.Media;
+using Android.Support.V4.Content;
+using SimpleWeather.Droid.Utils;
+using Com.Nostra13.Universalimageloader.Core;
 
 namespace SimpleWeather.Droid.Controls
 {
@@ -18,6 +21,7 @@ namespace SimpleWeather.Droid.Controls
         private TextView locationTempView;
         private WeatherIcon locationWeatherIcon;
         private ProgressBar progressBar;
+        private ImageLoader loader = ImageLoader.Instance;
 
         public LocationPanel(Context context) :
             base(context)
@@ -61,20 +65,20 @@ namespace SimpleWeather.Droid.Controls
 
         public void SetWeather(LocationPanelView panelView)
         {
-            // Background
-            if (mainLayout != null && Width > 0)
+            this.Post(() => 
             {
-                mainLayout.Background = new BitmapDrawable(App.Context.Resources, ThumbnailUtils.ExtractThumbnail(
-                    panelView.Background, Width, Height, ThumnailExtractOptions.None));
-            }
+                // Background
+                loader.DisplayImage(panelView.Background, new CustomViewAware(mainLayout),
+                    ImageUtils.CenterCropConfig(mainLayout.Width, mainLayout.Height));
 
-            locationNameView.Text = panelView.LocationName;
-            locationTempView.Text = panelView.CurrTemp;
-            locationWeatherIcon.Text = panelView.WeatherIcon;
-            Tag = panelView.Pair;
+                locationNameView.Text = panelView.LocationName;
+                locationTempView.Text = panelView.CurrTemp;
+                locationWeatherIcon.Text = panelView.WeatherIcon;
+                Tag = panelView.Pair;
 
-            Enabled = true;
-            ShowLoading(false);
+                Enabled = true;
+                ShowLoading(false);
+            });
         }
 
         public void ShowLoading(bool show)

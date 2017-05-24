@@ -6,10 +6,13 @@ using Android.Runtime;
 using Plugin.CurrentActivity;
 using Android.Content;
 using Android.Preferences;
+using Com.Nostra13.Universalimageloader.Core;
+using Com.Nostra13.Universalimageloader.Cache.Disc.Impl;
+using SimpleWeather.Droid.Utils;
 
 namespace SimpleWeather.Droid
 {
-	//You can specify additional application information in this attribute
+    //You can specify additional application information in this attribute
     [Application(Name= "SimpleWeather.Droid.App", AllowBackup = true, Icon = "@mipmap/ic_launcher", RoundIcon = "@mipmap/ic_round_launcher",
         Label = "@string/app_name", SupportsRtl = true, Theme = "@style/AppTheme.Launcher")]
     public class App : Application, Application.IActivityLifecycleCallbacks
@@ -26,6 +29,16 @@ namespace SimpleWeather.Droid
             base.OnCreate();
             RegisterActivityLifecycleCallbacks(this);
             //A great place to initialize Xamarin.Insights and Dependency Services!
+
+            // ImageLoader
+            // Use default options
+            ImageLoaderConfiguration default_config = new ImageLoaderConfiguration.Builder(ApplicationContext)
+                .DiskCache(new UnlimitedDiskCache(ApplicationContext.CacheDir))
+                .DefaultDisplayImageOptions(ImageUtils.DefaultDisplayConfig())
+                .DiskCacheSize(50 * 1024 * 1024)
+                .Build();
+            // Initialize ImageLoader with configuration.
+            ImageLoader.Instance.Init(default_config);
         }
 
         public static ISharedPreferences Preferences => PreferenceManager.GetDefaultSharedPreferences(Context);
