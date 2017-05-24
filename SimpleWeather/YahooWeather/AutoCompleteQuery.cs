@@ -18,7 +18,7 @@ namespace SimpleWeather.WeatherYahoo
         public static async Task<List<Controls.LocationQueryView>> getLocations(string location_query)
         {
             string yahooAPI = "https://query.yahooapis.com/v1/public/yql?q=";
-            string query = "select * from geo.places where text=\"" + location_query + "\"";
+            string query = "select * from geo.places where text=\"" + location_query + "*\"";
             Uri queryURL = new Uri(yahooAPI + query);
             List<Controls.LocationQueryView> locationResults = null;
             // Limit amount of results shown
@@ -50,7 +50,11 @@ namespace SimpleWeather.WeatherYahoo
                 {
                     // Filter: only store city results
                     if (result.placeTypeName.Value == "Town"
-                        || result.placeTypeName.Value == "Suburb")
+                        || result.placeTypeName.Value == "Suburb"
+                        || (result.placeTypeName.Value == "Zip Code" 
+                        || result.placeTypeName.Value == "Postal Code" &&
+                            (result.locality1 != null && result.locality1.type == "Town")
+                            || (result.locality1 != null && result.locality1.type == "Suburb")))
                         locationResults.Add(new Controls.LocationQueryView(result));
                     else
                         continue;
@@ -61,7 +65,7 @@ namespace SimpleWeather.WeatherYahoo
                         break;
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 locationResults = new List<Controls.LocationQueryView>();
             }

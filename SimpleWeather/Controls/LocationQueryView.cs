@@ -1,4 +1,5 @@
-﻿using SimpleWeather.WeatherUnderground;
+﻿using System;
+using SimpleWeather.WeatherUnderground;
 using SimpleWeather.WeatherYahoo;
 
 namespace SimpleWeather.Controls
@@ -52,14 +53,29 @@ namespace SimpleWeather.Controls
         {
             string town, region;
 
-            if (location.locality1 != null)
-                town = location.locality1.Value;
-            else
+            if ((location.placeTypeName.Value == "Zip Code"
+                || location.placeTypeName.Value == "Postal Code"))
+            {
                 town = location.name;
 
-            if (location.admin1 != null)
+                if (location.locality1 != null
+                    && !String.IsNullOrEmpty(location.locality1.Value))
+                    town += " - " + location.locality1.Value;
+            }
+            else
+            {
+                if (location.locality1 != null
+                    && !String.IsNullOrEmpty(location.locality1.Value))
+                    town = location.locality1.Value;
+                else
+                    town = location.name;
+            }
+
+            if (location.admin1 != null
+                && !String.IsNullOrEmpty(location.admin1.Value))
                 region = location.admin1.Value;
-            else if (location.admin2 != null)
+            else if (location.admin2 != null
+                && !String.IsNullOrEmpty(location.admin2.Value))
                 region = location.admin2.Value;
             else
                 region = location.country.Value;
