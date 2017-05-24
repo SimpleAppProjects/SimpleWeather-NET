@@ -134,7 +134,7 @@ namespace SimpleWeather.UWP
                 return;
             }
 
-            KeyValuePair<int, object> pair;
+            KeyValuePair<int, string> pair;
 
             // Weather Data
             OrderedDictionary weatherData = await Settings.getWeatherData();
@@ -151,7 +151,7 @@ namespace SimpleWeather.UWP
                 weatherData.Add(selected_query, weather);
             Settings.saveWeatherData(weatherData);
 
-            pair = new KeyValuePair<int, object>(App.HomeIdx, selected_query);
+            pair = new KeyValuePair<int, string>(App.HomeIdx, selected_query);
 
             Settings.WeatherLoaded = true;
             await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(Shell), pair));

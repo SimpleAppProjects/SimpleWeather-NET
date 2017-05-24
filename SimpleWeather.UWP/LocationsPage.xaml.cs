@@ -228,7 +228,7 @@ namespace SimpleWeather.UWP
         private async void Location_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
             LocationPanel panel = sender as LocationPanel;
-            KeyValuePair<int, object> pair = (KeyValuePair<int, object>)panel.Tag;
+            KeyValuePair<int, string> pair = (KeyValuePair<int, string>)panel.Tag;
             int idx = pair.Key;
 
             PopupMenu menu = new PopupMenu();
