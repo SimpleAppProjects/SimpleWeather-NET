@@ -49,7 +49,7 @@ namespace SimpleWeather.Utils
             if (!fileinfo.Exists || (fileinfo.Exists && fileinfo.Length == 0))
                 return;
 
-            weatherData = (OrderedDictionary)JSONParser.Deserializer(await FileUtils.ReadFile(dataFile), typeof(OrderedDictionary));
+            weatherData = await JSONParser.DeserializerAsync<OrderedDictionary>(await FileUtils.ReadFile(dataFile));
         }
 
         public static async Task<List<string>> getLocations()

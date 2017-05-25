@@ -100,7 +100,7 @@ namespace SimpleWeather.Droid
             // Create your fragment here
             if (Arguments != null)
             {
-                pair = JSONParser.Deserializer(Arguments.GetString("pair"), typeof(Pair<int, string>)) as Pair<int, string>;
+                pair = JSONParser.Deserializer<Pair<int, string>>(Arguments.GetString("pair"));
 
                 if (pair != null && wLoader == null)
                     wLoader = new WeatherDataLoader(this, pair.Value, pair.Key);

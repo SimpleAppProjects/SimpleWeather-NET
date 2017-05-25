@@ -46,7 +46,7 @@ namespace SimpleWeather.Droid
             {
                 if (Intent.HasExtra("pair"))
                 {
-                    Pair<int, string> pair = JSONParser.Deserializer(Intent.GetStringExtra("pair"), typeof(Pair<int, string>)) as Pair<int, string>;
+                    Pair<int, string> pair = JSONParser.Deserializer<Pair<int, string>>(Intent.GetStringExtra("pair"));
                     fragment = WeatherNowFragment.NewInstance(pair);
                 }
                 else
