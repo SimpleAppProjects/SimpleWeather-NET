@@ -247,7 +247,7 @@ namespace SimpleWeather.UWP
                     // Remove location from list
                     OrderedDictionary weatherData = await Settings.getWeatherData();
                     weatherData.RemoveAt(idx);
-                    Settings.saveWeatherData(weatherData);
+                    Settings.saveWeatherData();
 
                     // Remove panel
                     LocationPanels.RemoveAt(idx - 1);
@@ -386,7 +386,7 @@ namespace SimpleWeather.UWP
                 weatherData.Add(selected_query, weather);
             }
             // Save data
-            Settings.saveWeatherData(weatherData);
+            Settings.saveWeatherData();
 
             if (index == App.HomeIdx)
             {

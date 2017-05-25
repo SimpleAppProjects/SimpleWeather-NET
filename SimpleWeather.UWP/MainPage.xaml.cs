@@ -16,7 +16,6 @@ using Windows.UI.Xaml.Controls;
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
 namespace SimpleWeather.UWP
-
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -149,7 +148,7 @@ namespace SimpleWeather.UWP
                 weatherData[selected_query] = weather;
             else
                 weatherData.Add(selected_query, weather);
-            Settings.saveWeatherData(weatherData);
+            Settings.saveWeatherData();
 
             pair = new KeyValuePair<int, string>(App.HomeIdx, selected_query);
 

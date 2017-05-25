@@ -196,7 +196,7 @@ namespace SimpleWeather.Droid
             // Remove location from list
             OrderedDictionary weatherData = await Settings.getWeatherData();
             weatherData.RemoveAt(ItemId + 1);
-            Settings.saveWeatherData(weatherData);
+            Settings.saveWeatherData();
 
             // Remove panel
             mAdapter.Remove(ItemId);
@@ -342,7 +342,7 @@ namespace SimpleWeather.Droid
                     weatherData.Add(selected_query, weather);
                 }
                 // Save data
-                Settings.saveWeatherData(weatherData);
+                Settings.saveWeatherData();
 
                 if (index == App.HomeIdx)
                 {

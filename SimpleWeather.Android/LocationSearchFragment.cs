@@ -84,7 +84,7 @@ namespace SimpleWeather.Droid
                 weatherData[selected_query] = weather;
             else
                 weatherData.Add(selected_query, weather);
-            Settings.saveWeatherData(weatherData);
+            Settings.saveWeatherData();
 
             pair = new Pair<int, string>(App.HomeIdx, selected_query);
 

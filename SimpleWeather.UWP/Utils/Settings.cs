@@ -9,17 +9,26 @@ namespace SimpleWeather.Utils
 {
     public static partial class Settings
     {
+        // Shared Settings
+        private static ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
+        // App data files
         private static StorageFolder appDataFolder = ApplicationData.Current.LocalFolder;
         private static StorageFile dataFile;
 
+        private static async void init()
+        {
+            if (dataFile == null)
+                dataFile = await appDataFolder.CreateFileAsync("data.json", CreationCollisionOption.OpenIfExists);
+        }
+
         private static string getTempUnit()
         {
-            var localSettings = ApplicationData.Current.LocalSettings;
-            if (!localSettings.Values.ContainsKey("Units") || localSettings.Values["Units"] == null)
+            if (!localSettings.Values.ContainsKey(KEY_UNITS) || localSettings.Values[KEY_UNITS] == null)
             {
                 return Fahrenheit;
             }
-            else if (localSettings.Values["Units"].Equals("C"))
+            else if (localSettings.Values[KEY_UNITS].Equals(Celsius))
                 return Celsius;
 
             return Fahrenheit;
@@ -27,19 +36,14 @@ namespace SimpleWeather.Utils
 
         private static void setTempUnit(string value)
         {
-            var localSettings = ApplicationData.Current.LocalSettings;
-
             if (value == Celsius)
-                localSettings.Values["Units"] = Celsius;
+                localSettings.Values[KEY_UNITS] = Celsius;
             else
-                localSettings.Values["Units"] = Fahrenheit;
+                localSettings.Values[KEY_UNITS] = Fahrenheit;
         }
 
         private static bool isWeatherLoaded()
         {
-            if (dataFile == null)
-                dataFile = appDataFolder.CreateFileAsync("data.json", CreationCollisionOption.OpenIfExists).AsTask().GetAwaiter().GetResult();
-
             FileInfo fileinfo = new FileInfo(dataFile.Path);
 
             if (fileinfo.Length == 0 || !fileinfo.Exists)
@@ -48,13 +52,11 @@ namespace SimpleWeather.Utils
                 return false;
             }
 
-            var localSettings = ApplicationData.Current.LocalSettings;
-
-            if (localSettings.Values["weatherLoaded"] == null)
+            if (localSettings.Values[KEY_WEATHERLOADED] == null)
             {
                 return false;
             }
-            else if (localSettings.Values["weatherLoaded"].Equals("true"))
+            else if (localSettings.Values[KEY_WEATHERLOADED].Equals(true))
             {
                 return true;
             }
@@ -66,74 +68,29 @@ namespace SimpleWeather.Utils
 
         private static void setWeatherLoaded(bool isLoaded)
         {
-            var localSettings = ApplicationData.Current.LocalSettings;
-
-            if (isLoaded)
-            {
-                localSettings.Values["weatherLoaded"] = "true";
-            }
-            else
-            {
-                localSettings.Values["weatherLoaded"] = "false";
-            }
+            localSettings.Values[KEY_WEATHERLOADED] = isLoaded;
         }
 
         private static string getAPI()
         {
-            var localSettings = ApplicationData.Current.LocalSettings;
-            if (!localSettings.Values.ContainsKey("API") || localSettings.Values["API"] == null)
+            if (!localSettings.Values.ContainsKey(KEY_API) || localSettings.Values[KEY_API] == null)
             {
                 setAPI("WUnderground");
                 return "WUnderground";
             }
             else
-                return (string)localSettings.Values["API"];
+                return (string)localSettings.Values[KEY_API];
         }
 
         private static void setAPI(string value)
         {
-            var localSettings = ApplicationData.Current.LocalSettings;
-            localSettings.Values["API"] = value;
-        }
-
-        public static async Task<List<string>> getLocations()
-        {
-            OrderedDictionary dict = await getWeatherData();
-            List<string> locations = new List<string>();
-            foreach (string location in dict.Keys)
-            {
-                locations.Add(location);
-            }
-
-            return locations;
-        }
-
-        public static async Task<OrderedDictionary> getWeatherData()
-        {
-            if (dataFile == null)
-                dataFile = await appDataFolder.CreateFileAsync("data.json", CreationCollisionOption.OpenIfExists);
-
-            FileInfo fileinfo = new FileInfo(dataFile.Path);
-
-            if (fileinfo.Length == 0 || !fileinfo.Exists)
-                return new OrderedDictionary();
-
-            return (OrderedDictionary)JSONParser.Deserializer(await FileUtils.ReadFile(dataFile), typeof(OrderedDictionary));
-        }
-
-        public static async void saveWeatherData(OrderedDictionary weatherData)
-        {
-            if (dataFile == null)
-                dataFile = await appDataFolder.CreateFileAsync("data.json", CreationCollisionOption.OpenIfExists);
-
-            JSONParser.Serializer(weatherData, dataFile);
+            localSettings.Values[KEY_API] = value;
         }
 
         #region WeatherUnderground
         private static string getAPIKEY()
         {
-            var localSettings = ApplicationData.Current.LocalSettings;
-            if (!localSettings.Values.ContainsKey("API_KEY") || localSettings.Values["API_KEY"] == null)
+            if (!localSettings.Values.ContainsKey(KEY_APIKEY) || localSettings.Values[KEY_APIKEY] == null)
             {
                 String key = String.Empty;
                 key = readAPIKEYfile().GetAwaiter().GetResult();
@@ -144,7 +101,7 @@ namespace SimpleWeather.Utils
                 return key;
             }
             else
-                return (string)localSettings.Values["API_KEY"];
+                return (string)localSettings.Values[KEY_APIKEY];
         }
 
         private static async Task<string> readAPIKEYfile()
@@ -170,10 +127,8 @@ namespace SimpleWeather.Utils
 
         private static void setAPIKEY(string API_KEY)
         {
-            var localSettings = ApplicationData.Current.LocalSettings;
-
             if (!String.IsNullOrWhiteSpace(API_KEY))
-                localSettings.Values["API_KEY"] = API_KEY;
+                localSettings.Values[KEY_APIKEY] = API_KEY;
         }
         #endregion
     }

@@ -16,15 +16,24 @@ namespace SimpleWeather.Utils
 
         // App data files
         private static File appDataFolder = App.Context.FilesDir;
-        private static File dataFile = null;
+        private static File dataFile;
+
+        private static void init()
+        {
+            if (dataFile == null)
+                dataFile = new File(appDataFolder, "data.json");
+
+            if (!dataFile.Exists())
+                dataFile.CreateNewFile();
+        }
 
         private static string getTempUnit()
         {
-            if (!preferences.Contains("key_usecelsius"))
+            if (!preferences.Contains(KEY_USECELSIUS))
             {
                 return Fahrenheit;
             }
-            else if (preferences.GetBoolean("key_usecelsius", false))
+            else if (preferences.GetBoolean(KEY_USECELSIUS, false))
             {
                 return Celsius;
             }
@@ -32,11 +41,16 @@ namespace SimpleWeather.Utils
             return Fahrenheit;
         }
 
+        private static void setTempUnit(string value)
+        {
+            if (value == Celsius)
+                editor.PutBoolean(KEY_USECELSIUS, true);
+            else
+                editor.PutBoolean(KEY_USECELSIUS, false);
+        }
+
         private static bool isWeatherLoaded()
         {
-            if (dataFile == null)
-                dataFile = new File(appDataFolder, "data.json");
-
             System.IO.FileInfo fileinfo = new System.IO.FileInfo(dataFile.Path);
 
             if (!fileinfo.Exists || (fileinfo.Exists && fileinfo.Length == 0))
@@ -45,73 +59,36 @@ namespace SimpleWeather.Utils
                 return false;
             }
 
-            return preferences.Contains("weatherLoaded") && preferences.GetBoolean("weatherLoaded", false);
+            return preferences.Contains(KEY_WEATHERLOADED) && preferences.GetBoolean(KEY_WEATHERLOADED, false);
         }
 
         private static void setWeatherLoaded(bool isLoaded)
         {
-            if (isLoaded)
-                editor.PutBoolean("weatherLoaded", true);
-            else
-                editor.PutBoolean("weatherLoaded", false);
-
+            editor.PutBoolean(KEY_WEATHERLOADED, isLoaded);
             editor.Commit();
         }
 
         private static string getAPI()
         {
-            if (!preferences.Contains("API"))
+            if (!preferences.Contains(KEY_API))
             {
                 setAPI("WUnderground");
                 return "WUnderground";
             }
             else
-                return preferences.GetString("API", null);
+                return preferences.GetString(KEY_API, null);
         }
 
         private static void setAPI(string value)
         {
-            editor.PutString("API", value);
+            editor.PutString(KEY_API, value);
             editor.Commit();
-        }
-
-        public static async Task<List<string>> getLocations()
-        {
-            OrderedDictionary dict = await getWeatherData();
-            List<string> locations = new List<string>();
-            foreach (string location in dict.Keys)
-            {
-                locations.Add(location);
-            }
-
-            return locations;
-        }
-
-        public static async Task<OrderedDictionary> getWeatherData()
-        {
-            if (dataFile == null)
-                dataFile = new File(appDataFolder, "data.json");
-
-            System.IO.FileInfo fileinfo = new System.IO.FileInfo(dataFile.Path);
-
-            if (!fileinfo.Exists || (fileinfo.Exists && fileinfo.Length == 0))
-                return new OrderedDictionary();
-
-            return (OrderedDictionary)JSONParser.Deserializer(await FileUtils.ReadFile(dataFile), typeof(OrderedDictionary));
-        }
-
-        public static void saveWeatherData(OrderedDictionary weatherData)
-        {
-            if (dataFile == null)
-                dataFile = new File(appDataFolder, "data.json");
-
-            JSONParser.Serializer(weatherData, dataFile);
         }
 
         #region WeatherUnderground
         private static string getAPIKEY()
         {
-            if (!preferences.Contains("API_KEY"))
+            if (!preferences.Contains(KEY_APIKEY))
             {
                 String key;
                 key = readAPIKEYfile();
@@ -122,7 +99,7 @@ namespace SimpleWeather.Utils
                 return key;
             }
             else
-                return preferences.GetString("API_KEY", null);
+                return preferences.GetString(KEY_APIKEY, null);
         }
 
         private static string readAPIKEYfile()
@@ -161,7 +138,7 @@ namespace SimpleWeather.Utils
         private static void setAPIKEY(string key)
         {
             if (!String.IsNullOrWhiteSpace(key))
-                editor.PutString("API_KEY", key);
+                editor.PutString(KEY_APIKEY, key);
 
             editor.Commit();
         }

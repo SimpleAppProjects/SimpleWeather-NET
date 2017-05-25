@@ -263,7 +263,7 @@ namespace SimpleWeather.WeatherData
                 weatherData.Insert(locationIdx, location_query, weather);
             else
                 weatherData[locationIdx] = weather;
-            Settings.saveWeatherData(weatherData);
+            Settings.saveWeatherData();
         }
 
         public Weather getWeather()
