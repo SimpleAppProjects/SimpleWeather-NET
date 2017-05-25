@@ -15,7 +15,7 @@ namespace SimpleWeather.Droid
         MainLauncher = true)]
     public class LaunchActivity : AppCompatActivity
     {
-        protected override async void OnCreate(Bundle savedInstanceState)
+        protected override void OnCreate(Bundle savedInstanceState)
         {
             SetTheme(Resource.Style.AppTheme);
             base.OnCreate(savedInstanceState);
@@ -26,17 +26,9 @@ namespace SimpleWeather.Droid
             try
             {
                 if (Settings.WeatherLoaded)
-                {
-                    List<String> locations = await Settings.getLocations();
-                    String local = locations[App.HomeIdx];
-
                     intent = new Intent(this, typeof(MainActivity));
-                    intent.PutExtra("pair", JSONParser.Serializer(new Pair<int, string>(App.HomeIdx, local), typeof(Pair<int, string>)));
-                }
                 else
-                {
                     intent = new Intent(this, typeof(SetupActivity));
-                }
             }
             catch (Exception e)
             {

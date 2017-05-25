@@ -44,8 +44,13 @@ namespace SimpleWeather.Droid
             // Check if fragment exists
             if (fragment == null)
             {
-                Pair<int, string> pair = JSONParser.Deserializer(Intent.GetStringExtra("pair"), typeof(Pair<int, string>)) as Pair<int, string>;
-                fragment = WeatherNowFragment.NewInstance(pair);
+                if (Intent.HasExtra("pair"))
+                {
+                    Pair<int, string> pair = JSONParser.Deserializer(Intent.GetStringExtra("pair"), typeof(Pair<int, string>)) as Pair<int, string>;
+                    fragment = WeatherNowFragment.NewInstance(pair);
+                }
+                else
+                    fragment = new WeatherNowFragment();
 
                 // Navigate to WeatherNowFragment
                 SupportFragmentManager.BeginTransaction().Replace(
