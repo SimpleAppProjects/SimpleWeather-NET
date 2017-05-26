@@ -18,6 +18,7 @@ using SimpleWeather.Droid.Controls;
 using SimpleWeather.Controls;
 using System.Collections.ObjectModel;
 using SimpleWeather.Droid.Utils;
+using SimpleWeather.Droid.Helpers;
 
 namespace SimpleWeather.Droid
 {
@@ -28,6 +29,8 @@ namespace SimpleWeather.Droid
         private RecyclerView mRecyclerView;
         private LocationQueryAdapter mAdapter;
         private RecyclerView.LayoutManager mLayoutManager;
+
+        private LocationListener mLocListnr;
 
         private const int PERMISSION_LOCATION_REQUEST_CODE = 0;
 
@@ -114,7 +117,8 @@ namespace SimpleWeather.Droid
             mRecyclerView = (RecyclerView)view.FindViewById(Resource.Id.recycler_view);
 
             // Location Listener
-            mLocListnr.LocationChanged += (object sender, Location location) =>
+            mLocListnr = new LocationListener();
+            mLocListnr.LocationChanged += (Location location) =>
             {
                 mLocation = location;
                 fetchGeoLocation();
@@ -263,30 +267,6 @@ namespace SimpleWeather.Droid
                         }
                         return;
                     }
-            }
-        }
-
-        private LocationListener mLocListnr = new LocationListener();
-
-        internal class LocationListener : Java.Lang.Object, ILocationListener
-        {
-            public event EventHandler<Location> LocationChanged;
-
-            public void OnLocationChanged(Location location)
-            {
-                LocationChanged?.Invoke(this, location);
-            }
-
-            public void OnProviderDisabled(string provider)
-            {
-            }
-
-            public void OnProviderEnabled(string provider)
-            {
-            }
-
-            public void OnStatusChanged(string provider, [GeneratedEnum] Availability status, Bundle extras)
-            {
             }
         }
     }

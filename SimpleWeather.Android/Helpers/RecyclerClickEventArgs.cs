@@ -10,7 +10,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
-namespace SimpleWeather.Droid
+namespace SimpleWeather.Droid.Helpers
 {
     public class RecyclerClickEventArgs : EventArgs
     {

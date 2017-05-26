@@ -16,13 +16,12 @@ using Android.Text;
 using Android.Views;
 using System.Collections.Specialized;
 using SimpleWeather.Droid.Utils;
+using SimpleWeather.Droid.Helpers;
 
 namespace SimpleWeather.Droid
 {
     public class LocationsFragment : Fragment, WeatherLoadedListener
     {
-        private Context context;
-
         // Views
         private LocationPanel HomePanel;
         private RecyclerView mRecyclerView;
@@ -59,7 +58,7 @@ namespace SimpleWeather.Droid
                 {
                     // TODO: make lpv local
                     // OR Make HomePanel a recyclerview
-                    HomePanel.SetWeather(new LocationPanelView(weather) { Pair = (Pair<int, string>)HomePanel.Tag });
+                    HomePanel.SetWeather(new LocationPanelView(weather) { Pair = (Pair<int, string>)HomePanel.Tag});
                 }
                 // Others
                 else
@@ -122,7 +121,6 @@ namespace SimpleWeather.Droid
             base.OnCreate(savedInstanceState);
 
             // Create your fragment here
-            context = Activity.ApplicationContext;
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -451,41 +449,6 @@ namespace SimpleWeather.Droid
             if (imm != null && view != null)
             {
                 imm.HideSoftInputFromWindow(view.WindowToken, 0);
-            }
-        }
-
-        internal class ActionModeCallback : Java.Lang.Object, Android.Support.V7.View.ActionMode.ICallback
-        {
-            public Func<Android.Support.V7.View.ActionMode, IMenu, bool> CreateActionMode;
-            public Action<Android.Support.V7.View.ActionMode> DestroyActionMode;
-
-            // Called when the action mode is created; startActionMode() was called
-            public bool OnCreateActionMode(Android.Support.V7.View.ActionMode mode, IMenu menu)
-            {
-                if (CreateActionMode != null)
-                    return CreateActionMode.Invoke(mode, menu);
-                else
-                    return false;
-            }
-
-            // Called each time the action mode is shown. Always called after onCreateActionMode, but
-            // may be called multiple times if the mode is invalidated.
-            public bool OnPrepareActionMode(Android.Support.V7.View.ActionMode mode, IMenu menu)
-            {
-                return false; // Return false if nothing is done
-            }
-
-            // Called when the user selects a contextual menu item
-            public bool OnActionItemClicked(Android.Support.V7.View.ActionMode mode, IMenuItem item)
-            {
-                return false; // Return false if nothing is done
-            }
-
-            // Called when the user exits the action mode
-            public void OnDestroyActionMode(Android.Support.V7.View.ActionMode mode)
-            {
-                if (DestroyActionMode != null)
-                    DestroyActionMode.Invoke(mode);
             }
         }
     }

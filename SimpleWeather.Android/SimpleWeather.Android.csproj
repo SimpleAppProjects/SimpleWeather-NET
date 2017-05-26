@@ -132,13 +132,15 @@
     <Compile Include="Controls\LocationPanelView.cs" />
     <Compile Include="Controls\LocationQuery.cs" />
     <Compile Include="Controls\WeatherIcon.cs" />
+    <Compile Include="Helpers\ActionModeCallback.cs" />
+    <Compile Include="Helpers\LocationListener.cs" />
     <Compile Include="LaunchActivity.cs" />
     <Compile Include="LocationPanelAdapter.cs" />
     <Compile Include="LocationQueryAdapter.cs" />
     <Compile Include="LocationSearchFragment.cs" />
     <Compile Include="LocationsFragment.cs" />
     <Compile Include="MainActivity.cs" />
-    <Compile Include="RecyclerClickEventArgs.cs" />
+    <Compile Include="Helpers\RecyclerClickEventArgs.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingsActivity.cs" />

@@ -12,6 +12,7 @@ using Android.Widget;
 using Android.Support.V7.Widget;
 using SimpleWeather.Droid.Controls;
 using SimpleWeather.Controls;
+using SimpleWeather.Droid.Helpers;
 
 namespace SimpleWeather.Droid
 {
