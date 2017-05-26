@@ -59,7 +59,6 @@ namespace SimpleWeather.Droid.Controls
             locationWeatherIcon = (WeatherIcon)viewLayout.FindViewById(Resource.Id.weather_icon);
             progressBar = (ProgressBar)viewLayout.FindViewById(Resource.Id.progressBar);
 
-            Enabled = false;
             ShowLoading(true);
         }
 
@@ -76,7 +75,6 @@ namespace SimpleWeather.Droid.Controls
                 locationWeatherIcon.Text = panelView.WeatherIcon;
                 Tag = panelView.Pair;
 
-                Enabled = true;
                 ShowLoading(false);
             });
         }
@@ -84,6 +82,7 @@ namespace SimpleWeather.Droid.Controls
         public void ShowLoading(bool show)
         {
             progressBar.Visibility = show ? ViewStates.Visible : ViewStates.Gone;
+            Enabled = show ? false : true;
         }
 
         public override void SetBackgroundColor(Color color)

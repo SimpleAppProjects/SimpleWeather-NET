@@ -22,6 +22,8 @@ namespace SimpleWeather.Droid
 {
     public class LocationsFragment : Fragment, WeatherLoadedListener
     {
+        private bool loaded = false;
+
         // Views
         private LocationPanel HomePanel;
         private RecyclerView mRecyclerView;
@@ -121,6 +123,7 @@ namespace SimpleWeather.Droid
             base.OnCreate(savedInstanceState);
 
             // Create your fragment here
+            loaded = true;
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -165,6 +168,7 @@ namespace SimpleWeather.Droid
 
             view.Post(() =>
             {
+                loaded = true;
                 LoadLocations();
             });
 
@@ -204,11 +208,21 @@ namespace SimpleWeather.Droid
 
             // Update view on resume
             // ex. If temperature unit changed
-            // TODO: do this
+            if (!loaded)
+            {
+                RefreshLocations();
+                loaded = true;
+            }
 
             // Title
             AppCompatActivity activity = (AppCompatActivity)Activity;
             activity.SupportActionBar.Title = GetString(Resource.String.label_nav_locations);
+        }
+
+        public override void OnPause()
+        {
+            base.OnPause();
+            loaded = false;
         }
 
         private async void LoadLocations()
@@ -234,6 +248,26 @@ namespace SimpleWeather.Droid
                 }
 
                 wLoader = new WeatherDataLoader(this, location, index);
+                await wLoader.loadWeatherData(false);
+            }
+        }
+
+        private async void RefreshLocations()
+        {
+            // Home
+            if (HomePanel.Tag != null)
+            {
+                Pair<int, string> Pair = (Pair<int, string>)HomePanel.Tag;
+                WeatherDataLoader wLoader =
+                    new WeatherDataLoader(this, Pair.Value, Pair.Key);
+                await wLoader.loadWeatherData(false);
+            }
+
+            // Others
+            foreach (LocationPanelView view in mAdapter.Dataset)
+            {
+                WeatherDataLoader wLoader =
+                    new WeatherDataLoader(this, view.Pair.Value, view.Pair.Key);
                 await wLoader.loadWeatherData(false);
             }
         }

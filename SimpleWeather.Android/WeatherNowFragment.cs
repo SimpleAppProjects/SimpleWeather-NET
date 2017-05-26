@@ -23,6 +23,7 @@ namespace SimpleWeather.Droid
     {
         private Context context;
         private Pair<int, string> pair;
+        private bool loaded = false;
 
         WeatherDataLoader wLoader = null;
         WeatherNowView weatherView = null;
@@ -107,6 +108,7 @@ namespace SimpleWeather.Droid
             }
 
             context = Activity.ApplicationContext;
+            loaded = true;
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -137,7 +139,11 @@ namespace SimpleWeather.Droid
             sunrise = (TextView)view.FindViewById(Resource.Id.sunrise_time);
             sunset = (TextView)view.FindViewById(Resource.Id.sunset_time);
 
-            view.Post(() => Restore());
+            view.Post(() => 
+            {
+                loaded = true;
+                Restore();
+            });
 
             return view;
         }
@@ -172,18 +178,25 @@ namespace SimpleWeather.Droid
 
             // Update view on resume
             // ex. If temperature unit changed
-            if (wLoader != null)
+            if (wLoader != null && !loaded)
             {
                 if (wLoader.getWeather() != null)
                 {
                     weatherView.updateView(wLoader.getWeather());
                     SetView(weatherView);
+                    loaded = true;
                 }
             }
 
             // Title
             AppCompatActivity activity = (AppCompatActivity)Activity;
             activity.SupportActionBar.Title = GetString(Resource.String.title_activity_weather_now);
+        }
+
+        public override void OnPause()
+        {
+            base.OnPause();
+            loaded = false;
         }
 
         private async void Restore()
@@ -204,7 +217,7 @@ namespace SimpleWeather.Droid
         private async void RefreshWeather(bool forceRefresh)
         {
             // Hide view until weather is loaded
-            ShowLoadingView(true);
+            this.Activity.RunOnUiThread(() => ShowLoadingView(true));
 
             await wLoader.loadWeatherData(forceRefresh);
         }

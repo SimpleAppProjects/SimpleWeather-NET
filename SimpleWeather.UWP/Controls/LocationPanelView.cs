@@ -16,43 +16,35 @@ namespace SimpleWeather.UWP.Controls
         // Background
         public ImageBrush Background { get; set; }
 
-        public bool ShowLoading
-        {
-            get
-            {
-                return isLoading;
-            }
-            set
-            {
-                isLoading = value;
-                IsEnabled = !value;
-            }
-        }
         public bool IsEnabled { get; set; }
-        private bool isLoading = false;
+        public bool IsLoading { get; set; }
 
         public LocationPanelView()
         {
-            ShowLoading = true;
-
-            Background = new ImageBrush();
-            Background.Stretch = Stretch.UniformToFill;
-            Background.AlignmentX = AlignmentX.Center;
+            ShowLoading(true);
         }
 
         public LocationPanelView(Weather weather)
         {
-            ShowLoading = true;
-            Background = new ImageBrush();
-            Background.Stretch = Stretch.UniformToFill;
-            Background.AlignmentX = AlignmentX.Center;
-
+            ShowLoading(true);
             setWeather(weather);
+        }
+
+        public void ShowLoading(bool show)
+        {
+            IsEnabled = show ? false : true;
+            IsLoading = show ? true : false;
         }
 
         public void setWeather(Weather weather)
         {
             // Update background
+            if (Background == null)
+            {
+                Background = new ImageBrush();
+                Background.Stretch = Stretch.UniformToFill;
+                Background.AlignmentX = AlignmentX.Center;
+            }
             WeatherUtils.SetBackground(Background, weather);
 
             LocationName = weather.location.name;
@@ -60,7 +52,7 @@ namespace SimpleWeather.UWP.Controls
                 Math.Round(weather.condition.temp_f) : Math.Round(weather.condition.temp_c)) + "º";
             WeatherIcon = WeatherUtils.GetWeatherIcon(weather.condition.icon);
 
-            ShowLoading = false;
+            ShowLoading(false);
         }
     }
 }
