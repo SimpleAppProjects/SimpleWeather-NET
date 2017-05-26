@@ -59,7 +59,7 @@ namespace SimpleWeather.Droid
                 {
                     // TODO: make lpv local
                     // OR Make HomePanel a recyclerview
-                    HomePanel.SetWeather(new LocationPanelView(weather) { Pair = (Pair<int, string>)HomePanel.Tag});
+                    HomePanel.SetWeather(new LocationPanelView(weather) { Pair = (Pair<int, string>)HomePanel.Tag });
                 }
                 // Others
                 else
@@ -74,10 +74,8 @@ namespace SimpleWeather.Droid
         private bool onCreateActionMode(Android.Support.V7.View.ActionMode mode, IMenu menu)
         {
             if (searchViewLayout == null)
-            {
                 searchViewLayout = Activity.LayoutInflater.Inflate(Resource.Layout.search_action_bar, null);
-                searchViewLayout.SetPadding(0, 0, 16, 0); // l, t, r, b
-            }
+
             mode.CustomView = searchViewLayout;
             enterSearchUi();
             return true;
@@ -369,12 +367,18 @@ namespace SimpleWeather.Droid
         {
             backButtonView = (ImageView)searchViewLayout
                     .FindViewById(Resource.Id.search_back_button);
+            backButtonView.Click += delegate
+            {
+                exitSearchUi();
+            };
             backButtonView.Visibility = ViewStates.Gone;
             searchView = (EditText)searchViewLayout
                     .FindViewById(Resource.Id.search_view);
+            searchView.SetPadding(0, 0, 0, 0); // l, t, r, b
             clearButtonView = (ImageView)searchViewLayout.FindViewById(Resource.Id.search_close_button);
             locationButtonView = (ImageView)searchViewLayout
                     .FindViewById(Resource.Id.search_location_button);
+            locationButtonView.SetPadding(48, 0, 48, 0); // l, t, r, b
             clearButtonView.Click += delegate { searchView.Text = String.Empty; };
             searchView.TextChanged += (object sender, TextChangedEventArgs e) =>
             {
