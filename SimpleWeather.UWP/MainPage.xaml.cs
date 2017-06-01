@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 using Windows.UI.Core;
 using Windows.UI.Popups;
@@ -24,6 +26,8 @@ namespace SimpleWeather.UWP
     {
         // For UI Thread
         CoreDispatcher dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
+
+        private CancellationTokenSource cts = new CancellationTokenSource();
 
         public ObservableCollection<LocationQueryView> LocationQuerys { get; set; }
         private string selected_query = string.Empty;
@@ -53,20 +57,36 @@ namespace SimpleWeather.UWP
             Restore();
         }
 
-        private async void Location_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        private void Location_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
+            // Cancel pending searches
+            cts.Cancel();
+            cts = new CancellationTokenSource();
+
             if (!String.IsNullOrWhiteSpace(sender.Text) && args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
             {
-                LocationQuerys = await AutoCompleteQuery.getLocations(sender.Text);
+                String query = sender.Text;
 
-                // Refresh list
-                sender.ItemsSource = null;
-                sender.ItemsSource = LocationQuerys;
+                Task.Run(async () =>
+                {
+                    if (cts.IsCancellationRequested) return;
 
-                sender.IsSuggestionListOpen = true;
+                    var results = await AutoCompleteQuery.getLocations(query);
+
+                    // Refresh list
+                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => 
+                    {
+                        LocationQuerys = results;
+                        sender.ItemsSource = null;
+                        sender.ItemsSource = LocationQuerys;
+                        sender.IsSuggestionListOpen = true;
+                    });
+                });
             }
             else if (String.IsNullOrWhiteSpace(sender.Text))
             {
+                // Cancel pending searches
+                cts.Cancel();
                 // Hide flyout if query is empty or null
                 LocationQuerys.Clear();
                 sender.IsSuggestionListOpen = false;
@@ -231,15 +251,23 @@ namespace SimpleWeather.UWP
             {
                 button.IsEnabled = false;
 
-                LocationQueryView view = await GeopositionQuery.getLocation(geoPos);
-                LocationQuerys.Clear();
-                LocationQuerys.Add(view);
+                await Task.Run(async () =>
+                {
+                    if (cts.IsCancellationRequested) return;
 
-                // Refresh list
-                Location.ItemsSource = null;
-                Location.ItemsSource = LocationQuerys;
+                    LocationQueryView view = await GeopositionQuery.getLocation(geoPos);
 
-                Location.IsSuggestionListOpen = true;
+                    // Refresh list
+                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        LocationQuerys.Clear();
+                        LocationQuerys.Add(view);
+
+                        Location.ItemsSource = null;
+                        Location.ItemsSource = LocationQuerys;
+                        Location.IsSuggestionListOpen = true;
+                    });
+                });
             }
 
             button.IsEnabled = true;

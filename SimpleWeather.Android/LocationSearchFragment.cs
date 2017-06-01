@@ -11,6 +11,7 @@ using Android.Views;
 using Android.Widget;
 using SimpleWeather.Utils;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using Android.Runtime;
 using System.Collections.Specialized;
@@ -19,13 +20,14 @@ using SimpleWeather.Controls;
 using System.Collections.ObjectModel;
 using SimpleWeather.Droid.Utils;
 using SimpleWeather.Droid.Helpers;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SimpleWeather.Droid
 {
     public class LocationSearchFragment : Fragment
     {
         private Location mLocation;
-        private String mQueryString;
         private RecyclerView mRecyclerView;
         private LocationQueryAdapter mAdapter;
         private RecyclerView.LayoutManager mLayoutManager;
@@ -36,10 +38,13 @@ namespace SimpleWeather.Droid
 
         private String selected_query = String.Empty;
 
+        private CancellationTokenSource cts;
+
         public LocationSearchFragment()
         {
             // Required empty public constructor
             clickListener = LocationSearchFragment_clickListener;
+            cts = new CancellationTokenSource();
         }
 
         public event EventHandler<RecyclerClickEventArgs> clickListener;
@@ -138,56 +143,55 @@ namespace SimpleWeather.Droid
             mRecyclerView.SetAdapter(mAdapter);
         }
 
-        public async void fetchLocations(String queryString)
+        public void fetchLocations(String queryString)
         {
-            if (!TextUtils.Equals(mQueryString, queryString))
+            // Cancel pending searches
+            cts.Cancel();
+            cts = new CancellationTokenSource();
+
+            // Get locations
+            if (!String.IsNullOrWhiteSpace(queryString))
             {
-                mQueryString = queryString;
-                // Get locations
-                List<LocationQueryView> locations = new List<LocationQueryView>();
-
-                if (!TextUtils.IsEmpty(mQueryString))
+                Task.Run(async () =>
                 {
-                    try
-                    {
-                        ObservableCollection<LocationQueryView> results = await WeatherData.AutoCompleteQuery.getLocations(mQueryString);
+                    if (cts.IsCancellationRequested) return;
 
-                        if (results.Count > 0)
-                            locations.AddRange(results);
-                    }
-                    catch (Exception e)
-                    {
-                        //e.printStackTrace();
-                    }
-                }
+                    var results = await WeatherData.AutoCompleteQuery.getLocations(queryString);
 
-                mAdapter.SetLocations(locations);
+                    if (cts.IsCancellationRequested) return;
+
+                    this.Activity.RunOnUiThread(() => mAdapter.SetLocations(results.ToList()));
+                });
+            }
+            else if (String.IsNullOrWhiteSpace(queryString))
+            {
+                // Cancel pending searches
+                cts.Cancel();
+                // Hide flyout if query is empty or null
+                mAdapter.Dataset.Clear();
+                mAdapter.NotifyDataSetChanged();
             }
         }
 
-        public async void fetchGeoLocation()
+        public void fetchGeoLocation()
         {
+            // Cancel pending searches
+            cts.Cancel();
+            cts = new CancellationTokenSource();
+
             if (mLocation != null)
             {
-                // Get geo location
-                LocationQueryView gpsLocation = null;
-                List<LocationQueryView> results = new List<LocationQueryView>(1);
-
-                try
+                Task.Run(async () =>
                 {
-                    gpsLocation = await WeatherData.GeopositionQuery.getLocation(mLocation);
+                    if (cts.IsCancellationRequested) return;
 
-                    if (gpsLocation != null)
-                    {
-                        mQueryString = gpsLocation.LocationName;
-                        results.Add(gpsLocation);
-                        mAdapter.SetLocations(results);
-                    }
-                }
-                catch (Exception e)
-                {
-                    //e.printStackTrace();
-                }
+                    // Get geo location
+                    LocationQueryView gpsLocation = await WeatherData.GeopositionQuery.getLocation(mLocation);
+
+                    if (cts.IsCancellationRequested) return;
+
+                    this.Activity.RunOnUiThread(() => mAdapter.SetLocations(new List<LocationQueryView>() { gpsLocation }));
+                });
             }
             else
             {

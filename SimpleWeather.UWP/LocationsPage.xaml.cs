@@ -7,8 +7,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 using Windows.Foundation;
+using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -26,6 +29,8 @@ namespace SimpleWeather.UWP
     /// </summary>
     public sealed partial class LocationsPage : Page, WeatherLoadedListener
     {
+        private CancellationTokenSource cts = new CancellationTokenSource();
+
         /* Panel Animation Workaround */
         public List<LocationPanelView> HomePanel { get; set; }
         public ObservableCollection<LocationPanelView> LocationPanels { get; set; }
@@ -204,22 +209,31 @@ namespace SimpleWeather.UWP
             {
                 button.IsEnabled = false;
 
-                LocationQueryView view = await GeopositionQuery.getLocation(geoPos);
-                LocationQuerys.Clear();
-                LocationQuerys.Add(view);
-
-                AutoSuggestBox box = null;
-                DependencyObject parent = button.Parent;
-                while (!(parent is AutoSuggestBox))
+                await Task.Run(async () =>
                 {
-                    parent = VisualTreeHelper.GetParent(parent);
-                }
-                box = parent as AutoSuggestBox;
+                    if (cts.IsCancellationRequested) return;
 
-                // Refresh list
-                box.ItemsSource = null;
-                box.ItemsSource = LocationQuerys;
-                box.IsSuggestionListOpen = true;
+                    LocationQueryView view = await GeopositionQuery.getLocation(geoPos);
+
+                    // Refresh list
+                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        LocationQuerys.Clear();
+                        LocationQuerys.Add(view);
+
+                        AutoSuggestBox box = null;
+                        DependencyObject parent = button.Parent;
+                        while (!(parent is AutoSuggestBox))
+                        {
+                            parent = VisualTreeHelper.GetParent(parent);
+                        }
+                        box = parent as AutoSuggestBox;
+
+                        box.ItemsSource = null;
+                        box.ItemsSource = LocationQuerys;
+                        box.IsSuggestionListOpen = true;
+                    });
+                });
             }
 
             button.IsEnabled = true;
@@ -277,20 +291,38 @@ namespace SimpleWeather.UWP
             return new Rect(point, new Size(element.ActualWidth, element.ActualHeight));
         }
 
-        private async void Location_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        private void Location_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
+            // Cancel pending searches
+            cts.Cancel();
+            cts = new CancellationTokenSource();
+
             if (!String.IsNullOrWhiteSpace(sender.Text) && args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
             {
-                LocationQuerys = await AutoCompleteQuery.getLocations(sender.Text);
+                String query = sender.Text;
 
-                // Refresh list
-                sender.ItemsSource = null;
-                sender.ItemsSource = LocationQuerys;
+                Task.Run(async () =>
+                {
+                    if (cts.IsCancellationRequested) return;
 
-                sender.IsSuggestionListOpen = true;
+                    var results = await AutoCompleteQuery.getLocations(query);
+
+                    if (cts.IsCancellationRequested) return;
+
+                    // Refresh list
+                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        LocationQuerys = results;
+                        sender.ItemsSource = null;
+                        sender.ItemsSource = LocationQuerys;
+                        sender.IsSuggestionListOpen = true;
+                    });
+                });
             }
             else if (String.IsNullOrWhiteSpace(sender.Text))
             {
+                // Cancel pending searches
+                cts.Cancel();
                 // Hide flyout if query is empty or null
                 LocationQuerys.Clear();
                 sender.IsSuggestionListOpen = false;
