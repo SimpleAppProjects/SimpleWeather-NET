@@ -124,6 +124,21 @@ namespace SimpleWeather.Droid
 
             // Create your fragment here
             loaded = true;
+
+            // Set SoftInput mode
+            this.Activity.Window.SetSoftInputMode(SoftInput.AdjustResize);
+
+            // Get ActionMode state
+            if (savedInstanceState != null && savedInstanceState.GetBoolean("SearchUI", false))
+            {
+                inSearchUI = true;
+
+                // Restart ActionMode
+                AppCompatActivity activity = (AppCompatActivity)Activity;
+                mActionMode = activity.StartSupportActionMode(mActionModeCallback);
+                if (savedInstanceState.GetInt("ModeTag", -1) >= 0)
+                    mActionMode.Tag = savedInstanceState.GetInt("ModeTag");
+            }
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -225,6 +240,19 @@ namespace SimpleWeather.Droid
             loaded = false;
         }
 
+        public override void OnSaveInstanceState(Bundle outState)
+        {
+            // Save ActionMode state
+            outState.PutBoolean("SearchUI", inSearchUI);
+            if (mActionMode !=null && mActionMode.Tag != null)
+                outState.PutInt("ModeTag", (int)mActionMode.Tag);
+
+            if (inSearchUI)
+                exitSearchUi();
+
+            base.OnSaveInstanceState(outState);
+        }
+
         private async void LoadLocations()
         {
             WeatherDataLoader wLoader = null;
@@ -277,7 +305,9 @@ namespace SimpleWeather.Droid
             if ((childFragment as LocationSearchFragment) != null)
             {
                 mSearchFragment = (LocationSearchFragment)childFragment;
-                setupSearchUi();
+
+                if (inSearchUI)
+                    setupSearchUi();
             }
         }
 
@@ -432,13 +462,13 @@ namespace SimpleWeather.Droid
             };
             searchView.EditorAction += (object sender, TextView.EditorActionEventArgs e) =>
             {
-                View v = sender as View;
+                EditText v = sender as EditText;
 
                 if (e.ActionId == ImeAction.Search)
                 {
                     if (mSearchFragment != null)
                     {
-                        mSearchFragment.fetchLocations(selected_query);
+                        mSearchFragment.fetchLocations(v.Text);
                         HideInputMethod(v);
                     }
                     e.Handled = true;

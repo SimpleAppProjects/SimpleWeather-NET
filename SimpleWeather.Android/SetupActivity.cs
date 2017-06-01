@@ -16,7 +16,7 @@ namespace SimpleWeather.Droid
 {
     [Android.App.Activity(Name = "SimpleWeather.Droid.SetupActivity",
         ScreenOrientation = Android.Content.PM.ScreenOrientation.Portrait,
-        Theme = "@style/SetupTheme", WindowSoftInputMode = SoftInput.StateHidden | SoftInput.AdjustPan)]
+        Theme = "@style/SetupTheme", WindowSoftInputMode = SoftInput.StateHidden | SoftInput.AdjustResize)]
     public class SetupActivity : AppCompatActivity
     {
         private LocationSearchFragment mSearchFragment;
@@ -198,9 +198,9 @@ namespace SimpleWeather.Droid
                     HideInputMethod(v);
                 }
             };
-            searchView.EditorAction += (object s, TextView.EditorActionEventArgs e) =>
+            searchView.EditorAction += (object sender, TextView.EditorActionEventArgs e) =>
             {
-                TextView v = s as TextView;
+                EditText v = sender as EditText;
                 if (e.ActionId == ImeAction.Search)
                 {
                     if (mSearchFragment != null)
