@@ -10,9 +10,7 @@ using SimpleWeather.Droid.Utils;
 
 namespace SimpleWeather.Droid
 {
-    [Activity(Name = "SimpleWeather.Droid.LaunchActivity",
-        ScreenOrientation = Android.Content.PM.ScreenOrientation.Portrait,
-        MainLauncher = true)]
+    [Activity(Name = "SimpleWeather.Droid.LaunchActivity", MainLauncher = true)]
     public class LaunchActivity : AppCompatActivity
     {
         protected override void OnCreate(Bundle savedInstanceState)

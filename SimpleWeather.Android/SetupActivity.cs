@@ -15,7 +15,6 @@ using Android.Graphics;
 namespace SimpleWeather.Droid
 {
     [Android.App.Activity(Name = "SimpleWeather.Droid.SetupActivity",
-        ScreenOrientation = Android.Content.PM.ScreenOrientation.Portrait,
         Theme = "@style/SetupTheme", WindowSoftInputMode = SoftInput.StateHidden | SoftInput.AdjustResize)]
     public class SetupActivity : AppCompatActivity
     {
