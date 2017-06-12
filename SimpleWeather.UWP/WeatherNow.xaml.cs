@@ -3,6 +3,7 @@ using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
+using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -60,9 +61,13 @@ namespace SimpleWeather.UWP
         {
             base.OnNavigatedTo(e);
 
+            // Did home change?
+            object homeChanged = false;
+            CoreApplication.Properties.TryGetValue("HomeChanged", out homeChanged);
+
             // Update view on resume
             // ex. If temperature unit changed
-            if ((wLoader != null) && e.NavigationMode != NavigationMode.New)
+            if ((wLoader != null) && e.NavigationMode != NavigationMode.New && (homeChanged == null || homeChanged != null && !(bool)homeChanged))
             {
                 if (wLoader != null)
                 {

@@ -107,6 +107,8 @@
     <Compile Include="Controls\LocationQuery.xaml.cs">
       <DependentUpon>LocationQuery.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Helpers\InverseBooleanConverter.cs" />
     <Compile Include="LocationsPage.xaml.cs">
       <DependentUpon>LocationsPage.xaml</DependentUpon>
     </Compile>

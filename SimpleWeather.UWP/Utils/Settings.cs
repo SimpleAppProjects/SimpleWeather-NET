@@ -44,6 +44,8 @@ namespace SimpleWeather.Utils
 
         private static bool isWeatherLoaded()
         {
+            Task.Factory.StartNew(async () => await loadIfNeeded()).Unwrap().Wait();
+
             FileInfo fileinfo = new FileInfo(dataFile.Path);
 
             if (fileinfo.Length == 0 || !fileinfo.Exists)
@@ -52,7 +54,12 @@ namespace SimpleWeather.Utils
                 return false;
             }
 
-            if (localSettings.Values[KEY_WEATHERLOADED] == null)
+            if (weatherData.Count > 0)
+            {
+                setWeatherLoaded(true);
+                return true;
+            }
+            else if (localSettings.Values[KEY_WEATHERLOADED] == null)
             {
                 return false;
             }

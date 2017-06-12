@@ -1,6 +1,5 @@
 ﻿using SimpleWeather.Controls;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Controls;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
@@ -9,6 +8,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
 using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using Windows.UI.Core;
@@ -22,7 +22,6 @@ using Windows.UI.Xaml.Navigation;
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace SimpleWeather.UWP
-
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -31,26 +30,19 @@ namespace SimpleWeather.UWP
     {
         private CancellationTokenSource cts = new CancellationTokenSource();
 
-        /* Panel Animation Workaround */
-        public List<LocationPanelView> HomePanel { get; set; }
         public ObservableCollection<LocationPanelView> LocationPanels { get; set; }
-
         public ObservableCollection<LocationQueryView> LocationQuerys { get; set; }
         private string selected_query = string.Empty;
+
+        public bool EditMode { get; set; } = false;
+        private bool DataChanged = false;
 
         public void onWeatherLoaded(int locationIdx, Weather weather)
         {
             if (weather != null)
             {
-                if (locationIdx == App.HomeIdx)
-                {
-                    HomePanel.First().setWeather(weather);
-                }
-                else
-                {
-                    LocationPanelView panelView = LocationPanels[locationIdx - 1];
-                    panelView.setWeather(weather);
-                }
+                LocationPanelView panelView = LocationPanels[locationIdx];
+                panelView.setWeather(weather);
             }
         }
 
@@ -59,8 +51,6 @@ namespace SimpleWeather.UWP
             this.InitializeComponent();
             this.NavigationCacheMode = NavigationCacheMode.Enabled;
 
-            /* Panel Animation Workaround */
-            HomePanel = new List<LocationPanelView>(1);
             LocationPanels = new ObservableCollection<LocationPanelView>();
             LocationPanels.CollectionChanged += LocationPanels_CollectionChanged;
 
@@ -71,7 +61,7 @@ namespace SimpleWeather.UWP
         {
             base.OnNavigatedTo(e);
 
-            if (HomePanel.Count < 1 && LocationPanels.Count == 0)
+            if (LocationPanels.Count == 0)
             {
                 // New instance; Get locations and load up weather data
                 LoadLocations();
@@ -83,17 +73,33 @@ namespace SimpleWeather.UWP
             }
         }
 
-        private void LocationPanels_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            base.OnNavigatingFrom(e);
+
+            // Cancel edit mode if moving away
+            if (EditMode)
+                ToggleEditMode();
+        }
+
+        private void LocationPanels_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             foreach(LocationPanelView panelView in LocationPanels)
             {
-                int index = LocationPanels.IndexOf(panelView) + 1;
+                int index = LocationPanels.IndexOf(panelView);
                 panelView.Pair = new KeyValuePair<int, string>(index, panelView.Pair.Value);
             }
 
-            // Refresh ItemsSource
-            OtherLocationsPanel.ItemsSource = null;
-            OtherLocationsPanel.ItemsSource = LocationPanels;
+            // Cancel edit Mode
+            if (EditMode && LocationPanels.Count == 1)
+                ToggleEditMode();
+
+            // Disable EditMode if only single location
+            EditButton.Visibility = LocationPanels.Count == 1 ? Visibility.Collapsed : Visibility.Visible;
+
+            // Flag that data has changed
+            if (EditMode && (e.Action == NotifyCollectionChangedAction.Remove || e.Action == NotifyCollectionChangedAction.Move))
+                DataChanged = true;
         }
 
         private async void LoadLocations()
@@ -109,14 +115,14 @@ namespace SimpleWeather.UWP
                 // Save index to tag (to easily retreive)
                 panel.Pair = new KeyValuePair<int, string>(index, location);
 
-                if (index == App.HomeIdx) // Home
-                    HomePanel.Add(panel);
+                // Set home
+                if (index == App.HomeIdx)
+                    panel.IsHome = true;
                 else
-                    LocationPanels.Add(panel);
-            }
+                    panel.IsHome = false;
 
-            // Refresh
-            RefreshPanels();
+                LocationPanels.Add(panel);
+            }
 
             WeatherDataLoader wLoader = null;
 
@@ -127,39 +133,23 @@ namespace SimpleWeather.UWP
                 wLoader = new WeatherDataLoader(this, location, index);
                 await wLoader.loadWeatherData(false);
             }
-
-            // Refresh
-            RefreshPanels();
         }
 
         private async void RefreshLocations()
         {
-            foreach (LocationPanelView view in HomePanel.Concat(LocationPanels))
+            foreach (LocationPanelView view in LocationPanels)
             {
                 WeatherDataLoader wLoader =
                     new WeatherDataLoader(this, view.Pair.Value, view.Pair.Key);
                 await wLoader.loadWeatherData(false);
             }
-
-            // Refresh
-            RefreshPanels();
         }
 
-        private void RefreshPanels()
+        private void LocationsPanel_ItemClick(object sender, ItemClickEventArgs e)
         {
-            // Refresh
-            HomeLocation.ItemsSource = null;
-            OtherLocationsPanel.ItemsSource = null;
-            HomeLocation.ItemsSource = HomePanel;
-            OtherLocationsPanel.ItemsSource = LocationPanels;
-        }
+            LocationPanelView panel = e.ClickedItem as LocationPanelView;
 
-        private void LocationButton_Click(object sender, RoutedEventArgs e)
-        {
-            LocationPanel panel = sender as LocationPanel;
-            KeyValuePair<int, string> pair = (KeyValuePair<int, string>)panel.Tag;
-
-            this.Frame.Navigate(typeof(WeatherNow), pair);
+            this.Frame.Navigate(typeof(WeatherNow), panel.Pair);
         }
 
         private async void GPS_Click(object sender, RoutedEventArgs e)
@@ -237,58 +227,6 @@ namespace SimpleWeather.UWP
             }
 
             button.IsEnabled = true;
-        }
-
-        private async void Location_PointerReleased(object sender, PointerRoutedEventArgs e)
-        {
-            LocationPanel panel = sender as LocationPanel;
-            KeyValuePair<int, string> pair = (KeyValuePair<int, string>)panel.Tag;
-            int idx = pair.Key;
-
-            PopupMenu menu = new PopupMenu();
-
-            if (idx == App.HomeIdx)
-            {
-                menu.Commands.Add(new UICommand("Change Favorite Location", (command) =>
-                {
-                    ShowChangeHomePanel(true);
-                }));
-            }
-            else
-            {
-                menu.Commands.Add(new UICommand("Delete Location", async (command) =>
-                {
-                    // Remove location from list
-                    OrderedDictionary weatherData = await Settings.getWeatherData();
-                    weatherData.RemoveAt(idx);
-                    Settings.saveWeatherData();
-
-                    // Remove panel
-                    LocationPanels.RemoveAt(idx - 1);
-                }));
-            }
-
-            IUICommand chosenCommand = await menu.ShowForSelectionAsync(GetElementRect(panel));
-            if (chosenCommand == null) { } // The command is null if no command was invoked. 
-
-            e.Handled = true;
-        }
-
-        private void LocationButton_Holding(object sender, HoldingRoutedEventArgs e)
-        {
-            if (e.HoldingState == Windows.UI.Input.HoldingState.Started)
-            {
-                Button panel = sender as Button;
-                panel.ReleasePointerCaptures();
-                e.Handled = true;
-            }
-        }
-
-        public static Rect GetElementRect(FrameworkElement element)
-        {
-            GeneralTransform buttonTransform = element.TransformToVisual(null);
-            Point point = buttonTransform.TransformPoint(new Point());
-            return new Rect(point, new Size(element.ActualWidth, element.ActualHeight));
         }
 
         private void Location_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
@@ -379,24 +317,11 @@ namespace SimpleWeather.UWP
                 return;
             }
 
-            int index = 0;
             OrderedDictionary weatherData = await Settings.getWeatherData();
-
-            if (sender.Name == "NewHomeLocation")
-                index = App.HomeIdx;
-            else
-                index = weatherData.Keys.Count;
+            int index = weatherData.Keys.Count;
 
             // Check if location already exists
-            if (index == App.HomeIdx)
-            {
-                if (weatherData.Keys.Cast<string>().First().Equals(selected_query))
-                {
-                    ShowChangeHomePanel(false);
-                    return;
-                }
-            }
-            else if (weatherData.Contains(selected_query))
+            if (weatherData.Contains(selected_query))
             {
                 ShowAddLocationsPanel(false);
                 return;
@@ -408,69 +333,28 @@ namespace SimpleWeather.UWP
                 return;
 
             // Save coords to List
-            if (sender.Name == "NewHomeLocation")
-            {
-                weatherData.RemoveAt(0);
-                weatherData.Insert(0, selected_query, weather);
-            }
-            else
-            {
-                weatherData.Add(selected_query, weather);
-            }
+            weatherData.Add(selected_query, weather);
+
             // Save data
             Settings.saveWeatherData();
 
-            if (index == App.HomeIdx)
-            {
-                HomePanel.First().setWeather(weather);
-                // Save index to tag (to easily retreive)
-                HomePanel.First().Pair = new KeyValuePair<int, string>(index, selected_query);
+            LocationPanelView panelView = new LocationPanelView(weather);
+            // Save index to tag (to easily retreive)
+            panelView.Pair = new KeyValuePair<int, string>(index, selected_query);
 
-                // Hide change location panel
-                ShowChangeHomePanel(false);
+            // Set properties if necessary
+            if (EditMode)
+                panelView.EditMode = true;
 
-                // Refresh
-                HomeLocation.ItemsSource = null;
-                HomeLocation.ItemsSource = HomePanel;
-            }
-            else
-            {
-                LocationPanelView panelView = new LocationPanelView(weather);
-                // Save index to tag (to easily retreive)
-                panelView.Pair = new KeyValuePair<int, string>(index, selected_query);
+            // Add to collection
+            LocationPanels.Add(panelView);
 
-                // Add to collection
-                LocationPanels.Add(panelView);
-
-                // Hide add locations panel
-                ShowAddLocationsPanel(false);
-            }
+            // Hide add locations panel
+            ShowAddLocationsPanel(false);
 
             sender.IsSuggestionListOpen = false;
         }
 
-        #region LocationsPage HomePanelFunctions
-        private void ShowChangeHomePanel(bool show)
-        {
-            // Hide Textbox
-            ChangeHomePanel.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
-            // Show HomeLocation Panel
-            HomeLocation.Visibility = show ? Visibility.Collapsed : Visibility.Visible;
-
-            if (!show)
-            {
-                NewHomeLocation.Text = string.Empty;
-                NewHomeLocation.IsSuggestionListOpen = false;
-            }
-        }
-
-        private void NewHome_Cancel_Click(object sender, RoutedEventArgs e)
-        {
-            ShowChangeHomePanel(false);
-        }
-        #endregion
-
-        #region LocationsPage OtherLocationPanelFunctions
         private void AddLocationsButton_Click(object sender, RoutedEventArgs e)
         {
             ShowAddLocationsPanel(true);
@@ -492,6 +376,135 @@ namespace SimpleWeather.UWP
         {
             ShowAddLocationsPanel(false);
         }
-        #endregion
+
+        private void AppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleEditMode();
+        }
+
+        private void ToggleEditMode()
+        {
+            // Toggle EditMode
+            EditMode = !EditMode;
+
+            EditButton.Icon = new SymbolIcon(EditMode ? Symbol.Accept : Symbol.Edit);
+            EditButton.Label = EditMode ? "Done" : "Edit";
+            LocationsPanel.IsItemClickEnabled = !EditMode;
+
+            foreach (LocationPanelView view in LocationPanels)
+            {
+                view.EditMode = EditMode;
+            }
+
+            if (!EditMode && DataChanged) Settings.saveWeatherData();
+            DataChanged = false;
+        }
+
+        private async void LocationPanel_DeleteClick(object sender, RoutedEventArgs e)
+        {
+            FrameworkElement button = sender as FrameworkElement;
+            if (button == null || (button != null && button.DataContext == null))
+                return;
+
+            LocationPanelView view = button.DataContext as LocationPanelView;
+            KeyValuePair<int, string> pair = view.Pair;
+            int idx = pair.Key;
+
+            // Remove location from list
+            OrderedDictionary weatherData = await Settings.getWeatherData();
+            weatherData.RemoveAt(idx);
+
+            // Remove panel
+            LocationPanels.RemoveAt(idx);
+
+            if (idx == App.HomeIdx)
+                LocationPanels[App.HomeIdx].IsHome = true;
+        }
+
+        private void HomeBox_Click(object sender, RoutedEventArgs e)
+        {
+            FrameworkElement box = sender as FrameworkElement;
+            if (box == null || (box != null && box.DataContext == null))
+                return;
+
+            LocationPanelView view = box.DataContext as LocationPanelView;
+            int index = view.Pair.Key;
+
+            if (index == App.HomeIdx)
+                return;
+
+            foreach(LocationPanelView panelView in LocationPanels)
+            {
+                int panelIndex = LocationPanels.IndexOf(panelView);
+
+                if (panelIndex == index)
+                    panelView.IsHome = true;
+                else
+                    panelView.IsHome = false;
+            }
+
+            MoveData(view, index, App.HomeIdx);
+        }
+
+        private async void MoveData(LocationPanelView view, int fromIdx, int toIdx)
+        {
+            OrderedDictionary data = await Settings.getWeatherData();
+
+            Weather weather = data[fromIdx] as Weather;
+            data.RemoveAt(fromIdx);
+            data.Insert(toIdx, view.Pair.Value, weather);
+            
+            // Only move panels if we haven't already
+            if (view.Pair.Key != toIdx)
+                LocationPanels.Move(fromIdx, toIdx);
+
+            // Flag that home location has changed
+            if (CoreApplication.Properties.ContainsKey("HomeChanged"))
+                CoreApplication.Properties["HomeChanged"] = true;
+            else
+                CoreApplication.Properties.Add("HomeChanged", true);
+        }
+
+        private void LocationsPanel_DragItemsStarting(object sender, DragItemsStartingEventArgs e)
+        {
+            if (!EditMode) ToggleEditMode();
+        }
+
+        private async void LocationsPanel_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
+        {
+            LocationPanelView panel = args.Items.First() as LocationPanelView;
+
+            if (panel == null)
+                return;
+
+            List<string> data = await Settings.getLocations();
+            int newIndex = panel.Pair.Key;
+            int oldIndex = data.IndexOf(panel.Pair.Value);
+
+            MoveData(panel, oldIndex, newIndex);
+
+            // Reset home if necessary
+            if (oldIndex == App.HomeIdx || newIndex == App.HomeIdx)
+            {
+                foreach (LocationPanelView panelView in LocationPanels)
+                {
+                    int panelIndex = LocationPanels.IndexOf(panelView);
+
+                    if (panelIndex == App.HomeIdx)
+                        panelView.IsHome = true;
+                    else
+                        panelView.IsHome = false;
+                }
+            }
+        }
+
+        private void LocationPanel_Holding(object sender, HoldingRoutedEventArgs e)
+        {
+            if (e.HoldingState == Windows.UI.Input.HoldingState.Started)
+            {
+                if (!EditMode) ToggleEditMode();
+                e.Handled = true;
+            }
+        }
     }
 }

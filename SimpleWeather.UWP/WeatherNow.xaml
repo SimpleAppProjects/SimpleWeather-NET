@@ -12,12 +12,7 @@
         <TransitionCollection x:Name="TextTransitions">
             <EntranceThemeTransition />
         </TransitionCollection>
-        <Style x:Key="WeatherIcon" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="FontSize" Value="12" />
-            <Setter Property="FontFamily" Value="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons" />
-            <Setter Property="FontStyle" Value="Normal" />
-            <Setter Property="TextAlignment" Value="Center" />
+        <Style x:Key="WeatherIcon" TargetType="TextBlock" BasedOn="{StaticResource WeatherIcon}">
             <Setter Property="Transitions" Value="{StaticResource TextTransitions}" />
         </Style>
         <Style x:Key="ForecastBorder" TargetType="Border">
