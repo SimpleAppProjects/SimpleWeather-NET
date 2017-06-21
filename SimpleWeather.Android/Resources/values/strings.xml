@@ -36,5 +36,6 @@
     <string name="label_fav_location">Favorite Location</string>
     <string name="label_other_locations">Other Locations</string>
     <string name="label_btn_add_location">Add Location</string>
+    <string name="action_editmode">Edit Mode</string>
 
 </resources>

@@ -56,7 +56,7 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:textAlignment="center"
-                    android:layout_margin="5dp"
+                    android:layout_margin="10dp"
                     android:textAppearance="@android:style/TextAppearance.Material.Inverse"
                     android:textSize="30sp"
                     tools:text="@string/wi_night_cloudy" />
@@ -64,6 +64,14 @@
         </LinearLayout>
     </android.support.v7.widget.GridLayout>
 
+    <ImageButton
+        android:id="@+id/home_button"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:padding="2dp"
+        android:layout_gravity="bottom|right"
+        android:src="@drawable/ic_home_nofill_white_24dp"
+        android:background="@null" />
     <ProgressBar
         android:id="@+id/progressBar"
         style="@android:style/Widget.Material.Light.ProgressBar"
@@ -73,5 +81,4 @@
         android:layout_weight="1"
         android:indeterminateTint="@android:color/white"
         android:visibility="visible" />
-
 </android.support.v7.widget.CardView>

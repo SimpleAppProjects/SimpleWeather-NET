@@ -17,19 +17,24 @@ using Android.Views;
 using System.Collections.Specialized;
 using SimpleWeather.Droid.Utils;
 using SimpleWeather.Droid.Helpers;
+using Android.Support.Design.Widget;
+using Android.Support.V7.Widget.Helper;
 
 namespace SimpleWeather.Droid
 {
     public class LocationsFragment : Fragment, WeatherLoadedListener
     {
-        private bool loaded = false;
+        private bool Loaded = false;
+        private bool EditMode = false;
+        private bool DataChanged = false;
 
         // Views
-        private LocationPanel HomePanel;
+        private View mMainView;
         private RecyclerView mRecyclerView;
         private LocationPanelAdapter mAdapter;
         private RecyclerView.LayoutManager mLayoutManager;
-        private Button addLocationsButton;
+        private ItemTouchHelperCallback mITHCallback;
+        private FloatingActionButton addLocationsButton;
 
         // Search
         private LocationSearchFragment mSearchFragment;
@@ -44,6 +49,9 @@ namespace SimpleWeather.Droid
 
         private ActionModeCallback mActionModeCallback = new ActionModeCallback();
 
+        // OptionsMenu
+        private IMenu optionsMenu;
+
         public LocationsFragment()
         {
             // Required empty public constructor
@@ -55,20 +63,9 @@ namespace SimpleWeather.Droid
         {
             if (weather != null)
             {
-                // Home Panel
-                if (locationIdx == App.HomeIdx)
-                {
-                    // TODO: make lpv local
-                    // OR Make HomePanel a recyclerview
-                    HomePanel.SetWeather(new LocationPanelView(weather) { Pair = (Pair<int, string>)HomePanel.Tag});
-                }
-                // Others
-                else
-                {
-                    LocationPanelView panel = mAdapter.Dataset[locationIdx - 1];
-                    panel.setWeather(weather);
-                    mAdapter.NotifyDataSetChanged();
-                }
+                LocationPanelView panel = mAdapter.Dataset[locationIdx];
+                panel.setWeather(weather);
+                mAdapter.NotifyItemChanged(locationIdx);
             }
         }
 
@@ -123,7 +120,7 @@ namespace SimpleWeather.Droid
             base.OnCreate(savedInstanceState);
 
             // Create your fragment here
-            loaded = true;
+            Loaded = true;
 
             // Set SoftInput mode
             this.Activity.Window.SetSoftInputMode(SoftInput.AdjustResize);
@@ -145,23 +142,30 @@ namespace SimpleWeather.Droid
         {
             // Inflate the layout for this fragment
             View view = inflater.Inflate(Resource.Layout.fragment_locations, container, false);
+            mMainView = view;
             view.FindViewById(Resource.Id.search_fragment_container).Click += delegate
             {
                 exitSearchUi();
             };
-
-            HomePanel = (LocationPanel)view.FindViewById(Resource.Id.home_panel);
-            HomePanel.ContextMenuCreated += (object sender, View.CreateContextMenuEventArgs e) =>
+            view.FocusableInTouchMode = true;
+            view.RequestFocus();
+            view.KeyPress += (sender, e) =>
             {
-                View v = sender as View;
-                e.Menu.Add(Menu.None, v.Id, 0, "Change Favorite Location");
+                if (e.KeyCode == Keycode.Back && EditMode)
+                {
+                    ToggleEditMode();
+                    e.Handled = true;
+                }
+                else
+                    e.Handled = false;
             };
-            HomePanel.Click += onPanelClick;
 
-            // Other Locations
-            mRecyclerView = (RecyclerView)view.FindViewById(Resource.Id.other_location_container);
+            // Setup ActionBar
+            HasOptionsMenu = true;
 
-            addLocationsButton = (Button)view.FindViewById(Resource.Id.other_location_add);
+            mRecyclerView = (RecyclerView)view.FindViewById(Resource.Id.locations_container);
+
+            addLocationsButton = (FloatingActionButton)view.FindViewById(Resource.Id.locations_add);
             addLocationsButton.Click += delegate
             {
                 AppCompatActivity activity = (AppCompatActivity)Activity;
@@ -179,42 +183,48 @@ namespace SimpleWeather.Droid
             // specify an adapter (see also next example)
             mAdapter = new LocationPanelAdapter(new List<LocationPanelView>());
             mAdapter.ItemClick += onPanelClick;
+            mAdapter.ItemLongClick += onPanelLongClick;
+            mAdapter.CollectionChanged += LocationPanels_CollectionChanged;
             mRecyclerView.SetAdapter(mAdapter);
+            new ItemTouchHelper(mITHCallback = new ItemTouchHelperCallback(mAdapter))
+                .AttachToRecyclerView(mRecyclerView);
+
+            // Turn off by default
+            mITHCallback.SetLongPressDragEnabled(false);
+            mITHCallback.SetItemViewSwipeEnabled(false);
 
             view.Post(() =>
             {
-                loaded = true;
+                Loaded = true;
                 LoadLocations();
             });
 
             return view;
         }
 
-        public override bool OnContextItemSelected(IMenuItem item)
+        public override void OnCreateOptionsMenu(IMenu menu, MenuInflater inflater)
         {
-            // Home Panel
-            if (item.ItemId == Resource.Id.home_panel)
-            {
-                AppCompatActivity activity = (AppCompatActivity)Activity;
-                mActionMode = activity.StartSupportActionMode(mActionModeCallback);
-                mActionMode.Tag = Resource.Id.home_panel;
-            }
-            else if (item.TitleFormatted.ToString() == "Delete Location")
-            {
-                removeLocation(item.ItemId);
-            }
-            return base.OnContextItemSelected(item);
+            // Inflate the menu; this adds items to the action bar if it is present.
+            optionsMenu = menu;
+            menu.Clear();
+            inflater.Inflate(Resource.Menu.locations, menu);
         }
 
-        private async void removeLocation(int ItemId)
+        public override bool OnOptionsItemSelected(IMenuItem item)
         {
-            // Remove location from list
-            OrderedDictionary weatherData = await Settings.getWeatherData();
-            weatherData.RemoveAt(ItemId + 1);
-            Settings.saveWeatherData();
+            // Handle action bar item clicks here. The action bar will
+            // automatically handle clicks on the Home/Up button, so long
+            // as you specify a parent activity in AndroidManifest.xml.
+            int id = item.ItemId;
 
-            // Remove panel
-            mAdapter.Remove(ItemId);
+            //noinspection SimplifiableIfStatement
+            if (id == Resource.Id.action_editmode)
+            {
+                ToggleEditMode();
+                return true;
+            }
+
+            return base.OnOptionsItemSelected(item);
         }
 
         public override void OnResume()
@@ -223,10 +233,10 @@ namespace SimpleWeather.Droid
 
             // Update view on resume
             // ex. If temperature unit changed
-            if (!loaded)
+            if (!Loaded)
             {
                 RefreshLocations();
-                loaded = true;
+                Loaded = true;
             }
 
             // Title
@@ -237,7 +247,7 @@ namespace SimpleWeather.Droid
         public override void OnPause()
         {
             base.OnPause();
-            loaded = false;
+            Loaded = false;
         }
 
         public override void OnSaveInstanceState(Bundle outState)
@@ -263,17 +273,16 @@ namespace SimpleWeather.Droid
             {
                 int index = locations.IndexOf(location);
 
+                LocationPanelView panel = new LocationPanelView();
+                panel.Pair = new Pair<int, string>(index, location);
+
+                // Set home
                 if (index == App.HomeIdx)
-                {
-                    // Nothing
-                    HomePanel.Tag = new Pair<int, string>(index, location);
-                }
+                    panel.IsHome = true;
                 else
-                {
-                    LocationPanelView panel = new LocationPanelView();
-                    panel.Pair = new Pair<int, string>(index, location);
-                    mAdapter.Add(index - 1, panel);
-                }
+                    panel.IsHome = false;
+
+                mAdapter.Add(index, panel);
 
                 wLoader = new WeatherDataLoader(this, location, index);
                 await wLoader.loadWeatherData(false);
@@ -282,16 +291,6 @@ namespace SimpleWeather.Droid
 
         private async void RefreshLocations()
         {
-            // Home
-            if (HomePanel.Tag != null)
-            {
-                Pair<int, string> Pair = (Pair<int, string>)HomePanel.Tag;
-                WeatherDataLoader wLoader =
-                    new WeatherDataLoader(this, Pair.Value, Pair.Key);
-                await wLoader.loadWeatherData(false);
-            }
-
-            // Others
             foreach (LocationPanelView view in mAdapter.Dataset)
             {
                 WeatherDataLoader wLoader =
@@ -364,21 +363,10 @@ namespace SimpleWeather.Droid
 
                 OrderedDictionary weatherData = await Settings.getWeatherData();
 
-                if (mActionMode.Tag != null && (int)mActionMode.Tag == Resource.Id.home_panel)
-                    index = App.HomeIdx;
-                else
-                    index = weatherData.Keys.Count;
+                index = weatherData.Keys.Count;
 
                 // Check if location already exists
-                if (index == App.HomeIdx)
-                {
-                    if (weatherData.Keys.Cast<string>().First().Equals(selected_query))
-                    {
-                        exitSearchUi();
-                        return;
-                    }
-                }
-                else if (weatherData.Contains(selected_query))
+                if (weatherData.Contains(selected_query))
                 {
                     exitSearchUi();
                     return;
@@ -392,31 +380,19 @@ namespace SimpleWeather.Droid
                     return;
 
                 // Save coords to List
-                if (mActionMode.Tag != null && (int)mActionMode.Tag == Resource.Id.home_panel)
-                {
-                    weatherData.RemoveAt(0);
-                    weatherData.Insert(0, selected_query, weather);
-                }
-                else
-                {
-                    weatherData.Add(selected_query, weather);
-                }
+                weatherData.Add(selected_query, weather);
+
                 // Save data
                 Settings.saveWeatherData();
 
-                if (index == App.HomeIdx)
-                {
-                    // ProgressBar
-                    HomePanel.ShowLoading(true);
-                    HomePanel.SetWeather(new LocationPanelView(weather) { Pair = new Pair<int, string>(index, selected_query) });
-                }
-                else
-                {
-                    // (TODO:) NOTE: panel number could be wrong since we're adding
-                    LocationPanelView panel = new LocationPanelView(weather);
-                    panel.Pair = new Pair<int, string>(index, selected_query);
-                    mAdapter.Add(index - 1, panel);
-                }
+                LocationPanelView panel = new LocationPanelView(weather);
+                panel.Pair = new Pair<int, string>(index, selected_query);
+
+                // Set properties if necessary
+                if (EditMode)
+                    panel.EditMode = true;
+
+                mAdapter.Add(index, panel);
 
                 exitSearchUi();
             });
@@ -496,6 +472,7 @@ namespace SimpleWeather.Droid
             HideInputMethod(Activity.CurrentFocus);
             searchView.ClearFocus();
             mActionMode.Finish();
+            mMainView.RequestFocus();
             inSearchUI = false;
         }
 
@@ -514,6 +491,70 @@ namespace SimpleWeather.Droid
             {
                 imm.HideSoftInputFromWindow(view.WindowToken, 0);
             }
+        }
+
+        private void LocationPanels_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            foreach (LocationPanelView panelView in mAdapter.Dataset)
+            {
+                int index = mAdapter.Dataset.IndexOf(panelView);
+                panelView.Pair = new Pair<int, string>(index, panelView.Pair.Value);
+            }
+
+            // Cancel edit Mode
+            if (EditMode && mAdapter.Dataset.Count == 1)
+                ToggleEditMode();
+
+            // Disable EditMode if only single location
+            IMenuItem editMenuBtn = optionsMenu.FindItem(Resource.Id.action_editmode);
+            editMenuBtn.SetVisible(mAdapter.Dataset.Count != 1);
+
+            // Flag that data has changed
+            if (EditMode && (e.Action == NotifyCollectionChangedAction.Remove || e.Action == NotifyCollectionChangedAction.Move))
+                DataChanged = true;
+        }
+
+        private void onPanelLongClick(object sender, RecyclerClickEventArgs e)
+        {
+            if (!EditMode && mAdapter.Dataset.Count > 1) ToggleEditMode();
+        }
+
+        private void ToggleEditMode()
+        {
+            // Toggle EditMode
+            EditMode = !EditMode;
+
+            IMenuItem editMenuBtn = optionsMenu.FindItem(Resource.Id.action_editmode);
+            // Change EditMode button drwble
+            editMenuBtn.SetIcon(EditMode ? Resource.Drawable.ic_done_white_24dp : Resource.Drawable.ic_mode_edit_white_24dp);
+            // Change EditMode button label
+            editMenuBtn.SetTitle(EditMode ? GetString(Resource.String.abc_action_mode_done) : GetString(Resource.String.action_editmode));
+
+            // Set Drag & Swipe ability
+            mITHCallback.SetLongPressDragEnabled(EditMode);
+            mITHCallback.SetItemViewSwipeEnabled(EditMode);
+
+            if (EditMode)
+            {
+                // Unregister events
+                mAdapter.ItemClick -= onPanelClick;
+                mAdapter.ItemLongClick -= onPanelLongClick;
+            }
+            else
+            {
+                // Register events
+                mAdapter.ItemClick += onPanelClick;
+                mAdapter.ItemLongClick += onPanelLongClick;
+            }
+
+            foreach (LocationPanelView view in mAdapter.Dataset)
+            {
+                view.EditMode = EditMode;
+                mAdapter.NotifyItemChanged(mAdapter.Dataset.IndexOf(view));
+            }
+
+            if (!EditMode && DataChanged) Settings.saveWeatherData();
+            DataChanged = false;
         }
     }
 }

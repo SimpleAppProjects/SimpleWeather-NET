@@ -12,9 +12,10 @@ namespace SimpleWeather.Droid.Controls
         public string CurrTemp { get; set; }
         public string WeatherIcon { get; set; }
         public Pair<int, string> Pair { get; set; }
-
-        // Background
         public string Background { get; set; }
+
+        public bool IsHome { get; set; } = false;
+        public bool EditMode { get; set; } = false;
 
         public LocationPanelView()
         {
