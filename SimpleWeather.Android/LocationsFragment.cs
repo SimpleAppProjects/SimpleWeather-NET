@@ -63,7 +63,7 @@ namespace SimpleWeather.Droid
         {
             if (weather != null)
             {
-                LocationPanelView panel = mAdapter.Dataset[locationIdx];
+                LocationPanelViewModel panel = mAdapter.Dataset[locationIdx];
                 panel.setWeather(weather);
                 mAdapter.NotifyItemChanged(locationIdx);
             }
@@ -181,7 +181,7 @@ namespace SimpleWeather.Droid
             mRecyclerView.SetLayoutManager(mLayoutManager);
 
             // specify an adapter (see also next example)
-            mAdapter = new LocationPanelAdapter(new List<LocationPanelView>());
+            mAdapter = new LocationPanelAdapter(new List<LocationPanelViewModel>());
             mAdapter.ItemClick += onPanelClick;
             mAdapter.ItemLongClick += onPanelLongClick;
             mAdapter.CollectionChanged += LocationPanels_CollectionChanged;
@@ -273,7 +273,7 @@ namespace SimpleWeather.Droid
             {
                 int index = locations.IndexOf(location);
 
-                LocationPanelView panel = new LocationPanelView();
+                LocationPanelViewModel panel = new LocationPanelViewModel();
                 panel.Pair = new Pair<int, string>(index, location);
 
                 // Set home
@@ -291,7 +291,7 @@ namespace SimpleWeather.Droid
 
         private async void RefreshLocations()
         {
-            foreach (LocationPanelView view in mAdapter.Dataset)
+            foreach (LocationPanelViewModel view in mAdapter.Dataset)
             {
                 WeatherDataLoader wLoader =
                     new WeatherDataLoader(this, view.Pair.Value, view.Pair.Key);
@@ -385,7 +385,7 @@ namespace SimpleWeather.Droid
                 // Save data
                 Settings.saveWeatherData();
 
-                LocationPanelView panel = new LocationPanelView(weather);
+                LocationPanelViewModel panel = new LocationPanelViewModel(weather);
                 panel.Pair = new Pair<int, string>(index, selected_query);
 
                 // Set properties if necessary
@@ -495,7 +495,7 @@ namespace SimpleWeather.Droid
 
         private void LocationPanels_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            foreach (LocationPanelView panelView in mAdapter.Dataset)
+            foreach (LocationPanelViewModel panelView in mAdapter.Dataset)
             {
                 int index = mAdapter.Dataset.IndexOf(panelView);
                 panelView.Pair = new Pair<int, string>(index, panelView.Pair.Value);
@@ -548,7 +548,7 @@ namespace SimpleWeather.Droid
                 mAdapter.ItemLongClick += onPanelLongClick;
             }
 
-            foreach (LocationPanelView view in mAdapter.Dataset)
+            foreach (LocationPanelViewModel view in mAdapter.Dataset)
             {
                 view.EditMode = EditMode;
                 mAdapter.NotifyItemChanged(mAdapter.Dataset.IndexOf(view));

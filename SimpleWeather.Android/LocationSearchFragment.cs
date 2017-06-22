@@ -138,7 +138,7 @@ namespace SimpleWeather.Droid
             mRecyclerView.SetLayoutManager(mLayoutManager);
 
             // specify an adapter (see also next example)
-            mAdapter = new LocationQueryAdapter(new List<LocationQueryView>());
+            mAdapter = new LocationQueryAdapter(new List<LocationQueryViewModel>());
             mAdapter.ItemClick += clickListener;
             mRecyclerView.SetAdapter(mAdapter);
         }
@@ -186,11 +186,11 @@ namespace SimpleWeather.Droid
                     if (cts.IsCancellationRequested) return;
 
                     // Get geo location
-                    LocationQueryView gpsLocation = await WeatherData.GeopositionQuery.getLocation(mLocation);
+                    LocationQueryViewModel gpsLocation = await WeatherData.GeopositionQuery.getLocation(mLocation);
 
                     if (cts.IsCancellationRequested) return;
 
-                    this.Activity.RunOnUiThread(() => mAdapter.SetLocations(new List<LocationQueryView>() { gpsLocation }));
+                    this.Activity.RunOnUiThread(() => mAdapter.SetLocations(new List<LocationQueryViewModel>() { gpsLocation }));
                 });
             }
             else

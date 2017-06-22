@@ -7,12 +7,12 @@ namespace SimpleWeather.WeatherData
     public static class GeopositionQuery
     {
 #if WINDOWS_UWP
-        public static async Task<Controls.LocationQueryView> getLocation(Windows.Devices.Geolocation.Geoposition geoPos)
+        public static async Task<Controls.LocationQueryViewModel> getLocation(Windows.Devices.Geolocation.Geoposition geoPos)
 #elif __ANDROID__
-        public static async Task<Controls.LocationQueryView> getLocation(Android.Locations.Location geoPos)
+        public static async Task<Controls.LocationQueryViewModel> getLocation(Android.Locations.Location geoPos)
 #endif
         {
-            Controls.LocationQueryView location = null;
+            Controls.LocationQueryViewModel location = null;
 
             if (Settings.API == "WUnderground")
             {
@@ -20,18 +20,18 @@ namespace SimpleWeather.WeatherData
                     await WeatherUnderground.GeopositionQuery.getLocation(new WeatherUtils.Coordinate(geoPos));
 
                 if (geoLocation != null && !String.IsNullOrWhiteSpace(geoLocation.query))
-                    location = new Controls.LocationQueryView(geoLocation);
+                    location = new Controls.LocationQueryViewModel(geoLocation);
                 else
-                    location = new Controls.LocationQueryView();
+                    location = new Controls.LocationQueryViewModel();
             }
             else
             {
                 WeatherYahoo.place geoLocation = await WeatherYahoo.GeopositionQuery.getLocation(new WeatherUtils.Coordinate(geoPos));
 
                 if (geoLocation != null && !String.IsNullOrWhiteSpace(geoLocation.woeid))
-                    location = new Controls.LocationQueryView(geoLocation);
+                    location = new Controls.LocationQueryViewModel(geoLocation);
                 else
-                    location = new Controls.LocationQueryView();
+                    location = new Controls.LocationQueryViewModel();
             }
 
             return location;

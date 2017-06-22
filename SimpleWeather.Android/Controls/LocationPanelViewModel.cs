@@ -6,7 +6,7 @@ using Android.Graphics;
 
 namespace SimpleWeather.Droid.Controls
 {
-    public class LocationPanelView
+    public class LocationPanelViewModel
     {
         public string LocationName { get; set; }
         public string CurrTemp { get; set; }
@@ -17,11 +17,11 @@ namespace SimpleWeather.Droid.Controls
         public bool IsHome { get; set; } = false;
         public bool EditMode { get; set; } = false;
 
-        public LocationPanelView()
+        public LocationPanelViewModel()
         {
         }
 
-        public LocationPanelView(Weather weather)
+        public LocationPanelViewModel(Weather weather)
         {
             setWeather(weather);
         }

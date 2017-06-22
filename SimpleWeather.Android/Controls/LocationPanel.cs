@@ -29,7 +29,7 @@ namespace SimpleWeather.Droid.Controls
             Initialize(context);
         }
 
-        public LocationPanel(Context context, LocationPanelView panelView) :
+        public LocationPanel(Context context, LocationPanelViewModel panelView) :
             base(context)
         {
             Initialize(context);
@@ -62,7 +62,7 @@ namespace SimpleWeather.Droid.Controls
             ShowLoading(true);
         }
 
-        public void SetWeather(LocationPanelView panelView)
+        public void SetWeather(LocationPanelViewModel panelView)
         {
             this.Post(() => 
             {

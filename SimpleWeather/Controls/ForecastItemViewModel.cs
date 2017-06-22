@@ -3,7 +3,7 @@ using SimpleWeather.WeatherData;
 
 namespace SimpleWeather.Controls
 {
-    public class ForecastItemView
+    public class ForecastItemViewModel
     {
         public string WeatherIcon { get; set; }
         public string Date { get; set; }
@@ -11,11 +11,11 @@ namespace SimpleWeather.Controls
         public string HiTemp { get; set; }
         public string LoTemp { get; set; }
 
-        public ForecastItemView()
+        public ForecastItemViewModel()
         {
         }
 
-        public ForecastItemView(Forecast forecast)
+        public ForecastItemViewModel(Forecast forecast)
         {
             WeatherIcon = WeatherUtils.GetWeatherIcon(forecast.icon);
             Date = forecast.date.ToString("dddd dd");

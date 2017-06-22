@@ -18,9 +18,9 @@ namespace SimpleWeather.Droid
 {
     public class LocationQueryAdapter : RecyclerView.Adapter
     {
-        private List<LocationQueryView> mDataset;
+        private List<LocationQueryViewModel> mDataset;
 
-        public List<LocationQueryView> Dataset { get { return mDataset; } }
+        public List<LocationQueryViewModel> Dataset { get { return mDataset; } }
         public event EventHandler<RecyclerClickEventArgs> ItemClick;
         //public event EventHandler<RecyclerClickEventArgs> ItemLongClick;
 
@@ -40,7 +40,7 @@ namespace SimpleWeather.Droid
         }
 
         // Provide a suitable constructor (depends on the kind of dataset)
-        public LocationQueryAdapter(List<LocationQueryView> myDataset)
+        public LocationQueryAdapter(List<LocationQueryViewModel> myDataset)
         {
             mDataset = myDataset;
         }
@@ -67,7 +67,7 @@ namespace SimpleWeather.Droid
         // Return the size of your dataset (invoked by the layout manager)
         public override int ItemCount => mDataset.Count;
 
-        public void SetLocations(List<LocationQueryView> myDataset)
+        public void SetLocations(List<LocationQueryViewModel> myDataset)
         {
             mDataset.Clear();
             mDataset.AddRange(myDataset);

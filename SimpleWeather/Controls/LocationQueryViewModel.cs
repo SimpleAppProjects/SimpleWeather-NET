@@ -4,13 +4,13 @@ using SimpleWeather.WeatherYahoo;
 
 namespace SimpleWeather.Controls
 {
-    public class LocationQueryView
+    public class LocationQueryViewModel
     {
         public string LocationName { get; set; }
         public string LocationCountry { get; set; }
         public string LocationQuery { get; set; }
 
-        public LocationQueryView()
+        public LocationQueryViewModel()
         {
             LocationName = "No results found";
             LocationCountry = string.Empty;
@@ -18,7 +18,7 @@ namespace SimpleWeather.Controls
         }
 
         #region WeatherUnderground
-        public LocationQueryView(AC_RESULT location)
+        public LocationQueryViewModel(AC_RESULT location)
         {
             setLocation(location);
         }
@@ -30,7 +30,7 @@ namespace SimpleWeather.Controls
             LocationQuery = location.l;
         }
 
-        public LocationQueryView(location location)
+        public LocationQueryViewModel(location location)
         {
             setLocation(location);
         }
@@ -44,7 +44,7 @@ namespace SimpleWeather.Controls
         #endregion
 
         #region Yahoo Weather
-        public LocationQueryView(place location)
+        public LocationQueryViewModel(place location)
         {
             setLocation(location);
         }

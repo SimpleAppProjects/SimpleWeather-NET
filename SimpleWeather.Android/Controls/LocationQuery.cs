@@ -46,7 +46,7 @@ namespace SimpleWeather.Droid.Controls
             locationCountryView = (TextView)viewLayout.FindViewById(Resource.Id.location_country);
         }
 
-        public void SetLocation(SimpleWeather.Controls.LocationQueryView view)
+        public void SetLocation(SimpleWeather.Controls.LocationQueryViewModel view)
         {
             locationNameView.Text = view.LocationName;
             locationCountryView.Text = view.LocationCountry;

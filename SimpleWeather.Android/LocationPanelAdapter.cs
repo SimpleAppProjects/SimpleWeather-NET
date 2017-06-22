@@ -21,9 +21,9 @@ namespace SimpleWeather.Droid
 {
     public class LocationPanelAdapter : RecyclerView.Adapter, ItemTouchHelperAdapter
     {
-        private ObservableCollection<LocationPanelView> mDataset;
+        private ObservableCollection<LocationPanelViewModel> mDataset;
 
-        public List<LocationPanelView> Dataset { get { return mDataset.ToList(); } }
+        public List<LocationPanelViewModel> Dataset { get { return mDataset.ToList(); } }
         public event EventHandler<RecyclerClickEventArgs> ItemClick;
         public event EventHandler<RecyclerClickEventArgs> ItemLongClick;
         public event EventHandler<NotifyCollectionChangedEventArgs> CollectionChanged;
@@ -50,9 +50,9 @@ namespace SimpleWeather.Droid
         }
 
         // Provide a suitable constructor (depends on the kind of dataset)
-        public LocationPanelAdapter(List<LocationPanelView> myDataset)
+        public LocationPanelAdapter(List<LocationPanelViewModel> myDataset)
         {
-            mDataset = new ObservableCollection<LocationPanelView>(myDataset);
+            mDataset = new ObservableCollection<LocationPanelViewModel>(myDataset);
             mDataset.CollectionChanged += (sender, e) => CollectionChanged?.Invoke(sender, e);
         }
 
@@ -74,7 +74,7 @@ namespace SimpleWeather.Droid
             // - get element from your dataset at this position
             // - replace the contents of the view with that element
             ViewHolder vh = holder as ViewHolder;
-            LocationPanelView panelView = mDataset[position];
+            LocationPanelViewModel panelView = mDataset[position];
 
             if (!panelView.IsHome && !panelView.EditMode)
                 vh.mHomeButton.Visibility = ViewStates.Gone;
@@ -101,7 +101,7 @@ namespace SimpleWeather.Droid
         // Return the size of your dataset (invoked by the layout manager)
         public override int ItemCount => mDataset.Count;
 
-        public void Add(int position, LocationPanelView item)
+        public void Add(int position, LocationPanelViewModel item)
         {
             mDataset.Insert(position, item);
             NotifyItemInserted(position);
@@ -115,7 +115,7 @@ namespace SimpleWeather.Droid
             // Update pair if necessary
             if (CollectionChanged == null)
             {
-                foreach (LocationPanelView panelView in mDataset)
+                foreach (LocationPanelViewModel panelView in mDataset)
                 {
                     int index = mDataset.IndexOf(panelView);
                     panelView.Pair = new Utils.Pair<int, string>(index, panelView.Pair.Value);
@@ -123,7 +123,7 @@ namespace SimpleWeather.Droid
             }
         }
 
-        public LocationPanelView GetPanelView(int position)
+        public LocationPanelViewModel GetPanelView(int position)
         {
             return mDataset[position];
         }
@@ -148,7 +148,7 @@ namespace SimpleWeather.Droid
         public async void onItemMove(int fromPosition, int toPosition)
         {
             OrderedDictionary data = await Settings.getWeatherData();
-            LocationPanelView panel = mDataset[fromPosition];
+            LocationPanelViewModel panel = mDataset[fromPosition];
 
             WeatherData.Weather weather = data[fromPosition] as WeatherData.Weather;
             data.RemoveAt(fromPosition);
@@ -163,7 +163,7 @@ namespace SimpleWeather.Droid
             // Reset home if necessary
             if (fromPosition == App.HomeIdx || toPosition == App.HomeIdx)
             {
-                foreach (LocationPanelView panelView in mDataset)
+                foreach (LocationPanelViewModel panelView in mDataset)
                 {
                     int panelIndex = mDataset.IndexOf(panelView);
 

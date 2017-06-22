@@ -8,36 +8,36 @@ using Windows.UI.Xaml.Media;
 
 namespace SimpleWeather.Controls
 {
-    public class LocationPanelView : DependencyObject, INotifyPropertyChanged
+    public class LocationPanelViewModel : DependencyObject, INotifyPropertyChanged
     {
         #region DependencyProperties
         public static readonly DependencyProperty LocationNameProperty =
             DependencyProperty.Register("LocationName", typeof(String),
-            typeof(LocationPanelView), new PropertyMetadata(""));
+            typeof(LocationPanelViewModel), new PropertyMetadata(""));
         public static readonly DependencyProperty CurrTempProperty =
             DependencyProperty.Register("CurrTemp", typeof(String),
-            typeof(LocationPanelView), new PropertyMetadata(""));
+            typeof(LocationPanelViewModel), new PropertyMetadata(""));
         public static readonly DependencyProperty WeatherIconProperty =
             DependencyProperty.Register("WeatherIcon", typeof(String),
-            typeof(LocationPanelView), new PropertyMetadata(""));
+            typeof(LocationPanelViewModel), new PropertyMetadata(""));
         public static readonly DependencyProperty PairProperty =
             DependencyProperty.Register("Pair", typeof(KeyValuePair<int, string>),
-            typeof(LocationPanelView), new PropertyMetadata(""));
+            typeof(LocationPanelViewModel), new PropertyMetadata(""));
         public static readonly DependencyProperty EditModeProperty =
             DependencyProperty.Register("EditMode", typeof(bool),
-            typeof(LocationPanelView), new PropertyMetadata(false));
+            typeof(LocationPanelViewModel), new PropertyMetadata(false));
         public static readonly DependencyProperty BackgroundProperty =
             DependencyProperty.Register("Background", typeof(Brush),
-            typeof(LocationPanelView), new PropertyMetadata(new SolidColorBrush(UWP.App.AppColor)));
+            typeof(LocationPanelViewModel), new PropertyMetadata(new SolidColorBrush(UWP.App.AppColor)));
         public static readonly DependencyProperty IsLoadingProperty =
             DependencyProperty.Register("IsLoading", typeof(bool),
-            typeof(LocationPanelView), new PropertyMetadata(true));
+            typeof(LocationPanelViewModel), new PropertyMetadata(true));
         public static readonly DependencyProperty IsHomeProperty =
             DependencyProperty.Register("IsHome", typeof(bool),
-            typeof(LocationPanelView), new PropertyMetadata(false));
+            typeof(LocationPanelViewModel), new PropertyMetadata(false));
         public static readonly DependencyProperty HomeBoxVisibilityProperty =
             DependencyProperty.Register("HomeBoxVisibility", typeof(Visibility),
-            typeof(LocationPanelView), new PropertyMetadata(Visibility.Collapsed));
+            typeof(LocationPanelViewModel), new PropertyMetadata(Visibility.Collapsed));
 
         public event PropertyChangedEventHandler PropertyChanged;
         // Create the OnPropertyChanged method to raise the event
@@ -118,11 +118,11 @@ namespace SimpleWeather.Controls
             }
         }
 
-        public LocationPanelView()
+        public LocationPanelViewModel()
         {
         }
 
-        public LocationPanelView(Weather weather)
+        public LocationPanelViewModel(Weather weather)
         {
             setWeather(weather);
         }

@@ -13,12 +13,12 @@ namespace SimpleWeather.WeatherUnderground
 {
     public static class AutoCompleteQuery
     {
-        public static async Task<List<Controls.LocationQueryView>> getLocations(string query)
+        public static async Task<List<Controls.LocationQueryViewModel>> getLocations(string query)
         {
             string queryAPI = "http://autocomplete.wunderground.com/aq?query=";
             string options = "&h=0&cities=1";
             Uri queryURL = new Uri(queryAPI + query + options);
-            List<Controls.LocationQueryView> locationResults = null;
+            List<Controls.LocationQueryViewModel> locationResults = null;
             // Limit amount of results shown
             int maxResults = 10;
 
@@ -34,7 +34,7 @@ namespace SimpleWeather.WeatherUnderground
                 webClient.Dispose();
 
                 // Load data
-                locationResults = new List<Controls.LocationQueryView>();
+                locationResults = new List<Controls.LocationQueryViewModel>();
 
                 AC_Rootobject root = (AC_Rootobject)JsonConvert.DeserializeObject(content, typeof(AC_Rootobject));
 
@@ -44,7 +44,7 @@ namespace SimpleWeather.WeatherUnderground
                     if (result.type != "city")
                         continue;
 
-                    locationResults.Add(new Controls.LocationQueryView(result));
+                    locationResults.Add(new Controls.LocationQueryViewModel(result));
 
                     // Limit amount of results
                     maxResults--;
@@ -54,7 +54,7 @@ namespace SimpleWeather.WeatherUnderground
             }
             catch (Exception)
             {
-                locationResults = new List<Controls.LocationQueryView>();
+                locationResults = new List<Controls.LocationQueryViewModel>();
             }
 
             return locationResults;

@@ -15,12 +15,12 @@ namespace SimpleWeather.WeatherYahoo
 {
     public static class AutoCompleteQuery
     {
-        public static async Task<List<Controls.LocationQueryView>> getLocations(string location_query)
+        public static async Task<List<Controls.LocationQueryViewModel>> getLocations(string location_query)
         {
             string yahooAPI = "https://query.yahooapis.com/v1/public/yql?q=";
             string query = "select * from geo.places where text=\"" + location_query + "*\"";
             Uri queryURL = new Uri(yahooAPI + query);
-            List<Controls.LocationQueryView> locationResults = null;
+            List<Controls.LocationQueryViewModel> locationResults = null;
             // Limit amount of results shown
             int maxResults = 10;
 
@@ -42,7 +42,7 @@ namespace SimpleWeather.WeatherYahoo
                 webClient.Dispose();
 
                 // Load data
-                locationResults = new List<Controls.LocationQueryView>();
+                locationResults = new List<Controls.LocationQueryViewModel>();
                 XmlSerializer deserializer = new XmlSerializer(typeof(query), null, null, new XmlRootAttribute("query"), "");
                 query root = (query)deserializer.Deserialize(memStream);
 
@@ -55,7 +55,7 @@ namespace SimpleWeather.WeatherYahoo
                         || result.placeTypeName.Value == "Postal Code" &&
                             (result.locality1 != null && result.locality1.type == "Town")
                             || (result.locality1 != null && result.locality1.type == "Suburb")))
-                        locationResults.Add(new Controls.LocationQueryView(result));
+                        locationResults.Add(new Controls.LocationQueryViewModel(result));
                     else
                         continue;
 
@@ -67,7 +67,7 @@ namespace SimpleWeather.WeatherYahoo
             }
             catch (Exception e)
             {
-                locationResults = new List<Controls.LocationQueryView>();
+                locationResults = new List<Controls.LocationQueryViewModel>();
             }
 
             return locationResults;

@@ -7,27 +7,27 @@ namespace SimpleWeather.WeatherData
 {
     public static class AutoCompleteQuery
     {
-        public static async Task<ObservableCollection<Controls.LocationQueryView>> getLocations(string query)
+        public static async Task<ObservableCollection<Controls.LocationQueryViewModel>> getLocations(string query)
         {
-            ObservableCollection<Controls.LocationQueryView> locations = null;
+            ObservableCollection<Controls.LocationQueryViewModel> locations = null;
 
             if (Settings.API == "WUnderground")
             {
-                List<Controls.LocationQueryView> ac_query = await WeatherUnderground.AutoCompleteQuery.getLocations(query);
+                List<Controls.LocationQueryViewModel> ac_query = await WeatherUnderground.AutoCompleteQuery.getLocations(query);
 
                 if (ac_query == null || ac_query.Count == 0)
-                    locations = new ObservableCollection<Controls.LocationQueryView>() { new Controls.LocationQueryView() };
+                    locations = new ObservableCollection<Controls.LocationQueryViewModel>() { new Controls.LocationQueryViewModel() };
                 else
-                    locations = new ObservableCollection<Controls.LocationQueryView>(ac_query);
+                    locations = new ObservableCollection<Controls.LocationQueryViewModel>(ac_query);
             }
             else
             {
-                List<Controls.LocationQueryView> ac_query = await WeatherYahoo.AutoCompleteQuery.getLocations(query);
+                List<Controls.LocationQueryViewModel> ac_query = await WeatherYahoo.AutoCompleteQuery.getLocations(query);
 
                 if (ac_query == null || ac_query.Count == 0)
-                    locations = new ObservableCollection<Controls.LocationQueryView>() { new Controls.LocationQueryView() };
+                    locations = new ObservableCollection<Controls.LocationQueryViewModel>() { new Controls.LocationQueryViewModel() };
                 else
-                    locations = new ObservableCollection<Controls.LocationQueryView>(ac_query);
+                    locations = new ObservableCollection<Controls.LocationQueryViewModel>(ac_query);
             }
 
             return locations;

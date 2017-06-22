@@ -19,7 +19,7 @@ namespace SimpleWeather.UWP
     public sealed partial class WeatherNow : Page, WeatherLoadedListener
     {
         WeatherDataLoader wLoader = null;
-        WeatherNowView weatherView = null;
+        WeatherNowViewModel weatherView = null;
 
         KeyValuePair<int, string> pair;
 
@@ -28,7 +28,7 @@ namespace SimpleWeather.UWP
             if (weather != null)
             {
                 if (weatherView == null)
-                    weatherView = new WeatherNowView(weather);
+                    weatherView = new WeatherNowViewModel(weather);
                 else
                     weatherView.updateView(weather);
 

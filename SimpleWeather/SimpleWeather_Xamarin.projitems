@@ -9,9 +9,9 @@
     <Import_RootNamespace>SimpleWeather</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Controls\ForecastItemView.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Controls\LocationQueryView.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Controls\WeatherNowView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\ForecastItemViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\LocationQueryViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\WeatherNowViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\ConversionMethods.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\FileUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\JSONParser.cs" />

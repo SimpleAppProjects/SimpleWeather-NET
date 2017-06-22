@@ -103,7 +103,7 @@
     <Compile Include="Controls\LocationPanel.xaml.cs">
       <DependentUpon>LocationPanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\LocationPanelView.cs" />
+    <Compile Include="Controls\LocationPanelViewModel.cs" />
     <Compile Include="Controls\LocationQuery.xaml.cs">
       <DependentUpon>LocationQuery.xaml</DependentUpon>
     </Compile>

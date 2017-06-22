@@ -13,7 +13,7 @@ using Android.Views;
 
 namespace SimpleWeather.Controls
 {
-    public class WeatherNowView
+    public class WeatherNowViewModel
     {
         public string Location { get; set; }
         public string UpdateDate { get; set; }
@@ -44,7 +44,7 @@ namespace SimpleWeather.Controls
         public string Sunset { get; set; }
 
         // Forecast
-        public ObservableCollection<ForecastItemView> Forecasts { get; set; }
+        public ObservableCollection<ForecastItemViewModel> Forecasts { get; set; }
 
         // Background
 #if WINDOWS_UWP
@@ -55,7 +55,7 @@ namespace SimpleWeather.Controls
         public Color PanelBackground { get; set; }
 #endif
 
-        public WeatherNowView()
+        public WeatherNowViewModel()
         {
 #if WINDOWS_UWP
             Background = new ImageBrush();
@@ -64,7 +64,7 @@ namespace SimpleWeather.Controls
 #endif
         }
 
-        public WeatherNowView(Weather weather)
+        public WeatherNowViewModel(Weather weather)
         {
 #if WINDOWS_UWP
             Background = new ImageBrush();
@@ -120,10 +120,10 @@ namespace SimpleWeather.Controls
                 weather.atmosphere.visibility_mi + " mi" : weather.atmosphere.visibility_km + " km";
 
             // Add UI elements
-            Forecasts = new ObservableCollection<ForecastItemView>();
+            Forecasts = new ObservableCollection<ForecastItemViewModel>();
             foreach (Forecast forecast in weather.forecast)
             {
-                ForecastItemView forecastView = new ForecastItemView(forecast);
+                ForecastItemViewModel forecastView = new ForecastItemViewModel(forecast);
                 Forecasts.Add(forecastView);
             }
         }

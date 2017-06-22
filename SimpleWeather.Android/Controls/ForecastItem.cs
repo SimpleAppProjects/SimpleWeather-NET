@@ -21,7 +21,7 @@ namespace SimpleWeather.Droid.Controls
             Initialize(context);
         }
 
-        public ForecastItem(Context context, ForecastItemView forecastView) :
+        public ForecastItem(Context context, ForecastItemViewModel forecastView) :
             base(context)
         {
             Initialize(context);
@@ -58,7 +58,7 @@ namespace SimpleWeather.Droid.Controls
             forecastTempLo = (TextView)viewLayout.FindViewById(Resource.Id.forecast_templo);
         }
 
-        public void SetForecast(ForecastItemView forecastView)
+        public void SetForecast(ForecastItemViewModel forecastView)
         {
             forecastDate.Text = forecastView.Date;
             forecastIcon.Text = forecastView.WeatherIcon;

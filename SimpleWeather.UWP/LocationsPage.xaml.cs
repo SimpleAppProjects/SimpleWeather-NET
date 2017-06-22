@@ -30,8 +30,8 @@ namespace SimpleWeather.UWP
     {
         private CancellationTokenSource cts = new CancellationTokenSource();
 
-        public ObservableCollection<LocationPanelView> LocationPanels { get; set; }
-        public ObservableCollection<LocationQueryView> LocationQuerys { get; set; }
+        public ObservableCollection<LocationPanelViewModel> LocationPanels { get; set; }
+        public ObservableCollection<LocationQueryViewModel> LocationQuerys { get; set; }
         private string selected_query = string.Empty;
 
         public bool EditMode { get; set; } = false;
@@ -41,7 +41,7 @@ namespace SimpleWeather.UWP
         {
             if (weather != null)
             {
-                LocationPanelView panelView = LocationPanels[locationIdx];
+                LocationPanelViewModel panelView = LocationPanels[locationIdx];
                 panelView.setWeather(weather);
             }
         }
@@ -51,10 +51,10 @@ namespace SimpleWeather.UWP
             this.InitializeComponent();
             this.NavigationCacheMode = NavigationCacheMode.Enabled;
 
-            LocationPanels = new ObservableCollection<LocationPanelView>();
+            LocationPanels = new ObservableCollection<LocationPanelViewModel>();
             LocationPanels.CollectionChanged += LocationPanels_CollectionChanged;
 
-            LocationQuerys = new ObservableCollection<LocationQueryView>();
+            LocationQuerys = new ObservableCollection<LocationQueryViewModel>();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -84,7 +84,7 @@ namespace SimpleWeather.UWP
 
         private void LocationPanels_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            foreach(LocationPanelView panelView in LocationPanels)
+            foreach(LocationPanelViewModel panelView in LocationPanels)
             {
                 int index = LocationPanels.IndexOf(panelView);
                 panelView.Pair = new KeyValuePair<int, string>(index, panelView.Pair.Value);
@@ -111,7 +111,7 @@ namespace SimpleWeather.UWP
             {
                 int index = locations.IndexOf(location);
 
-                LocationPanelView panel = new LocationPanelView();
+                LocationPanelViewModel panel = new LocationPanelViewModel();
                 // Save index to tag (to easily retreive)
                 panel.Pair = new KeyValuePair<int, string>(index, location);
 
@@ -137,7 +137,7 @@ namespace SimpleWeather.UWP
 
         private async void RefreshLocations()
         {
-            foreach (LocationPanelView view in LocationPanels)
+            foreach (LocationPanelViewModel view in LocationPanels)
             {
                 WeatherDataLoader wLoader =
                     new WeatherDataLoader(this, view.Pair.Value, view.Pair.Key);
@@ -147,7 +147,7 @@ namespace SimpleWeather.UWP
 
         private void LocationsPanel_ItemClick(object sender, ItemClickEventArgs e)
         {
-            LocationPanelView panel = e.ClickedItem as LocationPanelView;
+            LocationPanelViewModel panel = e.ClickedItem as LocationPanelViewModel;
 
             this.Frame.Navigate(typeof(WeatherNow), panel.Pair);
         }
@@ -203,7 +203,7 @@ namespace SimpleWeather.UWP
                 {
                     if (cts.IsCancellationRequested) return;
 
-                    LocationQueryView view = await GeopositionQuery.getLocation(geoPos);
+                    LocationQueryViewModel view = await GeopositionQuery.getLocation(geoPos);
 
                     // Refresh list
                     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -269,7 +269,7 @@ namespace SimpleWeather.UWP
 
         private void Location_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
         {
-            LocationQueryView theChosenOne = args.SelectedItem as LocationQueryView;
+            LocationQueryViewModel theChosenOne = args.SelectedItem as LocationQueryViewModel;
 
             if (theChosenOne != null)
             {
@@ -287,7 +287,7 @@ namespace SimpleWeather.UWP
             if (args.ChosenSuggestion != null)
             {
                 // User selected an item from the suggestion list, take an action on it here.
-                LocationQueryView theChosenOne = args.ChosenSuggestion as LocationQueryView;
+                LocationQueryViewModel theChosenOne = args.ChosenSuggestion as LocationQueryViewModel;
 
                 if (!String.IsNullOrEmpty(theChosenOne.LocationQuery))
                     selected_query = theChosenOne.LocationQuery;
@@ -297,7 +297,7 @@ namespace SimpleWeather.UWP
             else if (!String.IsNullOrEmpty(args.QueryText))
             {
                 // Use args.QueryText to determine what to do.
-                LocationQueryView result = (await AutoCompleteQuery.getLocations(args.QueryText)).First();
+                LocationQueryViewModel result = (await AutoCompleteQuery.getLocations(args.QueryText)).First();
 
                 if (result != null && String.IsNullOrWhiteSpace(result.LocationQuery))
                 {
@@ -338,7 +338,7 @@ namespace SimpleWeather.UWP
             // Save data
             Settings.saveWeatherData();
 
-            LocationPanelView panelView = new LocationPanelView(weather);
+            LocationPanelViewModel panelView = new LocationPanelViewModel(weather);
             // Save index to tag (to easily retreive)
             panelView.Pair = new KeyValuePair<int, string>(index, selected_query);
 
@@ -391,7 +391,7 @@ namespace SimpleWeather.UWP
             EditButton.Label = EditMode ? "Done" : "Edit";
             LocationsPanel.IsItemClickEnabled = !EditMode;
 
-            foreach (LocationPanelView view in LocationPanels)
+            foreach (LocationPanelViewModel view in LocationPanels)
             {
                 view.EditMode = EditMode;
             }
@@ -406,7 +406,7 @@ namespace SimpleWeather.UWP
             if (button == null || (button != null && button.DataContext == null))
                 return;
 
-            LocationPanelView view = button.DataContext as LocationPanelView;
+            LocationPanelViewModel view = button.DataContext as LocationPanelViewModel;
             KeyValuePair<int, string> pair = view.Pair;
             int idx = pair.Key;
 
@@ -427,13 +427,13 @@ namespace SimpleWeather.UWP
             if (box == null || (box != null && box.DataContext == null))
                 return;
 
-            LocationPanelView view = box.DataContext as LocationPanelView;
+            LocationPanelViewModel view = box.DataContext as LocationPanelViewModel;
             int index = view.Pair.Key;
 
             if (index == App.HomeIdx)
                 return;
 
-            foreach(LocationPanelView panelView in LocationPanels)
+            foreach(LocationPanelViewModel panelView in LocationPanels)
             {
                 int panelIndex = LocationPanels.IndexOf(panelView);
 
@@ -446,7 +446,7 @@ namespace SimpleWeather.UWP
             MoveData(view, index, App.HomeIdx);
         }
 
-        private async void MoveData(LocationPanelView view, int fromIdx, int toIdx)
+        private async void MoveData(LocationPanelViewModel view, int fromIdx, int toIdx)
         {
             OrderedDictionary data = await Settings.getWeatherData();
 
@@ -475,7 +475,7 @@ namespace SimpleWeather.UWP
 
         private async void LocationsPanel_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
         {
-            LocationPanelView panel = args.Items.First() as LocationPanelView;
+            LocationPanelViewModel panel = args.Items.First() as LocationPanelViewModel;
 
             if (panel == null)
                 return;
@@ -489,7 +489,7 @@ namespace SimpleWeather.UWP
             // Reset home if necessary
             if (oldIndex == App.HomeIdx || newIndex == App.HomeIdx)
             {
-                foreach (LocationPanelView panelView in LocationPanels)
+                foreach (LocationPanelViewModel panelView in LocationPanels)
                 {
                     int panelIndex = LocationPanels.IndexOf(panelView);
 

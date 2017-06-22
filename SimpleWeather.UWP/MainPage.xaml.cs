@@ -29,7 +29,7 @@ namespace SimpleWeather.UWP
 
         private CancellationTokenSource cts = new CancellationTokenSource();
 
-        public ObservableCollection<LocationQueryView> LocationQuerys { get; set; }
+        public ObservableCollection<LocationQueryViewModel> LocationQuerys { get; set; }
         private string selected_query = string.Empty;
 
         public MainPage()
@@ -37,7 +37,7 @@ namespace SimpleWeather.UWP
             this.InitializeComponent();
 
             // Views
-            LocationQuerys = new ObservableCollection<LocationQueryView>();
+            LocationQuerys = new ObservableCollection<LocationQueryViewModel>();
 
             // TitleBar
             if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
@@ -95,7 +95,7 @@ namespace SimpleWeather.UWP
 
         private void Location_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
         {
-            LocationQueryView theChosenOne = args.SelectedItem as LocationQueryView;
+            LocationQueryViewModel theChosenOne = args.SelectedItem as LocationQueryViewModel;
 
             if (theChosenOne != null)
             {
@@ -113,7 +113,7 @@ namespace SimpleWeather.UWP
             if (args.ChosenSuggestion != null)
             {
                 // User selected an item from the suggestion list, take an action on it here.
-                LocationQueryView theChosenOne = args.ChosenSuggestion as LocationQueryView;
+                LocationQueryViewModel theChosenOne = args.ChosenSuggestion as LocationQueryViewModel;
 
                 if (!String.IsNullOrEmpty(theChosenOne.LocationQuery))
                     selected_query = theChosenOne.LocationQuery;
@@ -123,7 +123,7 @@ namespace SimpleWeather.UWP
             else if (!String.IsNullOrEmpty(args.QueryText))
             {
                 // Use args.QueryText to determine what to do.
-                LocationQueryView result = (await AutoCompleteQuery.getLocations(args.QueryText)).First();
+                LocationQueryViewModel result = (await AutoCompleteQuery.getLocations(args.QueryText)).First();
 
                 if (result != null && String.IsNullOrWhiteSpace(result.LocationQuery))
                 {
@@ -255,7 +255,7 @@ namespace SimpleWeather.UWP
                 {
                     if (cts.IsCancellationRequested) return;
 
-                    LocationQueryView view = await GeopositionQuery.getLocation(geoPos);
+                    LocationQueryViewModel view = await GeopositionQuery.getLocation(geoPos);
 
                     // Refresh list
                     await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>

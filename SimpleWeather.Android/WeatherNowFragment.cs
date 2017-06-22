@@ -26,7 +26,7 @@ namespace SimpleWeather.Droid
         private bool loaded = false;
 
         WeatherDataLoader wLoader = null;
-        WeatherNowView weatherView = null;
+        WeatherNowViewModel weatherView = null;
 
         // Views
         private View contentView;
@@ -59,7 +59,7 @@ namespace SimpleWeather.Droid
             if (weather != null)
             {
                 if (weatherView == null)
-                    weatherView = new WeatherNowView(weather);
+                    weatherView = new WeatherNowViewModel(weather);
                 else
                     weatherView.updateView(weather);
 
@@ -228,7 +228,7 @@ namespace SimpleWeather.Droid
             progressBar.Visibility = show ? ViewStates.Visible : ViewStates.Gone;
         }
 
-        private void SetView(WeatherNowView weatherView)
+        private void SetView(WeatherNowViewModel weatherView)
         {
             View.Post(() => 
             {
@@ -271,7 +271,7 @@ namespace SimpleWeather.Droid
 
                 // Add UI elements
                 forecastPanel.RemoveAllViews();
-                foreach (ForecastItemView forecast in weatherView.Forecasts)
+                foreach (ForecastItemViewModel forecast in weatherView.Forecasts)
                 {
                     forecastPanel.AddView(new ForecastItem(Activity, forecast));
                 }
