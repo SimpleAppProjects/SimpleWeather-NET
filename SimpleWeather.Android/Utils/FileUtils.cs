@@ -35,23 +35,20 @@ namespace SimpleWeather.Utils
             return data;
         }
 
-        public static async void WriteFile(String data, File file)
+        public static async Task WriteFile(String data, File file)
         {
             while(IsFileLocked(file))
             {
                 await Task.Delay(100);
             }
 
-            await Task.Run(async () =>
+            using (System.IO.Stream outputStream = App.Context.OpenFileOutput(file.Name, Android.Content.FileCreationMode.Private))
+            using (System.IO.StreamWriter writer = new System.IO.StreamWriter(outputStream))
             {
-                using (System.IO.Stream outputStream = App.Context.OpenFileOutput(file.Name, Android.Content.FileCreationMode.Private))
-                using (System.IO.StreamWriter writer = new System.IO.StreamWriter(outputStream))
-                {
-                    await writer.WriteAsync(data);
-                    await writer.FlushAsync();
-                    writer.Close();
-                }
-            });
+                await writer.WriteAsync(data);
+                await writer.FlushAsync();
+                writer.Close();
+            }
         }
 
         public static bool IsFileLocked(File file)

@@ -27,8 +27,8 @@ namespace SimpleWeather.Controls
             DependencyProperty.Register("EditMode", typeof(bool),
             typeof(LocationPanelView), new PropertyMetadata(false));
         public static readonly DependencyProperty BackgroundProperty =
-            DependencyProperty.Register("Background", typeof(ImageBrush),
-            typeof(LocationPanelView), new PropertyMetadata(null));
+            DependencyProperty.Register("Background", typeof(Brush),
+            typeof(LocationPanelView), new PropertyMetadata(new SolidColorBrush(UWP.App.AppColor)));
         public static readonly DependencyProperty IsLoadingProperty =
             DependencyProperty.Register("IsLoading", typeof(bool),
             typeof(LocationPanelView), new PropertyMetadata(true));
@@ -71,11 +71,11 @@ namespace SimpleWeather.Controls
         public bool EditMode
         {
             get { return (bool)GetValue(EditModeProperty); }
-            set { SetValue(EditModeProperty, value); setEditMode(value); OnPropertyChanged("LocationName"); }
+            set { SetValue(EditModeProperty, value); setEditMode(value); OnPropertyChanged("EditMode"); }
         }
-        public ImageBrush Background
+        public Brush Background
         {
-            get { return (ImageBrush)GetValue(BackgroundProperty); }
+            get { return (Brush)GetValue(BackgroundProperty); }
             set { SetValue(BackgroundProperty, value); OnPropertyChanged("Background"); }
         }
         public bool IsLoading
@@ -130,13 +130,13 @@ namespace SimpleWeather.Controls
         public void setWeather(Weather weather)
         {
             // Update background
-            if (Background == null)
+            if (Background as ImageBrush == null)
             {
                 Background = new ImageBrush();
-                Background.Stretch = Stretch.UniformToFill;
-                Background.AlignmentX = AlignmentX.Center;
+                (Background as ImageBrush).Stretch = Stretch.UniformToFill;
+                (Background as ImageBrush).AlignmentX = AlignmentX.Center;
             }
-            WeatherUtils.SetBackground(Background, weather);
+            WeatherUtils.SetBackground(Background as ImageBrush, weather);
 
             LocationName = weather.location.name;
             CurrTemp = (Settings.Unit == "F" ?

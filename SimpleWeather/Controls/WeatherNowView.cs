@@ -81,10 +81,10 @@ namespace SimpleWeather.Controls
 #if WINDOWS_UWP
             WeatherUtils.SetBackground(Background, weather);
             PanelBackground = new SolidColorBrush(WeatherUtils.isNight(weather) ?
-                Windows.UI.Color.FromArgb(15, 128, 128, 128) : Windows.UI.Color.FromArgb(15, 8, 8, 8));
+                Windows.UI.Color.FromArgb(45, 128, 128, 128) : Windows.UI.Color.FromArgb(15, 8, 8, 8));
 #elif __ANDROID__
             Background = WeatherUtils.GetBackgroundURI(weather);
-            PanelBackground = WeatherUtils.isNight(weather) ? new Color(128, 128, 128, 15) : new Color(8, 8, 8, 15);
+            PanelBackground = WeatherUtils.isNight(weather) ? new Color(128, 128, 128, 45) : new Color(8, 8, 8, 15);
 #endif
 
             // Location

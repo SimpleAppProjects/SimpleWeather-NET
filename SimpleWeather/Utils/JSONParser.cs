@@ -51,12 +51,12 @@ namespace SimpleWeather.Utils
         public static void Serializer(Object obj, File file)
 #endif
         {
-            Task.Run(() => 
+            Task.Run(async () =>
             {
                 String data = JsonConvert.SerializeObject(obj,
                     new JsonSerializerSettings()
                     { TypeNameHandling = TypeNameHandling.All });
-                FileUtils.WriteFile(data, file);
+                await FileUtils.WriteFile(data, file);
             });
         }
 

@@ -507,7 +507,8 @@ namespace SimpleWeather.Droid
 
             // Disable EditMode if only single location
             IMenuItem editMenuBtn = optionsMenu.FindItem(Resource.Id.action_editmode);
-            editMenuBtn.SetVisible(mAdapter.Dataset.Count != 1);
+            if (editMenuBtn != null)
+                editMenuBtn.SetVisible(mAdapter.Dataset.Count != 1);
 
             // Flag that data has changed
             if (EditMode && (e.Action == NotifyCollectionChangedAction.Remove || e.Action == NotifyCollectionChangedAction.Move))

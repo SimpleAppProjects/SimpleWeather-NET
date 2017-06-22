@@ -36,7 +36,7 @@ namespace SimpleWeather.Utils
             return data;
         }
 
-        public static async void WriteFile(String data, StorageFile file)
+        public static async Task WriteFile(String data, StorageFile file)
         {
             while(IsFileLocked(file))
             {
@@ -53,7 +53,7 @@ namespace SimpleWeather.Utils
             }
         }
 
-        public static async void WriteFile(Byte[] data, StorageFile file)
+        public static async Task WriteFile(Byte[] data, StorageFile file)
         {
             while (IsFileLocked(file))
             {

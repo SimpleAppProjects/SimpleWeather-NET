@@ -99,7 +99,7 @@
                                     <ColumnDefinition Width="50"/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="&#xf00d;" Style="{StaticResource WeatherIcon}" Grid.Column="0"/>
+                                <TextBlock Text="&#xf00d;" Style="{StaticResource WeatherIcon}" Grid.Column="0" FontSize="15"/>
                                 <TextBlock Text="Weather" RequestedTheme="Dark" FontSize="18" VerticalAlignment="Center" Padding="5" Grid.Column="1" />
                             </Grid>
                         </Button>

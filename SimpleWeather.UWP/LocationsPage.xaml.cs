@@ -459,10 +459,13 @@ namespace SimpleWeather.UWP
                 LocationPanels.Move(fromIdx, toIdx);
 
             // Flag that home location has changed
-            if (CoreApplication.Properties.ContainsKey("HomeChanged"))
-                CoreApplication.Properties["HomeChanged"] = true;
-            else
-                CoreApplication.Properties.Add("HomeChanged", true);
+            if (fromIdx == App.HomeIdx || toIdx == App.HomeIdx)
+            {
+                if (CoreApplication.Properties.ContainsKey("HomeChanged"))
+                    CoreApplication.Properties["HomeChanged"] = true;
+                else
+                    CoreApplication.Properties.Add("HomeChanged", true);
+            }
         }
 
         private void LocationsPanel_DragItemsStarting(object sender, DragItemsStartingEventArgs e)
