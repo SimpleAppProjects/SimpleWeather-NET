@@ -19,14 +19,14 @@ namespace SimpleWeather.Utils
             if (icon.Contains("mostlysunny") || icon.Contains("partlysunny") || 
                 icon.Contains("partlycloudy"))
             {
-                if (isNight(weather))
+                if (IsNight(weather))
                     imgURI = new Uri("ms-appx:///Assets/Backgrounds/PartlyCloudy-Night.jpg");
                 else
                     imgURI = new Uri("ms-appx:///Assets/Backgrounds/PartlyCloudy-Day.jpg");
             }
             if (icon.Contains("cloudy"))
             {
-                if (isNight(weather))
+                if (IsNight(weather))
                     imgURI = new Uri("ms-appx:///Assets/Backgrounds/MostlyCloudy-Night.jpg");
                 else
                     imgURI = new Uri("ms-appx:///Assets/Backgrounds/MostlyCloudy-Day.jpg");
@@ -50,7 +50,7 @@ namespace SimpleWeather.Utils
             else if (icon.Contains("clear") || icon.Contains("sunny"))
             {
                 // Set background based using sunset/rise times
-                if (isNight(weather))
+                if (IsNight(weather))
                     imgURI = new Uri("ms-appx:///Assets/Backgrounds/NightSky.jpg");
                 else
                     imgURI = new Uri("ms-appx:///Assets/Backgrounds/DaySky.jpg");
@@ -122,7 +122,7 @@ namespace SimpleWeather.Utils
                     case 28:
                     case 26:
                     case 27:
-                        if (isNight(weather))
+                        if (IsNight(weather))
                             imgURI = new Uri("ms-appx:///Assets/Backgrounds/MostlyCloudy-Night.jpg");
                         else
                             imgURI = new Uri("ms-appx:///Assets/Backgrounds/MostlyCloudy-Day.jpg");
@@ -131,7 +131,7 @@ namespace SimpleWeather.Utils
                     case 44:
                     case 29:
                     case 30:
-                        if (isNight(weather))
+                        if (IsNight(weather))
                             imgURI = new Uri("ms-appx:///Assets/Backgrounds/PartlyCloudy-Night.jpg");
                         else
                             imgURI = new Uri("ms-appx:///Assets/Backgrounds/PartlyCloudy-Day.jpg");
@@ -139,7 +139,7 @@ namespace SimpleWeather.Utils
                     case 3200:
                     default:
                         // Set background based using sunset/rise times
-                        if (isNight(weather))
+                        if (IsNight(weather))
                             imgURI = new Uri("ms-appx:///Assets/Backgrounds/NightSky.jpg");
                         else
                             imgURI = new Uri("ms-appx:///Assets/Backgrounds/DaySky.jpg");
@@ -149,10 +149,8 @@ namespace SimpleWeather.Utils
 
             if (bg != null && bg.ImageSource != null)
             {
-                BitmapImage bmp = bg.ImageSource as BitmapImage;
-
                 // Skip re-settting bg
-                if (bmp != null && bmp.UriSource == imgURI)
+                if (bg.ImageSource is BitmapImage bmp && bmp.UriSource == imgURI)
                     return;
             }
 
@@ -160,15 +158,17 @@ namespace SimpleWeather.Utils
             if (imgURI == null)
             {
                 // Set background based using sunset/rise times
-                if (isNight(weather))
+                if (IsNight(weather))
                     imgURI = new Uri("ms-appx:///Assets/Backgrounds/NightSky.jpg");
                 else
                     imgURI = new Uri("ms-appx:///Assets/Backgrounds/DaySky.jpg");
             }
 
-            BitmapImage img = new BitmapImage(imgURI);
-            img.CreateOptions = BitmapCreateOptions.None;
-            img.DecodePixelWidth = 960;
+            BitmapImage img = new BitmapImage(imgURI)
+            {
+                CreateOptions = BitmapCreateOptions.None,
+                DecodePixelWidth = 960
+            };
             bg.ImageSource = img;
         }
     }

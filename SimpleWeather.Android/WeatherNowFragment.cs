@@ -9,9 +9,6 @@ using SimpleWeather.WeatherData;
 using SimpleWeather.Droid.Controls;
 using Android.Support.V7.App;
 using SimpleWeather.Controls;
-using Android.Graphics;
-using Android.Graphics.Drawables;
-using Android.Media;
 using SimpleWeather.Droid.Utils;
 using SimpleWeather.Utils;
 using System.Collections.Generic;
@@ -19,7 +16,7 @@ using Com.Nostra13.Universalimageloader.Core;
 
 namespace SimpleWeather.Droid
 {
-    public class WeatherNowFragment : Fragment, WeatherLoadedListener
+    public class WeatherNowFragment : Fragment, IWeatherLoadedListener
     {
         private Context context;
         private Pair<int, string> pair;
@@ -54,14 +51,14 @@ namespace SimpleWeather.Droid
         private String fahrenheit = App.Context.GetString(Resource.String.wi_fahrenheit);
         private String celsius = App.Context.GetString(Resource.String.wi_celsius);
 
-        public void onWeatherLoaded(int locationIdx, Weather weather)
+        public void OnWeatherLoaded(int locationIdx, Weather weather)
         {
             if (weather != null)
             {
                 if (weatherView == null)
                     weatherView = new WeatherNowViewModel(weather);
                 else
-                    weatherView.updateView(weather);
+                    weatherView.UpdateView(weather);
 
                 this.SetView(weatherView);
             }
@@ -180,9 +177,9 @@ namespace SimpleWeather.Droid
             // ex. If temperature unit changed
             if (wLoader != null && !loaded)
             {
-                if (wLoader.getWeather() != null)
+                if (wLoader.GetWeather() != null)
                 {
-                    weatherView.updateView(wLoader.getWeather());
+                    weatherView.UpdateView(wLoader.GetWeather());
                     SetView(weatherView);
                     loaded = true;
                 }
@@ -204,7 +201,7 @@ namespace SimpleWeather.Droid
             if (wLoader == null)
             {
                 // Weather was loaded before. Lets load it up...
-                List<string> locations = await Settings.getLocations();
+                List<string> locations = await Settings.GetLocations();
                 string local = locations[App.HomeIdx];
 
                 wLoader = new WeatherDataLoader(this, local, App.HomeIdx);
@@ -219,7 +216,7 @@ namespace SimpleWeather.Droid
             // Hide view until weather is loaded
             this.Activity.RunOnUiThread(() => ShowLoadingView(true));
 
-            await wLoader.loadWeatherData(forceRefresh);
+            await wLoader.LoadWeatherData(forceRefresh);
         }
 
         private void ShowLoadingView(bool show)

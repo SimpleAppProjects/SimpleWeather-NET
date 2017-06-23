@@ -20,10 +20,10 @@ namespace SimpleWeather.Controls
         #region WeatherUnderground
         public LocationQueryViewModel(AC_RESULT location)
         {
-            setLocation(location);
+            SetLocation(location);
         }
 
-        public void setLocation(AC_RESULT location)
+        public void SetLocation(AC_RESULT location)
         {
             LocationName = location.name;
             LocationCountry = location.c;
@@ -32,10 +32,10 @@ namespace SimpleWeather.Controls
 
         public LocationQueryViewModel(location location)
         {
-            setLocation(location);
+            SetLocation(location);
         }
 
-        public void setLocation(location location)
+        public void SetLocation(location location)
         {
             LocationName = string.Format("{0}, {1}", location.city, location.state);
             LocationCountry = location.country;
@@ -46,13 +46,14 @@ namespace SimpleWeather.Controls
         #region Yahoo Weather
         public LocationQueryViewModel(place location)
         {
-            setLocation(location);
+            SetLocation(location);
         }
 
-        public void setLocation(place location)
+        public void SetLocation(place location)
         {
             string town, region;
 
+            // If location type is ZipCode append it to location name
             if ((location.placeTypeName.Value == "Zip Code"
                 || location.placeTypeName.Value == "Postal Code"))
             {
@@ -71,6 +72,7 @@ namespace SimpleWeather.Controls
                     town = location.name;
             }
 
+            // Try to get region name or fallback to country name
             if (location.admin1 != null
                 && !String.IsNullOrEmpty(location.admin1.Value))
                 region = location.admin1.Value;

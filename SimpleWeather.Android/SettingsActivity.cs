@@ -18,7 +18,7 @@ namespace SimpleWeather.Droid
          * Helper method to determine if the device has an extra-large screen. For
          * example, 10" tablets are extra-large.
          */
-        private static bool isXLargeTablet(Context context)
+        private static bool IsXLargeTablet(Context context)
         {
             return (context.Resources.Configuration.ScreenLayout
                     & ScreenLayout.SizeMask) >= ScreenLayout.SizeXlarge;
@@ -67,9 +67,9 @@ namespace SimpleWeather.Droid
         /**
          * {@inheritDoc}
          */
-        public bool onIsMultiPane()
+        public override bool OnIsMultiPane()
         {
-            return isXLargeTablet(this);
+            return IsXLargeTablet(this);
         }
 
         /**

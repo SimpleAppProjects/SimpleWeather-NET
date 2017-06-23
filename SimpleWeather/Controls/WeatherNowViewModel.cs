@@ -1,9 +1,9 @@
-﻿using SimpleWeather.Controls;
-using SimpleWeather.Utils;
+﻿using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.ObjectModel;
 #if WINDOWS_UWP
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 #elif __ANDROID__
@@ -58,33 +58,37 @@ namespace SimpleWeather.Controls
         public WeatherNowViewModel()
         {
 #if WINDOWS_UWP
-            Background = new ImageBrush();
-            Background.Stretch = Stretch.UniformToFill;
-            Background.AlignmentX = AlignmentX.Center;
+            Background = new ImageBrush()
+            {
+                Stretch = Stretch.UniformToFill,
+                AlignmentX = AlignmentX.Center
+            };
 #endif
         }
 
         public WeatherNowViewModel(Weather weather)
         {
 #if WINDOWS_UWP
-            Background = new ImageBrush();
-            Background.Stretch = Stretch.UniformToFill;
-            Background.AlignmentX = AlignmentX.Center;
+            Background = new ImageBrush()
+            {
+                Stretch = Stretch.UniformToFill,
+                AlignmentX = AlignmentX.Center
+            };
 #endif
 
-            updateView(weather);
+            UpdateView(weather);
         }
 
-        public void updateView(Weather weather)
+        public void UpdateView(Weather weather)
         {
             // Update backgrounds
 #if WINDOWS_UWP
             WeatherUtils.SetBackground(Background, weather);
-            PanelBackground = new SolidColorBrush(WeatherUtils.isNight(weather) ?
-                Windows.UI.Color.FromArgb(45, 128, 128, 128) : Windows.UI.Color.FromArgb(15, 8, 8, 8));
+            PanelBackground = new SolidColorBrush(WeatherUtils.IsNight(weather) ?
+                Color.FromArgb(45, 128, 128, 128) : Color.FromArgb(15, 8, 8, 8));
 #elif __ANDROID__
             Background = WeatherUtils.GetBackgroundURI(weather);
-            PanelBackground = WeatherUtils.isNight(weather) ? new Color(128, 128, 128, 45) : new Color(8, 8, 8, 15);
+            PanelBackground = WeatherUtils.IsNight(weather) ? new Color(128, 128, 128, 45) : new Color(8, 8, 8, 15);
 #endif
 
             // Location
@@ -94,7 +98,7 @@ namespace SimpleWeather.Controls
             UpdateDate = WeatherUtils.GetLastBuildDate(weather);
 
             // Update Current Condition
-            CurTemp = Settings.Unit == "F" ?
+            CurTemp = Settings.Unit == Settings.Fahrenheit ?
                 Math.Round(weather.condition.temp_f) + "\uf045" : Math.Round(weather.condition.temp_c) + "\uf03c";
             CurCondition = weather.condition.weather;
             WeatherIcon = WeatherUtils.GetWeatherIcon(weather.condition.icon);
@@ -105,18 +109,18 @@ namespace SimpleWeather.Controls
             Sunset = weather.astronomy.sunset.ToString("h:mm tt");
 
             // Wind
-            WindChill = Settings.Unit == "F" ?
+            WindChill = Settings.Unit == Settings.Fahrenheit ?
                 Math.Round(weather.condition.feelslike_f) + "º" : Math.Round(weather.condition.feelslike_c) + "º";
-            WindSpeed = Settings.Unit == "F" ?
+            WindSpeed = Settings.Unit == Settings.Fahrenheit ?
                 weather.condition.wind_mph.ToString() + " mph" : weather.condition.wind_kph.ToString() + " kph";
-            updateWindDirection(weather.condition.wind_degrees);
+            UpdateWindDirection(weather.condition.wind_degrees);
 
             // Atmosphere
             Humidity = weather.atmosphere.humidity;
-            Pressure = Settings.Unit == "F" ?
+            Pressure = Settings.Unit == Settings.Fahrenheit ?
                 weather.atmosphere.pressure_in + " in" : weather.atmosphere.pressure_mb + " mb";
-            updatePressureState(weather.atmosphere.pressure_trend);
-            _Visibility = Settings.Unit == "F" ?
+            UpdatePressureState(weather.atmosphere.pressure_trend);
+            _Visibility = Settings.Unit == Settings.Fahrenheit ?
                 weather.atmosphere.visibility_mi + " mi" : weather.atmosphere.visibility_km + " km";
 
             // Add UI elements
@@ -128,7 +132,7 @@ namespace SimpleWeather.Controls
             }
         }
 
-        private void updatePressureState(string state)
+        private void UpdatePressureState(string state)
         {
             switch (state)
             {
@@ -165,11 +169,13 @@ namespace SimpleWeather.Controls
             }
         }
 
-        private void updateWindDirection(int angle)
+        private void UpdateWindDirection(int angle)
         {
 #if WINDOWS_UWP
-            RotateTransform rotation = new RotateTransform();
-            rotation.Angle = angle;
+            RotateTransform rotation = new RotateTransform()
+            {
+                Angle = angle
+            };
             WindDirection = rotation;
 #elif __ANDROID__
             WindDirection = angle;

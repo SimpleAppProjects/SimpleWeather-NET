@@ -10,27 +10,26 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
-
 namespace SimpleWeather.UWP
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class WeatherNow : Page, WeatherLoadedListener
+    public sealed partial class WeatherNow : Page, IWeatherLoadedListener
     {
         WeatherDataLoader wLoader = null;
         WeatherNowViewModel weatherView = null;
 
         KeyValuePair<int, string> pair;
 
-        public void onWeatherLoaded(int locationIdx, Weather weather)
+        public void OnWeatherLoaded(int locationIdx, Weather weather)
         {
             if (weather != null)
             {
                 if (weatherView == null)
                     weatherView = new WeatherNowViewModel(weather);
                 else
-                    weatherView.updateView(weather);
+                    weatherView.UpdateView(weather);
 
                 this.DataContext = null;
                 this.DataContext = weatherView;
@@ -62,8 +61,7 @@ namespace SimpleWeather.UWP
             base.OnNavigatedTo(e);
 
             // Did home change?
-            object homeChanged = false;
-            CoreApplication.Properties.TryGetValue("HomeChanged", out homeChanged);
+            CoreApplication.Properties.TryGetValue("HomeChanged", out object homeChanged);
 
             // Update view on resume
             // ex. If temperature unit changed
@@ -71,8 +69,8 @@ namespace SimpleWeather.UWP
             {
                 if (wLoader != null)
                 {
-                    if (wLoader.getWeather() != null)
-                        weatherView.updateView(wLoader.getWeather());
+                    if (wLoader.GetWeather() != null)
+                        weatherView.UpdateView(wLoader.GetWeather());
                 }
 
                 if (pair.Key == App.HomeIdx)
@@ -117,7 +115,7 @@ namespace SimpleWeather.UWP
             if (wLoader == null)
             {
                 // Weather was loaded before. Lets load it up...
-                List<string> locations = await Settings.getLocations();
+                List<string> locations = await Settings.GetLocations();
                 string local = locations[App.HomeIdx];
 
                 wLoader = new WeatherDataLoader(this, local, App.HomeIdx);
@@ -140,7 +138,7 @@ namespace SimpleWeather.UWP
         {
             ShowLoadingGrid(true);
 
-            await wLoader.loadWeatherData(forceRefresh);
+            await wLoader.LoadWeatherData(forceRefresh);
         }
 
         private void ShowLoadingGrid(bool show)
@@ -183,8 +181,10 @@ namespace SimpleWeather.UWP
         {
             int counter = 0; // 128, 64, 32, 16, 8, 4, 2, 1
             int max_count = (int)ForecastViewer.HorizontalOffset / 64;
-            DispatcherTimer timer = new DispatcherTimer();
-            timer.Interval = new TimeSpan(0, 0, 0, 0, 5);
+            DispatcherTimer timer = new DispatcherTimer()
+            {
+                Interval = new TimeSpan(0, 0, 0, 0, 5)
+            };
             timer.Tick += ((sender, e) =>
             {
                 counter++;
@@ -202,8 +202,10 @@ namespace SimpleWeather.UWP
         {
             int counter = 0; // 128, 64, 32, 16, 8, 4, 2, 1
             int max_count = (int)(ForecastViewer.ScrollableWidth - ForecastViewer.HorizontalOffset) / 64;
-            DispatcherTimer timer = new DispatcherTimer();
-            timer.Interval = new TimeSpan(0, 0, 0, 0, 5);
+            DispatcherTimer timer = new DispatcherTimer()
+            {
+                Interval = new TimeSpan(0, 0, 0, 0, 5)
+            };
             timer.Tick += ((sender, e) =>
             {
                 counter++;

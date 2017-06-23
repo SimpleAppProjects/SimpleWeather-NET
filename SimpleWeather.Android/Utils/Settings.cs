@@ -18,7 +18,7 @@ namespace SimpleWeather.Utils
         private static File appDataFolder = App.Context.FilesDir;
         private static File dataFile;
 
-        private static void init()
+        private static void Init()
         {
             if (dataFile == null)
                 dataFile = new File(appDataFolder, "data.json");
@@ -27,7 +27,7 @@ namespace SimpleWeather.Utils
                 dataFile.CreateNewFile();
         }
 
-        private static string getTempUnit()
+        private static string GetTempUnit()
         {
             if (!preferences.Contains(KEY_USECELSIUS))
             {
@@ -41,7 +41,7 @@ namespace SimpleWeather.Utils
             return Fahrenheit;
         }
 
-        private static void setTempUnit(string value)
+        private static void SetTempUnit(string value)
         {
             if (value == Celsius)
                 editor.PutBoolean(KEY_USECELSIUS, true);
@@ -49,52 +49,52 @@ namespace SimpleWeather.Utils
                 editor.PutBoolean(KEY_USECELSIUS, false);
         }
 
-        private static bool isWeatherLoaded()
+        private static bool IsWeatherLoaded()
         {
             System.IO.FileInfo fileinfo = new System.IO.FileInfo(dataFile.Path);
 
             if (!fileinfo.Exists || (fileinfo.Exists && fileinfo.Length == 0))
             {
-                setWeatherLoaded(false);
+                SetWeatherLoaded(false);
                 return false;
             }
 
             return preferences.Contains(KEY_WEATHERLOADED) && preferences.GetBoolean(KEY_WEATHERLOADED, false);
         }
 
-        private static void setWeatherLoaded(bool isLoaded)
+        private static void SetWeatherLoaded(bool isLoaded)
         {
             editor.PutBoolean(KEY_WEATHERLOADED, isLoaded);
             editor.Commit();
         }
 
-        private static string getAPI()
+        private static string GetAPI()
         {
             if (!preferences.Contains(KEY_API))
             {
-                setAPI("WUnderground");
-                return "WUnderground";
+                SetAPI(API_WUnderground);
+                return API_WUnderground;
             }
             else
                 return preferences.GetString(KEY_API, null);
         }
 
-        private static void setAPI(string value)
+        private static void SetAPI(string value)
         {
             editor.PutString(KEY_API, value);
             editor.Commit();
         }
 
         #region WeatherUnderground
-        private static string getAPIKEY()
+        private static string GetAPIKEY()
         {
             if (!preferences.Contains(KEY_APIKEY))
             {
                 String key;
-                key = readAPIKEYfile();
+                key = ReadAPIKEYfile();
 
                 if (!String.IsNullOrWhiteSpace(key))
-                    setAPIKEY(key);
+                    SetAPIKEY(key);
 
                 return key;
             }
@@ -102,7 +102,7 @@ namespace SimpleWeather.Utils
                 return preferences.GetString(KEY_APIKEY, null);
         }
 
-        private static string readAPIKEYfile()
+        private static string ReadAPIKEYfile()
         {
             // Read key from file
             String key = "";
@@ -135,7 +135,7 @@ namespace SimpleWeather.Utils
             return key;
         }
 
-        private static void setAPIKEY(string key)
+        private static void SetAPIKEY(string key)
         {
             if (!String.IsNullOrWhiteSpace(key))
                 editor.PutString(KEY_APIKEY, key);

@@ -15,9 +15,9 @@ namespace SimpleWeather.Utils
             this.errorStatus = errorStatus;
         }
 
-        public override string Message => getMessage();
+        public override string Message => GetMessage();
 
-        public String getMessage()
+        public String GetMessage()
         {
             String errorMsg;
 

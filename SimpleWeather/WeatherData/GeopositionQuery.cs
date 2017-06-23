@@ -9,15 +9,16 @@ namespace SimpleWeather.WeatherData
 #if WINDOWS_UWP
         public static async Task<Controls.LocationQueryViewModel> getLocation(Windows.Devices.Geolocation.Geoposition geoPos)
 #elif __ANDROID__
-        public static async Task<Controls.LocationQueryViewModel> getLocation(Android.Locations.Location geoPos)
+        public static async Task<Controls.LocationQueryViewModel> GetLocation(Android.Locations.Location geoPos)
 #endif
         {
             Controls.LocationQueryViewModel location = null;
 
-            if (Settings.API == "WUnderground")
+            if (Settings.API == Settings.API_WUnderground)
             {
+                // Create model from geo-location query
                 WeatherUnderground.location geoLocation = 
-                    await WeatherUnderground.GeopositionQuery.getLocation(new WeatherUtils.Coordinate(geoPos));
+                    await WeatherUnderground.GeopositionQuery.GetLocation(new WeatherUtils.Coordinate(geoPos));
 
                 if (geoLocation != null && !String.IsNullOrWhiteSpace(geoLocation.query))
                     location = new Controls.LocationQueryViewModel(geoLocation);
@@ -26,7 +27,8 @@ namespace SimpleWeather.WeatherData
             }
             else
             {
-                WeatherYahoo.place geoLocation = await WeatherYahoo.GeopositionQuery.getLocation(new WeatherUtils.Coordinate(geoPos));
+                // Create model from geo-location query
+                WeatherYahoo.place geoLocation = await WeatherYahoo.GeopositionQuery.GetLocation(new WeatherUtils.Coordinate(geoPos));
 
                 if (geoLocation != null && !String.IsNullOrWhiteSpace(geoLocation.woeid))
                     location = new Controls.LocationQueryViewModel(geoLocation);

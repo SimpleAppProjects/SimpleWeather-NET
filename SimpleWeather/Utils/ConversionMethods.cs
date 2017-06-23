@@ -4,6 +4,7 @@ namespace SimpleWeather.Utils
 {
     public static class ConversionMethods
     {
+        // Constants
         private const double KM_TO_MI = 0.621371192;
         private const double MI_TO_KM = 1.609344;
         private const double INHG_TO_MB = 1013.25 / 29.92;
@@ -21,25 +22,25 @@ namespace SimpleWeather.Utils
             return Math.Round(result, 2).ToString();
         }
 
-        public static string kmToMi(String input)
+        public static string KmToMi(String input)
         {
             double result = KM_TO_MI * double.Parse(input);
             return Math.Round(result).ToString();
         }
 
-        public static string miToKm(String input)
+        public static string MiToKm(String input)
         {
             double result = MI_TO_KM * double.Parse(input);
             return Math.Round(result).ToString();
         }
 
-        public static string mphTokph(String input)
+        public static string MphToKph(String input)
         {
             double result = MI_TO_KM * double.Parse(input);
             return Math.Round(result).ToString();
         }
 
-        public static string kphTomph(String input)
+        public static string KphToMph(String input)
         {
             double result = KM_TO_MI * double.Parse(input);
             return Math.Round(result).ToString();

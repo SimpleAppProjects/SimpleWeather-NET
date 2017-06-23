@@ -383,7 +383,7 @@
                           HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
                           RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True">
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="controls:LocationPanelView">
+                        <DataTemplate x:DataType="controls:LocationPanelViewModel">
                             <Grid Margin="5">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>

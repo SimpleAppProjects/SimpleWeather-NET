@@ -16,13 +16,13 @@ namespace SimpleWeather.Utils
         private static StorageFolder appDataFolder = ApplicationData.Current.LocalFolder;
         private static StorageFile dataFile;
 
-        private static async void init()
+        private static async void Init()
         {
             if (dataFile == null)
                 dataFile = await appDataFolder.CreateFileAsync("data.json", CreationCollisionOption.OpenIfExists);
         }
 
-        private static string getTempUnit()
+        private static string GetTempUnit()
         {
             if (!localSettings.Values.ContainsKey(KEY_UNITS) || localSettings.Values[KEY_UNITS] == null)
             {
@@ -34,7 +34,7 @@ namespace SimpleWeather.Utils
             return Fahrenheit;
         }
 
-        private static void setTempUnit(string value)
+        private static void SetTempUnit(string value)
         {
             if (value == Celsius)
                 localSettings.Values[KEY_UNITS] = Celsius;
@@ -42,21 +42,21 @@ namespace SimpleWeather.Utils
                 localSettings.Values[KEY_UNITS] = Fahrenheit;
         }
 
-        private static bool isWeatherLoaded()
+        private static bool IsWeatherLoaded()
         {
-            Task.Factory.StartNew(async () => await loadIfNeeded()).Unwrap().Wait();
+            Task.Factory.StartNew(async () => await LoadIfNeeded()).Unwrap().Wait();
 
             FileInfo fileinfo = new FileInfo(dataFile.Path);
 
             if (fileinfo.Length == 0 || !fileinfo.Exists)
             {
-                setWeatherLoaded(false);
+                SetWeatherLoaded(false);
                 return false;
             }
 
             if (weatherData.Count > 0)
             {
-                setWeatherLoaded(true);
+                SetWeatherLoaded(true);
                 return true;
             }
             else if (localSettings.Values[KEY_WEATHERLOADED] == null)
@@ -73,37 +73,37 @@ namespace SimpleWeather.Utils
             }
         }
 
-        private static void setWeatherLoaded(bool isLoaded)
+        private static void SetWeatherLoaded(bool isLoaded)
         {
             localSettings.Values[KEY_WEATHERLOADED] = isLoaded;
         }
 
-        private static string getAPI()
+        private static string GetAPI()
         {
             if (!localSettings.Values.ContainsKey(KEY_API) || localSettings.Values[KEY_API] == null)
             {
-                setAPI("WUnderground");
-                return "WUnderground";
+                SetAPI(API_WUnderground);
+                return API_WUnderground;
             }
             else
                 return (string)localSettings.Values[KEY_API];
         }
 
-        private static void setAPI(string value)
+        private static void SetAPI(string value)
         {
             localSettings.Values[KEY_API] = value;
         }
 
         #region WeatherUnderground
-        private static string getAPIKEY()
+        private static string GetAPIKEY()
         {
             if (!localSettings.Values.ContainsKey(KEY_APIKEY) || localSettings.Values[KEY_APIKEY] == null)
             {
                 String key = String.Empty;
-                key = readAPIKEYfile().GetAwaiter().GetResult();
+                key = ReadAPIKEYfile().GetAwaiter().GetResult();
 
                 if (!String.IsNullOrWhiteSpace(key))
-                    setAPIKEY(key);
+                    SetAPIKEY(key);
 
                 return key;
             }
@@ -111,7 +111,7 @@ namespace SimpleWeather.Utils
                 return (string)localSettings.Values[KEY_APIKEY];
         }
 
-        private static async Task<string> readAPIKEYfile()
+        private static async Task<string> ReadAPIKEYfile()
         {
             // Read key from file
             String key = String.Empty;
@@ -132,7 +132,7 @@ namespace SimpleWeather.Utils
             return key;
         }
 
-        private static void setAPIKEY(string API_KEY)
+        private static void SetAPIKEY(string API_KEY)
         {
             if (!String.IsNullOrWhiteSpace(API_KEY))
                 localSettings.Values[KEY_APIKEY] = API_KEY;

@@ -6,7 +6,6 @@ using Android.OS;
 using Android.Support.V4.App;
 using Android.Support.V4.Content;
 using Android.Support.V7.Widget;
-using Android.Text;
 using Android.Views;
 using Android.Widget;
 using SimpleWeather.Utils;
@@ -17,7 +16,6 @@ using Android.Runtime;
 using System.Collections.Specialized;
 using SimpleWeather.Droid.Controls;
 using SimpleWeather.Controls;
-using System.Collections.ObjectModel;
 using SimpleWeather.Droid.Utils;
 using SimpleWeather.Droid.Helpers;
 using System.Threading;
@@ -43,15 +41,15 @@ namespace SimpleWeather.Droid
         public LocationSearchFragment()
         {
             // Required empty public constructor
-            clickListener = LocationSearchFragment_clickListener;
+            ClickListener = LocationSearchFragment_clickListener;
             cts = new CancellationTokenSource();
         }
 
-        public event EventHandler<RecyclerClickEventArgs> clickListener;
+        public event EventHandler<RecyclerClickEventArgs> ClickListener;
 
         public void SetClickListener(EventHandler<RecyclerClickEventArgs> listener)
         {
-            clickListener = listener;
+            ClickListener = listener;
         }
 
         private async void LocationSearchFragment_clickListener(object sender, RecyclerClickEventArgs e)
@@ -69,7 +67,7 @@ namespace SimpleWeather.Droid
                 return;
             }
 
-            if (String.IsNullOrWhiteSpace(Settings.API_KEY) && Settings.API == "WUnderground")
+            if (String.IsNullOrWhiteSpace(Settings.API_KEY) && Settings.API == Settings.API_WUnderground)
             {
                 // TODO: replace with string resource
                 String errorMsg = new WeatherException(WeatherUtils.ErrorStatus.INVALIDAPIKEY).Message;
@@ -79,10 +77,10 @@ namespace SimpleWeather.Droid
 
             Pair<int, string> pair;
             
-            // Weather Data
-            OrderedDictionary weatherData = await Settings.getWeatherData();
+            // Get Weather Data
+            OrderedDictionary weatherData = await Settings.GetWeatherData();
 
-            WeatherData.Weather weather = await WeatherData.WeatherLoaderTask.getWeather(selected_query);
+            WeatherData.Weather weather = await WeatherData.WeatherLoaderTask.GetWeather(selected_query);
 
             if (weather == null)
                 return;
@@ -92,7 +90,7 @@ namespace SimpleWeather.Droid
                 weatherData[selected_query] = weather;
             else
                 weatherData.Add(selected_query, weather);
-            Settings.saveWeatherData();
+            Settings.SaveWeatherData();
 
             pair = new Pair<int, string>(App.HomeIdx, selected_query);
 
@@ -108,7 +106,7 @@ namespace SimpleWeather.Droid
         {
             // Inflate the layout for this fragment
             View view = inflater.Inflate(Resource.Layout.fragment_location_search, container, false);
-            setupView(view);
+            SetupView(view);
             return view;
         }
 
@@ -117,7 +115,7 @@ namespace SimpleWeather.Droid
             base.OnDetach();
         }
 
-        private void setupView(View view)
+        private void SetupView(View view)
         {
             mRecyclerView = (RecyclerView)view.FindViewById(Resource.Id.recycler_view);
 
@@ -126,7 +124,7 @@ namespace SimpleWeather.Droid
             mLocListnr.LocationChanged += (Location location) =>
             {
                 mLocation = location;
-                fetchGeoLocation();
+                FetchGeoLocation();
             };
 
             // use this setting to improve performance if you know that changes
@@ -139,11 +137,11 @@ namespace SimpleWeather.Droid
 
             // specify an adapter (see also next example)
             mAdapter = new LocationQueryAdapter(new List<LocationQueryViewModel>());
-            mAdapter.ItemClick += clickListener;
+            mAdapter.ItemClick += ClickListener;
             mRecyclerView.SetAdapter(mAdapter);
         }
 
-        public void fetchLocations(String queryString)
+        public void FetchLocations(String queryString)
         {
             // Cancel pending searches
             cts.Cancel();
@@ -156,7 +154,7 @@ namespace SimpleWeather.Droid
                 {
                     if (cts.IsCancellationRequested) return;
 
-                    var results = await WeatherData.AutoCompleteQuery.getLocations(queryString);
+                    var results = await WeatherData.AutoCompleteQuery.GetLocations(queryString);
 
                     if (cts.IsCancellationRequested) return;
 
@@ -173,7 +171,7 @@ namespace SimpleWeather.Droid
             }
         }
 
-        public void fetchGeoLocation()
+        public void FetchGeoLocation()
         {
             // Cancel pending searches
             cts.Cancel();
@@ -186,7 +184,7 @@ namespace SimpleWeather.Droid
                     if (cts.IsCancellationRequested) return;
 
                     // Get geo location
-                    LocationQueryViewModel gpsLocation = await WeatherData.GeopositionQuery.getLocation(mLocation);
+                    LocationQueryViewModel gpsLocation = await WeatherData.GeopositionQuery.GetLocation(mLocation);
 
                     if (cts.IsCancellationRequested) return;
 
@@ -195,13 +193,14 @@ namespace SimpleWeather.Droid
             }
             else
             {
-                updateLocation();
+                UpdateLocation();
             }
         }
 
-        private void updateLocation()
+        private void UpdateLocation()
         {
-            if (ContextCompat.CheckSelfPermission(Activity, Manifest.Permission.AccessFineLocation) != Permission.Granted && ContextCompat.CheckSelfPermission(Activity, Manifest.Permission.AccessCoarseLocation) != Permission.Granted)
+            if (ContextCompat.CheckSelfPermission(Activity, Manifest.Permission.AccessFineLocation) != Permission.Granted &&
+                ContextCompat.CheckSelfPermission(Activity, Manifest.Permission.AccessCoarseLocation) != Permission.Granted)
             {
                 RequestPermissions(new String[] { Manifest.Permission.AccessCoarseLocation, Manifest.Permission.AccessFineLocation },
                         PERMISSION_LOCATION_REQUEST_CODE);
@@ -226,7 +225,7 @@ namespace SimpleWeather.Droid
                 else
                 {
                     mLocation = location;
-                    fetchGeoLocation();
+                    FetchGeoLocation();
                 }
             }
             else if (isNetEnabled)
@@ -238,7 +237,7 @@ namespace SimpleWeather.Droid
                 else
                 {
                     mLocation = location;
-                    fetchGeoLocation();
+                    FetchGeoLocation();
                 }
             }
             else
@@ -252,25 +251,24 @@ namespace SimpleWeather.Droid
             switch (requestCode)
             {
                 case PERMISSION_LOCATION_REQUEST_CODE:
+                {
+                    // If request is cancelled, the result arrays are empty.
+                    if (grantResults.Length > 0
+                            && grantResults[0] == Permission.Granted)
                     {
-                        // If request is cancelled, the result arrays are empty.
-                        if (grantResults.Length > 0
-                                && grantResults[0] == Permission.Granted)
-                        {
 
-                            // permission was granted, yay! Do the
-                            // contacts-related task you need to do.
-
-                            fetchGeoLocation();
-                        }
-                        else
-                        {
-                            // permission denied, boo! Disable the
-                            // functionality that depends on this permission.
-                            Toast.MakeText(Activity, "Location access denied", ToastLength.Short).Show();
-                        }
-                        return;
+                        // permission was granted, yay!
+                        // Do the task you need to do.
+                        FetchGeoLocation();
                     }
+                    else
+                    {
+                        // permission denied, boo! Disable the
+                        // functionality that depends on this permission.
+                        Toast.MakeText(Activity, "Location access denied", ToastLength.Short).Show();
+                    }
+                    return;
+                }
             }
         }
     }

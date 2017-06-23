@@ -65,7 +65,7 @@ namespace SimpleWeather.WeatherYahoo
                         break;
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 locationResults = new List<Controls.LocationQueryViewModel>();
             }

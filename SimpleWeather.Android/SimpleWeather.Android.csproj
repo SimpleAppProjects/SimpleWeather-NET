@@ -36,6 +36,7 @@
     <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
     <AndroidUseSharedRuntime>true</AndroidUseSharedRuntime>
     <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
@@ -134,7 +135,7 @@
     <Compile Include="Controls\LocationPanelViewModel.cs" />
     <Compile Include="Controls\LocationQuery.cs" />
     <Compile Include="Controls\WeatherIcon.cs" />
-    <Compile Include="Helpers\ItemTouchHelperAdapter.cs" />
+    <Compile Include="Helpers\IItemTouchHelperAdapter.cs" />
     <Compile Include="Helpers\ItemTouchHelperCallback.cs" />
     <Compile Include="Helpers\ActionModeCallback.cs" />
     <Compile Include="Helpers\LocationListener.cs" />

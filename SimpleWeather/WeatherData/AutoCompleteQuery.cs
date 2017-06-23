@@ -7,13 +7,14 @@ namespace SimpleWeather.WeatherData
 {
     public static class AutoCompleteQuery
     {
-        public static async Task<ObservableCollection<Controls.LocationQueryViewModel>> getLocations(string query)
+        public static async Task<ObservableCollection<Controls.LocationQueryViewModel>> GetLocations(string query)
         {
             ObservableCollection<Controls.LocationQueryViewModel> locations = null;
 
-            if (Settings.API == "WUnderground")
+            if (Settings.API == Settings.API_WUnderground)
             {
-                List<Controls.LocationQueryViewModel> ac_query = await WeatherUnderground.AutoCompleteQuery.getLocations(query);
+                // Create list of locations queries
+                List<Controls.LocationQueryViewModel> ac_query = await WeatherUnderground.AutoCompleteQuery.GetLocations(query);
 
                 if (ac_query == null || ac_query.Count == 0)
                     locations = new ObservableCollection<Controls.LocationQueryViewModel>() { new Controls.LocationQueryViewModel() };
@@ -22,6 +23,7 @@ namespace SimpleWeather.WeatherData
             }
             else
             {
+                // Create list of locations queries
                 List<Controls.LocationQueryViewModel> ac_query = await WeatherYahoo.AutoCompleteQuery.getLocations(query);
 
                 if (ac_query == null || ac_query.Count == 0)

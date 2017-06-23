@@ -16,7 +16,7 @@ namespace SimpleWeather.WeatherYahoo
 {
     public static class GeopositionQuery
     {
-        public static async Task<place> getLocation(WeatherUtils.Coordinate coord)
+        public static async Task<place> GetLocation(WeatherUtils.Coordinate coord)
         {
             string yahooAPI = "https://query.yahooapis.com/v1/public/yql?q=";
             string location_query = string.Format("({0},{1})", coord.Latitude, coord.Longitude);

@@ -7,9 +7,13 @@ using System.Text;
 using Newtonsoft.Json;
 #if WINDOWS_UWP
 using Windows.Storage.Streams;
+using Windows.UI.Core;
+using Windows.UI.Popups;
+using Windows.Web;
 using Windows.Web.Http;
 #elif __ANDROID__
 using Android.Widget;
+using System.Net;
 using System.Net.Http;
 using SimpleWeather.Droid;
 #endif
@@ -18,29 +22,29 @@ namespace SimpleWeather.WeatherData
 {
     public class WeatherDataLoader
     {
-        private WeatherLoadedListener callback;
+        private IWeatherLoadedListener callback;
         private string location_query = null;
         private Weather weather = null;
         private int locationIdx = 0;
 
-        public WeatherDataLoader(WeatherLoadedListener listener, string query, int idx)
+        public WeatherDataLoader(IWeatherLoadedListener listener, string query, int idx)
         {
             callback = listener;
             location_query = query;
             locationIdx = idx;
         }
 
-        public void setWeatherLoadedListener(WeatherLoadedListener listener)
+        public void SetWeatherLoadedListener(IWeatherLoadedListener listener)
         {
             callback = listener;
         }
 
-        private async Task getWeatherData()
+        private async Task GetWeatherData()
         {
             string queryAPI = null;
             Uri weatherURL = null;
 
-            if (Settings.API == "WUnderground")
+            if (Settings.API == Settings.API_WUnderground)
             {
                 queryAPI = "http://api.wunderground.com/api/" + Settings.API_KEY + "/astronomy/conditions/forecast10day";
                 string options = ".json";
@@ -70,7 +74,7 @@ namespace SimpleWeather.WeatherData
                     wEx = null;
 
                     // Load weather
-                    if (Settings.API == "WUnderground")
+                    if (Settings.API == Settings.API_WUnderground)
                     {
                         WeatherUnderground.Rootobject root = null;
                         await Task.Run(() =>
@@ -112,9 +116,9 @@ namespace SimpleWeather.WeatherData
                 {
                     weather = null;
 #if WINDOWS_UWP
-                    if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
+                    if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
 #elif __ANDROID__
-                    if (ex is System.Net.WebException)
+                    if (ex is WebException)
 #endif
                     {
                         wEx = new WeatherException(WeatherUtils.ErrorStatus.NETWORKERROR);
@@ -132,16 +136,17 @@ namespace SimpleWeather.WeatherData
             // Load old data if available and we can't get new data
             if (weather == null)
             {
-                await loadSavedWeatherData(true);
+                await LoadSavedWeatherData(true);
             }
             else if (weather != null)
             {
-                saveWeatherData();
+                SaveWeatherData();
             }
 
             // End Stream
             webClient.Dispose();
 
+            // Throw exception if we're unable to get any weather data
             if (weather == null && wEx != null)
             {
                 throw wEx;
@@ -152,52 +157,52 @@ namespace SimpleWeather.WeatherData
             }
         }
 
-        public async Task loadWeatherData(bool forceRefresh)
+        public async Task LoadWeatherData(bool forceRefresh)
         {
             if (forceRefresh)
             {
                 try
                 {
-                    await getWeatherData();
+                    await GetWeatherData();
                 }
                 catch (WeatherException wEx)
                 {
 #if WINDOWS_UWP
-                    await Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(
-                        Windows.UI.Core.CoreDispatcherPriority.Normal,
-                        async () => await new Windows.UI.Popups.MessageDialog(wEx.Message).ShowAsync());
+                    await CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(
+                        CoreDispatcherPriority.Normal,
+                        async () => await new MessageDialog(wEx.Message).ShowAsync());
 #elif __ANDROID__
                     Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
 #endif
                 }
             }
             else
-                await loadWeatherData();
+                await LoadWeatherData();
 
-            callback.onWeatherLoaded(locationIdx, weather);
+            callback.OnWeatherLoaded(locationIdx, weather);
         }
 
-        private async Task loadWeatherData()
+        private async Task LoadWeatherData()
         {
             /*
              * If unable to retrieve saved data, data is old, or units don't match
              * Refresh weather data
             */
 
-            bool gotData = await loadSavedWeatherData();
+            bool gotData = await LoadSavedWeatherData();
 
             if (!gotData)
             {
                 try
                 {
-                    await getWeatherData();
+                    await GetWeatherData();
                 }
                 catch (WeatherException wEx)
                 {
 #if WINDOWS_UWP
-                    await Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(
-                        Windows.UI.Core.CoreDispatcherPriority.Normal,
-                        async () => await new Windows.UI.Popups.MessageDialog(wEx.Message).ShowAsync());
+                    await CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(
+                        CoreDispatcherPriority.Normal,
+                        async () => await new MessageDialog(wEx.Message).ShowAsync());
 #elif __ANDROID__
                     Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
 #endif
@@ -205,14 +210,14 @@ namespace SimpleWeather.WeatherData
             }
         }
 
-        private async Task<bool> loadSavedWeatherData(bool _override)
+        private async Task<bool> LoadSavedWeatherData(bool _override)
         {
             if (_override)
             {
                 // Load weather data
                 try
                 {
-                    weather = (await Settings.getWeatherData())[locationIdx] as Weather;
+                    weather = (await Settings.GetWeatherData())[locationIdx] as Weather;
                 }
                 catch (Exception)
                 {
@@ -225,15 +230,15 @@ namespace SimpleWeather.WeatherData
                 return true;
             }
             else
-                return await loadSavedWeatherData();
+                return await LoadSavedWeatherData();
         }
 
-        private async Task<bool> loadSavedWeatherData()
+        private async Task<bool> LoadSavedWeatherData()
         {
             // Load weather data
             try
             {
-                weather = (await Settings.getWeatherData())[locationIdx] as Weather;
+                weather = (await Settings.GetWeatherData())[locationIdx] as Weather;
             }
             catch (Exception)
             {
@@ -256,17 +261,17 @@ namespace SimpleWeather.WeatherData
                 return false;
         }
 
-        private async void saveWeatherData()
+        private async void SaveWeatherData()
         {
-            OrderedDictionary weatherData = await Settings.getWeatherData();
+            OrderedDictionary weatherData = await Settings.GetWeatherData();
             if (locationIdx > weatherData.Count - 1)
                 weatherData.Insert(locationIdx, location_query, weather);
             else
                 weatherData[locationIdx] = weather;
-            Settings.saveWeatherData();
+            Settings.SaveWeatherData();
         }
 
-        public Weather getWeather()
+        public Weather GetWeather()
         {
             return weather;
         }
@@ -276,12 +281,12 @@ namespace SimpleWeather.WeatherData
     {
         private static Weather weather = null;
 
-        public static async Task<Weather> getWeather(string location_query)
+        public static async Task<Weather> GetWeather(string location_query)
         {
             string queryAPI = null;
             Uri weatherURL = null;
 
-            if (Settings.API == "WUnderground")
+            if (Settings.API == Settings.API_WUnderground)
             {
                 queryAPI = "http://api.wunderground.com/api/" + Settings.API_KEY + "/astronomy/conditions/forecast10day";
                 string options = ".json";
@@ -311,7 +316,7 @@ namespace SimpleWeather.WeatherData
                     wEx = null;
 
                     // Load weather
-                    if (Settings.API == "WUnderground")
+                    if (Settings.API == Settings.API_WUnderground)
                     {
                         WeatherUnderground.Rootobject root = null;
                         await Task.Run(() => 
@@ -352,9 +357,9 @@ namespace SimpleWeather.WeatherData
                 {
                     weather = null;
 #if WINDOWS_UWP
-                    if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
+                    if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
 #elif __ANDROID__
-                    if (ex is System.Net.WebException)
+                    if (ex is WebException)
 #endif
                     {
                         wEx = new WeatherException(WeatherUtils.ErrorStatus.NETWORKERROR);
@@ -378,9 +383,9 @@ namespace SimpleWeather.WeatherData
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NOWEATHER);
 
 #if WINDOWS_UWP
-                await Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(
-                    Windows.UI.Core.CoreDispatcherPriority.Normal,
-                    async () => await new Windows.UI.Popups.MessageDialog(wEx.Message).ShowAsync());
+                await CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(
+                    CoreDispatcherPriority.Normal,
+                    async () => await new MessageDialog(wEx.Message).ShowAsync());
 #elif __ANDROID__
                 Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
 #endif

@@ -13,7 +13,7 @@ namespace SimpleWeather.WeatherUnderground
 {
     public static class AutoCompleteQuery
     {
-        public static async Task<List<Controls.LocationQueryViewModel>> getLocations(string query)
+        public static async Task<List<Controls.LocationQueryViewModel>> GetLocations(string query)
         {
             string queryAPI = "http://autocomplete.wunderground.com/aq?query=";
             string options = "&h=0&cities=1";

@@ -150,7 +150,7 @@ namespace SimpleWeather.Utils
             return WeatherIcon;
         }
 
-        public static bool isNight(Weather weather)
+        public static bool IsNight(Weather weather)
         {
             TimeSpan sunrise = weather.astronomy.sunrise.TimeOfDay;
             TimeSpan sunset = weather.astronomy.sunset.TimeOfDay;
@@ -179,19 +179,19 @@ namespace SimpleWeather.Utils
 
         public class Coordinate
         {
-            public double Latitude { get => lat; set { setLat(value); } }
-            public double Longitude { get => _long; set { setLong(value); } }
+            public double Latitude { get => lat; set { SetLat(value); } }
+            public double Longitude { get => _long; set { SetLong(value); } }
 
             private double lat = 0;
             private double _long = 0;
 
-            private void setLat(double value) { lat = value; }
+            private void SetLat(double value) { lat = value; }
 
-            private void setLong(double value) { _long = value; }
+            private void SetLong(double value) { _long = value; }
 
             public Coordinate(string coordinatePair)
             {
-                setCoordinate(coordinatePair);
+                SetCoordinate(coordinatePair);
             }
 
             public Coordinate(double latitude, double longitude)
@@ -216,7 +216,7 @@ namespace SimpleWeather.Utils
             }
 #endif
 
-            public void setCoordinate(string coordinatePair)
+            public void SetCoordinate(string coordinatePair)
             {
                 string[] coord = coordinatePair.Split(',');
                 lat = double.Parse(coord[0]);

@@ -18,6 +18,7 @@ namespace SimpleWeather.WeatherData
         [Newtonsoft.Json.JsonConstructor]
         private Weather()
         {
+            // Needed for deserialization
         }
 
         public Weather(WeatherYahoo.Rootobject root)
@@ -62,6 +63,7 @@ namespace SimpleWeather.WeatherData
         [Newtonsoft.Json.JsonConstructor]
         private Location()
         {
+            // Needed for deserialization
         }
 
         public Location(WeatherUnderground.Current_Observation condition)
@@ -85,6 +87,7 @@ namespace SimpleWeather.WeatherData
 
         private void saveTimeZone(WeatherYahoo.Query query)
         {
+            /* Get TimeZone info by using UTC and local build time */
             // Now
             DateTime utc = DateTime.ParseExact(query.created,
                             "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'", CultureInfo.InvariantCulture);
@@ -115,6 +118,7 @@ namespace SimpleWeather.WeatherData
         [Newtonsoft.Json.JsonConstructor]
         private Forecast()
         {
+            // Needed for deserialization
         }
 
         public Forecast(WeatherYahoo.Forecast forecast)
@@ -156,6 +160,7 @@ namespace SimpleWeather.WeatherData
         [Newtonsoft.Json.JsonConstructor]
         private Condition()
         {
+            // Needed for deserialization
         }
 
         public Condition(WeatherUnderground.Current_Observation condition)
@@ -178,7 +183,7 @@ namespace SimpleWeather.WeatherData
             temp_c = float.Parse(ConversionMethods.FtoC(channel.item.condition.temp));
             wind_degrees = int.Parse(channel.wind.direction);
             wind_kph = float.Parse(channel.wind.speed);
-            wind_mph = float.Parse(ConversionMethods.kphTomph(channel.wind.speed));
+            wind_mph = float.Parse(ConversionMethods.KphToMph(channel.wind.speed));
             feelslike_f = float.Parse(channel.wind.chill);
             feelslike_c = float.Parse(ConversionMethods.FtoC(channel.wind.chill));
             icon = channel.item.condition.code;
@@ -197,6 +202,7 @@ namespace SimpleWeather.WeatherData
         [Newtonsoft.Json.JsonConstructor]
         private Atmosphere()
         {
+            // Needed for deserialization
         }
 
         public Atmosphere(WeatherUnderground.Current_Observation condition)
@@ -216,7 +222,7 @@ namespace SimpleWeather.WeatherData
             pressure_in = ConversionMethods.MBToInHg(pressure_mb);
             pressure_trend = atmosphere.rising;
             visibility_km = atmosphere.visibility;
-            visibility_mi = ConversionMethods.kmToMi(visibility_km);
+            visibility_mi = ConversionMethods.KmToMi(visibility_km);
         }
     }
 
@@ -228,6 +234,7 @@ namespace SimpleWeather.WeatherData
         [Newtonsoft.Json.JsonConstructor]
         private Astronomy()
         {
+            // Needed for deserialization
         }
 
         public Astronomy(WeatherUnderground.Sun_Phase sun_phase)

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
+using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
@@ -16,7 +17,6 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
-
 namespace SimpleWeather.UWP
 {
     /// <summary>
@@ -24,9 +24,6 @@ namespace SimpleWeather.UWP
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        // For UI Thread
-        CoreDispatcher dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
-
         private CancellationTokenSource cts = new CancellationTokenSource();
 
         public ObservableCollection<LocationQueryViewModel> LocationQuerys { get; set; }
@@ -40,7 +37,7 @@ namespace SimpleWeather.UWP
             LocationQuerys = new ObservableCollection<LocationQueryViewModel>();
 
             // TitleBar
-            if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
                 // Mobile
                 ApplicationView.GetForCurrentView().TryEnterFullScreenMode();
@@ -71,10 +68,10 @@ namespace SimpleWeather.UWP
                 {
                     if (cts.IsCancellationRequested) return;
 
-                    var results = await AutoCompleteQuery.getLocations(query);
+                    var results = await AutoCompleteQuery.GetLocations(query);
 
                     // Refresh list
-                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => 
+                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => 
                     {
                         LocationQuerys = results;
                         sender.ItemsSource = null;
@@ -95,9 +92,7 @@ namespace SimpleWeather.UWP
 
         private void Location_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
         {
-            LocationQueryViewModel theChosenOne = args.SelectedItem as LocationQueryViewModel;
-
-            if (theChosenOne != null)
+            if (args.SelectedItem is LocationQueryViewModel theChosenOne)
             {
                 if (String.IsNullOrEmpty(theChosenOne.LocationQuery))
                     sender.Text = String.Empty;
@@ -123,7 +118,7 @@ namespace SimpleWeather.UWP
             else if (!String.IsNullOrEmpty(args.QueryText))
             {
                 // Use args.QueryText to determine what to do.
-                LocationQueryViewModel result = (await AutoCompleteQuery.getLocations(args.QueryText)).First();
+                LocationQueryViewModel result = (await AutoCompleteQuery.GetLocations(args.QueryText)).First();
 
                 if (result != null && String.IsNullOrWhiteSpace(result.LocationQuery))
                 {
@@ -144,7 +139,7 @@ namespace SimpleWeather.UWP
             }
 
             // Stop if using WeatherUnderground and API Key is empty
-            if (String.IsNullOrWhiteSpace(Settings.API_KEY) && Settings.API == "WUnderground")
+            if (String.IsNullOrWhiteSpace(Settings.API_KEY) && Settings.API == Settings.API_WUnderground)
             {
                 TextBlock header = KeyEntry.Header as TextBlock;
                 header.Visibility = Visibility.Visible;
@@ -156,9 +151,9 @@ namespace SimpleWeather.UWP
             KeyValuePair<int, string> pair;
 
             // Weather Data
-            OrderedDictionary weatherData = await Settings.getWeatherData();
+            OrderedDictionary weatherData = await Settings.GetWeatherData();
 
-            Weather weather = await WeatherLoaderTask.getWeather(selected_query);
+            Weather weather = await WeatherLoaderTask.GetWeather(selected_query);
 
             if (weather == null)
                 return;
@@ -168,12 +163,12 @@ namespace SimpleWeather.UWP
                 weatherData[selected_query] = weather;
             else
                 weatherData.Add(selected_query, weather);
-            Settings.saveWeatherData();
+            Settings.SaveWeatherData();
 
             pair = new KeyValuePair<int, string>(App.HomeIdx, selected_query);
 
             Settings.WeatherLoaded = true;
-            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(Shell), pair));
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(Shell), pair));
             sender.IsSuggestionListOpen = false;
         }
 
@@ -190,7 +185,7 @@ namespace SimpleWeather.UWP
 
             if (Settings.WeatherLoaded)
             {
-                await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(Shell)));
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(Shell)));
             }
             else
             {
@@ -258,7 +253,7 @@ namespace SimpleWeather.UWP
                     LocationQueryViewModel view = await GeopositionQuery.getLocation(geoPos);
 
                     // Refresh list
-                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     {
                         LocationQuerys.Clear();
                         LocationQuerys.Add(view);
@@ -283,14 +278,14 @@ namespace SimpleWeather.UWP
                 // WeatherUnderground
                 if (KeyEntry != null)
                     KeyEntry.Visibility = Visibility.Visible;
-                Settings.API = "WUnderground";
+                Settings.API = Settings.API_WUnderground;
             }
             else if (index == 1)
             {
                 // Yahoo Weather
                 if (KeyEntry != null)
                     KeyEntry.Visibility = Visibility.Collapsed;
-                Settings.API = "Yahoo";
+                Settings.API = Settings.API_Yahoo;
             }
         }
 

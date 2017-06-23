@@ -44,12 +44,12 @@ namespace SimpleWeather.Droid
             {
                 if (e.Position == 0)
                 {
-                    Settings.API = "WUnderground";
+                    Settings.API = Settings.API_WUnderground;
                     FindViewById(Resource.Id.key_entry_box).Visibility = ViewStates.Visible;
                 }
                 else
                 {
-                    Settings.API = "Yahoo";
+                    Settings.API = Settings.API_Yahoo;
                     FindViewById(Resource.Id.key_entry_box).Visibility = ViewStates.Invisible;
                 }
             };
@@ -83,12 +83,12 @@ namespace SimpleWeather.Droid
 
             FindViewById(Resource.Id.search_view_container).Click += delegate
             {
-                enterSearchUi();
+                EnterSearchUi();
             };
 
             FindViewById(Resource.Id.search_fragment_container).Click += delegate
             {
-                exitSearchUi();
+                ExitSearchUi();
             };
 
             // Reset focus
@@ -109,16 +109,16 @@ namespace SimpleWeather.Droid
             if ((fragment as LocationSearchFragment) != null)
             {
                 mSearchFragment = (LocationSearchFragment)fragment;
-                setupSearchUi();
+                SetupSearchUi();
             }
         }
 
-        private void enterSearchUi()
+        private void EnterSearchUi()
         {
             inSearchUI = true;
             if (mSearchFragment == null)
             {
-                addSearchFragment();
+                AddSearchFragment();
                 return;
             }
             mSearchFragment.UserVisibleHint = true;
@@ -128,14 +128,14 @@ namespace SimpleWeather.Droid
             transaction.Show(mSearchFragment);
             transaction.CommitAllowingStateLoss();
             FragmentManager.ExecutePendingTransactions();
-            setupSearchUi();
+            SetupSearchUi();
         }
 
-        private void setupSearchUi()
+        private void SetupSearchUi()
         {
             if (searchView == null)
             {
-                prepareSearchView();
+                PrepareSearchView();
             }
             SupportActionBar.SetDisplayShowCustomEnabled(true);
             SupportActionBar.SetBackgroundDrawable(null);
@@ -143,20 +143,22 @@ namespace SimpleWeather.Droid
             searchView.RequestFocus();
         }
 
-        private void addSearchFragment()
+        private void AddSearchFragment()
         {
             if (mSearchFragment != null)
             {
                 return;
             }
             FragmentTransaction ft = SupportFragmentManager.BeginTransaction();
-            Fragment searchFragment = new LocationSearchFragment();
-            searchFragment.UserVisibleHint = false;
+            Fragment searchFragment = new LocationSearchFragment()
+            {
+                UserVisibleHint = false
+            };
             ft.Add(Resource.Id.search_fragment_container, searchFragment);
             ft.CommitAllowingStateLoss();
         }
 
-        private void prepareSearchView()
+        private void PrepareSearchView()
         {
             View searchViewLayout = LayoutInflater.Inflate(
                     Resource.Layout.search_action_bar, null);
@@ -164,7 +166,7 @@ namespace SimpleWeather.Droid
                     .FindViewById(Resource.Id.search_back_button);
             backButtonView.Click += delegate
             {
-                exitSearchUi();
+                ExitSearchUi();
             };
             searchView = (EditText)searchViewLayout
                     .FindViewById(Resource.Id.search_view);
@@ -181,7 +183,7 @@ namespace SimpleWeather.Droid
                 if (mSearchFragment != null)
                 {
                     clearButtonView.Visibility = String.IsNullOrEmpty(e.Text.ToString()) ? ViewStates.Gone : ViewStates.Visible;
-                    mSearchFragment.fetchLocations(e.Text.ToString());
+                    mSearchFragment.FetchLocations(e.Text.ToString());
                 }
             };
             clearButtonView.Visibility = ViewStates.Gone;
@@ -204,7 +206,7 @@ namespace SimpleWeather.Droid
                 {
                     if (mSearchFragment != null)
                     {
-                        mSearchFragment.fetchLocations(v.Text);
+                        mSearchFragment.FetchLocations(v.Text);
                         HideInputMethod(v);
                     }
                     e.Handled = true;
@@ -213,7 +215,7 @@ namespace SimpleWeather.Droid
             };
             locationButtonView.Click += delegate
             {
-                mSearchFragment.fetchGeoLocation();
+                mSearchFragment.FetchGeoLocation();
             };
 
             SupportActionBar.SetCustomView(
@@ -227,7 +229,7 @@ namespace SimpleWeather.Droid
             if (inSearchUI)
             {
                 // We should let the user go back to usual screens with tabs.
-                exitSearchUi();
+                ExitSearchUi();
             }
             else
             {
@@ -235,7 +237,7 @@ namespace SimpleWeather.Droid
             }
         }
 
-        private void exitSearchUi()
+        private void ExitSearchUi()
         {
             if (mSearchFragment != null)
             {

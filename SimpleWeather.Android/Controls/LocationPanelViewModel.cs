@@ -23,16 +23,16 @@ namespace SimpleWeather.Droid.Controls
 
         public LocationPanelViewModel(Weather weather)
         {
-            setWeather(weather);
+            SetWeather(weather);
         }
 
-        public void setWeather(Weather weather)
+        public void SetWeather(Weather weather)
         {
             // Update background
             Background = WeatherUtils.GetBackgroundURI(weather);
 
             LocationName = weather.location.name;
-            CurrTemp = (Settings.Unit == "F" ?
+            CurrTemp = (Settings.Unit == Settings.Fahrenheit ?
                 Math.Round(weather.condition.temp_f) : Math.Round(weather.condition.temp_c)) + "º";
             WeatherIcon = WeatherUtils.GetWeatherIcon(weather.condition.icon);
         }

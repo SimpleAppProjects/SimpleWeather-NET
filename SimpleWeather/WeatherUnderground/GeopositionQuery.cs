@@ -5,10 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 #if WINDOWS_UWP
+using Windows.UI.Core;
+using Windows.UI.Popups;
+using Windows.Web;
 using Windows.Web.Http;
 #elif __ANDROID__
 using SimpleWeather.Droid;
 using Android.Widget;
+using System.Net;
 using System.Net.Http;
 #endif
 
@@ -19,7 +23,7 @@ namespace SimpleWeather.WeatherUnderground
         private static string queryAPI = "http://api.wunderground.com/auto/wui/geo/GeoLookupXML/index.xml?query=";
         private static string options = "";
 
-        public static async Task<location> getLocation(WeatherUtils.Coordinate coord)
+        public static async Task<location> GetLocation(WeatherUtils.Coordinate coord)
         {
             string query = string.Format("{0},{1}", coord.Latitude, coord.Longitude);
             Uri queryURL = new Uri(queryAPI + query + options);
@@ -51,18 +55,18 @@ namespace SimpleWeather.WeatherUnderground
             {
                 result = new location();
 #if WINDOWS_UWP
-                if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NETWORKERROR);
-                    await Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(
-                        Windows.UI.Core.CoreDispatcherPriority.Normal,
-                        async () => await new Windows.UI.Popups.MessageDialog(wEx.Message).ShowAsync());
+                    await CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(
+                        CoreDispatcherPriority.Normal,
+                        async () => await new MessageDialog(wEx.Message).ShowAsync());
                 }
 #elif __ANDROID__
-                if (ex is System.Net.WebException)
+                if (ex is WebException)
                 {
-                    System.Net.WebException webEx = ex as System.Net.WebException;
-                    if (webEx.Status > System.Net.WebExceptionStatus.Success)
+                    WebException webEx = ex as WebException;
+                    if (webEx.Status > WebExceptionStatus.Success)
                     {
                         wEx = new WeatherException(WeatherUtils.ErrorStatus.NETWORKERROR);
                         Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();

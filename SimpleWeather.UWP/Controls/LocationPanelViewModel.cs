@@ -71,7 +71,7 @@ namespace SimpleWeather.Controls
         public bool EditMode
         {
             get { return (bool)GetValue(EditModeProperty); }
-            set { SetValue(EditModeProperty, value); setEditMode(value); OnPropertyChanged("EditMode"); }
+            set { SetValue(EditModeProperty, value); SetEditMode(value); OnPropertyChanged("EditMode"); }
         }
         public Brush Background
         {
@@ -86,7 +86,7 @@ namespace SimpleWeather.Controls
         public bool IsHome
         {
             get { return (bool)GetValue(IsHomeProperty); }
-            set { SetValue(IsHomeProperty, value); setHome(value); OnPropertyChanged("IsHome"); }
+            set { SetValue(IsHomeProperty, value); SetHome(value); OnPropertyChanged("IsHome"); }
         }
         public Visibility HomeBoxVisibility
         {
@@ -95,7 +95,7 @@ namespace SimpleWeather.Controls
         }
         #endregion
 
-        private void setEditMode(bool value)
+        private void SetEditMode(bool value)
         {
             if (!IsHome && !value)
             {
@@ -109,7 +109,7 @@ namespace SimpleWeather.Controls
             }
         }
 
-        private void setHome(bool value)
+        private void SetHome(bool value)
         {
             if (!EditMode)
             {
@@ -124,10 +124,10 @@ namespace SimpleWeather.Controls
 
         public LocationPanelViewModel(Weather weather)
         {
-            setWeather(weather);
+            SetWeather(weather);
         }
 
-        public void setWeather(Weather weather)
+        public void SetWeather(Weather weather)
         {
             // Update background
             if (Background as ImageBrush == null)
@@ -139,7 +139,7 @@ namespace SimpleWeather.Controls
             WeatherUtils.SetBackground(Background as ImageBrush, weather);
 
             LocationName = weather.location.name;
-            CurrTemp = (Settings.Unit == "F" ?
+            CurrTemp = (Settings.Unit == Settings.Fahrenheit ?
                 Math.Round(weather.condition.temp_f) : Math.Round(weather.condition.temp_c)) + "º";
             WeatherIcon = WeatherUtils.GetWeatherIcon(weather.condition.icon);
 

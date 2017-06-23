@@ -1,14 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
-using Android.Content;
 using Android.OS;
 using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.Locations;
 
 namespace SimpleWeather.Droid.Helpers
@@ -20,21 +12,25 @@ namespace SimpleWeather.Droid.Helpers
         public event Action<string> ProviderEnabled;
         public event Action<string, Availability, Bundle> StatusChanged;
 
+        // Called when the location has changed.
         public void OnLocationChanged(Location location)
         {
             LocationChanged?.Invoke(location);
         }
 
+        // Called when the provider is disabled by the user.
         public void OnProviderDisabled(string provider)
         {
             ProviderDisabled?.Invoke(provider);
         }
 
+        // Called when the provider is enabled by the user.
         public void OnProviderEnabled(string provider)
         {
             ProviderEnabled?.Invoke(provider);
         }
 
+        // Called when the provider status changes.
         public void OnStatusChanged(string provider, [GeneratedEnum] Availability status, Bundle extras)
         {
             StatusChanged?.Invoke(provider, status, extras);

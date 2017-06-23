@@ -37,7 +37,7 @@ namespace SimpleWeather.Droid.Controls
             {
                 typeface = Typeface.CreateFromAsset(am, "fonts/weathericons-regular-webfont.ttf");
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 typeface = Typeface.Default;
             }

@@ -10,8 +10,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.Devices.Geolocation;
-using Windows.Foundation;
 using Windows.UI.Core;
+using Windows.UI.Input;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -20,13 +20,12 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
-
 namespace SimpleWeather.UWP
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class LocationsPage : Page, WeatherLoadedListener
+    public sealed partial class LocationsPage : Page, IWeatherLoadedListener
     {
         private CancellationTokenSource cts = new CancellationTokenSource();
 
@@ -37,12 +36,12 @@ namespace SimpleWeather.UWP
         public bool EditMode { get; set; } = false;
         private bool DataChanged = false;
 
-        public void onWeatherLoaded(int locationIdx, Weather weather)
+        public void OnWeatherLoaded(int locationIdx, Weather weather)
         {
             if (weather != null)
             {
                 LocationPanelViewModel panelView = LocationPanels[locationIdx];
-                panelView.setWeather(weather);
+                panelView.SetWeather(weather);
             }
         }
 
@@ -105,15 +104,17 @@ namespace SimpleWeather.UWP
         private async void LoadLocations()
         {
             // Lets load it up...
-            List<string> locations = await Settings.getLocations();
+            List<string> locations = await Settings.GetLocations();
 
             foreach (string location in locations)
             {
                 int index = locations.IndexOf(location);
 
-                LocationPanelViewModel panel = new LocationPanelViewModel();
-                // Save index to tag (to easily retreive)
-                panel.Pair = new KeyValuePair<int, string>(index, location);
+                LocationPanelViewModel panel = new LocationPanelViewModel()
+                {
+                    // Save index to tag (to easily retreive)
+                    Pair = new KeyValuePair<int, string>(index, location)
+                };
 
                 // Set home
                 if (index == App.HomeIdx)
@@ -131,7 +132,7 @@ namespace SimpleWeather.UWP
                 int index = locations.IndexOf(location);
 
                 wLoader = new WeatherDataLoader(this, location, index);
-                await wLoader.loadWeatherData(false);
+                await wLoader.LoadWeatherData(false);
             }
         }
 
@@ -141,7 +142,7 @@ namespace SimpleWeather.UWP
             {
                 WeatherDataLoader wLoader =
                     new WeatherDataLoader(this, view.Pair.Value, view.Pair.Key);
-                await wLoader.loadWeatherData(false);
+                await wLoader.LoadWeatherData(false);
             }
         }
 
@@ -243,7 +244,7 @@ namespace SimpleWeather.UWP
                 {
                     if (cts.IsCancellationRequested) return;
 
-                    var results = await AutoCompleteQuery.getLocations(query);
+                    var results = await AutoCompleteQuery.GetLocations(query);
 
                     if (cts.IsCancellationRequested) return;
 
@@ -269,9 +270,7 @@ namespace SimpleWeather.UWP
 
         private void Location_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
         {
-            LocationQueryViewModel theChosenOne = args.SelectedItem as LocationQueryViewModel;
-
-            if (theChosenOne != null)
+            if (args.SelectedItem is LocationQueryViewModel theChosenOne)
             {
                 if (String.IsNullOrEmpty(theChosenOne.LocationQuery))
                     sender.Text = String.Empty;
@@ -297,7 +296,7 @@ namespace SimpleWeather.UWP
             else if (!String.IsNullOrEmpty(args.QueryText))
             {
                 // Use args.QueryText to determine what to do.
-                LocationQueryViewModel result = (await AutoCompleteQuery.getLocations(args.QueryText)).First();
+                LocationQueryViewModel result = (await AutoCompleteQuery.GetLocations(args.QueryText)).First();
 
                 if (result != null && String.IsNullOrWhiteSpace(result.LocationQuery))
                 {
@@ -317,7 +316,7 @@ namespace SimpleWeather.UWP
                 return;
             }
 
-            OrderedDictionary weatherData = await Settings.getWeatherData();
+            OrderedDictionary weatherData = await Settings.GetWeatherData();
             int index = weatherData.Keys.Count;
 
             // Check if location already exists
@@ -327,7 +326,7 @@ namespace SimpleWeather.UWP
                 return;
             }
 
-            Weather weather = await WeatherLoaderTask.getWeather(selected_query);
+            Weather weather = await WeatherLoaderTask.GetWeather(selected_query);
 
             if (weather == null)
                 return;
@@ -336,11 +335,13 @@ namespace SimpleWeather.UWP
             weatherData.Add(selected_query, weather);
 
             // Save data
-            Settings.saveWeatherData();
+            Settings.SaveWeatherData();
 
-            LocationPanelViewModel panelView = new LocationPanelViewModel(weather);
-            // Save index to tag (to easily retreive)
-            panelView.Pair = new KeyValuePair<int, string>(index, selected_query);
+            LocationPanelViewModel panelView = new LocationPanelViewModel(weather)
+            {
+                // Save index to tag (to easily retreive)
+                Pair = new KeyValuePair<int, string>(index, selected_query)
+            };
 
             // Set properties if necessary
             if (EditMode)
@@ -396,7 +397,7 @@ namespace SimpleWeather.UWP
                 view.EditMode = EditMode;
             }
 
-            if (!EditMode && DataChanged) Settings.saveWeatherData();
+            if (!EditMode && DataChanged) Settings.SaveWeatherData();
             DataChanged = false;
         }
 
@@ -411,7 +412,7 @@ namespace SimpleWeather.UWP
             int idx = pair.Key;
 
             // Remove location from list
-            OrderedDictionary weatherData = await Settings.getWeatherData();
+            OrderedDictionary weatherData = await Settings.GetWeatherData();
             weatherData.RemoveAt(idx);
 
             // Remove panel
@@ -448,7 +449,8 @@ namespace SimpleWeather.UWP
 
         private async void MoveData(LocationPanelViewModel view, int fromIdx, int toIdx)
         {
-            OrderedDictionary data = await Settings.getWeatherData();
+            // Move data in both weather dictionary and local dataset
+            OrderedDictionary data = await Settings.GetWeatherData();
 
             Weather weather = data[fromIdx] as Weather;
             data.RemoveAt(fromIdx);
@@ -480,7 +482,7 @@ namespace SimpleWeather.UWP
             if (panel == null)
                 return;
 
-            List<string> data = await Settings.getLocations();
+            List<string> data = await Settings.GetLocations();
             int newIndex = panel.Pair.Key;
             int oldIndex = data.IndexOf(panel.Pair.Value);
 
@@ -503,7 +505,7 @@ namespace SimpleWeather.UWP
 
         private void LocationPanel_Holding(object sender, HoldingRoutedEventArgs e)
         {
-            if (e.HoldingState == Windows.UI.Input.HoldingState.Started)
+            if (e.HoldingState == HoldingState.Started)
             {
                 if (!EditMode) ToggleEditMode();
                 e.Handled = true;

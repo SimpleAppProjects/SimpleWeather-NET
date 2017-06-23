@@ -37,7 +37,7 @@ namespace SimpleWeather.Droid
             navigationView.SetNavigationItemSelectedListener(this);
 
             // Back stack listener
-            SupportFragmentManager.BackStackChanged += delegate { refreshNavViewCheckedItem(); };
+            SupportFragmentManager.BackStackChanged += delegate { RefreshNavViewCheckedItem(); };
 
             Fragment fragment = SupportFragmentManager.FindFragmentById(Resource.Id.fragment_container);
 
@@ -126,10 +126,10 @@ namespace SimpleWeather.Droid
         protected override void OnResumeFragments()
         {
             base.OnResumeFragments();
-            refreshNavViewCheckedItem();
+            RefreshNavViewCheckedItem();
         }
 
-        private void refreshNavViewCheckedItem()
+        private void RefreshNavViewCheckedItem()
         {
             NavigationView navigationView = (NavigationView)FindViewById(Resource.Id.nav_view);
             Fragment fragment = SupportFragmentManager.FindFragmentById(Resource.Id.fragment_container);

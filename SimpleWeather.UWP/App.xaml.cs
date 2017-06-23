@@ -5,6 +5,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Storage;
 using Windows.Storage.Streams;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
@@ -17,7 +18,7 @@ namespace SimpleWeather.UWP
     /// </summary>
     sealed partial class App : Application
     {
-        public static Windows.UI.Color AppColor = Windows.UI.Color.FromArgb(255, 0, 111, 191);
+        public static readonly Color AppColor = Color.FromArgb(255, 0, 111, 191);
         public const int HomeIdx = 0;
 
         /// <summary>

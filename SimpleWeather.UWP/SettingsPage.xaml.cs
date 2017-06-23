@@ -3,9 +3,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
-
 namespace SimpleWeather.UWP
-
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -22,7 +20,7 @@ namespace SimpleWeather.UWP
         private void RestoreSettings()
         {
             // Temperature
-            if (Settings.Unit == "F")
+            if (Settings.Unit == Settings.Fahrenheit)
             {
                 Fahrenheit.IsChecked = true;
                 Celsius.IsChecked = false;
@@ -36,12 +34,12 @@ namespace SimpleWeather.UWP
 
         private void Fahrenheit_Checked(object sender, RoutedEventArgs e)
         {
-            Settings.Unit = "F";
+            Settings.Unit = Settings.Fahrenheit;
         }
 
         private void Celsius_Checked(object sender, RoutedEventArgs e)
         {
-            Settings.Unit = "C";
+            Settings.Unit = Settings.Celsius;
         }
     }
 }

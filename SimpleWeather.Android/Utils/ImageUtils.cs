@@ -12,6 +12,7 @@ namespace SimpleWeather.Droid.Utils
 {
     public static class ImageUtils
     {
+        // Default UniversalImageLoader config
         public static DisplayImageOptions DefaultDisplayConfig()
         {
             return new DisplayImageOptions.Builder()
@@ -22,6 +23,7 @@ namespace SimpleWeather.Droid.Utils
                     .Build();
         }
 
+        // UniversalImageLoader DisplayImageOptions for Center Cropping an Image
         public static DisplayImageOptions CenterCropConfig(int Width, int Height)
         {
             return new DisplayImageOptions.Builder()

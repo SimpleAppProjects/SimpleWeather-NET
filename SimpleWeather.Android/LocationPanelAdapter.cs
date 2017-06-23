@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
-using Android.App;
 using Android.Content;
-using Android.OS;
-using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.Support.V7.Widget;
@@ -19,11 +14,13 @@ using Android.Support.V4.Content;
 
 namespace SimpleWeather.Droid
 {
-    public class LocationPanelAdapter : RecyclerView.Adapter, ItemTouchHelperAdapter
+    public class LocationPanelAdapter : RecyclerView.Adapter, IItemTouchHelperAdapter
     {
         private ObservableCollection<LocationPanelViewModel> mDataset;
 
         public List<LocationPanelViewModel> Dataset { get { return mDataset.ToList(); } }
+
+        // Events
         public event EventHandler<RecyclerClickEventArgs> ItemClick;
         public event EventHandler<RecyclerClickEventArgs> ItemLongClick;
         public event EventHandler<NotifyCollectionChangedEventArgs> CollectionChanged;
@@ -33,7 +30,6 @@ namespace SimpleWeather.Droid
         // you provide access to all the views for a data item in a view holder
         class ViewHolder : RecyclerView.ViewHolder
         {
-            // each data item is just a string in this case
             public LocationPanel mLocView;
             public ImageButton mHomeButton;
             public ViewHolder(LocationPanel v,
@@ -74,8 +70,10 @@ namespace SimpleWeather.Droid
             // - get element from your dataset at this position
             // - replace the contents of the view with that element
             ViewHolder vh = holder as ViewHolder;
+            Context context = vh.mLocView.Context;
             LocationPanelViewModel panelView = mDataset[position];
 
+            // Set HomeButton visibility based on EditMode status
             if (!panelView.IsHome && !panelView.EditMode)
                 vh.mHomeButton.Visibility = ViewStates.Gone;
             else if (!panelView.IsHome && panelView.EditMode)
@@ -85,13 +83,13 @@ namespace SimpleWeather.Droid
 
             if (panelView.IsHome)
             {
-                vh.mHomeButton.SetImageDrawable(ContextCompat.GetDrawable(vh.mLocView.Context, Resource.Drawable.ic_home_fill_white_24dp));
+                vh.mHomeButton.SetImageDrawable(ContextCompat.GetDrawable(context, Resource.Drawable.ic_home_fill_white_24dp));
                 vh.mHomeButton.Enabled = false;
                 vh.mHomeButton.Visibility = ViewStates.Visible;
             }
             else
             {
-                vh.mHomeButton.SetImageDrawable(ContextCompat.GetDrawable(vh.mLocView.Context, Resource.Drawable.ic_home_nofill_white_24dp));
+                vh.mHomeButton.SetImageDrawable(ContextCompat.GetDrawable(context, Resource.Drawable.ic_home_nofill_white_24dp));
                 vh.mHomeButton.Enabled = true;
             }
 
@@ -123,7 +121,7 @@ namespace SimpleWeather.Droid
             }
         }
 
-        public LocationPanelViewModel GetPanelView(int position)
+        public LocationPanelViewModel GetPanelViewModel(int position)
         {
             return mDataset[position];
         }
@@ -131,13 +129,14 @@ namespace SimpleWeather.Droid
         private async void RemoveLocation(int position)
         {
             // Remove location from list
-            OrderedDictionary weatherData = await Settings.getWeatherData();
+            OrderedDictionary weatherData = await Settings.GetWeatherData();
             weatherData.RemoveAt(position);
-            Settings.saveWeatherData();
+            Settings.SaveWeatherData();
 
             // Remove panel
             Remove(position);
 
+            // Reset home if necessary
             if (position == App.HomeIdx)
             {
                 mDataset[App.HomeIdx].IsHome = true;
@@ -145,9 +144,10 @@ namespace SimpleWeather.Droid
             }
         }
 
-        public async void onItemMove(int fromPosition, int toPosition)
+        public async void OnItemMove(int fromPosition, int toPosition)
         {
-            OrderedDictionary data = await Settings.getWeatherData();
+            // Move data in both weather dictionary and local dataset
+            OrderedDictionary data = await Settings.GetWeatherData();
             LocationPanelViewModel panel = mDataset[fromPosition];
 
             WeatherData.Weather weather = data[fromPosition] as WeatherData.Weather;
@@ -158,7 +158,7 @@ namespace SimpleWeather.Droid
             NotifyItemMoved(fromPosition, toPosition);
         }
 
-        public void onItemMoved(int fromPosition, int toPosition)
+        public void OnItemMoved(int fromPosition, int toPosition)
         {
             // Reset home if necessary
             if (fromPosition == App.HomeIdx || toPosition == App.HomeIdx)
@@ -182,7 +182,7 @@ namespace SimpleWeather.Droid
             }
         }
 
-        public void onItemDismiss(int position)
+        public void OnItemDismiss(int position)
         {
             RemoveLocation(position);
         }
@@ -194,8 +194,8 @@ namespace SimpleWeather.Droid
             if (index == App.HomeIdx)
                 return;
 
-            onItemMove(index, App.HomeIdx);
-            onItemMoved(index, App.HomeIdx);
+            OnItemMove(index, App.HomeIdx);
+            OnItemMoved(index, App.HomeIdx);
         }
 
         protected void OnClick(RecyclerClickEventArgs args) => ItemClick?.Invoke(this, args);

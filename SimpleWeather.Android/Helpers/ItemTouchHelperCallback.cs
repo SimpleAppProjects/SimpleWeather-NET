@@ -20,9 +20,9 @@ namespace SimpleWeather.Droid.Helpers
         private int fromPosition = -1;
         private int toPosition = -1;
 
-        private ItemTouchHelperAdapter mAdapter;
+        private IItemTouchHelperAdapter mAdapter;
 
-        public ItemTouchHelperCallback(ItemTouchHelperAdapter adapter)
+        public ItemTouchHelperCallback(IItemTouchHelperAdapter adapter)
         {
             mAdapter = adapter;
         }
@@ -50,13 +50,13 @@ namespace SimpleWeather.Droid.Helpers
             fromPosition = viewHolder.AdapterPosition;
             toPosition = target.AdapterPosition;
 
-            mAdapter.onItemMove(viewHolder.AdapterPosition, target.AdapterPosition);
+            mAdapter.OnItemMove(viewHolder.AdapterPosition, target.AdapterPosition);
             return true;
         }
 
         public override void OnSwiped(RecyclerView.ViewHolder viewHolder, int direction)
         {
-            mAdapter.onItemDismiss(viewHolder.AdapterPosition);
+            mAdapter.OnItemDismiss(viewHolder.AdapterPosition);
         }
 
         public override void OnChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, bool isCurrentlyActive)
@@ -88,8 +88,9 @@ namespace SimpleWeather.Droid.Helpers
             base.ClearView(recyclerView, viewHolder);
 
             if (fromPosition != -1 && toPosition != -1 && fromPosition != toPosition)
-                mAdapter.onItemMoved(fromPosition, toPosition);
+                mAdapter.OnItemMoved(fromPosition, toPosition);
 
+            // Reset positions
             fromPosition = -1;
             toPosition = -1;
         }
@@ -97,7 +98,7 @@ namespace SimpleWeather.Droid.Helpers
         public override long GetAnimationDuration(RecyclerView recyclerView, int animationType, float animateDx, float animateDy)
         {
             if (animationType == ItemTouchHelper.AnimationTypeSwipeSuccess)
-                return 350;
+                return 350; // Default is 250
             else
                 return base.GetAnimationDuration(recyclerView, animationType, animateDx, animateDy);
         }

@@ -22,7 +22,7 @@ using Android.Support.V7.Widget.Helper;
 
 namespace SimpleWeather.Droid
 {
-    public class LocationsFragment : Fragment, WeatherLoadedListener
+    public class LocationsFragment : Fragment, IWeatherLoadedListener
     {
         private bool Loaded = false;
         private bool EditMode = false;
@@ -55,37 +55,37 @@ namespace SimpleWeather.Droid
         public LocationsFragment()
         {
             // Required empty public constructor
-            mActionModeCallback.CreateActionMode += onCreateActionMode;
-            mActionModeCallback.DestroyActionMode += onDestroyActionMode;
+            mActionModeCallback.CreateActionMode += OnCreateActionMode;
+            mActionModeCallback.DestroyActionMode += OnDestroyActionMode;
         }
 
-        public void onWeatherLoaded(int locationIdx, Weather weather)
+        public void OnWeatherLoaded(int locationIdx, Weather weather)
         {
             if (weather != null)
             {
                 LocationPanelViewModel panel = mAdapter.Dataset[locationIdx];
-                panel.setWeather(weather);
+                panel.SetWeather(weather);
                 mAdapter.NotifyItemChanged(locationIdx);
             }
         }
 
-        private bool onCreateActionMode(Android.Support.V7.View.ActionMode mode, IMenu menu)
+        private bool OnCreateActionMode(Android.Support.V7.View.ActionMode mode, IMenu menu)
         {
             if (searchViewLayout == null)
                 searchViewLayout = Activity.LayoutInflater.Inflate(Resource.Layout.search_action_bar, null);
 
             mode.CustomView = searchViewLayout;
-            enterSearchUi();
+            EnterSearchUi();
             return true;
         }
 
-        private void onDestroyActionMode(Android.Support.V7.View.ActionMode mode)
+        private void OnDestroyActionMode(Android.Support.V7.View.ActionMode mode)
         {
-            exitSearchUi();
+            ExitSearchUi();
             mActionMode = null;
         }
 
-        private void onPanelClick(object sender, EventArgs e)
+        private void OnPanelClick(object sender, EventArgs e)
         {
             View view = sender as View;
             if (view == null && e != null)
@@ -145,7 +145,7 @@ namespace SimpleWeather.Droid
             mMainView = view;
             view.FindViewById(Resource.Id.search_fragment_container).Click += delegate
             {
-                exitSearchUi();
+                ExitSearchUi();
             };
             view.FocusableInTouchMode = true;
             view.RequestFocus();
@@ -182,8 +182,8 @@ namespace SimpleWeather.Droid
 
             // specify an adapter (see also next example)
             mAdapter = new LocationPanelAdapter(new List<LocationPanelViewModel>());
-            mAdapter.ItemClick += onPanelClick;
-            mAdapter.ItemLongClick += onPanelLongClick;
+            mAdapter.ItemClick += OnPanelClick;
+            mAdapter.ItemLongClick += OnPanelLongClick;
             mAdapter.CollectionChanged += LocationPanels_CollectionChanged;
             mRecyclerView.SetAdapter(mAdapter);
             new ItemTouchHelper(mITHCallback = new ItemTouchHelperCallback(mAdapter))
@@ -258,23 +258,26 @@ namespace SimpleWeather.Droid
                 outState.PutInt("ModeTag", (int)mActionMode.Tag);
 
             if (inSearchUI)
-                exitSearchUi();
+                ExitSearchUi();
 
             base.OnSaveInstanceState(outState);
         }
 
         private async void LoadLocations()
         {
+            // Load up saved locations
             WeatherDataLoader wLoader = null;
 
-            List<String> locations = await Settings.getLocations();
+            List<String> locations = await Settings.GetLocations();
 
             foreach (String location in locations)
             {
                 int index = locations.IndexOf(location);
 
-                LocationPanelViewModel panel = new LocationPanelViewModel();
-                panel.Pair = new Pair<int, string>(index, location);
+                LocationPanelViewModel panel = new LocationPanelViewModel()
+                {
+                    Pair = new Pair<int, string>(index, location)
+                };
 
                 // Set home
                 if (index == App.HomeIdx)
@@ -285,7 +288,7 @@ namespace SimpleWeather.Droid
                 mAdapter.Add(index, panel);
 
                 wLoader = new WeatherDataLoader(this, location, index);
-                await wLoader.loadWeatherData(false);
+                await wLoader.LoadWeatherData(false);
             }
         }
 
@@ -295,7 +298,7 @@ namespace SimpleWeather.Droid
             {
                 WeatherDataLoader wLoader =
                     new WeatherDataLoader(this, view.Pair.Value, view.Pair.Key);
-                await wLoader.loadWeatherData(false);
+                await wLoader.LoadWeatherData(false);
             }
         }
 
@@ -306,16 +309,16 @@ namespace SimpleWeather.Droid
                 mSearchFragment = (LocationSearchFragment)childFragment;
 
                 if (inSearchUI)
-                    setupSearchUi();
+                    SetupSearchUi();
             }
         }
 
-        private void enterSearchUi()
+        private void EnterSearchUi()
         {
             inSearchUI = true;
             if (mSearchFragment == null)
             {
-                addSearchFragment();
+                AddSearchFragment();
                 return;
             }
             mSearchFragment.UserVisibleHint = true;
@@ -325,19 +328,19 @@ namespace SimpleWeather.Droid
             transaction.Show(mSearchFragment);
             transaction.CommitAllowingStateLoss();
             ChildFragmentManager.ExecutePendingTransactions();
-            setupSearchUi();
+            SetupSearchUi();
         }
 
-        private void setupSearchUi()
+        private void SetupSearchUi()
         {
             if (searchView == null)
             {
-                prepareSearchView();
+                PrepareSearchView();
             }
             searchView.RequestFocus();
         }
 
-        private void addSearchFragment()
+        private void AddSearchFragment()
         {
             if (mSearchFragment != null)
                 return;
@@ -361,20 +364,20 @@ namespace SimpleWeather.Droid
                     return;
                 }
 
-                OrderedDictionary weatherData = await Settings.getWeatherData();
+                OrderedDictionary weatherData = await Settings.GetWeatherData();
 
                 index = weatherData.Keys.Count;
 
                 // Check if location already exists
                 if (weatherData.Contains(selected_query))
                 {
-                    exitSearchUi();
+                    ExitSearchUi();
                     return;
                 }
 
                 Weather weather = null;
 
-                weather = await WeatherLoaderTask.getWeather(selected_query);
+                weather = await WeatherLoaderTask.GetWeather(selected_query);
 
                 if (weather == null)
                     return;
@@ -383,10 +386,12 @@ namespace SimpleWeather.Droid
                 weatherData.Add(selected_query, weather);
 
                 // Save data
-                Settings.saveWeatherData();
+                Settings.SaveWeatherData();
 
-                LocationPanelViewModel panel = new LocationPanelViewModel(weather);
-                panel.Pair = new Pair<int, string>(index, selected_query);
+                LocationPanelViewModel panel = new LocationPanelViewModel(weather)
+                {
+                    Pair = new Pair<int, string>(index, selected_query)
+                };
 
                 // Set properties if necessary
                 if (EditMode)
@@ -394,20 +399,20 @@ namespace SimpleWeather.Droid
 
                 mAdapter.Add(index, panel);
 
-                exitSearchUi();
+                ExitSearchUi();
             });
             searchFragment.UserVisibleHint = false;
             ft.Add(Resource.Id.search_fragment_container, searchFragment);
             ft.CommitAllowingStateLoss();
         }
 
-        private void prepareSearchView()
+        private void PrepareSearchView()
         {
             backButtonView = (ImageView)searchViewLayout
                     .FindViewById(Resource.Id.search_back_button);
             backButtonView.Click += delegate
             {
-                exitSearchUi();
+                ExitSearchUi();
             };
             backButtonView.Visibility = ViewStates.Gone;
             searchView = (EditText)searchViewLayout
@@ -423,7 +428,7 @@ namespace SimpleWeather.Droid
                 if (mSearchFragment != null)
                 {
                     clearButtonView.Visibility = String.IsNullOrEmpty(e.Text.ToString()) ? ViewStates.Gone : ViewStates.Visible;
-                    mSearchFragment.fetchLocations(e.Text.ToString());
+                    mSearchFragment.FetchLocations(e.Text.ToString());
                 }
             };
             clearButtonView.Visibility = ViewStates.Gone;
@@ -444,17 +449,17 @@ namespace SimpleWeather.Droid
                 {
                     if (mSearchFragment != null)
                     {
-                        mSearchFragment.fetchLocations(v.Text);
+                        mSearchFragment.FetchLocations(v.Text);
                         HideInputMethod(v);
                     }
                     e.Handled = true;
                 }
                 e.Handled = false;
             };
-            locationButtonView.Click += delegate { mSearchFragment.fetchGeoLocation(); };
+            locationButtonView.Click += delegate { mSearchFragment.FetchGeoLocation(); };
         }
 
-        private void exitSearchUi()
+        private void ExitSearchUi()
         {
             searchView.Text = String.Empty;
 
@@ -515,7 +520,7 @@ namespace SimpleWeather.Droid
                 DataChanged = true;
         }
 
-        private void onPanelLongClick(object sender, RecyclerClickEventArgs e)
+        private void OnPanelLongClick(object sender, RecyclerClickEventArgs e)
         {
             if (!EditMode && mAdapter.Dataset.Count > 1) ToggleEditMode();
         }
@@ -538,14 +543,14 @@ namespace SimpleWeather.Droid
             if (EditMode)
             {
                 // Unregister events
-                mAdapter.ItemClick -= onPanelClick;
-                mAdapter.ItemLongClick -= onPanelLongClick;
+                mAdapter.ItemClick -= OnPanelClick;
+                mAdapter.ItemLongClick -= OnPanelLongClick;
             }
             else
             {
                 // Register events
-                mAdapter.ItemClick += onPanelClick;
-                mAdapter.ItemLongClick += onPanelLongClick;
+                mAdapter.ItemClick += OnPanelClick;
+                mAdapter.ItemLongClick += OnPanelLongClick;
             }
 
             foreach (LocationPanelViewModel view in mAdapter.Dataset)
@@ -554,7 +559,7 @@ namespace SimpleWeather.Droid
                 mAdapter.NotifyItemChanged(mAdapter.Dataset.IndexOf(view));
             }
 
-            if (!EditMode && DataChanged) Settings.saveWeatherData();
+            if (!EditMode && DataChanged) Settings.SaveWeatherData();
             DataChanged = false;
         }
     }

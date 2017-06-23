@@ -45,7 +45,7 @@ namespace SimpleWeather.Utils
             });
         }
 
-        #if WINDOWS_UWP
+#if WINDOWS_UWP
         public static void Serializer(Object obj, StorageFile file)
 #elif __ANDROID__
         public static void Serializer(Object obj, File file)

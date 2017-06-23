@@ -11,6 +11,7 @@ namespace SimpleWeather.Utils
     {
         public async static Task<String> ReadFile(StorageFile file)
         {
+            // Wait for file to be free
             while (IsFileLocked(file))
             {
                 await Task.Delay(100);
@@ -38,7 +39,8 @@ namespace SimpleWeather.Utils
 
         public static async Task WriteFile(String data, StorageFile file)
         {
-            while(IsFileLocked(file))
+            // Wait for file to be free
+            while (IsFileLocked(file))
             {
                 await Task.Delay(100);
             }
@@ -55,6 +57,7 @@ namespace SimpleWeather.Utils
 
         public static async Task WriteFile(Byte[] data, StorageFile file)
         {
+            // Wait for file to be free
             while (IsFileLocked(file))
             {
                 await Task.Delay(100);

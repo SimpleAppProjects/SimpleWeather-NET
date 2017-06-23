@@ -17,14 +17,14 @@ namespace SimpleWeather.Utils
             if (icon.Contains("mostlysunny") || icon.Contains("partlysunny") ||
                 icon.Contains("partlycloudy"))
             {
-                if (isNight(weather))
+                if (IsNight(weather))
                     file = "assets://backgrounds/PartlyCloudy-Night.jpg";
                 else
                     file = "assets://backgrounds/PartlyCloudy-Day.jpg";
             }
             if (icon.Contains("cloudy"))
             {
-                if (isNight(weather))
+                if (IsNight(weather))
                     file = "assets://backgrounds/MostlyCloudy-Night.jpg";
                 else
                     file = "assets://backgrounds/MostlyCloudy-Day.jpg";
@@ -48,7 +48,7 @@ namespace SimpleWeather.Utils
             else if (icon.Contains("clear") || icon.Contains("sunny"))
             {
                 // Set background based using sunset/rise times
-                if (isNight(weather))
+                if (IsNight(weather))
                     file = "assets://backgrounds/NightSky.jpg";
                 else
                     file = "assets://backgrounds/DaySky.jpg";
@@ -120,7 +120,7 @@ namespace SimpleWeather.Utils
                     case 28:
                     case 26:
                     case 27:
-                        if (isNight(weather))
+                        if (IsNight(weather))
                             file = "assets://backgrounds/MostlyCloudy-Night.jpg";
                         else
                             file = "assets://backgrounds/MostlyCloudy-Day.jpg";
@@ -129,7 +129,7 @@ namespace SimpleWeather.Utils
                     case 44:
                     case 29:
                     case 30:
-                        if (isNight(weather))
+                        if (IsNight(weather))
                             file = "assets://backgrounds/PartlyCloudy-Night.jpg";
                         else
                             file = "assets://backgrounds/PartlyCloudy-Day.jpg";
@@ -137,7 +137,7 @@ namespace SimpleWeather.Utils
                     case 3200:
                     default:
                         // Set background based using sunset/rise times
-                        if (isNight(weather))
+                        if (IsNight(weather))
                             file = "assets://backgrounds/NightSky.jpg";
                         else
                             file = "assets://backgrounds/DaySky.jpg";
@@ -149,7 +149,7 @@ namespace SimpleWeather.Utils
             if (String.IsNullOrWhiteSpace(file))
             {
                 // Set background based using sunset/rise times
-                if (isNight(weather))
+                if (IsNight(weather))
                     file = "assets://backgrounds/NightSky.jpg";
                 else
                     file = "assets://backgrounds/DaySky.jpg";
