@@ -19,6 +19,7 @@ using SimpleWeather.Droid.Utils;
 using SimpleWeather.Droid.Helpers;
 using Android.Support.Design.Widget;
 using Android.Support.V7.Widget.Helper;
+using System.Threading.Tasks;
 
 namespace SimpleWeather.Droid
 {
@@ -193,11 +194,8 @@ namespace SimpleWeather.Droid
             mITHCallback.SetLongPressDragEnabled(false);
             mITHCallback.SetItemViewSwipeEnabled(false);
 
-            view.Post(() =>
-            {
-                Loaded = true;
-                LoadLocations();
-            });
+            Loaded = true;
+            Activity.RunOnUiThread(async () => await LoadLocations());
 
             return view;
         }
@@ -263,7 +261,7 @@ namespace SimpleWeather.Droid
             base.OnSaveInstanceState(outState);
         }
 
-        private async void LoadLocations()
+        private async Task LoadLocations()
         {
             // Load up saved locations
             WeatherDataLoader wLoader = null;
@@ -511,9 +509,12 @@ namespace SimpleWeather.Droid
                 ToggleEditMode();
 
             // Disable EditMode if only single location
-            IMenuItem editMenuBtn = optionsMenu.FindItem(Resource.Id.action_editmode);
-            if (editMenuBtn != null)
-                editMenuBtn.SetVisible(mAdapter.Dataset.Count != 1);
+            if (optionsMenu != null)
+            {
+                IMenuItem editMenuBtn = optionsMenu.FindItem(Resource.Id.action_editmode);
+                if (editMenuBtn != null)
+                    editMenuBtn.SetVisible(mAdapter.Dataset.Count != 1);
+            }
 
             // Flag that data has changed
             if (EditMode && (e.Action == NotifyCollectionChangedAction.Remove || e.Action == NotifyCollectionChangedAction.Move))

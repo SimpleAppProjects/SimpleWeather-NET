@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_weather_now"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="8dp"
-    android:paddingRight="8dp"
-    android:paddingTop="4dp"
-    android:paddingBottom="4dp"
     android:background="@color/colorPrimaryLight"
+    android:fillViewport="true"
     tools:context="com.thewizrd.simpleweather.WeatherNowFragment">
 
     <RelativeLayout
+        android:id="@+id/fragment_weather_now"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:paddingBottom="4dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="4dp">
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -25,18 +27,16 @@
             android:visibility="visible" />
 
         <LinearLayout
+            android:id="@+id/content_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/content_view"
-            android:visibility="gone"
-            tools:visibility="visible"
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/location_condition"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:id="@+id/location_condition">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/label_location_name"
@@ -56,54 +56,53 @@
                     android:id="@+id/label_updatetime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="Updated on 11:12 PM"
-                    android:textAppearance="@android:style/TextAppearance.Material.Large.Inverse"
                     android:layout_gravity="center"
                     android:paddingBottom="8dp"
-                    android:textSize="12sp" />
+                    android:textAppearance="@android:style/TextAppearance.Material.Large.Inverse"
+                    android:textSize="12sp"
+                    tools:text="Updated on 11:12 PM" />
 
                 <SimpleWeather.Droid.Controls.WeatherIcon
                     android:id="@+id/weather_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="@string/wi_wu_sunny"
+                    android:layout_gravity="center"
+                    android:paddingTop="16dp"
+                    android:textAlignment="center"
                     android:textAppearance="@android:style/TextAppearance.Material.Large.Inverse"
                     android:textSize="84sp"
-                    android:textAlignment="center"
-                    android:layout_gravity="center"
-                    android:paddingTop="16dp" />
+                    tools:text="@string/wi_wu_sunny" />
 
                 <TextView
                     android:id="@+id/weather_condition"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="Sunny"
                     android:layout_gravity="center"
                     android:paddingBottom="4dp"
                     android:paddingTop="8dp"
+                    android:textColor="@android:color/white"
                     android:textSize="18sp"
-                    android:textColor="@android:color/white" />
+                    tools:text="Sunny" />
 
                 <SimpleWeather.Droid.Controls.WeatherIcon
                     android:id="@+id/weather_temp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="70`F"
                     android:layout_gravity="center"
-                    android:paddingBottom="8dp"
-                    android:textSize="24sp"
                     android:fontFamily="sans-serif"
-                    android:textColor="@android:color/white" />
-
+                    android:paddingBottom="8dp"
+                    android:textColor="@android:color/white"
+                    android:textSize="24sp"
+                    tools:text="70&#xF045;" />
             </LinearLayout>
 
             <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
                 android:id="@+id/details_panel"
-                android:background="#10080808"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center">
+                android:layout_gravity="center"
+                android:background="#10080808"
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -113,11 +112,11 @@
                     <me.grantland.widget.AutofitTextView
                         android:id="@+id/humidity_label"
                         style="@style/WeatherDetails"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
                         android:gravity="center"
-                        android:text="@string/label_humidity" />
+                        android:text="@string/label_humidity"
+                        android:textSize="@dimen/detail_label_size" />
 
                     <me.grantland.widget.AutofitTextView
                         android:id="@+id/humidity"
@@ -125,16 +124,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        tools:text="25%" />
+                        android:textSize="@dimen/detail_value_size"
+                        tools:text="100%" />
 
                     <me.grantland.widget.AutofitTextView
                         android:id="@+id/pressure_label"
                         style="@style/WeatherDetails"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
                         android:gravity="center"
-                        android:text="@string/label_pressure" />
+                        android:text="@string/label_pressure"
+                        android:textSize="@dimen/detail_label_size" />
 
                     <SimpleWeather.Droid.Controls.WeatherIcon
                         android:id="@+id/pressure_state"
@@ -151,25 +151,26 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        tools:text="29.92 in" />
+                        android:textSize="@dimen/detail_value_size"
+                        tools:text="1000.2 mb" />
 
                     <me.grantland.widget.AutofitTextView
                         android:id="@+id/visibility_label"
                         style="@style/WeatherDetails"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
                         android:gravity="center"
-                        android:text="@string/label_visibility" />
+                        android:text="@string/label_visibility"
+                        android:textSize="@dimen/detail_label_size" />
 
                     <me.grantland.widget.AutofitTextView
                         android:id="@+id/visibility_val"
                         style="@style/WeatherDetails"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
                         android:gravity="center"
-                        tools:text="10.0 mi" />
+                        android:textSize="@dimen/detail_value_size"
+                        tools:text="10.0 km" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -180,12 +181,12 @@
                     <me.grantland.widget.AutofitTextView
                         android:id="@+id/feelslike_label"
                         style="@style/WeatherDetails"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:padding="2dp"
                         android:gravity="center"
-                        android:text="@string/label_feelslike" />
+                        android:padding="2dp"
+                        android:text="@string/label_feelslike"
+                        android:textSize="@dimen/detail_label_size" />
 
                     <me.grantland.widget.AutofitTextView
                         android:id="@+id/feelslike"
@@ -193,7 +194,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        tools:text="36`" />
+                        android:textSize="@dimen/detail_value_size"
+                        tools:text="36º" />
 
                     <me.grantland.widget.AutofitTextView
                         android:id="@+id/wind_label"
@@ -201,7 +203,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:text="@string/label_wind" />
+                        android:text="@string/label_wind"
+                        android:textSize="@dimen/detail_label_size" />
 
                     <SimpleWeather.Droid.Controls.WeatherIcon
                         android:id="@+id/wind_direction"
@@ -216,6 +219,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center"
+                        android:textSize="@dimen/detail_value_size"
                         tools:text="3.8 mph" />
                 </LinearLayout>
 
@@ -236,6 +240,7 @@
                         style="@style/WeatherDetails"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:textSize="@dimen/detail_value_size"
                         tools:text="06:45 AM" />
 
                     <SimpleWeather.Droid.Controls.WeatherIcon
@@ -250,33 +255,32 @@
                         style="@style/WeatherDetails"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:textSize="@dimen/detail_value_size"
                         tools:text="05:32 PM" />
                 </LinearLayout>
             </LinearLayout>
 
             <TextView
+                android:id="@+id/forecast_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/forecast_label"
+                android:paddingBottom="4dp"
+                android:paddingTop="12dp"
                 android:text="@string/label_forecast"
                 android:textAppearance="@android:style/TextAppearance.Material.Medium.Inverse"
                 android:textColor="@android:color/white"
-                android:textStyle="bold"
-                android:paddingTop="12dp"
-                android:paddingBottom="4dp" />
+                android:textStyle="bold" />
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <LinearLayout
-                    android:orientation="horizontal"
+                    android:id="@+id/forecast_panel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/forecast_panel"
-                    android:background="#10080808">
-
-                </LinearLayout>
+                    android:background="#10080808"
+                    android:orientation="horizontal" />
             </HorizontalScrollView>
         </LinearLayout>
     </RelativeLayout>

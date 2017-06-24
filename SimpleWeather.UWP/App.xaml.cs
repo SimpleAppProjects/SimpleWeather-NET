@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using SimpleWeather.Utils;
+using System;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.Storage;
-using Windows.Storage.Streams;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
 namespace SimpleWeather.UWP
@@ -76,6 +73,8 @@ namespace SimpleWeather.UWP
                 // Ensure the current window is active
                 Window.Current.Activate();
             }
+
+            Task.Run(() => Settings.LoadIfNeeded());
         }
 
         /// <summary>

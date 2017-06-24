@@ -2,6 +2,7 @@
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 #if WINDOWS_UWP
 using Windows.UI;
 using Windows.UI.Xaml;
@@ -14,7 +15,165 @@ using Android.Views;
 namespace SimpleWeather.Controls
 {
     public class WeatherNowViewModel
+#if WINDOWS_UWP
+        : DependencyObject, INotifyPropertyChanged
+#endif
     {
+#if WINDOWS_UWP
+        #region DependencyProperties
+        public static readonly DependencyProperty LocationProperty =
+            DependencyProperty.Register("Location", typeof(String),
+            typeof(LocationPanelViewModel), new PropertyMetadata(""));
+        public static readonly DependencyProperty UpdateDateProperty =
+            DependencyProperty.Register("UpdateDate", typeof(String),
+            typeof(LocationPanelViewModel), new PropertyMetadata(""));
+        public static readonly DependencyProperty CurTempProperty =
+            DependencyProperty.Register("CurTemp", typeof(String),
+            typeof(LocationPanelViewModel), new PropertyMetadata(""));
+        public static readonly DependencyProperty CurConditionProperty =
+            DependencyProperty.Register("CurCondition", typeof(String),
+            typeof(LocationPanelViewModel), new PropertyMetadata(""));
+        public static readonly DependencyProperty WeatherIconProperty =
+            DependencyProperty.Register("WeatherIcon", typeof(String),
+            typeof(LocationPanelViewModel), new PropertyMetadata(""));
+        public static readonly DependencyProperty HumidityProperty =
+            DependencyProperty.Register("Humidity", typeof(String),
+            typeof(LocationPanelViewModel), new PropertyMetadata(""));
+        public static readonly DependencyProperty PressureProperty =
+            DependencyProperty.Register("Pressure", typeof(String),
+            typeof(LocationPanelViewModel), new PropertyMetadata(""));
+        public static readonly DependencyProperty RisingVisiblityProperty =
+            DependencyProperty.Register("RisingVisiblity", typeof(Visibility),
+            typeof(LocationPanelViewModel), new PropertyMetadata(Visibility.Visible));
+        public static readonly DependencyProperty RisingIconProperty =
+            DependencyProperty.Register("RisingIcon", typeof(String),
+            typeof(LocationPanelViewModel), new PropertyMetadata(""));
+        public static readonly DependencyProperty _VisibilityProperty =
+            DependencyProperty.Register("_Visibility", typeof(String),
+            typeof(LocationPanelViewModel), new PropertyMetadata(""));
+        public static readonly DependencyProperty WindChillProperty =
+            DependencyProperty.Register("WindChill", typeof(String),
+            typeof(LocationPanelViewModel), new PropertyMetadata(""));
+        public static readonly DependencyProperty WindDirectionProperty =
+            DependencyProperty.Register("WindDirection", typeof(Transform),
+            typeof(LocationPanelViewModel), new PropertyMetadata(new RotateTransform()));
+        public static readonly DependencyProperty WindSpeedProperty =
+            DependencyProperty.Register("WindSpeed", typeof(String),
+            typeof(LocationPanelViewModel), new PropertyMetadata(""));
+        public static readonly DependencyProperty SunriseProperty =
+            DependencyProperty.Register("Sunrise", typeof(String),
+            typeof(LocationPanelViewModel), new PropertyMetadata(""));
+        public static readonly DependencyProperty SunsetProperty =
+            DependencyProperty.Register("Sunset", typeof(String),
+            typeof(LocationPanelViewModel), new PropertyMetadata(""));
+        public static readonly DependencyProperty BackgroundProperty =
+            DependencyProperty.Register("Background", typeof(ImageBrush),
+            typeof(LocationPanelViewModel), new PropertyMetadata(null));
+        public static readonly DependencyProperty PanelBackgroundProperty =
+            DependencyProperty.Register("PanelBackground", typeof(SolidColorBrush),
+            typeof(LocationPanelViewModel), new PropertyMetadata(null));
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        // Create the OnPropertyChanged method to raise the event
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+        #endregion
+
+        #region Properties
+        public string Location
+        {
+            get { return (string)GetValue(LocationProperty); }
+            set { SetValue(LocationProperty, value); OnPropertyChanged("Location"); }
+        }
+        public string UpdateDate
+        {
+            get { return (string)GetValue(UpdateDateProperty); }
+            set { SetValue(UpdateDateProperty, value); OnPropertyChanged("UpdateDate"); }
+        }
+        // Current Condition
+        public string CurTemp
+        {
+            get { return (string)GetValue(CurTempProperty); }
+            set { SetValue(CurTempProperty, value); OnPropertyChanged("CurTemp"); }
+        }
+        public string CurCondition
+        {
+            get { return (string)GetValue(CurConditionProperty); }
+            set { SetValue(CurConditionProperty, value); OnPropertyChanged("CurCondition"); }
+        }
+        public string WeatherIcon
+        {
+            get { return (string)GetValue(WeatherIconProperty); }
+            set { SetValue(WeatherIconProperty, value); OnPropertyChanged("WeatherIcon"); }
+        }
+        // Weather Details
+        public string Humidity
+        {
+            get { return (string)GetValue(HumidityProperty); }
+            set { SetValue(HumidityProperty, value); OnPropertyChanged("Humidity"); }
+        }
+        public string Pressure
+        {
+            get { return (string)GetValue(PressureProperty); }
+            set { SetValue(PressureProperty, value); OnPropertyChanged("Pressure"); }
+        }
+        public Visibility RisingVisiblity
+        {
+            get { return (Visibility)GetValue(RisingVisiblityProperty); }
+            set { SetValue(RisingVisiblityProperty, value); OnPropertyChanged("RisingVisiblity"); }
+        }
+        public string RisingIcon
+        {
+            get { return (string)GetValue(RisingIconProperty); }
+            set { SetValue(RisingIconProperty, value); OnPropertyChanged("RisingIcon"); }
+        }
+        public string _Visibility
+        {
+            get { return (string)GetValue(_VisibilityProperty); }
+            set { SetValue(_VisibilityProperty, value); OnPropertyChanged("_Visibility"); }
+        }
+        public string WindChill
+        {
+            get { return (string)GetValue(WindChillProperty); }
+            set { SetValue(WindChillProperty, value); OnPropertyChanged("WindChill"); }
+        }
+        public Transform WindDirection
+        {
+            get { return (Transform)GetValue(WindDirectionProperty); }
+            set { SetValue(WindDirectionProperty, value); OnPropertyChanged("WindDirection"); }
+        }
+        public string WindSpeed
+        {
+            get { return (string)GetValue(WindSpeedProperty); }
+            set { SetValue(WindSpeedProperty, value); OnPropertyChanged("WindSpeed"); }
+        }
+        public string Sunrise
+        {
+            get { return (string)GetValue(SunriseProperty); }
+            set { SetValue(SunriseProperty, value); OnPropertyChanged("Sunrise"); }
+        }
+        public string Sunset
+        {
+            get { return (string)GetValue(SunsetProperty); }
+            set { SetValue(SunsetProperty, value); OnPropertyChanged("Sunset"); }
+        }
+        // Forecast
+        public ObservableCollection<ForecastItemViewModel> Forecasts { get; set; }
+        // Background
+        public ImageBrush Background
+        {
+            get { return (ImageBrush)GetValue(BackgroundProperty); }
+            set { SetValue(BackgroundProperty, value); OnPropertyChanged("Background"); }
+        }
+        public SolidColorBrush PanelBackground
+        {
+            get { return (SolidColorBrush)GetValue(PanelBackgroundProperty); }
+            set { SetValue(PanelBackgroundProperty, value); OnPropertyChanged("PanelBackground"); }
+        }
+        #endregion
+#elif __ANDROID__
         public string Location { get; set; }
         public string UpdateDate { get; set; }
 
@@ -26,19 +185,11 @@ namespace SimpleWeather.Controls
         // Weather Details
         public string Humidity { get; set; }
         public string Pressure { get; set; }
-#if WINDOWS_UWP
-        public Visibility RisingVisiblity { get; set; }
-#elif __ANDROID__
         public ViewStates RisingVisiblity { get; set; }
-#endif
         public string RisingIcon { get; set; }
         public string _Visibility { get; set; }
         public string WindChill { get; set; }
-#if WINDOWS_UWP
-        public Transform WindDirection { get; set; }
-#elif __ANDROID__
         public int WindDirection { get; set; }
-#endif
         public string WindSpeed { get; set; }
         public string Sunrise { get; set; }
         public string Sunset { get; set; }
@@ -47,12 +198,9 @@ namespace SimpleWeather.Controls
         public ObservableCollection<ForecastItemViewModel> Forecasts { get; set; }
 
         // Background
-#if WINDOWS_UWP
-        public ImageBrush Background { get; set; }
-        public SolidColorBrush PanelBackground { get; set; }
-#elif __ANDROID__
         public string Background { get; set; }
         public Color PanelBackground { get; set; }
+        public Color PendingBackground { get; set; }
 #endif
 
         public WeatherNowViewModel()
@@ -89,6 +237,7 @@ namespace SimpleWeather.Controls
 #elif __ANDROID__
             Background = WeatherUtils.GetBackgroundURI(weather);
             PanelBackground = WeatherUtils.IsNight(weather) ? new Color(128, 128, 128, 45) : new Color(8, 8, 8, 15);
+            PendingBackground = WeatherUtils.IsNight(weather) ? new Color(13, 18, 37, 255) : new Color(72, 116, 191, 255);
 #endif
 
             // Location

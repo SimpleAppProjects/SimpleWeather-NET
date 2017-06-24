@@ -9,6 +9,8 @@ using Android.Preferences;
 using Com.Nostra13.Universalimageloader.Core;
 using Com.Nostra13.Universalimageloader.Cache.Disc.Impl;
 using SimpleWeather.Droid.Utils;
+using SimpleWeather.Utils;
+using System.Threading.Tasks;
 
 namespace SimpleWeather.Droid
 {
@@ -29,6 +31,8 @@ namespace SimpleWeather.Droid
             base.OnCreate();
             RegisterActivityLifecycleCallbacks(this);
             //A great place to initialize Xamarin.Insights and Dependency Services!
+            // Load data if needed
+            Task.Run(() => Settings.LoadIfNeeded());
 
             // ImageLoader
             // Use default options

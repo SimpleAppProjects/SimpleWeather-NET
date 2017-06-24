@@ -1993,6 +1993,12 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f08008e
 			public const int design_tab_text_size_2line = 2131230862;
 			
+			// aapt resource value: 0x7f0800a0
+			public const int detail_label_size = 2131230880;
+			
+			// aapt resource value: 0x7f0800a1
+			public const int detail_value_size = 2131230881;
+			
 			// aapt resource value: 0x7f080055
 			public const int disabled_alpha_material_dark = 2131230805;
 			

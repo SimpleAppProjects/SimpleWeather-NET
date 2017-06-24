@@ -7,6 +7,7 @@ using Com.Nostra13.Universalimageloader.Core.Imageaware;
 using Com.Nostra13.Universalimageloader.Core.Process;
 using Com.Nostra13.Universalimageloader.Core.Assist;
 using Android.Support.V4.Content;
+using Com.Nostra13.Universalimageloader.Core.Display;
 
 namespace SimpleWeather.Droid.Utils
 {
@@ -19,6 +20,7 @@ namespace SimpleWeather.Droid.Utils
                     .ImageScaleType(ImageScaleType.InSamplePowerOf2)
                     .CacheOnDisk(true)
                     .CacheInMemory(true)
+                    .BitmapConfig(Bitmap.Config.Rgb565)
                     .ShowImageOnLoading(new ColorDrawable(new Color(ContextCompat.GetColor(App.Context, Resource.Color.colorPrimary))))
                     .Build();
         }
@@ -31,7 +33,9 @@ namespace SimpleWeather.Droid.Utils
                     .CacheOnDisk(true)
                     .CacheInMemory(true)
                     .PreProcessor(new CenterCropper(Width, Height))
-                    .ShowImageOnLoading(new ColorDrawable(new Color(ContextCompat.GetColor(App.Context, Resource.Color.colorPrimary))))
+                    .BitmapConfig(Bitmap.Config.Rgb565)
+                    .ResetViewBeforeLoading(false)
+                    .Displayer(new FadeInBitmapDisplayer(500))
                     .Build();
         }
     }

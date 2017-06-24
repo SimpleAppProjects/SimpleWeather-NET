@@ -13,6 +13,8 @@ using SimpleWeather.Droid.Utils;
 using SimpleWeather.Utils;
 using System.Collections.Generic;
 using Com.Nostra13.Universalimageloader.Core;
+using System.Threading.Tasks;
+using Android.Graphics.Drawables;
 
 namespace SimpleWeather.Droid
 {
@@ -26,6 +28,7 @@ namespace SimpleWeather.Droid
         WeatherNowViewModel weatherView = null;
 
         // Views
+        private View mainView;
         private View contentView;
         private ProgressBar progressBar;
         // Condition
@@ -63,7 +66,7 @@ namespace SimpleWeather.Droid
                 this.SetView(weatherView);
             }
 
-            ShowLoadingView(false);
+            this.Activity.RunOnUiThread(() => progressBar.Visibility = ViewStates.Gone);
         }
 
         public WeatherNowFragment()
@@ -98,7 +101,7 @@ namespace SimpleWeather.Droid
             // Create your fragment here
             if (Arguments != null)
             {
-                pair = JSONParser.Deserializer<Pair<int, string>>(Arguments.GetString("pair"));
+                pair = Task.Run(() => JSONParser.DeserializerAsync<Pair<int, string>>(Arguments.GetString("pair"))).Result;
 
                 if (pair != null && wLoader == null)
                     wLoader = new WeatherDataLoader(this, pair.Value, pair.Key);
@@ -116,6 +119,7 @@ namespace SimpleWeather.Droid
             // Setup ActionBar
             HasOptionsMenu = true;
 
+            mainView = view.FindViewById(Resource.Id.fragment_weather_now);
             contentView = view.FindViewById(Resource.Id.content_view);
             progressBar = (ProgressBar)view.FindViewById(Resource.Id.progressBar);
             // Condition
@@ -136,11 +140,8 @@ namespace SimpleWeather.Droid
             sunrise = (TextView)view.FindViewById(Resource.Id.sunrise_time);
             sunset = (TextView)view.FindViewById(Resource.Id.sunset_time);
 
-            view.Post(() => 
-            {
-                loaded = true;
-                Restore();
-            });
+            loaded = true;
+            Task.Run(Restore);
 
             return view;
         }
@@ -196,7 +197,7 @@ namespace SimpleWeather.Droid
             loaded = false;
         }
 
-        private async void Restore()
+        private async Task Restore()
         {
             if (wLoader == null)
             {
@@ -214,24 +215,22 @@ namespace SimpleWeather.Droid
         private async void RefreshWeather(bool forceRefresh)
         {
             // Hide view until weather is loaded
-            this.Activity.RunOnUiThread(() => ShowLoadingView(true));
+            this.Activity.RunOnUiThread(() => progressBar.Visibility = ViewStates.Visible);
 
             await wLoader.LoadWeatherData(forceRefresh);
         }
 
-        private void ShowLoadingView(bool show)
-        {
-            contentView.Visibility = show ? ViewStates.Gone : ViewStates.Visible;
-            progressBar.Visibility = show ? ViewStates.Visible : ViewStates.Gone;
-        }
-
         private void SetView(WeatherNowViewModel weatherView)
         {
-            View.Post(() => 
+            // Background
+            mainView.Post(() => 
             {
-                // Background
-                loader.DisplayImage(weatherView.Background, new CustomViewAware(View), ImageUtils.CenterCropConfig(View.Width, View.Height));
+                View.Background = new ColorDrawable(weatherView.PendingBackground);
+                loader.DisplayImage(weatherView.Background, new CustomViewAware(mainView), ImageUtils.CenterCropConfig(View.Width, View.Height));
+            });
 
+            Activity.RunOnUiThread(() =>
+            {
                 LinearLayout forecastPanel = (LinearLayout)contentView.FindViewById(Resource.Id.forecast_panel);
                 forecastPanel.SetBackgroundColor(weatherView.PanelBackground);
                 detailsPanel.SetBackgroundColor(weatherView.PanelBackground);

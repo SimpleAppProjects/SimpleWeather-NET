@@ -18,7 +18,7 @@ namespace SimpleWeather.UWP
     public sealed partial class WeatherNow : Page, IWeatherLoadedListener
     {
         WeatherDataLoader wLoader = null;
-        WeatherNowViewModel weatherView = null;
+        WeatherNowViewModel WeatherView { get; set; }
 
         KeyValuePair<int, string> pair;
 
@@ -26,17 +26,11 @@ namespace SimpleWeather.UWP
         {
             if (weather != null)
             {
-                if (weatherView == null)
-                    weatherView = new WeatherNowViewModel(weather);
-                else
-                    weatherView.UpdateView(weather);
-
-                this.DataContext = null;
-                this.DataContext = weatherView;
-                StackControl.ItemsSource = weatherView.Forecasts;
+                WeatherView.UpdateView(weather);
+                StackControl.ItemsSource = WeatherView.Forecasts;
             }
 
-            ShowLoadingGrid(false);
+            LoadingRing.IsActive = false;
         }
 
         public WeatherNow()
@@ -44,7 +38,7 @@ namespace SimpleWeather.UWP
             this.InitializeComponent();
             NavigationCacheMode = NavigationCacheMode.Enabled;
 
-            MainGrid.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            WeatherView = new WeatherNowViewModel();
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
@@ -70,7 +64,7 @@ namespace SimpleWeather.UWP
                 if (wLoader != null)
                 {
                     if (wLoader.GetWeather() != null)
-                        weatherView.UpdateView(wLoader.GetWeather());
+                        WeatherView.UpdateView(wLoader.GetWeather());
                 }
 
                 if (pair.Key == App.HomeIdx)
@@ -136,16 +130,8 @@ namespace SimpleWeather.UWP
 
         private async void RefreshWeather(bool forceRefresh)
         {
-            ShowLoadingGrid(true);
-
+            LoadingRing.IsActive = true;
             await wLoader.LoadWeatherData(forceRefresh);
-        }
-
-        private void ShowLoadingGrid(bool show)
-        {
-            LoadingRing.IsActive = show;
-            LoadingGrid.Visibility = show ? Windows.UI.Xaml.Visibility.Visible : Windows.UI.Xaml.Visibility.Collapsed;
-            MainGrid.Visibility = show ? Windows.UI.Xaml.Visibility.Collapsed : Windows.UI.Xaml.Visibility.Visible;
         }
 
         private void LeftButton_Click(object sender, RoutedEventArgs e)
