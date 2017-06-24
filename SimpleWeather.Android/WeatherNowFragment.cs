@@ -58,12 +58,8 @@ namespace SimpleWeather.Droid
         {
             if (weather != null)
             {
-                if (weatherView == null)
-                    weatherView = new WeatherNowViewModel(weather);
-                else
-                    weatherView.UpdateView(weather);
-
-                this.SetView(weatherView);
+                weatherView.UpdateView(weather);
+                SetView(weatherView);
             }
 
             this.Activity.RunOnUiThread(() => progressBar.Visibility = ViewStates.Gone);
@@ -72,6 +68,7 @@ namespace SimpleWeather.Droid
         public WeatherNowFragment()
         {
             // Required empty public constructor
+            weatherView = new WeatherNowViewModel();
         }
 
         /**
