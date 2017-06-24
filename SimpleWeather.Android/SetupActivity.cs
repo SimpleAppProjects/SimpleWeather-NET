@@ -15,7 +15,7 @@ using Android.Graphics;
 namespace SimpleWeather.Droid
 {
     [Android.App.Activity(Name = "SimpleWeather.Droid.SetupActivity",
-        Theme = "@style/SetupTheme", WindowSoftInputMode = SoftInput.StateHidden | SoftInput.AdjustResize)]
+        Theme = "@style/SetupTheme", WindowSoftInputMode = SoftInput.StateHidden | SoftInput.AdjustPan)]
     public class SetupActivity : AppCompatActivity
     {
         private LocationSearchFragment mSearchFragment;
@@ -122,7 +122,6 @@ namespace SimpleWeather.Droid
                 return;
             }
             mSearchFragment.UserVisibleHint = true;
-            mSearchFragment.Activity.Window.SetSoftInputMode(SoftInput.AdjustPan | SoftInput.AdjustResize);
             FragmentTransaction transaction = SupportFragmentManager
                     .BeginTransaction();
             transaction.Show(mSearchFragment);
