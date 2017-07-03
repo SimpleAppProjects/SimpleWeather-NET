@@ -9,8 +9,7 @@ using Android.Preferences;
 
 namespace SimpleWeather.Droid
 {
-    [Android.App.Activity(Label = "@string/title_activity_settings",
-        Name = "SimpleWeather.Droid.SettingsActivity", Theme = "@style/SettingsTheme",
+    [Android.App.Activity(Label = "@string/title_activity_settings", Theme = "@style/SettingsTheme",
         ParentActivity = typeof(MainActivity))]
     public class SettingsActivity : AppCompatPreferenceActivity
     {

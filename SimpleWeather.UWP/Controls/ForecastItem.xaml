@@ -7,15 +7,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     d:DesignHeight="200"
-    d:DesignWidth="155"
-    d:DataContext="{d:DesignInstance Type=local:ForecastItemView, IsDesignTimeCreatable=True}">
+    d:DesignWidth="155">
     <UserControl.Resources>
-        <Style x:Key="ForecastBorder" TargetType="Border">
-            <Setter Property="Width" Value="155" />
-            <Setter Property="Height" Value="200" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="BorderBrush" Value="White" />
-        </Style>
         <Style x:Key="ForecastIcon" TargetType="Viewbox">
             <Setter Property="Height" Value="75" />
             <Setter Property="Width" Value="75" />
@@ -28,11 +21,12 @@
             <Setter Property="Text" Value="Date" />
             <Setter Property="Padding" Value="10" />
         </Style>
-        <Style x:Key="ForecastTemp" TargetType="RichTextBlock">
+        <Style x:Key="ForecastTemp" TargetType="TextBlock">
             <Setter Property="Foreground" Value="White" />
             <Setter Property="FontSize" Value="20" />
-            <Setter Property="HorizontalAlignment" Value="Left" />
-            <Setter Property="Padding" Value="10" />
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="VerticalAlignment" Value="Bottom"/>
         </Style>
         <Style x:Key="ForecastCondition" TargetType="TextBlock">
             <Setter Property="Foreground" Value="White" />
@@ -40,29 +34,28 @@
             <Setter Property="Text" Value="Condition" />
             <Setter Property="TextAlignment" Value="Left" />
             <Setter Property="TextWrapping" Value="Wrap" />
-            <Setter Property="Padding" Value="10,5" />
+            <Setter Property="Padding" Value="10,5,5,5" />
         </Style>
     </UserControl.Resources>
-    
-    <Border Style="{StaticResource ForecastBorder}">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <Viewbox Style="{StaticResource ForecastIcon}" Height="Auto" Grid.Row="1">
-                <TextBlock Style="{StaticResource WeatherIcon}" Text="{Binding WeatherIcon}" />
-            </Viewbox>
-            <TextBlock Style="{StaticResource ForecastDate}" Text="{Binding Date}" Grid.Row="0"/>
-            <TextBlock Style="{StaticResource ForecastCondition}" Text="{Binding Condition}" Grid.Row="2"/>
-            <RichTextBlock Style="{StaticResource ForecastTemp}" Grid.Row="3">
-                <Paragraph>
-                    <Run FontWeight="SemiBold" Text="{Binding HiTemp}" />
-                    <Run FontSize="16" FontWeight="SemiBold" Text="{Binding LoTemp}" Foreground="LightGray"/>
-                </Paragraph>
-            </RichTextBlock>
-        </Grid>
-    </Border>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Style="{StaticResource ForecastDate}" Text="{Binding Date, FallbackValue=Thursday 29}" Grid.Row="0"/>
+        <Viewbox Style="{StaticResource ForecastIcon}" Height="Auto" Grid.Row="1">
+            <TextBlock Style="{StaticResource WeatherIcon}" Text="{Binding WeatherIcon, FallbackValue='&#xf00d;'}" />
+        </Viewbox>
+        <TextBlock Style="{StaticResource ForecastCondition}" Text="{Binding Condition, FallbackValue='Scattered Thunderstorms'}" Grid.Row="2"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="3">
+            <TextBlock Text="{Binding HiTemp, FallbackValue=70º}" Padding="10,5,5,5"
+                           Style="{StaticResource ForecastTemp}"/>
+            <TextBlock FontSize="16" Text="{Binding LoTemp, FallbackValue=65º}"
+                           Foreground="LightGray"
+                           Style="{StaticResource ForecastTemp}" />
+        </StackPanel>
+    </Grid>
 </UserControl>

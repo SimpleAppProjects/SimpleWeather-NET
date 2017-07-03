@@ -15,12 +15,18 @@
     <string name="action_refresh">Refresh</string>
     <string name="action_settings">Settings</string>
     <!-- Weather Details -->
-    <string name="label_humidity">Humidity:</string>
-    <string name="label_pressure">Pressure:</string>
-    <string name="label_visibility">Visibility:</string>
-    <string name="label_feelslike">Feels Like:</string>
-    <string name="label_wind">Wind:</string>
+    <string name="label_details">Details</string>
+    <string name="label_humidity">Humidity</string>
+    <string name="label_pressure">Pressure</string>
+    <string name="label_visibility">Visibility</string>
+    <string name="label_feelslike">Feels Like</string>
+    <string name="label_wind">Wind</string>
     <string name="label_forecast">Forecast</string>
+    <string name="label_atmosphere">Atmosphere</string>
+    <string name="label_condition">Condition</string>
+    <string name="label_sunriseset">Sunrise / Sunset</string>
+    <string name="label_sunrise">Sunrise</string>
+    <string name="label_sunset">Sunset</string>
     <!-- NavBar -->
     <string name="label_nav_weathernow">Weather</string>
     <string name="label_nav_locations">Locations</string>
@@ -33,8 +39,6 @@
     <string name="pref_summary_celsius">Display Units in Celsius (Metric)</string>
 
     <!-- Locations -->
-    <string name="label_fav_location">Favorite Location</string>
-    <string name="label_other_locations">Other Locations</string>
     <string name="label_btn_add_location">Add Location</string>
     <string name="action_editmode">Edit Mode</string>
 

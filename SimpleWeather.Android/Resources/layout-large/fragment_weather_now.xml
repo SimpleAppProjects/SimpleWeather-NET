@@ -99,7 +99,7 @@
             <LinearLayout
                 android:id="@+id/forecast_panel"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <TextView
@@ -108,7 +108,7 @@
                     android:layout_height="wrap_content"
                     android:padding="4dp"
                     android:text="@string/label_forecast"
-                    android:textAppearance="@android:style/TextAppearance.Material.Medium.Inverse"
+                    android:textAppearance="@android:style/TextAppearance.Material.Large.Inverse"
                     android:textColor="@android:color/white"
                     android:textStyle="bold" />
 
@@ -136,7 +136,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <TextView
@@ -145,31 +145,32 @@
                     android:layout_height="wrap_content"
                     android:padding="4dp"
                     android:text="@string/label_details"
-                    android:textAppearance="@android:style/TextAppearance.Material.Medium.Inverse"
+                    android:textAppearance="@android:style/TextAppearance.Material.Large.Inverse"
                     android:textColor="@android:color/white"
                     android:textStyle="bold" />
 
-                <LinearLayout
+                <android.support.v7.widget.GridLayout
                     android:id="@+id/details_panel"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:background="@drawable/dark_round_corner_bg"
-                    android:orientation="vertical"
                     android:paddingBottom="10dp"
                     android:paddingEnd="25dp"
                     android:paddingStart="25dp"
-                    android:paddingTop="10dp">
+                    android:paddingTop="10dp"
+                    app:rowCount="3">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="@dimen/detail_card_max_width"
                         android:layout_height="wrap_content"
                         android:minHeight="150dp"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        app:layout_row="0">
 
                         <TextView
                             android:id="@+id/atmosphere_label"
                             style="@style/DetailCardLabels"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/label_atmosphere" />
 
@@ -265,30 +266,27 @@
 
                     </LinearLayout>
 
-                    <Space
-                        android:layout_width="match_parent"
-                        android:layout_height="20dp" />
-
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="@dimen/detail_card_max_width"
                         android:layout_height="wrap_content"
                         android:minHeight="150dp"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        app:layout_row="1">
 
                         <TextView
                             android:id="@+id/condition_label"
                             style="@style/DetailCardLabels"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/label_condition" />
 
                         <View
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="1dp"
                             android:background="@android:color/white" />
 
                         <RelativeLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
@@ -312,7 +310,7 @@
                         </RelativeLayout>
 
                         <RelativeLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content">
 
                             <TextView
@@ -345,31 +343,28 @@
 
                     </LinearLayout>
 
-                    <Space
-                        android:layout_width="match_parent"
-                        android:layout_height="20dp" />
-
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="@dimen/detail_card_max_width"
                         android:layout_height="wrap_content"
                         android:minHeight="150dp"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        app:layout_row="2">
 
                         <TextView
                             android:id="@+id/sunriseset_label"
                             style="@style/DetailCardLabels"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/label_sunriseset"
                             android:textAppearance="@android:style/TextAppearance.Material.Medium.Inverse" />
 
                         <View
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="1dp"
                             android:background="@android:color/white" />
 
                         <RelativeLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
@@ -402,7 +397,7 @@
                         </RelativeLayout>
 
                         <RelativeLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content">
 
                             <TextView
@@ -434,7 +429,7 @@
 
                     </LinearLayout>
 
-                </LinearLayout>
+                </android.support.v7.widget.GridLayout>
 
             </LinearLayout>
 

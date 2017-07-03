@@ -14,8 +14,8 @@ using Android.Graphics;
 
 namespace SimpleWeather.Droid
 {
-    [Android.App.Activity(Name = "SimpleWeather.Droid.SetupActivity",
-        Theme = "@style/SetupTheme", WindowSoftInputMode = SoftInput.StateHidden | SoftInput.AdjustPan)]
+    [Android.App.Activity(Theme = "@style/SetupTheme",
+        WindowSoftInputMode = SoftInput.StateHidden | SoftInput.AdjustPan)]
     public class SetupActivity : AppCompatActivity
     {
         private LocationSearchFragment mSearchFragment;

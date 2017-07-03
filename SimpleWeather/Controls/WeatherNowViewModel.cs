@@ -2,14 +2,15 @@
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 #if WINDOWS_UWP
+using System.ComponentModel;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 #elif __ANDROID__
 using Android.Graphics;
 using Android.Views;
+using SimpleWeather.Droid;
 #endif
 
 namespace SimpleWeather.Controls
@@ -66,6 +67,9 @@ namespace SimpleWeather.Controls
         public static readonly DependencyProperty SunsetProperty =
             DependencyProperty.Register("Sunset", typeof(String),
             typeof(LocationPanelViewModel), new PropertyMetadata(""));
+        public static readonly DependencyProperty ForecastsProperty =
+            DependencyProperty.Register("Forecasts", typeof(ObservableCollection<ForecastItemViewModel>),
+            typeof(LocationPanelViewModel), new PropertyMetadata(null));
         public static readonly DependencyProperty BackgroundProperty =
             DependencyProperty.Register("Background", typeof(ImageBrush),
             typeof(LocationPanelViewModel), new PropertyMetadata(null));
@@ -160,7 +164,11 @@ namespace SimpleWeather.Controls
             set { SetValue(SunsetProperty, value); OnPropertyChanged("Sunset"); }
         }
         // Forecast
-        public ObservableCollection<ForecastItemViewModel> Forecasts { get; set; }
+        public ObservableCollection<ForecastItemViewModel> Forecasts
+        {
+            get { return (ObservableCollection<ForecastItemViewModel>)GetValue(ForecastsProperty); }
+            set { SetValue(ForecastsProperty, value); OnPropertyChanged("Forecasts"); }
+        }
         // Background
         public ImageBrush Background
         {
@@ -199,7 +207,7 @@ namespace SimpleWeather.Controls
 
         // Background
         public string Background { get; set; }
-        public Color PanelBackground { get; set; }
+        public int PanelBackground { get; set; }
         public Color PendingBackground { get; set; }
 #endif
 
@@ -212,6 +220,7 @@ namespace SimpleWeather.Controls
                 AlignmentX = AlignmentX.Center
             };
 #endif
+            Forecasts = new ObservableCollection<ForecastItemViewModel>();
         }
 
         public WeatherNowViewModel(Weather weather)
@@ -223,7 +232,7 @@ namespace SimpleWeather.Controls
                 AlignmentX = AlignmentX.Center
             };
 #endif
-
+            Forecasts = new ObservableCollection<ForecastItemViewModel>();
             UpdateView(weather);
         }
 
@@ -236,7 +245,9 @@ namespace SimpleWeather.Controls
                 Color.FromArgb(45, 128, 128, 128) : Color.FromArgb(15, 8, 8, 8));
 #elif __ANDROID__
             Background = WeatherUtils.GetBackgroundURI(weather);
-            PanelBackground = WeatherUtils.IsNight(weather) ? new Color(128, 128, 128, 45) : new Color(8, 8, 8, 15);
+            PanelBackground = WeatherUtils.IsNight(weather) ? 
+                Resource.Drawable.dark_round_corner_bg : Resource.Drawable.light_round_corner_bg;
+                //new Color(128, 128, 128, 45) : new Color(8, 8, 8, 15);
             PendingBackground = WeatherUtils.IsNight(weather) ? new Color(13, 18, 37, 255) : new Color(72, 116, 191, 255);
 #endif
 
@@ -273,7 +284,7 @@ namespace SimpleWeather.Controls
                 weather.atmosphere.visibility_mi + " mi" : weather.atmosphere.visibility_km + " km";
 
             // Add UI elements
-            Forecasts = new ObservableCollection<ForecastItemViewModel>();
+            Forecasts.Clear();
             foreach (Forecast forecast in weather.forecast)
             {
                 ForecastItemViewModel forecastView = new ForecastItemViewModel(forecast);

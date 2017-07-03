@@ -7,6 +7,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
+    d:DesignHeight="854"
+    d:DesignWidth="480"
     DataContext="{x:Bind WeatherView}">
     <Page.Resources>
         <TransitionCollection x:Name="TextTransitions">
@@ -14,6 +16,14 @@
         </TransitionCollection>
         <Style x:Key="WeatherIcon" TargetType="TextBlock" BasedOn="{StaticResource WeatherIcon}">
             <Setter Property="Transitions" Value="{StaticResource TextTransitions}" />
+        </Style>
+        <Style x:Key="SectionLabel" TargetType="TextBlock">
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="top"/>
         </Style>
         <Style x:Key="ForecastBorder" TargetType="Border">
             <Setter Property="Width" Value="175" />
@@ -133,9 +143,23 @@
         </Style>
         <Style x:Key="WeatherDetails" TargetType="TextBlock">
             <Setter Property="Foreground" Value="White" />
-            <Setter Property="FontSize" Value="14" />
-            <Setter Property="Padding" Value="5" />
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="Padding" Value="10" />
             <Setter Property="Transitions" Value="{StaticResource TextTransitions}" />
+        </Style>
+        <Style x:Key="WeatherDetailsLabel" TargetType="TextBlock" BasedOn="{StaticResource WeatherDetails}">
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+        <Style x:Key="DetailsBorder" TargetType="StackPanel">
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="BorderThickness" Value="5"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        </Style>
+        <Style x:Key="Divider" TargetType="Border">
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="White"/>
         </Style>
     </Page.Resources>
 
@@ -154,138 +178,27 @@
         </CommandBar>
 
         <ScrollViewer x:Name="MainViewer" VerticalScrollMode="Auto" Grid.Row="1" Background="{Binding Background}">
-            <Grid x:Name="MainGrid">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid Grid.Row="0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Viewbox Margin="25,10,25,0" Grid.Row="0" Height="50">
-                        <TextBlock Name="Location" Text="{Binding Location}" Foreground="White" FontWeight="SemiBold" TextAlignment="Center"
-                                   Height="{Binding Path=Parent.Height, RelativeSource={RelativeSource Self}}"
-                                   Width="{Binding Path=Parent.Width, RelativeSource={RelativeSource Self}}"
-                                   Padding="5" Transitions="{StaticResource TextTransitions}"/>
-                    </Viewbox>
-                    <TextBlock Name="UpdateDate" Text="{Binding UpdateDate}" FontSize="12" Foreground="White"
-                               HorizontalAlignment="Center" VerticalAlignment="Bottom" Padding="5" Grid.Row="1" Transitions="{StaticResource TextTransitions}"/>
-                </Grid>
-                <Grid Grid.Row="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Viewbox x:Name="WeatherBox" VerticalAlignment="Top" Height="Auto" Grid.Row="0">
-                        <TextBlock x:Name="WeatherIcon" Style="{StaticResource WeatherIcon}" Text="{Binding WeatherIcon}" />
-                    </Viewbox>
-                    <TextBlock Name="CurCondition" Text="{Binding CurCondition}" FontSize="18" HorizontalAlignment="Center" Foreground="White" Grid.Row="1" Transitions="{StaticResource TextTransitions}"/>
-                    <TextBlock Name="CurTemp" Text="{Binding CurTemp}" FontSize="24" Foreground="White" Style="{StaticResource WeatherIcon}" HorizontalAlignment="Center" Margin="5,0,0,0" Grid.Row="2"/>
-                </Grid>
-
-                <Grid Name="DetailsPanel" Background="{Binding PanelBackground}" Grid.Row="2">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Viewbox StretchDirection="DownOnly" Grid.Row="0">
-                        <Grid HorizontalAlignment="Center">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid Grid.Column="0" Padding="5,0,5,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="Humidity:" Style="{StaticResource WeatherDetails}" Grid.Column="0" />
-                                <TextBlock Name="Humidity" Text="{Binding Humidity}" Style="{StaticResource WeatherDetails}" Grid.Column="1" />
-                            </Grid>
-                            <Grid Grid.Column="1" Padding="5,0,5,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="Pressure:" Style="{StaticResource WeatherDetails}" Grid.Column="0" />
-                                <TextBlock Name="Rising" FontSize="14" Foreground="White" Style="{StaticResource WeatherIcon}" 
-                                           Text="{Binding RisingIcon}" Visibility="{Binding RisingVisiblity}" Padding="5" Grid.Column="1" />
-                                <TextBlock Name="Pressure" Text="{Binding Pressure}" Style="{StaticResource WeatherDetails}" Grid.Column="2" Padding="5,5,0,5" />
-                            </Grid>
-                            <Grid Grid.Column="2" Padding="5,0,5,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="Visibility:" Style="{StaticResource WeatherDetails}" Grid.Column="0" />
-                                <TextBlock Name="Visibility" Text="{Binding _Visibility}" Style="{StaticResource WeatherDetails}" Grid.Column="1" Padding="5,5,0,5" />
-                            </Grid>
-                        </Grid>
-                    </Viewbox>
-                    <Viewbox StretchDirection="DownOnly" Grid.Row="1">
-                        <Grid HorizontalAlignment="Center">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid Grid.Column="0" Padding="5,0,5,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="Feels Like:" Style="{StaticResource WeatherDetails}" Grid.Column="0" />
-                                <TextBlock Name="Chill" Text="{Binding WindChill}" Style="{StaticResource WeatherDetails}" Grid.Column="1" />
-                            </Grid>
-                            <Grid Grid.Column="1" Padding="5,0,5,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="Wind:" Style="{StaticResource WeatherDetails}" Grid.Column="0" />
-                                <TextBlock Name="WindDirection" FontSize="14" Foreground="White" Style="{StaticResource WeatherIcon}" Text="&#xf058;" Padding="5" Grid.Column="1" 
-                                           RenderTransformOrigin="0.5,0.5" RenderTransform="{Binding WindDirection}"/>
-                                <TextBlock Name="Speed" Text="{Binding WindSpeed}" Style="{StaticResource WeatherDetails}" Grid.Column="2" Padding="5,5,0,5" />
-                            </Grid>
-                        </Grid>
-                    </Viewbox>
-                    <Viewbox StretchDirection="DownOnly" Grid.Row="2">
-                        <Grid HorizontalAlignment="Center">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid Grid.Column="0" Padding="5,0,10,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock FontSize="18" Foreground="White" Style="{StaticResource WeatherIcon}" Text="&#xf051;" Padding="5" Grid.Column="0" />
-                                <TextBlock Name="Sunrise" Text="{Binding Sunrise}" Style="{StaticResource WeatherDetails}" FontSize="16" Grid.Column="1" />
-                            </Grid>
-                            <Grid Grid.Column="1" Padding="5,0,10,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock FontSize="18" Foreground="White" Style="{StaticResource WeatherIcon}" Text="&#xf052;" Padding="5" Grid.Column="0" />
-                                <TextBlock Name="Sunset" Text="{Binding Sunset}" Style="{StaticResource WeatherDetails}" FontSize="16" Grid.Column="1"/>
-                            </Grid>
-                        </Grid>
-                    </Viewbox>
-                </Grid>
-
-                <TextBlock Name="ForecastLabel" Text="Forecast" FontSize="18" Foreground="White" Margin="50,0,0,0" Padding="5" Grid.Row="3"
-                                        HorizontalAlignment="Left" VerticalAlignment="Top" FontWeight="SemiBold"/>
-                <Grid Name="ForecastGrid" Background="{Binding PanelBackground}" Margin="0,35,0,0" Grid.Row="3">
+            <StackPanel>
+                <Viewbox Name="LocationBox" Margin="25,10,25,0" Height="50">
+                    <TextBlock Name="Location" Text="{Binding Location, FallbackValue='New York, NY'}"
+                           Foreground="White" FontWeight="SemiBold" TextAlignment="Center"
+                           Padding="5" Transitions="{StaticResource TextTransitions}"/>
+                </Viewbox>
+                <Viewbox Name="UpdateDateBox" Height="25">
+                    <TextBlock Name="UpdateDate" Text="{Binding UpdateDate, FallbackValue='Updated on 11:12 PM'}"
+                           Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                           Padding="5" Grid.Row="1" Transitions="{StaticResource TextTransitions}" FontSize="12"/>
+                </Viewbox>
+                <Rectangle Name="SpacerTop" Height="30"/>
+                <Viewbox x:Name="WeatherBox" VerticalAlignment="Top" Height="Auto" Grid.Row="0">
+                    <TextBlock x:Name="WeatherIcon" Style="{StaticResource WeatherIcon}" Text="{Binding WeatherIcon, FallbackValue='&#xf00d;'}" />
+                </Viewbox>
+                <TextBlock Name="CurCondition" Text="{Binding CurCondition, FallbackValue='Sunny'}" FontSize="24" HorizontalAlignment="Center" Foreground="White" Grid.Row="1" Transitions="{StaticResource TextTransitions}"/>
+                <TextBlock Name="CurTemp" Text="{Binding CurTemp, FallbackValue='70&#xF045;'}" FontSize="24" Foreground="White" Style="{StaticResource WeatherIcon}" HorizontalAlignment="Center" Margin="5,0,0,0" Grid.Row="2"/>
+                <Rectangle Height="{Binding ElementName=SpacerTop, Path=Height}"/>
+                <TextBlock Name="ForecastLabel" Text="Forecast" Margin="50,0,0,0"
+                           Style="{StaticResource SectionLabel}" />
+                <Grid Name="ForecastGrid" Background="{Binding PanelBackground}" Margin="0,0,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
@@ -295,57 +208,230 @@
                             HorizontalAlignment="Left" Grid.Column="0"/>
                     <Button x:Name="RightButton" Content="&#xE00F;" Click="RightButton_Click" IsEnabled="True" Style="{StaticResource ArrowButton}"
                             HorizontalAlignment="Right" Grid.Column="2"/>
-                    <ScrollViewer Name="ForecastViewer" HorizontalAlignment="Center" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden"
-                            VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Hidden" ViewChanged="ForecastViewer_ViewChanged" Grid.Column="1">
-                        <ItemsControl x:Name="StackControl">
+                    <ScrollViewer Name="ForecastViewer" HorizontalAlignment="Left" 
+                                  HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden"
+                                  VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Hidden"
+                                  ViewChanged="ForecastViewer_ViewChanged" Grid.Column="1">
+                        <ItemsControl x:Name="StackControl" 
+                                      ItemsSource="{x:Bind WeatherView.Forecasts}">
                             <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <controls:ForecastItem />
+                                <DataTemplate x:DataType="controls:ForecastItemViewModel">
+                                    <controls:ForecastItem Height="{Binding ElementName=StackControl, Path=Height}"
+                                                           Width="155" />
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <StackPanel Height="200" Orientation="Horizontal" Transitions="{StaticResource TextTransitions}"/>
+                                    <StackPanel Orientation="Horizontal" Transitions="{StaticResource TextTransitions}"/>
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                         </ItemsControl>
                     </ScrollViewer>
                 </Grid>
-            </Grid>
+                <Rectangle Height="25"/>
+                <TextBlock Name="DetailsLabel" Text="Details"
+                           Margin="{Binding ElementName=ForecastLabel, Path=Margin}"
+                           Style="{StaticResource SectionLabel}" />
+                <Grid Name="DetailsPanel" Background="{Binding PanelBackground}" Padding="50,0,50,0">
+                    <VariableSizedWrapGrid Name="DetailsWrapGrid" Orientation="Horizontal" ItemWidth="250" MaximumRowsOrColumns="1">
+                        <StackPanel Style="{StaticResource DetailsBorder}">
+                            <TextBlock Text="Atmosphere" Style="{StaticResource WeatherDetailsLabel}"/>
+                            <Border Style="{StaticResource Divider}"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Humidity" Style="{StaticResource WeatherDetails}"
+                                           Grid.Column="0"
+                                           FontSize="{Binding ElementName=Humidity, Path=FontSize}"
+                                           RelativePanel.LeftOf="Humidity"
+                                           RelativePanel.AlignLeftWithPanel="True" />
+                                <TextBlock Name="Humidity" Text="{Binding Humidity, FallbackValue='100%'}"
+                                           Grid.Column="1"
+                                           FontSize="18"
+                                           Style="{StaticResource WeatherDetails}"
+                                           RelativePanel.AlignRightWithPanel="True" />
+                            </Grid>
+                            <RelativePanel>
+                                <TextBlock Text="Pressure" Style="{StaticResource WeatherDetails}"
+                                           HorizontalAlignment="Stretch"
+                                           FontSize="{Binding ElementName=Humidity, Path=FontSize}"
+                                           RelativePanel.LeftOf="Rising"
+                                           RelativePanel.AlignLeftWithPanel="True" />
+                                <TextBlock Name="Rising" FontSize="20" Foreground="White"
+                                           Style="{StaticResource WeatherIcon}"
+                                           Text="{Binding RisingIcon, FallbackValue='&#xf058;&#xf058;'}"
+                                           Visibility="{Binding RisingVisiblity}"
+                                           Padding="6.5"
+                                           RelativePanel.LeftOf="Pressure"/>
+                                <TextBlock Name="Pressure" Text="{Binding Pressure, FallbackValue='1000.2 mb'}"
+                                           Style="{StaticResource WeatherDetails}"
+                                           FontSize="{Binding ElementName=Humidity, Path=FontSize}"
+                                           RelativePanel.AlignRightWithPanel="True"/>
+                            </RelativePanel>
+                            <RelativePanel>
+                                <TextBlock Text="Visibility"
+                                           Style="{StaticResource WeatherDetails}"
+                                           FontSize="{Binding ElementName=Humidity, Path=FontSize}"
+                                           RelativePanel.LeftOf="Visibility"
+                                           RelativePanel.AlignLeftWithPanel="True" />
+                                <TextBlock Name="Visibility" Text="{Binding _Visibility, FallbackValue='10.0 km'}"
+                                           Style="{StaticResource WeatherDetails}"
+                                           FontSize="{Binding ElementName=Humidity, Path=FontSize}"
+                                           RelativePanel.AlignRightWithPanel="True"/>
+                            </RelativePanel>
+                        </StackPanel>
+                        <StackPanel Style="{StaticResource DetailsBorder}">
+                            <TextBlock Text="Condition" Style="{StaticResource WeatherDetailsLabel}"/>
+                            <Border Style="{StaticResource Divider}"/>
+                            <RelativePanel>
+                                <TextBlock Text="Feels Like" Style="{StaticResource WeatherDetails}"
+                                           FontSize="{Binding ElementName=Humidity, Path=FontSize}"
+                                           RelativePanel.LeftOf="Chill"
+                                           RelativePanel.AlignLeftWithPanel="True" />
+                                <TextBlock Name="Chill" Text="{Binding WindChill, FallbackValue='36º'}"
+                                           Style="{StaticResource WeatherDetails}"
+                                           FontSize="{Binding ElementName=Humidity, Path=FontSize}"
+                                           RelativePanel.AlignRightWithPanel="True"/>
+                            </RelativePanel>
+                            <RelativePanel>
+                                <TextBlock Text="Wind" Style="{StaticResource WeatherDetails}"
+                                           FontSize="{Binding ElementName=Humidity, Path=FontSize}"
+                                           RelativePanel.LeftOf="WindDirection"
+                                           RelativePanel.AlignLeftWithPanel="True" />
+                                <TextBlock Name="WindDirection" FontSize="20" Foreground="White"
+                                           Style="{StaticResource WeatherIcon}"
+                                           Text="&#xf058;" Padding="6.5"
+                                           RenderTransformOrigin="0.5,0.5" RenderTransform="{Binding WindDirection}"
+                                           RelativePanel.LeftOf="Speed" />
+                                <TextBlock Name="Speed" Text="{Binding WindSpeed, FallbackValue='3.8 mph'}"
+                                           Style="{StaticResource WeatherDetails}"
+                                           FontSize="{Binding ElementName=Humidity, Path=FontSize}"
+                                           RelativePanel.AlignRightWithPanel="True"/>
+                            </RelativePanel>
+                        </StackPanel>
+                        <StackPanel Style="{StaticResource DetailsBorder}">
+                            <TextBlock Text="Sunrise / Sunset" Style="{StaticResource WeatherDetailsLabel}"/>
+                            <Border Style="{StaticResource Divider}"/>
+                            <RelativePanel>
+                                <TextBlock Text="Sunrise" Style="{StaticResource WeatherDetails}"
+                                           HorizontalAlignment="Stretch"
+                                           FontSize="{Binding ElementName=Humidity, Path=FontSize}"
+                                           RelativePanel.LeftOf="SunriseIcon"
+                                           RelativePanel.AlignLeftWithPanel="True" />
+                                <TextBlock Name="SunriseIcon" FontSize="24" Foreground="White"
+                                           Text="&#xf051;" Padding="5"
+                                           Style="{StaticResource WeatherIcon}"
+                                           RelativePanel.LeftOf="Sunrise" />
+                                <TextBlock Name="Sunrise" Text="{Binding Sunrise, FallbackValue='06:45 AM'}"
+                                           Style="{StaticResource WeatherDetails}"
+                                           FontSize="{Binding ElementName=Humidity, Path=FontSize}"
+                                           Width="100"
+                                           RelativePanel.AlignRightWithPanel="True"/>
+                            </RelativePanel>
+                            <RelativePanel>
+                                <TextBlock Text="Sunset" Style="{StaticResource WeatherDetails}"
+                                           FontSize="{Binding ElementName=Humidity, Path=FontSize}"
+                                           RelativePanel.LeftOf="SunsetIcon"
+                                           RelativePanel.AlignLeftWithPanel="True"/>
+                                <TextBlock Name="SunsetIcon" FontSize="24" Foreground="White"
+                                           Text="&#xf052;" Padding="5"
+                                           Style="{StaticResource WeatherIcon}"
+                                           RelativePanel.LeftOf="Sunset" />
+                                <TextBlock Name="Sunset" Text="{Binding Sunset, FallbackValue='05:32 PM'}"
+                                           Style="{StaticResource WeatherDetails}"
+                                           FontSize="{Binding ElementName=Humidity, Path=FontSize}"
+                                           Width="{Binding ElementName=Sunrise, Path=Width}"
+                                           RelativePanel.AlignRightWithPanel="True" />
+                            </RelativePanel>
+                        </StackPanel>
+                    </VariableSizedWrapGrid>
+                </Grid>
+            </StackPanel>
         </ScrollViewer>
         <ProgressRing x:Name="LoadingRing" Grid.Row="1"
                       HorizontalAlignment="Center" VerticalAlignment="Center" 
                       Height="50" Width="50" Foreground="White" IsActive="True"/>
         <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup>
+            <VisualStateGroup x:Name="HeightStates">
+                <VisualState x:Name="MobileHeight">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowHeight="0"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="WeatherBox.Height" Value="100"/>
+                        <Setter Target="WeatherBox.Width" Value="100"/>
+                        <Setter Target="SpacerTop.Height" Value="0"/>
+                        <Setter Target="StackControl.Height" Value="180"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="MediumHeight">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowHeight="640"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="WeatherBox.Height" Value="125"/>
+                        <Setter Target="WeatherBox.Width" Value="125"/>
+                        <Setter Target="SpacerTop.Height" Value="30"/>
+                        <Setter Target="StackControl.Height" Value="200"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="LargeHeight">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowHeight="690"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="WeatherBox.Height" Value="150"/>
+                        <Setter Target="WeatherBox.Width" Value="150"/>
+                        <Setter Target="SpacerTop.Height" Value="30"/>
+                        <Setter Target="StackControl.Height" Value="200"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+            <VisualStateGroup x:Name="WidthStates">
                 <VisualState x:Name="Mobile">
                     <VisualState.StateTriggers>
                         <AdaptiveTrigger MinWindowWidth="0"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="CommandBar.Margin" Value="50,0,0,0"/>
-                        <Setter Target="WeatherBox.Height" Value="125"/>
-                        <Setter Target="WeatherBox.Width" Value="125"/>
                         <Setter Target="LeftButton.Visibility" Value="Collapsed"/>
                         <Setter Target="RightButton.Visibility" Value="Collapsed"/>
-                        <Setter Target="ForecastLabel.Margin" Value="30,0,0,0"/>
-                        <Setter Target="StackControl.Margin" Value="25,0,0,0"/>
+                        <Setter Target="ForecastLabel.Margin" Value="15,0,0,0"/>
+                        <Setter Target="StackControl.Margin" Value="15,0,0,0"/>
                         <Setter Target="Location.FontSize" Value="32"/>
+                        <Setter Target="DetailsPanel.Padding" Value="0,0,0,0"/>
+                        <Setter Target="CurTemp.FontSize" Value="20"/>
+                        <Setter Target="CurCondition.FontSize" Value="20"/>
+                        <Setter Target="Humidity.FontSize" Value="14"/>
+                        <Setter Target="Sunrise.Width" Value="75"/>
                     </VisualState.Setters>
                 </VisualState>
-                <VisualState x:Name="Desktop">
+                <VisualState x:Name="Medium">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="600"/>
+                        <AdaptiveTrigger MinWindowWidth="640"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="CommandBar.Margin" Value="0,0,0,0"/>
-                        <Setter Target="WeatherBox.Height" Value="150"/>
-                        <Setter Target="WeatherBox.Width" Value="150"/>
+                        <Setter Target="Location.FontSize" Value="36"/>
+                        <Setter Target="Humidity.FontSize" Value="18"/>
+                        <Setter Target="Sunrise.Width" Value="100"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Large">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="1007"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
                         <Setter Target="LeftButton.Visibility" Value="Visible"/>
                         <Setter Target="RightButton.Visibility" Value="Visible"/>
                         <Setter Target="ForecastLabel.Margin" Value="50,0,0,0"/>
                         <Setter Target="StackControl.Margin" Value="0,0,0,0"/>
                         <Setter Target="Location.FontSize" Value="36"/>
+                        <Setter Target="DetailsPanel.Padding" Value="50,0,50,0"/>
+                        <Setter Target="CurTemp.FontSize" Value="24"/>
+                        <Setter Target="CurCondition.FontSize" Value="24"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>

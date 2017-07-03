@@ -155,7 +155,7 @@
                 </VisualState>
                 <VisualState x:Name="Desktop">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="600"/>
+                        <AdaptiveTrigger MinWindowWidth="640"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="HamBurgerMenu.DisplayMode" Value="CompactOverlay"/>

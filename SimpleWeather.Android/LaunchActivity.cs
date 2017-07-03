@@ -8,7 +8,7 @@ using Android.Support.V7.App;
 
 namespace SimpleWeather.Droid
 {
-    [Activity(Name = "SimpleWeather.Droid.LaunchActivity", MainLauncher = true)]
+    [Activity(MainLauncher = true)]
     public class LaunchActivity : AppCompatActivity
     {
         protected override void OnCreate(Bundle savedInstanceState)

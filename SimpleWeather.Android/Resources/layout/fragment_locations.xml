@@ -5,7 +5,7 @@
     android:id="@+id/fragment_locations"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.thewizrd.simpleweather.LocationsFragment"
+    tools:context="SimpleWeather.Droid.Controls.LocationsFragment"
     android:background="@android:color/white">
   <ScrollView
       android:layout_width="match_parent"

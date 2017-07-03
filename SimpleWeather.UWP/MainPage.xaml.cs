@@ -40,7 +40,7 @@ namespace SimpleWeather.UWP
             if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
                 // Mobile
-                ApplicationView.GetForCurrentView().TryEnterFullScreenMode();
+                StatusBar.GetForCurrentView().BackgroundColor = App.AppColor;
             }
             else
             {

@@ -100,7 +100,7 @@ namespace SimpleWeather.Utils
             if (!localSettings.Values.ContainsKey(KEY_APIKEY) || localSettings.Values[KEY_APIKEY] == null)
             {
                 String key = String.Empty;
-                key = ReadAPIKEYfile().GetAwaiter().GetResult();
+                key = Task.Run(() => ReadAPIKEYfile()).Result;
 
                 if (!String.IsNullOrWhiteSpace(key))
                     SetAPIKEY(key);

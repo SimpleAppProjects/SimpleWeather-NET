@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+VisualStudioVersion = 15.0.26430.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SimpleWeather", "SimpleWeather\SimpleWeather.shproj", "{3633F453-ECBB-41D1-A87D-2CC3BDD74221}"
 EndProject
@@ -66,9 +66,9 @@ Global
 		{1DFDD63E-A0DB-4AC0-9C61-04EEC0CE1E15}.Release|x86.ActiveCfg = Release|Any CPU
 		{1DFDD63E-A0DB-4AC0-9C61-04EEC0CE1E15}.Release|x86.Build.0 = Release|Any CPU
 		{1DFDD63E-A0DB-4AC0-9C61-04EEC0CE1E15}.Release|x86.Deploy.0 = Release|Any CPU
-		{552847DD-608D-4DA9-9CED-0C8416049742}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{552847DD-608D-4DA9-9CED-0C8416049742}.Debug|Any CPU.Build.0 = Debug|x64
-		{552847DD-608D-4DA9-9CED-0C8416049742}.Debug|Any CPU.Deploy.0 = Debug|x64
+		{552847DD-608D-4DA9-9CED-0C8416049742}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{552847DD-608D-4DA9-9CED-0C8416049742}.Debug|Any CPU.Build.0 = Debug|x86
+		{552847DD-608D-4DA9-9CED-0C8416049742}.Debug|Any CPU.Deploy.0 = Debug|x86
 		{552847DD-608D-4DA9-9CED-0C8416049742}.Debug|ARM.ActiveCfg = Debug|ARM
 		{552847DD-608D-4DA9-9CED-0C8416049742}.Debug|ARM.Build.0 = Debug|ARM
 		{552847DD-608D-4DA9-9CED-0C8416049742}.Debug|ARM.Deploy.0 = Debug|ARM

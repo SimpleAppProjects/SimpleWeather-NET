@@ -25,10 +25,7 @@ namespace SimpleWeather.UWP
         public void OnWeatherLoaded(int locationIdx, Weather weather)
         {
             if (weather != null)
-            {
                 WeatherView.UpdateView(weather);
-                StackControl.ItemsSource = WeatherView.Forecasts;
-            }
 
             LoadingRing.IsActive = false;
         }
@@ -39,6 +36,36 @@ namespace SimpleWeather.UWP
             NavigationCacheMode = NavigationCacheMode.Enabled;
 
             WeatherView = new WeatherNowViewModel();
+            DetailsPanel.SizeChanged += DetailsPanel_SizeChanged;
+        }
+
+        private void DetailsPanel_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (this.Width <= 600)
+            {
+                // Keep as one column on smaller screens
+                DetailsWrapGrid.MaximumRowsOrColumns = 1;
+                // Increase card width based on screen size
+                DetailsWrapGrid.ItemWidth = e.NewSize.Width - DetailsPanel.Padding.Right;
+            }
+            else
+            {
+                // Minimum width for ea. card
+                int minWidth = 250;
+                // Size of the view
+                int viewWidth = (int)(e.NewSize.Width - DetailsPanel.Padding.Right - DetailsPanel.Padding.Left);
+                // Available columns based on min card width
+                int availColumns = (viewWidth / minWidth) == 0 ? 1 : viewWidth / minWidth;
+                // Maximum columns to use
+                int maxColumns = (availColumns > DetailsWrapGrid.Children.Count) ? DetailsWrapGrid.Children.Count : availColumns;
+
+                int freeSpace = viewWidth - (minWidth * maxColumns);
+                // Increase card width to fill available space
+                int itemWidth = minWidth + (freeSpace / maxColumns);
+
+                DetailsWrapGrid.MaximumRowsOrColumns = maxColumns;
+                DetailsWrapGrid.ItemWidth = itemWidth;
+            }
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)

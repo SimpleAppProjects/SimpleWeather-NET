@@ -15,14 +15,14 @@ using System.Threading.Tasks;
 namespace SimpleWeather.Droid
 {
     //You can specify additional application information in this attribute
-    [Application(Name= "SimpleWeather.Droid.App", AllowBackup = true, Icon = "@mipmap/ic_launcher", RoundIcon = "@mipmap/ic_round_launcher",
+    [Application(AllowBackup = true, Icon = "@mipmap/ic_launcher", RoundIcon = "@mipmap/ic_round_launcher",
         Label = "@string/app_name", SupportsRtl = true, Theme = "@style/AppTheme.Launcher")]
     public class App : Application, Application.IActivityLifecycleCallbacks
     {
         public const int HomeIdx = 0;
 
         public App(IntPtr handle, JniHandleOwnership transer)
-          :base(handle, transer)
+          : base(handle, transer)
         {
         }
 

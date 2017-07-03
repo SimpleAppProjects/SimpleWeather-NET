@@ -8,7 +8,7 @@
     android:fillViewport="true"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    tools:context="com.thewizrd.simpleweather.SetupActivity">
+    tools:context="SimpleWeather.Droid.Controls.SetupActivity">
 
     <ScrollView
         android:layout_width="match_parent"

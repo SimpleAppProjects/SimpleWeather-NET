@@ -15,6 +15,9 @@ using System.Collections.Generic;
 using Com.Nostra13.Universalimageloader.Core;
 using System.Threading.Tasks;
 using Android.Graphics.Drawables;
+using Android.Support.V4.Widget;
+using Android.Support.V4.Content;
+using Android.Content.Res;
 
 namespace SimpleWeather.Droid
 {
@@ -28,9 +31,8 @@ namespace SimpleWeather.Droid
         WeatherNowViewModel weatherView = null;
 
         // Views
+        private SwipeRefreshLayout refreshLayout;
         private View mainView;
-        private View contentView;
-        private ProgressBar progressBar;
         // Condition
         private TextView locationName;
         private TextView updateTime;
@@ -38,7 +40,7 @@ namespace SimpleWeather.Droid
         private TextView weatherCondition;
         private WeatherIcon weatherTemp;
         // Details
-        private LinearLayout detailsPanel;
+        private View detailsPanel;
         private TextView humidity;
         private WeatherIcon pressureState;
         private TextView pressure;
@@ -48,6 +50,9 @@ namespace SimpleWeather.Droid
         private TextView windSpeed;
         private TextView sunrise;
         private TextView sunset;
+        // Forecast
+        private LinearLayout forecastPanel;
+        private LinearLayout forecastView;
 
         private ImageLoader loader = ImageLoader.Instance;
 
@@ -62,7 +67,7 @@ namespace SimpleWeather.Droid
                 SetView(weatherView);
             }
 
-            this.Activity.RunOnUiThread(() => progressBar.Visibility = ViewStates.Gone);
+            Activity.RunOnUiThread(() => refreshLayout.Refreshing = false);
         }
 
         public WeatherNowFragment()
@@ -113,12 +118,11 @@ namespace SimpleWeather.Droid
             // Inflate the layout for this fragment
             View view = inflater.Inflate(Resource.Layout.fragment_weather_now, container, false);
 
-            // Setup ActionBar
+            // Setup Actionbar
             HasOptionsMenu = true;
 
+            refreshLayout = (SwipeRefreshLayout)view;
             mainView = view.FindViewById(Resource.Id.fragment_weather_now);
-            contentView = view.FindViewById(Resource.Id.content_view);
-            progressBar = (ProgressBar)view.FindViewById(Resource.Id.progressBar);
             // Condition
             locationName = (TextView)view.FindViewById(Resource.Id.label_location_name);
             updateTime = (TextView)view.FindViewById(Resource.Id.label_updatetime);
@@ -126,7 +130,7 @@ namespace SimpleWeather.Droid
             weatherCondition = (TextView)view.FindViewById(Resource.Id.weather_condition);
             weatherTemp = (WeatherIcon)view.FindViewById(Resource.Id.weather_temp);
             // Details
-            detailsPanel = (LinearLayout)view.FindViewById(Resource.Id.details_panel);
+            detailsPanel = view.FindViewById(Resource.Id.details_panel);
             humidity = (TextView)view.FindViewById(Resource.Id.humidity);
             pressureState = (WeatherIcon)view.FindViewById(Resource.Id.pressure_state);
             pressure = (TextView)view.FindViewById(Resource.Id.pressure);
@@ -136,35 +140,81 @@ namespace SimpleWeather.Droid
             windSpeed = (TextView)view.FindViewById(Resource.Id.wind_speed);
             sunrise = (TextView)view.FindViewById(Resource.Id.sunrise_time);
             sunset = (TextView)view.FindViewById(Resource.Id.sunset_time);
+            // Forecast
+            forecastPanel = (LinearLayout)view.FindViewById(Resource.Id.forecast_panel);
+            forecastPanel.Visibility = ViewStates.Invisible;
+            forecastView = (LinearLayout)view.FindViewById(Resource.Id.forecast_view);
+
+            // SwipeRefresh
+            refreshLayout.SetColorSchemeColors(ContextCompat.GetColor(Activity, Resource.Color.colorPrimary));
+            refreshLayout.Refresh += delegate { Task.Run(() => RefreshWeather(true)); };
+
+            // Fix DetailsLayout
+            AdjustDetailsLayout();
 
             loaded = true;
+            refreshLayout.Refreshing = true;
             Task.Run(Restore);
 
             return view;
         }
 
-        public override void OnCreateOptionsMenu(IMenu menu, MenuInflater inflater)
+        private static bool IsLargeTablet(Context context)
         {
-            // Inflate the menu; this adds items to the action bar if it is present.
-            menu.Clear();
-            inflater.Inflate(Resource.Menu.weather_now, menu);
+            return (context.Resources.Configuration.ScreenLayout
+                    & ScreenLayout.SizeMask) >= ScreenLayout.SizeLarge;
         }
 
-        public override bool OnOptionsItemSelected(IMenuItem item)
+        private void AdjustDetailsLayout()
         {
-            // Handle action bar item clicks here. The action bar will
-            // automatically handle clicks on the Home/Up button, so long
-            // as you specify a parent activity in AndroidManifest.xml.
-            int id = item.ItemId;
-
-            //noinspection SimplifiableIfStatement
-            if (id == Resource.Id.action_refresh)
+            if (IsLargeTablet(Activity))
             {
-                RefreshWeather(true);
-                return true;
-            }
+                mainView.Post(() =>
+                {
+                    Android.Support.V7.Widget.GridLayout panel = (Android.Support.V7.Widget.GridLayout)detailsPanel;
 
-            return base.OnOptionsItemSelected(item);
+                    // Minimum width for ea. card
+                    int minWidth = 600;
+                    // Size of the view
+                    int viewWidth = (int)(this.View.Width - panel.PaddingRight - panel.PaddingLeft);
+                    // Available columns based on min card width
+                    int availColumns = (viewWidth / minWidth) == 0 ? 1 : viewWidth / minWidth;
+                    // Maximum columns to use
+                    int maxColumns = (availColumns > panel.ChildCount) ? panel.ChildCount : availColumns;
+
+                    int freeSpace = viewWidth - (minWidth * maxColumns);
+                    // Increase card width to fill available space
+                    int itemWidth = minWidth + (freeSpace / maxColumns);
+
+                    // Adjust GridLayout
+                    // Start
+                    int currCol = 0;
+                    int currRow = 0;
+                    for(int i = 0; i < panel.ChildCount; i++)
+                    {
+                        View view = panel.GetChildAt(i);
+                        view.LayoutParameters = new Android.Support.V7.Widget.GridLayout.LayoutParams(
+                            Android.Support.V7.Widget.GridLayout.InvokeSpec(currRow, 1.0f),
+                            Android.Support.V7.Widget.GridLayout.InvokeSpec(currCol, 1.0f));
+                        view.LayoutParameters.Width = 0;
+                        view.SetPaddingRelative(20, 0, 20, 0);
+                        if (currCol == maxColumns - 1)
+                        {
+                            currCol = 0;
+                            currRow++;
+                        }
+                        else
+                            currCol++;
+                    }
+                    panel.RowCount = currRow + 1;
+                    panel.ColumnCount = maxColumns;
+                });
+            }
+        }
+
+        public override void OnCreateOptionsMenu(IMenu menu, MenuInflater inflater)
+        {
+            menu.Clear();
         }
 
         public override void OnResume()
@@ -206,14 +256,11 @@ namespace SimpleWeather.Droid
             }
 
             // Load up weather data
-            RefreshWeather(false);
+            await RefreshWeather(false);
         }
 
-        private async void RefreshWeather(bool forceRefresh)
+        private async Task RefreshWeather(bool forceRefresh)
         {
-            // Hide view until weather is loaded
-            this.Activity.RunOnUiThread(() => progressBar.Visibility = ViewStates.Visible);
-
             await wLoader.LoadWeatherData(forceRefresh);
         }
 
@@ -228,10 +275,9 @@ namespace SimpleWeather.Droid
 
             Activity.RunOnUiThread(() =>
             {
-                LinearLayout forecastPanel = (LinearLayout)contentView.FindViewById(Resource.Id.forecast_panel);
-                forecastPanel.SetBackgroundColor(weatherView.PanelBackground);
-                detailsPanel.SetBackgroundColor(weatherView.PanelBackground);
-
+                forecastView.Background = ContextCompat.GetDrawable(Activity, weatherView.PanelBackground);
+                detailsPanel.Background = ContextCompat.GetDrawable(Activity, weatherView.PanelBackground);
+            
                 // Location
                 locationName.Text = weatherView.Location;
 
@@ -263,11 +309,13 @@ namespace SimpleWeather.Droid
                 visiblity.Text = weatherView._Visibility;
 
                 // Add UI elements
-                forecastPanel.RemoveAllViews();
+                forecastView.RemoveAllViews();
                 foreach (ForecastItemViewModel forecast in weatherView.Forecasts)
                 {
-                    forecastPanel.AddView(new ForecastItem(Activity, forecast));
+                    forecastView.AddView(new ForecastItem(Activity, forecast));
                 }
+                if (forecastPanel.Visibility != ViewStates.Visible)
+                    forecastPanel.Visibility = ViewStates.Visible;
             });
         }
     }

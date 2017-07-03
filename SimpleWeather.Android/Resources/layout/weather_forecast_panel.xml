@@ -1,50 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/forecast_panel_width"
+    android:layout_height="@dimen/forecast_panel_height"
     android:orientation="vertical"
-    android:layout_height="175dp"
-    android:padding="4dp"
-    android:layout_width="130dp">
+    android:padding="4dp">
 
     <TextView
         android:id="@+id/forecast_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="Someday XX"
-        android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
         android:padding="4dp"
+        android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
         android:textColor="@android:color/white"
-        android:textSize="14sp" />
+        android:textSize="@dimen/forecast_date_size"
+        tools:text="Someday XX" />
 
-    <me.grantland.widget.AutofitLayout
+    <SimpleWeather.Droid.Controls.WeatherIcon
+        android:id="@+id/forecast_icon"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_weight="2">
-
-        <SimpleWeather.Droid.Controls.WeatherIcon
-            android:id="@+id/forecast_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="@string/wi_wu_sunny"
-            android:textSize="44sp"
-            android:textAppearance="@android:style/TextAppearance.Material.Large.Inverse"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp"
-            android:paddingLeft="8dp" />
-    </me.grantland.widget.AutofitLayout>
+        android:layout_weight="2"
+        android:paddingBottom="4dp"
+        android:paddingLeft="8dp"
+        android:paddingTop="4dp"
+        android:textAppearance="@android:style/TextAppearance.Material.Large.Inverse"
+        android:textSize="@dimen/forecast_icon_size"
+        tools:text="@string/wi_wu_sunny" />
 
     <me.grantland.widget.AutofitTextView
         android:id="@+id/forecast_condition"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_weight="1"
         android:layout_gravity="bottom"
-        tools:text="Sunny"
-        android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+        android:layout_weight="1"
         android:padding="4dp"
+        android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
         android:textColor="@android:color/white"
-        android:textSize="12sp" />
+        android:textSize="@dimen/forecast_condition_size"
+        tools:text="Scattered Thunderstorms" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -55,22 +50,21 @@
             android:id="@+id/forecast_temphi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="77`"
-            android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
             android:padding="4dp"
+            android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
             android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:textStyle="normal|bold" />
+            android:textSize="@dimen/forecast_hi_size"
+            android:textStyle="normal|bold"
+            tools:text="77º" />
 
         <TextView
             android:id="@+id/forecast_templo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="66`"
-            android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
             android:padding="4dp"
-            android:textSize="14sp"
-            android:textStyle="normal|bold" />
-
+            android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+            android:textSize="@dimen/forecast_lo_size"
+            android:textStyle="normal|bold"
+            tools:text="66º" />
     </LinearLayout>
 </LinearLayout>

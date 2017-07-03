@@ -19,8 +19,7 @@
     </style>
 
     <style name="AppTheme.Launcher">
-        <item name="android:background">@color/colorPrimary</item>
-        <item name="android:foreground">@drawable/ic_splash_screen</item>
+        <item name="android:background">@drawable/ic_splash_screen</item>
     </style>
 
     <style name="SetupTheme" parent="Theme.AppCompat.Light">
@@ -34,10 +33,18 @@
     </style>
 
     <style name="WeatherDetails" parent="@android:style/Widget.Material.TextView">
-        <item name="android:textSize">14sp</item>
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:padding">4dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:padding">8dp</item>
         <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="DetailCardLabels" parent="@android:style/TextAppearance.Material.Medium.Inverse">
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:padding">8dp</item>
     </style>
 
     <style name="SettingsTheme" parent="Theme.AppCompat.Light.DarkActionBar">

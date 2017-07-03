@@ -14,8 +14,7 @@ using SimpleWeather.Utils;
 
 namespace SimpleWeather.Droid
 {
-    [Android.App.Activity(Label = "@string/title_activity_weather_now",
-        Name = "SimpleWeather.Droid.MainActivity", Theme = "@style/AppTheme")]
+    [Android.App.Activity(Label = "@string/title_activity_weather_now", Theme = "@style/AppTheme")]
     public class MainActivity : AppCompatActivity, NavigationView.IOnNavigationItemSelectedListener
     {
         protected override void OnCreate(Bundle savedInstanceState)
@@ -101,10 +100,6 @@ namespace SimpleWeather.Droid
             {
                 if (fragment.Class != SupportFragmentManager.FindFragmentById(Resource.Id.fragment_container).Class)
                 {
-                    // Replace whatever is in the fragment_container view with this fragment,
-                    // and add the transaction to the back stack so the user can navigate back
-                    transaction.Replace(Resource.Id.fragment_container, fragment);
-
                     if ((fragment as WeatherNowFragment) != null)
                     {
                         // Pop all since we're going home
@@ -114,6 +109,7 @@ namespace SimpleWeather.Droid
                     else
                     {
                         // Commit the transaction
+                        transaction.Add(Resource.Id.fragment_container, fragment);
                         transaction.AddToBackStack(null).Commit();
                     }
                 }
