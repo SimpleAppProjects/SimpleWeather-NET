@@ -111,7 +111,7 @@ namespace SimpleWeather.Droid
                 else
                 {
                     activity.SupportFragmentManager.BeginTransaction().Add(
-                        Resource.Id.fragment_container, fragment).AddToBackStack(null).Commit();
+                        Resource.Id.fragment_container, fragment).Hide(this).AddToBackStack(null).Commit();
                 }
             }
         }

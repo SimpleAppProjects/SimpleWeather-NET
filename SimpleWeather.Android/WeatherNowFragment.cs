@@ -119,7 +119,7 @@ namespace SimpleWeather.Droid
             View view = inflater.Inflate(Resource.Layout.fragment_weather_now, container, false);
 
             // Setup Actionbar
-            HasOptionsMenu = true;
+            HasOptionsMenu = false;
 
             refreshLayout = (SwipeRefreshLayout)view;
             mainView = view.FindViewById(Resource.Id.fragment_weather_now);
