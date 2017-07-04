@@ -22,13 +22,8 @@
         <item name="android:background">@drawable/ic_splash_screen</item>
     </style>
 
-    <style name="SetupTheme" parent="Theme.AppCompat.Light">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorPrimaryLight</item>
-
-        <item name="windowActionModeOverlay">true</item>
+    <style name="SetupTheme" parent="AppTheme">
+        <item name="windowActionModeOverlay">false</item>
         <item name="windowActionBarOverlay">false</item>
     </style>
 

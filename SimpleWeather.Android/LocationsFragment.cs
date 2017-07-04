@@ -42,7 +42,6 @@ namespace SimpleWeather.Droid
         private Android.Support.V7.View.ActionMode mActionMode;
         private View searchViewLayout;
         private EditText searchView;
-        private ImageView backButtonView;
         private ImageView clearButtonView;
         private ImageView locationButtonView;
         private bool inSearchUI;
@@ -134,8 +133,6 @@ namespace SimpleWeather.Droid
                 // Restart ActionMode
                 AppCompatActivity activity = (AppCompatActivity)Activity;
                 mActionMode = activity.StartSupportActionMode(mActionModeCallback);
-                if (savedInstanceState.GetInt("ModeTag", -1) >= 0)
-                    mActionMode.Tag = savedInstanceState.GetInt("ModeTag");
             }
         }
 
@@ -252,8 +249,6 @@ namespace SimpleWeather.Droid
         {
             // Save ActionMode state
             outState.PutBoolean("SearchUI", inSearchUI);
-            if (mActionMode !=null && mActionMode.Tag != null)
-                outState.PutInt("ModeTag", (int)mActionMode.Tag);
 
             if (inSearchUI)
                 ExitSearchUi();
@@ -406,20 +401,11 @@ namespace SimpleWeather.Droid
 
         private void PrepareSearchView()
         {
-            backButtonView = (ImageView)searchViewLayout
-                    .FindViewById(Resource.Id.search_back_button);
-            backButtonView.Click += delegate
-            {
-                ExitSearchUi();
-            };
-            backButtonView.Visibility = ViewStates.Gone;
             searchView = (EditText)searchViewLayout
                     .FindViewById(Resource.Id.search_view);
-            searchView.SetPadding(0, 0, 0, 0); // l, t, r, b
             clearButtonView = (ImageView)searchViewLayout.FindViewById(Resource.Id.search_close_button);
             locationButtonView = (ImageView)searchViewLayout
                     .FindViewById(Resource.Id.search_location_button);
-            locationButtonView.SetPadding(48, 0, 48, 0); // l, t, r, b
             clearButtonView.Click += delegate { searchView.Text = String.Empty; };
             searchView.TextChanged += (object sender, TextChangedEventArgs e) =>
             {

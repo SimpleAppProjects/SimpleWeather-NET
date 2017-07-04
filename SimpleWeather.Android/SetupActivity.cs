@@ -8,9 +8,7 @@ using Android.Text;
 using Android.Views.InputMethods;
 using Android.Content;
 using Android.Support.V4.App;
-using Android.Graphics.Drawables;
-using Android.Support.V4.Content;
-using Android.Graphics;
+using SimpleWeather.Droid.Helpers;
 
 namespace SimpleWeather.Droid
 {
@@ -19,22 +17,49 @@ namespace SimpleWeather.Droid
     public class SetupActivity : AppCompatActivity
     {
         private LocationSearchFragment mSearchFragment;
+        private Android.Support.V7.View.ActionMode mActionMode;
+        private View searchViewLayout;
         private Spinner apiSpinner;
         private EditText keyEntry;
         private EditText searchView;
-        private ImageView backButtonView;
         private ImageView clearButtonView;
         private ImageView locationButtonView;
         private bool inSearchUI;
+
+        private ActionModeCallback mActionModeCallback = new ActionModeCallback();
+
+        private bool OnCreateActionMode(Android.Support.V7.View.ActionMode mode, IMenu menu)
+        {
+            if (searchViewLayout == null)
+                searchViewLayout = LayoutInflater.Inflate(Resource.Layout.search_action_bar, null);
+
+            mode.CustomView = searchViewLayout;
+            EnterSearchUi();
+            return true;
+        }
+
+        private void OnDestroyActionMode(Android.Support.V7.View.ActionMode mode)
+        {
+            ExitSearchUi();
+            mActionMode = null;
+        }
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.activity_setup);
 
-            // Setup Actionbar
-            SupportActionBar.SetDisplayShowTitleEnabled(false);
-            SupportActionBar.Elevation = 0;
+            mActionModeCallback.CreateActionMode += OnCreateActionMode;
+            mActionModeCallback.DestroyActionMode += OnDestroyActionMode;
+
+            // Get ActionMode state
+            if (savedInstanceState != null && savedInstanceState.GetBoolean("SearchUI", false))
+            {
+                inSearchUI = true;
+
+                // Restart ActionMode
+                mActionMode = StartSupportActionMode(mActionModeCallback);
+            }
 
             apiSpinner = (Spinner)FindViewById(Resource.Id.api_spinner);
             keyEntry = (EditText)FindViewById(Resource.Id.key_entry);
@@ -83,7 +108,7 @@ namespace SimpleWeather.Droid
 
             FindViewById(Resource.Id.search_view_container).Click += delegate
             {
-                EnterSearchUi();
+                mActionMode = StartSupportActionMode(mActionModeCallback);
             };
 
             FindViewById(Resource.Id.search_fragment_container).Click += delegate
@@ -113,6 +138,17 @@ namespace SimpleWeather.Droid
             }
         }
 
+        protected override void OnSaveInstanceState(Bundle outState)
+        {
+            // Save ActionMode state
+            outState.PutBoolean("SearchUI", inSearchUI);
+
+            if (inSearchUI)
+                ExitSearchUi();
+
+            base.OnSaveInstanceState(outState);
+        }
+
         private void EnterSearchUi()
         {
             inSearchUI = true;
@@ -136,9 +172,6 @@ namespace SimpleWeather.Droid
             {
                 PrepareSearchView();
             }
-            SupportActionBar.SetDisplayShowCustomEnabled(true);
-            SupportActionBar.SetBackgroundDrawable(null);
-            SupportActionBar.Elevation = 5;
             searchView.RequestFocus();
         }
 
@@ -159,24 +192,12 @@ namespace SimpleWeather.Droid
 
         private void PrepareSearchView()
         {
-            View searchViewLayout = LayoutInflater.Inflate(
-                    Resource.Layout.search_action_bar, null);
-            backButtonView = (ImageView)searchViewLayout
-                    .FindViewById(Resource.Id.search_back_button);
-            backButtonView.Click += delegate
-            {
-                ExitSearchUi();
-            };
             searchView = (EditText)searchViewLayout
                     .FindViewById(Resource.Id.search_view);
             clearButtonView = (ImageView)searchViewLayout.FindViewById(Resource.Id.search_close_button);
             locationButtonView = (ImageView)searchViewLayout
                     .FindViewById(Resource.Id.search_location_button);
-            clearButtonView.Click += delegate
-            {
-                searchView.Text = String.Empty;
-            };
-
+            clearButtonView.Click += delegate { searchView.Text = String.Empty; };
             searchView.TextChanged += (object sender, TextChangedEventArgs e) =>
             {
                 if (mSearchFragment != null)
@@ -186,17 +207,14 @@ namespace SimpleWeather.Droid
                 }
             };
             clearButtonView.Visibility = ViewStates.Gone;
-            searchView.FocusChange += (object s, View.FocusChangeEventArgs e) =>
+            searchView.FocusChange += (object sender, View.FocusChangeEventArgs e) =>
             {
-                View v = s as View;
+                View v = sender as View;
+
                 if (e.HasFocus)
-                {
                     ShowInputMethod(v.FindFocus());
-                }
                 else
-                {
                     HideInputMethod(v);
-                }
             };
             searchView.EditorAction += (object sender, TextView.EditorActionEventArgs e) =>
             {
@@ -212,15 +230,7 @@ namespace SimpleWeather.Droid
                 }
                 e.Handled = false;
             };
-            locationButtonView.Click += delegate
-            {
-                mSearchFragment.FetchGeoLocation();
-            };
-
-            SupportActionBar.SetCustomView(
-                    searchViewLayout,
-                    new ActionBar.LayoutParams(ViewGroup.LayoutParams.MatchParent,
-                    ViewGroup.LayoutParams.WrapContent));
+            locationButtonView.Click += delegate { mSearchFragment.FetchGeoLocation(); };
         }
 
         public override void OnBackPressed()
@@ -238,6 +248,8 @@ namespace SimpleWeather.Droid
 
         private void ExitSearchUi()
         {
+            searchView.Text = String.Empty;
+
             if (mSearchFragment != null)
             {
                 mSearchFragment.UserVisibleHint = false;
@@ -249,14 +261,9 @@ namespace SimpleWeather.Droid
                 transaction.CommitAllowingStateLoss();
             }
 
-            // We want to hide SearchView and show Tabs. Also focus on previously
-            // selected one.
-            SupportActionBar.SetDisplayShowCustomEnabled(false);
-            SupportActionBar.SetBackgroundDrawable(new ColorDrawable(new Color(ContextCompat.GetColor(this, Resource.Color.colorPrimary))));
-            SupportActionBar.Elevation = 0;
             HideInputMethod(CurrentFocus);
-            InvalidateOptionsMenu();
             searchView.ClearFocus();
+            mActionMode.Finish();
             inSearchUI = false;
         }
 
