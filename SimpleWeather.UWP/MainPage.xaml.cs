@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 using Windows.Foundation.Metadata;
+using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
@@ -40,7 +41,9 @@ namespace SimpleWeather.UWP
             if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
                 // Mobile
+                StatusBar.GetForCurrentView().BackgroundOpacity = 1;
                 StatusBar.GetForCurrentView().BackgroundColor = App.AppColor;
+                StatusBar.GetForCurrentView().ForegroundColor = Colors.White;
             }
             else
             {
