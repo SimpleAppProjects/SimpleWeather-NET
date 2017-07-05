@@ -122,9 +122,6 @@ namespace SimpleWeather.Droid
             // Create your fragment here
             Loaded = true;
 
-            // Set SoftInput mode
-            this.Activity.Window.SetSoftInputMode(SoftInput.AdjustResize);
-
             // Get ActionMode state
             if (savedInstanceState != null && savedInstanceState.GetBoolean("SearchUI", false))
             {
@@ -203,6 +200,10 @@ namespace SimpleWeather.Droid
             optionsMenu = menu;
             menu.Clear();
             inflater.Inflate(Resource.Menu.locations, menu);
+
+            IMenuItem editMenuBtn = optionsMenu.FindItem(Resource.Id.action_editmode);
+            if (editMenuBtn != null)
+                editMenuBtn.SetVisible(mAdapter.Dataset.Count != 1);
         }
 
         public override bool OnOptionsItemSelected(IMenuItem item)
@@ -315,7 +316,6 @@ namespace SimpleWeather.Droid
                 return;
             }
             mSearchFragment.UserVisibleHint = true;
-            mSearchFragment.Activity.Window.SetSoftInputMode(SoftInput.AdjustPan | SoftInput.AdjustResize);
             FragmentTransaction transaction = ChildFragmentManager
                     .BeginTransaction();
             transaction.Show(mSearchFragment);

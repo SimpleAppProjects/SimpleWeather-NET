@@ -8,36 +8,64 @@
     mc:Ignorable="d"
     d:DesignHeight="100"
     d:DesignWidth="400"
-    Tag="{Binding Pair}"
-    d:DataContext="{d:DesignInstance Type=controls:LocationPanelView, IsDesignTimeCreatable=True}">
+    Tag="{Binding Pair}">
 
-    <Grid Background="{Binding Background, FallbackValue=#FF006FBF}"
-          Height="100" BorderBrush="White">
+    <Grid Background="{Binding Background, FallbackValue='#FF006FBF'}"
+          Height="100" BorderBrush="White"
+          Name="MainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <ProgressRing x:Name="LoadingRing" Grid.ColumnSpan="2" IsActive="{Binding IsLoading}" Foreground="White"/>
-        <Viewbox Height="55" HorizontalAlignment="Left" Grid.Column="0">
-            <TextBlock x:Name="LocationName" Text="{Binding LocationName}"
-                           Foreground="White"
-                           FontSize="24" VerticalAlignment="Center" Padding="10"/>
+        <Viewbox Name="NameBox" Height="55" HorizontalAlignment="Left" Grid.Column="0">
+            <TextBlock x:Name="LocationName" Text="{Binding LocationName, FallbackValue='New York, NY'}"
+                       Foreground="White" FontSize="24" VerticalAlignment="Center" Padding="10"
+                       Width="200"
+                       TextWrapping="WrapWholeWords"/>
         </Viewbox>
         <Viewbox Height="55" VerticalAlignment="Center" Grid.Column="1">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="90"/>
-                    <ColumnDefinition Width="90"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Viewbox Height="55" Width="55" Grid.Column="0">
-                    <TextBlock x:Name="CurrentTemp" Text="{Binding CurrTemp}" 
-                                   Foreground="White"
-                                   FontSize="24" Padding="10"/>
+                <Viewbox Name="TempBox" Height="55" Width="55" Grid.Column="0">
+                    <TextBlock x:Name="CurrentTemp" Text="{Binding CurrTemp, FallbackValue='70&#xF045;'}" 
+                               Foreground="White" FontSize="24" Padding="10"/>
                 </Viewbox>
-                <Viewbox Height="55" Width="55" Grid.Column="1">
-                    <TextBlock x:Name="WeatherIcon" Text="{Binding WeatherIcon}" Style="{StaticResource WeatherIcon}"/>
+                <Viewbox Name="IconBox" Height="55" Width="55" Grid.Column="1" Margin="5">
+                    <TextBlock x:Name="WeatherIcon" Text="{Binding WeatherIcon, FallbackValue='&#xf00d;'}" Style="{StaticResource WeatherIcon}"/>
                 </Viewbox>
             </Grid>
         </Viewbox>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="Mobile">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="LocationName.FontSize" Value="12"/>
+                        <Setter Target="MainGrid.Height" Value="75"/>
+                        <Setter Target="IconBox.Margin" Value="10"/>
+                        <Setter Target="IconBox.Width" Value="55"/>
+                        <Setter Target="TempBox.Width" Value="55"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Desktop">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="640"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="LocationName.FontSize" Value="24"/>
+                        <Setter Target="MainGrid.Height" Value="100"/>
+                        <Setter Target="IconBox.Margin" Value="5"/>
+                        <Setter Target="IconBox.Width" Value="90"/>
+                        <Setter Target="TempBox.Width" Value="90"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
     </Grid>
 </UserControl>

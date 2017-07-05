@@ -107,6 +107,8 @@ namespace SimpleWeather.Droid
             // Inflate the layout for this fragment
             View view = inflater.Inflate(Resource.Layout.fragment_location_search, container, false);
             SetupView(view);
+
+            Activity.Window.SetSoftInputMode(SoftInput.AdjustResize);
             return view;
         }
 

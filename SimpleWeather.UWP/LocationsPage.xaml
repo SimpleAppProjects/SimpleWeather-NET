@@ -384,31 +384,55 @@
                           RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="controls:LocationPanelViewModel">
-                            <Grid Margin="5">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <controls:LocationPanel Grid.Column="0" IsEnabled="False" Holding="LocationPanel_Holding"/>
-                                <Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Column="0"
+                            <UserControl>
+                                <Grid Margin="5">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <controls:LocationPanel Grid.Column="0" IsEnabled="False" Holding="LocationPanel_Holding"/>
+                                    <Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Column="0"
                                         Padding="5"
                                         Click="HomeBox_Click"
                                         Visibility="{Binding HomeBoxVisibility}"
                                         IsEnabled="{Binding IsHome, Converter={StaticResource inverseBooleanConverter}}"
                                         Style="{StaticResource HomeButtonStyle}">
-                                    <Grid>
-                                        <FontIcon Glyph="&#xE80F;" Foreground="White" Visibility="{Binding IsHome, Converter={StaticResource inverseBooleanToVisibilityConverter}}" />
-                                        <FontIcon Glyph="&#xEA8A;" Foreground="White" Visibility="{Binding IsHome, Converter={StaticResource booleanToVisibilityConverter}}" />
-                                    </Grid>
-                                </Button>
-                                <StackPanel Background="Black" Grid.Column="1"
-                                            Visibility="{Binding EditMode, Converter={StaticResource booleanToVisibilityConverter}}">
-                                    <Button x:Name="DeleteButton" Style="{StaticResource BurgerButton}"
-                                            Click="LocationPanel_DeleteClick">
-                                        <FontIcon Height="100" Width="50" Glyph="&#xE107;" Foreground="White"/>
+                                        <Grid>
+                                            <FontIcon Glyph="&#xE80F;" Foreground="White" Visibility="{Binding IsHome, Converter={StaticResource inverseBooleanToVisibilityConverter}}" />
+                                            <FontIcon Glyph="&#xEA8A;" Foreground="White" Visibility="{Binding IsHome, Converter={StaticResource booleanToVisibilityConverter}}" />
+                                        </Grid>
                                     </Button>
-                                </StackPanel>
-                            </Grid>
+                                    <StackPanel Background="Black" Grid.Column="1"
+                                            Visibility="{Binding EditMode, Converter={StaticResource booleanToVisibilityConverter}}">
+                                        <Button x:Name="DeleteButton" Style="{StaticResource BurgerButton}"
+                                            Click="LocationPanel_DeleteClick">
+                                            <FontIcon Name="DeleteButtonFontIco" Height="100" Width="50" Glyph="&#xE107;" Foreground="White"/>
+                                        </Button>
+                                    </StackPanel>
+                                    <VisualStateManager.VisualStateGroups>
+                                        <VisualStateGroup>
+                                            <VisualState x:Name="Mobile">
+                                                <VisualState.StateTriggers>
+                                                    <AdaptiveTrigger MinWindowWidth="0"/>
+                                                </VisualState.StateTriggers>
+                                                <VisualState.Setters>
+                                                    <Setter Target="DeleteButtonFontIco.Height" Value="75"/>
+                                                    <Setter Target="DeleteButtonFontIco.Width" Value="35"/>
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                            <VisualState x:Name="Desktop">
+                                                <VisualState.StateTriggers>
+                                                    <AdaptiveTrigger MinWindowWidth="640"/>
+                                                </VisualState.StateTriggers>
+                                                <VisualState.Setters>
+                                                    <Setter Target="DeleteButtonFontIco.Height" Value="100"/>
+                                                    <Setter Target="DeleteButtonFontIco.Width" Value="50"/>
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                        </VisualStateGroup>
+                                    </VisualStateManager.VisualStateGroups>
+                                </Grid>
+                            </UserControl>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                     <ListView.ItemContainerStyle>
@@ -466,7 +490,7 @@
                 </VisualState>
                 <VisualState x:Name="Desktop">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="600"/>
+                        <AdaptiveTrigger MinWindowWidth="640"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="CommandBar.Margin" Value="0,0,0,0"/>

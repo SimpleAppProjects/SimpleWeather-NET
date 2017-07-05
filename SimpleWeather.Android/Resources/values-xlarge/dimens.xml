@@ -17,4 +17,9 @@
     <dimen name="forecast_condition_size">16sp</dimen>
     <dimen name="forecast_hi_size">20sp</dimen>
     <dimen name="forecast_lo_size">16sp</dimen>
+    <!-- Locations -->
+    <dimen name="location_panel_height">125dp</dimen>
+    <dimen name="location_panel_text_size">28sp</dimen>
+    <dimen name="location_panel_textview_size">80dp</dimen>
+    <dimen name="location_panel_icon_size">50sp</dimen>
 </resources>

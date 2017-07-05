@@ -7,37 +7,43 @@
     android:layout_height="match_parent"
     tools:context="SimpleWeather.Droid.Controls.LocationsFragment"
     android:background="@android:color/white">
-  <ScrollView
-      android:layout_width="match_parent"
+
+    <ScrollView
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:paddingBottom="4dp"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp">
-        <LinearLayout
+        android:paddingTop="4dp">
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/locations_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/locations_add"
                 android:orientation="vertical" />
-        </LinearLayout>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/locations_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="16dp"
+                android:src="@drawable/ic_add_white_24dp"
+                android:tint="@android:color/white"
+                app:backgroundTint="@color/colorPrimary"
+                app:elevation="4dp"
+                app:fabSize="normal" />
+        </RelativeLayout>
     </ScrollView>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/locations_add"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_add_white_24dp"
-        android:tint="@android:color/white"
-        app:backgroundTint="@color/colorPrimary"
-        app:elevation="4dp"
-        app:fabSize="normal" />
     <RelativeLayout
         android:id="@+id/search_fragment_container"
         android:layout_width="wrap_content"
