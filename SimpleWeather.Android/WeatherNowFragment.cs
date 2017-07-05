@@ -90,9 +90,18 @@ namespace SimpleWeather.Droid
             if (pair != null)
             {
                 Bundle args = new Bundle();
-                args.PutString("pair", JSONParser.Serializer(pair, typeof(Pair<int, string>)));
+                args.PutString("pair", Task.Run(() => JSONParser.Serializer(pair, typeof(Pair<int, string>))).Result);
                 fragment.Arguments = args;
             }
+            return fragment;
+        }
+
+        public static WeatherNowFragment NewInstance(Bundle args)
+        {
+            WeatherNowFragment fragment = new WeatherNowFragment()
+            {
+                Arguments = args
+            };
             return fragment;
         }
 

@@ -95,7 +95,7 @@ namespace SimpleWeather.Droid
             pair = new Pair<int, string>(App.HomeIdx, selected_query);
 
             Intent intent = new Intent(Activity, typeof(MainActivity));
-            intent.PutExtra("pair", JSONParser.Serializer(pair, typeof(Pair<int, string>)));
+            intent.PutExtra("pair", await JSONParser.SerializerAsync(pair, typeof(Pair<int, string>)));
 
             Settings.WeatherLoaded = true;
             Activity.StartActivity(intent);

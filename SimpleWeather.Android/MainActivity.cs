@@ -9,8 +9,6 @@ using Android.Support.V4.App;
 using Android.Support.V4.View;
 using Android.Views;
 using Android.Content;
-using SimpleWeather.Droid.Utils;
-using SimpleWeather.Utils;
 
 namespace SimpleWeather.Droid
 {
@@ -45,8 +43,7 @@ namespace SimpleWeather.Droid
             {
                 if (Intent.HasExtra("pair"))
                 {
-                    Pair<int, string> pair = JSONParser.Deserializer<Pair<int, string>>(Intent.GetStringExtra("pair"));
-                    fragment = WeatherNowFragment.NewInstance(pair);
+                    fragment = WeatherNowFragment.NewInstance(Intent.Extras);
                 }
                 else
                     fragment = new WeatherNowFragment();
