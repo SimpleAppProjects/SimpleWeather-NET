@@ -447,7 +447,7 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <AutoSuggestBox x:Name="Location" FontSize="24" PlaceholderText="Enter Location..." Grid.Column="0" RequestedTheme="Light"
+                    <AutoSuggestBox x:Name="Location" FontSize="24" PlaceholderText="Enter Location" Grid.Column="0" RequestedTheme="Light"
                             QueryIcon="Find" TextChanged="Location_TextChanged" SuggestionChosen="Location_SuggestionChosen" QuerySubmitted="Location_QuerySubmitted"
                             UpdateTextOnSelect="False" Style="{StaticResource AutoSuggestBoxStyle}">
                         <AutoSuggestBox.ItemTemplate>

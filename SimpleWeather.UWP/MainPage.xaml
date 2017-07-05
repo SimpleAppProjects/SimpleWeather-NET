@@ -304,7 +304,7 @@
             <Image x:Name="AppLogo" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,0" Source="Assets/Square150x150Logo.png" />
         </Viewbox>
         <Grid Height="80" Grid.Row="1" Padding="25,0" RequestedTheme="Dark" Name="SearchGrid">
-            <AutoSuggestBox x:Name="Location" FontSize="24" PlaceholderText="Enter Location..." VerticalAlignment="Center" QueryIcon="Find"
+            <AutoSuggestBox x:Name="Location" FontSize="24" PlaceholderText="Enter Location" VerticalAlignment="Center" QueryIcon="Find"
                      RequestedTheme="Light" TextChanged="Location_TextChanged" SuggestionChosen="Location_SuggestionChosen" QuerySubmitted="Location_QuerySubmitted"
                             UpdateTextOnSelect="False" Style="{StaticResource AutoSuggestBoxStyle}">
                 <AutoSuggestBox.ItemTemplate>
@@ -325,13 +325,13 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <ComboBox x:Name="APIComboBox" HorizontalAlignment="Center" VerticalAlignment="Top" Width="300" Margin="0,10"
-                  Background="White" BorderThickness="0" Grid.Row="0" PlaceholderText="Select WeatherAPI" SelectionChanged="APIComboBox_SelectionChanged" FontSize="12">
+                  Background="White" BorderThickness="0" Grid.Row="0" PlaceholderText="Select Weather Provider" SelectionChanged="APIComboBox_SelectionChanged" FontSize="12">
                 <ComboBox.Items>
                     <TextBlock Text="WeatherUnderground"/>
                     <TextBlock Text="Yahoo Weather"/>
                 </ComboBox.Items>
                 <ComboBox.Header>
-                    <TextBlock Text="Weather API" Foreground="White" Padding="5,0" FontSize="12" />
+                    <TextBlock Text="Weather Provider" Foreground="White" Padding="5,0" FontSize="12" />
                 </ComboBox.Header>
             </ComboBox>
             <TextBox x:Name="KeyEntry" HorizontalAlignment="Center" Width="300" Grid.Row="1" FontSize="12"
