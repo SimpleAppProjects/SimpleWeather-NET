@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 using Android.Content;
 using Android.OS;
@@ -18,6 +19,7 @@ using Android.Graphics.Drawables;
 using Android.Support.V4.Widget;
 using Android.Support.V4.Content;
 using Android.Content.Res;
+using Android.Support.V4.View;
 
 namespace SimpleWeather.Droid
 {
@@ -53,6 +55,16 @@ namespace SimpleWeather.Droid
         // Forecast
         private LinearLayout forecastPanel;
         private LinearLayout forecastView;
+        // Additional Details
+        private Switch forecastSwitch;
+        private HorizontalScrollView forecastScrollView;
+        private ViewPager txtForecastView;
+        private LinearLayout hrforecastPanel;
+        private LinearLayout hrforecastView;
+        private LinearLayout precipitationPanel;
+        private TextView chance;
+        private TextView qpfRain;
+        private TextView qpfSnow;
 
         private ImageLoader loader = ImageLoader.Instance;
 
@@ -153,13 +165,26 @@ namespace SimpleWeather.Droid
             forecastPanel = (LinearLayout)view.FindViewById(Resource.Id.forecast_panel);
             forecastPanel.Visibility = ViewStates.Invisible;
             forecastView = (LinearLayout)view.FindViewById(Resource.Id.forecast_view);
+            // Additional Details
+            forecastSwitch = (Switch)view.FindViewById(Resource.Id.forecast_switch);
+            forecastSwitch.CheckedChange += ForecastSwitch_CheckedChange;
+            forecastSwitch.Visibility = ViewStates.Gone;
+            forecastScrollView = (HorizontalScrollView)view.FindViewById(Resource.Id.forecast_scrollview);
+            txtForecastView = (ViewPager)view.FindViewById(Resource.Id.txt_forecast_viewpgr);
+            txtForecastView.Adapter = new TextForecastPagerAdapter(this.Activity, new List<TextForecastItemViewModel>());
+            txtForecastView.Visibility = ViewStates.Gone;
+            hrforecastPanel = (LinearLayout)view.FindViewById(Resource.Id.hourly_forecast_panel);
+            hrforecastPanel.Visibility = ViewStates.Gone;
+            hrforecastView = (LinearLayout)view.FindViewById(Resource.Id.hourly_forecast_view);
+            precipitationPanel = (LinearLayout)view.FindViewById(Resource.Id.precipitation_card);
+            precipitationPanel.Visibility = ViewStates.Gone;
+            chance = (TextView)view.FindViewById(Resource.Id.chance_val);
+            qpfRain = (TextView)view.FindViewById(Resource.Id.qpf_rain_val);
+            qpfSnow = (TextView)view.FindViewById(Resource.Id.qpf_snow_val);
 
             // SwipeRefresh
             refreshLayout.SetColorSchemeColors(ContextCompat.GetColor(Activity, Resource.Color.colorPrimary));
             refreshLayout.Refresh += delegate { Task.Run(() => RefreshWeather(true)); };
-
-            // Fix DetailsLayout
-            AdjustDetailsLayout();
 
             loaded = true;
             refreshLayout.Refreshing = true;
@@ -202,11 +227,13 @@ namespace SimpleWeather.Droid
                     for(int i = 0; i < panel.ChildCount; i++)
                     {
                         View view = panel.GetChildAt(i);
-                        view.LayoutParameters = new Android.Support.V7.Widget.GridLayout.LayoutParams(
+
+                        var layoutParams = new Android.Support.V7.Widget.GridLayout.LayoutParams(
                             Android.Support.V7.Widget.GridLayout.InvokeSpec(currRow, 1.0f),
                             Android.Support.V7.Widget.GridLayout.InvokeSpec(currCol, 1.0f));
-                        view.LayoutParameters.Width = 0;
+                        layoutParams.Width = 0;
                         view.SetPaddingRelative(20, 0, 20, 0);
+                        view.LayoutParameters = layoutParams;
                         if (currCol == maxColumns - 1)
                         {
                             currCol = 0;
@@ -215,7 +242,7 @@ namespace SimpleWeather.Droid
                         else
                             currCol++;
                     }
-                    panel.RowCount = currRow + 1;
+                    panel.RowCount = GridLayout.Undefined;
                     panel.ColumnCount = maxColumns;
                 });
             }
@@ -273,6 +300,14 @@ namespace SimpleWeather.Droid
             await wLoader.LoadWeatherData(forceRefresh);
         }
 
+        private void ForecastSwitch_CheckedChange(object sender, CompoundButton.CheckedChangeEventArgs e)
+        {
+            forecastSwitch.Text = e.IsChecked ? 
+                Activity.GetString(Resource.String.switch_details) : Activity.GetString(Resource.String.switch_daily);
+            forecastScrollView.Visibility = e.IsChecked ? ViewStates.Gone : ViewStates.Visible;
+            txtForecastView.Visibility = e.IsChecked ? ViewStates.Visible : ViewStates.Gone;
+        }
+
         private void SetView(WeatherNowViewModel weatherView)
         {
             // Background
@@ -325,6 +360,48 @@ namespace SimpleWeather.Droid
                 }
                 if (forecastPanel.Visibility != ViewStates.Visible)
                     forecastPanel.Visibility = ViewStates.Visible;
+
+                // Additional Details
+                hrforecastView.RemoveAllViews();
+                if (weatherView.WUExtras.HourlyForecast.Count >= 1)
+                {
+                    foreach (HourlyForecastItemViewModel hrforecast in weatherView.WUExtras.HourlyForecast)
+                    {
+                        hrforecastView.AddView(new HourlyForecastItem(Activity, hrforecast));
+                    }
+                    if (hrforecastPanel.Visibility != ViewStates.Visible)
+                        hrforecastPanel.Visibility = ViewStates.Visible;
+                }
+
+                if (weatherView.WUExtras.TextForecast.Count >= 1)
+                {
+                    if (forecastSwitch.Visibility != ViewStates.Visible)
+                        forecastSwitch.Visibility = ViewStates.Visible;
+
+                    txtForecastView.Background = ContextCompat.GetDrawable(Activity, weatherView.PanelBackground);
+                    (txtForecastView.Adapter as TextForecastPagerAdapter).UpdateDataset(weatherView.WUExtras.TextForecast.ToList());
+                }
+
+                if (!String.IsNullOrWhiteSpace(weatherView.WUExtras.Chance))
+                {
+                    chance.Text = weatherView.WUExtras.Chance;
+                    qpfRain.Text = weatherView.WUExtras.Qpf_Rain;
+                    qpfSnow.Text = weatherView.WUExtras.Qpf_Snow;
+
+                    if (precipitationPanel.Visibility != ViewStates.Visible)
+                        precipitationPanel.Visibility = ViewStates.Visible;
+                }
+                else
+                {
+                    if (IsLargeTablet(Activity))
+                    {
+                        Android.Support.V7.Widget.GridLayout panel = (Android.Support.V7.Widget.GridLayout)detailsPanel;
+                        panel.RemoveView(panel.FindViewById(Resource.Id.precipitation_card));
+                    }
+                }
+
+                // Fix DetailsLayout
+                AdjustDetailsLayout();
             });
         }
     }

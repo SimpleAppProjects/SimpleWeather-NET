@@ -3,6 +3,7 @@ using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -24,8 +25,37 @@ namespace SimpleWeather.UWP
 
         public void OnWeatherLoaded(int locationIdx, Weather weather)
         {
+            // Save index before update
+            int index = TextForecastControl.SelectedIndex;
+
             if (weather != null)
                 WeatherView.UpdateView(weather);
+
+            // Set saved index from before update
+            // Note: needed since ItemSource is cleared and index is reset
+            if (index == 0) // Note: UWP Mobile Bug
+                TextForecastControl.SelectedIndex = index + 1;
+            TextForecastControl.SelectedIndex = index;
+
+            if (WeatherView.WUExtras.HourlyForecast.Count >= 1)
+            {
+                if (HourlyForecastPanel.Visibility != Visibility.Visible)
+                    HourlyForecastPanel.Visibility = Visibility.Visible;
+            }
+            if (WeatherView.WUExtras.TextForecast.Count >= 1)
+            {
+                if (ForecastSwitch.Visibility != Visibility.Visible)
+                    ForecastSwitch.Visibility = Visibility.Visible;
+            }
+            if (!String.IsNullOrWhiteSpace(WeatherView.WUExtras.Chance))
+            {
+                if (PrecipitationPanel.Visibility != Visibility.Visible)
+                    PrecipitationPanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                DetailsWrapGrid.Children.Remove(PrecipitationPanel);
+            }
 
             LoadingRing.IsActive = false;
         }
@@ -37,11 +67,20 @@ namespace SimpleWeather.UWP
 
             WeatherView = new WeatherNowViewModel();
             DetailsPanel.SizeChanged += DetailsPanel_SizeChanged;
+
+            HeaderLeft.Click += delegate { ScrollTxtPanel(false); };
+            HeaderRight.Click += delegate { ScrollTxtPanel(true); };
+
+            // Additional Details (WUExtras)
+            ForecastSwitch.Visibility = Visibility.Collapsed;
+            TextForecastPanel.Visibility = Visibility.Collapsed;
+            HourlyForecastPanel.Visibility = Visibility.Collapsed;
+            PrecipitationPanel.Visibility = Visibility.Collapsed;
         }
 
         private void DetailsPanel_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (this.Width <= 600)
+            if (this.ActualWidth <= 600)
             {
                 // Keep as one column on smaller screens
                 DetailsWrapGrid.MaximumRowsOrColumns = 1;
@@ -90,8 +129,17 @@ namespace SimpleWeather.UWP
             {
                 if (wLoader != null)
                 {
+                    // Save index before update
+                    int index = TextForecastControl.SelectedIndex;
+
                     if (wLoader.GetWeather() != null)
                         WeatherView.UpdateView(wLoader.GetWeather());
+
+                    // Set saved index from before update
+                    // Note: needed since ItemSource is cleared and index is reset
+                    if (index == 0) // Note: UWP Mobile Bug
+                        TextForecastControl.SelectedIndex = index + 1;
+                    TextForecastControl.SelectedIndex = index;
                 }
 
                 if (pair.Key == App.HomeIdx)
@@ -163,73 +211,144 @@ namespace SimpleWeather.UWP
 
         private void LeftButton_Click(object sender, RoutedEventArgs e)
         {
-            ScrollLeft();
+            var controlName = (sender as FrameworkElement).Name;
+
+            if (controlName.Contains("Hourly"))
+                ScrollLeft(HourlyForecastViewer);
+            else
+                ScrollLeft(ForecastViewer);
         }
 
         private void RightButton_Click(object sender, RoutedEventArgs e)
         {
-            ScrollRight();
+            var controlName = (sender as FrameworkElement).Name;
+
+            if (controlName.Contains("Hourly"))
+                ScrollRight(HourlyForecastViewer);
+            else
+                ScrollRight(ForecastViewer);
         }
 
         private void ForecastViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
-            if (ForecastViewer.HorizontalOffset == 0)
+            ScrollViewer viewer = sender as ScrollViewer;
+            var controlName = (sender as FrameworkElement).Name;
+
+            if (viewer.HorizontalOffset == 0)
             {
-                LeftButton.IsEnabled = false;
+                if (controlName.Contains("Hourly"))
+                    HourlyLeftButton.IsEnabled = false;
+                else
+                    LeftButton.IsEnabled = false;
             }
-            else if (ForecastViewer.HorizontalOffset == ForecastViewer.ScrollableWidth)
+            else if (viewer.HorizontalOffset == viewer.ScrollableWidth)
             {
-                RightButton.IsEnabled = false;
+                if (controlName.Contains("Hourly"))
+                    HourlyRightButton.IsEnabled = false;
+                else
+                    RightButton.IsEnabled = false;
             }
             else
             {
-                if (!LeftButton.IsEnabled)
-                    LeftButton.IsEnabled = true;
-                if (!RightButton.IsEnabled)
-                    RightButton.IsEnabled = true;
+                if (controlName.Contains("Hourly"))
+                {
+                    if (!HourlyLeftButton.IsEnabled)
+                        HourlyLeftButton.IsEnabled = true;
+                    if (!HourlyRightButton.IsEnabled)
+                        HourlyRightButton.IsEnabled = true;
+                }
+                else
+                {
+                    if (!LeftButton.IsEnabled)
+                        LeftButton.IsEnabled = true;
+                    if (!RightButton.IsEnabled)
+                        RightButton.IsEnabled = true;
+                }
             }
         }
 
-        private void ScrollLeft()
+        private void ScrollTxtPanel(bool right)
         {
-            int counter = 0; // 128, 64, 32, 16, 8, 4, 2, 1
-            int max_count = (int)ForecastViewer.HorizontalOffset / 64;
-            DispatcherTimer timer = new DispatcherTimer()
+            if (right && TextForecastControl.SelectedIndex < TextForecastControl.Items.Count - 1)
             {
-                Interval = new TimeSpan(0, 0, 0, 0, 5)
-            };
-            timer.Tick += ((sender, e) =>
+                TextForecastControl.SelectedIndex++;
+            }
+            else if (!right && TextForecastControl.SelectedIndex > 0)
             {
-                counter++;
-                ForecastViewer.ChangeView(
-                    ForecastViewer.HorizontalOffset - 128 / counter, null, null);
-                if (ForecastViewer.HorizontalOffset == 0) // can't scroll any more
-                    ((DispatcherTimer)sender).Stop();
-                if (counter >= max_count)
-                    ((DispatcherTimer)sender).Stop();
-            });
-            timer.Start();
+                TextForecastControl.SelectedIndex--;
+            }
         }
 
-        private void ScrollRight()
+        private void TextForecastControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            int counter = 0; // 128, 64, 32, 16, 8, 4, 2, 1
-            int max_count = (int)(ForecastViewer.ScrollableWidth - ForecastViewer.HorizontalOffset) / 64;
-            DispatcherTimer timer = new DispatcherTimer()
+            if (sender is Pivot control && control.ItemsSource != null)
             {
-                Interval = new TimeSpan(0, 0, 0, 0, 5)
-            };
-            timer.Tick += ((sender, e) =>
-            {
-                counter++;
-                ForecastViewer.ChangeView(
-                    ForecastViewer.HorizontalOffset + 128 / counter, null, null);
-                if (ForecastViewer.HorizontalOffset >= ForecastViewer.ScrollableWidth) // can't scroll any more
-                    ((DispatcherTimer)sender).Stop();
-                if (counter >= max_count)
-                    ((DispatcherTimer)sender).Stop();
-            });
-            timer.Start();
+                var source = (ObservableCollection<TextForecastItemViewModel>)control.ItemsSource;
+
+                if (source != null && source.Count > 1)
+                {
+                    if (control.SelectedItem == null)
+                    {
+                        control.SelectedIndex = 0;
+                    }
+                    else if (control.SelectedIndex == 0)
+                    {
+                        HeaderLeft.IsEnabled = false;
+
+                        HeaderLeft.Content = String.Empty;
+                        Header.Text = source[control.SelectedIndex].Title;
+                        HeaderRight.Content = source[control.SelectedIndex + 1].Title;
+
+                        if (!HeaderRight.IsEnabled)
+                            HeaderRight.IsEnabled = true;
+                    }
+                    else if (control.SelectedIndex == source.Count - 1)
+                    {
+                        if (!HeaderLeft.IsEnabled)
+                            HeaderLeft.IsEnabled = true;
+
+                        HeaderLeft.Content = source[control.SelectedIndex - 1].Title;
+                        Header.Text = source[control.SelectedIndex].Title;
+                        HeaderRight.Content = String.Empty;
+
+                        HeaderRight.IsEnabled = false;
+                    }
+                    else
+                    {
+                        if (!HeaderLeft.IsEnabled)
+                            HeaderLeft.IsEnabled = true;
+                        if (!HeaderRight.IsEnabled)
+                            HeaderRight.IsEnabled = true;
+
+                        HeaderLeft.Content = source[control.SelectedIndex - 1].Title;
+                        Header.Text = source[control.SelectedIndex].Title;
+                        HeaderRight.Content = source[control.SelectedIndex + 1].Title;
+                    }
+                }
+            }
+        }
+
+        private void ScrollLeft(ScrollViewer viewer)
+        {
+            viewer.ChangeView(viewer.HorizontalOffset - viewer.ActualWidth, null, null);
+        }
+
+        private void ScrollRight(ScrollViewer viewer)
+        {
+            viewer.ChangeView(viewer.HorizontalOffset + viewer.ActualWidth, null, null);
+        }
+
+        private void ForecastSwitch_Toggled(object sender, RoutedEventArgs e)
+        {
+            ForecastGrid.Visibility = ForecastSwitch.IsOn ?
+                Visibility.Collapsed : Visibility.Visible;
+            TextForecastPanel.Visibility = ForecastSwitch.IsOn ? 
+                Visibility.Visible : Visibility.Collapsed;
+
+            if (ForecastSwitch.IsOn)
+                TextForecastControl_SelectionChanged(TextForecastControl, null);
+            else
+                ForecastViewer_ViewChanged(ForecastViewer, null);
         }
     }
 }

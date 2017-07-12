@@ -27,6 +27,13 @@
     <string name="label_sunriseset">Sunrise / Sunset</string>
     <string name="label_sunrise">Sunrise</string>
     <string name="label_sunset">Sunset</string>
+    <string name="label_hourlyforecast">Hourly</string>
+    <string name="label_precipitation">Precipitation</string>
+    <string name="label_chance">Chance</string>
+    <string name="label_qpf_rain">Rain</string>
+    <string name="label_qpf_snow">Snow</string>
+    <string name="switch_daily">Daily</string>
+    <string name="switch_details">Details</string>
     <!-- NavBar -->
     <string name="label_nav_weathernow">Weather</string>
     <string name="label_nav_locations">Locations</string>

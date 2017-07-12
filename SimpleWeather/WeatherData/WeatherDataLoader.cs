@@ -46,7 +46,7 @@ namespace SimpleWeather.WeatherData
 
             if (Settings.API == Settings.API_WUnderground)
             {
-                queryAPI = "http://api.wunderground.com/api/" + Settings.API_KEY + "/astronomy/conditions/forecast10day";
+                queryAPI = "http://api.wunderground.com/api/" + Settings.API_KEY + "/astronomy/conditions/forecast10day/hourly";
                 string options = ".json";
                 weatherURL = new Uri(queryAPI + location_query + options);
             }
@@ -79,7 +79,7 @@ namespace SimpleWeather.WeatherData
                         WeatherUnderground.Rootobject root = null;
                         await Task.Run(() =>
                         {
-                            root = (WeatherUnderground.Rootobject)JsonConvert.DeserializeObject(content, typeof(WeatherUnderground.Rootobject));
+                            root = JSONParser.Deserializer<WeatherUnderground.Rootobject>(content);
                         });
 
                         // Check for errors
@@ -106,7 +106,7 @@ namespace SimpleWeather.WeatherData
                         WeatherYahoo.Rootobject root = null;
                         await Task.Run(() =>
                         {
-                            root = (WeatherYahoo.Rootobject)JsonConvert.DeserializeObject(content, typeof(WeatherYahoo.Rootobject));
+                            root = JSONParser.Deserializer<WeatherYahoo.Rootobject>(content);
                         });
 
                         weather = new Weather(root);
@@ -288,7 +288,7 @@ namespace SimpleWeather.WeatherData
 
             if (Settings.API == Settings.API_WUnderground)
             {
-                queryAPI = "http://api.wunderground.com/api/" + Settings.API_KEY + "/astronomy/conditions/forecast10day";
+                queryAPI = "http://api.wunderground.com/api/" + Settings.API_KEY + "/astronomy/conditions/forecast10day/hourly";
                 string options = ".json";
                 weatherURL = new Uri(queryAPI + location_query + options);
             }
@@ -321,7 +321,7 @@ namespace SimpleWeather.WeatherData
                         WeatherUnderground.Rootobject root = null;
                         await Task.Run(() => 
                         {
-                            root = (WeatherUnderground.Rootobject)JsonConvert.DeserializeObject(content, typeof(WeatherUnderground.Rootobject));
+                            root = JSONParser.Deserializer<WeatherUnderground.Rootobject>(content);
                         });
 
                         // Check for errors
@@ -348,7 +348,7 @@ namespace SimpleWeather.WeatherData
                         WeatherYahoo.Rootobject root = null;
                         await Task.Run(() =>
                         {
-                            root = (WeatherYahoo.Rootobject)JsonConvert.DeserializeObject(content, typeof(WeatherYahoo.Rootobject));
+                            root = JSONParser.Deserializer<WeatherYahoo.Rootobject>(content);
                         });
                         weather = new Weather(root);
                     }

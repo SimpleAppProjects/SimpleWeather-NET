@@ -1,5 +1,5 @@
 ﻿<UserControl
-    x:Class="SimpleWeather.Controls.LocationQuery"
+    x:Class="SimpleWeather.UWP.Controls.LocationQuery"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:SimpleWeather.Controls"
@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400"
-    d:DataContext="{d:DesignInstance Type=local:LocationQueryView, IsDesignTimeCreatable=True}"
+    d:DataContext="{d:DesignInstance Type=local:LocationQueryViewModel, IsDesignTimeCreatable=True}"
     Background="White">
     <UserControl.Resources>
         <Style x:Key="LocationQueryControlStyle" TargetType="UserControl">

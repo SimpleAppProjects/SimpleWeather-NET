@@ -4,9 +4,9 @@
 
 namespace SimpleWeather.UWP.Controls
 {
-    public sealed partial class ForecastItem : UserControl
+    public sealed partial class HourlyForecastItem : UserControl
     {
-        public ForecastItem()
+        public HourlyForecastItem()
         {
             this.InitializeComponent();
         }

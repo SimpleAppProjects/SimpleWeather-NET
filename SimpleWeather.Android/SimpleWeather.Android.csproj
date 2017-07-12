@@ -131,6 +131,8 @@
     <Compile Include="App.cs" />
     <Compile Include="AppCompatPreferenceActivity.cs" />
     <Compile Include="Controls\ForecastItem.cs" />
+    <Compile Include="Controls\HourlyForecastItem.cs" />
+    <Compile Include="Controls\TextForecastItem.cs" />
     <Compile Include="Controls\LocationPanel.cs" />
     <Compile Include="Controls\LocationPanelViewModel.cs" />
     <Compile Include="Controls\LocationQuery.cs" />
@@ -139,6 +141,7 @@
     <Compile Include="Helpers\ItemTouchHelperCallback.cs" />
     <Compile Include="Helpers\ActionModeCallback.cs" />
     <Compile Include="Helpers\LocationListener.cs" />
+    <Compile Include="TextForecastPagerAdapter.cs" />
     <Compile Include="LaunchActivity.cs" />
     <Compile Include="LocationPanelAdapter.cs" />
     <Compile Include="LocationQueryAdapter.cs" />
@@ -418,6 +421,12 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values-xlarge\dimens.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\weather_hrforecast_panel.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\txt_forecast_panel.xml" />
   </ItemGroup>
   <Import Project="..\SimpleWeather\SimpleWeather_Xamarin.projitems" Label="Shared" Condition="Exists('..\SimpleWeather\SimpleWeather_Xamarin.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

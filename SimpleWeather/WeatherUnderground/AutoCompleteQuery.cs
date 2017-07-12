@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using SimpleWeather.Utils;
 #if WINDOWS_UWP
 using Windows.Storage.Streams;
 using Windows.Web.Http;
@@ -36,7 +37,7 @@ namespace SimpleWeather.WeatherUnderground
                 // Load data
                 locationResults = new List<Controls.LocationQueryViewModel>();
 
-                AC_Rootobject root = (AC_Rootobject)JsonConvert.DeserializeObject(content, typeof(AC_Rootobject));
+                AC_Rootobject root = JSONParser.Deserializer<AC_Rootobject>(content);
 
                 foreach (AC_RESULT result in root.RESULTS)
                 {

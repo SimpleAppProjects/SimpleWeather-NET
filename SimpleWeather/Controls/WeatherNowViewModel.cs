@@ -24,58 +24,61 @@ namespace SimpleWeather.Controls
         #region DependencyProperties
         public static readonly DependencyProperty LocationProperty =
             DependencyProperty.Register("Location", typeof(String),
-            typeof(LocationPanelViewModel), new PropertyMetadata(""));
+            typeof(WeatherNowViewModel), new PropertyMetadata(""));
         public static readonly DependencyProperty UpdateDateProperty =
             DependencyProperty.Register("UpdateDate", typeof(String),
-            typeof(LocationPanelViewModel), new PropertyMetadata(""));
+            typeof(WeatherNowViewModel), new PropertyMetadata(""));
         public static readonly DependencyProperty CurTempProperty =
             DependencyProperty.Register("CurTemp", typeof(String),
-            typeof(LocationPanelViewModel), new PropertyMetadata(""));
+            typeof(WeatherNowViewModel), new PropertyMetadata(""));
         public static readonly DependencyProperty CurConditionProperty =
             DependencyProperty.Register("CurCondition", typeof(String),
-            typeof(LocationPanelViewModel), new PropertyMetadata(""));
+            typeof(WeatherNowViewModel), new PropertyMetadata(""));
         public static readonly DependencyProperty WeatherIconProperty =
             DependencyProperty.Register("WeatherIcon", typeof(String),
-            typeof(LocationPanelViewModel), new PropertyMetadata(""));
+            typeof(WeatherNowViewModel), new PropertyMetadata(""));
         public static readonly DependencyProperty HumidityProperty =
             DependencyProperty.Register("Humidity", typeof(String),
-            typeof(LocationPanelViewModel), new PropertyMetadata(""));
+            typeof(WeatherNowViewModel), new PropertyMetadata(""));
         public static readonly DependencyProperty PressureProperty =
             DependencyProperty.Register("Pressure", typeof(String),
-            typeof(LocationPanelViewModel), new PropertyMetadata(""));
+            typeof(WeatherNowViewModel), new PropertyMetadata(""));
         public static readonly DependencyProperty RisingVisiblityProperty =
             DependencyProperty.Register("RisingVisiblity", typeof(Visibility),
-            typeof(LocationPanelViewModel), new PropertyMetadata(Visibility.Visible));
+            typeof(WeatherNowViewModel), new PropertyMetadata(Visibility.Visible));
         public static readonly DependencyProperty RisingIconProperty =
             DependencyProperty.Register("RisingIcon", typeof(String),
-            typeof(LocationPanelViewModel), new PropertyMetadata(""));
+            typeof(WeatherNowViewModel), new PropertyMetadata(""));
         public static readonly DependencyProperty _VisibilityProperty =
             DependencyProperty.Register("_Visibility", typeof(String),
-            typeof(LocationPanelViewModel), new PropertyMetadata(""));
+            typeof(WeatherNowViewModel), new PropertyMetadata(""));
         public static readonly DependencyProperty WindChillProperty =
             DependencyProperty.Register("WindChill", typeof(String),
-            typeof(LocationPanelViewModel), new PropertyMetadata(""));
+            typeof(WeatherNowViewModel), new PropertyMetadata(""));
         public static readonly DependencyProperty WindDirectionProperty =
             DependencyProperty.Register("WindDirection", typeof(Transform),
-            typeof(LocationPanelViewModel), new PropertyMetadata(new RotateTransform()));
+            typeof(WeatherNowViewModel), new PropertyMetadata(new RotateTransform()));
         public static readonly DependencyProperty WindSpeedProperty =
             DependencyProperty.Register("WindSpeed", typeof(String),
-            typeof(LocationPanelViewModel), new PropertyMetadata(""));
+            typeof(WeatherNowViewModel), new PropertyMetadata(""));
         public static readonly DependencyProperty SunriseProperty =
             DependencyProperty.Register("Sunrise", typeof(String),
-            typeof(LocationPanelViewModel), new PropertyMetadata(""));
+            typeof(WeatherNowViewModel), new PropertyMetadata(""));
         public static readonly DependencyProperty SunsetProperty =
             DependencyProperty.Register("Sunset", typeof(String),
-            typeof(LocationPanelViewModel), new PropertyMetadata(""));
+            typeof(WeatherNowViewModel), new PropertyMetadata(""));
         public static readonly DependencyProperty ForecastsProperty =
             DependencyProperty.Register("Forecasts", typeof(ObservableCollection<ForecastItemViewModel>),
-            typeof(LocationPanelViewModel), new PropertyMetadata(null));
+            typeof(WeatherNowViewModel), new PropertyMetadata(null));
+        public static readonly DependencyProperty WUExtrasProperty =
+            DependencyProperty.Register("WUExtrasProperty", typeof(WUExtrasViewModel),
+            typeof(WeatherNowViewModel), new PropertyMetadata(null));
         public static readonly DependencyProperty BackgroundProperty =
             DependencyProperty.Register("Background", typeof(ImageBrush),
-            typeof(LocationPanelViewModel), new PropertyMetadata(null));
+            typeof(WeatherNowViewModel), new PropertyMetadata(null));
         public static readonly DependencyProperty PanelBackgroundProperty =
             DependencyProperty.Register("PanelBackground", typeof(SolidColorBrush),
-            typeof(LocationPanelViewModel), new PropertyMetadata(null));
+            typeof(WeatherNowViewModel), new PropertyMetadata(null));
 
         public event PropertyChangedEventHandler PropertyChanged;
         // Create the OnPropertyChanged method to raise the event
@@ -169,6 +172,12 @@ namespace SimpleWeather.Controls
             get { return (ObservableCollection<ForecastItemViewModel>)GetValue(ForecastsProperty); }
             set { SetValue(ForecastsProperty, value); OnPropertyChanged("Forecasts"); }
         }
+        // Additional Details
+        public WUExtrasViewModel WUExtras
+        {
+            get { return (WUExtrasViewModel)GetValue(WUExtrasProperty); }
+            set { SetValue(WUExtrasProperty, value); OnPropertyChanged("WUExtras"); }
+        }
         // Background
         public ImageBrush Background
         {
@@ -205,6 +214,9 @@ namespace SimpleWeather.Controls
         // Forecast
         public ObservableCollection<ForecastItemViewModel> Forecasts { get; set; }
 
+        // Additional Details
+        public WUExtrasViewModel WUExtras { get; set; }
+
         // Background
         public string Background { get; set; }
         public int PanelBackground { get; set; }
@@ -221,6 +233,7 @@ namespace SimpleWeather.Controls
             };
 #endif
             Forecasts = new ObservableCollection<ForecastItemViewModel>();
+            WUExtras = new WUExtrasViewModel();
         }
 
         public WeatherNowViewModel(Weather weather)
@@ -233,6 +246,7 @@ namespace SimpleWeather.Controls
             };
 #endif
             Forecasts = new ObservableCollection<ForecastItemViewModel>();
+            WUExtras = new WUExtrasViewModel();
             UpdateView(weather);
         }
 
@@ -289,6 +303,12 @@ namespace SimpleWeather.Controls
             {
                 ForecastItemViewModel forecastView = new ForecastItemViewModel(forecast);
                 Forecasts.Add(forecastView);
+            }
+
+            // Additional Details
+            if (Settings.API == Settings.API_WUnderground)
+            {
+                WUExtras.UpdateView(weather);
             }
         }
 

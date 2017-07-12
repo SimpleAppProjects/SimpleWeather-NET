@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/forecast_panel_width"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="4dp">
+
+    <TextView
+        android:id="@+id/hrforecast_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/forecast_date_size"
+        tools:text="Someday XX" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <SimpleWeather.Droid.Controls.WeatherIcon
+            android:id="@+id/hrforecast_icon"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:padding="4dp"
+            android:textAppearance="@android:style/TextAppearance.Material.Large.Inverse"
+            tools:text="@string/wi_wu_sunny" />
+
+        <TextView
+            android:id="@+id/hrforecast_temphi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:padding="8dp"
+            android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            tools:text="77º" />
+
+    </LinearLayout>
+
+    <me.grantland.widget.AutofitTextView
+        android:id="@+id/hrforecast_condition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:padding="4dp"
+        android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/forecast_condition_size"
+        tools:text="Scattered Thunderstorms" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <SimpleWeather.Droid.Controls.WeatherIcon
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:paddingEnd="4dp"
+            android:paddingStart="4dp"
+            android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+            android:textColor="@android:color/white"
+            android:text="@string/wi_raindrop" />
+
+        <me.grantland.widget.AutofitTextView
+            android:id="@+id/hrforecast_pop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/forecast_condition_size"
+            tools:text="60%" />
+
+        <Space
+            android:layout_width="5dp"
+            android:layout_height="wrap_content" />
+
+        <SimpleWeather.Droid.Controls.WeatherIcon
+            android:id="@+id/hrforecast_wind_dir"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:paddingEnd="4dp"
+            android:paddingStart="4dp"
+            android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:text="@string/wi_direction_up" />
+
+        <me.grantland.widget.AutofitTextView
+            android:id="@+id/hrforecast_wind"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/forecast_condition_size"
+            tools:text="6 mph" />
+    </LinearLayout>
+
+</LinearLayout>

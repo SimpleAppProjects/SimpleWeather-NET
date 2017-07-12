@@ -12,7 +12,7 @@
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.15063.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.10240.0</TargetPlatformMinVersion>
+    <TargetPlatformMinVersion>10.0.10586.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -98,6 +98,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\HourlyForecastItem.xaml.cs">
+      <DependentUpon>HourlyForecastItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ForecastItem.xaml.cs">
       <DependentUpon>ForecastItem.xaml</DependentUpon>
     </Compile>
@@ -107,6 +110,9 @@
     <Compile Include="Controls\LocationPanelViewModel.cs" />
     <Compile Include="Controls\LocationQuery.xaml.cs">
       <DependentUpon>LocationQuery.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TextForecastItem.xaml.cs">
+      <DependentUpon>TextForecastItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\BooleanToVisibilityConverter.cs" />
     <Compile Include="Helpers\InverseBooleanConverter.cs" />
@@ -169,6 +175,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Controls\HourlyForecastItem.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\ForecastItem.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -180,6 +190,10 @@
     <Page Include="Controls\LocationQuery.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\TextForecastItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="LocationsPage.xaml">
       <Generator>MSBuild:Compile</Generator>

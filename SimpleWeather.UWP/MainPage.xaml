@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:SimpleWeather.UWP"
     xmlns:controls="using:SimpleWeather.Controls"
+    xmlns:localcontrols="using:SimpleWeather.UWP.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -309,7 +310,7 @@
                             UpdateTextOnSelect="False" Style="{StaticResource AutoSuggestBoxStyle}">
                 <AutoSuggestBox.ItemTemplate>
                     <DataTemplate>
-                        <controls:LocationQuery MinWidth="300" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
+                        <localcontrols:LocationQuery MinWidth="300" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
                     </DataTemplate>
                 </AutoSuggestBox.ItemTemplate>
                 <AutoSuggestBox.ItemsPanel>

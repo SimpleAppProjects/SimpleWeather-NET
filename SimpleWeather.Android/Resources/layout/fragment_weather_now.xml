@@ -102,17 +102,36 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/forecast_label"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="4dp"
-                    android:text="@string/label_forecast"
-                    android:textAppearance="@android:style/TextAppearance.Material.Medium.Inverse"
-                    android:textColor="@android:color/white"
-                    android:textStyle="bold" />
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/forecast_label"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="4dp"
+                        android:text="@string/label_forecast"
+                        android:textAppearance="@android:style/TextAppearance.Material.Medium.Inverse"
+                        android:textColor="@android:color/white"
+                        android:textStyle="bold" />
+
+                    <Switch
+                        android:id="@+id/forecast_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:checked="false"
+                        android:switchPadding="10dp"
+                        android:switchTextAppearance="@style/TextAppearance.AppCompat.Widget.Switch"
+                        android:text="@string/switch_daily"
+                        android:textColor="@android:color/white" />
+
+                </LinearLayout>
 
                 <HorizontalScrollView
+                    android:id="@+id/forecast_scrollview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -124,6 +143,58 @@
                         android:orientation="horizontal">
 
                         <include layout="@layout/weather_forecast_panel" />
+
+                    </LinearLayout>
+                </HorizontalScrollView>
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/txt_forecast_viewpgr"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp">
+
+                    <android.support.v4.view.PagerTabStrip
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:paddingBottom="10dp"
+                        android:paddingTop="10dp"
+                        android:textColor="#fff" />
+
+                </android.support.v4.view.ViewPager>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/hourly_forecast_panel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp" />
+
+                <TextView
+                    android:id="@+id/hourly_forecast_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:text="@string/label_hourlyforecast"
+                    android:textAppearance="@android:style/TextAppearance.Material.Medium.Inverse"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold" />
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:id="@+id/hourly_forecast_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/dark_round_corner_bg"
+                        android:orientation="horizontal">
+
+                        <include layout="@layout/weather_hrforecast_panel" />
 
                     </LinearLayout>
                 </HorizontalScrollView>
@@ -161,6 +232,104 @@
                     android:paddingTop="10dp">
 
                     <LinearLayout
+                        android:id="@+id/precipitation_card"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:minHeight="150dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/precipitation_label"
+                            style="@style/DetailCardLabels"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_precipitation" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@android:color/white" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/chance_label"
+                                style="@style/WeatherDetails"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_toLeftOf="@+id/chance_val"
+                                android:text="@string/label_chance" />
+
+                            <TextView
+                                android:id="@+id/chance_val"
+                                style="@style/WeatherDetails"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:gravity="center"
+                                tools:text="20%" />
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center">
+
+                            <TextView
+                                android:id="@+id/qpf_rain_label"
+                                style="@style/WeatherDetails"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_toLeftOf="@+id/qpf_rain_val"
+                                android:text="@string/label_qpf_rain" />
+
+                            <TextView
+                                android:id="@+id/qpf_rain_val"
+                                style="@style/WeatherDetails"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:gravity="center"
+                                tools:text="0.01 in" />
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center">
+
+                            <TextView
+                                android:id="@+id/qpf_snow_label"
+                                style="@style/WeatherDetails"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_toLeftOf="@+id/qpf_snow_val"
+                                android:text="@string/label_qpf_snow" />
+
+                            <TextView
+                                android:id="@+id/qpf_snow_val"
+                                style="@style/WeatherDetails"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:gravity="center"
+                                tools:text="0.00 in" />
+
+                        </RelativeLayout>
+
+                        <Space
+                            android:layout_width="match_parent"
+                            android:layout_height="20dp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="150dp"
@@ -180,8 +349,7 @@
 
                         <RelativeLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:layout_height="wrap_content">
 
                             <TextView
                                 android:id="@+id/pressure_label"
@@ -209,15 +377,13 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentRight="true"
-                                android:backgroundTintMode="screen"
                                 android:gravity="center"
                                 tools:text="1000.2 mb" />
                         </RelativeLayout>
 
                         <RelativeLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:layout_height="wrap_content">
 
                             <TextView
                                 android:id="@+id/humidity_label"

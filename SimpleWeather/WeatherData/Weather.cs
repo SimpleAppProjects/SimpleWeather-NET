@@ -10,9 +10,12 @@ namespace SimpleWeather.WeatherData
         public Location location { get; set; }
         public DateTime update_time { get; set; }
         public Forecast[] forecast { get; set; }
+        public HourlyForecast[] hr_forecast { get; set; }
+        public TextForecast[] txt_forecast { get; set; }
         public Condition condition { get; set; }
         public Atmosphere atmosphere { get; set; }
         public Astronomy astronomy { get; set; }
+        public Precipitation precipitation { get; set; }
         public string ttl { get; set; }
 
         [Newtonsoft.Json.JsonConstructor]
@@ -46,9 +49,20 @@ namespace SimpleWeather.WeatherData
             {
                 forecast[i] = new Forecast(root.forecast.simpleforecast.forecastday[i]);
             }
+            hr_forecast = new HourlyForecast[root.hourly_forecast.Length];
+            for (int i = 0; i < hr_forecast.Length; i++)
+            {
+                hr_forecast[i] = new HourlyForecast(root.hourly_forecast[i]);
+            }
+            txt_forecast = new TextForecast[root.forecast.txt_forecast.forecastday.Length];
+            for (int i = 0; i < txt_forecast.Length; i++)
+            {
+                txt_forecast[i] = new TextForecast(root.forecast.txt_forecast.forecastday[i]);
+            }
             condition = new Condition(root.current_observation);
             atmosphere = new Atmosphere(root.current_observation);
             astronomy = new Astronomy(root.sun_phase);
+            precipitation = new Precipitation(root.forecast.simpleforecast.forecastday[0]);
             ttl = "60";
         }
     }
@@ -142,6 +156,62 @@ namespace SimpleWeather.WeatherData
             low_c = forecast.low.celsius;
             condition = forecast.conditions;
             icon = forecast.icon_url.Replace("http://icons.wxug.com/i/c/k/", "").Replace(".gif", "");
+        }
+    }
+
+    public class HourlyForecast
+    {
+        public DateTime date { get; set; }
+        public string high_f { get; set; }
+        public string high_c { get; set; }
+        public string condition { get; set; }
+        public string icon { get; set; }
+        public string pop { get; set; }
+        public int wind_degrees { get; set; }
+        public float wind_mph { get; set; }
+        public float wind_kph { get; set; }
+
+        [Newtonsoft.Json.JsonConstructor]
+        private HourlyForecast()
+        {
+            // Needed for deserialization
+        }
+
+        public HourlyForecast(WeatherUnderground.Hourly_Forecast hr_forecast)
+        {
+            date = ConversionMethods.ToEpochDateTime(hr_forecast.FCTTIME.epoch).ToLocalTime();
+            high_f = hr_forecast.temp.english;
+            high_c = hr_forecast.temp.metric;
+            condition = hr_forecast.condition;
+            icon = hr_forecast.icon_url.Replace("http://icons.wxug.com/i/c/k/", "").Replace(".gif", "");
+            pop = hr_forecast.pop;
+            wind_degrees = int.Parse(hr_forecast.wdir.degrees);
+            wind_mph = float.Parse(hr_forecast.wspd.english);
+            wind_kph = float.Parse(hr_forecast.wspd.metric);
+        }
+    }
+
+    public class TextForecast
+    {
+        public string title { get; set; }
+        public string fcttext { get; set; }
+        public string fcttext_metric { get; set; }
+        public string icon { get; set; }
+        public string pop { get; set; }
+
+        [Newtonsoft.Json.JsonConstructor]
+        private TextForecast()
+        {
+            // Needed for deserialization
+        }
+
+        public TextForecast(WeatherUnderground.Forecastday txt_forecast)
+        {
+            title = txt_forecast.title;
+            fcttext = txt_forecast.fcttext;
+            fcttext_metric = txt_forecast.fcttext_metric;
+            icon = txt_forecast.icon_url.Replace("http://icons.wxug.com/i/c/k/", "").Replace(".gif", "");
+            pop = txt_forecast.pop;
         }
     }
 
@@ -249,6 +319,30 @@ namespace SimpleWeather.WeatherData
         {
             sunrise = DateTime.Parse(astronomy.sunrise);
             sunset = DateTime.Parse(astronomy.sunset);
+        }
+    }
+
+    public class Precipitation
+    {
+        public string pop { get; set; }
+        public float qpf_rain_in { get; set; }
+        public float qpf_rain_mm { get; set; }
+        public float qpf_snow_in { get; set; }
+        public float qpf_snow_cm { get; set; }
+
+        [Newtonsoft.Json.JsonConstructor]
+        private Precipitation()
+        {
+            // Needed for deserialization
+        }
+
+        public Precipitation(WeatherUnderground.Forecastday1 forecast)
+        {
+            pop = forecast.pop.ToString();
+            qpf_rain_in = forecast.qpf_allday._in.GetValueOrDefault(0.00f);
+            qpf_rain_mm = forecast.qpf_allday.mm.GetValueOrDefault();
+            qpf_snow_in = forecast.snow_allday._in.GetValueOrDefault(0.00f);
+            qpf_snow_cm = forecast.snow_allday.cm.GetValueOrDefault();
         }
     }
 }
