@@ -259,9 +259,9 @@ namespace SimpleWeather.Controls
                 Color.FromArgb(45, 128, 128, 128) : Color.FromArgb(15, 8, 8, 8));
 #elif __ANDROID__
             Background = WeatherUtils.GetBackgroundURI(weather);
-            PanelBackground = WeatherUtils.IsNight(weather) ? 
+            PanelBackground = WeatherUtils.IsNight(weather) ?
                 Resource.Drawable.dark_round_corner_bg : Resource.Drawable.light_round_corner_bg;
-                //new Color(128, 128, 128, 45) : new Color(8, 8, 8, 15);
+            //new Color(128, 128, 128, 45) : new Color(8, 8, 8, 15);
             PendingBackground = WeatherUtils.IsNight(weather) ? new Color(13, 18, 37, 255) : new Color(72, 116, 191, 255);
 #endif
 

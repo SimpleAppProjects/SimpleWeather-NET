@@ -142,9 +142,15 @@ namespace SimpleWeather.Utils
                         break;
                     case 3200: // Not Available
                     default:
-                        WeatherIcon = "\uf077";
+                        WeatherIcon = "\uf07b";
                         break;
                 }
+            }
+
+            if (String.IsNullOrWhiteSpace(WeatherIcon))
+            {
+                // Not Available
+                WeatherIcon = "\uf07b";
             }
 
             return WeatherIcon;
