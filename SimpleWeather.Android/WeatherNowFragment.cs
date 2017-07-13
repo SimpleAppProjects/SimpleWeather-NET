@@ -65,6 +65,10 @@ namespace SimpleWeather.Droid
         private TextView chance;
         private TextView qpfRain;
         private TextView qpfSnow;
+        // Nav Header View
+        private View navheader;
+        private TextView navLocation;
+        private TextView navWeatherTemp;
 
         private ImageLoader loader = ImageLoader.Instance;
 
@@ -186,6 +190,11 @@ namespace SimpleWeather.Droid
             refreshLayout.SetColorSchemeColors(ContextCompat.GetColor(Activity, Resource.Color.colorPrimary));
             refreshLayout.Refresh += delegate { Task.Run(() => RefreshWeather(true)); };
 
+            // Nav Header View
+            navheader = ((Android.Support.Design.Widget.NavigationView)Activity.FindViewById(Resource.Id.nav_view)).GetHeaderView(0);
+            navLocation = (TextView)navheader.FindViewById(Resource.Id.nav_location);
+            navWeatherTemp = (TextView)navheader.FindViewById(Resource.Id.nav_weathertemp);
+
             loaded = true;
             refreshLayout.Refreshing = true;
             Task.Run(Restore);
@@ -272,6 +281,16 @@ namespace SimpleWeather.Droid
             // Title
             AppCompatActivity activity = (AppCompatActivity)Activity;
             activity.SupportActionBar.Title = GetString(Resource.String.title_activity_weather_now);
+        }
+
+        public override void OnHiddenChanged(bool hidden)
+        {
+            base.OnHiddenChanged(hidden);
+
+            if (!hidden && weatherView != null)
+            {
+                UpdateNavHeader(weatherView);
+            }
         }
 
         public override void OnPause()
@@ -402,7 +421,17 @@ namespace SimpleWeather.Droid
 
                 // Fix DetailsLayout
                 AdjustDetailsLayout();
+
+                // Nav Header View
+                UpdateNavHeader(weatherView);
             });
+        }
+
+        private void UpdateNavHeader(WeatherNowViewModel weatherView)
+        {
+            loader.DisplayImage(weatherView.Background, new CustomViewAware(navheader), ImageUtils.CenterCropConfig(navheader.Width, navheader.Height));
+            navLocation.Text = weatherView.Location;
+            navWeatherTemp.Text = weatherView.CurTemp;
         }
     }
 }

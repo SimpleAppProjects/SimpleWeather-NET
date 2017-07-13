@@ -105,6 +105,11 @@ namespace SimpleWeather.Droid
                     }
                     else
                     {
+                        Fragment current = SupportFragmentManager.FindFragmentById(Resource.Id.fragment_container);
+
+                        if (current is WeatherNowFragment)
+                            transaction.Hide(current);
+
                         // Commit the transaction
                         transaction.Add(Resource.Id.fragment_container, fragment);
                         transaction.AddToBackStack(null).Commit();
