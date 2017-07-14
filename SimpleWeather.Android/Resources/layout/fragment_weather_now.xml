@@ -604,6 +604,14 @@
 
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/weather_credit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="4dp"
+                android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+                tools:text="Data from WeatherUnderground" />
+
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 </android.support.v4.widget.SwipeRefreshLayout>

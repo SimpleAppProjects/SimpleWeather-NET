@@ -1,4 +1,5 @@
 ﻿using SimpleWeather.Utils;
+using Windows.ApplicationModel;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -30,6 +31,19 @@ namespace SimpleWeather.UWP
                 Fahrenheit.IsChecked = false;
                 Celsius.IsChecked = true;
             }
+
+            AppName.Text = Package.Current.DisplayName;
+            Version.Text = string.Format("v{0}.{1}.{2}",
+                Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
+
+            OSSLicenseWebview.NavigationStarting += OSSLicenseWebview_NavigationStarting;
+        }
+
+        private void OSSLicenseWebview_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
+        {
+            // Cancel navigation and open link in ext. browser
+            args.Cancel = true;
+            Windows.Foundation.IAsyncOperation<bool> b = Windows.System.Launcher.LaunchUriAsync(args.Uri);
         }
 
         private void Fahrenheit_Checked(object sender, RoutedEventArgs e)

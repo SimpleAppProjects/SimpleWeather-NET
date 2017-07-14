@@ -8,6 +8,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
+    d:DesignHeight="3000"
     DataContext="{x:Bind WeatherView}">
     <Page.Resources>
         <TransitionCollection x:Name="TextTransitions">
@@ -746,6 +747,11 @@
                         </StackPanel>
                     </VariableSizedWrapGrid>
                 </Grid>
+                <TextBlock Text="{Binding WeatherCredit, FallbackValue='Data from Weather Provider'}" 
+                           Margin="{Binding ElementName=ForecastHeader, Path=Margin}"
+                           Padding="10"
+                           FontSize="14"
+                           Foreground="White"/>
             </StackPanel>
         </ScrollViewer>
         <ProgressRing x:Name="LoadingRing" Grid.Row="1"

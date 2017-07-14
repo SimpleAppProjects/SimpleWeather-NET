@@ -1,8 +1,6 @@
-<PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory
-        android:title="@string/pref_title_temperature">
+    <PreferenceCategory android:title="@string/pref_title_general">
 
         <SwitchPreference
             android:defaultValue="false"
@@ -10,6 +8,13 @@
             android:summaryOff="@string/pref_summary_fahrenheit"
             android:summaryOn="@string/pref_summary_celsius"
             android:title="@string/pref_title_units" />
+
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/pref_title_about">
+
+        <Preference
+            android:key="key_aboutapp"
+            android:title="@string/pref_title_about_app" />
 
     </PreferenceCategory>
 

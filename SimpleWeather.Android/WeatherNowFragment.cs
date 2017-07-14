@@ -69,6 +69,8 @@ namespace SimpleWeather.Droid
         private View navheader;
         private TextView navLocation;
         private TextView navWeatherTemp;
+        // Weather Credit
+        private TextView weatherCredit;
 
         private ImageLoader loader = ImageLoader.Instance;
 
@@ -194,6 +196,8 @@ namespace SimpleWeather.Droid
             navheader = ((Android.Support.Design.Widget.NavigationView)Activity.FindViewById(Resource.Id.nav_view)).GetHeaderView(0);
             navLocation = (TextView)navheader.FindViewById(Resource.Id.nav_location);
             navWeatherTemp = (TextView)navheader.FindViewById(Resource.Id.nav_weathertemp);
+
+            weatherCredit = (TextView)view.FindViewById(Resource.Id.weather_credit);
 
             loaded = true;
             refreshLayout.Refreshing = true;
@@ -424,6 +428,8 @@ namespace SimpleWeather.Droid
 
                 // Nav Header View
                 UpdateNavHeader(weatherView);
+
+                weatherCredit.Text = weatherView.WeatherCredit;
             });
         }
 

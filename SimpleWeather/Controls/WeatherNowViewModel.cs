@@ -79,6 +79,9 @@ namespace SimpleWeather.Controls
         public static readonly DependencyProperty PanelBackgroundProperty =
             DependencyProperty.Register("PanelBackground", typeof(SolidColorBrush),
             typeof(WeatherNowViewModel), new PropertyMetadata(null));
+        public static readonly DependencyProperty WeatherCreditProperty =
+            DependencyProperty.Register("WeatherCredit", typeof(String),
+            typeof(WeatherNowViewModel), new PropertyMetadata(""));
 
         public event PropertyChangedEventHandler PropertyChanged;
         // Create the OnPropertyChanged method to raise the event
@@ -189,6 +192,11 @@ namespace SimpleWeather.Controls
             get { return (SolidColorBrush)GetValue(PanelBackgroundProperty); }
             set { SetValue(PanelBackgroundProperty, value); OnPropertyChanged("PanelBackground"); }
         }
+        public String WeatherCredit
+        {
+            get { return (String)GetValue(WeatherCreditProperty); }
+            set { SetValue(WeatherCreditProperty, value); OnPropertyChanged("WeatherCredit"); }
+        }
         #endregion
 #elif __ANDROID__
         public string Location { get; set; }
@@ -221,6 +229,8 @@ namespace SimpleWeather.Controls
         public string Background { get; set; }
         public int PanelBackground { get; set; }
         public Color PendingBackground { get; set; }
+
+        public string WeatherCredit { get; set; }
 #endif
 
         public WeatherNowViewModel()
@@ -308,7 +318,12 @@ namespace SimpleWeather.Controls
             // Additional Details
             if (Settings.API == Settings.API_WUnderground)
             {
+                WeatherCredit = "Data from WeatherUnderground";
                 WUExtras.UpdateView(weather);
+            }
+            else if (Settings.API == Settings.API_Yahoo)
+            {
+                WeatherCredit = "Data from Yahoo!";
             }
         }
 

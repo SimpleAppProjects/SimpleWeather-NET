@@ -91,6 +91,9 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <Content Include="API_KEY.txt" />
+    <Content Include="Assets\Credits\licenses.html" />
+    <Content Include="Assets\Providers\wunderground.png" />
+    <Content Include="Assets\Providers\yahoo.png" />
     <Content Include="Assets\WeatherIcons\weathericons-regular-webfont.ttf" />
     <None Include="project.json" />
   </ItemGroup>

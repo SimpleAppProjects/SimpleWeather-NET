@@ -40,10 +40,23 @@
     <string name="title_activity_settings">Settings</string>
 
     <!-- Settings -->
-    <string name="pref_title_temperature">Temperature</string>
+    <string name="pref_title_general">General</string>
+    <string name="pref_category_version">Version</string>
     <string name="pref_title_units">Units</string>
     <string name="pref_summary_fahrenheit">Display Units in Fahrenheit (US)</string>
     <string name="pref_summary_celsius">Display Units in Celsius (Metric)</string>
+    <string name="pref_title_about">About</string>
+    <string name="pref_title_about_app">About SimpleWeather</string>
+    <string name="pref_title_credits">Credits</string>
+    <string name="pref_title_oslibs">Open Source Libraries</string>
+    <string name="pref_category_providers">Weather Providers</string>
+    <string name="copyright_wunderground">
+        Weather Underground is a registered trademark of The Weather Channel, LLC. both in the United States and internationally.
+        The Weather Underground Logo is a trademark of Weather Underground, LLC.
+    </string>
+    <string name="copyright_yahoo">
+        YAHOO! is a registered trademark of Yahoo! Inc. both in the United States and internationally.
+    </string>
 
     <!-- Locations -->
     <string name="label_btn_add_location">Add Location</string>
