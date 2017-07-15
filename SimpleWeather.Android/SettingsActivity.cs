@@ -11,8 +11,7 @@ using Android.Util;
 
 namespace SimpleWeather.Droid
 {
-    [Android.App.Activity(Label = "@string/title_activity_settings", Theme = "@style/SettingsTheme",
-        ParentActivity = typeof(MainActivity))]
+    [Android.App.Activity(Label = "@string/title_activity_settings", Theme = "@style/SettingsTheme")]
     public class SettingsActivity : AppCompatPreferenceActivity
     {
         /**
@@ -62,9 +61,7 @@ namespace SimpleWeather.Droid
             {
                 if (!base.OnMenuItemSelected(featureId, item))
                 {
-                    Intent intent = NavUtils.GetParentActivityIntent(this);
-                    intent.SetFlags(ActivityFlags.ClearTop | ActivityFlags.SingleTop);
-                    NavUtils.NavigateUpTo(this, intent);
+                    base.OnBackPressed();
                 }
                 return true;
             }
@@ -152,7 +149,7 @@ namespace SimpleWeather.Droid
                             .Commit();
                 };
 
-                var packageInfo = Context.PackageManager.GetPackageInfo(Context.PackageName, 0);
+                var packageInfo = Activity.PackageManager.GetPackageInfo(Activity.PackageName, 0);
                 FindPreference(KEY_ABOUTVERSION).Summary = string.Format("v{0}", packageInfo.VersionName);
             }
 
