@@ -16,10 +16,14 @@ namespace SimpleWeather.Utils
         private static StorageFolder appDataFolder = ApplicationData.Current.LocalFolder;
         private static StorageFile dataFile;
 
-        private static async void Init()
+        private static void Init()
         {
             if (dataFile == null)
-                dataFile = await appDataFolder.CreateFileAsync("data.json", CreationCollisionOption.OpenIfExists);
+            {
+                Task<StorageFile> t = appDataFolder.CreateFileAsync("data.json", CreationCollisionOption.OpenIfExists).AsTask();
+                t.Wait();
+                dataFile = t.Result;
+            }
         }
 
         private static string GetTempUnit()
@@ -44,8 +48,6 @@ namespace SimpleWeather.Utils
 
         private static bool IsWeatherLoaded()
         {
-            Task.Factory.StartNew(async () => await LoadIfNeeded()).Unwrap().Wait();
-
             FileInfo fileinfo = new FileInfo(dataFile.Path);
 
             if (fileinfo.Length == 0 || !fileinfo.Exists)

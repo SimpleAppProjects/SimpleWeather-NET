@@ -43,12 +43,16 @@ namespace SimpleWeather.WeatherData
         {
             string queryAPI = null;
             Uri weatherURL = null;
+            int maxRetries = 0;
 
             if (Settings.API == Settings.API_WUnderground)
             {
                 queryAPI = "http://api.wunderground.com/api/" + Settings.API_KEY + "/astronomy/conditions/forecast10day/hourly";
                 string options = ".json";
                 weatherURL = new Uri(queryAPI + location_query + options);
+
+                // Don't force retries since it counts against calls per minute
+                maxRetries = 0;
             }
             else
             {
@@ -56,6 +60,9 @@ namespace SimpleWeather.WeatherData
                 string query = "select * from weather.forecast where woeid=\""
                     + location_query + "\" and u='F'&format=json";
                 weatherURL = new Uri(queryAPI + query);
+
+                // Allow more retries, since its known to fail sometimes
+                maxRetries = 2;
             }
 
             HttpClient webClient = new HttpClient();
@@ -133,7 +140,7 @@ namespace SimpleWeather.WeatherData
                     await Task.Delay(1000);
 
                 counter++;
-            } while (weather == null && counter < 10);
+            } while (weather == null && counter < maxRetries);
 
             // Load old data if available and we can't get new data
             if (weather == null)
@@ -289,12 +296,16 @@ namespace SimpleWeather.WeatherData
         {
             string queryAPI = null;
             Uri weatherURL = null;
+            int maxRetries = 0;
 
             if (Settings.API == Settings.API_WUnderground)
             {
                 queryAPI = "http://api.wunderground.com/api/" + Settings.API_KEY + "/astronomy/conditions/forecast10day/hourly";
                 string options = ".json";
                 weatherURL = new Uri(queryAPI + location_query + options);
+
+                // Don't force retries since it counts against calls per minute
+                maxRetries = 0;
             }
             else
             {
@@ -302,6 +313,9 @@ namespace SimpleWeather.WeatherData
                 string query = "select * from weather.forecast where woeid=\""
                     + location_query + "\" and u='F'&format=json";
                 weatherURL = new Uri(queryAPI + query);
+
+                // Allow more retries, since its known to fail sometimes
+                maxRetries = 2;
             }
 
             HttpClient webClient = new HttpClient();
@@ -378,7 +392,7 @@ namespace SimpleWeather.WeatherData
                     await Task.Delay(1000);
 
                 counter++;
-            } while (weather == null && counter < 10);
+            } while (weather == null && counter < maxRetries);
 
             // End Stream
             webClient.Dispose();
