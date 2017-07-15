@@ -54,10 +54,10 @@ namespace SimpleWeather.Droid.Controls
             viewLayout = inflater.Inflate(Resource.Layout.location_panel, this);
             mainLayout = viewLayout.FindViewById(Resource.Id.main_layout);
 
-            locationNameView = (TextView)viewLayout.FindViewById(Resource.Id.location_name);
-            locationTempView = (TextView)viewLayout.FindViewById(Resource.Id.weather_temp);
-            locationWeatherIcon = (WeatherIcon)viewLayout.FindViewById(Resource.Id.weather_icon);
-            progressBar = (ProgressBar)viewLayout.FindViewById(Resource.Id.progressBar);
+            locationNameView = viewLayout.FindViewById<TextView>(Resource.Id.location_name);
+            locationTempView = viewLayout.FindViewById<TextView>(Resource.Id.weather_temp);
+            locationWeatherIcon = viewLayout.FindViewById<WeatherIcon>(Resource.Id.weather_icon);
+            progressBar = viewLayout.FindViewById<ProgressBar>(Resource.Id.progressBar);
 
             ShowLoading(true);
         }

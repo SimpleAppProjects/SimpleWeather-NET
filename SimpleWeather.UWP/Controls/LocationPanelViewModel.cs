@@ -130,7 +130,7 @@ namespace SimpleWeather.Controls
         public void SetWeather(Weather weather)
         {
             // Update background
-            if (Background as ImageBrush == null)
+            if (!(Background is ImageBrush))
             {
                 Background = new ImageBrush();
                 (Background as ImageBrush).Stretch = Stretch.UniformToFill;

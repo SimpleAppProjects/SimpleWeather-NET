@@ -61,9 +61,8 @@ namespace SimpleWeather.WeatherYahoo
                         async () => await new Windows.UI.Popups.MessageDialog(wEx.Message).ShowAsync());
                 }
 #elif __ANDROID__
-                if (ex is System.Net.WebException)
+                if (ex is System.Net.WebException webEx)
                 {
-                    System.Net.WebException webEx = ex as System.Net.WebException;
                     if (webEx.Status > System.Net.WebExceptionStatus.Success)
                     {
                         wEx = new WeatherException(WeatherUtils.ErrorStatus.NETWORKERROR);
@@ -71,6 +70,7 @@ namespace SimpleWeather.WeatherYahoo
                     }
                 }
 #endif
+                System.Diagnostics.Debug.WriteLine(ex.StackTrace);
             }
 
             return result;

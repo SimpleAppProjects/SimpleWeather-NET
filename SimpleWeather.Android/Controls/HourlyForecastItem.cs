@@ -53,13 +53,13 @@ namespace SimpleWeather.Droid.Controls
             LayoutInflater inflater = LayoutInflater.From(context);
             viewLayout = inflater.Inflate(Resource.Layout.weather_hrforecast_panel, this);
 
-            forecastDate = (TextView)viewLayout.FindViewById(Resource.Id.hrforecast_date);
-            forecastIcon = (WeatherIcon)viewLayout.FindViewById(Resource.Id.hrforecast_icon);
-            forecastCondition = (TextView)viewLayout.FindViewById(Resource.Id.hrforecast_condition);
-            forecastTempHi = (TextView)viewLayout.FindViewById(Resource.Id.hrforecast_temphi);
-            forecastPoP = (TextView)viewLayout.FindViewById(Resource.Id.hrforecast_pop);
-            forecastWindDirection = (WeatherIcon)viewLayout.FindViewById(Resource.Id.hrforecast_wind_dir);
-            forecastWindSpeed = (TextView)viewLayout.FindViewById(Resource.Id.hrforecast_wind);
+            forecastDate = viewLayout.FindViewById<TextView>(Resource.Id.hrforecast_date);
+            forecastIcon = viewLayout.FindViewById<WeatherIcon>(Resource.Id.hrforecast_icon);
+            forecastCondition = viewLayout.FindViewById<TextView>(Resource.Id.hrforecast_condition);
+            forecastTempHi = viewLayout.FindViewById<TextView>(Resource.Id.hrforecast_temphi);
+            forecastPoP = viewLayout.FindViewById<TextView>(Resource.Id.hrforecast_pop);
+            forecastWindDirection = viewLayout.FindViewById<WeatherIcon>(Resource.Id.hrforecast_wind_dir);
+            forecastWindSpeed = viewLayout.FindViewById<TextView>(Resource.Id.hrforecast_wind);
         }
 
         public void SetForecast(HourlyForecastItemViewModel forecastView)

@@ -5,12 +5,15 @@ using Android.App;
 using Android.Content;
 using Android.OS;
 using Android.Support.V7.App;
+using Android.Util;
 
 namespace SimpleWeather.Droid
 {
     [Activity(MainLauncher = true)]
     public class LaunchActivity : AppCompatActivity
     {
+        private static String LOG_TAG = "LaunchActivity";
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             SetTheme(Resource.Style.AppTheme);
@@ -28,7 +31,7 @@ namespace SimpleWeather.Droid
             }
             catch (Exception e)
             {
-                Android.Util.Log.WriteLine(Android.Util.LogPriority.Error, "LaunchActivity", e.StackTrace);
+                Log.WriteLine(LogPriority.Error, LOG_TAG, e.StackTrace);
             }
             finally
             {

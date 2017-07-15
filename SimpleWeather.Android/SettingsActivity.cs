@@ -7,6 +7,7 @@ using Android.Views;
 using Android.Support.V4.App;
 using Android.Preferences;
 using Android.Webkit;
+using Android.Util;
 
 namespace SimpleWeather.Droid
 {
@@ -92,6 +93,7 @@ namespace SimpleWeather.Droid
 
         public class SettingsFragment : PreferenceFragment
         {
+            // Preference Keys
             private static string KEY_ABOUTAPP = "key_aboutapp";
 
             public override void OnCreate(Bundle savedInstanceState)
@@ -122,6 +124,7 @@ namespace SimpleWeather.Droid
 
         public class AboutAppFragment : PreferenceFragment
         {
+            // Preference Keys
             private static string KEY_ABOUTCREDITS = "key_aboutcredits";
             private static string KEY_ABOUTOSLIBS = "key_aboutoslibs";
             private static string KEY_ABOUTVERSION = "key_aboutversion";
@@ -208,17 +211,17 @@ namespace SimpleWeather.Droid
             {
             }
 
-            public OSSCreditsPreference(Context context, Android.Util.IAttributeSet attrs)
+            public OSSCreditsPreference(Context context, IAttributeSet attrs)
                 : base(context, attrs)
             {
             }
 
-            public OSSCreditsPreference(Context context, Android.Util.IAttributeSet attrs, int defStyleAttr)
+            public OSSCreditsPreference(Context context, IAttributeSet attrs, int defStyleAttr)
                 : base(context, attrs, defStyleAttr)
             {
             }
 
-            public OSSCreditsPreference(Context context, Android.Util.IAttributeSet attrs, int defStyleAttr, int defStyleRes)
+            public OSSCreditsPreference(Context context, IAttributeSet attrs, int defStyleAttr, int defStyleRes)
                 : base(context, attrs, defStyleAttr, defStyleRes)
             {
             }
@@ -227,7 +230,7 @@ namespace SimpleWeather.Droid
             {
                 base.OnBindView(view);
 
-                WebView webview = (WebView)view.FindViewById(Resource.Id.webview);
+                WebView webview = view.FindViewById<WebView>(Resource.Id.webview);
                 webview.Settings.SetLayoutAlgorithm(WebSettings.LayoutAlgorithm.SingleColumn);
                 webview.LoadUrl("file:///android_asset/credits/licenses.html");
             }

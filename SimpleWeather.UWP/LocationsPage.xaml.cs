@@ -25,7 +25,7 @@ namespace SimpleWeather.UWP
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class LocationsPage : Page, IWeatherLoadedListener
+    public sealed partial class LocationsPage : Page, IWeatherLoadedListener, IDisposable
     {
         private CancellationTokenSource cts = new CancellationTokenSource();
 
@@ -54,6 +54,11 @@ namespace SimpleWeather.UWP
             LocationPanels.CollectionChanged += LocationPanels_CollectionChanged;
 
             LocationQuerys = new ObservableCollection<LocationQueryViewModel>();
+        }
+
+        public void Dispose()
+        {
+            ((IDisposable)cts).Dispose();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -172,10 +177,12 @@ namespace SimpleWeather.UWP
                     {
                         geoPos = await geolocal.GetGeopositionAsync();
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         error = new MessageDialog("Unable to retrieve location status", "Location access error");
                         await error.ShowAsync();
+
+                        System.Diagnostics.Debug.WriteLine(ex.StackTrace);
                     }
                     break;
                 case GeolocationAccessStatus.Denied:
@@ -477,9 +484,7 @@ namespace SimpleWeather.UWP
 
         private async void LocationsPanel_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
         {
-            LocationPanelViewModel panel = args.Items.First() as LocationPanelViewModel;
-
-            if (panel == null)
+            if (!(args.Items.First() is LocationPanelViewModel panel))
                 return;
 
             List<string> data = await Settings.GetLocations();

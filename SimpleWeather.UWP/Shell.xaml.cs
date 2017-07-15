@@ -12,7 +12,7 @@ namespace SimpleWeather.UWP
     /// </summary>
     public sealed partial class Shell : Page
     {
-        public Frame AppFrame { get { return Content; } }
+        public Frame AppFrame { get { return FrameContent; } }
 
         public Shell()
         {

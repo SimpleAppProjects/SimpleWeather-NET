@@ -10,6 +10,7 @@ using Android.Runtime;
 using Android.Util;
 using Android.Views;
 using Android.Widget;
+using SimpleWeather.Controls;
 
 namespace SimpleWeather.Droid.Controls
 {
@@ -42,11 +43,11 @@ namespace SimpleWeather.Droid.Controls
             LayoutInflater inflater = LayoutInflater.From(context);
             viewLayout = inflater.Inflate(Resource.Layout.location_query_view, this);
 
-            locationNameView = (TextView)viewLayout.FindViewById(Resource.Id.location_name);
-            locationCountryView = (TextView)viewLayout.FindViewById(Resource.Id.location_country);
+            locationNameView = viewLayout.FindViewById<TextView>(Resource.Id.location_name);
+            locationCountryView = viewLayout.FindViewById<TextView>(Resource.Id.location_country);
         }
 
-        public void SetLocation(SimpleWeather.Controls.LocationQueryViewModel view)
+        public void SetLocation(LocationQueryViewModel view)
         {
             locationNameView.Text = view.LocationName;
             locationCountryView.Text = view.LocationCountry;

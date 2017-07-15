@@ -20,6 +20,7 @@ using Android.Support.V4.Widget;
 using Android.Support.V4.Content;
 using Android.Content.Res;
 using Android.Support.V4.View;
+using Android.Support.Design.Widget;
 
 namespace SimpleWeather.Droid
 {
@@ -31,6 +32,8 @@ namespace SimpleWeather.Droid
 
         WeatherDataLoader wLoader = null;
         WeatherNowViewModel weatherView = null;
+
+        AppCompatActivity AppCompatActivity;
 
         // Views
         private SwipeRefreshLayout refreshLayout;
@@ -126,6 +129,7 @@ namespace SimpleWeather.Droid
         public override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+            AppCompatActivity = Activity as AppCompatActivity;
 
             // Create your fragment here
             if (Arguments != null)
@@ -151,53 +155,53 @@ namespace SimpleWeather.Droid
             refreshLayout = (SwipeRefreshLayout)view;
             mainView = view.FindViewById(Resource.Id.fragment_weather_now);
             // Condition
-            locationName = (TextView)view.FindViewById(Resource.Id.label_location_name);
-            updateTime = (TextView)view.FindViewById(Resource.Id.label_updatetime);
-            weatherIcon = (WeatherIcon)view.FindViewById(Resource.Id.weather_icon);
-            weatherCondition = (TextView)view.FindViewById(Resource.Id.weather_condition);
-            weatherTemp = (WeatherIcon)view.FindViewById(Resource.Id.weather_temp);
+            locationName = view.FindViewById<TextView>(Resource.Id.label_location_name);
+            updateTime = view.FindViewById<TextView>(Resource.Id.label_updatetime);
+            weatherIcon = view.FindViewById<WeatherIcon>(Resource.Id.weather_icon);
+            weatherCondition = view.FindViewById<TextView>(Resource.Id.weather_condition);
+            weatherTemp = view.FindViewById<WeatherIcon>(Resource.Id.weather_temp);
             // Details
             detailsPanel = view.FindViewById(Resource.Id.details_panel);
-            humidity = (TextView)view.FindViewById(Resource.Id.humidity);
-            pressureState = (WeatherIcon)view.FindViewById(Resource.Id.pressure_state);
-            pressure = (TextView)view.FindViewById(Resource.Id.pressure);
-            visiblity = (TextView)view.FindViewById(Resource.Id.visibility_val);
-            feelslike = (TextView)view.FindViewById(Resource.Id.feelslike);
-            windDirection = (WeatherIcon)view.FindViewById(Resource.Id.wind_direction);
-            windSpeed = (TextView)view.FindViewById(Resource.Id.wind_speed);
-            sunrise = (TextView)view.FindViewById(Resource.Id.sunrise_time);
-            sunset = (TextView)view.FindViewById(Resource.Id.sunset_time);
+            humidity = view.FindViewById<TextView>(Resource.Id.humidity);
+            pressureState = view.FindViewById<WeatherIcon>(Resource.Id.pressure_state);
+            pressure = view.FindViewById<TextView>(Resource.Id.pressure);
+            visiblity = view.FindViewById<TextView>(Resource.Id.visibility_val);
+            feelslike = view.FindViewById<TextView>(Resource.Id.feelslike);
+            windDirection = view.FindViewById<WeatherIcon>(Resource.Id.wind_direction);
+            windSpeed = view.FindViewById<TextView>(Resource.Id.wind_speed);
+            sunrise = view.FindViewById<TextView>(Resource.Id.sunrise_time);
+            sunset = view.FindViewById<TextView>(Resource.Id.sunset_time);
             // Forecast
-            forecastPanel = (LinearLayout)view.FindViewById(Resource.Id.forecast_panel);
+            forecastPanel = view.FindViewById<LinearLayout>(Resource.Id.forecast_panel);
             forecastPanel.Visibility = ViewStates.Invisible;
-            forecastView = (LinearLayout)view.FindViewById(Resource.Id.forecast_view);
+            forecastView = view.FindViewById<LinearLayout>(Resource.Id.forecast_view);
             // Additional Details
-            forecastSwitch = (Switch)view.FindViewById(Resource.Id.forecast_switch);
+            forecastSwitch = view.FindViewById<Switch>(Resource.Id.forecast_switch);
             forecastSwitch.CheckedChange += ForecastSwitch_CheckedChange;
             forecastSwitch.Visibility = ViewStates.Gone;
-            forecastScrollView = (HorizontalScrollView)view.FindViewById(Resource.Id.forecast_scrollview);
-            txtForecastView = (ViewPager)view.FindViewById(Resource.Id.txt_forecast_viewpgr);
+            forecastScrollView = view.FindViewById<HorizontalScrollView>(Resource.Id.forecast_scrollview);
+            txtForecastView = view.FindViewById<ViewPager>(Resource.Id.txt_forecast_viewpgr);
             txtForecastView.Adapter = new TextForecastPagerAdapter(this.Activity, new List<TextForecastItemViewModel>());
             txtForecastView.Visibility = ViewStates.Gone;
-            hrforecastPanel = (LinearLayout)view.FindViewById(Resource.Id.hourly_forecast_panel);
+            hrforecastPanel = view.FindViewById<LinearLayout>(Resource.Id.hourly_forecast_panel);
             hrforecastPanel.Visibility = ViewStates.Gone;
-            hrforecastView = (LinearLayout)view.FindViewById(Resource.Id.hourly_forecast_view);
-            precipitationPanel = (LinearLayout)view.FindViewById(Resource.Id.precipitation_card);
+            hrforecastView = view.FindViewById<LinearLayout>(Resource.Id.hourly_forecast_view);
+            precipitationPanel = view.FindViewById<LinearLayout>(Resource.Id.precipitation_card);
             precipitationPanel.Visibility = ViewStates.Gone;
-            chance = (TextView)view.FindViewById(Resource.Id.chance_val);
-            qpfRain = (TextView)view.FindViewById(Resource.Id.qpf_rain_val);
-            qpfSnow = (TextView)view.FindViewById(Resource.Id.qpf_snow_val);
+            chance = view.FindViewById<TextView>(Resource.Id.chance_val);
+            qpfRain = view.FindViewById<TextView>(Resource.Id.qpf_rain_val);
+            qpfSnow = view.FindViewById<TextView>(Resource.Id.qpf_snow_val);
 
             // SwipeRefresh
             refreshLayout.SetColorSchemeColors(ContextCompat.GetColor(Activity, Resource.Color.colorPrimary));
             refreshLayout.Refresh += delegate { Task.Run(() => RefreshWeather(true)); };
 
             // Nav Header View
-            navheader = ((Android.Support.Design.Widget.NavigationView)Activity.FindViewById(Resource.Id.nav_view)).GetHeaderView(0);
-            navLocation = (TextView)navheader.FindViewById(Resource.Id.nav_location);
-            navWeatherTemp = (TextView)navheader.FindViewById(Resource.Id.nav_weathertemp);
+            navheader = Activity.FindViewById<NavigationView>(Resource.Id.nav_view).GetHeaderView(0);
+            navLocation = navheader.FindViewById<TextView>(Resource.Id.nav_location);
+            navWeatherTemp = navheader.FindViewById<TextView>(Resource.Id.nav_weathertemp);
 
-            weatherCredit = (TextView)view.FindViewById(Resource.Id.weather_credit);
+            weatherCredit = view.FindViewById<TextView>(Resource.Id.weather_credit);
 
             loaded = true;
             refreshLayout.Refreshing = true;
@@ -283,8 +287,7 @@ namespace SimpleWeather.Droid
             }
 
             // Title
-            AppCompatActivity activity = (AppCompatActivity)Activity;
-            activity.SupportActionBar.Title = GetString(Resource.String.title_activity_weather_now);
+            AppCompatActivity.SupportActionBar.Title = GetString(Resource.String.title_activity_weather_now);
         }
 
         public override void OnHiddenChanged(bool hidden)

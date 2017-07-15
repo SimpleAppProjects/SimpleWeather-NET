@@ -49,9 +49,9 @@ namespace SimpleWeather.Droid.Controls
             LayoutInflater inflater = LayoutInflater.From(context);
             viewLayout = inflater.Inflate(Resource.Layout.txt_forecast_panel, this);
 
-            forecastIcon = (WeatherIcon)viewLayout.FindViewById(Resource.Id.txt_forecasticon);
-            forecastPoP = (TextView)viewLayout.FindViewById(Resource.Id.txtforecast_pop);
-            forecastText = (TextView)viewLayout.FindViewById(Resource.Id.txt_fcttext);
+            forecastIcon = viewLayout.FindViewById<WeatherIcon>(Resource.Id.txt_forecasticon);
+            forecastPoP = viewLayout.FindViewById<TextView>(Resource.Id.txtforecast_pop);
+            forecastText = viewLayout.FindViewById<TextView>(Resource.Id.txt_fcttext);
         }
 
         public void SetForecast(TextForecastItemViewModel forecastView)

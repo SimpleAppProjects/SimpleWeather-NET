@@ -140,7 +140,7 @@
                 </StackPanel>
             </SplitView.Pane>
             <SplitView.Content>
-                <Frame x:Name="Content" Margin="0,-48,0,0"/>
+                <Frame x:Name="FrameContent" Margin="0,-48,0,0"/>
             </SplitView.Content>
         </SplitView>
         <VisualStateManager.VisualStateGroups>

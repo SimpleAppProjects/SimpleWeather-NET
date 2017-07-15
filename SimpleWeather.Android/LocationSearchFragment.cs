@@ -54,6 +54,7 @@ namespace SimpleWeather.Droid
 
         private async void LocationSearchFragment_clickListener(object sender, RecyclerClickEventArgs e)
         {
+            // Get selected query view
             LocationQuery v = (LocationQuery)e.View;
 
             if (!String.IsNullOrEmpty(mAdapter.Dataset[e.Position].LocationQuery))
@@ -69,7 +70,6 @@ namespace SimpleWeather.Droid
 
             if (String.IsNullOrWhiteSpace(Settings.API_KEY) && Settings.API == Settings.API_WUnderground)
             {
-                // TODO: replace with string resource
                 String errorMsg = new WeatherException(WeatherUtils.ErrorStatus.INVALIDAPIKEY).Message;
                 Toast.MakeText(Activity.ApplicationContext, errorMsg, ToastLength.Short).Show();
                 return;
@@ -94,6 +94,7 @@ namespace SimpleWeather.Droid
 
             pair = new Pair<int, string>(App.HomeIdx, selected_query);
 
+            // Start WeatherNow Activity with weather data
             Intent intent = new Intent(Activity, typeof(MainActivity));
             intent.PutExtra("pair", await JSONParser.SerializerAsync(pair, typeof(Pair<int, string>)));
 
@@ -119,7 +120,7 @@ namespace SimpleWeather.Droid
 
         private void SetupView(View view)
         {
-            mRecyclerView = (RecyclerView)view.FindViewById(Resource.Id.recycler_view);
+            mRecyclerView = view.FindViewById<RecyclerView>(Resource.Id.recycler_view);
 
             // Location Listener
             mLocListnr = new LocationListener();

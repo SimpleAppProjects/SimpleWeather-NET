@@ -29,6 +29,8 @@ namespace SimpleWeather.Droid
         private bool EditMode = false;
         private bool DataChanged = false;
 
+        AppCompatActivity AppCompatActivity;
+
         // Views
         private View mMainView;
         private RecyclerView mRecyclerView;
@@ -63,6 +65,7 @@ namespace SimpleWeather.Droid
         {
             if (weather != null)
             {
+                // Update panel weather
                 LocationPanelViewModel panel = mAdapter.Dataset[locationIdx];
                 panel.SetWeather(weather);
                 mAdapter.NotifyItemChanged(locationIdx);
@@ -98,18 +101,17 @@ namespace SimpleWeather.Droid
 
                 Fragment fragment = WeatherNowFragment.NewInstance(pair);
                 // Navigate to WeatherNowFragment
-                AppCompatActivity activity = (AppCompatActivity)Activity;
                 if (pair.Key == App.HomeIdx)
                 {
-                    activity.SupportFragmentManager.BeginTransaction().Replace(
+                    AppCompatActivity.SupportFragmentManager.BeginTransaction().Replace(
                         Resource.Id.fragment_container, fragment).Commit();
 
                     // Pop all since we're going home
-                    activity.SupportFragmentManager.PopBackStack(null, (int)Android.App.PopBackStackFlags.Inclusive);
+                    AppCompatActivity.SupportFragmentManager.PopBackStack(null, (int)Android.App.PopBackStackFlags.Inclusive);
                 }
                 else
                 {
-                    activity.SupportFragmentManager.BeginTransaction().Add(
+                    AppCompatActivity.SupportFragmentManager.BeginTransaction().Add(
                         Resource.Id.fragment_container, fragment).Hide(this).AddToBackStack(null).Commit();
                 }
             }
@@ -120,6 +122,7 @@ namespace SimpleWeather.Droid
             base.OnCreate(savedInstanceState);
 
             // Create your fragment here
+            AppCompatActivity = Activity as AppCompatActivity;
             Loaded = true;
 
             // Get ActionMode state
@@ -128,8 +131,7 @@ namespace SimpleWeather.Droid
                 inSearchUI = true;
 
                 // Restart ActionMode
-                AppCompatActivity activity = (AppCompatActivity)Activity;
-                mActionMode = activity.StartSupportActionMode(mActionModeCallback);
+                mActionMode = AppCompatActivity.StartSupportActionMode(mActionModeCallback);
             }
         }
 
@@ -158,13 +160,12 @@ namespace SimpleWeather.Droid
             // Setup ActionBar
             HasOptionsMenu = true;
 
-            mRecyclerView = (RecyclerView)view.FindViewById(Resource.Id.locations_container);
+            mRecyclerView = view.FindViewById<RecyclerView>(Resource.Id.locations_container);
 
-            addLocationsButton = (FloatingActionButton)view.FindViewById(Resource.Id.locations_add);
+            addLocationsButton = view.FindViewById<FloatingActionButton>(Resource.Id.locations_add);
             addLocationsButton.Click += delegate
             {
-                AppCompatActivity activity = (AppCompatActivity)Activity;
-                mActionMode = activity.StartSupportActionMode(mActionModeCallback);
+                mActionMode = AppCompatActivity.StartSupportActionMode(mActionModeCallback);
             };
 
             // use this setting to improve performance if you know that changes
@@ -210,7 +211,7 @@ namespace SimpleWeather.Droid
         {
             // Handle action bar item clicks here. The action bar will
             // automatically handle clicks on the Home/Up button, so long
-            // as you specify a parent activity in AndroidManifest.xml.
+            // as you specify a parent AppCompatActivity in AndroidManifest.xml.
             int id = item.ItemId;
 
             //noinspection SimplifiableIfStatement
@@ -236,8 +237,7 @@ namespace SimpleWeather.Droid
             }
 
             // Title
-            AppCompatActivity activity = (AppCompatActivity)Activity;
-            activity.SupportActionBar.Title = GetString(Resource.String.label_nav_locations);
+            AppCompatActivity.SupportActionBar.Title = GetString(Resource.String.label_nav_locations);
         }
 
         public override void OnPause()
@@ -298,9 +298,9 @@ namespace SimpleWeather.Droid
 
         public override void OnAttachFragment(Fragment childFragment)
         {
-            if ((childFragment as LocationSearchFragment) != null)
+            if (childFragment is LocationSearchFragment)
             {
-                mSearchFragment = (LocationSearchFragment)childFragment;
+                mSearchFragment = childFragment as LocationSearchFragment;
 
                 if (inSearchUI)
                     SetupSearchUi();
@@ -401,11 +401,9 @@ namespace SimpleWeather.Droid
 
         private void PrepareSearchView()
         {
-            searchView = (EditText)searchViewLayout
-                    .FindViewById(Resource.Id.search_view);
-            clearButtonView = (ImageView)searchViewLayout.FindViewById(Resource.Id.search_close_button);
-            locationButtonView = (ImageView)searchViewLayout
-                    .FindViewById(Resource.Id.search_location_button);
+            searchView = searchViewLayout.FindViewById<EditText>(Resource.Id.search_view);
+            clearButtonView = searchViewLayout.FindViewById<ImageView>(Resource.Id.search_close_button);
+            locationButtonView = searchViewLayout.FindViewById<ImageView>(Resource.Id.search_location_button);
             clearButtonView.Click += delegate { searchView.Text = String.Empty; };
             searchView.TextChanged += (object sender, TextChangedEventArgs e) =>
             {

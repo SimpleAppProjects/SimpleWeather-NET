@@ -124,6 +124,8 @@ namespace SimpleWeather.WeatherData
                         wEx = new WeatherException(WeatherUtils.ErrorStatus.NETWORKERROR);
                         break;
                     }
+
+                    System.Diagnostics.Debug.WriteLine(ex.StackTrace);
                 }
 
                 // If we can't load data, delay and try again
@@ -219,9 +221,10 @@ namespace SimpleWeather.WeatherData
                 {
                     weather = (await Settings.GetWeatherData())[locationIdx] as Weather;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     weather = null;
+                    System.Diagnostics.Debug.WriteLine(ex.StackTrace);
                 }
 
                 if (weather == null)
@@ -240,9 +243,10 @@ namespace SimpleWeather.WeatherData
             {
                 weather = (await Settings.GetWeatherData())[locationIdx] as Weather;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 weather = null;
+                System.Diagnostics.Debug.WriteLine(ex.StackTrace);
             }
 
             if (weather == null)
@@ -365,6 +369,8 @@ namespace SimpleWeather.WeatherData
                         wEx = new WeatherException(WeatherUtils.ErrorStatus.NETWORKERROR);
                         break;
                     }
+
+                    System.Diagnostics.Debug.WriteLine(ex.StackTrace);
                 }
 
                 // If we can't load data, delay and try again

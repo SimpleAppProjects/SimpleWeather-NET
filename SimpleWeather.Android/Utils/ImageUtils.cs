@@ -8,6 +8,7 @@ using Com.Nostra13.Universalimageloader.Core.Process;
 using Com.Nostra13.Universalimageloader.Core.Assist;
 using Android.Support.V4.Content;
 using Com.Nostra13.Universalimageloader.Core.Display;
+using Android.Util;
 
 namespace SimpleWeather.Droid.Utils
 {
@@ -93,9 +94,10 @@ namespace SimpleWeather.Droid.Utils
                 Canvas canvas = new Canvas(dest);
                 canvas.DrawBitmap(source, null, targetRect, null);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 dest = null;
+                Log.WriteLine(LogPriority.Error, "CenterCropper", ex.StackTrace);
             }
             finally
             {

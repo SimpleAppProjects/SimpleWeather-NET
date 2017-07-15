@@ -1,15 +1,15 @@
 ﻿using Android.Content;
+using Android.Util;
 using Java.IO;
 using SimpleWeather.Droid;
 using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Threading.Tasks;
 
 namespace SimpleWeather.Utils
 {
     public static partial class Settings
     {
+        private static String LOG_TAG = "Settings";
+
         // Shared Settings
         private static ISharedPreferences preferences = App.Preferences;
         private static ISharedPreferencesEditor editor = preferences.Edit();
@@ -18,6 +18,7 @@ namespace SimpleWeather.Utils
         private static File appDataFolder = App.Context.FilesDir;
         private static File dataFile;
 
+        // Initialize file
         private static void Init()
         {
             if (dataFile == null)
@@ -105,7 +106,7 @@ namespace SimpleWeather.Utils
         private static string ReadAPIKEYfile()
         {
             // Read key from file
-            String key = "";
+            String key = String.Empty;
             BufferedReader reader = null;
 
             try
@@ -117,19 +118,21 @@ namespace SimpleWeather.Utils
             }
             catch (Exception e)
             {
-                Android.Util.Log.WriteLine(Android.Util.LogPriority.Error, "Settings", e.StackTrace);
+                Log.WriteLine(LogPriority.Error, LOG_TAG, e.StackTrace);
             }
             finally
             {
                 if (reader != null)
+                {
                     try
                     {
                         reader.Close();
                     }
                     catch (Exception e)
                     {
-                        Android.Util.Log.WriteLine(Android.Util.LogPriority.Error, "Settings", e.StackTrace);
+                        Log.WriteLine(LogPriority.Error, LOG_TAG, e.StackTrace);
                     }
+                }
             }
 
             return key;

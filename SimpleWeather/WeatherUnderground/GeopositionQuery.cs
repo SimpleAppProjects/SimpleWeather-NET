@@ -63,9 +63,8 @@ namespace SimpleWeather.WeatherUnderground
                         async () => await new MessageDialog(wEx.Message).ShowAsync());
                 }
 #elif __ANDROID__
-                if (ex is WebException)
+                if (ex is WebException webEx)
                 {
-                    WebException webEx = ex as WebException;
                     if (webEx.Status > WebExceptionStatus.Success)
                     {
                         wEx = new WeatherException(WeatherUtils.ErrorStatus.NETWORKERROR);
@@ -73,6 +72,8 @@ namespace SimpleWeather.WeatherUnderground
                     }
                 }
 #endif
+
+                System.Diagnostics.Debug.WriteLine(ex.StackTrace);
             }
 
             return result;

@@ -37,7 +37,7 @@ namespace SimpleWeather.Droid
                 : base(v)
             {
                 mLocView = v;
-                mHomeButton = (ImageButton)v.FindViewById(Resource.Id.home_button);
+                mHomeButton = v.FindViewById<ImageButton>(Resource.Id.home_button);
 
                 mLocView.Click += (sender, e) => clickListener(new RecyclerClickEventArgs { View = mLocView, Position = AdapterPosition });
                 mLocView.LongClick += (sender, e) => longClickListener(new RecyclerClickEventArgs { View = mLocView, Position = AdapterPosition });

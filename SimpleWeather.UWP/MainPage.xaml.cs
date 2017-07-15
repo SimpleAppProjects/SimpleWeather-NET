@@ -23,7 +23,7 @@ namespace SimpleWeather.UWP
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class MainPage : Page, IDisposable
     {
         private CancellationTokenSource cts = new CancellationTokenSource();
 
@@ -55,6 +55,11 @@ namespace SimpleWeather.UWP
 
             // Restore Weather if Location already set
             Restore();
+        }
+
+        public void Dispose()
+        {
+            ((IDisposable)cts).Dispose();
         }
 
         private void Location_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
@@ -225,6 +230,8 @@ namespace SimpleWeather.UWP
                         else
                             error = new MessageDialog("Unable to retrieve location status", "Location access error");
                         await error.ShowAsync();
+
+                        System.Diagnostics.Debug.WriteLine(ex.StackTrace);
                     }
                     break;
                 case GeolocationAccessStatus.Denied:

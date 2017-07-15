@@ -21,30 +21,27 @@ namespace SimpleWeather.Droid
             SetContentView(Resource.Layout.activity_main);
 
             // Create your application here
-            Toolbar toolbar = (Toolbar)FindViewById(Resource.Id.toolbar);
+            Toolbar toolbar = FindViewById<Toolbar>(Resource.Id.toolbar);
             SetSupportActionBar(toolbar);
 
-            DrawerLayout drawer = (DrawerLayout)FindViewById(Resource.Id.drawer_layout);
+            DrawerLayout drawer = FindViewById<DrawerLayout>(Resource.Id.drawer_layout);
             Android.Support.V7.App.ActionBarDrawerToggle toggle = new Android.Support.V7.App.ActionBarDrawerToggle(
                     this, drawer, toolbar, Resource.String.navigation_drawer_open, Resource.String.navigation_drawer_close);
             drawer.SetDrawerListener(toggle);
             toggle.SyncState();
 
-            NavigationView navigationView = (NavigationView)FindViewById(Resource.Id.nav_view);
+            NavigationView navigationView = FindViewById<NavigationView>(Resource.Id.nav_view);
             navigationView.SetNavigationItemSelectedListener(this);
 
             // Back stack listener
             SupportFragmentManager.BackStackChanged += delegate { RefreshNavViewCheckedItem(); };
 
             Fragment fragment = SupportFragmentManager.FindFragmentById(Resource.Id.fragment_container);
-
             // Check if fragment exists
             if (fragment == null)
             {
                 if (Intent.HasExtra("pair"))
-                {
                     fragment = WeatherNowFragment.NewInstance(Intent.Extras);
-                }
                 else
                     fragment = new WeatherNowFragment();
 
@@ -58,7 +55,7 @@ namespace SimpleWeather.Droid
 
         public override void OnBackPressed()
         {
-            DrawerLayout drawer = (DrawerLayout)FindViewById(Resource.Id.drawer_layout);
+            DrawerLayout drawer = FindViewById<DrawerLayout>(Resource.Id.drawer_layout);
             if (drawer.IsDrawerOpen(GravityCompat.Start))
             {
                 drawer.CloseDrawer(GravityCompat.Start);
@@ -74,7 +71,7 @@ namespace SimpleWeather.Droid
             // Handle navigation view item clicks here.
             int id = item.ItemId;
 
-            DrawerLayout drawer = (DrawerLayout)FindViewById(Resource.Id.drawer_layout);
+            DrawerLayout drawer = FindViewById<DrawerLayout>(Resource.Id.drawer_layout);
             FragmentTransaction transaction = SupportFragmentManager.BeginTransaction();
             Fragment fragment = null;
 
@@ -97,7 +94,7 @@ namespace SimpleWeather.Droid
             {
                 if (fragment.Class != SupportFragmentManager.FindFragmentById(Resource.Id.fragment_container).Class)
                 {
-                    if ((fragment as WeatherNowFragment) != null)
+                    if (fragment is WeatherNowFragment)
                     {
                         // Pop all since we're going home
                         transaction.Commit();
@@ -129,15 +126,15 @@ namespace SimpleWeather.Droid
 
         private void RefreshNavViewCheckedItem()
         {
-            NavigationView navigationView = (NavigationView)FindViewById(Resource.Id.nav_view);
+            NavigationView navigationView = FindViewById<NavigationView>(Resource.Id.nav_view);
             Fragment fragment = SupportFragmentManager.FindFragmentById(Resource.Id.fragment_container);
 
-            if ((fragment as WeatherNowFragment) != null)
+            if (fragment is WeatherNowFragment)
             {
                 navigationView.SetCheckedItem(Resource.Id.nav_weathernow);
                 SupportActionBar.Title = GetString(Resource.String.title_activity_weather_now);
             }
-            else if ((fragment as LocationsFragment) != null)
+            else if (fragment is LocationsFragment)
             {
                 navigationView.SetCheckedItem(Resource.Id.nav_locations);
                 SupportActionBar.Title = GetString(Resource.String.label_nav_locations);

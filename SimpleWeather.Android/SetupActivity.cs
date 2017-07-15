@@ -61,8 +61,8 @@ namespace SimpleWeather.Droid
                 mActionMode = StartSupportActionMode(mActionModeCallback);
             }
 
-            apiSpinner = (Spinner)FindViewById(Resource.Id.api_spinner);
-            keyEntry = (EditText)FindViewById(Resource.Id.key_entry);
+            apiSpinner = FindViewById<Spinner>(Resource.Id.api_spinner);
+            keyEntry = FindViewById<EditText>(Resource.Id.key_entry);
 
             /* Event Listeners */
             apiSpinner.ItemSelected += (object sender, AdapterView.ItemSelectedEventArgs e) =>
@@ -131,7 +131,7 @@ namespace SimpleWeather.Droid
 
         public override void OnAttachFragment(Fragment fragment)
         {
-            if ((fragment as LocationSearchFragment) != null)
+            if (fragment is LocationSearchFragment)
             {
                 mSearchFragment = (LocationSearchFragment)fragment;
                 SetupSearchUi();
@@ -192,11 +192,9 @@ namespace SimpleWeather.Droid
 
         private void PrepareSearchView()
         {
-            searchView = (EditText)searchViewLayout
-                    .FindViewById(Resource.Id.search_view);
-            clearButtonView = (ImageView)searchViewLayout.FindViewById(Resource.Id.search_close_button);
-            locationButtonView = (ImageView)searchViewLayout
-                    .FindViewById(Resource.Id.search_location_button);
+            searchView = searchViewLayout.FindViewById<EditText>(Resource.Id.search_view);
+            clearButtonView = searchViewLayout.FindViewById<ImageView>(Resource.Id.search_close_button);
+            locationButtonView = searchViewLayout.FindViewById<ImageView>(Resource.Id.search_location_button);
             clearButtonView.Click += delegate { searchView.Text = String.Empty; };
             searchView.TextChanged += (object sender, TextChangedEventArgs e) =>
             {
