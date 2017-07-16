@@ -244,3 +244,10 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 API_KEY.txt
+/SimpleWeather.UWP/Package.StoreAssociation.xml
+/SimpleWeather.UWP/Package.StoreAssociation.xml
+/SimpleWeather.UWP/_scale-400.appx
+/SimpleWeather.UWP/_scale-150.appx
+/SimpleWeather.UWP/_scale-125.appx
+/SimpleWeather.UWP/_scale-100.appx
+/SimpleWeather.UWP/_pkginfo.txt

@@ -48,7 +48,7 @@ namespace SimpleWeather.WeatherUnderground
                 webClient.Dispose();
 
                 // Load data
-                XmlSerializer deserializer = new XmlSerializer(typeof(location), null, null, new XmlRootAttribute("location"), "");
+                XmlSerializer deserializer = new XmlSerializer(typeof(location));
                 result = (location)deserializer.Deserialize(memStream);
             }
             catch (Exception ex)

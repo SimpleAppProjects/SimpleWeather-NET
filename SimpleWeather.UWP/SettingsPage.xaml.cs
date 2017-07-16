@@ -32,7 +32,6 @@ namespace SimpleWeather.UWP
                 Celsius.IsChecked = true;
             }
 
-            AppName.Text = Package.Current.DisplayName;
             Version.Text = string.Format("v{0}.{1}.{2}",
                 Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
 

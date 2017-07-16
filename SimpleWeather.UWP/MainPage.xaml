@@ -8,6 +8,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
+
     <Page.Resources>
         <Style x:Key="AutoSuggestBoxTextBoxStyle" TargetType="TextBox">
             <Setter Property="MinWidth" Value="{ThemeResource TextControlThemeMinWidth}"/>
@@ -294,17 +295,11 @@
         </Style>
     </Page.Resources>
 
-    <Grid Background="#006FBF">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Viewbox MaxHeight="150" Grid.Row="0">
-            <Image x:Name="AppLogo" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,0" Source="Assets/Square150x150Logo.png" />
+    <StackPanel Background="#006FBF">
+        <Viewbox Name="AppLogo" Height="100" Margin="0,25,0,0">
+            <Image Source="Assets/AppLogo.png" Stretch="None" />
         </Viewbox>
-        <Grid Height="80" Grid.Row="1" Padding="25,0" RequestedTheme="Dark" Name="SearchGrid">
+        <Grid Height="80" Padding="25,0" RequestedTheme="Dark" Name="SearchGrid">
             <AutoSuggestBox x:Name="Location" FontSize="24" PlaceholderText="Enter Location" VerticalAlignment="Center" QueryIcon="Find"
                      RequestedTheme="Light" TextChanged="Location_TextChanged" SuggestionChosen="Location_SuggestionChosen" QuerySubmitted="Location_QuerySubmitted"
                             UpdateTextOnSelect="False" Style="{StaticResource AutoSuggestBoxStyle}">
@@ -320,7 +315,7 @@
                 </AutoSuggestBox.ItemsPanel>
             </AutoSuggestBox>
         </Grid>
-        <Grid x:Name="APIGrid" Grid.Row="2" Visibility="{Binding ElementName=SearchGrid, Path=Visibility}">
+        <Grid x:Name="APIGrid" Visibility="{Binding ElementName=SearchGrid, Path=Visibility}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -343,6 +338,27 @@
                 </TextBox.Header>
             </TextBox>
         </Grid>
-        <ProgressRing x:Name="LoadingRing" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Width="50" Grid.Row="3" Foreground="White"/>
-    </Grid>
+        <ProgressRing x:Name="LoadingRing" HorizontalAlignment="Center" IsActive="True" Margin="20" VerticalAlignment="Center" Height="50" Width="50" Foreground="White"/>
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="HeightStates">
+                <VisualState x:Name="MobileHeight">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowHeight="0"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="AppLogo.Height" Value="100"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="MediumHeight">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowHeight="480"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="AppLogo.Height" Value="150"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    </StackPanel>
 </Page>

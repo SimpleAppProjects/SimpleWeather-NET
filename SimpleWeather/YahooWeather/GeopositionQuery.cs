@@ -43,7 +43,7 @@ namespace SimpleWeather.WeatherYahoo
                 webClient.Dispose();
 
                 // Load data
-                XmlSerializer deserializer = new XmlSerializer(typeof(query), null, null, new XmlRootAttribute("query"), "");
+                XmlSerializer deserializer = new XmlSerializer(typeof(query));
                 query root = (query)deserializer.Deserialize(memStream);
 
                 if (root.results != null)

@@ -43,7 +43,7 @@ namespace SimpleWeather.WeatherYahoo
 
                 // Load data
                 locationResults = new List<Controls.LocationQueryViewModel>();
-                XmlSerializer deserializer = new XmlSerializer(typeof(query), null, null, new XmlRootAttribute("query"), "");
+                XmlSerializer deserializer = new XmlSerializer(typeof(query));
                 query root = (query)deserializer.Deserialize(memStream);
 
                 foreach (place result in root.results)
