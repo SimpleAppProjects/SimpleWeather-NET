@@ -74,7 +74,7 @@ namespace SimpleWeather.UWP
                 Window.Current.Activate();
             }
 
-            Task.Run(() => Settings.LoadIfNeeded());
+            Task.Factory.StartNew(() => Settings.LoadIfNeeded());
         }
 
         /// <summary>

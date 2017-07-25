@@ -37,7 +37,7 @@ namespace SimpleWeather.Droid
 
             //A great place to initialize Xamarin.Insights and Dependency Services!
             // Load data if needed
-            Task.Run(() => Settings.LoadIfNeeded());
+            Task.Factory.StartNew(() => Settings.LoadIfNeeded());
 
             // ImageLoader
             // Use default options
