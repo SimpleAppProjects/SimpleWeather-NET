@@ -132,6 +132,7 @@
     <Compile Include="AppCompatPreferenceActivity.cs" />
     <Compile Include="Controls\ForecastItem.cs" />
     <Compile Include="Controls\HourlyForecastItem.cs" />
+    <Compile Include="Controls\LoadingDialog.cs" />
     <Compile Include="Controls\TextForecastItem.cs" />
     <Compile Include="Controls\LocationPanel.cs" />
     <Compile Include="Controls\LocationPanelViewModel.cs" />

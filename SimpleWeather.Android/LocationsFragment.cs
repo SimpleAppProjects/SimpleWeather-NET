@@ -357,6 +357,10 @@ namespace SimpleWeather.Droid
                     return;
                 }
 
+                // Show loading dialog
+                LoadingDialog progDialog = new LoadingDialog(Activity);
+                progDialog.Show();
+
                 OrderedDictionary weatherData = await Settings.GetWeatherData();
 
                 index = weatherData.Keys.Count;
@@ -364,6 +368,8 @@ namespace SimpleWeather.Droid
                 // Check if location already exists
                 if (weatherData.Contains(selected_query))
                 {
+                    // Hide dialog
+                    progDialog.Dismiss();
                     ExitSearchUi();
                     return;
                 }
@@ -373,7 +379,11 @@ namespace SimpleWeather.Droid
                 weather = await WeatherLoaderTask.GetWeather(selected_query);
 
                 if (weather == null)
+                {
+                    // Hide dialog
+                    progDialog.Dismiss();
                     return;
+                }
 
                 // Save coords to List
                 weatherData.Add(selected_query, weather);
@@ -392,6 +402,8 @@ namespace SimpleWeather.Droid
 
                 mAdapter.Add(index, panel);
 
+                // Hide dialog
+                progDialog.Dismiss();
                 ExitSearchUi();
             });
             searchFragment.UserVisibleHint = false;

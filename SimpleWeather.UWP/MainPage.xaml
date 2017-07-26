@@ -338,7 +338,7 @@
                 </TextBox.Header>
             </TextBox>
         </Grid>
-        <ProgressRing x:Name="LoadingRing" HorizontalAlignment="Center" IsActive="True" Margin="20" VerticalAlignment="Center" Height="50" Width="50" Foreground="White"/>
+        <localcontrols:ProgressDialog x:Name="LoadingDialog" />
 
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="HeightStates">

@@ -75,6 +75,10 @@ namespace SimpleWeather.Droid
                 return;
             }
 
+            // Show loading dialog
+            LoadingDialog progDialog = new LoadingDialog(Activity);
+            progDialog.Show();
+
             Pair<int, string> pair;
             
             // Get Weather Data
@@ -83,7 +87,11 @@ namespace SimpleWeather.Droid
             WeatherData.Weather weather = await WeatherData.WeatherLoaderTask.GetWeather(selected_query);
 
             if (weather == null)
+            {
+                // Hide dialog
+                progDialog.Dismiss();
                 return;
+            }
 
             // Save weather data
             if (weatherData.Contains(selected_query))
@@ -99,6 +107,9 @@ namespace SimpleWeather.Droid
             intent.PutExtra("pair", await JSONParser.SerializerAsync(pair, typeof(Pair<int, string>)));
 
             Settings.WeatherLoaded = true;
+            // Hide dialog
+            progDialog.Dismiss();
+
             Activity.StartActivity(intent);
             Activity.FinishAffinity();
         }

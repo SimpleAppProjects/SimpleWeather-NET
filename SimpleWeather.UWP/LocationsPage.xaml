@@ -479,6 +479,8 @@
                 </Button>
             </RelativePanel>
         </ScrollViewer>
+        <localcontrols:ProgressDialog x:Name="LoadingDialog" Grid.RowSpan="3" />
+
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
                 <VisualState x:Name="Mobile">

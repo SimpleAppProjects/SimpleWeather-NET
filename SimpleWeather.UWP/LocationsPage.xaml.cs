@@ -323,12 +323,17 @@ namespace SimpleWeather.UWP
                 return;
             }
 
+            // Show loading dialog
+            LoadingDialog.IsEnabled = true;
+
             OrderedDictionary weatherData = await Settings.GetWeatherData();
             int index = weatherData.Keys.Count;
 
             // Check if location already exists
             if (weatherData.Contains(selected_query))
             {
+                // Hide dialog
+                LoadingDialog.IsEnabled = false;
                 ShowAddLocationsPanel(false);
                 return;
             }
@@ -336,7 +341,11 @@ namespace SimpleWeather.UWP
             Weather weather = await WeatherLoaderTask.GetWeather(selected_query);
 
             if (weather == null)
+            {
+                // Hide dialog
+                LoadingDialog.IsEnabled = false;
                 return;
+            }
 
             // Save coords to List
             weatherData.Add(selected_query, weather);
@@ -358,6 +367,7 @@ namespace SimpleWeather.UWP
             LocationPanels.Add(panelView);
 
             // Hide add locations panel
+            LoadingDialog.IsEnabled = false;
             ShowAddLocationsPanel(false);
 
             sender.IsSuggestionListOpen = false;

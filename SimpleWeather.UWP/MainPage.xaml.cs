@@ -156,6 +156,9 @@ namespace SimpleWeather.UWP
                 return;
             }
 
+            // Show loading dialog
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => LoadingDialog.IsEnabled = true);
+
             KeyValuePair<int, string> pair;
 
             // Weather Data
@@ -164,7 +167,11 @@ namespace SimpleWeather.UWP
             Weather weather = await WeatherLoaderTask.GetWeather(selected_query);
 
             if (weather == null)
+            {
+                // Hide dialog
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => LoadingDialog.IsEnabled = false);
                 return;
+            }
 
             // Save weather data
             if (weatherData.Contains(selected_query))
@@ -176,16 +183,19 @@ namespace SimpleWeather.UWP
             pair = new KeyValuePair<int, string>(App.HomeIdx, selected_query);
 
             Settings.WeatherLoaded = true;
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(Shell), pair));
-            sender.IsSuggestionListOpen = false;
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                // Hide dialog
+                LoadingDialog.IsEnabled = false;
+                sender.IsSuggestionListOpen = false;
+                this.Frame.Navigate(typeof(Shell), pair);
+            });
         }
 
         private async void Restore()
         {
             // Hide UIElements
             SearchGrid.Visibility = Visibility.Collapsed;
-            // Show Loading Ring
-            LoadingRing.IsActive = true;
 
             // Check for key
             if (!String.IsNullOrEmpty(Settings.API_KEY))
@@ -197,7 +207,6 @@ namespace SimpleWeather.UWP
             }
             else
             {
-                LoadingRing.IsActive = false;
                 SearchGrid.Visibility = Visibility.Visible;
                 // Set WUnderground as default API
                 APIComboBox.SelectedIndex = 0;
