@@ -17,6 +17,8 @@ namespace SimpleWeather.WeatherData
         public Astronomy astronomy { get; set; }
         public Precipitation precipitation { get; set; }
         public string ttl { get; set; }
+        public string source { get; set; }
+        public string query { get; set; }
 
         [Newtonsoft.Json.JsonConstructor]
         private Weather()
@@ -38,6 +40,8 @@ namespace SimpleWeather.WeatherData
             atmosphere = new Atmosphere(root.query.results.channel.atmosphere);
             astronomy = new Astronomy(root.query.results.channel.astronomy);
             ttl = root.query.results.channel.ttl;
+
+            source = Settings.API_Yahoo;
         }
 
         public Weather(WeatherUnderground.Rootobject root)
@@ -64,6 +68,8 @@ namespace SimpleWeather.WeatherData
             astronomy = new Astronomy(root.sun_phase);
             precipitation = new Precipitation(root.forecast.simpleforecast.forecastday[0]);
             ttl = "60";
+
+            source = Settings.API_WUnderground;
         }
     }
 

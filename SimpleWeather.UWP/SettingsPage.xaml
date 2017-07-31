@@ -240,6 +240,11 @@
                         <RadioButton x:Name="Fahrenheit" Content="Fahrenheit" Checked="Fahrenheit_Checked"/>
                         <RadioButton x:Name="Celsius" Content="Celsius" Checked="Celsius_Checked"/>
                     </StackPanel>
+                    <TextBlock Text="Location" Style="{StaticResource SubheaderTextBlockStyle}" FontWeight="SemiLight" Padding="0,10" FontSize="24"/>
+                    <TextBlock Text="Follow current location via GPS:" FontSize="18" Padding="10,5" />
+                    <StackPanel Orientation="Horizontal" Padding="10,5">
+                        <ToggleSwitch x:Name="FollowGPS" Toggled="FollowGPS_Toggled"/>
+                    </StackPanel>
                 </StackPanel>
             </PivotItem>
             <PivotItem Header="Credits" Padding="10">

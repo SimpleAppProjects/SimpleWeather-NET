@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
 using SimpleWeather.Utils;
@@ -234,7 +235,7 @@ namespace SimpleWeather.WeatherData
                     System.Diagnostics.Debug.WriteLine(ex.StackTrace);
                 }
 
-                if (weather == null)
+                if (weather == null || weather.query != location_query)
                     return false;
 
                 return true;
@@ -256,7 +257,7 @@ namespace SimpleWeather.WeatherData
                 System.Diagnostics.Debug.WriteLine(ex.StackTrace);
             }
 
-            if (weather == null)
+            if (weather == null || weather.query != location_query)
                 return false;
 
             // Weather data expiration
@@ -274,11 +275,23 @@ namespace SimpleWeather.WeatherData
 
         private async void SaveWeatherData()
         {
+            // Save location query
+            weather.query = location_query;
+
             OrderedDictionary weatherData = await Settings.GetWeatherData();
             if (locationIdx > weatherData.Count - 1)
                 weatherData.Insert(locationIdx, location_query, weather);
             else
-                weatherData[locationIdx] = weather;
+            {
+                if (weatherData.Keys.Cast<string>().ElementAt(locationIdx) != location_query)
+                {
+                    // Update key if it differs
+                    weatherData.RemoveAt(locationIdx);
+                    weatherData.Insert(locationIdx, location_query, weather);
+                }
+                else
+                    weatherData[locationIdx] = weather;
+            }
             Settings.SaveWeatherData();
         }
 
@@ -410,6 +423,8 @@ namespace SimpleWeather.WeatherData
                 Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
 #endif
             }
+            else
+                weather.query = location_query;
 
             return weather;
         }

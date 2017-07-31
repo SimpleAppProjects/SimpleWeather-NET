@@ -79,7 +79,7 @@ namespace SimpleWeather.UWP
                     var results = await AutoCompleteQuery.GetLocations(query);
 
                     // Refresh list
-                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => 
+                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     {
                         LocationQuerys = results;
                         sender.ItemsSource = null;
@@ -219,7 +219,7 @@ namespace SimpleWeather.UWP
             button.IsEnabled = false;
 
             GeolocationAccessStatus geoStatus = await Geolocator.RequestAccessAsync();
-            Geolocator geolocal = new Geolocator();
+            Geolocator geolocal = new Geolocator() { DesiredAccuracyInMeters = 5000, ReportInterval = 900000, MovementThreshold = 2500 };
             Geoposition geoPos = null;
 
             // Setup error just in case
@@ -259,11 +259,12 @@ namespace SimpleWeather.UWP
                     await error.ShowAsync();
                     break;
             }
-            
+
             // Access to location granted
             if (geoPos != null)
             {
                 button.IsEnabled = false;
+                LoadingDialog.IsEnabled = true;
 
                 await Task.Run(async () =>
                 {
@@ -271,20 +272,58 @@ namespace SimpleWeather.UWP
 
                     LocationQueryViewModel view = await GeopositionQuery.getLocation(geoPos);
 
-                    // Refresh list
-                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        LocationQuerys.Clear();
-                        LocationQuerys.Add(view);
-
-                        Location.ItemsSource = null;
-                        Location.ItemsSource = LocationQuerys;
-                        Location.IsSuggestionListOpen = true;
-                    });
+                    if (!String.IsNullOrEmpty(view.LocationQuery))
+                        selected_query = view.LocationQuery;
+                    else
+                        selected_query = string.Empty;
                 });
+
+                if (String.IsNullOrWhiteSpace(selected_query))
+                {
+                    // Stop since there is no valid query
+                    goto exit;
+                }
+
+                // Stop if using WeatherUnderground and API Key is empty
+                if (String.IsNullOrWhiteSpace(Settings.API_KEY) && Settings.API == Settings.API_WUnderground)
+                {
+                    TextBlock header = KeyEntry.Header as TextBlock;
+                    header.Visibility = Visibility.Visible;
+                    KeyEntry.BorderBrush = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Red);
+                    KeyEntry.BorderThickness = new Thickness(2);
+
+                    goto exit;
+                }
+
+                KeyValuePair<int, string> pair;
+
+                // Weather Data
+                OrderedDictionary weatherData = await Settings.GetWeatherData();
+
+                Weather weather = await WeatherLoaderTask.GetWeather(selected_query);
+
+                if (weather == null)
+                    goto exit;
+
+                // Save weather data
+                if (weatherData.Contains(selected_query))
+                    weatherData[selected_query] = weather;
+                else
+                    weatherData.Add(selected_query, weather);
+                Settings.SaveWeatherData();
+
+                pair = new KeyValuePair<int, string>(App.HomeIdx, selected_query);
+
+                Settings.FollowGPS = true;
+                Settings.WeatherLoaded = true;
+                // Hide dialog
+                LoadingDialog.IsEnabled = false;
+                this.Frame.Navigate(typeof(Shell), pair);
             }
 
+            exit:
             button.IsEnabled = true;
+            LoadingDialog.IsEnabled = false;
         }
 
         private void APIComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

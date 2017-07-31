@@ -29,6 +29,7 @@ namespace SimpleWeather.UWP
     {
         private CancellationTokenSource cts = new CancellationTokenSource();
 
+        public ObservableCollection<LocationPanelViewModel> GPSPanelViewModel { get; set; }
         public ObservableCollection<LocationPanelViewModel> LocationPanels { get; set; }
         public ObservableCollection<LocationQueryViewModel> LocationQuerys { get; set; }
         private string selected_query = string.Empty;
@@ -40,8 +41,16 @@ namespace SimpleWeather.UWP
         {
             if (weather != null)
             {
-                LocationPanelViewModel panelView = LocationPanels[locationIdx];
-                panelView.SetWeather(weather);
+                if (locationIdx == App.HomeIdx && Settings.FollowGPS)
+                {
+                    GPSPanelViewModel.First().SetWeather(weather);
+                }
+                else
+                {
+                    int index = Settings.FollowGPS ? locationIdx - 1 : locationIdx;
+                    LocationPanelViewModel panelView = LocationPanels[index];
+                    panelView.SetWeather(weather);
+                }
             }
         }
 
@@ -50,6 +59,7 @@ namespace SimpleWeather.UWP
             this.InitializeComponent();
             this.NavigationCacheMode = NavigationCacheMode.Enabled;
 
+            GPSPanelViewModel = new ObservableCollection<LocationPanelViewModel>() { null };
             LocationPanels = new ObservableCollection<LocationPanelViewModel>();
             LocationPanels.CollectionChanged += LocationPanels_CollectionChanged;
 
@@ -65,7 +75,16 @@ namespace SimpleWeather.UWP
         {
             base.OnNavigatedTo(e);
 
-            if (LocationPanels.Count == 0)
+            if (Settings.FollowGPS)
+                GPSPanel.Visibility = Visibility.Visible;
+            else
+            {
+                GPSPanelViewModel[0] = null;
+                GPSPanel.Visibility = Visibility.Collapsed;
+            }
+
+            if (!Settings.FollowGPS && LocationPanels.Count == 0 ||
+                Settings.FollowGPS && GPSPanelViewModel.First() == null)
             {
                 // New instance; Get locations and load up weather data
                 LoadLocations();
@@ -91,25 +110,31 @@ namespace SimpleWeather.UWP
             foreach(LocationPanelViewModel panelView in LocationPanels)
             {
                 int index = LocationPanels.IndexOf(panelView);
+
+                if (Settings.FollowGPS) index++;
+
                 panelView.Pair = new KeyValuePair<int, string>(index, panelView.Pair.Value);
             }
-
-            // Cancel edit Mode
-            if (EditMode && LocationPanels.Count == 1)
-                ToggleEditMode();
-
-            // Disable EditMode if only single location
-            EditButton.Visibility = LocationPanels.Count == 1 ? Visibility.Collapsed : Visibility.Visible;
 
             // Flag that data has changed
             if (EditMode && (e.Action == NotifyCollectionChangedAction.Remove || e.Action == NotifyCollectionChangedAction.Move))
                 DataChanged = true;
+
+            // Cancel edit Mode
+            // TODO: cleanup code; it looks ugly
+            if (EditMode && (!Settings.FollowGPS && LocationPanels.Count == 1 || Settings.FollowGPS && LocationPanels.Count == 0))
+                ToggleEditMode();
+
+            // Disable EditMode if only single location
+            // TODO: cleanup code; it looks ugly
+            EditButton.Visibility = (!Settings.FollowGPS && LocationPanels.Count == 1 || Settings.FollowGPS && LocationPanels.Count == 0) ? Visibility.Collapsed : Visibility.Visible;
         }
 
         private async void LoadLocations()
         {
             // Lets load it up...
             List<string> locations = await Settings.GetLocations();
+            LocationPanels.Clear();
 
             foreach (string location in locations)
             {
@@ -122,12 +147,18 @@ namespace SimpleWeather.UWP
                 };
 
                 // Set home
-                if (index == App.HomeIdx)
+                if (index == App.HomeIdx && !Settings.FollowGPS)
                     panel.IsHome = true;
                 else
                     panel.IsHome = false;
 
-                LocationPanels.Add(panel);
+                if (index == App.HomeIdx && Settings.FollowGPS)
+                {
+                    panel.IsHome = true;
+                    GPSPanelViewModel[0] = panel;
+                }
+                else
+                    LocationPanels.Add(panel);
             }
 
             WeatherDataLoader wLoader = null;
@@ -143,11 +174,23 @@ namespace SimpleWeather.UWP
 
         private async void RefreshLocations()
         {
-            foreach (LocationPanelViewModel view in LocationPanels)
+            // Reload all panels if needed
+            List<string> locations = await Settings.GetLocations();
+
+            if (!Settings.FollowGPS && locations.Count != LocationPanels.Count ||
+                Settings.FollowGPS && (GPSPanelViewModel.First() == null || locations.Count - 1 != LocationPanels.Count))
             {
-                WeatherDataLoader wLoader =
-                    new WeatherDataLoader(this, view.Pair.Value, view.Pair.Key);
-                await wLoader.LoadWeatherData(false);
+                LocationPanels.Clear();
+                LoadLocations();
+            }
+            else
+            {
+                foreach (LocationPanelViewModel view in GPSPanelViewModel.Concat(LocationPanels))
+                {
+                    WeatherDataLoader wLoader =
+                        new WeatherDataLoader(this, view.Pair.Value, view.Pair.Key);
+                    await wLoader.LoadWeatherData(false);
+                }
             }
         }
 
@@ -156,85 +199,6 @@ namespace SimpleWeather.UWP
             LocationPanelViewModel panel = e.ClickedItem as LocationPanelViewModel;
 
             this.Frame.Navigate(typeof(WeatherNow), panel.Pair);
-        }
-
-        private async void GPS_Click(object sender, RoutedEventArgs e)
-        {
-            Button button = sender as Button;
-            button.IsEnabled = false;
-
-            GeolocationAccessStatus geoStatus = await Geolocator.RequestAccessAsync();
-            Geolocator geolocal = new Geolocator();
-            Geoposition geoPos = null;
-
-            // Setup error just in case
-            MessageDialog error = null;
-
-            switch (geoStatus)
-            {
-                case GeolocationAccessStatus.Allowed:
-                    try
-                    {
-                        geoPos = await geolocal.GetGeopositionAsync();
-                    }
-                    catch (Exception ex)
-                    {
-                        error = new MessageDialog("Unable to retrieve location status", "Location access error");
-                        await error.ShowAsync();
-
-                        System.Diagnostics.Debug.WriteLine(ex.StackTrace);
-                    }
-                    break;
-                case GeolocationAccessStatus.Denied:
-                    error = new MessageDialog("Access to location was denied. Please enable in Settings.", "Location access denied");
-                    error.Commands.Add(new UICommand("Settings", async (command) =>
-                    {
-                        await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:privacy-location"));
-                    }, 0));
-                    error.Commands.Add(new UICommand("Cancel", null, 1));
-                    error.DefaultCommandIndex = 0;
-                    error.CancelCommandIndex = 1;
-                    await error.ShowAsync();
-                    break;
-                case GeolocationAccessStatus.Unspecified:
-                    error = new MessageDialog("Unable to retrieve location status", "Location access error");
-                    await error.ShowAsync();
-                    break;
-            }
-
-            // Access to location granted
-            if (geoPos != null)
-            {
-                button.IsEnabled = false;
-
-                await Task.Run(async () =>
-                {
-                    if (cts.IsCancellationRequested) return;
-
-                    LocationQueryViewModel view = await GeopositionQuery.getLocation(geoPos);
-
-                    // Refresh list
-                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        LocationQuerys.Clear();
-                        LocationQuerys.Add(view);
-
-                        AutoSuggestBox box = null;
-                        DependencyObject parent = button.Parent;
-                        while (!(parent is AutoSuggestBox))
-                        {
-                            parent = VisualTreeHelper.GetParent(parent);
-                        }
-                        box = parent as AutoSuggestBox;
-
-                        box.ItemsSource = null;
-                        box.ItemsSource = LocationQuerys;
-                        box.IsSuggestionListOpen = true;
-                    });
-                });
-            }
-
-            button.IsEnabled = true;
         }
 
         private void Location_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
@@ -361,7 +325,11 @@ namespace SimpleWeather.UWP
 
             // Set properties if necessary
             if (EditMode)
+            {
                 panelView.EditMode = true;
+                if (Settings.FollowGPS)
+                    panelView.HomeBoxVisibility = Visibility.Collapsed;
+            }
 
             // Add to collection
             LocationPanels.Add(panelView);
@@ -412,6 +380,9 @@ namespace SimpleWeather.UWP
             foreach (LocationPanelViewModel view in LocationPanels)
             {
                 view.EditMode = EditMode;
+
+                if (Settings.FollowGPS)
+                    view.HomeBoxVisibility = Visibility.Collapsed;
             }
 
             if (!EditMode && DataChanged) Settings.SaveWeatherData();
@@ -433,9 +404,9 @@ namespace SimpleWeather.UWP
             weatherData.RemoveAt(idx);
 
             // Remove panel
-            LocationPanels.RemoveAt(idx);
+            LocationPanels.RemoveAt(Settings.FollowGPS ? idx - 1 : idx);
 
-            if (idx == App.HomeIdx)
+            if (idx == App.HomeIdx && !Settings.FollowGPS)
                 LocationPanels[App.HomeIdx].IsHome = true;
         }
 
@@ -504,7 +475,7 @@ namespace SimpleWeather.UWP
             MoveData(panel, oldIndex, newIndex);
 
             // Reset home if necessary
-            if (oldIndex == App.HomeIdx || newIndex == App.HomeIdx)
+            if ((oldIndex == App.HomeIdx || newIndex == App.HomeIdx) && !Settings.FollowGPS)
             {
                 foreach (LocationPanelViewModel panelView in LocationPanels)
                 {

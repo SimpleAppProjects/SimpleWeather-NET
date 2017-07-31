@@ -13,6 +13,8 @@ namespace SimpleWeather.Utils
         public static string Unit { get { return GetTempUnit(); } set { SetTempUnit(value); } }
         public static string API { get { return GetAPI(); } set { SetAPI(value); } }
         public static string API_KEY { get { return GetAPIKEY(); } set { SetAPIKEY(value); } }
+        public static bool FollowGPS { get { return UseFollowGPS(); } set { SetFollowGPS(value); } }
+        private static string LastGPSLocation { get { return GetLastGPSLocation(); } set { SetLastGPSLocation(value); } }
 
         // Units
         public const string Fahrenheit = "F";
@@ -24,6 +26,8 @@ namespace SimpleWeather.Utils
         private const string KEY_USECELSIUS = "key_usecelsius";
         private const string KEY_UNITS = "Units";
         private const string KEY_WEATHERLOADED = "weatherLoaded";
+        private const string KEY_FOLLOWGPS = "key_followgps";
+        private const string KEY_LASTGPSLOCATION = "key_lastgpslocation";
 
         // APIs
         public const string API_WUnderground = "WUnderground";
@@ -31,6 +35,7 @@ namespace SimpleWeather.Utils
 
         // Weather Data
         private static OrderedDictionary weatherData = new OrderedDictionary();
+        private static WeatherData.LocationData lastGPSLocData = new WeatherData.LocationData();
         private static bool loaded = false;
 
         static Settings()
@@ -55,6 +60,11 @@ namespace SimpleWeather.Utils
                 return;
 
             weatherData = await JSONParser.DeserializerAsync<OrderedDictionary>(await FileUtils.ReadFile(dataFile));
+
+            if (!String.IsNullOrWhiteSpace(LastGPSLocation))
+            {
+                lastGPSLocData = await JSONParser.DeserializerAsync<WeatherData.LocationData>(LastGPSLocation);
+            }
         }
 
         public static async Task<List<string>> GetLocations()
@@ -69,9 +79,20 @@ namespace SimpleWeather.Utils
             return weatherData;
         }
 
+        public static async Task<WeatherData.LocationData> GetLastGPSLocData()
+        {
+            await LoadIfNeeded();
+            return lastGPSLocData;
+        }
+
         public static void SaveWeatherData()
         {
             JSONParser.Serializer(weatherData, dataFile);
+        }
+
+        public static void SaveLastGPSLocData()
+        {
+            LastGPSLocation = JSONParser.Serializer(lastGPSLocData, typeof(WeatherData.LocationData));
         }
     }
 }

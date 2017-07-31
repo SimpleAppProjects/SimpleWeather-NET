@@ -4,7 +4,9 @@ using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
+using Windows.Devices.Geolocation;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -22,6 +24,9 @@ namespace SimpleWeather.UWP
         WeatherNowViewModel WeatherView { get; set; }
 
         KeyValuePair<int, string> pair;
+
+        Geolocator geolocal = null;
+        Geoposition geoPos = null;
 
         public void OnWeatherLoaded(int locationIdx, Weather weather)
         {
@@ -76,6 +81,8 @@ namespace SimpleWeather.UWP
             TextForecastPanel.Visibility = Visibility.Collapsed;
             HourlyForecastPanel.Visibility = Visibility.Collapsed;
             PrecipitationPanel.Visibility = Visibility.Collapsed;
+
+            geolocal = new Geolocator() { DesiredAccuracyInMeters = 5000, ReportInterval = 900000, MovementThreshold = 2500 };
         }
 
         private void DetailsPanel_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -122,6 +129,7 @@ namespace SimpleWeather.UWP
 
             // Did home change?
             CoreApplication.Properties.TryGetValue("HomeChanged", out object homeChanged);
+            CoreApplication.Properties.Remove("HomeChanged");
 
             // Update view on resume
             // ex. If temperature unit changed
@@ -181,25 +189,151 @@ namespace SimpleWeather.UWP
 
         private async void Restore()
         {
+            bool forceRefresh = false;
+
             if (wLoader == null)
+            {
+                // Clear backstack since we're home
+                Frame.BackStack.Clear();
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+            }
+
+            // GPS Follow location
+            if (Settings.FollowGPS && pair.Key == App.HomeIdx)
+            {
+                LocationData locData = await Settings.GetLastGPSLocData();
+
+                if (locData == null)
+                {
+                    // Update location if not setup
+                    await UpdateLocation();
+                    wLoader = new WeatherDataLoader(this, pair.Value, pair.Key);
+                    forceRefresh = true;
+                }
+                else
+                {
+                    if (await UpdateLocation())
+                    {
+                        // Setup loader from updated location
+                        wLoader = new WeatherDataLoader(this, pair.Value, pair.Key);
+                        forceRefresh = true;
+                    }
+                    else
+                    {
+                        // Setup loader saved location data
+                        wLoader = new WeatherDataLoader(this, locData.query, App.HomeIdx);
+                    }
+                }
+            }
+            // Regular mode
+            else if (wLoader == null)
             {
                 // Weather was loaded before. Lets load it up...
                 List<string> locations = await Settings.GetLocations();
                 string local = locations[App.HomeIdx];
 
                 wLoader = new WeatherDataLoader(this, local, App.HomeIdx);
-
-                // Clear backstack since we're home
-                Frame.BackStack.Clear();
-                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
             }
 
             // Load up weather data
-            RefreshWeather(false);
+            RefreshWeather(forceRefresh);
         }
 
-        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        private async Task<bool> UpdateLocation()
         {
+            bool locationChanged = false;
+
+            if (Settings.FollowGPS && pair.Key == App.HomeIdx)
+            {
+                Geoposition newGeoPos = null;
+
+                try
+                {
+                    newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10));
+                }
+                catch (Exception)
+                {
+                    GeolocationAccessStatus geoStatus = await Geolocator.RequestAccessAsync();
+
+                    if (geoStatus == GeolocationAccessStatus.Allowed)
+                    {
+                        try
+                        {
+                            newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10));
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+                        }
+                    }
+                }
+
+                // Access to location granted
+                if (newGeoPos != null)
+                {
+                    // Check previous location difference
+                    if (geoPos != null && CalculateGeopositionDistance(geoPos, newGeoPos) < geolocal.MovementThreshold)
+                    {
+                        return false;
+                    }
+
+                    LocationData lastGPSLocData = await Settings.GetLastGPSLocData();
+
+                    if (lastGPSLocData.query != null && 
+                        Math.Abs(ConversionMethods.CalculateHaversine(lastGPSLocData.latitude, lastGPSLocData.longitude,
+                        newGeoPos.Coordinate.Point.Position.Latitude, newGeoPos.Coordinate.Point.Position.Longitude)) < geolocal.MovementThreshold)
+                    {
+                        return false;
+                    }
+
+                    string selected_query = string.Empty;
+
+                    await Task.Run(async () =>
+                    {
+                        LocationQueryViewModel view = await GeopositionQuery.getLocation(newGeoPos);
+
+                        if (!String.IsNullOrEmpty(view.LocationQuery))
+                            selected_query = view.LocationQuery;
+                        else
+                            selected_query = string.Empty;
+                    });
+
+                    if (String.IsNullOrWhiteSpace(selected_query))
+                    {
+                        // Stop since there is no valid query
+                        return false;
+                    }
+
+                    // Save location as last known
+                    lastGPSLocData.SetData(selected_query, newGeoPos);
+                    Settings.SaveLastGPSLocData();
+
+                    pair = new KeyValuePair<int, string>(App.HomeIdx, selected_query);
+                    geoPos = newGeoPos;
+                    locationChanged = true;
+                }
+            }
+
+            return locationChanged;
+        }
+
+        private double CalculateGeopositionDistance(Geoposition position1, Geoposition position2)
+        {
+            double lat1 = position1.Coordinate.Point.Position.Latitude;
+            double lon1 = position1.Coordinate.Point.Position.Longitude;
+            double lat2 = position2.Coordinate.Point.Position.Latitude;
+            double lon2 = position2.Coordinate.Point.Position.Longitude;
+
+            /* Returns value in meters */
+            return Math.Abs(ConversionMethods.CalculateHaversine(lat1, lon1, lat2, lon2));
+        }
+
+        private async void RefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (Settings.FollowGPS && await UpdateLocation())
+                // Setup loader from updated location
+                wLoader = new WeatherDataLoader(this, pair.Value, pair.Key);
+
             RefreshWeather(true);
         }
 

@@ -21,6 +21,7 @@ namespace SimpleWeather.Droid.Controls
         private TextView locationTempView;
         private WeatherIcon locationWeatherIcon;
         private ProgressBar progressBar;
+        private ImageButton homeButton;
         private ImageLoader loader = ImageLoader.Instance;
 
         public LocationPanel(Context context) :
@@ -58,6 +59,7 @@ namespace SimpleWeather.Droid.Controls
             locationTempView = viewLayout.FindViewById<TextView>(Resource.Id.weather_temp);
             locationWeatherIcon = viewLayout.FindViewById<WeatherIcon>(Resource.Id.weather_icon);
             progressBar = viewLayout.FindViewById<ProgressBar>(Resource.Id.progressBar);
+            homeButton = viewLayout.FindViewById<ImageButton>(Resource.Id.home_button);
 
             ShowLoading(true);
         }
@@ -74,6 +76,13 @@ namespace SimpleWeather.Droid.Controls
                 locationTempView.Text = panelView.CurrTemp;
                 locationWeatherIcon.Text = panelView.WeatherIcon;
                 Tag = panelView.Pair;
+
+                if (panelView.IsHome)
+                {
+                    homeButton.SetImageDrawable(ContextCompat.GetDrawable(Context, Resource.Drawable.ic_home_fill_white_24dp));
+                    homeButton.Enabled = false;
+                    homeButton.Visibility = ViewStates.Visible;
+                }
 
                 ShowLoading(false);
             });

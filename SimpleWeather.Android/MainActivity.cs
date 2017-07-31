@@ -20,6 +20,9 @@ namespace SimpleWeather.Droid
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.activity_main);
 
+            // Reset settings
+            App.Preferences.Edit().Remove("HomeChanged").Apply();
+
             // Create your application here
             Toolbar toolbar = FindViewById<Toolbar>(Resource.Id.toolbar);
             SetSupportActionBar(toolbar);

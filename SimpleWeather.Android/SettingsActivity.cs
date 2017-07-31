@@ -1,4 +1,4 @@
-﻿
+﻿using System;
 using Android.Content;
 using Android.OS;
 using Android.Content.Res;
@@ -8,6 +8,11 @@ using Android.Support.V4.App;
 using Android.Preferences;
 using Android.Webkit;
 using Android.Util;
+using Android.Support.V4.Content;
+using Android;
+using Android.Content.PM;
+using Android.Runtime;
+using Android.Widget;
 
 namespace SimpleWeather.Droid
 {
@@ -90,8 +95,14 @@ namespace SimpleWeather.Droid
 
         public class SettingsFragment : PreferenceFragment
         {
+            private const int PERMISSION_LOCATION_REQUEST_CODE = 0;
+
             // Preference Keys
             private static string KEY_ABOUTAPP = "key_aboutapp";
+            private static string KEY_FOLLOWGPS = "key_followgps";
+
+            // Preferences
+            private SwitchPreference followGps;
 
             public override void OnCreate(Bundle savedInstanceState)
             {
@@ -107,6 +118,53 @@ namespace SimpleWeather.Droid
                             .AddToBackStack(null)
                             .Commit();
                 };
+
+                followGps = (SwitchPreference)FindPreference(KEY_FOLLOWGPS);
+                followGps.PreferenceChange += (object sender, Preference.PreferenceChangeEventArgs e) =>
+                {
+                    SwitchPreference pref = e.Preference as SwitchPreference;
+                    if ((bool)e.NewValue)
+                    {
+                        if (ContextCompat.CheckSelfPermission(Activity, Manifest.Permission.AccessFineLocation) != Permission.Granted &&
+                            ContextCompat.CheckSelfPermission(Activity, Manifest.Permission.AccessCoarseLocation) != Permission.Granted)
+                        {
+                            RequestPermissions(new String[] { Manifest.Permission.AccessCoarseLocation, Manifest.Permission.AccessFineLocation },
+                                    PERMISSION_LOCATION_REQUEST_CODE);
+                            return;
+                        }
+                        else
+                        {
+                            App.Preferences.Edit().PutBoolean("HomeChanged", true).Apply();
+                        }
+                    }
+                };
+            }
+
+            public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
+            {
+                switch (requestCode)
+                {
+                    case PERMISSION_LOCATION_REQUEST_CODE:
+                        {
+                            // If request is cancelled, the result arrays are empty.
+                            if (grantResults.Length > 0
+                                    && grantResults[0] == Permission.Granted)
+                            {
+                                // permission was granted, yay!
+                                // Do the task you need to do.
+                                App.Preferences.Edit().PutBoolean("HomeChanged", true).Apply();
+                            }
+                            else
+                            {
+                                // permission denied, boo! Disable the
+                                // functionality that depends on this permission.
+                                Toast.MakeText(Activity, "Location access denied", ToastLength.Short).Show();
+                                followGps.Checked = false;
+                                Console.WriteLine(SimpleWeather.Utils.Settings.FollowGPS);
+                            }
+                            return;
+                        }
+                }
             }
 
             public override void OnResume()

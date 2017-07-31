@@ -22,11 +22,46 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:id="@+id/gps_follow_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/label_currentlocation"
+                    android:textAppearance="@android:style/TextAppearance.Material.Widget.TextView"
+                    android:textSize="18sp" />
+
+                <SimpleWeather.Droid.Controls.LocationPanel
+                    android:id="@+id/gps_panel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/favorite_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:text="@string/label_favoritelocations"
+                android:textAppearance="@android:style/TextAppearance.Material.Widget.TextView"
+                android:textSize="18sp"
+                android:layout_below="@+id/gps_follow_layout"/>
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/locations_container"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_above="@+id/locations_add"
+                android:layout_below="@+id/favorite_label"
                 android:orientation="vertical" />
 
             <android.support.design.widget.FloatingActionButton

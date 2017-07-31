@@ -115,53 +115,9 @@
                                         </Setter.Value>
                                     </Setter>
                                 </Style>
-                                <Style x:Name="GPSButtonStyle" TargetType="Button">
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="Button">
-                                                <Grid x:Name="ButtonLayoutGrid" BorderBrush="{ThemeResource TextBoxButtonBorderThemeBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{ThemeResource TextBoxButtonBackgroundThemeBrush}">
-                                                    <VisualStateManager.VisualStateGroups>
-                                                        <VisualStateGroup x:Name="CommonStates">
-                                                            <VisualState x:Name="Normal"/>
-                                                            <VisualState x:Name="PointerOver">
-                                                                <Storyboard>
-                                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="BorderElement">
-                                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightAccentBrush}"/>
-                                                                    </ObjectAnimationUsingKeyFrames>
-                                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentPresenter">
-                                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightAltChromeWhiteBrush}"/>
-                                                                    </ObjectAnimationUsingKeyFrames>
-                                                                </Storyboard>
-                                                            </VisualState>
-                                                            <VisualState x:Name="Pressed">
-                                                                <Storyboard>
-                                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="BorderElement">
-                                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightListAccentHighBrush}"/>
-                                                                    </ObjectAnimationUsingKeyFrames>
-                                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentPresenter">
-                                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightAltChromeWhiteBrush}"/>
-                                                                    </ObjectAnimationUsingKeyFrames>
-                                                                </Storyboard>
-                                                            </VisualState>
-                                                            <VisualState x:Name="Disabled">
-                                                                <Storyboard>
-                                                                    <DoubleAnimation Duration="0" To="50" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="BorderElement"/>
-                                                                </Storyboard>
-                                                            </VisualState>
-                                                        </VisualStateGroup>
-                                                    </VisualStateManager.VisualStateGroups>
-                                                    <Border x:Name="BorderElement" BorderBrush="{ThemeResource TextBoxButtonBorderThemeBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{ThemeResource TextBoxButtonBackgroundThemeBrush}">
-                                                        <ContentPresenter x:Name="ContentPresenter" AutomationProperties.AccessibilityView="Raw" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" Content="&#xE7B7;" FontFamily="Segoe MDL2 Assets" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                                                    </Border>
-                                                </Grid>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
                             </Grid.Resources>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
@@ -245,15 +201,13 @@
                                     <VisualState x:Name="ButtonCollapsed"/>
                                 </VisualStateGroup>
                             </VisualStateManager.VisualStateGroups>
-                            <Border x:Name="BackgroundElement" Background="{TemplateBinding Background}" Grid.ColumnSpan="4" Margin="{TemplateBinding BorderThickness}" Opacity="{ThemeResource TextControlBackgroundRestOpacity}" Grid.Row="1" Grid.RowSpan="1"/>
-                            <Border x:Name="BorderElement" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Grid.ColumnSpan="4" Grid.Row="1" Grid.RowSpan="1"/>
-                            <ContentPresenter x:Name="HeaderContentPresenter" Grid.ColumnSpan="4" ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}" FontWeight="Normal" Margin="0,0,0,8" Grid.Row="0" TextWrapping="Wrap" Visibility="Collapsed" x:DeferLoadStrategy="Lazy"/>
+                            <Border x:Name="BackgroundElement" Background="{TemplateBinding Background}" Grid.ColumnSpan="3" Margin="{TemplateBinding BorderThickness}" Opacity="{ThemeResource TextControlBackgroundRestOpacity}" Grid.Row="1" Grid.RowSpan="1"/>
+                            <Border x:Name="BorderElement" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Grid.ColumnSpan="3" Grid.Row="1" Grid.RowSpan="1"/>
+                            <ContentPresenter x:Name="HeaderContentPresenter" Grid.ColumnSpan="3" ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}" FontWeight="Normal" Margin="0,0,0,8" Grid.Row="0" TextWrapping="Wrap" Visibility="Collapsed" x:DeferLoadStrategy="Lazy"/>
                             <ScrollViewer x:Name="ContentElement" AutomationProperties.AccessibilityView="Raw" HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" IsTabStop="False" IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}" IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}" IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}" Margin="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" Grid.Row="1" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}" VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}" ZoomMode="Disabled"/>
-                            <ContentControl x:Name="PlaceholderTextContentPresenter" Grid.ColumnSpan="4" Content="{TemplateBinding PlaceholderText}" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" IsHitTestVisible="False" IsTabStop="False" Margin="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" Grid.Row="1"/>
+                            <ContentControl x:Name="PlaceholderTextContentPresenter" Grid.ColumnSpan="3" Content="{TemplateBinding PlaceholderText}" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" IsHitTestVisible="False" IsTabStop="False" Margin="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" Grid.Row="1"/>
                             <Button x:Name="DeleteButton" BorderThickness="{TemplateBinding BorderThickness}" Grid.Column="1" FontSize="{TemplateBinding FontSize}" IsTabStop="False" Margin="{ThemeResource HelperButtonThemePadding}" MinWidth="34" Grid.Row="1" Style="{StaticResource DeleteButtonStyle}" Visibility="Collapsed" VerticalAlignment="Stretch"/>
-                            <Button x:Name="GPSButton" BorderThickness="{TemplateBinding BorderThickness}" Grid.Column="2" FontSize="{TemplateBinding FontSize}" IsTabStop="False" Margin="{ThemeResource HelperButtonThemePadding}" MinWidth="34" Grid.Row="1" Style="{StaticResource GPSButtonStyle}" Visibility="Visible" VerticalAlignment="Stretch"
-                                Click="GPS_Click" ToolTipService.ToolTip="Find Location via GPS"/>
-                            <Button x:Name="QueryButton" BorderThickness="{TemplateBinding BorderThickness}" Grid.Column="3" FontSize="{TemplateBinding FontSize}" IsTabStop="False" Margin="{ThemeResource HelperButtonThemePadding}" MinWidth="34" Grid.Row="1" Style="{StaticResource QueryButtonStyle}" VerticalAlignment="Stretch"/>
+                            <Button x:Name="QueryButton" BorderThickness="{TemplateBinding BorderThickness}" Grid.Column="2" FontSize="{TemplateBinding FontSize}" IsTabStop="False" Margin="{ThemeResource HelperButtonThemePadding}" MinWidth="34" Grid.Row="1" Style="{StaticResource QueryButtonStyle}" VerticalAlignment="Stretch"/>
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
@@ -373,16 +327,59 @@
         </CommandBar>
 
         <ScrollViewer Grid.Row="1" RequestedTheme="Light" Name="theGrid" HorizontalScrollMode="Disabled" VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto">
-            <RelativePanel>
+            <StackPanel>
+                <Grid x:Name="GPSPanel" Visibility="Collapsed">
+                    <ListView x:Name="GPSLocationsPanel" SelectionMode="None" IsItemClickEnabled="True"
+                              Header="Current Location"
+                              ItemsSource="{x:Bind GPSPanelViewModel}"
+                              ItemClick="LocationsPanel_ItemClick"
+                              IsSwipeEnabled="False" AllowDrop="False"
+                              CanReorderItems="False" CanDragItems="False"
+                              HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                        <ListView.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" Margin="10,5" />
+                            </DataTemplate>
+                        </ListView.HeaderTemplate>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="controls:LocationPanelViewModel">
+                                <UserControl>
+                                    <Grid Margin="5">
+                                        <localcontrols:LocationPanel IsEnabled="False"/>
+                                        <Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Column="0"
+                                                Padding="5"
+                                                Visibility="{Binding HomeBoxVisibility}"
+                                                IsEnabled="False"
+                                                Style="{StaticResource HomeButtonStyle}">
+                                            <Grid>
+                                                <FontIcon Glyph="&#xEA8A;" Foreground="White" Visibility="{Binding IsHome, Converter={StaticResource booleanToVisibilityConverter}}" />
+                                            </Grid>
+                                        </Button>
+                                    </Grid>
+                                </UserControl>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                    </ListView>
+                </Grid>
                 <ListView x:Name="LocationsPanel" SelectionMode="None" IsItemClickEnabled="True"
+                          Header="Favorite Locations"
                           ItemsSource="{x:Bind LocationPanels}"
                           ItemClick="LocationsPanel_ItemClick"
                           IsSwipeEnabled="False" AllowDrop="True"
                           CanReorderItems="True" CanDragItems="True"
                           DragItemsStarting="LocationsPanel_DragItemsStarting"
                           DragItemsCompleted="LocationsPanel_DragItemsCompleted"
-                          HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
-                          RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True">
+                          HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                    <ListView.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" Margin="10,5" />
+                        </DataTemplate>
+                    </ListView.HeaderTemplate>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="controls:LocationPanelViewModel">
                             <UserControl>
@@ -442,8 +439,7 @@
                         </Style>
                     </ListView.ItemContainerStyle>
                 </ListView>
-                <Grid x:Name="AddLocationPanel" Margin="10,0" Padding="0,5" Visibility="Collapsed"
-                            RelativePanel.Below="LocationsPanel" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True">
+                <Grid x:Name="AddLocationPanel" Margin="10,0" Padding="0,5" Visibility="Collapsed">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
@@ -464,8 +460,7 @@
                     </AutoSuggestBox>
                     <Button x:Name="Cancel" Content="Cancel" Width="75" Click="Cancel_Click" Grid.Column="1"/>
                 </Grid>
-                <Button x:Name="AddLocationsButton" HorizontalAlignment="Stretch" Margin="10,5" Height="35" Click="AddLocationsButton_Click"
-                        RelativePanel.Below="AddLocationPanel" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True">
+                <Button x:Name="AddLocationsButton" HorizontalAlignment="Stretch" Margin="10,5" Height="35" Click="AddLocationsButton_Click">
                     <Grid Width="Auto">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -477,7 +472,7 @@
                         <TextBlock Text="Add Location" VerticalAlignment="Center" Padding="5" Grid.Column="1" />
                     </Grid>
                 </Button>
-            </RelativePanel>
+            </StackPanel>
         </ScrollViewer>
         <localcontrols:ProgressDialog x:Name="LoadingDialog" Grid.RowSpan="3" />
 

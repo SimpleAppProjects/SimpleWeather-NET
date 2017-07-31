@@ -9,6 +9,12 @@
             android:summaryOn="@string/pref_summary_celsius"
             android:title="@string/pref_title_units" />
 
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="key_followgps"
+            android:summary="@string/pref_summary_currentlocation"
+            android:title="@string/label_currentlocation" />
+
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_title_about">
 

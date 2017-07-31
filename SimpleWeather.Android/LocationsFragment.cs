@@ -45,9 +45,13 @@ namespace SimpleWeather.Droid
         private View searchViewLayout;
         private EditText searchView;
         private ImageView clearButtonView;
-        private ImageView locationButtonView;
         private bool inSearchUI;
         private String selected_query = string.Empty;
+
+        // GPS Location
+        View gpsPanelLayout;
+        LocationPanel gpsPanel;
+        LocationPanelViewModel gpsPanelViewModel;
 
         private ActionModeCallback mActionModeCallback = new ActionModeCallback();
 
@@ -65,10 +69,19 @@ namespace SimpleWeather.Droid
         {
             if (weather != null)
             {
-                // Update panel weather
-                LocationPanelViewModel panel = mAdapter.Dataset[locationIdx];
-                panel.SetWeather(weather);
-                mAdapter.NotifyItemChanged(locationIdx);
+                if (locationIdx == App.HomeIdx && Settings.FollowGPS)
+                {
+                    gpsPanelViewModel.SetWeather(weather);
+                    gpsPanel.SetWeather(gpsPanelViewModel);
+                }
+                else
+                {
+                    // Update panel weather
+                    int index = Settings.FollowGPS ? locationIdx - 1 : locationIdx;
+                    LocationPanelViewModel panel = mAdapter.Dataset[index];
+                    panel.SetWeather(weather);
+                    mAdapter.NotifyItemChanged(index);
+                }
             }
         }
 
@@ -168,6 +181,9 @@ namespace SimpleWeather.Droid
                 mActionMode = AppCompatActivity.StartSupportActionMode(mActionModeCallback);
             };
 
+            gpsPanelLayout = view.FindViewById(Resource.Id.gps_follow_layout);
+            gpsPanel = view.FindViewById<LocationPanel>(Resource.Id.gps_panel);
+
             // use this setting to improve performance if you know that changes
             // in content do not change the layout size of the RecyclerView
             mRecyclerView.HasFixedSize = false;
@@ -190,7 +206,6 @@ namespace SimpleWeather.Droid
             mITHCallback.SetItemViewSwipeEnabled(false);
 
             Loaded = true;
-            Activity.RunOnUiThread(async () => await LoadLocations());
 
             return view;
         }
@@ -204,7 +219,7 @@ namespace SimpleWeather.Droid
 
             IMenuItem editMenuBtn = optionsMenu.FindItem(Resource.Id.action_editmode);
             if (editMenuBtn != null)
-                editMenuBtn.SetVisible(mAdapter.Dataset.Count != 1);
+                editMenuBtn.SetVisible(!(!Settings.FollowGPS && mAdapter.ItemCount == 1 || Settings.FollowGPS && mAdapter.ItemCount == 0));
         }
 
         public override bool OnOptionsItemSelected(IMenuItem item)
@@ -224,14 +239,31 @@ namespace SimpleWeather.Droid
             return base.OnOptionsItemSelected(item);
         }
 
-        public override void OnResume()
+        public override async void OnResume()
         {
             base.OnResume();
 
             // Update view on resume
             // ex. If temperature unit changed
-            if (!Loaded)
+            if (Settings.FollowGPS)
             {
+                gpsPanelLayout.Visibility = ViewStates.Visible;
+            }
+            else
+            {
+                gpsPanelViewModel = null;
+                gpsPanelLayout.Visibility = ViewStates.Gone;
+            }
+
+            if (!Settings.FollowGPS && mAdapter.ItemCount == 0 ||
+                Settings.FollowGPS && gpsPanelViewModel == null)
+            {
+                // New instance; Get locations and load up weather data
+                await LoadLocations();
+            }
+            else if (!Loaded)
+            {
+                // Refresh view
                 RefreshLocations();
                 Loaded = true;
             }
@@ -263,6 +295,7 @@ namespace SimpleWeather.Droid
             WeatherDataLoader wLoader = null;
 
             List<String> locations = await Settings.GetLocations();
+            mAdapter.RemoveAll();
 
             foreach (String location in locations)
             {
@@ -274,12 +307,18 @@ namespace SimpleWeather.Droid
                 };
 
                 // Set home
-                if (index == App.HomeIdx)
+                if (index == App.HomeIdx && !Settings.FollowGPS)
                     panel.IsHome = true;
                 else
                     panel.IsHome = false;
 
-                mAdapter.Add(index, panel);
+                if (index == App.HomeIdx && Settings.FollowGPS)
+                {
+                    panel.IsHome = true;
+                    gpsPanelViewModel = panel;
+                }
+                else
+                    mAdapter.Add(Settings.FollowGPS ? index - 1 : index, panel);
 
                 wLoader = new WeatherDataLoader(this, location, index);
                 await wLoader.LoadWeatherData(false);
@@ -288,11 +327,27 @@ namespace SimpleWeather.Droid
 
         private async void RefreshLocations()
         {
-            foreach (LocationPanelViewModel view in mAdapter.Dataset)
+            // Reload all panels if needed
+            List<string> locations = await Settings.GetLocations();
+
+            if (!Settings.FollowGPS && locations.Count != mAdapter.ItemCount ||
+                Settings.FollowGPS && (gpsPanelViewModel == null || locations.Count - 1 != mAdapter.ItemCount))
             {
-                WeatherDataLoader wLoader =
-                    new WeatherDataLoader(this, view.Pair.Value, view.Pair.Key);
-                await wLoader.LoadWeatherData(false);
+                mAdapter.RemoveAll();
+                await LoadLocations();
+            }
+            else
+            {
+                List<LocationPanelViewModel> dataset = mAdapter.Dataset;
+                if (gpsPanelViewModel != null)
+                    dataset.Append(gpsPanelViewModel);
+
+                foreach (LocationPanelViewModel view in dataset)
+                {
+                    WeatherDataLoader wLoader =
+                        new WeatherDataLoader(this, view.Pair.Value, view.Pair.Key);
+                    await wLoader.LoadWeatherData(false);
+                }
             }
         }
 
@@ -400,7 +455,7 @@ namespace SimpleWeather.Droid
                 if (EditMode)
                     panel.EditMode = true;
 
-                mAdapter.Add(index, panel);
+                mAdapter.Add(Settings.FollowGPS ? index - 1 : index, panel);
 
                 // Hide dialog
                 progDialog.Dismiss();
@@ -415,7 +470,6 @@ namespace SimpleWeather.Droid
         {
             searchView = searchViewLayout.FindViewById<EditText>(Resource.Id.search_view);
             clearButtonView = searchViewLayout.FindViewById<ImageView>(Resource.Id.search_close_button);
-            locationButtonView = searchViewLayout.FindViewById<ImageView>(Resource.Id.search_location_button);
             clearButtonView.Click += delegate { searchView.Text = String.Empty; };
             searchView.TextChanged += (object sender, TextChangedEventArgs e) =>
             {
@@ -450,7 +504,6 @@ namespace SimpleWeather.Droid
                 }
                 e.Handled = false;
             };
-            locationButtonView.Click += delegate { mSearchFragment.FetchGeoLocation(); };
         }
 
         private void ExitSearchUi()
@@ -497,11 +550,19 @@ namespace SimpleWeather.Droid
             foreach (LocationPanelViewModel panelView in mAdapter.Dataset)
             {
                 int index = mAdapter.Dataset.IndexOf(panelView);
+
+                if (Settings.FollowGPS) index++;
+
                 panelView.Pair = new Pair<int, string>(index, panelView.Pair.Value);
             }
 
+            // Flag that data has changed
+            if (EditMode && (e.Action == NotifyCollectionChangedAction.Remove || e.Action == NotifyCollectionChangedAction.Move))
+                DataChanged = true;
+
             // Cancel edit Mode
-            if (EditMode && mAdapter.Dataset.Count == 1)
+            // TODO: cleanup code; it looks ugly
+            if (EditMode && (!Settings.FollowGPS && mAdapter.ItemCount == 1 || Settings.FollowGPS && mAdapter.ItemCount == 0))
                 ToggleEditMode();
 
             // Disable EditMode if only single location
@@ -509,17 +570,13 @@ namespace SimpleWeather.Droid
             {
                 IMenuItem editMenuBtn = optionsMenu.FindItem(Resource.Id.action_editmode);
                 if (editMenuBtn != null)
-                    editMenuBtn.SetVisible(mAdapter.Dataset.Count != 1);
+                    editMenuBtn.SetVisible(!(!Settings.FollowGPS && mAdapter.ItemCount == 1 || Settings.FollowGPS && mAdapter.ItemCount == 0));
             }
-
-            // Flag that data has changed
-            if (EditMode && (e.Action == NotifyCollectionChangedAction.Remove || e.Action == NotifyCollectionChangedAction.Move))
-                DataChanged = true;
         }
 
         private void OnPanelLongClick(object sender, RecyclerClickEventArgs e)
         {
-            if (!EditMode && mAdapter.Dataset.Count > 1) ToggleEditMode();
+            if (!EditMode && mAdapter.ItemCount > 1) ToggleEditMode();
         }
 
         private void ToggleEditMode()

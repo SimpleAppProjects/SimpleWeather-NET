@@ -21,6 +21,11 @@ using Android.Support.V4.Content;
 using Android.Content.Res;
 using Android.Support.V4.View;
 using Android.Support.Design.Widget;
+using SimpleWeather.Droid.Helpers;
+using Android.Runtime;
+using Android.Content.PM;
+using Android;
+using Android.Locations;
 
 namespace SimpleWeather.Droid
 {
@@ -74,6 +79,11 @@ namespace SimpleWeather.Droid
         private TextView navWeatherTemp;
         // Weather Credit
         private TextView weatherCredit;
+
+        // GPS location
+        private Android.Locations.Location mLocation;
+        private LocationListener mLocListnr;
+        private const int PERMISSION_LOCATION_REQUEST_CODE = 0;
 
         private ImageLoader loader = ImageLoader.Instance;
 
@@ -141,6 +151,13 @@ namespace SimpleWeather.Droid
             }
 
             context = Activity.ApplicationContext;
+            mLocListnr = new LocationListener();
+            mLocListnr.LocationChanged += async (Android.Locations.Location location) =>
+            {
+                if (Settings.FollowGPS && await UpdateLocation())
+                    // Setup loader from updated location
+                    wLoader = new WeatherDataLoader(this, pair.Value, pair.Key);
+            };
             loaded = true;
         }
 
@@ -194,7 +211,17 @@ namespace SimpleWeather.Droid
 
             // SwipeRefresh
             refreshLayout.SetColorSchemeColors(ContextCompat.GetColor(Activity, Resource.Color.colorPrimary));
-            refreshLayout.Refresh += delegate { Task.Run(() => RefreshWeather(true)); };
+            refreshLayout.Refresh += delegate
+            {
+                Task.Run(async () =>
+                {
+                    if (Settings.FollowGPS && await UpdateLocation())
+                        // Setup loader from updated location
+                        wLoader = new WeatherDataLoader(this, pair.Value, pair.Key);
+
+                    await RefreshWeather(true);
+                });
+            };
 
             // Nav Header View
             navheader = Activity.FindViewById<NavigationView>(Resource.Id.nav_view).GetHeaderView(0);
@@ -205,7 +232,6 @@ namespace SimpleWeather.Droid
 
             loaded = true;
             refreshLayout.Refreshing = true;
-            Task.Run(Restore);
 
             return view;
         }
@@ -270,13 +296,23 @@ namespace SimpleWeather.Droid
             menu.Clear();
         }
 
-        public override void OnResume()
+        public override async void OnResume()
         {
             base.OnResume();
 
             // Update view on resume
             // ex. If temperature unit changed
-            if (wLoader != null && !loaded)
+            bool homeChanged = App.Preferences.GetBoolean("HomeChanged", false);
+            App.Preferences.Edit().Remove("HomeChanged").Apply();
+
+            // New Page = loaded - true
+            // Navigating back to frag = !loaded - false
+            if (loaded || homeChanged)
+            {
+                await Restore();
+                loaded = true;
+            }
+            else if (wLoader != null && !loaded)
             {
                 if (wLoader.GetWeather() != null)
                 {
@@ -308,7 +344,36 @@ namespace SimpleWeather.Droid
 
         private async Task Restore()
         {
-            if (wLoader == null)
+            bool forceRefresh = false;
+
+            // GPS Follow location
+            if (Settings.FollowGPS && (pair == null || pair.Key == App.HomeIdx))
+            {
+                LocationData locData = await Settings.GetLastGPSLocData();
+
+                if (locData == null)
+                {
+                    // Update location if not setup
+                    await UpdateLocation();
+                    wLoader = new WeatherDataLoader(this, pair.Value, pair.Key);
+                    forceRefresh = true;
+                }
+                else
+                {
+                    if (await UpdateLocation())
+                    {
+                        // Setup loader from updated location
+                        wLoader = new WeatherDataLoader(this, pair.Value, pair.Key);
+                        forceRefresh = true;
+                    }
+                    else
+                    {
+                        // Setup loader saved location data
+                        wLoader = new WeatherDataLoader(this, locData.query, App.HomeIdx);
+                    }
+                }
+            }
+            else if (wLoader == null)
             {
                 // Weather was loaded before. Lets load it up...
                 List<string> locations = await Settings.GetLocations();
@@ -318,11 +383,12 @@ namespace SimpleWeather.Droid
             }
 
             // Load up weather data
-            await RefreshWeather(false);
+            await RefreshWeather(forceRefresh);
         }
 
         private async Task RefreshWeather(bool forceRefresh)
         {
+            refreshLayout.Refreshing = true;
             await wLoader.LoadWeatherData(forceRefresh);
         }
 
@@ -441,6 +507,124 @@ namespace SimpleWeather.Droid
             loader.DisplayImage(weatherView.Background, new CustomViewAware(navheader), ImageUtils.CenterCropConfig(navheader.Width, navheader.Height));
             navLocation.Text = weatherView.Location;
             navWeatherTemp.Text = weatherView.CurTemp;
+        }
+
+        private async Task<bool> UpdateLocation()
+        {
+            bool locationChanged = false;
+
+            if (Settings.FollowGPS && (pair == null || pair.Key == App.HomeIdx))
+            {
+                if (ContextCompat.CheckSelfPermission(Activity, Manifest.Permission.AccessFineLocation) != Permission.Granted &&
+                    ContextCompat.CheckSelfPermission(Activity, Manifest.Permission.AccessCoarseLocation) != Permission.Granted)
+                {
+                    RequestPermissions(new String[] { Manifest.Permission.AccessCoarseLocation, Manifest.Permission.AccessFineLocation },
+                            PERMISSION_LOCATION_REQUEST_CODE);
+                    return false;
+                }
+
+                LocationManager locMan = (LocationManager)Activity.GetSystemService(Context.LocationService);
+                bool isGPSEnabled = locMan.IsProviderEnabled(LocationManager.GpsProvider);
+                bool isNetEnabled = locMan.IsProviderEnabled(LocationManager.NetworkProvider);
+
+                Android.Locations.Location location = null;
+
+                if (isGPSEnabled || isNetEnabled)
+                {
+                    Criteria locCriteria = new Criteria() { Accuracy = Accuracy.Coarse, CostAllowed = false, PowerRequirement = Power.Low };
+                    string provider = locMan.GetBestProvider(locCriteria, true);
+                    location = locMan.GetLastKnownLocation(provider);
+
+                    if (location == null)
+                        locMan.RequestSingleUpdate(provider, mLocListnr, null);
+                    else
+                    {
+                        if (mLocation != null && CalculateGeopositionDistance(mLocation, location) < 2500)
+                        {
+                            return false;
+                        }
+
+                        LocationData lastGPSLocData = await Settings.GetLastGPSLocData();
+
+                        if (lastGPSLocData.query != null &&
+                            Math.Abs(ConversionMethods.CalculateHaversine(lastGPSLocData.latitude, lastGPSLocData.longitude,
+                            location.Latitude, location.Longitude)) < 2500)
+                        {
+                            return false;
+                        }
+
+                        string selected_query = string.Empty;
+
+                        await Task.Run(async () =>
+                        {
+                            LocationQueryViewModel view = await GeopositionQuery.GetLocation(location);
+
+                            if (!String.IsNullOrEmpty(view.LocationQuery))
+                                selected_query = view.LocationQuery;
+                            else
+                                selected_query = string.Empty;
+                        });
+
+                        if (String.IsNullOrWhiteSpace(selected_query))
+                        {
+                            // Stop since there is no valid query
+                            return false;
+                        }
+
+                        // Save location as last known
+                        lastGPSLocData.SetData(selected_query, location);
+                        Settings.SaveLastGPSLocData();
+
+                        pair = new Pair<int, string>(App.HomeIdx, selected_query);
+                        mLocation = location;
+                        locationChanged = true;
+                    }
+                }
+                else
+                {
+                    Toast.MakeText(Activity, "Unable to get location", ToastLength.Short).Show();
+                }
+            }
+
+            return locationChanged;
+        }
+
+        public override async void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
+        {
+            switch (requestCode)
+            {
+                case PERMISSION_LOCATION_REQUEST_CODE:
+                    {
+                        // If request is cancelled, the result arrays are empty.
+                        if (grantResults.Length > 0
+                                && grantResults[0] == Permission.Granted)
+                        {
+
+                            // permission was granted, yay!
+                            // Do the task you need to do.
+                            //FetchGeoLocation();
+                            await UpdateLocation();
+                        }
+                        else
+                        {
+                            // permission denied, boo! Disable the
+                            // functionality that depends on this permission.
+                            Toast.MakeText(Activity, "Location access denied", ToastLength.Short).Show();
+                        }
+                        return;
+                    }
+            }
+        }
+
+        private double CalculateGeopositionDistance(Android.Locations.Location position1, Android.Locations.Location position2)
+        {
+            double lat1 = position1.Latitude;
+            double lon1 = position1.Longitude;
+            double lat2 = position2.Latitude;
+            double lon2 = position2.Longitude;
+
+            /* Returns value in meters */
+            return Math.Abs(ConversionMethods.CalculateHaversine(lat1, lon1, lat2, lon2));
         }
     }
 }

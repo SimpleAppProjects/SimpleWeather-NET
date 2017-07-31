@@ -140,5 +140,34 @@ namespace SimpleWeather.Utils
                 localSettings.Values[KEY_APIKEY] = API_KEY;
         }
         #endregion
+
+        private static bool UseFollowGPS()
+        {
+            if (!localSettings.Values.ContainsKey(KEY_FOLLOWGPS) || localSettings.Values[KEY_FOLLOWGPS] == null)
+            {
+                SetFollowGPS(false);
+                return false;
+            }
+            else
+                return (bool)localSettings.Values[KEY_FOLLOWGPS];
+        }
+
+        private static void SetFollowGPS(bool value)
+        {
+            localSettings.Values[KEY_FOLLOWGPS] = value;
+        }
+
+        private static string GetLastGPSLocation()
+        {
+            if (!localSettings.Values.ContainsKey(KEY_LASTGPSLOCATION) || localSettings.Values[KEY_LASTGPSLOCATION] == null)
+                return null;
+            else
+                return (string)localSettings.Values[KEY_LASTGPSLOCATION];
+        }
+
+        private static void SetLastGPSLocation(string value)
+        {
+            localSettings.Values[KEY_LASTGPSLOCATION] = value;
+        }
     }
 }

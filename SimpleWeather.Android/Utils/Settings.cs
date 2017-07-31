@@ -146,5 +146,33 @@ namespace SimpleWeather.Utils
             editor.Commit();
         }
         #endregion
+
+        private static bool UseFollowGPS()
+        {
+            if (!preferences.Contains(KEY_FOLLOWGPS))
+            {
+                SetFollowGPS(false);
+                return false;
+            }
+            else
+                return preferences.GetBoolean(KEY_FOLLOWGPS, false);
+        }
+
+        private static void SetFollowGPS(bool value)
+        {
+            editor.PutBoolean(KEY_FOLLOWGPS, value);
+            editor.Commit();
+        }
+
+        private static string GetLastGPSLocation()
+        {
+            return preferences.GetString(KEY_LASTGPSLOCATION, null);
+        }
+
+        private static void SetLastGPSLocation(string value)
+        {
+            editor.PutString(KEY_LASTGPSLOCATION, value);
+            editor.Commit();
+        }
     }
 }

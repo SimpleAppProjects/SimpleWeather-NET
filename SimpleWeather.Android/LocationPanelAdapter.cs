@@ -73,6 +73,8 @@ namespace SimpleWeather.Droid
             Context context = vh.mLocView.Context;
             LocationPanelViewModel panelView = mDataset[position];
 
+            vh.mLocView.SetWeather(panelView);
+
             // Set HomeButton visibility based on EditMode status
             if (!panelView.IsHome && !panelView.EditMode)
                 vh.mHomeButton.Visibility = ViewStates.Gone;
@@ -93,7 +95,8 @@ namespace SimpleWeather.Droid
                 vh.mHomeButton.Enabled = true;
             }
 
-            vh.mLocView.SetWeather(panelView);
+            if (Settings.FollowGPS)
+                vh.mHomeButton.Visibility = ViewStates.Gone;
         }
 
         // Return the size of your dataset (invoked by the layout manager)
@@ -121,6 +124,12 @@ namespace SimpleWeather.Droid
             }
         }
 
+        public void RemoveAll()
+        {
+            mDataset.Clear();
+            NotifyDataSetChanged();
+        }
+
         public LocationPanelViewModel GetPanelViewModel(int position)
         {
             return mDataset[position];
@@ -137,7 +146,7 @@ namespace SimpleWeather.Droid
             Remove(position);
 
             // Reset home if necessary
-            if (position == App.HomeIdx)
+            if (position == App.HomeIdx && !Settings.FollowGPS)
             {
                 mDataset[App.HomeIdx].IsHome = true;
                 NotifyItemChanged(App.HomeIdx);
@@ -161,7 +170,7 @@ namespace SimpleWeather.Droid
         public void OnItemMoved(int fromPosition, int toPosition)
         {
             // Reset home if necessary
-            if (fromPosition == App.HomeIdx || toPosition == App.HomeIdx)
+            if ((fromPosition == App.HomeIdx || toPosition == App.HomeIdx) && !Settings.FollowGPS)
             {
                 foreach (LocationPanelViewModel panelView in mDataset)
                 {

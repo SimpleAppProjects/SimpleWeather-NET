@@ -9,6 +9,16 @@ using Android.Views.InputMethods;
 using Android.Content;
 using Android.Support.V4.App;
 using SimpleWeather.Droid.Helpers;
+using Android.Support.V4.Content;
+using Android.Locations;
+using System.Threading.Tasks;
+using SimpleWeather.Controls;
+using Android;
+using Android.Content.PM;
+using Android.Runtime;
+using SimpleWeather.Droid.Controls;
+using SimpleWeather.Droid.Utils;
+using System.Collections.Specialized;
 
 namespace SimpleWeather.Droid
 {
@@ -23,8 +33,12 @@ namespace SimpleWeather.Droid
         private EditText keyEntry;
         private EditText searchView;
         private ImageView clearButtonView;
-        private ImageView locationButtonView;
         private bool inSearchUI;
+
+        private Button gpsFollowButton;
+        private Location mLocation;
+        private LocationListener mLocListnr;
+        private const int PERMISSION_LOCATION_REQUEST_CODE = 0;
 
         private ActionModeCallback mActionModeCallback = new ActionModeCallback();
 
@@ -63,6 +77,7 @@ namespace SimpleWeather.Droid
 
             apiSpinner = FindViewById<Spinner>(Resource.Id.api_spinner);
             keyEntry = FindViewById<EditText>(Resource.Id.key_entry);
+            gpsFollowButton = FindViewById<Button>(Resource.Id.gps_follow);
 
             /* Event Listeners */
             apiSpinner.ItemSelected += (object sender, AdapterView.ItemSelectedEventArgs e) =>
@@ -116,6 +131,19 @@ namespace SimpleWeather.Droid
                 ExitSearchUi();
             };
 
+            gpsFollowButton.Click += delegate
+            {
+                FetchGeoLocation();
+            };
+
+            // Location Listener
+            mLocListnr = new LocationListener();
+            mLocListnr.LocationChanged += (Location location) =>
+            {
+                mLocation = location;
+                FetchGeoLocation();
+            };
+
             // Reset focus
             FindViewById(Resource.Id.activity_setup).RequestFocus();
 
@@ -126,6 +154,159 @@ namespace SimpleWeather.Droid
             if (Settings.API_KEY != null)
             {
                 keyEntry.Text = Settings.API_KEY;
+            }
+        }
+
+        public async void FetchGeoLocation()
+        {
+            if (mLocation != null)
+            {
+                String selected_query = String.Empty;
+                
+                // Show loading dialog
+                LoadingDialog progDialog = new LoadingDialog(this);
+                progDialog.Show();
+
+                await Task.Run(async () =>
+                {
+                     // Get geo location
+                     LocationQueryViewModel view = await WeatherData.GeopositionQuery.GetLocation(mLocation);
+
+                     if (!String.IsNullOrEmpty(view.LocationQuery))
+                         selected_query = view.LocationQuery;
+                     else
+                         selected_query = string.Empty;
+                });
+
+                if (String.IsNullOrWhiteSpace(selected_query))
+                {
+                    // Stop since there is no valid query
+                    progDialog.Dismiss();
+                    return;
+                }
+
+                if (String.IsNullOrWhiteSpace(Settings.API_KEY) && Settings.API == Settings.API_WUnderground)
+                {
+                    String errorMsg = new WeatherException(WeatherUtils.ErrorStatus.INVALIDAPIKEY).Message;
+                    Toast.MakeText(this.ApplicationContext, errorMsg, ToastLength.Short).Show();
+                    // Hide dialog
+                    progDialog.Dismiss();
+                    return;
+                }
+
+                Pair<int, string> pair;
+
+                // Get Weather Data
+                OrderedDictionary weatherData = await Settings.GetWeatherData();
+
+                WeatherData.Weather weather = await WeatherData.WeatherLoaderTask.GetWeather(selected_query);
+
+                if (weather == null)
+                {
+                    // Hide dialog
+                    progDialog.Dismiss();
+                    return;
+                }
+
+                // Save weather data
+                if (weatherData.Contains(selected_query))
+                    weatherData[selected_query] = weather;
+                else
+                    weatherData.Add(selected_query, weather);
+                Settings.SaveWeatherData();
+
+                pair = new Pair<int, string>(App.HomeIdx, selected_query);
+
+                // Start WeatherNow Activity with weather data
+                Intent intent = new Intent(this, typeof(MainActivity));
+                intent.PutExtra("pair", await JSONParser.SerializerAsync(pair, typeof(Pair<int, string>)));
+
+                Settings.FollowGPS = true;
+                Settings.WeatherLoaded = true;
+                // Hide dialog
+                progDialog.Dismiss();
+
+                StartActivity(intent);
+                FinishAffinity();
+            }
+            else
+            {
+                UpdateLocation();
+            }
+        }
+
+        private void UpdateLocation()
+        {
+            if (ContextCompat.CheckSelfPermission(this, Manifest.Permission.AccessFineLocation) != Permission.Granted &&
+                ContextCompat.CheckSelfPermission(this, Manifest.Permission.AccessCoarseLocation) != Permission.Granted)
+            {
+                RequestPermissions(new String[] { Manifest.Permission.AccessCoarseLocation, Manifest.Permission.AccessFineLocation },
+                        PERMISSION_LOCATION_REQUEST_CODE);
+                return;
+            }
+
+            LocationManager locMan = (LocationManager)GetSystemService(Context.LocationService);
+            bool isGPSEnabled = locMan.IsProviderEnabled(LocationManager.GpsProvider);
+            bool isNetEnabled = locMan.IsProviderEnabled(LocationManager.NetworkProvider);
+
+            Location location = null;
+
+            if (isGPSEnabled)
+            {
+                location = locMan.GetLastKnownLocation(LocationManager.GpsProvider);
+
+                if (location == null)
+                    location = locMan.GetLastKnownLocation(LocationManager.NetworkProvider);
+
+                if (location == null)
+                    locMan.RequestSingleUpdate(LocationManager.GpsProvider, mLocListnr, null);
+                else
+                {
+                    mLocation = location;
+                    FetchGeoLocation();
+                }
+            }
+            else if (isNetEnabled)
+            {
+                location = locMan.GetLastKnownLocation(LocationManager.NetworkProvider);
+
+                if (location == null)
+                    locMan.RequestSingleUpdate(LocationManager.NetworkProvider, mLocListnr, null);
+                else
+                {
+                    mLocation = location;
+                    FetchGeoLocation();
+                }
+            }
+            else
+            {
+                Toast.MakeText(this, "Unable to get location", ToastLength.Short).Show();
+            }
+        }
+
+        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
+        {
+            switch (requestCode)
+            {
+                case PERMISSION_LOCATION_REQUEST_CODE:
+                    {
+                        // If request is cancelled, the result arrays are empty.
+                        if (grantResults.Length > 0
+                                && grantResults[0] == Permission.Granted)
+                        {
+
+                            // permission was granted, yay!
+                            // Do the task you need to do.
+                            FetchGeoLocation();
+                        }
+                        else
+                        {
+                            // permission denied, boo! Disable the
+                            // functionality that depends on this permission.
+                            Toast.MakeText(this, "Location access denied", ToastLength.Short).Show();
+                        }
+                        return;
+                    }
             }
         }
 
@@ -194,7 +375,6 @@ namespace SimpleWeather.Droid
         {
             searchView = searchViewLayout.FindViewById<EditText>(Resource.Id.search_view);
             clearButtonView = searchViewLayout.FindViewById<ImageView>(Resource.Id.search_close_button);
-            locationButtonView = searchViewLayout.FindViewById<ImageView>(Resource.Id.search_location_button);
             clearButtonView.Click += delegate { searchView.Text = String.Empty; };
             searchView.TextChanged += (object sender, TextChangedEventArgs e) =>
             {
@@ -228,7 +408,6 @@ namespace SimpleWeather.Droid
                 }
                 e.Handled = false;
             };
-            locationButtonView.Click += delegate { mSearchFragment.FetchGeoLocation(); };
         }
 
         public override void OnBackPressed()
