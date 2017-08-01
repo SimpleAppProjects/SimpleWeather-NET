@@ -107,7 +107,7 @@ namespace SimpleWeather.UWP
 
         private void LocationPanels_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            foreach(LocationPanelViewModel panelView in LocationPanels)
+            foreach (LocationPanelViewModel panelView in LocationPanels)
             {
                 int index = LocationPanels.IndexOf(panelView);
 
@@ -288,7 +288,7 @@ namespace SimpleWeather.UWP
             }
 
             // Show loading dialog
-            LoadingDialog.IsEnabled = true;
+            await LoadingDialog.ShowAsync();
 
             OrderedDictionary weatherData = await Settings.GetWeatherData();
             int index = weatherData.Keys.Count;
@@ -297,7 +297,7 @@ namespace SimpleWeather.UWP
             if (weatherData.Contains(selected_query))
             {
                 // Hide dialog
-                LoadingDialog.IsEnabled = false;
+                await LoadingDialog.HideAsync();
                 ShowAddLocationsPanel(false);
                 return;
             }
@@ -307,7 +307,7 @@ namespace SimpleWeather.UWP
             if (weather == null)
             {
                 // Hide dialog
-                LoadingDialog.IsEnabled = false;
+                await LoadingDialog.HideAsync();
                 return;
             }
 
@@ -335,7 +335,7 @@ namespace SimpleWeather.UWP
             LocationPanels.Add(panelView);
 
             // Hide add locations panel
-            LoadingDialog.IsEnabled = false;
+            await LoadingDialog.HideAsync();
             ShowAddLocationsPanel(false);
 
             sender.IsSuggestionListOpen = false;
@@ -422,7 +422,7 @@ namespace SimpleWeather.UWP
             if (index == App.HomeIdx)
                 return;
 
-            foreach(LocationPanelViewModel panelView in LocationPanels)
+            foreach (LocationPanelViewModel panelView in LocationPanels)
             {
                 int panelIndex = LocationPanels.IndexOf(panelView);
 
@@ -443,7 +443,7 @@ namespace SimpleWeather.UWP
             Weather weather = data[fromIdx] as Weather;
             data.RemoveAt(fromIdx);
             data.Insert(toIdx, view.Pair.Value, weather);
-            
+
             // Only move panels if we haven't already
             if (view.Pair.Key != toIdx)
                 LocationPanels.Move(fromIdx, toIdx);

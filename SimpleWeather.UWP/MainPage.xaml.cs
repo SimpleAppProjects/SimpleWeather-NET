@@ -157,7 +157,7 @@ namespace SimpleWeather.UWP
             }
 
             // Show loading dialog
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => LoadingDialog.IsEnabled = true);
+            await LoadingDialog.ShowAsync();
 
             KeyValuePair<int, string> pair;
 
@@ -169,7 +169,7 @@ namespace SimpleWeather.UWP
             if (weather == null)
             {
                 // Hide dialog
-                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => LoadingDialog.IsEnabled = false);
+                await LoadingDialog.HideAsync();
                 return;
             }
 
@@ -183,10 +183,10 @@ namespace SimpleWeather.UWP
             pair = new KeyValuePair<int, string>(App.HomeIdx, selected_query);
 
             Settings.WeatherLoaded = true;
+            // Hide dialog
+            await LoadingDialog.HideAsync();
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                // Hide dialog
-                LoadingDialog.IsEnabled = false;
                 sender.IsSuggestionListOpen = false;
                 this.Frame.Navigate(typeof(Shell), pair);
             });
@@ -264,7 +264,7 @@ namespace SimpleWeather.UWP
             if (geoPos != null)
             {
                 button.IsEnabled = false;
-                LoadingDialog.IsEnabled = true;
+                await LoadingDialog.ShowAsync();
 
                 await Task.Run(async () =>
                 {
@@ -281,7 +281,9 @@ namespace SimpleWeather.UWP
                 if (String.IsNullOrWhiteSpace(selected_query))
                 {
                     // Stop since there is no valid query
-                    goto exit;
+                    button.IsEnabled = true;
+                    await LoadingDialog.HideAsync();
+                    return;
                 }
 
                 // Stop if using WeatherUnderground and API Key is empty
@@ -292,7 +294,9 @@ namespace SimpleWeather.UWP
                     KeyEntry.BorderBrush = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Red);
                     KeyEntry.BorderThickness = new Thickness(2);
 
-                    goto exit;
+                    button.IsEnabled = true;
+                    await LoadingDialog.HideAsync();
+                    return;
                 }
 
                 KeyValuePair<int, string> pair;
@@ -303,7 +307,11 @@ namespace SimpleWeather.UWP
                 Weather weather = await WeatherLoaderTask.GetWeather(selected_query);
 
                 if (weather == null)
-                    goto exit;
+                {
+                    button.IsEnabled = true;
+                    await LoadingDialog.HideAsync();
+                    return;
+                }
 
                 // Save weather data
                 if (weatherData.Contains(selected_query))
@@ -317,13 +325,9 @@ namespace SimpleWeather.UWP
                 Settings.FollowGPS = true;
                 Settings.WeatherLoaded = true;
                 // Hide dialog
-                LoadingDialog.IsEnabled = false;
+                await LoadingDialog.HideAsync();
                 this.Frame.Navigate(typeof(Shell), pair);
             }
-
-            exit:
-            button.IsEnabled = true;
-            LoadingDialog.IsEnabled = false;
         }
 
         private void APIComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

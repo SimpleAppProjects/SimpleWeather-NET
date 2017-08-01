@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Core;
@@ -18,27 +19,24 @@ using Windows.UI.Xaml.Navigation;
 
 namespace SimpleWeather.UWP.Controls
 {
-    public sealed partial class ProgressDialog : UserControl
+    public sealed partial class ProgressDialog : ContentDialog
     {
+        CoreDispatcher dispatcher;
+
         public ProgressDialog()
         {
             this.InitializeComponent();
-            this.IsEnabledChanged += ProgressDialog_IsEnabledChanged;
-
-            this.IsEnabled = false;
+            dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
         }
 
-        private async void ProgressDialog_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
+        public new async Task ShowAsync()
         {
-            var dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
+            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => { await base.ShowAsync(); });
+        }
 
-            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
-            {
-                if ((bool)e.NewValue)
-                    await Dialog.ShowAsync();
-                else
-                    Dialog.Hide();
-            });
+        public async Task HideAsync()
+        {
+            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { base.Hide(); });
         }
     }
 }
