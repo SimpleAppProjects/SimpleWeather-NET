@@ -37,13 +37,7 @@ namespace SimpleWeather.UWP
             }
 
             // Location
-            GeolocationAccessStatus geoStatus = await Geolocator.RequestAccessAsync();
-            if (geoStatus != GeolocationAccessStatus.Allowed)
-            {
-                Settings.FollowGPS = FollowGPS.IsOn = false;
-            }
-            else
-                FollowGPS.IsOn = Settings.FollowGPS;
+            FollowGPS.IsOn = Settings.FollowGPS;
 
             Version.Text = string.Format("v{0}.{1}.{2}",
                 Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
