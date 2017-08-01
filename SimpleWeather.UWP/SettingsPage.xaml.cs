@@ -22,7 +22,7 @@ namespace SimpleWeather.UWP
             RestoreSettings();
         }
 
-        private async void RestoreSettings()
+        private void RestoreSettings()
         {
             // Temperature
             if (Settings.Unit == Settings.Fahrenheit)
@@ -101,6 +101,21 @@ namespace SimpleWeather.UWP
             }
 
             Settings.FollowGPS = sw.IsOn;
+        }
+
+        private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Pivot pivot = sender as Pivot;
+
+            if (pivot.SelectedIndex == 2)
+            {
+                if (OSSLicenseWebview.Source == null)
+                {
+                    OSSLicenseWebview.NavigationStarting -= OSSLicenseWebview_NavigationStarting;
+                    OSSLicenseWebview.Navigate(new Uri("ms-appx-web:///Assets/Credits/licenses.html"));
+                    OSSLicenseWebview.NavigationStarting += OSSLicenseWebview_NavigationStarting;
+                }
+            }
         }
     }
 }

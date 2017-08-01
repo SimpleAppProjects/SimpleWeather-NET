@@ -226,7 +226,8 @@
             </CommandBar.Content>
         </CommandBar>
 
-        <Pivot Grid.Row="1" RequestedTheme="Light" Style="{StaticResource SettingsPivotStyle}">
+        <Pivot Grid.Row="1" RequestedTheme="Light" Style="{StaticResource SettingsPivotStyle}"
+               SelectionChanged="Pivot_SelectionChanged">
             <Pivot.HeaderTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding}" Style="{StaticResource CommandBarLabel}" FontWeight="SemiBold" />
@@ -278,7 +279,7 @@
                 </StackPanel>
             </PivotItem>
             <PivotItem Header="Open Source Libraries">
-                <WebView Name="OSSLicenseWebview" Source="ms-appx-web:///Assets/Credits/licenses.html"/>
+                <WebView Name="OSSLicenseWebview" />
             </PivotItem>
             <PivotItem Header="About" Padding="10">
                 <StackPanel>
