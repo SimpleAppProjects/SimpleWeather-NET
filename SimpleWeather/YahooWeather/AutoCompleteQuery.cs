@@ -15,7 +15,7 @@ namespace SimpleWeather.WeatherYahoo
 {
     public static class AutoCompleteQuery
     {
-        public static async Task<List<Controls.LocationQueryViewModel>> getLocations(string location_query)
+        public static async Task<List<Controls.LocationQueryViewModel>> GetLocations(string location_query)
         {
             string yahooAPI = "https://query.yahooapis.com/v1/public/yql?q=";
             string query = "select * from geo.places where text=\"" + location_query + "*\"";

@@ -119,7 +119,7 @@ namespace SimpleWeather.Droid
                 foreach (LocationPanelViewModel panelView in mDataset)
                 {
                     int index = mDataset.IndexOf(panelView);
-                    panelView.Pair = new Utils.Pair<int, string>(index, panelView.Pair.Value);
+                    panelView.Pair = new Utils.Pair<int, string>(Settings.FollowGPS ? index + 1 : index, panelView.Pair.Value);
                 }
             }
         }
@@ -139,7 +139,7 @@ namespace SimpleWeather.Droid
         {
             // Remove location from list
             OrderedDictionary weatherData = await Settings.GetWeatherData();
-            weatherData.RemoveAt(position);
+            weatherData.RemoveAt(Settings.FollowGPS ? position + 1 : position);
             Settings.SaveWeatherData();
 
             // Remove panel
@@ -155,13 +155,22 @@ namespace SimpleWeather.Droid
 
         public async void OnItemMove(int fromPosition, int toPosition)
         {
+            int dataFromPos = fromPosition;
+            int dataToPos = toPosition;
+
+            if (Settings.FollowGPS)
+            {
+                dataFromPos++;
+                dataToPos++;
+            }
+
             // Move data in both weather dictionary and local dataset
             OrderedDictionary data = await Settings.GetWeatherData();
             LocationPanelViewModel panel = mDataset[fromPosition];
 
-            WeatherData.Weather weather = data[fromPosition] as WeatherData.Weather;
-            data.RemoveAt(fromPosition);
-            data.Insert(toPosition, panel.Pair.Value, weather);
+            WeatherData.Weather weather = data[dataFromPos] as WeatherData.Weather;
+            data.RemoveAt(dataFromPos);
+            data.Insert(dataToPos, panel.Pair.Value, weather);
 
             mDataset.Move(fromPosition, toPosition);
             NotifyItemMoved(fromPosition, toPosition);

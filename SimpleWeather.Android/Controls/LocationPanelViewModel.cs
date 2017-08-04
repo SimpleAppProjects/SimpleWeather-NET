@@ -13,6 +13,7 @@ namespace SimpleWeather.Droid.Controls
         public string WeatherIcon { get; set; }
         public Pair<int, string> Pair { get; set; }
         public string Background { get; set; }
+        public string WeatherSource { get; set; }
 
         public bool IsHome { get; set; } = false;
         public bool EditMode { get; set; } = false;
@@ -35,6 +36,10 @@ namespace SimpleWeather.Droid.Controls
             CurrTemp = (Settings.Unit == Settings.Fahrenheit ?
                 Math.Round(weather.condition.temp_f) : Math.Round(weather.condition.temp_c)) + "º";
             WeatherIcon = WeatherUtils.GetWeatherIcon(weather.condition.icon);
+            WeatherSource = weather.source;
+
+            if (!String.IsNullOrWhiteSpace(weather.query) && Pair != null)
+                Pair = new Pair<int, string>(Pair.Key, weather.query);
         }
     }
 }

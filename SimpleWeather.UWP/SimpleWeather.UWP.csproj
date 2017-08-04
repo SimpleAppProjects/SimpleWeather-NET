@@ -149,6 +149,9 @@
     <Compile Include="Controls\ForecastItem.xaml.cs">
       <DependentUpon>ForecastItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\KeyEntryDialog.xaml.cs">
+      <DependentUpon>KeyEntryDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\LocationPanel.xaml.cs">
       <DependentUpon>LocationPanel.xaml</DependentUpon>
     </Compile>
@@ -234,6 +237,10 @@
     <Page Include="Controls\ForecastItem.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\KeyEntryDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\LocationPanel.xaml">
       <Generator>MSBuild:Compile</Generator>

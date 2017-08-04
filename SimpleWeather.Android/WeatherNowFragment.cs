@@ -296,10 +296,8 @@ namespace SimpleWeather.Droid
             menu.Clear();
         }
 
-        public override async void OnResume()
+        private async void Resume()
         {
-            base.OnResume();
-
             // Update view on resume
             // ex. If temperature unit changed
             bool homeChanged = App.Preferences.GetBoolean("HomeChanged", false);
@@ -314,13 +312,30 @@ namespace SimpleWeather.Droid
             }
             else if (wLoader != null && !loaded)
             {
-                if (wLoader.GetWeather() != null)
+                // Reset if source is different
+                if (weatherView.WeatherSource != Settings.API)
+                {
+                    await Restore();
+                    loaded = true;
+                }
+                else if (wLoader.GetWeather() != null)
                 {
                     weatherView.UpdateView(wLoader.GetWeather());
                     SetView(weatherView);
                     loaded = true;
                 }
             }
+        }
+
+        public override void OnResume()
+        {
+            base.OnResume();
+
+            // Don't resume if fragment is hidden
+            if (this.IsHidden)
+                return;
+            else
+                Resume();
 
             // Title
             AppCompatActivity.SupportActionBar.Title = GetString(Resource.String.title_activity_weather_now);
@@ -330,10 +345,13 @@ namespace SimpleWeather.Droid
         {
             base.OnHiddenChanged(hidden);
 
-            if (!hidden && weatherView != null)
+            if (!hidden && weatherView != null && this.IsVisible)
             {
                 UpdateNavHeader(weatherView);
+                Resume();
             }
+            else if (hidden)
+                loaded = false;
         }
 
         public override void OnPause()
@@ -360,6 +378,10 @@ namespace SimpleWeather.Droid
                 }
                 else
                 {
+                    // Reset locdata if source is different
+                    if (locData.source != Settings.API)
+                        Settings.SaveLastGPSLocData(new LocationData());
+
                     if (await UpdateLocation())
                     {
                         // Setup loader from updated location
@@ -450,8 +472,7 @@ namespace SimpleWeather.Droid
                 {
                     forecastView.AddView(new ForecastItem(Activity, forecast));
                 }
-                if (forecastPanel.Visibility != ViewStates.Visible)
-                    forecastPanel.Visibility = ViewStates.Visible;
+                forecastPanel.Visibility = ViewStates.Visible;
 
                 // Additional Details
                 hrforecastView.RemoveAllViews();
@@ -461,18 +482,20 @@ namespace SimpleWeather.Droid
                     {
                         hrforecastView.AddView(new HourlyForecastItem(Activity, hrforecast));
                     }
-                    if (hrforecastPanel.Visibility != ViewStates.Visible)
-                        hrforecastPanel.Visibility = ViewStates.Visible;
+                    hrforecastPanel.Visibility = ViewStates.Visible;
                 }
+                else
+                    hrforecastPanel.Visibility = ViewStates.Gone;
 
                 if (weatherView.WUExtras.TextForecast.Count >= 1)
                 {
-                    if (forecastSwitch.Visibility != ViewStates.Visible)
-                        forecastSwitch.Visibility = ViewStates.Visible;
+                    forecastSwitch.Visibility = ViewStates.Visible;
 
                     txtForecastView.Background = ContextCompat.GetDrawable(Activity, weatherView.PanelBackground);
                     (txtForecastView.Adapter as TextForecastPagerAdapter).UpdateDataset(weatherView.WUExtras.TextForecast.ToList());
                 }
+                else
+                    forecastSwitch.Visibility = ViewStates.Gone;
 
                 if (!String.IsNullOrWhiteSpace(weatherView.WUExtras.Chance))
                 {
@@ -480,8 +503,16 @@ namespace SimpleWeather.Droid
                     qpfRain.Text = weatherView.WUExtras.Qpf_Rain;
                     qpfSnow.Text = weatherView.WUExtras.Qpf_Snow;
 
-                    if (precipitationPanel.Visibility != ViewStates.Visible)
-                        precipitationPanel.Visibility = ViewStates.Visible;
+                    precipitationPanel.Visibility = ViewStates.Visible;
+
+                    if (IsLargeTablet(Activity))
+                    {
+                        // Add back panel if not present
+                        Android.Support.V7.Widget.GridLayout panel = (Android.Support.V7.Widget.GridLayout)detailsPanel;
+                        int childIdx = panel.IndexOfChild(panel.FindViewById(Resource.Id.precipitation_card));
+                        if (childIdx < 0)
+                            panel.AddView(precipitationPanel, 0);
+                    }
                 }
                 else
                 {
@@ -490,6 +521,8 @@ namespace SimpleWeather.Droid
                         Android.Support.V7.Widget.GridLayout panel = (Android.Support.V7.Widget.GridLayout)detailsPanel;
                         panel.RemoveView(panel.FindViewById(Resource.Id.precipitation_card));
                     }
+                    else
+                        precipitationPanel.Visibility = ViewStates.Gone;
                 }
 
                 // Fix DetailsLayout

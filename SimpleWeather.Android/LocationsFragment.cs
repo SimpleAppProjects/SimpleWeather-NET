@@ -183,6 +183,7 @@ namespace SimpleWeather.Droid
 
             gpsPanelLayout = view.FindViewById(Resource.Id.gps_follow_layout);
             gpsPanel = view.FindViewById<LocationPanel>(Resource.Id.gps_panel);
+            gpsPanel.Click += OnPanelClick;
 
             // use this setting to improve performance if you know that changes
             // in content do not change the layout size of the RecyclerView
@@ -242,6 +243,10 @@ namespace SimpleWeather.Droid
         public override async void OnResume()
         {
             base.OnResume();
+
+            // Don't resume if fragment is hidden
+            if (this.IsHidden)
+                return;
 
             // Update view on resume
             // ex. If temperature unit changed
@@ -329,9 +334,19 @@ namespace SimpleWeather.Droid
         {
             // Reload all panels if needed
             List<string> locations = await Settings.GetLocations();
+            bool reload = !Settings.FollowGPS && locations.Count != mAdapter.ItemCount ||
+                Settings.FollowGPS && (gpsPanelViewModel == null || locations.Count - 1 != mAdapter.ItemCount);
 
-            if (!Settings.FollowGPS && locations.Count != mAdapter.ItemCount ||
-                Settings.FollowGPS && (gpsPanelViewModel == null || locations.Count - 1 != mAdapter.ItemCount))
+            // Reload if weather source differs
+            if ((gpsPanelViewModel != null && gpsPanelViewModel.WeatherSource != Settings.API) ||
+                (mAdapter.ItemCount >= 1 && mAdapter.Dataset[0].WeatherSource != Settings.API))
+                reload = true;
+
+            // Reload if panel queries dont match
+            if (!reload && (gpsPanelViewModel != null && locations[App.HomeIdx] != gpsPanelViewModel.Pair.Value))
+                reload = true;
+
+            if (reload)
             {
                 mAdapter.RemoveAll();
                 await LoadLocations();

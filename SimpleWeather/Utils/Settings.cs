@@ -94,5 +94,11 @@ namespace SimpleWeather.Utils
         {
             LastGPSLocation = JSONParser.Serializer(lastGPSLocData, typeof(WeatherData.LocationData));
         }
+
+        public static void SaveLastGPSLocData(WeatherData.LocationData data)
+        {
+            lastGPSLocData = data;
+            LastGPSLocation = JSONParser.Serializer(lastGPSLocData, typeof(WeatherData.LocationData));
+        }
     }
 }

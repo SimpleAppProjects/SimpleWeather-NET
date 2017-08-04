@@ -6,6 +6,11 @@ using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.ApplicationModel.Core;
+using Windows.UI.Xaml.Navigation;
+using Windows.Storage;
+using Windows.UI.Xaml.Media;
+using Windows.UI;
+using Windows.UI.Core;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 namespace SimpleWeather.UWP
@@ -15,6 +20,26 @@ namespace SimpleWeather.UWP
     /// </summary>
     public sealed partial class SettingsPage : Page
     {
+        ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+        private static string KEY_APIKEY_VERIFIED = "API_KEY_VERIFIED";
+        private bool keyVerified { get { return IsKeyVerfied(); } set { SetKeyVerified(value); } }
+
+        private bool IsKeyVerfied()
+        {
+            if (localSettings.Containers.ContainsKey(Settings.API_WUnderground))
+            {
+                if (localSettings.Containers[Settings.API_WUnderground].Values.TryGetValue(KEY_APIKEY_VERIFIED, out object value))
+                    return (bool)value;
+            }
+
+            return false;
+        }
+
+        private void SetKeyVerified(bool value)
+        {
+            localSettings.Containers[Settings.API_WUnderground].Values[KEY_APIKEY_VERIFIED] = value;
+        }
+
         public SettingsPage()
         {
             this.InitializeComponent();
@@ -24,6 +49,8 @@ namespace SimpleWeather.UWP
 
         private void RestoreSettings()
         {
+            localSettings.CreateContainer(Settings.API_WUnderground, ApplicationDataCreateDisposition.Always);
+
             // Temperature
             if (Settings.Unit == Settings.Fahrenheit)
             {
@@ -39,10 +66,128 @@ namespace SimpleWeather.UWP
             // Location
             FollowGPS.IsOn = Settings.FollowGPS;
 
+            // Weather Providers
+            if (Settings.API == Settings.API_WUnderground)
+            {
+                if (!String.IsNullOrWhiteSpace(Settings.API_KEY) && !keyVerified)
+                    keyVerified = true;
+
+                APIComboBox.SelectedIndex = 0;
+                KeyPanel.Visibility = Visibility.Visible;
+            }
+            else if (Settings.API == Settings.API_Yahoo)
+            {
+                keyVerified = false;
+                localSettings.Containers[Settings.API_WUnderground].Values.Remove(KEY_APIKEY_VERIFIED);
+
+                APIComboBox.SelectedIndex = 1;
+                KeyPanel.Visibility = Visibility.Collapsed;
+            }
+
+            KeyEntry.Text = Settings.API_KEY;
+            UpdateKeyBorder();
+
             Version.Text = string.Format("v{0}.{1}.{2}",
                 Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
 
+            // Event Listeners
+            SystemNavigationManager.GetForCurrentView().BackRequested += SettingsPage_BackRequested;
+            APIComboBox.SelectionChanged += APIComboBox_SelectionChanged;
             OSSLicenseWebview.NavigationStarting += OSSLicenseWebview_NavigationStarting;
+        }
+
+        private async void SettingsPage_BackRequested(object sender, BackRequestedEventArgs e)
+        {
+            if (String.IsNullOrWhiteSpace(Settings.API_KEY) && APIComboBox.SelectedIndex == 0)
+            {
+                KeyBorder.BorderBrush = new SolidColorBrush(Colors.Red);
+                await new MessageDialog("Please enter an API Key").ShowAsync();
+                e.Handled = true;
+            }
+            else
+                e.Handled = false;
+        }
+
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            if (String.IsNullOrWhiteSpace(Settings.API_KEY) && APIComboBox.SelectedIndex == 0)
+            {
+                e.Cancel = true;
+            }
+        }
+
+        private async void KeyEntry_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        {
+            var keydialog = new Controls.KeyEntryDialog();
+            keydialog.PrimaryButtonClick += async (ContentDialog dialog, ContentDialogButtonClickEventArgs args) =>
+            {
+                var diag = dialog as Controls.KeyEntryDialog;
+
+                string key = diag.Key;
+                if (!String.IsNullOrWhiteSpace(key))
+                {
+                    if (await WeatherUnderground.KeyCheckQuery.IsValid(key))
+                    {
+                        KeyEntry.Text = Settings.API_KEY = key;
+                        Settings.API = Settings.API_WUnderground;
+
+                        keyVerified = true;
+                        UpdateKeyBorder();
+
+                        diag.CanClose = true;
+                        diag.Hide();
+                    }
+                    else
+                    {
+                        diag.CanClose = false;
+                    }
+                }
+            };
+            await keydialog.ShowAsync();
+        }
+
+        private void UpdateKeyBorder()
+        {
+            if (keyVerified)
+                KeyBorder.BorderBrush = new SolidColorBrush(Colors.Green);
+            else
+                KeyBorder.BorderBrush = new SolidColorBrush(Colors.DarkGray);
+        }
+
+        private void APIComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox box = sender as ComboBox;
+            int index = box.SelectedIndex;
+
+            if (index == 0)
+            {
+                // WeatherUnderground
+                if (KeyPanel != null)
+                    KeyPanel.Visibility = Visibility.Visible;
+
+                if (!String.IsNullOrWhiteSpace(Settings.API_KEY) && !keyVerified)
+                    keyVerified = true;
+
+                if (keyVerified)
+                    Settings.API = Settings.API_WUnderground;
+            }
+            else if (index == 1)
+            {
+                // Yahoo Weather
+                if (KeyPanel != null)
+                    KeyPanel.Visibility = Visibility.Collapsed;
+                Settings.API = Settings.API_Yahoo;
+
+                keyVerified = false;
+                localSettings.Containers[Settings.API_WUnderground].Values.Remove(KEY_APIKEY_VERIFIED);
+            }
+
+            UpdateKeyBorder();
+        }
+
+        private void KeyEntry_GotFocus(object sender, RoutedEventArgs e)
+        {
+            KeyBorder.BorderBrush = new SolidColorBrush(Colors.DarkGray);
         }
 
         private void OSSLicenseWebview_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)

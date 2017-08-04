@@ -123,5 +123,12 @@ namespace SimpleWeather.Controls
             Qpf_Snow = Settings.Unit == Settings.Fahrenheit ?
                 weather.precipitation.qpf_snow_in.ToString("0.00") + " in" : weather.precipitation.qpf_snow_cm + " cm";
         }
+
+        public void Clear()
+        {
+            HourlyForecast.Clear();
+            TextForecast.Clear();
+            Chance = Qpf_Rain = Qpf_Snow = String.Empty;
+        }
     }
 }

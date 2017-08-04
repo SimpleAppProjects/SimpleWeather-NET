@@ -24,7 +24,7 @@ namespace SimpleWeather.WeatherData
             else
             {
                 // Create list of locations queries
-                List<Controls.LocationQueryViewModel> ac_query = await WeatherYahoo.AutoCompleteQuery.getLocations(query);
+                List<Controls.LocationQueryViewModel> ac_query = await WeatherYahoo.AutoCompleteQuery.GetLocations(query);
 
                 if (ac_query == null || ac_query.Count == 0)
                     locations = new ObservableCollection<Controls.LocationQueryViewModel>() { new Controls.LocationQueryViewModel() };

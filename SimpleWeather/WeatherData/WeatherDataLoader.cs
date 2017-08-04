@@ -55,11 +55,21 @@ namespace SimpleWeather.WeatherData
                 // Don't force retries since it counts against calls per minute
                 maxRetries = 0;
             }
-            else
+            else if (Settings.API == Settings.API_Yahoo && int.TryParse(location_query, out int woeid))
             {
                 queryAPI = "https://query.yahooapis.com/v1/public/yql?q=";
                 string query = "select * from weather.forecast where woeid=\""
-                    + location_query + "\" and u='F'&format=json";
+                    + woeid + "\" and u='F'&format=json";
+                weatherURL = new Uri(queryAPI + query);
+
+                // Allow more retries, since its known to fail sometimes
+                maxRetries = 2;
+            }
+            else if (Settings.API == Settings.API_Yahoo)
+            {
+                queryAPI = "https://query.yahooapis.com/v1/public/yql?q=";
+                string query = "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text=\""
+                    + location_query + "\") and u='F'&format=json";
                 weatherURL = new Uri(queryAPI + query);
 
                 // Allow more retries, since its known to fail sometimes
@@ -150,7 +160,7 @@ namespace SimpleWeather.WeatherData
             }
             else if (weather != null)
             {
-                SaveWeatherData();
+                await SaveWeatherData();
             }
 
             // End Stream
@@ -205,6 +215,9 @@ namespace SimpleWeather.WeatherData
             {
                 try
                 {
+                    if (weather != null && weather.source != Settings.API)
+                        await UpdateQuery();
+
                     await GetWeatherData();
                 }
                 catch (WeatherException wEx)
@@ -218,6 +231,22 @@ namespace SimpleWeather.WeatherData
 #endif
                 }
             }
+        }
+
+        private async Task UpdateQuery()
+        {
+            string coord = string.Format("{0},{1}", weather.location.latitude, weather.location.longitude);
+            var qview = await GeopositionQuery.GetLocation(new WeatherUtils.Coordinate(coord));
+
+            if (String.IsNullOrEmpty(qview.LocationQuery))
+            {
+                if (Settings.API == Settings.API_WUnderground)
+                    location_query = string.Format("/q/{0}", coord);
+                else if (Settings.API == Settings.API_Yahoo)
+                    location_query = string.Format("({0})", coord);
+            }
+            else
+                location_query = qview.LocationQuery;
         }
 
         private async Task<bool> LoadSavedWeatherData(bool _override)
@@ -235,7 +264,7 @@ namespace SimpleWeather.WeatherData
                     System.Diagnostics.Debug.WriteLine(ex.StackTrace);
                 }
 
-                if (weather == null || weather.query != location_query)
+                if (weather == null || weather.query != location_query || weather.source != Settings.API)
                     return false;
 
                 return true;
@@ -257,7 +286,7 @@ namespace SimpleWeather.WeatherData
                 System.Diagnostics.Debug.WriteLine(ex.StackTrace);
             }
 
-            if (weather == null || weather.query != location_query)
+            if (weather == null || weather.query != location_query || weather.source != Settings.API)
                 return false;
 
             // Weather data expiration
@@ -273,7 +302,7 @@ namespace SimpleWeather.WeatherData
                 return false;
         }
 
-        private async void SaveWeatherData()
+        private async Task SaveWeatherData()
         {
             // Save location query
             weather.query = location_query;
@@ -320,11 +349,21 @@ namespace SimpleWeather.WeatherData
                 // Don't force retries since it counts against calls per minute
                 maxRetries = 0;
             }
-            else
+            else if (Settings.API == Settings.API_Yahoo && int.TryParse(location_query, out int woeid))
             {
                 queryAPI = "https://query.yahooapis.com/v1/public/yql?q=";
                 string query = "select * from weather.forecast where woeid=\""
-                    + location_query + "\" and u='F'&format=json";
+                    + woeid + "\" and u='F'&format=json";
+                weatherURL = new Uri(queryAPI + query);
+
+                // Allow more retries, since its known to fail sometimes
+                maxRetries = 2;
+            }
+            else if (Settings.API == Settings.API_Yahoo)
+            {
+                queryAPI = "https://query.yahooapis.com/v1/public/yql?q=";
+                string query = "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text=\""
+                    + location_query + "\") and u='F'&format=json";
                 weatherURL = new Uri(queryAPI + query);
 
                 // Allow more retries, since its known to fail sometimes

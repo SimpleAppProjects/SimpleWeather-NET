@@ -82,6 +82,9 @@ namespace SimpleWeather.Controls
         public static readonly DependencyProperty WeatherCreditProperty =
             DependencyProperty.Register("WeatherCredit", typeof(String),
             typeof(WeatherNowViewModel), new PropertyMetadata(""));
+        public static readonly DependencyProperty WeatherSourceProperty =
+            DependencyProperty.Register("WeatherSource", typeof(String),
+            typeof(WeatherNowViewModel), new PropertyMetadata(""));
 
         public event PropertyChangedEventHandler PropertyChanged;
         // Create the OnPropertyChanged method to raise the event
@@ -197,6 +200,11 @@ namespace SimpleWeather.Controls
             get { return (String)GetValue(WeatherCreditProperty); }
             set { SetValue(WeatherCreditProperty, value); OnPropertyChanged("WeatherCredit"); }
         }
+        public String WeatherSource
+        {
+            get { return (String)GetValue(WeatherSourceProperty); }
+            set { SetValue(WeatherSourceProperty, value); OnPropertyChanged("WeatherSource"); }
+        }
         #endregion
 #elif __ANDROID__
         public string Location { get; set; }
@@ -231,6 +239,7 @@ namespace SimpleWeather.Controls
         public Color PendingBackground { get; set; }
 
         public string WeatherCredit { get; set; }
+        public string WeatherSource { get; set; }
 #endif
 
         public WeatherNowViewModel()
@@ -316,14 +325,17 @@ namespace SimpleWeather.Controls
             }
 
             // Additional Details
-            if (Settings.API == Settings.API_WUnderground)
+            WeatherSource = weather.source;
+            if (weather.source == Settings.API_WUnderground)
             {
                 WeatherCredit = "Data from WeatherUnderground";
                 WUExtras.UpdateView(weather);
             }
-            else if (Settings.API == Settings.API_Yahoo)
+            else if (weather.source == Settings.API_Yahoo)
             {
                 WeatherCredit = "Data from Yahoo!";
+                // Clear data
+                WUExtras.Clear();
             }
         }
 

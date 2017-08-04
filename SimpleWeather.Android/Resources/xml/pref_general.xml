@@ -15,6 +15,18 @@
             android:summary="@string/pref_summary_currentlocation"
             android:title="@string/label_currentlocation" />
 
+        <ListPreference
+            android:entries="@array/api_entries"
+            android:entryValues="@array/api_entries_values"
+            android:key="API"
+            android:title="@string/api_label" />
+
+        <SimpleWeather.Droid.SettingsActivity.KeyEntryPreference
+            android:key="API_KEY"
+            android:singleLine="true"
+            android:summary="@string/pref_summary_apikey"
+            android:title="@string/key_hint" />
+
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_title_about">
 

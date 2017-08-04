@@ -9,6 +9,7 @@ namespace SimpleWeather.WeatherData
         public string query { get; set; }
         public double latitude { get; set; }
         public double longitude { get; set; }
+        public string source { get; set; }
 
         public LocationData()
         {
@@ -26,6 +27,7 @@ namespace SimpleWeather.WeatherData
             this.query = query;
             latitude = geoPos.Coordinate.Point.Position.Latitude;
             longitude = geoPos.Coordinate.Point.Position.Longitude;
+            source = Utils.Settings.API;
         }
 #elif __ANDROID__
         public LocationData(string query, Android.Locations.Location location)
@@ -38,6 +40,7 @@ namespace SimpleWeather.WeatherData
             this.query = query;
             latitude = location.Latitude;
             longitude = location.Longitude;
+            source = Utils.Settings.API;
         }
 #endif
     }

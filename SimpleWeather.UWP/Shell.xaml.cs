@@ -36,31 +36,10 @@ namespace SimpleWeather.UWP
         private void AppFrame_Navigated(object sender, NavigationEventArgs e)
         {
             if (AppFrame.CanGoBack)
-            {
                 SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
-            }
             else
-            {
                 SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-            }
-        }
 
-        private void Shell_BackRequested(object sender, BackRequestedEventArgs e)
-        {
-            if (AppFrame == null)
-                return;
-
-            // Navigate back if possible, and if the event has not 
-            // already been handled .
-            if (AppFrame.CanGoBack && e.Handled == false)
-            {
-                e.Handled = true;
-                AppFrame.GoBack();
-            }
-        }
-
-        private void AppFrame_Navigating(object sender, NavigatingCancelEventArgs e)
-        {
             if (e.SourcePageType == typeof(WeatherNow))
             {
                 WeatherButton.Background = new SolidColorBrush(App.AppColor);
@@ -82,7 +61,24 @@ namespace SimpleWeather.UWP
                 WeatherButton.Background = new SolidColorBrush(Windows.UI.Colors.Transparent);
                 SettingsButton.Background = new SolidColorBrush(Windows.UI.Colors.Transparent);
             }
+        }
 
+        private void Shell_BackRequested(object sender, BackRequestedEventArgs e)
+        {
+            if (AppFrame == null)
+                return;
+
+            // Navigate back if possible, and if the event has not 
+            // already been handled .
+            if (AppFrame.CanGoBack && e.Handled == false)
+            {
+                e.Handled = true;
+                AppFrame.GoBack();
+            }
+        }
+
+        private void AppFrame_Navigating(object sender, NavigatingCancelEventArgs e)
+        {
             if (HamBurgerMenu.IsPaneOpen)
                 HamBurgerMenu.IsPaneOpen = !HamBurgerMenu.IsPaneOpen;
         }

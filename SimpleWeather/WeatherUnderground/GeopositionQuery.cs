@@ -53,7 +53,7 @@ namespace SimpleWeather.WeatherUnderground
             }
             catch (Exception ex)
             {
-                result = new location();
+                result = null;
 #if WINDOWS_UWP
                 if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
@@ -99,15 +99,15 @@ namespace SimpleWeather.WeatherUnderground
 
         private string tz_unixField;
 
-        private decimal latField;
+        private string latField;
 
-        private decimal lonField;
+        private string lonField;
 
-        private uint zipField;
+        private string zipField;
 
-        private byte magicField;
+        private string magicField;
 
-        private uint wmoField;
+        private string wmoField;
 
         private string requesturlField;
 
@@ -203,7 +203,7 @@ namespace SimpleWeather.WeatherUnderground
         }
 
         /// <remarks/>
-        public decimal lat
+        public string lat
         {
             get
             {
@@ -216,7 +216,7 @@ namespace SimpleWeather.WeatherUnderground
         }
 
         /// <remarks/>
-        public decimal lon
+        public string lon
         {
             get
             {
@@ -229,7 +229,7 @@ namespace SimpleWeather.WeatherUnderground
         }
 
         /// <remarks/>
-        public uint zip
+        public string zip
         {
             get
             {
@@ -242,7 +242,7 @@ namespace SimpleWeather.WeatherUnderground
         }
 
         /// <remarks/>
-        public byte magic
+        public string magic
         {
             get
             {
@@ -255,7 +255,7 @@ namespace SimpleWeather.WeatherUnderground
         }
 
         /// <remarks/>
-        public uint wmo
+        public string wmo
         {
             get
             {

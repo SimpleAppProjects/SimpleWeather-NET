@@ -270,7 +270,7 @@ namespace SimpleWeather.UWP
                 {
                     if (cts.IsCancellationRequested) return;
 
-                    LocationQueryViewModel view = await GeopositionQuery.getLocation(geoPos);
+                    LocationQueryViewModel view = await GeopositionQuery.GetLocation(geoPos);
 
                     if (!String.IsNullOrEmpty(view.LocationQuery))
                         selected_query = view.LocationQuery;

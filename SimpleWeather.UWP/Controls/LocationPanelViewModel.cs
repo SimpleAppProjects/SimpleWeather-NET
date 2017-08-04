@@ -22,7 +22,7 @@ namespace SimpleWeather.Controls
             typeof(LocationPanelViewModel), new PropertyMetadata(""));
         public static readonly DependencyProperty PairProperty =
             DependencyProperty.Register("Pair", typeof(KeyValuePair<int, string>),
-            typeof(LocationPanelViewModel), new PropertyMetadata(""));
+            typeof(LocationPanelViewModel), new PropertyMetadata(new KeyValuePair<int,string>()));
         public static readonly DependencyProperty EditModeProperty =
             DependencyProperty.Register("EditMode", typeof(bool),
             typeof(LocationPanelViewModel), new PropertyMetadata(false));
@@ -38,6 +38,9 @@ namespace SimpleWeather.Controls
         public static readonly DependencyProperty HomeBoxVisibilityProperty =
             DependencyProperty.Register("HomeBoxVisibility", typeof(Visibility),
             typeof(LocationPanelViewModel), new PropertyMetadata(Visibility.Collapsed));
+        public static readonly DependencyProperty WeatherSourceProperty =
+            DependencyProperty.Register("WeatherSource", typeof(String),
+            typeof(LocationPanelViewModel), new PropertyMetadata(""));
 
         public event PropertyChangedEventHandler PropertyChanged;
         // Create the OnPropertyChanged method to raise the event
@@ -93,6 +96,11 @@ namespace SimpleWeather.Controls
             get { return (Visibility)GetValue(HomeBoxVisibilityProperty); }
             set { SetValue(HomeBoxVisibilityProperty, value); OnPropertyChanged("HomeBoxVisibility"); }
         }
+        public string WeatherSource
+        {
+            get { return (string)GetValue(WeatherSourceProperty); }
+            set { SetValue(WeatherSourceProperty, value); OnPropertyChanged("WeatherSource"); }
+        }
         #endregion
 
         private void SetEditMode(bool value)
@@ -142,6 +150,10 @@ namespace SimpleWeather.Controls
             CurrTemp = (Settings.Unit == Settings.Fahrenheit ?
                 Math.Round(weather.condition.temp_f) : Math.Round(weather.condition.temp_c)) + "º";
             WeatherIcon = WeatherUtils.GetWeatherIcon(weather.condition.icon);
+            WeatherSource = weather.source;
+
+            if (!String.IsNullOrWhiteSpace(weather.query) && !Pair.Equals(default(KeyValuePair<int, string>)))
+                Pair = new KeyValuePair<int, string>(Pair.Key, weather.query);
 
             IsLoading = false;
         }

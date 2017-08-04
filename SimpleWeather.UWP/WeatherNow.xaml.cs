@@ -43,23 +43,29 @@ namespace SimpleWeather.UWP
             TextForecastControl.SelectedIndex = index;
 
             if (WeatherView.WUExtras.HourlyForecast.Count >= 1)
-            {
-                if (HourlyForecastPanel.Visibility != Visibility.Visible)
-                    HourlyForecastPanel.Visibility = Visibility.Visible;
-            }
+                HourlyForecastPanel.Visibility = Visibility.Visible;
+            else
+                HourlyForecastPanel.Visibility = Visibility.Collapsed;
+
             if (WeatherView.WUExtras.TextForecast.Count >= 1)
-            {
-                if (ForecastSwitch.Visibility != Visibility.Visible)
-                    ForecastSwitch.Visibility = Visibility.Visible;
-            }
+                ForecastSwitch.Visibility = Visibility.Visible;
+            else
+                ForecastSwitch.Visibility = Visibility.Collapsed;
+
             if (!String.IsNullOrWhiteSpace(WeatherView.WUExtras.Chance))
             {
-                if (PrecipitationPanel.Visibility != Visibility.Visible)
-                    PrecipitationPanel.Visibility = Visibility.Visible;
+                if (!DetailsWrapGrid.Children.Contains(PrecipitationPanel))
+                {
+                    DetailsWrapGrid.Children.Add(PrecipitationPanel);
+                    DetailsPanel_SizeChanged(DetailsWrapGrid, null);
+                }
+
+                PrecipitationPanel.Visibility = Visibility.Visible;
             }
             else
             {
                 DetailsWrapGrid.Children.Remove(PrecipitationPanel);
+                DetailsPanel_SizeChanged(DetailsWrapGrid, null);
             }
 
             LoadingRing.IsActive = false;
@@ -87,19 +93,21 @@ namespace SimpleWeather.UWP
 
         private void DetailsPanel_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (this.ActualWidth <= 600)
+            double w = this.ActualWidth;
+
+            if (w <= 600)
             {
                 // Keep as one column on smaller screens
                 DetailsWrapGrid.MaximumRowsOrColumns = 1;
                 // Increase card width based on screen size
-                DetailsWrapGrid.ItemWidth = e.NewSize.Width - DetailsPanel.Padding.Right;
+                DetailsWrapGrid.ItemWidth = w - DetailsPanel.Padding.Right;
             }
             else
             {
                 // Minimum width for ea. card
                 int minWidth = 250;
                 // Size of the view
-                int viewWidth = (int)(e.NewSize.Width - DetailsPanel.Padding.Right - DetailsPanel.Padding.Left);
+                int viewWidth = (int)(w - DetailsPanel.Padding.Right - DetailsPanel.Padding.Left);
                 // Available columns based on min card width
                 int availColumns = (viewWidth / minWidth) == 0 ? 1 : viewWidth / minWidth;
                 // Maximum columns to use
@@ -130,6 +138,12 @@ namespace SimpleWeather.UWP
             // Did home change?
             CoreApplication.Properties.TryGetValue("HomeChanged", out object homeChanged);
             CoreApplication.Properties.Remove("HomeChanged");
+
+            // Reset loader if source is different
+            if (wLoader != null && WeatherView.WeatherSource != Settings.API)
+            {
+                wLoader = null;
+            }
 
             // Update view on resume
             // ex. If temperature unit changed
@@ -212,6 +226,10 @@ namespace SimpleWeather.UWP
                 }
                 else
                 {
+                    // Reset locdata if source is different
+                    if (locData.source != Settings.API)
+                        Settings.SaveLastGPSLocData(new LocationData());
+
                     if (await UpdateLocation())
                     {
                         // Setup loader from updated location
@@ -290,7 +308,7 @@ namespace SimpleWeather.UWP
 
                     await Task.Run(async () =>
                     {
-                        LocationQueryViewModel view = await GeopositionQuery.getLocation(newGeoPos);
+                        LocationQueryViewModel view = await GeopositionQuery.GetLocation(newGeoPos);
 
                         if (!String.IsNullOrEmpty(view.LocationQuery))
                             selected_query = view.LocationQuery;

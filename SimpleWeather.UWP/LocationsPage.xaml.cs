@@ -176,16 +176,30 @@ namespace SimpleWeather.UWP
         {
             // Reload all panels if needed
             List<string> locations = await Settings.GetLocations();
+            bool reload = !Settings.FollowGPS && locations.Count != LocationPanels.Count ||
+                Settings.FollowGPS && (GPSPanelViewModel.First() == null || locations.Count - 1 != LocationPanels.Count);
 
-            if (!Settings.FollowGPS && locations.Count != LocationPanels.Count ||
-                Settings.FollowGPS && (GPSPanelViewModel.First() == null || locations.Count - 1 != LocationPanels.Count))
+            // Reload if weather source differs
+            if ((GPSPanelViewModel.First() != null && GPSPanelViewModel.First().WeatherSource != Settings.API) ||
+                (LocationPanels.Count >= 1 && LocationPanels[0].WeatherSource != Settings.API))
+                reload = true;
+
+            // Reload if panel queries dont match
+            if (!reload && (GPSPanelViewModel.First() != null && locations[App.HomeIdx] != GPSPanelViewModel.First().Pair.Value))
+                reload = true;
+
+            if (reload)
             {
                 LocationPanels.Clear();
                 LoadLocations();
             }
             else
             {
-                foreach (LocationPanelViewModel view in GPSPanelViewModel.Concat(LocationPanels))
+                List<LocationPanelViewModel> dataset = LocationPanels.ToList();
+                if (GPSPanelViewModel.First() != null)
+                    dataset.Add(GPSPanelViewModel.First());
+
+                foreach (LocationPanelViewModel view in dataset)
                 {
                     WeatherDataLoader wLoader =
                         new WeatherDataLoader(this, view.Pair.Value, view.Pair.Key);
