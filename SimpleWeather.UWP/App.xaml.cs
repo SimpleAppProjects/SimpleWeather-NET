@@ -3,6 +3,7 @@ using System;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Resources;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -17,6 +18,7 @@ namespace SimpleWeather.UWP
     {
         public static readonly Color AppColor = Color.FromArgb(255, 0, 111, 191);
         public const int HomeIdx = 0;
+        public static ResourceLoader ResLoader;
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -74,6 +76,7 @@ namespace SimpleWeather.UWP
                 Window.Current.Activate();
             }
 
+            ResLoader = new ResourceLoader();
             Task.Factory.StartNew(() => Settings.LoadIfNeeded());
         }
 

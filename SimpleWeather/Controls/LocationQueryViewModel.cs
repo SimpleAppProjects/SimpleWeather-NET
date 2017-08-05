@@ -1,6 +1,11 @@
 ﻿using System;
 using SimpleWeather.WeatherUnderground;
 using SimpleWeather.WeatherYahoo;
+#if WINDOWS_UWP
+using SimpleWeather.UWP;
+#elif __ANDROID__
+using SimpleWeather.Droid;
+#endif
 
 namespace SimpleWeather.Controls
 {
@@ -12,12 +17,18 @@ namespace SimpleWeather.Controls
 
         public LocationQueryViewModel()
         {
+#if WINDOWS_UWP
+            LocationName = App.ResLoader.GetString("Error_NoResults");
+#elif __ANDROID__
+            LocationName = App.Context.GetString(Resource.String.error_noresults);
+#else
             LocationName = "No results found";
+#endif
             LocationCountry = string.Empty;
             LocationQuery = string.Empty;
         }
 
-        #region WeatherUnderground
+#region WeatherUnderground
         public LocationQueryViewModel(AC_RESULT location)
         {
             SetLocation(location);
@@ -41,9 +52,9 @@ namespace SimpleWeather.Controls
             LocationCountry = location.country;
             LocationQuery = location.query;
         }
-        #endregion
+#endregion
 
-        #region Yahoo Weather
+#region Yahoo Weather
         public LocationQueryViewModel(place location)
         {
             SetLocation(location);
@@ -86,6 +97,6 @@ namespace SimpleWeather.Controls
             LocationCountry = location.country.code;
             LocationQuery = location.woeid;
         }
-        #endregion
+#endregion
     }
 }

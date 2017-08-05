@@ -320,7 +320,7 @@
         <CommandBar x:Name="CommandBar" RequestedTheme="Dark" Background="#FF1F336C" Style="{StaticResource NoOverflow}" Grid.Row="0">
             <CommandBar.Content>
                 <Grid Height="48">
-                    <TextBlock Text="Locations" Style="{StaticResource CommandBarLabel}"/>
+                    <TextBlock x:Uid="Nav_Locations" Text="Locations" Style="{StaticResource CommandBarLabel}"/>
                 </Grid>
             </CommandBar.Content>
             <AppBarButton x:Name="EditButton" Icon="Edit" Label="Edit" Click="AppBarButton_Click"/>
@@ -444,7 +444,7 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <AutoSuggestBox x:Name="Location" FontSize="24" PlaceholderText="Enter Location" Grid.Column="0" RequestedTheme="Light"
+                    <AutoSuggestBox x:Name="Location" FontSize="24" x:Uid="LocationSearchHint" PlaceholderText="Enter Location" Grid.Column="0" RequestedTheme="Light"
                             QueryIcon="Find" TextChanged="Location_TextChanged" SuggestionChosen="Location_SuggestionChosen" QuerySubmitted="Location_QuerySubmitted"
                             UpdateTextOnSelect="False" Style="{StaticResource AutoSuggestBoxStyle}">
                         <AutoSuggestBox.ItemTemplate>
@@ -469,7 +469,7 @@
                         <Viewbox Grid.Column="0">
                             <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" Padding="2.5"/>
                         </Viewbox>
-                        <TextBlock Text="Add Location" VerticalAlignment="Center" Padding="5" Grid.Column="1" />
+                        <TextBlock x:Uid="Label_AddLocation" Text="Add Location" VerticalAlignment="Center" Padding="5" Grid.Column="1" />
                     </Grid>
                 </Button>
             </StackPanel>

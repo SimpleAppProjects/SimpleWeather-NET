@@ -22,6 +22,9 @@ namespace SimpleWeather.WeatherUnderground
 
             try
             {
+                if (String.IsNullOrWhiteSpace(key))
+                    throw (wEx = new WeatherException(WeatherUtils.ErrorStatus.INVALIDAPIKEY));
+
                 // Connect to webstream
                 HttpClient webClient = new HttpClient();
                 HttpResponseMessage response = await webClient.GetAsync(queryURL);

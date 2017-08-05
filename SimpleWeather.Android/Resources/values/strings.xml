@@ -60,12 +60,24 @@
     </string>
     <string name="pref_summary_currentlocation">Allow access to current location via GPS</string>
     <string name="pref_summary_apikey">Enter API Key required for WeatherUnderground</string>
+    <string name="message_enter_apikey">"Please enter an API Key"</string>
+    <string name="message_keyverified">Key Verified</string>
+    <string name="message_keyinvalid">Key Invalid</string>
 
     <!-- Locations -->
     <string name="label_btn_add_location">Add Location</string>
     <string name="action_editmode">Edit Mode</string>
-    <string name="message_loading">Loading...</string>
+    <string name="message_loading">Loading&#8230;</string>
     <string name="label_currentlocation">Current Location</string>
     <string name="label_favoritelocations">Favorite Locations</string>
+    <string name="error_location_denied">Location access denied</string>
+    <string name="error_retrieve_location">Unable to get location</string>
+    <string name="error_noresults">No results found</string>
+
+    <!-- Weather Exceptions -->
+    <string name="werror_noweather">Unable to load weather data!!</string>
+    <string name="werror_networkerror">Network Connection Error!!</string>
+    <string name="werror_invalidkey">Invalid API Key</string>
+    <string name="werror_querynotfound">No cities match your search query</string>
 
 </resources>

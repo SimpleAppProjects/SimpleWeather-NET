@@ -615,7 +615,7 @@ namespace SimpleWeather.Droid
                 }
                 else
                 {
-                    Toast.MakeText(Activity, "Unable to get location", ToastLength.Short).Show();
+                    Toast.MakeText(Activity, Resource.String.error_retrieve_location, ToastLength.Short).Show();
                 }
             }
 
@@ -642,7 +642,7 @@ namespace SimpleWeather.Droid
                         {
                             // permission denied, boo! Disable the
                             // functionality that depends on this permission.
-                            Toast.MakeText(Activity, "Location access denied", ToastLength.Short).Show();
+                            Toast.MakeText(Activity, Resource.String.error_location_denied, ToastLength.Short).Show();
                         }
                         return;
                     }

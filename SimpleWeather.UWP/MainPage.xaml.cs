@@ -235,27 +235,27 @@ namespace SimpleWeather.UWP
                     catch (Exception ex)
                     {
                         if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
-                            error = new MessageDialog("Network Connection Error!!", "Error");
+                            error = new MessageDialog(App.ResLoader.GetString("WError_NetworkError"), App.ResLoader.GetString("Label_Error"));
                         else
-                            error = new MessageDialog("Unable to retrieve location status", "Location access error");
+                            error = new MessageDialog(App.ResLoader.GetString("Error_Location"), App.ResLoader.GetString("Label_ErrorLocation"));
                         await error.ShowAsync();
 
                         System.Diagnostics.Debug.WriteLine(ex.StackTrace);
                     }
                     break;
                 case GeolocationAccessStatus.Denied:
-                    error = new MessageDialog("Access to location was denied. Please enable in Settings.", "Location access denied");
-                    error.Commands.Add(new UICommand("Settings", async (command) =>
+                    error = new MessageDialog(App.ResLoader.GetString("Msg_LocDeniedSettings"), App.ResLoader.GetString("Label_ErrLocationDenied"));
+                    error.Commands.Add(new UICommand(App.ResLoader.GetString("Label_Settings"), async (command) =>
                     {
                         await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:privacy-location"));
                     }, 0));
-                    error.Commands.Add(new UICommand("Cancel", null, 1));
+                    error.Commands.Add(new UICommand(App.ResLoader.GetString("Label_Cancel"), null, 1));
                     error.DefaultCommandIndex = 0;
                     error.CancelCommandIndex = 1;
                     await error.ShowAsync();
                     break;
                 case GeolocationAccessStatus.Unspecified:
-                    error = new MessageDialog("Unable to retrieve location status", "Location access error");
+                    error = new MessageDialog(App.ResLoader.GetString("Error_Location"), App.ResLoader.GetString("Label_ErrorLocation"));
                     await error.ShowAsync();
                     break;
             }

@@ -1,4 +1,5 @@
-﻿using Windows.UI.Core;
+﻿using Windows.UI;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -44,22 +45,22 @@ namespace SimpleWeather.UWP
             {
                 WeatherButton.Background = new SolidColorBrush(App.AppColor);
 
-                SettingsButton.Background = new SolidColorBrush(Windows.UI.Colors.Transparent);
-                LocationsButton.Background = new SolidColorBrush(Windows.UI.Colors.Transparent);
+                SettingsButton.Background = new SolidColorBrush(Colors.Transparent);
+                LocationsButton.Background = new SolidColorBrush(Colors.Transparent);
             }
             else if (e.SourcePageType == typeof(SettingsPage))
             {
                 SettingsButton.Background = new SolidColorBrush(App.AppColor);
 
-                WeatherButton.Background = new SolidColorBrush(Windows.UI.Colors.Transparent);
-                LocationsButton.Background = new SolidColorBrush(Windows.UI.Colors.Transparent);
+                WeatherButton.Background = new SolidColorBrush(Colors.Transparent);
+                LocationsButton.Background = new SolidColorBrush(Colors.Transparent);
             }
             else if (e.SourcePageType == typeof(LocationsPage))
             {
                 LocationsButton.Background = new SolidColorBrush(App.AppColor);
 
-                WeatherButton.Background = new SolidColorBrush(Windows.UI.Colors.Transparent);
-                SettingsButton.Background = new SolidColorBrush(Windows.UI.Colors.Transparent);
+                WeatherButton.Background = new SolidColorBrush(Colors.Transparent);
+                SettingsButton.Background = new SolidColorBrush(Colors.Transparent);
             }
         }
 

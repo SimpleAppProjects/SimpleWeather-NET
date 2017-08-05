@@ -187,8 +187,7 @@ namespace SimpleWeather.Droid
 
                 if (String.IsNullOrWhiteSpace(Settings.API_KEY) && Settings.API == Settings.API_WUnderground)
                 {
-                    String errorMsg = new WeatherException(WeatherUtils.ErrorStatus.INVALIDAPIKEY).Message;
-                    Toast.MakeText(this.ApplicationContext, errorMsg, ToastLength.Short).Show();
+                    Toast.MakeText(this.ApplicationContext, Resource.String.werror_invalidkey, ToastLength.Short).Show();
                     // Hide dialog
                     progDialog.Dismiss();
                     return;
@@ -280,7 +279,7 @@ namespace SimpleWeather.Droid
             }
             else
             {
-                Toast.MakeText(this, "Unable to get location", ToastLength.Short).Show();
+                Toast.MakeText(this, Resource.String.error_retrieve_location, ToastLength.Short).Show();
             }
         }
 
@@ -303,7 +302,7 @@ namespace SimpleWeather.Droid
                         {
                             // permission denied, boo! Disable the
                             // functionality that depends on this permission.
-                            Toast.MakeText(this, "Location access denied", ToastLength.Short).Show();
+                            Toast.MakeText(this, Resource.String.error_location_denied, ToastLength.Short).Show();
                         }
                         return;
                     }

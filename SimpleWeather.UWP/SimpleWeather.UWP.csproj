@@ -137,6 +137,7 @@
     <Content Include="Assets\StoreLogo.scale-150.png" />
     <Content Include="Assets\WeatherIcons\weathericons-regular-webfont.ttf" />
     <None Include="project.json" />
+    <PRIResource Include="Strings\en-US\Resources.resw" />
     <None Include="SimpleWeather.UWP_StoreKey.pfx" />
   </ItemGroup>
   <ItemGroup>

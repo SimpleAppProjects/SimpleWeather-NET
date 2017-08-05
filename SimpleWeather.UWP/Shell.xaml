@@ -100,7 +100,7 @@
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="&#xf00d;" Style="{StaticResource WeatherIcon}" Grid.Column="0" FontSize="15"/>
-                                <TextBlock Text="Weather" RequestedTheme="Dark" FontSize="18" VerticalAlignment="Center" Padding="5" Grid.Column="1" />
+                                <TextBlock x:Uid="Nav_WeatherNow" Text="Weather" RequestedTheme="Dark" FontSize="18" VerticalAlignment="Center" Padding="5" Grid.Column="1" />
                             </Grid>
                         </Button>
                         <StackPanel.Background>
@@ -115,7 +115,7 @@
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="&#xEA37;" Style="{StaticResource BurgerIcon}" Grid.Column="0"/>
-                                <TextBlock Text="Locations" RequestedTheme="Dark" FontSize="18" VerticalAlignment="Center" Padding="5" Grid.Column="1" />
+                                <TextBlock x:Uid="Nav_Locations" Text="Locations" RequestedTheme="Dark" FontSize="18" VerticalAlignment="Center" Padding="5" Grid.Column="1" />
                             </Grid>
                         </Button>
                         <StackPanel.Background>
@@ -130,7 +130,7 @@
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="&#xE713;" Style="{StaticResource BurgerIcon}" Grid.Column="0" />
-                                <TextBlock Text="Settings" RequestedTheme="Dark" FontSize="18" VerticalAlignment="Center" Padding="5" Grid.Column="1" />
+                                <TextBlock x:Uid="Nav_Settings" Text="Settings" RequestedTheme="Dark" FontSize="18" VerticalAlignment="Center" Padding="5" Grid.Column="1" />
                             </Grid>
                         </Button>
                         <StackPanel.Background>

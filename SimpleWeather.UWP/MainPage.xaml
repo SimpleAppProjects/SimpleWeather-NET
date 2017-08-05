@@ -258,7 +258,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <AutoSuggestBox x:Name="Location" FontSize="24" PlaceholderText="Enter Location" VerticalAlignment="Center" QueryIcon="Find"
+            <AutoSuggestBox x:Name="Location" x:Uid="LocationSearchHint" PlaceholderText="Enter Location" FontSize="24" VerticalAlignment="Center" QueryIcon="Find"
                             RequestedTheme="Light" TextChanged="Location_TextChanged" SuggestionChosen="Location_SuggestionChosen" QuerySubmitted="Location_QuerySubmitted"
                             Grid.Row="0" UpdateTextOnSelect="False" Style="{StaticResource AutoSuggestBoxStyle}">
                 <AutoSuggestBox.ItemTemplate>
@@ -276,7 +276,7 @@
                     HorizontalAlignment="Center" Margin="10">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Follow Location via GPS" VerticalAlignment="Center"
+                        <TextBlock x:Uid="Label_GPSFollow" Text="Follow Location via GPS" VerticalAlignment="Center"
                                    Padding="5,0" FontSize="12"/>
                         <TextBlock Text="&#xE7B7;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center"
                                    Padding="5,0" FontSize="12"/>
@@ -290,20 +290,20 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <ComboBox x:Name="APIComboBox" HorizontalAlignment="Center" VerticalAlignment="Top" Width="300" Margin="0,10"
-                  Background="White" BorderThickness="0" Grid.Row="0" PlaceholderText="Select Weather Provider" SelectionChanged="APIComboBox_SelectionChanged" FontSize="12">
+                  Background="White" BorderThickness="0" Grid.Row="0" x:Uid="API_Box" PlaceholderText="Select Weather Provider" SelectionChanged="APIComboBox_SelectionChanged" FontSize="12">
                 <ComboBox.Items>
                     <TextBlock Text="WeatherUnderground"/>
                     <TextBlock Text="Yahoo Weather"/>
                 </ComboBox.Items>
                 <ComboBox.Header>
-                    <TextBlock Text="Weather Provider" Foreground="White" Padding="5,0" FontSize="12" />
+                    <TextBlock x:Uid="API_Label" Text="Weather Provider" Foreground="White" Padding="5,0" FontSize="12" />
                 </ComboBox.Header>
             </ComboBox>
             <TextBox x:Name="KeyEntry" HorizontalAlignment="Center" Width="300" Grid.Row="1" FontSize="12"
-                 BorderThickness="0" PlaceholderText="API Key" Padding="10,7" Visibility="Visible"
+                 BorderThickness="0" x:Uid="KeyEntry" PlaceholderText="API Key" Padding="10,7" Visibility="Visible"
                      TextChanged="KeyEntry_TextChanged" GotFocus="KeyEntry_GotFocus">
                 <TextBox.Header>
-                    <TextBlock Text="Please enter an API key" Foreground="White" Padding="5,0" FontSize="12" Visibility="Collapsed" />
+                    <TextBlock x:Uid="Message_EnterAPIKey" Text="Please enter an API key" Foreground="White" Padding="5,0" FontSize="12" Visibility="Collapsed" />
                 </TextBox.Header>
             </TextBox>
         </Grid>

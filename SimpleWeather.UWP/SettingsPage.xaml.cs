@@ -101,7 +101,7 @@ namespace SimpleWeather.UWP
             if (String.IsNullOrWhiteSpace(Settings.API_KEY) && APIComboBox.SelectedIndex == 0)
             {
                 KeyBorder.BorderBrush = new SolidColorBrush(Colors.Red);
-                await new MessageDialog("Please enter an API Key").ShowAsync();
+                await new MessageDialog(App.ResLoader.GetString("Msg_EnterAPIKey")).ShowAsync();
                 e.Handled = true;
             }
             else
@@ -124,23 +124,20 @@ namespace SimpleWeather.UWP
                 var diag = dialog as Controls.KeyEntryDialog;
 
                 string key = diag.Key;
-                if (!String.IsNullOrWhiteSpace(key))
+                if (await WeatherUnderground.KeyCheckQuery.IsValid(key))
                 {
-                    if (await WeatherUnderground.KeyCheckQuery.IsValid(key))
-                    {
-                        KeyEntry.Text = Settings.API_KEY = key;
-                        Settings.API = Settings.API_WUnderground;
+                    KeyEntry.Text = Settings.API_KEY = key;
+                    Settings.API = Settings.API_WUnderground;
 
-                        keyVerified = true;
-                        UpdateKeyBorder();
+                    keyVerified = true;
+                    UpdateKeyBorder();
 
-                        diag.CanClose = true;
-                        diag.Hide();
-                    }
-                    else
-                    {
-                        diag.CanClose = false;
-                    }
+                    diag.CanClose = true;
+                    diag.Hide();
+                }
+                else
+                {
+                    diag.CanClose = false;
                 }
             };
             await keydialog.ShowAsync();
@@ -226,19 +223,19 @@ namespace SimpleWeather.UWP
                             CoreApplication.Properties.Add("HomeChanged", true);
                         break;
                     case GeolocationAccessStatus.Denied:
-                        error = new MessageDialog("Access to location was denied. Please enable in Settings.", "Location access denied");
-                        error.Commands.Add(new UICommand("Settings", async (command) =>
+                        error = new MessageDialog(App.ResLoader.GetString("Msg_LocDeniedSettings"), App.ResLoader.GetString("Label_ErrLocationDenied"));
+                        error.Commands.Add(new UICommand(App.ResLoader.GetString("Label_Settings"), async (command) =>
                         {
                             await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:privacy-location"));
                         }, 0));
-                        error.Commands.Add(new UICommand("Cancel", null, 1));
+                        error.Commands.Add(new UICommand(App.ResLoader.GetString("Label_Cancel"), null, 1));
                         error.DefaultCommandIndex = 0;
                         error.CancelCommandIndex = 1;
                         await error.ShowAsync();
                         sw.IsOn = false;
                         break;
                     case GeolocationAccessStatus.Unspecified:
-                        error = new MessageDialog("Unable to retrieve location status", "Location access error");
+                        error = new MessageDialog(App.ResLoader.GetString("Error_Location"), App.ResLoader.GetString("Label_ErrorLocation"));
                         await error.ShowAsync();
                         sw.IsOn = false;
                         break;

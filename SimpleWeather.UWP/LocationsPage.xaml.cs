@@ -388,7 +388,7 @@ namespace SimpleWeather.UWP
             EditMode = !EditMode;
 
             EditButton.Icon = new SymbolIcon(EditMode ? Symbol.Accept : Symbol.Edit);
-            EditButton.Label = EditMode ? "Done" : "Edit";
+            EditButton.Label = EditMode ? App.ResLoader.GetString("Label_Done") : App.ResLoader.GetString("Label_Edit");
             LocationsPanel.IsItemClickEnabled = !EditMode;
 
             foreach (LocationPanelViewModel view in LocationPanels)

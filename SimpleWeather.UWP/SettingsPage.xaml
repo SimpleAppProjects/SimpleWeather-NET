@@ -222,7 +222,7 @@
         <CommandBar x:Name="CommandBar" RequestedTheme="Dark" Background="#FF1F336C" Style="{StaticResource NoOverflow}" Grid.Row="0">
             <CommandBar.Content>
                 <Grid Height="48">
-                    <TextBlock Text="Settings" Style="{StaticResource CommandBarLabel}"/>
+                    <TextBlock x:Uid="Nav_Settings" Text="Settings" Style="{StaticResource CommandBarLabel}"/>
                 </Grid>
             </CommandBar.Content>
         </CommandBar>
@@ -234,43 +234,44 @@
                     <TextBlock Text="{Binding}" Style="{StaticResource CommandBarLabel}" FontWeight="SemiBold" />
                 </DataTemplate>
             </Pivot.HeaderTemplate>
-            <PivotItem Header="General" Padding="10">
+            <PivotItem x:Uid="General" Header="General" Padding="10">
                 <StackPanel>
-                    <TextBlock Text="Temperature" Style="{StaticResource SubheaderTextBlockStyle}" FontWeight="SemiLight" Padding="0,10" FontSize="24"/>
-                    <TextBlock Text="Display units in:" FontSize="18" Padding="10,5" />
+                    <TextBlock x:Uid="Pref_CategoryTemp" Text="Temperature" Style="{StaticResource SubheaderTextBlockStyle}" FontWeight="SemiLight" Padding="0,10" FontSize="24"/>
+                    <TextBlock x:Uid="Pref_SummaryUnits" Text="Display units in:" FontSize="18" Padding="10,5" />
                     <StackPanel Orientation="Horizontal" Padding="10,5">
                         <RadioButton x:Name="Fahrenheit" Content="Fahrenheit" Checked="Fahrenheit_Checked"/>
                         <RadioButton x:Name="Celsius" Content="Celsius" Checked="Celsius_Checked"/>
                     </StackPanel>
-                    <TextBlock Text="Location" Style="{StaticResource SubheaderTextBlockStyle}" FontWeight="SemiLight" Padding="0,10" FontSize="24"/>
-                    <TextBlock Text="Follow current location via GPS:" FontSize="18" Padding="10,5" />
+                    <TextBlock x:Uid="Pref_CategoryLocation" Text="Location" Style="{StaticResource SubheaderTextBlockStyle}" FontWeight="SemiLight" Padding="0,10" FontSize="24"/>
+                    <TextBlock x:Uid="Pref_SummaryFollowGPS" Text="Follow current location via GPS" FontSize="18" Padding="10,5" />
                     <StackPanel Orientation="Horizontal" Padding="10,5">
                         <ToggleSwitch x:Name="FollowGPS" Toggled="FollowGPS_Toggled"/>
                     </StackPanel>
-                    <TextBlock Text="Weather Provider" Style="{StaticResource SubheaderTextBlockStyle}" FontWeight="SemiLight" Padding="0,10" FontSize="24"/>
+                    <TextBlock x:Uid="Pref_CategoryWProvider" Text="Weather Provider" Style="{StaticResource SubheaderTextBlockStyle}" FontWeight="SemiLight" Padding="0,10" FontSize="24"/>
                     <ComboBox x:Name="APIComboBox" Width="300" HorizontalAlignment="Left"
-                              PlaceholderText="Select Weather Provider">
+                              x:Uid="API_Box" PlaceholderText="Select Weather Provider">
                         <ComboBox.Items>
                             <TextBlock Text="WeatherUnderground"/>
                             <TextBlock Text="Yahoo Weather"/>
                         </ComboBox.Items>
                     </ComboBox>
                     <StackPanel x:Name="KeyPanel">
-                        <TextBlock Text="API Key" Padding="5"/>
+                        <TextBlock x:Uid="KeyEntry.PlaceholderText" Text="API Key" Padding="5"/>
                         <Border x:Name="KeyBorder" BorderThickness="2" Background="White" BorderBrush="DarkGray"
                             Width="300" HorizontalAlignment="Left" Padding="10,4"
                             Visibility="{Binding ElementName=KeyEntry, Path=Visibility}">
                             <TextBlock x:Name="KeyEntry"
-                             Visibility="Visible"
-                             Tapped="KeyEntry_Tapped" Text="API Key"
-                             GotFocus="KeyEntry_GotFocus" />
+                                       Visibility="Visible"
+                                       Tapped="KeyEntry_Tapped"
+                                       x:Uid="KeyEntry.PlaceholderText" Text="API Key"
+                                       GotFocus="KeyEntry_GotFocus" />
                         </Border>
                     </StackPanel>
                 </StackPanel>
             </PivotItem>
-            <PivotItem Header="Credits" Padding="10">
+            <PivotItem x:Uid="Credits" Header="Credits" Padding="10">
                 <StackPanel>
-                    <TextBlock Text="Weather Providers" Style="{StaticResource SubheaderTextBlockStyle}" FontWeight="SemiLight" Padding="0,10" FontSize="24"/>
+                    <TextBlock x:Uid="Pref_TitleProviders" Text="Weather Providers" Style="{StaticResource SubheaderTextBlockStyle}" FontWeight="SemiLight" Padding="0,10" FontSize="24"/>
                     <StackPanel Padding="10">
                         <TextBlock Text="WeatherUnderground" Style="{StaticResource SubtitleTextBlockStyle}"/>
                         <RichTextBlock Padding="0,10">
@@ -298,10 +299,10 @@
                     </StackPanel>
                 </StackPanel>
             </PivotItem>
-            <PivotItem Header="Open Source Libraries">
+            <PivotItem x:Uid="OSSLibs" Header="Open Source Libraries">
                 <WebView Name="OSSLicenseWebview" />
             </PivotItem>
-            <PivotItem Header="About" Padding="10">
+            <PivotItem x:Uid="About" Header="About" Padding="10">
                 <StackPanel>
                     <TextBlock Name="AppName" Text="SimpleWeather" Style="{StaticResource TitleTextBlockStyle}" />
                     <TextBlock Name="Version" Text="v0.00" Style="{StaticResource BodyTextBlockStyle}" Foreground="Gray" />

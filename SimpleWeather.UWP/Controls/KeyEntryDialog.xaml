@@ -12,6 +12,6 @@
     SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
 
     <Grid>
-        <TextBox x:Name="KeyEntry" FontSize="12" PlaceholderText="API Key" Padding="10,7" VerticalAlignment="Center"/>
+        <TextBox x:Name="KeyEntry" FontSize="12" x:Uid="KeyEntry" PlaceholderText="API Key" Padding="10,7" VerticalAlignment="Center"/>
     </Grid>
 </ContentDialog>

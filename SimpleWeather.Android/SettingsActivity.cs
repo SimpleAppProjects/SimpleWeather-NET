@@ -88,7 +88,7 @@ namespace SimpleWeather.Droid
                 if (String.IsNullOrWhiteSpace(Settings.API_KEY) && keyPref.Value == Settings.API_WUnderground)
                 {
                     // Set keyentrypref color to red
-                    Toast.MakeText(this, "Please enter an API Key", ToastLength.Long).Show();
+                    Toast.MakeText(this, Resource.String.message_enter_apikey, ToastLength.Long).Show();
                     return;
                 }
             }
@@ -186,21 +186,16 @@ namespace SimpleWeather.Droid
                 {
                     String key = keyEntry.EditText.Text;
 
-                    if (!String.IsNullOrWhiteSpace(key))
+                    if (await WeatherUnderground.KeyCheckQuery.IsValid(key))
                     {
-                        if (await WeatherUnderground.KeyCheckQuery.IsValid(key))
-                        {
-                            Settings.API_KEY = key;
-                            Settings.API = Settings.API_WUnderground;
+                        Settings.API_KEY = key;
+                        Settings.API = Settings.API_WUnderground;
 
-                            keyVerified = true;
-                            UpdateKeySummary();
+                        keyVerified = true;
+                        UpdateKeySummary();
 
-                            keyEntry.Dialog.Dismiss();
-                        }
+                        keyEntry.Dialog.Dismiss();
                     }
-                    else
-                        Toast.MakeText(this.Activity, "Please enter an API Key", ToastLength.Short).Show();
                 };
 
                 providerPref = (ListPreference)FindPreference(KEY_API);
@@ -261,7 +256,7 @@ namespace SimpleWeather.Droid
                     ForegroundColorSpan colorSpan = new ForegroundColorSpan(keyVerified ?
                         Color.Green : Color.Red);
                     ISpannable summary = new SpannableString(keyVerified ?
-                        "Key Verified" : "Key Invalid");
+                        GetString(Resource.String.message_keyverified) : GetString(Resource.String.message_keyinvalid));
                     summary.SetSpan(colorSpan, 0, summary.Length(), 0);
                     keyEntry.SummaryFormatted = summary;
                 }
@@ -289,7 +284,7 @@ namespace SimpleWeather.Droid
                             {
                                 // permission denied, boo! Disable the
                                 // functionality that depends on this permission.
-                                Toast.MakeText(Activity, "Location access denied", ToastLength.Short).Show();
+                                Toast.MakeText(Activity, Resource.String.error_location_denied, ToastLength.Short).Show();
                                 followGps.Checked = false;
                                 Console.WriteLine(Settings.FollowGPS);
                             }

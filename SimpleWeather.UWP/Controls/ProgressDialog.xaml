@@ -133,7 +133,7 @@
                 <ProgressRing IsActive="True" Grid.Column="0"
                               Width="50" Height="50" Padding="10"
                               VerticalAlignment="Center" HorizontalAlignment="Right"/>
-                <TextBlock Text="Loading..." Grid.Column="1"
+                <TextBlock x:Uid="Label_Loading" Text="Loading..." Grid.Column="1"
                            Padding="10" VerticalAlignment="Center"/>
             </Grid>
         </StackPanel>
