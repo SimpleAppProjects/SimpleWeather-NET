@@ -284,6 +284,12 @@ namespace SimpleWeather.UWP
                             System.Diagnostics.Debug.WriteLine(ex.StackTrace);
                         }
                     }
+                    else if (geoStatus == GeolocationAccessStatus.Denied)
+                    {
+                        // Disable gps feature
+                        Settings.FollowGPS = false;
+                        return false;
+                    }
                 }
 
                 // Access to location granted

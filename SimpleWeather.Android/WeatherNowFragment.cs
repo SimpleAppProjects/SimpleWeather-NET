@@ -642,6 +642,7 @@ namespace SimpleWeather.Droid
                         {
                             // permission denied, boo! Disable the
                             // functionality that depends on this permission.
+                            Settings.FollowGPS = false;
                             Toast.MakeText(Activity, Resource.String.error_location_denied, ToastLength.Short).Show();
                         }
                         return;
