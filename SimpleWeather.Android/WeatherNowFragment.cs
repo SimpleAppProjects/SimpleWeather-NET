@@ -572,12 +572,14 @@ namespace SimpleWeather.Droid
                         locMan.RequestSingleUpdate(provider, mLocListnr, null);
                     else
                     {
-                        if (mLocation != null && CalculateGeopositionDistance(mLocation, location) < 2500)
+                        LocationData lastGPSLocData = await Settings.GetLastGPSLocData();
+
+                        // Check previous location difference
+                        if (lastGPSLocData.query != null &&
+                            mLocation != null && CalculateGeopositionDistance(mLocation, location) < 2500)
                         {
                             return false;
                         }
-
-                        LocationData lastGPSLocData = await Settings.GetLastGPSLocData();
 
                         if (lastGPSLocData.query != null &&
                             Math.Abs(ConversionMethods.CalculateHaversine(lastGPSLocData.latitude, lastGPSLocData.longitude,

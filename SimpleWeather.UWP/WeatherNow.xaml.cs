@@ -295,13 +295,14 @@ namespace SimpleWeather.UWP
                 // Access to location granted
                 if (newGeoPos != null)
                 {
+                    LocationData lastGPSLocData = await Settings.GetLastGPSLocData();
+
                     // Check previous location difference
-                    if (geoPos != null && CalculateGeopositionDistance(geoPos, newGeoPos) < geolocal.MovementThreshold)
+                    if (lastGPSLocData.query != null &&
+                        geoPos != null && CalculateGeopositionDistance(geoPos, newGeoPos) < geolocal.MovementThreshold)
                     {
                         return false;
                     }
-
-                    LocationData lastGPSLocData = await Settings.GetLastGPSLocData();
 
                     if (lastGPSLocData.query != null && 
                         Math.Abs(ConversionMethods.CalculateHaversine(lastGPSLocData.latitude, lastGPSLocData.longitude,
