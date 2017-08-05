@@ -87,7 +87,12 @@ namespace SimpleWeather.WeatherData
                     // Get response
                     HttpResponseMessage response = await webClient.GetAsync(weatherURL);
                     response.EnsureSuccessStatusCode();
-                    string content = await response.Content.ReadAsStringAsync();
+                    System.IO.Stream contentStream = null;
+#if WINDOWS_UWP
+                    contentStream = System.IO.WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+#elif __ANDROID__
+                    contentStream = await response.Content.ReadAsStreamAsync();
+#endif
                     // Reset exception
                     wEx = null;
 
@@ -97,7 +102,7 @@ namespace SimpleWeather.WeatherData
                         WeatherUnderground.Rootobject root = null;
                         await Task.Run(() =>
                         {
-                            root = JSONParser.Deserializer<WeatherUnderground.Rootobject>(content);
+                            root = JSONParser.Deserializer<WeatherUnderground.Rootobject>(contentStream);
                         });
 
                         // Check for errors
@@ -124,7 +129,7 @@ namespace SimpleWeather.WeatherData
                         WeatherYahoo.Rootobject root = null;
                         await Task.Run(() =>
                         {
-                            root = JSONParser.Deserializer<WeatherYahoo.Rootobject>(content);
+                            root = JSONParser.Deserializer<WeatherYahoo.Rootobject>(contentStream);
                         });
 
                         weather = new Weather(root);
@@ -381,7 +386,12 @@ namespace SimpleWeather.WeatherData
                     // Get response
                     HttpResponseMessage response = await webClient.GetAsync(weatherURL);
                     response.EnsureSuccessStatusCode();
-                    string content = await response.Content.ReadAsStringAsync();
+                    System.IO.Stream contentStream = null;
+#if WINDOWS_UWP
+                    contentStream = System.IO.WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+#elif __ANDROID__
+                    contentStream = await response.Content.ReadAsStreamAsync();
+#endif
                     // Reset exception
                     wEx = null;
 
@@ -391,7 +401,7 @@ namespace SimpleWeather.WeatherData
                         WeatherUnderground.Rootobject root = null;
                         await Task.Run(() => 
                         {
-                            root = JSONParser.Deserializer<WeatherUnderground.Rootobject>(content);
+                            root = JSONParser.Deserializer<WeatherUnderground.Rootobject>(contentStream);
                         });
 
                         // Check for errors
@@ -418,7 +428,7 @@ namespace SimpleWeather.WeatherData
                         WeatherYahoo.Rootobject root = null;
                         await Task.Run(() =>
                         {
-                            root = JSONParser.Deserializer<WeatherYahoo.Rootobject>(content);
+                            root = JSONParser.Deserializer<WeatherYahoo.Rootobject>(contentStream);
                         });
                         weather = new Weather(root);
                     }

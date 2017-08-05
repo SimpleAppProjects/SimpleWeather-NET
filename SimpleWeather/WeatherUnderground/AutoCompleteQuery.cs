@@ -29,15 +29,19 @@ namespace SimpleWeather.WeatherUnderground
                 HttpClient webClient = new HttpClient();
                 HttpResponseMessage response = await webClient.GetAsync(queryURL);
                 response.EnsureSuccessStatusCode();
-                string content = await response.Content.ReadAsStringAsync();
-
+                System.IO.Stream contentStream = null;
+#if WINDOWS_UWP
+                contentStream = System.IO.WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+#elif __ANDROID__
+                contentStream = await response.Content.ReadAsStreamAsync();
+#endif
                 // End Stream
                 webClient.Dispose();
 
                 // Load data
                 locationResults = new List<Controls.LocationQueryViewModel>();
 
-                AC_Rootobject root = JSONParser.Deserializer<AC_Rootobject>(content);
+                AC_Rootobject root = JSONParser.Deserializer<AC_Rootobject>(contentStream);
 
                 foreach (AC_RESULT result in root.RESULTS)
                 {
@@ -52,6 +56,9 @@ namespace SimpleWeather.WeatherUnderground
                     if (maxResults <= 0)
                         break;
                 }
+
+                // End Stream
+                contentStream.Dispose();
             }
             catch (Exception ex)
             {

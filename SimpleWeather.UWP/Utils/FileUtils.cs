@@ -82,7 +82,9 @@ namespace SimpleWeather.Utils
 
             try
             {
-                stream = Task.Run(async () => await file.OpenAsync(FileAccessMode.Read)).Result;
+                Task<IRandomAccessStream> t = file.OpenAsync(FileAccessMode.Read).AsTask();
+                t.Wait();
+                stream = t.Result;
             }
             catch (IOException)
             {

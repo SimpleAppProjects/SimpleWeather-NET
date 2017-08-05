@@ -59,7 +59,7 @@ namespace SimpleWeather.Utils
             if (!fileinfo.Exists || (fileinfo.Exists && fileinfo.Length == 0))
                 return;
 
-            weatherData = await JSONParser.DeserializerAsync<OrderedDictionary>(await FileUtils.ReadFile(dataFile));
+            weatherData = await JSONParser.DeserializerAsync<OrderedDictionary>(dataFile);
 
             if (!String.IsNullOrWhiteSpace(LastGPSLocation))
             {

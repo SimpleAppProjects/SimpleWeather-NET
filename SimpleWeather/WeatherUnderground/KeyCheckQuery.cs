@@ -29,7 +29,12 @@ namespace SimpleWeather.WeatherUnderground
                 HttpClient webClient = new HttpClient();
                 HttpResponseMessage response = await webClient.GetAsync(queryURL);
                 response.EnsureSuccessStatusCode();
-                string content = await response.Content.ReadAsStringAsync();
+                System.IO.Stream contentStream = null;
+#if WINDOWS_UWP
+                contentStream = System.IO.WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+#elif __ANDROID__
+                contentStream = await response.Content.ReadAsStreamAsync();
+#endif
                 // Reset exception
                 wEx = null;
 
@@ -37,7 +42,7 @@ namespace SimpleWeather.WeatherUnderground
                 webClient.Dispose();
 
                 // Load data
-                Rootobject root = await JSONParser.DeserializerAsync<Rootobject>(content);
+                Rootobject root = await JSONParser.DeserializerAsync<Rootobject>(contentStream);
 
                 // Check for errors
                 if (root.response.error != null)
@@ -52,6 +57,9 @@ namespace SimpleWeather.WeatherUnderground
                 }
                 else
                     isValid = true;
+
+                // End Stream
+                contentStream.Dispose();
             }
             catch (Exception)
             {

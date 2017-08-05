@@ -30,21 +30,19 @@ namespace SimpleWeather.WeatherYahoo
                 HttpClient webClient = new HttpClient();
                 HttpResponseMessage response = await webClient.GetAsync(queryURL);
                 response.EnsureSuccessStatusCode();
-                string content = await response.Content.ReadAsStringAsync();
-                byte[] buff = Encoding.UTF8.GetBytes(content);
-
-                // Write array/buffer to memorystream
-                MemoryStream memStream = new MemoryStream();
-                memStream.Write(buff, 0, buff.Length);
-                memStream.Seek(0, 0);
-
+                Stream contentStream = null;
+#if WINDOWS_UWP
+                contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+#elif __ANDROID__
+                contentStream = await response.Content.ReadAsStreamAsync();
+#endif
                 // End Stream
                 webClient.Dispose();
 
                 // Load data
                 locationResults = new List<Controls.LocationQueryViewModel>();
                 XmlSerializer deserializer = new XmlSerializer(typeof(query));
-                query root = (query)deserializer.Deserialize(memStream);
+                query root = (query)deserializer.Deserialize(contentStream);
 
                 foreach (place result in root.results)
                 {
@@ -64,6 +62,9 @@ namespace SimpleWeather.WeatherYahoo
                     if (maxResults <= 0)
                         break;
                 }
+
+                // End Stream
+                contentStream.Dispose();
             }
             catch (Exception ex)
             {
