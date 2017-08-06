@@ -7,6 +7,7 @@ using System.Collections.Specialized;
 using System.Text;
 using Newtonsoft.Json;
 #if WINDOWS_UWP
+using SimpleWeather.UWP.Controls;
 using Windows.Storage.Streams;
 using Windows.UI.Core;
 using Windows.UI.Popups;
@@ -44,16 +45,12 @@ namespace SimpleWeather.WeatherData
         {
             string queryAPI = null;
             Uri weatherURL = null;
-            int maxRetries = 0;
 
             if (Settings.API == Settings.API_WUnderground)
             {
                 queryAPI = "http://api.wunderground.com/api/" + Settings.API_KEY + "/astronomy/conditions/forecast10day/hourly";
                 string options = ".json";
                 weatherURL = new Uri(queryAPI + location_query + options);
-
-                // Don't force retries since it counts against calls per minute
-                maxRetries = 0;
             }
             else if (Settings.API == Settings.API_Yahoo && int.TryParse(location_query, out int woeid))
             {
@@ -61,9 +58,6 @@ namespace SimpleWeather.WeatherData
                 string query = "select * from weather.forecast where woeid=\""
                     + woeid + "\" and u='F'&format=json";
                 weatherURL = new Uri(queryAPI + query);
-
-                // Allow more retries, since its known to fail sometimes
-                maxRetries = 2;
             }
             else if (Settings.API == Settings.API_Yahoo)
             {
@@ -71,97 +65,83 @@ namespace SimpleWeather.WeatherData
                 string query = "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text=\""
                     + location_query + "\") and u='F'&format=json";
                 weatherURL = new Uri(queryAPI + query);
-
-                // Allow more retries, since its known to fail sometimes
-                maxRetries = 2;
             }
 
             HttpClient webClient = new HttpClient();
-            int counter = 0;
             WeatherException wEx = null;
+            bool loadedSavedData = false;
 
-            do
+            try
             {
-                try
-                {
-                    // Get response
-                    HttpResponseMessage response = await webClient.GetAsync(weatherURL);
-                    response.EnsureSuccessStatusCode();
-                    System.IO.Stream contentStream = null;
+                // Get response
+                HttpResponseMessage response = await webClient.GetAsync(weatherURL);
+                response.EnsureSuccessStatusCode();
+                Stream contentStream = null;
 #if WINDOWS_UWP
-                    contentStream = System.IO.WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 #elif __ANDROID__
-                    contentStream = await response.Content.ReadAsStreamAsync();
+                contentStream = await response.Content.ReadAsStreamAsync();
 #endif
-                    // Reset exception
-                    wEx = null;
+                // Reset exception
+                wEx = null;
 
-                    // Load weather
-                    if (Settings.API == Settings.API_WUnderground)
+                // Load weather
+                if (Settings.API == Settings.API_WUnderground)
+                {
+                    WeatherUnderground.Rootobject root = null;
+                    await Task.Run(() =>
                     {
-                        WeatherUnderground.Rootobject root = null;
-                        await Task.Run(() =>
-                        {
-                            root = JSONParser.Deserializer<WeatherUnderground.Rootobject>(contentStream);
-                        });
+                        root = JSONParser.Deserializer<WeatherUnderground.Rootobject>(contentStream);
+                    });
 
-                        // Check for errors
-                        if (root.response.error != null)
+                    // Check for errors
+                    if (root.response.error != null)
+                    {
+                        switch (root.response.error.type)
                         {
-                            switch (root.response.error.type)
-                            {
-                                case "querynotfound":
-                                    wEx = new WeatherException(WeatherUtils.ErrorStatus.QUERYNOTFOUND);
-                                    break;
-                                case "keynotfound":
-                                    wEx = new WeatherException(WeatherUtils.ErrorStatus.INVALIDAPIKEY);
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
+                            case "querynotfound":
+                                wEx = new WeatherException(WeatherUtils.ErrorStatus.QUERYNOTFOUND);
+                                break;
+                            case "keynotfound":
+                                wEx = new WeatherException(WeatherUtils.ErrorStatus.INVALIDAPIKEY);
+                                break;
+                            default:
+                                break;
                         }
-
-                        weather = new Weather(root);
                     }
-                    else
-                    {
-                        WeatherYahoo.Rootobject root = null;
-                        await Task.Run(() =>
-                        {
-                            root = JSONParser.Deserializer<WeatherYahoo.Rootobject>(contentStream);
-                        });
 
-                        weather = new Weather(root);
-                    }
+                    weather = new Weather(root);
                 }
-                catch (Exception ex)
+                else
                 {
-                    weather = null;
-#if WINDOWS_UWP
-                    if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
-#elif __ANDROID__
-                    if (ex is WebException)
-#endif
+                    WeatherYahoo.Rootobject root = null;
+                    await Task.Run(() =>
                     {
-                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NETWORKERROR);
-                        break;
-                    }
+                        root = JSONParser.Deserializer<WeatherYahoo.Rootobject>(contentStream);
+                    });
 
-                    System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+                    weather = new Weather(root);
+                }
+            }
+            catch (Exception ex)
+            {
+                weather = null;
+#if WINDOWS_UWP
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+#elif __ANDROID__
+                if (ex is WebException || ex is HttpRequestException)
+#endif
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NETWORKERROR);
                 }
 
-                // If we can't load data, delay and try again
-                if (weather == null)
-                    await Task.Delay(1000);
-
-                counter++;
-            } while (weather == null && counter < maxRetries);
+                System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+            }
 
             // Load old data if available and we can't get new data
             if (weather == null)
             {
-                await LoadSavedWeatherData(true);
+                loadedSavedData = await LoadSavedWeatherData(true);
             }
             else if (weather != null)
             {
@@ -180,6 +160,10 @@ namespace SimpleWeather.WeatherData
             {
                 throw new WeatherException(WeatherUtils.ErrorStatus.NOWEATHER);
             }
+            else if (weather != null && wEx != null && loadedSavedData)
+            {
+                throw wEx;
+            }
         }
 
         public async Task LoadWeatherData(bool forceRefresh)
@@ -193,11 +177,12 @@ namespace SimpleWeather.WeatherData
                 catch (WeatherException wEx)
                 {
 #if WINDOWS_UWP
-                    await CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(
-                        CoreDispatcherPriority.Normal,
-                        async () => await new MessageDialog(wEx.Message).ShowAsync());
+                    Toast.ShowToast(wEx.Message, Toast.ToastDuration.Short);
 #elif __ANDROID__
-                    Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
+                    new Android.OS.Handler(Android.OS.Looper.MainLooper).Post(() =>
+                    {
+                        Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
+                    });
 #endif
                 }
             }
@@ -228,11 +213,12 @@ namespace SimpleWeather.WeatherData
                 catch (WeatherException wEx)
                 {
 #if WINDOWS_UWP
-                    await CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(
-                        CoreDispatcherPriority.Normal,
-                        async () => await new MessageDialog(wEx.Message).ShowAsync());
+                    Toast.ShowToast(wEx.Message, Toast.ToastDuration.Short);
 #elif __ANDROID__
-                    Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
+                    new Android.OS.Handler(Android.OS.Looper.MainLooper).Post(() =>
+                    {
+                        Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
+                    });
 #endif
                 }
             }
@@ -343,16 +329,12 @@ namespace SimpleWeather.WeatherData
         {
             string queryAPI = null;
             Uri weatherURL = null;
-            int maxRetries = 0;
 
             if (Settings.API == Settings.API_WUnderground)
             {
                 queryAPI = "http://api.wunderground.com/api/" + Settings.API_KEY + "/astronomy/conditions/forecast10day/hourly";
                 string options = ".json";
                 weatherURL = new Uri(queryAPI + location_query + options);
-
-                // Don't force retries since it counts against calls per minute
-                maxRetries = 0;
             }
             else if (Settings.API == Settings.API_Yahoo && int.TryParse(location_query, out int woeid))
             {
@@ -360,9 +342,6 @@ namespace SimpleWeather.WeatherData
                 string query = "select * from weather.forecast where woeid=\""
                     + woeid + "\" and u='F'&format=json";
                 weatherURL = new Uri(queryAPI + query);
-
-                // Allow more retries, since its known to fail sometimes
-                maxRetries = 2;
             }
             else if (Settings.API == Settings.API_Yahoo)
             {
@@ -370,91 +349,76 @@ namespace SimpleWeather.WeatherData
                 string query = "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text=\""
                     + location_query + "\") and u='F'&format=json";
                 weatherURL = new Uri(queryAPI + query);
-
-                // Allow more retries, since its known to fail sometimes
-                maxRetries = 2;
             }
 
             HttpClient webClient = new HttpClient();
-            int counter = 0;
             WeatherException wEx = null;
 
-            do
+            try
             {
-                try
-                {
-                    // Get response
-                    HttpResponseMessage response = await webClient.GetAsync(weatherURL);
-                    response.EnsureSuccessStatusCode();
-                    System.IO.Stream contentStream = null;
+                // Get response
+                HttpResponseMessage response = await webClient.GetAsync(weatherURL);
+                response.EnsureSuccessStatusCode();
+                Stream contentStream = null;
 #if WINDOWS_UWP
-                    contentStream = System.IO.WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 #elif __ANDROID__
-                    contentStream = await response.Content.ReadAsStreamAsync();
+                contentStream = await response.Content.ReadAsStreamAsync();
 #endif
-                    // Reset exception
-                    wEx = null;
+                // Reset exception
+                wEx = null;
 
-                    // Load weather
-                    if (Settings.API == Settings.API_WUnderground)
+                // Load weather
+                if (Settings.API == Settings.API_WUnderground)
+                {
+                    WeatherUnderground.Rootobject root = null;
+                    await Task.Run(() =>
                     {
-                        WeatherUnderground.Rootobject root = null;
-                        await Task.Run(() => 
-                        {
-                            root = JSONParser.Deserializer<WeatherUnderground.Rootobject>(contentStream);
-                        });
+                        root = JSONParser.Deserializer<WeatherUnderground.Rootobject>(contentStream);
+                    });
 
-                        // Check for errors
-                        if (root.response.error != null)
+                    // Check for errors
+                    if (root.response.error != null)
+                    {
+                        switch (root.response.error.type)
                         {
-                            switch (root.response.error.type)
-                            {
-                                case "querynotfound":
-                                    wEx = new WeatherException(WeatherUtils.ErrorStatus.QUERYNOTFOUND);
-                                    break;
-                                case "keynotfound":
-                                    wEx = new WeatherException(WeatherUtils.ErrorStatus.INVALIDAPIKEY);
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
+                            case "querynotfound":
+                                wEx = new WeatherException(WeatherUtils.ErrorStatus.QUERYNOTFOUND);
+                                break;
+                            case "keynotfound":
+                                wEx = new WeatherException(WeatherUtils.ErrorStatus.INVALIDAPIKEY);
+                                break;
+                            default:
+                                break;
                         }
+                    }
 
-                        weather = new Weather(root);
-                    }
-                    else
-                    {
-                        WeatherYahoo.Rootobject root = null;
-                        await Task.Run(() =>
-                        {
-                            root = JSONParser.Deserializer<WeatherYahoo.Rootobject>(contentStream);
-                        });
-                        weather = new Weather(root);
-                    }
+                    weather = new Weather(root);
                 }
-                catch (Exception ex)
+                else
                 {
-                    weather = null;
-#if WINDOWS_UWP
-                    if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
-#elif __ANDROID__
-                    if (ex is WebException)
-#endif
+                    WeatherYahoo.Rootobject root = null;
+                    await Task.Run(() =>
                     {
-                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NETWORKERROR);
-                        break;
-                    }
-
-                    System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+                        root = JSONParser.Deserializer<WeatherYahoo.Rootobject>(contentStream);
+                    });
+                    weather = new Weather(root);
+                }
+            }
+            catch (Exception ex)
+            {
+                weather = null;
+#if WINDOWS_UWP
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+#elif __ANDROID__
+                if (ex is WebException || ex is HttpRequestException)
+#endif
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NETWORKERROR);
                 }
 
-                // If we can't load data, delay and try again
-                if (weather == null)
-                    await Task.Delay(1000);
-
-                counter++;
-            } while (weather == null && counter < maxRetries);
+                System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+            }
 
             // End Stream
             webClient.Dispose();
@@ -465,9 +429,7 @@ namespace SimpleWeather.WeatherData
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NOWEATHER);
 
 #if WINDOWS_UWP
-                await CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(
-                    CoreDispatcherPriority.Normal,
-                    async () => await new MessageDialog(wEx.Message).ShowAsync());
+                Toast.ShowToast(wEx.Message, Toast.ToastDuration.Short);
 #elif __ANDROID__
                 Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
 #endif

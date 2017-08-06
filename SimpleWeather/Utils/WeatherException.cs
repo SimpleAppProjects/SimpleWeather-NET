@@ -13,11 +13,11 @@ namespace SimpleWeather.Utils
 {
     public class WeatherException : Exception
     {
-        private WeatherUtils.ErrorStatus errorStatus;
+        public WeatherUtils.ErrorStatus ErrorStatus;
 
         public WeatherException(WeatherUtils.ErrorStatus errorStatus)
         {
-            this.errorStatus = errorStatus;
+            ErrorStatus = errorStatus;
         }
 
         public override string Message => GetMessage();
@@ -26,7 +26,7 @@ namespace SimpleWeather.Utils
         {
             String errorMsg;
 
-            switch (errorStatus)
+            switch (ErrorStatus)
             {
                 case WeatherUtils.ErrorStatus.NOWEATHER:
 #if WINDOWS_UWP

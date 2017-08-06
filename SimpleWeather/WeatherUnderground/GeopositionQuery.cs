@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 #if WINDOWS_UWP
+using SimpleWeather.UWP.Controls;
 using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.Web;
@@ -59,19 +60,16 @@ namespace SimpleWeather.WeatherUnderground
 #if WINDOWS_UWP
                 if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NETWORKERROR);
-                    await CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(
-                        CoreDispatcherPriority.Normal,
-                        async () => await new MessageDialog(wEx.Message).ShowAsync());
+                    Toast.ShowToast(wEx.Message, Toast.ToastDuration.Short);
                 }
 #elif __ANDROID__
-                if (ex is WebException webEx)
+                if (ex is WebException || ex is HttpRequestException)
                 {
-                    if (webEx.Status > WebExceptionStatus.Success)
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NETWORKERROR);
+                    new Android.OS.Handler(Android.OS.Looper.MainLooper).Post(() =>
                     {
-                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NETWORKERROR);
                         Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
-                    }
+                    });
                 }
 #endif
 

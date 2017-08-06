@@ -69,11 +69,12 @@ namespace SimpleWeather.WeatherUnderground
             if (wEx != null)
             {
 #if WINDOWS_UWP
-                await Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(
-                    Windows.UI.Core.CoreDispatcherPriority.Normal,
-                    async () => await new Windows.UI.Popups.MessageDialog(wEx.Message).ShowAsync());
+                UWP.Controls.Toast.ShowToast(wEx.Message, UWP.Controls.Toast.ToastDuration.Short);
 #elif __ANDROID__
-                Android.Widget.Toast.MakeText(Droid.App.Context, wEx.Message, Android.Widget.ToastLength.Short).Show();
+                new Android.OS.Handler(Android.OS.Looper.MainLooper).Post(() =>
+                {
+                    Android.Widget.Toast.MakeText(Droid.App.Context, wEx.Message, Android.Widget.ToastLength.Short).Show();
+                });
 #endif
             }
 
