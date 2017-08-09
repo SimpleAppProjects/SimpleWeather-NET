@@ -228,76 +228,88 @@
         </CommandBar>
 
         <Pivot Grid.Row="1" RequestedTheme="Light" Style="{StaticResource SettingsPivotStyle}"
-               SelectionChanged="Pivot_SelectionChanged">
+                   SelectionChanged="Pivot_SelectionChanged">
             <Pivot.HeaderTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding}" Style="{StaticResource CommandBarLabel}" FontWeight="SemiBold" />
                 </DataTemplate>
             </Pivot.HeaderTemplate>
             <PivotItem x:Uid="General" Header="General" Padding="10">
-                <StackPanel>
-                    <TextBlock x:Uid="Pref_CategoryTemp" Text="Temperature" Style="{StaticResource SubheaderTextBlockStyle}" FontWeight="SemiLight" Padding="0,10" FontSize="24"/>
-                    <TextBlock x:Uid="Pref_SummaryUnits" Text="Display units in:" FontSize="18" Padding="10,5" />
-                    <StackPanel Orientation="Horizontal" Padding="10,5">
-                        <RadioButton x:Name="Fahrenheit" Content="Fahrenheit" Checked="Fahrenheit_Checked"/>
-                        <RadioButton x:Name="Celsius" Content="Celsius" Checked="Celsius_Checked"/>
-                    </StackPanel>
-                    <TextBlock x:Uid="Pref_CategoryLocation" Text="Location" Style="{StaticResource SubheaderTextBlockStyle}" FontWeight="SemiLight" Padding="0,10" FontSize="24"/>
-                    <TextBlock x:Uid="Pref_SummaryFollowGPS" Text="Follow current location via GPS" FontSize="18" Padding="10,5" />
-                    <StackPanel Orientation="Horizontal" Padding="10,5">
-                        <ToggleSwitch x:Name="FollowGPS" Toggled="FollowGPS_Toggled"/>
-                    </StackPanel>
-                    <TextBlock x:Uid="Pref_CategoryWProvider" Text="Weather Provider" Style="{StaticResource SubheaderTextBlockStyle}" FontWeight="SemiLight" Padding="0,10" FontSize="24"/>
-                    <ComboBox x:Name="APIComboBox" Width="300" HorizontalAlignment="Left"
-                              x:Uid="API_Box" PlaceholderText="Select Weather Provider">
-                        <ComboBox.Items>
-                            <TextBlock Text="WeatherUnderground"/>
-                            <TextBlock Text="Yahoo Weather"/>
-                        </ComboBox.Items>
-                    </ComboBox>
-                    <StackPanel x:Name="KeyPanel">
-                        <TextBlock x:Uid="KeyEntry.PlaceholderText" Text="API Key" Padding="5"/>
-                        <Border x:Name="KeyBorder" BorderThickness="2" Background="White" BorderBrush="DarkGray"
-                            Width="300" HorizontalAlignment="Left" Padding="10,4"
-                            Visibility="{Binding ElementName=KeyEntry, Path=Visibility}">
-                            <TextBlock x:Name="KeyEntry"
-                                       Visibility="Visible"
-                                       Tapped="KeyEntry_Tapped"
-                                       x:Uid="KeyEntry.PlaceholderText" Text="API Key"
-                                       GotFocus="KeyEntry_GotFocus" />
-                        </Border>
-                    </StackPanel>
-                </StackPanel>
+                <ScrollViewer HorizontalScrollMode="Disabled" VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto">
+                    <Grid>
+                        <StackPanel>
+                            <TextBlock x:Uid="Pref_CategoryTemp" Text="Temperature" Padding="0,10"
+                                       Style="{ThemeResource TitleTextBlockStyle}"/>
+                            <TextBlock x:Uid="Pref_SummaryUnits" Text="Display units in:" Padding="10,5" />
+                            <StackPanel Orientation="Horizontal" Padding="10,5">
+                                <RadioButton x:Name="Fahrenheit" Content="Fahrenheit" Checked="Fahrenheit_Checked"/>
+                                <RadioButton x:Name="Celsius" Content="Celsius" Checked="Celsius_Checked"/>
+                            </StackPanel>
+                            <TextBlock x:Uid="Pref_CategoryLocation" Text="Location" Padding="0,10"
+                                       Style="{StaticResource TitleTextBlockStyle}" />
+                            <TextBlock x:Uid="Pref_SummaryFollowGPS" Text="Follow current location via GPS" Padding="10,5" />
+                            <StackPanel Orientation="Horizontal" Padding="10,5">
+                                <ToggleSwitch x:Name="FollowGPS" Toggled="FollowGPS_Toggled"/>
+                            </StackPanel>
+                            <TextBlock x:Uid="Pref_CategoryWProvider" Text="Weather Provider" Padding="0,10"
+                                       Style="{StaticResource TitleTextBlockStyle}" />
+                            <ComboBox x:Name="APIComboBox" HorizontalAlignment="Left" MinWidth="260"
+                                  x:Uid="API_Box" PlaceholderText="Select Weather Provider">
+                                <ComboBox.Items>
+                                    <TextBlock Text="WeatherUnderground"/>
+                                    <TextBlock Text="Yahoo Weather"/>
+                                </ComboBox.Items>
+                            </ComboBox>
+                            <StackPanel x:Name="KeyPanel">
+                                <TextBlock x:Uid="KeyEntry.PlaceholderText" Text="API Key" Padding="5"/>
+                                <Border x:Name="KeyBorder" BorderThickness="2" Background="White" BorderBrush="DarkGray"
+                                    HorizontalAlignment="Left" Padding="10,4" MinWidth="260"
+                                    Visibility="{Binding ElementName=KeyEntry, Path=Visibility}">
+                                    <TextBlock x:Name="KeyEntry"
+                                           Visibility="Visible"
+                                           Tapped="KeyEntry_Tapped"
+                                           x:Uid="KeyEntry.PlaceholderText" Text="API Key"
+                                           GotFocus="KeyEntry_GotFocus" />
+                                </Border>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </ScrollViewer>
             </PivotItem>
             <PivotItem x:Uid="Credits" Header="Credits" Padding="10">
-                <StackPanel>
-                    <TextBlock x:Uid="Pref_TitleProviders" Text="Weather Providers" Style="{StaticResource SubheaderTextBlockStyle}" FontWeight="SemiLight" Padding="0,10" FontSize="24"/>
-                    <StackPanel Padding="10">
-                        <TextBlock Text="WeatherUnderground" Style="{StaticResource SubtitleTextBlockStyle}"/>
-                        <RichTextBlock Padding="0,10">
-                            <Paragraph>
-                                Weather Underground is a registered trademark of The Weather Channel, LLC. both in the United States and internationally.
-                            </Paragraph>
-                            <Paragraph>
-                                The Weather Underground Logo is a trademark of Weather Underground, LLC.
-                            </Paragraph>
-                        </RichTextBlock>
-                        <HyperlinkButton NavigateUri="https://www.wunderground.com">
-                            <Image Source="Assets/Providers/wunderground.png" Height="50" HorizontalAlignment="Left" />
-                        </HyperlinkButton>
-                    </StackPanel>
-                    <StackPanel Padding="10">
-                        <TextBlock Text="Yahoo Weather" Style="{StaticResource SubtitleTextBlockStyle}"/>
-                        <RichTextBlock Padding="0,10">
-                            <Paragraph>
-                                YAHOO! is a registered trademark of Yahoo! Inc. both in the United States and internationally.
-                            </Paragraph>
-                        </RichTextBlock>
-                        <HyperlinkButton NavigateUri="https://www.yahoo.com/?ilc=401">
-                            <Image Source="Assets/Providers/yahoo.png" Height="50" HorizontalAlignment="Left" />
-                        </HyperlinkButton>
-                    </StackPanel>
-                </StackPanel>
+                <ScrollViewer HorizontalScrollMode="Disabled" VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto">
+                    <Grid>
+                        <StackPanel>
+                            <TextBlock x:Uid="Pref_TitleProviders" Text="Weather Providers" Padding="0,10"
+                                       Style="{StaticResource TitleTextBlockStyle}"/>
+                            <StackPanel Padding="10">
+                                <TextBlock Text="WeatherUnderground" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                                <RichTextBlock Padding="0,10">
+                                    <Paragraph>
+                                        Weather Underground is a registered trademark of The Weather Channel, LLC. both in the United States and internationally.
+                                    </Paragraph>
+                                    <Paragraph>
+                                        The Weather Underground Logo is a trademark of Weather Underground, LLC.
+                                    </Paragraph>
+                                </RichTextBlock>
+                                <HyperlinkButton NavigateUri="https://www.wunderground.com">
+                                    <Image Source="Assets/Providers/wunderground.png" Height="50" HorizontalAlignment="Left" />
+                                </HyperlinkButton>
+                            </StackPanel>
+                            <StackPanel Padding="10">
+                                <TextBlock Text="Yahoo Weather" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                                <RichTextBlock Padding="0,10">
+                                    <Paragraph>
+                                        YAHOO! is a registered trademark of Yahoo! Inc. both in the United States and internationally.
+                                    </Paragraph>
+                                </RichTextBlock>
+                                <HyperlinkButton NavigateUri="https://www.yahoo.com/?ilc=401">
+                                    <Image Source="Assets/Providers/yahoo.png" Height="50" HorizontalAlignment="Left" />
+                                </HyperlinkButton>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </ScrollViewer>
             </PivotItem>
             <PivotItem x:Uid="OSSLibs" Header="Open Source Libraries">
                 <WebView Name="OSSLicenseWebview" />
