@@ -61,7 +61,7 @@ namespace SimpleWeather.Droid
 
             if (String.IsNullOrWhiteSpace(Settings.API_KEY) && Settings.API == Settings.API_WUnderground)
             {
-                String errorMsg = new WeatherException(WeatherUtils.ErrorStatus.INVALIDAPIKEY).Message;
+                String errorMsg = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey).Message;
                 Toast.MakeText(Activity.ApplicationContext, errorMsg, ToastLength.Short).Show();
                 return;
             }

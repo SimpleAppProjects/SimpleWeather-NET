@@ -23,6 +23,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\AutoCompleteQuery.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\GeopositionQuery.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IWeatherErrorListener.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\LocationData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\WeatherDataLoader.cs" />

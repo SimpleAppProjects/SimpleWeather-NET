@@ -163,6 +163,7 @@
     <Compile Include="Controls\ProgressDialog.xaml.cs">
       <DependentUpon>ProgressDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Snackbar.cs" />
     <Compile Include="Controls\TextForecastItem.xaml.cs">
       <DependentUpon>TextForecastItem.xaml</DependentUpon>
     </Compile>
@@ -285,6 +286,12 @@
     <SDKReference Include="WindowsMobile, Version=10.0.15063.0">
       <Name>Windows Mobile Extensions for the UWP</Name>
     </SDKReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Kimono.Controls.SnackBar\Kimono.Controls.SnackBar.csproj">
+      <Project>{8cd45c2a-a6a7-4a78-abe9-1861a879a1c4}</Project>
+      <Name>Kimono.Controls.SnackBar</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="..\SimpleWeather\SimpleWeather_Xamarin.projitems" Label="Shared" Condition="Exists('..\SimpleWeather\SimpleWeather_Xamarin.projitems')" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

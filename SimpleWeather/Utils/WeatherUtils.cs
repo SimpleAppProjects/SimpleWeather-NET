@@ -237,12 +237,12 @@ namespace SimpleWeather.Utils
 
         public enum ErrorStatus
         {
-            UNKNOWN = -1,
-            SUCCESS,
-            NOWEATHER,
-            NETWORKERROR,
-            INVALIDAPIKEY,
-            QUERYNOTFOUND,
+            Unknown = -1,
+            Success,
+            NoWeather,
+            NetworkError,
+            InvalidAPIKey,
+            QueryNotFound,
         }
     }
 }

@@ -23,11 +23,12 @@ using System.Threading.Tasks;
 
 namespace SimpleWeather.Droid
 {
-    public class LocationsFragment : Fragment, IWeatherLoadedListener
+    public class LocationsFragment : Fragment, IWeatherLoadedListener, IWeatherErrorListener
     {
         private bool Loaded = false;
         private bool EditMode = false;
         private bool DataChanged = false;
+        private bool[] ErrorCounter;
 
         AppCompatActivity AppCompatActivity;
 
@@ -85,6 +86,37 @@ namespace SimpleWeather.Droid
             }
         }
 
+        public void OnWeatherError(WeatherException wEx)
+        {
+            switch (wEx.ErrorStatus)
+            {
+                case WeatherUtils.ErrorStatus.NetworkError:
+                case WeatherUtils.ErrorStatus.NoWeather:
+                    // Show error message and prompt to refresh
+                    // Only warn once
+                    if (!ErrorCounter[(int)wEx.ErrorStatus])
+                    {
+                        Snackbar snackBar = Snackbar.Make(mMainView, wEx.Message, Snackbar.LengthLong);
+                        snackBar.SetAction(Resource.String.action_retry, async (View v) =>
+                        {
+                            await RefreshLocations();
+                        });
+                        snackBar.Show();
+                        ErrorCounter[(int)wEx.ErrorStatus] = true;
+                    }
+                    break;
+                default:
+                    // Show error message
+                    // Only warn once
+                    if (!ErrorCounter[(int)wEx.ErrorStatus])
+                    {
+                        Snackbar.Make(mMainView, wEx.Message, Snackbar.LengthLong).Show();
+                        ErrorCounter[(int)wEx.ErrorStatus] = true;
+                    }
+                    break;
+            }
+        }
+
         private bool OnCreateActionMode(Android.Support.V7.View.ActionMode mode, IMenu menu)
         {
             if (searchViewLayout == null)
@@ -92,12 +124,15 @@ namespace SimpleWeather.Droid
 
             mode.CustomView = searchViewLayout;
             EnterSearchUi();
+            // Hide FAB in actionmode
+            addLocationsButton.Visibility = ViewStates.Gone;
             return true;
         }
 
         private void OnDestroyActionMode(Android.Support.V7.View.ActionMode mode)
         {
             ExitSearchUi();
+            addLocationsButton.Visibility = ViewStates.Visible;
             mActionMode = null;
         }
 
@@ -146,6 +181,9 @@ namespace SimpleWeather.Droid
                 // Restart ActionMode
                 mActionMode = AppCompatActivity.StartSupportActionMode(mActionModeCallback);
             }
+
+            int max = Enum.GetValues(typeof(WeatherUtils.ErrorStatus)).Cast<int>().Max();
+            ErrorCounter = new bool[max];
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -240,14 +278,8 @@ namespace SimpleWeather.Droid
             return base.OnOptionsItemSelected(item);
         }
 
-        public override async void OnResume()
+        private async void Resume()
         {
-            base.OnResume();
-
-            // Don't resume if fragment is hidden
-            if (this.IsHidden)
-                return;
-
             // Update view on resume
             // ex. If temperature unit changed
             if (Settings.FollowGPS)
@@ -269,9 +301,20 @@ namespace SimpleWeather.Droid
             else if (!Loaded)
             {
                 // Refresh view
-                RefreshLocations();
+                await RefreshLocations();
                 Loaded = true;
             }
+        }
+
+        public override void OnResume()
+        {
+            base.OnResume();
+
+            // Don't resume if fragment is hidden
+            if (this.IsHidden)
+                return;
+            else
+                Resume();
 
             // Title
             AppCompatActivity.SupportActionBar.Title = GetString(Resource.String.label_nav_locations);
@@ -281,6 +324,25 @@ namespace SimpleWeather.Droid
         {
             base.OnPause();
             Loaded = false;
+
+            // Reset error counter
+            Array.Clear(ErrorCounter, 0, ErrorCounter.Length);
+        }
+
+        public override void OnHiddenChanged(bool hidden)
+        {
+            base.OnHiddenChanged(hidden);
+
+            if (!hidden && this.IsVisible)
+            {
+                Resume();
+            }
+            else if (hidden)
+            {
+                Loaded = false;
+                // Reset error counter
+                Array.Clear(ErrorCounter, 0, ErrorCounter.Length);
+            }
         }
 
         public override void OnSaveInstanceState(Bundle outState)
@@ -325,12 +387,12 @@ namespace SimpleWeather.Droid
                 else
                     mAdapter.Add(Settings.FollowGPS ? index - 1 : index, panel);
 
-                wLoader = new WeatherDataLoader(this, location, index);
+                wLoader = new WeatherDataLoader(this, this, location, index);
                 await wLoader.LoadWeatherData(false);
             }
         }
 
-        private async void RefreshLocations()
+        private async Task RefreshLocations()
         {
             // Reload all panels if needed
             List<string> locations = await Settings.GetLocations();
@@ -360,7 +422,7 @@ namespace SimpleWeather.Droid
                 foreach (LocationPanelViewModel view in dataset)
                 {
                     WeatherDataLoader wLoader =
-                        new WeatherDataLoader(this, view.Pair.Value, view.Pair.Key);
+                        new WeatherDataLoader(this, this, view.Pair.Value, view.Pair.Key);
                     await wLoader.LoadWeatherData(false);
                 }
             }

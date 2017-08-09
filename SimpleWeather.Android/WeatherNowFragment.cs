@@ -29,7 +29,7 @@ using Android.Locations;
 
 namespace SimpleWeather.Droid
 {
-    public class WeatherNowFragment : Fragment, IWeatherLoadedListener
+    public class WeatherNowFragment : Fragment, IWeatherLoadedListener, IWeatherErrorListener
     {
         private Context context;
         private Pair<int, string> pair;
@@ -101,6 +101,27 @@ namespace SimpleWeather.Droid
             Activity.RunOnUiThread(() => refreshLayout.Refreshing = false);
         }
 
+        public void OnWeatherError(WeatherException wEx)
+        {
+            switch (wEx.ErrorStatus)
+            {
+                case WeatherUtils.ErrorStatus.NetworkError:
+                case WeatherUtils.ErrorStatus.NoWeather:
+                    // Show error message and prompt to refresh
+                    Snackbar snackBar = Snackbar.Make(mainView, wEx.Message, Snackbar.LengthLong);
+                    snackBar.SetAction(Resource.String.action_retry, async (View v) =>
+                    {
+                        await RefreshWeather(false);
+                    });
+                    snackBar.Show();
+                    break;
+                default:
+                    // Show error message
+                    Snackbar.Make(mainView, wEx.Message, Snackbar.LengthLong).Show();
+                    break;
+            }
+        }
+
         public WeatherNowFragment()
         {
             // Required empty public constructor
@@ -147,7 +168,7 @@ namespace SimpleWeather.Droid
                 pair = Task.Run(() => JSONParser.DeserializerAsync<Pair<int, string>>(Arguments.GetString("pair"))).Result;
 
                 if (pair != null && wLoader == null)
-                    wLoader = new WeatherDataLoader(this, pair.Value, pair.Key);
+                    wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
             }
 
             context = Activity.ApplicationContext;
@@ -156,7 +177,7 @@ namespace SimpleWeather.Droid
             {
                 if (Settings.FollowGPS && await UpdateLocation())
                     // Setup loader from updated location
-                    wLoader = new WeatherDataLoader(this, pair.Value, pair.Key);
+                    wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
             };
             loaded = true;
         }
@@ -217,7 +238,7 @@ namespace SimpleWeather.Droid
                 {
                     if (Settings.FollowGPS && await UpdateLocation())
                         // Setup loader from updated location
-                        wLoader = new WeatherDataLoader(this, pair.Value, pair.Key);
+                        wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
 
                     await RefreshWeather(true);
                 });
@@ -373,7 +394,7 @@ namespace SimpleWeather.Droid
                 {
                     // Update location if not setup
                     await UpdateLocation();
-                    wLoader = new WeatherDataLoader(this, pair.Value, pair.Key);
+                    wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
                     forceRefresh = true;
                 }
                 else
@@ -385,13 +406,13 @@ namespace SimpleWeather.Droid
                     if (await UpdateLocation())
                     {
                         // Setup loader from updated location
-                        wLoader = new WeatherDataLoader(this, pair.Value, pair.Key);
+                        wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
                         forceRefresh = true;
                     }
                     else
                     {
                         // Setup loader saved location data
-                        wLoader = new WeatherDataLoader(this, locData.query, App.HomeIdx);
+                        wLoader = new WeatherDataLoader(this, this, locData.query, App.HomeIdx);
                     }
                 }
             }
@@ -401,7 +422,7 @@ namespace SimpleWeather.Droid
                 List<string> locations = await Settings.GetLocations();
                 string local = locations[App.HomeIdx];
 
-                wLoader = new WeatherDataLoader(this, local, App.HomeIdx);
+                wLoader = new WeatherDataLoader(this, this, local, App.HomeIdx);
             }
 
             // Load up weather data

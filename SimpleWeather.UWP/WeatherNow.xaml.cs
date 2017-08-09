@@ -1,5 +1,6 @@
 ﻿using SimpleWeather.Controls;
 using SimpleWeather.Utils;
+using SimpleWeather.UWP.Controls;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace SimpleWeather.UWP
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class WeatherNow : Page, IWeatherLoadedListener
+    public sealed partial class WeatherNow : Page, IWeatherLoadedListener, IWeatherErrorListener
     {
         WeatherDataLoader wLoader = null;
         WeatherNowViewModel WeatherView { get; set; }
@@ -69,6 +70,27 @@ namespace SimpleWeather.UWP
             }
 
             LoadingRing.IsActive = false;
+        }
+
+        public void OnWeatherError(WeatherException wEx)
+        {
+            switch (wEx.ErrorStatus)
+            {
+                case WeatherUtils.ErrorStatus.NetworkError:
+                case WeatherUtils.ErrorStatus.NoWeather:
+                    // Show error message and prompt to refresh
+                    Snackbar snackBar = Snackbar.Make(Content as Grid, wEx.Message, SnackbarDuration.Long);
+                    snackBar.SetAction(App.ResLoader.GetString("Action_Retry"), (sender) =>
+                    {
+                        RefreshWeather(false);
+                    });
+                    snackBar.Show();
+                    break;
+                default:
+                    // Show error message
+                    Snackbar.Make(Content as Grid, wEx.Message, SnackbarDuration.Long).Show();
+                    break;
+            }
         }
 
         public WeatherNow()
@@ -135,6 +157,20 @@ namespace SimpleWeather.UWP
         {
             base.OnNavigatedTo(e);
 
+            if (e.Parameter != null)
+            {
+                string arg = e.Parameter.ToString();
+
+                switch (arg)
+                {
+                    case "toast-refresh":
+                        RefreshWeather(true);
+                        return;
+                    default:
+                        break;
+                }
+            }
+
             // Did home change?
             CoreApplication.Properties.TryGetValue("HomeChanged", out object homeChanged);
             CoreApplication.Properties.Remove("HomeChanged");
@@ -187,7 +223,7 @@ namespace SimpleWeather.UWP
                 {
                     pair = (KeyValuePair<int, string>)e.Parameter;
 
-                    wLoader = new WeatherDataLoader(this, pair.Value, pair.Key);
+                    wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
 
                     if (pair.Key == App.HomeIdx)
                     {
@@ -221,7 +257,7 @@ namespace SimpleWeather.UWP
                 {
                     // Update location if not setup
                     await UpdateLocation();
-                    wLoader = new WeatherDataLoader(this, pair.Value, pair.Key);
+                    wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
                     forceRefresh = true;
                 }
                 else
@@ -233,13 +269,13 @@ namespace SimpleWeather.UWP
                     if (await UpdateLocation())
                     {
                         // Setup loader from updated location
-                        wLoader = new WeatherDataLoader(this, pair.Value, pair.Key);
+                        wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
                         forceRefresh = true;
                     }
                     else
                     {
                         // Setup loader saved location data
-                        wLoader = new WeatherDataLoader(this, locData.query, App.HomeIdx);
+                        wLoader = new WeatherDataLoader(this, this, locData.query, App.HomeIdx);
                     }
                 }
             }
@@ -250,7 +286,7 @@ namespace SimpleWeather.UWP
                 List<string> locations = await Settings.GetLocations();
                 string local = locations[App.HomeIdx];
 
-                wLoader = new WeatherDataLoader(this, local, App.HomeIdx);
+                wLoader = new WeatherDataLoader(this, this, local, App.HomeIdx);
             }
 
             // Load up weather data
@@ -357,7 +393,7 @@ namespace SimpleWeather.UWP
         {
             if (Settings.FollowGPS && await UpdateLocation())
                 // Setup loader from updated location
-                wLoader = new WeatherDataLoader(this, pair.Value, pair.Key);
+                wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
 
             RefreshWeather(true);
         }

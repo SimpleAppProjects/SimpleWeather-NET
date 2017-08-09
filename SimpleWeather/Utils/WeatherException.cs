@@ -28,7 +28,7 @@ namespace SimpleWeather.Utils
 
             switch (ErrorStatus)
             {
-                case WeatherUtils.ErrorStatus.NOWEATHER:
+                case WeatherUtils.ErrorStatus.NoWeather:
 #if WINDOWS_UWP
                     errorMsg = App.ResLoader.GetString("WError_NoWeather");
 #elif __ANDROID__
@@ -37,7 +37,7 @@ namespace SimpleWeather.Utils
                     errorMsg = "Unable to load weather data!!";
 #endif
                     break;
-                case WeatherUtils.ErrorStatus.NETWORKERROR:
+                case WeatherUtils.ErrorStatus.NetworkError:
 #if WINDOWS_UWP
                     errorMsg = App.ResLoader.GetString("WError_NetworkError");
 #elif __ANDROID__
@@ -46,7 +46,7 @@ namespace SimpleWeather.Utils
                     errorMsg = "Network Connection Error!!";
 #endif
                     break;
-                case WeatherUtils.ErrorStatus.INVALIDAPIKEY:
+                case WeatherUtils.ErrorStatus.InvalidAPIKey:
 #if WINDOWS_UWP
                     errorMsg = App.ResLoader.GetString("WError_InvalidKey");
 #elif __ANDROID__
@@ -55,7 +55,7 @@ namespace SimpleWeather.Utils
                     errorMsg = "Invalid API Key";
 #endif
                     break;
-                case WeatherUtils.ErrorStatus.QUERYNOTFOUND:
+                case WeatherUtils.ErrorStatus.QueryNotFound:
 #if WINDOWS_UWP
                     errorMsg = App.ResLoader.GetString("WError_QueryNotFound");
 #elif __ANDROID__
@@ -64,7 +64,7 @@ namespace SimpleWeather.Utils
                     errorMsg = "No cities match your search query";
 #endif
                     break;
-                case WeatherUtils.ErrorStatus.UNKNOWN:
+                case WeatherUtils.ErrorStatus.Unknown:
                 default:
                     errorMsg = base.Message;
                     break;

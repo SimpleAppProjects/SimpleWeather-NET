@@ -25,6 +25,8 @@ namespace SimpleWeather.WeatherData
     public class WeatherDataLoader
     {
         private IWeatherLoadedListener callback;
+        private IWeatherErrorListener errorCallback;
+
         private string location_query = null;
         private Weather weather = null;
         private int locationIdx = 0;
@@ -36,9 +38,22 @@ namespace SimpleWeather.WeatherData
             locationIdx = idx;
         }
 
+        public WeatherDataLoader(IWeatherLoadedListener listener, IWeatherErrorListener errorListener, string query, int idx)
+        {
+            callback = listener;
+            errorCallback = errorListener;
+            location_query = query;
+            locationIdx = idx;
+        }
+
         public void SetWeatherLoadedListener(IWeatherLoadedListener listener)
         {
             callback = listener;
+        }
+
+        public void SetWeatherErrorListener(IWeatherErrorListener listener)
+        {
+            errorCallback = listener;
         }
 
         private async Task GetWeatherData()
@@ -100,10 +115,10 @@ namespace SimpleWeather.WeatherData
                         switch (root.response.error.type)
                         {
                             case "querynotfound":
-                                wEx = new WeatherException(WeatherUtils.ErrorStatus.QUERYNOTFOUND);
+                                wEx = new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
                                 break;
                             case "keynotfound":
-                                wEx = new WeatherException(WeatherUtils.ErrorStatus.INVALIDAPIKEY);
+                                wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
                                 break;
                             default:
                                 break;
@@ -132,7 +147,7 @@ namespace SimpleWeather.WeatherData
                 if (ex is WebException || ex is HttpRequestException)
 #endif
                 {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NETWORKERROR);
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                 }
 
                 System.Diagnostics.Debug.WriteLine(ex.StackTrace);
@@ -158,7 +173,7 @@ namespace SimpleWeather.WeatherData
             }
             else if (weather == null && wEx == null)
             {
-                throw new WeatherException(WeatherUtils.ErrorStatus.NOWEATHER);
+                throw new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
             }
             else if (weather != null && wEx != null && loadedSavedData)
             {
@@ -176,20 +191,13 @@ namespace SimpleWeather.WeatherData
                 }
                 catch (WeatherException wEx)
                 {
-#if WINDOWS_UWP
-                    Toast.ShowToast(wEx.Message, Toast.ToastDuration.Short);
-#elif __ANDROID__
-                    new Android.OS.Handler(Android.OS.Looper.MainLooper).Post(() =>
-                    {
-                        Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
-                    });
-#endif
+                    errorCallback?.OnWeatherError(wEx);
                 }
             }
             else
                 await LoadWeatherData();
 
-            callback.OnWeatherLoaded(locationIdx, weather);
+            callback?.OnWeatherLoaded(locationIdx, weather);
         }
 
         private async Task LoadWeatherData()
@@ -212,14 +220,7 @@ namespace SimpleWeather.WeatherData
                 }
                 catch (WeatherException wEx)
                 {
-#if WINDOWS_UWP
-                    Toast.ShowToast(wEx.Message, Toast.ToastDuration.Short);
-#elif __ANDROID__
-                    new Android.OS.Handler(Android.OS.Looper.MainLooper).Post(() =>
-                    {
-                        Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
-                    });
-#endif
+                    errorCallback?.OnWeatherError(wEx);
                 }
             }
         }
@@ -383,10 +384,10 @@ namespace SimpleWeather.WeatherData
                         switch (root.response.error.type)
                         {
                             case "querynotfound":
-                                wEx = new WeatherException(WeatherUtils.ErrorStatus.QUERYNOTFOUND);
+                                wEx = new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
                                 break;
                             case "keynotfound":
-                                wEx = new WeatherException(WeatherUtils.ErrorStatus.INVALIDAPIKEY);
+                                wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
                                 break;
                             default:
                                 break;
@@ -414,7 +415,7 @@ namespace SimpleWeather.WeatherData
                 if (ex is WebException || ex is HttpRequestException)
 #endif
                 {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NETWORKERROR);
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                 }
 
                 System.Diagnostics.Debug.WriteLine(ex.StackTrace);
@@ -426,10 +427,10 @@ namespace SimpleWeather.WeatherData
             if (weather == null)
             {
                 if (wEx == null)
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NOWEATHER);
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
 
 #if WINDOWS_UWP
-                Toast.ShowToast(wEx.Message, Toast.ToastDuration.Short);
+                await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
 #elif __ANDROID__
                 Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
 #endif

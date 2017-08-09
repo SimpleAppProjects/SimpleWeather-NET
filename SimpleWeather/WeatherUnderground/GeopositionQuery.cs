@@ -60,12 +60,13 @@ namespace SimpleWeather.WeatherUnderground
 #if WINDOWS_UWP
                 if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
-                    Toast.ShowToast(wEx.Message, Toast.ToastDuration.Short);
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
                 }
 #elif __ANDROID__
                 if (ex is WebException || ex is HttpRequestException)
                 {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NETWORKERROR);
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                     new Android.OS.Handler(Android.OS.Looper.MainLooper).Post(() =>
                     {
                         Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();

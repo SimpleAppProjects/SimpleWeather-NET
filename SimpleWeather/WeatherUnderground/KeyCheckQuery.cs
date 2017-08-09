@@ -23,7 +23,7 @@ namespace SimpleWeather.WeatherUnderground
             try
             {
                 if (String.IsNullOrWhiteSpace(key))
-                    throw (wEx = new WeatherException(WeatherUtils.ErrorStatus.INVALIDAPIKEY));
+                    throw (wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey));
 
                 // Connect to webstream
                 HttpClient webClient = new HttpClient();
@@ -50,7 +50,7 @@ namespace SimpleWeather.WeatherUnderground
                     switch (root.response.error.type)
                     {
                         case "keynotfound":
-                            wEx = new WeatherException(WeatherUtils.ErrorStatus.INVALIDAPIKEY);
+                            wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
                             isValid = false;
                             break;
                     }
@@ -69,7 +69,7 @@ namespace SimpleWeather.WeatherUnderground
             if (wEx != null)
             {
 #if WINDOWS_UWP
-                UWP.Controls.Toast.ShowToast(wEx.Message, UWP.Controls.Toast.ToastDuration.Short);
+                await UWP.Controls.Toast.ShowToastAsync(wEx.Message, UWP.Controls.ToastDuration.Short);
 #elif __ANDROID__
                 new Android.OS.Handler(Android.OS.Looper.MainLooper).Post(() =>
                 {

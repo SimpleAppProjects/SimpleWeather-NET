@@ -1,4 +1,5 @@
-﻿using SimpleWeather.Utils;
+﻿using Microsoft.QueryStringDotNET;
+using SimpleWeather.Utils;
 using System;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
@@ -102,6 +103,57 @@ namespace SimpleWeather.UWP
             var deferral = e.SuspendingOperation.GetDeferral();
             //TODO: Save application state and stop any background activity
             deferral.Complete();
+        }
+
+        protected override void OnActivated(IActivatedEventArgs e)
+        {
+            base.OnActivated(e);
+
+            // Handle toast activation
+            if (e is ToastNotificationActivatedEventArgs)
+            {
+                // Get the root frame
+                Frame rootFrame = Window.Current.Content as Frame;
+
+                var toastActivationArgs = e as ToastNotificationActivatedEventArgs;
+
+                // Parse the query string (using QueryString.NET)
+                QueryString args = QueryString.Parse(toastActivationArgs.Argument);
+
+                if (!args.Contains("action"))
+                    return;
+
+                // See what action is being requested 
+                switch (args["action"])
+                {
+                    // Open the image
+                    case "toast-refresh":
+
+                        // The URL retrieved from the toast args
+                        string pageName = args["page"];
+                        Type pageType = Type.GetType(pageName, false);
+
+                        // Skip if we're not on that page
+                        if (pageType != null && rootFrame.Content is Shell && (rootFrame.Content as Shell).AppFrame.SourcePageType.Equals(pageType))
+                        {
+                            // Refresh that page
+                            if (pageType.Equals((typeof(WeatherNow))))
+                            {
+                                (rootFrame.Content as Shell).AppFrame.Navigate(typeof(WeatherNow), args["action"]);
+                            }
+                            else if (pageType.Equals(typeof(LocationsPage)))
+                            {
+                                (rootFrame.Content as Shell).AppFrame.Navigate(typeof(LocationsPage), args["action"]);
+                            }
+                        }
+                        break;
+                }
+            }
+
+            // TODO: Handle other types of activation
+
+            // Ensure the current window is active
+            Window.Current.Activate();
         }
     }
 }

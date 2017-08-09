@@ -58,13 +58,13 @@ namespace SimpleWeather.WeatherYahoo
 #if WINDOWS_UWP
                 if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
                 {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NETWORKERROR);
-                    Toast.ShowToast(wEx.Message, Toast.ToastDuration.Short);
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
                 }
 #elif __ANDROID__
                 if (ex is System.Net.WebException || ex is HttpRequestException)
                 {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NETWORKERROR);
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                     new Android.OS.Handler(Android.OS.Looper.MainLooper).Post(() =>
                     {
                         Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();

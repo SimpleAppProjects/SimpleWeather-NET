@@ -1,5 +1,6 @@
 ﻿using SimpleWeather.Controls;
 using SimpleWeather.Utils;
+using SimpleWeather.UWP.Controls;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace SimpleWeather.UWP
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class LocationsPage : Page, IWeatherLoadedListener, IDisposable
+    public sealed partial class LocationsPage : Page, IWeatherLoadedListener, IWeatherErrorListener, IDisposable
     {
         private CancellationTokenSource cts = new CancellationTokenSource();
 
@@ -36,6 +37,7 @@ namespace SimpleWeather.UWP
 
         public bool EditMode { get; set; } = false;
         private bool DataChanged = false;
+        private bool[] ErrorCounter;
 
         public void OnWeatherLoaded(int locationIdx, Weather weather)
         {
@@ -54,6 +56,37 @@ namespace SimpleWeather.UWP
             }
         }
 
+        public void OnWeatherError(WeatherException wEx)
+        {
+            switch (wEx.ErrorStatus)
+            {
+                case WeatherUtils.ErrorStatus.NetworkError:
+                case WeatherUtils.ErrorStatus.NoWeather:
+                    // Show error message and prompt to refresh
+                    // Only warn once
+                    if (!ErrorCounter[(int)wEx.ErrorStatus])
+                    {
+                        Snackbar snackBar = Snackbar.Make(Content as Grid, wEx.Message, SnackbarDuration.Long);
+                        snackBar.SetAction(App.ResLoader.GetString("Action_Retry"), (sender) =>
+                        {
+                            RefreshLocations();
+                        });
+                        snackBar.Show();
+                        ErrorCounter[(int)wEx.ErrorStatus] = true;
+                    }
+                    break;
+                default:
+                    // Show error message
+                    // Only warn once
+                    if (!ErrorCounter[(int)wEx.ErrorStatus])
+                    {
+                        Snackbar.Make(Content as Grid, wEx.Message, SnackbarDuration.Long).Show();
+                        ErrorCounter[(int)wEx.ErrorStatus] = true;
+                    }
+                    break;
+            }
+        }
+
         public LocationsPage()
         {
             this.InitializeComponent();
@@ -64,6 +97,9 @@ namespace SimpleWeather.UWP
             LocationPanels.CollectionChanged += LocationPanels_CollectionChanged;
 
             LocationQuerys = new ObservableCollection<LocationQueryViewModel>();
+
+            int max = Enum.GetValues(typeof(WeatherUtils.ErrorStatus)).Cast<int>().Max();
+            ErrorCounter = new bool[max];
         }
 
         public void Dispose()
@@ -74,6 +110,20 @@ namespace SimpleWeather.UWP
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
+            if (e.Parameter != null)
+            {
+                string arg = e.Parameter.ToString();
+
+                switch (arg)
+                {
+                    case "toast-refresh":
+                        RefreshLocations();
+                        return;
+                    default:
+                        break;
+                }
+            }
 
             if (Settings.FollowGPS)
                 GPSPanel.Visibility = Visibility.Visible;
@@ -103,6 +153,9 @@ namespace SimpleWeather.UWP
             // Cancel edit mode if moving away
             if (EditMode)
                 ToggleEditMode();
+
+            // Reset error counter
+            Array.Clear(ErrorCounter, 0, ErrorCounter.Length);
         }
 
         private void LocationPanels_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -167,7 +220,7 @@ namespace SimpleWeather.UWP
             {
                 int index = locations.IndexOf(location);
 
-                wLoader = new WeatherDataLoader(this, location, index);
+                wLoader = new WeatherDataLoader(this, this, location, index);
                 await wLoader.LoadWeatherData(false);
             }
         }
@@ -202,7 +255,7 @@ namespace SimpleWeather.UWP
                 foreach (LocationPanelViewModel view in dataset)
                 {
                     WeatherDataLoader wLoader =
-                        new WeatherDataLoader(this, view.Pair.Value, view.Pair.Key);
+                        new WeatherDataLoader(this, this, view.Pair.Value, view.Pair.Key);
                     await wLoader.LoadWeatherData(false);
                 }
             }
@@ -247,6 +300,7 @@ namespace SimpleWeather.UWP
             {
                 // Cancel pending searches
                 cts.Cancel();
+                cts = new CancellationTokenSource();
                 // Hide flyout if query is empty or null
                 LocationQuerys.Clear();
                 sender.IsSuggestionListOpen = false;

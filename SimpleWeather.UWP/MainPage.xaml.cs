@@ -92,6 +92,7 @@ namespace SimpleWeather.UWP
             {
                 // Cancel pending searches
                 cts.Cancel();
+                cts = new CancellationTokenSource();
                 // Hide flyout if query is empty or null
                 LocationQuerys.Clear();
                 sender.IsSuggestionListOpen = false;
