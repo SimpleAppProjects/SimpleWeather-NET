@@ -219,7 +219,18 @@ namespace SimpleWeather.UWP
             Button button = sender as Button;
             button.IsEnabled = false;
 
-            GeolocationAccessStatus geoStatus = await Geolocator.RequestAccessAsync();
+            GeolocationAccessStatus geoStatus = GeolocationAccessStatus.Unspecified;
+
+            try
+            {
+                // Catch error in case dialog is dismissed
+                geoStatus = await Geolocator.RequestAccessAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+            }
+
             Geolocator geolocal = new Geolocator() { DesiredAccuracyInMeters = 5000, ReportInterval = 900000, MovementThreshold = 2500 };
             Geoposition geoPos = null;
 
@@ -282,9 +293,7 @@ namespace SimpleWeather.UWP
                 if (String.IsNullOrWhiteSpace(selected_query))
                 {
                     // Stop since there is no valid query
-                    button.IsEnabled = true;
-                    await LoadingDialog.HideAsync();
-                    return;
+                    goto exit;
                 }
 
                 // Stop if using WeatherUnderground and API Key is empty
@@ -295,9 +304,7 @@ namespace SimpleWeather.UWP
                     KeyEntry.BorderBrush = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Red);
                     KeyEntry.BorderThickness = new Thickness(2);
 
-                    button.IsEnabled = true;
-                    await LoadingDialog.HideAsync();
-                    return;
+                    goto exit;
                 }
 
                 KeyValuePair<int, string> pair;
@@ -309,9 +316,7 @@ namespace SimpleWeather.UWP
 
                 if (weather == null)
                 {
-                    button.IsEnabled = true;
-                    await LoadingDialog.HideAsync();
-                    return;
+                    goto exit;
                 }
 
                 // Save weather data
@@ -329,6 +334,10 @@ namespace SimpleWeather.UWP
                 await LoadingDialog.HideAsync();
                 this.Frame.Navigate(typeof(Shell), pair);
             }
+
+            exit:
+            button.IsEnabled = true;
+            await LoadingDialog.HideAsync();
         }
 
         private void APIComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

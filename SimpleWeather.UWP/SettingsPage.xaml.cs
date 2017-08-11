@@ -102,10 +102,7 @@ namespace SimpleWeather.UWP
             {
                 KeyBorder.BorderBrush = new SolidColorBrush(Colors.Red);
                 await new MessageDialog(App.ResLoader.GetString("Msg_EnterAPIKey")).ShowAsync();
-                e.Handled = true;
             }
-            else
-                e.Handled = false;
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
@@ -210,7 +207,18 @@ namespace SimpleWeather.UWP
 
             if (sw.IsOn)
             {
-                GeolocationAccessStatus geoStatus = await Geolocator.RequestAccessAsync();
+                GeolocationAccessStatus geoStatus = GeolocationAccessStatus.Unspecified;
+
+                try
+                {
+                    // Catch error in case dialog is dismissed
+                    geoStatus = await Geolocator.RequestAccessAsync();
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+                }
+
                 // Setup error just in case
                 MessageDialog error = null;
 

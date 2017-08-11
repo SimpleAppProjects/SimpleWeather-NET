@@ -307,25 +307,31 @@ namespace SimpleWeather.UWP
                 }
                 catch (Exception)
                 {
-                    GeolocationAccessStatus geoStatus = await Geolocator.RequestAccessAsync();
+                    GeolocationAccessStatus geoStatus = GeolocationAccessStatus.Unspecified;
 
-                    if (geoStatus == GeolocationAccessStatus.Allowed)
+                    try
                     {
-                        try
+                        geoStatus = await Geolocator.RequestAccessAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+                    }
+                    finally
+                    {
+                        if (geoStatus == GeolocationAccessStatus.Allowed)
                         {
                             newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10));
                         }
-                        catch (Exception ex)
+                        else if (geoStatus == GeolocationAccessStatus.Denied)
                         {
-                            System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+                            // Disable gps feature
+                            Settings.FollowGPS = false;
                         }
                     }
-                    else if (geoStatus == GeolocationAccessStatus.Denied)
-                    {
-                        // Disable gps feature
-                        Settings.FollowGPS = false;
+
+                    if (!Settings.FollowGPS)
                         return false;
-                    }
                 }
 
                 // Access to location granted
