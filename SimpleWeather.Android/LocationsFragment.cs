@@ -417,7 +417,7 @@ namespace SimpleWeather.Droid
             {
                 List<LocationPanelViewModel> dataset = mAdapter.Dataset;
                 if (gpsPanelViewModel != null)
-                    dataset.Append(gpsPanelViewModel);
+                    dataset.Add(gpsPanelViewModel);
 
                 foreach (LocationPanelViewModel view in dataset)
                 {
