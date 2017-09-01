@@ -1,8 +1,8 @@
 ﻿{
   "dependencies": {
     "Coding4Fun.Toolkit.Controls": "2.1.8",
-    "Microsoft.NETCore.UniversalWindowsPlatform": "5.3.3",
-    "Microsoft.Toolkit.Uwp.Notifications": "1.5.1",
+    "Microsoft.NETCore.UniversalWindowsPlatform": "5.4.0",
+    "Microsoft.Toolkit.Uwp.Notifications": "2.0.0",
     "Newtonsoft.Json": "10.0.3",
     "QueryString.NET": "1.0.0"
   },
