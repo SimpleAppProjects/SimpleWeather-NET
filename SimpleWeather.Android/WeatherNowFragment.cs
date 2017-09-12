@@ -26,6 +26,7 @@ using Android.Runtime;
 using Android.Content.PM;
 using Android;
 using Android.Locations;
+using Android.Graphics;
 
 namespace SimpleWeather.Droid
 {
@@ -34,6 +35,7 @@ namespace SimpleWeather.Droid
         private Context context;
         private Pair<int, string> pair;
         private bool loaded = false;
+        private int BGAlpha = 255;
 
         WeatherDataLoader wLoader = null;
         WeatherNowViewModel weatherView = null;
@@ -42,7 +44,7 @@ namespace SimpleWeather.Droid
 
         // Views
         private SwipeRefreshLayout refreshLayout;
-        private View mainView;
+        private NestedScrollView mainView;
         // Condition
         private TextView locationName;
         private TextView updateTime;
@@ -171,6 +173,11 @@ namespace SimpleWeather.Droid
                     wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
             }
 
+            if (savedInstanceState != null)
+            {
+                BGAlpha = savedInstanceState.GetInt("alpha", 255);
+            }
+
             context = Activity.ApplicationContext;
             mLocListnr = new LocationListener();
             mLocListnr.LocationChanged += async (Android.Locations.Location location) =>
@@ -191,7 +198,8 @@ namespace SimpleWeather.Droid
             HasOptionsMenu = false;
 
             refreshLayout = (SwipeRefreshLayout)view;
-            mainView = view.FindViewById(Resource.Id.fragment_weather_now);
+            mainView = view.FindViewById<NestedScrollView>(Resource.Id.fragment_weather_now);
+            mainView.ScrollChange += ScrollView_ScrollChange;
             // Condition
             locationName = view.FindViewById<TextView>(Resource.Id.label_location_name);
             updateTime = view.FindViewById<TextView>(Resource.Id.label_updatetime);
@@ -257,6 +265,15 @@ namespace SimpleWeather.Droid
             return view;
         }
 
+        private void ScrollView_ScrollChange(object sender, NestedScrollView.ScrollChangeEventArgs e)
+        {
+            if (mainView != null && mainView.Background != null)
+            {
+                int alpha = 255 - (int)(255 * 1.5 * e.ScrollY / (e.V.GetChildAt(0).Height - e.V.Height));
+                mainView.Background.Alpha = (alpha >= 0) ? BGAlpha = alpha : BGAlpha = 0;
+            }
+        }
+
         private static bool IsLargeTablet(Context context)
         {
             return (context.Resources.Configuration.ScreenLayout
@@ -274,7 +291,7 @@ namespace SimpleWeather.Droid
                     // Minimum width for ea. card
                     int minWidth = 600;
                     // Size of the view
-                    int viewWidth = (int)(this.View.Width - panel.PaddingRight - panel.PaddingLeft);
+                    int viewWidth = (int)(this.View.Width - panel.PaddingEnd - panel.PaddingStart);
                     // Available columns based on min card width
                     int availColumns = (viewWidth / minWidth) == 0 ? 1 : viewWidth / minWidth;
                     // Maximum columns to use
@@ -381,6 +398,14 @@ namespace SimpleWeather.Droid
             loaded = false;
         }
 
+        public override void OnSaveInstanceState(Bundle outState)
+        {
+            // Save data
+            outState.PutInt("alpha", BGAlpha);
+
+            base.OnSaveInstanceState(outState);
+        }
+
         private async Task Restore()
         {
             bool forceRefresh = false;
@@ -446,17 +471,19 @@ namespace SimpleWeather.Droid
         private void SetView(WeatherNowViewModel weatherView)
         {
             // Background
-            mainView.Post(() => 
+            mainView.Post(() =>
             {
-                View.Background = new ColorDrawable(weatherView.PendingBackground);
-                loader.DisplayImage(weatherView.Background, new CustomViewAware(mainView), ImageUtils.CenterCropConfig(View.Width, View.Height));
+                refreshLayout.Background = new ColorDrawable(weatherView.PendingBackground);
+                loader.DisplayImage(weatherView.Background, new CustomViewAware(mainView), ImageUtils.CenterCropAlpha(BGAlpha));
             });
 
             Activity.RunOnUiThread(() =>
             {
-                forecastView.Background = ContextCompat.GetDrawable(Activity, weatherView.PanelBackground);
-                detailsPanel.Background = ContextCompat.GetDrawable(Activity, weatherView.PanelBackground);
-            
+                // Actionbar & StatusBar
+                AppCompatActivity.SupportActionBar.SetBackgroundDrawable(new ColorDrawable(weatherView.PendingBackground));
+                AppCompatActivity.Window.SetStatusBarColor(Color.Argb(255, 
+                    (int)(weatherView.PendingBackground.R * 0.75), (int)(weatherView.PendingBackground.G * 0.75), (int)(weatherView.PendingBackground.B * 0.75)));
+
                 // Location
                 locationName.Text = weatherView.Location;
 
@@ -504,15 +531,17 @@ namespace SimpleWeather.Droid
                         hrforecastView.AddView(new HourlyForecastItem(Activity, hrforecast));
                     }
                     hrforecastPanel.Visibility = ViewStates.Visible;
+                    mainView.FindViewById(Resource.Id.hourly_space).Visibility = ViewStates.Visible;
                 }
                 else
+                {
                     hrforecastPanel.Visibility = ViewStates.Gone;
+                    mainView.FindViewById(Resource.Id.hourly_space).Visibility = ViewStates.Gone;
+                }
 
                 if (weatherView.WUExtras.TextForecast.Count >= 1)
                 {
                     forecastSwitch.Visibility = ViewStates.Visible;
-
-                    txtForecastView.Background = ContextCompat.GetDrawable(Activity, weatherView.PanelBackground);
                     (txtForecastView.Adapter as TextForecastPagerAdapter).UpdateDataset(weatherView.WUExtras.TextForecast.ToList());
                 }
                 else
@@ -558,7 +587,7 @@ namespace SimpleWeather.Droid
 
         private void UpdateNavHeader(WeatherNowViewModel weatherView)
         {
-            loader.DisplayImage(weatherView.Background, new CustomViewAware(navheader), ImageUtils.CenterCropConfig(navheader.Width, navheader.Height));
+            navheader.Background = new ColorDrawable(weatherView.PendingBackground);
             navLocation.Text = weatherView.Location;
             navWeatherTemp.Text = weatherView.CurTemp;
         }
@@ -569,7 +598,7 @@ namespace SimpleWeather.Droid
 
             if (Settings.FollowGPS && (pair == null || pair.Key == App.HomeIdx))
             {
-                if (ContextCompat.CheckSelfPermission(Activity, Manifest.Permission.AccessFineLocation) != Permission.Granted &&
+                if (Activity != null && ContextCompat.CheckSelfPermission(Activity, Manifest.Permission.AccessFineLocation) != Permission.Granted &&
                     ContextCompat.CheckSelfPermission(Activity, Manifest.Permission.AccessCoarseLocation) != Permission.Granted)
                 {
                     RequestPermissions(new String[] { Manifest.Permission.AccessCoarseLocation, Manifest.Permission.AccessFineLocation },

@@ -317,7 +317,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <CommandBar x:Name="CommandBar" RequestedTheme="Dark" Background="#FF1F336C" Style="{StaticResource NoOverflow}" Grid.Row="0">
+        <CommandBar x:Name="CommandBar" RequestedTheme="Dark" Background="#FF006FBF" Style="{StaticResource NoOverflow}" Grid.Row="0">
             <CommandBar.Content>
                 <Grid Height="48">
                     <TextBlock x:Uid="Nav_Locations" Text="Locations" Style="{StaticResource CommandBarLabel}"/>

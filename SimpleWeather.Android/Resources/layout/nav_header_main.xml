@@ -29,7 +29,6 @@
         android:layout_height="wrap_content"
         android:padding="4dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textSize="18sp"
         tools:text="81\uf045" />
 
 </LinearLayout>

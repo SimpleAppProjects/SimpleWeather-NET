@@ -20,6 +20,7 @@ namespace SimpleWeather.UWP
         public static readonly Color AppColor = Color.FromArgb(255, 0, 111, 191);
         public const int HomeIdx = 0;
         public static ResourceLoader ResLoader;
+        public static Frame RootFrame { get; set; }
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -41,19 +42,19 @@ namespace SimpleWeather.UWP
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
             {
-                this.DebugSettings.EnableFrameRateCounter = true;
+                //this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
-            Frame rootFrame = Window.Current.Content as Frame;
+            RootFrame = Window.Current.Content as Frame;
 
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
-            if (rootFrame == null)
+            if (RootFrame == null)
             {
                 // Create a Frame to act as the navigation context and navigate to the first page
-                rootFrame = new Frame();
+                RootFrame = new Frame();
 
-                rootFrame.NavigationFailed += OnNavigationFailed;
+                RootFrame.NavigationFailed += OnNavigationFailed;
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
@@ -61,24 +62,24 @@ namespace SimpleWeather.UWP
                 }
 
                 // Place the frame in the current Window
-                Window.Current.Content = rootFrame;
+                Window.Current.Content = RootFrame;
             }
 
             if (e.PrelaunchActivated == false)
             {
-                if (rootFrame.Content == null)
+                if (RootFrame.Content == null)
                 {
                     // When the navigation stack isn't restored navigate to the first page,
                     // configuring the new page by passing required information as a navigation
                     // parameter
-                    rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                    RootFrame.Navigate(typeof(MainPage), e.Arguments);
                 }
                 // Ensure the current window is active
                 Window.Current.Activate();
             }
 
             ResLoader = new ResourceLoader();
-            Task.Factory.StartNew(() => Settings.LoadIfNeeded());
+            //await Task.Factory.StartNew(() => Settings.LoadIfNeeded());
         }
 
         /// <summary>
@@ -113,7 +114,7 @@ namespace SimpleWeather.UWP
             if (e is ToastNotificationActivatedEventArgs)
             {
                 // Get the root frame
-                Frame rootFrame = Window.Current.Content as Frame;
+                RootFrame = Window.Current.Content as Frame;
 
                 var toastActivationArgs = e as ToastNotificationActivatedEventArgs;
 
@@ -134,16 +135,16 @@ namespace SimpleWeather.UWP
                         Type pageType = Type.GetType(pageName, false);
 
                         // Skip if we're not on that page
-                        if (pageType != null && rootFrame.Content is Shell && (rootFrame.Content as Shell).AppFrame.SourcePageType.Equals(pageType))
+                        if (pageType != null && RootFrame.Content is Shell && (RootFrame.Content as Shell).AppFrame.SourcePageType.Equals(pageType))
                         {
                             // Refresh that page
                             if (pageType.Equals((typeof(WeatherNow))))
                             {
-                                (rootFrame.Content as Shell).AppFrame.Navigate(typeof(WeatherNow), args["action"]);
+                                (RootFrame.Content as Shell).AppFrame.Navigate(typeof(WeatherNow), args["action"]);
                             }
                             else if (pageType.Equals(typeof(LocationsPage)))
                             {
-                                (rootFrame.Content as Shell).AppFrame.Navigate(typeof(LocationsPage), args["action"]);
+                                (RootFrame.Content as Shell).AppFrame.Navigate(typeof(LocationsPage), args["action"]);
                             }
                         }
                         break;

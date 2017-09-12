@@ -11,6 +11,8 @@ using Windows.Storage;
 using Windows.UI.Xaml.Media;
 using Windows.UI;
 using Windows.UI.Core;
+using Windows.Foundation.Metadata;
+using Windows.UI.ViewManagement;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 namespace SimpleWeather.UWP
@@ -43,6 +45,9 @@ namespace SimpleWeather.UWP
         public SettingsPage()
         {
             this.InitializeComponent();
+
+            // Shell
+            (Shell.Instance.BurgerBackground as SolidColorBrush).Color = App.AppColor;
 
             RestoreSettings();
         }

@@ -16,6 +16,7 @@ using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 namespace SimpleWeather.UWP
@@ -301,7 +302,7 @@ namespace SimpleWeather.UWP
                 {
                     TextBlock header = KeyEntry.Header as TextBlock;
                     header.Visibility = Visibility.Visible;
-                    KeyEntry.BorderBrush = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Red);
+                    KeyEntry.BorderBrush = new SolidColorBrush(Colors.Red);
                     KeyEntry.BorderThickness = new Thickness(2);
 
                     goto exit;

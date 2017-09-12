@@ -70,7 +70,7 @@ namespace SimpleWeather.Droid.Controls
             {
                 // Background
                 loader.DisplayImage(panelView.Background, new CustomViewAware(mainLayout),
-                    ImageUtils.CenterCropConfig(mainLayout.Width, mainLayout.Height));
+                    ImageUtils.CenterCropConfig());
 
                 locationNameView.Text = panelView.LocationName;
                 locationTempView.Text = panelView.CurrTemp;

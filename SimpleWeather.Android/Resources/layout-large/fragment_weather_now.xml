@@ -31,7 +31,8 @@
                 android:fontFamily="sans-serif-light"
                 android:padding="8dp"
                 android:textAlignment="center"
-                android:textAppearance="@android:style/TextAppearance.Material.Large.Inverse"
+                android:textAppearance="@android:style/TextAppearance.Material.Medium.Inverse"
+                android:textColor="@android:color/white"
                 android:textSize="@dimen/label_location_size"
                 android:textStyle="normal|bold"
                 tools:text="New York, NY" />
@@ -41,71 +42,64 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:textAppearance="@android:style/TextAppearance.Material.Large.Inverse"
+                android:textAppearance="@android:style/TextAppearance.Material.Medium.Inverse"
+                android:textColor="@android:color/white"
                 android:textSize="@dimen/label_updatetime_size"
                 tools:text="Updated on 11:12 PM" />
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/spacer_top_size"
-                android:layout_weight="1" />
+                android:layout_height="@dimen/spacer_top_size" />
 
-            <LinearLayout
-                android:id="@+id/location_condition"
+            <SimpleWeather.Droid.Controls.WeatherIcon
+                android:id="@+id/weather_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:orientation="vertical">
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:textAppearance="@android:style/TextAppearance.Material.Medium.Inverse"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/weather_icon_size"
+                tools:text="@string/wi_wu_sunny" />
 
-                <SimpleWeather.Droid.Controls.WeatherIcon
-                    android:id="@+id/weather_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:textAlignment="center"
-                    android:textAppearance="@android:style/TextAppearance.Material.Large.Inverse"
-                    android:textSize="@dimen/weather_icon_size"
-                    tools:text="@string/wi_wu_sunny" />
+            <TextView
+                android:id="@+id/weather_condition"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:maxLines="2"
+                android:padding="4dp"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/weather_condition_size"
+                tools:text="Sunny" />
 
-                <TextView
-                    android:id="@+id/weather_condition"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:maxLines="2"
-                    android:padding="4dp"
-                    android:textColor="@android:color/white"
-                    android:textSize="@dimen/weather_condition_size"
-                    tools:text="Sunny" />
-
-                <SimpleWeather.Droid.Controls.WeatherIcon
-                    android:id="@+id/weather_temp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical|center_horizontal"
-                    android:fontFamily="sans-serif"
-                    android:padding="4dp"
-                    android:textColor="@android:color/white"
-                    android:textSize="@dimen/weather_condition_size"
-                    tools:text="70&#xF045;" />
-
-            </LinearLayout>
+            <SimpleWeather.Droid.Controls.WeatherIcon
+                android:id="@+id/weather_temp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="sans-serif"
+                android:padding="4dp"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/weather_condition_size"
+                tools:text="70&#xF045;" />
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/spacer_mid_size"
-                android:layout_weight="1" />
+                android:layout_height="@dimen/spacer_mid_size" />
 
             <LinearLayout
                 android:id="@+id/forecast_panel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/dark_round_corner_bg"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:padding="8dp">
 
                     <TextView
                         android:id="@+id/forecast_label"
@@ -114,7 +108,7 @@
                         android:layout_weight="1"
                         android:padding="4dp"
                         android:text="@string/label_forecast"
-                        android:textAppearance="@android:style/TextAppearance.Material.Large.Inverse"
+                        android:textAppearance="@android:style/TextAppearance.Material.Medium.Inverse"
                         android:textColor="@android:color/white"
                         android:textStyle="bold" />
 
@@ -130,6 +124,11 @@
 
                 </LinearLayout>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@android:color/white" />
+
                 <HorizontalScrollView
                     android:id="@+id/forecast_scrollview"
                     android:layout_width="match_parent"
@@ -139,7 +138,6 @@
                         android:id="@+id/forecast_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/dark_round_corner_bg"
                         android:orientation="horizontal">
 
                         <include layout="@layout/weather_forecast_panel" />
@@ -150,7 +148,8 @@
                 <android.support.v4.view.ViewPager
                     android:id="@+id/txt_forecast_viewpgr"
                     android:layout_width="match_parent"
-                    android:layout_height="150dp">
+                    android:layout_height="150dp"
+                    tools:visibility="gone">
 
                     <android.support.v4.view.PagerTabStrip
                         android:layout_width="match_parent"
@@ -158,31 +157,37 @@
                         android:layout_gravity="bottom"
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp"
-                        android:textColor="@android:color/white" />
+                        android:textColor="#fff" />
 
                 </android.support.v4.view.ViewPager>
             </LinearLayout>
+
+            <Space
+                android:id="@+id/hourly_space"
+                android:layout_width="match_parent"
+                android:layout_height="20dp" />
 
             <LinearLayout
                 android:id="@+id/hourly_forecast_panel"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@drawable/dark_round_corner_bg"
                 android:orientation="vertical">
-
-                <Space
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:layout_weight="1" />
 
                 <TextView
                     android:id="@+id/hourly_forecast_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="4dp"
+                    android:padding="12dp"
                     android:text="@string/label_hourlyforecast"
-                    android:textAppearance="@android:style/TextAppearance.Material.Large.Inverse"
+                    android:textAppearance="@android:style/TextAppearance.Material.Medium.Inverse"
                     android:textColor="@android:color/white"
                     android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@android:color/white" />
 
                 <HorizontalScrollView
                     android:layout_width="match_parent"
@@ -192,40 +197,45 @@
                         android:id="@+id/hourly_forecast_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/dark_round_corner_bg"
                         android:orientation="horizontal">
 
                         <include layout="@layout/weather_hrforecast_panel" />
 
                     </LinearLayout>
+
                 </HorizontalScrollView>
+
             </LinearLayout>
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:layout_weight="1" />
+                android:layout_height="20dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/dark_round_corner_bg"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/details_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="4dp"
+                    android:padding="12dp"
                     android:text="@string/label_details"
-                    android:textAppearance="@android:style/TextAppearance.Material.Large.Inverse"
+                    android:textAppearance="@android:style/TextAppearance.Material.Medium.Inverse"
                     android:textColor="@android:color/white"
                     android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@android:color/white" />
 
                 <android.support.v7.widget.GridLayout
                     android:id="@+id/details_panel"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/dark_round_corner_bg"
+                    android:layout_height="match_parent"
                     android:paddingBottom="10dp"
                     android:paddingEnd="25dp"
                     android:paddingStart="25dp"
@@ -261,8 +271,8 @@
                                 style="@style/WeatherDetails"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
-                                android:layout_toLeftOf="@+id/chance_val"
+                                android:layout_alignParentStart="true"
+                                android:layout_toStartOf="@+id/chance_val"
                                 android:text="@string/label_chance" />
 
                             <TextView
@@ -270,7 +280,7 @@
                                 style="@style/WeatherDetails"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentRight="true"
+                                android:layout_alignParentEnd="true"
                                 android:gravity="center"
                                 tools:text="20%" />
                         </RelativeLayout>
@@ -285,8 +295,8 @@
                                 style="@style/WeatherDetails"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
-                                android:layout_toLeftOf="@+id/qpf_rain_val"
+                                android:layout_alignParentStart="true"
+                                android:layout_toStartOf="@+id/qpf_rain_val"
                                 android:text="@string/label_qpf_rain" />
 
                             <TextView
@@ -294,7 +304,7 @@
                                 style="@style/WeatherDetails"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentRight="true"
+                                android:layout_alignParentEnd="true"
                                 android:gravity="center"
                                 tools:text="0.01 in" />
 
@@ -310,8 +320,8 @@
                                 style="@style/WeatherDetails"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
-                                android:layout_toLeftOf="@+id/qpf_snow_val"
+                                android:layout_alignParentStart="true"
+                                android:layout_toStartOf="@+id/qpf_snow_val"
                                 android:text="@string/label_qpf_snow" />
 
                             <TextView
@@ -319,15 +329,11 @@
                                 style="@style/WeatherDetails"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentRight="true"
+                                android:layout_alignParentEnd="true"
                                 android:gravity="center"
                                 tools:text="0.00 in" />
 
                         </RelativeLayout>
-
-                        <Space
-                            android:layout_width="match_parent"
-                            android:layout_height="20dp" />
 
                     </LinearLayout>
 
@@ -352,16 +358,15 @@
 
                         <RelativeLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:layout_height="wrap_content">
 
                             <TextView
                                 android:id="@+id/pressure_label"
                                 style="@style/WeatherDetails"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
-                                android:layout_toLeftOf="@+id/pressure_state"
+                                android:layout_alignParentStart="true"
+                                android:layout_toStartOf="@+id/pressure_state"
                                 android:text="@string/label_pressure" />
 
                             <SimpleWeather.Droid.Controls.WeatherIcon
@@ -369,7 +374,7 @@
                                 style="@style/WeatherDetails"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_toLeftOf="@+id/pressure"
+                                android:layout_toStartOf="@+id/pressure"
                                 android:gravity="center"
                                 android:padding="6dp"
                                 android:visibility="visible"
@@ -380,24 +385,22 @@
                                 style="@style/WeatherDetails"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentRight="true"
-                                android:backgroundTintMode="screen"
+                                android:layout_alignParentEnd="true"
                                 android:gravity="center"
                                 tools:text="1000.2 mb" />
                         </RelativeLayout>
 
                         <RelativeLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:layout_height="wrap_content">
 
                             <TextView
                                 android:id="@+id/humidity_label"
                                 style="@style/WeatherDetails"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
-                                android:layout_toLeftOf="@+id/humidity"
+                                android:layout_alignParentStart="true"
+                                android:layout_toStartOf="@+id/humidity"
                                 android:text="@string/label_humidity" />
 
                             <TextView
@@ -405,7 +408,7 @@
                                 style="@style/WeatherDetails"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentRight="true"
+                                android:layout_alignParentEnd="true"
                                 android:gravity="center"
                                 tools:text="100%" />
 
@@ -421,8 +424,8 @@
                                 style="@style/WeatherDetails"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
-                                android:layout_toLeftOf="@+id/visibility_val"
+                                android:layout_alignParentStart="true"
+                                android:layout_toStartOf="@+id/visibility_val"
                                 android:text="@string/label_visibility" />
 
                             <TextView
@@ -430,7 +433,7 @@
                                 style="@style/WeatherDetails"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentRight="true"
+                                android:layout_alignParentEnd="true"
                                 android:gravity="center"
                                 tools:text="10.0 km" />
                         </RelativeLayout>
@@ -466,8 +469,8 @@
                                 style="@style/WeatherDetails"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
-                                android:layout_toLeftOf="@+id/feelslike"
+                                android:layout_alignParentStart="true"
+                                android:layout_toStartOf="@+id/feelslike"
                                 android:text="@string/label_feelslike" />
 
                             <TextView
@@ -475,7 +478,7 @@
                                 style="@style/WeatherDetails"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentRight="true"
+                                android:layout_alignParentEnd="true"
                                 android:gravity="center"
                                 tools:text="36º" />
                         </RelativeLayout>
@@ -489,8 +492,8 @@
                                 style="@style/WeatherDetails"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
-                                android:layout_toLeftOf="@+id/wind_direction"
+                                android:layout_alignParentStart="true"
+                                android:layout_toStartOf="@+id/wind_direction"
                                 android:text="@string/label_wind" />
 
                             <SimpleWeather.Droid.Controls.WeatherIcon
@@ -498,7 +501,7 @@
                                 style="@style/WeatherDetails"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_toLeftOf="@+id/wind_speed"
+                                android:layout_toStartOf="@+id/wind_speed"
                                 android:padding="6dp"
                                 android:text="@string/wi_direction_up" />
 
@@ -507,7 +510,7 @@
                                 style="@style/WeatherDetails"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentRight="true"
+                                android:layout_alignParentEnd="true"
                                 android:gravity="center"
                                 tools:text="3.8 mph" />
                         </RelativeLayout>
@@ -544,8 +547,8 @@
                                 style="@style/WeatherDetails"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
-                                android:layout_toLeftOf="@+id/sunrise_icon"
+                                android:layout_alignParentStart="true"
+                                android:layout_toStartOf="@+id/sunrise_icon"
                                 android:text="@string/label_sunrise" />
 
                             <SimpleWeather.Droid.Controls.WeatherIcon
@@ -553,7 +556,7 @@
                                 style="@style/WeatherDetails"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_toLeftOf="@+id/sunrise_time"
+                                android:layout_toStartOf="@+id/sunrise_time"
                                 android:padding="6dp"
                                 android:text="@string/wi_sunrise" />
 
@@ -562,7 +565,7 @@
                                 style="@style/WeatherDetails"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentRight="true"
+                                android:layout_alignParentEnd="true"
                                 tools:text="06:45 AM" />
 
                         </RelativeLayout>
@@ -576,8 +579,8 @@
                                 style="@style/WeatherDetails"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
-                                android:layout_toLeftOf="@+id/sunset_icon"
+                                android:layout_alignParentStart="true"
+                                android:layout_toStartOf="@+id/sunset_icon"
                                 android:text="@string/label_sunset" />
 
                             <SimpleWeather.Droid.Controls.WeatherIcon
@@ -585,7 +588,7 @@
                                 style="@style/WeatherDetails"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_toLeftOf="@+id/sunset_time"
+                                android:layout_toStartOf="@+id/sunset_time"
                                 android:padding="6dp"
                                 android:text="@string/wi_sunset" />
 
@@ -594,7 +597,7 @@
                                 style="@style/WeatherDetails"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentRight="true"
+                                android:layout_alignParentEnd="true"
                                 tools:text="05:32 PM" />
                         </RelativeLayout>
 
@@ -610,8 +613,10 @@
                 android:layout_height="wrap_content"
                 android:padding="4dp"
                 android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+                android:textColor="@android:color/white"
                 tools:text="Data from WeatherUnderground" />
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
+
 </android.support.v4.widget.SwipeRefreshLayout>

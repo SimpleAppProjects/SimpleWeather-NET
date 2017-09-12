@@ -22,6 +22,12 @@ namespace SimpleWeather.UWP.Controls
         public TextForecastItem()
         {
             this.InitializeComponent();
+            this.SizeChanged += TextForecastItem_SizeChanged;
+        }
+
+        private void TextForecastItem_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            FctTextBox.Width = FctText.Width = e.NewSize.Width - WeatherBox.ActualWidth;
         }
     }
 }

@@ -18,10 +18,9 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <ProgressRing x:Name="LoadingRing" Grid.ColumnSpan="2" IsActive="{Binding IsLoading}" Foreground="White"/>
-        <Viewbox Name="NameBox" Height="55" HorizontalAlignment="Left" Grid.Column="0">
+        <Viewbox Name="NameBox" Height="55" HorizontalAlignment="Left" Grid.Column="0" StretchDirection="DownOnly" Stretch="Uniform">
             <TextBlock x:Name="LocationName" Text="{Binding LocationName, FallbackValue='New York, NY'}"
                        Foreground="White" FontSize="24" VerticalAlignment="Center" Padding="10"
-                       Width="200"
                        TextWrapping="WrapWholeWords"/>
         </Viewbox>
         <Viewbox Height="55" VerticalAlignment="Center" Grid.Column="1">

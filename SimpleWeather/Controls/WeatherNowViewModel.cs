@@ -76,9 +76,9 @@ namespace SimpleWeather.Controls
         public static readonly DependencyProperty BackgroundProperty =
             DependencyProperty.Register("Background", typeof(ImageBrush),
             typeof(WeatherNowViewModel), new PropertyMetadata(null));
-        public static readonly DependencyProperty PanelBackgroundProperty =
-            DependencyProperty.Register("PanelBackground", typeof(SolidColorBrush),
-            typeof(WeatherNowViewModel), new PropertyMetadata(null));
+        public static readonly DependencyProperty PendingBackgroundProperty =
+            DependencyProperty.Register("PendingBackground", typeof(SolidColorBrush),
+            typeof(WeatherNowViewModel), new PropertyMetadata(new SolidColorBrush(Color.FromArgb(255, 0, 111, 191))));
         public static readonly DependencyProperty WeatherCreditProperty =
             DependencyProperty.Register("WeatherCredit", typeof(String),
             typeof(WeatherNowViewModel), new PropertyMetadata(""));
@@ -190,10 +190,10 @@ namespace SimpleWeather.Controls
             get { return (ImageBrush)GetValue(BackgroundProperty); }
             set { SetValue(BackgroundProperty, value); OnPropertyChanged("Background"); }
         }
-        public SolidColorBrush PanelBackground
+        public SolidColorBrush PendingBackground
         {
-            get { return (SolidColorBrush)GetValue(PanelBackgroundProperty); }
-            set { SetValue(PanelBackgroundProperty, value); OnPropertyChanged("PanelBackground"); }
+            get { return (SolidColorBrush)GetValue(PendingBackgroundProperty); }
+            set { SetValue(PendingBackgroundProperty, value); OnPropertyChanged("PendingBackground"); }
         }
         public String WeatherCredit
         {
@@ -235,7 +235,6 @@ namespace SimpleWeather.Controls
 
         // Background
         public string Background { get; set; }
-        public int PanelBackground { get; set; }
         public Color PendingBackground { get; set; }
 
         public string WeatherCredit { get; set; }
@@ -274,14 +273,11 @@ namespace SimpleWeather.Controls
             // Update backgrounds
 #if WINDOWS_UWP
             WeatherUtils.SetBackground(Background, weather);
-            PanelBackground = new SolidColorBrush(WeatherUtils.IsNight(weather) ?
-                Color.FromArgb(45, 128, 128, 128) : Color.FromArgb(15, 8, 8, 8));
+            PendingBackground.Color = WeatherUtils.IsNight(weather) ?
+                Color.FromArgb(255, 26, 36, 74) : Color.FromArgb(255, 72, 116, 191);
 #elif __ANDROID__
             Background = WeatherUtils.GetBackgroundURI(weather);
-            PanelBackground = WeatherUtils.IsNight(weather) ?
-                Resource.Drawable.dark_round_corner_bg : Resource.Drawable.light_round_corner_bg;
-            //new Color(128, 128, 128, 45) : new Color(8, 8, 8, 15);
-            PendingBackground = WeatherUtils.IsNight(weather) ? new Color(13, 18, 37, 255) : new Color(72, 116, 191, 255);
+            PendingBackground = WeatherUtils.IsNight(weather) ? new Color(26, 36, 74, 255) : new Color(72, 116, 191, 255);
 #endif
 
             // Location

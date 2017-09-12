@@ -20,6 +20,9 @@ using SimpleWeather.Droid.Helpers;
 using Android.Support.Design.Widget;
 using Android.Support.V7.Widget.Helper;
 using System.Threading.Tasks;
+using Android.Support.V4.Content;
+using Android.Graphics.Drawables;
+using Android.Graphics;
 
 namespace SimpleWeather.Droid
 {
@@ -73,7 +76,7 @@ namespace SimpleWeather.Droid
                 if (locationIdx == App.HomeIdx && Settings.FollowGPS)
                 {
                     gpsPanelViewModel.SetWeather(weather);
-                    gpsPanel.SetWeather(gpsPanelViewModel);
+                    Activity.RunOnUiThread(() => gpsPanel.SetWeather(gpsPanelViewModel));
                 }
                 else
                 {
@@ -81,7 +84,7 @@ namespace SimpleWeather.Droid
                     int index = Settings.FollowGPS ? locationIdx - 1 : locationIdx;
                     LocationPanelViewModel panel = mAdapter.Dataset[index];
                     panel.SetWeather(weather);
-                    mAdapter.NotifyItemChanged(index);
+                    Activity.RunOnUiThread(() => mAdapter.NotifyItemChanged(index));
                 }
             }
         }
@@ -282,6 +285,10 @@ namespace SimpleWeather.Droid
         {
             // Update view on resume
             // ex. If temperature unit changed
+            AppCompatActivity.SupportActionBar.SetBackgroundDrawable(
+                new ColorDrawable(new Color(ContextCompat.GetColor(Activity, Resource.Color.colorPrimary))));
+            AppCompatActivity.Window.SetStatusBarColor(new Color(ContextCompat.GetColor(Activity, Resource.Color.colorPrimaryDark)));
+
             if (Settings.FollowGPS)
             {
                 gpsPanelLayout.Visibility = ViewStates.Visible;
@@ -359,8 +366,6 @@ namespace SimpleWeather.Droid
         private async Task LoadLocations()
         {
             // Load up saved locations
-            WeatherDataLoader wLoader = null;
-
             List<String> locations = await Settings.GetLocations();
             mAdapter.RemoveAll();
 
@@ -387,8 +392,11 @@ namespace SimpleWeather.Droid
                 else
                     mAdapter.Add(Settings.FollowGPS ? index - 1 : index, panel);
 
-                wLoader = new WeatherDataLoader(this, this, location, index);
-                await wLoader.LoadWeatherData(false);
+                await Task.Run(async () =>
+                {
+                    var wLoader = new WeatherDataLoader(this, this, location, index);
+                    await wLoader.LoadWeatherData(false);
+                });
             }
         }
 
@@ -421,9 +429,12 @@ namespace SimpleWeather.Droid
 
                 foreach (LocationPanelViewModel view in dataset)
                 {
-                    WeatherDataLoader wLoader =
-                        new WeatherDataLoader(this, this, view.Pair.Value, view.Pair.Key);
-                    await wLoader.LoadWeatherData(false);
+                    await Task.Run(async () =>
+                    {
+                        var wLoader =
+                            new WeatherDataLoader(this, this, view.Pair.Value, view.Pair.Key);
+                        await wLoader.LoadWeatherData(false);
+                    });
                 }
             }
         }

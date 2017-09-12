@@ -1,4 +1,5 @@
-﻿using Windows.UI;
+﻿using System.ComponentModel;
+using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -14,9 +15,16 @@ namespace SimpleWeather.UWP
     public sealed partial class Shell : Page
     {
         public Frame AppFrame { get { return FrameContent; } }
+        public static Shell Instance { get; set; }
+        public Brush BurgerBackground
+        {
+            get { return HamburgerButton.Background; }
+            set { HamburgerButton.Background = value; }
+        }
 
         public Shell()
         {
+            Instance = this;
             this.InitializeComponent();
 
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;

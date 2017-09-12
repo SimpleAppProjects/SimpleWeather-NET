@@ -16,7 +16,12 @@ namespace SimpleWeather.Controls
 
         public TextForecastItemViewModel(TextForecast txt_forecast)
         {
-            Title = txt_forecast.title;
+            string[] date = txt_forecast.title.Split(' ');
+            if (date.Length > 1)
+                Title = string.Format("{0} {1}", date[0].Substring(0, 3), date[1]);
+            else
+                Title = date[0].Substring(0, 3);
+
             WeatherIcon = WeatherUtils.GetWeatherIcon(txt_forecast.icon);
             FctText = (Settings.Unit == Settings.Fahrenheit ?
                 txt_forecast.fcttext : txt_forecast.fcttext_metric);

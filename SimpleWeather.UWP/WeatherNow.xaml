@@ -8,7 +8,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    d:DesignHeight="3000"
+    d:DesignHeight="1500"
     DataContext="{x:Bind WeatherView}">
     <Page.Resources>
         <TransitionCollection x:Name="TextTransitions">
@@ -18,7 +18,7 @@
             <Setter Property="Transitions" Value="{StaticResource TextTransitions}" />
         </Style>
         <Style x:Key="SectionLabel" TargetType="TextBlock">
-            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Padding" Value="10"/>
             <Setter Property="FontSize" Value="18"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Foreground" Value="White"/>
@@ -431,12 +431,12 @@
         </Style>
     </Page.Resources>
 
-    <Grid Background="#FF006FBF">
+    <Grid Background="{Binding PendingBackground}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <CommandBar x:Name="CommandBar" RequestedTheme="Dark" Background="#FF1F336C" Foreground="White" Style="{StaticResource NoOverflow}" Grid.Row="0">
+        <CommandBar x:Name="CommandBar" RequestedTheme="Dark" Background="{Binding PendingBackground}" Foreground="White" Style="{StaticResource NoOverflow}" Grid.Row="0">
             <CommandBar.Content>
                 <Grid Height="48">
                     <TextBlock Text="SimpleWeather" Style="{StaticResource CommandBarLabel}"/>
@@ -445,17 +445,17 @@
             <AppBarButton Icon="Refresh" Label="Refresh" Click="RefreshButton_Click"/>
         </CommandBar>
 
-        <ScrollViewer x:Name="MainViewer" VerticalScrollMode="Auto" Grid.Row="1" Background="{Binding Background}">
+        <ScrollViewer x:Name="MainViewer" VerticalScrollMode="Auto" Grid.Row="1" Background="{Binding Background, Mode=TwoWay}">
             <StackPanel>
                 <Viewbox Name="LocationBox" Margin="25,10,25,0" Height="50">
                     <TextBlock Name="Location" Text="{Binding Location, FallbackValue='New York, NY'}"
-                           Foreground="White" FontWeight="SemiBold" TextAlignment="Center"
-                           Padding="5" Transitions="{StaticResource TextTransitions}"/>
+                               Foreground="White" FontWeight="SemiBold" TextAlignment="Center"
+                               Padding="5" Transitions="{StaticResource TextTransitions}"/>
                 </Viewbox>
                 <Viewbox Name="UpdateDateBox" Height="25">
                     <TextBlock Name="UpdateDate" Text="{Binding UpdateDate, FallbackValue='Updated on 11:12 PM'}"
-                           Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Bottom"
-                           Padding="5" Grid.Row="1" Transitions="{StaticResource TextTransitions}" FontSize="12"/>
+                               Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                               Padding="5" Grid.Row="1" Transitions="{StaticResource TextTransitions}" FontSize="12"/>
                 </Viewbox>
                 <Rectangle Name="SpacerTop" Height="30"/>
                 <Viewbox x:Name="WeatherBox" VerticalAlignment="Top" Height="Auto" Grid.Row="0">
@@ -464,18 +464,20 @@
                 <TextBlock Name="CurCondition" Text="{Binding CurCondition, FallbackValue='Sunny'}" FontSize="24" HorizontalAlignment="Center" Foreground="White" Grid.Row="1" Transitions="{StaticResource TextTransitions}"/>
                 <TextBlock Name="CurTemp" Text="{Binding CurTemp, FallbackValue='70&#xF045;'}" FontSize="24" Foreground="White" Style="{StaticResource WeatherIcon}" HorizontalAlignment="Center" Margin="5,0,0,0" Grid.Row="2"/>
                 <Rectangle Height="{Binding ElementName=SpacerTop, Path=Height}"/>
-                <Grid Name="ForecastHeader" Margin="50,0,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Name="ForecastLabel" x:Uid="Label_Forecast" Text="Forecast"
-                               Grid.Column="0" Style="{StaticResource SectionLabel}" />
-                    <ToggleSwitch Name="ForecastSwitch" Grid.Column="1" OffContent="Daily" OnContent="Details"
+                <StackPanel Background="#3d000000" CornerRadius="2.5">
+                    <Grid Name="ForecastHeader" Padding="50,0,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Name="ForecastLabel" x:Uid="Label_Forecast" Text="Forecast"
+                                   FontSize="18"
+                                   Grid.Column="0" Style="{StaticResource SectionLabel}" />
+                        <ToggleSwitch Name="ForecastSwitch" Grid.Column="1" OffContent="Daily" OnContent="Details"
                                   RequestedTheme="Dark" IsOn="False"
                                   MinWidth="0" Margin="0,0,50,0" Toggled="ForecastSwitch_Toggled"/>
-                </Grid>
-                <Grid Background="{Binding PanelBackground}" Margin="0,0,0,0">
+                    </Grid>
+                    <Border Style="{StaticResource Divider}"/>
                     <Grid Name="ForecastGrid">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -493,7 +495,7 @@
                             <ItemsControl x:Name="StackControl" ItemsSource="{x:Bind WeatherView.Forecasts}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="controls:ForecastItemViewModel">
-                                        <localcontrols:ForecastItem Height="{Binding ElementName=StackControl, Path=Height}" Width="155" />
+                                        <localcontrols:ForecastItem x:Name="ForecastItem" Height="{Binding ElementName=StackControl, Path=Height}" />
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                                 <ItemsControl.ItemsPanel>
@@ -504,27 +506,29 @@
                             </ItemsControl>
                         </ScrollViewer>
                     </Grid>
-                    <StackPanel Name="TextForecastPanel" Orientation="Vertical" Visibility="Collapsed"
-                                Margin="{Binding ElementName=ForecastHeader, Path=Margin}">
-                        <Pivot Name="TextForecastControl"
+                    <Grid Name="TextForecastPanel" Visibility="Collapsed"
+                          Margin="{Binding ElementName=ForecastHeader, Path=Padding}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Pivot Name="TextForecastControl" Grid.Row="0"
                                SelectionChanged="TextForecastControl_SelectionChanged"
                                ItemsSource="{x:Bind WeatherView.WUExtras.TextForecast}"
                                Style="{StaticResource PivotStyle}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate x:DataType="controls:TextForecastItemViewModel">
-                                    <localcontrols:TextForecastItem />
+                                    <localcontrols:TextForecastItem Height="{Binding ElementName=TextForecastControl, Path=Height}" />
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                             <Pivot.ItemContainerStyle>
                                 <Style TargetType="PivotItem">
-                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                    <Setter Property="HorizontalAlignment" Value="Stretch"/>
                                     <Setter Property="Margin" Value="0"/>
                                     <Setter Property="Padding" Value="0"/>
                                 </Style>
                             </Pivot.ItemContainerStyle>
                         </Pivot>
-                        <Grid>
+                        <Grid Height="50" Grid.Row="1">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="1.5*" />
@@ -544,14 +548,16 @@
                             <Button Name="HeaderRight" Content="Right" Grid.Column="2"
                                     Style="{StaticResource HeaderButtonStyle}"/>
                         </Grid>
-                    </StackPanel>
-                </Grid>
-                <StackPanel Name="HourlyForecastPanel">
-                    <Rectangle Height="25"/>
+                    </Grid>
+                </StackPanel>
+                <Rectangle Height="25"/>
+                <StackPanel Name="HourlyForecastPanel" Background="#3d000000" CornerRadius="2.5">
                     <TextBlock Name="HourlyLabel" x:Uid="Label_Hourly" Text="Hourly"
-                           Margin="{Binding ElementName=ForecastHeader, Path=Margin}"
-                           Style="{StaticResource SectionLabel}" />
-                    <Grid Background="{Binding PanelBackground}" Margin="0,0,0,0">
+                               Margin="{Binding ElementName=ForecastHeader, Path=Padding}"
+                               FontSize="{Binding ElementName=ForecastLabel, Path=FontSize}"
+                               Style="{StaticResource SectionLabel}" />
+                    <Border Style="{StaticResource Divider}"/>
+                    <Grid Margin="0,0,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
@@ -571,8 +577,7 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="controls:HourlyForecastItemViewModel">
                                         <Grid>
-                                            <localcontrols:HourlyForecastItem Height="{Binding ElementName=HourlyStackControl, Path=Height}"
-                                                                              Width="165" />
+                                            <localcontrols:HourlyForecastItem Height="{Binding ElementName=HourlyStackControl, Path=Height}" />
                                         </Grid>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
@@ -586,167 +591,171 @@
                     </Grid>
                 </StackPanel>
                 <Rectangle Height="25"/>
-                <TextBlock Name="DetailsLabel" x:Uid="Label_Details" Text="Details"
-                           Margin="{Binding ElementName=ForecastHeader, Path=Margin}"
-                           Style="{StaticResource SectionLabel}" />
-                <Grid Name="DetailsPanel" Background="{Binding PanelBackground}" Padding="50,0,50,0">
-                    <VariableSizedWrapGrid Name="DetailsWrapGrid" Orientation="Horizontal" ItemWidth="250" MaximumRowsOrColumns="2">
-                        <StackPanel Name="PrecipitationPanel" Style="{StaticResource DetailsBorder}">
-                            <TextBlock x:Uid="Label_Precipitation" Text="Precipitation" Style="{StaticResource WeatherDetailsLabel}"/>
-                            <Border Style="{StaticResource Divider}"/>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock x:Uid="Label_Chance" Text="Chance" Style="{StaticResource WeatherDetails}"
+                <StackPanel Background="#3d000000" CornerRadius="2.5">
+                    <TextBlock Name="DetailsLabel" x:Uid="Label_Details" Text="Details"
+                               Margin="{Binding ElementName=ForecastHeader, Path=Padding}"
+                               FontSize="{Binding ElementName=ForecastLabel, Path=FontSize}"
+                               Style="{StaticResource SectionLabel}" />
+                    <Border Style="{StaticResource Divider}"/>
+                    <Grid Name="DetailsPanel" Padding="50,0,50,0">
+                        <VariableSizedWrapGrid Name="DetailsWrapGrid" Orientation="Horizontal" ItemWidth="250" MaximumRowsOrColumns="2">
+                            <StackPanel Name="PrecipitationPanel" Style="{StaticResource DetailsBorder}">
+                                <TextBlock x:Uid="Label_Precipitation" Text="Precipitation" Style="{StaticResource WeatherDetailsLabel}"/>
+                                <Border Style="{StaticResource Divider}"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock x:Uid="Label_Chance" Text="Chance" Style="{StaticResource WeatherDetails}"
                                            Grid.Column="0"
                                            FontSize="{Binding ElementName=Humidity, Path=FontSize}"
                                            RelativePanel.LeftOf="ChancePoP"
                                            RelativePanel.AlignLeftWithPanel="True" />
-                                <TextBlock Name="ChancePoP" Text="{Binding WUExtras.Chance, FallbackValue='100%'}"
+                                    <TextBlock Name="ChancePoP" Text="{Binding WUExtras.Chance, FallbackValue='100%'}"
                                            Grid.Column="1"
                                            FontSize="{Binding ElementName=Humidity, Path=FontSize}"
                                            Style="{StaticResource WeatherDetails}"
                                            RelativePanel.AlignRightWithPanel="True" />
-                            </Grid>
-                            <RelativePanel>
-                                <TextBlock x:Uid="Label_Rain" Text="Rain" Style="{StaticResource WeatherDetails}"
+                                </Grid>
+                                <RelativePanel>
+                                    <TextBlock x:Uid="Label_Rain" Text="Rain" Style="{StaticResource WeatherDetails}"
                                            HorizontalAlignment="Stretch"
                                            FontSize="{Binding ElementName=Humidity, Path=FontSize}"
                                            RelativePanel.LeftOf="QPFRain"
                                            RelativePanel.AlignLeftWithPanel="True" />
-                                <TextBlock Name="QPFRain" Text="{Binding WUExtras.Qpf_Rain, FallbackValue='0.00 in'}"
+                                    <TextBlock Name="QPFRain" Text="{Binding WUExtras.Qpf_Rain, FallbackValue='0.00 in'}"
                                            Style="{StaticResource WeatherDetails}"
                                            FontSize="{Binding ElementName=Humidity, Path=FontSize}"
                                            RelativePanel.AlignRightWithPanel="True"/>
-                            </RelativePanel>
-                            <RelativePanel>
-                                <TextBlock x:Uid="Label_Snow" Text="Snow"
+                                </RelativePanel>
+                                <RelativePanel>
+                                    <TextBlock x:Uid="Label_Snow" Text="Snow"
                                            Style="{StaticResource WeatherDetails}"
                                            FontSize="{Binding ElementName=Humidity, Path=FontSize}"
                                            RelativePanel.LeftOf="QPFSnow"
                                            RelativePanel.AlignLeftWithPanel="True" />
-                                <TextBlock Name="QPFSnow" Text="{Binding WUExtras.Qpf_Snow, FallbackValue='0.00 in'}"
+                                    <TextBlock Name="QPFSnow" Text="{Binding WUExtras.Qpf_Snow, FallbackValue='0.00 in'}"
                                            Style="{StaticResource WeatherDetails}"
                                            FontSize="{Binding ElementName=Humidity, Path=FontSize}"
                                            RelativePanel.AlignRightWithPanel="True"/>
-                            </RelativePanel>
-                        </StackPanel>
-                        <StackPanel Style="{StaticResource DetailsBorder}">
-                            <TextBlock x:Uid="Label_Atmosphere" Text="Atmosphere" Style="{StaticResource WeatherDetailsLabel}"/>
-                            <Border Style="{StaticResource Divider}"/>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock x:Uid="Label_Humidity" Text="Humidity" Style="{StaticResource WeatherDetails}"
+                                </RelativePanel>
+                            </StackPanel>
+                            <StackPanel Style="{StaticResource DetailsBorder}">
+                                <TextBlock x:Uid="Label_Atmosphere" Text="Atmosphere" Style="{StaticResource WeatherDetailsLabel}"/>
+                                <Border Style="{StaticResource Divider}"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock x:Uid="Label_Humidity" Text="Humidity" Style="{StaticResource WeatherDetails}"
                                            Grid.Column="0"
                                            FontSize="{Binding ElementName=Humidity, Path=FontSize}"
                                            RelativePanel.LeftOf="Humidity"
                                            RelativePanel.AlignLeftWithPanel="True" />
-                                <TextBlock Name="Humidity" Text="{Binding Humidity, FallbackValue='100%'}"
+                                    <TextBlock Name="Humidity" Text="{Binding Humidity, FallbackValue='100%'}"
                                            Grid.Column="1"
                                            FontSize="18"
                                            Style="{StaticResource WeatherDetails}"
                                            RelativePanel.AlignRightWithPanel="True" />
-                            </Grid>
-                            <RelativePanel>
-                                <TextBlock x:Uid="Label_Pressure" Text="Pressure" Style="{StaticResource WeatherDetails}"
+                                </Grid>
+                                <RelativePanel>
+                                    <TextBlock x:Uid="Label_Pressure" Text="Pressure" Style="{StaticResource WeatherDetails}"
                                            HorizontalAlignment="Stretch"
                                            FontSize="{Binding ElementName=Humidity, Path=FontSize}"
                                            RelativePanel.LeftOf="Rising"
                                            RelativePanel.AlignLeftWithPanel="True" />
-                                <TextBlock Name="Rising" FontSize="20" Foreground="White"
+                                    <TextBlock Name="Rising" FontSize="20" Foreground="White"
                                            Style="{StaticResource WeatherIcon}"
                                            Text="{Binding RisingIcon, FallbackValue='&#xf058;&#xf058;'}"
                                            Visibility="{Binding RisingVisiblity}"
                                            Padding="6.5"
                                            RelativePanel.LeftOf="Pressure"/>
-                                <TextBlock Name="Pressure" Text="{Binding Pressure, FallbackValue='1000.2 mb'}"
+                                    <TextBlock Name="Pressure" Text="{Binding Pressure, FallbackValue='1000.2 mb'}"
                                            Style="{StaticResource WeatherDetails}"
                                            FontSize="{Binding ElementName=Humidity, Path=FontSize}"
                                            RelativePanel.AlignRightWithPanel="True"/>
-                            </RelativePanel>
-                            <RelativePanel>
-                                <TextBlock x:Uid="Label_Visibility" Text="Visibility"
+                                </RelativePanel>
+                                <RelativePanel>
+                                    <TextBlock x:Uid="Label_Visibility" Text="Visibility"
                                            Style="{StaticResource WeatherDetails}"
                                            FontSize="{Binding ElementName=Humidity, Path=FontSize}"
                                            RelativePanel.LeftOf="_Visibility"
                                            RelativePanel.AlignLeftWithPanel="True" />
-                                <TextBlock Name="_Visibility" Text="{Binding _Visibility, FallbackValue='10.0 km'}"
+                                    <TextBlock Name="_Visibility" Text="{Binding _Visibility, FallbackValue='10.0 km'}"
                                            Style="{StaticResource WeatherDetails}"
                                            FontSize="{Binding ElementName=Humidity, Path=FontSize}"
                                            RelativePanel.AlignRightWithPanel="True"/>
-                            </RelativePanel>
-                        </StackPanel>
-                        <StackPanel Style="{StaticResource DetailsBorder}">
-                            <TextBlock x:Uid="Label_Condition" Text="Condition" Style="{StaticResource WeatherDetailsLabel}"/>
-                            <Border Style="{StaticResource Divider}"/>
-                            <RelativePanel>
-                                <TextBlock x:Uid="Label_FeelsLike" Text="Feels Like" Style="{StaticResource WeatherDetails}"
+                                </RelativePanel>
+                            </StackPanel>
+                            <StackPanel Style="{StaticResource DetailsBorder}">
+                                <TextBlock x:Uid="Label_Condition" Text="Condition" Style="{StaticResource WeatherDetailsLabel}"/>
+                                <Border Style="{StaticResource Divider}"/>
+                                <RelativePanel>
+                                    <TextBlock x:Uid="Label_FeelsLike" Text="Feels Like" Style="{StaticResource WeatherDetails}"
                                            FontSize="{Binding ElementName=Humidity, Path=FontSize}"
                                            RelativePanel.LeftOf="Chill"
                                            RelativePanel.AlignLeftWithPanel="True" />
-                                <TextBlock Name="Chill" Text="{Binding WindChill, FallbackValue='36º'}"
+                                    <TextBlock Name="Chill" Text="{Binding WindChill, FallbackValue='36º'}"
                                            Style="{StaticResource WeatherDetails}"
                                            FontSize="{Binding ElementName=Humidity, Path=FontSize}"
                                            RelativePanel.AlignRightWithPanel="True"/>
-                            </RelativePanel>
-                            <RelativePanel>
-                                <TextBlock x:Uid="Label_Wind" Text="Wind" Style="{StaticResource WeatherDetails}"
+                                </RelativePanel>
+                                <RelativePanel>
+                                    <TextBlock x:Uid="Label_Wind" Text="Wind" Style="{StaticResource WeatherDetails}"
                                            FontSize="{Binding ElementName=Humidity, Path=FontSize}"
                                            RelativePanel.LeftOf="WindDirection"
                                            RelativePanel.AlignLeftWithPanel="True" />
-                                <TextBlock Name="WindDirection" FontSize="20" Foreground="White"
+                                    <TextBlock Name="WindDirection" FontSize="20" Foreground="White"
                                            Style="{StaticResource WeatherIcon}"
                                            Text="&#xf058;" Padding="6.5"
                                            RenderTransformOrigin="0.5,0.5" RenderTransform="{Binding WindDirection}"
                                            RelativePanel.LeftOf="Speed" />
-                                <TextBlock Name="Speed" Text="{Binding WindSpeed, FallbackValue='3.8 mph'}"
+                                    <TextBlock Name="Speed" Text="{Binding WindSpeed, FallbackValue='3.8 mph'}"
                                            Style="{StaticResource WeatherDetails}"
                                            FontSize="{Binding ElementName=Humidity, Path=FontSize}"
                                            RelativePanel.AlignRightWithPanel="True"/>
-                            </RelativePanel>
-                        </StackPanel>
-                        <StackPanel Style="{StaticResource DetailsBorder}">
-                            <TextBlock x:Uid="Label_Sunriseset" Text="Sunrise / Sunset" Style="{StaticResource WeatherDetailsLabel}"/>
-                            <Border Style="{StaticResource Divider}"/>
-                            <RelativePanel>
-                                <TextBlock x:Uid="Label_Sunrise" Text="Sunrise" Style="{StaticResource WeatherDetails}"
+                                </RelativePanel>
+                            </StackPanel>
+                            <StackPanel Style="{StaticResource DetailsBorder}">
+                                <TextBlock x:Uid="Label_Sunriseset" Text="Sunrise / Sunset" Style="{StaticResource WeatherDetailsLabel}"/>
+                                <Border Style="{StaticResource Divider}"/>
+                                <RelativePanel>
+                                    <TextBlock x:Uid="Label_Sunrise" Text="Sunrise" Style="{StaticResource WeatherDetails}"
                                            HorizontalAlignment="Stretch"
                                            FontSize="{Binding ElementName=Humidity, Path=FontSize}"
                                            RelativePanel.LeftOf="SunriseIcon"
                                            RelativePanel.AlignLeftWithPanel="True" />
-                                <TextBlock Name="SunriseIcon" FontSize="24" Foreground="White"
+                                    <TextBlock Name="SunriseIcon" FontSize="24" Foreground="White"
                                            Text="&#xf051;" Padding="5"
                                            Style="{StaticResource WeatherIcon}"
                                            RelativePanel.LeftOf="Sunrise" />
-                                <TextBlock Name="Sunrise" Text="{Binding Sunrise, FallbackValue='06:45 AM'}"
+                                    <TextBlock Name="Sunrise" Text="{Binding Sunrise, FallbackValue='06:45 AM'}"
                                            Style="{StaticResource WeatherDetails}"
                                            FontSize="{Binding ElementName=Humidity, Path=FontSize}"
                                            Width="100"
                                            RelativePanel.AlignRightWithPanel="True"/>
-                            </RelativePanel>
-                            <RelativePanel>
-                                <TextBlock x:Uid="Label_Sunset" Text="Sunset" Style="{StaticResource WeatherDetails}"
+                                </RelativePanel>
+                                <RelativePanel>
+                                    <TextBlock x:Uid="Label_Sunset" Text="Sunset" Style="{StaticResource WeatherDetails}"
                                            FontSize="{Binding ElementName=Humidity, Path=FontSize}"
                                            RelativePanel.LeftOf="SunsetIcon"
                                            RelativePanel.AlignLeftWithPanel="True"/>
-                                <TextBlock Name="SunsetIcon" FontSize="24" Foreground="White"
+                                    <TextBlock Name="SunsetIcon" FontSize="24" Foreground="White"
                                            Text="&#xf052;" Padding="5"
                                            Style="{StaticResource WeatherIcon}"
                                            RelativePanel.LeftOf="Sunset" />
-                                <TextBlock Name="Sunset" Text="{Binding Sunset, FallbackValue='05:32 PM'}"
+                                    <TextBlock Name="Sunset" Text="{Binding Sunset, FallbackValue='05:32 PM'}"
                                            Style="{StaticResource WeatherDetails}"
                                            FontSize="{Binding ElementName=Humidity, Path=FontSize}"
                                            Width="{Binding ElementName=Sunrise, Path=Width}"
                                            RelativePanel.AlignRightWithPanel="True" />
-                            </RelativePanel>
-                        </StackPanel>
-                    </VariableSizedWrapGrid>
-                </Grid>
+                                </RelativePanel>
+                            </StackPanel>
+                        </VariableSizedWrapGrid>
+                    </Grid>
+                </StackPanel>
                 <TextBlock Text="{Binding WeatherCredit, FallbackValue='Data from Weather Provider'}" 
                            Margin="{Binding ElementName=ForecastHeader, Path=Margin}"
                            Padding="10"
@@ -764,10 +773,12 @@
                         <AdaptiveTrigger MinWindowHeight="0"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
+                        <Setter Target="LocationBox.Height" Value="45"/>
                         <Setter Target="WeatherBox.Height" Value="100"/>
                         <Setter Target="WeatherBox.Width" Value="100"/>
-                        <Setter Target="SpacerTop.Height" Value="0"/>
-                        <Setter Target="StackControl.Height" Value="180"/>
+                        <Setter Target="SpacerTop.Height" Value="10"/>
+                        <Setter Target="StackControl.Height" Value="160"/>
+                        <Setter Target="ForecastLabel.FontSize" Value="16"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="MediumHeight">
@@ -775,10 +786,12 @@
                         <AdaptiveTrigger MinWindowHeight="640"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
+                        <Setter Target="LocationBox.Height" Value="50"/>
                         <Setter Target="WeatherBox.Height" Value="125"/>
                         <Setter Target="WeatherBox.Width" Value="125"/>
                         <Setter Target="SpacerTop.Height" Value="30"/>
-                        <Setter Target="StackControl.Height" Value="200"/>
+                        <Setter Target="StackControl.Height" Value="180"/>
+                        <Setter Target="ForecastLabel.FontSize" Value="18"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="LargeHeight">
@@ -786,10 +799,12 @@
                         <AdaptiveTrigger MinWindowHeight="690"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
+                        <Setter Target="LocationBox.Height" Value="50"/>
                         <Setter Target="WeatherBox.Height" Value="150"/>
                         <Setter Target="WeatherBox.Width" Value="150"/>
                         <Setter Target="SpacerTop.Height" Value="30"/>
                         <Setter Target="StackControl.Height" Value="200"/>
+                        <Setter Target="ForecastLabel.FontSize" Value="18"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
@@ -802,7 +817,7 @@
                         <Setter Target="CommandBar.Margin" Value="50,0,0,0"/>
                         <Setter Target="LeftButton.Visibility" Value="Collapsed"/>
                         <Setter Target="RightButton.Visibility" Value="Collapsed"/>
-                        <Setter Target="ForecastHeader.Margin" Value="15,0,0,0"/>
+                        <Setter Target="ForecastHeader.Padding" Value="15,0,0,0"/>
                         <Setter Target="ForecastSwitch.Margin" Value="0,0,15,0"/>
                         <Setter Target="StackControl.Margin" Value="15,0,0,0"/>
                         <Setter Target="Location.FontSize" Value="32"/>
@@ -831,7 +846,7 @@
                     <VisualState.Setters>
                         <Setter Target="LeftButton.Visibility" Value="Visible"/>
                         <Setter Target="RightButton.Visibility" Value="Visible"/>
-                        <Setter Target="ForecastHeader.Margin" Value="50,0,0,0"/>
+                        <Setter Target="ForecastHeader.Padding" Value="50,0,0,0"/>
                         <Setter Target="ForecastSwitch.Margin" Value="0,0,50,0"/>
                         <Setter Target="StackControl.Margin" Value="0,0,0,0"/>
                         <Setter Target="Location.FontSize" Value="36"/>

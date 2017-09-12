@@ -8,9 +8,12 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.Devices.Geolocation;
+using Windows.Foundation.Metadata;
 using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
@@ -25,6 +28,7 @@ namespace SimpleWeather.UWP
         WeatherNowViewModel WeatherView { get; set; }
 
         KeyValuePair<int, string> pair;
+        double BGAlpha = 1.0;
 
         Geolocator geolocal = null;
         Geoposition geoPos = null;
@@ -35,7 +39,12 @@ namespace SimpleWeather.UWP
             int index = TextForecastControl.SelectedIndex;
 
             if (weather != null)
+            {
                 WeatherView.UpdateView(weather);
+
+                // Shell
+                Shell.Instance.BurgerBackground = WeatherView.PendingBackground;
+            }
 
             // Set saved index from before update
             // Note: needed since ItemSource is cleared and index is reset
@@ -99,7 +108,9 @@ namespace SimpleWeather.UWP
             NavigationCacheMode = NavigationCacheMode.Enabled;
 
             WeatherView = new WeatherNowViewModel();
+            StackControl.SizeChanged += StackControl_SizeChanged;
             DetailsPanel.SizeChanged += DetailsPanel_SizeChanged;
+            MainViewer.ViewChanged += MainViewer_ViewChanged;
 
             HeaderLeft.Click += delegate { ScrollTxtPanel(false); };
             HeaderRight.Click += delegate { ScrollTxtPanel(true); };
@@ -111,6 +122,22 @@ namespace SimpleWeather.UWP
             PrecipitationPanel.Visibility = Visibility.Collapsed;
 
             geolocal = new Geolocator() { DesiredAccuracyInMeters = 5000, ReportInterval = 900000, MovementThreshold = 2500 };
+        }
+
+        private void MainViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        {
+            if (sender is ScrollViewer viewer && viewer.Background != null)
+            {
+                double alpha = 1 - (viewer.VerticalOffset / viewer.ScrollableHeight);
+                MainViewer.Background.Opacity = (alpha >= 0) ? BGAlpha = alpha : BGAlpha = 0;
+            }
+        }
+
+        private void StackControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            // TextForecastPanel resizing
+            TextForecastPanel.Height = e.NewSize.Height;
+            TextForecastControl.Height = TextForecastPanel.Height - 50;
         }
 
         private void DetailsPanel_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -191,7 +218,12 @@ namespace SimpleWeather.UWP
                     int index = TextForecastControl.SelectedIndex;
 
                     if (wLoader.GetWeather() != null)
+                    {
                         WeatherView.UpdateView(wLoader.GetWeather());
+
+                        // Shell
+                        Shell.Instance.BurgerBackground = WeatherView.PendingBackground;
+                    }
 
                     // Set saved index from before update
                     // Note: needed since ItemSource is cleared and index is reset
@@ -214,6 +246,7 @@ namespace SimpleWeather.UWP
             if (e.NavigationMode == NavigationMode.New)
             {
                 wLoader = null;
+                MainViewer.ChangeView(null, 0, null);
             }
 
             // New page instance created, so restore

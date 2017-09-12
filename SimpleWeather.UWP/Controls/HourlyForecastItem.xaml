@@ -6,8 +6,10 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
+    Name="Control"
     d:DesignHeight="200"
-    d:DesignWidth="155">
+    d:DesignWidth="155"
+    Width="155">
     <UserControl.Resources>
         <Style x:Key="ForecastIcon" TargetType="Viewbox">
             <Setter Property="Height" Value="75" />
@@ -40,29 +42,81 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Style="{StaticResource ForecastDate}" Text="{Binding Date, FallbackValue='Sat 2 AM'}" Grid.Row="0"/>
-        <StackPanel Orientation="Horizontal" Grid.Row="1" Height="60">
-            <Viewbox Style="{StaticResource ForecastIcon}" Height="50" Width="50">
+        <TextBlock Name="ForecastDate" Style="{StaticResource ForecastDate}" Text="{Binding Date, FallbackValue='Sat 2 AM'}" Grid.Row="0"/>
+        <StackPanel Name="WeatherBox" Orientation="Horizontal" Grid.Row="1" Height="75">
+            <Viewbox Style="{StaticResource ForecastIcon}"
+                     Height="{Binding ElementName=WeatherBox, Path=Height}"
+                     Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}">
                 <TextBlock Style="{StaticResource WeatherIcon}" Text="{Binding WeatherIcon, FallbackValue='&#xf00d;'}"/>
             </Viewbox>
-            <TextBlock Text="{Binding HiTemp, FallbackValue=70º}" Style="{StaticResource ForecastTemp}"/>
+            <TextBlock Name="ForecastTemp" Text="{Binding HiTemp, FallbackValue=70º}" Style="{StaticResource ForecastTemp}"/>
         </StackPanel>
-        <TextBlock Style="{StaticResource ForecastCondition}" Text="{Binding Condition, FallbackValue='Scattered Thunderstorms'}" Grid.Row="2"/>
-        <StackPanel Orientation="Horizontal" Grid.Row="3" HorizontalAlignment="Left">
+        <TextBlock Name="ForecastCondition" Style="{StaticResource ForecastCondition}" Grid.Row="2" 
+                   Text="{Binding Condition, FallbackValue='Scattered Thunderstorms'}"
+                   Width="145" HorizontalAlignment="Left" TextWrapping="WrapWholeWords"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="3">
             <TextBlock Style="{StaticResource WeatherIcon}" Text="&#xf078;" Padding="10,5"
                        FontSize="14"/>
-            <TextBlock Text="{Binding PoP, FallbackValue='100%'}"
+            <TextBlock Name="ForecastPoP" Text="{Binding PoP, FallbackValue='100%'}"
                        VerticalAlignment="Center" Foreground="White" />
             <Rectangle Width="10"/>
             <TextBlock Name="WindDirection" Style="{StaticResource WeatherIcon}" Text="&#xf058;" Padding="10,5"
                        RenderTransformOrigin="0.5,0.5" RenderTransform="{Binding WindDirection}"
                        FontSize="14"/>
             <TextBlock Text="{Binding WindSpeed, FallbackValue='5.8 mph'}"
-                       VerticalAlignment="Center" Foreground="White" />
+                       VerticalAlignment="Center" Foreground="White"
+                       FontSize="{Binding ElementName=ForecastPoP, Path=FontSize}" />
         </StackPanel>
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="HeightStates">
+                <VisualState x:Name="MobileHeight">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowHeight="0"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="Control.Width" Value="150"/>
+                        <Setter Target="WeatherBox.Height" Value="50"/>
+                        <Setter Target="ForecastDate.FontSize" Value="12"/>
+                        <Setter Target="ForecastCondition.FontSize" Value="12"/>
+                        <Setter Target="ForecastCondition.Height" Value="35"/>
+                        <Setter Target="ForecastTemp.FontSize" Value="16"/>
+                        <Setter Target="ForecastPoP.FontSize" Value="12"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="MediumHeight">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowHeight="640"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="Control.Width" Value="155"/>
+                        <Setter Target="WeatherBox.Height" Value="75"/>
+                        <Setter Target="ForecastDate.FontSize" Value="16"/>
+                        <Setter Target="ForecastCondition.FontSize" Value="14"/>
+                        <Setter Target="ForecastCondition.Height" Value="47"/>
+                        <Setter Target="ForecastTemp.FontSize" Value="20"/>
+                        <Setter Target="ForecastPoP.FontSize" Value="15"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="LargeHeight">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowHeight="690"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="Control.Width" Value="155"/>
+                        <Setter Target="WeatherBox.Height" Value="75"/>
+                        <Setter Target="ForecastDate.FontSize" Value="16"/>
+                        <Setter Target="ForecastCondition.FontSize" Value="14"/>
+                        <Setter Target="ForecastCondition.Height" Value="47"/>
+                        <Setter Target="ForecastTemp.FontSize" Value="20"/>
+                        <Setter Target="ForecastPoP.FontSize" Value="15"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
     </Grid>
 </UserControl>

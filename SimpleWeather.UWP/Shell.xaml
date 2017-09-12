@@ -84,19 +84,20 @@
             <RowDefinition Height="48" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Border Background="#FF1F336C" Width="50" HorizontalAlignment="Left" Grid.Row="0" Canvas.ZIndex="100">
-            <Button x:Name="HamburgerButton" Style="{StaticResource BurgerButton}" FontFamily="Segoe MDL2 Assets" Content="&#xE700;" 
-                            Width="50" Height="48" Click="HamburgerButton_Click" />
+        <Border Width="48" HorizontalAlignment="Left" Grid.Row="0">
+            <Button x:Name="HamburgerButton" Style="{StaticResource BurgerButton}" FontFamily="Segoe MDL2 Assets" Content="&#xE700;"
+                    Background="#FF006FBF"
+                    Width="48" Height="48" Click="HamburgerButton_Click" />
         </Border>
-        <SplitView x:Name="HamBurgerMenu" DisplayMode="CompactOverlay" IsPaneOpen="False" 
-                   CompactPaneLength="50" OpenPaneLength="250" PaneBackground="Transparent" Grid.Row="1">
+        <SplitView x:Name="HamBurgerMenu" DisplayMode="CompactOverlay" IsPaneOpen="False"
+                   CompactPaneLength="48" OpenPaneLength="250" PaneBackground="Transparent" Grid.Row="1">
             <SplitView.Pane>
                 <StackPanel Background="Black">
                     <StackPanel Orientation="Horizontal">
                         <Button x:Name="WeatherButton" Click="WeatherButton_Click" Style="{StaticResource BurgerButton}">
-                            <Grid Height="48" Width="250">
+                            <Grid Height="48" Width="{Binding ElementName=HamBurgerMenu, Path=OpenPaneLength}">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="48"/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="&#xf00d;" Style="{StaticResource WeatherIcon}" Grid.Column="0" FontSize="15"/>
@@ -109,9 +110,9 @@
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Button x:Name="LocationsButton" Click="LocationsButton_Click" Style="{StaticResource BurgerButton}">
-                            <Grid Height="48" Width="250">
+                            <Grid Height="48" Width="{Binding ElementName=HamBurgerMenu, Path=OpenPaneLength}">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="48"/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="&#xEA37;" Style="{StaticResource BurgerIcon}" Grid.Column="0"/>
@@ -124,9 +125,9 @@
                     </StackPanel>
                     <StackPanel x:Name="SettingsPanel" Orientation="Horizontal">
                         <Button x:Name="SettingsButton" Click="SettingsButton_Click" Style="{StaticResource BurgerButton}">
-                            <Grid Height="48" Width="250">
+                            <Grid Height="48" Width="{Binding ElementName=HamBurgerMenu, Path=OpenPaneLength}">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="48"/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="&#xE713;" Style="{StaticResource BurgerIcon}" Grid.Column="0" />

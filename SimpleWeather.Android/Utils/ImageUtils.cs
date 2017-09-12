@@ -27,16 +27,28 @@ namespace SimpleWeather.Droid.Utils
         }
 
         // UniversalImageLoader DisplayImageOptions for Center Cropping an Image
-        public static DisplayImageOptions CenterCropConfig(int Width, int Height)
+        public static DisplayImageOptions CenterCropConfig()
         {
             return new DisplayImageOptions.Builder()
                     .ImageScaleType(ImageScaleType.InSamplePowerOf2)
                     .CacheOnDisk(true)
                     .CacheInMemory(true)
-                    .PreProcessor(new CenterCropper(Width, Height))
                     .BitmapConfig(Bitmap.Config.Rgb565)
                     .ResetViewBeforeLoading(false)
-                    .Displayer(new FadeInBitmapDisplayer(500))
+                    .Displayer(new RoundedBitmapDisplayer(0, 0))
+                    .Build();
+        }
+
+        // UniversalImageLoader DisplayImageOptions for Center Cropping an Image
+        public static DisplayImageOptions CenterCropAlpha(int Alpha)
+        {
+            return new DisplayImageOptions.Builder()
+                    .ImageScaleType(ImageScaleType.InSamplePowerOf2)
+                    .CacheOnDisk(true)
+                    .CacheInMemory(true)
+                    .BitmapConfig(Bitmap.Config.Rgb565)
+                    .ResetViewBeforeLoading(false)
+                    .Displayer(new RoundedBitmapDisplayer(0, 0, Alpha))
                     .Build();
         }
     }
@@ -124,6 +136,155 @@ namespace SimpleWeather.Droid.Utils
         protected override void SetImageDrawableInto(Drawable drawable, View view)
         {
             view.Background = drawable;
+        }
+    }
+
+    public class RoundedBitmapDisplayer : Java.Lang.Object, IBitmapDisplayer
+    {
+        protected int cornerRadius;
+        protected int margin;
+        private int alpha;
+
+        public RoundedBitmapDisplayer(int cornerRadiusPixels)
+        {
+            this.cornerRadius = cornerRadiusPixels;
+            this.margin = 0;
+            this.alpha = 255;
+        }
+
+        public RoundedBitmapDisplayer(int cornerRadiusPixels, int marginPixels)
+        {
+            this.cornerRadius = cornerRadiusPixels;
+            this.margin = marginPixels;
+            this.alpha = 255;
+        }
+
+        public RoundedBitmapDisplayer(int cornerRadiusPixels, int marginPixels, int alpha)
+        {
+            this.cornerRadius = cornerRadiusPixels;
+            this.margin = marginPixels;
+            this.alpha = alpha;
+        }
+
+        public void Display(Bitmap bitmap, IImageAware imageAware, LoadedFrom loadedFrom)
+        {
+            if (!(imageAware is IImageAware))
+            {
+                throw new Java.Lang.IllegalArgumentException("ImageAware should wrap ImageView. ImageViewAware is expected.");
+            }
+
+            var drawable = new RoundCornerDrawable(bitmap, cornerRadius, margin, RoundCornerDrawable.Type.centerCrop)
+            {
+                Alpha = alpha
+            };
+            imageAware.SetImageDrawable(drawable);
+        }
+
+        /**
+          * Created by yijie.ma on 2016/7/20.
+          */
+        public class RoundCornerDrawable : Drawable
+        {
+
+            protected float cornerRadius;
+            protected int margin;
+
+            protected RectF mRect = new RectF();
+            protected BitmapShader bitmapShader;
+            protected Paint paint;
+            protected Bitmap mBitmap;
+
+            private Type mType = Type.fitXY;
+
+            public enum Type
+            {
+                center, fitXY, centerCrop
+            }
+
+            public RoundCornerDrawable(Bitmap bitmap, int cornerRadius, int margin, Type type)
+            {
+                this.cornerRadius = cornerRadius;
+                this.margin = margin;
+                mBitmap = bitmap;
+                mType = type;
+
+                bitmapShader = new BitmapShader(bitmap, Shader.TileMode.Clamp, Shader.TileMode.Clamp);
+
+                paint = new Paint();
+                paint.AntiAlias = (true);
+                paint.SetShader(bitmapShader);
+            }
+
+            protected override void OnBoundsChange(Rect bounds)
+            {
+                base.OnBoundsChange(bounds);
+                mRect.Set(margin, margin, bounds.Width() - margin, bounds.Height() - margin);
+
+                Matrix shaderMatrix = new Matrix();
+                int width = bounds.Width();
+                int height = bounds.Height();
+
+                switch (mType)
+                {
+                    case Type.centerCrop:
+                        float scale = width * 1.0f / mBitmap.Width;
+                        if (scale * mBitmap.Height < height)
+                        {
+                            scale = height * 1.0f / mBitmap.Height;
+                        }
+                        int outWidth = Java.Lang.Math.Round(scale * mBitmap.Width);
+                        int outHeight = Java.Lang.Math.Round(scale * mBitmap.Height);
+
+                        shaderMatrix.PostScale(scale, scale);
+
+                        int left = 0;
+                        int top = 0;
+                        if (outWidth == width)
+                        {
+                            top = (outHeight - height) * -1 / 2;
+                        }
+                        else
+                        {
+                            left = (outWidth - width) * -1 / 2;
+                        }
+                        shaderMatrix.PostTranslate(left, top);
+                        break;
+                    case Type.fitXY:
+                        float wScale = width * 1.0f / mBitmap.Width;
+                        float hScale = height * 1.0f / mBitmap.Height;
+                        shaderMatrix.PostScale(wScale, hScale);
+                        break;
+                    case Type.center:
+                        int moveleft;
+                        int movetop;
+                        moveleft = (width - mBitmap.Width) / 2;
+                        movetop = (height - mBitmap.Height) / 2;
+                        shaderMatrix.PostTranslate(moveleft, movetop);
+                        break;
+                }
+
+                bitmapShader.SetLocalMatrix(shaderMatrix);
+            }
+
+            public override void Draw(Canvas canvas)
+            {
+                canvas.DrawRoundRect(mRect, cornerRadius, cornerRadius, paint);
+            }
+
+            public override int Opacity
+            {
+                get { return (int)Format.Translucent; }
+            }
+
+            public override void SetAlpha(int alpha)
+            {
+                paint.Alpha = alpha;
+            }
+
+            public override void SetColorFilter(ColorFilter cf)
+            {
+                paint.SetColorFilter(cf);
+            }
         }
     }
 }

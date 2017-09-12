@@ -6,29 +6,37 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
+    Name="Control"
     d:DesignHeight="200"
     d:DesignWidth="400">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0" Orientation="Vertical"
-                    Padding="5">
-            <Viewbox Width="75" Height="75" Margin="5" HorizontalAlignment="Left">
+        <Grid Name="WeatherBox" Grid.Column="0" Padding="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Viewbox Width="75" Grid.Row="0"
+                     Margin="5" HorizontalAlignment="Left">
                 <TextBlock Text="{Binding WeatherIcon, FallbackValue='&#xf00d;'}" Style="{StaticResource WeatherIcon}"/>
             </Viewbox>
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" Grid.Row="1">
                 <TextBlock Text="&#xf078;" Style="{StaticResource WeatherIcon}"
-                           FontSize="18" Padding="5"/>
+                           FontSize="18" Padding="5,0"/>
                 <TextBlock Text="{Binding PoP, FallbackValue='100%'}"
                            Foreground="White"
-                           Padding="5" VerticalAlignment="Center"/>
+                           Padding="5,0" VerticalAlignment="Center"/>
             </StackPanel>
-        </StackPanel>
-        <TextBlock Grid.Column="1" Text="{Binding FctText, FallbackValue='Generally cloudy. A stray shower or thunderstorm is possible. High 76F. Winds SE at 10 to 15 mph.'}"
-                   Foreground="White"
-                   Padding="10" TextWrapping="WrapWholeWords"/>
+        </Grid>
+        <Viewbox Name="FctTextBox" Grid.Column="1"
+                 HorizontalAlignment="Left">
+            <TextBlock Name="FctText" Text="{Binding FctText, FallbackValue='Generally cloudy. A stray shower or thunderstorm is possible. High 76F. Winds SE at 10 to 15 mph.'}"
+                       Foreground="White" Margin="10"
+                       HorizontalAlignment="Left" TextWrapping="WrapWholeWords"/>
+        </Viewbox>
     </Grid>
 </UserControl>

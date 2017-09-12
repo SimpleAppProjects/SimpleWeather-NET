@@ -11,9 +11,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.Devices.Geolocation;
+using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 using Windows.UI.Input;
 using Windows.UI.Popups;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -110,6 +112,9 @@ namespace SimpleWeather.UWP
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
+            // Shell
+            (Shell.Instance.BurgerBackground as SolidColorBrush).Color = App.AppColor;
 
             if (e.Parameter != null)
             {
