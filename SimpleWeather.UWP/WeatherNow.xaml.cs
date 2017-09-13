@@ -66,7 +66,7 @@ namespace SimpleWeather.UWP
             {
                 if (!DetailsWrapGrid.Children.Contains(PrecipitationPanel))
                 {
-                    DetailsWrapGrid.Children.Add(PrecipitationPanel);
+                    DetailsWrapGrid.Children.Insert(0, PrecipitationPanel);
                     DetailsPanel_SizeChanged(DetailsWrapGrid, null);
                 }
 
