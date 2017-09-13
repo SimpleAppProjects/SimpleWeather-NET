@@ -158,15 +158,36 @@ namespace SimpleWeather.Utils
 
         public static bool IsNight(Weather weather)
         {
-            TimeSpan sunrise = weather.astronomy.sunrise.TimeOfDay;
-            TimeSpan sunset = weather.astronomy.sunset.TimeOfDay;
-            TimeSpan now = DateTimeOffset.UtcNow.ToOffset(weather.location.tz_offset).TimeOfDay;
+            bool isNight = false;
 
-            // Determine whether its night using sunset/rise times
-            if (now < sunrise || now > sunset)
-                return true;
-            else
-                return false;
+            if (weather.condition.icon.StartsWith("nt_"))
+                isNight = true;
+            else if (int.TryParse(weather.condition.icon, out int code))
+            {
+                switch (code)
+                {
+                    case 27: // Mostly Cloudy (Night)
+                    case 29: // Partly Cloudy (Night)
+                    case 31: // Clear (Night)
+                    case 33: // Fair (Night)
+                        isNight = true;
+                        break;
+                }
+            }
+
+            if (!isNight)
+            {
+                // Fallback to sunset/rise time just in case
+                TimeSpan sunrise = weather.astronomy.sunrise.TimeOfDay;
+                TimeSpan sunset = weather.astronomy.sunset.TimeOfDay;
+                TimeSpan now = DateTimeOffset.UtcNow.ToOffset(weather.location.tz_offset).TimeOfDay;
+
+                // Determine whether its night using sunset/rise times
+                if (now < sunrise || now > sunset)
+                    isNight = true;
+            }
+
+            return isNight;
         }
 
         public static String GetLastBuildDate(Weather weather)
