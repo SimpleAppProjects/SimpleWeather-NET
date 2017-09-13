@@ -289,7 +289,7 @@ namespace SimpleWeather.Controls
             // Update Current Condition
             CurTemp = Settings.Unit == Settings.Fahrenheit ?
                 Math.Round(weather.condition.temp_f) + "\uf045" : Math.Round(weather.condition.temp_c) + "\uf03c";
-            CurCondition = weather.condition.weather;
+            CurCondition = (String.IsNullOrWhiteSpace(weather.condition.weather)) ? "---" : weather.condition.weather;
             WeatherIcon = WeatherUtils.GetWeatherIcon(weather.condition.icon);
 
             // WeatherDetails
@@ -311,6 +311,9 @@ namespace SimpleWeather.Controls
             UpdatePressureState(weather.atmosphere.pressure_trend);
             _Visibility = Settings.Unit == Settings.Fahrenheit ?
                 weather.atmosphere.visibility_mi + " mi" : weather.atmosphere.visibility_km + " km";
+
+            if (_Visibility.StartsWith(" "))
+                _Visibility = _Visibility.Insert(0, "--");
 
             // Add UI elements
             Forecasts.Clear();
