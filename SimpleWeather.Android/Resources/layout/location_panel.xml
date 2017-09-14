@@ -6,11 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/location_panel_height">
 
+    <ImageView
+        android:id="@+id/image_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <android.support.v7.widget.GridLayout
-        android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimary"
         app:columnCount="2">
 
         <me.grantland.widget.AutofitTextView
@@ -69,7 +72,7 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:padding="2dp"
-        android:layout_gravity="bottom|right"
+        android:layout_gravity="bottom|end"
         android:src="@drawable/ic_home_nofill_white_24dp"
         android:background="@null" />
     <ProgressBar

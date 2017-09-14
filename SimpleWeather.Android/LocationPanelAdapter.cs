@@ -11,12 +11,16 @@ using SimpleWeather.Utils;
 using System.Collections.Specialized;
 using System.Collections.ObjectModel;
 using Android.Support.V4.Content;
+using Com.Bumptech.Glide;
+using Android.Graphics;
+using Android.Graphics.Drawables;
 
 namespace SimpleWeather.Droid
 {
     public class LocationPanelAdapter : RecyclerView.Adapter, IItemTouchHelperAdapter
     {
         private ObservableCollection<LocationPanelViewModel> mDataset;
+        private RequestManager Glide;
 
         public List<LocationPanelViewModel> Dataset { get { return mDataset.ToList(); } }
 
@@ -32,12 +36,14 @@ namespace SimpleWeather.Droid
         {
             public LocationPanel mLocView;
             public ImageButton mHomeButton;
+            public ImageView mBgImageView;
             public ViewHolder(LocationPanel v,
                 Action<RecyclerClickEventArgs> clickListener, Action<RecyclerClickEventArgs> longClickListener, Action<RecyclerClickEventArgs> homeClickListener)
                 : base(v)
             {
                 mLocView = v;
                 mHomeButton = v.FindViewById<ImageButton>(Resource.Id.home_button);
+                mBgImageView = v.FindViewById<ImageView>(Resource.Id.image_view);
 
                 mLocView.Click += (sender, e) => clickListener(new RecyclerClickEventArgs { View = mLocView, Position = AdapterPosition });
                 mLocView.LongClick += (sender, e) => longClickListener(new RecyclerClickEventArgs { View = mLocView, Position = AdapterPosition });
@@ -46,8 +52,9 @@ namespace SimpleWeather.Droid
         }
 
         // Provide a suitable constructor (depends on the kind of dataset)
-        public LocationPanelAdapter(List<LocationPanelViewModel> myDataset)
+        public LocationPanelAdapter(RequestManager glide, List<LocationPanelViewModel> myDataset)
         {
+            Glide = glide;
             mDataset = new ObservableCollection<LocationPanelViewModel>(myDataset);
             mDataset.CollectionChanged += (sender, e) => CollectionChanged?.Invoke(sender, e);
         }
@@ -72,6 +79,12 @@ namespace SimpleWeather.Droid
             ViewHolder vh = holder as ViewHolder;
             Context context = vh.mLocView.Context;
             LocationPanelViewModel panelView = mDataset[position];
+
+            // Background
+            Glide.Load(panelView.Background)
+                 .CenterCrop()
+                 .Placeholder(new ColorDrawable(new Color(ContextCompat.GetColor(context, Resource.Color.colorPrimary))))
+                 .Into(vh.mBgImageView);
 
             vh.mLocView.SetWeather(panelView);
 

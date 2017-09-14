@@ -9,20 +9,19 @@ using Android.Graphics.Drawables;
 using Android.Media;
 using Android.Support.V4.Content;
 using SimpleWeather.Droid.Utils;
-using Com.Nostra13.Universalimageloader.Core;
+using Com.Bumptech.Glide;
 
 namespace SimpleWeather.Droid.Controls
 {
     public class LocationPanel : CardView
     {
         private View viewLayout;
-        private View mainLayout;
+        private ImageView bgImageView;
         private TextView locationNameView;
         private TextView locationTempView;
         private WeatherIcon locationWeatherIcon;
         private ProgressBar progressBar;
         private ImageButton homeButton;
-        private ImageLoader loader = ImageLoader.Instance;
 
         public LocationPanel(Context context) :
             base(context)
@@ -53,8 +52,8 @@ namespace SimpleWeather.Droid.Controls
         {
             LayoutInflater inflater = LayoutInflater.From(context);
             viewLayout = inflater.Inflate(Resource.Layout.location_panel, this);
-            mainLayout = viewLayout.FindViewById(Resource.Id.main_layout);
 
+            bgImageView = viewLayout.FindViewById<ImageView>(Resource.Id.image_view);
             locationNameView = viewLayout.FindViewById<TextView>(Resource.Id.location_name);
             locationTempView = viewLayout.FindViewById<TextView>(Resource.Id.weather_temp);
             locationWeatherIcon = viewLayout.FindViewById<WeatherIcon>(Resource.Id.weather_icon);
@@ -64,39 +63,37 @@ namespace SimpleWeather.Droid.Controls
             ShowLoading(true);
         }
 
+        public void SetWeatherBackground(LocationPanelViewModel panelView)
+        {
+            // Background
+            Glide.With(Context)
+                 .Load(panelView.Background)
+                 .CenterCrop()
+                 .Placeholder(new ColorDrawable(new Color(ContextCompat.GetColor(Context, Resource.Color.colorPrimary))))
+                 .Into(bgImageView);
+        }
+
         public void SetWeather(LocationPanelViewModel panelView)
         {
-            this.Post(() => 
+            locationNameView.Text = panelView.LocationName;
+            locationTempView.Text = panelView.CurrTemp;
+            locationWeatherIcon.Text = panelView.WeatherIcon;
+            Tag = panelView.Pair;
+
+            if (panelView.IsHome)
             {
-                // Background
-                loader.DisplayImage(panelView.Background, new CustomViewAware(mainLayout),
-                    ImageUtils.CenterCropConfig());
+                homeButton.SetImageDrawable(ContextCompat.GetDrawable(Context, Resource.Drawable.ic_home_fill_white_24dp));
+                homeButton.Enabled = false;
+                homeButton.Visibility = ViewStates.Visible;
+            }
 
-                locationNameView.Text = panelView.LocationName;
-                locationTempView.Text = panelView.CurrTemp;
-                locationWeatherIcon.Text = panelView.WeatherIcon;
-                Tag = panelView.Pair;
-
-                if (panelView.IsHome)
-                {
-                    homeButton.SetImageDrawable(ContextCompat.GetDrawable(Context, Resource.Drawable.ic_home_fill_white_24dp));
-                    homeButton.Enabled = false;
-                    homeButton.Visibility = ViewStates.Visible;
-                }
-
-                ShowLoading(false);
-            });
+            ShowLoading(false);
         }
 
         public void ShowLoading(bool show)
         {
             progressBar.Visibility = show ? ViewStates.Visible : ViewStates.Gone;
             Enabled = show ? false : true;
-        }
-
-        public override void SetBackgroundColor(Color color)
-        {
-            mainLayout.SetBackgroundColor(color);
         }
     }
 }

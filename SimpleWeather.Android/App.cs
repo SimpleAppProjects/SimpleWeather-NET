@@ -4,8 +4,6 @@ using Android.App;
 using Android.Runtime;
 using Android.Content;
 using Android.Preferences;
-using Com.Nostra13.Universalimageloader.Core;
-using Com.Nostra13.Universalimageloader.Cache.Disc.Impl;
 using SimpleWeather.Droid.Utils;
 using SimpleWeather.Utils;
 using System.Threading.Tasks;
@@ -38,16 +36,6 @@ namespace SimpleWeather.Droid
             //A great place to initialize Xamarin.Insights and Dependency Services!
             // Load data if needed
             Task.Factory.StartNew(() => Settings.LoadIfNeeded());
-
-            // ImageLoader
-            // Use default options
-            ImageLoaderConfiguration default_config = new ImageLoaderConfiguration.Builder(ApplicationContext)
-                .DiskCache(new UnlimitedDiskCache(ApplicationContext.CacheDir))
-                .DefaultDisplayImageOptions(ImageUtils.DefaultDisplayConfig())
-                .DiskCacheSize(50 * 1024 * 1024)
-                .Build();
-            // Initialize ImageLoader with configuration.
-            ImageLoader.Instance.Init(default_config);
         }
     }
 }

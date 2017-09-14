@@ -59,6 +59,9 @@
     <Reference Include="AutoFitTextView, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoFitTextView.0.2.1.0\lib\MonoAndroid403\AutoFitTextView.dll</HintPath>
     </Reference>
+    <Reference Include="Glide, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Glide.Xamarin.3.8.0\lib\Glide.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Mono.Android" />
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -165,7 +168,9 @@
     <None Include="app.config" />
     <AndroidAsset Include="Assets\fonts\MaterialIcons-Regular.ttf" />
     <AndroidAsset Include="Assets\fonts\weathericons-regular-webfont.ttf" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Resources\AboutResources.txt" />
     <None Include="Properties\AndroidManifest.xml" />
     <None Include="Assets\AboutAssets.txt" />

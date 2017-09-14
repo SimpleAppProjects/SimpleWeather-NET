@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using Android.Support.V4.Content;
 using Android.Graphics.Drawables;
 using Android.Graphics;
+using Com.Bumptech.Glide;
 
 namespace SimpleWeather.Droid
 {
@@ -76,7 +77,11 @@ namespace SimpleWeather.Droid
                 if (locationIdx == App.HomeIdx && Settings.FollowGPS)
                 {
                     gpsPanelViewModel.SetWeather(weather);
-                    Activity.RunOnUiThread(() => gpsPanel.SetWeather(gpsPanelViewModel));
+                    Activity.RunOnUiThread(() => 
+                    {
+                        gpsPanel.SetWeatherBackground(gpsPanelViewModel);
+                        gpsPanel.SetWeather(gpsPanelViewModel);
+                    });
                 }
                 else
                 {
@@ -235,7 +240,7 @@ namespace SimpleWeather.Droid
             mRecyclerView.SetLayoutManager(mLayoutManager);
 
             // specify an adapter (see also next example)
-            mAdapter = new LocationPanelAdapter(new List<LocationPanelViewModel>());
+            mAdapter = new LocationPanelAdapter(Glide.With(this), new List<LocationPanelViewModel>());
             mAdapter.ItemClick += OnPanelClick;
             mAdapter.ItemLongClick += OnPanelLongClick;
             mAdapter.CollectionChanged += LocationPanels_CollectionChanged;
