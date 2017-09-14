@@ -202,8 +202,12 @@ namespace SimpleWeather.UWP
             CoreApplication.Properties.TryGetValue("HomeChanged", out object homeChanged);
             CoreApplication.Properties.Remove("HomeChanged");
 
-            // Reset loader if source is different
-            if (wLoader != null && WeatherView.WeatherSource != Settings.API)
+            KeyValuePair<int, string> PairParameter = e.Parameter == null ? 
+                new KeyValuePair<int, string>() : (KeyValuePair<int, string>)e.Parameter;
+
+            // Reset loader if source or query is different
+            if (wLoader != null && (WeatherView.WeatherSource != Settings.API || 
+                (e.NavigationMode == NavigationMode.Back && PairParameter.Value != pair.Value)))
             {
                 wLoader = null;
             }
@@ -250,20 +254,16 @@ namespace SimpleWeather.UWP
             }
 
             // New page instance created, so restore
-            if (e.Parameter != null && (wLoader == null || e.NavigationMode == NavigationMode.New))
+            if (PairParameter.Value != null && (wLoader == null || e.NavigationMode == NavigationMode.New))
             {
-                if (e.Parameter.GetType() == typeof(KeyValuePair<int, string>))
+                pair = PairParameter;
+                wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
+
+                if (pair.Key == App.HomeIdx)
                 {
-                    pair = (KeyValuePair<int, string>)e.Parameter;
-
-                    wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
-
-                    if (pair.Key == App.HomeIdx)
-                    {
-                        // Clear backstack since we're home
-                        Frame.BackStack.Clear();
-                        SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-                    }
+                    // Clear backstack since we're home
+                    Frame.BackStack.Clear();
+                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
                 }
             }
 

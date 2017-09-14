@@ -113,6 +113,17 @@ namespace SimpleWeather.UWP
         {
             base.OnNavigatedTo(e);
 
+            if (e.NavigationMode == NavigationMode.Back || e.NavigationMode == NavigationMode.New)
+            {
+                // Remove all from backstack except home
+                if (this.Frame.BackStackDepth > 1)
+                {
+                    var home = this.Frame.BackStack.ElementAt(0);
+                    this.Frame.BackStack.Clear();
+                    this.Frame.BackStack.Add(home);
+                }
+            }
+
             // Shell
             (Shell.Instance.BurgerBackground as SolidColorBrush).Color = App.AppColor;
 
