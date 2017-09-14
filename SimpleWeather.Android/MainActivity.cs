@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 using Android.OS;
 using Android.Support.V7.App;
@@ -21,7 +23,9 @@ namespace SimpleWeather.Droid
             SetContentView(Resource.Layout.activity_main);
 
             // Reset settings
-            App.Preferences.Edit().Remove("HomeChanged").Apply();
+            App.Preferences.Edit()
+               .Remove("HomeChanged")
+               .Apply();
 
             // Create your application here
             Toolbar toolbar = FindViewById<Toolbar>(Resource.Id.toolbar);
@@ -49,8 +53,9 @@ namespace SimpleWeather.Droid
                     fragment = new WeatherNowFragment();
 
                 // Navigate to WeatherNowFragment
-                SupportFragmentManager.BeginTransaction().Replace(
-                        Resource.Id.fragment_container, fragment).Commit();
+                SupportFragmentManager.BeginTransaction()
+                    .Replace(Resource.Id.fragment_container, fragment, "home")
+                    .Commit();
             }
 
             navigationView.SetCheckedItem(Resource.Id.nav_weathernow);
@@ -65,6 +70,16 @@ namespace SimpleWeather.Droid
             }
             else
             {
+                Fragment current = SupportFragmentManager.FindFragmentById(Resource.Id.fragment_container);
+                // Destroy untagged fragments onbackpressed
+                if (current != null && current.Tag == null)
+                {
+                    SupportFragmentManager.BeginTransaction()
+                        .Remove(current)
+                        .Commit();
+                    current.OnDestroy();
+                    current = null;
+                }
                 base.OnBackPressed();
             }
         }
@@ -100,19 +115,46 @@ namespace SimpleWeather.Droid
                     if (fragment is WeatherNowFragment)
                     {
                         // Pop all since we're going home
+                        fragment = null;
                         transaction.Commit();
                         SupportFragmentManager.PopBackStackImmediate(null, (int)Android.App.PopBackStackFlags.Inclusive);
                     }
-                    else
+                    else if (fragment is LocationsFragment)
                     {
                         Fragment current = SupportFragmentManager.FindFragmentById(Resource.Id.fragment_container);
 
                         if (current is WeatherNowFragment)
-                            transaction.Hide(current);
+                        {
+                            // Hide home frag
+                            if (current.Tag == "home")
+                                transaction.Hide(current);
+                            else
+                            {
+                                // Destroy lingering WNow frag
+                                SupportFragmentManager.BeginTransaction()
+                                    .Remove(current)
+                                    .Commit();
+                                current.OnDestroy();
+                                current = null;
+                                SupportFragmentManager.PopBackStack();
+                            }
+                        }
 
-                        // Commit the transaction
-                        transaction.Add(Resource.Id.fragment_container, fragment);
-                        transaction.AddToBackStack(null).Commit();
+                        if (SupportFragmentManager.FindFragmentByTag("locations") != null)
+                        {
+                            // Pop all frags if LocFrag in backstack
+                            fragment = null;
+                            transaction.Commit();
+                        }
+                        else
+                        {
+                            // Add LocFrag if not in backstack
+                            // Commit the transaction
+                            transaction
+                                .Add(Resource.Id.fragment_container, fragment, "locations")
+                                .AddToBackStack(null)
+                                .Commit();
+                        }
                     }
                 }
             }

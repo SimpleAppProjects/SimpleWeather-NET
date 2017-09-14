@@ -159,16 +159,20 @@ namespace SimpleWeather.Droid
                 // Navigate to WeatherNowFragment
                 if (pair.Key == App.HomeIdx)
                 {
-                    AppCompatActivity.SupportFragmentManager.BeginTransaction().Replace(
-                        Resource.Id.fragment_container, fragment).Commit();
+                    AppCompatActivity.SupportFragmentManager.BeginTransaction()
+                        .Replace(Resource.Id.fragment_container, fragment, "home")
+                        .Commit();
 
                     // Pop all since we're going home
                     AppCompatActivity.SupportFragmentManager.PopBackStack(null, (int)Android.App.PopBackStackFlags.Inclusive);
                 }
                 else
                 {
-                    AppCompatActivity.SupportFragmentManager.BeginTransaction().Add(
-                        Resource.Id.fragment_container, fragment).Hide(this).AddToBackStack(null).Commit();
+                    AppCompatActivity.SupportFragmentManager.BeginTransaction()
+                        .Add(Resource.Id.fragment_container, fragment, null)
+                        .Hide(this)
+                        .AddToBackStack(null)
+                        .Commit();
                 }
             }
         }
