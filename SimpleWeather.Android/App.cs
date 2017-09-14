@@ -11,11 +11,13 @@ using System.Threading.Tasks;
 namespace SimpleWeather.Droid
 {
     //You can specify additional application information in this attribute
-    [Application(AllowBackup = true, Icon = "@mipmap/ic_launcher", RoundIcon = "@mipmap/ic_round_launcher",
+    [Application(Icon = "@mipmap/ic_launcher", RoundIcon = "@mipmap/ic_round_launcher",
         Label = "@string/app_name", SupportsRtl = true, Theme = "@style/AppTheme.Launcher",
 #if DEBUG
+        AllowBackup = false,
         Debuggable = true
 #else
+        AllowBackup = true,
         Debuggable = false
 #endif
         )]
