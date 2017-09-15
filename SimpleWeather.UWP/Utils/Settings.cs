@@ -157,17 +157,17 @@ namespace SimpleWeather.Utils
             localSettings.Values[KEY_FOLLOWGPS] = value;
         }
 
-        private static string GetLastGPSLocation()
+        private static string GetHomeLocation()
         {
-            if (!localSettings.Values.ContainsKey(KEY_LASTGPSLOCATION) || localSettings.Values[KEY_LASTGPSLOCATION] == null)
+            if (!localSettings.Values.ContainsKey(KEY_HOMELOCATION) || localSettings.Values[KEY_HOMELOCATION] == null)
                 return null;
             else
-                return (string)localSettings.Values[KEY_LASTGPSLOCATION];
+                return (string)localSettings.Values[KEY_HOMELOCATION];
         }
 
-        private static void SetLastGPSLocation(string value)
+        private static void SetHomeLocation(string value)
         {
-            localSettings.Values[KEY_LASTGPSLOCATION] = value;
+            localSettings.Values[KEY_HOMELOCATION] = value;
         }
     }
 }

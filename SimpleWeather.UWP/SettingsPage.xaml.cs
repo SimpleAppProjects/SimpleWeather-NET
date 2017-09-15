@@ -230,10 +230,8 @@ namespace SimpleWeather.UWP
                 switch (geoStatus)
                 {
                     case GeolocationAccessStatus.Allowed:
-                        if (CoreApplication.Properties.ContainsKey("HomeChanged"))
-                            CoreApplication.Properties["HomeChanged"] = true;
-                        else
-                            CoreApplication.Properties.Add("HomeChanged", true);
+                        // Reset home location data
+                        Settings.SaveHomeLocation(new WeatherData.LocationData());
                         break;
                     case GeolocationAccessStatus.Denied:
                         error = new MessageDialog(App.ResLoader.GetString("Msg_LocDeniedSettings"), App.ResLoader.GetString("Label_ErrLocationDenied"));

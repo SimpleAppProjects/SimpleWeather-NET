@@ -16,6 +16,12 @@ namespace SimpleWeather.WeatherData
 
         }
 
+        public LocationData(string query)
+        {
+            this.query = query;
+            source = Utils.Settings.API;
+        }
+
 #if WINDOWS_UWP
         public LocationData(string query, Windows.Devices.Geolocation.Geoposition geoPos)
         {

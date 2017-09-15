@@ -126,7 +126,6 @@ namespace SimpleWeather.Droid
             private const string KEY_API = "API";
             private const string KEY_APIKEY = "API_KEY";
             private const string KEY_APIKEY_VERIFIED = "API_KEY_VERIFIED";
-            private const string KEY_HOMECHANGED = "HomeChanged";
 
             // Preferences
             private SwitchPreference followGps;
@@ -176,7 +175,8 @@ namespace SimpleWeather.Droid
                         }
                         else
                         {
-                            App.Preferences.Edit().PutBoolean(KEY_HOMECHANGED, true).Apply();
+                            // Reset home location data
+                            Settings.SaveHomeLocation(new WeatherData.LocationData());
                         }
                     }
                 };
@@ -278,7 +278,8 @@ namespace SimpleWeather.Droid
                             {
                                 // permission was granted, yay!
                                 // Do the task you need to do.
-                                App.Preferences.Edit().PutBoolean(KEY_HOMECHANGED, true).Apply();
+                                // Reset home location data
+                                Settings.SaveHomeLocation(new WeatherData.LocationData());
                             }
                             else
                             {

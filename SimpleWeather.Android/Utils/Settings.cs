@@ -164,14 +164,14 @@ namespace SimpleWeather.Utils
             editor.Commit();
         }
 
-        private static string GetLastGPSLocation()
+        private static string GetHomeLocation()
         {
-            return preferences.GetString(KEY_LASTGPSLOCATION, null);
+            return preferences.GetString(KEY_HOMELOCATION, null);
         }
 
-        private static void SetLastGPSLocation(string value)
+        private static void SetHomeLocation(string value)
         {
-            editor.PutString(KEY_LASTGPSLOCATION, value);
+            editor.PutString(KEY_HOMELOCATION, value);
             editor.Commit();
         }
     }

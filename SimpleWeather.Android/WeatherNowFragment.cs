@@ -336,10 +336,22 @@ namespace SimpleWeather.Droid
 
         private async void Resume()
         {
-            // Update view on resume
-            // ex. If temperature unit changed
-            bool homeChanged = App.Preferences.GetBoolean("HomeChanged", false);
-            App.Preferences.Edit().Remove("HomeChanged").Apply();
+            /* Update view on resume
+             * ex. If temperature unit changed
+             */
+
+            // Did home change?
+            var homeData = await Settings.GetHomeLocationData();
+            bool homeChanged = false;
+
+            if (pair != null && pair.Key == App.HomeIdx)
+            {
+                if ((pair.Value != null && pair.Value != homeData.query))
+                {
+                    homeChanged = true;
+                    wLoader = null;
+                }
+            }
 
             // New Page = loaded - true
             // Navigating back to frag = !loaded - false
@@ -408,14 +420,13 @@ namespace SimpleWeather.Droid
 
         private async Task Restore()
         {
+            LocationData homeData = await Settings.GetHomeLocationData();
             bool forceRefresh = false;
 
             // GPS Follow location
             if (Settings.FollowGPS && (pair == null || pair.Key == App.HomeIdx))
             {
-                LocationData locData = await Settings.GetLastGPSLocData();
-
-                if (locData == null)
+                if (homeData == null)
                 {
                     // Update location if not setup
                     await UpdateLocation();
@@ -425,8 +436,8 @@ namespace SimpleWeather.Droid
                 else
                 {
                     // Reset locdata if source is different
-                    if (locData.source != Settings.API)
-                        Settings.SaveLastGPSLocData(new LocationData());
+                    if (homeData.source != Settings.API)
+                        Settings.SaveHomeLocation(new LocationData());
 
                     if (await UpdateLocation())
                     {
@@ -437,17 +448,28 @@ namespace SimpleWeather.Droid
                     else
                     {
                         // Setup loader saved location data
-                        wLoader = new WeatherDataLoader(this, this, locData.query, App.HomeIdx);
+                        pair = new Pair<int, string>(App.HomeIdx, homeData.query);
+                        wLoader = new WeatherDataLoader(this, this, homeData.query, App.HomeIdx);
                     }
                 }
             }
             else if (wLoader == null)
             {
                 // Weather was loaded before. Lets load it up...
-                List<string> locations = await Settings.GetLocations();
-                string local = locations[App.HomeIdx];
+                if (homeData.query == null)
+                {
+                    List<string> locations = await Settings.GetLocations();
+                    string local = locations[App.HomeIdx];
+                    Settings.SaveHomeLocation(new LocationData(local));
 
-                wLoader = new WeatherDataLoader(this, this, local, App.HomeIdx);
+                    pair = new Pair<int, string>(App.HomeIdx, local);
+                    wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
+                }
+                else
+                {
+                    pair = new Pair<int, string>(App.HomeIdx, homeData.query);
+                    wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
+                }
             }
 
             // Load up weather data
@@ -623,7 +645,7 @@ namespace SimpleWeather.Droid
                         locMan.RequestSingleUpdate(provider, mLocListnr, null);
                     else
                     {
-                        LocationData lastGPSLocData = await Settings.GetLastGPSLocData();
+                        LocationData lastGPSLocData = await Settings.GetHomeLocationData();
 
                         // Check previous location difference
                         if (lastGPSLocData.query != null &&
@@ -659,7 +681,7 @@ namespace SimpleWeather.Droid
 
                         // Save location as last known
                         lastGPSLocData.SetData(selected_query, location);
-                        Settings.SaveLastGPSLocData();
+                        Settings.SaveHomeLocation();
 
                         pair = new Pair<int, string>(App.HomeIdx, selected_query);
                         mLocation = location;

@@ -176,6 +176,9 @@ namespace SimpleWeather.UWP
 
         private void LocationPanels_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            bool dataMoved = (e.Action == NotifyCollectionChangedAction.Remove) || (e.Action == NotifyCollectionChangedAction.Move);
+            bool onlyHomeIsLeft = (!Settings.FollowGPS && LocationPanels.Count == 1 || Settings.FollowGPS && LocationPanels.Count == 0);
+
             foreach (LocationPanelViewModel panelView in LocationPanels)
             {
                 int index = LocationPanels.IndexOf(panelView);
@@ -185,18 +188,22 @@ namespace SimpleWeather.UWP
                 panelView.Pair = new KeyValuePair<int, string>(index, panelView.Pair.Value);
             }
 
-            // Flag that data has changed
-            if (EditMode && (e.Action == NotifyCollectionChangedAction.Remove || e.Action == NotifyCollectionChangedAction.Move))
-                DataChanged = true;
+            // Reset home location since it changed
+            if (!Settings.FollowGPS && dataMoved && (e.OldStartingIndex == App.HomeIdx || e.NewStartingIndex == App.HomeIdx))
+            {
+                Settings.SaveHomeLocation(new LocationData(LocationPanels[0].Pair.Value));
+            }
 
+            // Flag that data has changed
+            if (EditMode && dataMoved)
+                DataChanged = true;
+            
             // Cancel edit Mode
-            // TODO: cleanup code; it looks ugly
-            if (EditMode && (!Settings.FollowGPS && LocationPanels.Count == 1 || Settings.FollowGPS && LocationPanels.Count == 0))
+            if (EditMode && onlyHomeIsLeft)
                 ToggleEditMode();
 
             // Disable EditMode if only single location
-            // TODO: cleanup code; it looks ugly
-            EditButton.Visibility = (!Settings.FollowGPS && LocationPanels.Count == 1 || Settings.FollowGPS && LocationPanels.Count == 0) ? Visibility.Collapsed : Visibility.Visible;
+            EditButton.Visibility = onlyHomeIsLeft ? Visibility.Collapsed : Visibility.Visible;
         }
 
         private async void LoadLocations()
@@ -531,15 +538,6 @@ namespace SimpleWeather.UWP
             // Only move panels if we haven't already
             if (view.Pair.Key != toIdx)
                 LocationPanels.Move(fromIdx, toIdx);
-
-            // Flag that home location has changed
-            if (fromIdx == App.HomeIdx || toIdx == App.HomeIdx)
-            {
-                if (CoreApplication.Properties.ContainsKey("HomeChanged"))
-                    CoreApplication.Properties["HomeChanged"] = true;
-                else
-                    CoreApplication.Properties.Add("HomeChanged", true);
-            }
         }
 
         private void LocationsPanel_DragItemsStarting(object sender, DragItemsStartingEventArgs e)

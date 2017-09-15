@@ -14,7 +14,7 @@ namespace SimpleWeather.Utils
         public static string API { get { return GetAPI(); } set { SetAPI(value); } }
         public static string API_KEY { get { return GetAPIKEY(); } set { SetAPIKEY(value); } }
         public static bool FollowGPS { get { return UseFollowGPS(); } set { SetFollowGPS(value); } }
-        private static string LastGPSLocation { get { return GetLastGPSLocation(); } set { SetLastGPSLocation(value); } }
+        private static string HomeLocation { get { return GetHomeLocation(); } set { SetHomeLocation(value); } }
 
         // Units
         public const string Fahrenheit = "F";
@@ -27,7 +27,7 @@ namespace SimpleWeather.Utils
         private const string KEY_UNITS = "Units";
         private const string KEY_WEATHERLOADED = "weatherLoaded";
         private const string KEY_FOLLOWGPS = "key_followgps";
-        private const string KEY_LASTGPSLOCATION = "key_lastgpslocation";
+        private const string KEY_HOMELOCATION = "key_homelocation";
 
         // APIs
         public const string API_WUnderground = "WUnderground";
@@ -35,7 +35,7 @@ namespace SimpleWeather.Utils
 
         // Weather Data
         private static OrderedDictionary weatherData = new OrderedDictionary();
-        private static WeatherData.LocationData lastGPSLocData = new WeatherData.LocationData();
+        private static WeatherData.LocationData homeLocData = new WeatherData.LocationData();
         private static bool loaded = false;
 
         static Settings()
@@ -61,9 +61,9 @@ namespace SimpleWeather.Utils
 
             weatherData = await JSONParser.DeserializerAsync<OrderedDictionary>(dataFile);
 
-            if (!String.IsNullOrWhiteSpace(LastGPSLocation))
+            if (!String.IsNullOrWhiteSpace(HomeLocation))
             {
-                lastGPSLocData = await JSONParser.DeserializerAsync<WeatherData.LocationData>(LastGPSLocation);
+                homeLocData = await JSONParser.DeserializerAsync<WeatherData.LocationData>(HomeLocation);
             }
         }
 
@@ -79,10 +79,10 @@ namespace SimpleWeather.Utils
             return weatherData;
         }
 
-        public static async Task<WeatherData.LocationData> GetLastGPSLocData()
+        public static async Task<WeatherData.LocationData> GetHomeLocationData()
         {
             await LoadIfNeeded();
-            return lastGPSLocData;
+            return homeLocData;
         }
 
         public static void SaveWeatherData()
@@ -90,15 +90,15 @@ namespace SimpleWeather.Utils
             JSONParser.Serializer(weatherData, dataFile);
         }
 
-        public static void SaveLastGPSLocData()
+        public static void SaveHomeLocation()
         {
-            LastGPSLocation = JSONParser.Serializer(lastGPSLocData, typeof(WeatherData.LocationData));
+            HomeLocation = JSONParser.Serializer(homeLocData, typeof(WeatherData.LocationData));
         }
 
-        public static void SaveLastGPSLocData(WeatherData.LocationData data)
+        public static void SaveHomeLocation(WeatherData.LocationData data)
         {
-            lastGPSLocData = data;
-            LastGPSLocation = JSONParser.Serializer(lastGPSLocData, typeof(WeatherData.LocationData));
+            homeLocData = data;
+            HomeLocation = JSONParser.Serializer(homeLocData, typeof(WeatherData.LocationData));
         }
     }
 }

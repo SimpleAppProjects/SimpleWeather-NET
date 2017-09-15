@@ -198,23 +198,29 @@ namespace SimpleWeather.UWP
                 }
             }
 
-            // Did home change?
-            CoreApplication.Properties.TryGetValue("HomeChanged", out object homeChanged);
-            CoreApplication.Properties.Remove("HomeChanged");
-
-            KeyValuePair<int, string> PairParameter = e.Parameter == null ? 
+            KeyValuePair<int, string> PairParameter = e.Parameter == null ?
                 new KeyValuePair<int, string>() : (KeyValuePair<int, string>)e.Parameter;
 
+            // Did home change?
+            var homeData = Task.Run(() => Settings.GetHomeLocationData()).Result;
+            bool homeChanged = false;
+
+            if (pair.Key == App.HomeIdx || PairParameter.Key == App.HomeIdx)
+            {
+                if ((pair.Value != null && pair.Value != homeData.query) ||
+                    (e.NavigationMode == NavigationMode.Back && PairParameter.Value != null && PairParameter.Value != pair.Value))
+                    homeChanged = true;
+            }
+
             // Reset loader if source or query is different
-            if (wLoader != null && (WeatherView.WeatherSource != Settings.API || 
-                (e.NavigationMode == NavigationMode.Back && PairParameter.Value != pair.Value)))
+            if (wLoader != null && (WeatherView.WeatherSource != Settings.API || homeChanged))
             {
                 wLoader = null;
             }
 
             // Update view on resume
             // ex. If temperature unit changed
-            if ((wLoader != null) && e.NavigationMode != NavigationMode.New && (homeChanged == null || homeChanged != null && !(bool)homeChanged))
+            if ((wLoader != null) && e.NavigationMode != NavigationMode.New && !homeChanged)
             {
                 if (wLoader != null)
                 {
@@ -254,7 +260,7 @@ namespace SimpleWeather.UWP
             }
 
             // New page instance created, so restore
-            if (PairParameter.Value != null && (wLoader == null || e.NavigationMode == NavigationMode.New))
+            if (!homeChanged && PairParameter.Value != null && (wLoader == null || e.NavigationMode == NavigationMode.New))
             {
                 pair = PairParameter;
                 wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
@@ -272,6 +278,7 @@ namespace SimpleWeather.UWP
 
         private async void Restore()
         {
+            LocationData homeData = await Settings.GetHomeLocationData();
             bool forceRefresh = false;
 
             if (wLoader == null)
@@ -284,9 +291,7 @@ namespace SimpleWeather.UWP
             // GPS Follow location
             if (Settings.FollowGPS && pair.Key == App.HomeIdx)
             {
-                LocationData locData = await Settings.GetLastGPSLocData();
-
-                if (locData == null)
+                if (homeData == null)
                 {
                     // Update location if not setup
                     await UpdateLocation();
@@ -296,8 +301,8 @@ namespace SimpleWeather.UWP
                 else
                 {
                     // Reset locdata if source is different
-                    if (locData.source != Settings.API)
-                        Settings.SaveLastGPSLocData(new LocationData());
+                    if (homeData.source != Settings.API)
+                        Settings.SaveHomeLocation(new LocationData());
 
                     if (await UpdateLocation())
                     {
@@ -308,7 +313,8 @@ namespace SimpleWeather.UWP
                     else
                     {
                         // Setup loader saved location data
-                        wLoader = new WeatherDataLoader(this, this, locData.query, App.HomeIdx);
+                        pair = new KeyValuePair<int, string>(App.HomeIdx, homeData.query);
+                        wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
                     }
                 }
             }
@@ -316,10 +322,20 @@ namespace SimpleWeather.UWP
             else if (wLoader == null)
             {
                 // Weather was loaded before. Lets load it up...
-                List<string> locations = await Settings.GetLocations();
-                string local = locations[App.HomeIdx];
+                if (homeData.query == null)
+                {
+                    List<string> locations = await Settings.GetLocations();
+                    string local = locations[App.HomeIdx];
+                    Settings.SaveHomeLocation(new LocationData(local));
 
-                wLoader = new WeatherDataLoader(this, this, local, App.HomeIdx);
+                    pair = new KeyValuePair<int, string>(App.HomeIdx, local);
+                    wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
+                }
+                else
+                {
+                    pair = new KeyValuePair<int, string>(App.HomeIdx, homeData.query);
+                    wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
+                }
             }
 
             // Load up weather data
@@ -370,7 +386,7 @@ namespace SimpleWeather.UWP
                 // Access to location granted
                 if (newGeoPos != null)
                 {
-                    LocationData lastGPSLocData = await Settings.GetLastGPSLocData();
+                    LocationData lastGPSLocData = await Settings.GetHomeLocationData();
 
                     // Check previous location difference
                     if (lastGPSLocData.query != null &&
@@ -406,7 +422,7 @@ namespace SimpleWeather.UWP
 
                     // Save location as last known
                     lastGPSLocData.SetData(selected_query, newGeoPos);
-                    Settings.SaveLastGPSLocData();
+                    Settings.SaveHomeLocation();
 
                     pair = new KeyValuePair<int, string>(App.HomeIdx, selected_query);
                     geoPos = newGeoPos;

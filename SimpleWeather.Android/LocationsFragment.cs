@@ -268,9 +268,10 @@ namespace SimpleWeather.Droid
             menu.Clear();
             inflater.Inflate(Resource.Menu.locations, menu);
 
+            bool onlyHomeIsLeft = (!Settings.FollowGPS && mAdapter.ItemCount == 1 || Settings.FollowGPS && mAdapter.ItemCount == 0);
             IMenuItem editMenuBtn = optionsMenu.FindItem(Resource.Id.action_editmode);
             if (editMenuBtn != null)
-                editMenuBtn.SetVisible(!(!Settings.FollowGPS && mAdapter.ItemCount == 1 || Settings.FollowGPS && mAdapter.ItemCount == 0));
+                editMenuBtn.SetVisible(!onlyHomeIsLeft);
         }
 
         public override bool OnOptionsItemSelected(IMenuItem item)
@@ -644,6 +645,9 @@ namespace SimpleWeather.Droid
 
         private void LocationPanels_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            bool dataMoved = (e.Action == NotifyCollectionChangedAction.Remove || e.Action == NotifyCollectionChangedAction.Move);
+            bool onlyHomeIsLeft = (!Settings.FollowGPS && mAdapter.ItemCount == 1 || Settings.FollowGPS && mAdapter.ItemCount == 0);
+
             foreach (LocationPanelViewModel panelView in mAdapter.Dataset)
             {
                 int index = mAdapter.Dataset.IndexOf(panelView);
@@ -653,13 +657,18 @@ namespace SimpleWeather.Droid
                 panelView.Pair = new Pair<int, string>(index, panelView.Pair.Value);
             }
 
+            // Reset home location since it changed
+            if (!Settings.FollowGPS && dataMoved && (e.OldStartingIndex == App.HomeIdx || e.NewStartingIndex == App.HomeIdx))
+            {
+                Settings.SaveHomeLocation(new LocationData(mAdapter.GetPanelViewModel(0).Pair.Value));
+            }
+
             // Flag that data has changed
-            if (EditMode && (e.Action == NotifyCollectionChangedAction.Remove || e.Action == NotifyCollectionChangedAction.Move))
+            if (EditMode && dataMoved)
                 DataChanged = true;
 
             // Cancel edit Mode
-            // TODO: cleanup code; it looks ugly
-            if (EditMode && (!Settings.FollowGPS && mAdapter.ItemCount == 1 || Settings.FollowGPS && mAdapter.ItemCount == 0))
+            if (EditMode && onlyHomeIsLeft)
                 ToggleEditMode();
 
             // Disable EditMode if only single location
@@ -667,7 +676,7 @@ namespace SimpleWeather.Droid
             {
                 IMenuItem editMenuBtn = optionsMenu.FindItem(Resource.Id.action_editmode);
                 if (editMenuBtn != null)
-                    editMenuBtn.SetVisible(!(!Settings.FollowGPS && mAdapter.ItemCount == 1 || Settings.FollowGPS && mAdapter.ItemCount == 0));
+                    editMenuBtn.SetVisible(!onlyHomeIsLeft);
             }
         }
 
