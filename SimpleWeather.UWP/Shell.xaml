@@ -84,7 +84,8 @@
             <RowDefinition Height="48" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Border Width="48" HorizontalAlignment="Left" Grid.Row="0">
+        <Border Width="48" HorizontalAlignment="Left" Grid.Row="0" Canvas.ZIndex="100"
+                Background="{Binding ElementName=HamburgerButton, Path=Background}">
             <Button x:Name="HamburgerButton" Style="{StaticResource BurgerButton}" FontFamily="Segoe MDL2 Assets" Content="&#xE700;"
                     Background="#FF006FBF"
                     Width="48" Height="48" Click="HamburgerButton_Click" />

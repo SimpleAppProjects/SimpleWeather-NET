@@ -814,7 +814,7 @@
                         <AdaptiveTrigger MinWindowWidth="0"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="CommandBar.Margin" Value="50,0,0,0"/>
+                        <Setter Target="CommandBar.Margin" Value="48,0,0,0"/>
                         <Setter Target="LeftButton.Visibility" Value="Collapsed"/>
                         <Setter Target="RightButton.Visibility" Value="Collapsed"/>
                         <Setter Target="ForecastHeader.Padding" Value="15,0,0,0"/>

@@ -398,7 +398,7 @@
                         <AdaptiveTrigger MinWindowWidth="0"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="CommandBar.Margin" Value="50,0,0,0"/>
+                        <Setter Target="CommandBar.Margin" Value="48,0,0,0"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Desktop">
