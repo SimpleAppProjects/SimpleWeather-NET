@@ -613,10 +613,14 @@ namespace SimpleWeather.UWP
             int newIndex = LocationPanels.IndexOf(panel);
             int oldIndex = data.FindIndex(location => location.query == panel.LocationData.query);
 
-            MoveData(panel, oldIndex, newIndex);
+            if (oldIndex != newIndex)
+                MoveData(panel, oldIndex, newIndex);
 
             // Make sure we're still in EditMode after
             if (!EditMode) ToggleEditMode();
+
+            if (oldIndex != newIndex)
+                DataChanged = true;
         }
 
         private void LocationPanel_Holding(object sender, HoldingRoutedEventArgs e)
