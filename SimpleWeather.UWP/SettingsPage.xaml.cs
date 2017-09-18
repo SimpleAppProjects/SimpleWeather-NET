@@ -231,7 +231,7 @@ namespace SimpleWeather.UWP
                 {
                     case GeolocationAccessStatus.Allowed:
                         // Reset home location data
-                        Settings.SaveHomeLocation(new WeatherData.LocationData());
+                        //Settings.SaveLastGPSLocData(new WeatherData.LocationData());
                         break;
                     case GeolocationAccessStatus.Denied:
                         error = new MessageDialog(App.ResLoader.GetString("Msg_LocDeniedSettings"), App.ResLoader.GetString("Label_ErrLocationDenied"));

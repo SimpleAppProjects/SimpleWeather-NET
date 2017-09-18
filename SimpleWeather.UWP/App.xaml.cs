@@ -78,8 +78,8 @@ namespace SimpleWeather.UWP
                 Window.Current.Activate();
             }
 
-            ResLoader = new ResourceLoader();
-            //await Task.Factory.StartNew(() => Settings.LoadIfNeeded());
+            if (ResLoader == null)
+                ResLoader = new ResourceLoader();
         }
 
         /// <summary>

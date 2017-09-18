@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
+using SimpleWeather.WeatherData;
 
 namespace SimpleWeather.Utils
 {
@@ -14,7 +15,11 @@ namespace SimpleWeather.Utils
         public static string API { get { return GetAPI(); } set { SetAPI(value); } }
         public static string API_KEY { get { return GetAPIKEY(); } set { SetAPIKEY(value); } }
         public static bool FollowGPS { get { return UseFollowGPS(); } set { SetFollowGPS(value); } }
-        private static string HomeLocation { get { return GetHomeLocation(); } set { SetHomeLocation(value); } }
+        private static string LastGPSLocation { get { return GetLastGPSLocation(); } set { SetLastGPSLocation(value); } }
+
+        // Data
+        public static List<LocationData> LocationData { get { return Task.Run(() => GetLocationData()).Result; } }
+        public static OrderedDictionary WeatherData { get { return Task.Run(() => GetWeatherData()).Result; } }
 
         // Units
         public const string Fahrenheit = "F";
@@ -27,15 +32,16 @@ namespace SimpleWeather.Utils
         private const string KEY_UNITS = "Units";
         private const string KEY_WEATHERLOADED = "weatherLoaded";
         private const string KEY_FOLLOWGPS = "key_followgps";
-        private const string KEY_HOMELOCATION = "key_homelocation";
+        private const string KEY_LASTGPSLOCATION = "key_lastgpslocation";
 
         // APIs
         public const string API_WUnderground = "WUnderground";
         public const string API_Yahoo = "Yahoo";
 
         // Weather Data
+        private static List<LocationData> locationData = new List<LocationData>();
         private static OrderedDictionary weatherData = new OrderedDictionary();
-        private static WeatherData.LocationData homeLocData = new WeatherData.LocationData();
+        private static LocationData lastGPSLocData = new LocationData();
         private static bool loaded = false;
 
         static Settings()
@@ -60,29 +66,54 @@ namespace SimpleWeather.Utils
                 return;
 
             weatherData = await JSONParser.DeserializerAsync<OrderedDictionary>(dataFile);
+            locationData = await JSONParser.DeserializerAsync<List<LocationData>>(locDataFile);
 
-            if (!String.IsNullOrWhiteSpace(HomeLocation))
+            if (!String.IsNullOrWhiteSpace(LastGPSLocation))
             {
-                homeLocData = await JSONParser.DeserializerAsync<WeatherData.LocationData>(HomeLocation);
+                lastGPSLocData = await JSONParser.DeserializerAsync<LocationData>(LastGPSLocation);
+            }
+
+            // Setup location data if N/A
+            if (locationData == null || locationData.Count == 0)
+            {
+                List<LocationData> data = new List<LocationData>();
+                List<string> weatherDataKeys = weatherData.Keys.Cast<string>().ToList();
+
+                foreach (string query in weatherDataKeys)
+                {
+                    LocationData loc = new LocationData(query)
+                    {
+                        longitude = double.Parse((weatherData[query] as Weather).location.longitude),
+                        latitude = double.Parse((weatherData[query] as Weather).location.latitude)
+                    };
+                    data.Add(loc);
+                }
+
+                locationData = data;
+                SaveLocationData();
             }
         }
 
-        public static async Task<List<string>> GetLocations()
+        private static async Task<List<LocationData>> GetLocationData()
         {
             await LoadIfNeeded();
-            return weatherData.Keys.Cast<string>().ToList();
+            return locationData;
         }
 
-        public static async Task<OrderedDictionary> GetWeatherData()
+        private static async Task<OrderedDictionary> GetWeatherData()
         {
             await LoadIfNeeded();
             return weatherData;
         }
 
-        public static async Task<WeatherData.LocationData> GetHomeLocationData()
+        public static async Task<LocationData> GetLastGPSLocData()
         {
             await LoadIfNeeded();
-            return homeLocData;
+
+            if (lastGPSLocData != null && lastGPSLocData.locationType != LocationType.GPS)
+                lastGPSLocData.locationType = LocationType.GPS;
+
+            return lastGPSLocData;
         }
 
         public static void SaveWeatherData()
@@ -90,15 +121,20 @@ namespace SimpleWeather.Utils
             JSONParser.Serializer(weatherData, dataFile);
         }
 
-        public static void SaveHomeLocation()
+        public static void SaveLocationData()
         {
-            HomeLocation = JSONParser.Serializer(homeLocData, typeof(WeatherData.LocationData));
+            JSONParser.Serializer(locationData, locDataFile);
         }
 
-        public static void SaveHomeLocation(WeatherData.LocationData data)
+        public static void SaveLastGPSLocData()
         {
-            homeLocData = data;
-            HomeLocation = JSONParser.Serializer(homeLocData, typeof(WeatherData.LocationData));
+            LastGPSLocation = JSONParser.Serializer(lastGPSLocData, typeof(LocationData));
+        }
+
+        public static void SaveLastGPSLocData(LocationData data)
+        {
+            lastGPSLocData = data;
+            LastGPSLocation = JSONParser.Serializer(lastGPSLocData, typeof(LocationData));
         }
     }
 }

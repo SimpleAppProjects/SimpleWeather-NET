@@ -67,14 +67,6 @@
         </LinearLayout>
     </android.support.v7.widget.GridLayout>
 
-    <ImageButton
-        android:id="@+id/home_button"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:padding="2dp"
-        android:layout_gravity="bottom|end"
-        android:src="@drawable/ic_home_nofill_white_24dp"
-        android:background="@null" />
     <ProgressBar
         android:id="@+id/progressBar"
         style="@android:style/Widget.Material.Light.ProgressBar"

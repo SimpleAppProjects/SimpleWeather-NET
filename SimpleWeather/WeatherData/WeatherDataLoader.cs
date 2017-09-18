@@ -27,23 +27,20 @@ namespace SimpleWeather.WeatherData
         private IWeatherLoadedListener callback;
         private IWeatherErrorListener errorCallback;
 
-        private string location_query = null;
+        private LocationData location = null;
         private Weather weather = null;
-        private int locationIdx = 0;
 
-        public WeatherDataLoader(IWeatherLoadedListener listener, string query, int idx)
+        public WeatherDataLoader(IWeatherLoadedListener listener, LocationData location)
         {
             callback = listener;
-            location_query = query;
-            locationIdx = idx;
+            this.location = location;
         }
 
-        public WeatherDataLoader(IWeatherLoadedListener listener, IWeatherErrorListener errorListener, string query, int idx)
+        public WeatherDataLoader(IWeatherLoadedListener listener, IWeatherErrorListener errorListener, LocationData location)
         {
             callback = listener;
             errorCallback = errorListener;
-            location_query = query;
-            locationIdx = idx;
+            this.location = location;
         }
 
         public void SetWeatherLoadedListener(IWeatherLoadedListener listener)
@@ -65,9 +62,9 @@ namespace SimpleWeather.WeatherData
             {
                 queryAPI = "http://api.wunderground.com/api/" + Settings.API_KEY + "/astronomy/conditions/forecast10day/hourly";
                 string options = ".json";
-                weatherURL = new Uri(queryAPI + location_query + options);
+                weatherURL = new Uri(queryAPI + location.query + options);
             }
-            else if (Settings.API == Settings.API_Yahoo && int.TryParse(location_query, out int woeid))
+            else if (Settings.API == Settings.API_Yahoo && int.TryParse(location.query, out int woeid))
             {
                 queryAPI = "https://query.yahooapis.com/v1/public/yql?q=";
                 string query = "select * from weather.forecast where woeid=\""
@@ -78,7 +75,7 @@ namespace SimpleWeather.WeatherData
             {
                 queryAPI = "https://query.yahooapis.com/v1/public/yql?q=";
                 string query = "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text=\""
-                    + location_query + "\") and u='F'&format=json";
+                    + location.query + "\") and u='F'&format=json";
                 weatherURL = new Uri(queryAPI + query);
             }
 
@@ -156,11 +153,11 @@ namespace SimpleWeather.WeatherData
             // Load old data if available and we can't get new data
             if (weather == null)
             {
-                loadedSavedData = await LoadSavedWeatherData(true);
+                loadedSavedData = LoadSavedWeatherData(true);
             }
             else if (weather != null)
             {
-                await SaveWeatherData();
+                SaveWeatherData();
             }
 
             // End Stream
@@ -197,7 +194,7 @@ namespace SimpleWeather.WeatherData
             else
                 await LoadWeatherData();
 
-            callback?.OnWeatherLoaded(locationIdx, weather);
+            callback?.OnWeatherLoaded(location, weather);
         }
 
         private async Task LoadWeatherData()
@@ -207,7 +204,7 @@ namespace SimpleWeather.WeatherData
              * Refresh weather data
             */
 
-            bool gotData = await LoadSavedWeatherData();
+            bool gotData = LoadSavedWeatherData();
 
             if (!gotData)
             {
@@ -233,22 +230,22 @@ namespace SimpleWeather.WeatherData
             if (String.IsNullOrEmpty(qview.LocationQuery))
             {
                 if (Settings.API == Settings.API_WUnderground)
-                    location_query = string.Format("/q/{0}", coord);
+                    location.query = string.Format("/q/{0}", coord);
                 else if (Settings.API == Settings.API_Yahoo)
-                    location_query = string.Format("({0})", coord);
+                    location.query = string.Format("({0})", coord);
             }
             else
-                location_query = qview.LocationQuery;
+                location.query = qview.LocationQuery;
         }
 
-        private async Task<bool> LoadSavedWeatherData(bool _override)
+        private bool LoadSavedWeatherData(bool _override)
         {
             if (_override)
             {
                 // Load weather data
                 try
                 {
-                    weather = (await Settings.GetWeatherData())[locationIdx] as Weather;
+                    weather = Settings.WeatherData[location.query] as Weather;
                 }
                 catch (Exception ex)
                 {
@@ -256,21 +253,21 @@ namespace SimpleWeather.WeatherData
                     System.Diagnostics.Debug.WriteLine(ex.StackTrace);
                 }
 
-                if (weather == null || weather.query != location_query || weather.source != Settings.API)
+                if (weather == null || weather.source != Settings.API)
                     return false;
 
                 return true;
             }
             else
-                return await LoadSavedWeatherData();
+                return LoadSavedWeatherData();
         }
 
-        private async Task<bool> LoadSavedWeatherData()
+        private bool LoadSavedWeatherData()
         {
             // Load weather data
             try
             {
-                weather = (await Settings.GetWeatherData())[locationIdx] as Weather;
+                weather = Settings.WeatherData[location.query] as Weather;
             }
             catch (Exception ex)
             {
@@ -278,7 +275,7 @@ namespace SimpleWeather.WeatherData
                 System.Diagnostics.Debug.WriteLine(ex.StackTrace);
             }
 
-            if (weather == null || weather.query != location_query || weather.source != Settings.API)
+            if (weather == null || weather.source != Settings.API)
                 return false;
 
             // Weather data expiration
@@ -294,25 +291,12 @@ namespace SimpleWeather.WeatherData
                 return false;
         }
 
-        private async Task SaveWeatherData()
+        private void SaveWeatherData()
         {
             // Save location query
-            weather.query = location_query;
+            weather.query = location.query;
 
-            OrderedDictionary weatherData = await Settings.GetWeatherData();
-            if (locationIdx > weatherData.Count - 1)
-                weatherData.Insert(locationIdx, location_query, weather);
-            else
-            {
-                if (weatherData.Keys.Cast<string>().ElementAt(locationIdx) != location_query)
-                {
-                    // Update key if it differs
-                    weatherData.RemoveAt(locationIdx);
-                    weatherData.Insert(locationIdx, location_query, weather);
-                }
-                else
-                    weatherData[locationIdx] = weather;
-            }
+            Settings.WeatherData[location.query] = weather;
             Settings.SaveWeatherData();
         }
 

@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     d:DesignHeight="100"
     d:DesignWidth="400"
-    Tag="{Binding Pair}">
+    Tag="{Binding LocationData}">
 
     <Grid Background="{Binding Background, FallbackValue='#FF006FBF'}"
           Height="100" BorderBrush="White"

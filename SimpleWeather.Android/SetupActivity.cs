@@ -1,5 +1,6 @@
 ﻿using SimpleWeather.Utils;
 using System;
+using System.Linq;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
@@ -193,12 +194,13 @@ namespace SimpleWeather.Droid
                     return;
                 }
 
-                Pair<int, string> pair;
-
                 // Get Weather Data
-                OrderedDictionary weatherData = await Settings.GetWeatherData();
+                var locData = Settings.LocationData;
+                var weatherData = Settings.WeatherData;
 
-                WeatherData.Weather weather = await WeatherData.WeatherLoaderTask.GetWeather(selected_query);
+                WeatherData.Weather weather = weatherData[selected_query] as WeatherData.Weather;
+                if (weather == null)
+                    weather = await WeatherData.WeatherLoaderTask.GetWeather(selected_query);
 
                 if (weather == null)
                 {
@@ -208,17 +210,17 @@ namespace SimpleWeather.Droid
                 }
 
                 // Save weather data
-                if (weatherData.Contains(selected_query))
-                    weatherData[selected_query] = weather;
-                else
-                    weatherData.Add(selected_query, weather);
+                var location = new WeatherData.LocationData(selected_query, mLocation);
+                locData.Clear();
+                locData.Add(new WeatherData.LocationData(selected_query));
+                weatherData[selected_query] = weather;
+                Settings.SaveLastGPSLocData(location);
+                Settings.SaveLocationData();
                 Settings.SaveWeatherData();
-
-                pair = new Pair<int, string>(App.HomeIdx, selected_query);
 
                 // Start WeatherNow Activity with weather data
                 Intent intent = new Intent(this, typeof(MainActivity));
-                intent.PutExtra("pair", await JSONParser.SerializerAsync(pair, typeof(Pair<int, string>)));
+                intent.PutExtra("data", await JSONParser.SerializerAsync(location, typeof(WeatherData.LocationData)));
 
                 Settings.FollowGPS = true;
                 Settings.WeatherLoaded = true;
@@ -381,6 +383,10 @@ namespace SimpleWeather.Droid
                 {
                     clearButtonView.Visibility = String.IsNullOrEmpty(e.Text.ToString()) ? ViewStates.Gone : ViewStates.Visible;
                     mSearchFragment.FetchLocations(e.Text.ToString());
+
+                    // If we're using searchfragment
+                    // make sure gps feature is off
+                    Settings.FollowGPS = false;
                 }
             };
             clearButtonView.Visibility = ViewStates.Gone;
@@ -402,6 +408,10 @@ namespace SimpleWeather.Droid
                     {
                         mSearchFragment.FetchLocations(v.Text);
                         HideInputMethod(v);
+
+                        // If we're using searchfragment
+                        // make sure gps feature is off
+                        Settings.FollowGPS = false;
                     }
                     e.Handled = true;
                 }

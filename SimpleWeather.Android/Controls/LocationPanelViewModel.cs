@@ -11,11 +11,10 @@ namespace SimpleWeather.Droid.Controls
         public string LocationName { get; set; }
         public string CurrTemp { get; set; }
         public string WeatherIcon { get; set; }
-        public Pair<int, string> Pair { get; set; }
         public string Background { get; set; }
+        public LocationData LocationData { get; set; }
         public string WeatherSource { get; set; }
 
-        public bool IsHome { get; set; } = false;
         public bool EditMode { get; set; } = false;
 
         public LocationPanelViewModel()
@@ -38,8 +37,8 @@ namespace SimpleWeather.Droid.Controls
             WeatherIcon = WeatherUtils.GetWeatherIcon(weather.condition.icon);
             WeatherSource = weather.source;
 
-            if (!String.IsNullOrWhiteSpace(weather.query) && Pair != null)
-                Pair = new Pair<int, string>(Pair.Key, weather.query);
+            if (LocationData == null)
+                LocationData = new LocationData(weather.query);
         }
     }
 }

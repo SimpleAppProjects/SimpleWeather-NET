@@ -33,7 +33,7 @@ namespace SimpleWeather.Droid
     public class WeatherNowFragment : Fragment, IWeatherLoadedListener, IWeatherErrorListener
     {
         private Context context;
-        private Pair<int, string> pair;
+        private LocationData location = null;
         private bool loaded = false;
         private int BGAlpha = 255;
 
@@ -88,10 +88,7 @@ namespace SimpleWeather.Droid
         private LocationListener mLocListnr;
         private const int PERMISSION_LOCATION_REQUEST_CODE = 0;
 
-        private String fahrenheit = App.Context.GetString(Resource.String.wi_fahrenheit);
-        private String celsius = App.Context.GetString(Resource.String.wi_celsius);
-
-        public void OnWeatherLoaded(int locationIdx, Weather weather)
+        public void OnWeatherLoaded(LocationData location, Weather weather)
         {
             if (weather != null)
             {
@@ -137,13 +134,13 @@ namespace SimpleWeather.Droid
          * @param index Location index.
          * @return A new instance of fragment WeatherNowFragment.
          */
-        public static WeatherNowFragment NewInstance(Pair<int, string> pair)
+        public static WeatherNowFragment NewInstance(LocationData data)
         {
             WeatherNowFragment fragment = new WeatherNowFragment();
-            if (pair != null)
+            if (data != null)
             {
                 Bundle args = new Bundle();
-                args.PutString("pair", Task.Run(() => JSONParser.Serializer(pair, typeof(Pair<int, string>))).Result);
+                args.PutString("data", Task.Run(() => JSONParser.Serializer(data, typeof(LocationData))).Result);
                 fragment.Arguments = args;
             }
             return fragment;
@@ -166,10 +163,10 @@ namespace SimpleWeather.Droid
             // Create your fragment here
             if (Arguments != null)
             {
-                pair = Task.Run(() => JSONParser.DeserializerAsync<Pair<int, string>>(Arguments.GetString("pair"))).Result;
+                location = Task.Run(() => JSONParser.DeserializerAsync<LocationData>(Arguments.GetString("data"))).Result;
 
-                if (pair != null && wLoader == null)
-                    wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
+                if (location != null && wLoader == null)
+                    wLoader = new WeatherDataLoader(this, this, location);
             }
 
             if (savedInstanceState != null)
@@ -182,8 +179,12 @@ namespace SimpleWeather.Droid
             mLocListnr.LocationChanged += async (Android.Locations.Location location) =>
             {
                 if (Settings.FollowGPS && await UpdateLocation())
+                {
                     // Setup loader from updated location
-                    wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
+                    wLoader = new WeatherDataLoader(this, this, this.location);
+
+                    await RefreshWeather(false);
+                }
             };
             loaded = true;
         }
@@ -246,7 +247,7 @@ namespace SimpleWeather.Droid
                 {
                     if (Settings.FollowGPS && await UpdateLocation())
                         // Setup loader from updated location
-                        wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
+                        wLoader = new WeatherDataLoader(this, this, this.location);
 
                     await RefreshWeather(true);
                 });
@@ -340,22 +341,29 @@ namespace SimpleWeather.Droid
              * ex. If temperature unit changed
              */
 
-            // Did home change?
-            var homeData = await Settings.GetHomeLocationData();
-            bool homeChanged = false;
+            LocationData homeData = null;
 
-            if (pair != null && pair.Key == App.HomeIdx)
+            if (Settings.FollowGPS)
+                homeData = await Settings.GetLastGPSLocData();
+            else
+                homeData = Settings.LocationData.First();
+
+            // Did home change?
+            bool homeChanged = false;
+            if (location != null && FragmentManager.BackStackEntryCount == 0)
             {
-                if ((pair.Value != null && pair.Value != homeData.query))
+                if (location.query != homeData.query ||
+                    Settings.FollowGPS && location.locationType != LocationType.GPS)
                 {
-                    homeChanged = true;
+                    location = homeData;
                     wLoader = null;
+                    homeChanged = true;
                 }
             }
 
             // New Page = loaded - true
             // Navigating back to frag = !loaded - false
-            if (loaded || homeChanged)
+            if (loaded || homeChanged || wLoader == null)
             {
                 await Restore();
                 loaded = true;
@@ -370,9 +378,30 @@ namespace SimpleWeather.Droid
                 }
                 else if (wLoader.GetWeather() != null)
                 {
-                    weatherView.UpdateView(wLoader.GetWeather());
-                    SetView(weatherView);
-                    loaded = true;
+                    Weather weather = wLoader.GetWeather();
+
+                    // Update weather if needed on resume
+                    if (Settings.FollowGPS && await UpdateLocation())
+                    {
+                        // Setup loader from updated location
+                        wLoader = new WeatherDataLoader(this, this, this.location);
+                        await RefreshWeather(false);
+                        loaded = true;
+                    }
+                    else
+                    {
+                        // Check weather data expiration
+                        int ttl = int.Parse(weather.ttl);
+                        TimeSpan span = DateTime.Now - weather.update_time;
+                        if (span.TotalMinutes > ttl)
+                            await RefreshWeather(false);
+                        else
+                        {
+                            weatherView.UpdateView(wLoader.GetWeather());
+                            SetView(weatherView);
+                            loaded = true;
+                        }
+                    }
                 }
             }
         }
@@ -420,56 +449,45 @@ namespace SimpleWeather.Droid
 
         private async Task Restore()
         {
-            LocationData homeData = await Settings.GetHomeLocationData();
             bool forceRefresh = false;
 
             // GPS Follow location
-            if (Settings.FollowGPS && (pair == null || pair.Key == App.HomeIdx))
+            if (Settings.FollowGPS && (location == null || location.locationType == LocationType.GPS))
             {
-                if (homeData == null)
+                LocationData locData = await Settings.GetLastGPSLocData();
+
+                if (locData == null)
                 {
                     // Update location if not setup
                     await UpdateLocation();
-                    wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
+                    wLoader = new WeatherDataLoader(this, this, location);
                     forceRefresh = true;
                 }
                 else
                 {
                     // Reset locdata if source is different
-                    if (homeData.source != Settings.API)
-                        Settings.SaveHomeLocation(new LocationData());
+                    if (locData.source != Settings.API)
+                        Settings.SaveLastGPSLocData(new LocationData());
 
                     if (await UpdateLocation())
                     {
                         // Setup loader from updated location
-                        wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
+                        wLoader = new WeatherDataLoader(this, this, location);
                         forceRefresh = true;
                     }
                     else
                     {
                         // Setup loader saved location data
-                        pair = new Pair<int, string>(App.HomeIdx, homeData.query);
-                        wLoader = new WeatherDataLoader(this, this, homeData.query, App.HomeIdx);
+                        location = locData;
+                        wLoader = new WeatherDataLoader(this, this, location);
                     }
                 }
             }
             else if (wLoader == null)
             {
                 // Weather was loaded before. Lets load it up...
-                if (homeData.query == null)
-                {
-                    List<string> locations = await Settings.GetLocations();
-                    string local = locations[App.HomeIdx];
-                    Settings.SaveHomeLocation(new LocationData(local));
-
-                    pair = new Pair<int, string>(App.HomeIdx, local);
-                    wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
-                }
-                else
-                {
-                    pair = new Pair<int, string>(App.HomeIdx, homeData.query);
-                    wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
-                }
+                location = Settings.LocationData.First();
+                wLoader = new WeatherDataLoader(this, this, location);
             }
 
             // Load up weather data
@@ -619,7 +637,7 @@ namespace SimpleWeather.Droid
         {
             bool locationChanged = false;
 
-            if (Settings.FollowGPS && (pair == null || pair.Key == App.HomeIdx))
+            if (Settings.FollowGPS && (location == null || location.locationType == LocationType.GPS))
             {
                 if (Activity != null && ContextCompat.CheckSelfPermission(Activity, Manifest.Permission.AccessFineLocation) != Permission.Granted &&
                     ContextCompat.CheckSelfPermission(Activity, Manifest.Permission.AccessCoarseLocation) != Permission.Granted)
@@ -645,11 +663,11 @@ namespace SimpleWeather.Droid
                         locMan.RequestSingleUpdate(provider, mLocListnr, null);
                     else
                     {
-                        LocationData lastGPSLocData = await Settings.GetHomeLocationData();
+                        LocationData lastGPSLocData = await Settings.GetLastGPSLocData();
 
                         // Check previous location difference
                         if (lastGPSLocData.query != null &&
-                            mLocation != null && CalculateGeopositionDistance(mLocation, location) < 2500)
+                            mLocation != null && ConversionMethods.CalculateGeopositionDistance(mLocation, location) < 2500)
                         {
                             return false;
                         }
@@ -681,9 +699,9 @@ namespace SimpleWeather.Droid
 
                         // Save location as last known
                         lastGPSLocData.SetData(selected_query, location);
-                        Settings.SaveHomeLocation();
+                        Settings.SaveLastGPSLocData();
 
-                        pair = new Pair<int, string>(App.HomeIdx, selected_query);
+                        this.location = lastGPSLocData;
                         mLocation = location;
                         locationChanged = true;
                     }
@@ -723,17 +741,6 @@ namespace SimpleWeather.Droid
                         return;
                     }
             }
-        }
-
-        private double CalculateGeopositionDistance(Android.Locations.Location position1, Android.Locations.Location position2)
-        {
-            double lat1 = position1.Latitude;
-            double lon1 = position1.Longitude;
-            double lat2 = position2.Latitude;
-            double lon2 = position2.Longitude;
-
-            /* Returns value in meters */
-            return Math.Abs(ConversionMethods.CalculateHaversine(lat1, lon1, lat2, lon2));
         }
     }
 }

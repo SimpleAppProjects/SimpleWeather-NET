@@ -24,6 +24,11 @@ using Android.Support.V4.Content;
 using Android.Graphics.Drawables;
 using Android.Graphics;
 using Com.Bumptech.Glide;
+using Android;
+using Android.Content.PM;
+using Android.Runtime;
+using Android.Locations;
+using SimpleWeather.Controls;
 
 namespace SimpleWeather.Droid
 {
@@ -57,6 +62,8 @@ namespace SimpleWeather.Droid
         View gpsPanelLayout;
         LocationPanel gpsPanel;
         LocationPanelViewModel gpsPanelViewModel;
+        private LocationListener mLocListnr;
+        private const int PERMISSION_LOCATION_REQUEST_CODE = 0;
 
         private ActionModeCallback mActionModeCallback = new ActionModeCallback();
 
@@ -70,11 +77,11 @@ namespace SimpleWeather.Droid
             mActionModeCallback.DestroyActionMode += OnDestroyActionMode;
         }
 
-        public void OnWeatherLoaded(int locationIdx, Weather weather)
+        public void OnWeatherLoaded(LocationData location, Weather weather)
         {
             if (weather != null)
             {
-                if (locationIdx == App.HomeIdx && Settings.FollowGPS)
+                if (Settings.FollowGPS && location.locationType == LocationType.GPS)
                 {
                     gpsPanelViewModel.SetWeather(weather);
                     Activity.RunOnUiThread(() => 
@@ -86,10 +93,9 @@ namespace SimpleWeather.Droid
                 else
                 {
                     // Update panel weather
-                    int index = Settings.FollowGPS ? locationIdx - 1 : locationIdx;
-                    LocationPanelViewModel panel = mAdapter.Dataset[index];
+                    LocationPanelViewModel panel = mAdapter.Dataset.Find(panelVM => panelVM.LocationData.query == location.query);
                     panel.SetWeather(weather);
-                    Activity.RunOnUiThread(() => mAdapter.NotifyItemChanged(index));
+                    Activity.RunOnUiThread(() => mAdapter.NotifyItemChanged(mAdapter.Dataset.IndexOf(panel)));
                 }
             }
         }
@@ -150,29 +156,25 @@ namespace SimpleWeather.Droid
             if (view == null && e != null)
                 view = (e as RecyclerClickEventArgs).View;
 
-            if (view.Enabled)
+            if (view != null && view.Enabled)
             {
-                LocationPanel v = (LocationPanel)view;
-                Pair<int, string> pair = (Pair<int, string>)view.Tag;
+                var locData = (LocationData)view.Tag;
 
-                Fragment fragment = WeatherNowFragment.NewInstance(pair);
-                // Navigate to WeatherNowFragment
-                if (pair.Key == App.HomeIdx)
+                if (locData.locationType == LocationType.GPS ||
+                    !Settings.FollowGPS && locData.query == Settings.LocationData.First().query)
                 {
-                    AppCompatActivity.SupportFragmentManager.BeginTransaction()
-                        .Replace(Resource.Id.fragment_container, fragment, "home")
-                        .Commit();
-
                     // Pop all since we're going home
                     AppCompatActivity.SupportFragmentManager.PopBackStack(null, (int)Android.App.PopBackStackFlags.Inclusive);
                 }
                 else
                 {
+                    // Navigate to WeatherNowFragment
+                    Fragment fragment = WeatherNowFragment.NewInstance(locData);
                     AppCompatActivity.SupportFragmentManager.BeginTransaction()
-                        .Add(Resource.Id.fragment_container, fragment, null)
-                        .Hide(this)
-                        .AddToBackStack(null)
-                        .Commit();
+                            .Add(Resource.Id.fragment_container, fragment, null)
+                            .Hide(this)
+                            .AddToBackStack(null)
+                            .Commit();
                 }
             }
         }
@@ -196,6 +198,8 @@ namespace SimpleWeather.Droid
 
             int max = Enum.GetValues(typeof(WeatherUtils.ErrorStatus)).Cast<int>().Max();
             ErrorCounter = new bool[max];
+
+            mLocListnr = new LocationListener();
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -268,7 +272,7 @@ namespace SimpleWeather.Droid
             menu.Clear();
             inflater.Inflate(Resource.Menu.locations, menu);
 
-            bool onlyHomeIsLeft = (!Settings.FollowGPS && mAdapter.ItemCount == 1 || Settings.FollowGPS && mAdapter.ItemCount == 0);
+            bool onlyHomeIsLeft = (mAdapter.ItemCount == 1);
             IMenuItem editMenuBtn = optionsMenu.FindItem(Resource.Id.action_editmode);
             if (editMenuBtn != null)
                 editMenuBtn.SetVisible(!onlyHomeIsLeft);
@@ -309,8 +313,7 @@ namespace SimpleWeather.Droid
                 gpsPanelLayout.Visibility = ViewStates.Gone;
             }
 
-            if (!Settings.FollowGPS && mAdapter.ItemCount == 0 ||
-                Settings.FollowGPS && gpsPanelViewModel == null)
+            if (mAdapter.ItemCount == 0 || Settings.FollowGPS && gpsPanelViewModel == null)
             {
                 // New instance; Get locations and load up weather data
                 await LoadLocations();
@@ -376,46 +379,66 @@ namespace SimpleWeather.Droid
         private async Task LoadLocations()
         {
             // Load up saved locations
-            List<String> locations = await Settings.GetLocations();
+            var locations = Settings.LocationData;
             mAdapter.RemoveAll();
 
-            foreach (String location in locations)
+            // Setup saved favorite locations
+            await LoadGPSPanel();
+            foreach (LocationData location in locations)
             {
                 int index = locations.IndexOf(location);
 
                 LocationPanelViewModel panel = new LocationPanelViewModel()
                 {
-                    Pair = new Pair<int, string>(index, location)
+                    LocationData = location
                 };
 
-                // Set home
-                if (index == App.HomeIdx && !Settings.FollowGPS)
-                    panel.IsHome = true;
-                else
-                    panel.IsHome = false;
-
-                if (index == App.HomeIdx && Settings.FollowGPS)
-                {
-                    panel.IsHome = true;
-                    gpsPanelViewModel = panel;
-                }
-                else
-                    mAdapter.Add(Settings.FollowGPS ? index - 1 : index, panel);
+                mAdapter.Add(index, panel);
 
                 await Task.Run(async () =>
                 {
-                    var wLoader = new WeatherDataLoader(this, this, location, index);
+                    var wLoader = new WeatherDataLoader(this, this, location);
                     await wLoader.LoadWeatherData(false);
                 });
+            }
+        }
+
+        private async Task LoadGPSPanel()
+        {
+            // Setup gps panel
+            if (Settings.FollowGPS)
+            {
+                gpsPanelLayout.Visibility = ViewStates.Visible;
+                var locData = await Settings.GetLastGPSLocData();
+
+                if (locData == null || locData.query == null)
+                {
+                    locData = await UpdateLocation();
+                }
+
+                if (locData != null && locData.query != null)
+                {
+                    LocationPanelViewModel panel = new LocationPanelViewModel()
+                    {
+                        LocationData = locData
+                    };
+                    gpsPanelViewModel = panel;
+
+                    await Task.Run(async () =>
+                    {
+                        var wLoader = new WeatherDataLoader(this, this, locData);
+                        await wLoader.LoadWeatherData(false);
+                    });
+                }
             }
         }
 
         private async Task RefreshLocations()
         {
             // Reload all panels if needed
-            List<string> locations = await Settings.GetLocations();
-            bool reload = !Settings.FollowGPS && locations.Count != mAdapter.ItemCount ||
-                Settings.FollowGPS && (gpsPanelViewModel == null || locations.Count - 1 != mAdapter.ItemCount);
+            var locations = Settings.LocationData;
+            var homeData = await Settings.GetLastGPSLocData();
+            bool reload = (locations.Count != mAdapter.ItemCount || Settings.FollowGPS && gpsPanelViewModel == null);
 
             // Reload if weather source differs
             if ((gpsPanelViewModel != null && gpsPanelViewModel.WeatherSource != Settings.API) ||
@@ -423,7 +446,7 @@ namespace SimpleWeather.Droid
                 reload = true;
 
             // Reload if panel queries dont match
-            if (!reload && (gpsPanelViewModel != null && locations[App.HomeIdx] != gpsPanelViewModel.Pair.Value))
+            if (!reload && (gpsPanelViewModel != null && homeData.query != gpsPanelViewModel.LocationData.query))
                 reload = true;
 
             if (reload)
@@ -442,10 +465,114 @@ namespace SimpleWeather.Droid
                     await Task.Run(async () =>
                     {
                         var wLoader =
-                            new WeatherDataLoader(this, this, view.Pair.Value, view.Pair.Key);
+                            new WeatherDataLoader(this, this, view.LocationData);
                         await wLoader.LoadWeatherData(false);
                     });
                 }
+            }
+        }
+
+        private async Task<LocationData> UpdateLocation()
+        {
+            LocationData locationData = null;
+
+            if (Settings.FollowGPS)
+            {
+                if (Activity != null && ContextCompat.CheckSelfPermission(Activity, Manifest.Permission.AccessFineLocation) != Permission.Granted &&
+                    ContextCompat.CheckSelfPermission(Activity, Manifest.Permission.AccessCoarseLocation) != Permission.Granted)
+                {
+                    RequestPermissions(new String[] { Manifest.Permission.AccessCoarseLocation, Manifest.Permission.AccessFineLocation },
+                            PERMISSION_LOCATION_REQUEST_CODE);
+                    return null;
+                }
+
+                LocationManager locMan = (LocationManager)Activity.GetSystemService(Context.LocationService);
+                bool isGPSEnabled = locMan.IsProviderEnabled(LocationManager.GpsProvider);
+                bool isNetEnabled = locMan.IsProviderEnabled(LocationManager.NetworkProvider);
+
+                Android.Locations.Location location = null;
+
+                if (isGPSEnabled || isNetEnabled)
+                {
+                    Criteria locCriteria = new Criteria() { Accuracy = Accuracy.Coarse, CostAllowed = false, PowerRequirement = Power.Low };
+                    string provider = locMan.GetBestProvider(locCriteria, true);
+                    location = locMan.GetLastKnownLocation(provider);
+
+                    if (location == null)
+                        locMan.RequestSingleUpdate(provider, mLocListnr, null);
+                    else
+                    {
+                        string selected_query = string.Empty;
+
+                        await Task.Run(async () =>
+                        {
+                            LocationQueryViewModel view = await GeopositionQuery.GetLocation(location);
+
+                            if (!String.IsNullOrEmpty(view.LocationQuery))
+                                selected_query = view.LocationQuery;
+                            else
+                                selected_query = string.Empty;
+                        });
+
+                        if (String.IsNullOrWhiteSpace(selected_query))
+                        {
+                            // Stop since there is no valid query
+                            gpsPanelViewModel = null;
+                            gpsPanelLayout.Visibility = ViewStates.Gone;
+                            return null;
+                        }
+
+                        // Save location as last known
+                        locationData = new LocationData(selected_query, location);
+                    }
+                }
+                else
+                {
+                    Toast.MakeText(Activity, Resource.String.error_retrieve_location, ToastLength.Short).Show();
+                    gpsPanelViewModel = null;
+                    gpsPanelLayout.Visibility = ViewStates.Gone;
+                }
+            }
+
+            return locationData;
+        }
+
+        public override async void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
+        {
+            switch (requestCode)
+            {
+                case PERMISSION_LOCATION_REQUEST_CODE:
+                    {
+                        // If request is cancelled, the result arrays are empty.
+                        if (grantResults.Length > 0
+                                && grantResults[0] == Permission.Granted)
+                        {
+
+                            // permission was granted, yay!
+                            // Do the task you need to do.
+                            var locData = await UpdateLocation();
+                            if (locData != null)
+                            {
+                                Settings.SaveLastGPSLocData(locData);
+                                await LoadGPSPanel();
+                            }
+                            else
+                            {
+                                gpsPanelViewModel = null;
+                                gpsPanelLayout.Visibility = ViewStates.Gone;
+                            }
+                        }
+                        else
+                        {
+                            // permission denied, boo! Disable the
+                            // functionality that depends on this permission.
+                            Settings.FollowGPS = false;
+                            gpsPanelViewModel = null;
+                            gpsPanelLayout.Visibility = ViewStates.Gone;
+                            Toast.MakeText(Activity, Resource.String.error_location_denied, ToastLength.Short).Show();
+                        }
+                        return;
+                    }
             }
         }
 
@@ -514,12 +641,13 @@ namespace SimpleWeather.Droid
                 LoadingDialog progDialog = new LoadingDialog(Activity);
                 progDialog.Show();
 
-                OrderedDictionary weatherData = await Settings.GetWeatherData();
+                var locData = Settings.LocationData;
+                var weatherData = Settings.WeatherData;
 
-                index = weatherData.Keys.Count;
+                index = locData.Count;
 
                 // Check if location already exists
-                if (weatherData.Contains(selected_query))
+                if (locData.Exists(l => l.query == selected_query))
                 {
                     // Hide dialog
                     progDialog.Dismiss();
@@ -527,9 +655,9 @@ namespace SimpleWeather.Droid
                     return;
                 }
 
-                Weather weather = null;
-
-                weather = await WeatherLoaderTask.GetWeather(selected_query);
+                Weather weather = weatherData[selected_query] as Weather;
+                if (weather == null)
+                    weather = await WeatherLoaderTask.GetWeather(selected_query);
 
                 if (weather == null)
                 {
@@ -539,21 +667,24 @@ namespace SimpleWeather.Droid
                 }
 
                 // Save coords to List
-                weatherData.Add(selected_query, weather);
+                var location = new LocationData(selected_query);
+                locData.Add(location);
+                weatherData[selected_query] = weather;
 
                 // Save data
+                Settings.SaveLocationData();
                 Settings.SaveWeatherData();
 
                 LocationPanelViewModel panel = new LocationPanelViewModel(weather)
                 {
-                    Pair = new Pair<int, string>(index, selected_query)
+                    LocationData = location
                 };
 
                 // Set properties if necessary
                 if (EditMode)
                     panel.EditMode = true;
 
-                mAdapter.Add(Settings.FollowGPS ? index - 1 : index, panel);
+                mAdapter.Add(index, panel);
 
                 // Hide dialog
                 progDialog.Dismiss();
@@ -646,22 +777,7 @@ namespace SimpleWeather.Droid
         private void LocationPanels_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             bool dataMoved = (e.Action == NotifyCollectionChangedAction.Remove || e.Action == NotifyCollectionChangedAction.Move);
-            bool onlyHomeIsLeft = (!Settings.FollowGPS && mAdapter.ItemCount == 1 || Settings.FollowGPS && mAdapter.ItemCount == 0);
-
-            foreach (LocationPanelViewModel panelView in mAdapter.Dataset)
-            {
-                int index = mAdapter.Dataset.IndexOf(panelView);
-
-                if (Settings.FollowGPS) index++;
-
-                panelView.Pair = new Pair<int, string>(index, panelView.Pair.Value);
-            }
-
-            // Reset home location since it changed
-            if (!Settings.FollowGPS && dataMoved && (e.OldStartingIndex == App.HomeIdx || e.NewStartingIndex == App.HomeIdx))
-            {
-                Settings.SaveHomeLocation(new LocationData(mAdapter.GetPanelViewModel(0).Pair.Value));
-            }
+            bool onlyHomeIsLeft = (mAdapter.ItemCount == 1);
 
             // Flag that data has changed
             if (EditMode && dataMoved)
@@ -719,7 +835,7 @@ namespace SimpleWeather.Droid
                 mAdapter.NotifyItemChanged(mAdapter.Dataset.IndexOf(view));
             }
 
-            if (!EditMode && DataChanged) Settings.SaveWeatherData();
+            if (!EditMode && DataChanged) Settings.SaveLocationData();
             DataChanged = false;
         }
     }

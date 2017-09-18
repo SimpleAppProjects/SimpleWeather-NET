@@ -5,6 +5,8 @@ using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.Devices.Geolocation;
@@ -27,13 +29,13 @@ namespace SimpleWeather.UWP
         WeatherDataLoader wLoader = null;
         WeatherNowViewModel WeatherView { get; set; }
 
-        KeyValuePair<int, string> pair;
+        LocationData location = null;
         double BGAlpha = 1.0;
 
         Geolocator geolocal = null;
         Geoposition geoPos = null;
 
-        public void OnWeatherLoaded(int locationIdx, Weather weather)
+        public void OnWeatherLoaded(LocationData location, Weather weather)
         {
             // Save index before update
             int index = TextForecastControl.SelectedIndex;
@@ -106,6 +108,7 @@ namespace SimpleWeather.UWP
         {
             this.InitializeComponent();
             NavigationCacheMode = NavigationCacheMode.Enabled;
+            Application.Current.Resuming += WeatherNow_Resuming;
 
             WeatherView = new WeatherNowViewModel();
             StackControl.SizeChanged += StackControl_SizeChanged;
@@ -122,6 +125,11 @@ namespace SimpleWeather.UWP
             PrecipitationPanel.Visibility = Visibility.Collapsed;
 
             geolocal = new Geolocator() { DesiredAccuracyInMeters = 5000, ReportInterval = 900000, MovementThreshold = 2500 };
+        }
+
+        private async void WeatherNow_Resuming(object sender, object e)
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => { await Resume(); });
         }
 
         private void MainViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
@@ -180,7 +188,7 @@ namespace SimpleWeather.UWP
                 NavigationCacheMode = NavigationCacheMode.Disabled;
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
 
@@ -198,123 +206,138 @@ namespace SimpleWeather.UWP
                 }
             }
 
-            KeyValuePair<int, string> PairParameter = e.Parameter == null ?
-                new KeyValuePair<int, string>() : (KeyValuePair<int, string>)e.Parameter;
+            LocationData LocParameter = (LocationData)e.Parameter;
 
-            // Did home change?
-            var homeData = Task.Run(() => Settings.GetHomeLocationData()).Result;
-            bool homeChanged = false;
-
-            if (pair.Key == App.HomeIdx || PairParameter.Key == App.HomeIdx)
-            {
-                if ((pair.Value != null && pair.Value != homeData.query) ||
-                    (e.NavigationMode == NavigationMode.Back && PairParameter.Value != null && PairParameter.Value != pair.Value))
-                    homeChanged = true;
-            }
-
-            // Reset loader if source or query is different
-            if (wLoader != null && (WeatherView.WeatherSource != Settings.API || homeChanged))
-            {
-                wLoader = null;
-            }
-
-            // Update view on resume
-            // ex. If temperature unit changed
-            if ((wLoader != null) && e.NavigationMode != NavigationMode.New && !homeChanged)
-            {
-                if (wLoader != null)
-                {
-                    // Save index before update
-                    int index = TextForecastControl.SelectedIndex;
-
-                    if (wLoader.GetWeather() != null)
-                    {
-                        WeatherView.UpdateView(wLoader.GetWeather());
-
-                        // Shell
-                        Shell.Instance.BurgerBackground = WeatherView.PendingBackground;
-                    }
-
-                    // Set saved index from before update
-                    // Note: needed since ItemSource is cleared and index is reset
-                    if (index == 0) // Note: UWP Mobile Bug
-                        TextForecastControl.SelectedIndex = index + 1;
-                    TextForecastControl.SelectedIndex = index;
-                }
-
-                if (pair.Key == App.HomeIdx)
-                {
-                    // Clear backstack since we're home
-                    Frame.BackStack.Clear();
-                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-                }
-
-                return;
-            }
-
-            // Reset loader if new page instance created
             if (e.NavigationMode == NavigationMode.New)
             {
+                // Reset loader if new page instance created
+                location = null;
                 wLoader = null;
                 MainViewer.ChangeView(null, 0, null);
-            }
 
-            // New page instance created, so restore
-            if (!homeChanged && PairParameter.Value != null && (wLoader == null || e.NavigationMode == NavigationMode.New))
-            {
-                pair = PairParameter;
-                wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
-
-                if (pair.Key == App.HomeIdx)
+                // New page instance created, so restore
+                if (LocParameter != null)
                 {
-                    // Clear backstack since we're home
-                    Frame.BackStack.Clear();
-                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                    location = LocParameter;
+                    wLoader = new WeatherDataLoader(this, this, location);
+                }
+            }
+            else
+            {
+                LocationData homeData = null;
+
+                if (Settings.FollowGPS)
+                    homeData = await Settings.GetLastGPSLocData();
+                else
+                    homeData = Settings.LocationData.First();
+
+                // Did home change?
+                bool homeChanged = false;
+                if (location != null && Frame.BackStack.Count == 0)
+                {
+                    if (location.query != homeData.query || 
+                        Settings.FollowGPS && location.locationType != LocationType.GPS)
+                    {
+                        location = homeData;
+                        homeChanged = true;
+                    }
+                }
+
+                // Reset loader if source or query is different
+                if (wLoader != null && (WeatherView.WeatherSource != Settings.API || homeChanged))
+                {
+                    wLoader = null;
+                }
+
+                // Update view on resume
+                // ex. If temperature unit changed
+                if ((wLoader != null) && !homeChanged)
+                {
+                    await Resume();
+
+                    if (location.query == homeData.query)
+                    {
+                        // Clear backstack since we're home
+                        Frame.BackStack.Clear();
+                        SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                    }
                 }
             }
 
             Restore();
         }
 
-        private async void Restore()
+        private async Task Resume()
         {
-            LocationData homeData = await Settings.GetHomeLocationData();
-            bool forceRefresh = false;
+            // Save index before update
+            int index = TextForecastControl.SelectedIndex;
 
-            if (wLoader == null)
+            if (wLoader.GetWeather() != null)
             {
-                // Clear backstack since we're home
-                Frame.BackStack.Clear();
-                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                Weather weather = wLoader.GetWeather();
+
+                // Update weather if needed on resume
+                if (Settings.FollowGPS && await UpdateLocation())
+                {
+                    // Setup loader from updated location
+                    wLoader = new WeatherDataLoader(this, this, this.location);
+                    RefreshWeather(false);
+                }
+                else
+                {
+                    // Check weather data expiration
+                    int ttl = int.Parse(weather.ttl);
+                    TimeSpan span = DateTime.Now - weather.update_time;
+                    if (span.TotalMinutes > ttl)
+                        RefreshWeather(false);
+                    else
+                    {
+                        WeatherView.UpdateView(wLoader.GetWeather());
+                        Shell.Instance.BurgerBackground = WeatherView.PendingBackground;
+                    }
+                }
             }
 
+            // Set saved index from before update
+            // Note: needed since ItemSource is cleared and index is reset
+            if (index == 0) // Note: UWP Mobile Bug
+                TextForecastControl.SelectedIndex = index + 1;
+            TextForecastControl.SelectedIndex = index;
+        }
+
+        private async void Restore()
+        {
+            bool forceRefresh = false;
+
             // GPS Follow location
-            if (Settings.FollowGPS && pair.Key == App.HomeIdx)
+            if (Settings.FollowGPS && (location == null || location.locationType == LocationType.GPS))
             {
-                if (homeData == null)
+                LocationData locData = await Settings.GetLastGPSLocData();
+
+                if (locData == null)
                 {
                     // Update location if not setup
                     await UpdateLocation();
-                    wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
+                    wLoader = new WeatherDataLoader(this, this, location);
                     forceRefresh = true;
                 }
                 else
                 {
                     // Reset locdata if source is different
-                    if (homeData.source != Settings.API)
-                        Settings.SaveHomeLocation(new LocationData());
+                    if (locData.source != Settings.API)
+                        Settings.SaveLastGPSLocData(new LocationData());
 
                     if (await UpdateLocation())
                     {
                         // Setup loader from updated location
-                        wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
+                        wLoader = new WeatherDataLoader(this, this, location);
                         forceRefresh = true;
                     }
                     else
                     {
                         // Setup loader saved location data
-                        pair = new KeyValuePair<int, string>(App.HomeIdx, homeData.query);
-                        wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
+                        location = locData;
+                        wLoader = new WeatherDataLoader(this, this, location);
                     }
                 }
             }
@@ -322,20 +345,8 @@ namespace SimpleWeather.UWP
             else if (wLoader == null)
             {
                 // Weather was loaded before. Lets load it up...
-                if (homeData.query == null)
-                {
-                    List<string> locations = await Settings.GetLocations();
-                    string local = locations[App.HomeIdx];
-                    Settings.SaveHomeLocation(new LocationData(local));
-
-                    pair = new KeyValuePair<int, string>(App.HomeIdx, local);
-                    wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
-                }
-                else
-                {
-                    pair = new KeyValuePair<int, string>(App.HomeIdx, homeData.query);
-                    wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
-                }
+                location = Settings.LocationData.First();
+                wLoader = new WeatherDataLoader(this, this, location);
             }
 
             // Load up weather data
@@ -346,7 +357,7 @@ namespace SimpleWeather.UWP
         {
             bool locationChanged = false;
 
-            if (Settings.FollowGPS && pair.Key == App.HomeIdx)
+            if (Settings.FollowGPS && (location == null || location.locationType == LocationType.GPS))
             {
                 Geoposition newGeoPos = null;
 
@@ -386,11 +397,11 @@ namespace SimpleWeather.UWP
                 // Access to location granted
                 if (newGeoPos != null)
                 {
-                    LocationData lastGPSLocData = await Settings.GetHomeLocationData();
+                    LocationData lastGPSLocData = await Settings.GetLastGPSLocData();
 
                     // Check previous location difference
                     if (lastGPSLocData.query != null &&
-                        geoPos != null && CalculateGeopositionDistance(geoPos, newGeoPos) < geolocal.MovementThreshold)
+                        geoPos != null && ConversionMethods.CalculateGeopositionDistance(geoPos, newGeoPos) < geolocal.MovementThreshold)
                     {
                         return false;
                     }
@@ -422,9 +433,9 @@ namespace SimpleWeather.UWP
 
                     // Save location as last known
                     lastGPSLocData.SetData(selected_query, newGeoPos);
-                    Settings.SaveHomeLocation();
+                    Settings.SaveLastGPSLocData();
 
-                    pair = new KeyValuePair<int, string>(App.HomeIdx, selected_query);
+                    location = lastGPSLocData;
                     geoPos = newGeoPos;
                     locationChanged = true;
                 }
@@ -433,22 +444,11 @@ namespace SimpleWeather.UWP
             return locationChanged;
         }
 
-        private double CalculateGeopositionDistance(Geoposition position1, Geoposition position2)
-        {
-            double lat1 = position1.Coordinate.Point.Position.Latitude;
-            double lon1 = position1.Coordinate.Point.Position.Longitude;
-            double lat2 = position2.Coordinate.Point.Position.Latitude;
-            double lon2 = position2.Coordinate.Point.Position.Longitude;
-
-            /* Returns value in meters */
-            return Math.Abs(ConversionMethods.CalculateHaversine(lat1, lon1, lat2, lon2));
-        }
-
         private async void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             if (Settings.FollowGPS && await UpdateLocation())
                 // Setup loader from updated location
-                wLoader = new WeatherDataLoader(this, this, pair.Value, pair.Key);
+                wLoader = new WeatherDataLoader(this, this, location);
 
             RefreshWeather(true);
         }

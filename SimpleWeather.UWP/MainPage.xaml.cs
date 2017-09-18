@@ -161,12 +161,13 @@ namespace SimpleWeather.UWP
             // Show loading dialog
             await LoadingDialog.ShowAsync();
 
-            KeyValuePair<int, string> pair;
-
             // Weather Data
-            OrderedDictionary weatherData = await Settings.GetWeatherData();
+            var locData = Settings.LocationData;
+            var weatherData = Settings.WeatherData;
 
-            Weather weather = await WeatherLoaderTask.GetWeather(selected_query);
+            Weather weather = weatherData[selected_query] as Weather;
+            if (weather == null)
+                weather = await WeatherLoaderTask.GetWeather(selected_query);
 
             if (weather == null)
             {
@@ -176,21 +177,23 @@ namespace SimpleWeather.UWP
             }
 
             // Save weather data
-            if (weatherData.Contains(selected_query))
-                weatherData[selected_query] = weather;
-            else
-                weatherData.Add(selected_query, weather);
+            var location = new LocationData(selected_query);
+            locData.Clear();
+            locData.Add(location);
+            weatherData[selected_query] = weather;
+            Settings.SaveLocationData();
             Settings.SaveWeatherData();
 
-            pair = new KeyValuePair<int, string>(App.HomeIdx, selected_query);
-
+            // If we're using search
+            // make sure gps feature is off
+            Settings.FollowGPS = false;
             Settings.WeatherLoaded = true;
             // Hide dialog
             await LoadingDialog.HideAsync();
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 sender.IsSuggestionListOpen = false;
-                this.Frame.Navigate(typeof(Shell), pair);
+                this.Frame.Navigate(typeof(Shell), location);
             });
         }
 
@@ -308,12 +311,13 @@ namespace SimpleWeather.UWP
                     goto exit;
                 }
 
-                KeyValuePair<int, string> pair;
-
                 // Weather Data
-                OrderedDictionary weatherData = await Settings.GetWeatherData();
+                var locData = Settings.LocationData;
+                var weatherData = Settings.WeatherData;
 
-                Weather weather = await WeatherLoaderTask.GetWeather(selected_query);
+                Weather weather = weatherData[selected_query] as Weather;
+                if (weather == null)
+                    weather = await WeatherLoaderTask.GetWeather(selected_query);
 
                 if (weather == null)
                 {
@@ -321,19 +325,19 @@ namespace SimpleWeather.UWP
                 }
 
                 // Save weather data
-                if (weatherData.Contains(selected_query))
-                    weatherData[selected_query] = weather;
-                else
-                    weatherData.Add(selected_query, weather);
+                var location = new LocationData(selected_query, geoPos);
+                locData.Clear();
+                locData.Add(new LocationData(selected_query));
+                weatherData[selected_query] = weather;
+                Settings.SaveLastGPSLocData(location);
+                Settings.SaveLocationData();
                 Settings.SaveWeatherData();
-
-                pair = new KeyValuePair<int, string>(App.HomeIdx, selected_query);
 
                 Settings.FollowGPS = true;
                 Settings.WeatherLoaded = true;
                 // Hide dialog
                 await LoadingDialog.HideAsync();
-                this.Frame.Navigate(typeof(Shell), pair);
+                this.Frame.Navigate(typeof(Shell), location);
             }
 
             exit:

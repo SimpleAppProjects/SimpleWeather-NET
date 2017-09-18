@@ -70,12 +70,13 @@ namespace SimpleWeather.Droid
             LoadingDialog progDialog = new LoadingDialog(Activity);
             progDialog.Show();
 
-            Pair<int, string> pair;
-            
             // Get Weather Data
-            OrderedDictionary weatherData = await Settings.GetWeatherData();
+            var locData = Settings.LocationData;
+            var weatherData = Settings.WeatherData;
 
-            WeatherData.Weather weather = await WeatherData.WeatherLoaderTask.GetWeather(selected_query);
+            WeatherData.Weather weather = weatherData[selected_query] as WeatherData.Weather;
+            if (weather == null)
+                weather = await WeatherData.WeatherLoaderTask.GetWeather(selected_query);
 
             if (weather == null)
             {
@@ -85,18 +86,20 @@ namespace SimpleWeather.Droid
             }
 
             // Save weather data
-            if (weatherData.Contains(selected_query))
-                weatherData[selected_query] = weather;
-            else
-                weatherData.Add(selected_query, weather);
+            var location = new WeatherData.LocationData(selected_query);
+            locData.Clear();
+            locData.Add(location);
+            weatherData[selected_query] = weather;
+            Settings.SaveLocationData();
             Settings.SaveWeatherData();
-
-            pair = new Pair<int, string>(App.HomeIdx, selected_query);
 
             // Start WeatherNow Activity with weather data
             Intent intent = new Intent(Activity, typeof(MainActivity));
-            intent.PutExtra("pair", await JSONParser.SerializerAsync(pair, typeof(Pair<int, string>)));
+            intent.PutExtra("data", await JSONParser.SerializerAsync(location, typeof(WeatherData.LocationData)));
 
+            // If we're using search
+            // make sure gps feature is off
+            Settings.FollowGPS = false;
             Settings.WeatherLoaded = true;
             // Hide dialog
             progDialog.Dismiss();

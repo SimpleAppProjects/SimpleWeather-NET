@@ -176,7 +176,7 @@ namespace SimpleWeather.Droid
                         else
                         {
                             // Reset home location data
-                            Settings.SaveHomeLocation(new WeatherData.LocationData());
+                            //Settings.SaveLastGPSLocData(new WeatherData.LocationData());
                         }
                     }
                 };
@@ -279,7 +279,7 @@ namespace SimpleWeather.Droid
                                 // permission was granted, yay!
                                 // Do the task you need to do.
                                 // Reset home location data
-                                Settings.SaveHomeLocation(new WeatherData.LocationData());
+                                //Settings.SaveLastGPSLocData(new WeatherData.LocationData());
                             }
                             else
                             {

@@ -42,7 +42,7 @@ namespace SimpleWeather.Droid
             // Check if fragment exists
             if (fragment == null)
             {
-                if (Intent.HasExtra("pair"))
+                if (Intent.HasExtra("data"))
                     fragment = WeatherNowFragment.NewInstance(Intent.Extras);
                 else
                     fragment = new WeatherNowFragment();

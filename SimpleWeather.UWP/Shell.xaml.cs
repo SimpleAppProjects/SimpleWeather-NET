@@ -32,6 +32,7 @@ namespace SimpleWeather.UWP
 
             AppFrame.Navigating += AppFrame_Navigating;
             AppFrame.Navigated += AppFrame_Navigated;
+            AppFrame.CacheSize = 1;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -100,19 +101,24 @@ namespace SimpleWeather.UWP
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
             if (AppFrame.SourcePageType != typeof(SettingsPage))
-                AppFrame.Navigate(typeof(SettingsPage));
+                AppFrame.Navigate(typeof(SettingsPage), null);
         }
 
         private void WeatherButton_Click(object sender, RoutedEventArgs e)
         {
             if (AppFrame.SourcePageType != typeof(WeatherNow))
-                AppFrame.Navigate(typeof(WeatherNow));
+            {
+                AppFrame.Navigate(typeof(WeatherNow), null);
+
+                AppFrame.BackStack.Clear();
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+            }
         }
 
         private void LocationsButton_Click(object sender, RoutedEventArgs e)
         {
             if (AppFrame.SourcePageType != typeof(LocationsPage))
-                AppFrame.Navigate(typeof(LocationsPage));
+                AppFrame.Navigate(typeof(LocationsPage), null);
         }
     }
 }

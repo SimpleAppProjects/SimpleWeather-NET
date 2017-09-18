@@ -4,16 +4,31 @@ using System.Text;
 
 namespace SimpleWeather.WeatherData
 {
-    public class LocationData
+    public enum LocationType
     {
+        GPS = -1,
+        Search
+    }
+
+    public class LocationData
+#if __ANDROID__
+        : Java.Lang.Object
+#endif
+    {
+        [Newtonsoft.Json.JsonProperty]
         public string query { get; set; }
+        [Newtonsoft.Json.JsonProperty]
         public double latitude { get; set; }
+        [Newtonsoft.Json.JsonProperty]
         public double longitude { get; set; }
+        [Newtonsoft.Json.JsonProperty]
+        public LocationType locationType { get; set; } = LocationType.Search;
+        [Newtonsoft.Json.JsonProperty]
         public string source { get; set; }
 
         public LocationData()
         {
-
+            source = Utils.Settings.API;
         }
 
         public LocationData(string query)
@@ -33,6 +48,7 @@ namespace SimpleWeather.WeatherData
             this.query = query;
             latitude = geoPos.Coordinate.Point.Position.Latitude;
             longitude = geoPos.Coordinate.Point.Position.Longitude;
+            locationType = LocationType.GPS;
             source = Utils.Settings.API;
         }
 #elif __ANDROID__
@@ -46,6 +62,7 @@ namespace SimpleWeather.WeatherData
             this.query = query;
             latitude = location.Latitude;
             longitude = location.Longitude;
+            locationType = LocationType.GPS;
             source = Utils.Settings.API;
         }
 #endif

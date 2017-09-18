@@ -20,9 +20,6 @@ namespace SimpleWeather.Controls
         public static readonly DependencyProperty WeatherIconProperty =
             DependencyProperty.Register("WeatherIcon", typeof(String),
             typeof(LocationPanelViewModel), new PropertyMetadata(""));
-        public static readonly DependencyProperty PairProperty =
-            DependencyProperty.Register("Pair", typeof(KeyValuePair<int, string>),
-            typeof(LocationPanelViewModel), new PropertyMetadata(new KeyValuePair<int,string>()));
         public static readonly DependencyProperty EditModeProperty =
             DependencyProperty.Register("EditMode", typeof(bool),
             typeof(LocationPanelViewModel), new PropertyMetadata(false));
@@ -32,12 +29,9 @@ namespace SimpleWeather.Controls
         public static readonly DependencyProperty IsLoadingProperty =
             DependencyProperty.Register("IsLoading", typeof(bool),
             typeof(LocationPanelViewModel), new PropertyMetadata(true));
-        public static readonly DependencyProperty IsHomeProperty =
-            DependencyProperty.Register("IsHome", typeof(bool),
-            typeof(LocationPanelViewModel), new PropertyMetadata(false));
-        public static readonly DependencyProperty HomeBoxVisibilityProperty =
-            DependencyProperty.Register("HomeBoxVisibility", typeof(Visibility),
-            typeof(LocationPanelViewModel), new PropertyMetadata(Visibility.Collapsed));
+        public static readonly DependencyProperty LocationDataProperty =
+            DependencyProperty.Register("LocationData", typeof(LocationData),
+            typeof(LocationPanelViewModel), new PropertyMetadata(null));
         public static readonly DependencyProperty WeatherSourceProperty =
             DependencyProperty.Register("WeatherSource", typeof(String),
             typeof(LocationPanelViewModel), new PropertyMetadata(""));
@@ -66,15 +60,10 @@ namespace SimpleWeather.Controls
             get { return (string)GetValue(WeatherIconProperty); }
             set { SetValue(WeatherIconProperty, value); OnPropertyChanged("WeatherIcon"); }
         }
-        public KeyValuePair<int, string> Pair
-        {
-            get { return (KeyValuePair<int, string>)GetValue(PairProperty); }
-            set { SetValue(PairProperty, value); OnPropertyChanged("Pair"); }
-        }
         public bool EditMode
         {
             get { return (bool)GetValue(EditModeProperty); }
-            set { SetValue(EditModeProperty, value); SetEditMode(value); OnPropertyChanged("EditMode"); }
+            set { SetValue(EditModeProperty, value); OnPropertyChanged("EditMode"); }
         }
         public Brush Background
         {
@@ -86,15 +75,10 @@ namespace SimpleWeather.Controls
             get { return (bool)GetValue(IsLoadingProperty); }
             set { SetValue(IsLoadingProperty, value); OnPropertyChanged("IsLoading"); }
         }
-        public bool IsHome
+        public LocationData LocationData
         {
-            get { return (bool)GetValue(IsHomeProperty); }
-            set { SetValue(IsHomeProperty, value); SetHome(value); OnPropertyChanged("IsHome"); }
-        }
-        public Visibility HomeBoxVisibility
-        {
-            get { return (Visibility)GetValue(HomeBoxVisibilityProperty); }
-            set { SetValue(HomeBoxVisibilityProperty, value); OnPropertyChanged("HomeBoxVisibility"); }
+            get { return (LocationData)GetValue(LocationDataProperty); }
+            set { SetValue(LocationDataProperty, value); OnPropertyChanged("LocationDataProperty"); }
         }
         public string WeatherSource
         {
@@ -103,35 +87,14 @@ namespace SimpleWeather.Controls
         }
         #endregion
 
-        private void SetEditMode(bool value)
-        {
-            if (!IsHome && !value)
-            {
-                HomeBoxVisibility = Visibility.Collapsed;
-                OnPropertyChanged("HomeBoxVisibility");
-            }
-            else if (!IsHome && value)
-            {
-                HomeBoxVisibility = Visibility.Visible;
-                OnPropertyChanged("HomeBoxVisibility");
-            }
-        }
-
-        private void SetHome(bool value)
-        {
-            if (!EditMode)
-            {
-                HomeBoxVisibility = value ? Visibility.Visible : Visibility.Collapsed;
-                OnPropertyChanged("HomeBoxVisibility");
-            }
-        }
-
         public LocationPanelViewModel()
         {
+            LocationData = new LocationData();
         }
 
         public LocationPanelViewModel(Weather weather)
         {
+            LocationData = new LocationData();
             SetWeather(weather);
         }
 
@@ -152,8 +115,11 @@ namespace SimpleWeather.Controls
             WeatherIcon = WeatherUtils.GetWeatherIcon(weather.condition.icon);
             WeatherSource = weather.source;
 
-            if (!String.IsNullOrWhiteSpace(weather.query) && !Pair.Equals(default(KeyValuePair<int, string>)))
-                Pair = new KeyValuePair<int, string>(Pair.Key, weather.query);
+            if (LocationData.query == null)
+            {
+                LocationData.query = weather.query;
+                LocationData.source = weather.source;
+            }
 
             IsLoading = false;
         }

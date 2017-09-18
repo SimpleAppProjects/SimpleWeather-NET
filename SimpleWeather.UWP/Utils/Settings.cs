@@ -14,6 +14,7 @@ namespace SimpleWeather.Utils
 
         // App data files
         private static StorageFolder appDataFolder = ApplicationData.Current.LocalFolder;
+        private static StorageFile locDataFile;
         private static StorageFile dataFile;
 
         private static void Init()
@@ -23,6 +24,13 @@ namespace SimpleWeather.Utils
                 Task<StorageFile> t = appDataFolder.CreateFileAsync("data.json", CreationCollisionOption.OpenIfExists).AsTask();
                 t.Wait();
                 dataFile = t.Result;
+            }
+
+            if (locDataFile == null)
+            {
+                Task<StorageFile> t = appDataFolder.CreateFileAsync("locations.json", CreationCollisionOption.OpenIfExists).AsTask();
+                t.Wait();
+                locDataFile = t.Result;
             }
         }
 
@@ -48,21 +56,34 @@ namespace SimpleWeather.Utils
 
         private static bool IsWeatherLoaded()
         {
-            FileInfo fileinfo = new FileInfo(dataFile.Path);
+            FileInfo dataFileinfo = new FileInfo(dataFile.Path);
+            FileInfo locFileinfo = new FileInfo(locDataFile.Path);
 
-            if (fileinfo.Length == 0 || !fileinfo.Exists)
+            if (dataFileinfo.Length == 0 || !dataFileinfo.Exists)
             {
-                SetWeatherLoaded(false);
-                return false;
+                if (locFileinfo.Length == 0 || !locFileinfo.Exists)
+                {
+                    SetWeatherLoaded(false);
+                    locationData.Clear();
+                    weatherData.Clear();
+                    return false;
+                }
+                else if (locationData.Count > 0)
+                {
+                    SetWeatherLoaded(true);
+                    return true;
+                }
             }
 
-            if (weatherData.Count > 0)
+            if (weatherData.Count > 0 || locationData.Count > 0)
             {
                 SetWeatherLoaded(true);
                 return true;
             }
             else if (localSettings.Values[KEY_WEATHERLOADED] == null)
             {
+                locationData.Clear();
+                weatherData.Clear();
                 return false;
             }
             else if (localSettings.Values[KEY_WEATHERLOADED].Equals(true))
@@ -71,6 +92,8 @@ namespace SimpleWeather.Utils
             }
             else
             {
+                locationData.Clear();
+                weatherData.Clear();
                 return false;
             }
         }
@@ -157,17 +180,17 @@ namespace SimpleWeather.Utils
             localSettings.Values[KEY_FOLLOWGPS] = value;
         }
 
-        private static string GetHomeLocation()
+        private static string GetLastGPSLocation()
         {
-            if (!localSettings.Values.ContainsKey(KEY_HOMELOCATION) || localSettings.Values[KEY_HOMELOCATION] == null)
+            if (!localSettings.Values.ContainsKey(KEY_LASTGPSLOCATION) || localSettings.Values[KEY_LASTGPSLOCATION] == null)
                 return null;
             else
-                return (string)localSettings.Values[KEY_HOMELOCATION];
+                return (string)localSettings.Values[KEY_LASTGPSLOCATION];
         }
 
-        private static void SetHomeLocation(string value)
+        private static void SetLastGPSLocation(string value)
         {
-            localSettings.Values[KEY_HOMELOCATION] = value;
+            localSettings.Values[KEY_LASTGPSLOCATION] = value;
         }
     }
 }

@@ -16,6 +16,7 @@ namespace SimpleWeather.Utils
 
         // App data files
         private static File appDataFolder = App.Context.FilesDir;
+        private static File locDataFile;
         private static File dataFile;
 
         // Initialize file
@@ -26,6 +27,12 @@ namespace SimpleWeather.Utils
 
             if (!dataFile.Exists())
                 dataFile.CreateNewFile();
+
+            if (locDataFile == null)
+                locDataFile = new File(appDataFolder, "locations.json");
+
+            if (!locDataFile.Exists())
+                locDataFile.CreateNewFile();
         }
 
         private static string GetTempUnit()
@@ -52,15 +59,41 @@ namespace SimpleWeather.Utils
 
         private static bool IsWeatherLoaded()
         {
-            System.IO.FileInfo fileinfo = new System.IO.FileInfo(dataFile.Path);
+            System.IO.FileInfo dataFileinfo = new System.IO.FileInfo(dataFile.Path);
+            System.IO.FileInfo locFileinfo = new System.IO.FileInfo(locDataFile.Path);
 
-            if (!fileinfo.Exists || (fileinfo.Exists && fileinfo.Length == 0))
+            if (!dataFileinfo.Exists || (dataFileinfo.Exists && dataFileinfo.Length == 0))
             {
-                SetWeatherLoaded(false);
-                return false;
+                if (!locFileinfo.Exists || (locFileinfo.Exists && locFileinfo.Length == 0))
+                {
+                    SetWeatherLoaded(false);
+                    locationData.Clear();
+                    weatherData.Clear();
+                    return false;
+                }
+                else if (locationData.Count > 0)
+                {
+                    SetWeatherLoaded(true);
+                    return true;
+                }
             }
 
-            return preferences.Contains(KEY_WEATHERLOADED) && preferences.GetBoolean(KEY_WEATHERLOADED, false);
+            if (weatherData.Count > 0 || locationData.Count > 0)
+            {
+                SetWeatherLoaded(true);
+                return true;
+            }
+            else if (preferences.Contains(KEY_WEATHERLOADED) && preferences.GetBoolean(KEY_WEATHERLOADED, false))
+            {
+                SetWeatherLoaded(true);
+                return true;
+            }
+            else
+            {
+                locationData.Clear();
+                weatherData.Clear();
+                return false;
+            }
         }
 
         private static void SetWeatherLoaded(bool isLoaded)
@@ -164,14 +197,14 @@ namespace SimpleWeather.Utils
             editor.Commit();
         }
 
-        private static string GetHomeLocation()
+        private static string GetLastGPSLocation()
         {
-            return preferences.GetString(KEY_HOMELOCATION, null);
+            return preferences.GetString(KEY_LASTGPSLOCATION, null);
         }
 
-        private static void SetHomeLocation(string value)
+        private static void SetLastGPSLocation(string value)
         {
-            editor.PutString(KEY_HOMELOCATION, value);
+            editor.PutString(KEY_LASTGPSLOCATION, value);
             editor.Commit();
         }
     }
