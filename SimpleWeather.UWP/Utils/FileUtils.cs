@@ -48,7 +48,9 @@ namespace SimpleWeather.Utils
             using (Stream stream = (await file.OpenAsync(FileAccessMode.ReadWrite)).AsStreamForWrite())
             using (StreamWriter writer = new StreamWriter(stream))
             {
+                // Clear file before writing
                 stream.SetLength(0);
+
                 await writer.WriteAsync(data);
                 await writer.FlushAsync();
                 writer.Dispose();
@@ -66,7 +68,9 @@ namespace SimpleWeather.Utils
             using (Stream stream = (await file.OpenAsync(FileAccessMode.ReadWrite)).AsStreamForWrite())
             using (StreamWriter writer = new StreamWriter(stream))
             {
+                // Clear file before writing
                 stream.SetLength(0);
+
                 await writer.WriteAsync(Encoding.UTF8.GetString(data));
                 await writer.FlushAsync();
                 writer.Dispose();

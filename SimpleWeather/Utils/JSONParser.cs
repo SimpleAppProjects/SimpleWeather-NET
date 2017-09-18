@@ -129,6 +129,9 @@ namespace SimpleWeather.Utils
                 using (System.IO.StreamWriter sWriter = new System.IO.StreamWriter(fStream))
                 using (JsonTextWriter writer = new JsonTextWriter(sWriter))
                 {
+                    // Clear file before writing
+                    fStream.SetLength(0);
+
                     JsonSerializer serializer = JsonSerializer.Create(DefaultSettings);
                     serializer.Serialize(writer, obj);
                     await writer.FlushAsync();

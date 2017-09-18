@@ -47,6 +47,9 @@ namespace SimpleWeather.Utils
             using (System.IO.Stream outputStream = App.Context.OpenFileOutput(file.Name, Android.Content.FileCreationMode.Private))
             using (System.IO.StreamWriter writer = new System.IO.StreamWriter(outputStream))
             {
+                // Clear file before writing
+                outputStream.SetLength(0);
+
                 await writer.WriteAsync(data);
                 await writer.FlushAsync();
                 writer.Close();
