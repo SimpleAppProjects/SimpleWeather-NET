@@ -381,12 +381,6 @@
     <AndroidResource Include="Resources\drawable\ic_add_white_24dp.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\bg_swipe_right_delete.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\bg_swipe_left_delete.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\drawable\ic_home_fill_white_24dp.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -426,7 +420,9 @@
     <AndroidResource Include="Resources\layout-large\fragment_weather_now.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\values-xlarge\dimens.xml" />
+    <AndroidResource Include="Resources\values-xlarge\dimens.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\weather_hrforecast_panel.xml" />

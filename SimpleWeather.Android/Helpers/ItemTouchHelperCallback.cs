@@ -22,9 +22,17 @@ namespace SimpleWeather.Droid.Helpers
 
         private IItemTouchHelperAdapter mAdapter;
 
+        Drawable deleteIcon;
+        Drawable deleteBackground;
+        int iconMargin;
+
         public ItemTouchHelperCallback(IItemTouchHelperAdapter adapter)
         {
             mAdapter = adapter;
+
+            deleteIcon = ContextCompat.GetDrawable(App.Context, Resource.Drawable.ic_delete_white_24dp);
+            deleteBackground = new ColorDrawable(new Color(ContextCompat.GetColor(App.Context, Resource.Color.bg_swipe_delete)));
+            iconMargin = (int)App.Context.Resources.GetDimension(Resource.Dimension.delete_icon_margin);
         }
 
         public override int GetMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder)
@@ -61,23 +69,37 @@ namespace SimpleWeather.Droid.Helpers
 
         public override void OnChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, bool isCurrentlyActive)
         {
+            if (viewHolder.AdapterPosition == -1)
+                return;
+
             if (actionState == ItemTouchHelper.ActionStateSwipe)
             {
                 View itemView = viewHolder.ItemView;
-                Drawable d;
+
+                int iconLeft;
+                int iconRight;
+                int iconTop = itemView.Top + (itemView.Bottom - itemView.Top - deleteIcon.IntrinsicHeight) / 2;
+                int iconBottom = iconTop + deleteIcon.IntrinsicHeight;
 
                 if (dX > 0)
                 {
-                    d = ContextCompat.GetDrawable(recyclerView.Context, Resource.Drawable.bg_swipe_right_delete);
-                    d.SetBounds(itemView.Left, itemView.Top, (int)dX, itemView.Bottom);
+                    deleteBackground.SetBounds(itemView.Left, itemView.Top, itemView.Left + (int)dX, itemView.Bottom);
+
+                    iconLeft = itemView.Left + iconMargin;
+                    iconRight = itemView.Left + iconMargin + deleteIcon.IntrinsicWidth;
                 }
                 else
                 {
-                    d = ContextCompat.GetDrawable(recyclerView.Context, Resource.Drawable.bg_swipe_left_delete);
-                    d.SetBounds((int)dX, itemView.Top, itemView.Right, itemView.Bottom);
+                    deleteBackground.SetBounds(itemView.Right + (int)dX, itemView.Top, itemView.Right, itemView.Bottom);
+
+                    iconLeft = itemView.Right - iconMargin - deleteIcon.IntrinsicWidth;
+                    iconRight = itemView.Right - iconMargin;
                 }
 
-                d.Draw(c);
+                deleteBackground.Draw(c);
+
+                deleteIcon.SetBounds(iconLeft, iconTop, iconRight, iconBottom);
+                deleteIcon.Draw(c);
             }
 
             base.OnChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);

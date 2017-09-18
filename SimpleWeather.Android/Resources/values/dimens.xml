@@ -32,4 +32,5 @@
     <dimen name="location_panel_text_size">20sp</dimen>
     <dimen name="location_panel_textview_size">50dp</dimen>
     <dimen name="location_panel_icon_size">30sp</dimen>
+    <dimen name="delete_icon_margin">12dp</dimen>
 </resources>
