@@ -238,37 +238,48 @@
                 <ScrollViewer HorizontalScrollMode="Disabled" VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto">
                     <Grid>
                         <StackPanel>
-                            <TextBlock x:Uid="Pref_CategoryTemp" Text="Temperature" Padding="0,10"
-                                       Style="{ThemeResource TitleTextBlockStyle}"/>
-                            <TextBlock x:Uid="Pref_SummaryUnits" Text="Display units in:" Padding="10,5" />
+                            <TextBlock x:Uid="Pref_GeneralHeader" Text="General Settings" Padding="0,10"
+                                       Style="{StaticResource TitleTextBlockStyle}"/>
+                            <TextBlock x:Uid="Pref_SummaryUnits" Text="Display units in:" Padding="0,5" />
                             <StackPanel Orientation="Horizontal" Padding="10,5">
                                 <RadioButton x:Name="Fahrenheit" Content="Fahrenheit" Checked="Fahrenheit_Checked"/>
                                 <RadioButton x:Name="Celsius" Content="Celsius" Checked="Celsius_Checked"/>
                             </StackPanel>
-                            <TextBlock x:Uid="Pref_CategoryLocation" Text="Location" Padding="0,10"
-                                       Style="{StaticResource TitleTextBlockStyle}" />
-                            <TextBlock x:Uid="Pref_SummaryFollowGPS" Text="Follow current location via GPS" Padding="10,5" />
+                            <TextBlock x:Uid="Pref_SummaryFollowGPS" Text="Follow current location via GPS" Padding="0,5" />
                             <StackPanel Orientation="Horizontal" Padding="10,5">
                                 <ToggleSwitch x:Name="FollowGPS" Toggled="FollowGPS_Toggled"/>
                             </StackPanel>
-                            <TextBlock x:Uid="Pref_CategoryWProvider" Text="Weather Provider" Padding="0,10"
-                                       Style="{StaticResource TitleTextBlockStyle}" />
-                            <ComboBox x:Name="APIComboBox" HorizontalAlignment="Left" MinWidth="260"
+                            <ComboBox x:Name="RefreshComboBox" MinWidth="260" Margin="0,10">
+                                <ComboBox.Items>
+                                    <TextBlock x:Uid="Pref_Refresh15Min" Text="15 minutes"/>
+                                    <TextBlock x:Uid="Pref_Refresh30Min" Text="30 minutes (default)"/>
+                                    <TextBlock x:Uid="Pref_Refresh60Min" Text="1 hour"/>
+                                    <TextBlock x:Uid="Pref_Refresh3Hrs" Text="3 hours"/>
+                                    <TextBlock x:Uid="Pref_Refresh6Hrs" Text="6 hours"/>
+                                </ComboBox.Items>
+                                <ComboBox.Header>
+                                    <TextBlock x:Uid="Pref_RefreshInterval" Text="Update Frequency" />
+                                </ComboBox.Header>
+                            </ComboBox>
+                            <ComboBox x:Name="APIComboBox" HorizontalAlignment="Left" MinWidth="260" Margin="0,10"
                                   x:Uid="API_Box" PlaceholderText="Select Weather Provider">
                                 <ComboBox.Items>
                                     <TextBlock Text="WeatherUnderground"/>
                                     <TextBlock Text="Yahoo Weather"/>
                                 </ComboBox.Items>
+                                <ComboBox.Header>
+                                    <TextBlock x:Uid="API_Label" Text="Weather Provider" />
+                                </ComboBox.Header>
                             </ComboBox>
                             <StackPanel x:Name="KeyPanel">
-                                <TextBlock x:Uid="KeyEntry.PlaceholderText" Text="API Key" Padding="5"/>
+                                <TextBlock x:Uid="KeyBox" Text="API Key" Padding="0,5"/>
                                 <Border x:Name="KeyBorder" BorderThickness="2" Background="White" BorderBrush="DarkGray"
                                     HorizontalAlignment="Left" Padding="10,4" MinWidth="260"
                                     Visibility="{Binding ElementName=KeyEntry, Path=Visibility}">
                                     <TextBlock x:Name="KeyEntry"
                                            Visibility="Visible"
                                            Tapped="KeyEntry_Tapped"
-                                           x:Uid="KeyEntry.PlaceholderText" Text="API Key"
+                                           x:Uid="KeyBox" Text="API Key"
                                            GotFocus="KeyEntry_GotFocus" />
                                 </Border>
                             </StackPanel>

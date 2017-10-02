@@ -1,15 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SimpleWeather", "SimpleWeather\SimpleWeather.shproj", "{3633F453-ECBB-41D1-A87D-2CC3BDD74221}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleWeather.Android", "SimpleWeather.Android\SimpleWeather.Android.csproj", "{1DFDD63E-A0DB-4AC0-9C61-04EEC0CE1E15}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleWeather.UWP", "SimpleWeather.UWP\SimpleWeather.UWP.csproj", "{552847DD-608D-4DA9-9CED-0C8416049742}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kimono.Controls.SnackBar", "Kimono.Controls.SnackBar\Kimono.Controls.SnackBar.csproj", "{8CD45C2A-A6A7-4A78-ABE9-1861A879A1C4}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SimpleWeather", "SimpleWeather\SimpleWeather.shproj", "{3633F453-ECBB-41D1-A87D-2CC3BDD74221}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -123,5 +123,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4A2283E1-635B-4980-A603-0389637BE725}
 	EndGlobalSection
 EndGlobal

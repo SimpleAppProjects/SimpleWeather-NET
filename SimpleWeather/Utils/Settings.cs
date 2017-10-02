@@ -16,6 +16,9 @@ namespace SimpleWeather.Utils
         public static string API_KEY { get { return GetAPIKEY(); } set { SetAPIKEY(value); } }
         public static bool FollowGPS { get { return UseFollowGPS(); } set { SetFollowGPS(value); } }
         private static string LastGPSLocation { get { return GetLastGPSLocation(); } set { SetLastGPSLocation(value); } }
+        public static int RefreshInterval { get { return GetRefreshInterval(); } set { SetRefreshInterval(value); } }
+        public static LocationData HomeData { get { return GetHomeData(); } }
+        public static DateTime UpdateTime { get { return GetUpdateTime(); } set { SetUpdateTime(value); } }
 
         // Data
         public static List<LocationData> LocationData { get { return Task.Run(() => GetLocationData()).Result; } }
@@ -24,6 +27,7 @@ namespace SimpleWeather.Utils
         // Units
         public const string Fahrenheit = "F";
         public const string Celsius = "C";
+        private const string DEFAULT_UPDATE_INTERVAL = "30"; // 30 minutes
 
         // Settings Keys
         private const string KEY_API = "API";
@@ -33,6 +37,8 @@ namespace SimpleWeather.Utils
         private const string KEY_WEATHERLOADED = "weatherLoaded";
         private const string KEY_FOLLOWGPS = "key_followgps";
         private const string KEY_LASTGPSLOCATION = "key_lastgpslocation";
+        private const string KEY_REFRESHINTERVAL = "key_refreshinterval";
+        private const string KEY_UPDATETIME = "key_updatetime";
 
         // APIs
         public const string API_WUnderground = "WUnderground";
@@ -135,6 +141,18 @@ namespace SimpleWeather.Utils
         {
             lastGPSLocData = data;
             LastGPSLocation = JSONParser.Serializer(lastGPSLocData, typeof(LocationData));
+        }
+
+        private static LocationData GetHomeData()
+        {
+            LocationData homeData = null;
+
+            if (FollowGPS)
+                homeData = Task.Run(() => GetLastGPSLocData()).Result;
+            else
+                homeData = LocationData.First();
+
+            return homeData;
         }
     }
 }

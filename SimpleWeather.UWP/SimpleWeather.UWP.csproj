@@ -135,6 +135,75 @@
     <Content Include="Assets\Square71x71Logo.scale-400.png" />
     <Content Include="Assets\StoreLogo.scale-125.png" />
     <Content Include="Assets\StoreLogo.scale-150.png" />
+    <Content Include="Assets\WeatherIcons\png\na.png" />
+    <Content Include="Assets\WeatherIcons\png\wu-chanceflurries.png" />
+    <Content Include="Assets\WeatherIcons\png\wu-chancerain.png" />
+    <Content Include="Assets\WeatherIcons\png\wu-chancesleat.png" />
+    <Content Include="Assets\WeatherIcons\png\wu-chancesnow.png" />
+    <Content Include="Assets\WeatherIcons\png\wu-chancetstorms.png" />
+    <Content Include="Assets\WeatherIcons\png\wu-clear.png" />
+    <Content Include="Assets\WeatherIcons\png\wu-cloudy.png" />
+    <Content Include="Assets\WeatherIcons\png\wu-flurries.png" />
+    <Content Include="Assets\WeatherIcons\png\wu-hazy.png" />
+    <Content Include="Assets\WeatherIcons\png\wu-mostlycloudy.png" />
+    <Content Include="Assets\WeatherIcons\png\wu-mostlysunny.png" />
+    <Content Include="Assets\WeatherIcons\png\wu-partlycloudy.png" />
+    <Content Include="Assets\WeatherIcons\png\wu-partlysunny.png" />
+    <Content Include="Assets\WeatherIcons\png\wu-rain.png" />
+    <Content Include="Assets\WeatherIcons\png\wu-sleat.png" />
+    <Content Include="Assets\WeatherIcons\png\wu-snow.png" />
+    <Content Include="Assets\WeatherIcons\png\wu-sunny.png" />
+    <Content Include="Assets\WeatherIcons\png\wu-tstorms.png" />
+    <Content Include="Assets\WeatherIcons\png\wu-unknown.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-0.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-1.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-10.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-11.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-12.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-13.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-14.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-15.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-16.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-17.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-18.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-19.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-2.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-20.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-21.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-22.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-23.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-24.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-25.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-26.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-27.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-28.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-29.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-3.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-30.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-31.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-32.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-3200.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-33.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-34.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-35.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-36.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-37.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-38.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-39.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-4.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-40.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-41.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-42.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-43.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-44.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-45.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-46.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-47.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-5.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-6.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-7.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-8.png" />
+    <Content Include="Assets\WeatherIcons\png\yahoo-9.png" />
     <Content Include="Assets\WeatherIcons\weathericons-regular-webfont.ttf" />
     <None Include="project.json" />
     <PRIResource Include="Strings\en-US\Resources.resw" />
@@ -144,6 +213,8 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BackgroundTasks\BackgroundTaskHandler.cs" />
+    <Compile Include="BackgroundTasks\WeatherUpdateBackgroundTask.cs" />
     <Compile Include="Controls\HourlyForecastItem.xaml.cs">
       <DependentUpon>HourlyForecastItem.xaml</DependentUpon>
     </Compile>
@@ -170,6 +241,7 @@
     <Compile Include="Controls\Toast.cs" />
     <Compile Include="Helpers\BooleanToVisibilityConverter.cs" />
     <Compile Include="Helpers\InverseBooleanConverter.cs" />
+    <Compile Include="Helpers\WeatherTileCreator.cs" />
     <Compile Include="LocationsPage.xaml.cs">
       <DependentUpon>LocationsPage.xaml</DependentUpon>
     </Compile>
@@ -293,7 +365,7 @@
       <Name>Kimono.Controls.SnackBar</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="..\SimpleWeather\SimpleWeather_Xamarin.projitems" Label="Shared" Condition="Exists('..\SimpleWeather\SimpleWeather_Xamarin.projitems')" />
+  <Import Project="..\SimpleWeather\SimpleWeather_Xamarin.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

@@ -12,34 +12,36 @@ namespace SimpleWeather.Utils
             string WeatherIcon = string.Empty;
 
             /* WeatherUnderground */
-            if (icon.Contains("nt_clear") || icon.Contains("nt_mostlysunny") 
-                || icon.Contains("nt_partlysunny") || icon.Contains("nt_sunny"))
-                WeatherIcon = "\uf02e";
-            else if (icon.Contains("nt_mostlycloudy") || icon.Contains("nt_partlycloudy")
-                || icon.Contains("nt_cloudy"))
+            if (icon.Contains("nt_mostlycloudy") || icon.Contains("nt_partlysunny") || icon.Contains("nt_cloudy"))
                 WeatherIcon = "\uf031";
-            else if (icon.Contains("mostlysunny") || icon.Contains("partlysunny"))
+            else if (icon.Contains("nt_partlycloudy") || icon.Contains("nt_mostlysunny"))
+                WeatherIcon = "\uf083";
+            else if (icon.Contains("nt_clear") || icon.Contains("nt_sunny")|| icon.Contains("nt_unknown"))
+                WeatherIcon = "\uf02e";
+            else if (icon.Contains("chancerain"))
+                WeatherIcon = "\uf019";
+            else if (icon.Contains("clear") || icon.Contains("sunny"))
                 WeatherIcon = "\uf00d";
-            else if (icon.Contains("mostlycloudy") || icon.Contains("partlycloudy"))
+            else if (icon.Contains("cloudy"))
                 WeatherIcon = "\uf002";
             else if (icon.Contains("flurries"))
                 WeatherIcon = "\uf064";
-            else if (icon.Contains("hazy"))
-                WeatherIcon = "\uf0b6";
             else if (icon.Contains("fog"))
                 WeatherIcon = "\uf014";
+            else if (icon.Contains("hazy"))
+                WeatherIcon = "\uf021";
+            else if (icon.Contains("sleet") || icon.Contains("sleat"))
+                WeatherIcon = "\uf0b5";
             else if (icon.Contains("rain"))
                 WeatherIcon = "\uf01a";
-            else if (icon.Contains("sleet"))
-                WeatherIcon = "\uf0b5";
             else if (icon.Contains("snow"))
                 WeatherIcon = "\uf01b";
             else if (icon.Contains("tstorms"))
                 WeatherIcon = "\uf01e";
-            else if (icon.Contains("cloudy"))
-                WeatherIcon = "\uf002";
-            else if (icon.Contains("clear") || icon.Contains("sunny"))
+            else if (icon.Contains("unknown"))
                 WeatherIcon = "\uf00d";
+            else if (icon.Contains("nt_"))
+                WeatherIcon = "\uf02e";
 
             /* Yahoo Weather */
             if (String.IsNullOrWhiteSpace(WeatherIcon) && int.TryParse(icon, out int code))
@@ -154,6 +156,56 @@ namespace SimpleWeather.Utils
             }
 
             return WeatherIcon;
+        }
+
+        public static String GetWeatherIconURI(string icon)
+        {
+            string baseuri = "ms-appx:///Assets/WeatherIcons/png/";
+            string fileIcon = string.Empty;
+
+            if (int.TryParse(icon, out int code))
+                fileIcon = string.Format("yahoo-{0}.png", code);
+            else
+            {
+                if (icon.Contains("nt_mostlycloudy") || icon.Contains("nt_partlysunny") || icon.Contains("nt_cloudy"))
+                    fileIcon = "yahoo-27.png";
+                else if (icon.Contains("nt_partlycloudy") || icon.Contains("nt_mostlysunny"))
+                    fileIcon = "yahoo-33.png";
+                else if (icon.Contains("nt_clear") || icon.Contains("nt_sunny") || icon.Contains("nt_unknown"))
+                    fileIcon = "yahoo-31.png";
+                else if (icon.Contains("chancerain"))
+                    fileIcon = "wu-chancerain.png";
+                else if (icon.Contains("clear") || icon.Contains("sunny"))
+                    fileIcon = "wu-clear.png";
+                else if (icon.Contains("cloudy"))
+                    fileIcon = "wu-cloudy.png";
+                else if (icon.Contains("flurries"))
+                    fileIcon = "wu-flurries.png";
+                else if (icon.Contains("fog"))
+                    fileIcon = "yahoo-20.png";
+                else if (icon.Contains("hazy"))
+                    fileIcon = "yahoo-21.png";
+                else if (icon.Contains("sleet") || icon.Contains("sleat"))
+                    fileIcon = "wu-sleat.png";
+                else if (icon.Contains("rain"))
+                    fileIcon = "wu-rain.png";
+                else if (icon.Contains("snow"))
+                    fileIcon = "wu-snow.png";
+                else if (icon.Contains("tstorms"))
+                    fileIcon = "wu-tstorms.png";
+                else if (icon.Contains("unknown"))
+                    fileIcon = "wu-unknown.png";
+                else if (icon.Contains("nt_"))
+                    fileIcon = "yahoo-31.png";
+            }
+
+            if (String.IsNullOrWhiteSpace(fileIcon))
+            {
+                // Not Available
+                fileIcon = "na.png";
+            }
+
+            return baseuri + fileIcon;
         }
 
         public static bool IsNight(Weather weather)

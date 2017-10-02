@@ -246,15 +246,6 @@
   <data name="OSSLibs.Header" xml:space="preserve">
     <value>Open Source Libraries</value>
   </data>
-  <data name="Pref_CategoryLocation.Text" xml:space="preserve">
-    <value>Location</value>
-  </data>
-  <data name="Pref_CategoryTemp.Text" xml:space="preserve">
-    <value>Temperature</value>
-  </data>
-  <data name="Pref_CategoryWProvider.Text" xml:space="preserve">
-    <value>Weather Provider</value>
-  </data>
   <data name="Pref_SummaryFollowGPS.Text" xml:space="preserve">
     <value>Follow current location via GPS:</value>
   </data>
@@ -290,5 +281,29 @@
   </data>
   <data name="Action_Retry" xml:space="preserve">
     <value>Retry</value>
+  </data>
+  <data name="Pref_GeneralHeader.Text" xml:space="preserve">
+    <value>General Settings</value>
+  </data>
+  <data name="Pref_Refresh15Min.Text" xml:space="preserve">
+    <value>15 minutes</value>
+  </data>
+  <data name="Pref_Refresh30Min.Text" xml:space="preserve">
+    <value>30 minutes (default)</value>
+  </data>
+  <data name="Pref_Refresh60Min.Text" xml:space="preserve">
+    <value>1 hour</value>
+  </data>
+  <data name="Pref_SummaryRefresh.Text" xml:space="preserve">
+    <value>Update Frequency</value>
+  </data>
+  <data name="KeyBox.Text" xml:space="preserve">
+    <value>API Key</value>
+  </data>
+  <data name="Pref_Refresh3Hrs.Text" xml:space="preserve">
+    <value>3 hours</value>
+  </data>
+  <data name="Pref_Refresh6Hrs.Text" xml:space="preserve">
+    <value>6 hours</value>
   </data>
 </root>

@@ -21,6 +21,7 @@ namespace SimpleWeather.UWP
         public const int HomeIdx = 0;
         public static ResourceLoader ResLoader;
         public static Frame RootFrame { get; set; }
+        public static BackgroundTasks.BackgroundTaskHandler BGTaskHandler { get; set; }
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -30,6 +31,8 @@ namespace SimpleWeather.UWP
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+
+            BGTaskHandler = new BackgroundTasks.BackgroundTaskHandler();
         }
 
         /// <summary>
@@ -155,6 +158,26 @@ namespace SimpleWeather.UWP
 
             // Ensure the current window is active
             Window.Current.Activate();
+        }
+
+        /// <summary>
+        /// Event fired when a Background Task is activated (in Single Process Model)
+        /// </summary>
+        /// <param name="args">Arguments that describe the BackgroundTask activated</param>
+        protected override void OnBackgroundActivated(BackgroundActivatedEventArgs args)
+        {
+            base.OnBackgroundActivated(args);
+
+            var deferral = args.TaskInstance.GetDeferral();
+
+            switch (args.TaskInstance.Task.Name)
+            {
+                case "WeatherUpdateBackgroundTask":
+                    new BackgroundTasks.WeatherUpdateBackgroundTask().Run(args.TaskInstance);
+                    break;
+            }
+
+            deferral.Complete();
         }
     }
 }

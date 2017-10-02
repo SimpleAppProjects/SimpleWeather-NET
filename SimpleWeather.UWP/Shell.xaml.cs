@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -37,10 +38,14 @@ namespace SimpleWeather.UWP
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            // Navigate to WeatherNow page
             if (AppFrame.Content == null)
             {
                 AppFrame.Navigate(typeof(WeatherNow), e.Parameter);
             }
+
+            // Setup background task
+            App.BGTaskHandler.RegisterBackgroundTask();
         }
 
         private void AppFrame_Navigated(object sender, NavigationEventArgs e)

@@ -44,6 +44,13 @@ namespace SimpleWeather.UWP
             {
                 WeatherView.UpdateView(weather);
 
+                // Update home tile if it hasn't been already
+                if (Settings.HomeData.Equals(location) && 
+                    TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > 60)
+                {
+                    Helpers.WeatherTileCreator.TileUpdater(weather);
+                }
+
                 // Shell
                 Shell.Instance.BurgerBackground = WeatherView.PendingBackground;
             }
@@ -224,12 +231,7 @@ namespace SimpleWeather.UWP
             }
             else
             {
-                LocationData homeData = null;
-
-                if (Settings.FollowGPS)
-                    homeData = await Settings.GetLastGPSLocData();
-                else
-                    homeData = Settings.LocationData.First();
+                LocationData homeData = Settings.HomeData;
 
                 // Did home change?
                 bool homeChanged = false;

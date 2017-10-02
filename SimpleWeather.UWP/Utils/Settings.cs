@@ -192,5 +192,34 @@ namespace SimpleWeather.Utils
         {
             localSettings.Values[KEY_LASTGPSLOCATION] = value;
         }
+
+        private static int GetRefreshInterval()
+        {
+            if (!localSettings.Values.ContainsKey(KEY_REFRESHINTERVAL) || localSettings.Values[KEY_REFRESHINTERVAL] == null)
+            {
+                SetRefreshInterval(int.Parse(DEFAULT_UPDATE_INTERVAL));
+                return int.Parse(DEFAULT_UPDATE_INTERVAL);
+            }
+            else
+                return (int)localSettings.Values[KEY_REFRESHINTERVAL];
+        }
+
+        private static void SetRefreshInterval(int value)
+        {
+            localSettings.Values[KEY_REFRESHINTERVAL] = value;
+        }
+
+        private static DateTime GetUpdateTime()
+        {
+            if (!localSettings.Values.ContainsKey(KEY_UPDATETIME) || localSettings.Values[KEY_UPDATETIME] == null)
+                return DateTime.MinValue;
+            else
+                return DateTime.Parse((string)localSettings.Values[KEY_UPDATETIME]);
+        }
+
+        public static void SetUpdateTime(DateTime value)
+        {
+            localSettings.Values[KEY_UPDATETIME] = value.ToString();
+        }
     }
 }

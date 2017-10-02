@@ -89,6 +89,27 @@ namespace SimpleWeather.UWP
                 KeyPanel.Visibility = Visibility.Collapsed;
             }
 
+            // Update Interval
+            switch (Settings.RefreshInterval)
+            {
+                case 15:
+                    RefreshComboBox.SelectedIndex = 0;
+                    break;
+                case 30:
+                default:
+                    RefreshComboBox.SelectedIndex = 1;
+                    break;
+                case 60:
+                    RefreshComboBox.SelectedIndex = 2;
+                    break;
+                case 180:
+                    RefreshComboBox.SelectedIndex = 3;
+                    break;
+                case 360:
+                    RefreshComboBox.SelectedIndex = 4;
+                    break;
+            }
+
             KeyEntry.Text = Settings.API_KEY;
             UpdateKeyBorder();
 
@@ -98,6 +119,7 @@ namespace SimpleWeather.UWP
             // Event Listeners
             SystemNavigationManager.GetForCurrentView().BackRequested += SettingsPage_BackRequested;
             APIComboBox.SelectionChanged += APIComboBox_SelectionChanged;
+            RefreshComboBox.SelectionChanged += RefreshComboBox_SelectionChanged;
             OSSLicenseWebview.NavigationStarting += OSSLicenseWebview_NavigationStarting;
         }
 
@@ -187,6 +209,26 @@ namespace SimpleWeather.UWP
         private void KeyEntry_GotFocus(object sender, RoutedEventArgs e)
         {
             KeyBorder.BorderBrush = new SolidColorBrush(Colors.DarkGray);
+        }
+
+        private void RefreshComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox box = sender as ComboBox;
+            int index = box.SelectedIndex;
+
+            if (index == 0)
+                Settings.RefreshInterval = 15; // 15 min
+            else if (index == 1)
+                Settings.RefreshInterval = 30; // 30 min
+            else if (index == 2)
+                Settings.RefreshInterval = 60; // 1 hr
+            else if (index == 3)
+                Settings.RefreshInterval = 180; // 3 hr
+            else if (index == 4)
+                Settings.RefreshInterval = 360; // 6 hr
+
+            // Re-register update tile bg task with new interval
+            App.BGTaskHandler.RegisterBackgroundTask();
         }
 
         private void OSSLicenseWebview_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
