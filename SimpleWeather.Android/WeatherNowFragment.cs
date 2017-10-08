@@ -94,6 +94,14 @@ namespace SimpleWeather.Droid
             {
                 weatherView.UpdateView(weather);
                 SetView(weatherView);
+
+                // Update widgets if they haven't been already
+                if (Settings.HomeData.Equals(location) &&
+                    TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval)
+                {
+                    context.StartService(new Intent(context, typeof(Widgets.WeatherWidgetService))
+                        .SetAction(Widgets.WeatherWidgetService.ACTION_REFRESH));
+                }
             }
 
             Activity.RunOnUiThread(() => refreshLayout.Refreshing = false);
@@ -341,12 +349,7 @@ namespace SimpleWeather.Droid
              * ex. If temperature unit changed
              */
 
-            LocationData homeData = null;
-
-            if (Settings.FollowGPS)
-                homeData = await Settings.GetLastGPSLocData();
-            else
-                homeData = Settings.LocationData.First();
+            LocationData homeData = Settings.HomeData;
 
             // Did home change?
             bool homeChanged = false;

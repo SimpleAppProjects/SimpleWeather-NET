@@ -163,11 +163,12 @@
     <Compile Include="Utils\Settings.cs" />
     <Compile Include="Utils\WeatherUtils.cs" />
     <Compile Include="WeatherNowFragment.cs" />
+    <Compile Include="Widgets\WeatherWidgetProvider.cs" />
+    <Compile Include="Widgets\WeatherWidgetService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <AndroidAsset Include="Assets\fonts\MaterialIcons-Regular.ttf" />
-    <AndroidAsset Include="Assets\fonts\weathericons-regular-webfont.ttf" />
+    <AndroidAsset Include="Assets\weathericons\weathericons-regular-webfont.ttf" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -457,7 +458,275 @@
   <ItemGroup>
     <AndroidResource Include="Resources\layout\about_oslibs.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\app_widget_1x1.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-nodpi\example_appwidget_preview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\values-v14\dimens.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\xml\app_widget_1x1_info.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\app_widget_forecast_panel.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\na.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\wu-chanceflurries.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\wu-chancerain.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\wu-chancesleat.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\wu-chancesnow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\wu-chancetstorms.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\wu-clear.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\wu-cloudy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\wu-flurries.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\wu-hazy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\wu-mostlycloudy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\wu-mostlysunny.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\wu-partlycloudy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\wu-partlysunny.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\wu-rain.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\wu-sleat.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\wu-snow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\wu-sunny.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\wu-tstorms.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\wu-unknown.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-10.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-11.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-12.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-13.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-14.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-15.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-17.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-18.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-19.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-20.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-21.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-22.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-23.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-25.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-26.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-27.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-28.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-30.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-31.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-3200.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-33.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-34.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-35.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-36.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-37.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-38.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-39.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-40.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-41.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-42.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-43.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-44.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-45.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-46.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-47.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\weathericons\png\yahoo-9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\app_widget_4x1.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\xml\app_widget_4x1_info.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\app_widget_2x2.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\app_widget_4x2.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\app_widget_forecast_panel_small.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\xml\app_widget_2x2_info.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\xml\app_widget_4x2_info.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\ic_raindrop.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\ic_direction_up.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\app_widget_forecast_panel_medium.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\ic_strong_wind.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\ic_thermometer.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\app_widget_getstarted.xml" />
+  </ItemGroup>
   <Import Project="..\SimpleWeather\SimpleWeather_Xamarin.projitems" Label="Shared" Condition="Exists('..\SimpleWeather\SimpleWeather_Xamarin.projitems')" />
+  <Import Project="..\SimpleWeather\SimpleWeather_Xamarin.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\packages\NETStandard.Library.2.0.0\build\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.0\build\NETStandard.Library.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

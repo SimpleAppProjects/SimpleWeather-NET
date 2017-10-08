@@ -33,4 +33,14 @@
     <dimen name="location_panel_textview_size">50dp</dimen>
     <dimen name="location_panel_icon_size">30sp</dimen>
     <dimen name="delete_icon_margin">12dp</dimen>
+
+    <!--
+Refer to App Widget Documentation for margin information
+http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
+    -->
+    <dimen name="widget_margin">8dp</dimen>
+
+    <!-- Widget -->
+    <dimen name="clock_text_size">24sp</dimen>
+    <dimen name="date_text_size">12sp</dimen>
 </resources>

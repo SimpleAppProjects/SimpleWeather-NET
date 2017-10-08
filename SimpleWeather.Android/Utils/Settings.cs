@@ -13,11 +13,50 @@ namespace SimpleWeather.Utils
         // Shared Settings
         private static ISharedPreferences preferences = App.Preferences;
         private static ISharedPreferencesEditor editor = preferences.Edit();
+        private static ISharedPreferencesOnSharedPreferenceChangeListener listener = new SettingsListener();
 
         // App data files
         private static File appDataFolder = App.Context.FilesDir;
         private static File locDataFile;
         private static File dataFile;
+
+        // Shared Preferences listener
+        internal class SettingsListener : Java.Lang.Object, ISharedPreferencesOnSharedPreferenceChangeListener
+        {
+            public void OnSharedPreferenceChanged(ISharedPreferences sharedPreferences, string key)
+            {
+                if (String.IsNullOrWhiteSpace(key))
+                    return;
+
+                Context context = App.Context;
+
+                switch (key)
+                {
+                    // FollowGPS changed
+                    case KEY_FOLLOWGPS:
+                        context.StartService(new Intent(context, typeof(Droid.Widgets.WeatherWidgetService))
+                            .SetAction(Droid.Widgets.WeatherWidgetService.ACTION_REFRESH));
+                        break;
+                    // Refresh interval changed
+                    case KEY_REFRESHINTERVAL:
+                        context.StartService(new Intent(context, typeof(Droid.Widgets.WeatherWidgetService))
+                            .SetAction(Droid.Widgets.WeatherWidgetService.ACTION_UPDATEALARM));
+                        break;
+                    // Weather Provider changed
+                    case KEY_API:
+                        context.StartService(new Intent(context, typeof(Droid.Widgets.WeatherWidgetService))
+                            .SetAction(Droid.Widgets.WeatherWidgetService.ACTION_REFRESH));
+                        break;
+                    // Settings unit changed
+                    case KEY_USECELSIUS:
+                        context.StartService(new Intent(context, typeof(Droid.Widgets.WeatherWidgetService))
+                            .SetAction(Droid.Widgets.WeatherWidgetService.ACTION_REFRESH));
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
 
         // Initialize file
         private static void Init()
@@ -33,6 +72,8 @@ namespace SimpleWeather.Utils
 
             if (!locDataFile.Exists())
                 locDataFile.CreateNewFile();
+
+            preferences.RegisterOnSharedPreferenceChangeListener(listener);
         }
 
         private static string GetTempUnit()
@@ -205,6 +246,31 @@ namespace SimpleWeather.Utils
         private static void SetLastGPSLocation(string value)
         {
             editor.PutString(KEY_LASTGPSLOCATION, value);
+            editor.Commit();
+        }
+
+        private static int GetRefreshInterval()
+        {
+            return int.Parse(preferences.GetString(KEY_REFRESHINTERVAL, DEFAULT_UPDATE_INTERVAL));
+        }
+
+        private static void SetRefreshInterval(int value)
+        {
+            editor.PutString(KEY_REFRESHINTERVAL, value.ToString());
+            editor.Commit();
+        }
+
+        private static DateTime GetUpdateTime()
+        {
+            if (!preferences.Contains(KEY_UPDATETIME))
+                return DateTime.MinValue;
+            else
+                return DateTime.Parse(preferences.GetString(KEY_UPDATETIME, DateTime.MinValue.ToString()));
+        }
+
+        private static void SetUpdateTime(DateTime value)
+        {
+            editor.PutString(KEY_UPDATETIME, value.ToString());
             editor.Commit();
         }
     }

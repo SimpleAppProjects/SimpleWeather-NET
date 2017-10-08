@@ -1,0 +1,675 @@
+﻿using SimpleWeather.Utils;
+using System;
+
+using Android.App;
+using Android.Content;
+using Android.OS;
+using Android.Widget;
+using Android.Appwidget;
+using System.Threading.Tasks;
+using SimpleWeather.WeatherData;
+using Android.Support.V4.Content;
+using Android;
+using Android.Content.PM;
+using Android.Locations;
+using SimpleWeather.Droid.Utils;
+using Android.Views;
+using Android.Util;
+
+namespace SimpleWeather.Droid.Widgets
+{
+    [Service]
+    public class WeatherWidgetService : IntentService
+    {
+        private static string TAG = "WeatherWidgetService";
+        public const string ACTION_REFRESH = "SimpleWeather.Droid.action.REFRESH_WIDGET";
+        public const string ACTION_RESIZEWIDGET = "SimpleWeather.Droid.action.RESIZE_WIDGET";
+        public const string ACTION_UPDATECLOCK = "SimpleWeather.Droid.action.UPDATE_CLOCK";
+        public const string ACTION_UPDATEDATE = "SimpleWeather.Droid.action.UPDATE_DATE";
+
+        public const string ACTION_STARTALARM = "SimpleWeather.Droid.action.START_ALARM";
+        public const string ACTION_CANCELALARM = "SimpleWeather.Droid.action.CANCEL_ALARM";
+        public const string ACTION_UPDATEALARM = "SimpleWeather.Droid.action.UPDATE_ALARM";
+
+        private Context mContext;
+        private AppWidgetManager mAppWidgetManager;
+
+        // Weather Widget Providers
+        private WeatherWidgetProvider1x1 mAppWidget1x1 =
+            WeatherWidgetProvider1x1.GetInstance();
+        private WeatherWidgetProvider2x2 mAppWidget2x2 =
+            WeatherWidgetProvider2x2.GetInstance();
+        private WeatherWidgetProvider4x1 mAppWidget4x1 = 
+            WeatherWidgetProvider4x1.GetInstance();
+        private WeatherWidgetProvider4x2 mAppWidget4x2 =
+            WeatherWidgetProvider4x2.GetInstance();
+
+        private const int FORECAST_LENGTH = 3; // 3-day
+        private const int MEDIUM_FORECAST_LENGTH = 4; // 4-day
+        private const int WIDE_FORECAST_LENGTH = 5; // 5-day
+
+        private static bool alarmStarted = false;
+
+        public override void OnCreate()
+        {
+            base.OnCreate();
+
+            mContext = ApplicationContext;
+            mAppWidgetManager = AppWidgetManager.GetInstance(mContext);
+        }
+
+        protected override void OnHandleIntent(Intent intent)
+        {
+            if (ACTION_REFRESH.Equals(intent.Action))
+            {
+                int[] appWidgetIds = intent.GetIntArrayExtra(WeatherWidgetProvider.EXTRA_WIDGET_IDS);
+                WidgetType widgetType = (WidgetType)intent.GetIntExtra(WeatherWidgetProvider.EXTRA_WIDGET_TYPE, -1);
+
+                switch (widgetType)
+                {
+                    case WidgetType.Widget1x1:
+                        RefreshWidget(mAppWidget1x1, appWidgetIds);
+                        break;
+                    case WidgetType.Widget2x2:
+                        RefreshWidget(mAppWidget2x2, appWidgetIds);
+                        break;
+                    case WidgetType.Widget4x1:
+                        RefreshWidget(mAppWidget4x1, appWidgetIds);
+                        break;
+                    case WidgetType.Widget4x2:
+                        RefreshWidget(mAppWidget4x2, appWidgetIds);
+                        break;
+                    // We don't know the widget type to update,
+                    // so just update all
+                    case WidgetType.Unknown:
+                    default:
+                        RefreshWidgets();
+                        break;
+                }
+            }
+            else if (ACTION_RESIZEWIDGET.Equals(intent.Action))
+            {
+                int appWidgetId = intent.GetIntExtra(WeatherWidgetProvider.EXTRA_WIDGET_ID, -1);
+                WidgetType widgetType = (WidgetType)intent.GetIntExtra(WeatherWidgetProvider.EXTRA_WIDGET_TYPE, -1);
+                Bundle newOptions = intent.GetBundleExtra(WeatherWidgetProvider.EXTRA_WIDGET_OPTIONS);
+
+                switch (widgetType)
+                {
+                    case WidgetType.Widget1x1:
+                        // Widget resizes itself; no need to adjust
+                        break;
+                    case WidgetType.Widget2x2:
+                        ResizeWidget(mAppWidget2x2, appWidgetId, newOptions);
+                        break;
+                    case WidgetType.Widget4x1:
+                        ResizeWidget(mAppWidget4x1, appWidgetId, newOptions);
+                        break;
+                    case WidgetType.Widget4x2:
+                        ResizeWidget(mAppWidget4x2, appWidgetId, newOptions);
+                        break;
+                }
+            }
+            else if (ACTION_STARTALARM.Equals(intent.Action))
+            {
+                // Start alarm if it hasn't started already
+                StartAlarm(mContext);
+            }
+            else if (ACTION_CANCELALARM.Equals(intent.Action))
+            {
+                // Cancel all alarms if no widgets exist
+                CancelAlarms(mContext);
+            }
+            else if (ACTION_UPDATEALARM.Equals(intent.Action))
+            {
+                // Refresh interval was changed
+                // Update alarm
+                UpdateAlarm(mContext);
+            }
+            else if (ACTION_UPDATECLOCK.Equals(intent.Action))
+            {
+                // Update clock widget instances
+                int[] appWidgetIds = intent.GetIntArrayExtra(WeatherWidgetProvider.EXTRA_WIDGET_IDS);
+                RefreshClock(appWidgetIds);
+            }
+            else if (ACTION_UPDATEDATE.Equals(intent.Action))
+            {
+                // Update clock widget instances
+                int[] appWidgetIds = intent.GetIntArrayExtra(WeatherWidgetProvider.EXTRA_WIDGET_IDS);
+                RefreshDate(appWidgetIds);
+            }
+        }
+
+        private PendingIntent GetAlarmIntent(Context context)
+        {
+            Intent intent = new Intent(context, typeof(WeatherWidgetService))
+                .SetAction(ACTION_REFRESH);
+
+            return PendingIntent.GetService(context, 0, intent, 0);
+        }
+
+        private void UpdateAlarm(Context context)
+        {
+            AlarmManager am = (AlarmManager)context.GetSystemService(Context.AlarmService);
+            int interval = Settings.RefreshInterval;
+
+            PendingIntent pendingIntent = GetAlarmIntent(context);
+            am.Cancel(pendingIntent);
+            am.SetInexactRepeating(AlarmType.ElapsedRealtime, SystemClock.ElapsedRealtime(),
+                (long)TimeSpan.FromMinutes(interval).TotalMilliseconds, pendingIntent);
+        }
+
+        private void CancelAlarms(Context context)
+        {
+            if (!WidgetsExist(context))
+            {
+                AlarmManager am = (AlarmManager)context.GetSystemService(Context.AlarmService);
+                am.Cancel(GetAlarmIntent(context));
+                alarmStarted = false;
+            }
+        }
+
+        private void StartAlarm(Context context)
+        {
+            if (!alarmStarted && WidgetsExist(context))
+            {
+                UpdateAlarm(context);
+                alarmStarted = true;
+            }
+        }
+
+        private bool WidgetsExist(Context context)
+        {
+            return mAppWidget1x1.HasInstances(context) || mAppWidget2x2.HasInstances(context) || mAppWidget4x1.HasInstances(context) || mAppWidget4x2.HasInstances(context);
+        }
+
+        private async void ResizeWidget(WeatherWidgetProvider provider, int appWidgetId, Bundle newOptions)
+        {
+            if (Settings.WeatherLoaded)
+            {
+                var weather = await GetWeather();
+
+                RebuildForecast(provider, weather, appWidgetId, newOptions);
+            }
+        }
+
+        private async void RefreshWidget(WeatherWidgetProvider provider, int[] appWidgetIds)
+        {
+            if (appWidgetIds == null || appWidgetIds.Length == 0)
+                appWidgetIds = mAppWidgetManager.GetAppWidgetIds(provider.ComponentName);
+
+            if (Settings.WeatherLoaded)
+            {
+                var weather = await GetWeather();
+
+                // Build the widget update for provider
+                var views = BuildUpdate(mContext, provider, weather);
+                BuildForecast(provider, weather, appWidgetIds);
+
+                // Push update for this widget to the home screen
+                if (views != null)
+                    mAppWidgetManager.PartiallyUpdateAppWidget(appWidgetIds, views);
+
+                if (provider.WidgetType == WidgetType.Widget4x2)
+                {
+                    RefreshClock(appWidgetIds);
+                    RefreshDate(appWidgetIds);
+                }
+
+                Settings.UpdateTime = DateTime.Now;
+            }
+            else
+            {
+                // Show "Get Started layout"
+                var views = new RemoteViews(mContext.PackageName, Resource.Layout.app_widget_getstarted);
+                Intent onClickIntent = new Intent(mContext, typeof(SetupActivity));
+                PendingIntent clickPendingIntent = PendingIntent.GetActivity(mContext, 0, onClickIntent, 0);
+                views.SetOnClickPendingIntent(Resource.Id.widgetBackground, clickPendingIntent);
+                mAppWidgetManager.UpdateAppWidget(appWidgetIds, views);
+            }
+        }
+
+        private async void RefreshWidgets()
+        {
+            if (Settings.WeatherLoaded)
+            {
+                var weather = await GetWeather();
+
+                // Build the widget update for available providers
+                // Add widget providers here
+                if (mAppWidget1x1.HasInstances(this))
+                {
+                    int[] appWidgetIds = mAppWidgetManager.GetAppWidgetIds(mAppWidget1x1.ComponentName);
+
+                    var views = BuildUpdate(mContext, mAppWidget1x1, weather);
+                    BuildForecast(mAppWidget1x1, weather, appWidgetIds);
+
+                    // Push update for this widget to the home screen
+                    if (views != null)
+                        mAppWidgetManager.PartiallyUpdateAppWidget(appWidgetIds, views);
+                }
+
+                if (mAppWidget2x2.HasInstances(this))
+                {
+                    int[] appWidgetIds = mAppWidgetManager.GetAppWidgetIds(mAppWidget2x2.ComponentName);
+
+                    var views = BuildUpdate(mContext, mAppWidget2x2, weather);
+                    BuildForecast(mAppWidget2x2, weather);
+
+                    // Push update for this widget to the home screen
+                    if (views != null)
+                        mAppWidgetManager.PartiallyUpdateAppWidget(appWidgetIds, views);
+                }
+
+                if (mAppWidget4x1.HasInstances(this))
+                {
+                    int[] appWidgetIds = mAppWidgetManager.GetAppWidgetIds(mAppWidget4x1.ComponentName);
+
+                    var views = BuildUpdate(mContext, mAppWidget4x1, weather);
+                    BuildForecast(mAppWidget4x1, weather, appWidgetIds);
+
+                    // Push update for this widget to the home screen
+                    if (views != null)
+                        mAppWidgetManager.PartiallyUpdateAppWidget(appWidgetIds, views);
+                }
+
+                if (mAppWidget4x2.HasInstances(this))
+                {
+                    int[] appWidgetIds = mAppWidgetManager.GetAppWidgetIds(mAppWidget4x2.ComponentName);
+
+                    var views = BuildUpdate(mContext, mAppWidget4x2, weather);
+                    BuildForecast(mAppWidget4x2, weather, appWidgetIds);
+
+                    // Push update for this widget to the home screen
+                    if (views != null)
+                        mAppWidgetManager.PartiallyUpdateAppWidget(appWidgetIds, views);
+
+                    RefreshClock(null);
+                    RefreshDate(null);
+                }
+
+                Settings.UpdateTime = DateTime.Now;
+            }
+        }
+
+        private void RefreshClock(int[] appWidgetIds)
+        {
+            if (appWidgetIds == null || appWidgetIds.Length == 0)
+                appWidgetIds = mAppWidgetManager.GetAppWidgetIds(mAppWidget4x2.ComponentName);
+
+            // Update 4x2 clock widgets
+            RemoteViews views = new RemoteViews(mContext.PackageName, mAppWidget4x2.WidgetLayoutId);
+
+            views.SetCharSequence(Resource.Id.clock_panel, "setFormat12Hour",
+                mContext.GetTextFormatted(Resource.String.main_widget_12_hours_format));
+            views.SetCharSequence(Resource.Id.clock_panel, "setFormat24Hour",
+                mContext.GetTextFormatted(Resource.String.clock_24_hours_format));
+
+            mAppWidgetManager.PartiallyUpdateAppWidget(appWidgetIds, views);
+        }
+
+        private void RefreshDate(int[] appWidgetIds)
+        {
+            if (appWidgetIds == null || appWidgetIds.Length == 0)
+                appWidgetIds = mAppWidgetManager.GetAppWidgetIds(mAppWidget4x2.ComponentName);
+
+            // Update 4x2 clock widgets
+            RemoteViews views = new RemoteViews(mContext.PackageName, mAppWidget4x2.WidgetLayoutId);
+            views.SetTextViewText(Resource.Id.date_panel, DateTime.Now.ToString("ddd, MMM dd"));
+            mAppWidgetManager.PartiallyUpdateAppWidget(appWidgetIds, views);
+        }
+
+        public override IBinder OnBind(Intent intent)
+        {
+            // We don't need to bind to this service
+            return null;
+        }
+
+        public RemoteViews BuildUpdate(Context context, WeatherWidgetProvider provider, Weather weather)
+        {
+            // Build an update that holds the updated widget contents
+            RemoteViews updateViews = new RemoteViews(context.PackageName, provider.WidgetLayoutId);
+
+            // Progress bar
+            updateViews.SetViewVisibility(Resource.Id.refresh_button, ViewStates.Visible);
+            updateViews.SetViewVisibility(Resource.Id.refresh_progress, ViewStates.Gone);
+            Intent refreshClickIntent = new Intent(WeatherWidgetProvider.ACTION_REFRESHWIDGETS);
+            PendingIntent prgPendingIntent = PendingIntent.GetBroadcast(context, 0, refreshClickIntent, 0);
+            updateViews.SetOnClickPendingIntent(Resource.Id.refresh_button, prgPendingIntent);
+
+            // Temperature
+            string temp = Settings.Unit == Settings.Fahrenheit ?
+                Math.Round(weather.condition.temp_f) + "\uf045" : Math.Round(weather.condition.temp_c) + "\uf03c";
+            int tempTextSize = 72;
+            if (provider.WidgetType == WidgetType.Widget2x2 || provider.WidgetType == WidgetType.Widget4x2)
+                tempTextSize = 96;
+            updateViews.SetImageViewBitmap(Resource.Id.condition_temp,
+                ImageUtils.WeatherIconToBitmap(context.Assets, temp, tempTextSize));
+
+            // Location Name
+            updateViews.SetTextViewText(Resource.Id.location_name, weather.location.name);
+            // Update Time
+            string updatetext = GetUpdateTimeText(DateTime.Now, false);
+            updateViews.SetTextViewText(Resource.Id.update_time, updatetext);
+
+            // Background
+            var color = WeatherUtils.IsNight(weather) ?
+                ContextCompat.GetColor(context, Resource.Color.color_background_night) :
+                ContextCompat.GetColor(context, Resource.Color.color_background_day);
+            updateViews.SetInt(Resource.Id.widgetBackground, "setBackgroundColor", color);
+
+            // WeatherIcon
+            updateViews.SetImageViewBitmap(Resource.Id.weather_icon,
+                ImageUtils.BitmapFromAssets(context.Assets, WeatherUtils.GetWeatherIconURI(weather.condition.icon)));
+
+            // Set data for larger widgets
+            if (provider.WidgetType != WidgetType.Widget1x1)
+            {
+                // Condition text
+                updateViews.SetTextViewText(Resource.Id.condition_weather, weather.condition.weather);
+
+                // Details
+                if (provider.WidgetType == WidgetType.Widget2x2 || provider.WidgetType == WidgetType.Widget4x2)
+                {
+                    // Feels like temp
+                    updateViews.SetTextViewText(Resource.Id.condition_feelslike, 
+                        (Settings.Unit == Settings.Fahrenheit ?
+                            Math.Round(weather.condition.feelslike_f) : Math.Round(weather.condition.feelslike_c)) + "º");
+
+                    // Wind
+                    updateViews.SetTextViewText(Resource.Id.condition_wind,
+                        (Settings.Unit == Settings.Fahrenheit ?
+                             weather.condition.wind_mph.ToString() + " mph" : weather.condition.wind_kph.ToString() + " kph"));
+
+                    // Show precipitation % if available
+                    if (weather.precipitation != null)
+                    {
+                        updateViews.SetViewVisibility(Resource.Id.condition_pop_panel, ViewStates.Visible);
+                        updateViews.SetTextViewText(Resource.Id.condition_pop, weather.precipitation.pop + "%");
+                    }
+                    else
+                        updateViews.SetViewVisibility(Resource.Id.condition_pop_panel, ViewStates.Invisible);
+                }
+            }
+
+            // When user clicks on widget, launch to WeatherNow page
+            Intent onClickIntent = new Intent(context.ApplicationContext, typeof(MainActivity));
+            PendingIntent clickPendingIntent = PendingIntent.GetActivity(context, 0, onClickIntent, 0);
+            updateViews.SetOnClickPendingIntent(Resource.Id.widgetBackground, clickPendingIntent);
+
+            return updateViews;
+        }
+
+        // TODO: Merge into function below
+        private void RebuildForecast(WeatherWidgetProvider provider, Weather weather, int appWidgetId, Bundle newOptions)
+        {
+            RemoteViews updateViews = new RemoteViews(mContext.PackageName, provider.WidgetLayoutId);
+
+            // Widget dimensions
+            int minHeight = newOptions.GetInt(AppWidgetManager.OptionAppwidgetMinHeight);
+            int minWidth = newOptions.GetInt(AppWidgetManager.OptionAppwidgetMinWidth);
+            int maxHeight = newOptions.GetInt(AppWidgetManager.OptionAppwidgetMaxHeight);
+            int maxWidth = newOptions.GetInt(AppWidgetManager.OptionAppwidgetMaxWidth);
+            int maxCellHeight = GetCellsForSize(maxHeight);
+            int maxCellWidth = GetCellsForSize(maxWidth);
+            int cellHeight = GetCellsForSize(minHeight);
+            int cellWidth = GetCellsForSize(minWidth);
+
+            // Determine forecast size
+            int forecastLength = GetForecastLength(provider.WidgetType, cellWidth);
+            if (weather.forecast.Length < forecastLength)
+                forecastLength = weather.forecast.Length;
+
+            if (provider.WidgetType == WidgetType.Widget4x1)
+            {
+                if (cellWidth > 3)
+                    updateViews.SetViewVisibility(Resource.Id.condition_weather, ViewStates.Visible);
+                else
+                    updateViews.SetViewVisibility(Resource.Id.condition_weather, ViewStates.Gone);
+            }
+            else if (provider.WidgetType == WidgetType.Widget4x2)
+            {
+                float clockSize = mContext.Resources.GetDimension(Resource.Dimension.clock_text_size);
+                float dateSize = mContext.Resources.GetDimension(Resource.Dimension.date_text_size);
+                float scale = (cellHeight != maxCellHeight) ? 1.25f : 1f;
+
+                updateViews.SetTextViewTextSize(Resource.Id.clock_panel, (int)ComplexUnitType.Px, clockSize * scale);
+                updateViews.SetTextViewTextSize(Resource.Id.date_panel, (int)ComplexUnitType.Px, dateSize * scale);
+            }
+
+            updateViews.RemoveAllViews(Resource.Id.forecast_layout);
+            BuildForecastPanel(updateViews, provider, weather, forecastLength, cellHeight == maxCellHeight);
+            mAppWidgetManager.PartiallyUpdateAppWidget(appWidgetId, updateViews);
+        }
+
+        private void BuildForecast(WeatherWidgetProvider provider, Weather weather)
+        {
+            int[] appWidgetIds = mAppWidgetManager.GetAppWidgetIds(provider.ComponentName);
+            BuildForecast(provider, weather, appWidgetIds);
+        }
+
+        private void BuildForecast(WeatherWidgetProvider provider, Weather weather, int[] appWidgetIds)
+        {
+            for (int i = 0; i < appWidgetIds.Length; i++)
+            {
+                RemoteViews updateViews = new RemoteViews(mContext.PackageName, provider.WidgetLayoutId);
+                updateViews.RemoveAllViews(Resource.Id.forecast_layout);
+
+                Bundle newOptions = mAppWidgetManager.GetAppWidgetOptions(appWidgetIds[i]);
+
+                // Widget dimensions
+                int minHeight = newOptions.GetInt(AppWidgetManager.OptionAppwidgetMinHeight);
+                int minWidth = newOptions.GetInt(AppWidgetManager.OptionAppwidgetMinWidth);
+                int maxHeight = newOptions.GetInt(AppWidgetManager.OptionAppwidgetMaxHeight);
+                int maxWidth = newOptions.GetInt(AppWidgetManager.OptionAppwidgetMaxWidth);
+                int maxCellHeight = GetCellsForSize(maxHeight);
+                int maxCellWidth = GetCellsForSize(maxWidth);
+                int cellHeight = GetCellsForSize(minHeight);
+                int cellWidth = GetCellsForSize(minWidth);
+
+                // Determine forecast size
+                int forecastLength = GetForecastLength(provider.WidgetType, cellWidth);
+                if (weather.forecast.Length < forecastLength)
+                    forecastLength = weather.forecast.Length;
+
+                if (provider.WidgetType == WidgetType.Widget4x1)
+                {
+                    if (cellWidth > 3)
+                        updateViews.SetViewVisibility(Resource.Id.condition_weather, ViewStates.Visible);
+                    else
+                        updateViews.SetViewVisibility(Resource.Id.condition_weather, ViewStates.Gone);
+                }
+                else if (provider.WidgetType == WidgetType.Widget4x2)
+                {
+                    float clockSize = mContext.Resources.GetDimension(Resource.Dimension.clock_text_size);
+                    float dateSize = mContext.Resources.GetDimension(Resource.Dimension.date_text_size);
+                    float scale = (cellHeight != maxCellHeight) ? 1.25f : 1f;
+
+                    updateViews.SetTextViewTextSize(Resource.Id.clock_panel, (int)ComplexUnitType.Px, clockSize * scale);
+                    updateViews.SetTextViewTextSize(Resource.Id.date_panel, (int)ComplexUnitType.Px, dateSize * scale);
+                }
+
+                BuildForecastPanel(updateViews, provider, weather, forecastLength, cellHeight == maxCellHeight);
+                mAppWidgetManager.PartiallyUpdateAppWidget(appWidgetIds[i], updateViews);
+            }
+        }
+
+        private void BuildForecastPanel(
+            RemoteViews updateViews, WeatherWidgetProvider provider, Weather weather,
+            int forecastLength, bool forceSmall)
+        {
+            for (int i = 0; i < forecastLength; i++)
+            {
+                var forecast = weather.forecast[i];
+
+                RemoteViews forecastPanel = null;
+                if (provider.WidgetType == WidgetType.Widget4x1)
+                    forecastPanel = new RemoteViews(mContext.PackageName, Resource.Layout.app_widget_forecast_panel);
+                else if (provider.WidgetType == WidgetType.Widget2x2 || forceSmall)
+                    forecastPanel = new RemoteViews(mContext.PackageName, Resource.Layout.app_widget_forecast_panel_small);
+                else
+                    forecastPanel = new RemoteViews(mContext.PackageName, Resource.Layout.app_widget_forecast_panel_medium);
+
+                forecastPanel.SetTextViewText(Resource.Id.forecast_date, forecast.date.ToString("ddd"));
+                forecastPanel.SetImageViewBitmap(Resource.Id.forecast_icon,
+                    ImageUtils.BitmapFromAssets(mContext.Assets, WeatherUtils.GetWeatherIconURI(forecast.icon)));
+                forecastPanel.SetTextViewText(Resource.Id.forecast_hi,
+                    (Settings.Unit == Settings.Fahrenheit ?
+                        forecast.high_f : forecast.high_c) + "º");
+                forecastPanel.SetTextViewText(Resource.Id.forecast_lo,
+                    (Settings.Unit == Settings.Fahrenheit ?
+                        forecast.low_f : forecast.low_c) + "º");
+
+                updateViews.AddView(Resource.Id.forecast_layout, forecastPanel);
+            }
+        }
+
+        /**
+         * Returns number of cells needed for given size of the widget.
+         *
+         * @param size Widget size in dp.
+         * @return Size in number of cells.
+         */
+        private int GetCellsForSize(int size)
+        {
+            // The hardwired sizes in this function come from the hardwired formula found in
+            // Android's UI guidelines for widget design:
+            // http://developer.android.com/guide/practices/ui_guidelines/widget_design.html
+            return (size + 30) / 70;
+        }
+
+        private int GetForecastLength(WidgetType widgetType, int cellWidth)
+        {
+            int forecastLength = (widgetType == WidgetType.Widget4x2) ? WIDE_FORECAST_LENGTH : FORECAST_LENGTH;
+
+            if (cellWidth < 2)
+            {
+                if (widgetType == WidgetType.Widget4x1)
+                    forecastLength = 0;
+            }
+            else if (cellWidth == 2)
+            {
+                if (widgetType == WidgetType.Widget4x1)
+                    forecastLength = 1;
+            }
+            else if (cellWidth == 3)
+            {
+                if (widgetType == WidgetType.Widget4x1)
+                    forecastLength = 2;
+                else if (widgetType == WidgetType.Widget2x2)
+                    forecastLength = MEDIUM_FORECAST_LENGTH;
+            }
+            else if (cellWidth == 4)
+            {
+                if (widgetType == WidgetType.Widget2x2 || widgetType == WidgetType.Widget4x2)
+                    forecastLength = WIDE_FORECAST_LENGTH;
+            }
+            else if (cellWidth > 4)
+            {
+                if (widgetType == WidgetType.Widget4x1)
+                    forecastLength = MEDIUM_FORECAST_LENGTH;
+                else if (widgetType == WidgetType.Widget2x2 || widgetType == WidgetType.Widget4x2)
+                    forecastLength = WIDE_FORECAST_LENGTH;
+            }
+
+            return forecastLength;
+        }
+
+        private string GetUpdateTimeText(DateTime now, bool shortFormat)
+        {
+            string updatetime = string.Format("{0} {1}", now.ToString("ddd"), now.ToString("t").ToLower());
+
+            if (shortFormat)
+                return updatetime;
+            else
+                return string.Format("{0} {1}", mContext.GetString(Resource.String.update_prefix).ToLower(), updatetime);
+        }
+
+        private async Task<Weather> GetWeather()
+        {
+            Weather weather = null;
+
+            try
+            {
+                if (Settings.FollowGPS)
+                    await UpdateLocation();
+
+                var wloader = new WeatherDataLoader(null, Settings.HomeData);
+                await wloader.LoadWeatherData(false);
+
+                weather = wloader.GetWeather();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+
+            return weather;
+        }
+
+        private async Task<bool> UpdateLocation()
+        {
+            bool locationChanged = false;
+
+            if (Settings.FollowGPS)
+            {
+                if (ContextCompat.CheckSelfPermission(App.Context, Manifest.Permission.AccessFineLocation) != Permission.Granted &&
+                    ContextCompat.CheckSelfPermission(App.Context, Manifest.Permission.AccessCoarseLocation) != Permission.Granted)
+                {
+                    return false;
+                }
+
+                LocationManager locMan = (LocationManager)App.Context.GetSystemService(Context.LocationService);
+                bool isGPSEnabled = locMan.IsProviderEnabled(LocationManager.GpsProvider);
+                bool isNetEnabled = locMan.IsProviderEnabled(LocationManager.NetworkProvider);
+
+                Android.Locations.Location location = null;
+
+                if (isGPSEnabled || isNetEnabled)
+                {
+                    Criteria locCriteria = new Criteria() { Accuracy = Accuracy.Coarse, CostAllowed = false, PowerRequirement = Power.Low };
+                    string provider = locMan.GetBestProvider(locCriteria, true);
+                    location = locMan.GetLastKnownLocation(provider);
+
+                    if (location != null)
+                    {
+                        LocationData lastGPSLocData = await Settings.GetLastGPSLocData();
+
+                        // Check previous location difference
+                        if (lastGPSLocData.query != null &&
+                            Math.Abs(ConversionMethods.CalculateHaversine(lastGPSLocData.latitude, lastGPSLocData.longitude,
+                            location.Latitude, location.Longitude)) < 2500)
+                        {
+                            return false;
+                        }
+
+                        string selected_query = string.Empty;
+
+                        await Task.Run(async () =>
+                        {
+                            var view = await GeopositionQuery.GetLocation(location);
+
+                            if (!String.IsNullOrEmpty(view.LocationQuery))
+                                selected_query = view.LocationQuery;
+                            else
+                                selected_query = string.Empty;
+                        });
+
+                        if (String.IsNullOrWhiteSpace(selected_query))
+                        {
+                            // Stop since there is no valid query
+                            return false;
+                        }
+
+                        // Save location as last known
+                        lastGPSLocData.SetData(selected_query, location);
+                        Settings.SaveLastGPSLocData();
+
+                        locationChanged = true;
+                    }
+                }
+            }
+
+            return locationChanged;
+        }
+    }
+}

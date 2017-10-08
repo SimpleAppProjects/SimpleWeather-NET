@@ -4,11 +4,52 @@ using Android.Graphics;
 using Android.Graphics.Drawables;
 using Android.Support.V4.Content;
 using Android.Util;
+using Android.Content.Res;
+using System.IO;
 
 namespace SimpleWeather.Droid.Utils
 {
     public static class ImageUtils
     {
+        public static Bitmap BitmapFromAssets(AssetManager am, String path)
+        {
+            Bitmap bmp = null;
+
+            try
+            {
+                using (Stream stream = am.Open(path))
+                    bmp = BitmapFactory.DecodeStream(stream);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                bmp = null;
+            }
+
+            return bmp;
+        }
+
+        public static Bitmap WeatherIconToBitmap(AssetManager am, String text, int textSize)
+        {
+            Paint paint = new Paint(PaintFlags.AntiAlias);
+            Typeface weathericons = Typeface.CreateFromAsset(am, "weathericons/weathericons-regular-webfont.ttf");
+            paint.SubpixelText = true;
+            paint.SetTypeface(weathericons);
+            paint.SetStyle(Paint.Style.Fill);
+            paint.Color = Color.White;
+            paint.TextSize = textSize;
+            paint.TextAlign = Paint.Align.Left;
+
+            float baseline = -paint.Ascent();
+            int width = (int)(paint.MeasureText(text) + 0.5f);
+            int height = (int)(baseline + paint.Descent() + 0.5f);
+
+            Bitmap bmp = Bitmap.CreateBitmap(width, height, Bitmap.Config.Argb8888);
+            Canvas myCanvas = new Canvas(bmp);
+            myCanvas.DrawText(text, 0, baseline, paint);
+
+            return bmp;
+        }
     }
 
     public class CenterCropper

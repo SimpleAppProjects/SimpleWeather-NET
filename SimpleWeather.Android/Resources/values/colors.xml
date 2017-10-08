@@ -11,4 +11,7 @@
     <color name="searchview_divider">@android:color/holo_red_light</color>
 
     <color name="bg_swipe_delete">#ffdb4437</color>
+
+    <color name="color_background_night">#FF1A244A</color>
+    <color name="color_background_day">#FF4874BF</color>
 </resources>

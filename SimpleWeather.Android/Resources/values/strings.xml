@@ -80,5 +80,21 @@
     <string name="werror_networkerror">Network Connection Error!!</string>
     <string name="werror_invalidkey">Invalid API Key</string>
     <string name="werror_querynotfound">No cities match your search query</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 
+    <!-- Refresh Intervals -->
+    <string name="pref_title_refreshinterval">Update Interval</string>
+    <string name="refresh_30min">30 minutes</string>
+    <string name="refresh_60min">1 hour</string>
+    <string name="refresh_3hrs">3 hours</string>
+    <string name="refresh_6hrs">6 hours</string>
+    <string name="refresh_12hrs">12 hours</string>
+
+    <!-- Widget -->
+    <string name="widget_getstarted_prompt">Tap to get started</string>
+    <string name="update_prefix">Updated on</string>
+    <!-- format strings for clocks -->
+    <string name="clock_24_hours_format" translatable="false">kk&#58;mm</string>
+    <string name="main_widget_12_hours_format" translatable="false">h&#58;mm&#8202;<b><font size="16" face="sans-serif">a</font></b></string>
 </resources>

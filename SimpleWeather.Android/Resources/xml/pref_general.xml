@@ -16,6 +16,13 @@
             android:title="@string/label_currentlocation" />
 
         <ListPreference
+            android:defaultValue="30"
+            android:entries="@array/refreshinterval_entries"
+            android:entryValues="@array/refreshinterval_values"
+            android:key="key_refreshinterval"
+            android:title="@string/pref_title_refreshinterval" />
+
+        <ListPreference
             android:entries="@array/api_entries"
             android:entryValues="@array/api_entries_values"
             android:key="API"

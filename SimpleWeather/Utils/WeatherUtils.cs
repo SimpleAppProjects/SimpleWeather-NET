@@ -160,7 +160,11 @@ namespace SimpleWeather.Utils
 
         public static String GetWeatherIconURI(string icon)
         {
+#if WINDOWS_UWP
             string baseuri = "ms-appx:///Assets/WeatherIcons/png/";
+#elif __ANDROID__
+            string baseuri = "weathericons/png/";
+#endif
             string fileIcon = string.Empty;
 
             if (int.TryParse(icon, out int code))

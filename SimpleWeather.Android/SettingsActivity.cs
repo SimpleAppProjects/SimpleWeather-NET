@@ -126,6 +126,7 @@ namespace SimpleWeather.Droid
             private const string KEY_API = "API";
             private const string KEY_APIKEY = "API_KEY";
             private const string KEY_APIKEY_VERIFIED = "API_KEY_VERIFIED";
+            private const string KEY_REFRESHINTERVAL = "key_refreshinterval";
 
             // Preferences
             private SwitchPreference followGps;
@@ -133,6 +134,7 @@ namespace SimpleWeather.Droid
             private KeyEntryPreference keyEntry;
             private ISharedPreferences wuSharedPrefs;
             private bool keyVerified { get { return IsKeyVerfied(); } set { SetKeyVerified(value); } }
+            private ListPreference intervalPref;
 
             private bool IsKeyVerfied()
             {
@@ -247,6 +249,14 @@ namespace SimpleWeather.Droid
 
                 UpdateKeySummary();
 
+                intervalPref = (ListPreference)FindPreference(KEY_REFRESHINTERVAL);
+                intervalPref.Summary = intervalPref.Entry;
+                intervalPref.PreferenceChange += (object sender, Preference.PreferenceChangeEventArgs e) =>
+                {
+                    ListPreference pref = e.Preference as ListPreference;
+                    int idx = pref.FindIndexOfValue(e.NewValue.ToString());
+                    pref.Summary = pref.GetEntries()[idx];
+                };
             }
 
             private void UpdateKeySummary()
