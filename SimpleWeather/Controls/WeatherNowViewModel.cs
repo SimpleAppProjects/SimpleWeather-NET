@@ -273,11 +273,10 @@ namespace SimpleWeather.Controls
             // Update backgrounds
 #if WINDOWS_UWP
             WeatherUtils.SetBackground(Background, weather);
-            PendingBackground.Color = WeatherUtils.IsNight(weather) ?
-                Color.FromArgb(255, 26, 36, 74) : Color.FromArgb(255, 72, 116, 191);
+            PendingBackground.Color = WeatherUtils.GetWeatherBackgroundColor(weather);
 #elif __ANDROID__
             Background = WeatherUtils.GetBackgroundURI(weather);
-            PendingBackground = WeatherUtils.IsNight(weather) ? new Color(26, 36, 74, 255) : new Color(72, 116, 191, 255);
+            PendingBackground = WeatherUtils.GetWeatherBackgroundColor(weather);
 #endif
 
             // Location

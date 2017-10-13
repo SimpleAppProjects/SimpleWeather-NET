@@ -22,14 +22,14 @@ namespace SimpleWeather.Utils
                 else
                     file = "file:///android_asset/backgrounds/PartlyCloudy-Day.jpg";
             }
-            if (icon.Contains("cloudy"))
+            else if (icon.Contains("cloudy"))
             {
                 if (IsNight(weather))
                     file = "file:///android_asset/backgrounds/MostlyCloudy-Night.jpg";
                 else
                     file = "file:///android_asset/backgrounds/MostlyCloudy-Day.jpg";
             }
-            else if (icon.Contains("rain") || icon.Contains("sleet"))
+            else if (icon.Contains("rain") || icon.Contains("sleet") || icon.Contains("sleat"))
             {
                 file = "file:///android_asset/backgrounds/RainySky.jpg";
             }

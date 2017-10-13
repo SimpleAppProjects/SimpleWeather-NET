@@ -260,6 +260,176 @@ namespace SimpleWeather.Utils
             return date;
         }
 
+#if WINDOWS_UWP
+        public static Windows.UI.Color GetWeatherBackgroundColor(Weather weather)
+        {
+#elif __ANDROID__
+        public static Android.Graphics.Color GetWeatherBackgroundColor(Weather weather)
+        {
+#endif
+            byte[] rgb = null;
+            String icon = weather.condition.icon;
+
+            // Apply background based on weather condition
+            /* WeatherUnderground */
+            if (icon.Contains("mostly") || icon.Contains("partly") ||
+                icon.Contains("cloudy"))
+            {
+                if (IsNight(weather))
+                {
+                    // Add night background plus cloudiness
+                    rgb = new byte[3] { 16, 37, 67 };
+                }
+                else
+                {
+                    // add day bg + cloudiness
+                    rgb = new byte[3] { 119, 148, 196 };
+                }
+            }
+            else if (icon.Contains("rain") || icon.Contains("sleet") || icon.Contains("sleat") || 
+                     icon.Contains("flurries") || icon.Contains("snow") || icon.Contains("tstorms"))
+            {
+                // lighter than night color + cloudiness
+                rgb = new byte[3] { 53, 67, 116 };
+            }
+            else if (icon.Contains("hazy") || icon.Contains("fog"))
+            {
+                // add haziness
+                rgb = new byte[3] { 143, 163, 196 };
+            }
+            else if (icon.Contains("clear") || icon.Contains("sunny"))
+            {
+                // Set background based using sunset/rise times
+                if (IsNight(weather))
+                {
+                    // Night background
+                    rgb = new byte[3] { 26, 36, 74 };
+                }
+                else
+                {
+                    // set day bg
+                    rgb = new byte[3] { 72, 116, 191 };
+                }
+            }
+
+            /* Yahoo Weather */
+            if (rgb == null && int.TryParse(icon, out int code))
+            {
+                switch (code)
+                {
+                    // Rain 
+                    case 9:
+                    case 11:
+                    case 12:
+                    case 40:
+                    // (Mixed) Rain/Snow/Sleet
+                    case 5:
+                    case 6:
+                    case 7:
+                    case 18:
+                    // Hail / Freezing Rain
+                    case 8:
+                    case 10:
+                    case 17:
+                    case 35:
+                    // Snow / Snow Showers/Storm
+                    case 13:
+                    case 14:
+                    case 15:
+                    case 16:
+                    case 41:
+                    case 42:
+                    case 43:
+                    case 46:
+                    // Tornado / Hurricane / Thunderstorm / Tropical Storm
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 37:
+                    case 38:
+                    case 39:
+                    case 45:
+                    case 47:
+                        // lighter than night color + cloudiness
+                        rgb = new byte[3] { 53, 67, 116 };
+                        break;
+                    // Dust
+                    case 19:
+                    // Foggy / Haze
+                    case 20:
+                    case 21:
+                    case 22:
+                        // add haziness
+                        rgb = new byte[3] { 143, 163, 196 };
+                        break;
+                    // Night
+                    case 31:
+                    case 33:
+                        // Night background
+                        rgb = new byte[3] { 26, 36, 74 };
+                        break;
+                    /* Ambigious weather conditions */
+                    // (Mostly) Cloudy
+                    case 28:
+                    case 26:
+                    case 27:
+                    // Partly Cloudy
+                    case 44:
+                    case 29:
+                    case 30:
+                        if (IsNight(weather))
+                        {
+                            // Add night background plus cloudiness
+                            rgb = new byte[3] { 16, 37, 67 };
+                        }
+                        else
+                        {
+                            // add day bg + cloudiness
+                            rgb = new byte[3] { 119, 148, 196 };
+                        }
+                        break;
+                    case 3200:
+                    default:
+                        // Set background based using sunset/rise times
+                        if (IsNight(weather))
+                        {
+                            // Night background
+                            rgb = new byte[3] { 26, 36, 74 };
+                        }
+                        else
+                        {
+                            // set day bg
+                            rgb = new byte[3] { 72, 116, 191 };
+                        }
+                        break;
+                }
+            }
+
+            // Just in case
+            if (rgb == null)
+            {
+                // Set background based using sunset/rise times
+                if (IsNight(weather))
+                {
+                    // Night background
+                    rgb = new byte[3] { 26, 36, 74 };
+                }
+                else
+                {
+                    // set day bg
+                    rgb = new byte[3] { 72, 116, 191 };
+                }
+            }
+
+#if WINDOWS_UWP
+            return Windows.UI.Color.FromArgb(255, rgb[0], rgb[1], rgb[2]);
+#elif __ANDROID__
+            return new Android.Graphics.Color(rgb[0], rgb[1], rgb[2]);
+#endif
+        }
+
         public class Coordinate
         {
             public double Latitude { get => lat; set { SetLat(value); } }

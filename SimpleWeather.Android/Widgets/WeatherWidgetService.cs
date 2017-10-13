@@ -352,9 +352,7 @@ namespace SimpleWeather.Droid.Widgets
             updateViews.SetTextViewText(Resource.Id.update_time, updatetext);
 
             // Background
-            var color = WeatherUtils.IsNight(weather) ?
-                ContextCompat.GetColor(context, Resource.Color.color_background_night) :
-                ContextCompat.GetColor(context, Resource.Color.color_background_day);
+            var color = WeatherUtils.GetWeatherBackgroundColor(weather);
             updateViews.SetInt(Resource.Id.widgetBackground, "setBackgroundColor", color);
 
             // WeatherIcon

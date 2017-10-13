@@ -44,14 +44,14 @@ namespace SimpleWeather.Utils
                 else
                     imgURI = ("ms-appx:///Assets/Backgrounds/PartlyCloudy-Day.jpg");
             }
-            if (icon.Contains("cloudy"))
+            else if (icon.Contains("cloudy"))
             {
                 if (IsNight(weather))
                     imgURI = ("ms-appx:///Assets/Backgrounds/MostlyCloudy-Night.jpg");
                 else
                     imgURI = ("ms-appx:///Assets/Backgrounds/MostlyCloudy-Day.jpg");
             }
-            else if (icon.Contains("rain") || icon.Contains("sleet"))
+            else if (icon.Contains("rain") || icon.Contains("sleet") || icon.Contains("sleat"))
             {
                 imgURI = ("ms-appx:///Assets/Backgrounds/RainySky.jpg");
             }
