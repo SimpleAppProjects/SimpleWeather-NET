@@ -20,10 +20,8 @@ namespace SimpleWeather.Controls
             WeatherIcon = WeatherUtils.GetWeatherIcon(forecast.icon);
             Date = forecast.date.ToString("dddd dd");
             Condition = forecast.condition;
-            HiTemp = (Settings.Unit == Settings.Fahrenheit ?
-                forecast.high_f : forecast.high_c) + "º ";
-            LoTemp = (Settings.Unit == Settings.Fahrenheit ?
-                forecast.low_f : forecast.low_c) + "º ";
+            HiTemp = (Settings.IsFahrenheit ? forecast.high_f : forecast.high_c) + "º ";
+            LoTemp = (Settings.IsFahrenheit ? forecast.low_f : forecast.low_c) + "º ";
         }
     }
 }

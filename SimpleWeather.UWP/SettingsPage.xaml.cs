@@ -57,16 +57,8 @@ namespace SimpleWeather.UWP
             localSettings.CreateContainer(Settings.API_WUnderground, ApplicationDataCreateDisposition.Always);
 
             // Temperature
-            if (Settings.Unit == Settings.Fahrenheit)
-            {
-                Fahrenheit.IsChecked = true;
-                Celsius.IsChecked = false;
-            }
-            else
-            {
-                Fahrenheit.IsChecked = false;
-                Celsius.IsChecked = true;
-            }
+            Fahrenheit.IsChecked = Settings.IsFahrenheit;
+            Celsius.IsChecked = !Settings.IsFahrenheit;
 
             // Location
             FollowGPS.IsOn = Settings.FollowGPS;

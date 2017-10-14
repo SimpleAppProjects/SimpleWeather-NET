@@ -23,8 +23,7 @@ namespace SimpleWeather.Controls
                 Title = date[0].Substring(0, 3);
 
             WeatherIcon = WeatherUtils.GetWeatherIcon(txt_forecast.icon);
-            FctText = (Settings.Unit == Settings.Fahrenheit ?
-                txt_forecast.fcttext : txt_forecast.fcttext_metric);
+            FctText = Settings.IsFahrenheit ? txt_forecast.fcttext : txt_forecast.fcttext_metric;
             PoP = txt_forecast.pop + "%";
         }
     }

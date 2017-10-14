@@ -19,6 +19,7 @@ namespace SimpleWeather.Utils
         public static int RefreshInterval { get { return GetRefreshInterval(); } set { SetRefreshInterval(value); } }
         public static LocationData HomeData { get { return GetHomeData(); } }
         public static DateTime UpdateTime { get { return GetUpdateTime(); } set { SetUpdateTime(value); } }
+        public static bool IsFahrenheit { get { return Unit == Fahrenheit; } }
 
         // Data
         public static List<LocationData> LocationData { get { return Task.Run(() => GetLocationData()).Result; } }

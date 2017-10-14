@@ -351,7 +351,7 @@ namespace SimpleWeather.Droid.Widgets
             updateViews.SetOnClickPendingIntent(Resource.Id.refresh_button, prgPendingIntent);
 
             // Temperature
-            string temp = Settings.Unit == Settings.Fahrenheit ?
+            string temp = Settings.IsFahrenheit ?
                 Math.Round(weather.condition.temp_f) + "\uf045" : Math.Round(weather.condition.temp_c) + "\uf03c";
             int tempTextSize = 72;
             if (provider.WidgetType == WidgetType.Widget2x2 || provider.WidgetType == WidgetType.Widget4x2)
@@ -384,12 +384,12 @@ namespace SimpleWeather.Droid.Widgets
                 {
                     // Feels like temp
                     updateViews.SetTextViewText(Resource.Id.condition_feelslike, 
-                        (Settings.Unit == Settings.Fahrenheit ?
+                        (Settings.IsFahrenheit ?
                             Math.Round(weather.condition.feelslike_f) : Math.Round(weather.condition.feelslike_c)) + "º");
 
                     // Wind
                     updateViews.SetTextViewText(Resource.Id.condition_wind,
-                        (Settings.Unit == Settings.Fahrenheit ?
+                        (Settings.IsFahrenheit ?
                              weather.condition.wind_mph.ToString() + " mph" : weather.condition.wind_kph.ToString() + " kph"));
 
                     // Show precipitation % if available
@@ -525,11 +525,9 @@ namespace SimpleWeather.Droid.Widgets
                 forecastPanel.SetImageViewBitmap(Resource.Id.forecast_icon,
                     ImageUtils.BitmapFromAssets(mContext.Assets, WeatherUtils.GetWeatherIconURI(forecast.icon)));
                 forecastPanel.SetTextViewText(Resource.Id.forecast_hi,
-                    (Settings.Unit == Settings.Fahrenheit ?
-                        forecast.high_f : forecast.high_c) + "º");
+                    (Settings.IsFahrenheit ? forecast.high_f : forecast.high_c) + "º");
                 forecastPanel.SetTextViewText(Resource.Id.forecast_lo,
-                    (Settings.Unit == Settings.Fahrenheit ?
-                        forecast.low_f : forecast.low_c) + "º");
+                    (Settings.IsFahrenheit ? forecast.low_f : forecast.low_c) + "º");
 
                 updateViews.AddView(Resource.Id.forecast_layout, forecastPanel);
             }

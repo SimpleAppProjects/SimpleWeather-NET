@@ -52,7 +52,7 @@ namespace SimpleWeather.UWP.Helpers
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = (Settings.Unit == Settings.Fahrenheit ? weather.condition.temp_f : weather.condition.temp_c) + "º",
+                                    Text = (Settings.IsFahrenheit ? weather.condition.temp_f : weather.condition.temp_c) + "º",
                                     HintStyle = AdaptiveTextStyle.Body,
                                     HintAlign = AdaptiveTextAlign.Center
                                 }
@@ -68,7 +68,7 @@ namespace SimpleWeather.UWP.Helpers
                 var tempGroup = new AdaptiveGroup();
 
                 // 2day forecast
-                for (int i = 0; i < MEDIUM_FORECAST_LENGTH+1; i++)
+                for (int i = 0; i < MEDIUM_FORECAST_LENGTH + 1; i++)
                 {
                     var forecast = weather.forecast[i];
 
@@ -104,7 +104,7 @@ namespace SimpleWeather.UWP.Helpers
                         {
                             new AdaptiveText()
                             {
-                                Text = (Settings.Unit == Settings.Fahrenheit ? forecast.high_f : forecast.high_c) + "º",
+                                Text = (Settings.IsFahrenheit ? forecast.high_f : forecast.high_c) + "º",
                                 HintStyle = AdaptiveTextStyle.Caption,
                                 HintAlign = AdaptiveTextAlign.Center
                             }
@@ -168,13 +168,13 @@ namespace SimpleWeather.UWP.Helpers
                         {
                             new AdaptiveText()
                             {
-                                Text = (Settings.Unit == Settings.Fahrenheit ? forecast.high_f : forecast.high_c) + "º",
+                                Text = (Settings.IsFahrenheit ? forecast.high_f : forecast.high_c) + "º",
                                 HintStyle = AdaptiveTextStyle.Caption,
                                 HintAlign = AdaptiveTextAlign.Center
                             },
                             new AdaptiveText()
                             {
-                                Text = (Settings.Unit == Settings.Fahrenheit ? forecast.low_f : forecast.low_c) + "º",
+                                Text = (Settings.IsFahrenheit ? forecast.low_f : forecast.low_c) + "º",
                                 HintStyle = AdaptiveTextStyle.CaptionSubtle,
                                 HintAlign = AdaptiveTextAlign.Center
                             }
@@ -227,17 +227,17 @@ namespace SimpleWeather.UWP.Helpers
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("Temp: {0}", (Settings.Unit == Settings.Fahrenheit ? weather.condition.temp_f : weather.condition.temp_c) + "º"),
+                                    Text = string.Format("Temp: {0}", (Settings.IsFahrenheit ? weather.condition.temp_f : weather.condition.temp_c) + "º"),
                                     HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("Feels like: {0}", (Settings.Unit == Settings.Fahrenheit ? weather.condition.feelslike_f : weather.condition.feelslike_c) + "º"),
+                                    Text = string.Format("Feels like: {0}", (Settings.IsFahrenheit ? weather.condition.feelslike_f : weather.condition.feelslike_c) + "º"),
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("Wind: {0}", Settings.Unit == Settings.Fahrenheit ? weather.condition.wind_mph.ToString() + " mph" : weather.condition.wind_kph.ToString() + " kph"),
+                                    Text = string.Format("Wind: {0}", Settings.IsFahrenheit ? weather.condition.wind_mph.ToString() + " mph" : weather.condition.wind_kph.ToString() + " kph"),
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle
                                 }
                             }
@@ -270,12 +270,12 @@ namespace SimpleWeather.UWP.Helpers
                             },
                             new AdaptiveText()
                             {
-                                Text = (Settings.Unit == Settings.Fahrenheit ? forecast.high_f : forecast.high_c) + "º",
+                                Text = (Settings.IsFahrenheit ? forecast.high_f : forecast.high_c) + "º",
                                 HintAlign = AdaptiveTextAlign.Center
                             },
                             new AdaptiveText()
                             {
-                                Text = (Settings.Unit == Settings.Fahrenheit ? forecast.low_f : forecast.low_c) + "º",
+                                Text = (Settings.IsFahrenheit ? forecast.low_f : forecast.low_c) + "º",
                                 HintStyle = AdaptiveTextStyle.CaptionSubtle,
                                 HintAlign = AdaptiveTextAlign.Center
                             }
@@ -322,7 +322,7 @@ namespace SimpleWeather.UWP.Helpers
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = (Settings.Unit == Settings.Fahrenheit ? weather.condition.temp_f : weather.condition.temp_c) + "º",
+                                    Text = (Settings.IsFahrenheit ? weather.condition.temp_f : weather.condition.temp_c) + "º",
                                     HintStyle = AdaptiveTextStyle.Body,
                                     HintAlign = AdaptiveTextAlign.Center
                                 }
@@ -361,7 +361,7 @@ namespace SimpleWeather.UWP.Helpers
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = (Settings.Unit == Settings.Fahrenheit ? weather.condition.temp_f : weather.condition.temp_c) + "º",
+                                    Text = (Settings.IsFahrenheit ? weather.condition.temp_f : weather.condition.temp_c) + "º",
                                     HintStyle = AdaptiveTextStyle.Body,
                                     HintAlign = AdaptiveTextAlign.Center,
                                 }
@@ -411,17 +411,17 @@ namespace SimpleWeather.UWP.Helpers
                         },
                         new AdaptiveText()
                         {
-                            Text = string.Format("Temp: {0}", (Settings.Unit == Settings.Fahrenheit ? weather.condition.temp_f : weather.condition.temp_c) + "º"),
+                            Text = string.Format("Temp: {0}", (Settings.IsFahrenheit ? weather.condition.temp_f : weather.condition.temp_c) + "º"),
                             HintStyle = AdaptiveTextStyle.Caption
                         },
                         new AdaptiveText()
                         {
-                            Text = string.Format("Feels like: {0}", (Settings.Unit == Settings.Fahrenheit ? weather.condition.feelslike_f : weather.condition.feelslike_c) + "º"),
+                            Text = string.Format("Feels like: {0}", (Settings.IsFahrenheit ? weather.condition.feelslike_f : weather.condition.feelslike_c) + "º"),
                             HintStyle = AdaptiveTextStyle.CaptionSubtle
                         },
                         new AdaptiveText()
                         {
-                            Text = string.Format("Wind: {0}", Settings.Unit == Settings.Fahrenheit ? weather.condition.wind_mph.ToString() + " mph" : weather.condition.wind_kph.ToString() + " kph"),
+                            Text = string.Format("Wind: {0}", Settings.IsFahrenheit ? weather.condition.wind_mph.ToString() + " mph" : weather.condition.wind_kph.ToString() + " kph"),
                             HintStyle = AdaptiveTextStyle.CaptionSubtle
                         }
                     }
@@ -469,17 +469,17 @@ namespace SimpleWeather.UWP.Helpers
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("Temp: {0}", (Settings.Unit == Settings.Fahrenheit ? weather.condition.temp_f : weather.condition.temp_c) + "º"),
+                                    Text = string.Format("Temp: {0}", (Settings.IsFahrenheit ? weather.condition.temp_f : weather.condition.temp_c) + "º"),
                                     HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("Feels like: {0}", (Settings.Unit == Settings.Fahrenheit ? weather.condition.feelslike_f : weather.condition.feelslike_c) + "º"),
+                                    Text = string.Format("Feels like: {0}", (Settings.IsFahrenheit ? weather.condition.feelslike_f : weather.condition.feelslike_c) + "º"),
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("Wind: {0}", Settings.Unit == Settings.Fahrenheit ? weather.condition.wind_mph.ToString() + " mph" : weather.condition.wind_kph.ToString() + " kph"),
+                                    Text = string.Format("Wind: {0}", Settings.IsFahrenheit ? weather.condition.wind_mph.ToString() + " mph" : weather.condition.wind_kph.ToString() + " kph"),
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle
                                 }
                             }
@@ -512,12 +512,12 @@ namespace SimpleWeather.UWP.Helpers
                             },
                             new AdaptiveText()
                             {
-                                Text = (Settings.Unit == Settings.Fahrenheit ? forecast.high_f : forecast.high_c) + "º",
+                                Text = (Settings.IsFahrenheit ? forecast.high_f : forecast.high_c) + "º",
                                 HintAlign = AdaptiveTextAlign.Center
                             },
                             new AdaptiveText()
                             {
-                                Text = (Settings.Unit == Settings.Fahrenheit ? forecast.low_f : forecast.low_c) + "º",
+                                Text = (Settings.IsFahrenheit ? forecast.low_f : forecast.low_c) + "º",
                                 HintStyle = AdaptiveTextStyle.CaptionSubtle,
                                 HintAlign = AdaptiveTextAlign.Center
                             }

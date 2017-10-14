@@ -118,9 +118,9 @@ namespace SimpleWeather.Controls
             }
 
             Chance = weather.precipitation.pop + "%";
-            Qpf_Rain = Settings.Unit == Settings.Fahrenheit ?
+            Qpf_Rain = Settings.IsFahrenheit ?
                 weather.precipitation.qpf_rain_in.ToString("0.00") + " in" : weather.precipitation.qpf_rain_mm + " mm";
-            Qpf_Snow = Settings.Unit == Settings.Fahrenheit ?
+            Qpf_Snow = Settings.IsFahrenheit ?
                 weather.precipitation.qpf_snow_in.ToString("0.00") + " in" : weather.precipitation.qpf_snow_cm + " cm";
         }
 

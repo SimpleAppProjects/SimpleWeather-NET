@@ -286,7 +286,7 @@ namespace SimpleWeather.Controls
             UpdateDate = WeatherUtils.GetLastBuildDate(weather);
 
             // Update Current Condition
-            CurTemp = Settings.Unit == Settings.Fahrenheit ?
+            CurTemp = Settings.IsFahrenheit ?
                 Math.Round(weather.condition.temp_f) + "\uf045" : Math.Round(weather.condition.temp_c) + "\uf03c";
             CurCondition = (String.IsNullOrWhiteSpace(weather.condition.weather)) ? "---" : weather.condition.weather;
             WeatherIcon = WeatherUtils.GetWeatherIcon(weather.condition.icon);
@@ -297,18 +297,18 @@ namespace SimpleWeather.Controls
             Sunset = weather.astronomy.sunset.ToString("h:mm tt");
 
             // Wind
-            WindChill = Settings.Unit == Settings.Fahrenheit ?
+            WindChill = Settings.IsFahrenheit ?
                 Math.Round(weather.condition.feelslike_f) + "º" : Math.Round(weather.condition.feelslike_c) + "º";
-            WindSpeed = Settings.Unit == Settings.Fahrenheit ?
+            WindSpeed = Settings.IsFahrenheit ?
                 weather.condition.wind_mph.ToString() + " mph" : weather.condition.wind_kph.ToString() + " kph";
             UpdateWindDirection(weather.condition.wind_degrees);
 
             // Atmosphere
             Humidity = weather.atmosphere.humidity;
-            Pressure = Settings.Unit == Settings.Fahrenheit ?
+            Pressure = Settings.IsFahrenheit ?
                 weather.atmosphere.pressure_in + " in" : weather.atmosphere.pressure_mb + " mb";
             UpdatePressureState(weather.atmosphere.pressure_trend);
-            _Visibility = Settings.Unit == Settings.Fahrenheit ?
+            _Visibility = Settings.IsFahrenheit ?
                 weather.atmosphere.visibility_mi + " mi" : weather.atmosphere.visibility_km + " km";
 
             if (_Visibility.StartsWith(" "))

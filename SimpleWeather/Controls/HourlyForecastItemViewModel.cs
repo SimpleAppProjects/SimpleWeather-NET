@@ -36,12 +36,11 @@ namespace SimpleWeather.Controls
             WeatherIcon = WeatherUtils.GetWeatherIcon(hr_forecast.icon);
             Date = hr_forecast.date.ToString("ddd h tt");
             Condition = hr_forecast.condition;
-            HiTemp = (Settings.Unit == Settings.Fahrenheit ?
-                hr_forecast.high_f : hr_forecast.high_c) + "º ";
+            HiTemp = (Settings.IsFahrenheit ? hr_forecast.high_f : hr_forecast.high_c) + "º ";
             PoP = hr_forecast.pop + "%";
             UpdateWindDirection(hr_forecast.wind_degrees);
-            WindSpeed = (Settings.Unit == Settings.Fahrenheit ?
-                hr_forecast.wind_mph.ToString() + " mph" : hr_forecast.wind_kph.ToString() + " kph");
+            WindSpeed = (Settings.IsFahrenheit ?
+               hr_forecast.wind_mph.ToString() + " mph" : hr_forecast.wind_kph.ToString() + " kph");
         }
 
         private void UpdateWindDirection(int angle)

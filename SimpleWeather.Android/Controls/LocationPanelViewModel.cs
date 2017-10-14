@@ -32,7 +32,7 @@ namespace SimpleWeather.Droid.Controls
             Background = WeatherUtils.GetBackgroundURI(weather);
 
             LocationName = weather.location.name;
-            CurrTemp = (Settings.Unit == Settings.Fahrenheit ?
+            CurrTemp = (Settings.IsFahrenheit ?
                 Math.Round(weather.condition.temp_f) : Math.Round(weather.condition.temp_c)) + "º";
             WeatherIcon = WeatherUtils.GetWeatherIcon(weather.condition.icon);
             WeatherSource = weather.source;
