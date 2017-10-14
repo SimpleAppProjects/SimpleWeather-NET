@@ -306,4 +306,10 @@
   <data name="Pref_Refresh6Hrs.Text" xml:space="preserve">
     <value>6 hours</value>
   </data>
+  <data name="Update_Prefix" xml:space="preserve">
+    <value>Updated on</value>
+  </data>
+  <data name="Update_PrefixDay" xml:space="preserve">
+    <value>Updated at</value>
+  </data>
 </root>

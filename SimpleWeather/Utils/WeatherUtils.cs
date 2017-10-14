@@ -249,13 +249,27 @@ namespace SimpleWeather.Utils
         public static String GetLastBuildDate(Weather weather)
         {
             String date;
+            String prefix;
 
             if (weather.update_time.DayOfWeek == DateTime.Today.DayOfWeek)
             {
-                date = string.Format("Updated at {0}", weather.update_time.ToString("t"));
+#if WINDOWS_UWP
+                prefix = UWP.App.ResLoader.GetString("Update_PrefixDay");
+#elif __ANDROID__
+                prefix = Droid.App.Context.GetString(Droid.Resource.String.update_prefix_day);
+#endif
+                date = string.Format("{0} {1}", prefix, weather.update_time.ToString("t"));
             }
             else
-                date = string.Format("Updated on {0} {1}", weather.update_time.ToString("ddd"), weather.update_time.ToString("t"));
+            {
+#if WINDOWS_UWP
+                prefix = UWP.App.ResLoader.GetString("Update_Prefix");
+#elif __ANDROID__
+                prefix = Droid.App.Context.GetString(Droid.Resource.String.update_prefix);
+#endif
+                date = string.Format("{0} {1} {2}",
+                    prefix, weather.update_time.ToString("ddd"), weather.update_time.ToString("t"));
+            }
 
             return date;
         }
