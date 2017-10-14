@@ -5,6 +5,6 @@
     android:minWidth="250dp"
     android:minResizeWidth="110dp"
     android:previewImage="@drawable/example_appwidget_preview"
-    android:resizeMode="horizontal"
+    android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="0"
     android:widgetCategory="home_screen" />

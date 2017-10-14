@@ -289,6 +289,20 @@ namespace SimpleWeather.Droid.Widgets
 
                 Settings.UpdateTime = DateTime.Now;
             }
+            else
+            {
+                // Show "Get Started layout"
+                var views = new RemoteViews(mContext.PackageName, Resource.Layout.app_widget_getstarted);
+                Intent onClickIntent = new Intent(mContext, typeof(SetupActivity));
+                PendingIntent clickPendingIntent = PendingIntent.GetActivity(mContext, 0, onClickIntent, 0);
+                views.SetOnClickPendingIntent(Resource.Id.widgetBackground, clickPendingIntent);
+
+                // Set for all providers
+                mAppWidgetManager.UpdateAppWidget(mAppWidget1x1.ComponentName, views);
+                mAppWidgetManager.UpdateAppWidget(mAppWidget2x2.ComponentName, views);
+                mAppWidgetManager.UpdateAppWidget(mAppWidget4x1.ComponentName, views);
+                mAppWidgetManager.UpdateAppWidget(mAppWidget4x2.ComponentName, views);
+            }
         }
 
         private void RefreshClock(int[] appWidgetIds)
@@ -385,7 +399,7 @@ namespace SimpleWeather.Droid.Widgets
                         updateViews.SetTextViewText(Resource.Id.condition_pop, weather.precipitation.pop + "%");
                     }
                     else
-                        updateViews.SetViewVisibility(Resource.Id.condition_pop_panel, ViewStates.Invisible);
+                        updateViews.SetViewVisibility(Resource.Id.condition_pop_panel, ViewStates.Gone);
                 }
             }
 

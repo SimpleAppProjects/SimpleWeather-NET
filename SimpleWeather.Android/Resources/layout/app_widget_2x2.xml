@@ -1,13 +1,12 @@
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/widgetBackground"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/black"
-    android:columnCount="2"
+    android:orientation="vertical"
     android:padding="@dimen/widget_margin"
-    android:rowCount="5"
     tools:layout_height="144dp"
     tools:layout_width="144dp">
 
@@ -15,10 +14,7 @@
         android:id="@+id/location_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_column="0"
-        android:layout_columnSpan="2"
         android:layout_gravity="start"
-        android:layout_row="0"
         android:ellipsize="end"
         android:maxLines="1"
         android:paddingBottom="2dp"
@@ -31,13 +27,10 @@
         android:textStyle="bold"
         tools:text="New York, NY" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_column="0"
-        android:layout_columnSpan="2"
-        android:layout_row="1"
-        android:layout_rowWeight="1"
+        android:layout_weight="1"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -45,16 +38,21 @@
             android:id="@+id/condition_temp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
             android:layout_margin="4dp"
+            android:adjustViewBounds="true"
+            android:maxHeight="30dp"
             android:scaleType="fitStart"
             tools:src="@drawable/ic_home_fill_white_24dp" />
 
         <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/condition_temp"
             android:orientation="vertical">
 
             <ImageView
@@ -65,7 +63,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
                 android:layout_margin="4dp"
-                android:scaleType="fitCenter"
+                android:scaleType="fitEnd"
                 android:src="@drawable/ic_weather_icon"
                 android:tint="@android:color/white" />
 
@@ -94,13 +92,11 @@
 
         </RelativeLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_column="0"
-        android:layout_row="2"
         android:baselineAligned="false"
         android:gravity="center_vertical"
         android:orientation="horizontal">
@@ -226,12 +222,7 @@
         android:id="@+id/forecast_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_column="0"
-        android:layout_columnSpan="2"
-        android:layout_row="3"
-        android:layout_rowWeight="1"
-        android:minHeight="30dp"
-        android:minWidth="75dp"
+        android:layout_weight="1"
         android:orientation="horizontal">
 
     </LinearLayout>
@@ -239,9 +230,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_column="0"
-        android:layout_columnSpan="2"
-        android:layout_row="4"
         android:gravity="bottom|end"
         android:orientation="horizontal">
 
@@ -278,4 +266,4 @@
             android:visibility="visible" />
 
     </LinearLayout>
-</GridLayout>
+</LinearLayout>

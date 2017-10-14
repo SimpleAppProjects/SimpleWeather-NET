@@ -2050,8 +2050,8 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f08008e
 			public const int design_tab_text_size_2line = 2131230862;
 			
-			// aapt resource value: 0x7f0800b0
-			public const int detail_card_max_width = 2131230896;
+			// aapt resource value: 0x7f0800b2
+			public const int detail_card_max_width = 2131230898;
 			
 			// aapt resource value: 0x7f0800a0
 			public const int detail_label_size = 2131230880;
@@ -2068,26 +2068,26 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f080099
 			public const int fab_margin = 2131230873;
 			
-			// aapt resource value: 0x7f0800b5
-			public const int forecast_condition_size = 2131230901;
-			
-			// aapt resource value: 0x7f0800b4
-			public const int forecast_date_size = 2131230900;
+			// aapt resource value: 0x7f0800b7
+			public const int forecast_condition_size = 2131230903;
 			
 			// aapt resource value: 0x7f0800b6
-			public const int forecast_hi_size = 2131230902;
+			public const int forecast_date_size = 2131230902;
+			
+			// aapt resource value: 0x7f0800b8
+			public const int forecast_hi_size = 2131230904;
+			
+			// aapt resource value: 0x7f0800b5
+			public const int forecast_icon_size = 2131230901;
+			
+			// aapt resource value: 0x7f0800b9
+			public const int forecast_lo_size = 2131230905;
+			
+			// aapt resource value: 0x7f0800b4
+			public const int forecast_panel_height = 2131230900;
 			
 			// aapt resource value: 0x7f0800b3
-			public const int forecast_icon_size = 2131230899;
-			
-			// aapt resource value: 0x7f0800b7
-			public const int forecast_lo_size = 2131230903;
-			
-			// aapt resource value: 0x7f0800b2
-			public const int forecast_panel_height = 2131230898;
-			
-			// aapt resource value: 0x7f0800b1
-			public const int forecast_panel_width = 2131230897;
+			public const int forecast_panel_width = 2131230899;
 			
 			// aapt resource value: 0x7f080057
 			public const int highlight_alpha_material_colored = 2131230807;
@@ -2119,11 +2119,11 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f080002
 			public const int item_touch_helper_swipe_escape_velocity = 2131230722;
 			
-			// aapt resource value: 0x7f0800ac
-			public const int label_location_size = 2131230892;
+			// aapt resource value: 0x7f0800ae
+			public const int label_location_size = 2131230894;
 			
-			// aapt resource value: 0x7f0800ad
-			public const int label_updatetime_size = 2131230893;
+			// aapt resource value: 0x7f0800af
+			public const int label_updatetime_size = 2131230895;
 			
 			// aapt resource value: 0x7f08009e
 			public const int list_horizontal_padding = 2131230878;
@@ -2151,6 +2151,12 @@ namespace SimpleWeather.Droid
 			
 			// aapt resource value: 0x7f0800a4
 			public const int location_panel_textview_size = 2131230884;
+			
+			// aapt resource value: 0x7f0800ab
+			public const int location_text_size_large = 2131230891;
+			
+			// aapt resource value: 0x7f0800aa
+			public const int location_text_size_small = 2131230890;
 			
 			// aapt resource value: 0x7f080098
 			public const int nav_header_height = 2131230872;
@@ -2215,11 +2221,11 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f080091
 			public const int searchview_side_margins = 2131230865;
 			
-			// aapt resource value: 0x7f0800ab
-			public const int spacer_mid_size = 2131230891;
+			// aapt resource value: 0x7f0800ad
+			public const int spacer_mid_size = 2131230893;
 			
-			// aapt resource value: 0x7f0800aa
-			public const int spacer_top_size = 2131230890;
+			// aapt resource value: 0x7f0800ac
+			public const int spacer_top_size = 2131230892;
 			
 			// aapt resource value: 0x7f080096
 			public const int spinner_height = 2131230870;
@@ -2227,11 +2233,11 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f080095
 			public const int textlabel_height = 2131230869;
 			
-			// aapt resource value: 0x7f0800af
-			public const int weather_condition_size = 2131230895;
+			// aapt resource value: 0x7f0800b1
+			public const int weather_condition_size = 2131230897;
 			
-			// aapt resource value: 0x7f0800ae
-			public const int weather_icon_size = 2131230894;
+			// aapt resource value: 0x7f0800b0
+			public const int weather_icon_size = 2131230896;
 			
 			// aapt resource value: 0x7f0800a7
 			public const int widget_margin = 2131230887;
@@ -2676,8 +2682,8 @@ namespace SimpleWeather.Droid
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f0900f4
-			public const int action0 = 2131296500;
+			// aapt resource value: 0x7f0900f6
+			public const int action0 = 2131296502;
 			
 			// aapt resource value: 0x7f09006f
 			public const int action_bar = 2131296367;
@@ -2700,20 +2706,20 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f09004c
 			public const int action_bar_title = 2131296332;
 			
-			// aapt resource value: 0x7f0900f1
-			public const int action_container = 2131296497;
+			// aapt resource value: 0x7f0900f3
+			public const int action_container = 2131296499;
 			
 			// aapt resource value: 0x7f090070
 			public const int action_context_bar = 2131296368;
 			
-			// aapt resource value: 0x7f0900f8
-			public const int action_divider = 2131296504;
+			// aapt resource value: 0x7f0900fa
+			public const int action_divider = 2131296506;
 			
-			// aapt resource value: 0x7f09011c
-			public const int action_editmode = 2131296540;
+			// aapt resource value: 0x7f09011e
+			public const int action_editmode = 2131296542;
 			
-			// aapt resource value: 0x7f0900f2
-			public const int action_image = 2131296498;
+			// aapt resource value: 0x7f0900f4
+			public const int action_image = 2131296500;
 			
 			// aapt resource value: 0x7f090003
 			public const int action_menu_divider = 2131296259;
@@ -2730,14 +2736,14 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f09004e
 			public const int action_mode_close_button = 2131296334;
 			
-			// aapt resource value: 0x7f09011d
-			public const int action_refresh = 2131296541;
+			// aapt resource value: 0x7f09011f
+			public const int action_refresh = 2131296543;
 			
-			// aapt resource value: 0x7f0900f3
-			public const int action_text = 2131296499;
+			// aapt resource value: 0x7f0900f5
+			public const int action_text = 2131296501;
 			
-			// aapt resource value: 0x7f090101
-			public const int actions = 2131296513;
+			// aapt resource value: 0x7f090103
+			public const int actions = 2131296515;
 			
 			// aapt resource value: 0x7f09004f
 			public const int activity_chooser_view_content = 2131296335;
@@ -2769,8 +2775,8 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f090088
 			public const int api_spinner = 2131296392;
 			
-			// aapt resource value: 0x7f0900d2
-			public const int atmosphere_label = 2131296466;
+			// aapt resource value: 0x7f0900d4
+			public const int atmosphere_label = 2131296468;
 			
 			// aapt resource value: 0x7f090046
 			public const int auto = 2131296326;
@@ -2787,8 +2793,8 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f090056
 			public const int buttonPanel = 2131296342;
 			
-			// aapt resource value: 0x7f0900f5
-			public const int cancel_action = 2131296501;
+			// aapt resource value: 0x7f0900f7
+			public const int cancel_action = 2131296503;
 			
 			// aapt resource value: 0x7f09001d
 			public const int center = 2131296285;
@@ -2802,17 +2808,17 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f090016
 			public const int chains = 2131296278;
 			
-			// aapt resource value: 0x7f0900cc
-			public const int chance_label = 2131296460;
+			// aapt resource value: 0x7f0900ce
+			public const int chance_label = 2131296462;
 			
-			// aapt resource value: 0x7f0900cd
-			public const int chance_val = 2131296461;
+			// aapt resource value: 0x7f0900cf
+			public const int chance_val = 2131296463;
 			
 			// aapt resource value: 0x7f090066
 			public const int checkbox = 2131296358;
 			
-			// aapt resource value: 0x7f0900fd
-			public const int chronometer = 2131296509;
+			// aapt resource value: 0x7f0900ff
+			public const int chronometer = 2131296511;
 			
 			// aapt resource value: 0x7f090020
 			public const int clip_horizontal = 2131296288;
@@ -2820,11 +2826,11 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f090021
 			public const int clip_vertical = 2131296289;
 			
-			// aapt resource value: 0x7f09009f
-			public const int clock_panel = 2131296415;
+			// aapt resource value: 0x7f0900a1
+			public const int clock_panel = 2131296417;
 			
-			// aapt resource value: 0x7f09009d
-			public const int clockdate_panel = 2131296413;
+			// aapt resource value: 0x7f09009f
+			public const int clockdate_panel = 2131296415;
 			
 			// aapt resource value: 0x7f09003d
 			public const int collapseActionView = 2131296317;
@@ -2832,8 +2838,11 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f090096
 			public const int condition_feelslike = 2131296406;
 			
-			// aapt resource value: 0x7f0900da
-			public const int condition_label = 2131296474;
+			// aapt resource value: 0x7f0900dc
+			public const int condition_label = 2131296476;
+			
+			// aapt resource value: 0x7f09009c
+			public const int condition_layout = 2131296412;
 			
 			// aapt resource value: 0x7f090099
 			public const int condition_pop = 2131296409;
@@ -2850,14 +2859,14 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f090097
 			public const int condition_wind = 2131296407;
 			
-			// aapt resource value: 0x7f0900a6
-			public const int container = 2131296422;
+			// aapt resource value: 0x7f0900a9
+			public const int container = 2131296425;
 			
 			// aapt resource value: 0x7f090059
 			public const int contentPanel = 2131296345;
 			
-			// aapt resource value: 0x7f0900a7
-			public const int coordinator = 2131296423;
+			// aapt resource value: 0x7f0900aa
+			public const int coordinator = 2131296426;
 			
 			// aapt resource value: 0x7f090060
 			public const int custom = 2131296352;
@@ -2865,8 +2874,8 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f09005f
 			public const int customPanel = 2131296351;
 			
-			// aapt resource value: 0x7f09009e
-			public const int date_panel = 2131296414;
+			// aapt resource value: 0x7f0900a0
+			public const int date_panel = 2131296416;
 			
 			// aapt resource value: 0x7f09006d
 			public const int decor_content_parent = 2131296365;
@@ -2874,26 +2883,26 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f090052
 			public const int default_activity_button = 2131296338;
 			
-			// aapt resource value: 0x7f0900a9
-			public const int design_bottom_sheet = 2131296425;
+			// aapt resource value: 0x7f0900ac
+			public const int design_bottom_sheet = 2131296428;
+			
+			// aapt resource value: 0x7f0900b3
+			public const int design_menu_item_action_area = 2131296435;
+			
+			// aapt resource value: 0x7f0900b2
+			public const int design_menu_item_action_area_stub = 2131296434;
+			
+			// aapt resource value: 0x7f0900b1
+			public const int design_menu_item_text = 2131296433;
 			
 			// aapt resource value: 0x7f0900b0
-			public const int design_menu_item_action_area = 2131296432;
+			public const int design_navigation_view = 2131296432;
 			
-			// aapt resource value: 0x7f0900af
-			public const int design_menu_item_action_area_stub = 2131296431;
+			// aapt resource value: 0x7f0900cb
+			public const int details_label = 2131296459;
 			
-			// aapt resource value: 0x7f0900ae
-			public const int design_menu_item_text = 2131296430;
-			
-			// aapt resource value: 0x7f0900ad
-			public const int design_navigation_view = 2131296429;
-			
-			// aapt resource value: 0x7f0900c8
-			public const int details_label = 2131296456;
-			
-			// aapt resource value: 0x7f0900c9
-			public const int details_panel = 2131296457;
+			// aapt resource value: 0x7f09009d
+			public const int details_panel = 2131296413;
 			
 			// aapt resource value: 0x7f09002d
 			public const int disableHome = 2131296301;
@@ -2907,8 +2916,8 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f090022
 			public const int end = 2131296290;
 			
-			// aapt resource value: 0x7f090107
-			public const int end_padder = 2131296519;
+			// aapt resource value: 0x7f090109
+			public const int end_padder = 2131296521;
 			
 			// aapt resource value: 0x7f090041
 			public const int enterAlways = 2131296321;
@@ -2925,14 +2934,14 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f090065
 			public const int expanded_menu = 2131296357;
 			
-			// aapt resource value: 0x7f0900b6
-			public const int favorite_label = 2131296438;
+			// aapt resource value: 0x7f0900b9
+			public const int favorite_label = 2131296441;
 			
-			// aapt resource value: 0x7f0900dc
-			public const int feelslike = 2131296476;
+			// aapt resource value: 0x7f0900de
+			public const int feelslike = 2131296478;
 			
-			// aapt resource value: 0x7f0900db
-			public const int feelslike_label = 2131296475;
+			// aapt resource value: 0x7f0900dd
+			public const int feelslike_label = 2131296477;
 			
 			// aapt resource value: 0x7f090023
 			public const int fill = 2131296291;
@@ -2946,62 +2955,62 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f09004a
 			public const int @fixed = 2131296330;
 			
-			// aapt resource value: 0x7f09010d
-			public const int forecast_condition = 2131296525;
-			
-			// aapt resource value: 0x7f0900a0
-			public const int forecast_date = 2131296416;
+			// aapt resource value: 0x7f09010f
+			public const int forecast_condition = 2131296527;
 			
 			// aapt resource value: 0x7f0900a2
-			public const int forecast_hi = 2131296418;
+			public const int forecast_date = 2131296418;
 			
-			// aapt resource value: 0x7f0900a1
-			public const int forecast_icon = 2131296417;
+			// aapt resource value: 0x7f0900a5
+			public const int forecast_hi = 2131296421;
 			
-			// aapt resource value: 0x7f0900bf
-			public const int forecast_label = 2131296447;
+			// aapt resource value: 0x7f0900a3
+			public const int forecast_icon = 2131296419;
+			
+			// aapt resource value: 0x7f0900c2
+			public const int forecast_label = 2131296450;
 			
 			// aapt resource value: 0x7f09009a
 			public const int forecast_layout = 2131296410;
 			
-			// aapt resource value: 0x7f0900a3
-			public const int forecast_lo = 2131296419;
+			// aapt resource value: 0x7f0900a6
+			public const int forecast_lo = 2131296422;
 			
-			// aapt resource value: 0x7f09009c
-			public const int forecast_panel = 2131296412;
+			// aapt resource value: 0x7f09009e
+			public const int forecast_panel = 2131296414;
 			
-			// aapt resource value: 0x7f0900c1
-			public const int forecast_scrollview = 2131296449;
+			// aapt resource value: 0x7f0900c4
+			public const int forecast_scrollview = 2131296452;
 			
-			// aapt resource value: 0x7f0900c0
-			public const int forecast_switch = 2131296448;
+			// aapt resource value: 0x7f0900c3
+			public const int forecast_switch = 2131296451;
 			
-			// aapt resource value: 0x7f09010e
-			public const int forecast_temphi = 2131296526;
+			// aapt resource value: 0x7f090110
+			public const int forecast_temphi = 2131296528;
 			
-			// aapt resource value: 0x7f09010f
-			public const int forecast_templo = 2131296527;
+			// aapt resource value: 0x7f090111
+			public const int forecast_templo = 2131296529;
 			
-			// aapt resource value: 0x7f0900c2
-			public const int forecast_view = 2131296450;
+			// aapt resource value: 0x7f0900c5
+			public const int forecast_view = 2131296453;
 			
 			// aapt resource value: 0x7f09008e
 			public const int fragment_container = 2131296398;
 			
-			// aapt resource value: 0x7f0900b3
-			public const int fragment_locations = 2131296435;
+			// aapt resource value: 0x7f0900b6
+			public const int fragment_locations = 2131296438;
 			
-			// aapt resource value: 0x7f0900ba
-			public const int fragment_weather_now = 2131296442;
+			// aapt resource value: 0x7f0900bd
+			public const int fragment_weather_now = 2131296445;
 			
 			// aapt resource value: 0x7f090084
 			public const int gps_follow = 2131296388;
 			
-			// aapt resource value: 0x7f0900b4
-			public const int gps_follow_layout = 2131296436;
+			// aapt resource value: 0x7f0900b7
+			public const int gps_follow_layout = 2131296439;
 			
-			// aapt resource value: 0x7f0900b5
-			public const int gps_panel = 2131296437;
+			// aapt resource value: 0x7f0900b8
+			public const int gps_panel = 2131296440;
 			
 			// aapt resource value: 0x7f090005
 			public const int home = 2131296261;
@@ -3012,50 +3021,50 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f090018
 			public const int horizontal = 2131296280;
 			
-			// aapt resource value: 0x7f0900c6
-			public const int hourly_forecast_label = 2131296454;
+			// aapt resource value: 0x7f0900c9
+			public const int hourly_forecast_label = 2131296457;
 			
-			// aapt resource value: 0x7f0900c5
-			public const int hourly_forecast_panel = 2131296453;
+			// aapt resource value: 0x7f0900c8
+			public const int hourly_forecast_panel = 2131296456;
+			
+			// aapt resource value: 0x7f0900ca
+			public const int hourly_forecast_view = 2131296458;
 			
 			// aapt resource value: 0x7f0900c7
-			public const int hourly_forecast_view = 2131296455;
-			
-			// aapt resource value: 0x7f0900c4
-			public const int hourly_space = 2131296452;
-			
-			// aapt resource value: 0x7f090113
-			public const int hrforecast_condition = 2131296531;
-			
-			// aapt resource value: 0x7f090110
-			public const int hrforecast_date = 2131296528;
-			
-			// aapt resource value: 0x7f090111
-			public const int hrforecast_icon = 2131296529;
-			
-			// aapt resource value: 0x7f090114
-			public const int hrforecast_pop = 2131296532;
-			
-			// aapt resource value: 0x7f090112
-			public const int hrforecast_temphi = 2131296530;
-			
-			// aapt resource value: 0x7f090116
-			public const int hrforecast_wind = 2131296534;
+			public const int hourly_space = 2131296455;
 			
 			// aapt resource value: 0x7f090115
-			public const int hrforecast_wind_dir = 2131296533;
+			public const int hrforecast_condition = 2131296533;
 			
-			// aapt resource value: 0x7f0900d7
-			public const int humidity = 2131296471;
+			// aapt resource value: 0x7f090112
+			public const int hrforecast_date = 2131296530;
 			
-			// aapt resource value: 0x7f0900d6
-			public const int humidity_label = 2131296470;
+			// aapt resource value: 0x7f090113
+			public const int hrforecast_icon = 2131296531;
+			
+			// aapt resource value: 0x7f090116
+			public const int hrforecast_pop = 2131296534;
+			
+			// aapt resource value: 0x7f090114
+			public const int hrforecast_temphi = 2131296532;
+			
+			// aapt resource value: 0x7f090118
+			public const int hrforecast_wind = 2131296536;
+			
+			// aapt resource value: 0x7f090117
+			public const int hrforecast_wind_dir = 2131296535;
+			
+			// aapt resource value: 0x7f0900d9
+			public const int humidity = 2131296473;
+			
+			// aapt resource value: 0x7f0900d8
+			public const int humidity_label = 2131296472;
 			
 			// aapt resource value: 0x7f090054
 			public const int icon = 2131296340;
 			
-			// aapt resource value: 0x7f090102
-			public const int icon_group = 2131296514;
+			// aapt resource value: 0x7f090104
+			public const int icon_group = 2131296516;
 			
 			// aapt resource value: 0x7f09003e
 			public const int ifRoom = 2131296318;
@@ -3063,11 +3072,11 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f090051
 			public const int image = 2131296337;
 			
-			// aapt resource value: 0x7f0900b9
-			public const int image_view = 2131296441;
+			// aapt resource value: 0x7f0900bc
+			public const int image_view = 2131296444;
 			
-			// aapt resource value: 0x7f0900fe
-			public const int info = 2131296510;
+			// aapt resource value: 0x7f090100
+			public const int info = 2131296512;
 			
 			// aapt resource value: 0x7f090000
 			public const int item_touch_helper_previous_elevation = 2131296256;
@@ -3081,23 +3090,23 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f09008a
 			public const int key_entry_box = 2131296394;
 			
-			// aapt resource value: 0x7f0900bb
-			public const int label_location_name = 2131296443;
+			// aapt resource value: 0x7f0900be
+			public const int label_location_name = 2131296446;
 			
-			// aapt resource value: 0x7f0900bc
-			public const int label_updatetime = 2131296444;
+			// aapt resource value: 0x7f0900bf
+			public const int label_updatetime = 2131296447;
 			
-			// aapt resource value: 0x7f0900a5
-			public const int largeLabel = 2131296421;
+			// aapt resource value: 0x7f0900a8
+			public const int largeLabel = 2131296424;
 			
 			// aapt resource value: 0x7f090026
 			public const int left = 2131296294;
 			
-			// aapt resource value: 0x7f090103
-			public const int line1 = 2131296515;
-			
 			// aapt resource value: 0x7f090105
-			public const int line3 = 2131296517;
+			public const int line1 = 2131296517;
+			
+			// aapt resource value: 0x7f090107
+			public const int line3 = 2131296519;
 			
 			// aapt resource value: 0x7f090082
 			public const int linearLayout = 2131296386;
@@ -3108,26 +3117,26 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f090053
 			public const int list_item = 2131296339;
 			
-			// aapt resource value: 0x7f0900e9
-			public const int location_country = 2131296489;
+			// aapt resource value: 0x7f0900eb
+			public const int location_country = 2131296491;
 			
 			// aapt resource value: 0x7f090094
 			public const int location_name = 2131296404;
 			
-			// aapt resource value: 0x7f0900b8
-			public const int locations_add = 2131296440;
+			// aapt resource value: 0x7f0900bb
+			public const int locations_add = 2131296443;
 			
-			// aapt resource value: 0x7f0900b7
-			public const int locations_container = 2131296439;
+			// aapt resource value: 0x7f0900ba
+			public const int locations_container = 2131296442;
 			
 			// aapt resource value: 0x7f090083
 			public const int main_logo = 2131296387;
 			
-			// aapt resource value: 0x7f090118
-			public const int masked = 2131296536;
+			// aapt resource value: 0x7f09011a
+			public const int masked = 2131296538;
 			
-			// aapt resource value: 0x7f0900f7
-			public const int media_actions = 2131296503;
+			// aapt resource value: 0x7f0900f9
+			public const int media_actions = 2131296505;
 			
 			// aapt resource value: 0x7f09003b
 			public const int middle = 2131296315;
@@ -3138,29 +3147,29 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f090033
 			public const int multiply = 2131296307;
 			
-			// aapt resource value: 0x7f0900ee
-			public const int nav_header_main = 2131296494;
+			// aapt resource value: 0x7f0900f0
+			public const int nav_header_main = 2131296496;
 			
-			// aapt resource value: 0x7f0900ef
-			public const int nav_location = 2131296495;
+			// aapt resource value: 0x7f0900f1
+			public const int nav_location = 2131296497;
 			
-			// aapt resource value: 0x7f09011a
-			public const int nav_locations = 2131296538;
+			// aapt resource value: 0x7f09011c
+			public const int nav_locations = 2131296540;
 			
-			// aapt resource value: 0x7f09011b
-			public const int nav_settings = 2131296539;
+			// aapt resource value: 0x7f09011d
+			public const int nav_settings = 2131296541;
 			
 			// aapt resource value: 0x7f090080
 			public const int nav_view = 2131296384;
 			
-			// aapt resource value: 0x7f090119
-			public const int nav_weathernow = 2131296537;
+			// aapt resource value: 0x7f09011b
+			public const int nav_weathernow = 2131296539;
 			
-			// aapt resource value: 0x7f0900f0
-			public const int nav_weathertemp = 2131296496;
+			// aapt resource value: 0x7f0900f2
+			public const int nav_weathertemp = 2131296498;
 			
-			// aapt resource value: 0x7f0900ac
-			public const int navigation_header_container = 2131296428;
+			// aapt resource value: 0x7f0900af
+			public const int navigation_header_container = 2131296431;
 			
 			// aapt resource value: 0x7f09003f
 			public const int never = 2131296319;
@@ -3171,14 +3180,14 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f09002b
 			public const int normal = 2131296299;
 			
-			// aapt resource value: 0x7f090100
-			public const int notification_background = 2131296512;
+			// aapt resource value: 0x7f090102
+			public const int notification_background = 2131296514;
 			
-			// aapt resource value: 0x7f0900fa
-			public const int notification_main_column = 2131296506;
+			// aapt resource value: 0x7f0900fc
+			public const int notification_main_column = 2131296508;
 			
-			// aapt resource value: 0x7f0900f9
-			public const int notification_main_column_container = 2131296505;
+			// aapt resource value: 0x7f0900fb
+			public const int notification_main_column_container = 2131296507;
 			
 			// aapt resource value: 0x7f090012
 			public const int packed = 2131296274;
@@ -3195,23 +3204,23 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f090048
 			public const int pin = 2131296328;
 			
-			// aapt resource value: 0x7f0900ca
-			public const int precipitation_card = 2131296458;
+			// aapt resource value: 0x7f0900cc
+			public const int precipitation_card = 2131296460;
 			
-			// aapt resource value: 0x7f0900cb
-			public const int precipitation_label = 2131296459;
+			// aapt resource value: 0x7f0900cd
+			public const int precipitation_label = 2131296461;
+			
+			// aapt resource value: 0x7f0900d7
+			public const int pressure = 2131296471;
 			
 			// aapt resource value: 0x7f0900d5
-			public const int pressure = 2131296469;
+			public const int pressure_label = 2131296469;
 			
-			// aapt resource value: 0x7f0900d3
-			public const int pressure_label = 2131296467;
+			// aapt resource value: 0x7f0900d6
+			public const int pressure_state = 2131296470;
 			
-			// aapt resource value: 0x7f0900d4
-			public const int pressure_state = 2131296468;
-			
-			// aapt resource value: 0x7f0900e8
-			public const int progressBar = 2131296488;
+			// aapt resource value: 0x7f0900ea
+			public const int progressBar = 2131296490;
 			
 			// aapt resource value: 0x7f090006
 			public const int progress_circular = 2131296262;
@@ -3219,23 +3228,23 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f090007
 			public const int progress_horizontal = 2131296263;
 			
-			// aapt resource value: 0x7f0900ce
-			public const int qpf_rain_label = 2131296462;
-			
-			// aapt resource value: 0x7f0900cf
-			public const int qpf_rain_val = 2131296463;
-			
 			// aapt resource value: 0x7f0900d0
-			public const int qpf_snow_label = 2131296464;
+			public const int qpf_rain_label = 2131296464;
 			
 			// aapt resource value: 0x7f0900d1
-			public const int qpf_snow_val = 2131296465;
+			public const int qpf_rain_val = 2131296465;
+			
+			// aapt resource value: 0x7f0900d2
+			public const int qpf_snow_label = 2131296466;
+			
+			// aapt resource value: 0x7f0900d3
+			public const int qpf_snow_val = 2131296467;
 			
 			// aapt resource value: 0x7f090068
 			public const int radio = 2131296360;
 			
-			// aapt resource value: 0x7f0900b2
-			public const int recycler_view = 2131296434;
+			// aapt resource value: 0x7f0900b5
+			public const int recycler_view = 2131296437;
 			
 			// aapt resource value: 0x7f090090
 			public const int refresh_button = 2131296400;
@@ -3246,11 +3255,11 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f090027
 			public const int right = 2131296295;
 			
-			// aapt resource value: 0x7f0900ff
-			public const int right_icon = 2131296511;
+			// aapt resource value: 0x7f090101
+			public const int right_icon = 2131296513;
 			
-			// aapt resource value: 0x7f0900fb
-			public const int right_side = 2131296507;
+			// aapt resource value: 0x7f0900fd
+			public const int right_side = 2131296509;
 			
 			// aapt resource value: 0x7f090034
 			public const int screen = 2131296308;
@@ -3276,11 +3285,11 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f090072
 			public const int search_bar = 2131296370;
 			
-			// aapt resource value: 0x7f0900eb
-			public const int search_box_collapsed = 2131296491;
-			
 			// aapt resource value: 0x7f0900ed
-			public const int search_box_start_search = 2131296493;
+			public const int search_box_collapsed = 2131296493;
+			
+			// aapt resource value: 0x7f0900ef
+			public const int search_box_start_search = 2131296495;
 			
 			// aapt resource value: 0x7f090074
 			public const int search_button = 2131296372;
@@ -3288,8 +3297,8 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f090079
 			public const int search_close_btn = 2131296377;
 			
-			// aapt resource value: 0x7f090109
-			public const int search_close_button = 2131296521;
+			// aapt resource value: 0x7f09010b
+			public const int search_close_button = 2131296523;
 			
 			// aapt resource value: 0x7f090086
 			public const int search_divider = 2131296390;
@@ -3306,8 +3315,8 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f090076
 			public const int search_mag_icon = 2131296374;
 			
-			// aapt resource value: 0x7f0900ec
-			public const int search_magnifying_glass = 2131296492;
+			// aapt resource value: 0x7f0900ee
+			public const int search_magnifying_glass = 2131296494;
 			
 			// aapt resource value: 0x7f090077
 			public const int search_plate = 2131296375;
@@ -3315,11 +3324,11 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f090078
 			public const int search_src_text = 2131296376;
 			
-			// aapt resource value: 0x7f090108
-			public const int search_view = 2131296520;
+			// aapt resource value: 0x7f09010a
+			public const int search_view = 2131296522;
 			
-			// aapt resource value: 0x7f0900ea
-			public const int search_view_container = 2131296490;
+			// aapt resource value: 0x7f0900ec
+			public const int search_view_container = 2131296492;
 			
 			// aapt resource value: 0x7f09007c
 			public const int search_voice_btn = 2131296380;
@@ -3339,20 +3348,23 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f090031
 			public const int showTitle = 2131296305;
 			
-			// aapt resource value: 0x7f0900a4
-			public const int smallLabel = 2131296420;
+			// aapt resource value: 0x7f0900a7
+			public const int smallLabel = 2131296423;
 			
-			// aapt resource value: 0x7f0900ab
-			public const int snackbar_action = 2131296427;
+			// aapt resource value: 0x7f0900ae
+			public const int snackbar_action = 2131296430;
 			
-			// aapt resource value: 0x7f0900aa
-			public const int snackbar_text = 2131296426;
+			// aapt resource value: 0x7f0900ad
+			public const int snackbar_text = 2131296429;
 			
 			// aapt resource value: 0x7f090045
 			public const int snap = 2131296325;
 			
 			// aapt resource value: 0x7f090057
 			public const int spacer = 2131296343;
+			
+			// aapt resource value: 0x7f0900a4
+			public const int spacer_middle = 2131296420;
 			
 			// aapt resource value: 0x7f090008
 			public const int split_action_bar = 2131296264;
@@ -3375,8 +3387,8 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f090028
 			public const int start = 2131296296;
 			
-			// aapt resource value: 0x7f0900f6
-			public const int status_bar_latest_event_content = 2131296502;
+			// aapt resource value: 0x7f0900f8
+			public const int status_bar_latest_event_content = 2131296504;
 			
 			// aapt resource value: 0x7f090069
 			public const int submenuarrow = 2131296361;
@@ -3384,35 +3396,35 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f09007a
 			public const int submit_area = 2131296378;
 			
-			// aapt resource value: 0x7f0900e2
-			public const int sunrise_icon = 2131296482;
-			
-			// aapt resource value: 0x7f0900e1
-			public const int sunrise_label = 2131296481;
+			// aapt resource value: 0x7f0900e4
+			public const int sunrise_icon = 2131296484;
 			
 			// aapt resource value: 0x7f0900e3
-			public const int sunrise_time = 2131296483;
-			
-			// aapt resource value: 0x7f0900e0
-			public const int sunriseset_label = 2131296480;
+			public const int sunrise_label = 2131296483;
 			
 			// aapt resource value: 0x7f0900e5
-			public const int sunset_icon = 2131296485;
+			public const int sunrise_time = 2131296485;
 			
-			// aapt resource value: 0x7f0900e4
-			public const int sunset_label = 2131296484;
+			// aapt resource value: 0x7f0900e2
+			public const int sunriseset_label = 2131296482;
+			
+			// aapt resource value: 0x7f0900e7
+			public const int sunset_icon = 2131296487;
 			
 			// aapt resource value: 0x7f0900e6
-			public const int sunset_time = 2131296486;
+			public const int sunset_label = 2131296486;
+			
+			// aapt resource value: 0x7f0900e8
+			public const int sunset_time = 2131296488;
 			
 			// aapt resource value: 0x7f09002c
 			public const int tabMode = 2131296300;
 			
-			// aapt resource value: 0x7f090106
-			public const int text = 2131296518;
+			// aapt resource value: 0x7f090108
+			public const int text = 2131296520;
 			
-			// aapt resource value: 0x7f090104
-			public const int text2 = 2131296516;
+			// aapt resource value: 0x7f090106
+			public const int text2 = 2131296518;
 			
 			// aapt resource value: 0x7f09005d
 			public const int textSpacerNoButtons = 2131296349;
@@ -3423,8 +3435,8 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f090087
 			public const int textView = 2131296391;
 			
-			// aapt resource value: 0x7f0900b1
-			public const int text_input_password_toggle = 2131296433;
+			// aapt resource value: 0x7f0900b4
+			public const int text_input_password_toggle = 2131296436;
 			
 			// aapt resource value: 0x7f09000c
 			public const int textinput_counter = 2131296268;
@@ -3432,8 +3444,8 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f09000d
 			public const int textinput_error = 2131296269;
 			
-			// aapt resource value: 0x7f0900fc
-			public const int time = 2131296508;
+			// aapt resource value: 0x7f0900fe
+			public const int time = 2131296510;
 			
 			// aapt resource value: 0x7f090055
 			public const int title = 2131296341;
@@ -3453,8 +3465,8 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f090061
 			public const int topPanel = 2131296353;
 			
-			// aapt resource value: 0x7f0900a8
-			public const int touch_outside = 2131296424;
+			// aapt resource value: 0x7f0900ab
+			public const int touch_outside = 2131296427;
 			
 			// aapt resource value: 0x7f09000a
 			public const int transition_current_scene = 2131296266;
@@ -3462,17 +3474,17 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f09000b
 			public const int transition_scene_layoutid_cache = 2131296267;
 			
+			// aapt resource value: 0x7f09010e
+			public const int txt_fcttext = 2131296526;
+			
+			// aapt resource value: 0x7f0900c6
+			public const int txt_forecast_viewpgr = 2131296454;
+			
 			// aapt resource value: 0x7f09010c
-			public const int txt_fcttext = 2131296524;
+			public const int txt_forecasticon = 2131296524;
 			
-			// aapt resource value: 0x7f0900c3
-			public const int txt_forecast_viewpgr = 2131296451;
-			
-			// aapt resource value: 0x7f09010a
-			public const int txt_forecasticon = 2131296522;
-			
-			// aapt resource value: 0x7f09010b
-			public const int txtforecast_pop = 2131296523;
+			// aapt resource value: 0x7f09010d
+			public const int txtforecast_pop = 2131296525;
 			
 			// aapt resource value: 0x7f090009
 			public const int up = 2131296265;
@@ -3489,26 +3501,26 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f09000e
 			public const int view_offset_helper = 2131296270;
 			
-			// aapt resource value: 0x7f0900d8
-			public const int visibility_label = 2131296472;
+			// aapt resource value: 0x7f0900da
+			public const int visibility_label = 2131296474;
 			
-			// aapt resource value: 0x7f0900d9
-			public const int visibility_val = 2131296473;
+			// aapt resource value: 0x7f0900db
+			public const int visibility_val = 2131296475;
 			
-			// aapt resource value: 0x7f090117
-			public const int visible = 2131296535;
+			// aapt resource value: 0x7f090119
+			public const int visible = 2131296537;
 			
-			// aapt resource value: 0x7f0900bd
-			public const int weather_condition = 2131296445;
+			// aapt resource value: 0x7f0900c0
+			public const int weather_condition = 2131296448;
 			
-			// aapt resource value: 0x7f0900e7
-			public const int weather_credit = 2131296487;
+			// aapt resource value: 0x7f0900e9
+			public const int weather_credit = 2131296489;
 			
 			// aapt resource value: 0x7f090092
 			public const int weather_icon = 2131296402;
 			
-			// aapt resource value: 0x7f0900be
-			public const int weather_temp = 2131296446;
+			// aapt resource value: 0x7f0900c1
+			public const int weather_temp = 2131296449;
 			
 			// aapt resource value: 0x7f09007e
 			public const int webview = 2131296382;
@@ -3516,14 +3528,14 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f09008f
 			public const int widgetBackground = 2131296399;
 			
-			// aapt resource value: 0x7f0900de
-			public const int wind_direction = 2131296478;
-			
-			// aapt resource value: 0x7f0900dd
-			public const int wind_label = 2131296477;
+			// aapt resource value: 0x7f0900e0
+			public const int wind_direction = 2131296480;
 			
 			// aapt resource value: 0x7f0900df
-			public const int wind_speed = 2131296479;
+			public const int wind_label = 2131296479;
+			
+			// aapt resource value: 0x7f0900e1
+			public const int wind_speed = 2131296481;
 			
 			// aapt resource value: 0x7f090040
 			public const int withText = 2131296320;

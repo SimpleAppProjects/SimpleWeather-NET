@@ -3,8 +3,6 @@
     android:initialLayout="@layout/app_widget_1x1"
     android:minHeight="40dp"
     android:minWidth="40dp"
-    android:maxHeight="110dp"
-    android:maxWidth="110dp"
     android:previewImage="@drawable/example_appwidget_preview"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="0"
