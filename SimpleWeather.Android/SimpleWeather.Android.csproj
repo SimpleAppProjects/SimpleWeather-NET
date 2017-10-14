@@ -438,10 +438,10 @@
     <AndroidResource Include="Resources\layout\credit_yahoo.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\yahoo.png" />
+    <AndroidResource Include="Resources\drawable-nodpi\yahoo.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\wunderground.png" />
+    <AndroidResource Include="Resources\drawable-nodpi\wunderground.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\credit_wunderground.xml" />
@@ -459,9 +459,6 @@
     <AndroidResource Include="Resources\layout\app_widget_1x1.xml">
       <SubType>Designer</SubType>
     </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\example_appwidget_preview.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values-v14\dimens.xml" />
@@ -727,6 +724,18 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\app_widget_getstarted.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-nodpi\appwidget_preview_4x1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-nodpi\appwidget_preview_4x2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-nodpi\appwidget_preview_1x1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-nodpi\appwidget_preview_2x2.png" />
   </ItemGroup>
   <Import Project="..\SimpleWeather\SimpleWeather_Xamarin.projitems" Label="Shared" Condition="Exists('..\SimpleWeather\SimpleWeather_Xamarin.projitems')" />
   <Import Project="..\SimpleWeather\SimpleWeather_Xamarin.projitems" Label="Shared" />
