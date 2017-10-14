@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Threading.Tasks;
+using Windows.Foundation.Collections;
 using Windows.Storage;
 
 namespace SimpleWeather.Utils
@@ -31,6 +32,39 @@ namespace SimpleWeather.Utils
                 Task<StorageFile> t = appDataFolder.CreateFileAsync("locations.json", CreationCollisionOption.OpenIfExists).AsTask();
                 t.Wait();
                 locDataFile = t.Result;
+            }
+
+            localSettings.Values.MapChanged += Values_MapChanged;
+        }
+
+        private static async void Values_MapChanged(IObservableMap<string, object> sender, IMapChangedEventArgs<string> @event)
+        {
+            if (@event.CollectionChange == CollectionChange.ItemChanged || @event.CollectionChange == CollectionChange.ItemInserted)
+            {
+                if (String.IsNullOrWhiteSpace(@event.Key))
+                    return;
+
+                switch(@event.Key)
+                {
+                    // FollowGPS changed
+                    case KEY_FOLLOWGPS:
+                        await UWP.App.BGTaskHandler.AppTrigger.RequestAsync();
+                        break;
+                    // Refresh interval changed
+                    case KEY_REFRESHINTERVAL:
+                        UWP.App.BGTaskHandler.RegisterBackgroundTask();
+                        break;
+                    // Weather Provider changed
+                    case KEY_API:
+                        await UWP.App.BGTaskHandler.AppTrigger.RequestAsync();
+                        break;
+                    // Settings unit changed
+                    case KEY_USECELSIUS:
+                        await UWP.App.BGTaskHandler.AppTrigger.RequestAsync();
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 

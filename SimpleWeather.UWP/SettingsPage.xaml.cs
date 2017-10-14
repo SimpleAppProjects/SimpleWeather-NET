@@ -218,9 +218,6 @@ namespace SimpleWeather.UWP
                 Settings.RefreshInterval = 180; // 3 hr
             else if (index == 4)
                 Settings.RefreshInterval = 360; // 6 hr
-
-            // Re-register update tile bg task with new interval
-            App.BGTaskHandler.RegisterBackgroundTask();
         }
 
         private void OSSLicenseWebview_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)

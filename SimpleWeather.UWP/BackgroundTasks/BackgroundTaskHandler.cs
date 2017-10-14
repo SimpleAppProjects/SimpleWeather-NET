@@ -10,6 +10,12 @@ namespace SimpleWeather.UWP.BackgroundTasks
     public class BackgroundTaskHandler
     {
         private const string taskName = "WeatherUpdateBackgroundTask";
+        public ApplicationTrigger AppTrigger = null;
+
+        public BackgroundTaskHandler()
+        {
+            AppTrigger = new ApplicationTrigger();
+        }
 
         public async void RegisterBackgroundTask()
         {
@@ -26,6 +32,8 @@ namespace SimpleWeather.UWP.BackgroundTasks
                 BackgroundTaskBuilder taskBuilder = new BackgroundTaskBuilder();
                 taskBuilder.Name = taskName;
                 taskBuilder.SetTrigger(new TimeTrigger((uint)Utils.Settings.RefreshInterval, false));
+                taskBuilder.SetTrigger(new SystemTrigger(SystemTriggerType.SessionConnected, false));
+                taskBuilder.SetTrigger(AppTrigger);
                 var registration = taskBuilder.Register();
             }
         }

@@ -11,7 +11,7 @@ namespace SimpleWeather.UWP.Helpers
 {
     public static class WeatherTileCreator
     {
-        const int MEDIUM_FORECAST_LENGTH = 2;
+        const int MEDIUM_FORECAST_LENGTH = 3;
         const int WIDE_FORECAST_LENGTH = 3;
         const int LARGE_FORECAST_LENGTH = 5;
 
@@ -67,8 +67,8 @@ namespace SimpleWeather.UWP.Helpers
                 var forecastGroup = new AdaptiveGroup();
                 var tempGroup = new AdaptiveGroup();
 
-                // 2day forecast
-                for (int i = 0; i < MEDIUM_FORECAST_LENGTH + 1; i++)
+                // 3day forecast
+                for (int i = 0; i < MEDIUM_FORECAST_LENGTH; i++)
                 {
                     var forecast = weather.forecast[i];
 

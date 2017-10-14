@@ -35,7 +35,7 @@ namespace SimpleWeather.UWP
         Geolocator geolocal = null;
         Geoposition geoPos = null;
 
-        public void OnWeatherLoaded(LocationData location, Weather weather)
+        public async void OnWeatherLoaded(LocationData location, Weather weather)
         {
             // Save index before update
             int index = TextForecastControl.SelectedIndex;
@@ -46,9 +46,9 @@ namespace SimpleWeather.UWP
 
                 // Update home tile if it hasn't been already
                 if (Settings.HomeData.Equals(location) && 
-                    TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > 60)
+                    TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval)
                 {
-                    Helpers.WeatherTileCreator.TileUpdater(weather);
+                    await App.BGTaskHandler.AppTrigger.RequestAsync();
                 }
 
                 // Shell
