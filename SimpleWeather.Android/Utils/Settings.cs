@@ -20,6 +20,10 @@ namespace SimpleWeather.Utils
         private static File locDataFile;
         private static File dataFile;
 
+        // Android specific settings
+        public static bool OnGoingNotification { get { return ShowOngoingNotification(); } }
+        private const string KEY_ONGOINGNOTIFICATION = "key_ongoingnotification";
+
         // Shared Preferences listener
         internal class SettingsListener : Java.Lang.Object, ISharedPreferencesOnSharedPreferenceChangeListener
         {
@@ -272,6 +276,16 @@ namespace SimpleWeather.Utils
         {
             editor.PutString(KEY_UPDATETIME, value.ToString());
             editor.Commit();
+        }
+
+        private static bool ShowOngoingNotification()
+        {
+            if (!preferences.Contains(KEY_ONGOINGNOTIFICATION))
+            {
+                return false;
+            }
+            else
+                return preferences.GetBoolean(KEY_ONGOINGNOTIFICATION, false);
         }
     }
 }

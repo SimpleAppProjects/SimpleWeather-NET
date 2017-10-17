@@ -31,12 +31,17 @@ namespace SimpleWeather.Droid.Utils
 
         public static Bitmap WeatherIconToBitmap(AssetManager am, String text, int textSize)
         {
+            return WeatherIconToBitmap(am, text, textSize, Color.White);
+        }
+
+        public static Bitmap WeatherIconToBitmap(AssetManager am, String text, int textSize, Color textColor)
+        {
             Paint paint = new Paint(PaintFlags.AntiAlias);
             Typeface weathericons = Typeface.CreateFromAsset(am, "weathericons/weathericons-regular-webfont.ttf");
             paint.SubpixelText = true;
             paint.SetTypeface(weathericons);
             paint.SetStyle(Paint.Style.Fill);
-            paint.Color = Color.White;
+            paint.Color = textColor;
             paint.TextSize = textSize;
             paint.TextAlign = Paint.Align.Left;
 

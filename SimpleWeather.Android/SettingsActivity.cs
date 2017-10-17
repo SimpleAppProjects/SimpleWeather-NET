@@ -127,6 +127,7 @@ namespace SimpleWeather.Droid
             private const string KEY_APIKEY = "API_KEY";
             private const string KEY_APIKEY_VERIFIED = "API_KEY_VERIFIED";
             private const string KEY_REFRESHINTERVAL = "key_refreshinterval";
+            private const string KEY_ONGOINGNOTIFICATION = "key_ongoingnotification";
 
             // Preferences
             private SwitchPreference followGps;
@@ -135,6 +136,7 @@ namespace SimpleWeather.Droid
             private ISharedPreferences wuSharedPrefs;
             private bool keyVerified { get { return IsKeyVerfied(); } set { SetKeyVerified(value); } }
             private ListPreference intervalPref;
+            private SwitchPreference onGoingNotification;
 
             private bool IsKeyVerfied()
             {
@@ -256,6 +258,25 @@ namespace SimpleWeather.Droid
                     ListPreference pref = e.Preference as ListPreference;
                     int idx = pref.FindIndexOfValue(e.NewValue.ToString());
                     pref.Summary = pref.GetEntries()[idx];
+                };
+
+                onGoingNotification = (SwitchPreference)FindPreference(KEY_ONGOINGNOTIFICATION);
+                onGoingNotification.PreferenceChange += (object sender, Preference.PreferenceChangeEventArgs e) =>
+                {
+                    SwitchPreference pref = e.Preference as SwitchPreference;
+                    var context = App.Context;
+
+                    // On-going notification
+                    if ((bool)e.NewValue)
+                    {
+                        context.StartService(new Intent(context, typeof(Widgets.WeatherWidgetService))
+                            .SetAction(Widgets.WeatherWidgetService.ACTION_UPDATENOTIFICATION));
+                    }
+                    else
+                    {
+                        context.StartService(new Intent(context, typeof(Widgets.WeatherWidgetService))
+                            .SetAction(Widgets.WeatherWidgetService.ACTION_REMOVENOTIFICATION));
+                    }
                 };
             }
 

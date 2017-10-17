@@ -64,6 +64,8 @@
     <string name="message_enter_apikey">"Please enter an API Key"</string>
     <string name="message_keyverified">Key Verified</string>
     <string name="message_keyinvalid">Key Invalid</string>
+    <string name="pref_title_notification">On-going Notification</string>
+    <string name="pref_summary_notification">Show persistent notification displaying current weather conditions</string>
 
     <!-- Locations -->
     <string name="label_btn_add_location">Add Location</string>
@@ -97,6 +99,6 @@
     <string name="update_prefix_day">Updated at</string>
     <!-- format strings for clocks -->
     <string name="clock_24_hours_format" translatable="false">kk&#58;mm</string>
-    <string name="main_widget_12_hours_format" translatable="false">h&#58;mm&#8202;<b><font size="16" face="sans-serif">a</font></b></string>
+    <string name="main_widget_12_hours_format" translatable="false">h&#58;mm&#8202;<b><font face="sans-serif" size="16">a</font></b></string>
 
 </resources>

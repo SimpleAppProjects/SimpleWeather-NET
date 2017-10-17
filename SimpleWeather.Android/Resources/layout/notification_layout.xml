@@ -1,0 +1,102 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/widgetBackground"
+    android:layout_width="match_parent"
+    android:layout_height="64dp"
+    android:background="@null"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/weather_icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        android:layout_marginEnd="12dp"
+        android:layout_marginStart="4dp"
+        android:adjustViewBounds="true"
+        android:gravity="center"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_weather_icon"
+        android:tint="@android:color/black" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/weather_icon"
+        android:layout_toStartOf="@+id/update_layout"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/location_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"
+            android:textStyle="bold"
+            tools:text="New York, NY" />
+
+        <TextView
+            android:id="@+id/condition_weather"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:text="--"
+            android:textAppearance="@android:style/TextAppearance.Material.Notification"
+            tools:text="68º - Sunny" />
+
+        <TextView
+            android:id="@+id/condition_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:text="--"
+            android:textAppearance="@android:style/TextAppearance.Material.Notification.Line2"
+            tools:text="74º / 65º" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/update_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/update_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|end"
+            android:padding="4dp"
+            android:text="--"
+            android:textAppearance="@android:style/TextAppearance.Material.Notification.Time"
+            tools:text="1:00 AM" />
+
+        <ImageView
+            android:id="@+id/refresh_button"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="end"
+            android:padding="2dp"
+            android:src="@drawable/ic_refresh_white_24dp"
+            android:tint="@android:color/black"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/refresh_progress"
+            style="@android:style/Widget.Material.Light.ProgressBar"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="end"
+            android:indeterminate="true"
+            android:indeterminateTint="@android:color/black"
+            android:padding="4dp"
+            android:visibility="visible" />
+
+    </LinearLayout>
+</RelativeLayout>

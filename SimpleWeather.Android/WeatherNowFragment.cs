@@ -95,13 +95,23 @@ namespace SimpleWeather.Droid
                 weatherView.UpdateView(weather);
                 SetView(weatherView);
 
-                // Update widgets if they haven't been already
-                if (Settings.HomeData.Equals(location) &&
-                    TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval)
+                if (Settings.HomeData.Equals(location))
                 {
-                    context.StartService(new Intent(context, typeof(Widgets.WeatherWidgetService))
-                        .SetAction(Widgets.WeatherWidgetService.ACTION_REFRESH));
+                    // Update widgets if they haven't been already
+                    if (TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval)
+                    {
+                        context.StartService(new Intent(context, typeof(Widgets.WeatherWidgetService))
+                            .SetAction(Widgets.WeatherWidgetService.ACTION_REFRESH));
+                    }
+
+                    // Update ongoing notification if its not showing
+                    if (Settings.OnGoingNotification && !Notifications.WeatherNotificationBuilder.IsShowing)
+                    {
+                        context.StartService(new Intent(context, typeof(Widgets.WeatherWidgetService))
+                            .SetAction(Widgets.WeatherWidgetService.ACTION_UPDATENOTIFICATION));
+                    }
                 }
+                    
             }
 
             Activity.RunOnUiThread(() => refreshLayout.Refreshing = false);
@@ -295,6 +305,9 @@ namespace SimpleWeather.Droid
             {
                 mainView.Post(() =>
                 {
+                    if (this.View == null)
+                        return;
+
                     Android.Support.V7.Widget.GridLayout panel = (Android.Support.V7.Widget.GridLayout)detailsPanel;
 
                     // Minimum width for ea. card
