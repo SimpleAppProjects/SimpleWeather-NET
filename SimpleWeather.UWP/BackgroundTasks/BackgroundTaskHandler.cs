@@ -29,12 +29,17 @@ namespace SimpleWeather.UWP.BackgroundTasks
             if (backgroundAccessStatus == BackgroundAccessStatus.AlwaysAllowed ||
                 backgroundAccessStatus == BackgroundAccessStatus.AllowedSubjectToSystemPolicy)
             {
-                BackgroundTaskBuilder taskBuilder = new BackgroundTaskBuilder();
-                taskBuilder.Name = taskName;
-                taskBuilder.SetTrigger(new TimeTrigger((uint)Utils.Settings.RefreshInterval, false));
-                taskBuilder.SetTrigger(new SystemTrigger(SystemTriggerType.SessionConnected, false));
-                taskBuilder.SetTrigger(AppTrigger);
-                var registration = taskBuilder.Register();
+                // Register a task for each trigger
+                var tb1 = new BackgroundTaskBuilder() { Name = taskName };
+                tb1.SetTrigger(new TimeTrigger((uint)Utils.Settings.RefreshInterval, false));
+                var tb2 = new BackgroundTaskBuilder() { Name = taskName };
+                tb2.SetTrigger(new SystemTrigger(SystemTriggerType.SessionConnected, false));
+                var tb3 = new BackgroundTaskBuilder() { Name = taskName };
+                tb3.SetTrigger(AppTrigger);
+
+                tb1.Register();
+                tb2.Register();
+                tb3.Register();
             }
         }
 
