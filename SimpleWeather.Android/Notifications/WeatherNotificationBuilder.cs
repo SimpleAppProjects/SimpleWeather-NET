@@ -1,27 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 using Android.App;
 using Android.Content;
-using Android.OS;
-using Android.Runtime;
+using Android.Support.V7.App;
 using Android.Views;
 using Android.Widget;
 
 using SimpleWeather.Droid.Utils;
 using SimpleWeather.Utils;
-using System.Threading.Tasks;
 using SimpleWeather.WeatherData;
-using Android.Locations;
-using Android;
-using Android.Support.V4.Content;
-using Android.Content.PM;
-using Android.Support.V7.App;
-using Android.Graphics;
-using Com.Bumptech.Glide;
-using Com.Bumptech.Glide.Request.Target;
 
 namespace SimpleWeather.Droid.Notifications
 {
@@ -66,7 +54,7 @@ namespace SimpleWeather.Droid.Notifications
             updateViews.SetViewVisibility(Resource.Id.refresh_button, ViewStates.Visible);
             updateViews.SetViewVisibility(Resource.Id.refresh_progress, ViewStates.Gone);
             Intent refreshClickIntent = new Intent(App.Context, typeof(Widgets.WeatherWidgetService))
-                .SetAction(Widgets.WeatherWidgetService.ACTION_UPDATENOTIFICATION);
+                .SetAction(Widgets.WeatherWidgetService.ACTION_UPDATEWEATHER);
             PendingIntent prgPendingIntent = PendingIntent.GetService(App.Context, 0, refreshClickIntent, 0);
             updateViews.SetOnClickPendingIntent(Resource.Id.refresh_button, prgPendingIntent);
 
@@ -98,7 +86,7 @@ namespace SimpleWeather.Droid.Notifications
             {
                 NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(App.Context)
-                    .SetSmallIcon(Resource.Drawable.ic_weather_icon)
+                    .SetSmallIcon(Resource.Drawable.ic_logo)
                     .SetPriority(NotificationCompat.PriorityLow)
                     .SetOngoing(true) as NotificationCompat.Builder;
 

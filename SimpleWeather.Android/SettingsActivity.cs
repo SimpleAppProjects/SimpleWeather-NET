@@ -270,7 +270,7 @@ namespace SimpleWeather.Droid
                     if ((bool)e.NewValue)
                     {
                         context.StartService(new Intent(context, typeof(Widgets.WeatherWidgetService))
-                            .SetAction(Widgets.WeatherWidgetService.ACTION_UPDATENOTIFICATION));
+                            .SetAction(Widgets.WeatherWidgetService.ACTION_REFRESHNOTIFICATION));
                     }
                     else
                     {

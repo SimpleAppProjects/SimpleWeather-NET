@@ -101,17 +101,16 @@ namespace SimpleWeather.Droid
                     if (TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval)
                     {
                         context.StartService(new Intent(context, typeof(Widgets.WeatherWidgetService))
-                            .SetAction(Widgets.WeatherWidgetService.ACTION_REFRESH));
+                            .SetAction(Widgets.WeatherWidgetService.ACTION_UPDATEWEATHER));
                     }
 
                     // Update ongoing notification if its not showing
                     if (Settings.OnGoingNotification && !Notifications.WeatherNotificationBuilder.IsShowing)
                     {
                         context.StartService(new Intent(context, typeof(Widgets.WeatherWidgetService))
-                            .SetAction(Widgets.WeatherWidgetService.ACTION_UPDATENOTIFICATION));
+                            .SetAction(Widgets.WeatherWidgetService.ACTION_REFRESHNOTIFICATION));
                     }
                 }
-                    
             }
 
             Activity.RunOnUiThread(() => refreshLayout.Refreshing = false);

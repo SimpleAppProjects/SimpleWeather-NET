@@ -38,23 +38,17 @@ namespace SimpleWeather.Utils
                 {
                     // FollowGPS changed
                     case KEY_FOLLOWGPS:
+                    // Weather Provider changed
+                    case KEY_API:
+                    // Settings unit changed
+                    case KEY_USECELSIUS:
                         context.StartService(new Intent(context, typeof(Droid.Widgets.WeatherWidgetService))
-                            .SetAction(Droid.Widgets.WeatherWidgetService.ACTION_REFRESH));
+                            .SetAction(Droid.Widgets.WeatherWidgetService.ACTION_UPDATEWEATHER));
                         break;
                     // Refresh interval changed
                     case KEY_REFRESHINTERVAL:
                         context.StartService(new Intent(context, typeof(Droid.Widgets.WeatherWidgetService))
                             .SetAction(Droid.Widgets.WeatherWidgetService.ACTION_UPDATEALARM));
-                        break;
-                    // Weather Provider changed
-                    case KEY_API:
-                        context.StartService(new Intent(context, typeof(Droid.Widgets.WeatherWidgetService))
-                            .SetAction(Droid.Widgets.WeatherWidgetService.ACTION_REFRESH));
-                        break;
-                    // Settings unit changed
-                    case KEY_USECELSIUS:
-                        context.StartService(new Intent(context, typeof(Droid.Widgets.WeatherWidgetService))
-                            .SetAction(Droid.Widgets.WeatherWidgetService.ACTION_REFRESH));
                         break;
                     default:
                         break;

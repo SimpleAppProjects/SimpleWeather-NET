@@ -23,20 +23,23 @@ namespace SimpleWeather.Droid.Widgets
     public class WeatherWidgetService : IntentService
     {
         private static string TAG = "WeatherWidgetService";
-        public const string ACTION_REFRESH = "SimpleWeather.Droid.action.REFRESH_WIDGET";
+        public const string ACTION_REFRESHWIDGET = "SimpleWeather.Droid.action.REFRESH_WIDGET";
         public const string ACTION_RESIZEWIDGET = "SimpleWeather.Droid.action.RESIZE_WIDGET";
         public const string ACTION_UPDATECLOCK = "SimpleWeather.Droid.action.UPDATE_CLOCK";
         public const string ACTION_UPDATEDATE = "SimpleWeather.Droid.action.UPDATE_DATE";
+        public const string ACTION_UPDATEWEATHER = "SimpleWeather.Droid.action.UPDATE_WEATHER";
 
         public const string ACTION_STARTALARM = "SimpleWeather.Droid.action.START_ALARM";
         public const string ACTION_CANCELALARM = "SimpleWeather.Droid.action.CANCEL_ALARM";
         public const string ACTION_UPDATEALARM = "SimpleWeather.Droid.action.UPDATE_ALARM";
 
-        public const string ACTION_UPDATENOTIFICATION = "SimpleWeather.Droid.action.UPDATE_NOTIFICATION";
+        public const string ACTION_REFRESHNOTIFICATION = "SimpleWeather.Droid.action.REFRESH_NOTIFICATION";
         public const string ACTION_REMOVENOTIFICATION = "SimpleWeather.Droid.action.REMOVE_NOTIFICATION";
 
         private Context mContext;
         private AppWidgetManager mAppWidgetManager;
+        private static Weather weather;
+        private static bool alarmStarted = false;
 
         // Weather Widget Providers
         private WeatherWidgetProvider1x1 mAppWidget1x1 =
@@ -52,8 +55,6 @@ namespace SimpleWeather.Droid.Widgets
         private const int MEDIUM_FORECAST_LENGTH = 4; // 4-day
         private const int WIDE_FORECAST_LENGTH = 5; // 5-day
 
-        private static bool alarmStarted = false;
-
         public override void OnCreate()
         {
             base.OnCreate();
@@ -62,10 +63,13 @@ namespace SimpleWeather.Droid.Widgets
             mAppWidgetManager = AppWidgetManager.GetInstance(mContext);
         }
 
-        protected override void OnHandleIntent(Intent intent)
+        protected override async void OnHandleIntent(Intent intent)
         {
-            if (ACTION_REFRESH.Equals(intent.Action))
+            if (ACTION_REFRESHWIDGET.Equals(intent.Action))
             {
+                if (weather == null)
+                    weather = await GetWeather();
+
                 int[] appWidgetIds = intent.GetIntArrayExtra(WeatherWidgetProvider.EXTRA_WIDGET_IDS);
                 WidgetType widgetType = (WidgetType)intent.GetIntExtra(WeatherWidgetProvider.EXTRA_WIDGET_TYPE, -1);
 
@@ -93,6 +97,9 @@ namespace SimpleWeather.Droid.Widgets
             }
             else if (ACTION_RESIZEWIDGET.Equals(intent.Action))
             {
+                if (weather == null)
+                    weather = await GetWeather();
+
                 int appWidgetId = intent.GetIntExtra(WeatherWidgetProvider.EXTRA_WIDGET_ID, -1);
                 WidgetType widgetType = (WidgetType)intent.GetIntExtra(WeatherWidgetProvider.EXTRA_WIDGET_TYPE, -1);
                 Bundle newOptions = intent.GetBundleExtra(WeatherWidgetProvider.EXTRA_WIDGET_OPTIONS);
@@ -141,27 +148,39 @@ namespace SimpleWeather.Droid.Widgets
                 int[] appWidgetIds = intent.GetIntArrayExtra(WeatherWidgetProvider.EXTRA_WIDGET_IDS);
                 RefreshDate(appWidgetIds);
             }
-            else if (ACTION_UPDATENOTIFICATION.Equals(intent.Action))
+            else if (ACTION_REFRESHNOTIFICATION.Equals(intent.Action))
             {
+                if (weather == null)
+                    weather = await GetWeather();
+
                 if (Settings.OnGoingNotification && Settings.WeatherLoaded)
-                {
-                    WeatherNotificationBuilder.ShowRefresh();
-
-                    var weather = Task.Run(() => GetWeather()).Result;
-
                     WeatherNotificationBuilder.UpdateNotification(weather);
-                }
             }
             else if (ACTION_REMOVENOTIFICATION.Equals(intent.Action))
             {
                 WeatherNotificationBuilder.RemoveNotification();
+            }
+            else if (ACTION_UPDATEWEATHER.Equals(intent.Action))
+            {
+                // Send broadcast to signal update
+                if (WidgetsExist(App.Context))
+                    SendBroadcast(new Intent(WeatherWidgetProvider.ACTION_SHOWREFRESH));
+                if (Settings.OnGoingNotification)
+                    WeatherNotificationBuilder.ShowRefresh();
+
+                weather = await GetWeather();
+
+                if (WidgetsExist(App.Context))
+                    RefreshWidgets();
+                if (Settings.OnGoingNotification)
+                    WeatherNotificationBuilder.UpdateNotification(weather);
             }
         }
 
         private PendingIntent GetAlarmIntent(Context context)
         {
             Intent intent = new Intent(context, typeof(WeatherWidgetService))
-                .SetAction(ACTION_REFRESH);
+                .SetAction(ACTION_UPDATEWEATHER);
 
             return PendingIntent.GetService(context, 0, intent, 0);
         }
@@ -171,10 +190,14 @@ namespace SimpleWeather.Droid.Widgets
             AlarmManager am = (AlarmManager)context.GetSystemService(Context.AlarmService);
             int interval = Settings.RefreshInterval;
 
+            bool startNow = !alarmStarted;
+            long intervalMillis = (long)TimeSpan.FromMinutes(interval).TotalMilliseconds;
+            long triggerAtTime = startNow ? SystemClock.ElapsedRealtime() : SystemClock.ElapsedRealtime() + intervalMillis;
+
             PendingIntent pendingIntent = GetAlarmIntent(context);
             am.Cancel(pendingIntent);
-            am.SetInexactRepeating(AlarmType.ElapsedRealtime, SystemClock.ElapsedRealtime(),
-                (long)TimeSpan.FromMinutes(interval).TotalMilliseconds, pendingIntent);
+            am.SetInexactRepeating(AlarmType.ElapsedRealtime, triggerAtTime, intervalMillis, pendingIntent);
+            alarmStarted = true;
         }
 
         private void CancelAlarms(Context context)
@@ -203,25 +226,18 @@ namespace SimpleWeather.Droid.Widgets
             return mAppWidget1x1.HasInstances(context) || mAppWidget2x2.HasInstances(context) || mAppWidget4x1.HasInstances(context) || mAppWidget4x2.HasInstances(context);
         }
 
-        private async void ResizeWidget(WeatherWidgetProvider provider, int appWidgetId, Bundle newOptions)
+        private void ResizeWidget(WeatherWidgetProvider provider, int appWidgetId, Bundle newOptions)
         {
-            if (Settings.WeatherLoaded)
-            {
-                var weather = await GetWeather();
-
-                RebuildForecast(provider, weather, appWidgetId, newOptions);
-            }
+            RebuildForecast(provider, weather, appWidgetId, newOptions);
         }
 
-        private async void RefreshWidget(WeatherWidgetProvider provider, int[] appWidgetIds)
+        private void RefreshWidget(WeatherWidgetProvider provider, int[] appWidgetIds)
         {
             if (appWidgetIds == null || appWidgetIds.Length == 0)
                 appWidgetIds = mAppWidgetManager.GetAppWidgetIds(provider.ComponentName);
 
             if (Settings.WeatherLoaded)
             {
-                var weather = await GetWeather();
-
                 // Build the widget update for provider
                 var views = BuildUpdate(mContext, provider, weather);
                 BuildForecast(provider, weather, appWidgetIds);
@@ -235,8 +251,6 @@ namespace SimpleWeather.Droid.Widgets
                     RefreshClock(appWidgetIds);
                     RefreshDate(appWidgetIds);
                 }
-
-                Settings.UpdateTime = DateTime.Now;
             }
             else
             {
@@ -249,12 +263,10 @@ namespace SimpleWeather.Droid.Widgets
             }
         }
 
-        private async void RefreshWidgets()
+        private void RefreshWidgets()
         {
             if (Settings.WeatherLoaded)
             {
-                var weather = await GetWeather();
-
                 // Build the widget update for available providers
                 // Add widget providers here
                 if (mAppWidget1x1.HasInstances(this))
@@ -307,8 +319,6 @@ namespace SimpleWeather.Droid.Widgets
                     RefreshClock(null);
                     RefreshDate(null);
                 }
-
-                Settings.UpdateTime = DateTime.Now;
             }
             else
             {
@@ -367,9 +377,7 @@ namespace SimpleWeather.Droid.Widgets
             // Progress bar
             updateViews.SetViewVisibility(Resource.Id.refresh_button, ViewStates.Visible);
             updateViews.SetViewVisibility(Resource.Id.refresh_progress, ViewStates.Gone);
-            Intent refreshClickIntent = new Intent(WeatherWidgetProvider.ACTION_REFRESHWIDGETS);
-            PendingIntent prgPendingIntent = PendingIntent.GetBroadcast(context, 0, refreshClickIntent, 0);
-            updateViews.SetOnClickPendingIntent(Resource.Id.refresh_button, prgPendingIntent);
+            updateViews.SetOnClickPendingIntent(Resource.Id.refresh_button, GetAlarmIntent(context));
 
             // Temperature
             string temp = Settings.IsFahrenheit ?
@@ -383,7 +391,7 @@ namespace SimpleWeather.Droid.Widgets
             // Location Name
             updateViews.SetTextViewText(Resource.Id.location_name, weather.location.name);
             // Update Time
-            string updatetext = GetUpdateTimeText(DateTime.Now, false);
+            string updatetext = GetUpdateTimeText(Settings.UpdateTime, false);
             updateViews.SetTextViewText(Resource.Id.update_time, updatetext);
 
             // Background
@@ -628,6 +636,13 @@ namespace SimpleWeather.Droid.Widgets
                 await wloader.LoadWeatherData(false);
 
                 weather = wloader.GetWeather();
+
+                if (weather != null)
+                {
+                    // Re-schedule alarm at selected interval from now
+                    UpdateAlarm(App.Context);
+                    Settings.UpdateTime = DateTime.Now;
+                }
             }
             catch (Exception ex)
             {

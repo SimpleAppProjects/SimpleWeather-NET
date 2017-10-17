@@ -24,6 +24,7 @@ namespace SimpleWeather.Droid.Widgets
         private static string TAG = "WeatherWidgetProvider";
 
         // Actions
+        public const string ACTION_SHOWREFRESH = "SimpleWeather.Droid.action.SHOWREFRESH";
         public const string ACTION_REFRESHWIDGETS = "SimpleWeather.Droid.action.UPDATEWIDGETS";
 
         // Extras
@@ -43,9 +44,7 @@ namespace SimpleWeather.Droid.Widgets
 
         public override void OnReceive(Context context, Intent intent)
         {
-            String action = intent.Action;
-
-            if (Intent.ActionBootCompleted.Equals(action))
+            if (Intent.ActionBootCompleted.Equals(intent.Action))
             {
                 // Reset weather update time
                 SimpleWeather.Utils.Settings.UpdateTime = DateTime.MinValue;
@@ -53,24 +52,34 @@ namespace SimpleWeather.Droid.Widgets
                 context.StartService(new Intent(context, typeof(WeatherWidgetService))
                     .SetAction(WeatherWidgetService.ACTION_STARTALARM));
             }
-            else if (ACTION_REFRESHWIDGETS.Equals(action))
+            else if (Intent.ActionLocaleChanged.Equals(intent.Action))
+            {
+                UpdateWidgets(context, null);
+            }
+            else if (ACTION_SHOWREFRESH.Equals(intent.Action))
+            {
+                // Update widgets
+                int[] appWidgetIds = intent.GetIntArrayExtra(EXTRA_WIDGET_IDS);
+                ShowRefresh(context, appWidgetIds);
+            }
+            else if (ACTION_REFRESHWIDGETS.Equals(intent.Action))
             {
                 // Update widgets
                 int[] appWidgetIds = intent.GetIntArrayExtra(EXTRA_WIDGET_IDS);
                 UpdateWidgets(context, appWidgetIds);
             }
-            else if (AppWidgetManager.ActionAppwidgetUpdate.Equals(action))
+            else if (AppWidgetManager.ActionAppwidgetUpdate.Equals(intent.Action))
             {
                 UpdateWidgets(context, null);
             }
             else
             {
-                Console.WriteLine("{0}: Unhandled action: {1}", TAG, action);
+                Console.WriteLine("{0}: Unhandled action: {1}", TAG, intent.Action);
                 base.OnReceive(context, intent);
             }
         }
 
-        protected void UpdateWidgets(Context context, int[] appWidgetIds)
+        protected void ShowRefresh(Context context, int[] appWidgetIds)
         {
             var appWidgetManager = AppWidgetManager.GetInstance(context);
             var componentname = new ComponentName(context.PackageName, ClassName);
@@ -81,9 +90,14 @@ namespace SimpleWeather.Droid.Widgets
             views.SetViewVisibility(Resource.Id.refresh_button, ViewStates.Gone);
             views.SetViewVisibility(Resource.Id.refresh_progress, ViewStates.Visible);
             appWidgetManager.PartiallyUpdateAppWidget(appWidgetIds, views);
+        }
+
+        protected void UpdateWidgets(Context context, int[] appWidgetIds)
+        {
+            ShowRefresh(context, appWidgetIds);
 
             context.StartService(new Intent(context, typeof(WeatherWidgetService))
-                .SetAction(WeatherWidgetService.ACTION_REFRESH)
+                .SetAction(WeatherWidgetService.ACTION_REFRESHWIDGET)
                 .PutExtra(EXTRA_WIDGET_IDS, appWidgetIds)
                 .PutExtra(EXTRA_WIDGET_TYPE, (int)WidgetType));
         }
@@ -128,6 +142,7 @@ namespace SimpleWeather.Droid.Widgets
     {
         AppWidgetManager.ActionAppwidgetUpdate,
         Intent.ActionBootCompleted,
+        Intent.ActionLocaleChanged,
         ACTION_REFRESHWIDGETS
     })]
     [MetaData("android.appwidget.provider", Resource = "@xml/app_widget_1x1_info")]
@@ -164,6 +179,7 @@ namespace SimpleWeather.Droid.Widgets
     {
         AppWidgetManager.ActionAppwidgetUpdate,
         Intent.ActionBootCompleted,
+        Intent.ActionLocaleChanged,
         ACTION_REFRESHWIDGETS
     })]
     [MetaData("android.appwidget.provider", Resource = "@xml/app_widget_2x2_info")]
@@ -200,6 +216,7 @@ namespace SimpleWeather.Droid.Widgets
     {
         AppWidgetManager.ActionAppwidgetUpdate,
         Intent.ActionBootCompleted,
+        Intent.ActionLocaleChanged,
         ACTION_REFRESHWIDGETS
     })]
     [MetaData("android.appwidget.provider", Resource = "@xml/app_widget_4x1_info")]
@@ -299,10 +316,6 @@ namespace SimpleWeather.Droid.Widgets
                     .SetAction(WeatherWidgetService.ACTION_UPDATEDATE)
                     .PutExtra(EXTRA_WIDGET_IDS, appWidgetIds)
                     .PutExtra(EXTRA_WIDGET_TYPE, (int)WidgetType));
-            }
-            else if (Intent.ActionLocaleChanged.Equals(action))
-            {
-                UpdateWidgets(context, null);
             }
             else
                 base.OnReceive(context, intent);
