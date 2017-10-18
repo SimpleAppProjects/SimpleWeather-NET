@@ -17,7 +17,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
             AppTrigger = new ApplicationTrigger();
         }
 
-        public async void RegisterBackgroundTask()
+        public async Task RegisterBackgroundTask()
         {
             // Unregister any previous exising background task
             UnregisterBackgroundTask();

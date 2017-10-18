@@ -36,7 +36,7 @@ namespace SimpleWeather.UWP
             AppFrame.CacheSize = 1;
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             // Navigate to WeatherNow page
             if (AppFrame.Content == null)
@@ -45,7 +45,8 @@ namespace SimpleWeather.UWP
             }
 
             // Setup background task
-            App.BGTaskHandler.RegisterBackgroundTask();
+            Windows.ApplicationModel.Background.BackgroundExecutionManager.RemoveAccess();
+            await App.BGTaskHandler.RegisterBackgroundTask();
         }
 
         private void AppFrame_Navigated(object sender, NavigationEventArgs e)
