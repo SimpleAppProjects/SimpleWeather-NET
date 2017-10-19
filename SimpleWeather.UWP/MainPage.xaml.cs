@@ -45,6 +45,14 @@ namespace SimpleWeather.UWP
                 StatusBar.GetForCurrentView().BackgroundOpacity = 1;
                 StatusBar.GetForCurrentView().BackgroundColor = App.AppColor;
                 StatusBar.GetForCurrentView().ForegroundColor = Colors.White;
+
+                Window.Current.SizeChanged += async (sender, e) =>
+                {
+                    if (ApplicationView.GetForCurrentView().Orientation == ApplicationViewOrientation.Landscape)
+                        await StatusBar.GetForCurrentView().HideAsync();
+                    else
+                        await StatusBar.GetForCurrentView().ShowAsync();
+                };
             }
             else
             {

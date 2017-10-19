@@ -80,20 +80,16 @@
     </Page.Resources>
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="48" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Border Width="48" HorizontalAlignment="Left" Grid.Row="0" Canvas.ZIndex="100"
+        <Border Width="48" Height="48" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.ZIndex="100"
                 Background="{Binding ElementName=HamburgerButton, Path=Background}">
             <Button x:Name="HamburgerButton" Style="{StaticResource BurgerButton}" FontFamily="Segoe MDL2 Assets" Content="&#xE700;"
                     Background="#FF006FBF"
                     Width="48" Height="48" Click="HamburgerButton_Click" />
         </Border>
-        <SplitView x:Name="HamBurgerMenu" DisplayMode="CompactOverlay" IsPaneOpen="False"
-                   CompactPaneLength="48" OpenPaneLength="250" PaneBackground="Transparent" Grid.Row="1">
+        <SplitView x:Name="HamBurgerMenu" DisplayMode="Overlay" IsPaneOpen="False"
+                   CompactPaneLength="48" OpenPaneLength="250" PaneBackground="Transparent">
             <SplitView.Pane>
-                <StackPanel Background="Black">
+                <StackPanel Background="Black" Margin="0,48,0,0">
                     <StackPanel Orientation="Horizontal">
                         <Button x:Name="WeatherButton" Click="WeatherButton_Click" Style="{StaticResource BurgerButton}">
                             <Grid Height="48" Width="{Binding ElementName=HamBurgerMenu, Path=OpenPaneLength}">
@@ -142,7 +138,7 @@
                 </StackPanel>
             </SplitView.Pane>
             <SplitView.Content>
-                <Frame x:Name="FrameContent" Margin="0,-48,0,0"/>
+                <Frame x:Name="FrameContent" />
             </SplitView.Content>
         </SplitView>
         <VisualStateManager.VisualStateGroups>
@@ -153,6 +149,7 @@
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="HamBurgerMenu.DisplayMode" Value="Overlay"/>
+                        <Setter Target="FrameContent.Margin" Value="0,-1,0,0" />
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Desktop">
@@ -161,6 +158,7 @@
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="HamBurgerMenu.DisplayMode" Value="CompactOverlay"/>
+                        <Setter Target="FrameContent.Margin" Value="0,0,0,0" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>

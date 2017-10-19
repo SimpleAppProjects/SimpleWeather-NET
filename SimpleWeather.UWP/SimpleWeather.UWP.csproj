@@ -355,15 +355,18 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <SDKReference Include="WindowsMobile, Version=10.0.15063.0">
-      <Name>Windows Mobile Extensions for the UWP</Name>
-    </SDKReference>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Kimono.Controls.SnackBar\Kimono.Controls.SnackBar.csproj">
       <Project>{8cd45c2a-a6a7-4a78-abe9-1861a879a1c4}</Project>
       <Name>Kimono.Controls.SnackBar</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <SDKReference Include="WindowsMobile, Version=10.0.14393.0">
+      <Name>Windows Mobile Extensions for the UWP %28WindowsMobile, Version=10.0.14393.0%29</Name>
+    </SDKReference>
+    <SDKReference Include="WindowsMobile, Version=10.0.15063.0">
+      <Name>Windows Mobile Extensions for the UWP %28WindowsMobile, Version=10.0.15063.0%29</Name>
+    </SDKReference>
   </ItemGroup>
   <Import Project="..\SimpleWeather\SimpleWeather_Xamarin.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
