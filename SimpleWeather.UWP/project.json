@@ -1,13 +1,13 @@
 ﻿{
   "dependencies": {
     "Coding4Fun.Toolkit.Controls": "2.1.8",
-    "Microsoft.NETCore.UniversalWindowsPlatform": "5.4.0",
+    "Microsoft.NETCore.UniversalWindowsPlatform": "5.4.1",
     "Microsoft.Toolkit.Uwp.Notifications": "2.0.0",
     "Newtonsoft.Json": "10.0.3",
     "QueryString.NET": "1.0.0"
   },
   "frameworks": {
-    "uap10.0": {}
+    "uap10.0.10586": {}
   },
   "runtimes": {
     "win10-arm": {},
