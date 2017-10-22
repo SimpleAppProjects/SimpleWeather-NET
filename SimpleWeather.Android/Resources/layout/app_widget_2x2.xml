@@ -42,7 +42,7 @@
             android:layout_centerVertical="true"
             android:layout_margin="4dp"
             android:adjustViewBounds="true"
-            android:maxHeight="30dp"
+            android:maxHeight="75dp"
             android:scaleType="fitStart"
             tools:src="@drawable/ic_home_fill_white_24dp" />
 
@@ -63,6 +63,8 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
                 android:layout_margin="4dp"
+                android:adjustViewBounds="true"
+                android:maxHeight="75dp"
                 android:scaleType="fitEnd"
                 android:src="@drawable/ic_weather_icon"
                 android:tint="@android:color/white" />
