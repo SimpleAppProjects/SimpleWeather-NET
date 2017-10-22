@@ -399,8 +399,8 @@ namespace SimpleWeather.Droid.Widgets
             updateViews.SetInt(Resource.Id.widgetBackground, "setBackgroundColor", color);
 
             // WeatherIcon
-            updateViews.SetImageViewBitmap(Resource.Id.weather_icon,
-                ImageUtils.BitmapFromAssets(context.Assets, WeatherUtils.GetWeatherIconURI(weather.condition.icon)));
+            updateViews.SetImageViewResource(Resource.Id.weather_icon,
+                WeatherUtils.GetWeatherIconResource(weather.condition.icon));
 
             // Set data for larger widgets
             if (provider.WidgetType != WidgetType.Widget1x1)
@@ -551,8 +551,8 @@ namespace SimpleWeather.Droid.Widgets
                     forecastPanel = new RemoteViews(mContext.PackageName, Resource.Layout.app_widget_forecast_panel_medium);
 
                 forecastPanel.SetTextViewText(Resource.Id.forecast_date, forecast.date.ToString("ddd"));
-                forecastPanel.SetImageViewBitmap(Resource.Id.forecast_icon,
-                    ImageUtils.BitmapFromAssets(mContext.Assets, WeatherUtils.GetWeatherIconURI(forecast.icon)));
+                forecastPanel.SetImageViewResource(Resource.Id.forecast_icon,
+                    WeatherUtils.GetWeatherIconResource(forecast.icon));
                 forecastPanel.SetTextViewText(Resource.Id.forecast_hi,
                     (Settings.IsFahrenheit ? forecast.high_f : forecast.high_c) + "º");
                 forecastPanel.SetTextViewText(Resource.Id.forecast_lo,

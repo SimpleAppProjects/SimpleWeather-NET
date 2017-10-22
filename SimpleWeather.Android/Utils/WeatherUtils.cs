@@ -157,5 +157,58 @@ namespace SimpleWeather.Utils
 
             return file;
         }
+
+        public static int GetWeatherIconResource(string icon)
+        {
+            int weatherIcon = -1;
+
+            if (int.TryParse(icon, out int code))
+            {
+                object value = typeof(Resource.Drawable).GetField(string.Format("yahoo_{0}", code)).GetValue(null);
+                if (value != null)
+                    weatherIcon = (int)value;
+            }
+            else
+            {
+                if (icon.Contains("nt_mostlycloudy") || icon.Contains("nt_partlysunny") || icon.Contains("nt_cloudy"))
+                    weatherIcon = Resource.Drawable.yahoo_27;
+                else if (icon.Contains("nt_partlycloudy") || icon.Contains("nt_mostlysunny"))
+                    weatherIcon = Resource.Drawable.yahoo_33;
+                else if (icon.Contains("nt_clear") || icon.Contains("nt_sunny") || icon.Contains("nt_unknown"))
+                    weatherIcon = Resource.Drawable.yahoo_31;
+                else if (icon.Contains("chancerain"))
+                    weatherIcon = Resource.Drawable.wu_chancerain;
+                else if (icon.Contains("clear") || icon.Contains("sunny"))
+                    weatherIcon = Resource.Drawable.wu_clear;
+                else if (icon.Contains("cloudy"))
+                    weatherIcon = Resource.Drawable.wu_cloudy;
+                else if (icon.Contains("flurries"))
+                    weatherIcon = Resource.Drawable.wu_flurries;
+                else if (icon.Contains("fog"))
+                    weatherIcon = Resource.Drawable.yahoo_20;
+                else if (icon.Contains("hazy"))
+                    weatherIcon = Resource.Drawable.yahoo_21;
+                else if (icon.Contains("sleet") || icon.Contains("sleat"))
+                    weatherIcon = Resource.Drawable.wu_sleat;
+                else if (icon.Contains("rain"))
+                    weatherIcon = Resource.Drawable.wu_rain;
+                else if (icon.Contains("snow"))
+                    weatherIcon = Resource.Drawable.wu_snow;
+                else if (icon.Contains("tstorms"))
+                    weatherIcon = Resource.Drawable.wu_tstorms;
+                else if (icon.Contains("unknown"))
+                    weatherIcon = Resource.Drawable.wu_unknown;
+                else if (icon.Contains("nt_"))
+                    weatherIcon = Resource.Drawable.yahoo_31;
+            }
+
+            if (weatherIcon == -1)
+            {
+                // Not Available
+                weatherIcon = Resource.Drawable.na;
+            }
+
+            return weatherIcon;
+        }
     }
 }

@@ -34,8 +34,8 @@ namespace SimpleWeather.Droid.Notifications
                     weather.forecast[0].low_f : weather.forecast[0].low_c) + "º";
 
             // Weather icon
-            updateViews.SetImageViewBitmap(Resource.Id.weather_icon,
-                ImageUtils.BitmapFromAssets(App.Context.Assets, WeatherUtils.GetWeatherIconURI(weather.condition.icon)));
+            updateViews.SetImageViewResource(Resource.Id.weather_icon, 
+                WeatherUtils.GetWeatherIconResource(weather.condition.icon));
 
             // Location Name
             updateViews.SetTextViewText(Resource.Id.location_name, weather.location.name);
