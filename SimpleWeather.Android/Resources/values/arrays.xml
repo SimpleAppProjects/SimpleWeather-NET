@@ -23,4 +23,12 @@
         <item>360</item>
         <item>720</item>
     </string-array>
+    <string-array name="notification_entries">
+        <item>@string/notificationicon_temperature</item>
+        <item>@string/notificationicon_condition</item>
+    </string-array>
+    <string-array name="notification_values">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
 </resources>

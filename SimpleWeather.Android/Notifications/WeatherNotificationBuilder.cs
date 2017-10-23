@@ -63,10 +63,14 @@ namespace SimpleWeather.Droid.Notifications
 
             NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(App.Context)
-                .SetSmallIcon(resId, Math.Abs(level))
                 .SetContent(updateViews)
                 .SetPriority(NotificationCompat.PriorityLow)
                 .SetOngoing(true) as NotificationCompat.Builder;
+
+            if (Settings.NotificationIcon == Settings.TEMPERATURE_ICON)
+                mBuilder.SetSmallIcon(resId, Math.Abs(level));
+            else if (Settings.NotificationIcon == Settings.CONDITION_ICON)
+                mBuilder.SetSmallIcon(WeatherUtils.GetWeatherIconResource(weather.condition.icon));
 
             Intent onClickIntent = new Intent(App.Context, typeof(MainActivity));
             PendingIntent clickPendingIntent = PendingIntent.GetActivity(App.Context, 0, onClickIntent, 0);

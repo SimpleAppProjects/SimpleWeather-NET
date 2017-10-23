@@ -2,11 +2,9 @@
 using System.Linq;
 using Android.Content;
 using Android.OS;
-using Android.Content.Res;
 using Android.Support.V7.App;
 using Android.Views;
 using Android.Support.V4.App;
-using Android.Preferences;
 using Android.Webkit;
 using Android.Util;
 using Android.Support.V4.Content;
@@ -18,71 +16,49 @@ using SimpleWeather.Utils;
 using Android.Text.Style;
 using Android.Graphics;
 using Android.Text;
+using Android.Support.V7.Preferences;
 
 namespace SimpleWeather.Droid
 {
     [Android.App.Activity(Label = "@string/title_activity_settings", Theme = "@style/SettingsTheme")]
-    public class SettingsActivity : AppCompatPreferenceActivity
+    public class SettingsActivity : AppCompatActivity
     {
-        /**
-         * Helper method to determine if the device has an extra-large screen. For
-         * example, 10" tablets are extra-large.
-         */
-        private static bool IsXLargeTablet(Context context)
-        {
-            return (context.Resources.Configuration.ScreenLayout
-                    & ScreenLayout.SizeMask) >= ScreenLayout.SizeXlarge;
-        }
-
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            SetupActionBar();
+            SupportActionBar.SetDisplayHomeAsUpEnabled(true);
 
             // Display the fragment as the main content.
-            Android.App.Fragment fragment = FragmentManager.FindFragmentById(Android.Resource.Id.Content);
+            Fragment fragment = SupportFragmentManager.FindFragmentById(Android.Resource.Id.Content);
 
             // Check if fragment exists
             if (fragment == null)
             {
-                FragmentManager.BeginTransaction()
+                SupportFragmentManager.BeginTransaction()
                         .Replace(Android.Resource.Id.Content, new SettingsFragment())
                         .Commit();
             }
         }
 
-        /**
-         * Set up the {@link android.app.ActionBar}, if the API is available.
-         */
-        private void SetupActionBar()
-        {
-            ActionBar actionBar = SupportActionBar;
-            if (actionBar != null)
-            {
-                // Show the Up button in the action bar.
-                actionBar.SetDisplayHomeAsUpEnabled(true);
-            }
-        }
-
-        public override bool OnMenuItemSelected(int featureId, IMenuItem item)
+        public override bool OnOptionsItemSelected(IMenuItem item)
         {
             int id = item.ItemId;
             if (id == Android.Resource.Id.Home)
             {
-                if (!base.OnMenuItemSelected(featureId, item))
+                if (!base.OnOptionsItemSelected(item))
                 {
                     OnBackPressed();
                 }
                 return true;
             }
-            return base.OnMenuItemSelected(featureId, item);
+            return base.OnOptionsItemSelected(item);
         }
 
         public override void OnBackPressed()
         {
             string KEY_API = "API";
 
-            if (FragmentManager.FindFragmentById(Android.Resource.Id.Content) is SettingsFragment fragment)
+            if (SupportFragmentManager.FindFragmentById(Android.Resource.Id.Content) is SettingsFragment fragment)
             {
                 ListPreference keyPref = fragment.FindPreference(KEY_API) as ListPreference;
                 if (String.IsNullOrWhiteSpace(Settings.API_KEY) && keyPref.Value == Settings.API_WUnderground)
@@ -96,27 +72,7 @@ namespace SimpleWeather.Droid
             base.OnBackPressed();
         }
 
-        /**
-         * {@inheritDoc}
-         */
-        public override bool OnIsMultiPane()
-        {
-            return IsXLargeTablet(this);
-        }
-
-        /**
-         * This method stops fragment injection in malicious applications.
-         * Make sure to deny any unknown fragments here.
-         */
-        protected override bool IsValidFragment(string fragmentName)
-        {
-            return Java.Lang.Class.FromType(typeof(PreferenceFragment)).Name.Equals(fragmentName)
-                || Java.Lang.Class.FromType(typeof(SettingsFragment)).Name.Equals(fragmentName)
-                || Java.Lang.Class.FromType(typeof(AboutAppFragment)).Name.Equals(fragmentName)
-                || Java.Lang.Class.FromType(typeof(CreditsFragment)).Name.Equals(fragmentName);
-        }
-
-        public class SettingsFragment : PreferenceFragment
+        public class SettingsFragment : PreferenceFragmentCompat
         {
             private const int PERMISSION_LOCATION_REQUEST_CODE = 0;
 
@@ -126,17 +82,23 @@ namespace SimpleWeather.Droid
             private const string KEY_API = "API";
             private const string KEY_APIKEY = "API_KEY";
             private const string KEY_APIKEY_VERIFIED = "API_KEY_VERIFIED";
-            private const string KEY_REFRESHINTERVAL = "key_refreshinterval";
             private const string KEY_ONGOINGNOTIFICATION = "key_ongoingnotification";
+            private const string KEY_NOTIFICATIONICON = "key_notificationicon";
+
+            private const string CATEGORY_NOTIFICATION = "category_notification";
+            private const string CATEGORY_API = "category_api";
 
             // Preferences
-            private SwitchPreference followGps;
-            private ListPreference providerPref;
-            private KeyEntryPreference keyEntry;
+            private SwitchPreferenceCompat followGps;
+            private DropDownPreference providerPref;
+            private EditTextPreference keyEntry;
             private ISharedPreferences wuSharedPrefs;
             private bool keyVerified { get { return IsKeyVerfied(); } set { SetKeyVerified(value); } }
-            private ListPreference intervalPref;
-            private SwitchPreference onGoingNotification;
+            private SwitchPreferenceCompat onGoingNotification;
+            private DropDownPreference notificationIcon;
+
+            private PreferenceCategory notCategory;
+            private PreferenceCategory apiCategory;
 
             private bool IsKeyVerfied()
             {
@@ -148,12 +110,14 @@ namespace SimpleWeather.Droid
                 wuSharedPrefs.Edit().PutBoolean(KEY_APIKEY_VERIFIED, value).Apply();
             }
 
-            public override void OnCreate(Bundle savedInstanceState)
+            public override void OnCreatePreferences(Bundle savedInstanceState, string rootKey)
             {
-                base.OnCreate(savedInstanceState);
-                AddPreferencesFromResource(Resource.Xml.pref_general);
-                SetHasOptionsMenu(false);
+                SetPreferencesFromResource(Resource.Xml.pref_general, null);
+                HasOptionsMenu = false;
                 wuSharedPrefs = Activity.GetSharedPreferences(Settings.API_WUnderground, FileCreationMode.Private);
+
+                notCategory = (PreferenceCategory)FindPreference(CATEGORY_NOTIFICATION);
+                apiCategory = (PreferenceCategory)FindPreference(CATEGORY_API);
 
                 FindPreference(KEY_ABOUTAPP).PreferenceClick += (object sender, Preference.PreferenceClickEventArgs e) =>
                 {
@@ -164,10 +128,10 @@ namespace SimpleWeather.Droid
                             .Commit();
                 };
 
-                followGps = (SwitchPreference)FindPreference(KEY_FOLLOWGPS);
+                followGps = (SwitchPreferenceCompat)FindPreference(KEY_FOLLOWGPS);
                 followGps.PreferenceChange += (object sender, Preference.PreferenceChangeEventArgs e) =>
                 {
-                    SwitchPreference pref = e.Preference as SwitchPreference;
+                    SwitchPreferenceCompat pref = e.Preference as SwitchPreferenceCompat;
                     if ((bool)e.NewValue)
                     {
                         if (ContextCompat.CheckSelfPermission(Activity, Manifest.Permission.AccessFineLocation) != Permission.Granted &&
@@ -185,25 +149,9 @@ namespace SimpleWeather.Droid
                     }
                 };
 
-                keyEntry = (KeyEntryPreference)FindPreference(KEY_APIKEY);
-                keyEntry.PositiveButtonClick += async delegate
-                {
-                    String key = keyEntry.EditText.Text;
+                keyEntry = (EditTextPreference)FindPreference(KEY_APIKEY);
 
-                    if (await WeatherUnderground.KeyCheckQuery.IsValid(key))
-                    {
-                        Settings.API_KEY = key;
-                        Settings.API = Settings.API_WUnderground;
-
-                        keyVerified = true;
-                        UpdateKeySummary();
-
-                        keyEntry.Dialog.Dismiss();
-                    }
-                };
-
-                providerPref = (ListPreference)FindPreference(KEY_API);
-                providerPref.Summary = providerPref.Entry;
+                providerPref = (DropDownPreference)FindPreference(KEY_API);
                 providerPref.Persistent = false;
                 providerPref.PreferenceChange += (object sender, Preference.PreferenceChangeEventArgs e) => 
                 {
@@ -221,6 +169,9 @@ namespace SimpleWeather.Droid
                             Settings.API = pref.Value;
                         else
                             Settings.API = Settings.API_WUnderground;
+
+                        if (apiCategory.FindPreference(KEY_APIKEY) == null)
+                            apiCategory.AddPreference(keyEntry);
                     }
                     else if (e.NewValue.ToString() == Settings.API_Yahoo)
                     {
@@ -229,10 +180,10 @@ namespace SimpleWeather.Droid
                         keyEntry.Enabled = false;
 
                         Settings.API = Settings.API_Yahoo;
+
+                        apiCategory.RemovePreference(keyEntry);
                     }
 
-                    int idx = pref.GetEntryValues().ToList().IndexOf(e.NewValue.ToString());
-                    pref.Summary = pref.GetEntries()[idx];
                     UpdateKeySummary();
                 };
 
@@ -251,19 +202,10 @@ namespace SimpleWeather.Droid
 
                 UpdateKeySummary();
 
-                intervalPref = (ListPreference)FindPreference(KEY_REFRESHINTERVAL);
-                intervalPref.Summary = intervalPref.Entry;
-                intervalPref.PreferenceChange += (object sender, Preference.PreferenceChangeEventArgs e) =>
-                {
-                    ListPreference pref = e.Preference as ListPreference;
-                    int idx = pref.FindIndexOfValue(e.NewValue.ToString());
-                    pref.Summary = pref.GetEntries()[idx];
-                };
-
-                onGoingNotification = (SwitchPreference)FindPreference(KEY_ONGOINGNOTIFICATION);
+                onGoingNotification = (SwitchPreferenceCompat)FindPreference(KEY_ONGOINGNOTIFICATION);
                 onGoingNotification.PreferenceChange += (object sender, Preference.PreferenceChangeEventArgs e) =>
                 {
-                    SwitchPreference pref = e.Preference as SwitchPreference;
+                    SwitchPreferenceCompat pref = e.Preference as SwitchPreferenceCompat;
                     var context = App.Context;
 
                     // On-going notification
@@ -271,13 +213,67 @@ namespace SimpleWeather.Droid
                     {
                         context.StartService(new Intent(context, typeof(Widgets.WeatherWidgetService))
                             .SetAction(Widgets.WeatherWidgetService.ACTION_REFRESHNOTIFICATION));
+
+                        if (notCategory.FindPreference(KEY_NOTIFICATIONICON) == null)
+                            notCategory.AddPreference(notificationIcon);
                     }
                     else
                     {
                         context.StartService(new Intent(context, typeof(Widgets.WeatherWidgetService))
                             .SetAction(Widgets.WeatherWidgetService.ACTION_REMOVENOTIFICATION));
+
+                        notCategory.RemovePreference(notificationIcon);
                     }
                 };
+
+                notificationIcon = (DropDownPreference)FindPreference(KEY_NOTIFICATIONICON);
+                notificationIcon.PreferenceChange += (object sender, Preference.PreferenceChangeEventArgs e) =>
+                {
+                    var context = App.Context;
+                    context.StartService(new Intent(context, typeof(Widgets.WeatherWidgetService))
+                        .SetAction(Widgets.WeatherWidgetService.ACTION_REFRESHNOTIFICATION));
+                };
+
+                // Remove preferences
+                if (!onGoingNotification.Checked)
+                {
+                    notCategory.RemovePreference(notificationIcon);
+                }
+            }
+
+            public override void OnDisplayPreferenceDialog(Preference preference)
+            {
+                const String TAG = "KeyEntryPreferenceDialogFragment";
+
+                if (FragmentManager.FindFragmentByTag(TAG) != null)
+                    return;
+
+                if (preference is EditTextPreference && preference.Key == KEY_APIKEY)
+                {
+                    var fragment = KeyEntryPreferenceDialogFragment.NewInstance(preference.Key);
+                    fragment.PositiveButtonClick += async delegate
+                    {
+                        String key = fragment.EditText.Text;
+
+                        if (await WeatherUnderground.KeyCheckQuery.IsValid(key))
+                        {
+                            Settings.API_KEY = key;
+                            Settings.API = Settings.API_WUnderground;
+
+                            keyVerified = true;
+                            UpdateKeySummary();
+
+                            fragment.Dialog.Dismiss();
+                        }
+                    };
+
+                    fragment.SetTargetFragment(this, 0);
+                    fragment.Show(this.FragmentManager, TAG);
+                }
+                else
+                {
+                    base.OnDisplayPreferenceDialog(preference);
+                }
             }
 
             private void UpdateKeySummary()
@@ -330,65 +326,69 @@ namespace SimpleWeather.Droid
                 base.OnResume();
 
                 // Title
-                AppCompatPreferenceActivity activity = (AppCompatPreferenceActivity)Activity;
+                AppCompatActivity activity = (AppCompatActivity)Activity;
                 activity.SupportActionBar.Title = GetString(Resource.String.title_activity_settings);
             }
         }
 
-        public class KeyEntryPreference : EditTextPreference
+        public class KeyEntryPreferenceDialogFragment : EditTextPreferenceDialogFragmentCompat
         {
             public EventHandler PositiveButtonClick { get; set; }
             public EventHandler NegativeButtonClick { get; set; }
 
-            public KeyEntryPreference(Context context) :
-                base(context)
+            public EditText EditText;
+
+            public KeyEntryPreferenceDialogFragment() :
+                base()
             {
             }
 
-            public KeyEntryPreference(Context context, IAttributeSet attrs) :
-                base(context, attrs)
+            public static new KeyEntryPreferenceDialogFragment NewInstance(String key)
             {
+                KeyEntryPreferenceDialogFragment fragment = new KeyEntryPreferenceDialogFragment();
+                Bundle b = new Bundle(1);
+                b.PutString(ArgKey, key);
+                fragment.Arguments = b;
+                return fragment;
             }
 
-            public KeyEntryPreference(Context context, IAttributeSet attrs, int defStyle) :
-                base(context, attrs, defStyle)
+            protected override void OnBindDialogView(View view)
             {
+                base.OnBindDialogView(view);
+
+                EditText = view.FindViewById<EditText>(Android.Resource.Id.Edit);
             }
 
-            public KeyEntryPreference(Context context, IAttributeSet attrs, int defStyle, int defStyleRes) :
-                base(context, attrs, defStyle, defStyleRes)
+            public override void SetupDialog(Android.App.Dialog dialog, int style)
             {
-            }
+                base.SetupDialog(dialog, style);
+                AlertDialog alertdialog = dialog as AlertDialog;
+                alertdialog.ShowEvent += (s, e) => 
+                {
+                    View posButton = alertdialog.GetButton((int)DialogButtonType.Positive);
+                    View negButton = alertdialog.GetButton((int)DialogButtonType.Negative);
+                    posButton.Click += PositiveButtonClick;
+                    if (NegativeButtonClick == null)
+                        negButton.Click += delegate { dialog.Dismiss(); };
+                    else
+                        negButton.Click += NegativeButtonClick;
+                };
 
-            protected override void ShowDialog(Bundle state)
-            {
-                base.ShowDialog(state);
-
-                this.EditText.Text = Settings.API_KEY;
-
-                Android.App.AlertDialog dialog = Dialog as Android.App.AlertDialog;
-                View posButton = dialog.GetButton((int)DialogButtonType.Positive);
-                View negButton = dialog.GetButton((int)DialogButtonType.Negative);
-                posButton.Click += PositiveButtonClick;
-                if (NegativeButtonClick == null)
-                    negButton.Click += delegate { dialog.Dismiss(); };
-                else
-                    negButton.Click += NegativeButtonClick;
+                EditText.Text = Settings.API_KEY;
             }
         }
 
-        public class AboutAppFragment : PreferenceFragment
+        public class AboutAppFragment : PreferenceFragmentCompat
         {
             // Preference Keys
             private static string KEY_ABOUTCREDITS = "key_aboutcredits";
             private static string KEY_ABOUTOSLIBS = "key_aboutoslibs";
             private static string KEY_ABOUTVERSION = "key_aboutversion";
 
-            public override void OnCreate(Bundle savedInstanceState)
+            public override void OnCreatePreferences(Bundle savedInstanceState, string rootKey)
             {
-                base.OnCreate(savedInstanceState);
-                AddPreferencesFromResource(Resource.Xml.pref_aboutapp);
-                SetHasOptionsMenu(false);
+                SetPreferencesFromResource(Resource.Xml.pref_aboutapp, null);
+                HasOptionsMenu = false;
 
                 FindPreference(KEY_ABOUTCREDITS).PreferenceClick += (object sender, Preference.PreferenceClickEventArgs e) =>
                 {
@@ -416,18 +416,17 @@ namespace SimpleWeather.Droid
                 base.OnResume();
 
                 // Title
-                AppCompatPreferenceActivity activity = (AppCompatPreferenceActivity)Activity;
+                AppCompatActivity activity = (AppCompatActivity)Activity;
                 activity.SupportActionBar.Title = GetString(Resource.String.pref_title_about);
             }
         }
 
-        public class CreditsFragment : PreferenceFragment
+        public class CreditsFragment : PreferenceFragmentCompat
         {
-            public override void OnCreate(Bundle savedInstanceState)
+            public override void OnCreatePreferences(Bundle savedInstanceState, string rootKey)
             {
-                base.OnCreate(savedInstanceState);
-                AddPreferencesFromResource(Resource.Xml.pref_credits);
-                SetHasOptionsMenu(false);
+                SetPreferencesFromResource(Resource.Xml.pref_credits, null);
+                HasOptionsMenu = false;
             }
 
             public override void OnResume()
@@ -435,18 +434,17 @@ namespace SimpleWeather.Droid
                 base.OnResume();
 
                 // Title
-                AppCompatPreferenceActivity activity = (AppCompatPreferenceActivity)Activity;
+                AppCompatActivity activity = (AppCompatActivity)Activity;
                 activity.SupportActionBar.Title = GetString(Resource.String.pref_title_credits);
             }
         }
 
-        public class OSSCreditsFragment : PreferenceFragment
+        public class OSSCreditsFragment : PreferenceFragmentCompat
         {
-            public override void OnCreate(Bundle savedInstanceState)
+            public override void OnCreatePreferences(Bundle savedInstanceState, string rootKey)
             {
-                base.OnCreate(savedInstanceState);
-                AddPreferencesFromResource(Resource.Xml.pref_oslibs);
-                SetHasOptionsMenu(false);
+                SetPreferencesFromResource(Resource.Xml.pref_oslibs, null);
+                HasOptionsMenu = false;
             }
 
             public override void OnResume()
@@ -454,7 +452,7 @@ namespace SimpleWeather.Droid
                 base.OnResume();
 
                 // Title
-                AppCompatPreferenceActivity activity = (AppCompatPreferenceActivity)Activity;
+                AppCompatActivity activity = (AppCompatActivity)Activity;
                 activity.SupportActionBar.Title = GetString(Resource.String.pref_title_oslibs);
             }
         }
@@ -481,13 +479,54 @@ namespace SimpleWeather.Droid
             {
             }
 
-            protected override void OnBindView(View view)
+            public override void OnBindViewHolder(PreferenceViewHolder holder)
             {
-                base.OnBindView(view);
+                base.OnBindViewHolder(holder);
 
-                WebView webview = view.FindViewById<WebView>(Resource.Id.webview);
+                WebView webview = holder.ItemView.FindViewById<WebView>(Resource.Id.webview);
                 webview.Settings.SetLayoutAlgorithm(WebSettings.LayoutAlgorithm.SingleColumn);
                 webview.LoadUrl("file:///android_asset/credits/licenses.html");
+            }
+        }
+
+        public class CustomDropDownPreference : DropDownPreference
+        {
+            public CustomDropDownPreference(Context context)
+                : base(context)
+            {
+            }
+
+            public CustomDropDownPreference(Context context, IAttributeSet attrs)
+                : base(context, attrs)
+            {
+            }
+
+            public CustomDropDownPreference(Context context, IAttributeSet attrs, int defStyleAttr)
+                : base(context, attrs, defStyleAttr)
+            {
+            }
+
+            public CustomDropDownPreference(Context context, IAttributeSet attrs, int defStyleAttr, int defStyleRes)
+                : base(context, attrs, defStyleAttr, defStyleRes)
+            {
+            }
+
+            public CustomDropDownPreference(IntPtr handle, JniHandleOwnership transer)
+                : base(handle, transer)
+            {
+            }
+
+            protected override ArrayAdapter CreateAdapter()
+            {
+                return new ArrayAdapter(Context, Resource.Layout.dropdown_item);
+            }
+
+            public override void OnBindViewHolder(PreferenceViewHolder holder)
+            {
+                base.OnBindViewHolder(holder);
+
+                Spinner spinner = holder.ItemView.FindViewById<Spinner>(Resource.Id.spinner);
+                spinner.DropDownVerticalOffset = 100;
             }
         }
     }

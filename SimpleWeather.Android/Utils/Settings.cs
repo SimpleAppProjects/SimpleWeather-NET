@@ -21,8 +21,14 @@ namespace SimpleWeather.Utils
         private static File dataFile;
 
         // Android specific settings
-        public static bool OnGoingNotification { get { return ShowOngoingNotification(); } }
         private const string KEY_ONGOINGNOTIFICATION = "key_ongoingnotification";
+        private const string KEY_NOTIFICATIONICON = "key_notificationicon";
+
+        public static bool OnGoingNotification { get { return ShowOngoingNotification(); } }
+        public static string NotificationIcon { get { return GetNotificationIcon(); } }
+
+        public const string TEMPERATURE_ICON = "0";
+        public const string CONDITION_ICON = "1";
 
         // Shared Preferences listener
         internal class SettingsListener : Java.Lang.Object, ISharedPreferencesOnSharedPreferenceChangeListener
@@ -280,6 +286,16 @@ namespace SimpleWeather.Utils
             }
             else
                 return preferences.GetBoolean(KEY_ONGOINGNOTIFICATION, false);
+        }
+
+        private static string GetNotificationIcon()
+        {
+            if (!preferences.Contains(KEY_NOTIFICATIONICON))
+            {
+                return TEMPERATURE_ICON;
+            }
+            else
+                return preferences.GetString(KEY_NOTIFICATIONICON, TEMPERATURE_ICON);
         }
     }
 }

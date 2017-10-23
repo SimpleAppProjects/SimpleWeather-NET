@@ -2,45 +2,69 @@
 
     <PreferenceCategory android:title="@string/pref_title_general">
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="key_usecelsius"
             android:summaryOff="@string/pref_summary_fahrenheit"
             android:summaryOn="@string/pref_summary_celsius"
             android:title="@string/pref_title_units" />
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="key_followgps"
             android:summary="@string/pref_summary_currentlocation"
             android:title="@string/label_currentlocation" />
 
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="key_ongoingnotification"
-            android:summary="@string/pref_summary_notification"
-            android:title="@string/pref_title_notification" />
-
-        <ListPreference
+        <SimpleWeather.Droid.SettingsActivity.CustomDropDownPreference
             android:defaultValue="30"
             android:entries="@array/refreshinterval_entries"
             android:entryValues="@array/refreshinterval_values"
             android:key="key_refreshinterval"
+            android:summary="%s"
             android:title="@string/pref_title_refreshinterval" />
 
-        <ListPreference
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/pref_category_notification"
+        android:key="category_notification">
+
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="key_ongoingnotification"
+            android:summary="@string/pref_summary_notification"
+            android:title="@string/pref_title_onnotification" />
+
+        <SimpleWeather.Droid.SettingsActivity.CustomDropDownPreference
+            android:defaultValue="0"
+            android:dependency="key_ongoingnotification"
+            android:entries="@array/notification_entries"
+            android:entryValues="@array/notification_values"
+            android:key="key_notificationicon"
+            android:summary="%s"
+            android:title="@string/pref_title_notificationicon" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/pref_title_api"
+        android:key="category_api">
+
+        <SimpleWeather.Droid.SettingsActivity.CustomDropDownPreference
             android:entries="@array/api_entries"
             android:entryValues="@array/api_entries_values"
             android:key="API"
+            android:summary="%s"
             android:title="@string/api_label" />
 
-        <SimpleWeather.Droid.SettingsActivity.KeyEntryPreference
+        <EditTextPreference
             android:key="API_KEY"
             android:singleLine="true"
             android:summary="@string/pref_summary_apikey"
             android:title="@string/key_hint" />
 
     </PreferenceCategory>
+
     <PreferenceCategory android:title="@string/pref_title_about">
 
         <Preference
