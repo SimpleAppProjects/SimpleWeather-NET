@@ -38,8 +38,10 @@ namespace SimpleWeather.Droid.Widgets
 
         private Context mContext;
         private AppWidgetManager mAppWidgetManager;
-        private static Weather weather;
         private static bool alarmStarted = false;
+
+        private static Weather weather;
+        private static LocationData locData;
 
         // Weather Widget Providers
         private WeatherWidgetProvider1x1 mAppWidget1x1 =
@@ -67,7 +69,7 @@ namespace SimpleWeather.Droid.Widgets
         {
             if (ACTION_REFRESHWIDGET.Equals(intent.Action))
             {
-                if (weather == null)
+                if (weather == null || (locData == null || !locData.Equals(Settings.HomeData)))
                     weather = await GetWeather();
 
                 int[] appWidgetIds = intent.GetIntArrayExtra(WeatherWidgetProvider.EXTRA_WIDGET_IDS);
@@ -97,7 +99,7 @@ namespace SimpleWeather.Droid.Widgets
             }
             else if (ACTION_RESIZEWIDGET.Equals(intent.Action))
             {
-                if (weather == null)
+                if (weather == null || (locData == null || !locData.Equals(Settings.HomeData)))
                     weather = await GetWeather();
 
                 int appWidgetId = intent.GetIntExtra(WeatherWidgetProvider.EXTRA_WIDGET_ID, -1);
@@ -150,7 +152,7 @@ namespace SimpleWeather.Droid.Widgets
             }
             else if (ACTION_REFRESHNOTIFICATION.Equals(intent.Action))
             {
-                if (weather == null)
+                if (weather == null || (locData == null || !locData.Equals(Settings.HomeData)))
                     weather = await GetWeather();
 
                 if (Settings.OnGoingNotification && Settings.WeatherLoaded)
@@ -635,6 +637,7 @@ namespace SimpleWeather.Droid.Widgets
                 var wloader = new WeatherDataLoader(null, Settings.HomeData);
                 await wloader.LoadWeatherData(false);
 
+                locData = Settings.HomeData;
                 weather = wloader.GetWeather();
 
                 if (weather != null)
