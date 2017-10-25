@@ -10,6 +10,7 @@ using Android.Widget;
 using SimpleWeather.Droid.Utils;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
+using Android.Text.Format;
 
 namespace SimpleWeather.Droid.Notifications
 {
@@ -48,7 +49,12 @@ namespace SimpleWeather.Droid.Notifications
                 string.Format("{0} / {1}", hitemp, lotemp));
 
             // Update Time
-            updateViews.SetTextViewText(Resource.Id.update_time, DateTime.Now.ToString("t"));
+            string timeformat = DateTime.Now.ToString("h:mm tt");
+
+            if (DateFormat.Is24HourFormat(App.Context))
+                timeformat = DateTime.Now.ToString("HH:mm");
+
+            updateViews.SetTextViewText(Resource.Id.update_time, timeformat);
 
             // Progress bar
             updateViews.SetViewVisibility(Resource.Id.refresh_button, ViewStates.Visible);

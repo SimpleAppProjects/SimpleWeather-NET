@@ -16,6 +16,7 @@ using SimpleWeather.Droid.Utils;
 using Android.Views;
 using Android.Util;
 using SimpleWeather.Droid.Notifications;
+using Android.Text.Format;
 
 namespace SimpleWeather.Droid.Widgets
 {
@@ -48,7 +49,7 @@ namespace SimpleWeather.Droid.Widgets
             WeatherWidgetProvider1x1.GetInstance();
         private WeatherWidgetProvider2x2 mAppWidget2x2 =
             WeatherWidgetProvider2x2.GetInstance();
-        private WeatherWidgetProvider4x1 mAppWidget4x1 = 
+        private WeatherWidgetProvider4x1 mAppWidget4x1 =
             WeatherWidgetProvider4x1.GetInstance();
         private WeatherWidgetProvider4x2 mAppWidget4x2 =
             WeatherWidgetProvider4x2.GetInstance();
@@ -414,7 +415,7 @@ namespace SimpleWeather.Droid.Widgets
                 if (provider.WidgetType == WidgetType.Widget2x2 || provider.WidgetType == WidgetType.Widget4x2)
                 {
                     // Feels like temp
-                    updateViews.SetTextViewText(Resource.Id.condition_feelslike, 
+                    updateViews.SetTextViewText(Resource.Id.condition_feelslike,
                         (Settings.IsFahrenheit ?
                             Math.Round(weather.condition.feelslike_f) : Math.Round(weather.condition.feelslike_c)) + "º");
 
@@ -617,7 +618,12 @@ namespace SimpleWeather.Droid.Widgets
 
         private string GetUpdateTimeText(DateTime now, bool shortFormat)
         {
-            string updatetime = string.Format("{0} {1}", now.ToString("ddd"), now.ToString("t").ToLower());
+            string timeformat = now.ToString("h:mm tt").ToLower();
+
+            if (DateFormat.Is24HourFormat(App.Context))
+                timeformat = now.ToString("HH:mm").ToLower();
+
+            string updatetime = string.Format("{0} {1}", now.ToString("ddd"), timeformat);
 
             if (shortFormat)
                 return updatetime;
