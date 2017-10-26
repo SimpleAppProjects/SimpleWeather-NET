@@ -33,39 +33,6 @@ namespace SimpleWeather.Utils
                 t.Wait();
                 locDataFile = t.Result;
             }
-
-            localSettings.Values.MapChanged += Values_MapChanged;
-        }
-
-        private static async void Values_MapChanged(IObservableMap<string, object> sender, IMapChangedEventArgs<string> @event)
-        {
-            if (@event.CollectionChange == CollectionChange.ItemChanged || @event.CollectionChange == CollectionChange.ItemInserted)
-            {
-                if (String.IsNullOrWhiteSpace(@event.Key))
-                    return;
-
-                switch(@event.Key)
-                {
-                    // FollowGPS changed
-                    case KEY_FOLLOWGPS:
-                        await UWP.App.BGTaskHandler.AppTrigger.RequestAsync();
-                        break;
-                    // Refresh interval changed
-                    case KEY_REFRESHINTERVAL:
-                        UWP.App.BGTaskHandler.RegisterBackgroundTask();
-                        break;
-                    // Weather Provider changed
-                    case KEY_API:
-                        await UWP.App.BGTaskHandler.AppTrigger.RequestAsync();
-                        break;
-                    // Settings unit changed
-                    case KEY_USECELSIUS:
-                        await UWP.App.BGTaskHandler.AppTrigger.RequestAsync();
-                        break;
-                    default:
-                        break;
-                }
-            }
         }
 
         private static string GetTempUnit()
@@ -90,12 +57,9 @@ namespace SimpleWeather.Utils
 
         private static bool IsWeatherLoaded()
         {
-            FileInfo dataFileinfo = new FileInfo(dataFile.Path);
-            FileInfo locFileinfo = new FileInfo(locDataFile.Path);
-
-            if (dataFileinfo.Length == 0 || !dataFileinfo.Exists)
+            if (!FileUtils.IsValid(dataFile.Path))
             {
-                if (locFileinfo.Length == 0 || !locFileinfo.Exists)
+                if (!FileUtils.IsValid(locDataFile.Path))
                 {
                     SetWeatherLoaded(false);
                     locationData.Clear();

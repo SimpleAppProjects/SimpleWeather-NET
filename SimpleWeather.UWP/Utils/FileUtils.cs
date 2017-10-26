@@ -45,15 +45,13 @@ namespace SimpleWeather.Utils
                 await Task.Delay(100);
             }
 
-            using (Stream stream = (await file.OpenAsync(FileAccessMode.ReadWrite)).AsStreamForWrite())
-            using (StreamWriter writer = new StreamWriter(stream))
+            using (StorageStreamTransaction transaction = await file.OpenTransactedWriteAsync())
+            using (DataWriter writer = new DataWriter(transaction.Stream))
             {
-                // Clear file before writing
-                stream.SetLength(0);
-
-                await writer.WriteAsync(data);
-                await writer.FlushAsync();
-                writer.Dispose();
+                writer.WriteString(data);
+                // reset stream size to override the file
+                transaction.Stream.Size = await writer.StoreAsync();
+                await transaction.CommitAsync();
             }
         }
 
@@ -65,15 +63,13 @@ namespace SimpleWeather.Utils
                 await Task.Delay(100);
             }
 
-            using (Stream stream = (await file.OpenAsync(FileAccessMode.ReadWrite)).AsStreamForWrite())
-            using (StreamWriter writer = new StreamWriter(stream))
+            using (StorageStreamTransaction transaction = await file.OpenTransactedWriteAsync())
+            using (DataWriter writer = new DataWriter(transaction.Stream))
             {
-                // Clear file before writing
-                stream.SetLength(0);
-
-                await writer.WriteAsync(Encoding.UTF8.GetString(data));
-                await writer.FlushAsync();
-                writer.Dispose();
+                writer.WriteString(Encoding.UTF8.GetString(data));
+                // reset stream size to override the file
+                transaction.Stream.Size = await writer.StoreAsync();
+                await transaction.CommitAsync();
             }
         }
 

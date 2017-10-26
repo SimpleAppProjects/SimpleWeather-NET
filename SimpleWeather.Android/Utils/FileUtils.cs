@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Java.IO;
 using SimpleWeather.Droid;
+using Android.Support.V4.Util;
 
 namespace SimpleWeather.Utils
 {
@@ -10,6 +11,8 @@ namespace SimpleWeather.Utils
     {
         public async static Task<String> ReadFile(File file)
         {
+            AtomicFile mFile = new AtomicFile(file);
+
             // Wait for file to be free
             while (IsFileLocked(file))
             {
@@ -18,7 +21,7 @@ namespace SimpleWeather.Utils
 
             String data;
 
-            using (BufferedReader reader = new BufferedReader(new FileReader(file)))
+            using (BufferedReader reader = new BufferedReader(new InputStreamReader(mFile.OpenRead())))
             {
                 String line = await reader.ReadLineAsync();
                 StringBuilder sBuilder = new StringBuilder();
@@ -38,13 +41,15 @@ namespace SimpleWeather.Utils
 
         public static async Task WriteFile(String data, File file)
         {
+            AtomicFile mFile = new AtomicFile(file);
+
             // Wait for file to be free
             while (IsFileLocked(file))
             {
                 await Task.Delay(100);
             }
 
-            using (System.IO.Stream outputStream = App.Context.OpenFileOutput(file.Name, Android.Content.FileCreationMode.Private))
+            using (System.IO.Stream outputStream = mFile.StartWrite())
             using (System.IO.StreamWriter writer = new System.IO.StreamWriter(outputStream))
             {
                 // Clear file before writing
@@ -52,7 +57,7 @@ namespace SimpleWeather.Utils
 
                 await writer.WriteAsync(data);
                 await writer.FlushAsync();
-                writer.Close();
+                mFile.FinishWrite(outputStream);
             }
         }
 

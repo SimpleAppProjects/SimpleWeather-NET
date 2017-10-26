@@ -67,9 +67,7 @@ namespace SimpleWeather.Utils
 
         private static async Task Load()
         {
-            System.IO.FileInfo fileinfo = new System.IO.FileInfo(dataFile.Path);
-
-            if (!fileinfo.Exists || (fileinfo.Exists && fileinfo.Length == 0))
+            if (!FileUtils.IsValid(dataFile.Path) && !FileUtils.IsValid(locDataFile.Path))
                 return;
 
             weatherData = await JSONParser.DeserializerAsync<OrderedDictionary>(dataFile);

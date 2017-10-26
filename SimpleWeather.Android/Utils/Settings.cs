@@ -104,12 +104,9 @@ namespace SimpleWeather.Utils
 
         private static bool IsWeatherLoaded()
         {
-            System.IO.FileInfo dataFileinfo = new System.IO.FileInfo(dataFile.Path);
-            System.IO.FileInfo locFileinfo = new System.IO.FileInfo(locDataFile.Path);
-
-            if (!dataFileinfo.Exists || (dataFileinfo.Exists && dataFileinfo.Length == 0))
+            if (!FileUtils.IsValid(dataFile.Path))
             {
-                if (!locFileinfo.Exists || (locFileinfo.Exists && locFileinfo.Length == 0))
+                if (!FileUtils.IsValid(locDataFile.Path))
                 {
                     SetWeatherLoaded(false);
                     locationData.Clear();
