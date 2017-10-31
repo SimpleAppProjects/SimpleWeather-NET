@@ -40,10 +40,10 @@
                     android:fontFamily="sans-serif-light"
                     android:padding="8dp"
                     android:textAlignment="center"
-                    android:textAppearance="@android:style/TextAppearance.Material.Medium.Inverse"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/label_location_size"
-                    android:textStyle="normal|bold"
+                    android:textStyle="bold"
                     tools:text="New York, NY" />
 
                 <TextView
@@ -51,7 +51,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:textAppearance="@android:style/TextAppearance.Material.Medium.Inverse"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/label_updatetime_size"
                     tools:text="Updated on 11:12 PM" />
@@ -66,7 +66,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:textAlignment="center"
-                    android:textAppearance="@android:style/TextAppearance.Material.Medium.Inverse"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/weather_icon_size"
                     tools:text="@string/wi_wu_sunny" />
@@ -117,7 +117,7 @@
                             android:layout_weight="1"
                             android:padding="4dp"
                             android:text="@string/label_forecast"
-                            android:textAppearance="@android:style/TextAppearance.Material.Medium.Inverse"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
                             android:textColor="@android:color/white"
                             android:textStyle="bold" />
 
@@ -189,7 +189,7 @@
                         android:layout_height="wrap_content"
                         android:padding="12dp"
                         android:text="@string/label_hourlyforecast"
-                        android:textAppearance="@android:style/TextAppearance.Material.Medium.Inverse"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
                         android:textColor="@android:color/white"
                         android:textStyle="bold" />
 
@@ -232,7 +232,7 @@
                         android:layout_height="wrap_content"
                         android:padding="12dp"
                         android:text="@string/label_details"
-                        android:textAppearance="@android:style/TextAppearance.Material.Medium.Inverse"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
                         android:textColor="@android:color/white"
                         android:textStyle="bold" />
 
@@ -247,6 +247,8 @@
                         android:layout_height="match_parent"
                         android:paddingBottom="10dp"
                         android:paddingEnd="25dp"
+                        android:paddingRight="25dp"
+                        android:paddingLeft="25dp"
                         android:paddingStart="25dp"
                         android:paddingTop="10dp"
                         app:rowCount="4">
@@ -280,7 +282,9 @@
                                     style="@style/WeatherDetails"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_alignParentLeft="true"
                                     android:layout_alignParentStart="true"
+                                    android:layout_toLeftOf="@+id/chance_val"
                                     android:layout_toStartOf="@+id/chance_val"
                                     android:text="@string/label_chance" />
 
@@ -290,6 +294,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
+                                    android:layout_alignParentRight="true"
                                     android:gravity="center"
                                     tools:text="20%" />
                             </RelativeLayout>
@@ -304,7 +309,9 @@
                                     style="@style/WeatherDetails"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_alignParentLeft="true"
                                     android:layout_alignParentStart="true"
+                                    android:layout_toLeftOf="@+id/qpf_rain_val"
                                     android:layout_toStartOf="@+id/qpf_rain_val"
                                     android:text="@string/label_qpf_rain" />
 
@@ -314,6 +321,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
+                                    android:layout_alignParentRight="true"
                                     android:gravity="center"
                                     tools:text="0.01 in" />
 
@@ -329,7 +337,9 @@
                                     style="@style/WeatherDetails"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_alignParentLeft="true"
                                     android:layout_alignParentStart="true"
+                                    android:layout_toLeftOf="@+id/qpf_snow_val"
                                     android:layout_toStartOf="@+id/qpf_snow_val"
                                     android:text="@string/label_qpf_snow" />
 
@@ -339,6 +349,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
+                                    android:layout_alignParentRight="true"
                                     android:gravity="center"
                                     tools:text="0.00 in" />
 
@@ -374,7 +385,9 @@
                                     style="@style/WeatherDetails"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_alignParentLeft="true"
                                     android:layout_alignParentStart="true"
+                                    android:layout_toLeftOf="@+id/pressure_state"
                                     android:layout_toStartOf="@+id/pressure_state"
                                     android:text="@string/label_pressure" />
 
@@ -383,6 +396,7 @@
                                     style="@style/WeatherDetails"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_toLeftOf="@+id/pressure"
                                     android:layout_toStartOf="@+id/pressure"
                                     android:gravity="center"
                                     android:padding="6dp"
@@ -395,6 +409,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
+                                    android:layout_alignParentRight="true"
                                     android:gravity="center"
                                     tools:text="1000.2 mb" />
                             </RelativeLayout>
@@ -408,7 +423,9 @@
                                     style="@style/WeatherDetails"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_alignParentLeft="true"
                                     android:layout_alignParentStart="true"
+                                    android:layout_toLeftOf="@+id/humidity"
                                     android:layout_toStartOf="@+id/humidity"
                                     android:text="@string/label_humidity" />
 
@@ -418,6 +435,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
+                                    android:layout_alignParentRight="true"
                                     android:gravity="center"
                                     tools:text="100%" />
 
@@ -433,7 +451,9 @@
                                     style="@style/WeatherDetails"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_alignParentLeft="true"
                                     android:layout_alignParentStart="true"
+                                    android:layout_toLeftOf="@+id/visibility_val"
                                     android:layout_toStartOf="@+id/visibility_val"
                                     android:text="@string/label_visibility" />
 
@@ -443,6 +463,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
+                                    android:layout_alignParentRight="true"
                                     android:gravity="center"
                                     tools:text="10.0 km" />
                             </RelativeLayout>
@@ -478,7 +499,9 @@
                                     style="@style/WeatherDetails"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_alignParentLeft="true"
                                     android:layout_alignParentStart="true"
+                                    android:layout_toLeftOf="@+id/feelslike"
                                     android:layout_toStartOf="@+id/feelslike"
                                     android:text="@string/label_feelslike" />
 
@@ -488,6 +511,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
+                                    android:layout_alignParentRight="true"
                                     android:gravity="center"
                                     tools:text="36º" />
                             </RelativeLayout>
@@ -501,7 +525,9 @@
                                     style="@style/WeatherDetails"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_alignParentLeft="true"
                                     android:layout_alignParentStart="true"
+                                    android:layout_toLeftOf="@+id/wind_direction"
                                     android:layout_toStartOf="@+id/wind_direction"
                                     android:text="@string/label_wind" />
 
@@ -510,6 +536,7 @@
                                     style="@style/WeatherDetails"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_toLeftOf="@+id/wind_speed"
                                     android:layout_toStartOf="@+id/wind_speed"
                                     android:padding="6dp"
                                     android:text="@string/wi_direction_up" />
@@ -520,6 +547,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
+                                    android:layout_alignParentRight="true"
                                     android:gravity="center"
                                     tools:text="3.8 mph" />
                             </RelativeLayout>
@@ -539,7 +567,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/label_sunriseset"
-                                android:textAppearance="@android:style/TextAppearance.Material.Medium.Inverse" />
+                                android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse" />
 
                             <View
                                 android:layout_width="wrap_content"
@@ -556,7 +584,9 @@
                                     style="@style/WeatherDetails"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_alignParentLeft="true"
                                     android:layout_alignParentStart="true"
+                                    android:layout_toLeftOf="@+id/sunrise_icon"
                                     android:layout_toStartOf="@+id/sunrise_icon"
                                     android:text="@string/label_sunrise" />
 
@@ -565,6 +595,7 @@
                                     style="@style/WeatherDetails"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_toLeftOf="@+id/sunrise_time"
                                     android:layout_toStartOf="@+id/sunrise_time"
                                     android:padding="6dp"
                                     android:text="@string/wi_sunrise" />
@@ -575,6 +606,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
+                                    android:layout_alignParentRight="true"
                                     tools:text="06:45 AM" />
 
                             </RelativeLayout>
@@ -588,7 +620,9 @@
                                     style="@style/WeatherDetails"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_alignParentLeft="true"
                                     android:layout_alignParentStart="true"
+                                    android:layout_toLeftOf="@+id/sunset_icon"
                                     android:layout_toStartOf="@+id/sunset_icon"
                                     android:text="@string/label_sunset" />
 
@@ -597,6 +631,7 @@
                                     style="@style/WeatherDetails"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_toLeftOf="@+id/sunset_time"
                                     android:layout_toStartOf="@+id/sunset_time"
                                     android:padding="6dp"
                                     android:text="@string/wi_sunset" />
@@ -607,6 +642,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
+                                    android:layout_alignParentRight="true"
                                     tools:text="05:32 PM" />
                             </RelativeLayout>
 
@@ -621,7 +657,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="4dp"
-                    android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
                     android:textColor="@android:color/white"
                     tools:text="Data from WeatherUnderground" />
 

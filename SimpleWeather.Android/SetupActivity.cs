@@ -25,7 +25,7 @@ namespace SimpleWeather.Droid
 {
     [Android.App.Activity(Theme = "@style/SetupTheme",
         WindowSoftInputMode = SoftInput.StateHidden | SoftInput.AdjustPan)]
-    public class SetupActivity : AppCompatActivity
+    public class SetupActivity : AppCompatActivity, ActivityCompat.IOnRequestPermissionsResultCallback
     {
         private LocationSearchFragment mSearchFragment;
         private Android.Support.V7.View.ActionMode mActionMode;
@@ -241,7 +241,7 @@ namespace SimpleWeather.Droid
             if (ContextCompat.CheckSelfPermission(this, Manifest.Permission.AccessFineLocation) != Permission.Granted &&
                 ContextCompat.CheckSelfPermission(this, Manifest.Permission.AccessCoarseLocation) != Permission.Granted)
             {
-                RequestPermissions(new String[] { Manifest.Permission.AccessCoarseLocation, Manifest.Permission.AccessFineLocation },
+                ActivityCompat.RequestPermissions(this, new String[] { Manifest.Permission.AccessCoarseLocation, Manifest.Permission.AccessFineLocation },
                         PERMISSION_LOCATION_REQUEST_CODE);
                 return;
             }

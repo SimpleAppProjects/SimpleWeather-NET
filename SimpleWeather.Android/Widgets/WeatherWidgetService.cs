@@ -17,6 +17,8 @@ using Android.Views;
 using Android.Util;
 using SimpleWeather.Droid.Notifications;
 using Android.Text.Format;
+using Android.Text;
+using Android.Text.Style;
 
 namespace SimpleWeather.Droid.Widgets
 {
@@ -37,9 +39,13 @@ namespace SimpleWeather.Droid.Widgets
         public const string ACTION_REFRESHNOTIFICATION = "SimpleWeather.Droid.action.REFRESH_NOTIFICATION";
         public const string ACTION_REMOVENOTIFICATION = "SimpleWeather.Droid.action.REMOVE_NOTIFICATION";
 
+        public const string ACTION_STARTCLOCK = "SimpleWeather.Droid.action.START_CLOCKALARM";
+        public const string ACTION_CANCELCLOCK = "SimpleWeather.Droid.action.CANCEL_CLOCKALARM";
+
         private Context mContext;
         private AppWidgetManager mAppWidgetManager;
         private static bool alarmStarted = false;
+        private static BroadcastReceiver mTickReceiver;
 
         private static Weather weather;
         private static LocationData locData;
@@ -49,7 +55,7 @@ namespace SimpleWeather.Droid.Widgets
             WeatherWidgetProvider1x1.GetInstance();
         private WeatherWidgetProvider2x2 mAppWidget2x2 =
             WeatherWidgetProvider2x2.GetInstance();
-        private WeatherWidgetProvider4x1 mAppWidget4x1 =
+        private WeatherWidgetProvider4x1 mAppWidget4x1 = 
             WeatherWidgetProvider4x1.GetInstance();
         private WeatherWidgetProvider4x2 mAppWidget4x2 =
             WeatherWidgetProvider4x2.GetInstance();
@@ -139,6 +145,16 @@ namespace SimpleWeather.Droid.Widgets
                 // Update alarm
                 UpdateAlarm(mContext);
             }
+            else if (ACTION_STARTCLOCK.Equals(intent.Action))
+            {
+                // Schedule clock updates
+                StartTickReceiver(mContext);
+            }
+            else if (ACTION_CANCELCLOCK.Equals(intent.Action))
+            {
+                // Cancel clock alarm
+                CancelClockAlarm(mContext);
+            }
             else if (ACTION_UPDATECLOCK.Equals(intent.Action))
             {
                 // Update clock widget instances
@@ -221,6 +237,53 @@ namespace SimpleWeather.Droid.Widgets
             {
                 UpdateAlarm(context);
                 alarmStarted = true;
+            }
+        }
+
+        private static PendingIntent GetClockRefreshIntent(Context context)
+        {
+            Intent intent = new Intent(context, typeof(WeatherWidgetService))
+                .SetAction(ACTION_UPDATECLOCK);
+
+            return PendingIntent.GetService(context, 0, intent, 0);
+        }
+
+        private void StartTickReceiver(Context context)
+        {
+            StopTickReceiver(context);
+
+            mTickReceiver = new TickReceiver();
+            context.RegisterReceiver(mTickReceiver, new IntentFilter(Intent.ActionTimeTick));
+        }
+
+        private static void StopTickReceiver(Context context)
+        {
+            if (mTickReceiver != null)
+            {
+                context.UnregisterReceiver(mTickReceiver);
+                mTickReceiver = null;
+            }
+        }
+
+        private void CancelClockAlarm(Context context)
+        {
+            AlarmManager am = (AlarmManager)context.GetSystemService(Context.AlarmService);
+            am.Cancel(GetClockRefreshIntent(context));
+        }
+
+        internal class TickReceiver : BroadcastReceiver
+        {
+            public override void OnReceive(Context context, Intent intent)
+            {
+                if (Intent.ActionTimeTick.Equals(intent.Action))
+                {
+                    AlarmManager am = (AlarmManager)context.GetSystemService(Context.AlarmService);
+                    PendingIntent pendingIntent = GetClockRefreshIntent(context);
+                    am.Cancel(pendingIntent);
+                    am.SetRepeating(AlarmType.Rtc, Java.Lang.JavaSystem.CurrentTimeMillis(), 60000, pendingIntent);
+
+                    StopTickReceiver(context);
+                }
             }
         }
 
@@ -347,10 +410,40 @@ namespace SimpleWeather.Droid.Widgets
             // Update 4x2 clock widgets
             RemoteViews views = new RemoteViews(mContext.PackageName, mAppWidget4x2.WidgetLayoutId);
 
-            views.SetCharSequence(Resource.Id.clock_panel, "setFormat12Hour",
-                mContext.GetTextFormatted(Resource.String.main_widget_12_hours_format));
-            views.SetCharSequence(Resource.Id.clock_panel, "setFormat24Hour",
-                mContext.GetTextFormatted(Resource.String.clock_24_hours_format));
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.JellyBeanMr1)
+            {
+                // TextClock
+                views.SetCharSequence(Resource.Id.clock_panel, "setFormat12Hour",
+                    mContext.GetTextFormatted(Resource.String.main_widget_12_hours_format));
+                views.SetCharSequence(Resource.Id.clock_panel, "setFormat24Hour",
+                    mContext.GetTextFormatted(Resource.String.clock_24_hours_format));
+            }
+            else
+            {
+                // TextView
+                var now = DateTime.Now;
+
+                SpannableString timeStr;
+                string timeformat = now.ToString("h:mmtt");
+                int end = timeformat.Length - 2;
+
+                if (DateFormat.Is24HourFormat(App.Context))
+                {
+                    timeformat = now.ToString("HH:mm");
+                    end = timeformat.Length - 1;
+                    timeStr = new SpannableString(timeformat);
+                }
+                else
+                {
+                    timeStr = new SpannableString(timeformat);
+                    timeStr.SetSpan(new TextAppearanceSpan("sans-serif", Android.Graphics.TypefaceStyle.Bold, 16,
+                        ContextCompat.GetColorStateList(mContext, Android.Resource.Color.White),
+                        ContextCompat.GetColorStateList(mContext, Android.Resource.Color.White)),
+                        end, timeformat.Length, SpanTypes.ExclusiveExclusive);
+                }
+
+                views.SetTextViewText(Resource.Id.clock_panel, timeStr);
+            }
 
             mAppWidgetManager.PartiallyUpdateAppWidget(appWidgetIds, views);
         }
@@ -415,7 +508,7 @@ namespace SimpleWeather.Droid.Widgets
                 if (provider.WidgetType == WidgetType.Widget2x2 || provider.WidgetType == WidgetType.Widget4x2)
                 {
                     // Feels like temp
-                    updateViews.SetTextViewText(Resource.Id.condition_feelslike,
+                    updateViews.SetTextViewText(Resource.Id.condition_feelslike, 
                         (Settings.IsFahrenheit ?
                             Math.Round(weather.condition.feelslike_f) : Math.Round(weather.condition.feelslike_c)) + "º");
 

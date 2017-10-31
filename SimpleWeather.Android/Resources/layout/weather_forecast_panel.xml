@@ -7,12 +7,12 @@
     android:orientation="vertical"
     android:padding="4dp">
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/forecast_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="4dp"
-        android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
         android:textColor="@android:color/white"
         android:textSize="@dimen/forecast_date_size"
         tools:text="Someday XX" />
@@ -24,21 +24,24 @@
         android:layout_weight="2"
         android:paddingBottom="4dp"
         android:paddingLeft="8dp"
+        android:paddingStart="8dp"
         android:paddingTop="4dp"
-        android:textAppearance="@android:style/TextAppearance.Material.Large.Inverse"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large.Inverse"
         android:textSize="@dimen/forecast_icon_size"
         tools:text="@string/wi_wu_sunny" />
 
-    <me.grantland.widget.AutofitTextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/forecast_condition"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_gravity="bottom"
         android:layout_weight="1"
         android:padding="4dp"
-        android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
         android:textColor="@android:color/white"
-        android:textSize="@dimen/forecast_condition_size"
+        app:autoSizeMaxTextSize="@dimen/forecast_condition_size"
+        app:autoSizeMinTextSize="2dp"
+        app:autoSizeTextType="uniform"
         tools:text="Scattered Thunderstorms" />
 
     <LinearLayout
@@ -46,25 +49,25 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/forecast_temphi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="4dp"
-            android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
             android:textColor="@android:color/white"
             android:textSize="@dimen/forecast_hi_size"
-            android:textStyle="normal|bold"
+            android:textStyle="bold"
             tools:text="77º" />
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/forecast_templo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="4dp"
-            android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
             android:textSize="@dimen/forecast_lo_size"
-            android:textStyle="normal|bold"
+            android:textStyle="bold"
             tools:text="66º" />
     </LinearLayout>
 </LinearLayout>

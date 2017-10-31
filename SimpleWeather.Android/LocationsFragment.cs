@@ -32,7 +32,9 @@ using SimpleWeather.Controls;
 
 namespace SimpleWeather.Droid
 {
-    public class LocationsFragment : Fragment, IWeatherLoadedListener, IWeatherErrorListener
+    public class LocationsFragment : Fragment, 
+        IWeatherLoadedListener, IWeatherErrorListener,
+        ActivityCompat.IOnRequestPermissionsResultCallback
     {
         private bool Loaded = false;
         private bool EditMode = false;
@@ -301,7 +303,10 @@ namespace SimpleWeather.Droid
             // ex. If temperature unit changed
             AppCompatActivity.SupportActionBar.SetBackgroundDrawable(
                 new ColorDrawable(new Color(ContextCompat.GetColor(Activity, Resource.Color.colorPrimary))));
-            AppCompatActivity.Window.SetStatusBarColor(new Color(ContextCompat.GetColor(Activity, Resource.Color.colorPrimaryDark)));
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
+            {
+                AppCompatActivity.Window.SetStatusBarColor(new Color(ContextCompat.GetColor(Activity, Resource.Color.colorPrimaryDark)));
+            }
 
             if (Settings.FollowGPS)
             {
@@ -481,7 +486,7 @@ namespace SimpleWeather.Droid
                 if (Activity != null && ContextCompat.CheckSelfPermission(Activity, Manifest.Permission.AccessFineLocation) != Permission.Granted &&
                     ContextCompat.CheckSelfPermission(Activity, Manifest.Permission.AccessCoarseLocation) != Permission.Granted)
                 {
-                    RequestPermissions(new String[] { Manifest.Permission.AccessCoarseLocation, Manifest.Permission.AccessFineLocation },
+                    ActivityCompat.RequestPermissions(this.Activity, new String[] { Manifest.Permission.AccessCoarseLocation, Manifest.Permission.AccessFineLocation },
                             PERMISSION_LOCATION_REQUEST_CODE);
                     return null;
                 }

@@ -18,10 +18,12 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:paddingBottom="2dp"
+        android:paddingRight="4dp"
+        android:paddingLeft="4dp"
         android:paddingEnd="4dp"
         android:paddingStart="4dp"
         android:paddingTop="2dp"
-        android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
         android:textColor="@android:color/white"
         android:textSize="14sp"
         android:textStyle="bold"
@@ -38,6 +40,7 @@
             android:id="@+id/condition_temp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_margin="4dp"
@@ -51,8 +54,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/condition_temp"
+            android:layout_toRightOf="@+id/condition_temp"
             android:orientation="vertical">
 
             <ImageView
@@ -61,6 +66,7 @@
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/spacer"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:layout_margin="4dp"
                 android:adjustViewBounds="true"
@@ -74,6 +80,7 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true" />
 
             <TextView
@@ -82,12 +89,13 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
                 android:layout_below="@+id/spacer"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:padding="2dp"
                 android:text="--"
-                android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
                 android:textColor="@android:color/white"
                 android:textSize="10sp"
                 tools:text="Sunny" />
@@ -124,9 +132,11 @@
                     android:maxLines="1"
                     android:paddingEnd="4dp"
                     android:paddingStart="4dp"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
                     android:paddingTop="2dp"
                     android:text="@string/label_feelslike"
-                    android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
                     android:textColor="@android:color/white"
                     android:textSize="10sp" />
 
@@ -137,11 +147,13 @@
                     android:layout_gravity="end"
                     android:ellipsize="end"
                     android:maxLines="1"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
                     android:paddingEnd="4dp"
                     android:paddingStart="4dp"
                     android:paddingTop="2dp"
                     android:text="--"
-                    android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
                     android:textColor="@android:color/white"
                     android:textSize="10sp"
                     android:textStyle="bold"
@@ -161,10 +173,12 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:paddingBottom="2dp"
+                    android:paddingRight="4dp"
+                    android:paddingLeft="4dp"
                     android:paddingEnd="4dp"
                     android:paddingStart="4dp"
                     android:text="@string/label_wind"
-                    android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
                     android:textColor="@android:color/white"
                     android:textSize="10sp" />
 
@@ -175,10 +189,12 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:paddingBottom="2dp"
+                    android:paddingRight="4dp"
+                    android:paddingLeft="4dp"
                     android:paddingEnd="4dp"
                     android:paddingStart="4dp"
                     android:text="--"
-                    android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
                     android:textColor="@android:color/white"
                     android:textSize="10sp"
                     android:textStyle="bold"
@@ -201,7 +217,8 @@
                 android:layout_height="16dp"
                 android:layout_gravity="center"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_raindrop" />
+                android:src="@drawable/ic_raindrop"
+                android:tint="@android:color/white" />
 
             <TextView
                 android:id="@+id/condition_pop"
@@ -211,7 +228,7 @@
                 android:maxLines="1"
                 android:padding="2dp"
                 android:text="--%"
-                android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
                 android:textColor="@android:color/white"
                 android:textSize="10sp"
                 android:textStyle="bold" />
@@ -224,7 +241,7 @@
         android:id="@+id/forecast_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="1.5"
         android:orientation="horizontal">
 
     </LinearLayout>
@@ -243,7 +260,7 @@
             android:maxLines="1"
             android:padding="4dp"
             android:text="--"
-            android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
             android:textColor="@android:color/white"
             android:textSize="10sp"
             tools:text="Updated at 1:00 AM" />
@@ -259,7 +276,7 @@
 
         <ProgressBar
             android:id="@+id/refresh_progress"
-            style="@android:style/Widget.Material.Light.ProgressBar"
+            style="@style/Widget.AppCompat.ProgressBar"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:indeterminate="true"

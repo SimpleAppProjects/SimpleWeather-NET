@@ -17,7 +17,7 @@
         android:maxLines="1"
         android:padding="2dp"
         android:text="--"
-        android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
         android:textColor="@android:color/white"
         android:textSize="12sp"
         tools:text="Mon" />
@@ -49,7 +49,7 @@
             android:layout_gravity="start"
             android:maxLines="1"
             android:text="--"
-            android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
             android:textColor="@android:color/white"
             android:textSize="9sp"
             android:textStyle="bold"
@@ -61,8 +61,10 @@
             android:layout_gravity="center_vertical"
             android:paddingEnd="1dp"
             android:paddingStart="1dp"
+            android:paddingLeft="1dp"
+            android:paddingRight="1dp"
             android:text="|"
-            android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
             android:textColor="@android:color/white"
             android:textSize="9sp" />
 
@@ -73,7 +75,7 @@
             android:layout_gravity="start"
             android:maxLines="1"
             android:text="--"
-            android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
             android:textColor="@android:color/white"
             android:textSize="9sp"
             tools:text="52º" />

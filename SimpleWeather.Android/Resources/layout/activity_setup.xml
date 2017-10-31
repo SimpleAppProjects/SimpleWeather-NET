@@ -25,22 +25,23 @@
             android:paddingRight="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_vertical_margin">
 
-            <ImageView
+            <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/main_logo"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:layout_marginTop="25dp"
-                android:src="@drawable/ic_logo" />
+                app:srcCompat="@drawable/ic_logo" />
 
             <include layout="@layout/location_search_bar" />
 
-            <Button
+            <android.support.v7.widget.AppCompatButton
                 android:id="@+id/gps_follow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:backgroundTint="@color/colorPrimaryLight"
+                app:backgroundTint="@color/colorPrimaryLight"
                 android:drawableEnd="@drawable/ic_my_location_white_24dp"
+                android:drawableRight="@drawable/ic_my_location_white_24dp"
                 android:drawablePadding="4dp"
                 android:padding="16dp"
                 android:text="@string/label_gpsfollow"
@@ -63,12 +64,13 @@
                     android:layout_height="25dp"
                     android:background="@color/colorPrimary" />
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     android:paddingBottom="8dp"
+                    android:paddingLeft="8dp"
                     android:paddingStart="8dp"
                     android:text="@string/api_label"
                     android:textAllCaps="false"
@@ -77,13 +79,14 @@
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/cardview_light_background">
 
-                    <Spinner
+                    <android.support.v7.widget.AppCompatSpinner
                         android:id="@+id/api_spinner"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:backgroundTint="@android:color/darker_gray"
+                        app:backgroundTint="@android:color/darker_gray"
                         android:entries="@array/api_entries"
                         android:paddingBottom="12dp"
                         android:paddingTop="12dp" />
@@ -98,7 +101,8 @@
                 <android.support.v7.widget.CardView
                     android:id="@+id/key_entry_box"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/cardview_light_background">
 
                     <EditText
                         android:id="@+id/key_entry"
@@ -107,6 +111,7 @@
                         android:background="@null"
                         android:hint="@string/key_hint"
                         android:paddingBottom="12dp"
+                        android:paddingLeft="8dp"
                         android:paddingStart="8dp"
                         android:paddingTop="12dp"
                         android:textSize="16sp" />

@@ -14,6 +14,7 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_gravity="center"
         android:padding="2dp"
@@ -22,10 +23,11 @@
 
     <ProgressBar
         android:id="@+id/refresh_progress"
-        style="@android:style/Widget.Material.Light.ProgressBar"
+        style="@style/Widget.AppCompat.ProgressBar"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:indeterminate="true"
         android:indeterminateTint="@android:color/white"
@@ -74,7 +76,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:text="--"
-            android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
             android:textColor="@android:color/white"
             android:textSize="12sp"
             tools:text="New York, NY" />

@@ -18,7 +18,7 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:padding="4dp"
-        android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
         android:textColor="@android:color/white"
         android:textSize="14sp"
         android:textStyle="bold"
@@ -33,9 +33,11 @@
             android:id="@+id/details_panel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:orientation="vertical"
+            android:paddingLeft="4dp"
             android:paddingStart="4dp">
 
             <LinearLayout
@@ -49,7 +51,8 @@
                     android:layout_height="16dp"
                     android:layout_gravity="top|center_horizontal"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_thermometer" />
+                    android:src="@drawable/ic_thermometer"
+                    android:tint="@android:color/white" />
 
                 <TextView
                     android:id="@+id/condition_feelslike"
@@ -59,10 +62,12 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:paddingBottom="2dp"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
                     android:paddingEnd="4dp"
                     android:paddingStart="4dp"
                     android:text="--"
-                    android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
                     android:textColor="@android:color/white"
                     android:textSize="12sp"
                     android:textStyle="bold"
@@ -81,7 +86,8 @@
                     android:layout_height="16dp"
                     android:layout_gravity="top|center_horizontal"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_strong_wind" />
+                    android:src="@drawable/ic_strong_wind"
+                    android:tint="@android:color/white" />
 
                 <TextView
                     android:id="@+id/condition_wind"
@@ -90,10 +96,12 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:paddingBottom="2dp"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
                     android:paddingEnd="4dp"
                     android:paddingStart="4dp"
                     android:text="--"
-                    android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
                     android:textColor="@android:color/white"
                     android:textSize="12sp"
                     android:textStyle="bold"
@@ -114,7 +122,8 @@
                     android:layout_gravity="top|center_horizontal"
                     android:adjustViewBounds="true"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_raindrop" />
+                    android:src="@drawable/ic_raindrop"
+                    android:tint="@android:color/white" />
 
                 <TextView
                     android:id="@+id/condition_pop"
@@ -123,10 +132,12 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:paddingBottom="2dp"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
                     android:paddingEnd="4dp"
                     android:paddingStart="4dp"
                     android:text="--%"
-                    android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
                     android:textColor="@android:color/white"
                     android:textSize="12sp"
                     android:textStyle="bold"
@@ -142,6 +153,8 @@
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:layout_toEndOf="@+id/details_panel"
+            android:layout_toRightOf="@+id/details_panel"
+            android:layout_toLeftOf="@+id/clockdate_panel"
             android:layout_toStartOf="@+id/clockdate_panel"
             android:orientation="vertical">
 
@@ -156,14 +169,18 @@
                     android:id="@+id/weather_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
+                    android:layout_alignLeft="@+id/spacer"
                     android:layout_alignStart="@+id/spacer"
                     android:layout_centerVertical="true"
                     android:layout_gravity="bottom"
+                    android:layout_toLeftOf="@+id/spacer"
                     android:layout_toStartOf="@+id/spacer"
                     android:adjustViewBounds="true"
                     android:maxHeight="75dp"
                     android:paddingEnd="2dp"
+                    android:paddingRight="2dp"
                     android:paddingTop="12dp"
                     android:scaleType="fitEnd"
                     android:src="@drawable/ic_weather_icon"
@@ -180,11 +197,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_gravity="bottom"
                     android:layout_toEndOf="@+id/spacer"
+                    android:layout_toRightOf="@+id/spacer"
                     android:adjustViewBounds="true"
                     android:maxHeight="75dp"
+                    android:paddingLeft="2dp"
                     android:paddingStart="2dp"
                     android:paddingTop="12dp"
                     android:scaleType="fitStart"
@@ -201,7 +221,7 @@
                 android:maxLines="2"
                 android:padding="4dp"
                 android:text="--"
-                android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
                 android:textColor="@android:color/white"
                 android:textSize="14sp"
                 android:textStyle="bold"
@@ -214,6 +234,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:orientation="vertical"
             android:padding="2dp">
@@ -225,28 +246,27 @@
                 android:layout_gravity="end"
                 android:layout_weight="0.5"
                 android:gravity="bottom"
-                android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/date_text_size"
                 android:textStyle="bold"
                 tools:text="Sun, Oct 08" />
 
-            <TextClock
+            <TextView
                 android:id="@+id/clock_panel"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:baselineAligned="true"
                 android:fontFamily="sans-serif-thin"
-                android:format12Hour="@string/main_widget_12_hours_format"
-                android:format24Hour="@string/clock_24_hours_format"
                 android:maxLines="1"
                 android:shadowColor="#DD000000"
                 android:shadowDy="2.0"
                 android:shadowRadius="2.75"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/clock_text_size"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:text="4:00 PM" />
         </LinearLayout>
 
     </RelativeLayout>
@@ -274,7 +294,7 @@
             android:maxLines="1"
             android:padding="4dp"
             android:text="--"
-            android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
             android:textColor="@android:color/white"
             android:textSize="10sp"
             tools:text="Updated at 1:00 AM" />
@@ -290,7 +310,7 @@
 
         <ProgressBar
             android:id="@+id/refresh_progress"
-            style="@android:style/Widget.Material.Light.ProgressBar"
+            style="@style/Widget.AppCompat.ProgressBar"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="center"

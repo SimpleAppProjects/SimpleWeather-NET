@@ -30,7 +30,8 @@ using Com.Bumptech.Glide;
 
 namespace SimpleWeather.Droid
 {
-    public class WeatherNowFragment : Fragment, IWeatherLoadedListener, IWeatherErrorListener
+    public class WeatherNowFragment : Fragment, IWeatherLoadedListener, IWeatherErrorListener,
+        ActivityCompat.IOnRequestPermissionsResultCallback
     {
         private Context context;
         private LocationData location = null;
@@ -334,7 +335,7 @@ namespace SimpleWeather.Droid
                             Android.Support.V7.Widget.GridLayout.InvokeSpec(currRow, 1.0f),
                             Android.Support.V7.Widget.GridLayout.InvokeSpec(currCol, 1.0f));
                         layoutParams.Width = 0;
-                        view.SetPaddingRelative(20, 0, 20, 0);
+                        ViewCompat.SetPaddingRelative(view, 20, 0, 20, 0);
                         view.LayoutParameters = layoutParams;
                         if (currCol == maxColumns - 1)
                         {
@@ -537,8 +538,11 @@ namespace SimpleWeather.Droid
 
                 // Actionbar & StatusBar
                 AppCompatActivity.SupportActionBar.SetBackgroundDrawable(new ColorDrawable(weatherView.PendingBackground));
-                AppCompatActivity.Window.SetStatusBarColor(Color.Argb(255, 
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
+                {
+                    AppCompatActivity.Window.SetStatusBarColor(Color.Argb(255,
                     (int)(weatherView.PendingBackground.R * 0.75), (int)(weatherView.PendingBackground.G * 0.75), (int)(weatherView.PendingBackground.B * 0.75)));
+                }
 
                 // Location
                 locationName.Text = weatherView.Location;
@@ -657,7 +661,7 @@ namespace SimpleWeather.Droid
                 if (Activity != null && ContextCompat.CheckSelfPermission(Activity, Manifest.Permission.AccessFineLocation) != Permission.Granted &&
                     ContextCompat.CheckSelfPermission(Activity, Manifest.Permission.AccessCoarseLocation) != Permission.Granted)
                 {
-                    RequestPermissions(new String[] { Manifest.Permission.AccessCoarseLocation, Manifest.Permission.AccessFineLocation },
+                    ActivityCompat.RequestPermissions(this.Activity, new String[] { Manifest.Permission.AccessCoarseLocation, Manifest.Permission.AccessFineLocation },
                             PERMISSION_LOCATION_REQUEST_CODE);
                     return false;
                 }

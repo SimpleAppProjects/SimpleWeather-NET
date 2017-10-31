@@ -7,12 +7,12 @@
     android:orientation="vertical"
     android:padding="4dp">
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/hrforecast_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="4dp"
-        android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
         android:textColor="@android:color/white"
         android:textSize="@dimen/forecast_date_size"
         tools:text="Someday XX" />
@@ -29,31 +29,34 @@
             android:layout_weight="1"
             android:layout_gravity="center_vertical"
             android:padding="4dp"
-            android:textAppearance="@android:style/TextAppearance.Material.Large.Inverse"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large.Inverse"
             tools:text="@string/wi_wu_sunny" />
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/hrforecast_temphi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right|center_vertical"
+            android:layout_gravity="end|center_vertical"
             android:padding="8dp"
-            android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
             android:textColor="@android:color/white"
             android:textSize="18sp"
             tools:text="77º" />
 
     </LinearLayout>
 
-    <me.grantland.widget.AutofitTextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/hrforecast_condition"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:padding="4dp"
-        android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
         android:textColor="@android:color/white"
         android:textSize="@dimen/forecast_condition_size"
+        app:autoSizeMaxTextSize="@dimen/forecast_condition_size"
+        app:autoSizeMinTextSize="2dp"
+        app:autoSizeTextType="uniform"
         tools:text="Scattered Thunderstorms" />
 
     <LinearLayout
@@ -67,18 +70,23 @@
             android:layout_gravity="center_vertical"
             android:paddingEnd="4dp"
             android:paddingStart="4dp"
-            android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
             android:textColor="@android:color/white"
             android:text="@string/wi_raindrop" />
 
-        <me.grantland.widget.AutofitTextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/hrforecast_pop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="4dp"
-            android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
             android:textColor="@android:color/white"
             android:textSize="@dimen/forecast_condition_size"
+            app:autoSizeMaxTextSize="@dimen/forecast_condition_size"
+            app:autoSizeMinTextSize="2dp"
+            app:autoSizeTextType="uniform"
             tools:text="60%" />
 
         <Space
@@ -92,19 +100,24 @@
             android:layout_gravity="center_vertical"
             android:paddingEnd="4dp"
             android:paddingStart="4dp"
-            android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
             android:textColor="@android:color/white"
             android:textSize="14sp"
             android:text="@string/wi_direction_up" />
 
-        <me.grantland.widget.AutofitTextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/hrforecast_wind"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="4dp"
-            android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
             android:textColor="@android:color/white"
             android:textSize="@dimen/forecast_condition_size"
+            app:autoSizeMaxTextSize="@dimen/forecast_condition_size"
+            app:autoSizeMinTextSize="2dp"
+            app:autoSizeTextType="uniform"
             tools:text="6 mph" />
     </LinearLayout>
 

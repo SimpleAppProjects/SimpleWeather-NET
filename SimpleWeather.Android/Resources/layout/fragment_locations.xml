@@ -28,13 +28,13 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
                     android:layout_marginTop="4dp"
                     android:text="@string/label_currentlocation"
-                    android:textAppearance="@android:style/TextAppearance.Material.Widget.TextView"
+                    android:textAppearance="@android:style/TextAppearance.Widget.TextView"
                     android:textSize="18sp" />
 
                 <SimpleWeather.Droid.Controls.LocationPanel
@@ -45,14 +45,14 @@
                     android:layout_marginBottom="4dp" />
             </LinearLayout>
 
-            <TextView
+            <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/favorite_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:layout_marginTop="4dp"
                 android:text="@string/label_favoritelocations"
-                android:textAppearance="@android:style/TextAppearance.Material.Widget.TextView"
+                android:textAppearance="@android:style/TextAppearance.Widget.TextView"
                 android:textSize="18sp"
                 android:layout_below="@+id/gps_follow_layout"/>
 
@@ -71,7 +71,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:src="@drawable/ic_add_white_24dp"
+        app:srcCompat="@drawable/ic_add_white_24dp"
         android:tint="@android:color/white"
         app:backgroundTint="@color/colorPrimary"
         app:elevation="4dp"

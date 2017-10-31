@@ -72,7 +72,7 @@ namespace SimpleWeather.Droid
             base.OnBackPressed();
         }
 
-        public class SettingsFragment : PreferenceFragmentCompat
+        public class SettingsFragment : PreferenceFragmentCompat, ActivityCompat.IOnRequestPermissionsResultCallback
         {
             private const int PERMISSION_LOCATION_REQUEST_CODE = 0;
 
@@ -137,7 +137,7 @@ namespace SimpleWeather.Droid
                         if (ContextCompat.CheckSelfPermission(Activity, Manifest.Permission.AccessFineLocation) != Permission.Granted &&
                             ContextCompat.CheckSelfPermission(Activity, Manifest.Permission.AccessCoarseLocation) != Permission.Granted)
                         {
-                            RequestPermissions(new String[] { Manifest.Permission.AccessCoarseLocation, Manifest.Permission.AccessFineLocation },
+                            ActivityCompat.RequestPermissions(this.Activity, new String[] { Manifest.Permission.AccessCoarseLocation, Manifest.Permission.AccessFineLocation },
                                     PERMISSION_LOCATION_REQUEST_CODE);
                             return;
                         }
@@ -197,6 +197,7 @@ namespace SimpleWeather.Droid
                 else
                 {
                     keyEntry.Enabled = false;
+                    apiCategory.RemovePreference(keyEntry);
                     wuSharedPrefs.Edit().Remove(KEY_APIKEY_VERIFIED).Apply();
                 }
 
@@ -525,8 +526,13 @@ namespace SimpleWeather.Droid
             {
                 base.OnBindViewHolder(holder);
 
+                float scale = Context.Resources.DisplayMetrics.Density;
+
+                // Show spinner under preference title
                 Spinner spinner = holder.ItemView.FindViewById<Spinner>(Resource.Id.spinner);
-                spinner.DropDownVerticalOffset = 100;
+                int titlePx = (int)TypedValue.ApplyDimension(ComplexUnitType.Sp, 14, Context.Resources.DisplayMetrics);
+                int paddingPx = (int)TypedValue.ApplyDimension(ComplexUnitType.Dip, 16, Context.Resources.DisplayMetrics);
+                spinner.DropDownVerticalOffset = titlePx + paddingPx - 1;
             }
         }
     }

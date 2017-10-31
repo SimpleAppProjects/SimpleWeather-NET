@@ -254,7 +254,6 @@ namespace SimpleWeather.Droid.Widgets
         AppWidgetManager.ActionAppwidgetUpdate,
         Intent.ActionBootCompleted,
         Intent.ActionTimeChanged,
-        Intent.ActionTimeTick,
         Intent.ActionLocaleChanged,
         Intent.ActionTimezoneChanged,
         ACTION_REFRESHWIDGETS
@@ -287,12 +286,35 @@ namespace SimpleWeather.Droid.Widgets
             return (appWidgetIds.Length > 0);
         }
 
+        public override void OnEnabled(Context context)
+        {
+            // Register tick receiver
+            if (Build.VERSION.SdkInt < BuildVersionCodes.JellyBeanMr1)
+            {
+                context.StartService(new Intent(context, typeof(WeatherWidgetService))
+                    .SetAction(WeatherWidgetService.ACTION_STARTCLOCK));
+            }
+
+            base.OnEnabled(context);
+        }
+
+        public override void OnDisabled(Context context)
+        {
+            // Unregister tick receiver
+            if (Build.VERSION.SdkInt < BuildVersionCodes.JellyBeanMr1)
+            {
+                context.StartService(new Intent(context, typeof(WeatherWidgetService))
+                    .SetAction(WeatherWidgetService.ACTION_CANCELCLOCK));
+            }
+
+            base.OnDisabled(context);
+        }
+
         public override void OnReceive(Context context, Intent intent)
         {
             string action = intent.Action;
 
             if (Intent.ActionTimeChanged.Equals(action)
-                || Intent.ActionTimeTick.Equals(action)
                 || Intent.ActionTimezoneChanged.Equals(action))
             {
                 // Update clock widget

@@ -31,7 +31,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:padding="4dp"
-                android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
                 android:textColor="@android:color/white"
                 android:textSize="12sp"
                 android:textStyle="bold"
@@ -77,9 +77,11 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_centerVertical="true"
             android:layout_toEndOf="@+id/condition_layout"
+            android:layout_toRightOf="@+id/condition_layout"
             android:minHeight="30dp"
             android:minWidth="75dp"
             android:orientation="horizontal">
@@ -103,7 +105,7 @@
             android:maxLines="2"
             android:padding="4dp"
             android:text="--"
-            android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
             android:textColor="@android:color/white"
             android:textSize="12sp"
             tools:text="Sunny" />
@@ -116,7 +118,7 @@
             android:maxLines="1"
             android:padding="4dp"
             android:text="--"
-            android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
             android:textColor="@android:color/white"
             android:textSize="10sp"
             tools:text="Updated at 1:00 AM" />
@@ -132,7 +134,7 @@
 
         <ProgressBar
             android:id="@+id/refresh_progress"
-            style="@android:style/Widget.Material.Light.ProgressBar"
+            style="@style/Widget.AppCompat.ProgressBar"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:indeterminate="true"
