@@ -17,7 +17,7 @@
         android:textSize="@dimen/forecast_date_size"
         tools:text="Someday XX" />
 
-    <SimpleWeather.Droid.Controls.WeatherIcon
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/forecast_icon"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
@@ -28,6 +28,8 @@
         android:paddingTop="4dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Large.Inverse"
         android:textSize="@dimen/forecast_icon_size"
+        app:fontFamily="@font/weathericons"
+        tools:fontFamily="@font/weathericons"
         tools:text="@string/wi_wu_sunny" />
 
     <android.support.v7.widget.AppCompatTextView

@@ -490,7 +490,7 @@ namespace SimpleWeather.Droid.Widgets
             if (provider.WidgetType == WidgetType.Widget2x2 || provider.WidgetType == WidgetType.Widget4x2)
                 tempTextSize = 96;
             updateViews.SetImageViewBitmap(Resource.Id.condition_temp,
-                ImageUtils.WeatherIconToBitmap(context.Assets, temp, tempTextSize));
+                ImageUtils.WeatherIconToBitmap(context, temp, tempTextSize));
 
             // Location Name
             updateViews.SetTextViewText(Resource.Id.location_name, weather.location.name);

@@ -1,11 +1,10 @@
 ﻿using System;
-using Android.Views;
 using Android.Graphics;
-using Android.Graphics.Drawables;
-using Android.Support.V4.Content;
 using Android.Util;
 using Android.Content.Res;
 using System.IO;
+using Android.Support.V4.Content.Res;
+using Android.Content;
 
 namespace SimpleWeather.Droid.Utils
 {
@@ -29,15 +28,15 @@ namespace SimpleWeather.Droid.Utils
             return bmp;
         }
 
-        public static Bitmap WeatherIconToBitmap(AssetManager am, String text, int textSize)
+        public static Bitmap WeatherIconToBitmap(Context context, String text, int textSize)
         {
-            return WeatherIconToBitmap(am, text, textSize, Color.White);
+            return WeatherIconToBitmap(context, text, textSize, Color.White);
         }
 
-        public static Bitmap WeatherIconToBitmap(AssetManager am, String text, int textSize, Color textColor)
+        public static Bitmap WeatherIconToBitmap(Context context, String text, int textSize, Color textColor)
         {
             Paint paint = new Paint(PaintFlags.AntiAlias);
-            Typeface weathericons = Typeface.CreateFromAsset(am, "weathericons/weathericons-regular-webfont.ttf");
+            Typeface weathericons = ResourcesCompat.GetFont(context, Resource.Font.weathericons);
             paint.SubpixelText = true;
             paint.SetTypeface(weathericons);
             paint.SetStyle(Paint.Style.Fill);

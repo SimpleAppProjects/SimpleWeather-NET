@@ -10,11 +10,11 @@ namespace SimpleWeather.Droid.Controls
     {
         private View viewLayout;
         private TextView forecastDate;
-        private WeatherIcon forecastIcon;
+        private TextView forecastIcon;
         private TextView forecastCondition;
         private TextView forecastTempHi;
         private TextView forecastPoP;
-        private WeatherIcon forecastWindDirection;
+        private TextView forecastWindDirection;
         private TextView forecastWindSpeed;
 
         public HourlyForecastItem(Context context) :
@@ -54,11 +54,11 @@ namespace SimpleWeather.Droid.Controls
             viewLayout = inflater.Inflate(Resource.Layout.weather_hrforecast_panel, this);
 
             forecastDate = viewLayout.FindViewById<TextView>(Resource.Id.hrforecast_date);
-            forecastIcon = viewLayout.FindViewById<WeatherIcon>(Resource.Id.hrforecast_icon);
+            forecastIcon = viewLayout.FindViewById<TextView>(Resource.Id.hrforecast_icon);
             forecastCondition = viewLayout.FindViewById<TextView>(Resource.Id.hrforecast_condition);
             forecastTempHi = viewLayout.FindViewById<TextView>(Resource.Id.hrforecast_temphi);
             forecastPoP = viewLayout.FindViewById<TextView>(Resource.Id.hrforecast_pop);
-            forecastWindDirection = viewLayout.FindViewById<WeatherIcon>(Resource.Id.hrforecast_wind_dir);
+            forecastWindDirection = viewLayout.FindViewById<TextView>(Resource.Id.hrforecast_wind_dir);
             forecastWindSpeed = viewLayout.FindViewById<TextView>(Resource.Id.hrforecast_wind);
         }
 

@@ -53,7 +53,7 @@
                 app:autoSizeTextType="uniform"
                 tools:text="50º" />
 
-            <SimpleWeather.Droid.Controls.WeatherIcon
+            <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/weather_icon"
                 android:layout_width="@dimen/location_panel_textview_size"
                 android:layout_height="@dimen/location_panel_textview_size"
@@ -65,6 +65,8 @@
                 app:autoSizeMaxTextSize="@dimen/location_panel_icon_size"
                 app:autoSizeMinTextSize="2dp"
                 app:autoSizeTextType="uniform"
+                app:fontFamily="@font/weathericons"
+                tools:fontFamily="@font/weathericons"
                 tools:text="@string/wi_night_cloudy" />
         </LinearLayout>
     </android.support.v7.widget.GridLayout>

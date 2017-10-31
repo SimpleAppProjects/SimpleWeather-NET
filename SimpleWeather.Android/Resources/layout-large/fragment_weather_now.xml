@@ -60,7 +60,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/spacer_top_size" />
 
-                <SimpleWeather.Droid.Controls.WeatherIcon
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/weather_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -69,6 +69,8 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/weather_icon_size"
+                    app:fontFamily="@font/weathericons"
+                    tools:fontFamily="@font/weathericons"
                     tools:text="@string/wi_wu_sunny" />
 
                 <TextView
@@ -82,15 +84,16 @@
                     android:textSize="@dimen/weather_condition_size"
                     tools:text="Sunny" />
 
-                <SimpleWeather.Droid.Controls.WeatherIcon
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/weather_temp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:fontFamily="sans-serif"
                     android:padding="4dp"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/weather_condition_size"
+                    app:fontFamily="@font/weathericons"
+                    tools:fontFamily="@font/weathericons"
                     tools:text="70&#xF045;" />
 
                 <Space
@@ -391,7 +394,7 @@
                                     android:layout_toStartOf="@+id/pressure_state"
                                     android:text="@string/label_pressure" />
 
-                                <SimpleWeather.Droid.Controls.WeatherIcon
+                                <android.support.v7.widget.AppCompatTextView
                                     android:id="@+id/pressure_state"
                                     style="@style/WeatherDetails"
                                     android:layout_width="wrap_content"
@@ -401,6 +404,8 @@
                                     android:gravity="center"
                                     android:padding="6dp"
                                     android:visibility="visible"
+                                    app:fontFamily="@font/weathericons"
+                                    tools:fontFamily="@font/weathericons"
                                     tools:text="@string/wi_direction_up" />
 
                                 <TextView
@@ -531,7 +536,7 @@
                                     android:layout_toStartOf="@+id/wind_direction"
                                     android:text="@string/label_wind" />
 
-                                <SimpleWeather.Droid.Controls.WeatherIcon
+                                <android.support.v7.widget.AppCompatTextView
                                     android:id="@+id/wind_direction"
                                     style="@style/WeatherDetails"
                                     android:layout_width="wrap_content"
@@ -539,7 +544,9 @@
                                     android:layout_toLeftOf="@+id/wind_speed"
                                     android:layout_toStartOf="@+id/wind_speed"
                                     android:padding="6dp"
-                                    android:text="@string/wi_direction_up" />
+                                    android:text="@string/wi_direction_up"
+                                    app:fontFamily="@font/weathericons"
+                                    tools:fontFamily="@font/weathericons" />
 
                                 <TextView
                                     android:id="@+id/wind_speed"
@@ -590,7 +597,7 @@
                                     android:layout_toStartOf="@+id/sunrise_icon"
                                     android:text="@string/label_sunrise" />
 
-                                <SimpleWeather.Droid.Controls.WeatherIcon
+                                <android.support.v7.widget.AppCompatTextView
                                     android:id="@+id/sunrise_icon"
                                     style="@style/WeatherDetails"
                                     android:layout_width="wrap_content"
@@ -598,7 +605,9 @@
                                     android:layout_toLeftOf="@+id/sunrise_time"
                                     android:layout_toStartOf="@+id/sunrise_time"
                                     android:padding="6dp"
-                                    android:text="@string/wi_sunrise" />
+                                    android:text="@string/wi_sunrise"
+                                    app:fontFamily="@font/weathericons"
+                                    tools:fontFamily="@font/weathericons" />
 
                                 <TextView
                                     android:id="@+id/sunrise_time"
@@ -626,7 +635,7 @@
                                     android:layout_toStartOf="@+id/sunset_icon"
                                     android:text="@string/label_sunset" />
 
-                                <SimpleWeather.Droid.Controls.WeatherIcon
+                                <android.support.v7.widget.AppCompatTextView
                                     android:id="@+id/sunset_icon"
                                     style="@style/WeatherDetails"
                                     android:layout_width="wrap_content"
@@ -634,7 +643,9 @@
                                     android:layout_toLeftOf="@+id/sunset_time"
                                     android:layout_toStartOf="@+id/sunset_time"
                                     android:padding="6dp"
-                                    android:text="@string/wi_sunset" />
+                                    android:text="@string/wi_sunset"
+                                    app:fontFamily="@font/weathericons"
+                                    tools:fontFamily="@font/weathericons" />
 
                                 <TextView
                                     android:id="@+id/sunset_time"

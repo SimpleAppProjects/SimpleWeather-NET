@@ -19,7 +19,7 @@ namespace SimpleWeather.Droid.Controls
         private ImageView bgImageView;
         private TextView locationNameView;
         private TextView locationTempView;
-        private WeatherIcon locationWeatherIcon;
+        private TextView locationWeatherIcon;
         private ProgressBar progressBar;
 
         public LocationPanel(Context context) :
@@ -55,7 +55,7 @@ namespace SimpleWeather.Droid.Controls
             bgImageView = viewLayout.FindViewById<ImageView>(Resource.Id.image_view);
             locationNameView = viewLayout.FindViewById<TextView>(Resource.Id.location_name);
             locationTempView = viewLayout.FindViewById<TextView>(Resource.Id.weather_temp);
-            locationWeatherIcon = viewLayout.FindViewById<WeatherIcon>(Resource.Id.weather_icon);
+            locationWeatherIcon = viewLayout.FindViewById<TextView>(Resource.Id.weather_icon);
             progressBar = viewLayout.FindViewById<ProgressBar>(Resource.Id.progressBar);
 
             ShowLoading(true);

@@ -10,7 +10,7 @@ namespace SimpleWeather.Droid.Controls
     {
         private View viewLayout;
         private TextView forecastDate;
-        private WeatherIcon forecastIcon;
+        private TextView forecastIcon;
         private TextView forecastCondition;
         private TextView forecastTempHi;
         private TextView forecastTempLo;
@@ -52,7 +52,7 @@ namespace SimpleWeather.Droid.Controls
             viewLayout = inflater.Inflate(Resource.Layout.weather_forecast_panel, this);
 
             forecastDate = viewLayout.FindViewById<TextView>(Resource.Id.forecast_date);
-            forecastIcon = viewLayout.FindViewById<WeatherIcon>(Resource.Id.forecast_icon);
+            forecastIcon = viewLayout.FindViewById<TextView>(Resource.Id.forecast_icon);
             forecastCondition = viewLayout.FindViewById<TextView>(Resource.Id.forecast_condition);
             forecastTempHi = viewLayout.FindViewById<TextView>(Resource.Id.forecast_temphi);
             forecastTempLo = viewLayout.FindViewById<TextView>(Resource.Id.forecast_templo);

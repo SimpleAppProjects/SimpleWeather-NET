@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <SimpleWeather.Droid.Controls.WeatherIcon
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/hrforecast_icon"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -30,6 +30,8 @@
             android:layout_gravity="center_vertical"
             android:padding="4dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Large.Inverse"
+            app:fontFamily="@font/weathericons"
+            tools:fontFamily="@font/weathericons"
             tools:text="@string/wi_wu_sunny" />
 
         <android.support.v7.widget.AppCompatTextView
@@ -64,7 +66,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <SimpleWeather.Droid.Controls.WeatherIcon
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -74,7 +76,9 @@
             android:paddingRight="4dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
             android:textColor="@android:color/white"
-            android:text="@string/wi_raindrop" />
+            android:text="@string/wi_raindrop"
+            app:fontFamily="@font/weathericons"
+            tools:fontFamily="@font/weathericons" />
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/hrforecast_pop"
@@ -93,7 +97,7 @@
             android:layout_width="5dp"
             android:layout_height="wrap_content" />
 
-        <SimpleWeather.Droid.Controls.WeatherIcon
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/hrforecast_wind_dir"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -105,7 +109,9 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
             android:textColor="@android:color/white"
             android:textSize="14sp"
-            android:text="@string/wi_direction_up" />
+            android:text="@string/wi_direction_up"
+            app:fontFamily="@font/weathericons"
+            tools:fontFamily="@font/weathericons" />
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/hrforecast_wind"

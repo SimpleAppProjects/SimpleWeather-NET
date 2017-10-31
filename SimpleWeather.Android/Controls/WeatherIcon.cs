@@ -1,9 +1,9 @@
 ﻿using System;
+
 using Android.Content;
 using Android.Util;
 using Android.Support.V7.Widget;
-using Android.Content.Res;
-using Android.Graphics;
+using Android.Support.V4.Content.Res;
 
 namespace SimpleWeather.Droid.Controls
 {
@@ -29,20 +29,7 @@ namespace SimpleWeather.Droid.Controls
 
         private void Initialize(Context context)
         {
-            AssetManager am = context.ApplicationContext.Assets;
-
-            Typeface typeface = null;
-
-            try
-            {
-                typeface = Typeface.CreateFromAsset(am, "weathericons/weathericons-regular-webfont.ttf");
-            }
-            catch (Exception)
-            {
-                typeface = Typeface.Default;
-            }
-
-            Typeface = typeface;
+            Typeface = ResourcesCompat.GetFont(context, Resource.Font.weathericons);
         }
     }
 }

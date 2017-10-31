@@ -191,7 +191,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <AndroidAsset Include="Assets\weathericons\weathericons-regular-webfont.ttf" />
+    <AndroidResource Include="Resources\font\weathericons.ttf" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

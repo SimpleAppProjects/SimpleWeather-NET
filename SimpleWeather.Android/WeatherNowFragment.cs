@@ -50,17 +50,17 @@ namespace SimpleWeather.Droid
         // Condition
         private TextView locationName;
         private TextView updateTime;
-        private WeatherIcon weatherIcon;
+        private TextView weatherIcon;
         private TextView weatherCondition;
-        private WeatherIcon weatherTemp;
+        private TextView weatherTemp;
         // Details
         private View detailsPanel;
         private TextView humidity;
-        private WeatherIcon pressureState;
+        private TextView pressureState;
         private TextView pressure;
         private TextView visiblity;
         private TextView feelslike;
-        private WeatherIcon windDirection;
+        private TextView windDirection;
         private TextView windSpeed;
         private TextView sunrise;
         private TextView sunset;
@@ -222,17 +222,17 @@ namespace SimpleWeather.Droid
             // Condition
             locationName = view.FindViewById<TextView>(Resource.Id.label_location_name);
             updateTime = view.FindViewById<TextView>(Resource.Id.label_updatetime);
-            weatherIcon = view.FindViewById<WeatherIcon>(Resource.Id.weather_icon);
+            weatherIcon = view.FindViewById<TextView>(Resource.Id.weather_icon);
             weatherCondition = view.FindViewById<TextView>(Resource.Id.weather_condition);
-            weatherTemp = view.FindViewById<WeatherIcon>(Resource.Id.weather_temp);
+            weatherTemp = view.FindViewById<TextView>(Resource.Id.weather_temp);
             // Details
             detailsPanel = view.FindViewById(Resource.Id.details_panel);
             humidity = view.FindViewById<TextView>(Resource.Id.humidity);
-            pressureState = view.FindViewById<WeatherIcon>(Resource.Id.pressure_state);
+            pressureState = view.FindViewById<TextView>(Resource.Id.pressure_state);
             pressure = view.FindViewById<TextView>(Resource.Id.pressure);
             visiblity = view.FindViewById<TextView>(Resource.Id.visibility_val);
             feelslike = view.FindViewById<TextView>(Resource.Id.feelslike);
-            windDirection = view.FindViewById<WeatherIcon>(Resource.Id.wind_direction);
+            windDirection = view.FindViewById<TextView>(Resource.Id.wind_direction);
             windSpeed = view.FindViewById<TextView>(Resource.Id.wind_speed);
             sunrise = view.FindViewById<TextView>(Resource.Id.sunrise_time);
             sunset = view.FindViewById<TextView>(Resource.Id.sunset_time);

@@ -9,7 +9,7 @@ namespace SimpleWeather.Droid.Controls
     public class TextForecastItem : LinearLayout
     {
         private View viewLayout;
-        private WeatherIcon forecastIcon;
+        private TextView forecastIcon;
         private TextView forecastPoP;
         private TextView forecastText;
 
@@ -49,7 +49,7 @@ namespace SimpleWeather.Droid.Controls
             LayoutInflater inflater = LayoutInflater.From(context);
             viewLayout = inflater.Inflate(Resource.Layout.txt_forecast_panel, this);
 
-            forecastIcon = viewLayout.FindViewById<WeatherIcon>(Resource.Id.txt_forecasticon);
+            forecastIcon = viewLayout.FindViewById<TextView>(Resource.Id.txt_forecasticon);
             forecastPoP = viewLayout.FindViewById<TextView>(Resource.Id.txtforecast_pop);
             forecastText = viewLayout.FindViewById<TextView>(Resource.Id.txt_fcttext);
         }
