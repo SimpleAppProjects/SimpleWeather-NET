@@ -11,6 +11,7 @@ using SimpleWeather.Droid.Utils;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using Android.Text.Format;
+using Android.OS;
 
 namespace SimpleWeather.Droid.Notifications
 {
@@ -18,11 +19,17 @@ namespace SimpleWeather.Droid.Notifications
     {
         // Sets an ID for the notification
         private const int PERSISTENT_NOT_ID = 0;
+        private const string NOT_CHANNEL_ID = "SimpleWeather.ongoingweather";
+
         private static Notification mNotification;
         public static bool IsShowing = false;
 
         public static void UpdateNotification(Weather weather)
         {
+            // Gets an instance of the NotificationManager service
+            NotificationManager mNotifyMgr = (NotificationManager)App.Context.GetSystemService(App.NotificationService);
+            InitChannel(mNotifyMgr);
+
             // Build update
             RemoteViews updateViews = new RemoteViews(App.Context.PackageName, Resource.Layout.notification_layout);
 
@@ -68,7 +75,7 @@ namespace SimpleWeather.Droid.Notifications
             int resId = level < 0 ? Resource.Drawable.notification_temp_neg : Resource.Drawable.notification_temp_pos;
 
             NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(App.Context)
+                new NotificationCompat.Builder(App.Context, NOT_CHANNEL_ID)
                 .SetContent(updateViews)
                 .SetPriority(NotificationCompat.PriorityLow)
                 .SetOngoing(true) as NotificationCompat.Builder;
@@ -78,24 +85,51 @@ namespace SimpleWeather.Droid.Notifications
             else if (Settings.NotificationIcon == Settings.CONDITION_ICON)
                 mBuilder.SetSmallIcon(WeatherUtils.GetWeatherIconResource(weather.condition.icon));
 
-            Intent onClickIntent = new Intent(App.Context, typeof(MainActivity));
+            Intent onClickIntent = new Intent(App.Context, typeof(MainActivity))
+                .SetFlags(ActivityFlags.ClearTop | ActivityFlags.NewTask | ActivityFlags.ClearTask);
             PendingIntent clickPendingIntent = PendingIntent.GetActivity(App.Context, 0, onClickIntent, 0);
             mBuilder.SetContentIntent(clickPendingIntent);
 
-            // Gets an instance of the NotificationManager service
-            NotificationManager mNotifyMgr = (NotificationManager)App.Context.GetSystemService(App.NotificationService);
             // Builds the notification and issues it.
             mNotification = mBuilder.Build();
             mNotifyMgr.Notify(PERSISTENT_NOT_ID, mNotification);
             IsShowing = true;
         }
 
+        private static void InitChannel(NotificationManager mNotifyMgr)
+        {
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
+            {
+                NotificationChannel mChannel = mNotifyMgr.GetNotificationChannel(NOT_CHANNEL_ID);
+
+                if (mChannel == null)
+                {
+                    String notchannel_name = App.Context.Resources.GetString(Resource.String.not_channel_name_weather);
+                    String notchannel_desc = App.Context.Resources.GetString(Resource.String.not_channel_desc_weather);
+
+                    mChannel = new NotificationChannel(NOT_CHANNEL_ID, notchannel_name, NotificationImportance.Low)
+                    {
+                        Description = notchannel_desc
+                    };
+                    // Configure the notification channel.
+                    mChannel.SetShowBadge(true);
+                    mChannel.EnableLights(false);
+                    mChannel.EnableVibration(false);
+                    mNotifyMgr.CreateNotificationChannel(mChannel);
+                }
+            }
+        }
+
         public static void ShowRefresh()
         {
+            // Gets an instance of the NotificationManager service
+            NotificationManager mNotifyMgr = (NotificationManager)App.Context.GetSystemService(App.NotificationService);
+            InitChannel(mNotifyMgr);
+
             if (mNotification == null)
             {
                 NotificationCompat.Builder mBuilder =
-                    new NotificationCompat.Builder(App.Context)
+                    new NotificationCompat.Builder(App.Context, NOT_CHANNEL_ID)
                     .SetSmallIcon(Resource.Drawable.ic_logo)
                     .SetPriority(NotificationCompat.PriorityLow)
                     .SetOngoing(true) as NotificationCompat.Builder;
@@ -116,8 +150,6 @@ namespace SimpleWeather.Droid.Notifications
 
             mNotification.ContentView = updateViews;
 
-            // Gets an instance of the NotificationManager service
-            NotificationManager mNotifyMgr = (NotificationManager)App.Context.GetSystemService(App.NotificationService);
             // Builds the notification and issues it.
             mNotifyMgr.Notify(PERSISTENT_NOT_ID, mNotification);
             IsShowing = true;

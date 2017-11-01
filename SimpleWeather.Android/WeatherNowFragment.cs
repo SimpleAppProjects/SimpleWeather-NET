@@ -368,8 +368,7 @@ namespace SimpleWeather.Droid
             bool homeChanged = false;
             if (location != null && FragmentManager.BackStackEntryCount == 0)
             {
-                if (location.query != homeData.query ||
-                    Settings.FollowGPS && location.locationType != LocationType.GPS)
+                if (location.Equals(homeData) && Tag != null)
                 {
                     location = homeData;
                     wLoader = null;

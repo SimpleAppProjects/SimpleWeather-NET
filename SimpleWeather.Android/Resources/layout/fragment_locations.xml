@@ -71,11 +71,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        app:srcCompat="@drawable/ic_add_white_24dp"
         android:tint="@android:color/white"
         app:backgroundTint="@color/colorPrimary"
         app:elevation="4dp"
-        app:fabSize="normal" />
+        app:fabSize="normal"
+        app:srcCompat="@drawable/ic_add_white_24dp"
+        app:tooltipText="@string/label_fab_add_location" />
 
     <RelativeLayout
         android:id="@+id/search_fragment_container"

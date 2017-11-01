@@ -14,6 +14,7 @@ using Android.Support.V4.Content;
 using Com.Bumptech.Glide;
 using Android.Graphics;
 using Android.Graphics.Drawables;
+using System.Threading.Tasks;
 
 namespace SimpleWeather.Droid
 {
@@ -142,6 +143,7 @@ namespace SimpleWeather.Droid
         public void OnItemDismiss(int position)
         {
             RemoveLocation(position);
+            Task.Run(() => Shortcuts.ShortcutCreator.UpdateShortcuts());
         }
 
         protected void OnClick(RecyclerClickEventArgs args) => ItemClick?.Invoke(this, args);

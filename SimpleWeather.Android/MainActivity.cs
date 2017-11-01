@@ -11,10 +11,14 @@ using Android.Support.V4.App;
 using Android.Support.V4.View;
 using Android.Views;
 using Android.Content;
+using System.Threading.Tasks;
+using SimpleWeather.Utils;
+using SimpleWeather.WeatherData;
 
 namespace SimpleWeather.Droid
 {
-    [Android.App.Activity(Label = "@string/title_activity_weather_now", Theme = "@style/AppTheme")]
+    [Android.App.Activity(Label = "@string/title_activity_weather_now", Theme = "@style/AppTheme",
+        ClearTaskOnLaunch = true, FinishOnTaskLaunch = true)]
     public class MainActivity : AppCompatActivity, NavigationView.IOnNavigationItemSelectedListener
     {
         protected override void OnCreate(Bundle savedInstanceState)
@@ -53,7 +57,24 @@ namespace SimpleWeather.Droid
                     .Commit();
             }
 
+            if ((bool)Intent?.HasExtra("shortcut-data"))
+            {
+                var locData = Task.Run(() => JSONParser.Deserializer<LocationData>(Intent.GetStringExtra("shortcut-data"))).Result;
+
+                // Navigate to WeatherNowFragment
+                Fragment newFragment = WeatherNowFragment.NewInstance(locData);
+                SupportFragmentManager.BeginTransaction()
+                    .Replace(Resource.Id.fragment_container, newFragment, "shortcut")
+                    .Commit();
+
+                // Disable navigation
+                toggle.DrawerIndicatorEnabled = false;
+                drawer.SetDrawerLockMode(DrawerLayout.LockModeLockedClosed);
+            }
+
             navigationView.SetCheckedItem(Resource.Id.nav_weathernow);
+
+            Task.Run(() => Shortcuts.ShortcutCreator.UpdateShortcuts());
         }
 
         public override void OnBackPressed()

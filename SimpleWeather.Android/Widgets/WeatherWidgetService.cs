@@ -537,7 +537,8 @@ namespace SimpleWeather.Droid.Widgets
             }
 
             // When user clicks on widget, launch to WeatherNow page
-            Intent onClickIntent = new Intent(context.ApplicationContext, typeof(MainActivity));
+            Intent onClickIntent = new Intent(context.ApplicationContext, typeof(MainActivity))
+                .SetFlags(ActivityFlags.ClearTop | ActivityFlags.NewTask | ActivityFlags.ClearTask);
             PendingIntent clickPendingIntent = PendingIntent.GetActivity(context, 0, onClickIntent, 0);
             updateViews.SetOnClickPendingIntent(Resource.Id.widgetBackground, clickPendingIntent);
 

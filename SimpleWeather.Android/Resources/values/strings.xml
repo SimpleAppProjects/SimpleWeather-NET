@@ -79,14 +79,13 @@
     <string name="error_location_denied">Location access denied</string>
     <string name="error_retrieve_location">Unable to get location</string>
     <string name="error_noresults">No results found</string>
+    <string name="label_fab_add_location">Add a location</string>
 
     <!-- Weather Exceptions -->
     <string name="werror_noweather">Unable to load weather data!!</string>
     <string name="werror_networkerror">Network Connection Error!!</string>
     <string name="werror_invalidkey">Invalid API Key</string>
     <string name="werror_querynotfound">No cities match your search query</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
 
     <!-- Refresh Intervals -->
     <string name="pref_title_refreshinterval">Update Interval</string>
@@ -107,5 +106,7 @@
     <!-- Notification -->
     <string name="notificationicon_temperature">Temperature</string>
     <string name="notificationicon_condition">Weather Condition</string>
+    <string name="not_channel_name_weather">Weather Notifications</string>
+    <string name="not_channel_desc_weather">Weather notifications</string>
 
 </resources>

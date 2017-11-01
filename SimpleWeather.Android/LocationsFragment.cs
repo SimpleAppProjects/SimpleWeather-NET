@@ -162,8 +162,7 @@ namespace SimpleWeather.Droid
             {
                 var locData = (LocationData)view.Tag;
 
-                if (locData.locationType == LocationType.GPS ||
-                    !Settings.FollowGPS && locData.query == Settings.LocationData.First().query)
+                if (locData.Equals(Settings.HomeData))
                 {
                     // Pop all since we're going home
                     AppCompatActivity.SupportFragmentManager.PopBackStack(null, (int)Android.App.PopBackStackFlags.Inclusive);
@@ -690,6 +689,9 @@ namespace SimpleWeather.Droid
                     panel.EditMode = true;
 
                 mAdapter.Add(index, panel);
+
+                // Update shortcuts
+                await Task.Run(() => Shortcuts.ShortcutCreator.UpdateShortcuts());
 
                 // Hide dialog
                 progDialog.Dismiss();

@@ -25,7 +25,10 @@ namespace SimpleWeather.Droid
             try
             {
                 if (Settings.WeatherLoaded)
-                    intent = new Intent(this, typeof(MainActivity));
+                {
+                    intent = new Intent(this, typeof(MainActivity))
+                        .SetFlags(ActivityFlags.ClearTop | ActivityFlags.NewTask | ActivityFlags.ClearTask);
+                }
                 else
                     intent = new Intent(this, typeof(SetupActivity));
             }
