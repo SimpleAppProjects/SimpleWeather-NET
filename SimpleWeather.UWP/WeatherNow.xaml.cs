@@ -237,8 +237,7 @@ namespace SimpleWeather.UWP
                 bool homeChanged = false;
                 if (location != null && Frame.BackStack.Count == 0)
                 {
-                    if (location.query != homeData.query || 
-                        Settings.FollowGPS && location.locationType != LocationType.GPS)
+                    if (location.Equals(homeData))
                     {
                         location = homeData;
                         homeChanged = true;

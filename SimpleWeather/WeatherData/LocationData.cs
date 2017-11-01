@@ -66,5 +66,24 @@ namespace SimpleWeather.WeatherData
             source = Utils.Settings.API;
         }
 #endif
+
+#if WINDOWS_UWP
+        public override bool Equals(System.Object obj)
+#elif __ANDROID__
+        public override bool Equals(Java.Lang.Object obj)
+#endif
+        {
+            if ((obj == null) || !this.GetType().Equals(obj.GetType()))
+            {
+                return false;
+            }
+            else
+            {
+                LocationData locData = (LocationData)obj;
+                return (query == locData.query) && (latitude == locData.latitude) &&
+                    (longitude == locData.longitude) && (locationType == locData.locationType) &&
+                    (source == locData.source);
+            }
+        }
     }
 }
