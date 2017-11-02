@@ -5,8 +5,8 @@
     android:id="@+id/fragment_locations"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="SimpleWeather.Droid.Controls.LocationsFragment"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    tools:context="SimpleWeather.Droid.Controls.LocationsFragment">
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -41,20 +41,20 @@
                     android:id="@+id/gps_panel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginBottom="4dp" />
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp" />
             </LinearLayout>
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/favorite_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/gps_follow_layout"
                 android:layout_marginBottom="4dp"
                 android:layout_marginTop="4dp"
                 android:text="@string/label_favoritelocations"
                 android:textAppearance="@android:style/TextAppearance.Widget.TextView"
-                android:textSize="18sp"
-                android:layout_below="@+id/gps_follow_layout"/>
+                android:textSize="18sp" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/locations_container"

@@ -50,7 +50,6 @@
             android:gravity="center"
             android:maxWidth="75dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_weather_icon"
             android:tint="@android:color/white" />
 
         <ImageView
@@ -63,8 +62,7 @@
             android:adjustViewBounds="true"
             android:gravity="center"
             android:maxWidth="75dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_home_fill_white_24dp" />
+            android:scaleType="fitCenter" />
 
         <TextView
             android:id="@+id/location_name"

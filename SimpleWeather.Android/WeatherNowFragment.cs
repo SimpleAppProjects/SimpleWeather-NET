@@ -65,7 +65,7 @@ namespace SimpleWeather.Droid
         private TextView sunrise;
         private TextView sunset;
         // Forecast
-        private LinearLayout forecastPanel;
+        private RelativeLayout forecastPanel;
         private LinearLayout forecastView;
         // Additional Details
         private Switch forecastSwitch;
@@ -73,7 +73,7 @@ namespace SimpleWeather.Droid
         private ViewPager txtForecastView;
         private LinearLayout hrforecastPanel;
         private LinearLayout hrforecastView;
-        private LinearLayout precipitationPanel;
+        private RelativeLayout precipitationPanel;
         private TextView chance;
         private TextView qpfRain;
         private TextView qpfSnow;
@@ -237,7 +237,7 @@ namespace SimpleWeather.Droid
             sunrise = view.FindViewById<TextView>(Resource.Id.sunrise_time);
             sunset = view.FindViewById<TextView>(Resource.Id.sunset_time);
             // Forecast
-            forecastPanel = view.FindViewById<LinearLayout>(Resource.Id.forecast_panel);
+            forecastPanel = view.FindViewById<RelativeLayout>(Resource.Id.forecast_panel);
             forecastPanel.Visibility = ViewStates.Invisible;
             forecastView = view.FindViewById<LinearLayout>(Resource.Id.forecast_view);
             // Additional Details
@@ -251,7 +251,7 @@ namespace SimpleWeather.Droid
             hrforecastPanel = view.FindViewById<LinearLayout>(Resource.Id.hourly_forecast_panel);
             hrforecastPanel.Visibility = ViewStates.Gone;
             hrforecastView = view.FindViewById<LinearLayout>(Resource.Id.hourly_forecast_view);
-            precipitationPanel = view.FindViewById<LinearLayout>(Resource.Id.precipitation_card);
+            precipitationPanel = view.FindViewById<RelativeLayout>(Resource.Id.precipitation_card);
             precipitationPanel.Visibility = ViewStates.Gone;
             chance = view.FindViewById<TextView>(Resource.Id.chance_val);
             qpfRain = view.FindViewById<TextView>(Resource.Id.qpf_rain_val);
@@ -590,13 +590,9 @@ namespace SimpleWeather.Droid
                         hrforecastView.AddView(new HourlyForecastItem(Activity, hrforecast));
                     }
                     hrforecastPanel.Visibility = ViewStates.Visible;
-                    mainView.FindViewById(Resource.Id.hourly_space).Visibility = ViewStates.Visible;
                 }
                 else
-                {
                     hrforecastPanel.Visibility = ViewStates.Gone;
-                    mainView.FindViewById(Resource.Id.hourly_space).Visibility = ViewStates.Gone;
-                }
 
                 if (weatherView.WUExtras.TextForecast.Count >= 1)
                 {
