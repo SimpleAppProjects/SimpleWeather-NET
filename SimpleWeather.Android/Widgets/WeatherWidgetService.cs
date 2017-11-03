@@ -794,7 +794,7 @@ namespace SimpleWeather.Droid.Widgets
                         // Check previous location difference
                         if (lastGPSLocData.query != null &&
                             Math.Abs(ConversionMethods.CalculateHaversine(lastGPSLocData.latitude, lastGPSLocData.longitude,
-                            location.Latitude, location.Longitude)) < 2500)
+                            location.Latitude, location.Longitude)) < 1600)
                         {
                             return false;
                         }

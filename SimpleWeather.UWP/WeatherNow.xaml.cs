@@ -131,7 +131,7 @@ namespace SimpleWeather.UWP
             HourlyForecastPanel.Visibility = Visibility.Collapsed;
             PrecipitationPanel.Visibility = Visibility.Collapsed;
 
-            geolocal = new Geolocator() { DesiredAccuracyInMeters = 5000, ReportInterval = 900000, MovementThreshold = 2500 };
+            geolocal = new Geolocator() { DesiredAccuracyInMeters = 5000, ReportInterval = 900000, MovementThreshold = 1600 };
         }
 
         private async void WeatherNow_Resuming(object sender, object e)

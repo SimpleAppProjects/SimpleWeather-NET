@@ -45,8 +45,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                     await UpdateLocation();
 
                 var wloader = new WeatherDataLoader(null, Settings.HomeData);
-                /*Task t = */ await wloader.LoadWeatherData(false);
-                //t.Wait();
+                await wloader.LoadWeatherData(false);
 
                 weather = wloader.GetWeather();
             }
@@ -65,7 +64,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
             if (Settings.FollowGPS)
             {
                 Geoposition newGeoPos = null;
-                Geolocator geolocal = new Geolocator() { DesiredAccuracyInMeters = 5000, ReportInterval = 900000, MovementThreshold = 2500 };
+                Geolocator geolocal = new Geolocator() { DesiredAccuracyInMeters = 5000, ReportInterval = 900000, MovementThreshold = 1600 };
 
                 try
                 {

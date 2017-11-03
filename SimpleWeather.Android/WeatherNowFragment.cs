@@ -681,14 +681,14 @@ namespace SimpleWeather.Droid
 
                         // Check previous location difference
                         if (lastGPSLocData.query != null &&
-                            mLocation != null && ConversionMethods.CalculateGeopositionDistance(mLocation, location) < 2500)
+                            mLocation != null && ConversionMethods.CalculateGeopositionDistance(mLocation, location) < 1600)
                         {
                             return false;
                         }
 
                         if (lastGPSLocData.query != null &&
                             Math.Abs(ConversionMethods.CalculateHaversine(lastGPSLocData.latitude, lastGPSLocData.longitude,
-                            location.Latitude, location.Longitude)) < 2500)
+                            location.Latitude, location.Longitude)) < 1600)
                         {
                             return false;
                         }

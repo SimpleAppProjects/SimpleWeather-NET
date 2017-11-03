@@ -243,7 +243,7 @@ namespace SimpleWeather.UWP
                 System.Diagnostics.Debug.WriteLine(ex.StackTrace);
             }
 
-            Geolocator geolocal = new Geolocator() { DesiredAccuracyInMeters = 5000, ReportInterval = 900000, MovementThreshold = 2500 };
+            Geolocator geolocal = new Geolocator() { DesiredAccuracyInMeters = 5000, ReportInterval = 900000, MovementThreshold = 1600 };
             Geoposition geoPos = null;
 
             // Setup error just in case
