@@ -21,7 +21,7 @@ namespace SimpleWeather.Droid
         ClearTaskOnLaunch = true, FinishOnTaskLaunch = true)]
     public class MainActivity : AppCompatActivity, NavigationView.IOnNavigationItemSelectedListener
     {
-        protected override void OnCreate(Bundle savedInstanceState)
+        protected override async void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.activity_main);
@@ -59,7 +59,7 @@ namespace SimpleWeather.Droid
 
             if ((bool)Intent?.HasExtra("shortcut-data"))
             {
-                var locData = Task.Run(() => JSONParser.Deserializer<LocationData>(Intent.GetStringExtra("shortcut-data"))).Result;
+                var locData = await JSONParser.DeserializerAsync<LocationData>(Intent.GetStringExtra("shortcut-data"));
 
                 // Navigate to WeatherNowFragment
                 Fragment newFragment = WeatherNowFragment.NewInstance(locData);
@@ -74,7 +74,7 @@ namespace SimpleWeather.Droid
 
             navigationView.SetCheckedItem(Resource.Id.nav_weathernow);
 
-            Task.Run(() => Shortcuts.ShortcutCreator.UpdateShortcuts());
+            await Task.Run(() => Shortcuts.ShortcutCreator.UpdateShortcuts());
         }
 
         public override void OnBackPressed()

@@ -69,9 +69,9 @@ namespace SimpleWeather.UWP
                     if (!ErrorCounter[(int)wEx.ErrorStatus])
                     {
                         Snackbar snackBar = Snackbar.Make(Content as Grid, wEx.Message, SnackbarDuration.Long);
-                        snackBar.SetAction(App.ResLoader.GetString("Action_Retry"), (sender) =>
+                        snackBar.SetAction(App.ResLoader.GetString("Action_Retry"), async (sender) =>
                         {
-                            RefreshLocations();
+                            await RefreshLocations();
                         });
                         snackBar.Show();
                         ErrorCounter[(int)wEx.ErrorStatus] = true;
@@ -107,7 +107,7 @@ namespace SimpleWeather.UWP
 
         private async void LocationsPage_Resuming(object sender, object e)
         {
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { RefreshLocations(); });
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => { await RefreshLocations(); });
         }
 
         public void Dispose()
@@ -115,7 +115,7 @@ namespace SimpleWeather.UWP
             ((IDisposable)cts).Dispose();
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
 
@@ -140,7 +140,7 @@ namespace SimpleWeather.UWP
                 switch (arg)
                 {
                     case "toast-refresh":
-                        RefreshLocations();
+                        await RefreshLocations();
                         return;
                     default:
                         break;
@@ -161,12 +161,12 @@ namespace SimpleWeather.UWP
             if (reload || e.NavigationMode == NavigationMode.New)
             {
                 // New instance; Get locations and load up weather data
-                LoadLocations();
+                await LoadLocations();
             }
             else
             {
                 // Refresh view
-                RefreshLocations();
+                await RefreshLocations();
             }
         }
 
@@ -199,7 +199,7 @@ namespace SimpleWeather.UWP
             EditButton.Visibility = onlyHomeIsLeft ? Visibility.Collapsed : Visibility.Visible;
         }
 
-        private async void LoadLocations()
+        private async Task LoadLocations()
         {
             // Lets load it up...
             var locations = Settings.LocationData;
@@ -253,7 +253,7 @@ namespace SimpleWeather.UWP
             }
         }
 
-        private async void RefreshLocations()
+        private async Task RefreshLocations()
         {
             // Reload all panels if needed
             var locations = Settings.LocationData;
@@ -272,7 +272,7 @@ namespace SimpleWeather.UWP
             if (reload)
             {
                 LocationPanels.Clear();
-                LoadLocations();
+                await LoadLocations();
             }
             else
             {

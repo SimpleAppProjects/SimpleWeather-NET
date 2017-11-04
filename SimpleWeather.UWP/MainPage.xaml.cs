@@ -17,6 +17,7 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 namespace SimpleWeather.UWP
@@ -61,14 +62,19 @@ namespace SimpleWeather.UWP
                 titlebar.BackgroundColor = App.AppColor;
                 titlebar.ButtonBackgroundColor = titlebar.BackgroundColor;
             }
-
-            // Restore Weather if Location already set
-            Restore();
         }
 
         public void Dispose()
         {
             ((IDisposable)cts).Dispose();
+        }
+
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+
+            // Restore Weather if Location already set
+            await Restore();
         }
 
         private void Location_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
@@ -205,7 +211,7 @@ namespace SimpleWeather.UWP
             });
         }
 
-        private async void Restore()
+        private async Task Restore()
         {
             // Hide UIElements
             SearchGrid.Visibility = Visibility.Collapsed;

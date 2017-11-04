@@ -38,15 +38,15 @@ namespace SimpleWeather.UWP
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            // Setup background task
+            Windows.ApplicationModel.Background.BackgroundExecutionManager.RemoveAccess();
+            await App.BGTaskHandler.RegisterBackgroundTask();
+
             // Navigate to WeatherNow page
             if (AppFrame.Content == null)
             {
                 AppFrame.Navigate(typeof(WeatherNow), e.Parameter);
             }
-
-            // Setup background task
-            Windows.ApplicationModel.Background.BackgroundExecutionManager.RemoveAccess();
-            await App.BGTaskHandler.RegisterBackgroundTask();
         }
 
         private void AppFrame_Navigated(object sender, NavigationEventArgs e)

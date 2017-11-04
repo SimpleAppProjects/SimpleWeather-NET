@@ -98,9 +98,9 @@ namespace SimpleWeather.UWP
                 case WeatherUtils.ErrorStatus.NoWeather:
                     // Show error message and prompt to refresh
                     Snackbar snackBar = Snackbar.Make(Content as Grid, wEx.Message, SnackbarDuration.Long);
-                    snackBar.SetAction(App.ResLoader.GetString("Action_Retry"), (sender) =>
+                    snackBar.SetAction(App.ResLoader.GetString("Action_Retry"), async (sender) =>
                     {
-                        RefreshWeather(false);
+                        await RefreshWeather(false);
                     });
                     snackBar.Show();
                     break;
@@ -206,7 +206,7 @@ namespace SimpleWeather.UWP
                 switch (arg)
                 {
                     case "toast-refresh":
-                        RefreshWeather(true);
+                        await RefreshWeather(true);
                         return;
                     default:
                         break;
@@ -265,7 +265,7 @@ namespace SimpleWeather.UWP
                 }
             }
 
-            Restore();
+            await Restore();
         }
 
         private async Task Resume()
@@ -282,7 +282,7 @@ namespace SimpleWeather.UWP
                 {
                     // Setup loader from updated location
                     wLoader = new WeatherDataLoader(this, this, this.location);
-                    RefreshWeather(false);
+                    await RefreshWeather(false);
                 }
                 else
                 {
@@ -290,7 +290,7 @@ namespace SimpleWeather.UWP
                     int ttl = int.Parse(weather.ttl);
                     TimeSpan span = DateTime.Now - weather.update_time;
                     if (span.TotalMinutes > ttl)
-                        RefreshWeather(false);
+                        await RefreshWeather(false);
                     else
                     {
                         WeatherView.UpdateView(wLoader.GetWeather());
@@ -306,7 +306,7 @@ namespace SimpleWeather.UWP
             TextForecastControl.SelectedIndex = index;
         }
 
-        private async void Restore()
+        private async Task Restore()
         {
             bool forceRefresh = false;
 
@@ -351,7 +351,7 @@ namespace SimpleWeather.UWP
             }
 
             // Load up weather data
-            RefreshWeather(forceRefresh);
+            await RefreshWeather(forceRefresh);
         }
 
         private async Task<bool> UpdateLocation()
@@ -451,10 +451,10 @@ namespace SimpleWeather.UWP
                 // Setup loader from updated location
                 wLoader = new WeatherDataLoader(this, this, location);
 
-            RefreshWeather(true);
+            await RefreshWeather(true);
         }
 
-        private async void RefreshWeather(bool forceRefresh)
+        private async Task RefreshWeather(bool forceRefresh)
         {
             LoadingRing.IsActive = true;
             await wLoader.LoadWeatherData(forceRefresh);

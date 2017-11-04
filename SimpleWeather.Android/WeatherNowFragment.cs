@@ -173,7 +173,7 @@ namespace SimpleWeather.Droid
             return fragment;
         }
 
-        public override void OnCreate(Bundle savedInstanceState)
+        public override async void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             AppCompatActivity = Activity as AppCompatActivity;
@@ -181,7 +181,7 @@ namespace SimpleWeather.Droid
             // Create your fragment here
             if (Arguments != null)
             {
-                location = Task.Run(() => JSONParser.DeserializerAsync<LocationData>(Arguments.GetString("data"))).Result;
+                location = await JSONParser.DeserializerAsync<LocationData>(Arguments.GetString("data"));
 
                 if (location != null && wLoader == null)
                     wLoader = new WeatherDataLoader(this, this, location);
@@ -356,7 +356,7 @@ namespace SimpleWeather.Droid
             menu.Clear();
         }
 
-        private async void Resume()
+        private async Task Resume()
         {
             /* Update view on resume
              * ex. If temperature unit changed
@@ -421,7 +421,7 @@ namespace SimpleWeather.Droid
             }
         }
 
-        public override void OnResume()
+        public override async void OnResume()
         {
             base.OnResume();
 
@@ -429,20 +429,20 @@ namespace SimpleWeather.Droid
             if (this.IsHidden)
                 return;
             else
-                Resume();
+                await Resume();
 
             // Title
             AppCompatActivity.SupportActionBar.Title = GetString(Resource.String.title_activity_weather_now);
         }
 
-        public override void OnHiddenChanged(bool hidden)
+        public override async void OnHiddenChanged(bool hidden)
         {
             base.OnHiddenChanged(hidden);
 
             if (!hidden && weatherView != null && this.IsVisible)
             {
                 UpdateNavHeader(weatherView);
-                Resume();
+                await Resume();
             }
             else if (hidden)
                 loaded = false;

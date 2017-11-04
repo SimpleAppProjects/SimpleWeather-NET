@@ -296,7 +296,7 @@ namespace SimpleWeather.Droid
             return base.OnOptionsItemSelected(item);
         }
 
-        private async void Resume()
+        private async Task Resume()
         {
             // Update view on resume
             // ex. If temperature unit changed
@@ -330,7 +330,7 @@ namespace SimpleWeather.Droid
             }
         }
 
-        public override void OnResume()
+        public override async void OnResume()
         {
             base.OnResume();
 
@@ -338,7 +338,7 @@ namespace SimpleWeather.Droid
             if (this.IsHidden)
                 return;
             else
-                Resume();
+                await Resume();
 
             // Title
             AppCompatActivity.SupportActionBar.Title = GetString(Resource.String.label_nav_locations);
@@ -353,13 +353,13 @@ namespace SimpleWeather.Droid
             Array.Clear(ErrorCounter, 0, ErrorCounter.Length);
         }
 
-        public override void OnHiddenChanged(bool hidden)
+        public override async void OnHiddenChanged(bool hidden)
         {
             base.OnHiddenChanged(hidden);
 
             if (!hidden && this.IsVisible)
             {
-                Resume();
+                await Resume();
             }
             else if (hidden)
             {

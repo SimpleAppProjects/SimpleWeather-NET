@@ -132,17 +132,17 @@ namespace SimpleWeather.Droid
                 ExitSearchUi();
             };
 
-            gpsFollowButton.Click += delegate
+            gpsFollowButton.Click += async delegate
             {
-                FetchGeoLocation();
+                await FetchGeoLocation();
             };
 
             // Location Listener
             mLocListnr = new LocationListener();
-            mLocListnr.LocationChanged += (Location location) =>
+            mLocListnr.LocationChanged += async (Location location) =>
             {
                 mLocation = location;
-                FetchGeoLocation();
+                await FetchGeoLocation();
             };
 
             // Reset focus
@@ -158,7 +158,7 @@ namespace SimpleWeather.Droid
             }
         }
 
-        public async void FetchGeoLocation()
+        public async Task FetchGeoLocation()
         {
             if (mLocation != null)
             {
@@ -232,11 +232,11 @@ namespace SimpleWeather.Droid
             }
             else
             {
-                UpdateLocation();
+                await UpdateLocation();
             }
         }
 
-        private void UpdateLocation()
+        private async Task UpdateLocation()
         {
             if (ContextCompat.CheckSelfPermission(this, Manifest.Permission.AccessFineLocation) != Permission.Granted &&
                 ContextCompat.CheckSelfPermission(this, Manifest.Permission.AccessCoarseLocation) != Permission.Granted)
@@ -264,7 +264,7 @@ namespace SimpleWeather.Droid
                 else
                 {
                     mLocation = location;
-                    FetchGeoLocation();
+                    await FetchGeoLocation();
                 }
             }
             else if (isNetEnabled)
@@ -276,7 +276,7 @@ namespace SimpleWeather.Droid
                 else
                 {
                     mLocation = location;
-                    FetchGeoLocation();
+                    await FetchGeoLocation();
                 }
             }
             else
@@ -285,7 +285,7 @@ namespace SimpleWeather.Droid
             }
         }
 
-        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
+        public override async void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
         {
             switch (requestCode)
             {
@@ -298,7 +298,7 @@ namespace SimpleWeather.Droid
 
                             // permission was granted, yay!
                             // Do the task you need to do.
-                            FetchGeoLocation();
+                            await FetchGeoLocation();
                         }
                         else
                         {
