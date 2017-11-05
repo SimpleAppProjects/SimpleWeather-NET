@@ -45,7 +45,7 @@ namespace SimpleWeather.UWP
                 WeatherView.UpdateView(weather);
 
                 // Update home tile if it hasn't been already
-                if (Settings.HomeData.Equals(location) && 
+                if (Settings.HomeData.Equals(location) &&
                     TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval)
                 {
                     await App.BGTaskHandler.AppTrigger.RequestAsync();
@@ -237,7 +237,7 @@ namespace SimpleWeather.UWP
                 bool homeChanged = false;
                 if (location != null && Frame.BackStack.Count == 0)
                 {
-                    if (location.Equals(homeData))
+                    if (!location.Equals(homeData))
                     {
                         location = homeData;
                         homeChanged = true;
@@ -407,7 +407,7 @@ namespace SimpleWeather.UWP
                         return false;
                     }
 
-                    if (lastGPSLocData.query != null && 
+                    if (lastGPSLocData.query != null &&
                         Math.Abs(ConversionMethods.CalculateHaversine(lastGPSLocData.latitude, lastGPSLocData.longitude,
                         newGeoPos.Coordinate.Point.Position.Latitude, newGeoPos.Coordinate.Point.Position.Longitude)) < geolocal.MovementThreshold)
                     {
@@ -593,7 +593,7 @@ namespace SimpleWeather.UWP
         {
             ForecastGrid.Visibility = ForecastSwitch.IsOn ?
                 Visibility.Collapsed : Visibility.Visible;
-            TextForecastPanel.Visibility = ForecastSwitch.IsOn ? 
+            TextForecastPanel.Visibility = ForecastSwitch.IsOn ?
                 Visibility.Visible : Visibility.Collapsed;
 
             if (ForecastSwitch.IsOn)
