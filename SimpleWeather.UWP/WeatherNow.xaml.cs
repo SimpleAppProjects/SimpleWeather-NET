@@ -45,7 +45,7 @@ namespace SimpleWeather.UWP
                 WeatherView.UpdateView(weather);
 
                 // Update home tile if it hasn't been already
-                if (Settings.HomeData.Equals(location) &&
+                if (Settings.HomeData.Equals(location) && 
                     TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval)
                 {
                     await App.BGTaskHandler.AppTrigger.RequestAsync();
@@ -98,9 +98,9 @@ namespace SimpleWeather.UWP
                 case WeatherUtils.ErrorStatus.NoWeather:
                     // Show error message and prompt to refresh
                     Snackbar snackBar = Snackbar.Make(Content as Grid, wEx.Message, SnackbarDuration.Long);
-                    snackBar.SetAction(App.ResLoader.GetString("Action_Retry"), async (sender) =>
+                    snackBar.SetAction(App.ResLoader.GetString("Action_Retry"), (sender) =>
                     {
-                        await RefreshWeather(false);
+                        RefreshWeather(false);
                     });
                     snackBar.Show();
                     break;
@@ -206,14 +206,14 @@ namespace SimpleWeather.UWP
                 switch (arg)
                 {
                     case "toast-refresh":
-                        await RefreshWeather(true);
+                        RefreshWeather(true);
                         return;
                     default:
                         break;
                 }
             }
 
-            LocationData LocParameter = (LocationData)e.Parameter;
+            LocationData LocParameter = e.Parameter as LocationData;
 
             if (e.NavigationMode == NavigationMode.New)
             {
@@ -228,6 +228,8 @@ namespace SimpleWeather.UWP
                     location = LocParameter;
                     wLoader = new WeatherDataLoader(this, this, location);
                 }
+
+                Restore();
             }
             else
             {
@@ -263,9 +265,9 @@ namespace SimpleWeather.UWP
                         SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
                     }
                 }
+                else
+                    Restore();
             }
-
-            await Restore();
         }
 
         private async Task Resume()
@@ -282,7 +284,7 @@ namespace SimpleWeather.UWP
                 {
                     // Setup loader from updated location
                     wLoader = new WeatherDataLoader(this, this, this.location);
-                    await RefreshWeather(false);
+                    RefreshWeather(false);
                 }
                 else
                 {
@@ -290,7 +292,7 @@ namespace SimpleWeather.UWP
                     int ttl = int.Parse(weather.ttl);
                     TimeSpan span = DateTime.Now - weather.update_time;
                     if (span.TotalMinutes > ttl)
-                        await RefreshWeather(false);
+                        RefreshWeather(false);
                     else
                     {
                         WeatherView.UpdateView(wLoader.GetWeather());
@@ -306,7 +308,7 @@ namespace SimpleWeather.UWP
             TextForecastControl.SelectedIndex = index;
         }
 
-        private async Task Restore()
+        private async void Restore()
         {
             bool forceRefresh = false;
 
@@ -351,7 +353,7 @@ namespace SimpleWeather.UWP
             }
 
             // Load up weather data
-            await RefreshWeather(forceRefresh);
+            RefreshWeather(forceRefresh);
         }
 
         private async Task<bool> UpdateLocation()
@@ -407,7 +409,7 @@ namespace SimpleWeather.UWP
                         return false;
                     }
 
-                    if (lastGPSLocData.query != null &&
+                    if (lastGPSLocData.query != null && 
                         Math.Abs(ConversionMethods.CalculateHaversine(lastGPSLocData.latitude, lastGPSLocData.longitude,
                         newGeoPos.Coordinate.Point.Position.Latitude, newGeoPos.Coordinate.Point.Position.Longitude)) < geolocal.MovementThreshold)
                     {
@@ -451,10 +453,10 @@ namespace SimpleWeather.UWP
                 // Setup loader from updated location
                 wLoader = new WeatherDataLoader(this, this, location);
 
-            await RefreshWeather(true);
+            RefreshWeather(true);
         }
 
-        private async Task RefreshWeather(bool forceRefresh)
+        private async void RefreshWeather(bool forceRefresh)
         {
             LoadingRing.IsActive = true;
             await wLoader.LoadWeatherData(forceRefresh);
@@ -547,7 +549,7 @@ namespace SimpleWeather.UWP
                         HeaderLeft.IsEnabled = false;
 
                         HeaderLeft.Content = String.Empty;
-                        Header.Text = source[control.SelectedIndex].Title;
+                        Header.Text = source[control.SelectedIndex].Title ?? String.Empty; // set to empty if null
                         HeaderRight.Content = source[control.SelectedIndex + 1].Title;
 
                         if (!HeaderRight.IsEnabled)
@@ -559,7 +561,7 @@ namespace SimpleWeather.UWP
                             HeaderLeft.IsEnabled = true;
 
                         HeaderLeft.Content = source[control.SelectedIndex - 1].Title;
-                        Header.Text = source[control.SelectedIndex].Title;
+                        Header.Text = source[control.SelectedIndex].Title ?? String.Empty; // set to empty if null
                         HeaderRight.Content = String.Empty;
 
                         HeaderRight.IsEnabled = false;
@@ -572,7 +574,7 @@ namespace SimpleWeather.UWP
                             HeaderRight.IsEnabled = true;
 
                         HeaderLeft.Content = source[control.SelectedIndex - 1].Title;
-                        Header.Text = source[control.SelectedIndex].Title;
+                        Header.Text = source[control.SelectedIndex].Title ?? String.Empty; // set to empty if null
                         HeaderRight.Content = source[control.SelectedIndex + 1].Title;
                     }
                 }
@@ -593,7 +595,7 @@ namespace SimpleWeather.UWP
         {
             ForecastGrid.Visibility = ForecastSwitch.IsOn ?
                 Visibility.Collapsed : Visibility.Visible;
-            TextForecastPanel.Visibility = ForecastSwitch.IsOn ?
+            TextForecastPanel.Visibility = ForecastSwitch.IsOn ? 
                 Visibility.Visible : Visibility.Collapsed;
 
             if (ForecastSwitch.IsOn)
