@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimpleWeather.Controls;
+using System;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -9,10 +10,16 @@ namespace SimpleWeather.UWP.Controls
 {
     public sealed partial class LocationPanel : UserControl
     {
+        public LocationPanelViewModel ViewModel
+        {
+            get { return (this.DataContext as LocationPanelViewModel); }
+        }
+
         public LocationPanel()
         {
             this.InitializeComponent();
-            SizeChanged += LocationPanel_SizeChanged;
+            this.SizeChanged += LocationPanel_SizeChanged;
+            this.DataContextChanged += (sender, args) => this.Bindings.Update();
         }
 
         private void LocationPanel_SizeChanged(object sender, SizeChangedEventArgs e)

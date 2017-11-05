@@ -48,7 +48,7 @@ namespace SimpleWeather.UWP
             this.InitializeComponent();
 
             // Shell
-            (Shell.Instance.BurgerBackground as SolidColorBrush).Color = App.AppColor;
+            Shell.Instance.BurgerBackgroundColor = App.AppColor;
 
             RestoreSettings();
         }

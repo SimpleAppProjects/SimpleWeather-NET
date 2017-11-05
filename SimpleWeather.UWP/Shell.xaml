@@ -80,8 +80,10 @@
     </Page.Resources>
 
     <Grid>
-        <Border Width="48" Height="48" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.ZIndex="100"
-                Background="{Binding ElementName=HamburgerButton, Path=Background}">
+        <Border Width="48" Height="48" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.ZIndex="100">
+            <Border.Background>
+                <SolidColorBrush Color="{x:Bind HamburgerButton.Background.(SolidColorBrush.Color), FallbackValue='#FF006FBF', Mode=OneWay}" />
+            </Border.Background>
             <Button x:Name="HamburgerButton" Style="{StaticResource BurgerButton}" FontFamily="Segoe MDL2 Assets" Content="&#xE700;"
                     Background="#FF006FBF"
                     Width="48" Height="48" Click="HamburgerButton_Click" />
@@ -92,7 +94,7 @@
                 <StackPanel Background="Black" Margin="0,48,0,0">
                     <StackPanel Orientation="Horizontal">
                         <Button x:Name="WeatherButton" Click="WeatherButton_Click" Style="{StaticResource BurgerButton}">
-                            <Grid Height="48" Width="{Binding ElementName=HamBurgerMenu, Path=OpenPaneLength}">
+                            <Grid Height="48" Width="{x:Bind HamBurgerMenu.OpenPaneLength, Mode=OneWay}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="48"/>
                                     <ColumnDefinition/>
@@ -102,12 +104,12 @@
                             </Grid>
                         </Button>
                         <StackPanel.Background>
-                            <SolidColorBrush Color="{Binding ElementName=WeatherButton, Path=Background.Color}" />
+                            <SolidColorBrush Color="{x:Bind WeatherButton.Background.(SolidColorBrush.Color), Mode=OneWay}" />
                         </StackPanel.Background>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Button x:Name="LocationsButton" Click="LocationsButton_Click" Style="{StaticResource BurgerButton}">
-                            <Grid Height="48" Width="{Binding ElementName=HamBurgerMenu, Path=OpenPaneLength}">
+                            <Grid Height="48" Width="{x:Bind HamBurgerMenu.OpenPaneLength, Mode=OneWay}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="48"/>
                                     <ColumnDefinition/>
@@ -117,12 +119,12 @@
                             </Grid>
                         </Button>
                         <StackPanel.Background>
-                            <SolidColorBrush Color="{Binding ElementName=LocationsButton, Path=Background.Color}" />
+                            <SolidColorBrush Color="{x:Bind LocationsButton.Background.(SolidColorBrush.Color), Mode=OneWay}" />
                         </StackPanel.Background>
                     </StackPanel>
                     <StackPanel x:Name="SettingsPanel" Orientation="Horizontal">
                         <Button x:Name="SettingsButton" Click="SettingsButton_Click" Style="{StaticResource BurgerButton}">
-                            <Grid Height="48" Width="{Binding ElementName=HamBurgerMenu, Path=OpenPaneLength}">
+                            <Grid Height="48" Width="{x:Bind HamBurgerMenu.OpenPaneLength, Mode=OneWay}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="48"/>
                                     <ColumnDefinition/>
@@ -132,7 +134,7 @@
                             </Grid>
                         </Button>
                         <StackPanel.Background>
-                            <SolidColorBrush Color="{Binding ElementName=SettingsButton, Path=Background.Color}" />
+                            <SolidColorBrush Color="{x:Bind SettingsButton.Background.(SolidColorBrush.Color), Mode=OneWay}" />
                         </StackPanel.Background>
                     </StackPanel>
                 </StackPanel>

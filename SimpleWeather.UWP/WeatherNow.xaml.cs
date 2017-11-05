@@ -52,7 +52,7 @@ namespace SimpleWeather.UWP
                 }
 
                 // Shell
-                Shell.Instance.BurgerBackground = WeatherView.PendingBackground;
+                Shell.Instance.BurgerBackgroundColor = WeatherView.PendingBackgroundColor;
             }
 
             // Set saved index from before update
@@ -294,7 +294,7 @@ namespace SimpleWeather.UWP
                     else
                     {
                         WeatherView.UpdateView(wLoader.GetWeather());
-                        Shell.Instance.BurgerBackground = WeatherView.PendingBackground;
+                        Shell.Instance.BurgerBackgroundColor = WeatherView.PendingBackgroundColor;
                     }
                 }
             }

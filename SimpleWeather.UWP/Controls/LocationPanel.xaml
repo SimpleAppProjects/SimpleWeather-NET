@@ -8,18 +8,18 @@
     mc:Ignorable="d"
     d:DesignHeight="100"
     d:DesignWidth="400"
-    Tag="{Binding LocationData}">
+    Tag="{x:Bind ViewModel.LocationData, Mode=OneWay}">
 
-    <Grid Background="{Binding Background, FallbackValue='#FF006FBF'}"
+    <Grid Background="{x:Bind ViewModel.Background, FallbackValue='#FF006FBF', Mode=OneWay}"
           Height="100" BorderBrush="White"
           Name="MainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <ProgressRing x:Name="LoadingRing" Grid.ColumnSpan="2" IsActive="{Binding IsLoading}" Foreground="White"/>
+        <ProgressRing x:Name="LoadingRing" Grid.ColumnSpan="2" IsActive="{x:Bind ViewModel.IsLoading, Mode=OneWay}" Foreground="White"/>
         <Viewbox Name="NameBox" Height="55" HorizontalAlignment="Left" Grid.Column="0" StretchDirection="DownOnly" Stretch="Uniform">
-            <TextBlock x:Name="LocationName" Text="{Binding LocationName, FallbackValue='New York, NY'}"
+            <TextBlock x:Name="LocationName" Text="{x:Bind ViewModel.LocationName, FallbackValue='New York, NY', Mode=OneWay}"
                        Foreground="White" FontSize="24" VerticalAlignment="Center" Padding="10"
                        TextWrapping="WrapWholeWords"/>
         </Viewbox>
@@ -30,11 +30,11 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Viewbox Name="TempBox" Height="55" Width="55" Grid.Column="0">
-                    <TextBlock x:Name="CurrentTemp" Text="{Binding CurrTemp, FallbackValue='70&#xF045;'}" 
+                    <TextBlock x:Name="CurrentTemp" Text="{x:Bind ViewModel.CurrTemp, FallbackValue='70&#xF045;', Mode=OneWay}" 
                                Foreground="White" FontSize="24" Padding="10"/>
                 </Viewbox>
                 <Viewbox Name="IconBox" Height="55" Width="55" Grid.Column="1" Margin="5">
-                    <TextBlock x:Name="WeatherIcon" Text="{Binding WeatherIcon, FallbackValue='&#xf00d;'}" Style="{StaticResource WeatherIcon}"/>
+                    <TextBlock x:Name="WeatherIcon" Text="{x:Bind ViewModel.WeatherIcon, FallbackValue='&#xf00d;', Mode=OneWay}" Style="{StaticResource WeatherIcon}"/>
                 </Viewbox>
             </Grid>
         </Viewbox>

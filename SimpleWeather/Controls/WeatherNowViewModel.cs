@@ -76,9 +76,9 @@ namespace SimpleWeather.Controls
         public static readonly DependencyProperty BackgroundProperty =
             DependencyProperty.Register("Background", typeof(ImageBrush),
             typeof(WeatherNowViewModel), new PropertyMetadata(null));
-        public static readonly DependencyProperty PendingBackgroundProperty =
-            DependencyProperty.Register("PendingBackground", typeof(SolidColorBrush),
-            typeof(WeatherNowViewModel), new PropertyMetadata(new SolidColorBrush(Color.FromArgb(255, 0, 111, 191))));
+        public static readonly DependencyProperty PendingBackgroundColorProperty =
+            DependencyProperty.Register("PendingBackgroundColor", typeof(Color),
+            typeof(WeatherNowViewModel), new PropertyMetadata(Color.FromArgb(255, 0, 111, 191)));
         public static readonly DependencyProperty WeatherCreditProperty =
             DependencyProperty.Register("WeatherCredit", typeof(String),
             typeof(WeatherNowViewModel), new PropertyMetadata(""));
@@ -190,10 +190,10 @@ namespace SimpleWeather.Controls
             get { return (ImageBrush)GetValue(BackgroundProperty); }
             set { SetValue(BackgroundProperty, value); OnPropertyChanged("Background"); }
         }
-        public SolidColorBrush PendingBackground
+        public Color PendingBackgroundColor
         {
-            get { return (SolidColorBrush)GetValue(PendingBackgroundProperty); }
-            set { SetValue(PendingBackgroundProperty, value); OnPropertyChanged("PendingBackground"); }
+            get { return (Color)GetValue(PendingBackgroundColorProperty); }
+            set { SetValue(PendingBackgroundColorProperty, value); OnPropertyChanged("PendingBackgroundColor"); }
         }
         public String WeatherCredit
         {
@@ -273,7 +273,7 @@ namespace SimpleWeather.Controls
             // Update backgrounds
 #if WINDOWS_UWP
             WeatherUtils.SetBackground(Background, weather);
-            PendingBackground.Color = WeatherUtils.GetWeatherBackgroundColor(weather);
+            PendingBackgroundColor = WeatherUtils.GetWeatherBackgroundColor(weather);
 #elif __ANDROID__
             Background = WeatherUtils.GetBackgroundURI(weather);
             PendingBackground = WeatherUtils.GetWeatherBackgroundColor(weather);

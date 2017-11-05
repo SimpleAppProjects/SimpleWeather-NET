@@ -316,7 +316,7 @@
                                     </Grid.ColumnDefinitions>
                                     <localcontrols:LocationPanel Grid.Column="0" IsEnabled="False" Holding="LocationPanel_Holding"/>
                                     <StackPanel Background="Black" Grid.Column="1"
-                                            Visibility="{Binding EditMode, Converter={StaticResource booleanToVisibilityConverter}}">
+                                            Visibility="{x:Bind EditMode, Mode=OneWay}">
                                         <Button x:Name="DeleteButton" Style="{StaticResource BurgerButton}"
                                             Click="LocationPanel_DeleteClick">
                                             <FontIcon Name="DeleteButtonFontIco" Height="100" Width="50" Glyph="&#xE107;" Foreground="White"/>

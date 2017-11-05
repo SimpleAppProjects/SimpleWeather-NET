@@ -91,7 +91,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="LocationName" Text="{Binding LocationName}" FontSize="14" Padding="5" TextAlignment="Left" Grid.Row="0"/>
-        <TextBlock x:Name="LocationCountry" Text="{Binding LocationCountry}" FontSize="12" Padding="5" TextAlignment="Left" Grid.Row="1"/>
+        <TextBlock x:Name="LocationName" Text="{x:Bind ViewModel.LocationName, Mode=OneWay}" FontSize="14" Padding="5" TextAlignment="Left" Grid.Row="0"/>
+        <TextBlock x:Name="LocationCountry" Text="{x:Bind ViewModel.LocationCountry, Mode=OneWay}" FontSize="12" Padding="5" TextAlignment="Left" Grid.Row="1"/>
     </Grid>
 </UserControl>

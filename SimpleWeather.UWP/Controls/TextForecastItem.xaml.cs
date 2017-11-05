@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimpleWeather.Controls;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,10 +20,16 @@ namespace SimpleWeather.UWP.Controls
 {
     public sealed partial class TextForecastItem : UserControl
     {
+        public TextForecastItemViewModel ViewModel
+        {
+            get { return (this.DataContext as TextForecastItemViewModel); }
+        }
+
         public TextForecastItem()
         {
             this.InitializeComponent();
             this.SizeChanged += TextForecastItem_SizeChanged;
+            this.DataContextChanged += (sender, args) => this.Bindings.Update();
         }
 
         private void TextForecastItem_SizeChanged(object sender, SizeChangedEventArgs e)

@@ -284,7 +284,7 @@
                 </Button.Content>
             </Button>
         </Grid>
-        <Grid x:Name="APIGrid" Visibility="{Binding ElementName=SearchGrid, Path=Visibility}">
+        <Grid x:Name="APIGrid" Visibility="{x:Bind SearchGrid.Visibility, Mode=OneWay}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>

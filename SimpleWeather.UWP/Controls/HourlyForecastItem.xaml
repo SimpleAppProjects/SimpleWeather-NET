@@ -46,30 +46,31 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Name="ForecastDate" Style="{StaticResource ForecastDate}" Text="{Binding Date, FallbackValue='Sat 2 AM'}" Grid.Row="0"/>
+        <TextBlock Name="ForecastDate" Style="{StaticResource ForecastDate}" Text="{x:Bind HourlyForecasts.Date, FallbackValue='Sat 2 AM'}" Grid.Row="0"/>
         <StackPanel Name="WeatherBox" Orientation="Horizontal" Grid.Row="1" Height="75">
-            <Viewbox Style="{StaticResource ForecastIcon}"
-                     Height="{Binding ElementName=WeatherBox, Path=Height}"
-                     Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}">
-                <TextBlock Style="{StaticResource WeatherIcon}" Text="{Binding WeatherIcon, FallbackValue='&#xf00d;'}"/>
+            <Viewbox Name="WeatherViewbox"
+                     Style="{StaticResource ForecastIcon}"
+                     Height="{x:Bind WeatherBox.Height, Mode=OneWay}"
+                     Width="{x:Bind WeatherViewbox.Height}">
+                <TextBlock Style="{StaticResource WeatherIcon}" Text="{x:Bind HourlyForecasts.WeatherIcon, FallbackValue='&#xf00d;', Mode=OneWay}"/>
             </Viewbox>
-            <TextBlock Name="ForecastTemp" Text="{Binding HiTemp, FallbackValue=70º}" Style="{StaticResource ForecastTemp}"/>
+            <TextBlock Name="ForecastTemp" Text="{x:Bind HourlyForecasts.HiTemp, FallbackValue=70º, Mode=OneWay}" Style="{StaticResource ForecastTemp}"/>
         </StackPanel>
         <TextBlock Name="ForecastCondition" Style="{StaticResource ForecastCondition}" Grid.Row="2" 
-                   Text="{Binding Condition, FallbackValue='Scattered Thunderstorms'}"
+                   Text="{x:Bind HourlyForecasts.Condition, FallbackValue='Scattered Thunderstorms', Mode=OneWay}"
                    Width="145" HorizontalAlignment="Left" TextWrapping="WrapWholeWords"/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="3">
             <TextBlock Style="{StaticResource WeatherIcon}" Text="&#xf078;" Padding="10,5"
                        FontSize="14"/>
-            <TextBlock Name="ForecastPoP" Text="{Binding PoP, FallbackValue='100%'}"
+            <TextBlock Name="ForecastPoP" Text="{x:Bind HourlyForecasts.PoP, FallbackValue='100%', Mode=OneWay}"
                        VerticalAlignment="Center" Foreground="White" />
             <Rectangle Width="10"/>
             <TextBlock Name="WindDirection" Style="{StaticResource WeatherIcon}" Text="&#xf058;" Padding="10,5"
-                       RenderTransformOrigin="0.5,0.5" RenderTransform="{Binding WindDirection}"
+                       RenderTransformOrigin="0.5,0.5" RenderTransform="{x:Bind HourlyForecasts.WindDirection, Mode=OneWay}"
                        FontSize="14"/>
-            <TextBlock Text="{Binding WindSpeed, FallbackValue='5.8 mph'}"
+            <TextBlock Text="{x:Bind HourlyForecasts.WindSpeed, FallbackValue='5.8 mph', Mode=OneWay}"
                        VerticalAlignment="Center" Foreground="White"
-                       FontSize="{Binding ElementName=ForecastPoP, Path=FontSize}" />
+                       FontSize="{x:Bind ForecastPoP.FontSize, Mode=OneWay}" />
         </StackPanel>
 
         <VisualStateManager.VisualStateGroups>

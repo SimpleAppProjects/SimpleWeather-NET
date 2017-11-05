@@ -275,7 +275,7 @@
                                 <TextBlock x:Uid="KeyBox" Text="API Key" Padding="0,5"/>
                                 <Border x:Name="KeyBorder" BorderThickness="2" Background="White" BorderBrush="DarkGray"
                                     HorizontalAlignment="Left" Padding="10,4" MinWidth="260"
-                                    Visibility="{Binding ElementName=KeyEntry, Path=Visibility}">
+                                    Visibility="{x:Bind KeyEntry.Visibility, Mode=OneWay}">
                                     <TextBlock x:Name="KeyEntry"
                                            Visibility="Visible"
                                            Tapped="KeyEntry_Tapped"

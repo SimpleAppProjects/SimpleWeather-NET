@@ -26,6 +26,10 @@ namespace SimpleWeather.UWP.Controls
         public ProgressDialog()
         {
             this.InitializeComponent();
+            if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
+            {
+                return;
+            }
             dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
         }
 
