@@ -52,7 +52,7 @@ namespace SimpleWeather.UWP.Helpers
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = (Settings.IsFahrenheit ? weather.condition.temp_f : weather.condition.temp_c) + "º",
+                                    Text = (Settings.IsFahrenheit ? Math.Round(weather.condition.temp_f) : Math.Round(weather.condition.temp_c)) + "º",
                                     HintStyle = AdaptiveTextStyle.Body,
                                     HintAlign = AdaptiveTextAlign.Center
                                 }
@@ -227,12 +227,12 @@ namespace SimpleWeather.UWP.Helpers
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("Temp: {0}", (Settings.IsFahrenheit ? weather.condition.temp_f : weather.condition.temp_c) + "º"),
+                                    Text = string.Format("Temp: {0}", (Settings.IsFahrenheit ? Math.Round(weather.condition.temp_f) : Math.Round(weather.condition.temp_c)) + "º"),
                                     HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("Feels like: {0}", (Settings.IsFahrenheit ? weather.condition.feelslike_f : weather.condition.feelslike_c) + "º"),
+                                    Text = string.Format("Feels like: {0}", (Settings.IsFahrenheit ? Math.Round(weather.condition.feelslike_f) : Math.Round(weather.condition.feelslike_c)) + "º"),
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle
                                 },
                                 new AdaptiveText()
@@ -322,7 +322,7 @@ namespace SimpleWeather.UWP.Helpers
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = (Settings.IsFahrenheit ? weather.condition.temp_f : weather.condition.temp_c) + "º",
+                                    Text = (Settings.IsFahrenheit ? Math.Round(weather.condition.temp_f) : Math.Round(weather.condition.temp_c)) + "º",
                                     HintStyle = AdaptiveTextStyle.Body,
                                     HintAlign = AdaptiveTextAlign.Center
                                 }
@@ -361,7 +361,7 @@ namespace SimpleWeather.UWP.Helpers
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = (Settings.IsFahrenheit ? weather.condition.temp_f : weather.condition.temp_c) + "º",
+                                    Text = (Settings.IsFahrenheit ? Math.Round(weather.condition.temp_f) : Math.Round(weather.condition.temp_c)) + "º",
                                     HintStyle = AdaptiveTextStyle.Body,
                                     HintAlign = AdaptiveTextAlign.Center,
                                 }
@@ -411,12 +411,12 @@ namespace SimpleWeather.UWP.Helpers
                         },
                         new AdaptiveText()
                         {
-                            Text = string.Format("Temp: {0}", (Settings.IsFahrenheit ? weather.condition.temp_f : weather.condition.temp_c) + "º"),
+                            Text = string.Format("Temp: {0}", (Settings.IsFahrenheit ? Math.Round(weather.condition.temp_f) : Math.Round(weather.condition.temp_c)) + "º"),
                             HintStyle = AdaptiveTextStyle.Caption
                         },
                         new AdaptiveText()
                         {
-                            Text = string.Format("Feels like: {0}", (Settings.IsFahrenheit ? weather.condition.feelslike_f : weather.condition.feelslike_c) + "º"),
+                            Text = string.Format("Feels like: {0}", (Settings.IsFahrenheit ? Math.Round(weather.condition.feelslike_f) : Math.Round(weather.condition.feelslike_c)) + "º"),
                             HintStyle = AdaptiveTextStyle.CaptionSubtle
                         },
                         new AdaptiveText()
@@ -469,12 +469,12 @@ namespace SimpleWeather.UWP.Helpers
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("Temp: {0}", (Settings.IsFahrenheit ? weather.condition.temp_f : weather.condition.temp_c) + "º"),
+                                    Text = string.Format("Temp: {0}", (Settings.IsFahrenheit ? Math.Round(weather.condition.temp_f) : Math.Round(weather.condition.temp_c)) + "º"),
                                     HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("Feels like: {0}", (Settings.IsFahrenheit ? weather.condition.feelslike_f : weather.condition.feelslike_c) + "º"),
+                                    Text = string.Format("Feels like: {0}", (Settings.IsFahrenheit ? Math.Round(weather.condition.feelslike_f) : Math.Round(weather.condition.feelslike_c)) + "º"),
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle
                                 },
                                 new AdaptiveText()
