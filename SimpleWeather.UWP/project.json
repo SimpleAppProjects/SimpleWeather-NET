@@ -7,7 +7,7 @@
     "QueryString.NET": "1.0.0"
   },
   "frameworks": {
-    "uap10.0.10586": {}
+    "uap10.0.14393": {}
   },
   "runtimes": {
     "win10-arm": {},

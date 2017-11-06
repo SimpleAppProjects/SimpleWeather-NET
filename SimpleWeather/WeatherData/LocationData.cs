@@ -85,5 +85,16 @@ namespace SimpleWeather.WeatherData
                     (source == locData.source);
             }
         }
+
+        public override int GetHashCode()
+        {
+            var hashCode = -364563956;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(query);
+            hashCode = hashCode * -1521134295 + latitude.GetHashCode();
+            hashCode = hashCode * -1521134295 + longitude.GetHashCode();
+            hashCode = hashCode * -1521134295 + locationType.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(source);
+            return hashCode;
+        }
     }
 }

@@ -70,12 +70,39 @@ namespace SimpleWeather.Utils
             if (!FileUtils.IsValid(dataFile.Path) && !FileUtils.IsValid(locDataFile.Path))
                 return;
 
-            weatherData = await JSONParser.DeserializerAsync<OrderedDictionary>(dataFile);
-            locationData = await JSONParser.DeserializerAsync<List<LocationData>>(locDataFile);
+            try
+            {
+                weatherData = await JSONParser.DeserializerAsync<OrderedDictionary>(dataFile);
+            }
+            catch (Newtonsoft.Json.JsonSerializationException jsEx)
+            {
+                Console.WriteLine(jsEx.StackTrace);
+                if (weatherData == null)
+                    weatherData = new OrderedDictionary();
+            }
+
+            try
+            {
+                locationData = await JSONParser.DeserializerAsync<List<LocationData>>(locDataFile);
+            }
+            catch (Newtonsoft.Json.JsonSerializationException jsEx)
+            {
+                Console.WriteLine(jsEx.StackTrace);
+                locationData = null;
+            }
 
             if (!String.IsNullOrWhiteSpace(LastGPSLocation))
             {
-                lastGPSLocData = await JSONParser.DeserializerAsync<LocationData>(LastGPSLocation);
+                try
+                {
+                    lastGPSLocData = await JSONParser.DeserializerAsync<LocationData>(LastGPSLocation);
+                }
+                catch (Newtonsoft.Json.JsonSerializationException jsEx)
+                {
+                    Console.WriteLine(jsEx.StackTrace);
+                    if (lastGPSLocData == null)
+                        lastGPSLocData = new LocationData();
+                }
             }
 
             // Setup location data if N/A
