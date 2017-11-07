@@ -36,6 +36,7 @@
     <string name="label_qpf_snow">Snow</string>
     <string name="switch_daily">Daily</string>
     <string name="switch_details">Details</string>
+    <string name="credit_prefix">Data from</string>
     <!-- NavBar -->
     <string name="label_nav_weathernow">Weather</string>
     <string name="label_nav_locations">Locations</string>

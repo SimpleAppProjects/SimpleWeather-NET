@@ -385,8 +385,11 @@ namespace SimpleWeather.Droid
             }
             else if (wLoader != null && !loaded)
             {
-                // Reset if source is different
-                if (weatherView.WeatherSource != Settings.API)
+                var culture = System.Globalization.CultureInfo.CurrentCulture;
+                var locale = WeatherUtils.LocaleToWUCode(culture.TwoLetterISOLanguageName, culture.Name);
+
+                // Reset if source || locale is different
+                if (weatherView.WeatherSource != Settings.API || weatherView.WeatherLocale != locale)
                 {
                     await Restore();
                     loaded = true;

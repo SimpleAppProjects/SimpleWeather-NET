@@ -57,10 +57,22 @@ namespace SimpleWeather.WeatherData
         {
             string queryAPI = null;
             Uri weatherURL = null;
+            string locale = "EN";
+
+#if WINDOWS_UWP
+            var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages.First();
+            var culture = new System.Globalization.CultureInfo(userlang);
+#else
+            var culture = System.Globalization.CultureInfo.CurrentCulture;
+#endif
+            locale = WeatherUtils.LocaleToWUCode(culture.TwoLetterISOLanguageName, culture.Name);
+
+            if (Settings.API == Settings.API_Yahoo)
+                locale = "EN";
 
             if (Settings.API == Settings.API_WUnderground)
             {
-                queryAPI = "http://api.wunderground.com/api/" + Settings.API_KEY + "/astronomy/conditions/forecast10day/hourly";
+                queryAPI = "http://api.wunderground.com/api/" + Settings.API_KEY + "/astronomy/conditions/forecast10day/hourly/lang:" + locale;
                 string options = ".json";
                 weatherURL = new Uri(queryAPI + location.query + options);
             }
@@ -157,6 +169,7 @@ namespace SimpleWeather.WeatherData
             }
             else if (weather != null)
             {
+                weather.locale = locale;
                 SaveWeatherData();
             }
 
@@ -253,7 +266,15 @@ namespace SimpleWeather.WeatherData
                     System.Diagnostics.Debug.WriteLine(ex.StackTrace);
                 }
 
-                if (weather == null || weather.source != Settings.API)
+#if WINDOWS_UWP
+                var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages.First();
+                var culture = new System.Globalization.CultureInfo(userlang);
+#else
+                var culture = System.Globalization.CultureInfo.CurrentCulture;
+#endif
+                var locale = WeatherUtils.LocaleToWUCode(culture.TwoLetterISOLanguageName, culture.Name);
+
+                if (weather == null || weather.source != Settings.API || weather.locale != locale)
                     return false;
 
                 return true;
@@ -275,7 +296,15 @@ namespace SimpleWeather.WeatherData
                 System.Diagnostics.Debug.WriteLine(ex.StackTrace);
             }
 
-            if (weather == null || weather.source != Settings.API)
+#if WINDOWS_UWP
+            var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages.First();
+            var culture = new System.Globalization.CultureInfo(userlang);
+#else
+            var culture = System.Globalization.CultureInfo.CurrentCulture;
+#endif
+            var locale = WeatherUtils.LocaleToWUCode(culture.TwoLetterISOLanguageName, culture.Name);
+
+            if (weather == null || weather.source != Settings.API || weather.locale != locale)
                 return false;
 
             // Weather data expiration
@@ -314,10 +343,22 @@ namespace SimpleWeather.WeatherData
         {
             string queryAPI = null;
             Uri weatherURL = null;
+            string locale = "EN";
+
+#if WINDOWS_UWP
+            var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages.First();
+            var culture = new System.Globalization.CultureInfo(userlang);
+#else
+            var culture = System.Globalization.CultureInfo.CurrentCulture;
+#endif
+            locale = WeatherUtils.LocaleToWUCode(culture.TwoLetterISOLanguageName, culture.Name);
+
+            if (String.IsNullOrWhiteSpace(locale))
+                locale = "EN";
 
             if (Settings.API == Settings.API_WUnderground)
             {
-                queryAPI = "http://api.wunderground.com/api/" + Settings.API_KEY + "/astronomy/conditions/forecast10day/hourly";
+                queryAPI = "http://api.wunderground.com/api/" + Settings.API_KEY + "/astronomy/conditions/forecast10day/hourly/lang:" + locale;
                 string options = ".json";
                 weatherURL = new Uri(queryAPI + location_query + options);
             }

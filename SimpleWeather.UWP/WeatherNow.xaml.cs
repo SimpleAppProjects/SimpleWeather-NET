@@ -246,10 +246,15 @@ namespace SimpleWeather.UWP
                     }
                 }
 
-                // Reset loader if source or query is different
-                if (wLoader != null && (WeatherView.WeatherSource != Settings.API || homeChanged))
+                if (wLoader != null)
                 {
-                    wLoader = null;
+                    var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages.First();
+                    var culture = new System.Globalization.CultureInfo(userlang);
+                    var locale = WeatherUtils.LocaleToWUCode(culture.TwoLetterISOLanguageName, culture.Name);
+
+                    // Reset loader if source, query or locale is different
+                    if (WeatherView.WeatherSource != Settings.API || WeatherView.WeatherLocale != locale || homeChanged)
+                        wLoader = null;
                 }
 
                 // Update view on resume

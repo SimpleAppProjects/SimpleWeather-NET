@@ -25,6 +25,9 @@ namespace SimpleWeather.UWP.Helpers
 
         private static TileBindingContentAdaptive GenerateForecast(WeatherData.Weather weather, ForecastTileType forecastTileType)
         {
+            var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages[0];
+            var culture = new System.Globalization.CultureInfo(userlang);
+
             var content = new TileBindingContentAdaptive
             {
                 // Background URI
@@ -46,7 +49,7 @@ namespace SimpleWeather.UWP.Helpers
                             {
                                 new AdaptiveText()
                                 {
-                                    Text = weather.update_time.ToString("ddd"),
+                                    Text = weather.update_time.ToString("ddd", culture),
                                     HintStyle = AdaptiveTextStyle.Base,
                                     HintAlign = AdaptiveTextAlign.Center
                                 },
@@ -79,7 +82,7 @@ namespace SimpleWeather.UWP.Helpers
                         {
                             new AdaptiveText()
                             {
-                                Text = forecast.date.ToString("ddd"),
+                                Text = forecast.date.ToString("ddd", culture),
                                 HintAlign = AdaptiveTextAlign.Center
                             },
                         }
@@ -141,7 +144,7 @@ namespace SimpleWeather.UWP.Helpers
                         {
                             new AdaptiveText()
                             {
-                                Text = forecast.date.ToString("ddd"),
+                                Text = forecast.date.ToString("ddd", culture),
                                 HintAlign = AdaptiveTextAlign.Left
                             },
                         }
@@ -260,7 +263,7 @@ namespace SimpleWeather.UWP.Helpers
                         {
                             new AdaptiveText()
                             {
-                                Text = forecast.date.ToString("ddd"),
+                                Text = forecast.date.ToString("ddd", culture),
                                 HintAlign = AdaptiveTextAlign.Center
                             },
                             new AdaptiveImage()
@@ -295,6 +298,9 @@ namespace SimpleWeather.UWP.Helpers
 
         private static TileBindingContentAdaptive GenerateCondition(WeatherData.Weather weather, ForecastTileType forecastTileType)
         {
+            var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages[0];
+            var culture = new System.Globalization.CultureInfo(userlang);
+
             var content = new TileBindingContentAdaptive
             {
                 // Background URI
@@ -316,7 +322,7 @@ namespace SimpleWeather.UWP.Helpers
                             {
                                 new AdaptiveText()
                                 {
-                                    Text = weather.update_time.ToString("ddd"),
+                                    Text = weather.update_time.ToString("ddd", culture),
                                     HintStyle = AdaptiveTextStyle.Base,
                                     HintAlign = AdaptiveTextAlign.Center
                                 },
@@ -502,7 +508,7 @@ namespace SimpleWeather.UWP.Helpers
                         {
                             new AdaptiveText()
                             {
-                                Text = forecast.date.ToString("ddd"),
+                                Text = forecast.date.ToString("ddd", culture),
                                 HintAlign = AdaptiveTextAlign.Center
                             },
                             new AdaptiveImage()

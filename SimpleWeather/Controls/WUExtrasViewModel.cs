@@ -97,6 +97,13 @@ namespace SimpleWeather.Controls
 
         public void UpdateView(Weather weather)
         {
+#if WINDOWS_UWP
+            var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages[0];
+            var culture = new System.Globalization.CultureInfo(userlang);
+#else
+            var culture = System.Globalization.CultureInfo.CurrentCulture;
+#endif
+
             HourlyForecast.Clear();
             if (weather.hr_forecast != null && weather.hr_forecast.Length > 0)
             {
@@ -119,9 +126,9 @@ namespace SimpleWeather.Controls
 
             Chance = weather.precipitation.pop + "%";
             Qpf_Rain = Settings.IsFahrenheit ?
-                weather.precipitation.qpf_rain_in.ToString("0.00") + " in" : weather.precipitation.qpf_rain_mm + " mm";
+                weather.precipitation.qpf_rain_in.ToString("0.00", culture) + " in" : weather.precipitation.qpf_rain_mm.ToString(culture) + " mm";
             Qpf_Snow = Settings.IsFahrenheit ?
-                weather.precipitation.qpf_snow_in.ToString("0.00") + " in" : weather.precipitation.qpf_snow_cm + " cm";
+                weather.precipitation.qpf_snow_in.ToString("0.00", culture) + " in" : weather.precipitation.qpf_snow_cm.ToString(culture) + " cm";
         }
 
         public void Clear()

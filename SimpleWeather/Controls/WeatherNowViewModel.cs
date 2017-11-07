@@ -2,7 +2,9 @@
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.ObjectModel;
+using System.Globalization;
 #if WINDOWS_UWP
+using SimpleWeather.UWP;
 using System.ComponentModel;
 using Windows.UI;
 using Windows.UI.Xaml;
@@ -85,6 +87,9 @@ namespace SimpleWeather.Controls
         public static readonly DependencyProperty WeatherSourceProperty =
             DependencyProperty.Register("WeatherSource", typeof(String),
             typeof(WeatherNowViewModel), new PropertyMetadata(""));
+        public static readonly DependencyProperty WeatherLocaleProperty =
+            DependencyProperty.Register("WeatherLocale", typeof(String),
+            typeof(WeatherNowViewModel), new PropertyMetadata("EN"));
 
         public event PropertyChangedEventHandler PropertyChanged;
         // Create the OnPropertyChanged method to raise the event
@@ -205,6 +210,11 @@ namespace SimpleWeather.Controls
             get { return (String)GetValue(WeatherSourceProperty); }
             set { SetValue(WeatherSourceProperty, value); OnPropertyChanged("WeatherSource"); }
         }
+        public String WeatherLocale
+        {
+            get { return (String)GetValue(WeatherLocaleProperty); }
+            set { SetValue(WeatherLocaleProperty, value); OnPropertyChanged("WeatherLocale"); }
+        }
         #endregion
 #elif __ANDROID__
         public string Location { get; set; }
@@ -239,6 +249,8 @@ namespace SimpleWeather.Controls
 
         public string WeatherCredit { get; set; }
         public string WeatherSource { get; set; }
+
+        public string WeatherLocale { get; set; }
 #endif
 
         public WeatherNowViewModel()
@@ -270,6 +282,12 @@ namespace SimpleWeather.Controls
 
         public void UpdateView(Weather weather)
         {
+#if WINDOWS_UWP
+            var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages[0];
+            var culture = new System.Globalization.CultureInfo(userlang);
+#else
+            var culture = CultureInfo.CurrentCulture;
+#endif
             // Update backgrounds
 #if WINDOWS_UWP
             WeatherUtils.SetBackground(Background, weather);
@@ -293,24 +311,39 @@ namespace SimpleWeather.Controls
 
             // WeatherDetails
             // Astronomy
-            Sunrise = weather.astronomy.sunrise.ToString("h:mm tt");
-            Sunset = weather.astronomy.sunset.ToString("h:mm tt");
+#if WINDOWS_UWP
+            Sunrise = weather.astronomy.sunrise.ToString("t", culture);
+            Sunset = weather.astronomy.sunset.ToString("t", culture);
+#elif __ANDROID__
+            if (Android.Text.Format.DateFormat.Is24HourFormat(App.Context))
+            {
+                Sunrise = weather.astronomy.sunrise.ToString("HH:mm");
+                Sunset = weather.astronomy.sunset.ToString("HH:mm");
+            }
+            else
+            {
+                Sunrise = weather.astronomy.sunrise.ToString("h:mm tt");
+                Sunset = weather.astronomy.sunset.ToString("h:mm tt");
+            }
+#endif
 
             // Wind
             WindChill = Settings.IsFahrenheit ?
                 Math.Round(weather.condition.feelslike_f) + "º" : Math.Round(weather.condition.feelslike_c) + "º";
             WindSpeed = Settings.IsFahrenheit ?
-                weather.condition.wind_mph.ToString() + " mph" : weather.condition.wind_kph.ToString() + " kph";
+                weather.condition.wind_mph.ToString(culture) + " mph" : weather.condition.wind_kph.ToString(culture) + " kph";
             UpdateWindDirection(weather.condition.wind_degrees);
 
             // Atmosphere
             Humidity = weather.atmosphere.humidity;
             Pressure = Settings.IsFahrenheit ?
-                weather.atmosphere.pressure_in + " in" : weather.atmosphere.pressure_mb + " mb";
+                float.Parse(weather.atmosphere.pressure_in, CultureInfo.InvariantCulture).ToString(culture) + " in" :
+                float.Parse(weather.atmosphere.pressure_mb, CultureInfo.InvariantCulture).ToString(culture) + " mb";
             UpdatePressureState(weather.atmosphere.pressure_trend);
             _Visibility = Settings.IsFahrenheit ?
-                weather.atmosphere.visibility_mi + " mi" : weather.atmosphere.visibility_km + " km";
-
+                float.Parse(weather.atmosphere.visibility_mi, CultureInfo.InvariantCulture).ToString(culture) + " mi" : 
+                float.Parse(weather.atmosphere.visibility_km, CultureInfo.InvariantCulture).ToString(culture) + " km";
+            
             if (_Visibility.StartsWith(" "))
                 _Visibility = _Visibility.Insert(0, "--");
 
@@ -324,17 +357,28 @@ namespace SimpleWeather.Controls
 
             // Additional Details
             WeatherSource = weather.source;
+            string creditPrefix = "Data from";
+
+#if WINDOWS_UWP
+            creditPrefix = App.ResLoader.GetString("Credit_Prefix");
+#elif __ANDROID__
+            creditPrefix = App.Context.GetString(Resource.String.credit_prefix);
+#endif
+
             if (weather.source == Settings.API_WUnderground)
             {
-                WeatherCredit = "Data from WeatherUnderground";
+                WeatherCredit = string.Format("{0} WeatherUnderground", creditPrefix);
                 WUExtras.UpdateView(weather);
             }
             else if (weather.source == Settings.API_Yahoo)
             {
-                WeatherCredit = "Data from Yahoo!";
+                WeatherCredit = string.Format("{0} Yahoo!", creditPrefix);
                 // Clear data
                 WUExtras.Clear();
             }
+
+            // Language
+            WeatherLocale = weather.locale;
         }
 
         private void UpdatePressureState(string state)

@@ -194,9 +194,16 @@ namespace SimpleWeather.Utils
 
         public static String GetLastBuildDate(Weather weather)
         {
+#if WINDOWS_UWP
+            var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages[0];
+            var culture = new System.Globalization.CultureInfo(userlang);
+#else
+            var culture = System.Globalization.CultureInfo.CurrentCulture;
+#endif
+
             String date;
             String prefix;
-            String timeformat = weather.update_time.ToString("t");
+            String timeformat = weather.update_time.ToString("t", culture);
 
 #if __ANDROID__
             if (Android.Text.Format.DateFormat.Is24HourFormat(Droid.App.Context))
@@ -222,7 +229,7 @@ namespace SimpleWeather.Utils
                 prefix = Droid.App.Context.GetString(Droid.Resource.String.update_prefix);
 #endif
                 date = string.Format("{0} {1} {2}",
-                    prefix, weather.update_time.ToString("ddd"), timeformat);
+                    prefix, weather.update_time.ToString("ddd", culture), timeformat);
             }
 
             return date;
@@ -396,6 +403,263 @@ namespace SimpleWeather.Utils
 #elif __ANDROID__
             return new Android.Graphics.Color(rgb[0], rgb[1], rgb[2]);
 #endif
+        }
+
+        public static String LocaleToWUCode(String iso, String name)
+        {
+            string code = "EN";
+
+            switch (iso)
+            {
+                // Afrikaans
+                case "af":
+                // Arabic
+                case "ar":
+                // Armenian
+                case "hy":
+                // Azerbaijani
+                case "az":
+                // Basque
+                case "eu":
+                // Burmese
+                case "my":
+                // Catalan
+                case "ca":
+                // Dhivehi
+                case "dv":
+                // Dutch
+                case "nl":
+                // Esperanto
+                case "eo":
+                // Estonian
+                case "et":
+                // Farsi / Persian
+                case "fa":
+                // Finnish
+                case "fi":
+                // Georgian
+                case "ka":
+                // Gujarati
+                case "gu":
+                // Haitian Creole
+                case "ht":
+                // Hindi
+                case "hi":
+                // Hungarian
+                case "hu":
+                // Icelandic
+                case "is":
+                // Ido
+                case "io":
+                // Indonesian
+                case "id":
+                // Italian
+                case "it":
+                // Khmer
+                case "km":
+                // Kurdish
+                case "ku":
+                // Latin
+                case "la":
+                // Latvian
+                case "lv":
+                // Lithuanian
+                case "lt":
+                // Macedonian
+                case "mk":
+                // Maltese
+                case "mt":
+                // Maori
+                case "mi":
+                // Marathi
+                case "mr":
+                // Mongolian
+                case "mn":
+                // Norwegian
+                case "no":
+                // Occitan
+                case "oc":
+                // Pashto
+                case "ps":
+                // Polish
+                case "pl":
+                // Punjabi
+                case "pa":
+                // Romanian
+                case "ro":
+                // Russian
+                case "ru":
+                // Serbian
+                case "sr":
+                // Slovak
+                case "sk":
+                // Slovenian
+                case "sl":
+                // Tagalog
+                case "tl":
+                // Thai
+                case "th":
+                // Turkish
+                case "tr":
+                // Turkmen
+                case "tk":
+                // Uzbek
+                case "uz":
+                // Welsh
+                case "cy":
+                // Yiddish
+                case "yi":
+                    code = iso.ToUpper();
+                    break;
+                // Albanian
+                case "sq":
+                    code = "AL";
+                    break;
+                // Belarusian
+                case "be":
+                    code = "BY";
+                    break;
+                // Bulgarian
+                case "bg":
+                    code = "BU";
+                    break;
+                // English
+                case "en":
+                    // British English
+                    if (name.Equals("en-GB"))
+                        code = "LI";
+                    else
+                        code = "EN";
+                    break;
+                // Chinese
+                case "zh":
+                    switch (name)
+                    {
+                        // Chinese - Traditional
+                        case "zh-Hant":
+                        case "zh-HK":
+                        case "zh-MO":
+                        case "zh-TW":
+                            code = "TW";
+                            break;
+                        // Chinese - Simplified
+                        default:
+                            code = "CN";
+                            break;
+                    }
+                    break;
+                // Croatian
+                case "hr":
+                    code = "CR";
+                    break;
+                // Czech
+                case "cs":
+                    code = "CZ";
+                    break;
+                // Danish
+                case "da":
+                    code = "DK";
+                    break;
+                // French
+                case "fr":
+                    if (name.Equals("fr-CA"))
+                        // French Canadian
+                        code = "FC";
+                    else
+                        code = "FR";
+                    break;
+                // Galician
+                case "gl":
+                    code = "GZ";
+                    break;
+                // German
+                case "de":
+                    code = "DL";
+                    break;
+                // Greek
+                case "el":
+                    code = "GR";
+                    break;
+                // Hebrew
+                case "he":
+                    code = "IL";
+                    break;
+                // Irish
+                case "ga":
+                    code = "IR";
+                    break;
+                // Japanese
+                case "ja":
+                    code = "JP";
+                    break;
+                // Javanese
+                case "jv":
+                    code = "JW";
+                    break;
+                // Korean
+                case "ko":
+                    code = "KR";
+                    break;
+                // Portuguese
+                case "pt":
+                    code = "BR";
+                    break;
+                // Spanish
+                case "es":
+                    code = "SP";
+                    break;
+                // Swahili
+                case "sw":
+                    code = "SI";
+                    break;
+                // Swedish
+                case "sv":
+                    code = "SW";
+                    break;
+                // Swiss
+                case "gsw":
+                    code = "CH";
+                    break;
+                // Ukrainian
+                case "uk":
+                    code = "UA";
+                    break;
+                // Vietnamese
+                case "vi":
+                    code = "VU";
+                    break;
+                // Wolof
+                case "wo":
+                    code = "SN";
+                    break;
+                /*
+                // Mandinka
+                case "mandinka":
+                    code = "GM";
+                    break;
+                // Plautdietsch
+                case "plautdietsch":
+                    code = "GN";
+                    break;
+                // Tatarish
+                case "tatarish":
+                    code = "TT";
+                    break;
+                // Yiddish - transliterated
+                case "yiddish-tl":
+                    code = "JI";
+                    break;
+                */
+                default:
+                    // Low German
+                    if (name.Equals("nds") || name.StartsWith("nds-"))
+                        code = "ND";
+                    else
+                        code = "EN";
+                    break;
+            }
+
+            return code;
         }
 
         public class Coordinate

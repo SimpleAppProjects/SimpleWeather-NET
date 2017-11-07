@@ -17,8 +17,15 @@ namespace SimpleWeather.Controls
 
         public ForecastItemViewModel(Forecast forecast)
         {
+#if WINDOWS_UWP
+            var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages[0];
+            var culture = new System.Globalization.CultureInfo(userlang);
+#else
+            var culture = System.Globalization.CultureInfo.CurrentCulture;
+#endif
+
             WeatherIcon = WeatherUtils.GetWeatherIcon(forecast.icon);
-            Date = forecast.date.ToString("dddd dd");
+            Date = forecast.date.ToString("dddd dd", culture);
             Condition = forecast.condition;
             HiTemp = (Settings.IsFahrenheit ? forecast.high_f : forecast.high_c) + "º ";
             LoTemp = (Settings.IsFahrenheit ? forecast.low_f : forecast.low_c) + "º ";

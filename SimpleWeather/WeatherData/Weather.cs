@@ -19,6 +19,7 @@ namespace SimpleWeather.WeatherData
         public string ttl { get; set; }
         public string source { get; set; }
         public string query { get; set; }
+        public string locale { get; set; }
 
         [Newtonsoft.Json.JsonConstructor]
         private Weather()
