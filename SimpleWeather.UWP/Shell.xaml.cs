@@ -1,7 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
+using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -76,6 +78,23 @@ namespace SimpleWeather.UWP
 
                 WeatherButton.Background = new SolidColorBrush(Colors.Transparent);
                 SettingsButton.Background = new SolidColorBrush(Colors.Transparent);
+            }
+
+            if (e.SourcePageType != typeof(WeatherNow))
+            {
+                BurgerBackgroundColor = App.AppColor;
+                if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+                {
+                    // Mobile
+                    StatusBar.GetForCurrentView().BackgroundColor = BurgerBackgroundColor;
+                }
+                else
+                {
+                    // Desktop
+                    var titlebar = ApplicationView.GetForCurrentView().TitleBar;
+                    titlebar.BackgroundColor = BurgerBackgroundColor;
+                    titlebar.ButtonBackgroundColor = titlebar.BackgroundColor;
+                }
             }
         }
 

@@ -323,7 +323,7 @@
                 </ScrollViewer>
             </PivotItem>
             <PivotItem x:Uid="OSSLibs" Header="Open Source Libraries">
-                <WebView Name="OSSLicenseWebview" />
+                <WebView Name="OSSLicenseWebview" x:DeferLoadStrategy="Lazy" Visibility="Collapsed" />
             </PivotItem>
             <PivotItem x:Uid="About" Header="About" Padding="10">
                 <StackPanel>

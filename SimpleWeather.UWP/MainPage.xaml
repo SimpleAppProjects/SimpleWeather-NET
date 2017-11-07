@@ -249,11 +249,11 @@
         </Style>
     </Page.Resources>
 
-    <StackPanel Background="#006FBF">
+    <StackPanel Background="#006FBF" x:DeferLoadStrategy="Lazy" x:Name="MainPanel">
         <Viewbox Name="AppLogo" Height="100" Margin="0,25,0,0">
             <Image Source="Assets/AppLogo.png" Stretch="None" />
         </Viewbox>
-        <Grid Height="80" Padding="25,0" RequestedTheme="Dark" Name="SearchGrid">
+        <Grid Height="80" Padding="25,0" RequestedTheme="Dark" Name="SearchGrid" Visibility="Collapsed">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />

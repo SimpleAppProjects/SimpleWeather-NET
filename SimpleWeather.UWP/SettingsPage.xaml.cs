@@ -47,9 +47,6 @@ namespace SimpleWeather.UWP
         {
             this.InitializeComponent();
 
-            // Shell
-            Shell.Instance.BurgerBackgroundColor = App.AppColor;
-
             RestoreSettings();
         }
 
@@ -116,7 +113,8 @@ namespace SimpleWeather.UWP
             FollowGPS.Toggled += FollowGPS_Toggled;
             APIComboBox.SelectionChanged += APIComboBox_SelectionChanged;
             RefreshComboBox.SelectionChanged += RefreshComboBox_SelectionChanged;
-            OSSLicenseWebview.NavigationStarting += OSSLicenseWebview_NavigationStarting;
+            if (OSSLicenseWebview != null)
+                OSSLicenseWebview.NavigationStarting += OSSLicenseWebview_NavigationStarting;
         }
 
         private async void SettingsPage_BackRequested(object sender, BackRequestedEventArgs e)
@@ -310,6 +308,10 @@ namespace SimpleWeather.UWP
 
             if (pivot.SelectedIndex == 2)
             {
+                // Load webview
+                var webview = (FrameworkElement)FindName("OSSLicenseWebview");
+                webview.Visibility = Visibility.Visible;
+
                 if (OSSLicenseWebview.Source == null)
                 {
                     OSSLicenseWebview.NavigationStarting -= OSSLicenseWebview_NavigationStarting;

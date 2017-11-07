@@ -53,6 +53,18 @@ namespace SimpleWeather.UWP
 
                 // Shell
                 Shell.Instance.BurgerBackgroundColor = WeatherView.PendingBackgroundColor;
+                if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+                {
+                    // Mobile
+                    StatusBar.GetForCurrentView().BackgroundColor = WeatherView.PendingBackgroundColor;
+                }
+                else
+                {
+                    // Desktop
+                    var titlebar = ApplicationView.GetForCurrentView().TitleBar;
+                    titlebar.BackgroundColor = WeatherView.PendingBackgroundColor;
+                    titlebar.ButtonBackgroundColor = titlebar.BackgroundColor;
+                }
             }
 
             // Set saved index from before update
@@ -302,6 +314,18 @@ namespace SimpleWeather.UWP
                     {
                         WeatherView.UpdateView(wLoader.GetWeather());
                         Shell.Instance.BurgerBackgroundColor = WeatherView.PendingBackgroundColor;
+                        if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+                        {
+                            // Mobile
+                            StatusBar.GetForCurrentView().BackgroundColor = WeatherView.PendingBackgroundColor;
+                        }
+                        else
+                        {
+                            // Desktop
+                            var titlebar = ApplicationView.GetForCurrentView().TitleBar;
+                            titlebar.BackgroundColor = WeatherView.PendingBackgroundColor;
+                            titlebar.ButtonBackgroundColor = titlebar.BackgroundColor;
+                        }
                     }
                 }
             }

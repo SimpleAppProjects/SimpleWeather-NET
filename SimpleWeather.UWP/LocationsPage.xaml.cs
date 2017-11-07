@@ -130,9 +130,6 @@ namespace SimpleWeather.UWP
                 }
             }
 
-            // Shell
-            Shell.Instance.BurgerBackgroundColor = App.AppColor;
-
             if (e.Parameter != null)
             {
                 string arg = e.Parameter.ToString();

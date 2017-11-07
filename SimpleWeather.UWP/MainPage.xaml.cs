@@ -61,6 +61,7 @@ namespace SimpleWeather.UWP
                 var titlebar = ApplicationView.GetForCurrentView().TitleBar;
                 titlebar.BackgroundColor = App.AppColor;
                 titlebar.ButtonBackgroundColor = titlebar.BackgroundColor;
+                titlebar.ForegroundColor = Colors.White;
             }
         }
 
@@ -213,19 +214,19 @@ namespace SimpleWeather.UWP
 
         private async Task Restore()
         {
-            // Hide UIElements
-            SearchGrid.Visibility = Visibility.Collapsed;
-
-            // Check for key
-            if (!String.IsNullOrEmpty(Settings.API_KEY))
-                KeyEntry.Text = Settings.API_KEY;
-
             if (Settings.WeatherLoaded)
             {
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(Shell)));
             }
             else
             {
+                var mainPanel = FindName("MainPanel") as FrameworkElement;
+                mainPanel.Visibility = Visibility.Visible;
+
+                // Check for key
+                if (!String.IsNullOrEmpty(Settings.API_KEY))
+                    KeyEntry.Text = Settings.API_KEY;
+
                 SearchGrid.Visibility = Visibility.Visible;
                 // Set WUnderground as default API
                 APIComboBox.SelectedIndex = 0;
