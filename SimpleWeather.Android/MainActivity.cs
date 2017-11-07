@@ -59,7 +59,7 @@ namespace SimpleWeather.Droid
 
             if ((bool)Intent?.HasExtra("shortcut-data"))
             {
-                var locData = await JSONParser.DeserializerAsync<LocationData>(Intent.GetStringExtra("shortcut-data"));
+                var locData = Task.Run(() => JSONParser.Deserializer<LocationData>(Intent.GetStringExtra("shortcut-data"))).Result;
 
                 // Navigate to WeatherNowFragment
                 Fragment newFragment = WeatherNowFragment.NewInstance(locData);

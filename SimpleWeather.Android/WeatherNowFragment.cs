@@ -173,7 +173,7 @@ namespace SimpleWeather.Droid
             return fragment;
         }
 
-        public override async void OnCreate(Bundle savedInstanceState)
+        public override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             AppCompatActivity = Activity as AppCompatActivity;
@@ -181,7 +181,7 @@ namespace SimpleWeather.Droid
             // Create your fragment here
             if (Arguments != null)
             {
-                location = await JSONParser.DeserializerAsync<LocationData>(Arguments.GetString("data"));
+                location = Task.Run(() => JSONParser.DeserializerAsync<LocationData>(Arguments.GetString("data"))).Result;
 
                 if (location != null && wLoader == null)
                     wLoader = new WeatherDataLoader(this, this, location);
