@@ -187,7 +187,7 @@ namespace SimpleWeather.UWP
             // Flag that data has changed
             if (EditMode && dataMoved)
                 DataChanged = true;
-            
+
             // Cancel edit Mode
             if (EditMode && onlyHomeIsLeft)
                 ToggleEditMode();
@@ -199,7 +199,7 @@ namespace SimpleWeather.UWP
         private async Task LoadLocations()
         {
             // Lets load it up...
-            var locations = Settings.LocationData;
+            var locations = await Settings.GetFavorites();
             LocationPanels.Clear();
 
             // Setup saved favorite locations
@@ -253,7 +253,7 @@ namespace SimpleWeather.UWP
         private async Task RefreshLocations()
         {
             // Reload all panels if needed
-            var locations = Settings.LocationData;
+            var locations = await Settings.GetLocationData();
             var homeData = await Settings.GetLastGPSLocData();
             bool reload = (locations.Count != LocationPanels.Count || Settings.FollowGPS && (GPSPanelViewModel.First() == null));
 
@@ -369,8 +369,7 @@ namespace SimpleWeather.UWP
             LocationPanelViewModel panel = e.ClickedItem as LocationPanelViewModel;
             this.Frame.Navigate(typeof(WeatherNow), panel.LocationData);
 
-            if (panel.LocationData.locationType == LocationType.GPS ||
-                !Settings.FollowGPS && panel.LocationData.query == Settings.LocationData.First().query)
+            if (panel.LocationData.Equals(Settings.HomeData))
             {
                 // Clear backstack since we're going home
                 Frame.BackStack.Clear();
@@ -468,8 +467,7 @@ namespace SimpleWeather.UWP
             // Show loading dialog
             await LoadingDialog.ShowAsync();
 
-            var locData = Settings.LocationData;
-            var weatherData = Settings.WeatherData;
+            var locData = await Settings.GetLocationData();
             int index = locData.Count;
 
             // Check if location already exists
@@ -481,7 +479,7 @@ namespace SimpleWeather.UWP
                 return;
             }
 
-            Weather weather = weatherData[selected_query] as Weather;
+            Weather weather = await Settings.GetWeatherData(selected_query);
             if (weather == null)
                 weather = await WeatherLoaderTask.GetWeather(selected_query);
 
@@ -492,14 +490,10 @@ namespace SimpleWeather.UWP
                 return;
             }
 
-            // Save coords to List
-            var location = new LocationData(selected_query);
-            locData.Add(location);
-            weatherData[selected_query] = weather;
-
             // Save data
-            Settings.SaveLocationData();
-            Settings.SaveWeatherData();
+            var location = new LocationData(selected_query);
+            await Settings.AddLocation(location);
+            Settings.SaveWeatherData(weather);
 
             LocationPanelViewModel panelView = new LocationPanelViewModel(weather)
             {
@@ -561,13 +555,19 @@ namespace SimpleWeather.UWP
             foreach (LocationPanelViewModel view in LocationPanels)
             {
                 view.EditMode = EditMode;
+
+                if (!EditMode && DataChanged)
+                {
+                    string query = view.LocationData.query;
+                    int pos = LocationPanels.IndexOf(view);
+                    Task.Run(() => Settings.MoveLocation(query, pos));
+                }
             }
 
-            if (!EditMode && DataChanged) Settings.SaveLocationData();
             DataChanged = false;
         }
 
-        private void LocationPanel_DeleteClick(object sender, RoutedEventArgs e)
+        private async void LocationPanel_DeleteClick(object sender, RoutedEventArgs e)
         {
             FrameworkElement button = sender as FrameworkElement;
             if (button == null || (button != null && button.DataContext == null))
@@ -577,8 +577,7 @@ namespace SimpleWeather.UWP
             LocationData data = view.LocationData;
 
             // Remove location from list
-            Settings.LocationData.Remove(data);
-            Settings.SaveLocationData();
+            await Settings.DeleteLocation(data.query);
 
             // Remove panel
             LocationPanels.Remove(view);
@@ -586,11 +585,6 @@ namespace SimpleWeather.UWP
 
         private void MoveData(LocationPanelViewModel view, int fromIdx, int toIdx)
         {
-            // Move data in both location dictionary and local dataset
-            var location = Settings.LocationData[fromIdx];
-            Settings.LocationData.RemoveAt(fromIdx);
-            Settings.LocationData.Insert(toIdx, location);
-
             // Only move panels if we haven't already
             if (LocationPanels.IndexOf(view) != toIdx)
                 LocationPanels.Move(fromIdx, toIdx);
@@ -601,12 +595,12 @@ namespace SimpleWeather.UWP
             if (!EditMode) ToggleEditMode();
         }
 
-        private void LocationsPanel_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
+        private async void LocationsPanel_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
         {
             if (!(args.Items.First() is LocationPanelViewModel panel))
                 return;
 
-            var data = Settings.LocationData;
+            var data = await Settings.GetFavorites();
             int newIndex = LocationPanels.IndexOf(panel);
             int oldIndex = data.FindIndex(location => location.query == panel.LocationData.query);
 

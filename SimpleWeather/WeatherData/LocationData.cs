@@ -1,6 +1,8 @@
-﻿using System;
+﻿using SimpleWeather.Utils;
+using System;
 using System.Collections.Generic;
 using System.Text;
+using SQLite;
 
 namespace SimpleWeather.WeatherData
 {
@@ -10,12 +12,15 @@ namespace SimpleWeather.WeatherData
         Search
     }
 
+    [Newtonsoft.Json.JsonConverter(typeof(CustomJsonConverter))]
+    [Table("locations")]
     public class LocationData
 #if __ANDROID__
         : Java.Lang.Object
 #endif
     {
         [Newtonsoft.Json.JsonProperty]
+        [PrimaryKey]
         public string query { get; set; }
         [Newtonsoft.Json.JsonProperty]
         public double latitude { get; set; }
@@ -28,13 +33,13 @@ namespace SimpleWeather.WeatherData
 
         public LocationData()
         {
-            source = Utils.Settings.API;
+            source = Settings.API;
         }
 
         public LocationData(string query)
         {
             this.query = query;
-            source = Utils.Settings.API;
+            source = Settings.API;
         }
 
 #if WINDOWS_UWP
@@ -49,7 +54,7 @@ namespace SimpleWeather.WeatherData
             latitude = geoPos.Coordinate.Point.Position.Latitude;
             longitude = geoPos.Coordinate.Point.Position.Longitude;
             locationType = LocationType.GPS;
-            source = Utils.Settings.API;
+            source = Settings.API;
         }
 #elif __ANDROID__
         public LocationData(string query, Android.Locations.Location location)
@@ -63,7 +68,7 @@ namespace SimpleWeather.WeatherData
             latitude = location.Latitude;
             longitude = location.Longitude;
             locationType = LocationType.GPS;
-            source = Utils.Settings.API;
+            source = Settings.API;
         }
 #endif
 
@@ -80,9 +85,7 @@ namespace SimpleWeather.WeatherData
             else
             {
                 LocationData locData = (LocationData)obj;
-                return (query == locData.query) && (latitude == locData.latitude) &&
-                    (longitude == locData.longitude) && (locationType == locData.locationType) &&
-                    (source == locData.source);
+                return this.GetHashCode() == locData.GetHashCode();
             }
         }
 
@@ -95,6 +98,96 @@ namespace SimpleWeather.WeatherData
             hashCode = hashCode * -1521134295 + locationType.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(source);
             return hashCode;
+        }
+
+        public static LocationData FromJson(Newtonsoft.Json.JsonReader reader)
+        {
+            LocationData obj = null;
+
+            try
+            {
+                obj = new LocationData();
+
+                while (reader.Read() && reader.TokenType != Newtonsoft.Json.JsonToken.EndObject)
+                {
+                    if (reader.TokenType == Newtonsoft.Json.JsonToken.StartObject)
+                        reader.Read(); // StartObject
+
+                    string property = reader.Value.ToString();
+                    reader.Read(); // prop value
+
+                    switch (property)
+                    {
+                        case "query":
+                            obj.query = reader.Value.ToString();
+                            break;
+                        case "latitude":
+                            obj.latitude = double.Parse(reader.Value.ToString());
+                            break;
+                        case "longitude":
+                            obj.longitude = double.Parse(reader.Value.ToString());
+                            break;
+                        case "locationType":
+                            obj.locationType = (LocationType)int.Parse(reader.Value.ToString());
+                            break;
+                        case "source":
+                            obj.source = reader.Value.ToString();
+                            break;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                obj = null;
+            }
+
+            return obj;
+        }
+
+        public string ToJson()
+        {
+            System.IO.StringWriter sw = new System.IO.StringWriter();
+            Newtonsoft.Json.JsonTextWriter writer = new Newtonsoft.Json.JsonTextWriter(sw);
+
+            // {
+            writer.WriteStartObject();
+
+            // "query" : ""
+            writer.WritePropertyName("query");
+            writer.WriteValue(query);
+
+            // "latitude" : ""
+            writer.WritePropertyName("latitude");
+            writer.WriteValue(latitude);
+
+            // "longitude" : ""
+            writer.WritePropertyName("longitude");
+            writer.WriteValue(longitude);
+
+            // "locationType" : ""
+            writer.WritePropertyName("locationType");
+            writer.WriteValue((int)locationType);
+
+            // "source" : ""
+            writer.WritePropertyName("source");
+            writer.WriteValue(source);
+
+            // }
+            writer.WriteEndObject();
+
+            return sw.ToString();
+        }
+    }
+
+    [Table("favorites")]
+    public class Favorites
+    {
+        [PrimaryKey]
+        public string query { get; set; }
+        public int position { get; set; }
+
+        public Favorites()
+        {
         }
     }
 }

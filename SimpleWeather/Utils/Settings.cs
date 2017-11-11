@@ -1,9 +1,13 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
+using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
 using SimpleWeather.WeatherData;
+using SQLite;
+using SQLiteNetExtensionsAsync.Extensions;
 
 namespace SimpleWeather.Utils
 {
@@ -22,8 +26,8 @@ namespace SimpleWeather.Utils
         public static bool IsFahrenheit { get { return Unit == Fahrenheit; } }
 
         // Data
-        public static List<LocationData> LocationData { get { return Task.Run(() => GetLocationData()).Result; } }
-        public static OrderedDictionary WeatherData { get { return Task.Run(() => GetWeatherData()).Result; } }
+        private static SQLiteAsyncConnection locationDB;
+        private static SQLiteAsyncConnection weatherDB;
 
         // Units
         public const string Fahrenheit = "F";
@@ -46,8 +50,6 @@ namespace SimpleWeather.Utils
         public const string API_Yahoo = "Yahoo";
 
         // Weather Data
-        private static List<LocationData> locationData = new List<LocationData>();
-        private static OrderedDictionary weatherData = new OrderedDictionary();
         private static LocationData lastGPSLocData = new LocationData();
         private static bool loaded = false;
 
@@ -67,37 +69,18 @@ namespace SimpleWeather.Utils
 
         private static async Task Load()
         {
-            if (!FileUtils.IsValid(dataFile.Path) && !FileUtils.IsValid(locDataFile.Path))
-                return;
-
-            try
-            {
-                weatherData = await JSONParser.DeserializerAsync<OrderedDictionary>(dataFile);
-            }
-            catch (Newtonsoft.Json.JsonSerializationException jsEx)
-            {
-                Console.WriteLine(jsEx.StackTrace);
-                if (weatherData == null)
-                    weatherData = new OrderedDictionary();
-            }
-
-            try
-            {
-                locationData = await JSONParser.DeserializerAsync<List<LocationData>>(locDataFile);
-            }
-            catch (Newtonsoft.Json.JsonSerializationException jsEx)
-            {
-                Console.WriteLine(jsEx.StackTrace);
-                locationData = null;
-            }
+            // Create DB tables
+            await locationDB.CreateTableAsync<LocationData>();
+            await locationDB.CreateTableAsync<Favorites>();
+            await weatherDB.CreateTableAsync<Weather>();
 
             if (!String.IsNullOrWhiteSpace(LastGPSLocation))
             {
                 try
                 {
-                    lastGPSLocData = await JSONParser.DeserializerAsync<LocationData>(LastGPSLocation);
+                    lastGPSLocData = LocationData.FromJson(new JsonTextReader(new StringReader(LastGPSLocation)));
                 }
-                catch (Newtonsoft.Json.JsonSerializationException jsEx)
+                catch (JsonSerializationException jsEx)
                 {
                     Console.WriteLine(jsEx.StackTrace);
                     if (lastGPSLocData == null)
@@ -105,37 +88,108 @@ namespace SimpleWeather.Utils
                 }
             }
 
-            // Setup location data if N/A
-            if (locationData == null || locationData.Count == 0)
+            List<LocationData> locationData = null;
+            if (locDataFile != null && FileUtils.IsValid(locDataFile.Path))
             {
-                List<LocationData> data = new List<LocationData>();
-                List<string> weatherDataKeys = weatherData.Keys.Cast<string>().ToList();
-
-                foreach (string query in weatherDataKeys)
+                // Migrate to new structure
+                try
                 {
-                    LocationData loc = new LocationData(query)
-                    {
-                        longitude = double.Parse((weatherData[query] as Weather).location.longitude),
-                        latitude = double.Parse((weatherData[query] as Weather).location.latitude)
-                    };
-                    data.Add(loc);
+                    locationData = await JSONParser.DeserializerAsync<List<LocationData>>(locDataFile);
+                }
+                catch (JsonSerializationException jsEx)
+                {
+                    Console.WriteLine(jsEx.StackTrace);
+                    locationData = null;
                 }
 
-                locationData = data;
-                SaveLocationData();
+                await SaveLocationData(locationData);
+
+#if __ANDROID__
+                locDataFile.Delete();
+                locDataFile.Dispose();
+#elif WINDOWS_UWP
+                await locDataFile.DeleteAsync();
+                locDataFile = null;
+#endif
+            }
+
+            if (dataFile != null && FileUtils.IsValid(dataFile.Path))
+            {
+                OrderedDictionary oldWeather = null;
+                try
+                {
+                    oldWeather = await JSONParser.DeserializerAsync<OrderedDictionary>(dataFile);
+                }
+                catch (JsonSerializationException jsEx)
+                {
+                    Console.WriteLine(jsEx.StackTrace);
+                    if (oldWeather == null)
+                        oldWeather = new OrderedDictionary();
+                }
+
+                // Setup location data if N/A
+                if (locationData == null || locationData.Count == 0)
+                {
+                    List<LocationData> data = new List<LocationData>();
+                    List<string> weatherDataKeys = oldWeather.Keys.Cast<string>().ToList();
+
+                    foreach (string query in weatherDataKeys)
+                    {
+                        LocationData loc = new LocationData(query)
+                        {
+                            longitude = double.Parse((oldWeather[query] as Weather).location.longitude),
+                            latitude = double.Parse((oldWeather[query] as Weather).location.latitude)
+                        };
+                        data.Add(loc);
+                    }
+
+                    locationData = data;
+                    await SaveLocationData(locationData);
+                }
+
+                // Add data
+                var list = oldWeather.Values.Cast<Weather>();
+                await weatherDB.InsertOrReplaceAllWithChildrenAsync(list);
+
+                // Delete old files
+#if __ANDROID__
+                dataFile.Delete();
+                dataFile.Dispose();
+#elif WINDOWS_UWP
+                await dataFile.DeleteAsync();
+                dataFile = null;
+#endif
             }
         }
 
-        private static async Task<List<LocationData>> GetLocationData()
+        public static async Task<List<LocationData>> GetFavorites()
         {
             await LoadIfNeeded();
-            return locationData;
+            var query = from loc in await locationDB.Table<LocationData>().ToListAsync()
+                        join favs in await locationDB.Table<Favorites>().ToListAsync()
+                        on loc.query equals favs.query
+                        orderby favs.position
+                        select new LocationData()
+                        {
+                            query = loc.query,
+                            latitude = loc.latitude,
+                            longitude = loc.longitude,
+                            locationType = loc.locationType,
+                            source = loc.source
+                        };
+            return query.ToList();
         }
 
-        private static async Task<OrderedDictionary> GetWeatherData()
+        public static async Task<List<LocationData>> GetLocationData()
         {
             await LoadIfNeeded();
-            return weatherData;
+            return await locationDB.Table<LocationData>().ToListAsync();
+        }
+
+        public static async Task<Weather> GetWeatherData(string key)
+        {
+            await LoadIfNeeded();
+            return await weatherDB.GetWithChildrenAsync<Weather>(key);
         }
 
         public static async Task<LocationData> GetLastGPSLocData()
@@ -148,25 +202,85 @@ namespace SimpleWeather.Utils
             return lastGPSLocData;
         }
 
-        public static void SaveWeatherData()
+        public static void SaveWeatherData(Weather weather)
         {
-            JSONParser.Serializer(weatherData, dataFile);
+            Task.Run(async () => 
+            {
+                await weatherDB.InsertOrReplaceAsync(weather);
+                await WriteOperations.UpdateWithChildrenAsync(weatherDB, weather);
+            });
         }
 
-        public static void SaveLocationData()
+        private static async Task SaveLocationData(List<LocationData> locationData)
         {
-            JSONParser.Serializer(locationData, locDataFile);
+            var favs = new List<Favorites>(locationData.Count);
+            foreach (LocationData loc in locationData)
+            {
+                await locationDB.InsertOrReplaceAsync(loc);
+                var fav = new Favorites() { query = loc.query, position = locationData.IndexOf(loc) };
+                favs.Add(fav);
+                await locationDB.InsertAsync(fav);
+            }
+
+            var locs = await locationDB.Table<LocationData>().ToListAsync();
+            var loctodelete = locs.Where(l => locationData.All(l2 => !l2.Equals(l)));
+            int count = loctodelete.Count();
+
+            if (count > 0)
+            {
+                foreach (LocationData loc in loctodelete)
+                {
+                    await locationDB.DeleteAsync<LocationData>(loc.query);
+                    await locationDB.DeleteAsync<Favorites>(loc.query);
+                }
+            }
+        }
+
+        public static async Task AddLocation(LocationData location)
+        {
+            await locationDB.InsertOrReplaceAsync(location);
+            int pos = await locationDB.Table<LocationData>().CountAsync();
+            await locationDB.InsertAsync(new Favorites() { query = location.query, position = pos });
+        }
+
+        public static async Task DeleteLocations()
+        {
+            await locationDB.DeleteAllAsync<LocationData>();
+            await locationDB.DeleteAllAsync<Favorites>();
+        }
+
+        public static async Task DeleteLocation(string key)
+        {
+            await locationDB.DeleteAsync<LocationData>(key);
+            await locationDB.QueryAsync<Favorites>("delete from favorites where query = ?", key);
+            await ResetPosition();
+        }
+
+        public static async Task MoveLocation(string key, int toPos)
+        {
+            await locationDB.QueryAsync<Favorites>("update favorites set position = ? where query = ?",
+                toPos, key);
+        }
+
+        private static async Task ResetPosition()
+        {
+            var favs = await locationDB.Table<Favorites>().OrderBy(f => f.position).ToListAsync();
+            foreach(Favorites fav in favs)
+            {
+                fav.position = favs.IndexOf(fav);
+                await locationDB.UpdateAsync(fav);
+            }
         }
 
         public static void SaveLastGPSLocData()
         {
-            LastGPSLocation = JSONParser.Serializer(lastGPSLocData, typeof(LocationData));
+            LastGPSLocation = lastGPSLocData.ToJson();
         }
 
         public static void SaveLastGPSLocData(LocationData data)
         {
             lastGPSLocData = data;
-            LastGPSLocation = JSONParser.Serializer(lastGPSLocData, typeof(LocationData));
+            LastGPSLocation = lastGPSLocData.ToJson();
         }
 
         private static LocationData GetHomeData()
@@ -176,7 +290,7 @@ namespace SimpleWeather.Utils
             if (FollowGPS)
                 homeData = Task.Run(() => GetLastGPSLocData()).Result;
             else
-                homeData = LocationData.First();
+                homeData = Task.Run(async () => (await GetFavorites()).First()).Result;
 
             return homeData;
         }

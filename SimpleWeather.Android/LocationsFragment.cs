@@ -383,7 +383,7 @@ namespace SimpleWeather.Droid
         private async Task LoadLocations()
         {
             // Load up saved locations
-            var locations = Settings.LocationData;
+            var locations = await Settings.GetFavorites();
             mAdapter.RemoveAll();
 
             // Setup saved favorite locations
@@ -440,7 +440,7 @@ namespace SimpleWeather.Droid
         private async Task RefreshLocations()
         {
             // Reload all panels if needed
-            var locations = Settings.LocationData;
+            var locations = await Settings.GetLocationData();
             var homeData = await Settings.GetLastGPSLocData();
             bool reload = (locations.Count != mAdapter.ItemCount || Settings.FollowGPS && gpsPanelViewModel == null);
 
@@ -628,7 +628,6 @@ namespace SimpleWeather.Droid
             {
                 LocationQueryAdapter adapter = sender as LocationQueryAdapter;
                 LocationQuery v = (LocationQuery)e.View;
-                int index = 0;
 
                 if (!String.IsNullOrEmpty(adapter.Dataset[e.Position].LocationQuery))
                     selected_query = adapter.Dataset[e.Position].LocationQuery;
@@ -645,10 +644,8 @@ namespace SimpleWeather.Droid
                 LoadingDialog progDialog = new LoadingDialog(Activity);
                 progDialog.Show();
 
-                var locData = Settings.LocationData;
-                var weatherData = Settings.WeatherData;
-
-                index = locData.Count;
+                var locData = await Settings.GetLocationData();
+                int index = locData.Count;
 
                 // Check if location already exists
                 if (locData.Exists(l => l.query == selected_query))
@@ -659,7 +656,7 @@ namespace SimpleWeather.Droid
                     return;
                 }
 
-                Weather weather = weatherData[selected_query] as Weather;
+                Weather weather = await Settings.GetWeatherData(selected_query);
                 if (weather == null)
                     weather = await WeatherLoaderTask.GetWeather(selected_query);
 
@@ -670,14 +667,10 @@ namespace SimpleWeather.Droid
                     return;
                 }
 
-                // Save coords to List
-                var location = new LocationData(selected_query);
-                locData.Add(location);
-                weatherData[selected_query] = weather;
-
                 // Save data
-                Settings.SaveLocationData();
-                Settings.SaveWeatherData();
+                var location = new LocationData(selected_query);
+                await Settings.AddLocation(location);
+                Settings.SaveWeatherData(weather);
 
                 LocationPanelViewModel panel = new LocationPanelViewModel(weather)
                 {
@@ -840,9 +833,15 @@ namespace SimpleWeather.Droid
             {
                 view.EditMode = EditMode;
                 mAdapter.NotifyItemChanged(mAdapter.Dataset.IndexOf(view));
+
+                if (!EditMode && DataChanged)
+                {
+                    string query = view.LocationData.query;
+                    int pos = mAdapter.Dataset.IndexOf(view);
+                    Task.Factory.StartNew(() => Settings.MoveLocation(query, pos));
+                }
             }
 
-            if (!EditMode && DataChanged) Settings.SaveLocationData();
             DataChanged = false;
         }
     }

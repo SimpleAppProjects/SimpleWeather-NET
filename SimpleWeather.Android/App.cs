@@ -7,6 +7,7 @@ using Android.Preferences;
 using SimpleWeather.Droid.Utils;
 using SimpleWeather.Utils;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace SimpleWeather.Droid
 {
@@ -37,7 +38,11 @@ namespace SimpleWeather.Droid
 
             //A great place to initialize Xamarin.Insights and Dependency Services!
             // Load data if needed
-            Task.Factory.StartNew(() => Settings.LoadIfNeeded());
+            var th = new Thread(() => Settings.LoadIfNeeded().ConfigureAwait(false).GetAwaiter().GetResult());
+            th.Start();
+
+            while (th.ThreadState != ThreadState.Stopped)
+                Thread.Sleep(100);
         }
     }
 }

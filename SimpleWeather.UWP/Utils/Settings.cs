@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
@@ -20,19 +21,27 @@ namespace SimpleWeather.Utils
 
         private static void Init()
         {
-            if (dataFile == null)
-            {
-                Task<StorageFile> t = appDataFolder.CreateFileAsync("data.json", CreationCollisionOption.OpenIfExists).AsTask();
-                t.Wait();
-                dataFile = t.Result;
-            }
-
             if (locDataFile == null)
             {
-                Task<StorageFile> t = appDataFolder.CreateFileAsync("locations.json", CreationCollisionOption.OpenIfExists).AsTask();
+                Task<IStorageItem> t = appDataFolder.TryGetItemAsync("locations.json").AsTask();
                 t.Wait();
-                locDataFile = t.Result;
+                locDataFile = t.Result as StorageFile;
             }
+
+            if (dataFile == null)
+            {
+                Task<IStorageItem> t = appDataFolder.TryGetItemAsync("data.json").AsTask();
+                t.Wait();
+                dataFile = t.Result as StorageFile;
+            }
+
+            if (locationDB == null)
+                locationDB = new SQLiteAsyncConnection(
+                    Path.Combine(appDataFolder.Path, "locations.db"));
+
+            if (weatherDB == null)
+                weatherDB = new SQLiteAsyncConnection(
+                    Path.Combine(appDataFolder.Path, "weatherdata.db"));
         }
 
         private static string GetTempUnit()
@@ -57,31 +66,29 @@ namespace SimpleWeather.Utils
 
         private static bool IsWeatherLoaded()
         {
-            if (!FileUtils.IsValid(dataFile.Path))
+            if (!Task.Run(() => DBUtils.LocationDataExists(locationDB)).Result)
             {
-                if (!FileUtils.IsValid(locDataFile.Path))
+                if (!Task.Run(() => DBUtils.WeatherDataExists(weatherDB)).Result)
                 {
-                    SetWeatherLoaded(false);
-                    locationData.Clear();
-                    weatherData.Clear();
-                    return false;
-                }
-                else if (locationData.Count > 0)
-                {
-                    SetWeatherLoaded(true);
-                    return true;
+                    // Fallback to file if db is empty
+                    if (locDataFile != null && !FileUtils.IsValid(locDataFile.Path))
+                    {
+                        if (dataFile != null && !FileUtils.IsValid(dataFile.Path))
+                        {
+                            SetWeatherLoaded(false);
+                            return false;
+                        }
+                        else
+                        {
+                            SetWeatherLoaded(true);
+                            return true;
+                        }
+                    }
                 }
             }
 
-            if (weatherData.Count > 0 || locationData.Count > 0)
+            if (localSettings.Values[KEY_WEATHERLOADED] == null)
             {
-                SetWeatherLoaded(true);
-                return true;
-            }
-            else if (localSettings.Values[KEY_WEATHERLOADED] == null)
-            {
-                locationData.Clear();
-                weatherData.Clear();
                 return false;
             }
             else if (localSettings.Values[KEY_WEATHERLOADED].Equals(true))
@@ -90,8 +97,6 @@ namespace SimpleWeather.Utils
             }
             else
             {
-                locationData.Clear();
-                weatherData.Clear();
                 return false;
             }
         }

@@ -72,6 +72,10 @@ namespace SimpleWeather.Utils
             {
                 stream = new FileInputStream(file);
             }
+            catch (FileNotFoundException)
+            {
+                return false;
+            }
             catch (IOException)
             {
                 //the file is unavailable because it is:

@@ -116,8 +116,7 @@ namespace SimpleWeather.Droid
         private void RemoveLocation(int position)
         {
             // Remove location from list
-            Settings.LocationData.RemoveAt(position);
-            Settings.SaveLocationData();
+            Task.Run(() => Settings.DeleteLocation(mDataset[position].LocationData.query));
 
             // Remove panel
             Remove(position);
@@ -125,11 +124,6 @@ namespace SimpleWeather.Droid
 
         public void OnItemMove(int fromPosition, int toPosition)
         {
-            // Move data in both location dictionary and local dataset
-            var location = Settings.LocationData[fromPosition];
-            Settings.LocationData.RemoveAt(fromPosition);
-            Settings.LocationData.Insert(toPosition, location);
-
             mDataset.Move(fromPosition, toPosition);
             NotifyItemMoved(fromPosition, toPosition);
         }

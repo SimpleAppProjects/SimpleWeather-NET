@@ -165,7 +165,7 @@ namespace SimpleWeather.WeatherData
             // Load old data if available and we can't get new data
             if (weather == null)
             {
-                loadedSavedData = LoadSavedWeatherData(true);
+                loadedSavedData = await LoadSavedWeatherData(true);
             }
             else if (weather != null)
             {
@@ -217,7 +217,7 @@ namespace SimpleWeather.WeatherData
              * Refresh weather data
             */
 
-            bool gotData = LoadSavedWeatherData();
+            bool gotData = await LoadSavedWeatherData();
 
             if (!gotData)
             {
@@ -251,14 +251,14 @@ namespace SimpleWeather.WeatherData
                 location.query = qview.LocationQuery;
         }
 
-        private bool LoadSavedWeatherData(bool _override)
+        private async Task<bool> LoadSavedWeatherData(bool _override)
         {
             if (_override)
             {
                 // Load weather data
                 try
                 {
-                    weather = Settings.WeatherData[location.query] as Weather;
+                    weather = await Settings.GetWeatherData(location.query);
                 }
                 catch (Exception ex)
                 {
@@ -280,15 +280,15 @@ namespace SimpleWeather.WeatherData
                 return true;
             }
             else
-                return LoadSavedWeatherData();
+                return await LoadSavedWeatherData();
         }
 
-        private bool LoadSavedWeatherData()
+        private async Task<bool> LoadSavedWeatherData()
         {
             // Load weather data
             try
             {
-                weather = Settings.WeatherData[location.query] as Weather;
+                weather = await Settings.GetWeatherData(location.query);
             }
             catch (Exception ex)
             {
@@ -325,8 +325,7 @@ namespace SimpleWeather.WeatherData
             // Save location query
             weather.query = location.query;
 
-            Settings.WeatherData[location.query] = weather;
-            Settings.SaveWeatherData();
+            Settings.SaveWeatherData(weather);
         }
 
         public Weather GetWeather()

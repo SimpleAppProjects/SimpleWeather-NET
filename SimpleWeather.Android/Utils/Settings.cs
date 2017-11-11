@@ -2,7 +2,9 @@
 using Android.Util;
 using Java.IO;
 using SimpleWeather.Droid;
+using SQLite;
 using System;
+using System.Threading.Tasks;
 
 namespace SimpleWeather.Utils
 {
@@ -65,17 +67,19 @@ namespace SimpleWeather.Utils
         // Initialize file
         private static void Init()
         {
-            if (dataFile == null)
-                dataFile = new File(appDataFolder, "data.json");
-
-            if (!dataFile.Exists())
-                dataFile.CreateNewFile();
-
             if (locDataFile == null)
                 locDataFile = new File(appDataFolder, "locations.json");
 
-            if (!locDataFile.Exists())
-                locDataFile.CreateNewFile();
+            if (dataFile == null)
+                dataFile = new File(appDataFolder, "data.json");
+
+            if (locationDB == null)
+                locationDB = new SQLiteAsyncConnection(
+                    System.IO.Path.Combine(appDataFolder.Path, "locations.db"));
+
+            if (weatherDB == null)
+                weatherDB = new SQLiteAsyncConnection(
+                    System.IO.Path.Combine(appDataFolder.Path, "weatherdata.db"));
 
             preferences.RegisterOnSharedPreferenceChangeListener(listener);
         }
@@ -104,36 +108,34 @@ namespace SimpleWeather.Utils
 
         private static bool IsWeatherLoaded()
         {
-            if (!FileUtils.IsValid(dataFile.Path))
+            if (!Task.Run(() => DBUtils.LocationDataExists(locationDB)).Result)
             {
-                if (!FileUtils.IsValid(locDataFile.Path))
+                if (!Task.Run(() => DBUtils.WeatherDataExists(weatherDB)).Result)
                 {
-                    SetWeatherLoaded(false);
-                    locationData.Clear();
-                    weatherData.Clear();
-                    return false;
-                }
-                else if (locationData.Count > 0)
-                {
-                    SetWeatherLoaded(true);
-                    return true;
+                    // Fallback to file if db is empty
+                    if (locDataFile != null && !FileUtils.IsValid(locDataFile.Path))
+                    {
+                        if (dataFile != null && !FileUtils.IsValid(dataFile.Path))
+                        {
+                            SetWeatherLoaded(false);
+                            return false;
+                        }
+                        else
+                        {
+                            SetWeatherLoaded(true);
+                            return true;
+                        }
+                    }
                 }
             }
 
-            if (weatherData.Count > 0 || locationData.Count > 0)
-            {
-                SetWeatherLoaded(true);
-                return true;
-            }
-            else if (preferences.Contains(KEY_WEATHERLOADED) && preferences.GetBoolean(KEY_WEATHERLOADED, false))
+            if (preferences.Contains(KEY_WEATHERLOADED) && preferences.GetBoolean(KEY_WEATHERLOADED, false))
             {
                 SetWeatherLoaded(true);
                 return true;
             }
             else
             {
-                locationData.Clear();
-                weatherData.Clear();
                 return false;
             }
         }

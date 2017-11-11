@@ -2,10 +2,10 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using System.Reflection;
 #if WINDOWS_UWP
 using Windows.Storage;
 #elif __ANDROID__
-using Java.IO;
 using Android.Support.V4.Util;
 #endif
 
@@ -49,7 +49,7 @@ namespace SimpleWeather.Utils
 
         public static async Task<Object> DeserializerAsync(String response, Type type)
         {
-            return await Task.Run(() => 
+            return await Task.Run(() =>
             {
                 return JsonConvert.DeserializeObject(response, type, DefaultSettings);
             });
@@ -103,12 +103,30 @@ namespace SimpleWeather.Utils
                     await Task.Delay(100);
                 }
 
+                Stream fStream;
 #if __ANDROID__
                 AtomicFile mFile = new AtomicFile(file);
-                using (Stream fStream = mFile.OpenRead())
+                try
+                {
+                    fStream = mFile.OpenRead();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.StackTrace);
+                    return default(T);
+                }
 #else
-                using (FileStream fStream = new FileStream(file.Path, FileMode.Open, FileAccess.Read))
+                try
+                {
+                    fStream = new FileStream(file.Path, FileMode.Open, FileAccess.Read);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.StackTrace);
+                    return default(T);
+                }
 #endif
+                using (fStream)
                 using (StreamReader sReader = new StreamReader(fStream))
                 using (JsonReader reader = new JsonTextReader(sReader))
                 {
@@ -199,6 +217,50 @@ namespace SimpleWeather.Utils
             {
                 return JsonConvert.SerializeObject(obj, type, DefaultSettings);
             });
+        }
+    }
+
+    public class CustomJsonConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            MethodInfo fromjson = objectType.GetMethod("FromJson", new Type[] { typeof(JsonReader) });
+            MethodInfo tojson = objectType.GetMethod("ToJson");
+
+            if (fromjson != null && tojson != null && fromjson.IsStatic && fromjson.ReturnType == objectType)
+                return true;
+            else
+                return false;
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            MethodInfo fromjson = objectType.GetMethod("FromJson", new Type[] { typeof(JsonReader) });
+            if (fromjson != null && fromjson.IsStatic && fromjson.ReturnType == objectType)
+            {
+                object obj = null;
+                try
+                {
+                    obj = fromjson.Invoke(null, new object[] { reader });
+                }
+                catch (Exception ex)
+                {
+                    System.Console.WriteLine(ex.StackTrace);
+                }
+
+                if (obj != null)
+                    return obj;
+            }
+
+            throw new JsonSerializationException(string.Format("{0} type does not implement FromJson(string) method",
+                objectType.Name));
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            MethodInfo tojson = value.GetType().GetMethod("ToJson");
+            if (tojson != null)
+                writer.WriteValue((string)tojson.Invoke(value, null));
         }
     }
 }

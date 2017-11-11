@@ -25,8 +25,7 @@ namespace SimpleWeather.Droid.Shortcuts
         {
             if (Build.VERSION.SdkInt >= BuildVersionCodes.NMr1)
             {
-                var weatherData = Settings.WeatherData;
-                var locations = new List<LocationData>(Settings.LocationData);
+                var locations = new List<LocationData>(await Settings.GetLocationData());
                 if (Settings.FollowGPS)
                     locations.Insert(0, Settings.HomeData);
 
@@ -42,7 +41,7 @@ namespace SimpleWeather.Droid.Shortcuts
                 for (int i = 0; i < MAX_SHORTCUTS; i++)
                 {
                     LocationData location = locations[i];
-                    Weather weather = weatherData[location.query] as Weather;
+                    Weather weather = await Settings.GetWeatherData(location.query);
 
                     if (weather == null || shortcuts.Any(s => s.Id == location.query))
                     {
@@ -56,7 +55,7 @@ namespace SimpleWeather.Droid.Shortcuts
                     // Start WeatherNow Activity with weather data
                     Intent intent = new Intent(App.Context, typeof(MainActivity))
                         .SetAction(Intent.ActionMain)
-                        .PutExtra("shortcut-data", await JSONParser.SerializerAsync(location, typeof(LocationData)))
+                        .PutExtra("shortcut-data", location.ToJson())
                         .SetFlags(ActivityFlags.NewTask | ActivityFlags.MultipleTask | ActivityFlags.NoHistory);
 
                     var bmp = await BitmapFactory.DecodeResourceAsync(App.Context.Resources, WeatherUtils.GetWeatherIconResource(weather.condition.icon),

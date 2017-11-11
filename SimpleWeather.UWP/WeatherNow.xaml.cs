@@ -377,7 +377,7 @@ namespace SimpleWeather.UWP
             else if (wLoader == null)
             {
                 // Weather was loaded before. Lets load it up...
-                location = Settings.LocationData.First();
+                location = Settings.HomeData;
                 wLoader = new WeatherDataLoader(this, this, location);
             }
 

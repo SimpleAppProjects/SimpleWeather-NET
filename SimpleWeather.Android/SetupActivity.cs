@@ -195,10 +195,7 @@ namespace SimpleWeather.Droid
                 }
 
                 // Get Weather Data
-                var locData = Settings.LocationData;
-                var weatherData = Settings.WeatherData;
-
-                WeatherData.Weather weather = weatherData[selected_query] as WeatherData.Weather;
+                WeatherData.Weather weather = await Settings.GetWeatherData(selected_query);
                 if (weather == null)
                     weather = await WeatherData.WeatherLoaderTask.GetWeather(selected_query);
 
@@ -211,16 +208,13 @@ namespace SimpleWeather.Droid
 
                 // Save weather data
                 var location = new WeatherData.LocationData(selected_query, mLocation);
-                locData.Clear();
-                locData.Add(new WeatherData.LocationData(selected_query));
-                weatherData[selected_query] = weather;
-                Settings.SaveLastGPSLocData(location);
-                Settings.SaveLocationData();
-                Settings.SaveWeatherData();
+                await Settings.DeleteLocations();
+                await Settings.AddLocation(new WeatherData.LocationData(selected_query));
+                Settings.SaveWeatherData(weather);
 
                 // Start WeatherNow Activity with weather data
                 Intent intent = new Intent(this, typeof(MainActivity));
-                intent.PutExtra("data", await JSONParser.SerializerAsync(location, typeof(WeatherData.LocationData)));
+                intent.PutExtra("data", location.ToJson());
 
                 Settings.FollowGPS = true;
                 Settings.WeatherLoaded = true;

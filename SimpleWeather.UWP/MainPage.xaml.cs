@@ -177,10 +177,7 @@ namespace SimpleWeather.UWP
             await LoadingDialog.ShowAsync();
 
             // Weather Data
-            var locData = Settings.LocationData;
-            var weatherData = Settings.WeatherData;
-
-            Weather weather = weatherData[selected_query] as Weather;
+            Weather weather = await Settings.GetWeatherData(selected_query);
             if (weather == null)
                 weather = await WeatherLoaderTask.GetWeather(selected_query);
 
@@ -193,11 +190,9 @@ namespace SimpleWeather.UWP
 
             // Save weather data
             var location = new LocationData(selected_query);
-            locData.Clear();
-            locData.Add(location);
-            weatherData[selected_query] = weather;
-            Settings.SaveLocationData();
-            Settings.SaveWeatherData();
+            await Settings.DeleteLocations();
+            await Settings.AddLocation(location);
+            Settings.SaveWeatherData(weather);
 
             // If we're using search
             // make sure gps feature is off
@@ -327,10 +322,7 @@ namespace SimpleWeather.UWP
                 }
 
                 // Weather Data
-                var locData = Settings.LocationData;
-                var weatherData = Settings.WeatherData;
-
-                Weather weather = weatherData[selected_query] as Weather;
+                Weather weather = await Settings.GetWeatherData(selected_query);
                 if (weather == null)
                     weather = await WeatherLoaderTask.GetWeather(selected_query);
 
@@ -341,12 +333,10 @@ namespace SimpleWeather.UWP
 
                 // Save weather data
                 var location = new LocationData(selected_query, geoPos);
-                locData.Clear();
-                locData.Add(new LocationData(selected_query));
-                weatherData[selected_query] = weather;
                 Settings.SaveLastGPSLocData(location);
-                Settings.SaveLocationData();
-                Settings.SaveWeatherData();
+                await Settings.DeleteLocations();
+                await Settings.AddLocation(new LocationData(selected_query));
+                Settings.SaveWeatherData(weather);
 
                 Settings.FollowGPS = true;
                 Settings.WeatherLoaded = true;

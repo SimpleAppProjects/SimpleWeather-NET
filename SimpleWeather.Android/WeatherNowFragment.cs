@@ -158,7 +158,7 @@ namespace SimpleWeather.Droid
             if (data != null)
             {
                 Bundle args = new Bundle();
-                args.PutString("data", Task.Run(() => JSONParser.Serializer(data, typeof(LocationData))).Result);
+                args.PutString("data", data.ToJson());
                 fragment.Arguments = args;
             }
             return fragment;
@@ -181,7 +181,9 @@ namespace SimpleWeather.Droid
             // Create your fragment here
             if (Arguments != null)
             {
-                location = Task.Run(() => JSONParser.DeserializerAsync<LocationData>(Arguments.GetString("data"))).Result;
+                location = LocationData.FromJson(
+                    new Newtonsoft.Json.JsonTextReader(
+                        new System.IO.StringReader(Arguments.GetString("data", null))));
 
                 if (location != null && wLoader == null)
                     wLoader = new WeatherDataLoader(this, this, location);
@@ -368,7 +370,7 @@ namespace SimpleWeather.Droid
             bool homeChanged = false;
             if (location != null && FragmentManager.BackStackEntryCount == 0)
             {
-                if (!location.Equals(homeData) && Tag != null)
+                if (!location.Equals(homeData) && Tag == "home")
                 {
                     location = homeData;
                     wLoader = null;
@@ -504,7 +506,7 @@ namespace SimpleWeather.Droid
             else if (wLoader == null)
             {
                 // Weather was loaded before. Lets load it up...
-                location = Settings.LocationData.First();
+                location = Settings.HomeData;
                 wLoader = new WeatherDataLoader(this, this, location);
             }
 
