@@ -19,8 +19,6 @@ namespace SimpleWeather.Utils
 
         // App data files
         private static File appDataFolder = App.Context.FilesDir;
-        private static File locDataFile;
-        private static File dataFile;
 
         // Android specific settings
         private const string KEY_ONGOINGNOTIFICATION = "key_ongoingnotification";
@@ -67,12 +65,6 @@ namespace SimpleWeather.Utils
         // Initialize file
         private static void Init()
         {
-            if (locDataFile == null)
-                locDataFile = new File(appDataFolder, "locations.json");
-
-            if (dataFile == null)
-                dataFile = new File(appDataFolder, "data.json");
-
             if (locationDB == null)
                 locationDB = new SQLiteAsyncConnection(
                     System.IO.Path.Combine(appDataFolder.Path, "locations.db"));
@@ -112,20 +104,8 @@ namespace SimpleWeather.Utils
             {
                 if (!Task.Run(() => DBUtils.WeatherDataExists(weatherDB)).Result)
                 {
-                    // Fallback to file if db is empty
-                    if (locDataFile != null && !FileUtils.IsValid(locDataFile.Path))
-                    {
-                        if (dataFile != null && !FileUtils.IsValid(dataFile.Path))
-                        {
-                            SetWeatherLoaded(false);
-                            return false;
-                        }
-                        else
-                        {
-                            SetWeatherLoaded(true);
-                            return true;
-                        }
-                    }
+                    SetWeatherLoaded(false);
+                    return false;
                 }
             }
 
@@ -295,6 +275,17 @@ namespace SimpleWeather.Utils
             }
             else
                 return preferences.GetString(KEY_NOTIFICATIONICON, TEMPERATURE_ICON);
+        }
+
+        private static int GetDBVersion()
+        {
+            return int.Parse(preferences.GetString(KEY_DBVERSION, "0"));
+        }
+
+        private static void SetDBVersion(int value)
+        {
+            editor.PutString(KEY_DBVERSION, value.ToString());
+            editor.Commit();
         }
     }
 }

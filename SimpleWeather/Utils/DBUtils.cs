@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SimpleWeather.Utils
 {
-    public static class DBUtils
+    public static partial class DBUtils
     {
         public static async Task<bool> WeatherDataExists(SQLite.SQLiteAsyncConnection dbConn)
         {

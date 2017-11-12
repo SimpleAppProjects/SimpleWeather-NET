@@ -24,10 +24,13 @@ namespace SimpleWeather.Utils
         public static LocationData HomeData { get { return GetHomeData(); } }
         public static DateTime UpdateTime { get { return GetUpdateTime(); } set { SetUpdateTime(value); } }
         public static bool IsFahrenheit { get { return Unit == Fahrenheit; } }
+        private static int DBVersion { get { return GetDBVersion(); } set { SetDBVersion(value); } }
 
         // Data
+        private const int CurrentDBVersion = 1;
         private static SQLiteAsyncConnection locationDB;
         private static SQLiteAsyncConnection weatherDB;
+        private const int CACHE_LIMIT = 10;
 
         // Units
         public const string Fahrenheit = "F";
@@ -44,6 +47,7 @@ namespace SimpleWeather.Utils
         private const string KEY_LASTGPSLOCATION = "key_lastgpslocation";
         private const string KEY_REFRESHINTERVAL = "key_refreshinterval";
         private const string KEY_UPDATETIME = "key_updatetime";
+        private const string KEY_DBVERSION = "key_dbversion";
 
         // APIs
         public const string API_WUnderground = "WUnderground";
@@ -74,6 +78,14 @@ namespace SimpleWeather.Utils
             await locationDB.CreateTableAsync<Favorites>();
             await weatherDB.CreateTableAsync<Weather>();
 
+            // Migrate old data if available
+            if (GetDBVersion() < CurrentDBVersion)
+            {
+                if (await locationDB.Table<LocationData>().CountAsync() == 0)
+                    await DBUtils.MigrateData(locationDB, weatherDB);
+                SetDBVersion(CurrentDBVersion);
+            }
+
             if (!String.IsNullOrWhiteSpace(LastGPSLocation))
             {
                 try
@@ -86,79 +98,6 @@ namespace SimpleWeather.Utils
                     if (lastGPSLocData == null)
                         lastGPSLocData = new LocationData();
                 }
-            }
-
-            List<LocationData> locationData = null;
-            if (locDataFile != null && FileUtils.IsValid(locDataFile.Path))
-            {
-                // Migrate to new structure
-                try
-                {
-                    locationData = await JSONParser.DeserializerAsync<List<LocationData>>(locDataFile);
-                }
-                catch (JsonSerializationException jsEx)
-                {
-                    Console.WriteLine(jsEx.StackTrace);
-                    locationData = null;
-                }
-
-                await SaveLocationData(locationData);
-
-#if __ANDROID__
-                locDataFile.Delete();
-                locDataFile.Dispose();
-#elif WINDOWS_UWP
-                await locDataFile.DeleteAsync();
-                locDataFile = null;
-#endif
-            }
-
-            if (dataFile != null && FileUtils.IsValid(dataFile.Path))
-            {
-                OrderedDictionary oldWeather = null;
-                try
-                {
-                    oldWeather = await JSONParser.DeserializerAsync<OrderedDictionary>(dataFile);
-                }
-                catch (JsonSerializationException jsEx)
-                {
-                    Console.WriteLine(jsEx.StackTrace);
-                    if (oldWeather == null)
-                        oldWeather = new OrderedDictionary();
-                }
-
-                // Setup location data if N/A
-                if (locationData == null || locationData.Count == 0)
-                {
-                    List<LocationData> data = new List<LocationData>();
-                    List<string> weatherDataKeys = oldWeather.Keys.Cast<string>().ToList();
-
-                    foreach (string query in weatherDataKeys)
-                    {
-                        LocationData loc = new LocationData(query)
-                        {
-                            longitude = double.Parse((oldWeather[query] as Weather).location.longitude),
-                            latitude = double.Parse((oldWeather[query] as Weather).location.latitude)
-                        };
-                        data.Add(loc);
-                    }
-
-                    locationData = data;
-                    await SaveLocationData(locationData);
-                }
-
-                // Add data
-                var list = oldWeather.Values.Cast<Weather>();
-                await weatherDB.InsertOrReplaceAllWithChildrenAsync(list);
-
-                // Delete old files
-#if __ANDROID__
-                dataFile.Delete();
-                dataFile.Dispose();
-#elif WINDOWS_UWP
-                await dataFile.DeleteAsync();
-                dataFile = null;
-#endif
             }
         }
 
@@ -189,7 +128,7 @@ namespace SimpleWeather.Utils
         public static async Task<Weather> GetWeatherData(string key)
         {
             await LoadIfNeeded();
-            return await weatherDB.GetWithChildrenAsync<Weather>(key);
+            return await weatherDB.FindWithChildrenAsync<Weather>(key);
         }
 
         public static async Task<LocationData> GetLastGPSLocData()
@@ -208,10 +147,29 @@ namespace SimpleWeather.Utils
             {
                 await weatherDB.InsertOrReplaceAsync(weather);
                 await WriteOperations.UpdateWithChildrenAsync(weatherDB, weather);
+
+                if (await weatherDB.Table<Weather>().CountAsync() > CACHE_LIMIT)
+                    CleanupWeatherData();
             });
         }
 
-        private static async Task SaveLocationData(List<LocationData> locationData)
+        private static void CleanupWeatherData()
+        {
+            Task.Run(async () => 
+            {
+                var locs = await locationDB.Table<LocationData>().ToListAsync();
+                if (FollowGPS) locs.Add(lastGPSLocData);
+                var data = await weatherDB.Table<Weather>().ToListAsync();
+                var weatherToDelete = data.Where(w => locs.All(l => l.query != w.query));
+
+                foreach (Weather weather in data)
+                {
+                    await weatherDB.DeleteAsync<Weather>(weather.query);
+                }
+            });
+        }
+
+        public static async Task SaveLocationData(List<LocationData> locationData)
         {
             var favs = new List<Favorites>(locationData.Count);
             foreach (LocationData loc in locationData)
@@ -223,12 +181,12 @@ namespace SimpleWeather.Utils
             }
 
             var locs = await locationDB.Table<LocationData>().ToListAsync();
-            var loctodelete = locs.Where(l => locationData.All(l2 => !l2.Equals(l)));
-            int count = loctodelete.Count();
+            var locToDelete = locs.Where(l => locationData.All(l2 => !l2.Equals(l)));
+            int count = locToDelete.Count();
 
             if (count > 0)
             {
-                foreach (LocationData loc in loctodelete)
+                foreach (LocationData loc in locToDelete)
                 {
                     await locationDB.DeleteAsync<LocationData>(loc.query);
                     await locationDB.DeleteAsync<Favorites>(loc.query);

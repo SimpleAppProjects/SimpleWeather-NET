@@ -16,25 +16,9 @@ namespace SimpleWeather.Utils
 
         // App data files
         private static StorageFolder appDataFolder = ApplicationData.Current.LocalFolder;
-        private static StorageFile locDataFile;
-        private static StorageFile dataFile;
 
         private static void Init()
         {
-            if (locDataFile == null)
-            {
-                Task<IStorageItem> t = appDataFolder.TryGetItemAsync("locations.json").AsTask();
-                t.Wait();
-                locDataFile = t.Result as StorageFile;
-            }
-
-            if (dataFile == null)
-            {
-                Task<IStorageItem> t = appDataFolder.TryGetItemAsync("data.json").AsTask();
-                t.Wait();
-                dataFile = t.Result as StorageFile;
-            }
-
             if (locationDB == null)
                 locationDB = new SQLiteAsyncConnection(
                     Path.Combine(appDataFolder.Path, "locations.db"));
@@ -70,20 +54,8 @@ namespace SimpleWeather.Utils
             {
                 if (!Task.Run(() => DBUtils.WeatherDataExists(weatherDB)).Result)
                 {
-                    // Fallback to file if db is empty
-                    if (locDataFile != null && !FileUtils.IsValid(locDataFile.Path))
-                    {
-                        if (dataFile != null && !FileUtils.IsValid(dataFile.Path))
-                        {
-                            SetWeatherLoaded(false);
-                            return false;
-                        }
-                        else
-                        {
-                            SetWeatherLoaded(true);
-                            return true;
-                        }
-                    }
+                    SetWeatherLoaded(false);
+                    return false;
                 }
             }
 
@@ -223,6 +195,22 @@ namespace SimpleWeather.Utils
         public static void SetUpdateTime(DateTime value)
         {
             localSettings.Values[KEY_UPDATETIME] = value.ToString();
+        }
+
+        private static int GetDBVersion()
+        {
+            if (!localSettings.Values.ContainsKey(KEY_DBVERSION) || localSettings.Values[KEY_DBVERSION] == null)
+            {
+                SetDBVersion(0);
+                return 0;
+            }
+            else
+                return (int)localSettings.Values[KEY_DBVERSION];
+        }
+
+        private static void SetDBVersion(int value)
+        {
+            localSettings.Values[KEY_DBVERSION] = value;
         }
     }
 }
