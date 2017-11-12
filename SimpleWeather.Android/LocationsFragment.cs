@@ -57,6 +57,7 @@ namespace SimpleWeather.Droid
         private View searchViewLayout;
         private EditText searchView;
         private ImageView clearButtonView;
+        private ProgressBar progressBar;
         private bool inSearchUI;
         private String selected_query = string.Empty;
 
@@ -141,7 +142,8 @@ namespace SimpleWeather.Droid
             mode.CustomView = searchViewLayout;
             EnterSearchUi();
             // Hide FAB in actionmode
-            addLocationsButton.Visibility = ViewStates.Gone;
+            if (addLocationsButton != null)
+                addLocationsButton.Visibility = ViewStates.Gone;
             return true;
         }
 
@@ -390,15 +392,16 @@ namespace SimpleWeather.Droid
             await LoadGPSPanel();
             foreach (LocationData location in locations)
             {
-                int index = locations.IndexOf(location);
-
                 LocationPanelViewModel panel = new LocationPanelViewModel()
                 {
                     LocationData = location
                 };
 
-                mAdapter.Add(index, panel);
+                mAdapter.Add(panel);
+            }
 
+            foreach (LocationData location in locations)
+            {
                 await Task.Run(async () =>
                 {
                     var wLoader = new WeatherDataLoader(this, this, location);
@@ -617,6 +620,19 @@ namespace SimpleWeather.Droid
             searchView.RequestFocus();
         }
 
+        private void ShowLoading(bool show)
+        {
+            if (mSearchFragment == null)
+                return;
+
+            progressBar.Visibility = show ? ViewStates.Visible : ViewStates.Gone;
+
+            if (show || (!show && String.IsNullOrEmpty(searchView.Text)))
+                clearButtonView.Visibility = ViewStates.Gone;
+            else
+                clearButtonView.Visibility = ViewStates.Visible;
+        }
+
         private void AddSearchFragment()
         {
             if (mSearchFragment != null)
@@ -640,19 +656,29 @@ namespace SimpleWeather.Droid
                     return;
                 }
 
-                // Show loading dialog
-                LoadingDialog progDialog = new LoadingDialog(Activity);
-                progDialog.Show();
+                // Cancel other tasks
+                mSearchFragment.CtsCancel();
 
-                var locData = await Settings.GetLocationData();
-                int index = locData.Count;
+                ShowLoading(true);
+
+                if (mSearchFragment.CtsCancelRequested())
+                {
+                    ShowLoading(false);
+                    return;
+                }
 
                 // Check if location already exists
+                var locData = await Settings.GetLocationData();
                 if (locData.Exists(l => l.query == selected_query))
                 {
-                    // Hide dialog
-                    progDialog.Dismiss();
+                    ShowLoading(false);
                     ExitSearchUi();
+                    return;
+                }
+
+                if (mSearchFragment.CtsCancelRequested())
+                {
+                    ShowLoading(false);
                     return;
                 }
 
@@ -662,10 +688,14 @@ namespace SimpleWeather.Droid
 
                 if (weather == null)
                 {
-                    // Hide dialog
-                    progDialog.Dismiss();
+                    ShowLoading(false);
                     return;
                 }
+
+                // We got our data so disable controls just in case
+                mAdapter.Dataset.Clear();
+                mAdapter.NotifyDataSetChanged();
+                searchFragment.View.FindViewById<RecyclerView>(Resource.Id.recycler_view).Enabled = false;
 
                 // Save data
                 var location = new LocationData(selected_query);
@@ -678,16 +708,16 @@ namespace SimpleWeather.Droid
                 };
 
                 // Set properties if necessary
-                if (EditMode)
-                    panel.EditMode = true;
+                if (EditMode) panel.EditMode = true;
 
-                mAdapter.Add(index, panel);
+                int index = mAdapter.Dataset.Count;
+                mAdapter.Add(panel);
 
                 // Update shortcuts
                 await Task.Run(() => Shortcuts.ShortcutCreator.UpdateShortcuts());
 
                 // Hide dialog
-                progDialog.Dismiss();
+                ShowLoading(false);
                 ExitSearchUi();
             });
             searchFragment.UserVisibleHint = false;
@@ -699,6 +729,7 @@ namespace SimpleWeather.Droid
         {
             searchView = searchViewLayout.FindViewById<EditText>(Resource.Id.search_view);
             clearButtonView = searchViewLayout.FindViewById<ImageView>(Resource.Id.search_close_button);
+            progressBar = searchViewLayout.FindViewById<ProgressBar>(Resource.Id.search_progressBar);
             clearButtonView.Click += delegate { searchView.Text = String.Empty; };
             searchView.TextChanged += (object sender, TextChangedEventArgs e) =>
             {

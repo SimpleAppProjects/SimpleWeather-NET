@@ -206,8 +206,6 @@ namespace SimpleWeather.UWP
             await LoadGPSPanel();
             foreach (LocationData location in locations)
             {
-                int index = locations.IndexOf(location);
-
                 LocationPanelViewModel panel = new LocationPanelViewModel()
                 {
                     // Save index to tag (to easily retreive)
@@ -464,18 +462,30 @@ namespace SimpleWeather.UWP
                 return;
             }
 
-            // Show loading dialog
-            await LoadingDialog.ShowAsync();
+            // Cancel other tasks
+            cts.Cancel();
+            cts = new CancellationTokenSource();
 
-            var locData = await Settings.GetLocationData();
-            int index = locData.Count;
+            LoadingRing.IsActive = true;
+
+            if (cts.IsCancellationRequested)
+            {
+                LoadingRing.IsActive = false;
+                return;
+            }
 
             // Check if location already exists
+            var locData = await Settings.GetLocationData();
             if (locData.Exists(l => l.query == selected_query))
             {
-                // Hide dialog
-                await LoadingDialog.HideAsync();
+                LoadingRing.IsActive = false;
                 ShowAddLocationsPanel(false);
+                return;
+            }
+
+            if (cts.IsCancellationRequested)
+            {
+                LoadingRing.IsActive = false;
                 return;
             }
 
@@ -485,10 +495,12 @@ namespace SimpleWeather.UWP
 
             if (weather == null)
             {
-                // Hide dialog
-                await LoadingDialog.HideAsync();
+                LoadingRing.IsActive = false;
                 return;
             }
+
+            // We got our data so disable controls just in case
+            sender.IsSuggestionListOpen = false;
 
             // Save data
             var location = new LocationData(selected_query);
@@ -501,19 +513,14 @@ namespace SimpleWeather.UWP
             };
 
             // Set properties if necessary
-            if (EditMode)
-            {
-                panelView.EditMode = true;
-            }
+            if (EditMode) panelView.EditMode = true;
 
             // Add to collection
             LocationPanels.Add(panelView);
 
             // Hide add locations panel
-            await LoadingDialog.HideAsync();
+            LoadingRing.IsActive = false;
             ShowAddLocationsPanel(false);
-
-            sender.IsSuggestionListOpen = false;
         }
 
         private void AddLocationsButton_Click(object sender, RoutedEventArgs e)

@@ -33,7 +33,7 @@ namespace SimpleWeather.Droid
             DrawerLayout drawer = FindViewById<DrawerLayout>(Resource.Id.drawer_layout);
             Android.Support.V7.App.ActionBarDrawerToggle toggle = new Android.Support.V7.App.ActionBarDrawerToggle(
                     this, drawer, toolbar, Resource.String.navigation_drawer_open, Resource.String.navigation_drawer_close);
-            drawer.SetDrawerListener(toggle);
+            drawer.AddDrawerListener(toggle);
             toggle.SyncState();
 
             NavigationView navigationView = FindViewById<NavigationView>(Resource.Id.nav_view);

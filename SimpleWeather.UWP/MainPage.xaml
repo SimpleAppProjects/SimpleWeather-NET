@@ -249,85 +249,70 @@
         </Style>
     </Page.Resources>
 
-    <StackPanel Background="#006FBF" x:DeferLoadStrategy="Lazy" x:Name="MainPanel">
-        <Viewbox Name="AppLogo" Height="100" Margin="0,25,0,0">
-            <Image Source="Assets/AppLogo.png" Stretch="None" />
-        </Viewbox>
-        <Grid Height="80" Padding="25,0" RequestedTheme="Dark" Name="SearchGrid" Visibility="Collapsed">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <AutoSuggestBox x:Name="Location" x:Uid="LocationSearchHint" PlaceholderText="Enter Location" FontSize="24" VerticalAlignment="Center" QueryIcon="Find"
+    <ScrollViewer Background="#006FBF">
+        <StackPanel x:DeferLoadStrategy="Lazy" x:Name="MainPanel" VerticalAlignment="Top">
+            <Viewbox Name="AppLogo" Height="100" Margin="0,25,0,0">
+                <Image Source="Assets/AppLogo.png" Stretch="None" />
+            </Viewbox>
+            <Grid MinHeight="80" Padding="25,0" RequestedTheme="Dark" Name="SearchGrid" Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <AutoSuggestBox x:Name="Location" x:Uid="LocationSearchHint" PlaceholderText="Enter Location" FontSize="24" VerticalAlignment="Center" QueryIcon="Find"
                             RequestedTheme="Light" TextChanged="Location_TextChanged" SuggestionChosen="Location_SuggestionChosen" QuerySubmitted="Location_QuerySubmitted"
                             Grid.Row="0" UpdateTextOnSelect="False" Style="{StaticResource AutoSuggestBoxStyle}">
-                <AutoSuggestBox.ItemTemplate>
-                    <DataTemplate>
-                        <localcontrols:LocationQuery MinWidth="300" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
-                    </DataTemplate>
-                </AutoSuggestBox.ItemTemplate>
-                <AutoSuggestBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel />
-                    </ItemsPanelTemplate>
-                </AutoSuggestBox.ItemsPanel>
-            </AutoSuggestBox>
-            <Button Grid.Row="1" Click="GPS_Click"
+                    <AutoSuggestBox.ItemTemplate>
+                        <DataTemplate>
+                            <localcontrols:LocationQuery MinWidth="300" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
+                        </DataTemplate>
+                    </AutoSuggestBox.ItemTemplate>
+                    <AutoSuggestBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel />
+                        </ItemsPanelTemplate>
+                    </AutoSuggestBox.ItemsPanel>
+                </AutoSuggestBox>
+                <Button Name="GPSButton" Grid.Row="1" Click="GPS_Click"
                     HorizontalAlignment="Center" Margin="10">
-                <Button.Content>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock x:Uid="Label_GPSFollow" Text="Follow Location via GPS" VerticalAlignment="Center"
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock x:Uid="Label_GPSFollow" Text="Follow Location via GPS" VerticalAlignment="Center"
                                    Padding="5,0" FontSize="12"/>
-                        <TextBlock Text="&#xE7B7;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center"
+                            <TextBlock Text="&#xE7B7;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center"
                                    Padding="5,0" FontSize="12"/>
-                    </StackPanel>
-                </Button.Content>
-            </Button>
-        </Grid>
-        <Grid x:Name="APIGrid" Visibility="{x:Bind SearchGrid.Visibility, Mode=OneWay}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <ComboBox x:Name="APIComboBox" HorizontalAlignment="Center" VerticalAlignment="Top" Width="300" Margin="0,10"
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+                <ProgressRing Name="LoadingRing" Grid.Row="2" Margin="10"
+                          Height="35" Width="35" Foreground="White"
+                          HorizontalAlignment="Center" 
+                          IsActive="False" Visibility="{x:Bind LoadingRing.IsActive, Mode=OneWay}" />
+            </Grid>
+            <Grid x:Name="APIGrid" Visibility="{x:Bind SearchGrid.Visibility, Mode=OneWay}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <ComboBox x:Name="APIComboBox" HorizontalAlignment="Center" VerticalAlignment="Top" Width="300" Margin="0,10"
                   Background="White" BorderThickness="0" Grid.Row="0" x:Uid="API_Box" PlaceholderText="Select Weather Provider" SelectionChanged="APIComboBox_SelectionChanged" FontSize="12">
-                <ComboBox.Items>
-                    <TextBlock Text="WeatherUnderground"/>
-                    <TextBlock Text="Yahoo Weather"/>
-                </ComboBox.Items>
-                <ComboBox.Header>
-                    <TextBlock x:Uid="API_Label" Text="Weather Provider" Foreground="White" Padding="5,0" FontSize="12" />
-                </ComboBox.Header>
-            </ComboBox>
-            <TextBox x:Name="KeyEntry" HorizontalAlignment="Center" Width="300" Grid.Row="1" FontSize="12"
+                    <ComboBox.Items>
+                        <TextBlock Text="WeatherUnderground"/>
+                        <TextBlock Text="Yahoo Weather"/>
+                    </ComboBox.Items>
+                    <ComboBox.Header>
+                        <TextBlock x:Uid="API_Label" Text="Weather Provider" Foreground="White" Padding="5,0" FontSize="12" />
+                    </ComboBox.Header>
+                </ComboBox>
+                <TextBox x:Name="KeyEntry" HorizontalAlignment="Center" Width="300" Grid.Row="1" FontSize="12"
                  BorderThickness="0" x:Uid="KeyEntry" PlaceholderText="API Key" Padding="10,7" Visibility="Visible"
                      TextChanged="KeyEntry_TextChanged" GotFocus="KeyEntry_GotFocus">
-                <TextBox.Header>
-                    <TextBlock x:Uid="Message_EnterAPIKey" Text="Please enter an API key" Foreground="White" Padding="5,0" FontSize="12" Visibility="Collapsed" />
-                </TextBox.Header>
-            </TextBox>
-        </Grid>
-        <localcontrols:ProgressDialog x:Name="LoadingDialog" />
-
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="HeightStates">
-                <VisualState x:Name="MobileHeight">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowHeight="0"/>
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="AppLogo.Height" Value="100"/>
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="MediumHeight">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowHeight="480"/>
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="AppLogo.Height" Value="150"/>
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
-    </StackPanel>
+                    <TextBox.Header>
+                        <TextBlock x:Uid="Message_EnterAPIKey" Text="Please enter an API key" Foreground="White" Padding="5,0" FontSize="12" Visibility="Collapsed" />
+                    </TextBox.Header>
+                </TextBox>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
 </Page>

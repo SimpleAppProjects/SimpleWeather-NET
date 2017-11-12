@@ -15,6 +15,8 @@ using Com.Bumptech.Glide;
 using Android.Graphics;
 using Android.Graphics.Drawables;
 using System.Threading.Tasks;
+using SimpleWeather.Droid.Utils;
+using Android.Util;
 
 namespace SimpleWeather.Droid
 {
@@ -64,7 +66,8 @@ namespace SimpleWeather.Droid
             LocationPanel v = new LocationPanel(parent.Context);
             // set the view's size, margins, paddings and layout parameters
             RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent);
-            layoutParams.SetMargins(0, 10, 0, 10); // l, t, r, b
+            int margin = (int)TypedValue.ApplyDimension(ComplexUnitType.Dip, 4, parent.Context.Resources.DisplayMetrics);
+            layoutParams.SetMargins(0, margin, 0, margin); // l, t, r, b
             v.LayoutParameters = layoutParams;
             return new ViewHolder(v, OnClick, OnLongClick);
         }
@@ -80,20 +83,20 @@ namespace SimpleWeather.Droid
 
             // Background
             Glide.Load(panelView.Background)
+                 .AsBitmap()
                  .CenterCrop()
-                 .Placeholder(new ColorDrawable(new Color(ContextCompat.GetColor(context, Resource.Color.colorPrimary))))
-                 .Into(vh.mBgImageView);
-
-            vh.mLocView.SetWeather(panelView);
+                 .Error(vh.mLocView.colorDrawable)
+                 .Placeholder(vh.mLocView.colorDrawable)
+                 .Into(new GlideBitmapViewTarget(vh.mBgImageView, () => vh.mLocView.SetWeather(panelView)));
         }
 
         // Return the size of your dataset (invoked by the layout manager)
         public override int ItemCount => mDataset.Count;
 
-        public void Add(int position, LocationPanelViewModel item)
+        public void Add(LocationPanelViewModel item)
         {
-            mDataset.Insert(position, item);
-            NotifyItemInserted(position);
+            mDataset.Add(item);
+            NotifyItemInserted(mDataset.IndexOf(item));
         }
 
         public void Remove(int position)
@@ -113,10 +116,10 @@ namespace SimpleWeather.Droid
             return mDataset[position];
         }
 
-        private void RemoveLocation(int position)
+        private async void RemoveLocation(int position)
         {
             // Remove location from list
-            Task.Run(() => Settings.DeleteLocation(mDataset[position].LocationData.query));
+            await Settings.DeleteLocation(mDataset[position].LocationData.query);
 
             // Remove panel
             Remove(position);

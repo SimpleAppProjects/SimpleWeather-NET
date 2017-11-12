@@ -12,6 +12,7 @@ using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using Android.Text.Format;
 using Android.OS;
+using Android.Service.Notification;
 
 namespace SimpleWeather.Droid.Notifications
 {
@@ -128,13 +129,22 @@ namespace SimpleWeather.Droid.Notifications
 
             if (mNotification == null)
             {
-                NotificationCompat.Builder mBuilder =
-                    new NotificationCompat.Builder(App.Context, NOT_CHANNEL_ID)
-                    .SetSmallIcon(Resource.Drawable.ic_logo)
-                    .SetPriority(NotificationCompat.PriorityLow)
-                    .SetOngoing(true) as NotificationCompat.Builder;
+                StatusBarNotification statNot = null;
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.M)
+                    statNot = mNotifyMgr.GetActiveNotifications().First(not => not.Id == PERSISTENT_NOT_ID);
 
-                mNotification = mBuilder.Build();
+                if (statNot != null)
+                    mNotification = statNot.Notification;
+                else
+                {
+                    NotificationCompat.Builder mBuilder =
+                        new NotificationCompat.Builder(App.Context, NOT_CHANNEL_ID)
+                        .SetSmallIcon(Resource.Drawable.ic_logo)
+                        .SetPriority(NotificationCompat.PriorityLow)
+                        .SetOngoing(true) as NotificationCompat.Builder;
+
+                    mNotification = mBuilder.Build();
+                }
             }
 
             // Build update

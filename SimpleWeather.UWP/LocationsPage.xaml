@@ -358,6 +358,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <AutoSuggestBox x:Name="Location" FontSize="24" x:Uid="LocationSearchHint" PlaceholderText="Enter Location" Grid.Column="0" RequestedTheme="Light"
                             QueryIcon="Find" TextChanged="Location_TextChanged" SuggestionChosen="Location_SuggestionChosen" QuerySubmitted="Location_QuerySubmitted"
@@ -374,6 +375,9 @@
                         </AutoSuggestBox.ItemsPanel>
                     </AutoSuggestBox>
                     <Button x:Name="Cancel" Content="Cancel" Width="75" Click="Cancel_Click" Grid.Column="1"/>
+                    <ProgressRing Name="LoadingRing" Grid.Column="2" Foreground="#FF006FBF" Margin="10,0"
+                                  Height="{x:Bind Cancel.ActualHeight}" Width="{x:Bind Cancel.ActualHeight}"
+                                  Visibility="{x:Bind LoadingRing.IsActive, Mode=OneWay}" IsActive="False"/>
                 </Grid>
                 <Button x:Name="AddLocationsButton" HorizontalAlignment="Stretch" Margin="10,5" Height="35" Click="AddLocationsButton_Click">
                     <Grid Width="Auto">
@@ -389,7 +393,6 @@
                 </Button>
             </StackPanel>
         </ScrollViewer>
-        <localcontrols:ProgressDialog x:Name="LoadingDialog" Grid.RowSpan="3" />
 
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>

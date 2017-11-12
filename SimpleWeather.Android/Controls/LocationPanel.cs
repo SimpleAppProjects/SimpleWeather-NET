@@ -6,10 +6,9 @@ using Android.Widget;
 using Android.Support.V7.Widget;
 using Android.Graphics;
 using Android.Graphics.Drawables;
-using Android.Media;
 using Android.Support.V4.Content;
-using SimpleWeather.Droid.Utils;
 using Com.Bumptech.Glide;
+using Android.OS;
 
 namespace SimpleWeather.Droid.Controls
 {
@@ -21,6 +20,7 @@ namespace SimpleWeather.Droid.Controls
         private TextView locationTempView;
         private TextView locationWeatherIcon;
         private ProgressBar progressBar;
+        public Drawable colorDrawable { get; private set; }
 
         public LocationPanel(Context context) :
             base(context)
@@ -57,6 +57,19 @@ namespace SimpleWeather.Droid.Controls
             locationTempView = viewLayout.FindViewById<TextView>(Resource.Id.weather_temp);
             locationWeatherIcon = viewLayout.FindViewById<TextView>(Resource.Id.weather_icon);
             progressBar = viewLayout.FindViewById<ProgressBar>(Resource.Id.progressBar);
+            colorDrawable = new ColorDrawable(new Color(ContextCompat.GetColor(context, Resource.Color.colorPrimary)));
+
+            // NOTE: Bug: Explicitly set tintmode on Lollipop devices
+            if (Build.VERSION.SdkInt == BuildVersionCodes.Lollipop)
+                progressBar.IndeterminateTintMode = PorterDuff.Mode.SrcIn;
+
+            // Remove extra (compat) padding on pre-Lollipop devices
+            if (Build.VERSION.SdkInt < BuildVersionCodes.Lollipop)
+            {
+                PreventCornerOverlap = false;
+                CardElevation = 0;
+                MaxCardElevation = 0;
+            }
 
             ShowLoading(true);
         }
@@ -67,7 +80,8 @@ namespace SimpleWeather.Droid.Controls
             Glide.With(Context)
                  .Load(panelView.Background)
                  .CenterCrop()
-                 .Placeholder(new ColorDrawable(new Color(ContextCompat.GetColor(Context, Resource.Color.colorPrimary))))
+                 .Error(colorDrawable)
+                 .Placeholder(colorDrawable)
                  .Into(bgImageView);
         }
 
@@ -78,13 +92,14 @@ namespace SimpleWeather.Droid.Controls
             locationWeatherIcon.Text = panelView.WeatherIcon;
             Tag = panelView.LocationData;
 
-            ShowLoading(false);
+            if (panelView.LocationName != null && Tag != null)
+                ShowLoading(false);
         }
 
         public void ShowLoading(bool show)
         {
             progressBar.Visibility = show ? ViewStates.Visible : ViewStates.Gone;
-            Enabled = show ? false : true;
+            Clickable = show ? false : true;
         }
     }
 }

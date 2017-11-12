@@ -27,6 +27,7 @@ using Android;
 using Android.Locations;
 using Android.Graphics;
 using Com.Bumptech.Glide;
+using Android.Util;
 
 namespace SimpleWeather.Droid
 {
@@ -329,7 +330,7 @@ namespace SimpleWeather.Droid
                     // Start
                     int currCol = 0;
                     int currRow = 0;
-                    for(int i = 0; i < panel.ChildCount; i++)
+                    for (int i = 0; i < panel.ChildCount; i++)
                     {
                         View view = panel.GetChildAt(i);
 
@@ -337,7 +338,8 @@ namespace SimpleWeather.Droid
                             Android.Support.V7.Widget.GridLayout.InvokeSpec(currRow, 1.0f),
                             Android.Support.V7.Widget.GridLayout.InvokeSpec(currCol, 1.0f));
                         layoutParams.Width = 0;
-                        ViewCompat.SetPaddingRelative(view, 20, 0, 20, 0);
+                        int paddingVert = (int)TypedValue.ApplyDimension(ComplexUnitType.Dip, 10, view.Context.Resources.DisplayMetrics);
+                        ViewCompat.SetPaddingRelative(view, paddingVert, 0, paddingVert, 0); // s, t, e, b
                         view.LayoutParameters = layoutParams;
                         if (currCol == maxColumns - 1)
                         {
@@ -522,7 +524,7 @@ namespace SimpleWeather.Droid
 
         private void ForecastSwitch_CheckedChange(object sender, CompoundButton.CheckedChangeEventArgs e)
         {
-            forecastSwitch.Text = e.IsChecked ? 
+            forecastSwitch.Text = e.IsChecked ?
                 Activity.GetString(Resource.String.switch_details) : Activity.GetString(Resource.String.switch_daily);
             forecastScrollView.Visibility = e.IsChecked ? ViewStates.Gone : ViewStates.Visible;
             txtForecastView.Visibility = e.IsChecked ? ViewStates.Visible : ViewStates.Gone;
@@ -530,7 +532,7 @@ namespace SimpleWeather.Droid
 
         private void SetView(WeatherNowViewModel weatherView)
         {
-            Activity.RunOnUiThread(() =>
+            Activity?.RunOnUiThread(() =>
             {
                 // Background
                 refreshLayout.Background = new ColorDrawable(weatherView.PendingBackground);

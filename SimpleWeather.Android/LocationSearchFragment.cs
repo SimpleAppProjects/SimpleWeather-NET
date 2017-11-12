@@ -16,6 +16,10 @@ using SimpleWeather.Droid.Utils;
 using SimpleWeather.Droid.Helpers;
 using System.Threading;
 using System.Threading.Tasks;
+using Android.Support.V4.Content;
+using Android.Graphics;
+using Android.Support.V4.Graphics.Drawable;
+using Android.Util;
 
 namespace SimpleWeather.Droid
 {
@@ -24,6 +28,9 @@ namespace SimpleWeather.Droid
         private RecyclerView mRecyclerView;
         private LocationQueryAdapter mAdapter;
         private RecyclerView.LayoutManager mLayoutManager;
+        private ProgressBar mProgressBar;
+        private View mClearButton;
+        private EditText mSearchView;
 
         private String selected_query = String.Empty;
 
@@ -34,6 +41,17 @@ namespace SimpleWeather.Droid
             // Required empty public constructor
             ClickListener = LocationSearchFragment_clickListener;
             cts = new CancellationTokenSource();
+        }
+
+        public void CtsCancel()
+        {
+            cts.Cancel();
+            cts = new CancellationTokenSource();
+        }
+
+        public bool CtsCancelRequested()
+        {
+            return (bool)cts?.IsCancellationRequested;
         }
 
         public event EventHandler<RecyclerClickEventArgs> ClickListener;
@@ -66,9 +84,17 @@ namespace SimpleWeather.Droid
                 return;
             }
 
-            // Show loading dialog
-            LoadingDialog progDialog = new LoadingDialog(Activity);
-            progDialog.Show();
+            // Cancel pending searches
+            cts.Cancel();
+            cts = new CancellationTokenSource();
+
+            ShowLoading(true);
+
+            if (cts.IsCancellationRequested)
+            {
+                ShowLoading(false);
+                return;
+            }
 
             // Get Weather Data
             WeatherData.Weather weather = await Settings.GetWeatherData(selected_query);
@@ -77,10 +103,14 @@ namespace SimpleWeather.Droid
 
             if (weather == null)
             {
-                // Hide dialog
-                progDialog.Dismiss();
+                ShowLoading(false);
                 return;
             }
+
+            // We got our data so disable controls just in case
+            mAdapter.Dataset.Clear();
+            mAdapter.NotifyDataSetChanged();
+            mRecyclerView.Enabled = false;
 
             // Save weather data
             var location = new WeatherData.LocationData(selected_query);
@@ -96,11 +126,19 @@ namespace SimpleWeather.Droid
             // make sure gps feature is off
             Settings.FollowGPS = false;
             Settings.WeatherLoaded = true;
-            // Hide dialog
-            progDialog.Dismiss();
 
             Activity.StartActivity(intent);
             Activity.FinishAffinity();
+        }
+
+        private void ShowLoading(bool show)
+        {
+            mProgressBar.Visibility = show ? ViewStates.Visible : ViewStates.Gone;
+
+            if (show || (!show && String.IsNullOrEmpty(mSearchView.Text)))
+                mClearButton.Visibility = ViewStates.Gone;
+            else
+                mClearButton.Visibility = ViewStates.Visible;
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -115,6 +153,16 @@ namespace SimpleWeather.Droid
 
         private void SetupView(View view)
         {
+            mProgressBar = this.Activity.FindViewById<ProgressBar>(Resource.Id.search_progressBar);
+            mClearButton = this.Activity.FindViewById(Resource.Id.search_close_button);
+            mSearchView = this.Activity.FindViewById<EditText>(Resource.Id.search_view);
+
+            if (Build.VERSION.SdkInt < BuildVersionCodes.Lollipop)
+            {
+                mProgressBar.IndeterminateDrawable = 
+                    ContextCompat.GetDrawable(this.Activity, Resource.Drawable.progressring);
+            }
+
             mRecyclerView = view.FindViewById<RecyclerView>(Resource.Id.recycler_view);
 
             // use this setting to improve performance if you know that changes

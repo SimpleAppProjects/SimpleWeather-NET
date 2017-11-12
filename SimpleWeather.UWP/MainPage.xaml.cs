@@ -36,6 +36,8 @@ namespace SimpleWeather.UWP
         {
             this.InitializeComponent();
 
+            this.SizeChanged += MainPage_SizeChanged;
+
             // Views
             LocationQuerys = new ObservableCollection<LocationQueryViewModel>();
 
@@ -62,6 +64,38 @@ namespace SimpleWeather.UWP
                 titlebar.BackgroundColor = App.AppColor;
                 titlebar.ButtonBackgroundColor = titlebar.BackgroundColor;
                 titlebar.ForegroundColor = Colors.White;
+            }
+        }
+
+        private void MainPage_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ResizeControls();
+        }
+
+        private void ResizeControls()
+        {
+            if (MainPanel != null)
+            {
+                if (Math.Abs(MainPanel.ActualHeight - this.ActualHeight) <= 100)
+                {
+                    MainPanel.Margin = new Thickness(0);
+                    MainPanel.VerticalAlignment = VerticalAlignment.Center;
+                }
+                else
+                {
+                    MainPanel.Margin = new Thickness(0, (this.ActualHeight / 8), 0, 0);
+                    MainPanel.VerticalAlignment = VerticalAlignment.Top;
+                }
+
+                if (this.ActualWidth > 640)
+                    Location.Width = ActualWidth / 2;
+                else
+                    Location.Width = double.NaN;
+
+                if (this.ActualHeight > 480)
+                    AppLogo.Height = 150;
+                else
+                    AppLogo.Height = 100;
             }
         }
 
@@ -168,13 +202,22 @@ namespace SimpleWeather.UWP
             {
                 TextBlock header = KeyEntry.Header as TextBlock;
                 header.Visibility = Visibility.Visible;
-                KeyEntry.BorderBrush = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Red);
+                KeyEntry.BorderBrush = new SolidColorBrush(Colors.Red);
                 KeyEntry.BorderThickness = new Thickness(2);
                 return;
             }
 
-            // Show loading dialog
-            await LoadingDialog.ShowAsync();
+            // Cancel other tasks
+            cts.Cancel();
+            cts = new CancellationTokenSource();
+
+            LoadingRing.IsActive = true;
+
+            if (cts.IsCancellationRequested)
+            {
+                EnableControls(true);
+                return;
+            }
 
             // Weather Data
             Weather weather = await Settings.GetWeatherData(selected_query);
@@ -183,10 +226,16 @@ namespace SimpleWeather.UWP
 
             if (weather == null)
             {
-                // Hide dialog
-                await LoadingDialog.HideAsync();
+                EnableControls(true);
                 return;
             }
+
+            // We got our data so disable controls just in case
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                EnableControls(false);
+                sender.IsSuggestionListOpen = false;
+            });
 
             // Save weather data
             var location = new LocationData(selected_query);
@@ -198,13 +247,20 @@ namespace SimpleWeather.UWP
             // make sure gps feature is off
             Settings.FollowGPS = false;
             Settings.WeatherLoaded = true;
-            // Hide dialog
-            await LoadingDialog.HideAsync();
+
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                sender.IsSuggestionListOpen = false;
                 this.Frame.Navigate(typeof(Shell), location);
             });
+        }
+
+        private void EnableControls(bool Enable)
+        {
+            Location.IsEnabled = Enable;
+            GPSButton.IsEnabled = Enable;
+            APIComboBox.IsEnabled = Enable;
+            KeyEntry.IsEnabled = Enable;
+            LoadingRing.IsActive = !Enable;
         }
 
         private async Task Restore()
@@ -217,6 +273,9 @@ namespace SimpleWeather.UWP
             {
                 var mainPanel = FindName("MainPanel") as FrameworkElement;
                 mainPanel.Visibility = Visibility.Visible;
+
+                // Sizing
+                ResizeControls();
 
                 // Check for key
                 if (!String.IsNullOrEmpty(Settings.API_KEY))
@@ -232,6 +291,17 @@ namespace SimpleWeather.UWP
         {
             Button button = sender as Button;
             button.IsEnabled = false;
+            LoadingRing.IsActive = true;
+
+            // Cancel other tasks
+            cts.Cancel();
+            cts = new CancellationTokenSource();
+
+            if (cts.IsCancellationRequested)
+            {
+                EnableControls(true);
+                return;
+            }
 
             GeolocationAccessStatus geoStatus = GeolocationAccessStatus.Unspecified;
 
@@ -243,6 +313,12 @@ namespace SimpleWeather.UWP
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+            }
+
+            if (cts.IsCancellationRequested)
+            {
+                EnableControls(true);
+                return;
             }
 
             Geolocator geolocal = new Geolocator() { DesiredAccuracyInMeters = 5000, ReportInterval = 900000, MovementThreshold = 1600 };
@@ -289,12 +365,21 @@ namespace SimpleWeather.UWP
             // Access to location granted
             if (geoPos != null)
             {
+                if (cts.IsCancellationRequested)
+                {
+                    EnableControls(true);
+                    return;
+                }
+
                 button.IsEnabled = false;
-                await LoadingDialog.ShowAsync();
 
                 await Task.Run(async () =>
                 {
-                    if (cts.IsCancellationRequested) return;
+                    if (cts.IsCancellationRequested)
+                    {
+                        EnableControls(true);
+                        return;
+                    }
 
                     LocationQueryViewModel view = await GeopositionQuery.GetLocation(geoPos);
 
@@ -307,7 +392,8 @@ namespace SimpleWeather.UWP
                 if (String.IsNullOrWhiteSpace(selected_query))
                 {
                     // Stop since there is no valid query
-                    goto exit;
+                    EnableControls(true);
+                    return;
                 }
 
                 // Stop if using WeatherUnderground and API Key is empty
@@ -318,7 +404,14 @@ namespace SimpleWeather.UWP
                     KeyEntry.BorderBrush = new SolidColorBrush(Colors.Red);
                     KeyEntry.BorderThickness = new Thickness(2);
 
-                    goto exit;
+                    EnableControls(true);
+                    return;
+                }
+
+                if (cts.IsCancellationRequested)
+                {
+                    EnableControls(true);
+                    return;
                 }
 
                 // Weather Data
@@ -328,8 +421,12 @@ namespace SimpleWeather.UWP
 
                 if (weather == null)
                 {
-                    goto exit;
+                    EnableControls(true);
+                    return;
                 }
+
+                // We got our data so disable controls just in case
+                EnableControls(false);
 
                 // Save weather data
                 var location = new LocationData(selected_query, geoPos);
@@ -340,14 +437,11 @@ namespace SimpleWeather.UWP
 
                 Settings.FollowGPS = true;
                 Settings.WeatherLoaded = true;
-                // Hide dialog
-                await LoadingDialog.HideAsync();
+
                 this.Frame.Navigate(typeof(Shell), location);
             }
-
-            exit:
-            button.IsEnabled = true;
-            await LoadingDialog.HideAsync();
+            else
+                EnableControls(true);
         }
 
         private void APIComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

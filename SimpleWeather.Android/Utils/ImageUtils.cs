@@ -5,6 +5,8 @@ using Android.Content.Res;
 using System.IO;
 using Android.Support.V4.Content.Res;
 using Android.Content;
+using Com.Bumptech.Glide.Request.Target;
+using Android.Graphics.Drawables;
 
 namespace SimpleWeather.Droid.Utils
 {
@@ -121,6 +123,35 @@ namespace SimpleWeather.Droid.Utils
             }
 
             return dest;
+        }
+    }
+
+    public class GlideBitmapViewTarget : BitmapImageViewTarget
+    {
+        private Action LoadAction;
+
+        public GlideBitmapViewTarget(Android.Widget.ImageView imageView, Action loadAction) :
+            base(imageView)
+        {
+            LoadAction = loadAction;
+        }
+
+        public override void OnLoadFailed(Java.Lang.Exception p0, Drawable p1)
+        {
+            base.OnLoadFailed(p0, p1);
+            LoadAction?.Invoke();
+        }
+
+        public override void SetDrawable(Drawable p0)
+        {
+            base.SetDrawable(p0);
+            LoadAction?.Invoke();
+        }
+
+        protected override void SetResource(Bitmap p0)
+        {
+            base.SetResource(p0);
+            LoadAction?.Invoke();
         }
     }
 }

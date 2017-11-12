@@ -30,6 +30,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="0dip"
     android:layout_height="0dip"
     android:elevation="@dimen/appbar_elevation"
@@ -50,15 +51,32 @@
         android:textColor="@android:color/black"
         android:textColorHint="@android:color/secondary_text_dark" />
 
+    <ProgressBar
+        android:id="@+id/search_progressBar"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_gravity="center_vertical"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/colorPrimary"
+        android:paddingEnd="16dp"
+        android:paddingLeft="0dp"
+        android:paddingRight="16dp"
+        android:paddingStart="0dp"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/search_close_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
+        android:paddingBottom="16dp"
         android:paddingEnd="16dp"
-        android:paddingRight="16dp"
         android:paddingLeft="0dp"
+        android:paddingRight="16dp"
         android:paddingStart="0dp"
+        android:paddingTop="16dp"
         app:srcCompat="@drawable/ic_clear_white_24dp"
         android:tint="@color/colorPrimary" />
 </LinearLayout>

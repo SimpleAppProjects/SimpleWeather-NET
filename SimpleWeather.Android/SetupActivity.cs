@@ -20,6 +20,7 @@ using Android.Runtime;
 using SimpleWeather.Droid.Controls;
 using SimpleWeather.Droid.Utils;
 using System.Collections.Specialized;
+using System.Threading;
 
 namespace SimpleWeather.Droid
 {
@@ -30,6 +31,7 @@ namespace SimpleWeather.Droid
         private LocationSearchFragment mSearchFragment;
         private Android.Support.V7.View.ActionMode mActionMode;
         private View searchViewLayout;
+        private View searchViewContainer;
         private Spinner apiSpinner;
         private EditText keyEntry;
         private EditText searchView;
@@ -37,9 +39,11 @@ namespace SimpleWeather.Droid
         private bool inSearchUI;
 
         private Button gpsFollowButton;
+        private ProgressBar progressBar;
         private Location mLocation;
         private LocationListener mLocListnr;
         private const int PERMISSION_LOCATION_REQUEST_CODE = 0;
+        private CancellationTokenSource cts;
 
         private ActionModeCallback mActionModeCallback = new ActionModeCallback();
 
@@ -64,6 +68,8 @@ namespace SimpleWeather.Droid
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.activity_setup);
 
+            cts = new CancellationTokenSource();
+
             mActionModeCallback.CreateActionMode += OnCreateActionMode;
             mActionModeCallback.DestroyActionMode += OnDestroyActionMode;
 
@@ -76,9 +82,12 @@ namespace SimpleWeather.Droid
                 mActionMode = StartSupportActionMode(mActionModeCallback);
             }
 
+            searchViewContainer = FindViewById(Resource.Id.search_view_container);
             apiSpinner = FindViewById<Spinner>(Resource.Id.api_spinner);
             keyEntry = FindViewById<EditText>(Resource.Id.key_entry);
             gpsFollowButton = FindViewById<Button>(Resource.Id.gps_follow);
+            progressBar = FindViewById<ProgressBar>(Resource.Id.progressBar);
+            progressBar.Visibility = ViewStates.Gone;
 
             /* Event Listeners */
             apiSpinner.ItemSelected += (object sender, AdapterView.ItemSelectedEventArgs e) =>
@@ -122,7 +131,7 @@ namespace SimpleWeather.Droid
                 keyEntry.ClearFocus();
             };
 
-            FindViewById(Resource.Id.search_view_container).Click += delegate
+            searchViewContainer.Click += delegate
             {
                 mActionMode = StartSupportActionMode(mActionModeCallback);
             };
@@ -158,20 +167,46 @@ namespace SimpleWeather.Droid
             }
         }
 
+        private void EnableControls(bool enable)
+        {
+            searchViewContainer.Enabled = enable;
+            apiSpinner.Enabled = enable;
+            keyEntry.Enabled = enable;
+            gpsFollowButton.Enabled = enable;
+            progressBar.Visibility = enable ? ViewStates.Gone : ViewStates.Visible;
+        }
+
         public async Task FetchGeoLocation()
         {
+            gpsFollowButton.Enabled = false;
+
             if (mLocation != null)
             {
                 String selected_query = String.Empty;
-                
-                // Show loading dialog
-                LoadingDialog progDialog = new LoadingDialog(this);
-                progDialog.Show();
+
+                // Cancel other tasks
+                cts.Cancel();
+                cts = new CancellationTokenSource();
+
+                if (cts.IsCancellationRequested)
+                {
+                    EnableControls(true);
+                    return;
+                }
+
+                // Show loading bar
+                progressBar.Visibility = ViewStates.Visible;
 
                 await Task.Run(async () =>
                 {
-                     // Get geo location
-                     LocationQueryViewModel view = await WeatherData.GeopositionQuery.GetLocation(mLocation);
+                    if (cts.IsCancellationRequested)
+                    {
+                        EnableControls(true);
+                        return;
+                    }
+
+                    // Get geo location
+                    LocationQueryViewModel view = await WeatherData.GeopositionQuery.GetLocation(mLocation);
 
                      if (!String.IsNullOrEmpty(view.LocationQuery))
                          selected_query = view.LocationQuery;
@@ -182,15 +217,20 @@ namespace SimpleWeather.Droid
                 if (String.IsNullOrWhiteSpace(selected_query))
                 {
                     // Stop since there is no valid query
-                    progDialog.Dismiss();
+                    EnableControls(true);
                     return;
                 }
 
                 if (String.IsNullOrWhiteSpace(Settings.API_KEY) && Settings.API == Settings.API_WUnderground)
                 {
                     Toast.MakeText(this.ApplicationContext, Resource.String.werror_invalidkey, ToastLength.Short).Show();
-                    // Hide dialog
-                    progDialog.Dismiss();
+                    EnableControls(true);
+                    return;
+                }
+
+                if (cts.IsCancellationRequested)
+                {
+                    EnableControls(true);
                     return;
                 }
 
@@ -201,13 +241,16 @@ namespace SimpleWeather.Droid
 
                 if (weather == null)
                 {
-                    // Hide dialog
-                    progDialog.Dismiss();
+                    EnableControls(true);
                     return;
                 }
 
+                // We got our data so disable controls just in case
+                EnableControls(false);
+
                 // Save weather data
                 var location = new WeatherData.LocationData(selected_query, mLocation);
+                Settings.SaveLastGPSLocData(location);
                 await Settings.DeleteLocations();
                 await Settings.AddLocation(new WeatherData.LocationData(selected_query));
                 Settings.SaveWeatherData(weather);
@@ -218,8 +261,6 @@ namespace SimpleWeather.Droid
 
                 Settings.FollowGPS = true;
                 Settings.WeatherLoaded = true;
-                // Hide dialog
-                progDialog.Dismiss();
 
                 StartActivity(intent);
                 FinishAffinity();
@@ -275,6 +316,7 @@ namespace SimpleWeather.Droid
             }
             else
             {
+                EnableControls(true);
                 Toast.MakeText(this, Resource.String.error_retrieve_location, ToastLength.Short).Show();
             }
         }
@@ -289,7 +331,6 @@ namespace SimpleWeather.Droid
                         if (grantResults.Length > 0
                                 && grantResults[0] == Permission.Granted)
                         {
-
                             // permission was granted, yay!
                             // Do the task you need to do.
                             await FetchGeoLocation();
@@ -298,6 +339,7 @@ namespace SimpleWeather.Droid
                         {
                             // permission denied, boo! Disable the
                             // functionality that depends on this permission.
+                            EnableControls(true);
                             Toast.MakeText(this, Resource.String.error_location_denied, ToastLength.Short).Show();
                         }
                         return;
@@ -375,6 +417,10 @@ namespace SimpleWeather.Droid
             {
                 if (mSearchFragment != null)
                 {
+                    // Cancel pending searches
+                    cts.Cancel();
+                    cts = new CancellationTokenSource();
+
                     clearButtonView.Visibility = String.IsNullOrEmpty(e.Text.ToString()) ? ViewStates.Gone : ViewStates.Visible;
                     mSearchFragment.FetchLocations(e.Text.ToString());
 

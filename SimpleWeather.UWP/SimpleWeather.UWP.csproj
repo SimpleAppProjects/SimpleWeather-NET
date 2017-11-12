@@ -231,9 +231,6 @@
     <Compile Include="Controls\LocationQuery.xaml.cs">
       <DependentUpon>LocationQuery.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ProgressDialog.xaml.cs">
-      <DependentUpon>ProgressDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\Snackbar.cs" />
     <Compile Include="Controls\TextForecastItem.xaml.cs">
       <DependentUpon>TextForecastItem.xaml</DependentUpon>
@@ -324,10 +321,6 @@
     <Page Include="Controls\LocationQuery.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\ProgressDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\TextForecastItem.xaml">
       <SubType>Designer</SubType>

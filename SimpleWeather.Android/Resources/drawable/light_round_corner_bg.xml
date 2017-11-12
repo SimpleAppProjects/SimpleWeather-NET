@@ -25,7 +25,7 @@
     <!-- Background -->
     <item>
         <shape>
-            <solid android:color="#10080808" />
+            <solid android:color="@color/cardview_light_background" />
             <corners android:radius="4dp" />
         </shape>
     </item>

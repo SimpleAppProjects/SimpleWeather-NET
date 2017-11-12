@@ -47,6 +47,19 @@
                 android:textColor="@android:color/white"
                 app:backgroundTint="@color/colorPrimaryLight" />
 
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="@style/Widget.AppCompat.ProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:indeterminate="true"
+                android:indeterminateTint="@android:color/white"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
             <LinearLayout
                 android:id="@+id/api_region"
                 android:layout_width="match_parent"

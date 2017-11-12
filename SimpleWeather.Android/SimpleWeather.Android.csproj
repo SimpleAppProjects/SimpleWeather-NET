@@ -182,7 +182,6 @@
     <Compile Include="AppCompatPreferenceActivity.cs" />
     <Compile Include="Controls\ForecastItem.cs" />
     <Compile Include="Controls\HourlyForecastItem.cs" />
-    <Compile Include="Controls\LoadingDialog.cs" />
     <Compile Include="Controls\TextForecastItem.cs" />
     <Compile Include="Controls\LocationPanel.cs" />
     <Compile Include="Controls\LocationPanelViewModel.cs" />
@@ -289,7 +288,9 @@
     <AndroidResource Include="Resources\layout\activity_main.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\activity_setup.xml" />
+    <AndroidResource Include="Resources\layout\activity_setup.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\app_bar_main.xml" />
@@ -308,7 +309,9 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\location_panel.xml" />
+    <AndroidResource Include="Resources\layout\location_panel.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\location_query_view.xml" />
@@ -320,7 +323,9 @@
     <AndroidResource Include="Resources\layout\nav_header_main.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\search_action_bar.xml" />
+    <AndroidResource Include="Resources\layout\search_action_bar.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\weather_forecast_panel.xml" />
@@ -2007,8 +2012,18 @@
   <ItemGroup>
     <AndroidResource Include="Resources\values\ic_launcher_background.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\progressring.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\values-mdpi\dimens.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\values-mdpi\styles.xml" />
+  </ItemGroup>
   <Import Project="..\SimpleWeather\SimpleWeather_Xamarin.projitems" Label="Shared" Condition="Exists('..\SimpleWeather\SimpleWeather_Xamarin.projitems')" />
-  <Import Project="..\SimpleWeather\SimpleWeather_Xamarin.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

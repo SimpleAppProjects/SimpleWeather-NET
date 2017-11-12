@@ -184,7 +184,10 @@ namespace SimpleWeather.Droid.Widgets
                 // Send broadcast to signal update
                 if (WidgetsExist(App.Context))
                     SendBroadcast(new Intent(WeatherWidgetProvider.ACTION_SHOWREFRESH));
-                if (Settings.OnGoingNotification)
+                // NOTE: Don't try to show refresh for pre-M devices
+                // If app gets killed, instance of notif is lost & view is reset
+                // and might get stuck
+                if (Settings.OnGoingNotification && Build.VERSION.SdkInt >= BuildVersionCodes.M)
                     WeatherNotificationBuilder.ShowRefresh();
 
                 weather = await GetWeather();
