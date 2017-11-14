@@ -54,7 +54,7 @@ namespace Kimono.Controls.SnackBar
         public string ButtonText
         {
             get { return PART_CommandButton.Content as string; }
-            set { PART_CommandButton.Content = value.ToUpper(); }
+            set { PART_CommandButton.Content = value?.ToUpper(); }
         }
 
         public Visibility ButtonVisibility

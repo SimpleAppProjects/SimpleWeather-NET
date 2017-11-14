@@ -24,7 +24,7 @@ namespace SimpleWeather.UWP.Controls
 
         private void LocationPanel_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            LocationName.Width = e.NewSize.Width - TempBox.ActualWidth - IconBox.ActualWidth;
+            LocationName.Width = e.NewSize.Width - TempBox.Width - IconBox.Width;
         }
     }
 }

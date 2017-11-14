@@ -270,7 +270,8 @@
                               ItemClick="LocationsPanel_ItemClick"
                               IsSwipeEnabled="False" AllowDrop="False"
                               CanReorderItems="False" CanDragItems="False"
-                              HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                              HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                              ScrollViewer.VerticalScrollMode="Disabled">
                         <ListView.HeaderTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding}" Margin="10,5" />
