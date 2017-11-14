@@ -270,6 +270,15 @@ namespace SimpleWeather.WeatherData
 
             return sw.ToString();
         }
+
+        public bool IsValid()
+        {
+            if (location == null || (forecast == null || forecast.Length == 0)
+                || condition == null || atmosphere == null || astronomy == null)
+                return false;
+            else
+                return true;
+        }
     }
 
     [JsonConverter(typeof(CustomJsonConverter))]

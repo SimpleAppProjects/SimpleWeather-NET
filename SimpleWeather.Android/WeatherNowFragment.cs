@@ -34,7 +34,6 @@ namespace SimpleWeather.Droid
     public class WeatherNowFragment : Fragment, IWeatherLoadedListener, IWeatherErrorListener,
         ActivityCompat.IOnRequestPermissionsResultCallback
     {
-        private Context context;
         private LocationData location = null;
         private bool loaded = false;
         private int BGAlpha = 255;
@@ -102,20 +101,20 @@ namespace SimpleWeather.Droid
                     // Update widgets if they haven't been already
                     if (TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval)
                     {
-                        context.StartService(new Intent(context, typeof(Widgets.WeatherWidgetService))
+                        App.Context.StartService(new Intent(App.Context, typeof(Widgets.WeatherWidgetService))
                             .SetAction(Widgets.WeatherWidgetService.ACTION_UPDATEWEATHER));
                     }
 
                     // Update ongoing notification if its not showing
                     if (Settings.OnGoingNotification && !Notifications.WeatherNotificationBuilder.IsShowing)
                     {
-                        context.StartService(new Intent(context, typeof(Widgets.WeatherWidgetService))
+                        App.Context.StartService(new Intent(App.Context, typeof(Widgets.WeatherWidgetService))
                             .SetAction(Widgets.WeatherWidgetService.ACTION_REFRESHNOTIFICATION));
                     }
                 }
             }
 
-            Activity.RunOnUiThread(() => refreshLayout.Refreshing = false);
+            AppCompatActivity?.RunOnUiThread(() => refreshLayout.Refreshing = false);
         }
 
         public void OnWeatherError(WeatherException wEx)
@@ -174,10 +173,27 @@ namespace SimpleWeather.Droid
             return fragment;
         }
 
+        public override void OnAttach(Context context)
+        {
+            base.OnAttach(context);
+            AppCompatActivity = context as AppCompatActivity;
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+            AppCompatActivity = null;
+        }
+
+        public override void OnDetach()
+        {
+            base.OnDetach();
+            AppCompatActivity = null;
+        }
+
         public override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            AppCompatActivity = Activity as AppCompatActivity;
 
             // Create your fragment here
             if (Arguments != null)
@@ -195,7 +211,6 @@ namespace SimpleWeather.Droid
                 BGAlpha = savedInstanceState.GetInt("alpha", 255);
             }
 
-            context = Activity.ApplicationContext;
             mLocListnr = new LocationListener();
             mLocListnr.LocationChanged += async (Android.Locations.Location location) =>
             {
@@ -304,7 +319,7 @@ namespace SimpleWeather.Droid
 
         private void AdjustDetailsLayout()
         {
-            if (IsLargeTablet(Activity))
+            if (IsLargeTablet(AppCompatActivity))
             {
                 mainView.Post(() =>
                 {
@@ -439,7 +454,8 @@ namespace SimpleWeather.Droid
                 await Resume();
 
             // Title
-            AppCompatActivity.SupportActionBar.Title = GetString(Resource.String.title_activity_weather_now);
+            if (AppCompatActivity != null)
+                AppCompatActivity.SupportActionBar.Title = GetString(Resource.String.title_activity_weather_now);
         }
 
         public override async void OnHiddenChanged(bool hidden)
@@ -525,14 +541,14 @@ namespace SimpleWeather.Droid
         private void ForecastSwitch_CheckedChange(object sender, CompoundButton.CheckedChangeEventArgs e)
         {
             forecastSwitch.Text = e.IsChecked ?
-                Activity.GetString(Resource.String.switch_details) : Activity.GetString(Resource.String.switch_daily);
+                AppCompatActivity.GetString(Resource.String.switch_details) : AppCompatActivity.GetString(Resource.String.switch_daily);
             forecastScrollView.Visibility = e.IsChecked ? ViewStates.Gone : ViewStates.Visible;
             txtForecastView.Visibility = e.IsChecked ? ViewStates.Visible : ViewStates.Gone;
         }
 
         private void SetView(WeatherNowViewModel weatherView)
         {
-            Activity?.RunOnUiThread(() =>
+            AppCompatActivity?.RunOnUiThread(() =>
             {
                 // Background
                 refreshLayout.Background = new ColorDrawable(weatherView.PendingBackground);
@@ -543,11 +559,13 @@ namespace SimpleWeather.Droid
                      .Into(bgImageView);
 
                 // Actionbar & StatusBar
-                AppCompatActivity.SupportActionBar.SetBackgroundDrawable(new ColorDrawable(weatherView.PendingBackground));
+                AppCompatActivity?.SupportActionBar.SetBackgroundDrawable(new ColorDrawable(weatherView.PendingBackground));
                 if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
                 {
-                    AppCompatActivity.Window.SetStatusBarColor(Color.Argb(255,
-                    (int)(weatherView.PendingBackground.R * 0.75), (int)(weatherView.PendingBackground.G * 0.75), (int)(weatherView.PendingBackground.B * 0.75)));
+                    AppCompatActivity?.Window.SetStatusBarColor(Color.Argb(255,
+                        (int)(weatherView.PendingBackground.R * 0.75),
+                        (int)(weatherView.PendingBackground.G * 0.75),
+                        (int)(weatherView.PendingBackground.B * 0.75)));
                 }
 
                 // Location
@@ -584,7 +602,7 @@ namespace SimpleWeather.Droid
                 forecastView.RemoveAllViews();
                 foreach (ForecastItemViewModel forecast in weatherView.Forecasts)
                 {
-                    forecastView.AddView(new ForecastItem(Activity, forecast));
+                    forecastView.AddView(new ForecastItem(AppCompatActivity, forecast));
                 }
                 forecastPanel.Visibility = ViewStates.Visible;
 
@@ -594,7 +612,7 @@ namespace SimpleWeather.Droid
                 {
                     foreach (HourlyForecastItemViewModel hrforecast in weatherView.WUExtras.HourlyForecast)
                     {
-                        hrforecastView.AddView(new HourlyForecastItem(Activity, hrforecast));
+                        hrforecastView.AddView(new HourlyForecastItem(AppCompatActivity, hrforecast));
                     }
                     hrforecastPanel.Visibility = ViewStates.Visible;
                 }
@@ -617,7 +635,7 @@ namespace SimpleWeather.Droid
 
                     precipitationPanel.Visibility = ViewStates.Visible;
 
-                    if (IsLargeTablet(Activity))
+                    if (IsLargeTablet(AppCompatActivity))
                     {
                         // Add back panel if not present
                         Android.Support.V7.Widget.GridLayout panel = (Android.Support.V7.Widget.GridLayout)detailsPanel;
@@ -628,7 +646,7 @@ namespace SimpleWeather.Droid
                 }
                 else
                 {
-                    if (IsLargeTablet(Activity))
+                    if (IsLargeTablet(AppCompatActivity))
                     {
                         Android.Support.V7.Widget.GridLayout panel = (Android.Support.V7.Widget.GridLayout)detailsPanel;
                         panel.RemoveView(panel.FindViewById(Resource.Id.precipitation_card));
@@ -660,17 +678,17 @@ namespace SimpleWeather.Droid
 
             if (Settings.FollowGPS && (location == null || location.locationType == LocationType.GPS))
             {
-                if (Activity != null && ContextCompat.CheckSelfPermission(Activity, Manifest.Permission.AccessFineLocation) != Permission.Granted &&
-                    ContextCompat.CheckSelfPermission(Activity, Manifest.Permission.AccessCoarseLocation) != Permission.Granted)
+                if (AppCompatActivity != null && ContextCompat.CheckSelfPermission(AppCompatActivity, Manifest.Permission.AccessFineLocation) != Permission.Granted &&
+                    ContextCompat.CheckSelfPermission(AppCompatActivity, Manifest.Permission.AccessCoarseLocation) != Permission.Granted)
                 {
-                    ActivityCompat.RequestPermissions(this.Activity, new String[] { Manifest.Permission.AccessCoarseLocation, Manifest.Permission.AccessFineLocation },
+                    ActivityCompat.RequestPermissions(AppCompatActivity, new String[] { Manifest.Permission.AccessCoarseLocation, Manifest.Permission.AccessFineLocation },
                             PERMISSION_LOCATION_REQUEST_CODE);
                     return false;
                 }
 
-                LocationManager locMan = (LocationManager)Activity.GetSystemService(Context.LocationService);
-                bool isGPSEnabled = locMan.IsProviderEnabled(LocationManager.GpsProvider);
-                bool isNetEnabled = locMan.IsProviderEnabled(LocationManager.NetworkProvider);
+                LocationManager locMan = AppCompatActivity?.GetSystemService(Context.LocationService) as LocationManager;
+                bool isGPSEnabled = (bool)locMan?.IsProviderEnabled(LocationManager.GpsProvider);
+                bool isNetEnabled = (bool)locMan?.IsProviderEnabled(LocationManager.NetworkProvider);
 
                 Android.Locations.Location location = null;
 
@@ -729,7 +747,7 @@ namespace SimpleWeather.Droid
                 }
                 else
                 {
-                    Toast.MakeText(Activity, Resource.String.error_retrieve_location, ToastLength.Short).Show();
+                    Toast.MakeText(AppCompatActivity, Resource.String.error_retrieve_location, ToastLength.Short).Show();
                 }
             }
 
@@ -757,7 +775,7 @@ namespace SimpleWeather.Droid
                             // permission denied, boo! Disable the
                             // functionality that depends on this permission.
                             Settings.FollowGPS = false;
-                            Toast.MakeText(Activity, Resource.String.error_location_denied, ToastLength.Short).Show();
+                            Toast.MakeText(AppCompatActivity, Resource.String.error_location_denied, ToastLength.Short).Show();
                         }
                         return;
                     }

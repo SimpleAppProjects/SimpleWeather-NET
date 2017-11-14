@@ -31,6 +31,7 @@ namespace SimpleWeather.Droid
         private ProgressBar mProgressBar;
         private View mClearButton;
         private EditText mSearchView;
+        private FragmentActivity mActivity; 
 
         private String selected_query = String.Empty;
 
@@ -61,6 +62,24 @@ namespace SimpleWeather.Droid
             ClickListener = listener;
         }
 
+        public override void OnAttach(Context context)
+        {
+            base.OnAttach(context);
+            mActivity = (FragmentActivity)context;
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+            mActivity = null;
+        }
+
+        public override void OnDetach()
+        {
+            base.OnDetach();
+            mActivity = null;
+        }
+
         private async void LocationSearchFragment_clickListener(object sender, RecyclerClickEventArgs e)
         {
             // Get selected query view
@@ -80,7 +99,7 @@ namespace SimpleWeather.Droid
             if (String.IsNullOrWhiteSpace(Settings.API_KEY) && Settings.API == Settings.API_WUnderground)
             {
                 String errorMsg = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey).Message;
-                Toast.MakeText(Activity.ApplicationContext, errorMsg, ToastLength.Short).Show();
+                Toast.MakeText(App.Context, errorMsg, ToastLength.Short).Show();
                 return;
             }
 
@@ -119,7 +138,7 @@ namespace SimpleWeather.Droid
             Settings.SaveWeatherData(weather);
 
             // Start WeatherNow Activity with weather data
-            Intent intent = new Intent(Activity, typeof(MainActivity));
+            Intent intent = new Intent(mActivity, typeof(MainActivity));
             intent.PutExtra("data", location.ToJson());
 
             // If we're using search
@@ -127,8 +146,8 @@ namespace SimpleWeather.Droid
             Settings.FollowGPS = false;
             Settings.WeatherLoaded = true;
 
-            Activity.StartActivity(intent);
-            Activity.FinishAffinity();
+            mActivity.StartActivity(intent);
+            mActivity.FinishAffinity();
         }
 
         private void ShowLoading(bool show)
@@ -147,20 +166,20 @@ namespace SimpleWeather.Droid
             View view = inflater.Inflate(Resource.Layout.fragment_location_search, container, false);
             SetupView(view);
 
-            Activity.Window.SetSoftInputMode(SoftInput.AdjustResize);
+            mActivity.Window.SetSoftInputMode(SoftInput.AdjustResize);
             return view;
         }
 
         private void SetupView(View view)
         {
-            mProgressBar = this.Activity.FindViewById<ProgressBar>(Resource.Id.search_progressBar);
-            mClearButton = this.Activity.FindViewById(Resource.Id.search_close_button);
-            mSearchView = this.Activity.FindViewById<EditText>(Resource.Id.search_view);
+            mProgressBar = mActivity.FindViewById<ProgressBar>(Resource.Id.search_progressBar);
+            mClearButton = mActivity.FindViewById(Resource.Id.search_close_button);
+            mSearchView = mActivity.FindViewById<EditText>(Resource.Id.search_view);
 
             if (Build.VERSION.SdkInt < BuildVersionCodes.Lollipop)
             {
                 mProgressBar.IndeterminateDrawable = 
-                    ContextCompat.GetDrawable(this.Activity, Resource.Drawable.progressring);
+                    ContextCompat.GetDrawable(mActivity, Resource.Drawable.progressring);
             }
 
             mRecyclerView = view.FindViewById<RecyclerView>(Resource.Id.recycler_view);
@@ -170,7 +189,7 @@ namespace SimpleWeather.Droid
             mRecyclerView.HasFixedSize = true;
 
             // use a linear layout manager
-            mLayoutManager = new LinearLayoutManager(Activity);
+            mLayoutManager = new LinearLayoutManager(mActivity);
             mRecyclerView.SetLayoutManager(mLayoutManager);
 
             // specify an adapter (see also next example)
@@ -196,7 +215,7 @@ namespace SimpleWeather.Droid
 
                     if (cts.IsCancellationRequested) return;
 
-                    this.Activity.RunOnUiThread(() => mAdapter.SetLocations(results.ToList()));
+                    mActivity?.RunOnUiThread(() => mAdapter.SetLocations(results.ToList()));
                 });
             }
             else if (String.IsNullOrWhiteSpace(queryString))

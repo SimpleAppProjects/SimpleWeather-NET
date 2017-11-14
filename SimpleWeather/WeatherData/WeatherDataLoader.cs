@@ -274,7 +274,7 @@ namespace SimpleWeather.WeatherData
 #endif
                 var locale = WeatherUtils.LocaleToWUCode(culture.TwoLetterISOLanguageName, culture.Name);
 
-                if (weather == null || weather.source != Settings.API || weather.locale != locale)
+                if (weather == null || !weather.IsValid() || weather.source != Settings.API || weather.locale != locale)
                     return false;
 
                 return true;
@@ -304,7 +304,7 @@ namespace SimpleWeather.WeatherData
 #endif
             var locale = WeatherUtils.LocaleToWUCode(culture.TwoLetterISOLanguageName, culture.Name);
 
-            if (weather == null || weather.source != Settings.API || weather.locale != locale)
+            if (weather == null || !weather.IsValid() || weather.source != Settings.API || weather.locale != locale)
                 return false;
 
             // Weather data expiration

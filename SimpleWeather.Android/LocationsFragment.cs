@@ -80,6 +80,24 @@ namespace SimpleWeather.Droid
             mActionModeCallback.DestroyActionMode += OnDestroyActionMode;
         }
 
+        public override void OnAttach(Context context)
+        {
+            base.OnAttach(context);
+            AppCompatActivity = context as AppCompatActivity;
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+            AppCompatActivity = null;
+        }
+
+        public override void OnDetach()
+        {
+            base.OnDetach();
+            AppCompatActivity = null;
+        }
+
         public void OnWeatherLoaded(LocationData location, Weather weather)
         {
             if (weather != null)
@@ -87,7 +105,7 @@ namespace SimpleWeather.Droid
                 if (Settings.FollowGPS && location.locationType == LocationType.GPS)
                 {
                     gpsPanelViewModel.SetWeather(weather);
-                    Activity.RunOnUiThread(() => 
+                    AppCompatActivity?.RunOnUiThread(() => 
                     {
                         gpsPanel.SetWeatherBackground(gpsPanelViewModel);
                         gpsPanel.SetWeather(gpsPanelViewModel);
@@ -98,7 +116,7 @@ namespace SimpleWeather.Droid
                     // Update panel weather
                     LocationPanelViewModel panel = mAdapter.Dataset.Find(panelVM => panelVM.LocationData.query == location.query);
                     panel.SetWeather(weather);
-                    Activity.RunOnUiThread(() => mAdapter.NotifyItemChanged(mAdapter.Dataset.IndexOf(panel)));
+                    AppCompatActivity?.RunOnUiThread(() => mAdapter.NotifyItemChanged(mAdapter.Dataset.IndexOf(panel)));
                 }
             }
         }
@@ -137,7 +155,7 @@ namespace SimpleWeather.Droid
         private bool OnCreateActionMode(Android.Support.V7.View.ActionMode mode, IMenu menu)
         {
             if (searchViewLayout == null)
-                searchViewLayout = Activity.LayoutInflater.Inflate(Resource.Layout.search_action_bar, null);
+                searchViewLayout = AppCompatActivity.LayoutInflater.Inflate(Resource.Layout.search_action_bar, null);
 
             mode.CustomView = searchViewLayout;
             EnterSearchUi();
@@ -150,7 +168,8 @@ namespace SimpleWeather.Droid
         private void OnDestroyActionMode(Android.Support.V7.View.ActionMode mode)
         {
             ExitSearchUi();
-            addLocationsButton.Visibility = ViewStates.Visible;
+            if (addLocationsButton != null)
+                addLocationsButton.Visibility = ViewStates.Visible;
             mActionMode = null;
         }
 
@@ -187,7 +206,6 @@ namespace SimpleWeather.Droid
             base.OnCreate(savedInstanceState);
 
             // Create your fragment here
-            AppCompatActivity = Activity as AppCompatActivity;
             Loaded = true;
 
             // Get ActionMode state
@@ -247,7 +265,7 @@ namespace SimpleWeather.Droid
             mRecyclerView.HasFixedSize = false;
 
             // use a linear layout manager
-            mLayoutManager = new LinearLayoutManager(Activity);
+            mLayoutManager = new LinearLayoutManager(AppCompatActivity);
             mRecyclerView.SetLayoutManager(mLayoutManager);
 
             // specify an adapter (see also next example)
@@ -302,11 +320,12 @@ namespace SimpleWeather.Droid
         {
             // Update view on resume
             // ex. If temperature unit changed
-            AppCompatActivity.SupportActionBar.SetBackgroundDrawable(
-                new ColorDrawable(new Color(ContextCompat.GetColor(Activity, Resource.Color.colorPrimary))));
+            AppCompatActivity?.SupportActionBar.SetBackgroundDrawable(
+                new ColorDrawable(new Color(ContextCompat.GetColor(AppCompatActivity, Resource.Color.colorPrimary))));
             if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
             {
-                AppCompatActivity.Window.SetStatusBarColor(new Color(ContextCompat.GetColor(Activity, Resource.Color.colorPrimaryDark)));
+                AppCompatActivity?.Window.SetStatusBarColor(
+                    new Color(ContextCompat.GetColor(AppCompatActivity, Resource.Color.colorPrimaryDark)));
             }
 
             if (Settings.FollowGPS)
@@ -343,7 +362,8 @@ namespace SimpleWeather.Droid
                 await Resume();
 
             // Title
-            AppCompatActivity.SupportActionBar.Title = GetString(Resource.String.label_nav_locations);
+            if (AppCompatActivity != null)
+                AppCompatActivity.SupportActionBar.Title = GetString(Resource.String.label_nav_locations);
         }
 
         public override void OnPause()
@@ -485,15 +505,15 @@ namespace SimpleWeather.Droid
 
             if (Settings.FollowGPS)
             {
-                if (Activity != null && ContextCompat.CheckSelfPermission(Activity, Manifest.Permission.AccessFineLocation) != Permission.Granted &&
-                    ContextCompat.CheckSelfPermission(Activity, Manifest.Permission.AccessCoarseLocation) != Permission.Granted)
+                if (AppCompatActivity != null && ContextCompat.CheckSelfPermission(AppCompatActivity, Manifest.Permission.AccessFineLocation) != Permission.Granted &&
+                    ContextCompat.CheckSelfPermission(AppCompatActivity, Manifest.Permission.AccessCoarseLocation) != Permission.Granted)
                 {
-                    ActivityCompat.RequestPermissions(this.Activity, new String[] { Manifest.Permission.AccessCoarseLocation, Manifest.Permission.AccessFineLocation },
+                    ActivityCompat.RequestPermissions(AppCompatActivity, new String[] { Manifest.Permission.AccessCoarseLocation, Manifest.Permission.AccessFineLocation },
                             PERMISSION_LOCATION_REQUEST_CODE);
                     return null;
                 }
 
-                LocationManager locMan = (LocationManager)Activity.GetSystemService(Context.LocationService);
+                LocationManager locMan = (LocationManager)AppCompatActivity.GetSystemService(Context.LocationService);
                 bool isGPSEnabled = locMan.IsProviderEnabled(LocationManager.GpsProvider);
                 bool isNetEnabled = locMan.IsProviderEnabled(LocationManager.NetworkProvider);
 
@@ -535,7 +555,7 @@ namespace SimpleWeather.Droid
                 }
                 else
                 {
-                    Toast.MakeText(Activity, Resource.String.error_retrieve_location, ToastLength.Short).Show();
+                    Toast.MakeText(AppCompatActivity, Resource.String.error_retrieve_location, ToastLength.Short).Show();
                     gpsPanelViewModel = null;
                     gpsPanelLayout.Visibility = ViewStates.Gone;
                 }
@@ -576,7 +596,7 @@ namespace SimpleWeather.Droid
                             Settings.FollowGPS = false;
                             gpsPanelViewModel = null;
                             gpsPanelLayout.Visibility = ViewStates.Gone;
-                            Toast.MakeText(Activity, Resource.String.error_location_denied, ToastLength.Short).Show();
+                            Toast.MakeText(AppCompatActivity, Resource.String.error_location_denied, ToastLength.Short).Show();
                         }
                         return;
                     }
@@ -781,24 +801,24 @@ namespace SimpleWeather.Droid
                 transaction.CommitAllowingStateLoss();
             }
 
-            HideInputMethod(Activity.CurrentFocus);
-            searchView.ClearFocus();
-            mActionMode.Finish();
-            mMainView.RequestFocus();
+            HideInputMethod(AppCompatActivity?.CurrentFocus);
+            searchView?.ClearFocus();
+            mActionMode?.Finish();
+            mMainView?.RequestFocus();
             inSearchUI = false;
         }
 
         private void ShowInputMethod(View view)
         {
-            InputMethodManager imm = (InputMethodManager)Activity.GetSystemService(
-                    Context.InputMethodService);
-            imm.ToggleSoftInput(0, HideSoftInputFlags.NotAlways);
+            InputMethodManager imm = AppCompatActivity?.GetSystemService(
+                    Context.InputMethodService) as InputMethodManager;
+            imm?.ToggleSoftInput(0, HideSoftInputFlags.NotAlways);
         }
 
         private void HideInputMethod(View view)
         {
-            InputMethodManager imm = (InputMethodManager)Activity.GetSystemService(
-                    Context.InputMethodService);
+            InputMethodManager imm = AppCompatActivity.GetSystemService(
+                    Context.InputMethodService) as InputMethodManager;
             if (imm != null && view != null)
             {
                 imm.HideSoftInputFromWindow(view.WindowToken, 0);
@@ -850,12 +870,14 @@ namespace SimpleWeather.Droid
             if (EditMode)
             {
                 // Unregister events
+                gpsPanel.Click -= OnPanelClick;
                 mAdapter.ItemClick -= OnPanelClick;
                 mAdapter.ItemLongClick -= OnPanelLongClick;
             }
             else
             {
                 // Register events
+                gpsPanel.Click += OnPanelClick;
                 mAdapter.ItemClick += OnPanelClick;
                 mAdapter.ItemLongClick += OnPanelLongClick;
             }
