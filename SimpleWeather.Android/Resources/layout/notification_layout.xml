@@ -5,12 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="72dp"
     android:background="@null"
-    android:paddingBottom="8dp"
-    android:paddingEnd="8dp"
-    android:paddingLeft="8dp"
-    android:paddingRight="8dp"
-    android:paddingStart="8dp"
-    android:paddingTop="8dp">
+    android:paddingBottom="@dimen/not_vert_padding"
+    android:paddingEnd="@dimen/not_horiz_padding"
+    android:paddingLeft="@dimen/not_horiz_padding"
+    android:paddingRight="@dimen/not_horiz_padding"
+    android:paddingStart="@dimen/not_horiz_padding"
+    android:paddingTop="@dimen/not_vert_padding">
 
     <ImageView
         android:id="@+id/weather_icon"

@@ -2,6 +2,7 @@
 using Android.Util;
 using Java.IO;
 using SimpleWeather.Droid;
+using SimpleWeather.Droid.Widgets;
 using SQLite;
 using System;
 using System.Threading.Tasks;
@@ -48,13 +49,13 @@ namespace SimpleWeather.Utils
                     case KEY_API:
                     // Settings unit changed
                     case KEY_USECELSIUS:
-                        context.StartService(new Intent(context, typeof(Droid.Widgets.WeatherWidgetService))
-                            .SetAction(Droid.Widgets.WeatherWidgetService.ACTION_UPDATEWEATHER));
+                        WeatherWidgetService.EnqueueWork(context, new Intent(context, typeof(WeatherWidgetService))
+                            .SetAction(WeatherWidgetService.ACTION_UPDATEWEATHER));
                         break;
                     // Refresh interval changed
                     case KEY_REFRESHINTERVAL:
-                        context.StartService(new Intent(context, typeof(Droid.Widgets.WeatherWidgetService))
-                            .SetAction(Droid.Widgets.WeatherWidgetService.ACTION_UPDATEALARM));
+                        WeatherWidgetService.EnqueueWork(context, new Intent(context, typeof(WeatherWidgetService))
+                            .SetAction(WeatherWidgetService.ACTION_UPDATEALARM));
                         break;
                     default:
                         break;

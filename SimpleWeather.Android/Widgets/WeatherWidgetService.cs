@@ -19,11 +19,12 @@ using SimpleWeather.Droid.Notifications;
 using Android.Text.Format;
 using Android.Text;
 using Android.Text.Style;
+using Android.Support.V4.App;
 
 namespace SimpleWeather.Droid.Widgets
 {
-    [Service]
-    public class WeatherWidgetService : IntentService
+    [Service(Exported = true, Permission = "android.permission.BIND_JOB_SERVICE")]
+    public class WeatherWidgetService : JobIntentService
     {
         private static string TAG = "WeatherWidgetService";
         public const string ACTION_REFRESHWIDGET = "SimpleWeather.Droid.action.REFRESH_WIDGET";
@@ -41,6 +42,8 @@ namespace SimpleWeather.Droid.Widgets
 
         public const string ACTION_STARTCLOCK = "SimpleWeather.Droid.action.START_CLOCKALARM";
         public const string ACTION_CANCELCLOCK = "SimpleWeather.Droid.action.CANCEL_CLOCKALARM";
+
+        private const int JOB_ID = 1000;
 
         private Context mContext;
         private AppWidgetManager mAppWidgetManager;
@@ -64,6 +67,13 @@ namespace SimpleWeather.Droid.Widgets
         private const int MEDIUM_FORECAST_LENGTH = 4; // 4-day
         private const int WIDE_FORECAST_LENGTH = 5; // 5-day
 
+        public static void EnqueueWork(Context context, Intent work)
+        {
+            EnqueueWork(context,
+                Java.Lang.Class.FromType(typeof(WeatherWidgetService)),
+                JOB_ID, work);
+        }
+
         public override void OnCreate()
         {
             base.OnCreate();
@@ -72,7 +82,7 @@ namespace SimpleWeather.Droid.Widgets
             mAppWidgetManager = AppWidgetManager.GetInstance(mContext);
         }
 
-        protected override async void OnHandleIntent(Intent intent)
+        protected override async void OnHandleWork(Intent intent)
         {
             if (ACTION_REFRESHWIDGET.Equals(intent.Action))
             {
@@ -468,12 +478,6 @@ namespace SimpleWeather.Droid.Widgets
             mAppWidgetManager.PartiallyUpdateAppWidget(appWidgetIds, views);
 
             Console.WriteLine(string.Format("{0}: Refreshed date", TAG));
-        }
-
-        public override IBinder OnBind(Intent intent)
-        {
-            // We don't need to bind to this service
-            return null;
         }
 
         public RemoteViews BuildUpdate(Context context, WeatherWidgetProvider provider, Weather weather)

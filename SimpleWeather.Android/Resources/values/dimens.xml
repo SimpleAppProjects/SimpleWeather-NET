@@ -45,4 +45,7 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="date_text_size">12sp</dimen>
     <dimen name="location_text_size_small">12sp</dimen>
     <dimen name="location_text_size_large">14sp</dimen>
+    <!-- Notification -->
+    <dimen name="not_horiz_padding">8dp</dimen>
+    <dimen name="not_vert_padding">8dp</dimen>
 </resources>

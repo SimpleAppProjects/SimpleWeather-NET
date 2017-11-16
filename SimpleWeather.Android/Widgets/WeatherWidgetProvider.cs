@@ -49,7 +49,7 @@ namespace SimpleWeather.Droid.Widgets
                 // Reset weather update time
                 SimpleWeather.Utils.Settings.UpdateTime = DateTime.MinValue;
                 // Restart update alarm
-                context.StartService(new Intent(context, typeof(WeatherWidgetService))
+                WeatherWidgetService.EnqueueWork(context, new Intent(context, typeof(WeatherWidgetService))
                     .SetAction(WeatherWidgetService.ACTION_STARTALARM));
             }
             else if (Intent.ActionLocaleChanged.Equals(intent.Action))
@@ -96,7 +96,7 @@ namespace SimpleWeather.Droid.Widgets
         {
             ShowRefresh(context, appWidgetIds);
 
-            context.StartService(new Intent(context, typeof(WeatherWidgetService))
+            WeatherWidgetService.EnqueueWork(context, new Intent(context, typeof(WeatherWidgetService))
                 .SetAction(WeatherWidgetService.ACTION_REFRESHWIDGET)
                 .PutExtra(EXTRA_WIDGET_IDS, appWidgetIds)
                 .PutExtra(EXTRA_WIDGET_TYPE, (int)WidgetType));
@@ -111,20 +111,20 @@ namespace SimpleWeather.Droid.Widgets
         public override void OnEnabled(Context context)
         {
             // Schedule alarms/updates
-            context.StartService(new Intent(context, typeof(WeatherWidgetService))
+            WeatherWidgetService.EnqueueWork(context, new Intent(context, typeof(WeatherWidgetService))
                 .SetAction(WeatherWidgetService.ACTION_STARTALARM));
         }
 
         public override void OnDisabled(Context context)
         {
             // Remove alarms/updates
-            context.StartService(new Intent(context, typeof(WeatherWidgetService))
+            WeatherWidgetService.EnqueueWork(context, new Intent(context, typeof(WeatherWidgetService))
                 .SetAction(WeatherWidgetService.ACTION_CANCELALARM));
         }
 
         public override void OnAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions)
         {
-            context.StartService(new Intent(context, typeof(WeatherWidgetService))
+            WeatherWidgetService.EnqueueWork(context, new Intent(context, typeof(WeatherWidgetService))
                 .SetAction(WeatherWidgetService.ACTION_RESIZEWIDGET)
                 .PutExtra(EXTRA_WIDGET_ID, appWidgetId)
                 .PutExtra(EXTRA_WIDGET_OPTIONS, newOptions)
@@ -291,7 +291,7 @@ namespace SimpleWeather.Droid.Widgets
             // Register tick receiver
             if (Build.VERSION.SdkInt < BuildVersionCodes.JellyBeanMr1)
             {
-                context.StartService(new Intent(context, typeof(WeatherWidgetService))
+                WeatherWidgetService.EnqueueWork(context, new Intent(context, typeof(WeatherWidgetService))
                     .SetAction(WeatherWidgetService.ACTION_STARTCLOCK));
             }
 
@@ -303,7 +303,7 @@ namespace SimpleWeather.Droid.Widgets
             // Unregister tick receiver
             if (Build.VERSION.SdkInt < BuildVersionCodes.JellyBeanMr1)
             {
-                context.StartService(new Intent(context, typeof(WeatherWidgetService))
+                WeatherWidgetService.EnqueueWork(context, new Intent(context, typeof(WeatherWidgetService))
                     .SetAction(WeatherWidgetService.ACTION_CANCELCLOCK));
             }
 
@@ -322,7 +322,7 @@ namespace SimpleWeather.Droid.Widgets
                 var componentname = new ComponentName(context.PackageName, ClassName);
                 int[] appWidgetIds = appWidgetManager.GetAppWidgetIds(componentname);
 
-                context.StartService(new Intent(context, typeof(WeatherWidgetService))
+                WeatherWidgetService.EnqueueWork(context, new Intent(context, typeof(WeatherWidgetService))
                     .SetAction(WeatherWidgetService.ACTION_UPDATECLOCK)
                     .PutExtra(EXTRA_WIDGET_IDS, appWidgetIds)
                     .PutExtra(EXTRA_WIDGET_TYPE, (int)WidgetType));
@@ -334,7 +334,7 @@ namespace SimpleWeather.Droid.Widgets
                 var componentname = new ComponentName(context.PackageName, ClassName);
                 int[] appWidgetIds = appWidgetManager.GetAppWidgetIds(componentname);
 
-                context.StartService(new Intent(context, typeof(WeatherWidgetService))
+                WeatherWidgetService.EnqueueWork(context, new Intent(context, typeof(WeatherWidgetService))
                     .SetAction(WeatherWidgetService.ACTION_UPDATEDATE)
                     .PutExtra(EXTRA_WIDGET_IDS, appWidgetIds)
                     .PutExtra(EXTRA_WIDGET_TYPE, (int)WidgetType));

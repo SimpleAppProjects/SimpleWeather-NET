@@ -21,6 +21,7 @@ using SimpleWeather.Droid.Controls;
 using SimpleWeather.Droid.Utils;
 using System.Collections.Specialized;
 using System.Threading;
+using Android.Graphics;
 
 namespace SimpleWeather.Droid
 {
@@ -88,6 +89,10 @@ namespace SimpleWeather.Droid
             gpsFollowButton = FindViewById<Button>(Resource.Id.gps_follow);
             progressBar = FindViewById<ProgressBar>(Resource.Id.progressBar);
             progressBar.Visibility = ViewStates.Gone;
+
+            // NOTE: Bug: Explicitly set tintmode on Lollipop devices
+            if (Build.VERSION.SdkInt == BuildVersionCodes.Lollipop)
+                progressBar.IndeterminateTintMode = PorterDuff.Mode.SrcIn;
 
             /* Event Listeners */
             apiSpinner.ItemSelected += (object sender, AdapterView.ItemSelectedEventArgs e) =>

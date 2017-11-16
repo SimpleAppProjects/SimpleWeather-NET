@@ -150,8 +150,6 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
-                            <include layout="@layout/weather_forecast_panel" />
-
                         </LinearLayout>
                     </HorizontalScrollView>
 

@@ -28,6 +28,7 @@ using Android.Locations;
 using Android.Graphics;
 using Com.Bumptech.Glide;
 using Android.Util;
+using SimpleWeather.Droid.Widgets;
 
 namespace SimpleWeather.Droid
 {
@@ -101,15 +102,15 @@ namespace SimpleWeather.Droid
                     // Update widgets if they haven't been already
                     if (TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval)
                     {
-                        App.Context.StartService(new Intent(App.Context, typeof(Widgets.WeatherWidgetService))
-                            .SetAction(Widgets.WeatherWidgetService.ACTION_UPDATEWEATHER));
+                        WeatherWidgetService.EnqueueWork(App.Context, new Intent(App.Context, typeof(WeatherWidgetService))
+                            .SetAction(WeatherWidgetService.ACTION_UPDATEWEATHER));
                     }
 
                     // Update ongoing notification if its not showing
                     if (Settings.OnGoingNotification && !Notifications.WeatherNotificationBuilder.IsShowing)
                     {
-                        App.Context.StartService(new Intent(App.Context, typeof(Widgets.WeatherWidgetService))
-                            .SetAction(Widgets.WeatherWidgetService.ACTION_REFRESHNOTIFICATION));
+                        WeatherWidgetService.EnqueueWork(App.Context, new Intent(App.Context, typeof(WeatherWidgetService))
+                            .SetAction(WeatherWidgetService.ACTION_REFRESHNOTIFICATION));
                     }
                 }
             }

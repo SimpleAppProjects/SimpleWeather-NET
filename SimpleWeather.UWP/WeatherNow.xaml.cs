@@ -148,7 +148,11 @@ namespace SimpleWeather.UWP
 
         private async void WeatherNow_Resuming(object sender, object e)
         {
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => { await Resume(); });
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => 
+            {
+                if (Shell.Instance.AppFrame.SourcePageType == this.GetType())
+                    await Resume();
+            });
         }
 
         private void MainViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)

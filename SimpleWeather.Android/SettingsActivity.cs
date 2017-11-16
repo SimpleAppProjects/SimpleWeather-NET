@@ -17,6 +17,7 @@ using Android.Text.Style;
 using Android.Graphics;
 using Android.Text;
 using Android.Support.V7.Preferences;
+using SimpleWeather.Droid.Widgets;
 
 namespace SimpleWeather.Droid
 {
@@ -212,16 +213,16 @@ namespace SimpleWeather.Droid
                     // On-going notification
                     if ((bool)e.NewValue)
                     {
-                        context.StartService(new Intent(context, typeof(Widgets.WeatherWidgetService))
-                            .SetAction(Widgets.WeatherWidgetService.ACTION_REFRESHNOTIFICATION));
+                        WeatherWidgetService.EnqueueWork(context, new Intent(context, typeof(WeatherWidgetService))
+                            .SetAction(WeatherWidgetService.ACTION_REFRESHNOTIFICATION));
 
                         if (notCategory.FindPreference(KEY_NOTIFICATIONICON) == null)
                             notCategory.AddPreference(notificationIcon);
                     }
                     else
                     {
-                        context.StartService(new Intent(context, typeof(Widgets.WeatherWidgetService))
-                            .SetAction(Widgets.WeatherWidgetService.ACTION_REMOVENOTIFICATION));
+                        WeatherWidgetService.EnqueueWork(context, new Intent(context, typeof(WeatherWidgetService))
+                            .SetAction(WeatherWidgetService.ACTION_REMOVENOTIFICATION));
 
                         notCategory.RemovePreference(notificationIcon);
                     }
@@ -231,8 +232,8 @@ namespace SimpleWeather.Droid
                 notificationIcon.PreferenceChange += (object sender, Preference.PreferenceChangeEventArgs e) =>
                 {
                     var context = App.Context;
-                    context.StartService(new Intent(context, typeof(Widgets.WeatherWidgetService))
-                        .SetAction(Widgets.WeatherWidgetService.ACTION_REFRESHNOTIFICATION));
+                    WeatherWidgetService.EnqueueWork(context, new Intent(context, typeof(WeatherWidgetService))
+                        .SetAction(WeatherWidgetService.ACTION_REFRESHNOTIFICATION));
                 };
 
                 // Remove preferences
