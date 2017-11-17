@@ -336,17 +336,25 @@ namespace SimpleWeather.Controls
 
             // Atmosphere
             Humidity = weather.atmosphere.humidity;
-            Pressure = Settings.IsFahrenheit ?
-                float.Parse(weather.atmosphere.pressure_in, CultureInfo.InvariantCulture).ToString(culture) + " in" :
-                float.Parse(weather.atmosphere.pressure_mb, CultureInfo.InvariantCulture).ToString(culture) + " mb";
-            UpdatePressureState(weather.atmosphere.pressure_trend);
-            _Visibility = Settings.IsFahrenheit ?
-                float.Parse(weather.atmosphere.visibility_mi, CultureInfo.InvariantCulture).ToString(culture) + " mi" : 
-                float.Parse(weather.atmosphere.visibility_km, CultureInfo.InvariantCulture).ToString(culture) + " km";
-            
-            if (_Visibility.StartsWith(" "))
-                _Visibility = _Visibility.Insert(0, "--");
 
+            var pressureVal = Settings.IsFahrenheit ? weather.atmosphere.pressure_in : weather.atmosphere.pressure_mb;
+            var pressureUnit = Settings.IsFahrenheit ? "in" : "mb";
+
+            if (float.TryParse(pressureVal, NumberStyles.Float, CultureInfo.InvariantCulture, out float pressure))
+                Pressure = string.Format("{0} {1}", pressure.ToString(culture), pressureUnit);
+            else
+                Pressure = string.Format("-- {0}", pressureUnit);
+
+            UpdatePressureState(weather.atmosphere.pressure_trend);
+
+            var visibilityVal = Settings.IsFahrenheit ? weather.atmosphere.visibility_mi : weather.atmosphere.visibility_km;
+            var visibilityUnit = Settings.IsFahrenheit ? "mi" : "km";
+
+            if (float.TryParse(visibilityVal, NumberStyles.Float, CultureInfo.InvariantCulture, out float visibility))
+                _Visibility = string.Format("{0} {1}", visibility.ToString(culture), visibilityUnit);
+            else
+                _Visibility = string.Format("-- {0}", visibilityUnit);
+            
             // Add UI elements
             Forecasts.Clear();
             foreach (Forecast forecast in weather.forecast)

@@ -72,7 +72,9 @@ namespace SimpleWeather.Droid.Notifications
             PendingIntent prgPendingIntent = PendingIntent.GetService(App.Context, 0, refreshClickIntent, 0);
             updateViews.SetOnClickPendingIntent(Resource.Id.refresh_button, prgPendingIntent);
 
-            int level = int.Parse(temp.Replace("º", ""));
+            if (!int.TryParse(temp.Replace("º", ""), out int level))
+                level = 0;
+
             int resId = level < 0 ? Resource.Drawable.notification_temp_neg : Resource.Drawable.notification_temp_pos;
 
             NotificationCompat.Builder mBuilder =
@@ -131,9 +133,13 @@ namespace SimpleWeather.Droid.Notifications
             {
                 StatusBarNotification statNot = null;
                 if (Build.VERSION.SdkInt >= BuildVersionCodes.M)
-                    statNot = mNotifyMgr.GetActiveNotifications().First(not => not.Id == PERSISTENT_NOT_ID);
+                {
+                    var statNots = mNotifyMgr.GetActiveNotifications();
+                    if (statNots.Length > 0)
+                        statNot = statNots.FirstOrDefault(not => not.Id == PERSISTENT_NOT_ID);
+                }
 
-                if (statNot != null)
+                if (statNot != null && statNot.Notification != null)
                     mNotification = statNot.Notification;
                 else
                 {

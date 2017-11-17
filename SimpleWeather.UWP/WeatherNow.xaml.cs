@@ -310,7 +310,8 @@ namespace SimpleWeather.UWP
                 else
                 {
                     // Check weather data expiration
-                    int ttl = int.Parse(weather.ttl);
+                    if (!int.TryParse(weather.ttl, out int ttl))
+                        ttl = 60;
                     TimeSpan span = DateTime.Now - weather.update_time;
                     if (span.TotalMinutes > ttl)
                         RefreshWeather(false);

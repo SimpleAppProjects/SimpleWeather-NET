@@ -308,7 +308,8 @@ namespace SimpleWeather.WeatherData
                 return false;
 
             // Weather data expiration
-            int ttl = int.Parse(weather.ttl);
+            if (!int.TryParse(weather.ttl, out int ttl))
+                ttl = 60;
 
             // Check file age
             DateTime updateTime = weather.update_time;
