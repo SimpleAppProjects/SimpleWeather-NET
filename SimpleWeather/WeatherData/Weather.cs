@@ -571,7 +571,8 @@ namespace SimpleWeather.WeatherData
 
         public HourlyForecast(WeatherUnderground.Hourly_Forecast hr_forecast)
         {
-            date = ConversionMethods.ToEpochDateTime(hr_forecast.FCTTIME.epoch).ToLocalTime();
+            var dateformat = string.Format("{0}/{1}/{2} {3}", hr_forecast.FCTTIME.mon, hr_forecast.FCTTIME.mday, hr_forecast.FCTTIME.year, hr_forecast.FCTTIME.civil);
+            date = DateTime.Parse(dateformat, CultureInfo.InvariantCulture);
             high_f = hr_forecast.temp.english;
             high_c = hr_forecast.temp.metric;
             condition = hr_forecast.condition;
