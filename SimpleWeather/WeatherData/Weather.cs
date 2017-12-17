@@ -442,7 +442,7 @@ namespace SimpleWeather.WeatherData
 
         public Forecast(WeatherUnderground.Forecastday1 forecast)
         {
-            date = ConversionMethods.ToEpochDateTime(forecast.date.epoch);
+            date = ConversionMethods.ToEpochDateTime(forecast.date.epoch).ToLocalTime();
             high_f = forecast.high.fahrenheit;
             high_c = forecast.high.celsius;
             low_f = forecast.low.fahrenheit;
