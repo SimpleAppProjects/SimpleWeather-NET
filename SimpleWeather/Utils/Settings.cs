@@ -143,7 +143,7 @@ namespace SimpleWeather.Utils
 
         public static void SaveWeatherData(Weather weather)
         {
-            Task.Run(async () => 
+            Task.Run(async () =>
             {
                 await weatherDB.InsertOrReplaceAsync(weather);
                 await WriteOperations.UpdateWithChildrenAsync(weatherDB, weather);

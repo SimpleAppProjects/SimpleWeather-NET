@@ -203,16 +203,19 @@ namespace SimpleWeather.Utils
 
             String date;
             String prefix;
-            String timeformat = weather.update_time.ToString("t", culture);
+            DateTime update_time = weather.update_time.DateTime.Add(weather.location.tz_offset);
+            String timeformat = update_time.ToString("t", culture);
 
 #if __ANDROID__
             if (Android.Text.Format.DateFormat.Is24HourFormat(Droid.App.Context))
-                timeformat = weather.update_time.ToString("HH:mm");
+                timeformat = update_time.ToString("HH:mm");
             else
-                timeformat = weather.update_time.ToString("h:mm tt");
+                timeformat = update_time.ToString("h:mm tt");
 #endif
 
-            if (weather.update_time.DayOfWeek == DateTime.Today.DayOfWeek)
+            timeformat = string.Format("{0} {1}", timeformat, weather.location.tz_short);
+
+            if (update_time.DayOfWeek == DateTime.Now.DayOfWeek)
             {
 #if WINDOWS_UWP
                 prefix = UWP.App.ResLoader.GetString("Update_PrefixDay");
@@ -229,7 +232,7 @@ namespace SimpleWeather.Utils
                 prefix = Droid.App.Context.GetString(Droid.Resource.String.update_prefix);
 #endif
                 date = string.Format("{0} {1} {2}",
-                    prefix, weather.update_time.ToString("ddd", culture), timeformat);
+                    prefix, update_time.ToString("ddd", culture), timeformat);
             }
 
             return date;

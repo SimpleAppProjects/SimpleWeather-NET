@@ -431,7 +431,7 @@ namespace SimpleWeather.Droid
                         // Check weather data expiration
                         if (!int.TryParse(weather.ttl, out int ttl))
                             ttl = 60;
-                        TimeSpan span = DateTime.Now - weather.update_time;
+                        TimeSpan span = DateTimeOffset.Now - weather.update_time;
                         if (span.TotalMinutes > ttl)
                             await RefreshWeather(false);
                         else

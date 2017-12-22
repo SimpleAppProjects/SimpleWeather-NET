@@ -14,7 +14,7 @@ namespace SimpleWeather.WeatherData
     {
         [TextBlob("locationblob")]
         public Location location { get; set; }
-        public DateTime update_time { get; set; }
+        public DateTimeOffset update_time { get; set; }
         [TextBlob("forecastblob")]
         public Forecast[] forecast { get; set; }
         [TextBlob("hrforecastblob")]
@@ -61,7 +61,7 @@ namespace SimpleWeather.WeatherData
         public Weather(WeatherYahoo.Rootobject root)
         {
             location = new Location(root.query);
-            update_time = DateTime.ParseExact(root.query.created,
+            update_time = DateTimeOffset.ParseExact(root.query.created,
                             "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
             forecast = new Forecast[root.query.results.channel.item.forecast.Length];
             for (int i = 0; i < forecast.Length; i++)
@@ -79,7 +79,7 @@ namespace SimpleWeather.WeatherData
         public Weather(WeatherUnderground.Rootobject root)
         {
             location = new Location(root.current_observation);
-            update_time = DateTime.Parse(root.current_observation.local_time_rfc822);
+            update_time = DateTimeOffset.Parse(root.current_observation.local_time_rfc822);
             forecast = new Forecast[root.forecast.simpleforecast.forecastday.Length];
             for (int i = 0; i < forecast.Length; i++)
             {
@@ -126,7 +126,10 @@ namespace SimpleWeather.WeatherData
                             obj.location = Location.FromJson(reader);
                             break;
                         case "update_time":
-                            obj.update_time = DateTime.Parse(reader.Value.ToString());
+                            bool parsed = DateTimeOffset.TryParse(reader.Value.ToString(), out DateTimeOffset result);
+                            if (!parsed)
+                                result = DateTime.Parse(reader.Value.ToString());
+                            obj.update_time = result;
                             break;
                         case "forecast":
                             System.Collections.Generic.List<Forecast> forecasts = new System.Collections.Generic.List<Forecast>();
@@ -288,6 +291,7 @@ namespace SimpleWeather.WeatherData
         public string latitude { get; set; }
         public string longitude { get; set; }
         public TimeSpan tz_offset { get; set; }
+        public string tz_short { get; set; }
 
         [JsonConstructor]
         private Location()
@@ -304,6 +308,7 @@ namespace SimpleWeather.WeatherData
                 tz_offset = -TimeSpan.ParseExact(condition.local_tz_offset, "\\-hhmm", null);
             else
                 tz_offset = TimeSpan.ParseExact(condition.local_tz_offset, "\\+hhmm", null);
+            tz_short = condition.local_tz_short;
         }
 
         public Location(WeatherYahoo.Query query)
@@ -331,6 +336,7 @@ namespace SimpleWeather.WeatherData
             TimeSpan offset = there - utc;
 
             tz_offset = TimeSpan.Parse(string.Format("{0}:{1}", offset.Hours, offset.Minutes));
+            tz_short = query.results.channel.lastBuildDate.Substring(AMPMidx + 4);
         }
 
         public static Location FromJson(JsonReader extReader)
@@ -369,6 +375,9 @@ namespace SimpleWeather.WeatherData
                         case "tz_offset":
                             obj.tz_offset = TimeSpan.Parse(reader.Value.ToString());
                             break;
+                        case "tz_short":
+                            obj.tz_short = reader.Value.ToString();
+                            break;
                     }
                 }
             }
@@ -403,6 +412,10 @@ namespace SimpleWeather.WeatherData
             // "tz_offset" : ""
             writer.WritePropertyName("tz_offset");
             writer.WriteValue(tz_offset);
+
+            // "tz_short" : ""
+            writer.WritePropertyName("tz_short");
+            writer.WriteValue(tz_short);
 
             // }
             writer.WriteEndObject();

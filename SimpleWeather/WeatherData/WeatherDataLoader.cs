@@ -312,9 +312,9 @@ namespace SimpleWeather.WeatherData
                 ttl = 60;
 
             // Check file age
-            DateTime updateTime = weather.update_time;
+            DateTimeOffset updateTime = weather.update_time;
 
-            TimeSpan span = DateTime.Now - updateTime;
+            TimeSpan span = DateTimeOffset.Now - updateTime;
             if (span.TotalMinutes < ttl)
                 return true;
             else
