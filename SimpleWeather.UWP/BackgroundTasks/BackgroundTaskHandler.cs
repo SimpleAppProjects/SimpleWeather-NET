@@ -10,11 +10,31 @@ namespace SimpleWeather.UWP.BackgroundTasks
     public class BackgroundTaskHandler
     {
         private const string taskName = "WeatherUpdateBackgroundTask";
-        public ApplicationTrigger AppTrigger = null;
+        private ApplicationTrigger AppTrigger = null;
 
         public BackgroundTaskHandler()
         {
             AppTrigger = new ApplicationTrigger();
+        }
+
+        public async Task RequestAppTrigger()
+        {
+            if (AppTrigger == null)
+                AppTrigger = new ApplicationTrigger();
+
+            // Request access
+            var backgroundAccessStatus = await BackgroundExecutionManager.RequestAccessAsync();
+
+            // If allowed
+            if (backgroundAccessStatus == BackgroundAccessStatus.AlwaysAllowed ||
+                backgroundAccessStatus == BackgroundAccessStatus.AllowedSubjectToSystemPolicy)
+            {
+                await AppTrigger.RequestAsync();
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("BackgroundTaskHandler: Can't trigger ApplicationTrigger, background access not allowed");
+            }
         }
 
         public async Task RegisterBackgroundTask()

@@ -147,7 +147,7 @@ namespace SimpleWeather.UWP
                     KeyEntry.Text = Settings.API_KEY = key;
                     Settings.API = Settings.API_WUnderground;
 
-                    await App.BGTaskHandler.AppTrigger.RequestAsync();
+                    await App.BGTaskHandler.RequestAppTrigger();
 
                     keyVerified = true;
                     UpdateKeyBorder();
@@ -188,7 +188,7 @@ namespace SimpleWeather.UWP
                 if (keyVerified)
                 {
                     Settings.API = Settings.API_WUnderground;
-                    Task.Run(async () => await App.BGTaskHandler.AppTrigger.RequestAsync());
+                    Task.Run(async () => await App.BGTaskHandler.RequestAppTrigger());
                 }
             }
             else if (index == 1)
@@ -241,14 +241,14 @@ namespace SimpleWeather.UWP
         {
             Settings.Unit = Settings.Fahrenheit;
 
-            Task.Run(async () => await App.BGTaskHandler.AppTrigger.RequestAsync());
+            Task.Run(async () => await App.BGTaskHandler.RequestAppTrigger());
         }
 
         private void Celsius_Checked(object sender, RoutedEventArgs e)
         {
             Settings.Unit = Settings.Celsius;
 
-            Task.Run(async () => await App.BGTaskHandler.AppTrigger.RequestAsync());
+            Task.Run(async () => await App.BGTaskHandler.RequestAppTrigger());
         }
 
         private async void FollowGPS_Toggled(object sender, RoutedEventArgs e)
@@ -299,7 +299,7 @@ namespace SimpleWeather.UWP
             }
 
             Settings.FollowGPS = sw.IsOn;
-            await App.BGTaskHandler.AppTrigger.RequestAsync();
+            await App.BGTaskHandler.RequestAppTrigger();
         }
 
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)

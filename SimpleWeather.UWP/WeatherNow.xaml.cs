@@ -48,7 +48,7 @@ namespace SimpleWeather.UWP
                 if (Settings.HomeData.Equals(location) && 
                     TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval)
                 {
-                    await App.BGTaskHandler.AppTrigger.RequestAsync();
+                    await App.BGTaskHandler.RequestAppTrigger();
                 }
 
                 // Shell
