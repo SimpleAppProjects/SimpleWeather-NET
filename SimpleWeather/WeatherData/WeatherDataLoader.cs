@@ -461,7 +461,10 @@ namespace SimpleWeather.WeatherData
 #endif
             }
             else
+            {
+                weather.locale = locale;
                 weather.query = location_query;
+            }
 
             return weather;
         }
