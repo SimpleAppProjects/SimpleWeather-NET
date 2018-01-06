@@ -50,6 +50,7 @@ namespace SimpleWeather.Droid.Widgets
         private static bool alarmStarted = false;
         private static BroadcastReceiver mTickReceiver;
 
+        private WeatherManager wm;
         private static Weather weather;
         private static LocationData locData;
 
@@ -80,6 +81,7 @@ namespace SimpleWeather.Droid.Widgets
 
             mContext = ApplicationContext;
             mAppWidgetManager = AppWidgetManager.GetInstance(mContext);
+            wm = WeatherManager.GetInstance();
         }
 
         protected override async void OnHandleWork(Intent intent)
@@ -506,12 +508,12 @@ namespace SimpleWeather.Droid.Widgets
             updateViews.SetTextViewText(Resource.Id.update_time, updatetext);
 
             // Background
-            var color = WeatherUtils.GetWeatherBackgroundColor(weather);
+            var color = wm.GetWeatherBackgroundColor(weather);
             updateViews.SetInt(Resource.Id.widgetBackground, "setBackgroundColor", color);
 
             // WeatherIcon
             updateViews.SetImageViewResource(Resource.Id.weather_icon,
-                WeatherUtils.GetWeatherIconResource(weather.condition.icon));
+                wm.GetWeatherIconResource(weather.condition.icon));
 
             // Set data for larger widgets
             if (provider.WidgetType != WidgetType.Widget1x1)
@@ -664,7 +666,7 @@ namespace SimpleWeather.Droid.Widgets
 
                 forecastPanel.SetTextViewText(Resource.Id.forecast_date, forecast.date.ToString("ddd"));
                 forecastPanel.SetImageViewResource(Resource.Id.forecast_icon,
-                    WeatherUtils.GetWeatherIconResource(forecast.icon));
+                    wm.GetWeatherIconResource(forecast.icon));
                 forecastPanel.SetTextViewText(Resource.Id.forecast_hi,
                     (Settings.IsFahrenheit ? forecast.high_f : forecast.high_c) + "º");
                 forecastPanel.SetTextViewText(Resource.Id.forecast_lo,
@@ -810,7 +812,7 @@ namespace SimpleWeather.Droid.Widgets
 
                         await Task.Run(async () =>
                         {
-                            var view = await GeopositionQuery.GetLocation(location);
+                            var view = await wm.GetLocation(location);
 
                             if (!String.IsNullOrEmpty(view.LocationQuery))
                                 selected_query = view.LocationQuery;

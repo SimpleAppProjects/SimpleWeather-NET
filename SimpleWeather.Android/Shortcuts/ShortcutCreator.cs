@@ -25,6 +25,8 @@ namespace SimpleWeather.Droid.Shortcuts
         {
             if (Build.VERSION.SdkInt >= BuildVersionCodes.NMr1)
             {
+                var wm = WeatherManager.GetInstance();
+
                 var locations = new List<LocationData>(await Settings.GetLocationData());
                 if (Settings.FollowGPS)
                     locations.Insert(0, Settings.HomeData);
@@ -58,7 +60,7 @@ namespace SimpleWeather.Droid.Shortcuts
                         .PutExtra("shortcut-data", location.ToJson())
                         .SetFlags(ActivityFlags.NewTask | ActivityFlags.MultipleTask | ActivityFlags.NoHistory);
 
-                    var bmp = await BitmapFactory.DecodeResourceAsync(App.Context.Resources, WeatherUtils.GetWeatherIconResource(weather.condition.icon),
+                    var bmp = await BitmapFactory.DecodeResourceAsync(App.Context.Resources, wm.GetWeatherIconResource(weather.condition.icon),
                         new BitmapFactory.Options() { InMutable = true });
                     var newImage = Bitmap.CreateBitmap(bmp.Width, bmp.Height, bmp.GetConfig());
                     Paint paint = new Paint();

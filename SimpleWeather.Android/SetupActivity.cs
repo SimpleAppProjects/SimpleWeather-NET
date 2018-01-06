@@ -47,6 +47,7 @@ namespace SimpleWeather.Droid
         private CancellationTokenSource cts;
 
         private ActionModeCallback mActionModeCallback = new ActionModeCallback();
+        private WeatherData.WeatherManager wm;
 
         private bool OnCreateActionMode(Android.Support.V7.View.ActionMode mode, IMenu menu)
         {
@@ -83,6 +84,8 @@ namespace SimpleWeather.Droid
                 mActionMode = StartSupportActionMode(mActionModeCallback);
             }
 
+            wm = WeatherData.WeatherManager.GetInstance();
+
             searchViewContainer = FindViewById(Resource.Id.search_view_container);
             apiSpinner = FindViewById<Spinner>(Resource.Id.api_spinner);
             keyEntry = FindViewById<EditText>(Resource.Id.key_entry);
@@ -99,14 +102,16 @@ namespace SimpleWeather.Droid
             {
                 if (e.Position == 0)
                 {
-                    Settings.API = Settings.API_WUnderground;
+                    Settings.API = WeatherData.WeatherAPI.WeatherUnderground;
                     FindViewById(Resource.Id.key_entry_box).Visibility = ViewStates.Visible;
                 }
                 else
                 {
-                    Settings.API = Settings.API_Yahoo;
+                    Settings.API = WeatherData.WeatherAPI.Yahoo;
                     FindViewById(Resource.Id.key_entry_box).Visibility = ViewStates.Invisible;
                 }
+
+                wm.UpdateAPI();
             };
 
             keyEntry.FocusChange += (object sender, View.FocusChangeEventArgs e) =>
@@ -211,7 +216,7 @@ namespace SimpleWeather.Droid
                     }
 
                     // Get geo location
-                    LocationQueryViewModel view = await WeatherData.GeopositionQuery.GetLocation(mLocation);
+                    LocationQueryViewModel view = await wm.GetLocation(mLocation);
 
                      if (!String.IsNullOrEmpty(view.LocationQuery))
                          selected_query = view.LocationQuery;
@@ -226,7 +231,7 @@ namespace SimpleWeather.Droid
                     return;
                 }
 
-                if (String.IsNullOrWhiteSpace(Settings.API_KEY) && Settings.API == Settings.API_WUnderground)
+                if (String.IsNullOrWhiteSpace(Settings.API_KEY) && Settings.API == WeatherData.WeatherAPI.WeatherUnderground)
                 {
                     Toast.MakeText(this.ApplicationContext, Resource.String.werror_invalidkey, ToastLength.Short).Show();
                     EnableControls(true);
@@ -242,7 +247,7 @@ namespace SimpleWeather.Droid
                 // Get Weather Data
                 WeatherData.Weather weather = await Settings.GetWeatherData(selected_query);
                 if (weather == null)
-                    weather = await WeatherData.WeatherLoaderTask.GetWeather(selected_query);
+                    weather = await wm.GetWeather(selected_query);
 
                 if (weather == null)
                 {

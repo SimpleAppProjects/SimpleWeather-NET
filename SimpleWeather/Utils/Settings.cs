@@ -49,10 +49,6 @@ namespace SimpleWeather.Utils
         private const string KEY_UPDATETIME = "key_updatetime";
         private const string KEY_DBVERSION = "key_dbversion";
 
-        // APIs
-        public const string API_WUnderground = "WUnderground";
-        public const string API_Yahoo = "Yahoo";
-
         // Weather Data
         private static LocationData lastGPSLocData = new LocationData();
         private static bool loaded = false;

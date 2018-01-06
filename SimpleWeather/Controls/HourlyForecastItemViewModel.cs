@@ -15,6 +15,8 @@ namespace SimpleWeather.Controls
 {
     public class HourlyForecastItemViewModel
     {
+        private WeatherManager wm;
+
         public string WeatherIcon { get; set; }
         public string Date { get; set; }
         public string Condition { get; set; }
@@ -29,10 +31,13 @@ namespace SimpleWeather.Controls
 
         public HourlyForecastItemViewModel()
         {
+            wm = WeatherManager.GetInstance();
         }
 
         public HourlyForecastItemViewModel(HourlyForecast hr_forecast)
         {
+            wm = WeatherManager.GetInstance();
+
 #if WINDOWS_UWP
             var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages[0];
             var culture = new System.Globalization.CultureInfo(userlang);
@@ -40,7 +45,7 @@ namespace SimpleWeather.Controls
             var culture = System.Globalization.CultureInfo.CurrentCulture;
 #endif
 
-            WeatherIcon = WeatherUtils.GetWeatherIcon(hr_forecast.icon);
+            WeatherIcon = wm.GetWeatherIcon(hr_forecast.icon);
 #if WINDOWS_UWP
             if (culture.DateTimeFormat.ShortTimePattern.Contains("H"))
                 Date = hr_forecast.date.ToString("ddd HH:00", culture);

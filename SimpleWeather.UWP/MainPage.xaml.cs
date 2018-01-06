@@ -29,6 +29,8 @@ namespace SimpleWeather.UWP
     {
         private CancellationTokenSource cts = new CancellationTokenSource();
 
+        private WeatherManager wm;
+
         public ObservableCollection<LocationQueryViewModel> LocationQuerys { get; set; }
         private string selected_query = string.Empty;
 
@@ -37,6 +39,8 @@ namespace SimpleWeather.UWP
             this.InitializeComponent();
 
             this.SizeChanged += MainPage_SizeChanged;
+
+            wm = WeatherManager.GetInstance();
 
             // Views
             LocationQuerys = new ObservableCollection<LocationQueryViewModel>();
@@ -126,7 +130,7 @@ namespace SimpleWeather.UWP
                 {
                     if (cts.IsCancellationRequested) return;
 
-                    var results = await AutoCompleteQuery.GetLocations(query);
+                    var results = await wm.GetLocations(query);
 
                     // Refresh list
                     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -177,7 +181,7 @@ namespace SimpleWeather.UWP
             else if (!String.IsNullOrEmpty(args.QueryText))
             {
                 // Use args.QueryText to determine what to do.
-                LocationQueryViewModel result = (await AutoCompleteQuery.GetLocations(args.QueryText)).First();
+                LocationQueryViewModel result = (await wm.GetLocations(args.QueryText)).First();
 
                 if (result != null && String.IsNullOrWhiteSpace(result.LocationQuery))
                 {
@@ -222,7 +226,7 @@ namespace SimpleWeather.UWP
             // Weather Data
             Weather weather = await Settings.GetWeatherData(selected_query);
             if (weather == null)
-                weather = await WeatherLoaderTask.GetWeather(selected_query);
+                weather = await wm.GetWeather(selected_query);
 
             if (weather == null)
             {
@@ -381,7 +385,7 @@ namespace SimpleWeather.UWP
                         return;
                     }
 
-                    LocationQueryViewModel view = await GeopositionQuery.GetLocation(geoPos);
+                    LocationQueryViewModel view = await wm.GetLocation(geoPos);
 
                     if (!String.IsNullOrEmpty(view.LocationQuery))
                         selected_query = view.LocationQuery;
@@ -417,7 +421,7 @@ namespace SimpleWeather.UWP
                 // Weather Data
                 Weather weather = await Settings.GetWeatherData(selected_query);
                 if (weather == null)
-                    weather = await WeatherLoaderTask.GetWeather(selected_query);
+                    weather = await wm.GetWeather(selected_query);
 
                 if (weather == null)
                 {
@@ -463,6 +467,8 @@ namespace SimpleWeather.UWP
                     KeyEntry.Visibility = Visibility.Collapsed;
                 Settings.API = Settings.API_Yahoo;
             }
+
+            wm.UpdateAPI();
         }
 
         private void KeyEntry_TextChanged(object sender, TextChangedEventArgs e)

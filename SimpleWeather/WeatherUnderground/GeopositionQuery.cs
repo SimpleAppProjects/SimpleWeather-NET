@@ -1,87 +1,8 @@
-﻿using SimpleWeather.Utils;
-using System;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.Xml.Serialization;
-#if WINDOWS_UWP
-using SimpleWeather.UWP.Controls;
-using Windows.UI.Core;
-using Windows.UI.Popups;
-using Windows.Web;
-using Windows.Web.Http;
-#elif __ANDROID__
-using SimpleWeather.Droid;
-using Android.Widget;
-using System.Net;
-using System.Net.Http;
-#endif
 
 namespace SimpleWeather.WeatherUnderground
 {
-    public static class GeopositionQuery
-    {
-        private static string queryAPI = "http://api.wunderground.com/auto/wui/geo/GeoLookupXML/index.xml?query=";
-        private static string options = "";
-
-        public static async Task<location> GetLocation(WeatherUtils.Coordinate coord)
-        {
-            string query = string.Format("{0},{1}", coord.Latitude, coord.Longitude);
-            Uri queryURL = new Uri(queryAPI + query + options);
-            location result;
-            WeatherException wEx = null;
-
-            try
-            {
-                // Connect to webstream
-                HttpClient webClient = new HttpClient();
-                HttpResponseMessage response = await webClient.GetAsync(queryURL);
-                response.EnsureSuccessStatusCode();
-                Stream contentStream = null;
-#if WINDOWS_UWP
-                contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-#elif __ANDROID__
-                contentStream = await response.Content.ReadAsStreamAsync();
-#endif
-
-                // End Stream
-                webClient.Dispose();
-
-                // Load data
-                XmlSerializer deserializer = new XmlSerializer(typeof(location));
-                result = (location)deserializer.Deserialize(contentStream);
-
-                // End Stream
-                contentStream.Dispose();
-            }
-            catch (Exception ex)
-            {
-                result = null;
-#if WINDOWS_UWP
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
-                {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                    await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
-                }
-#elif __ANDROID__
-                if (ex is WebException || ex is HttpRequestException)
-                {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                    new Android.OS.Handler(Android.OS.Looper.MainLooper).Post(() =>
-                    {
-                        Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
-                    });
-                }
-#endif
-
-                System.Diagnostics.Debug.WriteLine(ex.StackTrace);
-            }
-
-            return result;
-        }
-    }
-
-
     /// <remarks/>
     [XmlTypeAttribute(AnonymousType = true)]
     [XmlRootAttribute(Namespace = "", IsNullable = false)]

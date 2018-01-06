@@ -62,7 +62,7 @@ namespace SimpleWeather.Droid
             if (SupportFragmentManager.FindFragmentById(Android.Resource.Id.Content) is SettingsFragment fragment)
             {
                 ListPreference keyPref = fragment.FindPreference(KEY_API) as ListPreference;
-                if (String.IsNullOrWhiteSpace(Settings.API_KEY) && keyPref.Value == Settings.API_WUnderground)
+                if (String.IsNullOrWhiteSpace(Settings.API_KEY) && keyPref.Value == WeatherData.WeatherAPI.WeatherUnderground)
                 {
                     // Set keyentrypref color to red
                     Toast.MakeText(this, Resource.String.message_enter_apikey, ToastLength.Long).Show();
@@ -115,7 +115,7 @@ namespace SimpleWeather.Droid
             {
                 SetPreferencesFromResource(Resource.Xml.pref_general, null);
                 HasOptionsMenu = false;
-                wuSharedPrefs = Activity.GetSharedPreferences(Settings.API_WUnderground, FileCreationMode.Private);
+                wuSharedPrefs = Activity.GetSharedPreferences(WeatherData.WeatherAPI.WeatherUnderground, FileCreationMode.Private);
 
                 notCategory = (PreferenceCategory)FindPreference(CATEGORY_NOTIFICATION);
                 apiCategory = (PreferenceCategory)FindPreference(CATEGORY_API);
@@ -158,7 +158,7 @@ namespace SimpleWeather.Droid
                 {
                     ListPreference pref = e.Preference as ListPreference;
 
-                    if (e.NewValue.ToString() == Settings.API_WUnderground)
+                    if (e.NewValue.ToString() == WeatherData.WeatherAPI.WeatherUnderground)
                     {
                         keyEntry.Enabled = true;
 
@@ -169,18 +169,18 @@ namespace SimpleWeather.Droid
                         if (!keyVerified)
                             Settings.API = pref.Value;
                         else
-                            Settings.API = Settings.API_WUnderground;
+                            Settings.API = WeatherData.WeatherAPI.WeatherUnderground;
 
                         if (apiCategory.FindPreference(KEY_APIKEY) == null)
                             apiCategory.AddPreference(keyEntry);
                     }
-                    else if (e.NewValue.ToString() == Settings.API_Yahoo)
+                    else if (e.NewValue.ToString() == WeatherData.WeatherAPI.Yahoo)
                     {
                         keyVerified = false;
                         wuSharedPrefs.Edit().Remove(KEY_APIKEY_VERIFIED).Apply();
                         keyEntry.Enabled = false;
 
-                        Settings.API = Settings.API_Yahoo;
+                        Settings.API = WeatherData.WeatherAPI.Yahoo;
 
                         apiCategory.RemovePreference(keyEntry);
                     }
@@ -188,7 +188,7 @@ namespace SimpleWeather.Droid
                     UpdateKeySummary();
                 };
 
-                if (Settings.API == Settings.API_WUnderground)
+                if (Settings.API == WeatherData.WeatherAPI.WeatherUnderground)
                 {
                     keyEntry.Enabled = true;
 
@@ -255,12 +255,13 @@ namespace SimpleWeather.Droid
                     var fragment = KeyEntryPreferenceDialogFragment.NewInstance(preference.Key);
                     fragment.PositiveButtonClick += async delegate
                     {
+                        var wm = WeatherData.WeatherManager.GetInstance();
                         String key = fragment.EditText.Text;
 
-                        if (await WeatherUnderground.KeyCheckQuery.IsValid(key))
+                        if (await wm.IsKeyValid(key))
                         {
                             Settings.API_KEY = key;
-                            Settings.API = Settings.API_WUnderground;
+                            Settings.API = WeatherData.WeatherAPI.WeatherUnderground;
 
                             keyVerified = true;
                             UpdateKeySummary();

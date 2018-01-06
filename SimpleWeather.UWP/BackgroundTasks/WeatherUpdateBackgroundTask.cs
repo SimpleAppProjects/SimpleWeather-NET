@@ -15,10 +15,12 @@ namespace SimpleWeather.UWP.BackgroundTasks
     public sealed class WeatherUpdateBackgroundTask : IBackgroundTask
     {
         private CancellationTokenSource cts;
+        private WeatherManager wm;
 
         public WeatherUpdateBackgroundTask()
         {
             cts = new CancellationTokenSource();
+            wm = WeatherManager.GetInstance();
         }
 
         public async void Run(IBackgroundTaskInstance taskInstance)
@@ -148,7 +150,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
 
                     await Task.Run(async () =>
                     {
-                        var view = await GeopositionQuery.GetLocation(newGeoPos);
+                        var view = await wm.GetLocation(newGeoPos);
 
                         if (!String.IsNullOrEmpty(view.LocationQuery))
                             selected_query = view.LocationQuery;

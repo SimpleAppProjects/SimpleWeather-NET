@@ -73,11 +73,15 @@ namespace SimpleWeather.Droid
         // OptionsMenu
         private IMenu optionsMenu;
 
+        private WeatherManager wm;
+
         public LocationsFragment()
         {
             // Required empty public constructor
             mActionModeCallback.CreateActionMode += OnCreateActionMode;
             mActionModeCallback.DestroyActionMode += OnDestroyActionMode;
+
+            wm = WeatherManager.GetInstance();
         }
 
         public override void OnAttach(Context context)
@@ -533,7 +537,7 @@ namespace SimpleWeather.Droid
 
                         await Task.Run(async () =>
                         {
-                            LocationQueryViewModel view = await GeopositionQuery.GetLocation(location);
+                            LocationQueryViewModel view = await wm.GetLocation(location);
 
                             if (!String.IsNullOrEmpty(view.LocationQuery))
                                 selected_query = view.LocationQuery;
@@ -704,7 +708,7 @@ namespace SimpleWeather.Droid
 
                 Weather weather = await Settings.GetWeatherData(selected_query);
                 if (weather == null)
-                    weather = await WeatherLoaderTask.GetWeather(selected_query);
+                    weather = await wm.GetWeather(selected_query);
 
                 if (weather == null)
                 {

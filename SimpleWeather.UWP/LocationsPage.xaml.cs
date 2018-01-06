@@ -31,6 +31,7 @@ namespace SimpleWeather.UWP
     public sealed partial class LocationsPage : Page, IWeatherLoadedListener, IWeatherErrorListener, IDisposable
     {
         private CancellationTokenSource cts = new CancellationTokenSource();
+        private WeatherManager wm;
 
         public ObservableCollection<LocationPanelViewModel> GPSPanelViewModel { get; set; }
         public ObservableCollection<LocationPanelViewModel> LocationPanels { get; set; }
@@ -94,6 +95,8 @@ namespace SimpleWeather.UWP
             this.InitializeComponent();
             this.NavigationCacheMode = NavigationCacheMode.Required;
             Application.Current.Resuming += LocationsPage_Resuming;
+
+            wm = WeatherManager.GetInstance();
 
             GPSPanelViewModel = new ObservableCollection<LocationPanelViewModel>() { null };
             LocationPanels = new ObservableCollection<LocationPanelViewModel>();
@@ -339,7 +342,7 @@ namespace SimpleWeather.UWP
 
                     await Task.Run(async () =>
                     {
-                        LocationQueryViewModel view = await GeopositionQuery.GetLocation(newGeoPos);
+                        LocationQueryViewModel view = await wm.GetLocation(newGeoPos);
 
                         if (!String.IsNullOrEmpty(view.LocationQuery))
                             selected_query = view.LocationQuery;
@@ -389,7 +392,7 @@ namespace SimpleWeather.UWP
                 {
                     if (cts.IsCancellationRequested) return;
 
-                    var results = await AutoCompleteQuery.GetLocations(query);
+                    var results = await wm.GetLocations(query);
 
                     if (cts.IsCancellationRequested) return;
 
@@ -442,7 +445,7 @@ namespace SimpleWeather.UWP
             else if (!String.IsNullOrEmpty(args.QueryText))
             {
                 // Use args.QueryText to determine what to do.
-                LocationQueryViewModel result = (await AutoCompleteQuery.GetLocations(args.QueryText)).First();
+                LocationQueryViewModel result = (await wm.GetLocations(args.QueryText)).First();
 
                 if (result != null && String.IsNullOrWhiteSpace(result.LocationQuery))
                 {
@@ -491,7 +494,7 @@ namespace SimpleWeather.UWP
 
             Weather weather = await Settings.GetWeatherData(selected_query);
             if (weather == null)
-                weather = await WeatherLoaderTask.GetWeather(selected_query);
+                weather = await wm.GetWeather(selected_query);
 
             if (weather == null)
             {

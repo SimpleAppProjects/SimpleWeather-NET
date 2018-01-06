@@ -253,8 +253,12 @@ namespace SimpleWeather.Controls
         public string WeatherLocale { get; set; }
 #endif
 
+        private WeatherManager wm;
+
         public WeatherNowViewModel()
         {
+            wm = WeatherManager.GetInstance();
+
 #if WINDOWS_UWP
             Background = new ImageBrush()
             {
@@ -268,6 +272,8 @@ namespace SimpleWeather.Controls
 
         public WeatherNowViewModel(Weather weather)
         {
+            wm = WeatherManager.GetInstance();
+
 #if WINDOWS_UWP
             Background = new ImageBrush()
             {
@@ -290,11 +296,11 @@ namespace SimpleWeather.Controls
 #endif
             // Update backgrounds
 #if WINDOWS_UWP
-            WeatherUtils.SetBackground(Background, weather);
-            PendingBackgroundColor = WeatherUtils.GetWeatherBackgroundColor(weather);
+            wm.SetBackground(Background, weather);
+            PendingBackgroundColor = wm.GetWeatherBackgroundColor(weather);
 #elif __ANDROID__
-            Background = WeatherUtils.GetBackgroundURI(weather);
-            PendingBackground = WeatherUtils.GetWeatherBackgroundColor(weather);
+            Background = wm.GetBackgroundURI(weather);
+            PendingBackground = wm.GetWeatherBackgroundColor(weather);
 #endif
 
             // Location
@@ -307,7 +313,7 @@ namespace SimpleWeather.Controls
             CurTemp = Settings.IsFahrenheit ?
                 Math.Round(weather.condition.temp_f) + "\uf045" : Math.Round(weather.condition.temp_c) + "\uf03c";
             CurCondition = (String.IsNullOrWhiteSpace(weather.condition.weather)) ? "---" : weather.condition.weather;
-            WeatherIcon = WeatherUtils.GetWeatherIcon(weather.condition.icon);
+            WeatherIcon = wm.GetWeatherIcon(weather.condition.icon);
 
             // WeatherDetails
             // Astronomy
@@ -373,12 +379,12 @@ namespace SimpleWeather.Controls
             creditPrefix = App.Context.GetString(Resource.String.credit_prefix);
 #endif
 
-            if (weather.source == Settings.API_WUnderground)
+            if (weather.source == WeatherAPI.WeatherUnderground)
             {
                 WeatherCredit = string.Format("{0} WeatherUnderground", creditPrefix);
                 WUExtras.UpdateView(weather);
             }
-            else if (weather.source == Settings.API_Yahoo)
+            else if (weather.source == WeatherAPI.Yahoo)
             {
                 WeatherCredit = string.Format("{0} Yahoo!", creditPrefix);
                 // Clear data

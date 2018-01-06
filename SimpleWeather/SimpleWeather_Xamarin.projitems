@@ -23,19 +23,20 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Settings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)WeatherData\AutoCompleteQuery.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)WeatherData\GeopositionQuery.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IWeatherErrorListener.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IWeatherProviderImpl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\LocationData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\WeatherDataLoader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IWeatherLoadedListener.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)WeatherUnderground\KeyCheckQuery.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WeatherData\WeatherManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WeatherData\WeatherProviderImpl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherUnderground\AutoCompleteQuery.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherUnderground\GeopositionQuery.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherUnderground\Weather.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WeatherUnderground\WeatherUndergroundProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)YahooWeather\AutoCompleteQuery.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)YahooWeather\GeopositionQuery.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)YahooWeather\Weather.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)YahooWeather\YahooWeatherProvider.cs" />
   </ItemGroup>
 </Project>

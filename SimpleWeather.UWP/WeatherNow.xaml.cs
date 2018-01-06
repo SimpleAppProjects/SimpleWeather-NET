@@ -6,11 +6,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.Devices.Geolocation;
 using Windows.Foundation.Metadata;
+using Windows.System.UserProfile;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -26,6 +28,7 @@ namespace SimpleWeather.UWP
     /// </summary>
     public sealed partial class WeatherNow : Page, IWeatherLoadedListener, IWeatherErrorListener
     {
+        WeatherManager wm;
         WeatherDataLoader wLoader = null;
         WeatherNowViewModel WeatherView { get; set; }
 
@@ -129,6 +132,7 @@ namespace SimpleWeather.UWP
             NavigationCacheMode = NavigationCacheMode.Enabled;
             Application.Current.Resuming += WeatherNow_Resuming;
 
+            wm = WeatherManager.GetInstance();
             WeatherView = new WeatherNowViewModel();
             StackControl.SizeChanged += StackControl_SizeChanged;
             DetailsPanel.SizeChanged += DetailsPanel_SizeChanged;
@@ -264,13 +268,16 @@ namespace SimpleWeather.UWP
 
                 if (wLoader != null)
                 {
-                    var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages.First();
-                    var culture = new System.Globalization.CultureInfo(userlang);
-                    var locale = WeatherUtils.LocaleToWUCode(culture.TwoLetterISOLanguageName, culture.Name);
+                    var userlang = GlobalizationPreferences.Languages.First();
+                    var culture = new CultureInfo(userlang);
+                    var locale = wm.LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
                     // Reset loader if source, query or locale is different
-                    if (WeatherView.WeatherSource != Settings.API || WeatherView.WeatherLocale != locale || homeChanged)
-                        wLoader = null;
+                    bool resetLoader = WeatherView.WeatherSource != Settings.API || homeChanged;
+                    if (wm.SupportsWeatherLocale && !resetLoader)
+                        resetLoader = WeatherView.WeatherLocale != locale;
+
+                    if (resetLoader) wLoader = null;
                 }
 
                 // Update view on resume
@@ -454,7 +461,7 @@ namespace SimpleWeather.UWP
 
                     await Task.Run(async () =>
                     {
-                        LocationQueryViewModel view = await GeopositionQuery.GetLocation(newGeoPos);
+                        LocationQueryViewModel view = await wm.GetLocation(newGeoPos);
 
                         if (!String.IsNullOrEmpty(view.LocationQuery))
                             selected_query = view.LocationQuery;

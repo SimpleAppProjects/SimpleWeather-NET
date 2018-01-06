@@ -37,11 +37,14 @@ namespace SimpleWeather.Droid
 
         private CancellationTokenSource cts;
 
+        private WeatherData.WeatherManager wm;
+
         public LocationSearchFragment()
         {
             // Required empty public constructor
             ClickListener = LocationSearchFragment_clickListener;
             cts = new CancellationTokenSource();
+            wm = WeatherData.WeatherManager.GetInstance();
         }
 
         public void CtsCancel()
@@ -96,7 +99,7 @@ namespace SimpleWeather.Droid
                 return;
             }
 
-            if (String.IsNullOrWhiteSpace(Settings.API_KEY) && Settings.API == Settings.API_WUnderground)
+            if (String.IsNullOrWhiteSpace(Settings.API_KEY) && Settings.API == WeatherData.WeatherAPI.WeatherUnderground)
             {
                 String errorMsg = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey).Message;
                 Toast.MakeText(App.Context, errorMsg, ToastLength.Short).Show();
@@ -118,7 +121,7 @@ namespace SimpleWeather.Droid
             // Get Weather Data
             WeatherData.Weather weather = await Settings.GetWeatherData(selected_query);
             if (weather == null)
-                weather = await WeatherData.WeatherLoaderTask.GetWeather(selected_query);
+                weather = await wm.GetWeather(selected_query);
 
             if (weather == null)
             {
@@ -211,7 +214,7 @@ namespace SimpleWeather.Droid
                 {
                     if (cts.IsCancellationRequested) return;
 
-                    var results = await WeatherData.AutoCompleteQuery.GetLocations(queryString);
+                    var results = await wm.GetLocations(queryString);
 
                     if (cts.IsCancellationRequested) return;
 

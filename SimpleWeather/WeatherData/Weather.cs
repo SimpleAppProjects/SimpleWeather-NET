@@ -73,7 +73,7 @@ namespace SimpleWeather.WeatherData
             astronomy = new Astronomy(root.query.results.channel.astronomy);
             ttl = root.query.results.channel.ttl;
 
-            source = Settings.API_Yahoo;
+            source = WeatherAPI.Yahoo;
         }
 
         public Weather(WeatherUnderground.Rootobject root)
@@ -101,7 +101,7 @@ namespace SimpleWeather.WeatherData
             precipitation = new Precipitation(root.forecast.simpleforecast.forecastday[0]);
             ttl = "60";
 
-            source = Settings.API_WUnderground;
+            source = WeatherAPI.WeatherUnderground;
         }
 
         public static Weather FromJson(JsonReader reader)

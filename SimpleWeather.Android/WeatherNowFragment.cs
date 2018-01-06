@@ -39,10 +39,11 @@ namespace SimpleWeather.Droid
         private bool loaded = false;
         private int BGAlpha = 255;
 
-        WeatherDataLoader wLoader = null;
-        WeatherNowViewModel weatherView = null;
+        private WeatherManager wm;
+        private WeatherDataLoader wLoader = null;
+        private WeatherNowViewModel weatherView = null;
 
-        AppCompatActivity AppCompatActivity;
+        private AppCompatActivity AppCompatActivity;
 
         // Views
         private SwipeRefreshLayout refreshLayout;
@@ -143,6 +144,7 @@ namespace SimpleWeather.Droid
         {
             // Required empty public constructor
             weatherView = new WeatherNowViewModel();
+            wm = WeatherManager.GetInstance();
         }
 
         /**
@@ -406,7 +408,7 @@ namespace SimpleWeather.Droid
             else if (wLoader != null && !loaded)
             {
                 var culture = System.Globalization.CultureInfo.CurrentCulture;
-                var locale = WeatherUtils.LocaleToWUCode(culture.TwoLetterISOLanguageName, culture.Name);
+                var locale = wm.LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
                 // Reset if source || locale is different
                 if (weatherView.WeatherSource != Settings.API || weatherView.WeatherLocale != locale)
@@ -724,7 +726,7 @@ namespace SimpleWeather.Droid
 
                         await Task.Run(async () =>
                         {
-                            LocationQueryViewModel view = await GeopositionQuery.GetLocation(location);
+                            LocationQueryViewModel view = await wm.GetLocation(location);
 
                             if (!String.IsNullOrEmpty(view.LocationQuery))
                                 selected_query = view.LocationQuery;

@@ -206,10 +206,13 @@
     <Compile Include="Utils\ImageUtils.cs" />
     <Compile Include="Utils\Pair.cs" />
     <Compile Include="Utils\Settings.cs" />
-    <Compile Include="Utils\WeatherUtils.cs" />
+    <Compile Include="WeatherData\IWeatherProviderImpl.cs" />
+    <Compile Include="WeatherData\WeatherProviderImpl.cs" />
     <Compile Include="WeatherNowFragment.cs" />
+    <Compile Include="WeatherUnderground\WeatherUndergroundProvider.cs" />
     <Compile Include="Widgets\WeatherWidgetProvider.cs" />
     <Compile Include="Widgets\WeatherWidgetService.cs" />
+    <Compile Include="YahooWeather\YahooWeatherProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">

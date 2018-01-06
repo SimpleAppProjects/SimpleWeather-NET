@@ -43,10 +43,12 @@ namespace SimpleWeather.Utils
 
                 switch (key)
                 {
-                    // FollowGPS changed
-                    case KEY_FOLLOWGPS:
                     // Weather Provider changed
                     case KEY_API:
+                        WeatherData.WeatherManager.GetInstance().UpdateAPI();
+                        goto case KEY_FOLLOWGPS;
+                    // FollowGPS changed
+                    case KEY_FOLLOWGPS:
                     // Settings unit changed
                     case KEY_USECELSIUS:
                         WeatherWidgetService.EnqueueWork(context, new Intent(context, typeof(WeatherWidgetService))
@@ -131,8 +133,8 @@ namespace SimpleWeather.Utils
         {
             if (!preferences.Contains(KEY_API))
             {
-                SetAPI(API_WUnderground);
-                return API_WUnderground;
+                SetAPI(WeatherData.WeatherAPI.WeatherUnderground);
+                return WeatherData.WeatherAPI.WeatherUnderground;
             }
             else
                 return preferences.GetString(KEY_API, null);

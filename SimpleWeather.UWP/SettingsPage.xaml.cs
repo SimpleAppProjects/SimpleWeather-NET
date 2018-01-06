@@ -14,6 +14,7 @@ using Windows.UI.Core;
 using Windows.Foundation.Metadata;
 using Windows.UI.ViewManagement;
 using System.Threading.Tasks;
+using SimpleWeather.WeatherData;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 namespace SimpleWeather.UWP
@@ -26,6 +27,8 @@ namespace SimpleWeather.UWP
         ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
         private static string KEY_APIKEY_VERIFIED = "API_KEY_VERIFIED";
         private bool keyVerified { get { return IsKeyVerfied(); } set { SetKeyVerified(value); } }
+
+        private WeatherManager wm;
 
         private bool IsKeyVerfied()
         {
@@ -47,6 +50,7 @@ namespace SimpleWeather.UWP
         {
             this.InitializeComponent();
 
+            wm = WeatherManager.GetInstance();
             RestoreSettings();
         }
 
@@ -78,6 +82,8 @@ namespace SimpleWeather.UWP
                 APIComboBox.SelectedIndex = 1;
                 KeyPanel.Visibility = Visibility.Collapsed;
             }
+
+            wm.UpdateAPI();
 
             // Update Interval
             switch (Settings.RefreshInterval)
@@ -142,7 +148,7 @@ namespace SimpleWeather.UWP
                 var diag = dialog as Controls.KeyEntryDialog;
 
                 string key = diag.Key;
-                if (await WeatherUnderground.KeyCheckQuery.IsValid(key))
+                if (await wm.IsKeyValid(key))
                 {
                     KeyEntry.Text = Settings.API_KEY = key;
                     Settings.API = Settings.API_WUnderground;
@@ -202,6 +208,7 @@ namespace SimpleWeather.UWP
                 localSettings.Containers[Settings.API_WUnderground].Values.Remove(KEY_APIKEY_VERIFIED);
             }
 
+            wm.UpdateAPI();
             UpdateKeyBorder();
         }
 

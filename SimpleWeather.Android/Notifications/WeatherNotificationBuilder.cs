@@ -31,6 +31,8 @@ namespace SimpleWeather.Droid.Notifications
             NotificationManager mNotifyMgr = (NotificationManager)App.Context.GetSystemService(App.NotificationService);
             InitChannel(mNotifyMgr);
 
+            var wm = WeatherManager.GetInstance();
+
             // Build update
             RemoteViews updateViews = new RemoteViews(App.Context.PackageName, Resource.Layout.notification_layout);
 
@@ -44,7 +46,7 @@ namespace SimpleWeather.Droid.Notifications
 
             // Weather icon
             updateViews.SetImageViewResource(Resource.Id.weather_icon, 
-                WeatherUtils.GetWeatherIconResource(weather.condition.icon));
+                wm.GetWeatherIconResource(weather.condition.icon));
 
             // Location Name
             updateViews.SetTextViewText(Resource.Id.location_name, weather.location.name);
@@ -86,7 +88,7 @@ namespace SimpleWeather.Droid.Notifications
             if (Settings.NotificationIcon == Settings.TEMPERATURE_ICON)
                 mBuilder.SetSmallIcon(resId, Math.Abs(level));
             else if (Settings.NotificationIcon == Settings.CONDITION_ICON)
-                mBuilder.SetSmallIcon(WeatherUtils.GetWeatherIconResource(weather.condition.icon));
+                mBuilder.SetSmallIcon(wm.GetWeatherIconResource(weather.condition.icon));
 
             Intent onClickIntent = new Intent(App.Context, typeof(MainActivity))
                 .SetFlags(ActivityFlags.ClearTop | ActivityFlags.NewTask | ActivityFlags.ClearTask);

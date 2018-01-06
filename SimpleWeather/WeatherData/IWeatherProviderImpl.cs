@@ -1,0 +1,22 @@
+﻿using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using SimpleWeather.Controls;
+using SimpleWeather.Utils;
+
+namespace SimpleWeather.WeatherData
+{
+    public partial interface IWeatherProviderImpl
+    {
+        bool KeyRequired { get; }
+        bool SupportsWeatherLocale { get; }
+
+        Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coordinate);
+        Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string ac_query);
+        Task<Weather> GetWeather(string location_query);
+        string GetWeatherIcon(string icon);
+        Task<bool> IsKeyValid(string key);
+        bool IsNight(Weather weather);
+        string LocaleToLangCode(string iso, string name);
+        Task<string> UpdateLocationQuery(Weather weather);
+    }
+}

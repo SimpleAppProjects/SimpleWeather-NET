@@ -254,10 +254,13 @@
     </Compile>
     <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="Utils\Settings.cs" />
-    <Compile Include="Utils\WeatherUtils.cs" />
+    <Compile Include="WeatherData\IWeatherProviderImpl.cs" />
+    <Compile Include="WeatherData\WeatherProviderImpl.cs" />
     <Compile Include="WeatherNow.xaml.cs">
       <DependentUpon>WeatherNow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WeatherUnderground\WeatherUndergroundProvider.cs" />
+    <Compile Include="YahooWeather\YahooWeatherProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">

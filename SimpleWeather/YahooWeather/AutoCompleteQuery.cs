@@ -1,81 +1,8 @@
 ﻿using System;
-using System.Threading.Tasks;
-using System.IO;
-using System.Collections.Generic;
-using System.Text;
 using System.Xml.Serialization;
-#if WINDOWS_UWP
-using Windows.Storage.Streams;
-using Windows.Web.Http;
-#elif __ANDROID__
-using System.Net.Http;
-#endif
 
 namespace SimpleWeather.WeatherYahoo
 {
-    public static class AutoCompleteQuery
-    {
-        public static async Task<List<Controls.LocationQueryViewModel>> GetLocations(string location_query)
-        {
-            string yahooAPI = "https://query.yahooapis.com/v1/public/yql?q=";
-            string query = "select * from geo.places where text=\"" + location_query + "*\"";
-            Uri queryURL = new Uri(yahooAPI + query);
-            List<Controls.LocationQueryViewModel> locationResults = null;
-            // Limit amount of results shown
-            int maxResults = 10;
-
-            try
-            {
-                // Connect to webstream
-                HttpClient webClient = new HttpClient();
-                HttpResponseMessage response = await webClient.GetAsync(queryURL);
-                response.EnsureSuccessStatusCode();
-                Stream contentStream = null;
-#if WINDOWS_UWP
-                contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-#elif __ANDROID__
-                contentStream = await response.Content.ReadAsStreamAsync();
-#endif
-                // End Stream
-                webClient.Dispose();
-
-                // Load data
-                locationResults = new List<Controls.LocationQueryViewModel>();
-                XmlSerializer deserializer = new XmlSerializer(typeof(query));
-                query root = (query)deserializer.Deserialize(contentStream);
-
-                foreach (place result in root.results)
-                {
-                    // Filter: only store city results
-                    if (result.placeTypeName.Value == "Town"
-                        || result.placeTypeName.Value == "Suburb"
-                        || (result.placeTypeName.Value == "Zip Code" 
-                        || result.placeTypeName.Value == "Postal Code" &&
-                            (result.locality1 != null && result.locality1.type == "Town")
-                            || (result.locality1 != null && result.locality1.type == "Suburb")))
-                        locationResults.Add(new Controls.LocationQueryViewModel(result));
-                    else
-                        continue;
-
-                    // Limit amount of results
-                    maxResults--;
-                    if (maxResults <= 0)
-                        break;
-                }
-
-                // End Stream
-                contentStream.Dispose();
-            }
-            catch (Exception ex)
-            {
-                locationResults = new List<Controls.LocationQueryViewModel>();
-                System.Diagnostics.Debug.WriteLine(ex.StackTrace);
-            }
-
-            return locationResults;
-        }
-    }
-
     /// <remarks/>
     [XmlTypeAttribute(AnonymousType = true)]
     [XmlRootAttribute(Namespace = "", IsNullable = false)]

@@ -87,13 +87,17 @@ namespace SimpleWeather.Controls
         }
         #endregion
 
+        private WeatherManager wm;
+
         public LocationPanelViewModel()
         {
+            wm = WeatherManager.GetInstance();
             LocationData = new LocationData();
         }
 
         public LocationPanelViewModel(Weather weather)
         {
+            wm = WeatherManager.GetInstance();
             LocationData = new LocationData();
             SetWeather(weather);
         }
@@ -107,12 +111,12 @@ namespace SimpleWeather.Controls
                 (Background as ImageBrush).Stretch = Stretch.UniformToFill;
                 (Background as ImageBrush).AlignmentX = AlignmentX.Center;
             }
-            WeatherUtils.SetBackground(Background as ImageBrush, weather);
+            wm.SetBackground(Background as ImageBrush, weather);
 
             LocationName = weather.location.name;
             CurrTemp = (Settings.IsFahrenheit ?
                 Math.Round(weather.condition.temp_f) : Math.Round(weather.condition.temp_c)) + "º";
-            WeatherIcon = WeatherUtils.GetWeatherIcon(weather.condition.icon);
+            WeatherIcon = wm.GetWeatherIcon(weather.condition.icon);
             WeatherSource = weather.source;
 
             if (LocationData.query == null)
