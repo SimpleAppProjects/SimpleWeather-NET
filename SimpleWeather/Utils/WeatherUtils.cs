@@ -18,7 +18,7 @@ namespace SimpleWeather.Utils
 
             String date;
             String prefix;
-            DateTime update_time = weather.update_time.DateTime.Add(weather.location.tz_offset);
+            DateTime update_time = weather.update_time.DateTime;
             String timeformat = update_time.ToString("t", culture);
 
 #if __ANDROID__

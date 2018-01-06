@@ -14,7 +14,22 @@ namespace SimpleWeather.WeatherData
     {
         [TextBlob("locationblob")]
         public Location location { get; set; }
-        public DateTimeOffset update_time { get; set; }
+        [Ignore] 
+        // Doesn't store this in db
+        // For DateTimeOffset, offset isn't stored when saving to db
+        // Store as string (blob) instead
+        // If db previously stored DateTimeOffset (as ticks) retrieve and set offset
+        public DateTimeOffset update_time
+        {
+            get
+            {
+                if (DateTimeOffset.TryParseExact(updatetimeblob, "dd.MM.yyyy HH:mm:ss zzzz", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset result))
+                    return result;
+                else
+                    return new DateTimeOffset(long.Parse(updatetimeblob), TimeSpan.Zero).ToOffset(location.tz_offset);
+            }
+            set { updatetimeblob = value.ToString("dd.MM.yyyy HH:mm:ss zzzz"); }
+        }
         [TextBlob("forecastblob")]
         public Forecast[] forecast { get; set; }
         [TextBlob("hrforecastblob")]
@@ -37,6 +52,10 @@ namespace SimpleWeather.WeatherData
 
         [JsonIgnore]
         public string locationblob { get; set; }
+        [JsonIgnore]
+        [Column("update_time")]
+        // Keep DateTimeOffset column name to get data as string
+        public string updatetimeblob { get; set; }
         [JsonIgnore]
         public string forecastblob { get; set; }
         [JsonIgnore]
@@ -63,6 +82,7 @@ namespace SimpleWeather.WeatherData
             location = new Location(root.query);
             update_time = DateTimeOffset.ParseExact(root.query.created,
                             "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
+            update_time = update_time.ToOffset(location.tz_offset);
             forecast = new Forecast[root.query.results.channel.item.forecast.Length];
             for (int i = 0; i < forecast.Length; i++)
             {
@@ -127,8 +147,15 @@ namespace SimpleWeather.WeatherData
                             break;
                         case "update_time":
                             bool parsed = DateTimeOffset.TryParse(reader.Value.ToString(), out DateTimeOffset result);
-                            if (!parsed)
+                            if (!parsed) // If we can't parse as DateTimeOffset try DateTime (data could be old)
                                 result = DateTime.Parse(reader.Value.ToString());
+                            else
+                            {
+                                // DateTimeOffset date stored in SQLite.NET doesn't store offset
+                                // Try to convert to location's timezone if possible or if time is in UTC
+                                if (obj.location?.tz_offset != null && result.Offset.Ticks == 0)
+                                    result = result.ToOffset(obj.location.tz_offset);
+                            }
                             obj.update_time = result;
                             break;
                         case "forecast":
