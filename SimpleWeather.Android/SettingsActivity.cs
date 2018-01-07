@@ -62,7 +62,7 @@ namespace SimpleWeather.Droid
             if (SupportFragmentManager.FindFragmentById(Android.Resource.Id.Content) is SettingsFragment fragment)
             {
                 ListPreference keyPref = fragment.FindPreference(KEY_API) as ListPreference;
-                if (String.IsNullOrWhiteSpace(Settings.API_KEY) && keyPref.Value == WeatherData.WeatherAPI.WeatherUnderground)
+                if (String.IsNullOrWhiteSpace(Settings.API_KEY) && WeatherData.WeatherManager.IsKeyRequired(keyPref.Value))
                 {
                     // Set keyentrypref color to red
                     Toast.MakeText(this, Resource.String.message_enter_apikey, ToastLength.Long).Show();
@@ -115,6 +115,7 @@ namespace SimpleWeather.Droid
             {
                 SetPreferencesFromResource(Resource.Xml.pref_general, null);
                 HasOptionsMenu = false;
+                // TODO: change pref name since this will eventually be used by other APIs
                 wuSharedPrefs = Activity.GetSharedPreferences(WeatherData.WeatherAPI.WeatherUnderground, FileCreationMode.Private);
 
                 notCategory = (PreferenceCategory)FindPreference(CATEGORY_NOTIFICATION);
@@ -158,29 +159,29 @@ namespace SimpleWeather.Droid
                 {
                     ListPreference pref = e.Preference as ListPreference;
 
-                    if (e.NewValue.ToString() == WeatherData.WeatherAPI.WeatherUnderground)
+                    if (WeatherData.WeatherManager.IsKeyRequired(e.NewValue.ToString()))
                     {
                         keyEntry.Enabled = true;
 
-                        if (!String.IsNullOrWhiteSpace(Settings.API_KEY) && !keyVerified)
-                            keyVerified = true;
+                        //if (!String.IsNullOrWhiteSpace(Settings.API_KEY) && !keyVerified)
+                        //    keyVerified = true;
 
                         // Reset to old value if not verified
                         if (!keyVerified)
                             Settings.API = pref.Value;
                         else
-                            Settings.API = WeatherData.WeatherAPI.WeatherUnderground;
+                            Settings.API = e.NewValue.ToString();
 
                         if (apiCategory.FindPreference(KEY_APIKEY) == null)
                             apiCategory.AddPreference(keyEntry);
                     }
-                    else if (e.NewValue.ToString() == WeatherData.WeatherAPI.Yahoo)
+                    else
                     {
                         keyVerified = false;
                         wuSharedPrefs.Edit().Remove(KEY_APIKEY_VERIFIED).Apply();
                         keyEntry.Enabled = false;
 
-                        Settings.API = WeatherData.WeatherAPI.Yahoo;
+                        Settings.API = e.NewValue.ToString();
 
                         apiCategory.RemovePreference(keyEntry);
                     }
@@ -188,12 +189,12 @@ namespace SimpleWeather.Droid
                     UpdateKeySummary();
                 };
 
-                if (Settings.API == WeatherData.WeatherAPI.WeatherUnderground)
+                if (WeatherData.WeatherManager.GetInstance().KeyRequired)
                 {
                     keyEntry.Enabled = true;
 
-                    if (!String.IsNullOrWhiteSpace(Settings.API_KEY) && !keyVerified)
-                        keyVerified = true;
+                    //if (!String.IsNullOrWhiteSpace(Settings.API_KEY) && !keyVerified)
+                    //    keyVerified = true;
                 }
                 else
                 {
@@ -258,10 +259,12 @@ namespace SimpleWeather.Droid
                         var wm = WeatherData.WeatherManager.GetInstance();
                         String key = fragment.EditText.Text;
 
-                        if (await wm.IsKeyValid(key))
+                        // TODO: NOTE: this might not work
+                        String API = providerPref.Value;
+                        if (await WeatherData.WeatherManager.IsKeyValid(key, API))
                         {
                             Settings.API_KEY = key;
-                            Settings.API = WeatherData.WeatherAPI.WeatherUnderground;
+                            Settings.API = API;
 
                             keyVerified = true;
                             UpdateKeySummary();

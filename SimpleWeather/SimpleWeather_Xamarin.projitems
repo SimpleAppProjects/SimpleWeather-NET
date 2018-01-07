@@ -9,6 +9,7 @@
     <Import_RootNamespace>SimpleWeather</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\ComboBoxItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\TextForecastItemViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\HourlyForecastItemViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ForecastItemViewModel.cs" />

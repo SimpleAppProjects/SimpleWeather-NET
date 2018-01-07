@@ -146,7 +146,6 @@ namespace SimpleWeather.Utils
             editor.Commit();
         }
 
-        #region WeatherUnderground
         private static string GetAPIKEY()
         {
             if (!preferences.Contains(KEY_APIKEY))
@@ -205,7 +204,6 @@ namespace SimpleWeather.Utils
 
             editor.Commit();
         }
-        #endregion
 
         private static bool UseFollowGPS()
         {

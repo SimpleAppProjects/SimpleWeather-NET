@@ -98,7 +98,6 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-    <Content Include="API_KEY.txt" Condition="'$(Configuration)' == 'Debug'" />
     <Content Include="Assets\AppLogo.png" />
     <Content Include="Assets\BadgeLogo.scale-125.png" />
     <Content Include="Assets\BadgeLogo.scale-150.png" />

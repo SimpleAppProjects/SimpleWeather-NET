@@ -411,7 +411,8 @@ namespace SimpleWeather.Droid
                 var locale = wm.LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
                 // Reset if source || locale is different
-                if (weatherView.WeatherSource != Settings.API || weatherView.WeatherLocale != locale)
+                if (weatherView.WeatherSource != Settings.API ||
+                    wm.SupportsWeatherLocale && weatherView.WeatherLocale != locale)
                 {
                     await Restore();
                     loaded = true;

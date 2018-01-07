@@ -21,6 +21,12 @@ namespace SimpleWeather.WeatherData
         // APIs
         public const string WeatherUnderground = "WUnderground";
         public const string Yahoo = "Yahoo";
+
+        public static List<ComboBoxItem> APIs = new List<ComboBoxItem>()
+        {
+            new ComboBoxItem("WeatherUnderground", WeatherUnderground),
+            new ComboBoxItem("Yahoo Weather", Yahoo),
+        };
     }
 
     public class WeatherManager : IWeatherProviderImpl
@@ -28,7 +34,8 @@ namespace SimpleWeather.WeatherData
         private static WeatherManager Instance;
         private static WeatherProviderImpl WeatherProvider;
 
-        public WeatherManager()
+        // Prevent instance from being created outside of this class
+        private WeatherManager()
         {
             UpdateAPI();
         }
@@ -41,24 +48,56 @@ namespace SimpleWeather.WeatherData
             return Instance;
         }
 
-        public bool KeyRequired => WeatherProvider.KeyRequired;
-
-        public bool SupportsWeatherLocale => WeatherProvider.SupportsWeatherLocale;
-
         public void UpdateAPI()
         {
             string API = Settings.API;
 
+            WeatherProvider = GetProvider(API);
+        }
+
+        // Static Methods
+        public static WeatherProviderImpl GetProvider(string API)
+        {
+            WeatherProviderImpl providerImpl = null;
+
             switch (API)
             {
                 case WeatherAPI.WeatherUnderground:
-                    WeatherProvider = new WeatherUndergroundProvider();
+                    providerImpl = new WeatherUndergroundProvider();
                     break;
                 case WeatherAPI.Yahoo:
-                    WeatherProvider = new YahooWeatherProvider();
+                    providerImpl = new YahooWeatherProvider();
                     break;
             }
+
+            if (providerImpl == null)
+                throw new ArgumentNullException("API", "Invalid API name! This API is not supported");
+
+            return providerImpl;
         }
+
+        public static bool IsKeyRequired(string API)
+        {
+            WeatherProviderImpl provider = null;
+            bool needsKey = false;
+
+            provider = GetProvider(API);
+
+            needsKey = provider.KeyRequired;
+            provider = null;
+            return needsKey;
+        }
+
+        public static async Task<bool> IsKeyValid(string key, string API)
+        {
+            var provider = GetProvider(API);
+            return await provider.IsKeyValid(key);
+        }
+
+        // Provider dependent methods
+        public bool KeyRequired => WeatherProvider.KeyRequired;
+
+        public bool SupportsWeatherLocale => WeatherProvider.SupportsWeatherLocale;
 
         public async Task<string> UpdateLocationQuery(Weather weather)
         {

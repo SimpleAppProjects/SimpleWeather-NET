@@ -201,8 +201,8 @@ namespace SimpleWeather.UWP
                 return;
             }
 
-            // Stop if using WeatherUnderground and API Key is empty
-            if (String.IsNullOrWhiteSpace(Settings.API_KEY) && Settings.API == Settings.API_WUnderground)
+            // Stop if using provider that req's a key and is empty
+            if (String.IsNullOrWhiteSpace(Settings.API_KEY) && wm.KeyRequired)
             {
                 TextBlock header = KeyEntry.Header as TextBlock;
                 header.Visibility = Visibility.Visible;
@@ -281,13 +281,17 @@ namespace SimpleWeather.UWP
                 // Sizing
                 ResizeControls();
 
+                APIComboBox.ItemsSource = WeatherAPI.APIs;
+                APIComboBox.DisplayMemberPath = "Display";
+                APIComboBox.SelectedValuePath = "Value";
+
                 // Check for key
                 if (!String.IsNullOrEmpty(Settings.API_KEY))
                     KeyEntry.Text = Settings.API_KEY;
 
                 SearchGrid.Visibility = Visibility.Visible;
                 // Set WUnderground as default API
-                APIComboBox.SelectedIndex = 0;
+                APIComboBox.SelectedValue = WeatherAPI.WeatherUnderground;
             }
         }
 
@@ -400,8 +404,8 @@ namespace SimpleWeather.UWP
                     return;
                 }
 
-                // Stop if using WeatherUnderground and API Key is empty
-                if (String.IsNullOrWhiteSpace(Settings.API_KEY) && Settings.API == Settings.API_WUnderground)
+                // Stop if using provider that req's a key and is empty
+                if (String.IsNullOrWhiteSpace(Settings.API_KEY) && wm.KeyRequired)
                 {
                     TextBlock header = KeyEntry.Header as TextBlock;
                     header.Visibility = Visibility.Visible;
@@ -451,24 +455,17 @@ namespace SimpleWeather.UWP
         private void APIComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBox box = sender as ComboBox;
-            int index = box.SelectedIndex;
 
-            if (index == 0)
-            {
-                // WeatherUnderground
-                if (KeyEntry != null)
-                    KeyEntry.Visibility = Visibility.Visible;
-                Settings.API = Settings.API_WUnderground;
-            }
-            else if (index == 1)
-            {
-                // Yahoo Weather
-                if (KeyEntry != null)
-                    KeyEntry.Visibility = Visibility.Collapsed;
-                Settings.API = Settings.API_Yahoo;
-            }
-
+            Settings.API = box.SelectedValue.ToString();
             wm.UpdateAPI();
+
+            if (KeyEntry != null)
+            {
+                if (wm.KeyRequired)
+                    KeyEntry.Visibility = Visibility.Visible;
+                else
+                    KeyEntry.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void KeyEntry_TextChanged(object sender, TextChangedEventArgs e)

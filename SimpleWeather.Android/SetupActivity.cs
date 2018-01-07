@@ -93,6 +93,13 @@ namespace SimpleWeather.Droid
             progressBar = FindViewById<ProgressBar>(Resource.Id.progressBar);
             progressBar.Visibility = ViewStates.Gone;
 
+            // Setup spinner
+            var spinnerAdapter = new ArrayAdapter<ComboBoxItem>(
+                this, Android.Resource.Layout.SimpleSpinnerItem,
+                WeatherData.WeatherAPI.APIs.ToArray());
+            spinnerAdapter.SetDropDownViewResource(Android.Resource.Layout.SimpleSpinnerDropDownItem);
+            apiSpinner.Adapter = spinnerAdapter;
+
             // NOTE: Bug: Explicitly set tintmode on Lollipop devices
             if (Build.VERSION.SdkInt == BuildVersionCodes.Lollipop)
                 progressBar.IndeterminateTintMode = PorterDuff.Mode.SrcIn;
@@ -100,18 +107,14 @@ namespace SimpleWeather.Droid
             /* Event Listeners */
             apiSpinner.ItemSelected += (object sender, AdapterView.ItemSelectedEventArgs e) =>
             {
-                if (e.Position == 0)
-                {
-                    Settings.API = WeatherData.WeatherAPI.WeatherUnderground;
-                    FindViewById(Resource.Id.key_entry_box).Visibility = ViewStates.Visible;
-                }
-                else
-                {
-                    Settings.API = WeatherData.WeatherAPI.Yahoo;
-                    FindViewById(Resource.Id.key_entry_box).Visibility = ViewStates.Invisible;
-                }
-
+                Spinner spinner = sender as Spinner;
+                Settings.API = (spinner.SelectedItem as ComboBoxItem).Value;
                 wm.UpdateAPI();
+
+                if (wm.KeyRequired)
+                    FindViewById(Resource.Id.key_entry_box).Visibility = ViewStates.Visible;
+                else
+                    FindViewById(Resource.Id.key_entry_box).Visibility = ViewStates.Invisible;
             };
 
             keyEntry.FocusChange += (object sender, View.FocusChangeEventArgs e) =>
@@ -231,7 +234,7 @@ namespace SimpleWeather.Droid
                     return;
                 }
 
-                if (String.IsNullOrWhiteSpace(Settings.API_KEY) && Settings.API == WeatherData.WeatherAPI.WeatherUnderground)
+                if (String.IsNullOrWhiteSpace(Settings.API_KEY) && wm.KeyRequired)
                 {
                     Toast.MakeText(this.ApplicationContext, Resource.String.werror_invalidkey, ToastLength.Short).Show();
                     EnableControls(true);

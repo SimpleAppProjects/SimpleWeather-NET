@@ -82,8 +82,8 @@ namespace SimpleWeather.Utils
         {
             if (!localSettings.Values.ContainsKey(KEY_API) || localSettings.Values[KEY_API] == null)
             {
-                SetAPI(API_WUnderground);
-                return API_WUnderground;
+                SetAPI(WeatherData.WeatherAPI.WeatherUnderground);
+                return WeatherData.WeatherAPI.WeatherUnderground;
             }
             else
                 return (string)localSettings.Values[KEY_API];

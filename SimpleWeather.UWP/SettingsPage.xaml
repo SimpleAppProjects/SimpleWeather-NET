@@ -263,10 +263,6 @@
                             </ComboBox>
                             <ComboBox x:Name="APIComboBox" HorizontalAlignment="Left" MinWidth="260" Margin="0,10"
                                   x:Uid="API_Box" PlaceholderText="Select Weather Provider">
-                                <ComboBox.Items>
-                                    <TextBlock Text="WeatherUnderground"/>
-                                    <TextBlock Text="Yahoo Weather"/>
-                                </ComboBox.Items>
                                 <ComboBox.Header>
                                     <TextBlock x:Uid="API_Label" Text="Weather Provider" />
                                 </ComboBox.Header>

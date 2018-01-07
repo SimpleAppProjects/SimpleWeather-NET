@@ -32,9 +32,9 @@ namespace SimpleWeather.UWP
 
         private bool IsKeyVerfied()
         {
-            if (localSettings.Containers.ContainsKey(Settings.API_WUnderground))
+            if (localSettings.Containers.ContainsKey(WeatherAPI.WeatherUnderground))
             {
-                if (localSettings.Containers[Settings.API_WUnderground].Values.TryGetValue(KEY_APIKEY_VERIFIED, out object value))
+                if (localSettings.Containers[WeatherAPI.WeatherUnderground].Values.TryGetValue(KEY_APIKEY_VERIFIED, out object value))
                     return (bool)value;
             }
 
@@ -43,7 +43,7 @@ namespace SimpleWeather.UWP
 
         private void SetKeyVerified(bool value)
         {
-            localSettings.Containers[Settings.API_WUnderground].Values[KEY_APIKEY_VERIFIED] = value;
+            localSettings.Containers[WeatherAPI.WeatherUnderground].Values[KEY_APIKEY_VERIFIED] = value;
         }
 
         public SettingsPage()
@@ -56,7 +56,7 @@ namespace SimpleWeather.UWP
 
         private void RestoreSettings()
         {
-            localSettings.CreateContainer(Settings.API_WUnderground, ApplicationDataCreateDisposition.Always);
+            localSettings.CreateContainer(WeatherAPI.WeatherUnderground, ApplicationDataCreateDisposition.Always);
 
             // Temperature
             Fahrenheit.IsChecked = Settings.IsFahrenheit;
@@ -66,24 +66,28 @@ namespace SimpleWeather.UWP
             FollowGPS.IsOn = Settings.FollowGPS;
 
             // Weather Providers
-            if (Settings.API == Settings.API_WUnderground)
-            {
-                if (!String.IsNullOrWhiteSpace(Settings.API_KEY) && !keyVerified)
-                    keyVerified = true;
-
-                APIComboBox.SelectedIndex = 0;
-                KeyPanel.Visibility = Visibility.Visible;
-            }
-            else if (Settings.API == Settings.API_Yahoo)
-            {
-                keyVerified = false;
-                localSettings.Containers[Settings.API_WUnderground].Values.Remove(KEY_APIKEY_VERIFIED);
-
-                APIComboBox.SelectedIndex = 1;
-                KeyPanel.Visibility = Visibility.Collapsed;
-            }
+            APIComboBox.ItemsSource = WeatherAPI.APIs;
+            APIComboBox.DisplayMemberPath = "Display";
+            APIComboBox.SelectedValuePath = "Value";
 
             wm.UpdateAPI();
+
+            APIComboBox.SelectedValue = Settings.API;
+
+            if (wm.KeyRequired)
+            {
+                //if (!String.IsNullOrWhiteSpace(Settings.API_KEY) && !keyVerified)
+                //    keyVerified = true;
+
+                KeyPanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                keyVerified = false;
+                localSettings.Containers[WeatherAPI.WeatherUnderground].Values.Remove(KEY_APIKEY_VERIFIED);
+
+                KeyPanel.Visibility = Visibility.Collapsed;
+            }
 
             // Update Interval
             switch (Settings.RefreshInterval)
@@ -125,7 +129,7 @@ namespace SimpleWeather.UWP
 
         private async void SettingsPage_BackRequested(object sender, BackRequestedEventArgs e)
         {
-            if (String.IsNullOrWhiteSpace(Settings.API_KEY) && APIComboBox.SelectedIndex == 0)
+            if (String.IsNullOrWhiteSpace(Settings.API_KEY) && WeatherManager.IsKeyRequired(APIComboBox.SelectedValue.ToString()))
             {
                 KeyBorder.BorderBrush = new SolidColorBrush(Colors.Red);
                 await new MessageDialog(App.ResLoader.GetString("Msg_EnterAPIKey")).ShowAsync();
@@ -134,7 +138,7 @@ namespace SimpleWeather.UWP
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
-            if (String.IsNullOrWhiteSpace(Settings.API_KEY) && APIComboBox.SelectedIndex == 0)
+            if (String.IsNullOrWhiteSpace(Settings.API_KEY) && WeatherManager.IsKeyRequired(APIComboBox.SelectedValue.ToString()))
             {
                 e.Cancel = true;
             }
@@ -148,11 +152,16 @@ namespace SimpleWeather.UWP
                 var diag = dialog as Controls.KeyEntryDialog;
 
                 string key = diag.Key;
-                if (await wm.IsKeyValid(key))
+                string API = APIComboBox.SelectedValue.ToString();
+
+                if (await WeatherManager.IsKeyValid(key, API))
                 {
                     KeyEntry.Text = Settings.API_KEY = key;
-                    Settings.API = Settings.API_WUnderground;
+                    Settings.API = API;
+                    wm.UpdateAPI();
 
+                    // TODO: NOTE: try not to trigger right away
+                    // Do so when navigating away
                     await App.BGTaskHandler.RequestAppTrigger();
 
                     keyVerified = true;
@@ -180,32 +189,30 @@ namespace SimpleWeather.UWP
         private void APIComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBox box = sender as ComboBox;
-            int index = box.SelectedIndex;
+            string API = box.SelectedValue.ToString();
 
-            if (index == 0)
+            if (WeatherManager.IsKeyRequired(API))
             {
-                // WeatherUnderground
                 if (KeyPanel != null)
                     KeyPanel.Visibility = Visibility.Visible;
 
-                if (!String.IsNullOrWhiteSpace(Settings.API_KEY) && !keyVerified)
-                    keyVerified = true;
+                //if (!String.IsNullOrWhiteSpace(Settings.API_KEY) && !keyVerified)
+                //    keyVerified = true;
 
                 if (keyVerified)
                 {
-                    Settings.API = Settings.API_WUnderground;
+                    Settings.API = API;
                     Task.Run(async () => await App.BGTaskHandler.RequestAppTrigger());
                 }
             }
-            else if (index == 1)
+            else
             {
-                // Yahoo Weather
                 if (KeyPanel != null)
                     KeyPanel.Visibility = Visibility.Collapsed;
-                Settings.API = Settings.API_Yahoo;
+                Settings.API = API;
 
                 keyVerified = false;
-                localSettings.Containers[Settings.API_WUnderground].Values.Remove(KEY_APIKEY_VERIFIED);
+                localSettings.Containers[WeatherAPI.WeatherUnderground].Values.Remove(KEY_APIKEY_VERIFIED);
             }
 
             wm.UpdateAPI();

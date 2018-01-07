@@ -400,9 +400,6 @@
     <AndroidAsset Include="Assets\backgrounds\StormySky.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Assets\API_KEY.txt" Condition="'$(Configuration)' == 'Debug'" />
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\menu\locations.xml" />
   </ItemGroup>
   <ItemGroup>

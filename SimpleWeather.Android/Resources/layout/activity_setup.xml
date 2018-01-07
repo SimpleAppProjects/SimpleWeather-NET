@@ -98,7 +98,6 @@
                         android:id="@+id/api_spinner"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:entries="@array/api_entries"
                         android:paddingBottom="12dp"
                         android:paddingTop="12dp"
                         app:backgroundTint="@android:color/darker_gray" />

@@ -297,10 +297,6 @@
                 </Grid.RowDefinitions>
                 <ComboBox x:Name="APIComboBox" HorizontalAlignment="Center" VerticalAlignment="Top" Width="300" Margin="0,10"
                   Background="White" BorderThickness="0" Grid.Row="0" x:Uid="API_Box" PlaceholderText="Select Weather Provider" SelectionChanged="APIComboBox_SelectionChanged" FontSize="12">
-                    <ComboBox.Items>
-                        <TextBlock Text="WeatherUnderground"/>
-                        <TextBlock Text="Yahoo Weather"/>
-                    </ComboBox.Items>
                     <ComboBox.Header>
                         <TextBlock x:Uid="API_Label" Text="Weather Provider" Foreground="White" Padding="5,0" FontSize="12" />
                     </ComboBox.Header>
