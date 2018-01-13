@@ -153,7 +153,10 @@ namespace SimpleWeather.Droid
 
                 keyEntry = (EditTextPreference)FindPreference(KEY_APIKEY);
 
+                var providers = WeatherData.WeatherAPI.APIs;
                 providerPref = (DropDownPreference)FindPreference(KEY_API);
+                providerPref.SetEntries(providers.Select(provider => provider.Display).ToArray());
+                providerPref.SetEntryValues(providers.Select(provider => provider.Value).ToArray());
                 providerPref.Persistent = false;
                 providerPref.PreferenceChange += (object sender, Preference.PreferenceChangeEventArgs e) => 
                 {
@@ -295,7 +298,7 @@ namespace SimpleWeather.Droid
                 }
                 else
                 {
-                    keyEntry.Summary = Activity.GetString(Resource.String.pref_summary_apikey);
+                    keyEntry.Summary = Activity.GetString(Resource.String.pref_summary_apikey, providerPref.Entry);
                 }
             }
 

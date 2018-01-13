@@ -59,7 +59,6 @@ namespace SimpleWeather.Droid
         private ImageView clearButtonView;
         private ProgressBar progressBar;
         private bool inSearchUI;
-        private String selected_query = string.Empty;
 
         // GPS Location
         View gpsPanelLayout;
@@ -533,19 +532,17 @@ namespace SimpleWeather.Droid
                         locMan.RequestSingleUpdate(provider, mLocListnr, null);
                     else
                     {
-                        string selected_query = string.Empty;
+                        LocationQueryViewModel view = null;
 
                         await Task.Run(async () =>
                         {
-                            LocationQueryViewModel view = await wm.GetLocation(location);
+                            view = await wm.GetLocation(location);
 
-                            if (!String.IsNullOrEmpty(view.LocationQuery))
-                                selected_query = view.LocationQuery;
-                            else
-                                selected_query = string.Empty;
+                            if (String.IsNullOrEmpty(view.LocationQuery))
+                                view = new LocationQueryViewModel();
                         });
 
-                        if (String.IsNullOrWhiteSpace(selected_query))
+                        if (String.IsNullOrWhiteSpace(view.LocationQuery))
                         {
                             // Stop since there is no valid query
                             gpsPanelViewModel = null;
@@ -554,7 +551,7 @@ namespace SimpleWeather.Droid
                         }
 
                         // Save location as last known
-                        locationData = new LocationData(selected_query, location);
+                        locationData = new LocationData(view, location);
                     }
                 }
                 else
@@ -668,13 +665,14 @@ namespace SimpleWeather.Droid
             {
                 LocationQueryAdapter adapter = sender as LocationQueryAdapter;
                 LocationQuery v = (LocationQuery)e.View;
+                LocationQueryViewModel query_vm = null;
 
                 if (!String.IsNullOrEmpty(adapter.Dataset[e.Position].LocationQuery))
-                    selected_query = adapter.Dataset[e.Position].LocationQuery;
+                    query_vm = adapter.Dataset[e.Position];
                 else
-                    selected_query = string.Empty;
+                    query_vm = new LocationQueryViewModel();
 
-                if (String.IsNullOrWhiteSpace(selected_query))
+                if (String.IsNullOrWhiteSpace(query_vm.LocationQuery))
                 {
                     // Stop since there is no valid query
                     return;
@@ -693,7 +691,7 @@ namespace SimpleWeather.Droid
 
                 // Check if location already exists
                 var locData = await Settings.GetLocationData();
-                if (locData.Exists(l => l.query == selected_query))
+                if (locData.Exists(l => l.query == query_vm.LocationQuery))
                 {
                     ShowLoading(false);
                     ExitSearchUi();
@@ -706,9 +704,15 @@ namespace SimpleWeather.Droid
                     return;
                 }
 
-                Weather weather = await Settings.GetWeatherData(selected_query);
+                var location = new LocationData(query_vm);
+                Weather weather = await Settings.GetWeatherData(location.query);
                 if (weather == null)
-                    weather = await wm.GetWeather(selected_query);
+                {
+                    if (wm.NeedsExternalLocationData)
+                        weather = await wm.GetWeather(location);
+                    else
+                        weather = await wm.GetWeather(location.query);
+                }
 
                 if (weather == null)
                 {
@@ -722,9 +726,8 @@ namespace SimpleWeather.Droid
                 searchFragment.View.FindViewById<RecyclerView>(Resource.Id.recycler_view).Enabled = false;
 
                 // Save data
-                var location = new LocationData(selected_query);
                 await Settings.AddLocation(location);
-                Settings.SaveWeatherData(weather);
+                await Settings.SaveWeatherData(weather);
 
                 LocationPanelViewModel panel = new LocationPanelViewModel(weather)
                 {

@@ -31,6 +31,7 @@ namespace SimpleWeather.WeatherYahoo
     {
         public override bool SupportsWeatherLocale => false;
         public override bool KeyRequired => false;
+        public override bool NeedsExternalLocationData => false;
 
         public override async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string location_query)
         {

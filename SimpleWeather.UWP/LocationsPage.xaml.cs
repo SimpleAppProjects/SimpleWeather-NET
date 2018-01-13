@@ -36,7 +36,6 @@ namespace SimpleWeather.UWP
         public ObservableCollection<LocationPanelViewModel> GPSPanelViewModel { get; set; }
         public ObservableCollection<LocationPanelViewModel> LocationPanels { get; set; }
         public ObservableCollection<LocationQueryViewModel> LocationQuerys { get; set; }
-        private string selected_query = string.Empty;
         Geolocator geolocal = null;
 
         public bool EditMode { get; set; } = false;
@@ -338,19 +337,17 @@ namespace SimpleWeather.UWP
                 // Access to location granted
                 if (newGeoPos != null)
                 {
-                    string selected_query = string.Empty;
+                    LocationQueryViewModel view = null;
 
                     await Task.Run(async () =>
                     {
-                        LocationQueryViewModel view = await wm.GetLocation(newGeoPos);
+                        view = await wm.GetLocation(newGeoPos);
 
-                        if (!String.IsNullOrEmpty(view.LocationQuery))
-                            selected_query = view.LocationQuery;
-                        else
-                            selected_query = string.Empty;
+                        if (String.IsNullOrEmpty(view.LocationQuery))
+                            view = new LocationQueryViewModel();
                     });
 
-                    if (String.IsNullOrWhiteSpace(selected_query))
+                    if (String.IsNullOrWhiteSpace(view.LocationQuery))
                     {
                         // Stop since there is no valid query
                         GPSPanelViewModel[0] = null;
@@ -358,7 +355,7 @@ namespace SimpleWeather.UWP
                     }
 
                     // Save location as last known
-                    locationData = new LocationData(selected_query, newGeoPos);
+                    locationData = new LocationData(view, newGeoPos);
                 }
             }
 
@@ -432,15 +429,17 @@ namespace SimpleWeather.UWP
 
         private async void Location_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
+            LocationQueryViewModel query_vm = null;
+
             if (args.ChosenSuggestion != null)
             {
                 // User selected an item from the suggestion list, take an action on it here.
                 LocationQueryViewModel theChosenOne = args.ChosenSuggestion as LocationQueryViewModel;
 
                 if (!String.IsNullOrEmpty(theChosenOne.LocationQuery))
-                    selected_query = theChosenOne.LocationQuery;
+                    query_vm = theChosenOne;
                 else
-                    selected_query = string.Empty;
+                    query_vm = new LocationQueryViewModel();
             }
             else if (!String.IsNullOrEmpty(args.QueryText))
             {
@@ -450,7 +449,7 @@ namespace SimpleWeather.UWP
                 if (result != null && String.IsNullOrWhiteSpace(result.LocationQuery))
                 {
                     sender.Text = result.LocationName;
-                    selected_query = result.LocationQuery;
+                    query_vm = result;
                 }
             }
             else if (String.IsNullOrWhiteSpace(args.QueryText))
@@ -459,7 +458,7 @@ namespace SimpleWeather.UWP
                 return;
             }
 
-            if (String.IsNullOrWhiteSpace(selected_query))
+            if (String.IsNullOrWhiteSpace(query_vm.LocationQuery))
             {
                 // Stop since there is no valid query
                 return;
@@ -479,7 +478,7 @@ namespace SimpleWeather.UWP
 
             // Check if location already exists
             var locData = await Settings.GetLocationData();
-            if (locData.Exists(l => l.query == selected_query))
+            if (locData.Exists(l => l.query == query_vm.LocationQuery))
             {
                 LoadingRing.IsActive = false;
                 ShowAddLocationsPanel(false);
@@ -492,9 +491,15 @@ namespace SimpleWeather.UWP
                 return;
             }
 
-            Weather weather = await Settings.GetWeatherData(selected_query);
+            var location = new LocationData(query_vm);
+            Weather weather = await Settings.GetWeatherData(location.query);
             if (weather == null)
-                weather = await wm.GetWeather(selected_query);
+            {
+                if (wm.NeedsExternalLocationData)
+                    weather = await wm.GetWeather(location);
+                else
+                    weather = await wm.GetWeather(location.query);
+            }
 
             if (weather == null)
             {
@@ -506,9 +511,8 @@ namespace SimpleWeather.UWP
             sender.IsSuggestionListOpen = false;
 
             // Save data
-            var location = new LocationData(selected_query);
             await Settings.AddLocation(location);
-            Settings.SaveWeatherData(weather);
+            await Settings.SaveWeatherData(weather);
 
             LocationPanelViewModel panelView = new LocationPanelViewModel(weather)
             {

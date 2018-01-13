@@ -15,7 +15,20 @@ namespace SimpleWeather.UWP.Controls
         public HourlyForecastItem()
         {
             this.InitializeComponent();
-            this.DataContextChanged += (sender, args) => this.Bindings.Update();
+            this.DataContextChanged += (sender, args) =>
+            {
+                this.Bindings.Update();
+
+                if (Utils.Settings.API.Equals(WeatherData.WeatherAPI.OpenWeatherMap))
+                {
+                    // Use cloudiness
+                    PoPIcon.Text = "\uf013";
+                }
+                else
+                {
+                    PoPIcon.Text = "\uf078";
+                }
+            };
         }
     }
 }

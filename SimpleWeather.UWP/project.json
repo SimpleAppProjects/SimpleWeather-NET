@@ -4,6 +4,7 @@
     "Microsoft.NETCore.UniversalWindowsPlatform": "6.0.1",
     "Microsoft.Toolkit.Uwp.Notifications": "2.0.0",
     "Newtonsoft.Json": "10.0.3",
+    "NodaTime": "2.2.3",
     "QueryString.NET": "1.0.0",
     "sqlite-net-pcl": "1.5.166-beta",
     "SQLiteNetExtensions": "2.0.0-alpha2",

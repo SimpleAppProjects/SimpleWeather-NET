@@ -33,6 +33,7 @@ namespace SimpleWeather.WeatherUnderground
     {
         public override bool SupportsWeatherLocale => true;
         public override bool KeyRequired => true;
+        public override bool NeedsExternalLocationData => false;
 
         public override async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string query)
         {

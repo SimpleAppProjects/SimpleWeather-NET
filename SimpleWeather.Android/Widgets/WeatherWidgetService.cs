@@ -1,4 +1,5 @@
-﻿using SimpleWeather.Utils;
+﻿using SimpleWeather.Controls;
+using SimpleWeather.Utils;
 using System;
 
 using Android.App;
@@ -808,26 +809,24 @@ namespace SimpleWeather.Droid.Widgets
                             return false;
                         }
 
-                        string selected_query = string.Empty;
+                        LocationQueryViewModel query_vm = null;
 
                         await Task.Run(async () =>
                         {
-                            var view = await wm.GetLocation(location);
+                            query_vm = await wm.GetLocation(location);
 
-                            if (!String.IsNullOrEmpty(view.LocationQuery))
-                                selected_query = view.LocationQuery;
-                            else
-                                selected_query = string.Empty;
+                            if (String.IsNullOrEmpty(query_vm.LocationQuery))
+                                query_vm = new LocationQueryViewModel();
                         });
 
-                        if (String.IsNullOrWhiteSpace(selected_query))
+                        if (String.IsNullOrWhiteSpace(query_vm.LocationQuery))
                         {
                             // Stop since there is no valid query
                             return false;
                         }
 
                         // Save location as last known
-                        lastGPSLocData.SetData(selected_query, location);
+                        lastGPSLocData.SetData(query_vm, location);
                         Settings.SaveLastGPSLocData();
 
                         locationChanged = true;

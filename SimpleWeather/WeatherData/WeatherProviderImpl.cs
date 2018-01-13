@@ -11,6 +11,7 @@ namespace SimpleWeather.WeatherData
         // Variables
         public abstract bool SupportsWeatherLocale { get; }
         public abstract bool KeyRequired { get; }
+        public abstract bool NeedsExternalLocationData { get; }
 
         // Methods
         // AutoCompleteQuery
@@ -19,6 +20,17 @@ namespace SimpleWeather.WeatherData
         public abstract Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coordinate);
         // Weather
         public abstract Task<Weather> GetWeather(String location_query);
+        public virtual async Task<Weather> GetWeather(LocationData location)
+        {
+            var weather = await GetWeather(location.query);
+
+            weather.location.name = location.name;
+            weather.location.tz_offset = location.tz_offset;
+            weather.location.tz_short = location.tz_short;
+
+            return weather;
+        }
+
         // KeyCheck
         public abstract Task<bool> IsKeyValid(String key);
 

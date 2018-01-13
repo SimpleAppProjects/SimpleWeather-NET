@@ -9,6 +9,9 @@ namespace SimpleWeather.Utils
         private const double MI_TO_KM = 1.609344;
         private const double INHG_TO_MB = 1013.25 / 29.92;
         private const double MB_TO_INHG = 29.92 / 1013.25;
+        private const double MSEC_TO_MPH = 2.23694;
+        private const double MSEC_TO_KPH = 3.6;
+        private const double MM_TO_IN = 1 / 25.4;
 
         public static string MBToInHg(String input)
         {
@@ -34,6 +37,12 @@ namespace SimpleWeather.Utils
             return Math.Round(result).ToString();
         }
 
+        public static string MMToIn(String input)
+        {
+            double result = MM_TO_IN * double.Parse(input);
+            return Math.Round(result).ToString();
+        }
+
         public static string MphToKph(String input)
         {
             double result = MI_TO_KM * double.Parse(input);
@@ -46,6 +55,18 @@ namespace SimpleWeather.Utils
             return Math.Round(result).ToString();
         }
 
+        public static string MSecToMph(String input)
+        {
+            double result = double.Parse(input) * MSEC_TO_MPH;
+            return Math.Round(result, 2).ToString();
+        }
+
+        public static string MSecToKph(String input)
+        {
+            double result = double.Parse(input) * MSEC_TO_KPH;
+            return Math.Round(result, 2).ToString();
+        }
+
         public static string FtoC(String input)
         {
             double result = (double.Parse(input) - 32) * ((double)5 / 9);
@@ -54,7 +75,19 @@ namespace SimpleWeather.Utils
 
         public static string CtoF(String input)
         {
-            double result = (double.Parse(input) * ((double)9 /5)) + 32;
+            double result = (double.Parse(input) * ((double)9 / 5)) + 32;
+            return Math.Round(result).ToString();
+        }
+
+        public static string KtoC(String input)
+        {
+            double result = double.Parse(input) - 273.15;
+            return Math.Round(result).ToString();
+        }
+
+        public static string KtoF(String input)
+        {
+            double result = (double.Parse(input) * ((double)9 / 5)) - 459.67;
             return Math.Round(result).ToString();
         }
 

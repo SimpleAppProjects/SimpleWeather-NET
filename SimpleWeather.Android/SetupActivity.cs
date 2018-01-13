@@ -195,7 +195,7 @@ namespace SimpleWeather.Droid
 
             if (mLocation != null)
             {
-                String selected_query = String.Empty;
+                LocationQueryViewModel view = null;
 
                 // Cancel other tasks
                 cts.Cancel();
@@ -219,15 +219,13 @@ namespace SimpleWeather.Droid
                     }
 
                     // Get geo location
-                    LocationQueryViewModel view = await wm.GetLocation(mLocation);
+                    view = await wm.GetLocation(mLocation);
 
-                     if (!String.IsNullOrEmpty(view.LocationQuery))
-                         selected_query = view.LocationQuery;
-                     else
-                         selected_query = string.Empty;
+                    if (String.IsNullOrEmpty(view.LocationQuery))
+                        view = new LocationQueryViewModel();
                 });
 
-                if (String.IsNullOrWhiteSpace(selected_query))
+                if (String.IsNullOrWhiteSpace(view.LocationQuery))
                 {
                     // Stop since there is no valid query
                     EnableControls(true);
@@ -248,9 +246,15 @@ namespace SimpleWeather.Droid
                 }
 
                 // Get Weather Data
-                WeatherData.Weather weather = await Settings.GetWeatherData(selected_query);
+                var location = new WeatherData.LocationData(view, mLocation);
+                WeatherData.Weather weather = await Settings.GetWeatherData(location.query);
                 if (weather == null)
-                    weather = await wm.GetWeather(selected_query);
+                {
+                    if (wm.NeedsExternalLocationData)
+                        weather = await wm.GetWeather(location);
+                    else
+                        weather = await wm.GetWeather(location.query);
+                }
 
                 if (weather == null)
                 {
@@ -262,11 +266,10 @@ namespace SimpleWeather.Droid
                 EnableControls(false);
 
                 // Save weather data
-                var location = new WeatherData.LocationData(selected_query, mLocation);
                 Settings.SaveLastGPSLocData(location);
                 await Settings.DeleteLocations();
-                await Settings.AddLocation(new WeatherData.LocationData(selected_query));
-                Settings.SaveWeatherData(weather);
+                await Settings.AddLocation(new WeatherData.LocationData(view));
+                await Settings.SaveWeatherData(weather);
 
                 // Start WeatherNow Activity with weather data
                 Intent intent = new Intent(this, typeof(MainActivity));

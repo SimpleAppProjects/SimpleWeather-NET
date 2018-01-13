@@ -124,6 +124,74 @@ namespace SimpleWeather.WeatherData
             source = WeatherAPI.WeatherUnderground;
         }
 
+        public Weather(OpenWeather.CurrentRootobject currRoot, OpenWeather.ForecastRootobject foreRoot)
+        {
+            location = new Location(foreRoot);
+            update_time = DateTimeOffset.FromUnixTimeSeconds(currRoot.dt);
+
+            // 5-day forecast / 3-hr forecast
+            // 24hr / 3hr = 8items for each day
+            forecast = new Forecast[5];
+            hr_forecast = new HourlyForecast[foreRoot.list.Length];
+
+            // Store potential min/max values
+            float dayMax = float.NaN;
+            float dayMin = float.NaN;
+            int lastDay = 0;
+
+            for (int i = 0; i < foreRoot.list.Length; i++)
+            {
+                hr_forecast[i] = new HourlyForecast(foreRoot.list[i]);
+
+                float max = foreRoot.list[i].main.temp_max;
+                if (!float.IsNaN(max) && (float.IsNaN(dayMax) || max > dayMax))
+                {
+                    dayMax = max;
+                }
+
+                float min = foreRoot.list[i].main.temp_min;
+                if (!float.IsNaN(min) && (float.IsNaN(dayMin) || min < dayMin))
+                {
+                    dayMin = min;
+                }
+
+                // Get every 8th item for daily forecast
+                if (i % 8 == 0)
+                {
+                    lastDay = i / 8;
+
+                    forecast[i / 8] = new Forecast(foreRoot.list[i]);
+                }
+
+                // This is possibly the last forecast for the day (3-hrly forecast)
+                // Set the min / max temp here and reset
+                if (hr_forecast[i].date.Hour >= 21)
+                {
+                    if (!float.IsNaN(dayMax))
+                    {
+                        forecast[lastDay].high_f = ConversionMethods.KtoF(dayMax.ToString(CultureInfo.InvariantCulture));
+                        forecast[lastDay].high_c = ConversionMethods.KtoC(dayMax.ToString(CultureInfo.InvariantCulture));
+                    }
+                    if (!float.IsNaN(dayMin))
+                    {
+                        forecast[lastDay].low_f = ConversionMethods.KtoF(dayMin.ToString(CultureInfo.InvariantCulture));
+                        forecast[lastDay].low_c = ConversionMethods.KtoC(dayMin.ToString(CultureInfo.InvariantCulture));
+                    }
+
+                    dayMax = float.NaN;
+                    dayMin = float.NaN;
+                }
+            }
+            condition = new Condition(currRoot);
+            atmosphere = new Atmosphere(currRoot);
+            astronomy = new Astronomy(currRoot);
+            precipitation = new Precipitation(currRoot);
+            ttl = "120";
+
+            query = currRoot.id.ToString();
+            source = WeatherAPI.OpenWeatherMap;
+        }
+
         public static Weather FromJson(JsonReader reader)
         {
             Weather obj = null;
@@ -346,6 +414,15 @@ namespace SimpleWeather.WeatherData
             saveTimeZone(query);
         }
 
+        public Location(OpenWeather.ForecastRootobject root)
+        {
+            name = root.city.name;
+            latitude = root.city.coord.lat.ToString();
+            longitude = root.city.coord.lon.ToString();
+            tz_offset = TimeSpan.Zero;
+            tz_short = "UTC";
+        }
+
         private void saveTimeZone(WeatherYahoo.Query query)
         {
             /* Get TimeZone info by using UTC and local build time */
@@ -491,6 +568,17 @@ namespace SimpleWeather.WeatherData
             icon = forecast.icon_url.Replace("http://icons.wxug.com/i/c/k/", "").Replace(".gif", "");
         }
 
+        public Forecast(OpenWeather.List forecast)
+        {
+            date = DateTimeOffset.FromUnixTimeSeconds(forecast.dt).DateTime;
+            high_f = ConversionMethods.KtoF(forecast.main.temp_max.ToString(CultureInfo.InvariantCulture));
+            high_c = ConversionMethods.KtoC(forecast.main.temp_max.ToString(CultureInfo.InvariantCulture));
+            low_f = ConversionMethods.KtoF(forecast.main.temp_min.ToString(CultureInfo.InvariantCulture));
+            low_c = ConversionMethods.KtoC(forecast.main.temp_min.ToString(CultureInfo.InvariantCulture));
+            condition = forecast.weather[0].main;
+            icon = forecast.weather[0].id.ToString();
+        }
+
         public static Forecast FromJson(JsonReader extReader)
         {
             Forecast obj = null;
@@ -621,6 +709,20 @@ namespace SimpleWeather.WeatherData
             wind_degrees = int.Parse(hr_forecast.wdir.degrees);
             wind_mph = float.Parse(hr_forecast.wspd.english);
             wind_kph = float.Parse(hr_forecast.wspd.metric);
+        }
+
+        public HourlyForecast(OpenWeather.List forecast)
+        {
+            date = DateTimeOffset.FromUnixTimeSeconds(forecast.dt).DateTime;
+            high_f = ConversionMethods.KtoF(forecast.main.temp.ToString(CultureInfo.InvariantCulture));
+            high_c = ConversionMethods.KtoC(forecast.main.temp.ToString(CultureInfo.InvariantCulture));
+            condition = forecast.weather[0].main;
+            icon = forecast.weather[0].id.ToString();
+            // Use cloudiness value here
+            pop = forecast.clouds.all.ToString();
+            wind_degrees = (int)forecast.wind.deg;
+            wind_mph = (float)Math.Round(double.Parse(ConversionMethods.MSecToMph(forecast.wind.speed.ToString())));
+            wind_kph = (float)Math.Round(double.Parse(ConversionMethods.MSecToKph(forecast.wind.speed.ToString())));
         }
 
         public static HourlyForecast FromJson(JsonReader extReader)
@@ -890,6 +992,19 @@ namespace SimpleWeather.WeatherData
             icon = channel.item.condition.code;
         }
 
+        public Condition(OpenWeather.CurrentRootobject root)
+        {
+            weather = root.weather[0].main;
+            temp_f = float.Parse(ConversionMethods.KtoF(root.main.temp.ToString(CultureInfo.InvariantCulture)));
+            temp_c = float.Parse(ConversionMethods.KtoC(root.main.temp.ToString(CultureInfo.InvariantCulture)));
+            wind_degrees = (int)root.wind.deg;
+            wind_mph = float.Parse(ConversionMethods.MSecToMph(root.wind.speed.ToString(CultureInfo.InvariantCulture)));
+            wind_kph = float.Parse(ConversionMethods.MSecToKph(root.wind.speed.ToString(CultureInfo.InvariantCulture)));
+            feelslike_f = temp_f;
+            feelslike_c = temp_c;
+            icon = root.weather[0].id.ToString();
+        }
+
         public static Condition FromJson(JsonReader extReader)
         {
             Condition obj = null;
@@ -1039,6 +1154,16 @@ namespace SimpleWeather.WeatherData
             visibility_mi = ConversionMethods.KmToMi(visibility_km);
         }
 
+        public Atmosphere(OpenWeather.CurrentRootobject root)
+        {
+            humidity = root.main.humidity;
+            pressure_mb = root.main.pressure.ToString(CultureInfo.InvariantCulture);
+            pressure_in = ConversionMethods.MBToInHg(root.main.pressure.ToString(CultureInfo.InvariantCulture));
+            pressure_trend = String.Empty;
+            visibility_mi = ConversionMethods.KmToMi((root.visibility / 1000).ToString());
+            visibility_km = (root.visibility / 1000).ToString();
+        }
+
         public static Atmosphere FromJson(JsonReader extReader)
         {
             Atmosphere obj = null;
@@ -1157,6 +1282,12 @@ namespace SimpleWeather.WeatherData
             sunset = DateTime.Parse(astronomy.sunset);
         }
 
+        public Astronomy(OpenWeather.CurrentRootobject root)
+        {
+            sunrise = DateTimeOffset.FromUnixTimeSeconds(root.sys.sunrise).DateTime;
+            sunset = DateTimeOffset.FromUnixTimeSeconds(root.sys.sunset).DateTime;
+        }
+
         public static Astronomy FromJson(JsonReader extReader)
         {
             Astronomy obj = null;
@@ -1243,6 +1374,22 @@ namespace SimpleWeather.WeatherData
             qpf_rain_mm = forecast.qpf_allday.mm.GetValueOrDefault();
             qpf_snow_in = forecast.snow_allday._in.GetValueOrDefault(0.00f);
             qpf_snow_cm = forecast.snow_allday.cm.GetValueOrDefault();
+        }
+
+        public Precipitation(OpenWeather.CurrentRootobject root)
+        {
+            // Use cloudiness value here
+            pop = root.clouds.all.ToString();
+            if (root.rain != null)
+            {
+                qpf_rain_in = float.Parse(ConversionMethods.MMToIn(root.rain._3h.ToString(CultureInfo.InvariantCulture)));
+                qpf_rain_mm = root.rain._3h;
+            }
+            if (root.snow != null)
+            {
+                qpf_snow_in = float.Parse(ConversionMethods.MMToIn(root.snow._3h.ToString(CultureInfo.InvariantCulture)));
+                qpf_snow_cm = root.snow._3h;
+            }
         }
 
         public static Precipitation FromJson(JsonReader extReader)

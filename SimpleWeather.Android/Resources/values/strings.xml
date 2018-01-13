@@ -32,6 +32,7 @@
     <string name="label_hourlyforecast">Hourly</string>
     <string name="label_precipitation">Precipitation</string>
     <string name="label_chance">Chance</string>
+    <string name="label_cloudiness">Cloudiness</string>
     <string name="label_qpf_rain">Rain</string>
     <string name="label_qpf_snow">Snow</string>
     <string name="switch_daily">Daily</string>
@@ -61,7 +62,7 @@
         YAHOO! is a registered trademark of Yahoo! Inc. both in the United States and internationally.
     </string>
     <string name="pref_summary_currentlocation">Allow access to current location via GPS</string>
-    <string name="pref_summary_apikey">Enter API Key required for WeatherUnderground</string>
+    <string name="pref_summary_apikey">Enter API Key required for %1$s</string>
     <string name="message_enter_apikey">"Please enter an API Key"</string>
     <string name="message_keyverified">Key Verified</string>
     <string name="message_keyinvalid">Key Invalid</string>

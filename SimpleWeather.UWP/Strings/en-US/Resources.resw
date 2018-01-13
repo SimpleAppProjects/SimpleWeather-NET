@@ -315,4 +315,7 @@
   <data name="Credit_Prefix" xml:space="preserve">
     <value>Data from</value>
   </data>
+  <data name="Label_Cloudiness.Text" xml:space="preserve">
+    <value>Cloudiness</value>
+  </data>
 </root>

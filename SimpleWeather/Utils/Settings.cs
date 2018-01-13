@@ -77,8 +77,15 @@ namespace SimpleWeather.Utils
             // Migrate old data if available
             if (GetDBVersion() < CurrentDBVersion)
             {
-                if (await locationDB.Table<LocationData>().CountAsync() == 0)
-                    await DBUtils.MigrateData(locationDB, weatherDB);
+                switch (GetDBVersion())
+                {
+                    // Move data from json to db
+                    case 0:
+                        if (await locationDB.Table<LocationData>().CountAsync() == 0)
+                            await DBUtils.MigrateDataJsonToDB(locationDB, weatherDB);
+                        break;
+                }
+
                 SetDBVersion(CurrentDBVersion);
             }
 
@@ -137,16 +144,13 @@ namespace SimpleWeather.Utils
             return lastGPSLocData;
         }
 
-        public static void SaveWeatherData(Weather weather)
+        public static async Task SaveWeatherData(Weather weather)
         {
-            Task.Run(async () =>
-            {
-                await weatherDB.InsertOrReplaceAsync(weather);
-                await WriteOperations.UpdateWithChildrenAsync(weatherDB, weather);
+            await weatherDB.InsertOrReplaceAsync(weather);
+            await WriteOperations.UpdateWithChildrenAsync(weatherDB, weather);
 
-                if (await weatherDB.Table<Weather>().CountAsync() > CACHE_LIMIT)
-                    CleanupWeatherData();
-            });
+            if (await weatherDB.Table<Weather>().CountAsync() > CACHE_LIMIT)
+                CleanupWeatherData();
         }
 
         private static void CleanupWeatherData()
@@ -195,6 +199,11 @@ namespace SimpleWeather.Utils
             await locationDB.InsertOrReplaceAsync(location);
             int pos = await locationDB.Table<LocationData>().CountAsync();
             await locationDB.InsertAsync(new Favorites() { query = location.query, position = pos });
+        }
+
+        public static async Task UpdateLocation(LocationData location)
+        {
+            await locationDB.UpdateAsync(location);
         }
 
         public static async Task DeleteLocations()

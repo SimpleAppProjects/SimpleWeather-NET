@@ -51,8 +51,6 @@
         android:key="category_api">
 
         <SimpleWeather.Droid.SettingsActivity.CustomDropDownPreference
-            android:entries="@array/api_entries"
-            android:entryValues="@array/api_entries_values"
             android:key="API"
             android:summary="%s"
             android:title="@string/api_label" />

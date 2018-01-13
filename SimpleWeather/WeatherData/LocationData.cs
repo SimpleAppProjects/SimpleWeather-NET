@@ -23,9 +23,15 @@ namespace SimpleWeather.WeatherData
         [PrimaryKey]
         public string query { get; set; }
         [Newtonsoft.Json.JsonProperty]
+        public string name { get; set; }
+        [Newtonsoft.Json.JsonProperty]
         public double latitude { get; set; }
         [Newtonsoft.Json.JsonProperty]
         public double longitude { get; set; }
+        [Newtonsoft.Json.JsonProperty]
+        public TimeSpan tz_offset { get; set; }
+        [Newtonsoft.Json.JsonProperty]
+        public string tz_short { get; set; }
         [Newtonsoft.Json.JsonProperty]
         public LocationType locationType { get; set; } = LocationType.Search;
         [Newtonsoft.Json.JsonProperty]
@@ -36,37 +42,46 @@ namespace SimpleWeather.WeatherData
             source = Settings.API;
         }
 
-        public LocationData(string query)
+        public LocationData(Controls.LocationQueryViewModel query_vm)
         {
-            this.query = query;
+            query = query_vm.LocationQuery;
+            name = query_vm.LocationName;
+            tz_offset = query_vm.LocationTZ_Offset;
+            tz_short = query_vm.LocationTZ_Short;
             source = Settings.API;
         }
 
 #if WINDOWS_UWP
-        public LocationData(string query, Windows.Devices.Geolocation.Geoposition geoPos)
+        public LocationData(Controls.LocationQueryViewModel query_vm, Windows.Devices.Geolocation.Geoposition geoPos)
         {
-            SetData(query, geoPos);
+            SetData(query_vm, geoPos);
         }
 
-        public void SetData(string query, Windows.Devices.Geolocation.Geoposition geoPos)
+        public void SetData(Controls.LocationQueryViewModel query_vm, Windows.Devices.Geolocation.Geoposition geoPos)
         {
-            this.query = query;
+            query = query_vm.LocationQuery;
+            name = query_vm.LocationName;
             latitude = geoPos.Coordinate.Point.Position.Latitude;
             longitude = geoPos.Coordinate.Point.Position.Longitude;
+            tz_offset = query_vm.LocationTZ_Offset;
+            tz_short = query_vm.LocationTZ_Short;
             locationType = LocationType.GPS;
             source = Settings.API;
         }
 #elif __ANDROID__
-        public LocationData(string query, Android.Locations.Location location)
+        public LocationData(Controls.LocationQueryViewModel query_vm, Android.Locations.Location location)
         {
-            SetData(query, location);
+            SetData(query_vm, location);
         }
 
-        public void SetData(string query, Android.Locations.Location location)
+        public void SetData(Controls.LocationQueryViewModel query_vm, Android.Locations.Location location)
         {
-            this.query = query;
+            query = query_vm.LocationQuery;
+            name = query_vm.LocationName;
             latitude = location.Latitude;
             longitude = location.Longitude;
+            tz_offset = query_vm.LocationTZ_Offset;
+            tz_short = query_vm.LocationTZ_Short;
             locationType = LocationType.GPS;
             source = Settings.API;
         }
@@ -91,10 +106,13 @@ namespace SimpleWeather.WeatherData
 
         public override int GetHashCode()
         {
-            var hashCode = -364563956;
+            var hashCode = -671766369;
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(query);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(name);
             hashCode = hashCode * -1521134295 + latitude.GetHashCode();
             hashCode = hashCode * -1521134295 + longitude.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<TimeSpan>.Default.GetHashCode(tz_offset);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(tz_short);
             hashCode = hashCode * -1521134295 + locationType.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(source);
             return hashCode;
@@ -121,11 +139,20 @@ namespace SimpleWeather.WeatherData
                         case "query":
                             obj.query = reader.Value.ToString();
                             break;
+                        case "name":
+                            obj.name = reader.Value.ToString();
+                            break;
                         case "latitude":
                             obj.latitude = double.Parse(reader.Value.ToString());
                             break;
                         case "longitude":
                             obj.longitude = double.Parse(reader.Value.ToString());
+                            break;
+                        case "tz_offset":
+                            obj.tz_offset = TimeSpan.Parse(reader.Value.ToString());
+                            break;
+                        case "tz_short":
+                            obj.tz_short = reader.Value.ToString();
                             break;
                         case "locationType":
                             obj.locationType = (LocationType)int.Parse(reader.Value.ToString());
@@ -156,6 +183,10 @@ namespace SimpleWeather.WeatherData
             writer.WritePropertyName("query");
             writer.WriteValue(query);
 
+            // "name" : ""
+            writer.WritePropertyName("name");
+            writer.WriteValue(name);
+
             // "latitude" : ""
             writer.WritePropertyName("latitude");
             writer.WriteValue(latitude);
@@ -163,6 +194,14 @@ namespace SimpleWeather.WeatherData
             // "longitude" : ""
             writer.WritePropertyName("longitude");
             writer.WriteValue(longitude);
+
+            // "tz_offset" : ""
+            writer.WritePropertyName("tz_offset");
+            writer.WriteValue(tz_offset);
+
+            // "tz_short" : ""
+            writer.WritePropertyName("tz_short");
+            writer.WriteValue(tz_short);
 
             // "locationType" : ""
             writer.WritePropertyName("locationType");

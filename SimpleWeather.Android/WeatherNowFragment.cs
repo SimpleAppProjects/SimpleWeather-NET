@@ -76,9 +76,12 @@ namespace SimpleWeather.Droid
         private LinearLayout hrforecastPanel;
         private LinearLayout hrforecastView;
         private RelativeLayout precipitationPanel;
+        private TextView chanceLabel;
         private TextView chance;
         private TextView qpfRain;
         private TextView qpfSnow;
+        private TextView cloudinessLabel;
+        private TextView cloudiness;
         // Nav Header View
         private View navheader;
         private TextView navLocation;
@@ -274,9 +277,16 @@ namespace SimpleWeather.Droid
             hrforecastView = view.FindViewById<LinearLayout>(Resource.Id.hourly_forecast_view);
             precipitationPanel = view.FindViewById<RelativeLayout>(Resource.Id.precipitation_card);
             precipitationPanel.Visibility = ViewStates.Gone;
+            chanceLabel = view.FindViewById<TextView>(Resource.Id.chance_label);
             chance = view.FindViewById<TextView>(Resource.Id.chance_val);
+            cloudinessLabel = view.FindViewById<TextView>(Resource.Id.cloudiness_label);
+            cloudiness = view.FindViewById<TextView>(Resource.Id.cloudiness);
             qpfRain = view.FindViewById<TextView>(Resource.Id.qpf_rain_val);
             qpfSnow = view.FindViewById<TextView>(Resource.Id.qpf_snow_val);
+
+            // Cloudiness only supported by OWM
+            cloudinessLabel.Visibility = ViewStates.Gone;
+            cloudiness.Visibility = ViewStates.Gone;
 
             // SwipeRefresh
             refreshLayout.SetColorSchemeColors(ContextCompat.GetColor(Activity, Resource.Color.colorPrimary));
@@ -613,9 +623,9 @@ namespace SimpleWeather.Droid
 
                 // Additional Details
                 hrforecastView.RemoveAllViews();
-                if (weatherView.WUExtras.HourlyForecast.Count >= 1)
+                if (weatherView.Extras.HourlyForecast.Count >= 1)
                 {
-                    foreach (HourlyForecastItemViewModel hrforecast in weatherView.WUExtras.HourlyForecast)
+                    foreach (HourlyForecastItemViewModel hrforecast in weatherView.Extras.HourlyForecast)
                     {
                         hrforecastView.AddView(new HourlyForecastItem(AppCompatActivity, hrforecast));
                     }
@@ -624,19 +634,19 @@ namespace SimpleWeather.Droid
                 else
                     hrforecastPanel.Visibility = ViewStates.Gone;
 
-                if (weatherView.WUExtras.TextForecast.Count >= 1)
+                if (weatherView.Extras.TextForecast.Count >= 1)
                 {
                     forecastSwitch.Visibility = ViewStates.Visible;
-                    (txtForecastView.Adapter as TextForecastPagerAdapter).UpdateDataset(weatherView.WUExtras.TextForecast.ToList());
+                    (txtForecastView.Adapter as TextForecastPagerAdapter).UpdateDataset(weatherView.Extras.TextForecast.ToList());
                 }
                 else
                     forecastSwitch.Visibility = ViewStates.Gone;
 
-                if (!String.IsNullOrWhiteSpace(weatherView.WUExtras.Chance))
+                if (!String.IsNullOrWhiteSpace(weatherView.Extras.Chance))
                 {
-                    chance.Text = weatherView.WUExtras.Chance;
-                    qpfRain.Text = weatherView.WUExtras.Qpf_Rain;
-                    qpfSnow.Text = weatherView.WUExtras.Qpf_Snow;
+                    chance.Text = cloudiness.Text = weatherView.Extras.Chance;
+                    qpfRain.Text = weatherView.Extras.Qpf_Rain;
+                    qpfSnow.Text = weatherView.Extras.Qpf_Snow;
 
                     precipitationPanel.Visibility = ViewStates.Visible;
 
@@ -647,6 +657,23 @@ namespace SimpleWeather.Droid
                         int childIdx = panel.IndexOfChild(panel.FindViewById(Resource.Id.precipitation_card));
                         if (childIdx < 0)
                             panel.AddView(precipitationPanel, 0);
+                    }
+
+                    if (Settings.API.Equals(WeatherAPI.OpenWeatherMap))
+                    {
+                        chanceLabel.Visibility = ViewStates.Gone;
+                        chance.Visibility = ViewStates.Gone;
+
+                        cloudinessLabel.Visibility = ViewStates.Visible;
+                        cloudiness.Visibility = ViewStates.Visible;
+                    }
+                    else
+                    {
+                        chanceLabel.Visibility = ViewStates.Visible;
+                        chance.Visibility = ViewStates.Visible;
+
+                        cloudinessLabel.Visibility = ViewStates.Gone;
+                        cloudiness.Visibility = ViewStates.Gone;
                     }
                 }
                 else
@@ -723,26 +750,24 @@ namespace SimpleWeather.Droid
                             return false;
                         }
 
-                        string selected_query = string.Empty;
+                        LocationQueryViewModel view = null;
 
                         await Task.Run(async () =>
                         {
-                            LocationQueryViewModel view = await wm.GetLocation(location);
+                            view = await wm.GetLocation(location);
 
-                            if (!String.IsNullOrEmpty(view.LocationQuery))
-                                selected_query = view.LocationQuery;
-                            else
-                                selected_query = string.Empty;
+                            if (String.IsNullOrEmpty(view.LocationQuery))
+                                view = new LocationQueryViewModel();
                         });
 
-                        if (String.IsNullOrWhiteSpace(selected_query))
+                        if (String.IsNullOrWhiteSpace(view.LocationQuery))
                         {
                             // Stop since there is no valid query
                             return false;
                         }
 
                         // Save location as last known
-                        lastGPSLocData.SetData(selected_query, location);
+                        lastGPSLocData.SetData(view, location);
                         Settings.SaveLastGPSLocData();
 
                         this.location = lastGPSLocData;

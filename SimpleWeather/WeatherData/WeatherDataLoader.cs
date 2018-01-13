@@ -53,7 +53,10 @@ namespace SimpleWeather.WeatherData
 
             try
             {
-                weather = await wm.GetWeather(location.query);
+                if (wm.NeedsExternalLocationData)
+                    weather = await wm.GetWeather(location);
+                else
+                    weather = await wm.GetWeather(location.query);
             }
             catch (WeatherException weatherEx)
             {
@@ -73,7 +76,17 @@ namespace SimpleWeather.WeatherData
             }
             else if (weather != null)
             {
-                SaveWeatherData();
+                // Handle upgrades
+                if (String.IsNullOrEmpty(location.name) || String.IsNullOrEmpty(location.tz_short))
+                {
+                    location.name = weather.location.name;
+                    location.tz_offset = weather.location.tz_offset;
+                    location.tz_short = weather.location.tz_short;
+
+                    await Settings.UpdateLocation(location);
+                }
+
+                await SaveWeatherData();
             }
 
             // Throw exception if we're unable to get any weather data
@@ -211,12 +224,12 @@ namespace SimpleWeather.WeatherData
                 return false;
         }
 
-        private void SaveWeatherData()
+        private async Task SaveWeatherData()
         {
             // Save location query
             weather.query = location.query;
 
-            Settings.SaveWeatherData(weather);
+            await Settings.SaveWeatherData(weather);
         }
 
         public Weather GetWeather()

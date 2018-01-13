@@ -72,8 +72,8 @@ namespace SimpleWeather.Controls
         public static readonly DependencyProperty ForecastsProperty =
             DependencyProperty.Register("Forecasts", typeof(ObservableCollection<ForecastItemViewModel>),
             typeof(WeatherNowViewModel), new PropertyMetadata(null));
-        public static readonly DependencyProperty WUExtrasProperty =
-            DependencyProperty.Register("WUExtrasProperty", typeof(WUExtrasViewModel),
+        public static readonly DependencyProperty ExtrasProperty =
+            DependencyProperty.Register("ExtrasProperty", typeof(WeatherExtrasViewModel),
             typeof(WeatherNowViewModel), new PropertyMetadata(null));
         public static readonly DependencyProperty BackgroundProperty =
             DependencyProperty.Register("Background", typeof(ImageBrush),
@@ -184,10 +184,10 @@ namespace SimpleWeather.Controls
             set { SetValue(ForecastsProperty, value); OnPropertyChanged("Forecasts"); }
         }
         // Additional Details
-        public WUExtrasViewModel WUExtras
+        public WeatherExtrasViewModel Extras
         {
-            get { return (WUExtrasViewModel)GetValue(WUExtrasProperty); }
-            set { SetValue(WUExtrasProperty, value); OnPropertyChanged("WUExtras"); }
+            get { return (WeatherExtrasViewModel)GetValue(ExtrasProperty); }
+            set { SetValue(ExtrasProperty, value); OnPropertyChanged("Extras"); }
         }
         // Background
         public ImageBrush Background
@@ -241,7 +241,7 @@ namespace SimpleWeather.Controls
         public ObservableCollection<ForecastItemViewModel> Forecasts { get; set; }
 
         // Additional Details
-        public WUExtrasViewModel WUExtras { get; set; }
+        public WeatherExtrasViewModel Extras { get; set; }
 
         // Background
         public string Background { get; set; }
@@ -267,7 +267,7 @@ namespace SimpleWeather.Controls
             };
 #endif
             Forecasts = new ObservableCollection<ForecastItemViewModel>();
-            WUExtras = new WUExtrasViewModel();
+            Extras = new WeatherExtrasViewModel();
         }
 
         public WeatherNowViewModel(Weather weather)
@@ -282,7 +282,7 @@ namespace SimpleWeather.Controls
             };
 #endif
             Forecasts = new ObservableCollection<ForecastItemViewModel>();
-            WUExtras = new WUExtrasViewModel();
+            Extras = new WeatherExtrasViewModel();
             UpdateView(weather);
         }
 
@@ -382,13 +382,18 @@ namespace SimpleWeather.Controls
             if (weather.source == WeatherAPI.WeatherUnderground)
             {
                 WeatherCredit = string.Format("{0} WeatherUnderground", creditPrefix);
-                WUExtras.UpdateView(weather);
+                Extras.UpdateView(weather);
             }
             else if (weather.source == WeatherAPI.Yahoo)
             {
                 WeatherCredit = string.Format("{0} Yahoo!", creditPrefix);
                 // Clear data
-                WUExtras.Clear();
+                Extras.Clear();
+            }
+            else if (weather.source == WeatherAPI.OpenWeatherMap)
+            {
+                WeatherCredit = string.Format("{0} OpenWeatherMap", creditPrefix);
+                Extras.UpdateView(weather);
             }
 
             // Language

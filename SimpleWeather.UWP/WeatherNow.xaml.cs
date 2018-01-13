@@ -34,6 +34,7 @@ namespace SimpleWeather.UWP
 
         LocationData location = null;
         double BGAlpha = 1.0;
+        bool ItemsGenerated = false;
 
         Geolocator geolocal = null;
         Geoposition geoPos = null;
@@ -76,32 +77,58 @@ namespace SimpleWeather.UWP
                 TextForecastControl.SelectedIndex = index + 1;
             TextForecastControl.SelectedIndex = index;
 
-            if (WeatherView.WUExtras.HourlyForecast.Count >= 1)
+            if (WeatherView.Extras.HourlyForecast.Count >= 1)
                 HourlyForecastPanel.Visibility = Visibility.Visible;
             else
                 HourlyForecastPanel.Visibility = Visibility.Collapsed;
 
-            if (WeatherView.WUExtras.TextForecast.Count >= 1)
+            if (WeatherView.Extras.TextForecast.Count >= 1)
                 ForecastSwitch.Visibility = Visibility.Visible;
             else
                 ForecastSwitch.Visibility = Visibility.Collapsed;
 
-            if (!String.IsNullOrWhiteSpace(WeatherView.WUExtras.Chance))
+            if (!String.IsNullOrWhiteSpace(WeatherView.Extras.Chance))
             {
                 if (!DetailsWrapGrid.Children.Contains(PrecipitationPanel))
                 {
                     DetailsWrapGrid.Children.Insert(0, PrecipitationPanel);
-                    DetailsPanel_SizeChanged(DetailsWrapGrid, null);
+                    ResizeDetailItems();
                 }
 
                 PrecipitationPanel.Visibility = Visibility.Visible;
+
+                int precipCount = PrecipitationPanel.Children.Count;
+                int atmosCount = AtmospherePanel.Children.Count;
+
+                if (Settings.API.Equals(WeatherAPI.OpenWeatherMap))
+                {
+                    if (ChanceItem != null)
+                        PrecipitationPanel.Children.Remove(ChanceItem);
+
+                    var cloudinessItem = FindName("CloudinessItem") as FrameworkElement;
+                    if (!AtmospherePanel.Children.Contains(cloudinessItem))
+                        AtmospherePanel.Children.Insert(2, cloudinessItem);
+                }
+                else
+                {
+                    var chanceItem = FindName("ChanceItem") as FrameworkElement;
+                    if (!PrecipitationPanel.Children.Contains(chanceItem))
+                        PrecipitationPanel.Children.Insert(2, chanceItem);
+
+                    if (CloudinessItem != null)
+                        AtmospherePanel.Children.Remove(CloudinessItem);
+                }
+
+                if (precipCount != PrecipitationPanel.Children.Count || atmosCount != AtmospherePanel.Children.Count || !ItemsGenerated)
+                    ResizeDetailItems();
             }
             else
             {
                 DetailsWrapGrid.Children.Remove(PrecipitationPanel);
-                DetailsPanel_SizeChanged(DetailsWrapGrid, null);
+                ResizeDetailItems();
             }
 
+            ItemsGenerated = false;
             LoadingRing.IsActive = false;
         }
 
@@ -134,6 +161,7 @@ namespace SimpleWeather.UWP
 
             wm = WeatherManager.GetInstance();
             WeatherView = new WeatherNowViewModel();
+            this.SizeChanged += WeatherNow_SizeChanged;
             StackControl.SizeChanged += StackControl_SizeChanged;
             DetailsPanel.SizeChanged += DetailsPanel_SizeChanged;
             MainViewer.ViewChanged += MainViewer_ViewChanged;
@@ -141,7 +169,7 @@ namespace SimpleWeather.UWP
             HeaderLeft.Click += delegate { ScrollTxtPanel(false); };
             HeaderRight.Click += delegate { ScrollTxtPanel(true); };
 
-            // Additional Details (WUExtras)
+            // Additional Details (Extras)
             ForecastSwitch.Visibility = Visibility.Collapsed;
             TextForecastPanel.Visibility = Visibility.Collapsed;
             HourlyForecastPanel.Visibility = Visibility.Collapsed;
@@ -159,6 +187,12 @@ namespace SimpleWeather.UWP
             });
         }
 
+        private void WeatherNow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (StackControl != null)
+                ResizeForecastItems();
+        }
+
         private void MainViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
             if (sender is ScrollViewer viewer && viewer.Background != null)
@@ -173,9 +207,54 @@ namespace SimpleWeather.UWP
             // TextForecastPanel resizing
             TextForecastPanel.Height = e.NewSize.Height;
             TextForecastControl.Height = TextForecastPanel.Height - 50;
+
+            // For first launch resize forecast panels when panel is filled
+            if (StackControl.ItemsPanelRoot != null && StackControl.Items.Count > 0 &&
+                StackControl.Items.Count == WeatherView.Forecasts.Count && !ItemsGenerated)
+            {
+                ResizeForecastItems();
+                ItemsGenerated = true;
+            }
+        }
+
+        private void ResizeForecastItems()
+        {
+            // Resize StackControl items
+            double StackWidth = ForecastViewer.ActualWidth;
+            if (StackControl.Items.Count > 0)
+            {
+                if (StackControl.ItemsPanelRoot == null)
+                    return;
+
+                var StackCollection = StackControl.ItemsPanelRoot.Children.Cast<FrameworkElement>();
+                double itemsWidth = StackCollection.First().ActualWidth * StackControl.Items.Count;
+
+                if (itemsWidth < StackWidth)
+                {
+                    double freeSpace = StackWidth - itemsWidth;
+                    double itemWidth = (itemsWidth / StackControl.Items.Count) + (freeSpace / StackControl.Items.Count);
+
+                    foreach (FrameworkElement element in StackCollection)
+                    {
+                        element.Width = itemWidth;
+                    }
+                }
+                else
+                {
+                    foreach (FrameworkElement element in StackCollection)
+                    {
+                        element.Width = Double.NaN;
+                    }
+                }
+            }
         }
 
         private void DetailsPanel_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ResizeDetailItems();
+        }
+
+        private void ResizeDetailItems()
         {
             double w = this.ActualWidth;
 
@@ -185,6 +264,15 @@ namespace SimpleWeather.UWP
                 DetailsWrapGrid.MaximumRowsOrColumns = 1;
                 // Increase card width based on screen size
                 DetailsWrapGrid.ItemWidth = w - DetailsPanel.Padding.Right;
+                double maxHeight = Double.NaN;
+                foreach (FrameworkElement element in DetailsWrapGrid.Children)
+                {
+                    if (!Double.IsNaN(element.ActualHeight) && (Double.IsNaN(maxHeight) || element.ActualHeight > maxHeight))
+                    {
+                        maxHeight = element.ActualHeight;
+                    }
+                }
+                DetailsWrapGrid.ItemHeight = maxHeight;
             }
             else
             {
@@ -203,6 +291,16 @@ namespace SimpleWeather.UWP
 
                 DetailsWrapGrid.MaximumRowsOrColumns = maxColumns;
                 DetailsWrapGrid.ItemWidth = itemWidth;
+                // Resizing needed if first details element is less than others
+                double maxHeight = Double.NaN;
+                foreach (FrameworkElement element in DetailsWrapGrid.Children)
+                {
+                    if (!Double.IsNaN(element.ActualHeight) && (Double.IsNaN(maxHeight) || element.ActualHeight > maxHeight))
+                    {
+                        maxHeight = element.ActualHeight;
+                    }
+                }
+                DetailsWrapGrid.ItemHeight = maxHeight;
             }
         }
 
@@ -457,26 +555,24 @@ namespace SimpleWeather.UWP
                         return false;
                     }
 
-                    string selected_query = string.Empty;
+                    LocationQueryViewModel view = null;
 
                     await Task.Run(async () =>
                     {
-                        LocationQueryViewModel view = await wm.GetLocation(newGeoPos);
+                        view = await wm.GetLocation(newGeoPos);
 
-                        if (!String.IsNullOrEmpty(view.LocationQuery))
-                            selected_query = view.LocationQuery;
-                        else
-                            selected_query = string.Empty;
+                        if (String.IsNullOrEmpty(view.LocationQuery))
+                            view = new LocationQueryViewModel();
                     });
 
-                    if (String.IsNullOrWhiteSpace(selected_query))
+                    if (String.IsNullOrWhiteSpace(view.LocationQuery))
                     {
                         // Stop since there is no valid query
                         return false;
                     }
 
                     // Save location as last known
-                    lastGPSLocData.SetData(selected_query, newGeoPos);
+                    lastGPSLocData.SetData(view, newGeoPos);
                     Settings.SaveLastGPSLocData();
 
                     location = lastGPSLocData;

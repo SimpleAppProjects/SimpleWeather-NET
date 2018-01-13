@@ -15,7 +15,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ForecastItemViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\LocationQueryViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\WeatherNowViewModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Controls\WUExtrasViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\WeatherExtrasViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\AutoCompleteQuery.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\GeopositionQuery.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\Weather.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\OpenWeatherMapProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\ConversionMethods.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\DataMigration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\DBUtils.cs" />

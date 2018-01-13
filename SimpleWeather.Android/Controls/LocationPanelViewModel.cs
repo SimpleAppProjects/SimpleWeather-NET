@@ -42,7 +42,13 @@ namespace SimpleWeather.Droid.Controls
             WeatherSource = weather.source;
 
             if (LocationData == null)
-                LocationData = new LocationData(weather.query);
+                LocationData = new LocationData()
+                {
+                    query = weather.query,
+                    name = weather.location.name,
+                    tz_offset = weather.location.tz_offset,
+                    tz_short = weather.location.tz_short
+                };
         }
     }
 }

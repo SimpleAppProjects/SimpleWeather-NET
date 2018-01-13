@@ -1,6 +1,7 @@
 ﻿using System;
 using SimpleWeather.WeatherUnderground;
 using SimpleWeather.WeatherYahoo;
+using SimpleWeather.OpenWeather;
 #if WINDOWS_UWP
 using SimpleWeather.UWP;
 #elif __ANDROID__
@@ -14,6 +15,9 @@ namespace SimpleWeather.Controls
         public string LocationName { get; set; }
         public string LocationCountry { get; set; }
         public string LocationQuery { get; set; }
+
+        public TimeSpan LocationTZ_Offset { get; set; }
+        public string LocationTZ_Short { get; set; }
 
         public LocationQueryViewModel()
         {
@@ -29,32 +33,32 @@ namespace SimpleWeather.Controls
         }
 
 #region WeatherUnderground
-        public LocationQueryViewModel(AC_RESULT location)
+        public LocationQueryViewModel(WeatherUnderground.AC_RESULT location)
         {
             SetLocation(location);
         }
 
-        public void SetLocation(AC_RESULT location)
+        public void SetLocation(WeatherUnderground.AC_RESULT location)
         {
             LocationName = location.name;
             LocationCountry = location.c;
             LocationQuery = location.l;
         }
 
-        public LocationQueryViewModel(location location)
+        public LocationQueryViewModel(WeatherUnderground.location location)
         {
             SetLocation(location);
         }
 
-        public void SetLocation(location location)
+        public void SetLocation(WeatherUnderground.location location)
         {
             LocationName = string.Format("{0}, {1}", location.city, location.state);
             LocationCountry = location.country;
             LocationQuery = location.query;
         }
-#endregion
+        #endregion
 
-#region Yahoo Weather
+        #region Yahoo Weather
         public LocationQueryViewModel(place location)
         {
             SetLocation(location);
@@ -97,6 +101,42 @@ namespace SimpleWeather.Controls
             LocationCountry = location.country.code;
             LocationQuery = location.woeid;
         }
-#endregion
+        #endregion
+
+        #region OpenWeatherMap
+        public LocationQueryViewModel(OpenWeather.AC_RESULT location)
+        {
+            SetLocation(location);
+        }
+
+        public void SetLocation(OpenWeather.AC_RESULT location)
+        {
+            LocationName = location.name;
+            LocationCountry = location.c;
+            LocationQuery = string.Format("lat={0}&lon={1}", location.lat, location.lon);
+
+            var tz = location.tz;
+            var nodaTZ = NodaTime.DateTimeZoneProviders.Tzdb[tz];
+            LocationTZ_Offset = nodaTZ.GetUtcOffset(NodaTime.SystemClock.Instance.GetCurrentInstant()).ToTimeSpan();
+            LocationTZ_Short = location.tzs;
+        }
+
+        public LocationQueryViewModel(OpenWeather.location location)
+        {
+            SetLocation(location);
+        }
+
+        public void SetLocation(OpenWeather.location location)
+        {
+            LocationName = string.Format("{0}, {1}", location.city, location.state);
+            LocationCountry = location.country;
+            LocationQuery = string.Format("lat={0}&lon={1}", location.lat, location.lon);
+
+            var tz = location.tz_unix;
+            var nodaTZ = NodaTime.DateTimeZoneProviders.Tzdb[tz];
+            LocationTZ_Offset = nodaTZ.GetUtcOffset(NodaTime.SystemClock.Instance.GetCurrentInstant()).ToTimeSpan();
+            LocationTZ_Short = location.tz_short;
+        }
+        #endregion
     }
 }

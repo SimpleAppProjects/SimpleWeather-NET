@@ -15,7 +15,7 @@ using SimpleWeather.Droid;
 
 namespace SimpleWeather.Controls
 {
-    public class WUExtrasViewModel
+    public class WeatherExtrasViewModel
 #if WINDOWS_UWP
         : DependencyObject, INotifyPropertyChanged
 #endif
@@ -82,13 +82,13 @@ namespace SimpleWeather.Controls
         public string Qpf_Snow { get; set; }
 #endif
 
-        public WUExtrasViewModel()
+        public WeatherExtrasViewModel()
         {
             HourlyForecast = new ObservableCollection<HourlyForecastItemViewModel>();
             TextForecast = new ObservableCollection<TextForecastItemViewModel>();
         }
 
-        public WUExtrasViewModel(Weather weather)
+        public WeatherExtrasViewModel(Weather weather)
         {
             HourlyForecast = new ObservableCollection<HourlyForecastItemViewModel>();
             TextForecast = new ObservableCollection<TextForecastItemViewModel>();

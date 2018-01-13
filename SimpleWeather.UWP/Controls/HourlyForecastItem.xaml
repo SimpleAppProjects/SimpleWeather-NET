@@ -60,12 +60,13 @@
                    Text="{x:Bind HourlyForecasts.Condition, FallbackValue='Scattered Thunderstorms', Mode=OneWay}"
                    Width="145" HorizontalAlignment="Left" TextWrapping="WrapWholeWords"/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="3">
-            <TextBlock Style="{StaticResource WeatherIcon}" Text="&#xf078;" Padding="10,5"
+            <TextBlock Name="PoPIcon"
+                       Style="{StaticResource WeatherIcon}" Text="&#xf078;" Padding="5"
                        FontSize="14"/>
             <TextBlock Name="ForecastPoP" Text="{x:Bind HourlyForecasts.PoP, FallbackValue='100%', Mode=OneWay}"
                        VerticalAlignment="Center" Foreground="White" />
             <Rectangle Width="10"/>
-            <TextBlock Name="WindDirection" Style="{StaticResource WeatherIcon}" Text="&#xf058;" Padding="10,5"
+            <TextBlock Name="WindDirection" Style="{StaticResource WeatherIcon}" Text="&#xf058;" Padding="5"
                        RenderTransformOrigin="0.5,0.5" RenderTransform="{x:Bind HourlyForecasts.WindDirection, Mode=OneWay}"
                        FontSize="14"/>
             <TextBlock Text="{x:Bind HourlyForecasts.WindSpeed, FallbackValue='5.8 mph', Mode=OneWay}"

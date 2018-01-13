@@ -33,7 +33,7 @@ namespace SimpleWeather.Droid
         private EditText mSearchView;
         private FragmentActivity mActivity; 
 
-        private String selected_query = String.Empty;
+        private LocationQueryViewModel query_vm = null;
 
         private CancellationTokenSource cts;
 
@@ -89,11 +89,11 @@ namespace SimpleWeather.Droid
             LocationQuery v = (LocationQuery)e.View;
 
             if (!String.IsNullOrEmpty(mAdapter.Dataset[e.Position].LocationQuery))
-                selected_query = mAdapter.Dataset[e.Position].LocationQuery;
+                query_vm = mAdapter.Dataset[e.Position];
             else
-                selected_query = string.Empty;
+                query_vm = new LocationQueryViewModel();
 
-            if (String.IsNullOrWhiteSpace(selected_query))
+            if (String.IsNullOrWhiteSpace(query_vm.LocationQuery))
             {
                 // Stop since there is no valid query
                 return;
@@ -119,9 +119,15 @@ namespace SimpleWeather.Droid
             }
 
             // Get Weather Data
-            WeatherData.Weather weather = await Settings.GetWeatherData(selected_query);
+            var location = new WeatherData.LocationData(query_vm);
+            WeatherData.Weather weather = await Settings.GetWeatherData(location.query);
             if (weather == null)
-                weather = await wm.GetWeather(selected_query);
+            {
+                if (wm.NeedsExternalLocationData)
+                    weather = await wm.GetWeather(location);
+                else
+                    weather = await wm.GetWeather(location.query);
+            }
 
             if (weather == null)
             {
@@ -135,10 +141,9 @@ namespace SimpleWeather.Droid
             mRecyclerView.Enabled = false;
 
             // Save weather data
-            var location = new WeatherData.LocationData(selected_query);
             await Settings.DeleteLocations();
             await Settings.AddLocation(location);
-            Settings.SaveWeatherData(weather);
+            await Settings.SaveWeatherData(weather);
 
             // Start WeatherNow Activity with weather data
             Intent intent = new Intent(mActivity, typeof(MainActivity));

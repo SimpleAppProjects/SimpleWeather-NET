@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
 using SimpleWeather.Controls;
+using SimpleWeather.OpenWeather;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherUnderground;
 using SimpleWeather.WeatherYahoo;
@@ -21,11 +22,13 @@ namespace SimpleWeather.WeatherData
         // APIs
         public const string WeatherUnderground = "WUnderground";
         public const string Yahoo = "Yahoo";
+        public const string OpenWeatherMap = "OpenWeather";
 
         public static List<ComboBoxItem> APIs = new List<ComboBoxItem>()
         {
             new ComboBoxItem("WeatherUnderground", WeatherUnderground),
             new ComboBoxItem("Yahoo Weather", Yahoo),
+            new ComboBoxItem("OpenWeatherMap", OpenWeatherMap),
         };
     }
 
@@ -68,6 +71,9 @@ namespace SimpleWeather.WeatherData
                 case WeatherAPI.Yahoo:
                     providerImpl = new YahooWeatherProvider();
                     break;
+                case WeatherAPI.OpenWeatherMap:
+                    providerImpl = new OpenWeatherMapProvider();
+                    break;
             }
 
             if (providerImpl == null)
@@ -99,6 +105,8 @@ namespace SimpleWeather.WeatherData
 
         public bool SupportsWeatherLocale => WeatherProvider.SupportsWeatherLocale;
 
+        public bool NeedsExternalLocationData => WeatherProvider.NeedsExternalLocationData;
+
         public async Task<string> UpdateLocationQuery(Weather weather)
         {
             return await WeatherProvider.UpdateLocationQuery(weather);
@@ -128,6 +136,11 @@ namespace SimpleWeather.WeatherData
         public async Task<Weather> GetWeather(string query)
         {
             return await WeatherProvider.GetWeather(query);
+        }
+
+        public async Task<Weather> GetWeather(LocationData location)
+        {
+            return await WeatherProvider.GetWeather(location);
         }
 
         public String LocaleToLangCode(String iso, String name)

@@ -1,4 +1,5 @@
-﻿using SimpleWeather.Utils;
+﻿using SimpleWeather.Controls;
+using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
@@ -146,19 +147,17 @@ namespace SimpleWeather.UWP.BackgroundTasks
                         return false;
                     }
 
-                    string selected_query = string.Empty;
+                    LocationQueryViewModel view = null;
 
                     await Task.Run(async () =>
                     {
-                        var view = await wm.GetLocation(newGeoPos);
+                        view = await wm.GetLocation(newGeoPos);
 
-                        if (!String.IsNullOrEmpty(view.LocationQuery))
-                            selected_query = view.LocationQuery;
-                        else
-                            selected_query = string.Empty;
+                        if (String.IsNullOrEmpty(view.LocationQuery))
+                            view = new LocationQueryViewModel();
                     }, cts.Token);
 
-                    if (String.IsNullOrWhiteSpace(selected_query))
+                    if (String.IsNullOrWhiteSpace(view.LocationQuery))
                     {
                         // Stop since there is no valid query
                         return false;
@@ -167,7 +166,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                     if (cts.IsCancellationRequested) return locationChanged;
 
                     // Save location as last known
-                    lastGPSLocData.SetData(selected_query, newGeoPos);
+                    lastGPSLocData.SetData(view, newGeoPos);
                     Settings.SaveLastGPSLocData();
 
                     locationChanged = true;

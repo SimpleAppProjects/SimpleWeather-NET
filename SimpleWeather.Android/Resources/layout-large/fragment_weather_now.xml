@@ -360,6 +360,28 @@
                                 android:background="@android:color/white" />
 
                             <TextView
+                                android:id="@+id/cloudiness_label"
+                                style="@style/WeatherDetails"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_alignParentStart="true"
+                                android:layout_below="@+id/atmosphere_label_border"
+                                android:layout_toLeftOf="@+id/cloudiness"
+                                android:layout_toStartOf="@+id/cloudiness"
+                                android:text="@string/label_cloudiness" />
+
+                            <TextView
+                                android:id="@+id/cloudiness"
+                                style="@style/WeatherDetails"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentRight="true"
+                                android:layout_below="@+id/atmosphere_label_border"
+                                tools:text="100%" />
+
+                            <TextView
                                 android:id="@+id/pressure_label"
                                 style="@style/WeatherDetails"
                                 android:layout_width="wrap_content"
@@ -367,7 +389,7 @@
                                 android:layout_alignBottom="@+id/pressure_state"
                                 android:layout_alignParentLeft="true"
                                 android:layout_alignParentStart="true"
-                                android:layout_below="@+id/atmosphere_label_border"
+                                android:layout_below="@+id/cloudiness_label"
                                 android:layout_toLeftOf="@+id/pressure_state"
                                 android:layout_toStartOf="@+id/pressure_state"
                                 android:text="@string/label_pressure" />
@@ -377,7 +399,7 @@
                                 style="@style/WeatherDetails"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_below="@+id/atmosphere_label_border"
+                                android:layout_below="@+id/cloudiness_label"
                                 android:layout_toLeftOf="@+id/pressure"
                                 android:layout_toStartOf="@+id/pressure"
                                 android:gravity="center"
@@ -395,7 +417,7 @@
                                 android:layout_alignBottom="@+id/pressure_state"
                                 android:layout_alignParentEnd="true"
                                 android:layout_alignParentRight="true"
-                                android:layout_below="@+id/atmosphere_label_border"
+                                android:layout_below="@+id/cloudiness"
                                 android:gravity="center"
                                 tools:text="1000.2 mb" />
 

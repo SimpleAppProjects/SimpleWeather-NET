@@ -17,7 +17,7 @@ namespace SimpleWeather.Utils
 {
     public partial class DBUtils
     {
-        public static async Task MigrateData(SQLiteAsyncConnection locationDB, SQLiteAsyncConnection weatherDB)
+        public static async Task MigrateDataJsonToDB(SQLiteAsyncConnection locationDB, SQLiteAsyncConnection weatherDB)
         {
 #if WINDOWS_UWP
             StorageFolder appDataFolder = ApplicationData.Current.LocalFolder;
@@ -88,10 +88,14 @@ namespace SimpleWeather.Utils
 
                     foreach (string query in weatherDataKeys)
                     {
-                        LocationData loc = new LocationData(query)
+                        LocationData loc = new LocationData()
                         {
+                            query = query,
+                            name = (oldWeather[query] as Weather).location.name,
                             longitude = double.Parse((oldWeather[query] as Weather).location.longitude),
-                            latitude = double.Parse((oldWeather[query] as Weather).location.latitude)
+                            latitude = double.Parse((oldWeather[query] as Weather).location.latitude),
+                            tz_offset = (oldWeather[query] as Weather).location.tz_offset,
+                            tz_short = (oldWeather[query] as Weather).location.tz_short
                         };
                         data.Add(loc);
                     }
