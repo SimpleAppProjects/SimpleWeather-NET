@@ -166,9 +166,6 @@ namespace SimpleWeather.Droid
                     {
                         keyEntry.Enabled = true;
 
-                        //if (!String.IsNullOrWhiteSpace(Settings.API_KEY) && !keyVerified)
-                        //    keyVerified = true;
-
                         // Reset to old value if not verified
                         if (!keyVerified)
                             Settings.API = pref.Value;
@@ -192,12 +189,13 @@ namespace SimpleWeather.Droid
                     UpdateKeySummary();
                 };
 
+                // Set key as verified if API Key is req for API and its set
                 if (WeatherData.WeatherManager.GetInstance().KeyRequired)
                 {
                     keyEntry.Enabled = true;
 
-                    //if (!String.IsNullOrWhiteSpace(Settings.API_KEY) && !keyVerified)
-                    //    keyVerified = true;
+                    if (!String.IsNullOrWhiteSpace(Settings.API_KEY) && !keyVerified)
+                        keyVerified = true;
                 }
                 else
                 {
@@ -257,12 +255,10 @@ namespace SimpleWeather.Droid
                 if (preference is EditTextPreference && preference.Key == KEY_APIKEY)
                 {
                     var fragment = KeyEntryPreferenceDialogFragment.NewInstance(preference.Key);
-                    fragment.PositiveButtonClick += async delegate
+                    fragment.PositiveButtonClick += async (sender, e) =>
                     {
-                        var wm = WeatherData.WeatherManager.GetInstance();
                         String key = fragment.EditText.Text;
 
-                        // TODO: NOTE: this might not work
                         String API = providerPref.Value;
                         if (await WeatherData.WeatherManager.IsKeyValid(key, API))
                         {

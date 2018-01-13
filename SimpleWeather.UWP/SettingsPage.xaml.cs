@@ -76,8 +76,8 @@ namespace SimpleWeather.UWP
 
             if (wm.KeyRequired)
             {
-                //if (!String.IsNullOrWhiteSpace(Settings.API_KEY) && !keyVerified)
-                //    keyVerified = true;
+                if (!String.IsNullOrWhiteSpace(Settings.API_KEY) && !keyVerified)
+                    keyVerified = true;
 
                 KeyPanel.Visibility = Visibility.Visible;
             }
@@ -160,7 +160,7 @@ namespace SimpleWeather.UWP
                     Settings.API = API;
                     wm.UpdateAPI();
 
-                    // TODO: NOTE: try not to trigger right away
+                    // TODO: try not to trigger right away
                     // Do so when navigating away
                     await App.BGTaskHandler.RequestAppTrigger();
 

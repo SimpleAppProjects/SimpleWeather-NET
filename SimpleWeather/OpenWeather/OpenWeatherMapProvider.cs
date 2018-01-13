@@ -175,39 +175,37 @@ namespace SimpleWeather.OpenWeather
                 // Connect to webstream
                 HttpClient webClient = new HttpClient();
                 HttpResponseMessage response = await webClient.GetAsync(queryURL);
-                response.EnsureSuccessStatusCode();
-                Stream contentStream = null;
-#if WINDOWS_UWP
-                contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-#elif __ANDROID__
-                contentStream = await response.Content.ReadAsStreamAsync();
-#endif
-                // Reset exception
-                wEx = null;
-
-                // End Stream
-                webClient.Dispose();
-
-                // Load data
-                Rootobject root = await JSONParser.DeserializerAsync<Rootobject>(contentStream);
+                var responseCode = response.StatusCode;
 
                 // Check for errors
-                switch (root.cod)
+                switch (responseCode)
                 {
-                    case 400:
+                    // 400 (OK since this isn't a valid request)
+                    case HttpStatusCode.BadRequest:
                         isValid = true;
                         break;
-                    case 401:
+                    // 401 (Unauthorized - Key is invalid)
+                    case HttpStatusCode.Unauthorized:
                         wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
                         isValid = false;
                         break;
                 }
 
                 // End Stream
-                contentStream.Dispose();
+                response.Dispose();
+                webClient.Dispose();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+#if WINDOWS_UWP
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+#elif __ANDROID__
+                if (ex is WebException || ex is HttpRequestException)
+#endif
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                }
+
                 isValid = false;
             }
 
