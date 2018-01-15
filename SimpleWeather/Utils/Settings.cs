@@ -95,9 +95,12 @@ namespace SimpleWeather.Utils
                 {
                     lastGPSLocData = LocationData.FromJson(new JsonTextReader(new StringReader(LastGPSLocation)));
                 }
-                catch (JsonSerializationException jsEx)
+                catch (Exception ex)
                 {
-                    Console.WriteLine(jsEx.StackTrace);
+                    Console.WriteLine(ex.StackTrace);
+                }
+                finally
+                {
                     if (lastGPSLocData == null)
                         lastGPSLocData = new LocationData();
                 }
