@@ -62,14 +62,13 @@
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="3">
             <TextBlock Name="PoPIcon"
                        Style="{StaticResource WeatherIcon}" Text="&#xf078;" Padding="5"
-                       FontSize="14"/>
-            <TextBlock Name="ForecastPoP" Text="{x:Bind HourlyForecasts.PoP, FallbackValue='100%', Mode=OneWay}"
+                       FontSize="18" TextLineBounds="Tight"/>
+            <TextBlock Name="ForecastPoP" Text="{x:Bind HourlyForecasts.PoP, FallbackValue='100%', Mode=OneWay}" Padding="5"
                        VerticalAlignment="Center" Foreground="White" />
-            <Rectangle Width="10"/>
-            <TextBlock Name="WindDirection" Style="{StaticResource WeatherIcon}" Text="&#xf058;" Padding="5"
+            <TextBlock Name="WindDirection" Style="{StaticResource WeatherIcon}" Text="&#xf0b1;" Padding="5"
                        RenderTransformOrigin="0.5,0.5" RenderTransform="{x:Bind HourlyForecasts.WindDirection, Mode=OneWay}"
-                       FontSize="14"/>
-            <TextBlock Text="{x:Bind HourlyForecasts.WindSpeed, FallbackValue='5.8 mph', Mode=OneWay}"
+                       FontSize="18" TextLineBounds="Tight"/>
+            <TextBlock Text="{x:Bind HourlyForecasts.WindSpeed, FallbackValue='5.8 mph', Mode=OneWay}" Padding="5"
                        VerticalAlignment="Center" Foreground="White"
                        FontSize="{x:Bind ForecastPoP.FontSize, Mode=OneWay}" />
         </StackPanel>
@@ -92,7 +91,7 @@
                 </VisualState>
                 <VisualState x:Name="MediumHeight">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowHeight="640"/>
+                        <AdaptiveTrigger MinWindowHeight="641"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="Control.Width" Value="155"/>
@@ -106,7 +105,7 @@
                 </VisualState>
                 <VisualState x:Name="LargeHeight">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowHeight="690"/>
+                        <AdaptiveTrigger MinWindowHeight="691"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="Control.Width" Value="155"/>

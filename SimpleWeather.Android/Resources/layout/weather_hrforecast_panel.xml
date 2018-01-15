@@ -85,6 +85,9 @@
             android:id="@+id/hrforecast_pop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:maxLines="1"
             android:padding="4dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
             android:textColor="@android:color/white"
@@ -92,7 +95,7 @@
             app:autoSizeMaxTextSize="@dimen/forecast_condition_size"
             app:autoSizeMinTextSize="2dp"
             app:autoSizeTextType="uniform"
-            tools:text="60%" />
+            tools:text="100%" />
 
         <Space
             android:layout_width="5dp"
@@ -107,7 +110,7 @@
             android:paddingLeft="4dp"
             android:paddingRight="4dp"
             android:paddingStart="4dp"
-            android:text="@string/wi_direction_up"
+            android:text="@string/wi_wind_direction"
             android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
             android:textColor="@android:color/white"
             android:textSize="14sp"
@@ -118,6 +121,8 @@
             android:id="@+id/hrforecast_wind"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
             android:padding="4dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
             android:textColor="@android:color/white"
@@ -125,7 +130,7 @@
             app:autoSizeMaxTextSize="@dimen/forecast_condition_size"
             app:autoSizeMinTextSize="2dp"
             app:autoSizeTextType="uniform"
-            tools:text="6 mph" />
+            tools:text="100 mph" />
     </LinearLayout>
 
 </LinearLayout>

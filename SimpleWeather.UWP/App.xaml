@@ -4,12 +4,13 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:helpers="using:SimpleWeather.UWP.Helpers"
     xmlns:coding4fun="using:Coding4Fun.Toolkit.Controls"
+    xmlns:toolkitConverters="using:Microsoft.Toolkit.Uwp.UI.Converters"
     RequestedTheme="Light">
     <Application.Resources>
         <helpers:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
         <helpers:BooleanToVisibilityConverter x:Key="inverseBooleanToVisibilityConverter" IsInverse="True" />
         <helpers:InverseBooleanConverter x:Key="inverseBooleanConverter" />
-        <helpers:StringVisibilityConverter x:Key="stringVisibilityConverter" />
+        <toolkitConverters:StringVisibilityConverter x:Key="stringVisibilityConverter" />
         <Style x:Key="NoOverflow" TargetType="CommandBar">
             <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundChromeMediumBrush}"/>
             <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}"/>

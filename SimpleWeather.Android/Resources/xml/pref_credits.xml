@@ -19,6 +19,13 @@
                 android:action="android.intent.action.VIEW"
                 android:data="https://www.yahoo.com/?ilc=401" />
         </Preference>
+        <Preference
+            android:title="@string/api_owm" />
+        <Preference android:layout="@layout/credit_openweathermap">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="http://www.openweathermap.org" />
+        </Preference>
 
     </PreferenceCategory>
 

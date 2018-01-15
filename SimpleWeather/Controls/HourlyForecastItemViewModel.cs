@@ -70,11 +70,11 @@ namespace SimpleWeather.Controls
 #if WINDOWS_UWP
             RotateTransform rotation = new RotateTransform()
             {
-                Angle = angle
+                Angle = angle - 180
             };
             WindDirection = rotation;
 #elif __ANDROID__
-            WindDirection = angle;
+            WindDirection = angle - 180;
 #endif
         }
     }

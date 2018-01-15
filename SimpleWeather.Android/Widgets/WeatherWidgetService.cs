@@ -89,7 +89,7 @@ namespace SimpleWeather.Droid.Widgets
         {
             if (ACTION_REFRESHWIDGET.Equals(intent.Action))
             {
-                if (weather == null || (locData == null || !locData.Equals(Settings.HomeData)))
+                if (Settings.WeatherLoaded && (weather == null || (locData == null || !locData.Equals(Settings.HomeData))))
                     weather = await GetWeather();
 
                 int[] appWidgetIds = intent.GetIntArrayExtra(WeatherWidgetProvider.EXTRA_WIDGET_IDS);
@@ -119,7 +119,7 @@ namespace SimpleWeather.Droid.Widgets
             }
             else if (ACTION_RESIZEWIDGET.Equals(intent.Action))
             {
-                if (weather == null || (locData == null || !locData.Equals(Settings.HomeData)))
+                if (Settings.WeatherLoaded && (weather == null || (locData == null || !locData.Equals(Settings.HomeData))))
                     weather = await GetWeather();
 
                 int appWidgetId = intent.GetIntExtra(WeatherWidgetProvider.EXTRA_WIDGET_ID, -1);
@@ -130,6 +130,8 @@ namespace SimpleWeather.Droid.Widgets
                 {
                     case WidgetType.Widget1x1:
                         // Widget resizes itself; no need to adjust
+                        if (!Settings.WeatherLoaded)
+                            ResizeWidget(mAppWidget2x2, appWidgetId, newOptions);
                         break;
                     case WidgetType.Widget2x2:
                         ResizeWidget(mAppWidget2x2, appWidgetId, newOptions);
@@ -182,11 +184,14 @@ namespace SimpleWeather.Droid.Widgets
             }
             else if (ACTION_REFRESHNOTIFICATION.Equals(intent.Action))
             {
-                if (weather == null || (locData == null || !locData.Equals(Settings.HomeData)))
-                    weather = await GetWeather();
+                if (Settings.WeatherLoaded)
+                {
+                    if (weather == null || (locData == null || !locData.Equals(Settings.HomeData)))
+                        weather = await GetWeather();
 
-                if (Settings.OnGoingNotification && Settings.WeatherLoaded)
-                    WeatherNotificationBuilder.UpdateNotification(weather);
+                    if (Settings.OnGoingNotification)
+                        WeatherNotificationBuilder.UpdateNotification(weather);
+                }
             }
             else if (ACTION_REMOVENOTIFICATION.Equals(intent.Action))
             {
@@ -194,21 +199,24 @@ namespace SimpleWeather.Droid.Widgets
             }
             else if (ACTION_UPDATEWEATHER.Equals(intent.Action))
             {
-                // Send broadcast to signal update
-                if (WidgetsExist(App.Context))
-                    SendBroadcast(new Intent(WeatherWidgetProvider.ACTION_SHOWREFRESH));
-                // NOTE: Don't try to show refresh for pre-M devices
-                // If app gets killed, instance of notif is lost & view is reset
-                // and might get stuck
-                if (Settings.OnGoingNotification && Build.VERSION.SdkInt >= BuildVersionCodes.M)
-                    WeatherNotificationBuilder.ShowRefresh();
+                if (Settings.WeatherLoaded)
+                {
+                    // Send broadcast to signal update
+                    if (WidgetsExist(App.Context))
+                        SendBroadcast(new Intent(WeatherWidgetProvider.ACTION_SHOWREFRESH));
+                    // NOTE: Don't try to show refresh for pre-M devices
+                    // If app gets killed, instance of notif is lost & view is reset
+                    // and might get stuck
+                    if (Settings.OnGoingNotification && Build.VERSION.SdkInt >= BuildVersionCodes.M)
+                        WeatherNotificationBuilder.ShowRefresh();
 
-                weather = await GetWeather();
+                    weather = await GetWeather();
 
-                if (WidgetsExist(App.Context))
-                    RefreshWidgets();
-                if (Settings.OnGoingNotification)
-                    WeatherNotificationBuilder.UpdateNotification(weather);
+                    if (WidgetsExist(App.Context))
+                        RefreshWidgets();
+                    if (Settings.OnGoingNotification)
+                        WeatherNotificationBuilder.UpdateNotification(weather);
+                }
             }
 
             Console.WriteLine(string.Format("{0}: Intent Action = {1}", TAG, intent.Action));
@@ -324,7 +332,43 @@ namespace SimpleWeather.Droid.Widgets
 
         private void ResizeWidget(WeatherWidgetProvider provider, int appWidgetId, Bundle newOptions)
         {
-            RebuildForecast(provider, weather, appWidgetId, newOptions);
+            if (Settings.WeatherLoaded)
+            {
+                RebuildForecast(provider, weather, appWidgetId, newOptions);
+            }
+            else
+            {
+                // Widget dimensions
+                int minHeight = newOptions.GetInt(AppWidgetManager.OptionAppwidgetMinHeight);
+                int minWidth = newOptions.GetInt(AppWidgetManager.OptionAppwidgetMinWidth);
+                int maxHeight = newOptions.GetInt(AppWidgetManager.OptionAppwidgetMaxHeight);
+                int maxWidth = newOptions.GetInt(AppWidgetManager.OptionAppwidgetMaxWidth);
+                int maxCellHeight = GetCellsForSize(maxHeight);
+                int maxCellWidth = GetCellsForSize(maxWidth);
+                int cellHeight = GetCellsForSize(minHeight);
+                int cellWidth = GetCellsForSize(minWidth);
+
+                // Show "Get Started layout"
+                RemoteViews views = null;
+
+                if (cellWidth == 1 && cellHeight < 3)
+                {
+                    views = new RemoteViews(mContext.PackageName, Resource.Layout.app_widget_getstarted_small);
+                }
+                else if (cellHeight == 1 && cellWidth > 2)
+                {
+                    views = new RemoteViews(mContext.PackageName, Resource.Layout.app_widget_getstarted_wide);
+                }
+                else
+                {
+                    views = new RemoteViews(mContext.PackageName, Resource.Layout.app_widget_getstarted);
+                }
+
+                Intent onClickIntent = new Intent(mContext, typeof(SetupActivity));
+                PendingIntent clickPendingIntent = PendingIntent.GetActivity(mContext, 0, onClickIntent, 0);
+                views.SetOnClickPendingIntent(Resource.Id.widgetBackground, clickPendingIntent);
+                mAppWidgetManager.UpdateAppWidget(appWidgetId, views);
+            }
         }
 
         private void RefreshWidget(WeatherWidgetProvider provider, int[] appWidgetIds)
@@ -349,7 +393,21 @@ namespace SimpleWeather.Droid.Widgets
             else
             {
                 // Show "Get Started layout"
-                var views = new RemoteViews(mContext.PackageName, Resource.Layout.app_widget_getstarted);
+                RemoteViews views = null;
+
+                if (provider.WidgetType == WidgetType.Widget1x1)
+                {
+                    views = new RemoteViews(mContext.PackageName, Resource.Layout.app_widget_getstarted_small);
+                }
+                else if (provider.WidgetType == WidgetType.Widget4x1)
+                {
+                    views = new RemoteViews(mContext.PackageName, Resource.Layout.app_widget_getstarted_wide);
+                }
+                else
+                {
+                    views = new RemoteViews(mContext.PackageName, Resource.Layout.app_widget_getstarted);
+                }
+
                 Intent onClickIntent = new Intent(mContext, typeof(SetupActivity));
                 PendingIntent clickPendingIntent = PendingIntent.GetActivity(mContext, 0, onClickIntent, 0);
                 views.SetOnClickPendingIntent(Resource.Id.widgetBackground, clickPendingIntent);
@@ -540,6 +598,11 @@ namespace SimpleWeather.Droid.Widgets
                     {
                         updateViews.SetViewVisibility(Resource.Id.condition_pop_panel, ViewStates.Visible);
                         updateViews.SetTextViewText(Resource.Id.condition_pop, weather.precipitation.pop + "%");
+
+                        if (Settings.API.Equals(WeatherAPI.OpenWeatherMap))
+                            updateViews.SetImageViewResource(Resource.Id.condition_pop_label, Resource.Drawable.ic_cloudy);
+                        else
+                            updateViews.SetImageViewResource(Resource.Id.condition_pop_label, Resource.Drawable.ic_raindrop);
                     }
                     else
                         updateViews.SetViewVisibility(Resource.Id.condition_pop_panel, ViewStates.Gone);

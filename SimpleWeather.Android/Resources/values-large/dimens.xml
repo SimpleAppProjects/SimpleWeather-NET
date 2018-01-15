@@ -9,7 +9,7 @@
     <dimen name="weather_condition_size">24sp</dimen>
     <dimen name="detail_card_max_width">500dp</dimen>
     <!-- Forecast -->
-    <dimen name="forecast_panel_width">130dp</dimen>
+    <dimen name="forecast_panel_width">145dp</dimen>
     <dimen name="forecast_panel_height">175dp</dimen>
     <dimen name="forecast_icon_size">44sp</dimen>
     <dimen name="forecast_date_size">14sp</dimen>

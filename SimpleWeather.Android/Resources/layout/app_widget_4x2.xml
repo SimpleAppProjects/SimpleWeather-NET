@@ -117,6 +117,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:id="@+id/condition_pop_label"
                     android:layout_width="12dp"
                     android:layout_height="16dp"
                     android:layout_gravity="top|center_horizontal"

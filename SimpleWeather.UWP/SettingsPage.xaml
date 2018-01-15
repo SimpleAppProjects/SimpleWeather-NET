@@ -314,6 +314,12 @@
                                     <Image Source="Assets/Providers/yahoo.png" Height="50" HorizontalAlignment="Left" />
                                 </HyperlinkButton>
                             </StackPanel>
+                            <StackPanel Padding="10">
+                                <TextBlock Text="OpenWeatherMap" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                                <HyperlinkButton NavigateUri="http://openweathermap.org/">
+                                    <Image Source="Assets/Providers/openweathermap.png" Height="25" HorizontalAlignment="Left" />
+                                </HyperlinkButton>
+                            </StackPanel>
                         </StackPanel>
                     </Grid>
                 </ScrollViewer>
@@ -340,7 +346,7 @@
                 </VisualState>
                 <VisualState x:Name="Desktop">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="600"/>
+                        <AdaptiveTrigger MinWindowWidth="601"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="CommandBar.Margin" Value="0,0,0,0"/>

@@ -104,6 +104,7 @@
     <Content Include="Assets\BadgeLogo.scale-200.png" />
     <Content Include="Assets\BadgeLogo.scale-400.png" />
     <Content Include="Assets\Credits\licenses.html" />
+    <Content Include="Assets\Providers\openweathermap.png" />
     <Content Include="Assets\Providers\wunderground.png" />
     <Content Include="Assets\Providers\yahoo.png" />
     <Content Include="Assets\SplashScreen.scale-100.png" />

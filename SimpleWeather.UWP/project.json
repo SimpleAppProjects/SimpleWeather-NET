@@ -3,6 +3,7 @@
     "Coding4Fun.Toolkit.Controls": "2.1.8",
     "Microsoft.NETCore.UniversalWindowsPlatform": "6.0.1",
     "Microsoft.Toolkit.Uwp.Notifications": "2.0.0",
+    "Microsoft.Toolkit.Uwp.UI.Controls": "2.1.1",
     "Newtonsoft.Json": "10.0.3",
     "NodaTime": "2.2.3",
     "QueryString.NET": "1.0.0",

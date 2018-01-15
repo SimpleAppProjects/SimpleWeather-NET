@@ -534,7 +534,7 @@
                                 android:layout_toLeftOf="@+id/wind_speed"
                                 android:layout_toStartOf="@+id/wind_speed"
                                 android:padding="6dp"
-                                android:text="@string/wi_direction_up"
+                                android:text="@string/wi_wind_direction"
                                 app:fontFamily="@font/weathericons"
                                 tools:fontFamily="@font/weathericons" />
 

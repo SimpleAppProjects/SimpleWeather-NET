@@ -34,7 +34,6 @@ namespace SimpleWeather.UWP
 
         LocationData location = null;
         double BGAlpha = 1.0;
-        bool ItemsGenerated = false;
 
         Geolocator geolocal = null;
         Geoposition geoPos = null;
@@ -119,7 +118,7 @@ namespace SimpleWeather.UWP
                         AtmospherePanel.Children.Remove(CloudinessItem);
                 }
 
-                if (precipCount != PrecipitationPanel.Children.Count || atmosCount != AtmospherePanel.Children.Count || !ItemsGenerated)
+                if (precipCount != PrecipitationPanel.Children.Count || atmosCount != AtmospherePanel.Children.Count)
                     ResizeDetailItems();
             }
             else
@@ -128,7 +127,6 @@ namespace SimpleWeather.UWP
                 ResizeDetailItems();
             }
 
-            ItemsGenerated = false;
             LoadingRing.IsActive = false;
         }
 
@@ -161,7 +159,6 @@ namespace SimpleWeather.UWP
 
             wm = WeatherManager.GetInstance();
             WeatherView = new WeatherNowViewModel();
-            this.SizeChanged += WeatherNow_SizeChanged;
             StackControl.SizeChanged += StackControl_SizeChanged;
             DetailsPanel.SizeChanged += DetailsPanel_SizeChanged;
             MainViewer.ViewChanged += MainViewer_ViewChanged;
@@ -187,12 +184,6 @@ namespace SimpleWeather.UWP
             });
         }
 
-        private void WeatherNow_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if (StackControl != null)
-                ResizeForecastItems();
-        }
-
         private void MainViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
             if (sender is ScrollViewer viewer && viewer.Background != null)
@@ -208,26 +199,21 @@ namespace SimpleWeather.UWP
             TextForecastPanel.Height = e.NewSize.Height;
             TextForecastControl.Height = TextForecastPanel.Height - 50;
 
-            // For first launch resize forecast panels when panel is filled
-            if (StackControl.ItemsPanelRoot != null && StackControl.Items.Count > 0 &&
-                StackControl.Items.Count == WeatherView.Forecasts.Count && !ItemsGenerated)
-            {
-                ResizeForecastItems();
-                ItemsGenerated = true;
-            }
+            ResizeForecastItems();
         }
 
         private void ResizeForecastItems()
         {
             // Resize StackControl items
             double StackWidth = ForecastViewer.ActualWidth;
-            if (StackControl.Items.Count > 0)
-            {
-                if (StackControl.ItemsPanelRoot == null)
-                    return;
 
+            // For first launch resize forecast panels when panel is filled
+            if (StackControl.ItemsPanelRoot != null && StackControl.Items.Count > 0 &&
+                StackControl.Items.Count == WeatherView.Forecasts.Count)
+            {
                 var StackCollection = StackControl.ItemsPanelRoot.Children.Cast<FrameworkElement>();
-                double itemsWidth = StackCollection.First().ActualWidth * StackControl.Items.Count;
+                var firstElement = StackCollection.First();
+                double itemsWidth = firstElement.ActualWidth * StackControl.Items.Count;
 
                 if (itemsWidth < StackWidth)
                 {
@@ -239,7 +225,8 @@ namespace SimpleWeather.UWP
                         element.Width = itemWidth;
                     }
                 }
-                else
+                // Only change width we did before (default is NaN)
+                else if (itemsWidth > StackWidth + 100 && !Double.IsNaN(firstElement.Width))
                 {
                     foreach (FrameworkElement element in StackCollection)
                     {
@@ -261,18 +248,11 @@ namespace SimpleWeather.UWP
             if (w <= 600)
             {
                 // Keep as one column on smaller screens
-                DetailsWrapGrid.MaximumRowsOrColumns = 1;
-                // Increase card width based on screen size
-                DetailsWrapGrid.ItemWidth = w - DetailsPanel.Padding.Right;
-                double maxHeight = Double.NaN;
                 foreach (FrameworkElement element in DetailsWrapGrid.Children)
                 {
-                    if (!Double.IsNaN(element.ActualHeight) && (Double.IsNaN(maxHeight) || element.ActualHeight > maxHeight))
-                    {
-                        maxHeight = element.ActualHeight;
-                    }
+                    // Increase card width based on screen size
+                    element.Width = w - DetailsPanel.Padding.Right;
                 }
-                DetailsWrapGrid.ItemHeight = maxHeight;
             }
             else
             {
@@ -289,18 +269,11 @@ namespace SimpleWeather.UWP
                 // Increase card width to fill available space
                 int itemWidth = minWidth + (freeSpace / maxColumns);
 
-                DetailsWrapGrid.MaximumRowsOrColumns = maxColumns;
-                DetailsWrapGrid.ItemWidth = itemWidth;
                 // Resizing needed if first details element is less than others
-                double maxHeight = Double.NaN;
                 foreach (FrameworkElement element in DetailsWrapGrid.Children)
                 {
-                    if (!Double.IsNaN(element.ActualHeight) && (Double.IsNaN(maxHeight) || element.ActualHeight > maxHeight))
-                    {
-                        maxHeight = element.ActualHeight;
-                    }
+                    element.Width = itemWidth - 1;
                 }
-                DetailsWrapGrid.ItemHeight = maxHeight;
             }
         }
 

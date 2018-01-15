@@ -5,6 +5,7 @@
     xmlns:controls="using:SimpleWeather.Controls"
     xmlns:localcontrols="using:SimpleWeather.UWP.Controls"
     xmlns:local="using:SimpleWeather.UWP"
+    xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
@@ -604,7 +605,7 @@
                                Style="{StaticResource SectionLabel}" />
                     <Border Style="{StaticResource Divider}"/>
                     <Grid Name="DetailsPanel" Padding="50,0,50,0">
-                        <VariableSizedWrapGrid Name="DetailsWrapGrid" Orientation="Horizontal" ItemWidth="250" MaximumRowsOrColumns="2">
+                        <toolkitControls:WrapPanel Name="DetailsWrapGrid">
                             <StackPanel Name="PrecipitationPanel" Style="{StaticResource DetailsBorder}">
                                 <TextBlock x:Uid="Label_Precipitation" Text="Precipitation" Style="{StaticResource WeatherDetailsLabel}"/>
                                 <Border Style="{StaticResource Divider}"/>
@@ -711,9 +712,9 @@
                                            FontSize="{x:Bind Humidity.FontSize, Mode=OneWay}"
                                            RelativePanel.LeftOf="WindDirection"
                                            RelativePanel.AlignLeftWithPanel="True" />
-                                    <TextBlock Name="WindDirection" FontSize="20" Foreground="White"
+                                    <TextBlock Name="WindDirection" FontSize="24" Foreground="White"
                                            Style="{StaticResource WeatherIcon}"
-                                           Text="&#xf058;" Padding="6.5"
+                                           Text="&#xf0b1;" Padding="5"
                                            RenderTransformOrigin="0.5,0.5" RenderTransform="{x:Bind WeatherView.WindDirection, Mode=OneWay}"
                                            RelativePanel.LeftOf="Speed" />
                                     <TextBlock Name="Speed" Text="{x:Bind WeatherView.WindSpeed, FallbackValue='3.8 mph', Mode=OneWay}"
@@ -757,7 +758,7 @@
                                            RelativePanel.AlignRightWithPanel="True" />
                                 </RelativePanel>
                             </StackPanel>
-                        </VariableSizedWrapGrid>
+                        </toolkitControls:WrapPanel>
                     </Grid>
                 </StackPanel>
                 <TextBlock Text="{x:Bind WeatherView.WeatherCredit, FallbackValue='Data from Weather Provider', Mode=OneWay}" 
@@ -787,7 +788,7 @@
                 </VisualState>
                 <VisualState x:Name="MediumHeight">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowHeight="640"/>
+                        <AdaptiveTrigger MinWindowHeight="641"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="LocationBox.Height" Value="50"/>
@@ -800,7 +801,7 @@
                 </VisualState>
                 <VisualState x:Name="LargeHeight">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowHeight="690"/>
+                        <AdaptiveTrigger MinWindowHeight="691"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="LocationBox.Height" Value="50"/>
@@ -834,7 +835,7 @@
                 </VisualState>
                 <VisualState x:Name="Medium">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="640"/>
+                        <AdaptiveTrigger MinWindowWidth="641"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="CommandBar.Margin" Value="0,0,0,0"/>
