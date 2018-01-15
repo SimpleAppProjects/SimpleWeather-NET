@@ -130,8 +130,6 @@ namespace SimpleWeather.Droid.Widgets
                 {
                     case WidgetType.Widget1x1:
                         // Widget resizes itself; no need to adjust
-                        if (!Settings.WeatherLoaded)
-                            ResizeWidget(mAppWidget2x2, appWidgetId, newOptions);
                         break;
                     case WidgetType.Widget2x2:
                         ResizeWidget(mAppWidget2x2, appWidgetId, newOptions);
@@ -333,42 +331,7 @@ namespace SimpleWeather.Droid.Widgets
         private void ResizeWidget(WeatherWidgetProvider provider, int appWidgetId, Bundle newOptions)
         {
             if (Settings.WeatherLoaded)
-            {
                 RebuildForecast(provider, weather, appWidgetId, newOptions);
-            }
-            else
-            {
-                // Widget dimensions
-                int minHeight = newOptions.GetInt(AppWidgetManager.OptionAppwidgetMinHeight);
-                int minWidth = newOptions.GetInt(AppWidgetManager.OptionAppwidgetMinWidth);
-                int maxHeight = newOptions.GetInt(AppWidgetManager.OptionAppwidgetMaxHeight);
-                int maxWidth = newOptions.GetInt(AppWidgetManager.OptionAppwidgetMaxWidth);
-                int maxCellHeight = GetCellsForSize(maxHeight);
-                int maxCellWidth = GetCellsForSize(maxWidth);
-                int cellHeight = GetCellsForSize(minHeight);
-                int cellWidth = GetCellsForSize(minWidth);
-
-                // Show "Get Started layout"
-                RemoteViews views = null;
-
-                if (cellWidth == 1 && cellHeight < 3)
-                {
-                    views = new RemoteViews(mContext.PackageName, Resource.Layout.app_widget_getstarted_small);
-                }
-                else if (cellHeight == 1 && cellWidth > 2)
-                {
-                    views = new RemoteViews(mContext.PackageName, Resource.Layout.app_widget_getstarted_wide);
-                }
-                else
-                {
-                    views = new RemoteViews(mContext.PackageName, Resource.Layout.app_widget_getstarted);
-                }
-
-                Intent onClickIntent = new Intent(mContext, typeof(SetupActivity));
-                PendingIntent clickPendingIntent = PendingIntent.GetActivity(mContext, 0, onClickIntent, 0);
-                views.SetOnClickPendingIntent(Resource.Id.widgetBackground, clickPendingIntent);
-                mAppWidgetManager.UpdateAppWidget(appWidgetId, views);
-            }
         }
 
         private void RefreshWidget(WeatherWidgetProvider provider, int[] appWidgetIds)
@@ -389,29 +352,6 @@ namespace SimpleWeather.Droid.Widgets
                     RefreshClock(appWidgetIds);
                     RefreshDate(appWidgetIds);
                 }
-            }
-            else
-            {
-                // Show "Get Started layout"
-                RemoteViews views = null;
-
-                if (provider.WidgetType == WidgetType.Widget1x1)
-                {
-                    views = new RemoteViews(mContext.PackageName, Resource.Layout.app_widget_getstarted_small);
-                }
-                else if (provider.WidgetType == WidgetType.Widget4x1)
-                {
-                    views = new RemoteViews(mContext.PackageName, Resource.Layout.app_widget_getstarted_wide);
-                }
-                else
-                {
-                    views = new RemoteViews(mContext.PackageName, Resource.Layout.app_widget_getstarted);
-                }
-
-                Intent onClickIntent = new Intent(mContext, typeof(SetupActivity));
-                PendingIntent clickPendingIntent = PendingIntent.GetActivity(mContext, 0, onClickIntent, 0);
-                views.SetOnClickPendingIntent(Resource.Id.widgetBackground, clickPendingIntent);
-                mAppWidgetManager.UpdateAppWidget(appWidgetIds, views);
             }
         }
 
@@ -463,20 +403,6 @@ namespace SimpleWeather.Droid.Widgets
                     RefreshClock(null);
                     RefreshDate(null);
                 }
-            }
-            else
-            {
-                // Show "Get Started layout"
-                var views = new RemoteViews(mContext.PackageName, Resource.Layout.app_widget_getstarted);
-                Intent onClickIntent = new Intent(mContext, typeof(SetupActivity));
-                PendingIntent clickPendingIntent = PendingIntent.GetActivity(mContext, 0, onClickIntent, 0);
-                views.SetOnClickPendingIntent(Resource.Id.widgetBackground, clickPendingIntent);
-
-                // Set for all providers
-                mAppWidgetManager.UpdateAppWidget(mAppWidget1x1.ComponentName, views);
-                mAppWidgetManager.UpdateAppWidget(mAppWidget2x2.ComponentName, views);
-                mAppWidgetManager.UpdateAppWidget(mAppWidget4x1.ComponentName, views);
-                mAppWidgetManager.UpdateAppWidget(mAppWidget4x2.ComponentName, views);
             }
         }
 

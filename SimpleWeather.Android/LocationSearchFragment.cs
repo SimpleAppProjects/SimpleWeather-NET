@@ -20,6 +20,8 @@ using Android.Support.V4.Content;
 using Android.Graphics;
 using Android.Support.V4.Graphics.Drawable;
 using Android.Util;
+using Android.Appwidget;
+using SimpleWeather.Droid.Widgets;
 
 namespace SimpleWeather.Droid
 {
@@ -38,6 +40,9 @@ namespace SimpleWeather.Droid
         private CancellationTokenSource cts;
 
         private WeatherData.WeatherManager wm;
+
+        // Widget id for ConfigurationActivity
+        private int mAppWidgetId = AppWidgetManager.InvalidAppwidgetId;
 
         public LocationSearchFragment()
         {
@@ -145,17 +150,34 @@ namespace SimpleWeather.Droid
             await Settings.AddLocation(location);
             await Settings.SaveWeatherData(weather);
 
-            // Start WeatherNow Activity with weather data
-            Intent intent = new Intent(mActivity, typeof(MainActivity));
-            intent.PutExtra("data", location.ToJson());
-
             // If we're using search
             // make sure gps feature is off
             Settings.FollowGPS = false;
             Settings.WeatherLoaded = true;
 
-            mActivity.StartActivity(intent);
-            mActivity.FinishAffinity();
+            if (mAppWidgetId == AppWidgetManager.InvalidAppwidgetId)
+            {
+                // Start WeatherNow Activity with weather data
+                Intent intent = new Intent(mActivity, typeof(MainActivity));
+                intent.PutExtra("data", location.ToJson());
+
+                mActivity.StartActivity(intent);
+                mActivity.FinishAffinity();
+            }
+            else
+            {
+                // Trigger widget service to update widget
+                WeatherWidgetService.EnqueueWork(mActivity,
+                    new Intent(mActivity, typeof(WeatherWidgetService))
+                    .SetAction(WeatherWidgetService.ACTION_REFRESHWIDGET)
+                    .PutExtra(AppWidgetManager.ExtraAppwidgetIds, new int[] { mAppWidgetId }));
+
+                // Create return intent
+                Intent resultValue = new Intent();
+                resultValue.PutExtra(AppWidgetManager.ExtraAppwidgetId, mAppWidgetId);
+                mActivity.SetResult(Android.App.Result.Ok, resultValue);
+                mActivity.Finish();
+            }
         }
 
         private void ShowLoading(bool show)
@@ -166,6 +188,16 @@ namespace SimpleWeather.Droid
                 mClearButton.Visibility = ViewStates.Gone;
             else
                 mClearButton.Visibility = ViewStates.Visible;
+        }
+
+        public override void OnCreate(Bundle savedInstanceState)
+        {
+            base.OnCreate(savedInstanceState);
+
+            if (Arguments != null)
+            {
+                mAppWidgetId = Arguments.GetInt(AppWidgetManager.ExtraAppwidgetId, AppWidgetManager.InvalidAppwidgetId);
+            }
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

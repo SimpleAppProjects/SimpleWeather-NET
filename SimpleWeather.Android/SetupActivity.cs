@@ -22,11 +22,19 @@ using SimpleWeather.Droid.Utils;
 using System.Collections.Specialized;
 using System.Threading;
 using Android.Graphics;
+using Android.Appwidget;
+using SimpleWeather.Droid.Widgets;
 
 namespace SimpleWeather.Droid
 {
-    [Android.App.Activity(Theme = "@style/SetupTheme",
+    [Android.App.Activity(
+        Name = "SimpleWeather.Droid.SetupActivity",
+        Theme = "@style/SetupTheme",
         WindowSoftInputMode = SoftInput.StateHidden | SoftInput.AdjustPan)]
+    [Android.App.IntentFilter(new string[]
+    {
+        AppWidgetManager.ActionAppwidgetConfigure
+    })]
     public class SetupActivity : AppCompatActivity, ActivityCompat.IOnRequestPermissionsResultCallback
     {
         private LocationSearchFragment mSearchFragment;
@@ -48,6 +56,9 @@ namespace SimpleWeather.Droid
 
         private ActionModeCallback mActionModeCallback = new ActionModeCallback();
         private WeatherData.WeatherManager wm;
+
+        // Widget id for ConfigurationActivity
+        private int mAppWidgetId = AppWidgetManager.InvalidAppwidgetId;
 
         private bool OnCreateActionMode(Android.Support.V7.View.ActionMode mode, IMenu menu)
         {
@@ -178,6 +189,20 @@ namespace SimpleWeather.Droid
             {
                 keyEntry.Text = Settings.API_KEY;
             }
+
+            // Check if this activity was started from adding a new widget
+            if (Intent != null && AppWidgetManager.ActionAppwidgetConfigure.Equals(Intent.Action))
+            {
+                mAppWidgetId = Intent.GetIntExtra(AppWidgetManager.ExtraAppwidgetId, AppWidgetManager.InvalidAppwidgetId);
+
+                if (mAppWidgetId != AppWidgetManager.InvalidAppwidgetId)
+                    // Set the result to CANCELED.  This will cause the widget host to cancel
+                    // out of the widget placement if they press the back button.
+                    SetResult(Android.App.Result.Canceled, new Intent().PutExtra(AppWidgetManager.ExtraAppwidgetId, mAppWidgetId));
+                else
+                    // If they gave us an intent without the widget id, just bail.
+                    FinishAffinity();
+            }
         }
 
         private void EnableControls(bool enable)
@@ -271,15 +296,32 @@ namespace SimpleWeather.Droid
                 await Settings.AddLocation(new WeatherData.LocationData(view));
                 await Settings.SaveWeatherData(weather);
 
-                // Start WeatherNow Activity with weather data
-                Intent intent = new Intent(this, typeof(MainActivity));
-                intent.PutExtra("data", location.ToJson());
-
                 Settings.FollowGPS = true;
                 Settings.WeatherLoaded = true;
 
-                StartActivity(intent);
-                FinishAffinity();
+                if (mAppWidgetId == AppWidgetManager.InvalidAppwidgetId)
+                {
+                    // Start WeatherNow Activity with weather data
+                    Intent intent = new Intent(this, typeof(MainActivity));
+                    intent.PutExtra("data", location.ToJson());
+
+                    StartActivity(intent);
+                    FinishAffinity();
+                }
+                else
+                {
+                    // Trigger widget service to update widget
+                    WeatherWidgetService.EnqueueWork(this,
+                        new Intent(this, typeof(WeatherWidgetService))
+                        .SetAction(WeatherWidgetService.ACTION_REFRESHWIDGET)
+                        .PutExtra(AppWidgetManager.ExtraAppwidgetIds, new int[] { mAppWidgetId }));
+
+                    // Create return intent
+                    Intent resultValue = new Intent();
+                    resultValue.PutExtra(AppWidgetManager.ExtraAppwidgetId, mAppWidgetId);
+                    SetResult(Android.App.Result.Ok, resultValue);
+                    Finish();
+                }
             }
             else
             {
@@ -420,6 +462,15 @@ namespace SimpleWeather.Droid
             {
                 UserVisibleHint = false
             };
+            
+            // Add AppWidgetId to fragment args
+            if (mAppWidgetId != AppWidgetManager.InvalidAppwidgetId)
+            {
+                Bundle args = new Bundle();
+                args.PutInt(AppWidgetManager.ExtraAppwidgetId, mAppWidgetId);
+                searchFragment.Arguments = args;
+            }
+
             ft.Add(Resource.Id.search_fragment_container, searchFragment);
             ft.CommitAllowingStateLoss();
         }
