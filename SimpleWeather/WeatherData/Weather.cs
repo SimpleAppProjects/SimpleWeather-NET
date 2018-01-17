@@ -771,8 +771,15 @@ namespace SimpleWeather.WeatherData
             high_c = ConversionMethods.KtoC(forecast.main.temp_max.ToString(CultureInfo.InvariantCulture));
             low_f = ConversionMethods.KtoF(forecast.main.temp_min.ToString(CultureInfo.InvariantCulture));
             low_c = ConversionMethods.KtoC(forecast.main.temp_min.ToString(CultureInfo.InvariantCulture));
+
+            string ico = forecast.weather[0].icon;
+            string dn = ico.Last().ToString();
+
+            if (int.TryParse(dn, out int x))
+                dn = String.Empty;
+
             condition = forecast.weather[0].main;
-            icon = forecast.weather[0].id.ToString();
+            icon = forecast.weather[0].id.ToString() + dn;
         }
 
         public Forecast(Metno.weatherdataProductTime time)
@@ -919,7 +926,14 @@ namespace SimpleWeather.WeatherData
             high_f = ConversionMethods.KtoF(hr_forecast.main.temp.ToString(CultureInfo.InvariantCulture));
             high_c = ConversionMethods.KtoC(hr_forecast.main.temp.ToString(CultureInfo.InvariantCulture));
             condition = hr_forecast.weather[0].main;
-            icon = hr_forecast.weather[0].id.ToString();
+
+            string ico = hr_forecast.weather[0].icon;
+            string dn = ico.Last().ToString();
+
+            if (int.TryParse(dn, out int x))
+                dn = String.Empty;
+
+            icon = hr_forecast.weather[0].id.ToString() + dn;
             // Use cloudiness value here
             pop = hr_forecast.clouds.all.ToString();
             wind_degrees = (int)hr_forecast.wind.deg;
@@ -1219,7 +1233,14 @@ namespace SimpleWeather.WeatherData
             // TODO: Calculate with formula
             feelslike_f = temp_f;
             feelslike_c = temp_c;
-            icon = root.weather[0].id.ToString();
+
+            string ico = root.weather[0].icon;
+            string dn = ico.Last().ToString();
+
+            if (int.TryParse(dn, out int x))
+                dn = String.Empty;
+
+            icon = root.weather[0].id.ToString() + dn;
         }
 
         public Condition(Metno.weatherdataProductTime time)

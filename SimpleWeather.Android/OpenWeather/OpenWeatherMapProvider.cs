@@ -13,7 +13,7 @@ namespace SimpleWeather.OpenWeather
             String file = null;
 
             // Apply background based on weather condition
-            switch (icon)
+            switch (icon.Substring(0, 3))
             {
                 // drizzle
                 case "300":
@@ -131,7 +131,7 @@ namespace SimpleWeather.OpenWeather
         {
             int weatherIcon = -1;
 
-            if (int.TryParse(icon, out int code))
+            if (int.TryParse(icon.Substring(0, 3), out int code))
             {
                 object value = typeof(Resource.Drawable).GetField(string.Format("owm_{0}", code)).GetValue(null);
                 if (value != null)

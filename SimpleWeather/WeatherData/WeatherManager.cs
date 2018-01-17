@@ -166,6 +166,11 @@ namespace SimpleWeather.WeatherData
             return WeatherProvider.GetWeatherIcon(icon);
         }
 
+        public string GetWeatherIcon(bool isNight, string icon)
+        {
+            return WeatherProvider.GetWeatherIcon(isNight, icon);
+        }
+
         public async Task<bool> IsKeyValid(string key)
         {
             return await WeatherProvider.IsKeyValid(key);
@@ -174,6 +179,27 @@ namespace SimpleWeather.WeatherData
         public bool IsNight(Weather weather)
         {
             return WeatherProvider.IsNight(weather);
+        }
+
+        public bool IsNight(DateTime date)
+        {
+            bool isNight = false;
+
+            var weather = WeatherData;
+
+            if (!isNight && weather != null)
+            {
+                // Fallback to sunset/rise time just in case
+                TimeSpan sunrise = weather.astronomy.sunrise.TimeOfDay;
+                TimeSpan sunset = weather.astronomy.sunset.TimeOfDay;
+                TimeSpan now = date.TimeOfDay;
+
+                // Determine whether its night using sunset/rise times
+                if (now < sunrise || now > sunset)
+                    isNight = true;
+            }
+
+            return isNight;
         }
 
 #if WINDOWS_UWP

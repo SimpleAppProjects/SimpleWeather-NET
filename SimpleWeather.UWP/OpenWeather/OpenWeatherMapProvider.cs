@@ -11,7 +11,7 @@ namespace SimpleWeather.OpenWeather
             String imgURI = null;
 
             // Apply background based on weather condition
-            switch (icon)
+            switch (icon.Substring(0, 3))
             {
                 // drizzle
                 case "300":
@@ -130,7 +130,7 @@ namespace SimpleWeather.OpenWeather
             string baseuri = "ms-appx:///Assets/WeatherIcons/png/";
             string fileIcon = string.Empty;
 
-            if (int.TryParse(icon, out int code))
+            if (int.TryParse(icon.Substring(0, 3), out int code))
                 fileIcon = string.Format("owm_{0}.png", code);
 
             if (String.IsNullOrWhiteSpace(fileIcon))

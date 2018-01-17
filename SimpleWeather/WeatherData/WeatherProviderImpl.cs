@@ -38,6 +38,11 @@ namespace SimpleWeather.WeatherData
         public abstract Task<String> UpdateLocationQuery(Weather weather);
         public virtual String LocaleToLangCode(String iso, String name) { return "EN"; }
         public abstract String GetWeatherIcon(String icon);
+        public virtual string GetWeatherIcon(bool isNight, String icon)
+        {
+            return GetWeatherIcon(icon);
+        }
+
         public abstract bool IsNight(Weather weather);
     }
 }

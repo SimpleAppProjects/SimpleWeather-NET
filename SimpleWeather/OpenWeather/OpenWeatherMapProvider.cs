@@ -481,84 +481,91 @@ namespace SimpleWeather.OpenWeather
         public override string GetWeatherIcon(string icon)
         {
             string WeatherIcon = string.Empty;
+            bool isNight = false;
 
-            switch (icon)
+            if (icon.EndsWith("n"))
+                isNight = true;
+
+            switch (icon.Substring(0,3))
             {
-                // thunderstorm
-                case "200":
-                case "201":
-                case "202":
-                case "230":
-                case "231":
-                case "232":
-                    WeatherIcon = "\uf01e";
-                    break;
-
-                // lightning
-                case "210":
-                case "211":
-                case "212":
-                case "221":
-                    WeatherIcon = "\uf016";
-                    break;
-
-                // drizzle
-                case "300":
-                case "301":
-                case "321":
-                case "500":
-                    WeatherIcon = "\uf01c";
-                    break;
-
-                // rain
-                case "302":
-                case "311":
-                case "312":
-                case "314":
-                case "501":
-                case "502":
-                case "503":
-                case "504":
-                    WeatherIcon = "\uf019";
-                    break;
-
-                // rain-mix
-                case "310":
-                case "511":
-                case "611":
-                case "612":
-                case "615":
-                case "616":
-                case "620":
-                    WeatherIcon = "\uf017";
-                    break;
-
-                // rain showers
-                case "313":
-                case "520":
-                case "521":
-                case "522":
-                case "701":
-                    WeatherIcon = "\uf01a";
-                    break;
-
-                // storm-showers
-                case "531":
-                case "901":
+                case "200": // thunderstorm w/ light rain
+                case "201": // thunderstorm w/ rain
+                case "210": // light thunderstorm
+                case "230": // thunderstorm w/ light drizzle
+                case "231": // thunderstorm w/ drizzle
                     WeatherIcon = "\uf01d";
                     break;
 
-                // snow
-                case "600":
-                case "601":
-                case "621":
-                case "622":
+                case "211": // thunderstorm
+                case "212": // heavy thunderstorm
+                case "221": // ragged thunderstorm
+                case "202": // thunderstorm w/ heavy rain
+                case "232": // thunderstorm w/ heavy drizzle
+                    WeatherIcon = "\uf01e";
+                    break;
+
+                case "300": // light intensity drizzle
+                case "301": // drizzle
+                case "321": // shower drizzle
+                    WeatherIcon = "\uf01c";
+                    break;
+
+                case "302": // heavy intensity drizzle
+                case "311": // drizzle rain
+                case "312": // heavy intensity drizzle rain
+                case "314": // heavy shower rain and drizzle
+                    WeatherIcon = "\uf019";
+                    break;
+
+                case "500": // light rain
+                    if (isNight)
+                        WeatherIcon = "\uf039";
+                    else
+                        WeatherIcon = "\uf00b";
+                    break;
+
+                case "501": // moderate rain
+                case "502": // heavy intensity rain
+                case "503": // very heavy rain
+                case "504": // extreme rain
+                    if (isNight)
+                        WeatherIcon = "\uf036";
+                    else
+                        WeatherIcon = "\uf008";
+                    break;
+
+                case "310": // light intensity drizzle rain
+                case "511": // freezing rain
+                case "611": // sleet
+                case "612": // shower sleet
+                case "615": // light rain and snow
+                case "616": // rain and snow
+                case "620": // light shower snow
+                    WeatherIcon = "\uf017";
+                    break;
+
+                case "313": // shower rain and drizzle
+                case "520": // light intensity shower rain
+                case "521": // shower rain
+                case "522": // heavy intensity shower rain
+                case "701": // mist
+                    WeatherIcon = "\uf01a";
+                    break;
+
+                case "531": // ragged shower rain
+                case "901": // tropical storm
+                    WeatherIcon = "\uf01d";
+                    break;
+
+                case "600": // light snow
+                case "601": // snow
+                case "621": // shower snow
+                case "622": // heavy shower snow
                     WeatherIcon = "\uf01b";
                     break;
 
-                // sleet
-                case "602":
-                    WeatherIcon = "\uf0b5";
+                case "602": // heavy snow
+                    WeatherIcon = "\uf064";
                     break;
 
                 // smoke
@@ -582,11 +589,9 @@ namespace SimpleWeather.OpenWeather
                 case "741":
                     WeatherIcon = "\uf014";
                     break;
-                
+
                 // cloudy-gusts
-                case "771":
-                case "801":
-                case "802":
+                case "771": // squalls
                     WeatherIcon = "\uf011";
                     break;
 
@@ -597,18 +602,36 @@ namespace SimpleWeather.OpenWeather
                     break;
 
                 // day-sunny
-                case "800":
-                    WeatherIcon = "\uf00d";
+                case "800": // clear sky
+                    if (isNight)
+                        WeatherIcon = "\uf02e";
+                    else
+                        WeatherIcon = "\uf00d";
                     break;
 
                 // cloudy-gusts
-                case "803":
-                    WeatherIcon = "\uf012";
+                case "801": // few clouds
+                case "802": // scattered clouds
+                    if (isNight)
+                        WeatherIcon = "\uf022";
+                    else
+                        WeatherIcon = "\uf000";
                     break;
-                
+
+                // cloudy-gusts
+                case "803": // broken clouds
+                    if (isNight)
+                        WeatherIcon = "\uf023";
+                    else
+                        WeatherIcon = "\uf001";
+                    break;
+
                 // cloudy
-                case "804":
-                    WeatherIcon = "\uf013";
+                case "804": // overcast clouds
+                    if (isNight)
+                        WeatherIcon = "\uf031";
+                    else
+                        WeatherIcon = "\uf002";
                     break;
 
                 // hurricane
@@ -638,7 +661,199 @@ namespace SimpleWeather.OpenWeather
 
                 // strong wind
                 case "957":
+                    WeatherIcon = "\uf050";
+                    break;
+            }
+
+            if (String.IsNullOrWhiteSpace(WeatherIcon))
+            {
+                // Not Available
+                WeatherIcon = "\uf07b";
+            }
+
+            return WeatherIcon;
+        }
+
+        public override string GetWeatherIcon(bool isNight, string icon)
+        {
+            string WeatherIcon = string.Empty;
+
+            switch (icon.Substring(0,3))
+            {
+                case "200": // thunderstorm w/ light rain
+                case "201": // thunderstorm w/ rain
+                case "210": // light thunderstorm
+                case "230": // thunderstorm w/ light drizzle
+                case "231": // thunderstorm w/ drizzle
+                    WeatherIcon = "\uf01d";
+                    break;
+
+                case "211": // thunderstorm
+                case "212": // heavy thunderstorm
+                case "221": // ragged thunderstorm
+                case "202": // thunderstorm w/ heavy rain
+                case "232": // thunderstorm w/ heavy drizzle
+                    WeatherIcon = "\uf01e";
+                    break;
+
+                case "300": // light intensity drizzle
+                case "301": // drizzle
+                case "321": // shower drizzle
+                    WeatherIcon = "\uf01c";
+                    break;
+
+                case "302": // heavy intensity drizzle
+                case "311": // drizzle rain
+                case "312": // heavy intensity drizzle rain
+                case "314": // heavy shower rain and drizzle
+                    WeatherIcon = "\uf019";
+                    break;
+
+                case "500": // light rain
+                    if (isNight)
+                        WeatherIcon = "\uf039";
+                    else
+                        WeatherIcon = "\uf00b";
+                    break;
+
+                case "501": // moderate rain
+                case "502": // heavy intensity rain
+                case "503": // very heavy rain
+                case "504": // extreme rain
+                    if (isNight)
+                        WeatherIcon = "\uf036";
+                    else
+                        WeatherIcon = "\uf008";
+                    break;
+
+                case "310": // light intensity drizzle rain
+                case "511": // freezing rain
+                case "611": // sleet
+                case "612": // shower sleet
+                case "615": // light rain and snow
+                case "616": // rain and snow
+                case "620": // light shower snow
+                    WeatherIcon = "\uf017";
+                    break;
+
+                case "313": // shower rain and drizzle
+                case "520": // light intensity shower rain
+                case "521": // shower rain
+                case "522": // heavy intensity shower rain
+                case "701": // mist
+                    WeatherIcon = "\uf01a";
+                    break;
+
+                case "531": // ragged shower rain
+                case "901": // tropical storm
+                    WeatherIcon = "\uf01d";
+                    break;
+
+                case "600": // light snow
+                case "601": // snow
+                case "621": // shower snow
+                case "622": // heavy shower snow
+                    WeatherIcon = "\uf01b";
+                    break;
+
+                case "602": // heavy snow
+                    WeatherIcon = "\uf064";
+                    break;
+
+                // smoke
+                case "711":
+                    WeatherIcon = "\uf062";
+                    break;
+
+                // haze
+                case "721":
+                    WeatherIcon = "\uf0b6";
+                    break;
+
+                // dust
+                case "731":
+                case "761":
+                case "762":
+                    WeatherIcon = "\uf063";
+                    break;
+
+                // fog
+                case "741":
+                    WeatherIcon = "\uf014";
+                    break;
+
+                // cloudy-gusts
+                case "771": // squalls
+                    WeatherIcon = "\uf011";
+                    break;
+
+                // tornado
+                case "781":
+                case "900":
+                    WeatherIcon = "\uf056";
+                    break;
+
+                // day-sunny
+                case "800": // clear sky
+                    if (isNight)
+                        WeatherIcon = "\uf02e";
+                    else
+                        WeatherIcon = "\uf00d";
+                    break;
+
+                // cloudy-gusts
+                case "801": // few clouds
+                case "802": // scattered clouds
+                    if (isNight)
+                        WeatherIcon = "\uf022";
+                    else
+                        WeatherIcon = "\uf000";
+                    break;
+
+                // cloudy-gusts
+                case "803": // broken clouds
+                    if (isNight)
+                        WeatherIcon = "\uf023";
+                    else
+                        WeatherIcon = "\uf001";
+                    break;
+
+                // cloudy
+                case "804": // overcast clouds
+                    if (isNight)
+                        WeatherIcon = "\uf031";
+                    else
+                        WeatherIcon = "\uf002";
+                    break;
+
+                // hurricane
+                case "902":
+                    WeatherIcon = "\uf073";
+                    break;
+
+                // cold
+                case "903":
+                    WeatherIcon = "\uf076";
+                    break;
+
+                // hot
+                case "904":
+                    WeatherIcon = "\uf072";
+                    break;
+
+                // windy
+                case "905":
+                    WeatherIcon = "\uf021";
+                    break;
+
+                // hail
+                case "906":
                     WeatherIcon = "\uf015";
+                    break;
+
+                // strong wind
+                case "957":
+                    WeatherIcon = "\uf050";
                     break;
             }
 
@@ -654,6 +869,9 @@ namespace SimpleWeather.OpenWeather
         public override bool IsNight(WeatherData.Weather weather)
         {
             bool isNight = false;
+
+            if (weather.condition.icon.EndsWith("n"))
+                isNight = true;
 
             if (!isNight)
             {
@@ -680,7 +898,7 @@ namespace SimpleWeather.OpenWeather
             String icon = weather.condition.icon;
 
             // Apply background based on weather condition
-            switch (icon)
+            switch (icon.Substring(0, 3))
             {
                 // thunderstorm
                 case "200":

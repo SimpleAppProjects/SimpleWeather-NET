@@ -17,6 +17,7 @@ namespace SimpleWeather.WeatherData
         Task<Weather> GetWeather(string location_query);
         Task<Weather> GetWeather(LocationData location);
         string GetWeatherIcon(string icon);
+        string GetWeatherIcon(bool isNight, string icon);
         Task<bool> IsKeyValid(string key);
         bool IsNight(Weather weather);
         string LocaleToLangCode(string iso, string name);

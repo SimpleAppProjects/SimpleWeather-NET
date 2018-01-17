@@ -406,14 +406,19 @@ namespace SimpleWeather.Metno
                     break;
 
                 case "7": // SleetSun
+                case "42": // LightSleetSun
+                case "43": // HeavySleetSun
                     WeatherIcon = "\uf0b2";
                     break;
 
                 case "8": // SnowSun
+                case "44": // LightSnowSun
+                case "45": // HeavySnowSun
                     WeatherIcon = "\uf00a";
                     break;
 
                 case "9": // LightRain
+                case "46": // Drizzle
                     WeatherIcon = "\uf01c";
                     break;
 
@@ -426,14 +431,22 @@ namespace SimpleWeather.Metno
                     break;
 
                 case "12": // Sleet
+                case "47": // LightSleet
+                case "48": // HeavySleet
                     WeatherIcon = "\uf0b5";
                     break;
 
                 case "13": // Snow
+                case "49": // LightSnow
                     WeatherIcon = "\uf01b";
                     break;
 
                 case "14": // SnowThunder
+                case "21": // SnowSunThunder
+                case "28": // LightSnowThunderSun
+                case "29": // HeavySnowThunderSun
+                case "33": // LightSnowThunder
+                case "34": // HeavySnowThunder
                     WeatherIcon = "\uf06b";
                     break;
 
@@ -442,11 +455,12 @@ namespace SimpleWeather.Metno
                     break;
 
                 case "20": // SleetSunThunder
+                case "23": // SleetThunder
+                case "26": // LightSleetThunderSun
+                case "27": // HeavySleetThunderSun
+                case "31": // LightSleetThunder
+                case "32": // HeavySleetThunder
                     WeatherIcon = "\uf068";
-                    break;
-
-                case "21": // SnowSunThunder
-                    WeatherIcon = "\uf06b";
                     break;
 
                 case "22": // LightRainThunder
@@ -454,33 +468,9 @@ namespace SimpleWeather.Metno
                     WeatherIcon = "\uf01d";
                     break;
 
-                case "23": // SleetThunder
-                    WeatherIcon = "\uf068";
-                    break;
-
                 case "24": // DrizzleThunderSun
                 case "25": // RainThunderSun
                     WeatherIcon = "\uf00e";
-                    break;
-
-                case "26": // LightSleetThunderSun
-                case "27": // HeavySleetThunderSun
-                    WeatherIcon = "\uf068";
-                    break;
-
-                case "28": // LightSnowThunderSun
-                case "29": // HeavySnowThunderSun
-                    WeatherIcon = "\uf06b";
-                    break;
-
-                case "31": // LightSleetThunder
-                case "32": // HeavySleetThunder
-                    WeatherIcon = "\uf068";
-                    break;
-
-                case "33": // LightSnowThunder
-                case "34": // HeavySnowThunder
-                    WeatherIcon = "\uf06b";
                     break;
 
                 case "40": // DrizzleSun
@@ -488,28 +478,150 @@ namespace SimpleWeather.Metno
                     WeatherIcon = "\uf008";
                     break;
 
+                case "50": // HeavySnow
+                    WeatherIcon = "\uf064";
+                    break;
+            }
+
+            if (String.IsNullOrWhiteSpace(WeatherIcon))
+            {
+                // Not Available
+                WeatherIcon = "\uf07b";
+            }
+
+            return WeatherIcon;
+        }
+
+        public override string GetWeatherIcon(bool isNight, string icon)
+        {
+            string WeatherIcon = string.Empty;
+
+            switch (icon)
+            {
+                case "1": // Sun
+                    if (isNight)
+                        WeatherIcon = "\uf02e";
+                    else
+                        WeatherIcon = "\uf00d";
+                    break;
+
+                case "2": // LightCloud
+                case "3": // PartlyCloud
+                    if (isNight)
+                        WeatherIcon = "\uf031";
+                    else
+                        WeatherIcon = "\uf002";
+                    break;
+
+                case "4": // Cloud
+                    WeatherIcon = "\uf013";
+                    break;
+
+                case "5": // LightRainSun
+                    if (isNight)
+                        WeatherIcon = "\uf039";
+                    else
+                        WeatherIcon = "\uf00b";
+                    break;
+
+                case "6": // LightRainThunderSun
+                    if (isNight)
+                        WeatherIcon = "\uf03b";
+                    else
+                        WeatherIcon = "\uf010";
+                    break;
+
+                case "7": // SleetSun
                 case "42": // LightSleetSun
                 case "43": // HeavySleetSun
-                    WeatherIcon = "\uf0b2";
+                    if (isNight)
+                        WeatherIcon = "\uf0b3";
+                    else
+                        WeatherIcon = "\uf0b2";
                     break;
 
+                case "8": // SnowSun
                 case "44": // LightSnowSun
                 case "45": // HeavySnowSun
-                    WeatherIcon = "\uf00a";
+                    if (isNight)
+                        WeatherIcon = "\uf038";
+                    else
+                        WeatherIcon = "\uf00a";
                     break;
 
+                case "9": // LightRain
                 case "46": // Drizzle
                     WeatherIcon = "\uf01c";
                     break;
 
-                case "47": // LightSleet
-                case "48": // HeavySleet
-                    WeatherIcon = "\uf0b5";
+                case "10": // Rain
+                    WeatherIcon = "\uf019";
                     break;
 
+                case "11": // RainThunder
+                    WeatherIcon = "\uf01e";
+                    break;
+
+                case "12": // Sleet
+                case "48": // HeavySleet
+                    WeatherIcon = "\uf017";
+                    break;
+
+                case "13": // Snow
                 case "49": // LightSnow
                     WeatherIcon = "\uf01b";
                     break;
+
+                case "14": // SnowThunder
+                case "21": // SnowSunThunder
+                case "28": // LightSnowThunderSun
+                case "29": // HeavySnowThunderSun
+                case "33": // LightSnowThunder
+                case "34": // HeavySnowThunder
+                    if (isNight)
+                        WeatherIcon = "\uf06c";
+                    else
+                        WeatherIcon = "\uf06b";
+                    break;
+
+                case "15": // Fog
+                    WeatherIcon = "\uf014";
+                    break;
+
+                case "20": // SleetSunThunder
+                case "23": // SleetThunder
+                case "26": // LightSleetThunderSun
+                case "27": // HeavySleetThunderSun
+                case "31": // LightSleetThunder
+                case "32": // HeavySleetThunder
+                    if (isNight)
+                        WeatherIcon = "\uf069";
+                    else
+                        WeatherIcon = "\uf068";
+                    break;
+
+                case "22": // LightRainThunder
+                case "30": // DrizzleThunder
+                case "24": // DrizzleThunderSun
+                case "25": // RainThunderSun
+                    if (isNight)
+                        WeatherIcon = "\uf03a";
+                    else
+                        WeatherIcon = "\uf00e";
+                    break;
+
+                case "40": // DrizzleSun
+                case "41": // RainSun
+                    if (isNight)
+                        WeatherIcon = "\uf036";
+                    else
+                        WeatherIcon = "\uf008";
+                    break;
+
+                case "47": // LightSleet
+                    WeatherIcon = "\uf0b5";
+                    break;
+
                 case "50": // HeavySnow
                     WeatherIcon = "\uf064";
                     break;

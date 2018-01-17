@@ -117,9 +117,12 @@ namespace SimpleWeather.Utils
                         select new LocationData()
                         {
                             query = loc.query,
+                            name = loc.name,
                             latitude = loc.latitude,
                             longitude = loc.longitude,
                             locationType = loc.locationType,
+                            tz_offset = loc.tz_offset,
+                            tz_short = loc.tz_short,
                             source = loc.source
                         };
             return query.ToList();
