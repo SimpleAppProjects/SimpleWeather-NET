@@ -174,6 +174,7 @@ namespace SimpleWeather.Droid
 
                         if (apiCategory.FindPreference(KEY_APIKEY) == null)
                             apiCategory.AddPreference(keyEntry);
+                        UpdateKeySummary(providers.Find(provider => provider.Value == e.NewValue.ToString()).Display);
                     }
                     else
                     {
@@ -186,9 +187,8 @@ namespace SimpleWeather.Droid
                         Settings.API_KEY = String.Empty;
 
                         apiCategory.RemovePreference(keyEntry);
+                        UpdateKeySummary();
                     }
-
-                    UpdateKeySummary();
                 };
 
                 // Set key as verified if API Key is req for API and its set
@@ -285,6 +285,11 @@ namespace SimpleWeather.Droid
 
             private void UpdateKeySummary()
             {
+                UpdateKeySummary(providerPref.Entry);
+            }
+
+            private void UpdateKeySummary(string providerAPI)
+            {
                 if (wuSharedPrefs.Contains(KEY_APIKEY_VERIFIED))
                 {
                     ForegroundColorSpan colorSpan = new ForegroundColorSpan(keyVerified ?
@@ -296,7 +301,7 @@ namespace SimpleWeather.Droid
                 }
                 else
                 {
-                    keyEntry.Summary = Activity.GetString(Resource.String.pref_summary_apikey, providerPref.Entry);
+                    keyEntry.Summary = Activity.GetString(Resource.String.pref_summary_apikey, providerAPI);
                 }
             }
 
