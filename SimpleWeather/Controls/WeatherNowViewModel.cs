@@ -395,6 +395,11 @@ namespace SimpleWeather.Controls
                 WeatherCredit = string.Format("{0} OpenWeatherMap", creditPrefix);
                 Extras.UpdateView(weather);
             }
+            else if (weather.source == WeatherAPI.MetNo)
+            {
+                WeatherCredit = string.Format("{0} MET Norway", creditPrefix);
+                Extras.UpdateView(weather);
+            }
 
             // Language
             WeatherLocale = weather.locale;

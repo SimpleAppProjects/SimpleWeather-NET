@@ -191,6 +191,7 @@
     <Compile Include="Helpers\ItemTouchHelperCallback.cs" />
     <Compile Include="Helpers\ActionModeCallback.cs" />
     <Compile Include="Helpers\LocationListener.cs" />
+    <Compile Include="Metno\MetnoWeatherProvider.cs" />
     <Compile Include="Notifications\WeatherNotificationBuilder.cs" />
     <Compile Include="OpenWeather\OpenWeatherMapProvider.cs" />
     <Compile Include="Shortcuts\ShortcutCreator.cs" />
@@ -2255,6 +2256,12 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\credit_openweathermap.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\credit_metno.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-nodpi\metno.png" />
   </ItemGroup>
   <Import Project="..\SimpleWeather\SimpleWeather_Xamarin.projitems" Label="Shared" Condition="Exists('..\SimpleWeather\SimpleWeather_Xamarin.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

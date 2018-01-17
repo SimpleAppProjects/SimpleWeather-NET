@@ -6,6 +6,7 @@
     <string name="location_search_hint">Enter Location</string>
     <string name="api_label">Weather Provider</string>
     <string name="key_hint">API Key</string>
+    <string name="api_metno">MET Norway</string>
     <string name="api_owm">OpenWeatherMap</string>
     <string name="api_wu">WeatherUnderground</string>
     <string name="api_yahoo">Yahoo Weather</string>

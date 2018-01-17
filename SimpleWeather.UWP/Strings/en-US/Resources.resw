@@ -126,12 +126,6 @@
   <data name="API_Label.Text" xml:space="preserve">
     <value>Weather Provider</value>
   </data>
-  <data name="API_WU" xml:space="preserve">
-    <value>WeatherUnderground</value>
-  </data>
-  <data name="API_Yahoo" xml:space="preserve">
-    <value>Yahoo Weather</value>
-  </data>
   <data name="AppName" xml:space="preserve">
     <value>SimpleWeather</value>
   </data>

@@ -525,7 +525,7 @@ namespace SimpleWeather.Droid.Widgets
                         updateViews.SetViewVisibility(Resource.Id.condition_pop_panel, ViewStates.Visible);
                         updateViews.SetTextViewText(Resource.Id.condition_pop, weather.precipitation.pop + "%");
 
-                        if (Settings.API.Equals(WeatherAPI.OpenWeatherMap))
+                        if (Settings.API.Equals(WeatherAPI.OpenWeatherMap) || Settings.API.Equals(WeatherAPI.MetNo))
                             updateViews.SetImageViewResource(Resource.Id.condition_pop_label, Resource.Drawable.ic_cloudy);
                         else
                             updateViews.SetImageViewResource(Resource.Id.condition_pop_label, Resource.Drawable.ic_raindrop);

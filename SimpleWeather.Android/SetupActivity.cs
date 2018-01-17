@@ -125,7 +125,10 @@ namespace SimpleWeather.Droid
                 if (wm.KeyRequired)
                     FindViewById(Resource.Id.key_entry_box).Visibility = ViewStates.Visible;
                 else
+                {
                     FindViewById(Resource.Id.key_entry_box).Visibility = ViewStates.Invisible;
+                    Settings.API_KEY = keyEntry.Text = String.Empty;
+                }
             };
 
             keyEntry.FocusChange += (object sender, View.FocusChangeEventArgs e) =>

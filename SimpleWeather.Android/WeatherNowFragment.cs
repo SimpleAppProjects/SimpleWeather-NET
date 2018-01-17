@@ -98,6 +98,7 @@ namespace SimpleWeather.Droid
         {
             if (weather != null)
             {
+                wm.UpdateWeather(weather);
                 weatherView.UpdateView(weather);
                 SetView(weatherView);
 
@@ -648,18 +649,31 @@ namespace SimpleWeather.Droid
                     qpfRain.Text = weatherView.Extras.Qpf_Rain;
                     qpfSnow.Text = weatherView.Extras.Qpf_Snow;
 
-                    precipitationPanel.Visibility = ViewStates.Visible;
-
-                    if (IsLargeTablet(AppCompatActivity))
+                    if (!Settings.API.Equals(WeatherAPI.MetNo))
                     {
-                        // Add back panel if not present
-                        Android.Support.V7.Widget.GridLayout panel = (Android.Support.V7.Widget.GridLayout)detailsPanel;
-                        int childIdx = panel.IndexOfChild(panel.FindViewById(Resource.Id.precipitation_card));
-                        if (childIdx < 0)
-                            panel.AddView(precipitationPanel, 0);
+                        precipitationPanel.Visibility = ViewStates.Visible;
+
+                        if (IsLargeTablet(AppCompatActivity))
+                        {
+                            // Add back panel if not present
+                            Android.Support.V7.Widget.GridLayout panel = (Android.Support.V7.Widget.GridLayout)detailsPanel;
+                            int childIdx = panel.IndexOfChild(panel.FindViewById(Resource.Id.precipitation_card));
+                            if (childIdx < 0)
+                                panel.AddView(precipitationPanel, 0);
+                        }
+                    }
+                    else
+                    {
+                        if (IsLargeTablet(AppCompatActivity))
+                        {
+                            Android.Support.V7.Widget.GridLayout panel = (Android.Support.V7.Widget.GridLayout)detailsPanel;
+                            panel.RemoveView(panel.FindViewById(Resource.Id.precipitation_card));
+                        }
+                        else
+                            precipitationPanel.Visibility = ViewStates.Gone;
                     }
 
-                    if (Settings.API.Equals(WeatherAPI.OpenWeatherMap))
+                    if (Settings.API.Equals(WeatherAPI.OpenWeatherMap) || Settings.API.Equals(WeatherAPI.MetNo))
                     {
                         chanceLabel.Visibility = ViewStates.Gone;
                         chance.Visibility = ViewStates.Gone;

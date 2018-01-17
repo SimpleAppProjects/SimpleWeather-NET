@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="api_entries">
-        <item>@string/api_wu</item>
-        <item>@string/api_yahoo</item>
-    </string-array>
-    <string-array name="api_entries_values">
-        <item>WUnderground</item>
-        <item>Yahoo</item>
-    </string-array>
-
     <string-array name="refreshinterval_entries">
         <item>@string/refresh_30min</item>
         <item>@string/refresh_60min</item>

@@ -795,7 +795,7 @@
                         <Setter Target="WeatherBox.Height" Value="125"/>
                         <Setter Target="WeatherBox.Width" Value="125"/>
                         <Setter Target="SpacerTop.Height" Value="30"/>
-                        <Setter Target="StackControl.Height" Value="180"/>
+                        <Setter Target="StackControl.Height" Value="200"/>
                         <Setter Target="ForecastLabel.FontSize" Value="18"/>
                     </VisualState.Setters>
                 </VisualState>

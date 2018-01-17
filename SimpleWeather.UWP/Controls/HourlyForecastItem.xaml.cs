@@ -19,7 +19,8 @@ namespace SimpleWeather.UWP.Controls
             {
                 this.Bindings.Update();
 
-                if (Utils.Settings.API.Equals(WeatherData.WeatherAPI.OpenWeatherMap))
+                if (Utils.Settings.API.Equals(WeatherData.WeatherAPI.OpenWeatherMap) || 
+                    Utils.Settings.API.Equals(WeatherData.WeatherAPI.MetNo))
                 {
                     // Use cloudiness
                     PoPIcon.Text = "\uf013";

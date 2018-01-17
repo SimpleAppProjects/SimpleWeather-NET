@@ -4,7 +4,9 @@ using SQLite;
 using SQLiteNetExtensions;
 using SQLiteNetExtensions.Attributes;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace SimpleWeather.WeatherData
 {
@@ -12,6 +14,9 @@ namespace SimpleWeather.WeatherData
     [Table("weatherdata")]
     public class Weather
     {
+        [JsonIgnore]
+        public const string NA = "N/A";
+
         [TextBlob("locationblob")]
         public Location location { get; set; }
         [Ignore] 
@@ -192,6 +197,187 @@ namespace SimpleWeather.WeatherData
             source = WeatherAPI.OpenWeatherMap;
         }
 
+        public Weather(Metno.weatherdata foreRoot, Metno.astrodata astroRoot)
+        {
+            location = new Location(foreRoot);
+            update_time = foreRoot.created;
+
+            // 9-day forecast / hrly -> 6hrly forecast
+            var forecastL = new List<Forecast>();
+            var hr_forecastL = new List<HourlyForecast>();
+
+            // Store potential min/max values
+            float dayMax = float.NaN;
+            float dayMin = float.NaN;
+
+            // Flag values
+            bool end = false;
+            bool conditionSet = false;
+            int fcastCount = 0;
+
+            DateTime startDate = foreRoot.meta.First().from;
+            DateTime endDate = foreRoot.meta.Last().to.Subtract(new TimeSpan(6, 0, 0));
+            Forecast fcast = null;
+
+            // Metno data is troublesome to parse thru
+            for (int i = 0; i < foreRoot.product.time.Length; i++)
+            {
+                var time = foreRoot.product.time[i];
+                DateTime date = time.from;
+
+                // Create condition for next 2hrs from data
+                if (i == 0 && date.Equals(startDate))
+                {
+                    condition = new Condition(time);
+                    atmosphere = new Atmosphere(time);
+                    precipitation = new Precipitation(time);
+                }
+
+                // This contains all weather details
+                if (!end && time.to.Subtract(time.from).Ticks == 0)
+                {
+                    // Find max/min for each hour
+                    float temp = (float)time.location.temperature.value;
+                    if (!float.IsNaN(temp) && (float.IsNaN(dayMax) || temp > dayMax))
+                    {
+                        dayMax = temp;
+                    }
+                    if (!float.IsNaN(temp) && (float.IsNaN(dayMin) || temp < dayMin))
+                    {
+                        dayMin = temp;
+                    }
+
+                    // Add a new hour
+                    hr_forecastL.Add(new HourlyForecast(time));
+
+                    // Create new forecast
+                    if (date.Hour == 0 || date.Equals(startDate))
+                    {
+                        fcastCount++;
+
+                        // Oops, we missed one
+                        if (fcast != null && fcastCount != forecastL.Count)
+                        {
+                            // Set forecast properties here:
+                            // condition (set in provider GetWeather method)
+                            // date
+                            fcast.date = date;
+                            // high
+                            fcast.high_f = ConversionMethods.CtoF(dayMax.ToString(CultureInfo.InvariantCulture));
+                            fcast.high_c = Math.Round(dayMax).ToString();
+                            // low
+                            fcast.low_f = ConversionMethods.CtoF(dayMin.ToString(CultureInfo.InvariantCulture));
+                            fcast.low_c = Math.Round(dayMin).ToString();
+                            // icon (set in provider GetWeather method)
+                            forecastL.Add(fcast);
+
+                            // Reset
+                            dayMax = float.NaN;
+                            dayMin = float.NaN;
+                        }
+
+                        fcast = new Forecast(time);
+                    }
+                    // Last forecast for day; create forecast
+                    if (date.Hour == 23 || date.Equals(endDate))
+                    {
+                        // condition (set in provider GetWeather method)
+                        // date
+                        fcast.date = date;
+                        // high
+                        fcast.high_f = ConversionMethods.CtoF(dayMax.ToString(CultureInfo.InvariantCulture));
+                        fcast.high_c = Math.Round(dayMax).ToString();
+                        // low
+                        fcast.low_f = ConversionMethods.CtoF(dayMin.ToString(CultureInfo.InvariantCulture));
+                        fcast.low_c = Math.Round(dayMin).ToString();
+                        // icon (set in provider GetWeather method)
+                        forecastL.Add(fcast);
+
+                        if (date.Equals(endDate))
+                            end = true;
+
+                        // Reset
+                        dayMax = float.NaN;
+                        dayMin = float.NaN;
+                        fcast = null;
+                    }
+                }
+
+                // Get conditions for hour if available
+                if (hr_forecastL.Count > 1 &&
+                    hr_forecastL[hr_forecastL.Count - 2].date.Equals(time.from))
+                {
+                    // Set condition from id (do this in GetWeather func)
+                    var hr = hr_forecastL[hr_forecastL.Count - 2];
+                    if (String.IsNullOrEmpty(hr.icon))
+                    {
+                        if (time.location.symbol != null)
+                        {
+                            hr.condition = time.location.symbol.id;
+                            hr.icon = time.location.symbol.number.ToString();
+                        }
+                    }
+                }
+                else if (end && hr_forecastL.Last().date.Equals(time.from))
+                {
+                    // Set condition from id (do this in GetWeather func)
+                    var hr = hr_forecastL.Last();
+                    if (String.IsNullOrEmpty(hr.icon))
+                    {
+                        if (time.location.symbol != null)
+                        {
+                            hr.condition = time.location.symbol.id;
+                            hr.icon = time.location.symbol.number.ToString();
+                        }
+                    }
+                }
+
+                if (fcast != null && fcast.date.Equals(time.from) && time.to.Subtract(time.from).TotalHours >= 1)
+                {
+                    if (time.location.symbol != null)
+                    {
+                        fcast.condition = time.location.symbol.id;
+                        fcast.icon = time.location.symbol.number.ToString();
+                    }
+                }
+                else if (forecastL.Count > 0 && forecastL.Last().date.Equals(time.from) && time.to.Subtract(time.from).TotalHours >= 1)
+                {
+                    if (String.IsNullOrEmpty(forecastL.Last().icon))
+                    {
+                        if (time.location.symbol != null)
+                        {
+                            forecastL.Last().condition = time.location.symbol.id;
+                            forecastL.Last().icon = time.location.symbol.number.ToString();
+                        }
+                    }
+                }
+
+                if (!conditionSet && condition != null && date.Equals(startDate) && time.to.Subtract(time.from).TotalHours >= 2)
+                {
+                    // TODO: Calculate with formula
+                    //condition.feelslike_f
+                    //condition.feelslike_c
+
+                    // Set condition from id (do this in GetWeather func)
+                    if (time.location.symbol != null)
+                    {
+                        condition.icon = time.location.symbol.number.ToString();
+                        condition.weather = time.location.symbol.id;
+                    }
+
+                    conditionSet = true;
+                }
+            }
+
+            forecast = forecastL.ToArray();
+            hr_forecast = hr_forecastL.ToArray();
+            astronomy = new Astronomy(astroRoot);
+            ttl = "120";
+
+            query = string.Format("lat={0}&lon={1}", location.latitude, location.longitude);
+            source = WeatherAPI.MetNo;
+        }
+
         public static Weather FromJson(JsonReader reader)
         {
             Weather obj = null;
@@ -227,7 +413,7 @@ namespace SimpleWeather.WeatherData
                             obj.update_time = result;
                             break;
                         case "forecast":
-                            System.Collections.Generic.List<Forecast> forecasts = new System.Collections.Generic.List<Forecast>();
+                            List<Forecast> forecasts = new List<Forecast>();
                             while(reader.Read() && reader.TokenType != JsonToken.EndArray)
                             {
                                 if (reader.TokenType == JsonToken.String)
@@ -236,7 +422,7 @@ namespace SimpleWeather.WeatherData
                             obj.forecast = forecasts.ToArray();
                             break;
                         case "hr_forecast":
-                            System.Collections.Generic.List<HourlyForecast> hr_forecasts = new System.Collections.Generic.List<HourlyForecast>();
+                            List<HourlyForecast> hr_forecasts = new List<HourlyForecast>();
                             while (reader.Read() && reader.TokenType != JsonToken.EndArray)
                             {
                                 if (reader.TokenType == JsonToken.String)
@@ -245,7 +431,7 @@ namespace SimpleWeather.WeatherData
                             obj.hr_forecast = hr_forecasts.ToArray();
                             break;
                         case "txt_forecast":
-                            System.Collections.Generic.List<TextForecast> txt_forecasts = new System.Collections.Generic.List<TextForecast>();
+                            List<TextForecast> txt_forecasts = new List<TextForecast>();
                             while (reader.Read() && reader.TokenType != JsonToken.EndArray)
                             {
                                 if (reader.TokenType == JsonToken.String)
@@ -423,6 +609,16 @@ namespace SimpleWeather.WeatherData
             tz_short = "UTC";
         }
 
+        public Location(Metno.weatherdata foreRoot)
+        {
+            // API doesn't provide location name (at all)
+            name = null;
+            latitude = foreRoot.product.time.First().location.latitude.ToString();
+            longitude = foreRoot.product.time.First().location.longitude.ToString();
+            tz_offset = TimeSpan.Zero;
+            tz_short = "UTC";
+        }
+
         private void saveTimeZone(WeatherYahoo.Query query)
         {
             /* Get TimeZone info by using UTC and local build time */
@@ -579,6 +775,12 @@ namespace SimpleWeather.WeatherData
             icon = forecast.weather[0].id.ToString();
         }
 
+        public Forecast(Metno.weatherdataProductTime time)
+        {
+            date = time.from;
+            // Don't bother setting other values; they're not available yet
+        }
+
         public static Forecast FromJson(JsonReader extReader)
         {
             Forecast obj = null;
@@ -711,18 +913,32 @@ namespace SimpleWeather.WeatherData
             wind_kph = float.Parse(hr_forecast.wspd.metric);
         }
 
-        public HourlyForecast(OpenWeather.List forecast)
+        public HourlyForecast(OpenWeather.List hr_forecast)
         {
-            date = DateTimeOffset.FromUnixTimeSeconds(forecast.dt).DateTime;
-            high_f = ConversionMethods.KtoF(forecast.main.temp.ToString(CultureInfo.InvariantCulture));
-            high_c = ConversionMethods.KtoC(forecast.main.temp.ToString(CultureInfo.InvariantCulture));
-            condition = forecast.weather[0].main;
-            icon = forecast.weather[0].id.ToString();
+            date = DateTimeOffset.FromUnixTimeSeconds(hr_forecast.dt).DateTime;
+            high_f = ConversionMethods.KtoF(hr_forecast.main.temp.ToString(CultureInfo.InvariantCulture));
+            high_c = ConversionMethods.KtoC(hr_forecast.main.temp.ToString(CultureInfo.InvariantCulture));
+            condition = hr_forecast.weather[0].main;
+            icon = hr_forecast.weather[0].id.ToString();
             // Use cloudiness value here
-            pop = forecast.clouds.all.ToString();
-            wind_degrees = (int)forecast.wind.deg;
-            wind_mph = (float)Math.Round(double.Parse(ConversionMethods.MSecToMph(forecast.wind.speed.ToString())));
-            wind_kph = (float)Math.Round(double.Parse(ConversionMethods.MSecToKph(forecast.wind.speed.ToString())));
+            pop = hr_forecast.clouds.all.ToString();
+            wind_degrees = (int)hr_forecast.wind.deg;
+            wind_mph = (float)Math.Round(double.Parse(ConversionMethods.MSecToMph(hr_forecast.wind.speed.ToString())));
+            wind_kph = (float)Math.Round(double.Parse(ConversionMethods.MSecToKph(hr_forecast.wind.speed.ToString())));
+        }
+
+        public HourlyForecast(Metno.weatherdataProductTime hr_forecast)
+        {
+            date = hr_forecast.from;
+            high_f = ConversionMethods.CtoF(hr_forecast.location.temperature.value.ToString(CultureInfo.InvariantCulture));
+            high_c = hr_forecast.location.temperature.value.ToString();
+            //condition = hr_forecast.weather[0].main;
+            //icon = hr_forecast.weather[0].id.ToString();
+            // Use cloudiness value here
+            pop = ((int)Math.Round(hr_forecast.location.cloudiness.percent)).ToString();
+            wind_degrees = (int)Math.Round(hr_forecast.location.windDirection.deg);
+            wind_mph = (float)Math.Round(double.Parse(ConversionMethods.MSecToMph(hr_forecast.location.windSpeed.mps.ToString())));
+            wind_kph = (float)Math.Round(double.Parse(ConversionMethods.MSecToKph(hr_forecast.location.windSpeed.mps.ToString())));
         }
 
         public static HourlyForecast FromJson(JsonReader extReader)
@@ -1000,9 +1216,24 @@ namespace SimpleWeather.WeatherData
             wind_degrees = (int)root.wind.deg;
             wind_mph = float.Parse(ConversionMethods.MSecToMph(root.wind.speed.ToString(CultureInfo.InvariantCulture)));
             wind_kph = float.Parse(ConversionMethods.MSecToKph(root.wind.speed.ToString(CultureInfo.InvariantCulture)));
+            // TODO: Calculate with formula
             feelslike_f = temp_f;
             feelslike_c = temp_c;
             icon = root.weather[0].id.ToString();
+        }
+
+        public Condition(Metno.weatherdataProductTime time)
+        {
+            // weather
+            temp_f = float.Parse(ConversionMethods.CtoF(time.location.temperature.value.ToString()));
+            temp_c = (float)time.location.temperature.value;
+            wind_degrees = (int)Math.Round(time.location.windDirection.deg);
+            wind_mph = (float)Math.Round(double.Parse(ConversionMethods.MSecToMph(time.location.windSpeed.mps.ToString())));
+            wind_kph = (float)Math.Round(double.Parse(ConversionMethods.MSecToKph(time.location.windSpeed.mps.ToString())));
+            // TODO: Calculate with formula
+            feelslike_f = temp_f;
+            feelslike_c = temp_c;
+            // icon
         }
 
         public static Condition FromJson(JsonReader extReader)
@@ -1164,6 +1395,16 @@ namespace SimpleWeather.WeatherData
             visibility_km = (root.visibility / 1000).ToString();
         }
 
+        public Atmosphere(Metno.weatherdataProductTime time)
+        {
+            humidity = Math.Round(time.location.humidity.value).ToString() + "%";
+            pressure_mb = time.location.pressure.value.ToString(CultureInfo.InvariantCulture);
+            pressure_in = ConversionMethods.MBToInHg(time.location.pressure.value.ToString(CultureInfo.InvariantCulture));
+            pressure_trend = String.Empty;
+            visibility_mi = Weather.NA;
+            visibility_km = Weather.NA;
+        }
+
         public static Atmosphere FromJson(JsonReader extReader)
         {
             Atmosphere obj = null;
@@ -1288,6 +1529,20 @@ namespace SimpleWeather.WeatherData
             sunset = DateTimeOffset.FromUnixTimeSeconds(root.sys.sunset).DateTime;
         }
 
+        public Astronomy(Metno.astrodata astroRoot)
+        {
+            if (astroRoot.time.location.sun.rise != null && astroRoot.time.location.sun.set != null)
+            {
+                sunrise = astroRoot.time.location.sun.rise;
+                sunset = astroRoot.time.location.sun.set;
+            }
+            else
+            {
+                sunrise = DateTime.MinValue;
+                sunset = DateTime.MinValue;
+            }
+        }
+
         public static Astronomy FromJson(JsonReader extReader)
         {
             Astronomy obj = null;
@@ -1390,6 +1645,13 @@ namespace SimpleWeather.WeatherData
                 qpf_snow_in = float.Parse(ConversionMethods.MMToIn(root.snow._3h.ToString(CultureInfo.InvariantCulture)));
                 qpf_snow_cm = root.snow._3h;
             }
+        }
+
+        public Precipitation(Metno.weatherdataProductTime time)
+        {
+            // Use cloudiness value here
+            pop = Math.Round(time.location.cloudiness.percent).ToString();
+            // The rest DNE
         }
 
         public static Precipitation FromJson(JsonReader extReader)

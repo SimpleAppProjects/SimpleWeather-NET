@@ -182,6 +182,8 @@ namespace SimpleWeather.Droid
                         keyEntry.Enabled = false;
 
                         Settings.API = e.NewValue.ToString();
+                        // Clear API KEY entry to avoid issues
+                        Settings.API_KEY = String.Empty;
 
                         apiCategory.RemovePreference(keyEntry);
                     }

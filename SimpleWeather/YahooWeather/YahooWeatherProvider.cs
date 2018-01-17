@@ -83,7 +83,8 @@ namespace SimpleWeather.WeatherYahoo
                 }
 
                 // End Stream
-                contentStream.Dispose();
+                if (contentStream != null)
+                    contentStream.Dispose();
             }
             catch (Exception ex)
             {
@@ -132,7 +133,8 @@ namespace SimpleWeather.WeatherYahoo
                     result = root.results[0];
 
                 // End Stream
-                contentStream.Dispose();
+                if (contentStream != null)
+                    contentStream.Dispose();
             }
             catch (Exception ex)
             {
@@ -222,6 +224,11 @@ namespace SimpleWeather.WeatherYahoo
                 {
                     root = JSONParser.Deserializer<Rootobject>(contentStream);
                 });
+
+                // End Stream
+                if (contentStream != null)
+                    contentStream.Dispose();
+
                 weather = new Weather(root);
             }
             catch (Exception ex)

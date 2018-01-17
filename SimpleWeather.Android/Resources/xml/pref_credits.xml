@@ -26,6 +26,13 @@
                 android:action="android.intent.action.VIEW"
                 android:data="http://www.openweathermap.org" />
         </Preference>
+        <Preference
+            android:title="@string/api_metno" />
+        <Preference android:layout="@layout/credit_metno">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://www.met.no/en" />
+        </Preference>
 
     </PreferenceCategory>
 

@@ -479,6 +479,11 @@ namespace SimpleWeather.UWP
                 else
                     KeyEntry.Visibility = Visibility.Collapsed;
             }
+
+            if (!wm.KeyRequired)
+            {
+                Settings.API_KEY = KeyEntry.Text = String.Empty;
+            }
         }
 
         private void KeyEntry_TextChanged(object sender, TextChangedEventArgs e)

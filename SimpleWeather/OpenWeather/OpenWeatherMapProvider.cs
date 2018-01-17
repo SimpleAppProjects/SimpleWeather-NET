@@ -291,6 +291,10 @@ namespace SimpleWeather.OpenWeather
                     foreRoot = JSONParser.Deserializer<ForecastRootobject>(forecastStream);
                 });
 
+                // End Streams
+                currentStream.Dispose();
+                forecastStream.Dispose();
+
                 weather = new WeatherData.Weather(currRoot, foreRoot);
             }
             catch (Exception ex)

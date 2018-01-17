@@ -104,6 +104,7 @@
     <Content Include="Assets\BadgeLogo.scale-200.png" />
     <Content Include="Assets\BadgeLogo.scale-400.png" />
     <Content Include="Assets\Credits\licenses.html" />
+    <Content Include="Assets\Providers\metno.png" />
     <Content Include="Assets\Providers\openweathermap.png" />
     <Content Include="Assets\Providers\wunderground.png" />
     <Content Include="Assets\Providers\yahoo.png" />
@@ -307,6 +308,7 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Metno\MetnoWeatherProvider.cs" />
     <Compile Include="OpenWeather\OpenWeatherMapProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingsPage.xaml.cs">

@@ -320,6 +320,12 @@
                                     <Image Source="Assets/Providers/openweathermap.png" Height="25" HorizontalAlignment="Left" />
                                 </HyperlinkButton>
                             </StackPanel>
+                            <StackPanel Padding="10">
+                                <TextBlock Text="MET Norway" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                                <HyperlinkButton NavigateUri="https://www.met.no/en">
+                                    <Image Source="Assets/Providers/metno.png" Height="50" HorizontalAlignment="Left" />
+                                </HyperlinkButton>
+                            </StackPanel>
                         </StackPanel>
                     </Grid>
                 </ScrollViewer>

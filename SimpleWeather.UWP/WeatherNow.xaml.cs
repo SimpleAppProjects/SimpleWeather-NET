@@ -45,6 +45,7 @@ namespace SimpleWeather.UWP
 
             if (weather != null)
             {
+                wm.UpdateWeather(weather);
                 WeatherView.UpdateView(weather);
 
                 // Update home tile if it hasn't been already
@@ -88,18 +89,26 @@ namespace SimpleWeather.UWP
 
             if (!String.IsNullOrWhiteSpace(WeatherView.Extras.Chance))
             {
-                if (!DetailsWrapGrid.Children.Contains(PrecipitationPanel))
+                if (!Settings.API.Equals(WeatherAPI.MetNo))
                 {
-                    DetailsWrapGrid.Children.Insert(0, PrecipitationPanel);
+                    if (!DetailsWrapGrid.Children.Contains(PrecipitationPanel))
+                    {
+                        DetailsWrapGrid.Children.Insert(0, PrecipitationPanel);
+                        ResizeDetailItems();
+                    }
+
+                    PrecipitationPanel.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    DetailsWrapGrid.Children.Remove(PrecipitationPanel);
                     ResizeDetailItems();
                 }
-
-                PrecipitationPanel.Visibility = Visibility.Visible;
 
                 int precipCount = PrecipitationPanel.Children.Count;
                 int atmosCount = AtmospherePanel.Children.Count;
 
-                if (Settings.API.Equals(WeatherAPI.OpenWeatherMap))
+                if (Settings.API.Equals(WeatherAPI.OpenWeatherMap) || Settings.API.Equals(WeatherAPI.MetNo))
                 {
                     if (ChanceItem != null)
                         PrecipitationPanel.Children.Remove(ChanceItem);

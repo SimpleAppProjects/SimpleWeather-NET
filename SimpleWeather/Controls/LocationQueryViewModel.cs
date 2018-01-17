@@ -32,7 +32,7 @@ namespace SimpleWeather.Controls
             LocationQuery = string.Empty;
         }
 
-#region WeatherUnderground
+        #region WeatherUnderground
         public LocationQueryViewModel(WeatherUnderground.AC_RESULT location)
         {
             SetLocation(location);
@@ -120,7 +120,7 @@ namespace SimpleWeather.Controls
         }
         #endregion
 
-        #region OpenWeatherMap
+        #region OpenWeatherMap|Met.No
         public LocationQueryViewModel(OpenWeather.AC_RESULT location)
         {
             SetLocation(location);

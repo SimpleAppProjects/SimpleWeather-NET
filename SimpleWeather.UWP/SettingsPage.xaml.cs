@@ -210,6 +210,8 @@ namespace SimpleWeather.UWP
                 if (KeyPanel != null)
                     KeyPanel.Visibility = Visibility.Collapsed;
                 Settings.API = API;
+                // Clear API KEY entry to avoid issues
+                Settings.API_KEY = String.Empty;
 
                 keyVerified = false;
                 localSettings.Containers[WeatherAPI.WeatherUnderground].Values.Remove(KEY_APIKEY_VERIFIED);

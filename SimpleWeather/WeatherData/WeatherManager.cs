@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
 using SimpleWeather.Controls;
+using SimpleWeather.Metno;
 using SimpleWeather.OpenWeather;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherUnderground;
@@ -23,12 +24,14 @@ namespace SimpleWeather.WeatherData
         public const string WeatherUnderground = "WUnderground";
         public const string Yahoo = "Yahoo";
         public const string OpenWeatherMap = "OpenWeather";
+        public const string MetNo = "Metno";
 
         public static List<ComboBoxItem> APIs = new List<ComboBoxItem>()
         {
             new ComboBoxItem("WeatherUnderground", WeatherUnderground),
             new ComboBoxItem("Yahoo Weather", Yahoo),
             new ComboBoxItem("OpenWeatherMap", OpenWeatherMap),
+            new ComboBoxItem("MET Norway", MetNo),
         };
     }
 
@@ -36,6 +39,7 @@ namespace SimpleWeather.WeatherData
     {
         private static WeatherManager Instance;
         private static WeatherProviderImpl WeatherProvider;
+        private static Weather WeatherData;
 
         // Prevent instance from being created outside of this class
         private WeatherManager()
@@ -58,6 +62,12 @@ namespace SimpleWeather.WeatherData
             WeatherProvider = GetProvider(API);
         }
 
+        // Shouldn't be used in anything other than WeatherNow
+        public void UpdateWeather(Weather weather)
+        {
+            WeatherData = weather;
+        }
+
         // Static Methods
         public static WeatherProviderImpl GetProvider(string API)
         {
@@ -73,6 +83,9 @@ namespace SimpleWeather.WeatherData
                     break;
                 case WeatherAPI.OpenWeatherMap:
                     providerImpl = new OpenWeatherMapProvider();
+                    break;
+                case WeatherAPI.MetNo:
+                    providerImpl = new MetnoWeatherProvider();
                     break;
             }
 

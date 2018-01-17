@@ -80,7 +80,8 @@ namespace SimpleWeather.WeatherUnderground
                 }
 
                 // End Stream
-                contentStream.Dispose();
+                if (contentStream != null)
+                    contentStream.Dispose();
             }
             catch (Exception ex)
             {
@@ -126,7 +127,8 @@ namespace SimpleWeather.WeatherUnderground
                 result = (location)deserializer.Deserialize(contentStream);
 
                 // End Stream
-                contentStream.Dispose();
+                if (contentStream != null)
+                    contentStream.Dispose();
             }
             catch (Exception ex)
             {
@@ -206,7 +208,8 @@ namespace SimpleWeather.WeatherUnderground
                     isValid = true;
 
                 // End Stream
-                contentStream.Dispose();
+                if (contentStream != null)
+                    contentStream.Dispose();
             }
             catch (Exception)
             {
@@ -286,6 +289,10 @@ namespace SimpleWeather.WeatherUnderground
                             break;
                     }
                 }
+
+                // End Stream
+                if (contentStream != null)
+                    contentStream.Dispose();
 
                 weather = new Weather(root);
             }

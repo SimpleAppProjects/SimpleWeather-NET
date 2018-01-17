@@ -73,7 +73,8 @@ namespace SimpleWeather.Droid.Controls
             forecastCondition.Text = forecastView.Condition;
             forecastTempHi.Text = forecastView.HiTemp;
 
-            if (SimpleWeather.Utils.Settings.API.Equals(WeatherData.WeatherAPI.OpenWeatherMap))
+            if (SimpleWeather.Utils.Settings.API.Equals(WeatherData.WeatherAPI.OpenWeatherMap) ||
+                SimpleWeather.Utils.Settings.API.Equals(WeatherData.WeatherAPI.MetNo))
                 forecastPoPIcon.Text = mContext.GetString(Resource.String.wi_cloudy);
             else
                 forecastPoPIcon.Text = mContext.GetString(Resource.String.wi_raindrop);
