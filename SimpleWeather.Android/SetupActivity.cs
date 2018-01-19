@@ -78,6 +78,29 @@ namespace SimpleWeather.Droid
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
+            // Check if this activity was started from adding a new widget
+            if (Intent != null && AppWidgetManager.ActionAppwidgetConfigure.Equals(Intent.Action))
+            {
+                mAppWidgetId = Intent.GetIntExtra(AppWidgetManager.ExtraAppwidgetId, AppWidgetManager.InvalidAppwidgetId);
+
+                if (Settings.WeatherLoaded)
+                {
+                    // Weather is already loaded; no need to setup
+                    Intent resultValue = new Intent();
+                    resultValue.PutExtra(AppWidgetManager.ExtraAppwidgetId, mAppWidgetId);
+                    SetResult(Android.App.Result.Ok, resultValue);
+                    Finish();
+                }
+
+                if (mAppWidgetId != AppWidgetManager.InvalidAppwidgetId)
+                    // Set the result to CANCELED.  This will cause the widget host to cancel
+                    // out of the widget placement if they press the back button.
+                    SetResult(Android.App.Result.Canceled, new Intent().PutExtra(AppWidgetManager.ExtraAppwidgetId, mAppWidgetId));
+                else
+                    // If they gave us an intent without the widget id, just bail.
+                    FinishAffinity();
+            }
+
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.activity_setup);
 
@@ -191,20 +214,6 @@ namespace SimpleWeather.Droid
             if (Settings.API_KEY != null)
             {
                 keyEntry.Text = Settings.API_KEY;
-            }
-
-            // Check if this activity was started from adding a new widget
-            if (Intent != null && AppWidgetManager.ActionAppwidgetConfigure.Equals(Intent.Action))
-            {
-                mAppWidgetId = Intent.GetIntExtra(AppWidgetManager.ExtraAppwidgetId, AppWidgetManager.InvalidAppwidgetId);
-
-                if (mAppWidgetId != AppWidgetManager.InvalidAppwidgetId)
-                    // Set the result to CANCELED.  This will cause the widget host to cancel
-                    // out of the widget placement if they press the back button.
-                    SetResult(Android.App.Result.Canceled, new Intent().PutExtra(AppWidgetManager.ExtraAppwidgetId, mAppWidgetId));
-                else
-                    // If they gave us an intent without the widget id, just bail.
-                    FinishAffinity();
             }
         }
 
