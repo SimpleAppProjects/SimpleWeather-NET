@@ -113,14 +113,20 @@ namespace SimpleWeather.UWP
                     if (ChanceItem != null)
                         PrecipitationPanel.Children.Remove(ChanceItem);
 
-                    var cloudinessItem = FindName("CloudinessItem") as FrameworkElement;
-                    if (!AtmospherePanel.Children.Contains(cloudinessItem))
+                    FrameworkElement cloudinessItem = CloudinessItem;
+                    if (cloudinessItem == null)
+                        cloudinessItem = FindName("CloudinessItem") as FrameworkElement;
+
+                    if (cloudinessItem != null && !AtmospherePanel.Children.Contains(cloudinessItem))
                         AtmospherePanel.Children.Insert(2, cloudinessItem);
                 }
                 else
                 {
-                    var chanceItem = FindName("ChanceItem") as FrameworkElement;
-                    if (!PrecipitationPanel.Children.Contains(chanceItem))
+                    FrameworkElement chanceItem = ChanceItem;
+                    if (chanceItem == null)
+                        chanceItem = FindName("ChanceItem") as FrameworkElement;
+
+                    if (chanceItem != null && !PrecipitationPanel.Children.Contains(chanceItem))
                         PrecipitationPanel.Children.Insert(2, chanceItem);
 
                     if (CloudinessItem != null)
@@ -133,6 +139,8 @@ namespace SimpleWeather.UWP
             else
             {
                 DetailsWrapGrid.Children.Remove(PrecipitationPanel);
+                if (CloudinessItem != null)
+                    AtmospherePanel.Children.Remove(CloudinessItem);
                 ResizeDetailItems();
             }
 
@@ -216,6 +224,9 @@ namespace SimpleWeather.UWP
             // Resize StackControl items
             double StackWidth = ForecastViewer.ActualWidth;
 
+            if (StackWidth <= 0)
+                return;
+
             // For first launch resize forecast panels when panel is filled
             if (StackControl.ItemsPanelRoot != null && StackControl.Items.Count > 0 &&
                 StackControl.Items.Count == WeatherView.Forecasts.Count)
@@ -253,6 +264,9 @@ namespace SimpleWeather.UWP
         private void ResizeDetailItems()
         {
             double w = this.ActualWidth;
+
+            if (w <= 0)
+                return;
 
             if (w <= 600)
             {
