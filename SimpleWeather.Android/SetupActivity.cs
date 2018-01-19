@@ -28,7 +28,7 @@ using SimpleWeather.Droid.Widgets;
 namespace SimpleWeather.Droid
 {
     [Android.App.Activity(
-        Name = "SimpleWeather.Droid.SetupActivity",
+        Name = "com.thewizrd.simpleweather.SetupActivity",
         Theme = "@style/SetupTheme",
         WindowSoftInputMode = SoftInput.StateHidden | SoftInput.AdjustPan)]
     [Android.App.IntentFilter(new string[]
