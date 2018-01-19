@@ -612,142 +612,75 @@ namespace SimpleWeather.WeatherUnderground
 
         public override string GetWeatherIcon(string icon)
         {
+            bool isNight = false;
+
+            if (icon.Contains("nt_"))
+                isNight = true;
+
+            return GetWeatherIcon(isNight, icon);
+        }
+
+        public override string GetWeatherIcon(bool isNight, string icon)
+        {
             string WeatherIcon = string.Empty;
 
             if (icon.Contains("nt_mostlycloudy") || icon.Contains("nt_partlysunny") || icon.Contains("nt_cloudy"))
-                WeatherIcon = "\uf031";
+                if (isNight)
+                    WeatherIcon = WeatherIcons.NIGHT_ALT_CLOUDY;
+                else
+                    WeatherIcon = WeatherIcons.DAY_CLOUDY;
             else if (icon.Contains("nt_partlycloudy") || icon.Contains("nt_mostlysunny"))
-                WeatherIcon = "\uf083";
+                if (isNight)
+                    WeatherIcon = WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY;
+                else
+                    WeatherIcon = WeatherIcons.DAY_SUNNY_OVERCAST;
             else if (icon.Contains("nt_clear") || icon.Contains("nt_sunny") || icon.Contains("nt_unknown"))
-                WeatherIcon = "\uf02e";
+                if (isNight)
+                    WeatherIcon = WeatherIcons.NIGHT_CLEAR;
+                else
+                    WeatherIcon = WeatherIcons.DAY_SUNNY;
             else if (icon.Contains("chancerain"))
-                WeatherIcon = "\uf019";
+                WeatherIcon = WeatherIcons.RAIN;
             else if (icon.Contains("clear") || icon.Contains("sunny"))
-                WeatherIcon = "\uf00d";
+                if (isNight)
+                    WeatherIcon = WeatherIcons.NIGHT_CLEAR;
+                else
+                    WeatherIcon = WeatherIcons.DAY_SUNNY;
             else if (icon.Contains("cloudy"))
-                WeatherIcon = "\uf002";
+                if (isNight)
+                    WeatherIcon = WeatherIcons.NIGHT_ALT_CLOUDY;
+                else
+                    WeatherIcon = WeatherIcons.DAY_CLOUDY;
             else if (icon.Contains("flurries"))
-                WeatherIcon = "\uf064";
+                WeatherIcon = WeatherIcons.SNOW_WIND;
             else if (icon.Contains("fog"))
-                WeatherIcon = "\uf014";
+                WeatherIcon = WeatherIcons.FOG;
             else if (icon.Contains("hazy"))
-                WeatherIcon = "\uf021";
+                if (isNight)
+                    WeatherIcon = WeatherIcons.WINDY;
+                else
+                    WeatherIcon = WeatherIcons.DAY_HAZE;
             else if (icon.Contains("sleet") || icon.Contains("sleat"))
-                WeatherIcon = "\uf0b5";
+                WeatherIcon = WeatherIcons.SLEET;
             else if (icon.Contains("rain"))
-                WeatherIcon = "\uf01a";
+                WeatherIcon = WeatherIcons.SHOWERS;
             else if (icon.Contains("snow"))
-                WeatherIcon = "\uf01b";
+                WeatherIcon = WeatherIcons.SNOW;
             else if (icon.Contains("tstorms"))
-                WeatherIcon = "\uf01e";
-            else if (icon.Contains("unknown"))
-                WeatherIcon = "\uf00d";
-            else if (icon.Contains("nt_"))
-                WeatherIcon = "\uf02e";
+                WeatherIcon = WeatherIcons.THUNDERSTORM;
+            else if (icon.Contains("unknown") || icon.Contains("nt_"))
+                if (isNight)
+                    WeatherIcon = WeatherIcons.NIGHT_CLEAR;
+                else
+                    WeatherIcon = WeatherIcons.DAY_SUNNY;
 
             if (String.IsNullOrWhiteSpace(WeatherIcon))
             {
                 // Not Available
-                WeatherIcon = "\uf07b";
+                WeatherIcon = WeatherIcons.NA;
             }
 
             return WeatherIcon;
-        }
-
-        public override bool IsNight(Weather weather)
-        {
-            bool isNight = false;
-
-            if (weather.condition.icon.StartsWith("nt_"))
-                isNight = true;
-
-            if (!isNight)
-            {
-                // Fallback to sunset/rise time just in case
-                TimeSpan sunrise = weather.astronomy.sunrise.TimeOfDay;
-                TimeSpan sunset = weather.astronomy.sunset.TimeOfDay;
-                TimeSpan now = DateTimeOffset.UtcNow.ToOffset(weather.location.tz_offset).TimeOfDay;
-
-                // Determine whether its night using sunset/rise times
-                if (now < sunrise || now > sunset)
-                    isNight = true;
-            }
-
-            return isNight;
-        }
-
-#if WINDOWS_UWP
-        public override Color GetWeatherBackgroundColor(Weather weather)
-#elif __ANDROID__
-        public override Color GetWeatherBackgroundColor(Weather weather)
-#endif
-        {
-            byte[] rgb = null;
-            String icon = weather.condition.icon;
-
-            // Apply background based on weather condition
-            /* WeatherUnderground */
-            if (icon.Contains("mostly") || icon.Contains("partly") ||
-                icon.Contains("cloudy"))
-            {
-                if (IsNight(weather))
-                {
-                    // Add night background plus cloudiness
-                    rgb = new byte[3] { 16, 37, 67 };
-                }
-                else
-                {
-                    // add day bg + cloudiness
-                    rgb = new byte[3] { 119, 148, 196 };
-                }
-            }
-            else if (icon.Contains("rain") || icon.Contains("sleet") || icon.Contains("sleat") ||
-                     icon.Contains("flurries") || icon.Contains("snow") || icon.Contains("tstorms"))
-            {
-                // lighter than night color + cloudiness
-                rgb = new byte[3] { 53, 67, 116 };
-            }
-            else if (icon.Contains("hazy") || icon.Contains("fog"))
-            {
-                // add haziness
-                rgb = new byte[3] { 143, 163, 196 };
-            }
-            else if (icon.Contains("clear") || icon.Contains("sunny"))
-            {
-                // Set background based using sunset/rise times
-                if (IsNight(weather))
-                {
-                    // Night background
-                    rgb = new byte[3] { 26, 36, 74 };
-                }
-                else
-                {
-                    // set day bg
-                    rgb = new byte[3] { 72, 116, 191 };
-                }
-            }
-
-            // Just in case
-            if (rgb == null)
-            {
-                // Set background based using sunset/rise times
-                if (IsNight(weather))
-                {
-                    // Night background
-                    rgb = new byte[3] { 26, 36, 74 };
-                }
-                else
-                {
-                    // set day bg
-                    rgb = new byte[3] { 72, 116, 191 };
-                }
-            }
-
-#if WINDOWS_UWP
-            return Color.FromArgb(255, rgb[0], rgb[1], rgb[2]);
-#elif __ANDROID__
-            return new Color(rgb[0], rgb[1], rgb[2]);
-#endif
         }
     }
 }

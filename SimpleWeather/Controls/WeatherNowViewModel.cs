@@ -313,7 +313,7 @@ namespace SimpleWeather.Controls
             CurTemp = Settings.IsFahrenheit ?
                 Math.Round(weather.condition.temp_f) + "\uf045" : Math.Round(weather.condition.temp_c) + "\uf03c";
             CurCondition = (String.IsNullOrWhiteSpace(weather.condition.weather)) ? "---" : weather.condition.weather;
-            WeatherIcon = wm.GetWeatherIcon(weather.condition.icon);
+            WeatherIcon = weather.condition.icon;
 
             // WeatherDetails
             // Astronomy

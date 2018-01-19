@@ -7,6 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+#if WINDOWS_UWP
+using SimpleWeather.UWP.Helpers;
+#endif
 
 namespace SimpleWeather.WeatherData
 {
@@ -268,7 +271,7 @@ namespace SimpleWeather.WeatherData
                             // low
                             fcast.low_f = ConversionMethods.CtoF(dayMin.ToString(CultureInfo.InvariantCulture));
                             fcast.low_c = Math.Round(dayMin).ToString();
-                            // icon (set in provider GetWeather method)
+                            // icon
                             forecastL.Add(fcast);
 
                             // Reset
@@ -290,7 +293,7 @@ namespace SimpleWeather.WeatherData
                         // low
                         fcast.low_f = ConversionMethods.CtoF(dayMin.ToString(CultureInfo.InvariantCulture));
                         fcast.low_c = Math.Round(dayMin).ToString();
-                        // icon (set in provider GetWeather method)
+                        // icon
                         forecastL.Add(fcast);
 
                         if (date.Equals(endDate))
@@ -307,7 +310,7 @@ namespace SimpleWeather.WeatherData
                 if (hr_forecastL.Count > 1 &&
                     hr_forecastL[hr_forecastL.Count - 2].date.Equals(time.from))
                 {
-                    // Set condition from id (do this in GetWeather func)
+                    // Set condition from id
                     var hr = hr_forecastL[hr_forecastL.Count - 2];
                     if (String.IsNullOrEmpty(hr.icon))
                     {
@@ -320,7 +323,7 @@ namespace SimpleWeather.WeatherData
                 }
                 else if (end && hr_forecastL.Last().date.Equals(time.from))
                 {
-                    // Set condition from id (do this in GetWeather func)
+                    // Set condition from id
                     var hr = hr_forecastL.Last();
                     if (String.IsNullOrEmpty(hr.icon))
                     {
@@ -358,7 +361,7 @@ namespace SimpleWeather.WeatherData
                     //condition.feelslike_f
                     //condition.feelslike_c
 
-                    // Set condition from id (do this in GetWeather func)
+                    // Set condition from id
                     if (time.location.symbol != null)
                     {
                         condition.icon = time.location.symbol.number.ToString();
@@ -750,7 +753,8 @@ namespace SimpleWeather.WeatherData
             low_f = forecast.low;
             low_c = ConversionMethods.FtoC(low_f);
             condition = forecast.text;
-            icon = forecast.code;
+            icon = WeatherManager.GetProvider(WeatherAPI.Yahoo)
+                   .GetWeatherIcon(forecast.code);
         }
 
         public Forecast(WeatherUnderground.Forecastday1 forecast)
@@ -761,7 +765,8 @@ namespace SimpleWeather.WeatherData
             low_f = forecast.low.fahrenheit;
             low_c = forecast.low.celsius;
             condition = forecast.conditions;
-            icon = forecast.icon_url.Replace("http://icons.wxug.com/i/c/k/", "").Replace(".gif", "");
+            icon = WeatherManager.GetProvider(WeatherAPI.WeatherUnderground)
+                   .GetWeatherIcon(forecast.icon_url.Replace("http://icons.wxug.com/i/c/k/", "").Replace(".gif", ""));
         }
 
         public Forecast(OpenWeather.List forecast)
@@ -772,14 +777,14 @@ namespace SimpleWeather.WeatherData
             low_f = ConversionMethods.KtoF(forecast.main.temp_min.ToString(CultureInfo.InvariantCulture));
             low_c = ConversionMethods.KtoC(forecast.main.temp_min.ToString(CultureInfo.InvariantCulture));
 
-            string ico = forecast.weather[0].icon;
-            string dn = ico.Last().ToString();
-
-            if (int.TryParse(dn, out int x))
-                dn = String.Empty;
-
-            condition = forecast.weather[0].main;
-            icon = forecast.weather[0].id.ToString() + dn;
+#if WINDOWS_UWP
+            condition = forecast.weather[0].description.ToTitleCase();
+#else
+            var culture = CultureInfo.CurrentCulture;
+            condition = culture.TextInfo.ToTitleCase(forecast.weather[0].description);
+#endif
+            icon = WeatherManager.GetProvider(WeatherAPI.OpenWeatherMap)
+                   .GetWeatherIcon(forecast.weather[0].id.ToString());
         }
 
         public Forecast(Metno.weatherdataProductTime time)
@@ -913,7 +918,10 @@ namespace SimpleWeather.WeatherData
             high_f = hr_forecast.temp.english;
             high_c = hr_forecast.temp.metric;
             condition = hr_forecast.condition;
-            icon = hr_forecast.icon_url.Replace("http://icons.wxug.com/i/c/k/", "").Replace(".gif", "");
+
+            icon = WeatherManager.GetProvider(WeatherAPI.WeatherUnderground)
+                   .GetWeatherIcon(hr_forecast.icon_url.Replace("http://icons.wxug.com/i/c/k/", "").Replace(".gif", ""));
+
             pop = hr_forecast.pop;
             wind_degrees = int.Parse(hr_forecast.wdir.degrees);
             wind_mph = float.Parse(hr_forecast.wspd.english);
@@ -925,15 +933,24 @@ namespace SimpleWeather.WeatherData
             date = DateTimeOffset.FromUnixTimeSeconds(hr_forecast.dt).DateTime;
             high_f = ConversionMethods.KtoF(hr_forecast.main.temp.ToString(CultureInfo.InvariantCulture));
             high_c = ConversionMethods.KtoC(hr_forecast.main.temp.ToString(CultureInfo.InvariantCulture));
-            condition = hr_forecast.weather[0].main;
 
+#if WINDOWS_UWP
+            condition = hr_forecast.weather[0].description.ToTitleCase();
+#else
+            var culture = CultureInfo.CurrentCulture;
+            condition = culture.TextInfo.ToTitleCase(hr_forecast.weather[0].description);
+#endif
+
+            // Use icon to determine if day or night
             string ico = hr_forecast.weather[0].icon;
             string dn = ico.Last().ToString();
 
             if (int.TryParse(dn, out int x))
                 dn = String.Empty;
 
-            icon = hr_forecast.weather[0].id.ToString() + dn;
+            icon = WeatherManager.GetProvider(WeatherAPI.OpenWeatherMap)
+                   .GetWeatherIcon(hr_forecast.weather[0].id.ToString() + dn);
+
             // Use cloudiness value here
             pop = hr_forecast.clouds.all.ToString();
             wind_degrees = (int)hr_forecast.wind.deg;
@@ -1088,7 +1105,10 @@ namespace SimpleWeather.WeatherData
             title = txt_forecast.title;
             fcttext = txt_forecast.fcttext;
             fcttext_metric = txt_forecast.fcttext_metric;
-            icon = txt_forecast.icon_url.Replace("http://icons.wxug.com/i/c/k/", "").Replace(".gif", "");
+
+            icon = WeatherManager.GetProvider(WeatherAPI.WeatherUnderground)
+                   .GetWeatherIcon(txt_forecast.icon_url.Replace("http://icons.wxug.com/i/c/k/", "").Replace(".gif", ""));
+
             pop = txt_forecast.pop;
         }
 
@@ -1206,7 +1226,8 @@ namespace SimpleWeather.WeatherData
             wind_kph = condition.wind_kph;
             feelslike_f = condition.feelslike_f;
             feelslike_c = condition.feelslike_c;
-            icon = condition.icon_url.Replace("http://icons.wxug.com/i/c/k/", "").Replace(".gif", "");
+            icon = WeatherManager.GetProvider(WeatherAPI.WeatherUnderground)
+                   .GetWeatherIcon(condition.icon_url.Replace("http://icons.wxug.com/i/c/k/", "").Replace(".gif", ""));
         }
 
         public Condition(WeatherYahoo.Channel channel)
@@ -1219,12 +1240,19 @@ namespace SimpleWeather.WeatherData
             wind_mph = float.Parse(ConversionMethods.KphToMph(channel.wind.speed));
             feelslike_f = float.Parse(channel.wind.chill);
             feelslike_c = float.Parse(ConversionMethods.FtoC(channel.wind.chill));
-            icon = channel.item.condition.code;
+            icon = WeatherManager.GetProvider(WeatherAPI.Yahoo)
+                   .GetWeatherIcon(channel.item.condition.code);
         }
 
         public Condition(OpenWeather.CurrentRootobject root)
         {
-            weather = root.weather[0].main;
+#if WINDOWS_UWP
+            weather = root.weather[0].description.ToTitleCase();
+#else
+            var culture = CultureInfo.CurrentCulture;
+            weather = culture.TextInfo.ToTitleCase(root.weather[0].description);
+#endif
+
             temp_f = float.Parse(ConversionMethods.KtoF(root.main.temp.ToString(CultureInfo.InvariantCulture)));
             temp_c = float.Parse(ConversionMethods.KtoC(root.main.temp.ToString(CultureInfo.InvariantCulture)));
             wind_degrees = (int)root.wind.deg;
@@ -1240,7 +1268,8 @@ namespace SimpleWeather.WeatherData
             if (int.TryParse(dn, out int x))
                 dn = String.Empty;
 
-            icon = root.weather[0].id.ToString() + dn;
+            icon = WeatherManager.GetProvider(WeatherAPI.OpenWeatherMap)
+                   .GetWeatherIcon(root.weather[0].id.ToString() + dn);
         }
 
         public Condition(Metno.weatherdataProductTime time)

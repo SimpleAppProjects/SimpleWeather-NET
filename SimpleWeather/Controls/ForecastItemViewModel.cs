@@ -29,7 +29,7 @@ namespace SimpleWeather.Controls
             var culture = System.Globalization.CultureInfo.CurrentCulture;
 #endif
 
-            WeatherIcon = wm.GetWeatherIcon(forecast.icon);
+            WeatherIcon = forecast.icon;
             Date = forecast.date.ToString("dddd dd", culture);
             Condition = forecast.condition;
             HiTemp = (Settings.IsFahrenheit ? forecast.high_f : forecast.high_c) + "º ";

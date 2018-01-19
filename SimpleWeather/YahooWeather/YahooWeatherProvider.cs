@@ -290,127 +290,9 @@ namespace SimpleWeather.WeatherYahoo
 
         public override string GetWeatherIcon(string icon)
         {
-            string WeatherIcon = string.Empty;
-
-            if (int.TryParse(icon, out int code))
-            {
-                switch (code)
-                {
-                    case 0: // Tornado
-                        WeatherIcon = "\uf056";
-                        break;
-                    case 1: // Tropical Storm
-                    case 37:
-                    case 38: // Scattered Thunderstorms/showers
-                    case 39:
-                    case 45:
-                    case 47:
-                        WeatherIcon = "\uf00e";
-                        break;
-                    case 2: // Hurricane
-                        WeatherIcon = "\uf073";
-                        break;
-                    case 3:
-                    case 4: // Scattered Thunderstorms
-                        WeatherIcon = "\uf01e";
-                        break;
-                    case 5: // Mixed Rain/Snow
-                    case 6: // Mixed Rain/Sleet
-                    case 7: // Mixed Snow/Sleet
-                    case 18: // Sleet
-                    case 35: // Mixed Rain/Hail
-                        WeatherIcon = "\uf017";
-                        break;
-                    case 8: // Freezing Drizzle
-                    case 10: // Freezing Rain
-                    case 17: // Hail
-                        WeatherIcon = "\uf015";
-                        break;
-                    case 9: // Drizzle
-                    case 11: // Showers
-                    case 12:
-                    case 40: // Scattered Showers
-                        WeatherIcon = "\uf01a";
-                        break;
-                    case 13: // Snow Flurries
-                    case 14: // Light Snow Showers
-                    case 16: // Snow
-                    case 42: // Scattered Snow Showers
-                    case 46: // Snow Showers
-                        WeatherIcon = "\uf01b";
-                        break;
-                    case 15: // Blowing Snow
-                    case 41: // Heavy Snow
-                    case 43:
-                        WeatherIcon = "\uf064";
-                        break;
-                    case 19: // Dust
-                        WeatherIcon = "\uf063";
-                        break;
-                    case 20: // Foggy
-                        WeatherIcon = "\uf014";
-                        break;
-                    case 21: // Haze
-                        WeatherIcon = "\uf021";
-                        break;
-                    case 22: // Smoky
-                        WeatherIcon = "\uf062";
-                        break;
-                    case 23: // Blustery
-                    case 24: // Windy
-                        WeatherIcon = "\uf050";
-                        break;
-                    case 25: // Cold
-                        WeatherIcon = "\uf076";
-                        break;
-                    case 26: // Cloudy
-                        WeatherIcon = "\uf013";
-                        break;
-                    case 27: // Mostly Cloudy (Night)
-                    case 29: // Partly Cloudy (Night)
-                        WeatherIcon = "\uf031";
-                        break;
-                    case 28: // Mostly Cloudy (Day)
-                    case 30: // Partly Cloudy (Day)
-                        WeatherIcon = "\uf002";
-                        break;
-                    case 31: // Clear (Night)
-                        WeatherIcon = "\uf02e";
-                        break;
-                    case 32: // Sunny
-                        WeatherIcon = "\uf00d";
-                        break;
-                    case 33: // Fair (Night)
-                        WeatherIcon = "\uf083";
-                        break;
-                    case 34: // Fair (Day)
-                    case 44: // Partly Cloudy
-                        WeatherIcon = "\uf00c";
-                        break;
-                    case 36: // HOT
-                        WeatherIcon = "\uf072";
-                        break;
-                    case 3200: // Not Available
-                    default:
-                        WeatherIcon = "\uf07b";
-                        break;
-                }
-            }
-
-            if (String.IsNullOrWhiteSpace(WeatherIcon))
-            {
-                // Not Available
-                WeatherIcon = "\uf07b";
-            }
-
-            return WeatherIcon;
-        }
-
-        public override bool IsNight(Weather weather)
-        {
             bool isNight = false;
 
-            if (int.TryParse(weather.condition.icon, out int code))
+            if (int.TryParse(icon, out int code))
             {
                 switch (code)
                 {
@@ -423,146 +305,166 @@ namespace SimpleWeather.WeatherYahoo
                 }
             }
 
-            if (!isNight)
-            {
-                // Fallback to sunset/rise time just in case
-                TimeSpan sunrise = weather.astronomy.sunrise.TimeOfDay;
-                TimeSpan sunset = weather.astronomy.sunset.TimeOfDay;
-                TimeSpan now = DateTimeOffset.UtcNow.ToOffset(weather.location.tz_offset).TimeOfDay;
-
-                // Determine whether its night using sunset/rise times
-                if (now < sunrise || now > sunset)
-                    isNight = true;
-            }
-
-            return isNight;
+            return GetWeatherIcon(isNight, icon);
         }
 
-#if WINDOWS_UWP
-        public override Color GetWeatherBackgroundColor(Weather weather)
-#elif __ANDROID__
-        public override Color GetWeatherBackgroundColor(Weather weather)
-#endif
+        public override string GetWeatherIcon(bool isNight, string icon)
         {
-            byte[] rgb = null;
-            String icon = weather.condition.icon;
+            string WeatherIcon = string.Empty;
 
-            // Apply background based on weather condition
             if (int.TryParse(icon, out int code))
             {
                 switch (code)
                 {
-                    // Rain 
-                    case 9:
-                    case 11:
-                    case 12:
-                    case 40:
-                    // (Mixed) Rain/Snow/Sleet
-                    case 5:
-                    case 6:
-                    case 7:
-                    case 18:
-                    // Hail / Freezing Rain
-                    case 8:
-                    case 10:
-                    case 17:
-                    case 35:
-                    // Snow / Snow Showers/Storm
-                    case 13:
-                    case 14:
-                    case 15:
-                    case 16:
-                    case 41:
-                    case 42:
-                    case 43:
-                    case 46:
-                    // Tornado / Hurricane / Thunderstorm / Tropical Storm
-                    case 0:
-                    case 1:
-                    case 2:
-                    case 3:
-                    case 4:
+                    case 0: // Tornado
+                        WeatherIcon = WeatherIcons.TORNADO;
+                        break;
+                    case 1: // Tropical Storm
                     case 37:
-                    case 38:
+                    case 38: // Scattered Thunderstorms/showers
                     case 39:
                     case 45:
                     case 47:
-                        // lighter than night color + cloudiness
-                        rgb = new byte[3] { 53, 67, 116 };
-                        break;
-                    // Dust
-                    case 19:
-                    // Foggy / Haze
-                    case 20:
-                    case 21:
-                    case 22:
-                        // add haziness
-                        rgb = new byte[3] { 143, 163, 196 };
-                        break;
-                    // Night
-                    case 31:
-                    case 33:
-                        // Night background
-                        rgb = new byte[3] { 26, 36, 74 };
-                        break;
-                    /* Ambigious weather conditions */
-                    // (Mostly) Cloudy
-                    case 28:
-                    case 26:
-                    case 27:
-                    // Partly Cloudy
-                    case 44:
-                    case 29:
-                    case 30:
-                        if (IsNight(weather))
-                        {
-                            // Add night background plus cloudiness
-                            rgb = new byte[3] { 16, 37, 67 };
-                        }
+                        if (isNight)
+                            WeatherIcon = WeatherIcons.NIGHT_ALT_STORM_SHOWERS;
                         else
-                        {
-                            // add day bg + cloudiness
-                            rgb = new byte[3] { 119, 148, 196 };
-                        }
+                            WeatherIcon = WeatherIcons.DAY_STORM_SHOWERS;
                         break;
-                    case 3200:
+                    case 2: // Hurricane
+                        WeatherIcon = WeatherIcons.HURRICANE;
+                        break;
+                    case 3:
+                    case 4: // Scattered Thunderstorms
+                        WeatherIcon = WeatherIcons.THUNDERSTORM;
+                        break;
+                    case 5: // Mixed Rain/Snow
+                    case 6: // Mixed Rain/Sleet
+                    case 7: // Mixed Snow/Sleet
+                    case 18: // Sleet
+                    case 35: // Mixed Rain/Hail
+                        WeatherIcon = WeatherIcons.RAIN_MIX;
+                        break;
+                    case 8: // Freezing Drizzle
+                    case 10: // Freezing Rain
+                    case 17: // Hail
+                        WeatherIcon = WeatherIcons.HAIL;
+                        break;
+                    case 9: // Drizzle
+                    case 11: // Showers
+                    case 12:
+                    case 40: // Scattered Showers
+                        WeatherIcon = WeatherIcons.SHOWERS;
+                        break;
+                    case 13: // Snow Flurries
+                    case 14: // Light Snow Showers
+                    case 16: // Snow
+                    case 42: // Scattered Snow Showers
+                    case 46: // Snow Showers
+                        WeatherIcon = WeatherIcons.SNOW;
+                        break;
+                    case 15: // Blowing Snow
+                    case 41: // Heavy Snow
+                    case 43:
+                        WeatherIcon = WeatherIcons.SNOW_WIND;
+                        break;
+                    case 19: // Dust
+                        WeatherIcon = WeatherIcons.DUST;
+                        break;
+                    case 20: // Foggy
+                        WeatherIcon = WeatherIcons.FOG;
+                        break;
+                    case 21: // Haze
+                        if (isNight)
+                            WeatherIcon = WeatherIcons.WINDY;
+                        else
+                            WeatherIcon = WeatherIcons.DAY_HAZE;
+                        break;
+                    case 22: // Smoky
+                        WeatherIcon = WeatherIcons.SMOKE;
+                        break;
+                    case 23: // Blustery
+                    case 24: // Windy
+                        WeatherIcon = WeatherIcons.STRONG_WIND;
+                        break;
+                    case 25: // Cold
+                        WeatherIcon = WeatherIcons.SNOWFLAKE_COLD;
+                        break;
+                    case 26: // Cloudy
+                        WeatherIcon = WeatherIcons.CLOUDY;
+                        break;
+                    case 27: // Mostly Cloudy (Night)
+                    case 28: // Mostly Cloudy (Day)
+                    case 29: // Partly Cloudy (Night)
+                    case 30: // Partly Cloudy (Day)
+                        if (isNight)
+                            WeatherIcon = WeatherIcons.NIGHT_ALT_CLOUDY;
+                        else
+                            WeatherIcon = WeatherIcons.DAY_CLOUDY;
+                        break;
+                    case 31: // Clear (Night)
+                    case 32: // Sunny
+                        if (isNight)
+                            WeatherIcon = WeatherIcons.NIGHT_CLEAR;
+                        else
+                            WeatherIcon = WeatherIcons.DAY_SUNNY;
+                        break;
+                    case 33: // Fair (Night)
+                    case 34: // Fair (Day)
+                    case 44: // Partly Cloudy
+                        if (isNight)
+                            WeatherIcon = WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY;
+                        else
+                            WeatherIcon = WeatherIcons.DAY_SUNNY_OVERCAST;
+                        break;
+                    case 36: // HOT
+                        if (isNight)
+                            WeatherIcon = WeatherIcons.NIGHT_CLEAR;
+                        else
+                            WeatherIcon = WeatherIcons.DAY_HOT;
+                        break;
+                    case 3200: // Not Available
                     default:
-                        // Set background based using sunset/rise times
-                        if (IsNight(weather))
-                        {
-                            // Night background
-                            rgb = new byte[3] { 26, 36, 74 };
-                        }
-                        else
-                        {
-                            // set day bg
-                            rgb = new byte[3] { 72, 116, 191 };
-                        }
+                        WeatherIcon = WeatherIcons.NA;
                         break;
                 }
             }
 
-            // Just in case
-            if (rgb == null)
+            if (String.IsNullOrWhiteSpace(WeatherIcon))
             {
-                // Set background based using sunset/rise times
-                if (IsNight(weather))
-                {
-                    // Night background
-                    rgb = new byte[3] { 26, 36, 74 };
-                }
-                else
-                {
-                    // set day bg
-                    rgb = new byte[3] { 72, 116, 191 };
-                }
+                // Not Available
+                WeatherIcon = WeatherIcons.NA;
             }
 
-#if WINDOWS_UWP
-            return Color.FromArgb(255, rgb[0], rgb[1], rgb[2]);
-#elif __ANDROID__
-            return new Color(rgb[0], rgb[1], rgb[2]);
-#endif
+            return WeatherIcon;
+        }
+
+        // Some conditions can be for any time of day
+        // So use sunrise/set data as fallback
+        public override bool IsNight(Weather weather)
+        {
+            bool isNight = base.IsNight(weather);
+
+            switch (weather.condition.icon)
+            {
+                // The following cases can be present at any time of day
+                case WeatherIcons.CLOUDY:
+                case WeatherIcons.SNOWFLAKE_COLD:
+                case WeatherIcons.STRONG_WIND:
+                    if (!isNight)
+                    {
+                        // Fallback to sunset/rise time just in case
+                        TimeSpan sunrise = weather.astronomy.sunrise.TimeOfDay;
+                        TimeSpan sunset = weather.astronomy.sunset.TimeOfDay;
+                        TimeSpan now = DateTimeOffset.UtcNow.ToOffset(weather.location.tz_offset).TimeOfDay;
+
+                        // Determine whether its night using sunset/rise times
+                        if (now < sunrise || now > sunset)
+                            isNight = true;
+                    }
+                    break;
+            }
+
+            return isNight;
         }
     }
 }

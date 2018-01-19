@@ -248,16 +248,23 @@ namespace SimpleWeather.Metno
             {
                 weather.query = location_query;
                 // Add condition icons
-                weather.condition.weather = GetWeatherCondition(weather.condition.icon);
+                var now = DateTimeOffset.UtcNow.TimeOfDay;
+                var sunrise = weather.astronomy.sunrise.TimeOfDay;
+                var sunset = weather.astronomy.sunset.TimeOfDay;
 
-                foreach(Forecast forecast in weather.forecast)
+                weather.condition.weather = GetWeatherCondition(weather.condition.icon);
+                weather.condition.icon = GetWeatherIcon(now < sunrise || now > sunset, weather.condition.icon);
+
+                foreach (Forecast forecast in weather.forecast)
                 {
                     forecast.condition = GetWeatherCondition(forecast.icon);
+                    forecast.icon = GetWeatherIcon(forecast.icon);
                 }
 
                 foreach (HourlyForecast hr_forecast in weather.hr_forecast)
                 {
                     hr_forecast.condition = GetWeatherCondition(hr_forecast.icon);
+                    hr_forecast.icon = GetWeatherIcon(hr_forecast.date.TimeOfDay < sunrise || hr_forecast.date.TimeOfDay > sunset, hr_forecast.icon);
                 }
             }
 
@@ -267,6 +274,27 @@ namespace SimpleWeather.Metno
             return weather;
         }
 
+        public override async Task<Weather> GetWeather(LocationData location)
+        {
+            var weather = await base.GetWeather(location);
+
+            // OWM reports datetime in UTC; add location tz_offset
+            weather.update_time = weather.update_time.ToOffset(location.tz_offset);
+            foreach (HourlyForecast hr_forecast in weather.hr_forecast)
+            {
+                hr_forecast.date = hr_forecast.date.Add(location.tz_offset);
+            }
+            foreach (Forecast forecast in weather.forecast)
+            {
+                forecast.date = forecast.date.Add(location.tz_offset);
+            }
+            weather.astronomy.sunrise = weather.astronomy.sunrise.Add(location.tz_offset);
+            weather.astronomy.sunset = weather.astronomy.sunset.Add(location.tz_offset);
+
+            return weather;
+        }
+
+        // TODO: Move this out
         public string GetWeatherCondition(string icon)
         {
             string condition = String.Empty;
@@ -344,26 +372,6 @@ namespace SimpleWeather.Metno
             return condition;
         }
 
-        public override async Task<Weather> GetWeather(LocationData location)
-        {
-            var weather = await base.GetWeather(location);
-
-            // OWM reports datetime in UTC; add location tz_offset
-            weather.update_time = weather.update_time.ToOffset(location.tz_offset);
-            foreach (HourlyForecast hr_forecast in weather.hr_forecast)
-            {
-                hr_forecast.date = hr_forecast.date.Add(location.tz_offset);
-            }
-            foreach (Forecast forecast in weather.forecast)
-            {
-                forecast.date = forecast.date.Add(location.tz_offset);
-            }
-            weather.astronomy.sunrise = weather.astronomy.sunrise.Add(location.tz_offset);
-            weather.astronomy.sunset = weather.astronomy.sunset.Add(location.tz_offset);
-
-            return weather;
-        }
-
         public override async Task<string> UpdateLocationQuery(Weather weather)
         {
             string query = string.Empty;
@@ -380,118 +388,10 @@ namespace SimpleWeather.Metno
 
         public override string GetWeatherIcon(string icon)
         {
-            string WeatherIcon = string.Empty;
-
-            switch (icon)
-            {
-                case "1": // Sun
-                    WeatherIcon = "\uf00d";
-                    break;
-
-                case "2": // LightCloud
-                case "3": // PartlyCloud
-                    WeatherIcon = "\uf002";
-                    break;
-
-                case "4": // Cloud
-                    WeatherIcon = "\uf013";
-                    break;
-
-                case "5": // LightRainSun
-                    WeatherIcon = "\uf00b";
-                    break;
-
-                case "6": // LightRainThunderSun
-                    WeatherIcon = "\uf010";
-                    break;
-
-                case "7": // SleetSun
-                case "42": // LightSleetSun
-                case "43": // HeavySleetSun
-                    WeatherIcon = "\uf0b2";
-                    break;
-
-                case "8": // SnowSun
-                case "44": // LightSnowSun
-                case "45": // HeavySnowSun
-                    WeatherIcon = "\uf00a";
-                    break;
-
-                case "9": // LightRain
-                case "46": // Drizzle
-                    WeatherIcon = "\uf01c";
-                    break;
-
-                case "10": // Rain
-                    WeatherIcon = "\uf019";
-                    break;
-
-                case "11": // RainThunder
-                    WeatherIcon = "\uf01e";
-                    break;
-
-                case "12": // Sleet
-                case "47": // LightSleet
-                case "48": // HeavySleet
-                    WeatherIcon = "\uf0b5";
-                    break;
-
-                case "13": // Snow
-                case "49": // LightSnow
-                    WeatherIcon = "\uf01b";
-                    break;
-
-                case "14": // SnowThunder
-                case "21": // SnowSunThunder
-                case "28": // LightSnowThunderSun
-                case "29": // HeavySnowThunderSun
-                case "33": // LightSnowThunder
-                case "34": // HeavySnowThunder
-                    WeatherIcon = "\uf06b";
-                    break;
-
-                case "15": // Fog
-                    WeatherIcon = "\uf014";
-                    break;
-
-                case "20": // SleetSunThunder
-                case "23": // SleetThunder
-                case "26": // LightSleetThunderSun
-                case "27": // HeavySleetThunderSun
-                case "31": // LightSleetThunder
-                case "32": // HeavySleetThunder
-                    WeatherIcon = "\uf068";
-                    break;
-
-                case "22": // LightRainThunder
-                case "30": // DrizzleThunder
-                    WeatherIcon = "\uf01d";
-                    break;
-
-                case "24": // DrizzleThunderSun
-                case "25": // RainThunderSun
-                    WeatherIcon = "\uf00e";
-                    break;
-
-                case "40": // DrizzleSun
-                case "41": // RainSun
-                    WeatherIcon = "\uf008";
-                    break;
-
-                case "50": // HeavySnow
-                    WeatherIcon = "\uf064";
-                    break;
-            }
-
-            if (String.IsNullOrWhiteSpace(WeatherIcon))
-            {
-                // Not Available
-                WeatherIcon = "\uf07b";
-            }
-
-            return WeatherIcon;
+            return GetWeatherIcon(false, icon);
         }
 
+        // Needed b/c icons don't show whether night or not
         public override string GetWeatherIcon(bool isNight, string icon)
         {
             string WeatherIcon = string.Empty;
@@ -500,76 +400,77 @@ namespace SimpleWeather.Metno
             {
                 case "1": // Sun
                     if (isNight)
-                        WeatherIcon = "\uf02e";
+                        WeatherIcon = WeatherIcons.NIGHT_CLEAR;
                     else
-                        WeatherIcon = "\uf00d";
+                        WeatherIcon = WeatherIcons.DAY_SUNNY;
                     break;
 
                 case "2": // LightCloud
                 case "3": // PartlyCloud
                     if (isNight)
-                        WeatherIcon = "\uf031";
+                        WeatherIcon = WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY;
                     else
-                        WeatherIcon = "\uf002";
+                        WeatherIcon = WeatherIcons.DAY_SUNNY_OVERCAST;
                     break;
 
                 case "4": // Cloud
-                    WeatherIcon = "\uf013";
+                    WeatherIcon = WeatherIcons.CLOUDY;
                     break;
 
                 case "5": // LightRainSun
                     if (isNight)
-                        WeatherIcon = "\uf039";
+                        WeatherIcon = WeatherIcons.NIGHT_ALT_SPRINKLE;
                     else
-                        WeatherIcon = "\uf00b";
+                        WeatherIcon = WeatherIcons.DAY_SPRINKLE;
                     break;
 
                 case "6": // LightRainThunderSun
                     if (isNight)
-                        WeatherIcon = "\uf03b";
+                        WeatherIcon = WeatherIcons.NIGHT_ALT_THUNDERSTORM;
                     else
-                        WeatherIcon = "\uf010";
+                        WeatherIcon = WeatherIcons.DAY_THUNDERSTORM;
                     break;
 
                 case "7": // SleetSun
                 case "42": // LightSleetSun
                 case "43": // HeavySleetSun
                     if (isNight)
-                        WeatherIcon = "\uf0b3";
+                        WeatherIcon = WeatherIcons.NIGHT_ALT_SLEET;
                     else
-                        WeatherIcon = "\uf0b2";
+                        WeatherIcon = WeatherIcons.DAY_SLEET;
                     break;
 
                 case "8": // SnowSun
                 case "44": // LightSnowSun
                 case "45": // HeavySnowSun
                     if (isNight)
-                        WeatherIcon = "\uf038";
+                        WeatherIcon = WeatherIcons.NIGHT_ALT_SNOW;
                     else
-                        WeatherIcon = "\uf00a";
+                        WeatherIcon = WeatherIcons.DAY_SNOW;
                     break;
 
                 case "9": // LightRain
                 case "46": // Drizzle
-                    WeatherIcon = "\uf01c";
+                    WeatherIcon = WeatherIcons.SPRINKLE;
                     break;
 
                 case "10": // Rain
-                    WeatherIcon = "\uf019";
+                    WeatherIcon = WeatherIcons.RAIN;
                     break;
 
                 case "11": // RainThunder
-                    WeatherIcon = "\uf01e";
+                    WeatherIcon = WeatherIcons.THUNDERSTORM;
                     break;
 
                 case "12": // Sleet
+                case "47": // LightSleet
                 case "48": // HeavySleet
-                    WeatherIcon = "\uf017";
+                    WeatherIcon = WeatherIcons.SLEET;
                     break;
 
                 case "13": // Snow
                 case "49": // LightSnow
-                    WeatherIcon = "\uf01b";
+                    WeatherIcon = WeatherIcons.SNOW;
                     break;
 
                 case "14": // SnowThunder
@@ -579,13 +480,13 @@ namespace SimpleWeather.Metno
                 case "33": // LightSnowThunder
                 case "34": // HeavySnowThunder
                     if (isNight)
-                        WeatherIcon = "\uf06c";
+                        WeatherIcon = WeatherIcons.NIGHT_ALT_SNOW_THUNDERSTORM;
                     else
-                        WeatherIcon = "\uf06b";
+                        WeatherIcon = WeatherIcons.DAY_SNOW_THUNDERSTORM;
                     break;
 
                 case "15": // Fog
-                    WeatherIcon = "\uf014";
+                    WeatherIcon = WeatherIcons.FOG;
                     break;
 
                 case "20": // SleetSunThunder
@@ -595,9 +496,9 @@ namespace SimpleWeather.Metno
                 case "31": // LightSleetThunder
                 case "32": // HeavySleetThunder
                     if (isNight)
-                        WeatherIcon = "\uf069";
+                        WeatherIcon = WeatherIcons.NIGHT_ALT_SLEET_STORM;
                     else
-                        WeatherIcon = "\uf068";
+                        WeatherIcon = WeatherIcons.DAY_SLEET_STORM;
                     break;
 
                 case "22": // LightRainThunder
@@ -605,40 +506,38 @@ namespace SimpleWeather.Metno
                 case "24": // DrizzleThunderSun
                 case "25": // RainThunderSun
                     if (isNight)
-                        WeatherIcon = "\uf03a";
+                        WeatherIcon = WeatherIcons.NIGHT_ALT_STORM_SHOWERS;
                     else
-                        WeatherIcon = "\uf00e";
+                        WeatherIcon = WeatherIcons.DAY_STORM_SHOWERS;
                     break;
 
                 case "40": // DrizzleSun
                 case "41": // RainSun
                     if (isNight)
-                        WeatherIcon = "\uf036";
+                        WeatherIcon = WeatherIcons.NIGHT_ALT_RAIN;
                     else
-                        WeatherIcon = "\uf008";
-                    break;
-
-                case "47": // LightSleet
-                    WeatherIcon = "\uf0b5";
+                        WeatherIcon = WeatherIcons.DAY_RAIN;
                     break;
 
                 case "50": // HeavySnow
-                    WeatherIcon = "\uf064";
+                    WeatherIcon = WeatherIcons.SNOW_WIND;
                     break;
             }
 
             if (String.IsNullOrWhiteSpace(WeatherIcon))
             {
                 // Not Available
-                WeatherIcon = "\uf07b";
+                WeatherIcon = WeatherIcons.NA;
             }
 
             return WeatherIcon;
         }
 
+        // Met.no conditions can be for any time of day
+        // So use sunrise/set data as fallback
         public override bool IsNight(Weather weather)
         {
-            bool isNight = false;
+            bool isNight = base.IsNight(weather);
 
             if (!isNight)
             {
@@ -653,101 +552,6 @@ namespace SimpleWeather.Metno
             }
 
             return isNight;
-        }
-
-#if WINDOWS_UWP
-        public override Color GetWeatherBackgroundColor(Weather weather)
-#elif __ANDROID__
-        public override Color GetWeatherBackgroundColor(Weather weather)
-#endif
-        {
-            byte[] rgb = null;
-            String icon = weather.condition.icon;
-
-            // Apply background based on weather condition
-            switch (icon)
-            {
-                case "5": // LightRainSun
-                case "6": // LightRainThunderSun
-                case "7": // SleetSun
-                case "8": // SnowSun
-                case "9": // LightRain
-                case "10": // Rain
-                case "11": // RainThunder
-                case "12": // Sleet
-                case "13": // Snow
-                case "14": // SnowThunder
-                case "20": // SleetSunThunder
-                case "21": // SnowSunThunder
-                case "22": // LightRainThunder
-                case "23": // SleetThunder
-                case "24": // DrizzleThunderSun
-                case "25": // RainThunderSun
-                case "26": // LightSleetThunderSun
-                case "27": // HeavySleetThunderSun
-                case "28": // LightSnowThunderSun
-                case "29": // HeavySnowThunderSun
-                case "30": // DrizzleThunder
-                case "31": // LightSleetThunder
-                case "32": // HeavySleetThunder
-                case "33": // LightSnowThunder
-                case "34": // HeavySnowThunder
-                case "40": // DrizzleSun
-                case "41": // RainSun
-                case "42": // LightSleetSun
-                case "43": // HeavySleetSun
-                case "44": // LightSnowSun
-                case "45": // HeavySnowSun
-                case "46": // Drizzle
-                case "47": // LightSleet
-                case "48": // HeavySleet
-                case "49": // LightSnow
-                case "50": // HeavySnow
-                    // lighter than night color + cloudiness
-                    rgb = new byte[3] { 53, 67, 116 };
-                    break;
-
-                case "15": // Fog
-                    // add haziness
-                    rgb = new byte[3] { 143, 163, 196 };
-                    break;
-
-                case "2": // LightCloud
-                case "3": // PartlyCloud
-                case "4": // Cloud
-                    if (IsNight(weather))
-                    {
-                        // Add night background plus cloudiness
-                        rgb = new byte[3] { 16, 37, 67 };
-                    }
-                    else
-                    {
-                        // add day bg + cloudiness
-                        rgb = new byte[3] { 119, 148, 196 };
-                    }
-                    break;
-
-                case "1": // Sun
-                default:
-                    // Set background based using sunset/rise times
-                    if (IsNight(weather))
-                    {
-                        // Night background
-                        rgb = new byte[3] { 26, 36, 74 };
-                    }
-                    else
-                    {
-                        // set day bg
-                        rgb = new byte[3] { 72, 116, 191 };
-                    }
-                    break;
-            }
-
-#if WINDOWS_UWP
-            return Color.FromArgb(255, rgb[0], rgb[1], rgb[2]);
-#elif __ANDROID__
-            return new Color(rgb[0], rgb[1], rgb[2]);
-#endif
         }
     }
 }

@@ -181,27 +181,6 @@ namespace SimpleWeather.WeatherData
             return WeatherProvider.IsNight(weather);
         }
 
-        public bool IsNight(DateTime date)
-        {
-            bool isNight = false;
-
-            var weather = WeatherData;
-
-            if (!isNight && weather != null)
-            {
-                // Fallback to sunset/rise time just in case
-                TimeSpan sunrise = weather.astronomy.sunrise.TimeOfDay;
-                TimeSpan sunset = weather.astronomy.sunset.TimeOfDay;
-                TimeSpan now = date.TimeOfDay;
-
-                // Determine whether its night using sunset/rise times
-                if (now < sunrise || now > sunset)
-                    isNight = true;
-            }
-
-            return isNight;
-        }
-
 #if WINDOWS_UWP
         public string GetWeatherIconURI(string icon)
         {

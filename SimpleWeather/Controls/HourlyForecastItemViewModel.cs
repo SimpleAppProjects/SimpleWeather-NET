@@ -44,10 +44,7 @@ namespace SimpleWeather.Controls
 #else
             var culture = System.Globalization.CultureInfo.CurrentCulture;
 #endif
-            if (Settings.API.Equals(WeatherAPI.MetNo))
-                WeatherIcon = wm.GetWeatherIcon(wm.IsNight(hr_forecast.date), hr_forecast.icon);
-            else
-                WeatherIcon = wm.GetWeatherIcon(hr_forecast.icon);
+            WeatherIcon = hr_forecast.icon;
 
 #if WINDOWS_UWP
             if (culture.DateTimeFormat.ShortTimePattern.Contains("H"))

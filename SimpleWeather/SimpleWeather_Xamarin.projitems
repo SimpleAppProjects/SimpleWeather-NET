@@ -36,6 +36,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\WeatherDataLoader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IWeatherLoadedListener.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WeatherData\WeatherIcons.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\WeatherManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\WeatherProviderImpl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherUnderground\AutoCompleteQuery.cs" />

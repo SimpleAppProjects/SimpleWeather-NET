@@ -38,7 +38,7 @@ namespace SimpleWeather.Droid.Controls
             LocationName = weather.location.name;
             CurrTemp = (Settings.IsFahrenheit ?
                 Math.Round(weather.condition.temp_f) : Math.Round(weather.condition.temp_c)) + "º";
-            WeatherIcon = wm.GetWeatherIcon(weather.condition.icon);
+            WeatherIcon = weather.condition.icon;
             WeatherSource = weather.source;
 
             if (LocationData == null)
