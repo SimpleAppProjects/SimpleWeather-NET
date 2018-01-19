@@ -199,9 +199,7 @@ namespace SimpleWeather.Utils
 
         private static void SetAPIKEY(string key)
         {
-            if (!String.IsNullOrWhiteSpace(key))
-                editor.PutString(KEY_APIKEY, key);
-
+            editor.PutString(KEY_APIKEY, key);
             editor.Commit();
         }
 

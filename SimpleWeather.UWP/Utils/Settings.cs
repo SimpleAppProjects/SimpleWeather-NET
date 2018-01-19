@@ -134,8 +134,7 @@ namespace SimpleWeather.Utils
 
         private static void SetAPIKEY(string API_KEY)
         {
-            if (!String.IsNullOrWhiteSpace(API_KEY))
-                localSettings.Values[KEY_APIKEY] = API_KEY;
+            localSettings.Values[KEY_APIKEY] = API_KEY;
         }
         #endregion
 
