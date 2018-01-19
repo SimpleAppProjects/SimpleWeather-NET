@@ -142,6 +142,9 @@ namespace SimpleWeather.UWP
             {
                 e.Cancel = true;
             }
+            else
+                // Unsubscribe from event
+                SystemNavigationManager.GetForCurrentView().BackRequested -= SettingsPage_BackRequested;
         }
 
         private async void KeyEntry_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
