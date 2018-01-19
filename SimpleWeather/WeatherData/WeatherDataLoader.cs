@@ -85,6 +85,12 @@ namespace SimpleWeather.WeatherData
 
                     await Settings.UpdateLocation(location);
                 }
+                if (location.latitude == 0 && location.longitude == 0)
+                {
+                    location.latitude = double.Parse(weather.location.latitude);
+                    location.longitude = double.Parse(weather.location.longitude);
+                    await Settings.UpdateLocation(location);
+                }
 
                 await SaveWeatherData();
             }
@@ -136,8 +142,25 @@ namespace SimpleWeather.WeatherData
             {
                 try
                 {
-                    if (weather != null && weather.source != Settings.API)
-                        await wm.UpdateLocationQuery(weather);
+                    if (weather != null && weather.source != Settings.API ||
+                        weather == null && location != null && location.source != Settings.API)
+                    {
+                        // Update location query and source for new API
+                        string oldKey = location.query;
+
+                        if (weather != null)
+                            location.query = await wm.UpdateLocationQuery(weather);
+                        else
+                            location.query = await wm.UpdateLocationQuery(location);
+
+                        location.source = Settings.API;
+
+                        // Update database as well
+                        if (location.locationType == LocationType.GPS)
+                            Settings.SaveLastGPSLocData(location);
+                        else
+                            await Settings.UpdateLocationWithKey(location, oldKey);
+                    }
 
                     await GetWeatherData();
                 }

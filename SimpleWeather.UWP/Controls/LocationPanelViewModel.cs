@@ -122,6 +122,8 @@ namespace SimpleWeather.Controls
             if (LocationData.query == null)
             {
                 LocationData.query = weather.query;
+                LocationData.latitude = double.Parse(weather.location.latitude);
+                LocationData.longitude = double.Parse(weather.location.longitude);
                 LocationData.source = weather.source;
             }
 

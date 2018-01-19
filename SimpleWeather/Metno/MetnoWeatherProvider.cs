@@ -386,6 +386,20 @@ namespace SimpleWeather.Metno
             return query;
         }
 
+        public override async Task<string> UpdateLocationQuery(LocationData location)
+        {
+            string query = string.Empty;
+            var coord = new WeatherUtils.Coordinate(location.latitude, location.longitude);
+            var qview = await GetLocation(coord);
+
+            if (String.IsNullOrEmpty(qview.LocationQuery))
+                query = string.Format("lat={0}&lon={1}", coord.Latitude, coord.Longitude);
+            else
+                query = qview.LocationQuery;
+
+            return query;
+        }
+
         public override string GetWeatherIcon(string icon)
         {
             return GetWeatherIcon(false, icon);

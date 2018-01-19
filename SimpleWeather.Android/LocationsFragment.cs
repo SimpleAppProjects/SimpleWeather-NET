@@ -117,7 +117,16 @@ namespace SimpleWeather.Droid
                 else
                 {
                     // Update panel weather
-                    LocationPanelViewModel panel = mAdapter.Dataset.Find(panelVM => panelVM.LocationData.query == location.query);
+                    LocationPanelViewModel panel = mAdapter.Dataset.First(panelVM => panelVM.LocationData.query.Equals(location.query));
+                    // Just in case
+                    if (panel == null)
+                    {
+                        panel = mAdapter.Dataset.First(panelVM => panelVM.LocationData.name.Equals(location.name) &&
+                                                        panelVM.LocationData.latitude.Equals(location.latitude) &&
+                                                        panelVM.LocationData.longitude.Equals(location.longitude) &&
+                                                        panelVM.LocationData.tz_offset.Equals(location.tz_offset) &&
+                                                        panelVM.LocationData.tz_short.Equals(location.tz_short));
+                    }
                     panel.SetWeather(weather);
                     AppCompatActivity?.RunOnUiThread(() => mAdapter.NotifyItemChanged(mAdapter.Dataset.IndexOf(panel)));
                 }

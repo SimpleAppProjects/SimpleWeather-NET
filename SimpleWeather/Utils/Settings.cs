@@ -212,6 +212,22 @@ namespace SimpleWeather.Utils
             await locationDB.UpdateAsync(location);
         }
 
+        public static async Task UpdateLocationWithKey(LocationData location, string oldKey)
+        {
+            // Get position from favorites table
+            var favs = await locationDB.Table<Favorites>().ToListAsync();
+            var fav = favs.Find(f => f.query == oldKey);
+            int pos = fav.position;
+
+            // Remove location from table
+            await locationDB.DeleteAsync<LocationData>(oldKey);
+            await locationDB.QueryAsync<Favorites>("delete from favorites where query = ?", oldKey);
+
+            // Add updated location with new query (pkey)
+            await locationDB.InsertOrReplaceAsync(location);
+            await locationDB.InsertAsync(new Favorites() { query = location.query, position = pos });
+        }
+
         public static async Task DeleteLocations()
         {
             await locationDB.DeleteAllAsync<LocationData>();

@@ -41,6 +41,7 @@ namespace SimpleWeather.WeatherData
 
         // Utils Methods
         public abstract Task<String> UpdateLocationQuery(Weather weather);
+        public abstract Task<String> UpdateLocationQuery(LocationData location);
         public virtual String LocaleToLangCode(String iso, String name) { return "EN"; }
         public abstract String GetWeatherIcon(String icon);
         // Used in some providers for hourly forecast

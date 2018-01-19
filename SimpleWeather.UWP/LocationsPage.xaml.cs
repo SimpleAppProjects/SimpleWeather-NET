@@ -53,6 +53,15 @@ namespace SimpleWeather.UWP
                 else
                 {
                     LocationPanelViewModel panelView = LocationPanels.First(panelVM => panelVM.LocationData.query == location.query);
+                    // Just in case
+                    if (panelView == null)
+                    {
+                        panelView = LocationPanels.First(panelVM => panelVM.LocationData.name.Equals(location.name) &&
+                                                        panelVM.LocationData.latitude.Equals(location.latitude) &&
+                                                        panelVM.LocationData.longitude.Equals(location.longitude) &&
+                                                        panelVM.LocationData.tz_offset.Equals(location.tz_offset) &&
+                                                        panelVM.LocationData.tz_short.Equals(location.tz_short));
+                    }
                     panelView.SetWeather(weather);
                 }
             }

@@ -125,6 +125,11 @@ namespace SimpleWeather.WeatherData
             return await WeatherProvider.UpdateLocationQuery(weather);
         }
 
+        public async Task<string> UpdateLocationQuery(LocationData location)
+        {
+            return await WeatherProvider.UpdateLocationQuery(location);
+        }
+
         public async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string ac_query)
         {
             return await WeatherProvider.GetLocations(ac_query);

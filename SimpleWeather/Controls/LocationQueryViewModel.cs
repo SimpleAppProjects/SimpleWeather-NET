@@ -16,6 +16,9 @@ namespace SimpleWeather.Controls
         public string LocationCountry { get; set; }
         public string LocationQuery { get; set; }
 
+        public double LocationLat { get; set; }
+        public double LocationLong { get; set; }
+
         public TimeSpan LocationTZ_Offset { get; set; }
         public string LocationTZ_Short { get; set; }
 
@@ -44,6 +47,9 @@ namespace SimpleWeather.Controls
             LocationCountry = location.c;
             LocationQuery = location.l;
 
+            LocationLat = double.Parse(location.lat);
+            LocationLong = double.Parse(location.lon);
+
             var tz = location.tz;
             var nodaTZ = NodaTime.DateTimeZoneProviders.Tzdb[tz];
             LocationTZ_Offset = nodaTZ.GetUtcOffset(NodaTime.SystemClock.Instance.GetCurrentInstant()).ToTimeSpan();
@@ -60,6 +66,9 @@ namespace SimpleWeather.Controls
             LocationName = string.Format("{0}, {1}", location.city, location.state);
             LocationCountry = location.country;
             LocationQuery = location.query;
+
+            LocationLat = double.Parse(location.lat);
+            LocationLong = double.Parse(location.lon);
 
             var tz = location.tz_unix;
             var nodaTZ = NodaTime.DateTimeZoneProviders.Tzdb[tz];
@@ -111,6 +120,9 @@ namespace SimpleWeather.Controls
             LocationCountry = location.country.code;
             LocationQuery = location.woeid;
 
+            LocationLat = (double)location.centroid.latitude;
+            LocationLong = (double)location.centroid.longitude;
+
             var tz = location.timezone.Value;
             var nodaTZ = NodaTime.DateTimeZoneProviders.Tzdb[tz];
             var instant = NodaTime.SystemClock.Instance.GetCurrentInstant();
@@ -132,6 +144,9 @@ namespace SimpleWeather.Controls
             LocationCountry = location.c;
             LocationQuery = string.Format("lat={0}&lon={1}", location.lat, location.lon);
 
+            LocationLat = double.Parse(location.lat);
+            LocationLong = double.Parse(location.lon);
+
             var tz = location.tz;
             var nodaTZ = NodaTime.DateTimeZoneProviders.Tzdb[tz];
             LocationTZ_Offset = nodaTZ.GetUtcOffset(NodaTime.SystemClock.Instance.GetCurrentInstant()).ToTimeSpan();
@@ -148,6 +163,9 @@ namespace SimpleWeather.Controls
             LocationName = string.Format("{0}, {1}", location.city, location.state);
             LocationCountry = location.country;
             LocationQuery = string.Format("lat={0}&lon={1}", location.lat, location.lon);
+
+            LocationLat = double.Parse(location.lat);
+            LocationLong = double.Parse(location.lon);
 
             var tz = location.tz_unix;
             var nodaTZ = NodaTime.DateTimeZoneProviders.Tzdb[tz];

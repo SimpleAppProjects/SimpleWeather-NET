@@ -46,6 +46,8 @@ namespace SimpleWeather.WeatherData
         {
             query = query_vm.LocationQuery;
             name = query_vm.LocationName;
+            latitude = query_vm.LocationLat;
+            longitude = query_vm.LocationLong;
             tz_offset = query_vm.LocationTZ_Offset;
             tz_short = query_vm.LocationTZ_Short;
             source = Settings.API;

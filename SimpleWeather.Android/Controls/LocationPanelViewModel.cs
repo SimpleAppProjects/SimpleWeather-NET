@@ -46,6 +46,8 @@ namespace SimpleWeather.Droid.Controls
                 {
                     query = weather.query,
                     name = weather.location.name,
+                    latitude = double.Parse(weather.location.latitude),
+                    longitude = double.Parse(weather.location.longitude),
                     tz_offset = weather.location.tz_offset,
                     tz_short = weather.location.tz_short
                 };

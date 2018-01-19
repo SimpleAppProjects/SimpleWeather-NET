@@ -288,6 +288,20 @@ namespace SimpleWeather.WeatherYahoo
             return query;
         }
 
+        public override async Task<string> UpdateLocationQuery(LocationData location)
+        {
+            string query = string.Empty;
+            string coord = string.Format("{0},{1}", location.latitude, location.longitude);
+            var qview = await GetLocation(new WeatherUtils.Coordinate(coord));
+
+            if (String.IsNullOrEmpty(qview.LocationQuery))
+                query = string.Format("({0})", coord);
+            else
+                query = qview.LocationQuery;
+
+            return query;
+        }
+
         public override string GetWeatherIcon(string icon)
         {
             bool isNight = false;
