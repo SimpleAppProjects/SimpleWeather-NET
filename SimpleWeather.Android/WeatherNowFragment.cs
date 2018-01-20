@@ -699,6 +699,9 @@ namespace SimpleWeather.Droid
                     }
                     else
                         precipitationPanel.Visibility = ViewStates.Gone;
+
+                    cloudinessLabel.Visibility = ViewStates.Gone;
+                    cloudiness.Visibility = ViewStates.Gone;
                 }
 
                 // Fix DetailsLayout
