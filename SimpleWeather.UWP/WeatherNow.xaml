@@ -605,7 +605,7 @@
                                Style="{StaticResource SectionLabel}" />
                     <Border Style="{StaticResource Divider}"/>
                     <Grid Name="DetailsPanel" Padding="50,0,50,0">
-                        <toolkitControls:WrapPanel Name="DetailsWrapGrid">
+                        <toolkitControls:WrapPanel x:Name="DetailsWrapGrid">
                             <StackPanel Name="PrecipitationPanel" Style="{StaticResource DetailsBorder}">
                                 <TextBlock x:Uid="Label_Precipitation" Text="Precipitation" Style="{StaticResource WeatherDetailsLabel}"/>
                                 <Border Style="{StaticResource Divider}"/>
