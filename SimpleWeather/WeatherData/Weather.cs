@@ -101,6 +101,13 @@ namespace SimpleWeather.WeatherData
             astronomy = new Astronomy(root.query.results.channel.astronomy);
             ttl = root.query.results.channel.ttl;
 
+            // Set feelslike temp
+            if (condition.temp_f > 80)
+            {
+                condition.feelslike_f = (float)WeatherUtils.CalculateHeatIndex(condition.temp_f, int.Parse(atmosphere.humidity.Replace("%", "")));
+                condition.feelslike_c = float.Parse(ConversionMethods.FtoC(condition.feelslike_f.ToString()));
+            }
+
             source = WeatherAPI.Yahoo;
         }
 
@@ -197,6 +204,11 @@ namespace SimpleWeather.WeatherData
             ttl = "120";
 
             query = currRoot.id.ToString();
+
+            // Set feelslike temp
+            condition.feelslike_f = float.Parse(WeatherUtils.GetFeelsLikeTemp(condition.temp_f.ToString(), condition.wind_mph.ToString(), atmosphere.humidity));
+            condition.feelslike_c = float.Parse(ConversionMethods.FtoC(condition.feelslike_f.ToString()));
+
             source = WeatherAPI.OpenWeatherMap;
         }
 
@@ -378,6 +390,11 @@ namespace SimpleWeather.WeatherData
             ttl = "120";
 
             query = string.Format("lat={0}&lon={1}", location.latitude, location.longitude);
+
+            // Set feelslike temp
+            condition.feelslike_f = float.Parse(WeatherUtils.GetFeelsLikeTemp(condition.temp_f.ToString(), condition.wind_mph.ToString(), atmosphere.humidity));
+            condition.feelslike_c = float.Parse(ConversionMethods.FtoC(condition.feelslike_f.ToString()));
+
             source = WeatherAPI.MetNo;
         }
 

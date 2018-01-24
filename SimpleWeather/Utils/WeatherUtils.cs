@@ -53,6 +53,69 @@ namespace SimpleWeather.Utils
             return date;
         }
 
+        public static String GetFeelsLikeTemp(String temp_f, String wind_mph, String humidity_percent)
+        {
+            String feelslikeTemp = temp_f;
+
+            if (float.TryParse(temp_f, out float temp))
+            {
+                if (temp < 50 && float.TryParse(wind_mph, out float windmph))
+                {
+                    feelslikeTemp = CalculateWindChill(temp, windmph).ToString();
+                }
+                else if (temp > 80 && int.TryParse(humidity_percent, out int humidity))
+                {
+                    feelslikeTemp = CalculateHeatIndex(temp, humidity).ToString();
+                }
+                else
+                    feelslikeTemp = temp_f;
+            }
+
+            return feelslikeTemp;
+        }
+
+        public static float CalculateWindChill(float temp_f, float wind_mph)
+        {
+            if (temp_f < 50)
+                return (float)(35.74f + (0.6215f * temp_f) - (35.75f * Math.Pow(wind_mph, 0.16f)) + (0.4275f * temp_f * Math.Pow(wind_mph, 0.16f)));
+            else
+                return temp_f;
+        }
+
+        public static double CalculateHeatIndex(float temp_f, int humidity)
+        {
+            if (temp_f > 80)
+            {
+                double HI = -42.379
+                            + (2.04901523 * temp_f)
+                            + (10.14333127 * humidity)
+                            - (0.22475541 * temp_f * humidity)
+                            - (0.00683783 * Math.Pow(temp_f, 2))
+                            - (0.05481717 * Math.Pow(humidity, 2))
+                            + (0.00122874 * Math.Pow(temp_f, 2) * humidity)
+                            + (0.00085282 * temp_f * Math.Pow(humidity, 2))
+                            - (0.00000199 * Math.Pow(temp_f, 2) * Math.Pow(humidity, 2));
+
+                if (humidity < 13 && (temp_f > 80 && temp_f < 112))
+                {
+                    double adj = ((13 - humidity) / 4) * Math.Sqrt((17 - Math.Abs(temp_f - 95)) / 17);
+                    HI -= adj;
+                }
+                else if (humidity > 85 && (temp_f > 80 && temp_f < 87))
+                {
+                    double adj = ((humidity - 85) / 10) * ((87 - temp_f) / 5);
+                    HI += adj;
+                }
+
+                if (HI > 80 && HI > temp_f)
+                    return HI;
+                else
+                    return temp_f;
+            }
+            else
+                return temp_f;
+        }
+
         public class Coordinate
         {
             public double Latitude { get => lat; set { SetLat(value); } }
@@ -101,7 +164,7 @@ namespace SimpleWeather.Utils
 
             public override string ToString()
             {
-                return "(" + lat + ", " + _long + ")";
+                return string.Format(CultureInfo.InvariantCulture, "{0},{1}", lat, _long);
             }
         }
 
