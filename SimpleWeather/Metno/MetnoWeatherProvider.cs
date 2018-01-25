@@ -18,6 +18,7 @@ using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.Web;
 using Windows.Web.Http;
+using Windows.Web.Http.Headers;
 #elif __ANDROID__
 using SimpleWeather.Droid;
 using Android.Graphics;
@@ -25,6 +26,7 @@ using Android.Locations;
 using Android.Widget;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 #endif
 
 namespace SimpleWeather.Metno
@@ -182,6 +184,14 @@ namespace SimpleWeather.Metno
             sunrisesetURL = new Uri(string.Format(sunrisesetAPI, location_query, date));
 
             HttpClient webClient = new HttpClient();
+
+            // Use GZIP compression
+#if WINDOWS_UWP
+            webClient.DefaultRequestHeaders.AcceptEncoding.Add(new HttpContentCodingWithQualityHeaderValue("gzip"));
+#elif __ANDROID__
+            webClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
+#endif
+
             WeatherException wEx = null;
 
             try
