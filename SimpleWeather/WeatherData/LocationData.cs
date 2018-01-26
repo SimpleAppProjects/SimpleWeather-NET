@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using SQLite;
+using NodaTime;
 
 namespace SimpleWeather.WeatherData
 {
@@ -28,10 +29,38 @@ namespace SimpleWeather.WeatherData
         public double latitude { get; set; }
         [Newtonsoft.Json.JsonProperty]
         public double longitude { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        [Ignore]
+        public TimeSpan tz_offset
+        {
+            get
+            {
+                if (!String.IsNullOrWhiteSpace(tz_long))
+                {
+                    var nodaTz = DateTimeZoneProviders.Tzdb.GetZoneOrNull(tz_long);
+                    if (nodaTz != null)
+                        return nodaTz.GetUtcOffset(SystemClock.Instance.GetCurrentInstant()).ToTimeSpan();
+                }
+                return TimeSpan.Zero;
+            }
+        }
+        [Newtonsoft.Json.JsonIgnore]
+        [Ignore]
+        public string tz_short
+        {
+            get
+            {
+                if (!String.IsNullOrWhiteSpace(tz_long))
+                {
+                    var nodaTz = DateTimeZoneProviders.Tzdb.GetZoneOrNull(tz_long);
+                    if (nodaTz != null)
+                        return nodaTz.GetZoneInterval(SystemClock.Instance.GetCurrentInstant()).Name;
+                }
+                return "UTC";
+            }
+        }
         [Newtonsoft.Json.JsonProperty]
-        public TimeSpan tz_offset { get; set; }
-        [Newtonsoft.Json.JsonProperty]
-        public string tz_short { get; set; }
+        public string tz_long { get; set; }
         [Newtonsoft.Json.JsonProperty]
         public LocationType locationType { get; set; } = LocationType.Search;
         [Newtonsoft.Json.JsonProperty]
@@ -48,8 +77,7 @@ namespace SimpleWeather.WeatherData
             name = query_vm.LocationName;
             latitude = query_vm.LocationLat;
             longitude = query_vm.LocationLong;
-            tz_offset = query_vm.LocationTZ_Offset;
-            tz_short = query_vm.LocationTZ_Short;
+            tz_long = query_vm.LocationTZ_Long;
             source = Settings.API;
         }
 
@@ -65,8 +93,7 @@ namespace SimpleWeather.WeatherData
             name = query_vm.LocationName;
             latitude = geoPos.Coordinate.Point.Position.Latitude;
             longitude = geoPos.Coordinate.Point.Position.Longitude;
-            tz_offset = query_vm.LocationTZ_Offset;
-            tz_short = query_vm.LocationTZ_Short;
+            tz_long = query_vm.LocationTZ_Long;
             locationType = LocationType.GPS;
             source = Settings.API;
         }
@@ -82,8 +109,7 @@ namespace SimpleWeather.WeatherData
             name = query_vm.LocationName;
             latitude = location.Latitude;
             longitude = location.Longitude;
-            tz_offset = query_vm.LocationTZ_Offset;
-            tz_short = query_vm.LocationTZ_Short;
+            tz_long = query_vm.LocationTZ_Long;
             locationType = LocationType.GPS;
             source = Settings.API;
         }
@@ -108,13 +134,15 @@ namespace SimpleWeather.WeatherData
 
         public override int GetHashCode()
         {
-            var hashCode = -671766369;
+            var hashCode = -302706095;
+            hashCode = hashCode * -1521134295 + base.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(query);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(name);
             hashCode = hashCode * -1521134295 + latitude.GetHashCode();
             hashCode = hashCode * -1521134295 + longitude.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<TimeSpan>.Default.GetHashCode(tz_offset);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(tz_short);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(tz_long);
             hashCode = hashCode * -1521134295 + locationType.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(source);
             return hashCode;
@@ -150,11 +178,8 @@ namespace SimpleWeather.WeatherData
                         case "longitude":
                             obj.longitude = double.Parse(reader.Value.ToString());
                             break;
-                        case "tz_offset":
-                            obj.tz_offset = TimeSpan.Parse(reader.Value.ToString());
-                            break;
-                        case "tz_short":
-                            obj.tz_short = reader.Value.ToString();
+                        case "tz_long":
+                            obj.tz_long = reader.Value.ToString();
                             break;
                         case "locationType":
                             obj.locationType = (LocationType)int.Parse(reader.Value.ToString());
@@ -197,13 +222,9 @@ namespace SimpleWeather.WeatherData
             writer.WritePropertyName("longitude");
             writer.WriteValue(longitude);
 
-            // "tz_offset" : ""
-            writer.WritePropertyName("tz_offset");
-            writer.WriteValue(tz_offset);
-
-            // "tz_short" : ""
-            writer.WritePropertyName("tz_short");
-            writer.WriteValue(tz_short);
+            // "tz_long" : ""
+            writer.WritePropertyName("tz_long");
+            writer.WriteValue(tz_long);
 
             // "locationType" : ""
             writer.WritePropertyName("locationType");

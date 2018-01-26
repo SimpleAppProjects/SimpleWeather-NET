@@ -118,7 +118,10 @@ namespace SimpleWeather.WeatherData
 
         public bool SupportsWeatherLocale => WeatherProvider.SupportsWeatherLocale;
 
-        public bool NeedsExternalLocationData => WeatherProvider.NeedsExternalLocationData;
+        public async Task UpdateLocationData(LocationData location)
+        {
+            await WeatherProvider.UpdateLocationData(location);
+        }
 
         public async Task<string> UpdateLocationQuery(Weather weather)
         {

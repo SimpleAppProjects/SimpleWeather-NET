@@ -16,22 +16,24 @@ namespace SimpleWeather.WeatherData
         // Variables
         public abstract bool SupportsWeatherLocale { get; }
         public abstract bool KeyRequired { get; }
-        public abstract bool NeedsExternalLocationData { get; }
 
         // Methods
         // AutoCompleteQuery
         public abstract Task<ObservableCollection<LocationQueryViewModel>> GetLocations(String ac_query);
         // GeopositionQuery
         public abstract Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coordinate);
+        public abstract Task<LocationQueryViewModel> GetLocation(string query);
         // Weather
         public abstract Task<Weather> GetWeather(String location_query);
         public virtual async Task<Weather> GetWeather(LocationData location)
         {
             var weather = await GetWeather(location.query);
 
-            weather.location.name = location.name;
-            weather.location.tz_offset = location.tz_offset;
             weather.location.tz_short = location.tz_short;
+            weather.location.tz_offset = location.tz_offset;
+
+            if (String.IsNullOrWhiteSpace(weather.location.tz_long))
+                weather.location.tz_long = location.tz_long;
 
             return weather;
         }
@@ -40,6 +42,21 @@ namespace SimpleWeather.WeatherData
         public abstract Task<bool> IsKeyValid(String key);
 
         // Utils Methods
+        public virtual async Task UpdateLocationData(LocationData location)
+        {
+            var qview = await GetLocation(location.query);
+
+            if (qview != null)
+            {
+                location.name = qview.LocationName;
+                location.latitude = qview.LocationLat;
+                location.longitude = qview.LocationLong;
+                location.tz_long = qview.LocationTZ_Long;
+
+                // Update DB here or somewhere else
+                await Settings.UpdateLocation(location);
+            }
+        }
         public abstract Task<String> UpdateLocationQuery(Weather weather);
         public abstract Task<String> UpdateLocationQuery(LocationData location);
         public virtual String LocaleToLangCode(String iso, String name) { return "EN"; }

@@ -33,7 +33,6 @@ namespace SimpleWeather.WeatherUnderground
     {
         public override bool SupportsWeatherLocale => true;
         public override bool KeyRequired => true;
-        public override bool NeedsExternalLocationData => false;
 
         public override async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string query)
         {
@@ -154,6 +153,71 @@ namespace SimpleWeather.WeatherUnderground
             }
 
             if (result != null && !String.IsNullOrWhiteSpace(result.query))
+                location = new LocationQueryViewModel(result);
+            else
+                location = new LocationQueryViewModel();
+
+            return location;
+        }
+
+        public override async Task<LocationQueryViewModel> GetLocation(string query)
+        {
+            LocationQueryViewModel location = null;
+
+            string queryAPI = "http://autocomplete.wunderground.com/aq?query=";
+            string options = "&h=0&cities=1";
+            Uri queryURL = new Uri(queryAPI + query + options);
+            AC_RESULT result;
+            WeatherException wEx = null;
+
+            try
+            {
+                // Connect to webstream
+                HttpClient webClient = new HttpClient();
+                HttpResponseMessage response = await webClient.GetAsync(queryURL);
+                response.EnsureSuccessStatusCode();
+                Stream contentStream = null;
+#if WINDOWS_UWP
+                contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+#elif __ANDROID__
+                contentStream = await response.Content.ReadAsStreamAsync();
+#endif
+
+                // End Stream
+                webClient.Dispose();
+
+                // Load data
+                AC_Rootobject root = JSONParser.Deserializer<AC_Rootobject>(contentStream);
+                result = root.RESULTS.FirstOrDefault();
+
+                // End Stream
+                if (contentStream != null)
+                    contentStream.Dispose();
+            }
+            catch (Exception ex)
+            {
+                result = null;
+#if WINDOWS_UWP
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
+                }
+#elif __ANDROID__
+                if (ex is WebException || ex is HttpRequestException)
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    new Android.OS.Handler(Android.OS.Looper.MainLooper).Post(() =>
+                    {
+                        Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
+                    });
+                }
+#endif
+
+                Debug.WriteLine(ex.StackTrace);
+            }
+
+            if (result != null && !String.IsNullOrWhiteSpace(result.l))
                 location = new LocationQueryViewModel(result);
             else
                 location = new LocationQueryViewModel();
@@ -337,6 +401,39 @@ namespace SimpleWeather.WeatherUnderground
                 throw wEx;
 
             return weather;
+        }
+
+        public override async Task<Weather> GetWeather(LocationData location)
+        {
+            var weather = await base.GetWeather(location);
+
+            // Just update hourly forecast dates to timezone
+            var offset = location.tz_offset;
+
+            foreach (HourlyForecast hr_forecast in weather.hr_forecast)
+            {
+                if (!hr_forecast.date.Offset.Equals(offset))
+                    hr_forecast.date = new DateTimeOffset(hr_forecast.date.DateTime, offset);
+            }
+
+            return weather;
+        }
+
+        // Use location name here instead of query since we use the AutoComplete API
+        public override async Task UpdateLocationData(LocationData location)
+        {
+            var qview = await GetLocation(location.name);
+
+            if (qview != null)
+            {
+                location.name = qview.LocationName;
+                location.latitude = qview.LocationLat;
+                location.longitude = qview.LocationLong;
+                location.tz_long = qview.LocationTZ_Long;
+
+                // Update DB here or somewhere else
+                await Settings.UpdateLocation(location);
+            }
         }
 
         public override async Task<string> UpdateLocationQuery(Weather weather)

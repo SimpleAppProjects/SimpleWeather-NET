@@ -53,10 +53,7 @@ namespace SimpleWeather.WeatherData
 
             try
             {
-                if (wm.NeedsExternalLocationData)
-                    weather = await wm.GetWeather(location);
-                else
-                    weather = await wm.GetWeather(location.query);
+                weather = await wm.GetWeather(location);
             }
             catch (WeatherException weatherEx)
             {
@@ -77,11 +74,10 @@ namespace SimpleWeather.WeatherData
             else if (weather != null)
             {
                 // Handle upgrades
-                if (String.IsNullOrEmpty(location.name) || String.IsNullOrEmpty(location.tz_short))
+                if (String.IsNullOrEmpty(location.name) || String.IsNullOrEmpty(location.tz_long))
                 {
                     location.name = weather.location.name;
-                    location.tz_offset = weather.location.tz_offset;
-                    location.tz_short = weather.location.tz_short;
+                    location.tz_long = weather.location.tz_long;
 
                     await Settings.UpdateLocation(location);
                 }

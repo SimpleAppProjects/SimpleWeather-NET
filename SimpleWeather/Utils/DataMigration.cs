@@ -88,15 +88,11 @@ namespace SimpleWeather.Utils
 
                     foreach (string query in weatherDataKeys)
                     {
-                        LocationData loc = new LocationData()
-                        {
-                            query = query,
-                            name = (oldWeather[query] as Weather).location.name,
-                            longitude = double.Parse((oldWeather[query] as Weather).location.longitude),
-                            latitude = double.Parse((oldWeather[query] as Weather).location.latitude),
-                            tz_offset = (oldWeather[query] as Weather).location.tz_offset,
-                            tz_short = (oldWeather[query] as Weather).location.tz_short
-                        };
+                        var weather = oldWeather[query] as Weather;
+                        var prov = WeatherManager.GetProvider(weather.source);
+                        var qview = await prov.GetLocation(weather.query);
+
+                        LocationData loc = new LocationData(qview);
                         data.Add(loc);
                     }
 
@@ -116,6 +112,16 @@ namespace SimpleWeather.Utils
                 await dataFile.DeleteAsync();
                 dataFile = null;
 #endif
+            }
+        }
+
+        public static async Task SetLocationData(SQLiteAsyncConnection locationDB)
+        {
+            List<LocationData> data = await locationDB.Table<LocationData>().ToListAsync();
+
+            foreach(LocationData location in data)
+            {
+                await WeatherManager.GetProvider(location.source).UpdateLocationData(location);
             }
         }
     }

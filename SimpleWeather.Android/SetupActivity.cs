@@ -287,10 +287,7 @@ namespace SimpleWeather.Droid
                 WeatherData.Weather weather = await Settings.GetWeatherData(location.query);
                 if (weather == null)
                 {
-                    if (wm.NeedsExternalLocationData)
-                        weather = await wm.GetWeather(location);
-                    else
-                        weather = await wm.GetWeather(location.query);
+                    weather = await wm.GetWeather(location);
                 }
 
                 if (weather == null)

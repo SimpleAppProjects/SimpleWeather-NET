@@ -31,7 +31,6 @@ namespace SimpleWeather.WeatherYahoo
     {
         public override bool SupportsWeatherLocale => false;
         public override bool KeyRequired => false;
-        public override bool NeedsExternalLocationData => false;
 
         public override async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string location_query)
         {
@@ -105,6 +104,73 @@ namespace SimpleWeather.WeatherYahoo
             string yahooAPI = "https://query.yahooapis.com/v1/public/yql?q=";
             string location_query = string.Format("({0},{1})", coord.Latitude, coord.Longitude);
             string query = "select * from geo.places where text=\"" + location_query + "\"";
+            Uri queryURL = new Uri(yahooAPI + query);
+            place result = null;
+            WeatherException wEx = null;
+
+            try
+            {
+                // Connect to webstream
+                HttpClient webClient = new HttpClient();
+                HttpResponseMessage response = await webClient.GetAsync(queryURL);
+                response.EnsureSuccessStatusCode();
+                Stream contentStream = null;
+#if WINDOWS_UWP
+                contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+#elif __ANDROID__
+                contentStream = await response.Content.ReadAsStreamAsync();
+#endif
+
+                // End Stream
+                webClient.Dispose();
+
+                // Load data
+                XmlSerializer deserializer = new XmlSerializer(typeof(query));
+                query root = (query)deserializer.Deserialize(contentStream);
+
+                if (root.results != null)
+                    result = root.results[0];
+
+                // End Stream
+                if (contentStream != null)
+                    contentStream.Dispose();
+            }
+            catch (Exception ex)
+            {
+                result = null;
+#if WINDOWS_UWP
+                if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
+                }
+#elif __ANDROID__
+                if (ex is System.Net.WebException || ex is HttpRequestException)
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    new Android.OS.Handler(Android.OS.Looper.MainLooper).Post(() =>
+                    {
+                        Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
+                    });
+                }
+#endif
+                System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+            }
+
+            if (result != null && !String.IsNullOrWhiteSpace(result.woeid))
+                location = new LocationQueryViewModel(result);
+            else
+                location = new LocationQueryViewModel();
+
+            return location;
+        }
+
+        public override async Task<LocationQueryViewModel> GetLocation(string location_query)
+        {
+            LocationQueryViewModel location = null;
+
+            string yahooAPI = "https://query.yahooapis.com/v1/public/yql?q=";
+            string query = "select * from geo.places where woeid=\"" + location_query + "\"";
             Uri queryURL = new Uri(yahooAPI + query);
             place result = null;
             WeatherException wEx = null;
@@ -270,6 +336,15 @@ namespace SimpleWeather.WeatherYahoo
 
             if (wEx != null)
                 throw wEx;
+
+            return weather;
+        }
+
+        public override async Task<Weather> GetWeather(LocationData location)
+        {
+            var weather = await base.GetWeather(location);
+
+            weather.update_time = weather.update_time.ToOffset(location.tz_offset);
 
             return weather;
         }
@@ -467,9 +542,15 @@ namespace SimpleWeather.WeatherYahoo
                     if (!isNight)
                     {
                         // Fallback to sunset/rise time just in case
-                        TimeSpan sunrise = weather.astronomy.sunrise.TimeOfDay;
-                        TimeSpan sunset = weather.astronomy.sunset.TimeOfDay;
-                        TimeSpan now = DateTimeOffset.UtcNow.ToOffset(weather.location.tz_offset).TimeOfDay;
+                        var sunrise = NodaTime.LocalTime.FromTicksSinceMidnight(weather.astronomy.sunrise.TimeOfDay.Ticks);
+                        var sunset = NodaTime.LocalTime.FromTicksSinceMidnight(weather.astronomy.sunset.TimeOfDay.Ticks);
+
+                        var tz = NodaTime.DateTimeZoneProviders.Tzdb.GetZoneOrNull(weather.location.tz_long);
+                        if (tz == null)
+                            tz = NodaTime.DateTimeZone.ForOffset(NodaTime.Offset.FromTimeSpan(weather.location.tz_offset));
+
+                        var now = NodaTime.SystemClock.Instance.GetCurrentInstant()
+                                    .InZone(tz).TimeOfDay;
 
                         // Determine whether its night using sunset/rise times
                         if (now < sunrise || now > sunset)

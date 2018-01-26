@@ -33,7 +33,6 @@ namespace SimpleWeather.OpenWeather
     {
         public override bool SupportsWeatherLocale => true;
         public override bool KeyRequired => true;
-        public override bool NeedsExternalLocationData => true;
 
         public override async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string query)
         {
@@ -152,6 +151,71 @@ namespace SimpleWeather.OpenWeather
             }
 
             if (result != null && !String.IsNullOrWhiteSpace(result.query))
+                location = new LocationQueryViewModel(result);
+            else
+                location = new LocationQueryViewModel();
+
+            return location;
+        }
+
+        public override async Task<LocationQueryViewModel> GetLocation(string query)
+        {
+            LocationQueryViewModel location = null;
+
+            string queryAPI = "http://autocomplete.wunderground.com/aq?query=";
+            string options = "&h=0&cities=1";
+            Uri queryURL = new Uri(queryAPI + query + options);
+            AC_RESULT result;
+            WeatherException wEx = null;
+
+            try
+            {
+                // Connect to webstream
+                HttpClient webClient = new HttpClient();
+                HttpResponseMessage response = await webClient.GetAsync(queryURL);
+                response.EnsureSuccessStatusCode();
+                Stream contentStream = null;
+#if WINDOWS_UWP
+                contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+#elif __ANDROID__
+                contentStream = await response.Content.ReadAsStreamAsync();
+#endif
+
+                // End Stream
+                webClient.Dispose();
+
+                // Load data
+                AC_Rootobject root = JSONParser.Deserializer<AC_Rootobject>(contentStream);
+                result = root.RESULTS.FirstOrDefault();
+
+                // End Stream
+                if (contentStream != null)
+                    contentStream.Dispose();
+            }
+            catch (Exception ex)
+            {
+                result = null;
+#if WINDOWS_UWP
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
+                }
+#elif __ANDROID__
+                if (ex is WebException || ex is HttpRequestException)
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    new Android.OS.Handler(Android.OS.Looper.MainLooper).Post(() =>
+                    {
+                        Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
+                    });
+                }
+#endif
+
+                Debug.WriteLine(ex.StackTrace);
+            }
+
+            if (result != null && !String.IsNullOrWhiteSpace(result.l))
                 location = new LocationQueryViewModel(result);
             else
                 location = new LocationQueryViewModel();
@@ -345,19 +409,37 @@ namespace SimpleWeather.OpenWeather
             var weather = await base.GetWeather(location);
 
             // OWM reports datetime in UTC; add location tz_offset
-            weather.update_time = weather.update_time.ToOffset(location.tz_offset);
+            var offset = location.tz_offset;
+            weather.update_time = weather.update_time.ToOffset(offset);
             foreach(HourlyForecast hr_forecast in weather.hr_forecast)
             {
-                hr_forecast.date =  hr_forecast.date.Add(location.tz_offset);
+                hr_forecast.date =  hr_forecast.date.ToOffset(offset);
             }
             foreach (Forecast forecast in weather.forecast)
             {
-                forecast.date =  forecast.date.Add(location.tz_offset);
+                forecast.date =  forecast.date.Add(offset);
             }
-            weather.astronomy.sunrise = weather.astronomy.sunrise.Add(location.tz_offset);
-            weather.astronomy.sunset = weather.astronomy.sunset.Add(location.tz_offset);
+            weather.astronomy.sunrise = weather.astronomy.sunrise.Add(offset);
+            weather.astronomy.sunset = weather.astronomy.sunset.Add(offset);
 
             return weather;
+        }
+
+        // Use location name here instead of query since we use the AutoComplete API
+        public override async Task UpdateLocationData(LocationData location)
+        {
+            var qview = await GetLocation(location.name);
+
+            if (qview != null)
+            {
+                location.name = qview.LocationName;
+                location.latitude = qview.LocationLat;
+                location.longitude = qview.LocationLong;
+                location.tz_long = qview.LocationTZ_Long;
+
+                // Update DB here or somewhere else
+                await Settings.UpdateLocation(location);
+            }
         }
 
         public override async Task<string> UpdateLocationQuery(WeatherData.Weather weather)

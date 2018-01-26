@@ -19,8 +19,7 @@ namespace SimpleWeather.Controls
         public double LocationLat { get; set; }
         public double LocationLong { get; set; }
 
-        public TimeSpan LocationTZ_Offset { get; set; }
-        public string LocationTZ_Short { get; set; }
+        public string LocationTZ_Long { get; set; }
 
         public LocationQueryViewModel()
         {
@@ -50,10 +49,7 @@ namespace SimpleWeather.Controls
             LocationLat = double.Parse(location.lat);
             LocationLong = double.Parse(location.lon);
 
-            var tz = location.tz;
-            var nodaTZ = NodaTime.DateTimeZoneProviders.Tzdb[tz];
-            LocationTZ_Offset = nodaTZ.GetUtcOffset(NodaTime.SystemClock.Instance.GetCurrentInstant()).ToTimeSpan();
-            LocationTZ_Short = location.tzs;
+            LocationTZ_Long = location.tz;
         }
 
         public LocationQueryViewModel(WeatherUnderground.location location)
@@ -70,10 +66,7 @@ namespace SimpleWeather.Controls
             LocationLat = double.Parse(location.lat);
             LocationLong = double.Parse(location.lon);
 
-            var tz = location.tz_unix;
-            var nodaTZ = NodaTime.DateTimeZoneProviders.Tzdb[tz];
-            LocationTZ_Offset = nodaTZ.GetUtcOffset(NodaTime.SystemClock.Instance.GetCurrentInstant()).ToTimeSpan();
-            LocationTZ_Short = location.tz_short;
+            LocationTZ_Long = location.tz_unix;
         }
         #endregion
 
@@ -123,12 +116,7 @@ namespace SimpleWeather.Controls
             LocationLat = (double)location.centroid.latitude;
             LocationLong = (double)location.centroid.longitude;
 
-            var tz = location.timezone.Value;
-            var nodaTZ = NodaTime.DateTimeZoneProviders.Tzdb[tz];
-            var instant = NodaTime.SystemClock.Instance.GetCurrentInstant();
-            LocationTZ_Offset = nodaTZ.GetUtcOffset(instant).ToTimeSpan();
-            // Get timezone abbreviation from NodaTime
-            LocationTZ_Short = nodaTZ.GetZoneInterval(instant).Name;
+            LocationTZ_Long = location.timezone.Value;
         }
         #endregion
 
@@ -147,10 +135,7 @@ namespace SimpleWeather.Controls
             LocationLat = double.Parse(location.lat);
             LocationLong = double.Parse(location.lon);
 
-            var tz = location.tz;
-            var nodaTZ = NodaTime.DateTimeZoneProviders.Tzdb[tz];
-            LocationTZ_Offset = nodaTZ.GetUtcOffset(NodaTime.SystemClock.Instance.GetCurrentInstant()).ToTimeSpan();
-            LocationTZ_Short = location.tzs;
+            LocationTZ_Long = location.tz;
         }
 
         public LocationQueryViewModel(OpenWeather.location location)
@@ -167,10 +152,7 @@ namespace SimpleWeather.Controls
             LocationLat = double.Parse(location.lat);
             LocationLong = double.Parse(location.lon);
 
-            var tz = location.tz_unix;
-            var nodaTZ = NodaTime.DateTimeZoneProviders.Tzdb[tz];
-            LocationTZ_Offset = nodaTZ.GetUtcOffset(NodaTime.SystemClock.Instance.GetCurrentInstant()).ToTimeSpan();
-            LocationTZ_Short = location.tz_short;
+            LocationTZ_Long = location.tz_unix;
         }
         #endregion
     }

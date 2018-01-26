@@ -90,7 +90,6 @@ namespace SimpleWeather.WeatherData
             location = new Location(root.query);
             update_time = DateTimeOffset.ParseExact(root.query.created,
                             "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
-            update_time = update_time.ToOffset(location.tz_offset);
             forecast = new Forecast[root.query.results.channel.item.forecast.Length];
             for (int i = 0; i < forecast.Length; i++)
             {
@@ -593,6 +592,7 @@ namespace SimpleWeather.WeatherData
         public string longitude { get; set; }
         public TimeSpan tz_offset { get; set; }
         public string tz_short { get; set; }
+        public string tz_long { get; set; }
 
         [JsonConstructor]
         private Location()
@@ -610,6 +610,7 @@ namespace SimpleWeather.WeatherData
             else
                 tz_offset = TimeSpan.ParseExact(condition.local_tz_offset, "\\+hhmm", null);
             tz_short = condition.local_tz_short;
+            tz_long = condition.local_tz_long;
         }
 
         public Location(WeatherYahoo.Query query)
@@ -627,6 +628,7 @@ namespace SimpleWeather.WeatherData
             longitude = root.city.coord.lon.ToString();
             tz_offset = TimeSpan.Zero;
             tz_short = "UTC";
+            tz_long = "UTC";
         }
 
         public Location(Metno.weatherdata foreRoot)
@@ -637,6 +639,7 @@ namespace SimpleWeather.WeatherData
             longitude = foreRoot.product.time.First().location.longitude.ToString();
             tz_offset = TimeSpan.Zero;
             tz_short = "UTC";
+            tz_long = "UTC";
         }
 
         private void saveTimeZone(WeatherYahoo.Query query)
@@ -698,6 +701,9 @@ namespace SimpleWeather.WeatherData
                         case "tz_short":
                             obj.tz_short = reader.Value.ToString();
                             break;
+                        case "tz_long":
+                            obj.tz_long = reader.Value?.ToString();
+                            break;
                     }
                 }
             }
@@ -736,6 +742,10 @@ namespace SimpleWeather.WeatherData
             // "tz_short" : ""
             writer.WritePropertyName("tz_short");
             writer.WriteValue(tz_short);
+
+            // "tz_long" : ""
+            writer.WritePropertyName("tz_long");
+            writer.WriteValue(tz_long);
 
             // }
             writer.WriteEndObject();
@@ -912,7 +922,18 @@ namespace SimpleWeather.WeatherData
     [JsonConverter(typeof(CustomJsonConverter))]
     public class HourlyForecast
     {
-        public DateTime date { get; set; }
+        [JsonIgnore]
+        public DateTimeOffset date
+        {
+            get
+            {
+                if (DateTimeOffset.TryParseExact(_date, "dd.MM.yyyy HH:mm:ss zzzz", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset result))
+                    return result;
+                else
+                    return DateTimeOffset.Parse(_date);
+            }
+            set { _date = value.ToString("dd.MM.yyyy HH:mm:ss zzzz"); }
+        }
         public string high_f { get; set; }
         public string high_c { get; set; }
         public string condition { get; set; }
@@ -921,6 +942,9 @@ namespace SimpleWeather.WeatherData
         public int wind_degrees { get; set; }
         public float wind_mph { get; set; }
         public float wind_kph { get; set; }
+
+        [JsonProperty(PropertyName = "date")]
+        private string _date { get; set; }
 
         [JsonConstructor]
         private HourlyForecast()
@@ -931,7 +955,7 @@ namespace SimpleWeather.WeatherData
         public HourlyForecast(WeatherUnderground.Hourly_Forecast hr_forecast)
         {
             var dateformat = string.Format("{0}/{1}/{2} {3}", hr_forecast.FCTTIME.mon, hr_forecast.FCTTIME.mday, hr_forecast.FCTTIME.year, hr_forecast.FCTTIME.civil);
-            date = DateTime.Parse(dateformat, CultureInfo.InvariantCulture);
+            date = DateTimeOffset.Parse(dateformat, CultureInfo.InvariantCulture);
             high_f = hr_forecast.temp.english;
             high_c = hr_forecast.temp.metric;
             condition = hr_forecast.condition;
@@ -947,7 +971,7 @@ namespace SimpleWeather.WeatherData
 
         public HourlyForecast(OpenWeather.List hr_forecast)
         {
-            date = DateTimeOffset.FromUnixTimeSeconds(hr_forecast.dt).DateTime;
+            date = DateTimeOffset.FromUnixTimeSeconds(hr_forecast.dt);
             high_f = ConversionMethods.KtoF(hr_forecast.main.temp.ToString(CultureInfo.InvariantCulture));
             high_c = ConversionMethods.KtoC(hr_forecast.main.temp.ToString(CultureInfo.InvariantCulture));
 
@@ -977,7 +1001,7 @@ namespace SimpleWeather.WeatherData
 
         public HourlyForecast(Metno.weatherdataProductTime hr_forecast)
         {
-            date = hr_forecast.from;
+            date = new DateTimeOffset(hr_forecast.from, TimeSpan.Zero);
             high_f = ConversionMethods.CtoF(hr_forecast.location.temperature.value.ToString(CultureInfo.InvariantCulture));
             high_c = hr_forecast.location.temperature.value.ToString();
             //condition = hr_forecast.weather[0].main;
@@ -1014,7 +1038,7 @@ namespace SimpleWeather.WeatherData
                     switch (property)
                     {
                         case "date":
-                            obj.date = DateTime.Parse(reader.Value.ToString());
+                            obj._date = reader.Value.ToString();
                             break;
                         case "high_f":
                             obj.high_f = reader.Value.ToString();
@@ -1061,7 +1085,7 @@ namespace SimpleWeather.WeatherData
 
             // "date" : ""
             writer.WritePropertyName("date");
-            writer.WriteValue(date);
+            writer.WriteValue(_date);
 
             // "high_f" : ""
             writer.WritePropertyName("high_f");

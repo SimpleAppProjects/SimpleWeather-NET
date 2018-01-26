@@ -10,7 +10,6 @@ namespace SimpleWeather.WeatherData
     {
         bool KeyRequired { get; }
         bool SupportsWeatherLocale { get; }
-        bool NeedsExternalLocationData { get; }
 
         Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coordinate);
         Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string ac_query);
@@ -21,6 +20,7 @@ namespace SimpleWeather.WeatherData
         Task<bool> IsKeyValid(string key);
         bool IsNight(Weather weather);
         string LocaleToLangCode(string iso, string name);
+        Task UpdateLocationData(LocationData location);
         Task<string> UpdateLocationQuery(Weather weather);
         Task<string> UpdateLocationQuery(LocationData location);
     }

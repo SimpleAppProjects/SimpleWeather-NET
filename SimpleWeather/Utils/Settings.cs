@@ -27,7 +27,7 @@ namespace SimpleWeather.Utils
         private static int DBVersion { get { return GetDBVersion(); } set { SetDBVersion(value); } }
 
         // Data
-        private const int CurrentDBVersion = 1;
+        private const int CurrentDBVersion = 2;
         private static SQLiteAsyncConnection locationDB;
         private static SQLiteAsyncConnection weatherDB;
         private const int CACHE_LIMIT = 10;
@@ -84,6 +84,11 @@ namespace SimpleWeather.Utils
                         if (await locationDB.Table<LocationData>().CountAsync() == 0)
                             await DBUtils.MigrateDataJsonToDB(locationDB, weatherDB);
                         break;
+                    // Add and set tz_long column in db
+                    case 1:
+                        if (await locationDB.Table<LocationData>().CountAsync() > 0)
+                            await DBUtils.SetLocationData(locationDB);
+                        break;
                 }
 
                 SetDBVersion(CurrentDBVersion);
@@ -101,7 +106,7 @@ namespace SimpleWeather.Utils
                 }
                 finally
                 {
-                    if (lastGPSLocData == null)
+                    if (lastGPSLocData == null || String.IsNullOrWhiteSpace(lastGPSLocData.tz_long))
                         lastGPSLocData = new LocationData();
                 }
             }
@@ -121,8 +126,7 @@ namespace SimpleWeather.Utils
                             latitude = loc.latitude,
                             longitude = loc.longitude,
                             locationType = loc.locationType,
-                            tz_offset = loc.tz_offset,
-                            tz_short = loc.tz_short,
+                            tz_long = loc.tz_long,
                             source = loc.source
                         };
             return query.ToList();
