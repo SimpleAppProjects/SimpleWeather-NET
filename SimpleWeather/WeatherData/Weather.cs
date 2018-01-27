@@ -623,12 +623,12 @@ namespace SimpleWeather.WeatherData
 
         public Location(OpenWeather.ForecastRootobject root)
         {
-            name = root.city.name;
+            // Use location name from location provider
+            name = null;
             latitude = root.city.coord.lat.ToString();
             longitude = root.city.coord.lon.ToString();
             tz_offset = TimeSpan.Zero;
             tz_short = "UTC";
-            tz_long = "UTC";
         }
 
         public Location(Metno.weatherdata foreRoot)
@@ -639,7 +639,6 @@ namespace SimpleWeather.WeatherData
             longitude = foreRoot.product.time.First().location.longitude.ToString();
             tz_offset = TimeSpan.Zero;
             tz_short = "UTC";
-            tz_long = "UTC";
         }
 
         private void saveTimeZone(WeatherYahoo.Query query)

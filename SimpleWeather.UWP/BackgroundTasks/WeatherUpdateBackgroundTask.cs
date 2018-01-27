@@ -40,12 +40,14 @@ namespace SimpleWeather.UWP.BackgroundTasks
                 if (cts.IsCancellationRequested) return;
 
                 // Update the live tile with data.
-                Helpers.WeatherTileCreator.TileUpdater(weather);
+                if (weather != null)
+                    Helpers.WeatherTileCreator.TileUpdater(weather);
 
                 if (cts.IsCancellationRequested) return;
 
                 // Set update time
-                Settings.UpdateTime = DateTime.Now;
+                if (weather != null)
+                    Settings.UpdateTime = DateTime.Now;
             }
 
             // Inform the system that the task is finished.

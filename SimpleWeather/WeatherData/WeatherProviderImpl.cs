@@ -29,6 +29,9 @@ namespace SimpleWeather.WeatherData
         {
             var weather = await GetWeather(location.query);
 
+            if (String.IsNullOrWhiteSpace(weather.location.name))
+                weather.location.name = location.name;
+
             weather.location.tz_short = location.tz_short;
             weather.location.tz_offset = location.tz_offset;
 

@@ -187,7 +187,7 @@ namespace SimpleWeather.Droid.Widgets
                     if (weather == null || (locData == null || !locData.Equals(Settings.HomeData)))
                         weather = await GetWeather();
 
-                    if (Settings.OnGoingNotification)
+                    if (Settings.OnGoingNotification && weather != null)
                         WeatherNotificationBuilder.UpdateNotification(weather);
                 }
             }
@@ -339,19 +339,19 @@ namespace SimpleWeather.Droid.Widgets
             if (appWidgetIds == null || appWidgetIds.Length == 0)
                 appWidgetIds = mAppWidgetManager.GetAppWidgetIds(provider.ComponentName);
 
-            if (Settings.WeatherLoaded)
+            if (Settings.WeatherLoaded && weather != null)
             {
                 // Build the widget update for provider
                 var views = BuildUpdate(mContext, provider, weather);
                 // Push update for this widget to the home screen
                 mAppWidgetManager.UpdateAppWidget(appWidgetIds, views);
                 BuildForecast(provider, weather, appWidgetIds);
+            }
 
-                if (provider.WidgetType == WidgetType.Widget4x2)
-                {
-                    RefreshClock(appWidgetIds);
-                    RefreshDate(appWidgetIds);
-                }
+            if (provider.WidgetType == WidgetType.Widget4x2)
+            {
+                RefreshClock(appWidgetIds);
+                RefreshDate(appWidgetIds);
             }
         }
 
@@ -363,6 +363,8 @@ namespace SimpleWeather.Droid.Widgets
                 // Add widget providers here
                 if (mAppWidget1x1.HasInstances(this))
                 {
+                    if (weather == null) return;
+
                     int[] appWidgetIds = mAppWidgetManager.GetAppWidgetIds(mAppWidget1x1.ComponentName);
 
                     var views = BuildUpdate(mContext, mAppWidget1x1, weather);
@@ -373,6 +375,8 @@ namespace SimpleWeather.Droid.Widgets
 
                 if (mAppWidget2x2.HasInstances(this))
                 {
+                    if (weather == null) return;
+
                     int[] appWidgetIds = mAppWidgetManager.GetAppWidgetIds(mAppWidget2x2.ComponentName);
 
                     var views = BuildUpdate(mContext, mAppWidget2x2, weather);
@@ -383,6 +387,8 @@ namespace SimpleWeather.Droid.Widgets
 
                 if (mAppWidget4x1.HasInstances(this))
                 {
+                    if (weather == null) return;
+
                     int[] appWidgetIds = mAppWidgetManager.GetAppWidgetIds(mAppWidget4x1.ComponentName);
 
                     var views = BuildUpdate(mContext, mAppWidget4x1, weather);
@@ -395,13 +401,16 @@ namespace SimpleWeather.Droid.Widgets
                 {
                     int[] appWidgetIds = mAppWidgetManager.GetAppWidgetIds(mAppWidget4x2.ComponentName);
 
-                    var views = BuildUpdate(mContext, mAppWidget4x2, weather);
-                    // Push update for this widget to the home screen
-                    mAppWidgetManager.UpdateAppWidget(appWidgetIds, views);
-                    BuildForecast(mAppWidget4x2, weather, appWidgetIds);
+                    if (weather != null)
+                    {
+                        var views = BuildUpdate(mContext, mAppWidget4x2, weather);
+                        // Push update for this widget to the home screen
+                        mAppWidgetManager.UpdateAppWidget(appWidgetIds, views);
+                        BuildForecast(mAppWidget4x2, weather, appWidgetIds);
+                    }
 
-                    RefreshClock(null);
-                    RefreshDate(null);
+                    RefreshClock(appWidgetIds);
+                    RefreshDate(appWidgetIds);
                 }
             }
         }
@@ -547,6 +556,9 @@ namespace SimpleWeather.Droid.Widgets
         // TODO: Merge into function below
         private void RebuildForecast(WeatherWidgetProvider provider, Weather weather, int appWidgetId, Bundle newOptions)
         {
+            if (weather == null)
+                return;
+
             RemoteViews updateViews = new RemoteViews(mContext.PackageName, provider.WidgetLayoutId);
 
             // Widget dimensions
@@ -594,6 +606,9 @@ namespace SimpleWeather.Droid.Widgets
 
         private void BuildForecast(WeatherWidgetProvider provider, Weather weather, int[] appWidgetIds)
         {
+            if (weather == null)
+                return;
+
             for (int i = 0; i < appWidgetIds.Length; i++)
             {
                 RemoteViews updateViews = new RemoteViews(mContext.PackageName, provider.WidgetLayoutId);
@@ -642,6 +657,9 @@ namespace SimpleWeather.Droid.Widgets
             RemoteViews updateViews, WeatherWidgetProvider provider, Weather weather,
             int forecastLength, bool forceSmall)
         {
+            if (weather == null)
+                return;
+
             for (int i = 0; i < forecastLength; i++)
             {
                 var forecast = weather.forecast[i];

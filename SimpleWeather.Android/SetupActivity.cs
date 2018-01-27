@@ -86,6 +86,13 @@ namespace SimpleWeather.Droid
                 if (Settings.WeatherLoaded)
                 {
                     // Weather is already loaded; no need to setup
+                    // Trigger widget service to update widget
+                    WeatherWidgetService.EnqueueWork(this,
+                        new Intent(this, typeof(WeatherWidgetService))
+                        .SetAction(WeatherWidgetService.ACTION_REFRESHWIDGET)
+                        .PutExtra(AppWidgetManager.ExtraAppwidgetIds, new int[] { mAppWidgetId }));
+
+                    // Create return intent
                     Intent resultValue = new Intent();
                     resultValue.PutExtra(AppWidgetManager.ExtraAppwidgetId, mAppWidgetId);
                     SetResult(Android.App.Result.Ok, resultValue);
@@ -287,7 +294,15 @@ namespace SimpleWeather.Droid
                 WeatherData.Weather weather = await Settings.GetWeatherData(location.query);
                 if (weather == null)
                 {
-                    weather = await wm.GetWeather(location);
+                    try
+                    {
+                        weather = await wm.GetWeather(location);
+                    }
+                    catch (WeatherException wEx)
+                    {
+                        weather = null;
+                        Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
+                    }
                 }
 
                 if (weather == null)

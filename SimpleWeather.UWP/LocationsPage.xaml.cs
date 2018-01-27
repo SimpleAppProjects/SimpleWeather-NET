@@ -455,11 +455,13 @@ namespace SimpleWeather.UWP
                 // Use args.QueryText to determine what to do.
                 LocationQueryViewModel result = (await wm.GetLocations(args.QueryText)).First();
 
-                if (result != null && String.IsNullOrWhiteSpace(result.LocationQuery))
+                if (result != null && !String.IsNullOrWhiteSpace(result.LocationQuery))
                 {
                     sender.Text = result.LocationName;
                     query_vm = result;
                 }
+                else
+                    query_vm = new LocationQueryViewModel();
             }
             else if (String.IsNullOrWhiteSpace(args.QueryText))
             {
@@ -504,7 +506,15 @@ namespace SimpleWeather.UWP
             Weather weather = await Settings.GetWeatherData(location.query);
             if (weather == null)
             {
-                weather = await wm.GetWeather(location);
+                try
+                {
+                    weather = await wm.GetWeather(location);
+                }
+                catch (WeatherException wEx)
+                {
+                    weather = null;
+                    await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
+                }
             }
 
             if (weather == null)

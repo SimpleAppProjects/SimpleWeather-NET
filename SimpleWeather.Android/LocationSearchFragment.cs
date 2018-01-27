@@ -35,8 +35,6 @@ namespace SimpleWeather.Droid
         private EditText mSearchView;
         private FragmentActivity mActivity; 
 
-        private LocationQueryViewModel query_vm = null;
-
         private CancellationTokenSource cts;
 
         private WeatherData.WeatherManager wm;
@@ -92,6 +90,7 @@ namespace SimpleWeather.Droid
         {
             // Get selected query view
             LocationQuery v = (LocationQuery)e.View;
+            LocationQueryViewModel query_vm = null;
 
             if (!String.IsNullOrEmpty(mAdapter.Dataset[e.Position].LocationQuery))
                 query_vm = mAdapter.Dataset[e.Position];
@@ -128,7 +127,15 @@ namespace SimpleWeather.Droid
             WeatherData.Weather weather = await Settings.GetWeatherData(location.query);
             if (weather == null)
             {
-                weather = await wm.GetWeather(location);
+                try
+                {
+                    weather = await wm.GetWeather(location);
+                }
+                catch (WeatherException wEx)
+                {
+                    weather = null;
+                    Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
+                }
             }
 
             if (weather == null)

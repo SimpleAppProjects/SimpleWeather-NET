@@ -717,7 +717,15 @@ namespace SimpleWeather.Droid
                 Weather weather = await Settings.GetWeatherData(location.query);
                 if (weather == null)
                 {
-                    weather = await wm.GetWeather(location);
+                    try
+                    {
+                        weather = await wm.GetWeather(location);
+                    }
+                    catch (WeatherException wEx)
+                    {
+                        weather = null;
+                        Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
+                    }
                 }
 
                 if (weather == null)
