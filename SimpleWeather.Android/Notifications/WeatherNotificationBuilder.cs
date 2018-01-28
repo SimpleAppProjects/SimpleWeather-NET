@@ -69,9 +69,9 @@ namespace SimpleWeather.Droid.Notifications
             // Progress bar
             updateViews.SetViewVisibility(Resource.Id.refresh_button, ViewStates.Visible);
             updateViews.SetViewVisibility(Resource.Id.refresh_progress, ViewStates.Gone);
-            Intent refreshClickIntent = new Intent(App.Context, typeof(Widgets.WeatherWidgetService))
+            Intent refreshClickIntent = new Intent(App.Context, typeof(Widgets.WeatherWidgetBroadcastReceiver))
                 .SetAction(Widgets.WeatherWidgetService.ACTION_UPDATEWEATHER);
-            PendingIntent prgPendingIntent = PendingIntent.GetService(App.Context, 0, refreshClickIntent, 0);
+            PendingIntent prgPendingIntent = PendingIntent.GetBroadcast(App.Context, 0, refreshClickIntent, 0);
             updateViews.SetOnClickPendingIntent(Resource.Id.refresh_button, prgPendingIntent);
 
             if (!int.TryParse(temp.Replace("º", ""), out int level))

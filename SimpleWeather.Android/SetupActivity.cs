@@ -78,6 +78,8 @@ namespace SimpleWeather.Droid
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
+            base.OnCreate(savedInstanceState);
+
             // Check if this activity was started from adding a new widget
             if (Intent != null && AppWidgetManager.ActionAppwidgetConfigure.Equals(Intent.Action))
             {
@@ -90,13 +92,15 @@ namespace SimpleWeather.Droid
                     WeatherWidgetService.EnqueueWork(this,
                         new Intent(this, typeof(WeatherWidgetService))
                         .SetAction(WeatherWidgetService.ACTION_REFRESHWIDGET)
-                        .PutExtra(AppWidgetManager.ExtraAppwidgetIds, new int[] { mAppWidgetId }));
+                        .PutExtra(WeatherWidgetProvider.EXTRA_WIDGET_IDS, new int[] { mAppWidgetId }));
 
                     // Create return intent
                     Intent resultValue = new Intent();
                     resultValue.PutExtra(AppWidgetManager.ExtraAppwidgetId, mAppWidgetId);
                     SetResult(Android.App.Result.Ok, resultValue);
                     Finish();
+                    // Return if we're finished
+                    return;
                 }
 
                 if (mAppWidgetId != AppWidgetManager.InvalidAppwidgetId)
@@ -104,11 +108,14 @@ namespace SimpleWeather.Droid
                     // out of the widget placement if they press the back button.
                     SetResult(Android.App.Result.Canceled, new Intent().PutExtra(AppWidgetManager.ExtraAppwidgetId, mAppWidgetId));
                 else
+                {
                     // If they gave us an intent without the widget id, just bail.
                     FinishAffinity();
+                    // Return if we're finished
+                    return;
+                }
             }
 
-            base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.activity_setup);
 
             cts = new CancellationTokenSource();

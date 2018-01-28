@@ -24,7 +24,18 @@ using Android.Support.V4.App;
 
 namespace SimpleWeather.Droid.Widgets
 {
-    [Service(Exported = true, Permission = "android.permission.BIND_JOB_SERVICE")]
+    [BroadcastReceiver(Enabled = true, Exported = true)]
+    public class WeatherWidgetBroadcastReceiver : BroadcastReceiver
+    {
+        public override void OnReceive(Context context, Intent intent)
+        {
+            // Relay intent to WeatherWidgetService
+            intent.SetClass(context, Java.Lang.Class.FromType(typeof(WeatherWidgetService)));
+            WeatherWidgetService.EnqueueWork(context, intent);
+        }
+    }
+
+    [Service(Exported = false, Permission = "android.permission.BIND_JOB_SERVICE")]
     public class WeatherWidgetService : JobIntentService
     {
         private static string TAG = "WeatherWidgetService";
@@ -222,10 +233,10 @@ namespace SimpleWeather.Droid.Widgets
 
         private PendingIntent GetAlarmIntent(Context context)
         {
-            Intent intent = new Intent(context, typeof(WeatherWidgetService))
+            Intent intent = new Intent(context, typeof(WeatherWidgetBroadcastReceiver))
                 .SetAction(ACTION_UPDATEWEATHER);
 
-            return PendingIntent.GetService(context, 0, intent, 0);
+            return PendingIntent.GetBroadcast(context, 0, intent, 0);
         }
 
         private void UpdateAlarm(Context context)
@@ -270,10 +281,10 @@ namespace SimpleWeather.Droid.Widgets
 
         private static PendingIntent GetClockRefreshIntent(Context context)
         {
-            Intent intent = new Intent(context, typeof(WeatherWidgetService))
+            Intent intent = new Intent(context, typeof(WeatherWidgetBroadcastReceiver))
                 .SetAction(ACTION_UPDATECLOCK);
 
-            return PendingIntent.GetService(context, 0, intent, 0);
+            return PendingIntent.GetBroadcast(context, 0, intent, 0);
         }
 
         private void StartTickReceiver(Context context)
