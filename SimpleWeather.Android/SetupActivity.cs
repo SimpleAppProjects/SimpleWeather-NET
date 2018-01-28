@@ -28,13 +28,8 @@ using SimpleWeather.Droid.Widgets;
 namespace SimpleWeather.Droid
 {
     [Android.App.Activity(
-        Name = "com.thewizrd.simpleweather.SetupActivity",
         Theme = "@style/SetupTheme",
         WindowSoftInputMode = SoftInput.StateHidden | SoftInput.AdjustPan)]
-    [Android.App.IntentFilter(new string[]
-    {
-        AppWidgetManager.ActionAppwidgetConfigure
-    })]
     public class SetupActivity : AppCompatActivity, ActivityCompat.IOnRequestPermissionsResultCallback
     {
         private LocationSearchFragment mSearchFragment;
@@ -85,19 +80,10 @@ namespace SimpleWeather.Droid
             {
                 mAppWidgetId = Intent.GetIntExtra(AppWidgetManager.ExtraAppwidgetId, AppWidgetManager.InvalidAppwidgetId);
 
-                if (Settings.WeatherLoaded)
+                if (Settings.WeatherLoaded || mAppWidgetId == AppWidgetManager.InvalidAppwidgetId)
                 {
-                    // Weather is already loaded; no need to setup
-                    // Trigger widget service to update widget
-                    WeatherWidgetService.EnqueueWork(this,
-                        new Intent(this, typeof(WeatherWidgetService))
-                        .SetAction(WeatherWidgetService.ACTION_REFRESHWIDGET)
-                        .PutExtra(WeatherWidgetProvider.EXTRA_WIDGET_IDS, new int[] { mAppWidgetId }));
-
-                    // Create return intent
-                    Intent resultValue = new Intent();
-                    resultValue.PutExtra(AppWidgetManager.ExtraAppwidgetId, mAppWidgetId);
-                    SetResult(Android.App.Result.Ok, resultValue);
+                    // This shouldn't happen, but just in case
+                    SetResult(Android.App.Result.Ok);
                     Finish();
                     // Return if we're finished
                     return;
@@ -107,13 +93,6 @@ namespace SimpleWeather.Droid
                     // Set the result to CANCELED.  This will cause the widget host to cancel
                     // out of the widget placement if they press the back button.
                     SetResult(Android.App.Result.Canceled, new Intent().PutExtra(AppWidgetManager.ExtraAppwidgetId, mAppWidgetId));
-                else
-                {
-                    // If they gave us an intent without the widget id, just bail.
-                    FinishAffinity();
-                    // Return if we're finished
-                    return;
-                }
             }
 
             SetContentView(Resource.Layout.activity_setup);
