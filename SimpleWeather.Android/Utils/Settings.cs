@@ -286,5 +286,22 @@ namespace SimpleWeather.Utils
             editor.PutString(KEY_DBVERSION, value.ToString());
             editor.Commit();
         }
+
+        private static bool UseAlerts()
+        {
+            if (!preferences.Contains(KEY_USEALERTS))
+            {
+                SetAlerts(false);
+                return false;
+            }
+            else
+                return preferences.GetBoolean(KEY_USEALERTS, false);
+        }
+
+        private static void SetAlerts(bool value)
+        {
+            editor.PutBoolean(KEY_USEALERTS, value);
+            editor.Commit();
+        }
     }
 }

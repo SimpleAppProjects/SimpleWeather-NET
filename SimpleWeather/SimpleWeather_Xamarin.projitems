@@ -14,6 +14,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\HourlyForecastItemViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ForecastItemViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\LocationQueryViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\WeatherAlertViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\WeatherNowViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\WeatherExtrasViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Metno\MetnoWeatherProvider.cs" />
@@ -34,11 +35,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IWeatherProviderImpl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\LocationData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\Weather.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WeatherData\WeatherAlert.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\WeatherDataLoader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IWeatherLoadedListener.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\WeatherIcons.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\WeatherManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\WeatherProviderImpl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WeatherUnderground\Alerts.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherUnderground\AutoCompleteQuery.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherUnderground\GeopositionQuery.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherUnderground\Weather.cs" />

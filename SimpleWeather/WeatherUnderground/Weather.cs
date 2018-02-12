@@ -11,6 +11,8 @@ namespace SimpleWeather.WeatherUnderground
         public Hourly_Forecast[] hourly_forecast { get; set; }
         public Moon_Phase moon_phase { get; set; }
         public Sun_Phase sun_phase { get; set; }
+        public string query_zone { get; set; }
+        public Alert[] alerts { get; set; }
     }
 
     public class Response

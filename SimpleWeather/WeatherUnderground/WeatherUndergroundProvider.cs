@@ -33,6 +33,7 @@ namespace SimpleWeather.WeatherUnderground
     {
         public override bool SupportsWeatherLocale => true;
         public override bool KeyRequired => true;
+        public override bool SupportsAlerts => true;
 
         public override async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string query)
         {
@@ -310,7 +311,7 @@ namespace SimpleWeather.WeatherUnderground
 #endif
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
-            queryAPI = "http://api.wunderground.com/api/" + Settings.API_KEY + "/astronomy/conditions/forecast10day/hourly/lang:" + locale;
+            queryAPI = "http://api.wunderground.com/api/" + Settings.API_KEY + "/astronomy/conditions/forecast10day/hourly/alerts/lang:" + locale;
             string options = ".json";
             weatherURL = new Uri(queryAPI + location_query + options);
 
@@ -359,6 +360,18 @@ namespace SimpleWeather.WeatherUnderground
                     contentStream.Dispose();
 
                 weather = new Weather(root);
+
+                // Add weather alerts if available
+                if (root.alerts != null && root.alerts.Length > 0)
+                {
+                    if (weather.weather_alerts == null)
+                        weather.weather_alerts = new List<WeatherAlert>();
+
+                    foreach (Alert result in root.alerts)
+                    {
+                        weather.weather_alerts.Add(new WeatherAlert(result));
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -417,6 +430,66 @@ namespace SimpleWeather.WeatherUnderground
             }
 
             return weather;
+        }
+
+        public override async Task<List<WeatherAlert>> GetAlerts(LocationData location)
+        {
+            List<WeatherAlert> alerts = null;
+
+            string queryAPI = null;
+            Uri weatherURL = null;
+
+#if WINDOWS_UWP
+            var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages.First();
+            var culture = new System.Globalization.CultureInfo(userlang);
+#else
+            var culture = System.Globalization.CultureInfo.CurrentCulture;
+#endif
+            string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
+
+            queryAPI = "http://api.wunderground.com/api/" + Settings.API_KEY + "/alerts/lang:" + locale;
+            string options = ".json";
+            weatherURL = new Uri(queryAPI + location.query + options);
+
+            try
+            {
+                // Connect to webstream
+                HttpClient webClient = new HttpClient();
+                HttpResponseMessage response = await webClient.GetAsync(weatherURL);
+                response.EnsureSuccessStatusCode();
+                Stream contentStream = null;
+#if WINDOWS_UWP
+                contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+#elif __ANDROID__
+                contentStream = await response.Content.ReadAsStreamAsync();
+#endif
+                // End Stream
+                webClient.Dispose();
+
+                // Load data
+                alerts = new List<WeatherAlert>();
+
+                AlertRootobject root = JSONParser.Deserializer<AlertRootobject>(contentStream);
+
+                foreach (Alert result in root.alerts)
+                {
+                    alerts.Add(new WeatherAlert(result));
+                }
+
+                // End Stream
+                if (contentStream != null)
+                    contentStream.Dispose();
+            }
+            catch (Exception ex)
+            {
+                alerts = new List<WeatherAlert>();
+                Debug.WriteLine(ex.StackTrace);
+            }
+
+            if (alerts == null)
+                alerts = new List<WeatherAlert>();
+
+            return alerts;
         }
 
         // Use location name here instead of query since we use the AutoComplete API

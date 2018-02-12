@@ -51,11 +51,60 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="@dimen/spacer_top_size"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large.Inverse"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/label_updatetime_size"
                     tools:text="Updated on 11:12 PM" />
+
+                <LinearLayout
+                    android:id="@+id/alert_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/light_round_corner_bg"
+                    android:orientation="horizontal"
+                    android:paddingEnd="4dp"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:paddingStart="4dp"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:includeFontPadding="false"
+                        android:padding="4dp"
+                        android:text="&#xE000;"
+                        android:textColor="@android:color/white"
+                        android:textSize="24sp"
+                        app:fontFamily="@font/materialicons_regular"
+                        tools:fontFamily="@font/materialicons_regular" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:paddingLeft="4dp"
+                        android:paddingStart="4dp"
+                        android:text="@string/title_fragment_alerts"
+                        android:textColor="@android:color/white" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:includeFontPadding="false"
+                        android:padding="4dp"
+                        android:text="&#xE5CC;"
+                        android:textColor="@android:color/white"
+                        android:textSize="24sp"
+                        app:fontFamily="@font/materialicons_regular"
+                        tools:fontFamily="@font/materialicons_regular" />
+
+                </LinearLayout>
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/weather_icon"

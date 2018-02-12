@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using SimpleWeather.Controls;
@@ -10,11 +11,13 @@ namespace SimpleWeather.WeatherData
     {
         bool KeyRequired { get; }
         bool SupportsWeatherLocale { get; }
+        bool SupportsAlerts { get; }
 
         Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coordinate);
         Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string ac_query);
         Task<Weather> GetWeather(string location_query);
         Task<Weather> GetWeather(LocationData location);
+        Task<List<WeatherAlert>> GetAlerts(LocationData location);
         string GetWeatherIcon(string icon);
         string GetWeatherIcon(bool isNight, string icon);
         Task<bool> IsKeyValid(string key);

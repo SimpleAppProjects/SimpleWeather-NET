@@ -33,6 +33,7 @@ namespace SimpleWeather.OpenWeather
     {
         public override bool SupportsWeatherLocale => true;
         public override bool KeyRequired => true;
+        public override bool SupportsAlerts => false;
 
         public override async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string query)
         {
@@ -423,6 +424,11 @@ namespace SimpleWeather.OpenWeather
             weather.astronomy.sunset = weather.astronomy.sunset.Add(offset);
 
             return weather;
+        }
+
+        public override Task<List<WeatherAlert>> GetAlerts(LocationData location)
+        {
+            throw new NotImplementedException();
         }
 
         // Use location name here instead of query since we use the AutoComplete API

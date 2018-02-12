@@ -312,4 +312,10 @@
   <data name="Label_Cloudiness.Text" xml:space="preserve">
     <value>Cloudiness</value>
   </data>
+  <data name="Pref_WeatherAlerts.Text" xml:space="preserve">
+    <value>Show notifications for weather alerts:</value>
+  </data>
+  <data name="Label_WeatherAlerts.Text" xml:space="preserve">
+    <value>Severe Weather Alerts</value>
+  </data>
 </root>

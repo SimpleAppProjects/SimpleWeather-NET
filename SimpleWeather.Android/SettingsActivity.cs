@@ -85,6 +85,7 @@ namespace SimpleWeather.Droid
             private const string KEY_APIKEY_VERIFIED = "API_KEY_VERIFIED";
             private const string KEY_ONGOINGNOTIFICATION = "key_ongoingnotification";
             private const string KEY_NOTIFICATIONICON = "key_notificationicon";
+            private const string KEY_USEALERTS = "key_usealerts";
 
             private const string CATEGORY_NOTIFICATION = "category_notification";
             private const string CATEGORY_API = "category_api";
@@ -97,6 +98,7 @@ namespace SimpleWeather.Droid
             private bool keyVerified { get { return IsKeyVerfied(); } set { SetKeyVerified(value); } }
             private SwitchPreferenceCompat onGoingNotification;
             private DropDownPreference notificationIcon;
+            private SwitchPreferenceCompat alertNotification;
 
             private PreferenceCategory notCategory;
             private PreferenceCategory apiCategory;
@@ -189,6 +191,8 @@ namespace SimpleWeather.Droid
                         apiCategory.RemovePreference(keyEntry);
                         UpdateKeySummary();
                     }
+
+                    UpdateAlertPreference(WeatherData.WeatherManager.GetInstance().SupportsAlerts);
                 };
 
                 // Set key as verified if API Key is req for API and its set
@@ -245,6 +249,26 @@ namespace SimpleWeather.Droid
                 {
                     notCategory.RemovePreference(notificationIcon);
                 }
+
+                alertNotification = (SwitchPreferenceCompat)FindPreference(KEY_USEALERTS);
+                alertNotification.PreferenceChange += (object sender, Preference.PreferenceChangeEventArgs e) =>
+                {
+                    SwitchPreferenceCompat pref = e.Preference as SwitchPreferenceCompat;
+                    var context = App.Context;
+
+                    // Alert notification
+                    if ((bool)e.NewValue)
+                    {
+                        WeatherWidgetService.EnqueueWork(context, new Intent(context, typeof(WeatherWidgetService))
+                            .SetAction(WeatherWidgetService.ACTION_STARTALARM));
+                    }
+                    else
+                    {
+                        WeatherWidgetService.EnqueueWork(context, new Intent(context, typeof(WeatherWidgetService))
+                            .SetAction(WeatherWidgetService.ACTION_CANCELALARM));
+                    }
+                };
+                UpdateAlertPreference(WeatherData.WeatherManager.GetInstance().SupportsAlerts);
             }
 
             public override void OnDisplayPreferenceDialog(Preference preference)
@@ -269,6 +293,7 @@ namespace SimpleWeather.Droid
 
                             keyVerified = true;
                             UpdateKeySummary();
+                            UpdateAlertPreference(WeatherData.WeatherManager.GetInstance().SupportsAlerts);
 
                             fragment.Dialog.Dismiss();
                         }
@@ -303,6 +328,13 @@ namespace SimpleWeather.Droid
                 {
                     keyEntry.Summary = Activity.GetString(Resource.String.pref_summary_apikey, providerAPI);
                 }
+            }
+
+            private void UpdateAlertPreference(bool enable)
+            {
+                alertNotification.Enabled = enable;
+                alertNotification.Summary = enable ? 
+                    Activity.GetString(Resource.String.pref_summary_alerts) : Activity.GetString(Resource.String.pref_summary_alerts_disabled);
             }
 
             public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)

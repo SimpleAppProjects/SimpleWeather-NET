@@ -35,6 +35,7 @@ namespace SimpleWeather.Metno
     {
         public override bool SupportsWeatherLocale => false;
         public override bool KeyRequired => false;
+        public override bool SupportsAlerts => false;
 
         public override async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string query)
         {
@@ -367,6 +368,11 @@ namespace SimpleWeather.Metno
             weather.astronomy.sunset = weather.astronomy.sunset.Add(offset);
 
             return weather;
+        }
+
+        public override Task<List<WeatherAlert>> GetAlerts(LocationData location)
+        {
+            throw new NotImplementedException();
         }
 
         // TODO: Move this out

@@ -56,6 +56,16 @@ namespace SimpleWeather.Droid.Utils
 
             return bmp;
         }
+
+        public static Bitmap TintBitmap(Bitmap bitmap, Color color)
+        {
+            Paint paint = new Paint();
+            paint.SetColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SrcIn));
+            Bitmap bitmapResult = Bitmap.CreateBitmap(bitmap.Width, bitmap.Height, Bitmap.Config.Argb8888);
+            Canvas canvas = new Canvas(bitmapResult);
+            canvas.DrawBitmap(bitmap, 0, 0, paint);
+            return bitmapResult;
+        }
     }
 
     public class CenterCropper

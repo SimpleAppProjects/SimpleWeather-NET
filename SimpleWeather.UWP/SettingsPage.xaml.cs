@@ -15,6 +15,7 @@ using Windows.Foundation.Metadata;
 using Windows.UI.ViewManagement;
 using System.Threading.Tasks;
 using SimpleWeather.WeatherData;
+using SimpleWeather.UWP.BackgroundTasks;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 namespace SimpleWeather.UWP
@@ -113,6 +114,10 @@ namespace SimpleWeather.UWP
             KeyEntry.Text = Settings.API_KEY;
             UpdateKeyBorder();
 
+            // Alerts
+            AlertSwitch.IsEnabled = wm.SupportsAlerts;
+            AlertSwitch.IsOn = Settings.ShowAlerts;
+
             Version.Text = string.Format("v{0}.{1}.{2}",
                 Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
 
@@ -121,10 +126,17 @@ namespace SimpleWeather.UWP
             Fahrenheit.Checked += Fahrenheit_Checked;
             Celsius.Checked += Celsius_Checked;
             FollowGPS.Toggled += FollowGPS_Toggled;
+            AlertSwitch.Toggled += AlertSwitch_Toggled;
             APIComboBox.SelectionChanged += APIComboBox_SelectionChanged;
             RefreshComboBox.SelectionChanged += RefreshComboBox_SelectionChanged;
             if (OSSLicenseWebview != null)
                 OSSLicenseWebview.NavigationStarting += OSSLicenseWebview_NavigationStarting;
+        }
+
+        private void AlertSwitch_Toggled(object sender, RoutedEventArgs e)
+        {
+            ToggleSwitch sw = sender as ToggleSwitch;
+            Settings.ShowAlerts = sw.IsOn;
         }
 
         private async void SettingsPage_BackRequested(object sender, BackRequestedEventArgs e)
@@ -165,10 +177,12 @@ namespace SimpleWeather.UWP
 
                     // TODO: try not to trigger right away
                     // Do so when navigating away
-                    await App.BGTaskHandler.RequestAppTrigger();
+                    await WeatherUpdateBackgroundTask.RequestAppTrigger();
 
                     keyVerified = true;
                     UpdateKeyBorder();
+
+                    AlertSwitch.IsEnabled = wm.SupportsAlerts;
 
                     diag.CanClose = true;
                     diag.Hide();
@@ -199,13 +213,10 @@ namespace SimpleWeather.UWP
                 if (KeyPanel != null)
                     KeyPanel.Visibility = Visibility.Visible;
 
-                //if (!String.IsNullOrWhiteSpace(Settings.API_KEY) && !keyVerified)
-                //    keyVerified = true;
-
                 if (keyVerified)
                 {
                     Settings.API = API;
-                    Task.Run(async () => await App.BGTaskHandler.RequestAppTrigger());
+                    Task.Run(async () => await WeatherUpdateBackgroundTask.RequestAppTrigger());
                 }
             }
             else
@@ -214,7 +225,7 @@ namespace SimpleWeather.UWP
                     KeyPanel.Visibility = Visibility.Collapsed;
                 Settings.API = API;
                 // Clear API KEY entry to avoid issues
-                Settings.API_KEY = String.Empty;
+                Settings.API_KEY = KeyEntry.Text = String.Empty;
 
                 keyVerified = false;
                 localSettings.Containers[WeatherAPI.WeatherUnderground].Values.Remove(KEY_APIKEY_VERIFIED);
@@ -222,6 +233,10 @@ namespace SimpleWeather.UWP
 
             wm.UpdateAPI();
             UpdateKeyBorder();
+
+            AlertSwitch.IsEnabled = wm.SupportsAlerts;
+            if (!wm.SupportsAlerts)
+                AlertSwitch.IsOn = false;
         }
 
         private void KeyEntry_GotFocus(object sender, RoutedEventArgs e)
@@ -246,7 +261,7 @@ namespace SimpleWeather.UWP
                 Settings.RefreshInterval = 360; // 6 hr
 
             // Re-register background task
-            Task.Run(() => App.BGTaskHandler.RegisterBackgroundTask());
+            Task.Run(() => WeatherUpdateBackgroundTask.RegisterBackgroundTask());
         }
 
         private void OSSLicenseWebview_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
@@ -260,14 +275,14 @@ namespace SimpleWeather.UWP
         {
             Settings.Unit = Settings.Fahrenheit;
 
-            Task.Run(async () => await App.BGTaskHandler.RequestAppTrigger());
+            Task.Run(async () => await WeatherUpdateBackgroundTask.RequestAppTrigger());
         }
 
         private void Celsius_Checked(object sender, RoutedEventArgs e)
         {
             Settings.Unit = Settings.Celsius;
 
-            Task.Run(async () => await App.BGTaskHandler.RequestAppTrigger());
+            Task.Run(async () => await WeatherUpdateBackgroundTask.RequestAppTrigger());
         }
 
         private async void FollowGPS_Toggled(object sender, RoutedEventArgs e)
@@ -318,7 +333,7 @@ namespace SimpleWeather.UWP
             }
 
             Settings.FollowGPS = sw.IsOn;
-            await App.BGTaskHandler.RequestAppTrigger();
+            await WeatherUpdateBackgroundTask.RequestAppTrigger();
         }
 
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)

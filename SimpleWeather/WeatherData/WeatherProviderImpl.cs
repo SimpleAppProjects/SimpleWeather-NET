@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using SimpleWeather.Controls;
 using SimpleWeather.Utils;
+using System.Collections.Generic;
 #if WINDOWS_UWP
 using Windows.UI;
 #elif __ANDROID__
@@ -16,6 +17,7 @@ namespace SimpleWeather.WeatherData
         // Variables
         public abstract bool SupportsWeatherLocale { get; }
         public abstract bool KeyRequired { get; }
+        public abstract bool SupportsAlerts { get; }
 
         // Methods
         // AutoCompleteQuery
@@ -40,6 +42,8 @@ namespace SimpleWeather.WeatherData
 
             return weather;
         }
+        // Alerts
+        public abstract Task<List<WeatherAlert>> GetAlerts(LocationData location);
 
         // KeyCheck
         public abstract Task<bool> IsKeyValid(String key);

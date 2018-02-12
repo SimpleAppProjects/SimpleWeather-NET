@@ -1,6 +1,8 @@
 ﻿using SimpleWeather.Controls;
 using SimpleWeather.Utils;
+using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.UWP.Controls;
+using SimpleWeather.UWP.WeatherAlerts;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
@@ -48,11 +50,43 @@ namespace SimpleWeather.UWP
                 wm.UpdateWeather(weather);
                 WeatherView.UpdateView(weather);
 
+                if (wm.SupportsAlerts)
+                {
+                    if (weather.weather_alerts != null && weather.weather_alerts.Count > 0)
+                    {
+                        // Alerts are posted to the user here. Set them as notified.
+                        await WeatherAlertHandler.SetasNotified(location, weather.weather_alerts);
+                    }
+
+                    // Show/Hide Alert panel
+                    if (WeatherView.Extras.Alerts.Count > 0)
+                    {
+                        FrameworkElement alertButton = AlertButton;
+                        if (alertButton == null)
+                            alertButton = FindName("AlertButton") as FrameworkElement;
+
+                        ResizeAlertPanel();
+                        alertButton.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        FrameworkElement alertButton = AlertButton;
+                        if (alertButton != null)
+                            alertButton.Visibility = Visibility.Collapsed;
+                    }
+                }
+                else
+                {
+                    FrameworkElement alertButton = AlertButton;
+                    if (alertButton != null)
+                        alertButton.Visibility = Visibility.Collapsed;
+                }
+
                 // Update home tile if it hasn't been already
                 if (Settings.HomeData.Equals(location) && 
                     TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval)
                 {
-                    await App.BGTaskHandler.RequestAppTrigger();
+                    await WeatherUpdateBackgroundTask.RequestAppTrigger();
                 }
 
                 // Shell
@@ -178,6 +212,7 @@ namespace SimpleWeather.UWP
             WeatherView = new WeatherNowViewModel();
             StackControl.SizeChanged += StackControl_SizeChanged;
             DetailsPanel.SizeChanged += DetailsPanel_SizeChanged;
+            MainViewer.SizeChanged += MainViewer_SizeChanged;
             MainViewer.ViewChanged += MainViewer_ViewChanged;
 
             HeaderLeft.Click += delegate { ScrollTxtPanel(false); };
@@ -300,6 +335,26 @@ namespace SimpleWeather.UWP
             }
         }
 
+        private void MainViewer_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ResizeAlertPanel();
+        }
+
+        private void ResizeAlertPanel()
+        {
+            double w = this.ActualWidth;
+
+            if (w <= 0 || AlertButton == null)
+                return;
+
+            if (w <= 640)
+                AlertButton.Width = w;
+            else if (w <= 1080)
+                AlertButton.Width = w * (0.75);
+            else
+                AlertButton.Width = w * (0.50);
+        }
+
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
@@ -319,9 +374,9 @@ namespace SimpleWeather.UWP
 
                 switch (arg)
                 {
-                    case "toast-refresh":
-                        RefreshWeather(true);
-                        return;
+                    case "view-alerts":
+                        GotoAlertsPage();
+                        break;
                     default:
                         break;
                 }
@@ -735,6 +790,16 @@ namespace SimpleWeather.UWP
                 TextForecastControl_SelectionChanged(TextForecastControl, null);
             else
                 ForecastViewer_ViewChanged(ForecastViewer, null);
+        }
+
+        private void GotoAlertsPage()
+        {
+            Frame.Navigate(typeof(WeatherAlertPage), WeatherView);
+        }
+
+        private void AlertButton_Click(object sender, RoutedEventArgs e)
+        {
+            GotoAlertsPage();
         }
     }
 }

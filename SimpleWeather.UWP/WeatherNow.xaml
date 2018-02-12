@@ -464,6 +464,37 @@
                                Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Bottom"
                                Padding="5" Grid.Row="1" Transitions="{StaticResource TextTransitions}" FontSize="12"/>
                 </Viewbox>
+                <Button x:Name="AlertButton" x:DeferLoadStrategy="Lazy"
+                        Height="30"
+                        Padding="0"
+                        Background="OrangeRed"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Stretch"
+                        Click="AlertButton_Click">
+                    <Button.Content>
+                        <Grid Padding="4" Background="OrangeRed">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <toolkitControls:ImageEx Source="/Assets/WeatherIcons/png/ic_error_white.png"
+                                                     Grid.Column="0"
+                                                     Width="25" Padding="5"
+                                                     VerticalAlignment="Center" />
+                            <TextBlock x:Uid="Label_WeatherAlerts" Text="Severe Weather Alerts"
+                                       Grid.Column="1"
+                                       FontSize="12" Foreground="White"
+                                       Padding="5"
+                                       VerticalAlignment="Center" />
+                            <FontIcon Glyph="&#xE76C;"
+                                      Grid.Column="2"
+                                      FontSize="12"
+                                      HorizontalAlignment="Right"
+                                      Foreground="White" />
+                        </Grid>
+                    </Button.Content>
+                </Button>
                 <Rectangle Name="SpacerTop" Height="30"/>
                 <Viewbox x:Name="WeatherBox" VerticalAlignment="Top" Height="Auto" Grid.Row="0">
                     <TextBlock x:Name="WeatherIcon" Style="{StaticResource WeatherIcon}" Text="{x:Bind WeatherView.WeatherIcon, FallbackValue='&#xf00d;', Mode=OneWay}" />

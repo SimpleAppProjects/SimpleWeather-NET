@@ -14,6 +14,7 @@ using Android.Content;
 using System.Threading.Tasks;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
+using SimpleWeather.Droid.Widgets;
 
 namespace SimpleWeather.Droid
 {
@@ -43,6 +44,32 @@ namespace SimpleWeather.Droid
             SupportFragmentManager.BackStackChanged += delegate { RefreshNavViewCheckedItem(); };
 
             Fragment fragment = SupportFragmentManager.FindFragmentById(Resource.Id.fragment_container);
+
+            // Alerts
+            if (WeatherWidgetService.ACTION_SHOWALERTS.Equals(Intent?.Action))
+            {
+                Fragment newFragment = WeatherNowFragment.NewInstance(Intent.Extras);
+
+                if (fragment == null)
+                {
+                    fragment = newFragment;
+                    // Navigate to WeatherNowFragment
+                    // Make sure we exit if location is not home
+                    SupportFragmentManager.BeginTransaction()
+                        .Replace(Resource.Id.fragment_container, fragment, "notification")
+                        .Commit();
+                }
+                else
+                {
+                    // Navigate to WeatherNowFragment
+                    // Make sure we exit if location is not home
+                    SupportFragmentManager.BeginTransaction()
+                        .Add(Resource.Id.fragment_container, newFragment)
+                        .AddToBackStack(null)
+                        .Commit();
+                }
+            }
+
             // Check if fragment exists
             if (fragment == null)
             {
@@ -65,6 +92,7 @@ namespace SimpleWeather.Droid
 
                 // Navigate to WeatherNowFragment
                 Fragment newFragment = WeatherNowFragment.NewInstance(locData);
+
                 SupportFragmentManager.BeginTransaction()
                     .Replace(Resource.Id.fragment_container, newFragment, "shortcut")
                     .Commit();
@@ -190,6 +218,7 @@ namespace SimpleWeather.Droid
         private void RefreshNavViewCheckedItem()
         {
             NavigationView navigationView = FindViewById<NavigationView>(Resource.Id.nav_view);
+            DrawerLayout drawer = FindViewById<DrawerLayout>(Resource.Id.drawer_layout);
             Fragment fragment = SupportFragmentManager.FindFragmentById(Resource.Id.fragment_container);
 
             if (fragment is WeatherNowFragment)
@@ -201,6 +230,27 @@ namespace SimpleWeather.Droid
             {
                 navigationView.SetCheckedItem(Resource.Id.nav_locations);
                 SupportActionBar.Title = GetString(Resource.String.label_nav_locations);
+            }
+            else if (fragment is WeatherAlertsFragment)
+            {
+                navigationView.SetCheckedItem(Resource.Id.nav_weathernow);
+                SupportActionBar.Title = GetString(Resource.String.title_fragment_alerts);
+            }
+
+            if (fragment is WeatherAlertsFragment)
+            {
+                SupportActionBar.Hide();
+                drawer.SetDrawerLockMode(DrawerLayout.LockModeLockedClosed);
+            }
+            else
+            {
+                if (!SupportActionBar.IsShowing)
+                    SupportActionBar.Show();
+
+                if ((bool)Intent?.HasExtra("shortcut-data"))
+                    drawer.SetDrawerLockMode(DrawerLayout.LockModeLockedClosed);
+                else
+                    drawer.SetDrawerLockMode(DrawerLayout.LockModeUnlocked);
             }
         }
     }

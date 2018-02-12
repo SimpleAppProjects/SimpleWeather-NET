@@ -44,6 +44,7 @@
     <string name="label_nav_weathernow">Weather</string>
     <string name="label_nav_locations">Locations</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="title_fragment_alerts">Severe Weather Alerts</string>
 
     <!-- Settings -->
     <string name="pref_title_general">General</string>
@@ -73,6 +74,9 @@
     <string name="pref_title_api">Weather API</string>
     <string name="pref_category_notification">Notifications</string>
     <string name="pref_title_notificationicon">Notification Icon</string>
+    <string name="pref_title_alerts">Weather Alerts</string>
+    <string name="pref_summary_alerts">Show notifications for weather alerts</string>
+    <string name="pref_summary_alerts_disabled">Weather alerts are not supported with this weather provider</string>
 
     <!-- Locations -->
     <string name="label_btn_add_location">Add Location</string>
@@ -112,5 +116,9 @@
     <string name="notificationicon_condition">Weather Condition</string>
     <string name="not_channel_name_weather">Weather Notifications</string>
     <string name="not_channel_desc_weather">Weather notifications</string>
+
+    <!-- Notification -->
+    <string name="not_channel_name_alerts">Weather Alerts</string>
+    <string name="not_channel_desc_alerts">Notifications for weather alerts</string>
 
 </resources>

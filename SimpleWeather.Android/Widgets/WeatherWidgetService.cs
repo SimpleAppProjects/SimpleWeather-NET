@@ -21,6 +21,7 @@ using Android.Text.Format;
 using Android.Text;
 using Android.Text.Style;
 using Android.Support.V4.App;
+using SimpleWeather.Droid.WeatherAlerts;
 
 namespace SimpleWeather.Droid.Widgets
 {
@@ -36,9 +37,10 @@ namespace SimpleWeather.Droid.Widgets
     }
 
     [Service(Exported = false, Permission = "android.permission.BIND_JOB_SERVICE")]
-    public class WeatherWidgetService : JobIntentService
+    public partial class WeatherWidgetService : JobIntentService
     {
         private static string TAG = "WeatherWidgetService";
+
         public const string ACTION_REFRESHWIDGET = "SimpleWeather.Droid.action.REFRESH_WIDGET";
         public const string ACTION_RESIZEWIDGET = "SimpleWeather.Droid.action.RESIZE_WIDGET";
         public const string ACTION_UPDATECLOCK = "SimpleWeather.Droid.action.UPDATE_CLOCK";
@@ -54,6 +56,8 @@ namespace SimpleWeather.Droid.Widgets
 
         public const string ACTION_STARTCLOCK = "SimpleWeather.Droid.action.START_CLOCKALARM";
         public const string ACTION_CANCELCLOCK = "SimpleWeather.Droid.action.CANCEL_CLOCKALARM";
+
+        public const string ACTION_SHOWALERTS = "SimpleWeather.Droid.action.SHOW_ALERTS";
 
         private const int JOB_ID = 1000;
 
@@ -225,6 +229,8 @@ namespace SimpleWeather.Droid.Widgets
                         RefreshWidgets();
                     if (Settings.OnGoingNotification)
                         WeatherNotificationBuilder.UpdateNotification(weather);
+                    if (Settings.ShowAlerts && wm.SupportsAlerts && weather != null)
+                        await WeatherAlertHandler.PostAlerts(locData, weather.weather_alerts);
                 }
             }
 
@@ -259,7 +265,7 @@ namespace SimpleWeather.Droid.Widgets
         private void CancelAlarms(Context context)
         {
             // Cancel alarm if dependent features are turned off
-            if ((!WidgetsExist(context) && !Settings.OnGoingNotification))
+            if ((!WidgetsExist(context) && !Settings.OnGoingNotification && !Settings.ShowAlerts))
             {
                 AlarmManager am = (AlarmManager)context.GetSystemService(Context.AlarmService);
                 am.Cancel(GetAlarmIntent(context));
@@ -272,7 +278,7 @@ namespace SimpleWeather.Droid.Widgets
         private void StartAlarm(Context context)
         {
             // Start alarm if dependent features are enabled
-            if (!alarmStarted && (WidgetsExist(context) || Settings.OnGoingNotification))
+            if (!alarmStarted && (WidgetsExist(context) || Settings.OnGoingNotification || Settings.ShowAlerts))
             {
                 UpdateAlarm(context);
                 alarmStarted = true;

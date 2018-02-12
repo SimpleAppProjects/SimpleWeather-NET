@@ -3,18 +3,14 @@ using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls;
 using SimpleWeather.WeatherData;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
-using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Popups;
-using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -26,7 +22,7 @@ namespace SimpleWeather.UWP
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainPage : Page, IDisposable
+    public sealed partial class SetupPage : Page, IDisposable
     {
         private CancellationTokenSource cts = new CancellationTokenSource();
 
@@ -34,44 +30,19 @@ namespace SimpleWeather.UWP
 
         public ObservableCollection<LocationQueryViewModel> LocationQuerys { get; set; }
 
-        public MainPage()
+        public SetupPage()
         {
             this.InitializeComponent();
 
-            this.SizeChanged += MainPage_SizeChanged;
+            this.SizeChanged += SetupPage_SizeChanged;
 
             wm = WeatherManager.GetInstance();
 
             // Views
             LocationQuerys = new ObservableCollection<LocationQueryViewModel>();
-
-            // TitleBar
-            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
-            {
-                // Mobile
-                StatusBar.GetForCurrentView().BackgroundOpacity = 1;
-                StatusBar.GetForCurrentView().BackgroundColor = App.AppColor;
-                StatusBar.GetForCurrentView().ForegroundColor = Colors.White;
-
-                Window.Current.SizeChanged += async (sender, e) =>
-                {
-                    if (ApplicationView.GetForCurrentView().Orientation == ApplicationViewOrientation.Landscape)
-                        await StatusBar.GetForCurrentView().HideAsync();
-                    else
-                        await StatusBar.GetForCurrentView().ShowAsync();
-                };
-            }
-            else
-            {
-                // Desktop
-                var titlebar = ApplicationView.GetForCurrentView().TitleBar;
-                titlebar.BackgroundColor = App.AppColor;
-                titlebar.ButtonBackgroundColor = titlebar.BackgroundColor;
-                titlebar.ForegroundColor = Colors.White;
-            }
         }
 
-        private void MainPage_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void SetupPage_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             ResizeControls();
         }
@@ -108,12 +79,10 @@ namespace SimpleWeather.UWP
             ((IDisposable)cts).Dispose();
         }
 
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
-            // Restore Weather if Location already set
-            await Restore();
+            Restore();
         }
 
         private void Location_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
@@ -259,6 +228,8 @@ namespace SimpleWeather.UWP
             // Save weather data
             await Settings.DeleteLocations();
             await Settings.AddLocation(location);
+            if (wm.SupportsAlerts && weather.weather_alerts != null)
+                await Settings.SaveWeatherAlerts(location, weather.weather_alerts);
             await Settings.SaveWeatherData(weather);
 
             // If we're using search
@@ -281,34 +252,27 @@ namespace SimpleWeather.UWP
             LoadingRing.IsActive = !Enable;
         }
 
-        private async Task Restore()
+        private void Restore()
         {
-            if (Settings.WeatherLoaded)
-            {
-                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(Shell)));
-            }
+            var mainPanel = FindName("MainPanel") as FrameworkElement;
+            mainPanel.Visibility = Visibility.Visible;
+
+            // Sizing
+            ResizeControls();
+
+            APIComboBox.ItemsSource = WeatherAPI.APIs;
+            APIComboBox.DisplayMemberPath = "Display";
+            APIComboBox.SelectedValuePath = "Value";
+
+            // Check for key
+            if (!String.IsNullOrEmpty(Settings.API_KEY))
+                KeyEntry.Text = Settings.API_KEY;
             else
-            {
-                var mainPanel = FindName("MainPanel") as FrameworkElement;
-                mainPanel.Visibility = Visibility.Visible;
+                KeyEntry.Text = String.Empty;
 
-                // Sizing
-                ResizeControls();
-
-                APIComboBox.ItemsSource = WeatherAPI.APIs;
-                APIComboBox.DisplayMemberPath = "Display";
-                APIComboBox.SelectedValuePath = "Value";
-
-                // Check for key
-                if (!String.IsNullOrEmpty(Settings.API_KEY))
-                    KeyEntry.Text = Settings.API_KEY;
-                else
-                    KeyEntry.Text = String.Empty;
-
-                SearchGrid.Visibility = Visibility.Visible;
-                // Set WUnderground as default API
-                APIComboBox.SelectedValue = WeatherAPI.WeatherUnderground;
-            }
+            SearchGrid.Visibility = Visibility.Visible;
+            // Set WUnderground as default API
+            APIComboBox.SelectedValue = WeatherAPI.WeatherUnderground;
         }
 
         private async void GPS_Click(object sender, RoutedEventArgs e)
@@ -467,6 +431,8 @@ namespace SimpleWeather.UWP
                 Settings.SaveLastGPSLocData(location);
                 await Settings.DeleteLocations();
                 await Settings.AddLocation(new LocationData(view));
+                if (wm.SupportsAlerts && weather.weather_alerts != null)
+                    await Settings.SaveWeatherAlerts(location, weather.weather_alerts);
                 await Settings.SaveWeatherData(weather);
 
                 Settings.FollowGPS = true;

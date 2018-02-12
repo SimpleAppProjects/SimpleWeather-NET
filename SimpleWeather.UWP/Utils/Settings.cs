@@ -211,5 +211,21 @@ namespace SimpleWeather.Utils
         {
             localSettings.Values[KEY_DBVERSION] = value;
         }
+
+        private static bool UseAlerts()
+        {
+            if (!localSettings.Values.ContainsKey(KEY_USEALERTS) || localSettings.Values[KEY_USEALERTS] == null)
+            {
+                SetAlerts(false);
+                return false;
+            }
+            else
+                return (bool)localSettings.Values[KEY_USEALERTS];
+        }
+
+        private static void SetAlerts(bool value)
+        {
+            localSettings.Values[KEY_USEALERTS] = value;
+        }
     }
 }

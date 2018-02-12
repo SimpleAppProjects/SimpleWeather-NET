@@ -165,10 +165,15 @@
     <Content Include="Assets\WeatherIcons\png\day_thunderstorm.png" />
     <Content Include="Assets\WeatherIcons\png\day_windy.png" />
     <Content Include="Assets\WeatherIcons\png\dust.png" />
+    <Content Include="Assets\WeatherIcons\png\fire.png" />
+    <Content Include="Assets\WeatherIcons\png\flood.png" />
     <Content Include="Assets\WeatherIcons\png\fog.png" />
+    <Content Include="Assets\WeatherIcons\png\gale_warning.png" />
     <Content Include="Assets\WeatherIcons\png\hail.png" />
     <Content Include="Assets\WeatherIcons\png\hot.png" />
     <Content Include="Assets\WeatherIcons\png\hurricane.png" />
+    <Content Include="Assets\WeatherIcons\png\hurricane_warning.png" />
+    <Content Include="Assets\WeatherIcons\png\ic_error_white.png" />
     <Content Include="Assets\WeatherIcons\png\lightning.png" />
     <Content Include="Assets\WeatherIcons\png\na.png" />
     <Content Include="Assets\WeatherIcons\png\night_alt_cloudy.png" />
@@ -198,6 +203,7 @@
     <Content Include="Assets\WeatherIcons\png\sandstorm.png" />
     <Content Include="Assets\WeatherIcons\png\showers.png" />
     <Content Include="Assets\WeatherIcons\png\sleet.png" />
+    <Content Include="Assets\WeatherIcons\png\small_craft_advisory.png" />
     <Content Include="Assets\WeatherIcons\png\smog.png" />
     <Content Include="Assets\WeatherIcons\png\smoke.png" />
     <Content Include="Assets\WeatherIcons\png\snow.png" />
@@ -205,9 +211,12 @@
     <Content Include="Assets\WeatherIcons\png\snow_wind.png" />
     <Content Include="Assets\WeatherIcons\png\sprinkle.png" />
     <Content Include="Assets\WeatherIcons\png\storm_showers.png" />
+    <Content Include="Assets\WeatherIcons\png\storm_warning.png" />
     <Content Include="Assets\WeatherIcons\png\strong_wind.png" />
     <Content Include="Assets\WeatherIcons\png\thunderstorm.png" />
     <Content Include="Assets\WeatherIcons\png\tornado.png" />
+    <Content Include="Assets\WeatherIcons\png\tsunami.png" />
+    <Content Include="Assets\WeatherIcons\png\volcano.png" />
     <Content Include="Assets\WeatherIcons\png\windy.png" />
     <Content Include="Assets\WeatherIcons\weathericons-regular-webfont.ttf" />
     <None Include="project.json" />
@@ -218,7 +227,14 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BackgroundTasks\BackgroundTaskHandler.cs" />
+    <Compile Include="Controls\WeatherAlertPanel.xaml.cs">
+      <DependentUpon>WeatherAlertPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\InverseVisibilityConverter.cs" />
+    <Compile Include="WeatherAlertPage.xaml.cs">
+      <DependentUpon>WeatherAlertPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WeatherAlerts\WeatherAlertHandler.cs" />
     <Compile Include="BackgroundTasks\WeatherUpdateBackgroundTask.cs" />
     <Compile Include="Controls\HourlyForecastItem.xaml.cs">
       <DependentUpon>HourlyForecastItem.xaml</DependentUpon>
@@ -245,12 +261,13 @@
     <Compile Include="Helpers\InverseBooleanConverter.cs" />
     <Compile Include="Helpers\StringExtensions.cs" />
     <Compile Include="Helpers\StringVisibilityConverter.cs" />
+    <Compile Include="Helpers\WeatherAlertCreator.cs" />
     <Compile Include="Helpers\WeatherTileCreator.cs" />
     <Compile Include="LocationsPage.xaml.cs">
       <DependentUpon>LocationsPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainPage.xaml.cs">
-      <DependentUpon>MainPage.xaml</DependentUpon>
+    <Compile Include="SetupPage.xaml.cs">
+      <DependentUpon>SetupPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingsPage.xaml.cs">
@@ -334,11 +351,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\WeatherAlertPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="LocationsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="MainPage.xaml">
+    <Page Include="SetupPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -349,6 +370,10 @@
     <Page Include="Shell.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="WeatherAlertPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="WeatherNow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -372,6 +397,7 @@
       <Name>Windows Mobile Extensions for the UWP %28WindowsMobile, Version=10.0.15063.0%29</Name>
     </SDKReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="..\SimpleWeather\SimpleWeather_Xamarin.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

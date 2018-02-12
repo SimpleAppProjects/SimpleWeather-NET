@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SimpleWeather.Utils;
+using SimpleWeather.UWP.BackgroundTasks;
+using System;
 using System.ComponentModel;
 using Windows.Foundation.Metadata;
 using Windows.UI;
@@ -40,15 +42,29 @@ namespace SimpleWeather.UWP
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            bool suppressNavigate = false;
+
+            if (e.Parameter != null)
+            {
+                string arg = e.Parameter.ToString();
+
+                switch (arg)
+                {
+                    case "suppressNavigate":
+                        suppressNavigate = true;
+                        break;
+                }
+            }
+
             // Navigate to WeatherNow page
-            if (AppFrame.Content == null)
+            if (AppFrame.Content == null && !suppressNavigate)
             {
                 AppFrame.Navigate(typeof(WeatherNow), e.Parameter);
             }
 
             // Setup background task
             Windows.ApplicationModel.Background.BackgroundExecutionManager.RemoveAccess();
-            await App.BGTaskHandler.RegisterBackgroundTask();
+            await WeatherUpdateBackgroundTask.RegisterBackgroundTask();
         }
 
         private void AppFrame_Navigated(object sender, NavigationEventArgs e)

@@ -29,6 +29,8 @@ using Android.Graphics;
 using Com.Bumptech.Glide;
 using Android.Util;
 using SimpleWeather.Droid.Widgets;
+using SimpleWeather.Droid.WeatherAlerts;
+using Android.Support.V4.Graphics.Drawable;
 
 namespace SimpleWeather.Droid
 {
@@ -82,6 +84,8 @@ namespace SimpleWeather.Droid
         private TextView qpfSnow;
         private TextView cloudinessLabel;
         private TextView cloudiness;
+        // Alerts
+        private View alertButton;
         // Nav Header View
         private View navheader;
         private TextView navLocation;
@@ -117,6 +121,13 @@ namespace SimpleWeather.Droid
                         WeatherWidgetService.EnqueueWork(App.Context, new Intent(App.Context, typeof(WeatherWidgetService))
                             .SetAction(WeatherWidgetService.ACTION_REFRESHNOTIFICATION));
                     }
+                }
+
+                if (wm.SupportsAlerts && Settings.ShowAlerts &&
+                    weather.weather_alerts != null && weather.weather_alerts.Count > 0)
+                {
+                    // Alerts are posted to the user here. Set them as notified.
+                    Task.Run(async () => await WeatherAlertHandler.SetasNotified(location, weather.weather_alerts));
                 }
             }
 
@@ -284,6 +295,19 @@ namespace SimpleWeather.Droid
             cloudiness = view.FindViewById<TextView>(Resource.Id.cloudiness);
             qpfRain = view.FindViewById<TextView>(Resource.Id.qpf_rain_val);
             qpfSnow = view.FindViewById<TextView>(Resource.Id.qpf_snow_val);
+            // Alerts
+            alertButton = view.FindViewById(Resource.Id.alert_button);
+            alertButton.Click += (sender, e) =>
+            {
+                // Show Alert Fragment
+                if (weatherView.Extras.Alerts.Count > 0)
+                    AppCompatActivity.SupportFragmentManager.BeginTransaction()
+                        .Add(Resource.Id.fragment_container, WeatherAlertsFragment.NewInstance(weatherView))
+                        .Hide(this)
+                        .AddToBackStack(null)
+                        .Commit();
+            };
+            alertButton.Visibility = ViewStates.Invisible;
 
             // Cloudiness only supported by OWM
             cloudinessLabel.Visibility = ViewStates.Gone;
@@ -462,6 +486,22 @@ namespace SimpleWeather.Droid
         public override async void OnResume()
         {
             base.OnResume();
+
+            // Go straight to alerts here
+            if (Arguments != null && Arguments.GetBoolean(WeatherWidgetService.ACTION_SHOWALERTS, false))
+            {
+                // Remove key from Arguments
+                Arguments.Remove(WeatherWidgetService.ACTION_SHOWALERTS);
+
+                // Show Alert Fragment
+                AppCompatActivity.SupportFragmentManager.BeginTransaction()
+                    .Add(Resource.Id.fragment_container, WeatherAlertsFragment.NewInstance(location))
+                    .Hide(this)
+                    .AddToBackStack(null)
+                    .Commit();
+
+                return;
+            }
 
             // Don't resume if fragment is hidden
             if (this.IsHidden)
@@ -703,6 +743,26 @@ namespace SimpleWeather.Droid
                     cloudinessLabel.Visibility = ViewStates.Gone;
                     cloudiness.Visibility = ViewStates.Gone;
                 }
+
+                // Alerts
+                if (wm.SupportsAlerts && weatherView.Extras.Alerts.Count > 0)
+                {
+                    if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
+                    {
+                        alertButton.BackgroundTintList = ColorStateList.ValueOf(Color.OrangeRed);
+                    }
+                    else
+                    {
+                        var origDrawable = ContextCompat.GetDrawable(AppCompatActivity, Resource.Drawable.light_round_corner_bg);
+                        var compatDrawable = DrawableCompat.Wrap(origDrawable);
+                        DrawableCompat.SetTint(compatDrawable, Color.OrangeRed);
+                        alertButton.Background = compatDrawable;
+                    }
+
+                    alertButton.Visibility = ViewStates.Visible;
+                }
+                else
+                    alertButton.Visibility = ViewStates.Invisible;
 
                 // Fix DetailsLayout
                 AdjustDetailsLayout();

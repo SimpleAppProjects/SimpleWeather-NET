@@ -152,6 +152,8 @@ namespace SimpleWeather.Droid
             // Save weather data
             await Settings.DeleteLocations();
             await Settings.AddLocation(location);
+            if (wm.SupportsAlerts && weather.weather_alerts != null)
+                await Settings.SaveWeatherAlerts(location, weather.weather_alerts);
             await Settings.SaveWeatherData(weather);
 
             // If we're using search

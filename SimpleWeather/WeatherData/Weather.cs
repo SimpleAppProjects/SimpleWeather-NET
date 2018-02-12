@@ -52,6 +52,10 @@ namespace SimpleWeather.WeatherData
         public Astronomy astronomy { get; set; }
         [TextBlob("precipitationblob")]
         public Precipitation precipitation { get; set; }
+        [JsonIgnore]
+        [Ignore]
+        // Just for passing along to where its needed
+        public List<WeatherAlert> weather_alerts { get; set; }
         public string ttl { get; set; }
         public string source { get; set; }
         [PrimaryKey]

@@ -1,11 +1,19 @@
 ﻿using Microsoft.QueryStringDotNET;
+using Newtonsoft.Json;
+using SimpleWeather.Controls;
 using SimpleWeather.Utils;
+using SimpleWeather.WeatherData;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Resources;
+using Windows.Foundation.Metadata;
 using Windows.UI;
+using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -21,7 +29,6 @@ namespace SimpleWeather.UWP
         public const int HomeIdx = 0;
         public static ResourceLoader ResLoader;
         public static Frame RootFrame { get; set; }
-        public static BackgroundTasks.BackgroundTaskHandler BGTaskHandler { get; set; }
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -31,8 +38,6 @@ namespace SimpleWeather.UWP
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
-
-            BGTaskHandler = new BackgroundTasks.BackgroundTaskHandler();
         }
 
         /// <summary>
@@ -48,6 +53,27 @@ namespace SimpleWeather.UWP
                 //this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
+            await Initialize(e);
+
+            if (e.PrelaunchActivated == false)
+            {
+                if (RootFrame.Content == null)
+                {
+                    // When the navigation stack isn't restored navigate to the first page,
+                    // configuring the new page by passing required information as a navigation
+                    // parameter
+                    if (Settings.WeatherLoaded)
+                        RootFrame.Navigate(typeof(Shell), e.Arguments);
+                    else
+                        RootFrame.Navigate(typeof(SetupPage), e.Arguments);
+                }
+                // Ensure the current window is active
+                Window.Current.Activate();
+            }
+        }
+
+        private async Task Initialize(IActivatedEventArgs e)
+        {
             RootFrame = Window.Current.Content as Frame;
 
             // Do not repeat app initialization when the Window already has content,
@@ -68,24 +94,36 @@ namespace SimpleWeather.UWP
                 Window.Current.Content = RootFrame;
             }
 
-            if (e.PrelaunchActivated == false)
-            {
-                if (RootFrame.Content == null)
-                {
-                    // When the navigation stack isn't restored navigate to the first page,
-                    // configuring the new page by passing required information as a navigation
-                    // parameter
-                    RootFrame.Navigate(typeof(MainPage), e.Arguments);
-                }
-                // Ensure the current window is active
-                Window.Current.Activate();
-            }
-
             if (ResLoader == null)
                 ResLoader = new ResourceLoader();
 
             // Load data if needed
             await Settings.LoadIfNeeded();
+
+            // TitleBar
+            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            {
+                // Mobile
+                StatusBar.GetForCurrentView().BackgroundOpacity = 1;
+                StatusBar.GetForCurrentView().BackgroundColor = App.AppColor;
+                StatusBar.GetForCurrentView().ForegroundColor = Colors.White;
+
+                Window.Current.SizeChanged += async (sender, eventArgs) =>
+                {
+                    if (ApplicationView.GetForCurrentView().Orientation == ApplicationViewOrientation.Landscape)
+                        await StatusBar.GetForCurrentView().HideAsync();
+                    else
+                        await StatusBar.GetForCurrentView().ShowAsync();
+                };
+            }
+            else
+            {
+                // Desktop
+                var titlebar = ApplicationView.GetForCurrentView().TitleBar;
+                titlebar.BackgroundColor = App.AppColor;
+                titlebar.ButtonBackgroundColor = titlebar.BackgroundColor;
+                titlebar.ForegroundColor = Colors.White;
+            }
         }
 
         /// <summary>
@@ -112,7 +150,7 @@ namespace SimpleWeather.UWP
             deferral.Complete();
         }
 
-        protected override void OnActivated(IActivatedEventArgs e)
+        protected override async void OnActivated(IActivatedEventArgs e)
         {
             base.OnActivated(e);
 
@@ -133,24 +171,38 @@ namespace SimpleWeather.UWP
                 // See what action is being requested 
                 switch (args["action"])
                 {
-                    // Open the image
-                    case "toast-refresh":
-
-                        // The URL retrieved from the toast args
-                        string pageName = args["page"];
-                        Type pageType = Type.GetType(pageName, false);
-
-                        // Skip if we're not on that page
-                        if (pageType != null && RootFrame.Content is Shell && (RootFrame.Content as Shell).AppFrame.SourcePageType.Equals(pageType))
+                    case "view-alerts":
+                        if (Settings.WeatherLoaded)
                         {
-                            // Refresh that page
-                            if (pageType.Equals((typeof(WeatherNow))))
+                            String key = args["query"];
+
+                            // App loaded for first time
+                            await Initialize(e);
+
+                            if (RootFrame.Content == null)
                             {
-                                (RootFrame.Content as Shell).AppFrame.Navigate(typeof(WeatherNow), args["action"]);
+                                RootFrame.Navigate(typeof(Shell), "suppressNavigate");
                             }
-                            else if (pageType.Equals(typeof(LocationsPage)))
+
+                            if (Shell.Instance != null)
                             {
-                                (RootFrame.Content as Shell).AppFrame.Navigate(typeof(LocationsPage), args["action"]);
+                                var weather = await Settings.GetWeatherData(key);
+                                weather.weather_alerts = await Settings.GetWeatherAlertData(key);
+
+                                // If we're already on WeatherNow navigate to Alert page
+                                if (Shell.Instance.AppFrame.Content != null && Shell.Instance.AppFrame.SourcePageType.IsTypeOf(typeof(WeatherNow)))
+                                {
+                                    Shell.Instance.AppFrame.Navigate(typeof(WeatherAlertPage), new WeatherNowViewModel(weather));
+                                }
+                                // If not clear backstack and navigate to Alert page
+                                // Add a WeatherNow page in backstack to go back to
+                                else
+                                {
+                                    Shell.Instance.AppFrame.Navigate(typeof(WeatherAlertPage), new WeatherNowViewModel(weather));
+                                    Shell.Instance.AppFrame.BackStack.Clear();
+                                    Shell.Instance.AppFrame.BackStack.Add(new PageStackEntry(typeof(WeatherNow), null, null));
+                                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+                                }
                             }
                         }
                         break;

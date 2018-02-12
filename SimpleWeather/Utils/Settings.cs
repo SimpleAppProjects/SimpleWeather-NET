@@ -24,6 +24,9 @@ namespace SimpleWeather.Utils
         public static LocationData HomeData { get { return GetHomeData(); } }
         public static DateTime UpdateTime { get { return GetUpdateTime(); } set { SetUpdateTime(value); } }
         public static bool IsFahrenheit { get { return Unit == Fahrenheit; } }
+        public static bool ShowAlerts { get { return UseAlerts(); } set { SetAlerts(value); } }
+
+        // Database
         private static int DBVersion { get { return GetDBVersion(); } set { SetDBVersion(value); } }
 
         // Data
@@ -48,6 +51,7 @@ namespace SimpleWeather.Utils
         private const string KEY_REFRESHINTERVAL = "key_refreshinterval";
         private const string KEY_UPDATETIME = "key_updatetime";
         private const string KEY_DBVERSION = "key_dbversion";
+        private const string KEY_USEALERTS = "key_usealerts";
 
         // Weather Data
         private static LocationData lastGPSLocData = new LocationData();
@@ -73,6 +77,7 @@ namespace SimpleWeather.Utils
             await locationDB.CreateTableAsync<LocationData>();
             await locationDB.CreateTableAsync<Favorites>();
             await weatherDB.CreateTableAsync<Weather>();
+            await weatherDB.CreateTableAsync<WeatherAlerts>();
 
             // Migrate old data if available
             if (GetDBVersion() < CurrentDBVersion)
@@ -144,6 +149,32 @@ namespace SimpleWeather.Utils
             return await weatherDB.FindWithChildrenAsync<Weather>(key);
         }
 
+        public static async Task<List<WeatherAlert>> GetWeatherAlertData(string key)
+        {
+            await LoadIfNeeded();
+
+            List<WeatherAlert> alerts = null;
+
+            try
+            {
+                var weatherAlertData = await weatherDB.FindWithChildrenAsync<WeatherAlerts>(key);
+
+                if (weatherAlertData != null && weatherAlertData.alerts != null)
+                    alerts = weatherAlertData.alerts;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
+            finally
+            {
+                if (alerts == null)
+                    alerts = new List<WeatherAlert>();
+            }
+
+            return alerts;
+        }
+
         public static async Task<LocationData> GetLastGPSLocData()
         {
             await LoadIfNeeded();
@@ -163,6 +194,16 @@ namespace SimpleWeather.Utils
                 CleanupWeatherData();
         }
 
+        public static async Task SaveWeatherAlerts(LocationData location, List<WeatherAlert> alerts)
+        {
+            var alertdata = new WeatherAlerts(location.query, alerts);
+            await weatherDB.InsertOrReplaceAsync(alertdata);
+            await WriteOperations.UpdateWithChildrenAsync(weatherDB, alertdata);
+
+            if (await weatherDB.Table<WeatherAlerts>().CountAsync() > CACHE_LIMIT)
+                CleanupWeatherAlertData();
+        }
+
         private static void CleanupWeatherData()
         {
             Task.Run(async () => 
@@ -175,6 +216,22 @@ namespace SimpleWeather.Utils
                 foreach (Weather weather in data)
                 {
                     await weatherDB.DeleteAsync<Weather>(weather.query);
+                }
+            });
+        }
+
+        private static void CleanupWeatherAlertData()
+        {
+            Task.Run(async () =>
+            {
+                var locs = await locationDB.Table<LocationData>().ToListAsync();
+                if (FollowGPS) locs.Add(lastGPSLocData);
+                var data = await weatherDB.Table<WeatherAlerts>().ToListAsync();
+                var weatherToDelete = data.Where(w => locs.All(l => l.query != w.query));
+
+                foreach (WeatherAlerts alertdata in data)
+                {
+                    await weatherDB.DeleteAsync<WeatherAlerts>(alertdata.query);
                 }
             });
         }

@@ -175,6 +175,9 @@ namespace SimpleWeather.WeatherData
                 try
                 {
                     weather = await Settings.GetWeatherData(location.query);
+
+                    if (wm.SupportsAlerts)
+                        weather.weather_alerts = await Settings.GetWeatherAlertData(location.query);
                 }
                 catch (Exception ex)
                 {
@@ -208,6 +211,9 @@ namespace SimpleWeather.WeatherData
             try
             {
                 weather = await Settings.GetWeatherData(location.query);
+
+                if (wm.SupportsAlerts)
+                    weather.weather_alerts = await Settings.GetWeatherAlertData(location.query);
             }
             catch (Exception ex)
             {
@@ -248,7 +254,37 @@ namespace SimpleWeather.WeatherData
             // Save location query
             weather.query = location.query;
 
+            // Save weather alerts
+            await SaveWeatherAlerts();
+
             await Settings.SaveWeatherData(weather);
+        }
+
+        private async Task SaveWeatherAlerts()
+        {
+            if (weather.weather_alerts != null)
+            {
+                // Check for previously saved alerts
+                var previousAlerts = await Settings.GetWeatherAlertData(location.query);
+
+                if (previousAlerts != null && previousAlerts.Count > 0)
+                {
+                    // If any previous alerts were flagged before as notified
+                    // make sure to set them here as such
+                    // bc notified flag gets reset when retrieving weatherdata
+                    foreach(WeatherAlert alert in weather.weather_alerts)
+                    {
+                        if (previousAlerts.Find(walert => walert.Equals(alert)) is WeatherAlert prevAlert)
+                        {
+                            if (prevAlert.Notified)
+                                alert.Notified = prevAlert.Notified;
+                        }
+                    }
+                }
+
+
+                await Settings.SaveWeatherAlerts(location, weather.weather_alerts);
+            }
         }
 
         public Weather GetWeather()

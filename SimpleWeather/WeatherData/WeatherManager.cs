@@ -118,6 +118,8 @@ namespace SimpleWeather.WeatherData
 
         public bool SupportsWeatherLocale => WeatherProvider.SupportsWeatherLocale;
 
+        public bool SupportsAlerts => WeatherProvider.SupportsAlerts;
+
         public async Task UpdateLocationData(LocationData location)
         {
             await WeatherProvider.UpdateLocationData(location);
@@ -162,6 +164,11 @@ namespace SimpleWeather.WeatherData
         public async Task<Weather> GetWeather(LocationData location)
         {
             return await WeatherProvider.GetWeather(location);
+        }
+
+        public async Task<List<WeatherAlert>> GetAlerts(LocationData location)
+        {
+            return await WeatherProvider.GetAlerts(location);
         }
 
         public String LocaleToLangCode(String iso, String name)

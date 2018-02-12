@@ -42,7 +42,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
         android:textColor="@android:color/white"
         app:autoSizeMaxTextSize="@dimen/forecast_condition_size"
-        app:autoSizeMinTextSize="2dp"
+        app:autoSizeMinTextSize="2sp"
         app:autoSizeTextType="uniform"
         tools:text="Scattered Thunderstorms" />
 

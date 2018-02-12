@@ -86,6 +86,10 @@ namespace SimpleWeather.WeatherData
         public const String HURRICANE = "\uf073";
         public const String TORNADO = "\uf056";
 
+        public const String FIRE = "\uf0c7";
+        public const String FLOOD = "\uf07c";
+        public const String VOLCANO = "\uf0c8";
+
         // N/A
         public const String NA = "\uf07b";
     }

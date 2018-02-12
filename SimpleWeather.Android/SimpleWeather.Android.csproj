@@ -180,6 +180,7 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="AppCompatPreferenceActivity.cs" />
+    <Compile Include="Controls\WeatherAlertPanel.cs" />
     <Compile Include="Controls\ForecastItem.cs" />
     <Compile Include="Controls\HourlyForecastItem.cs" />
     <Compile Include="Controls\TextForecastItem.cs" />
@@ -191,6 +192,8 @@
     <Compile Include="Helpers\ItemTouchHelperCallback.cs" />
     <Compile Include="Helpers\ActionModeCallback.cs" />
     <Compile Include="Helpers\LocationListener.cs" />
+    <Compile Include="WeatherAlertPanelAdapter.cs" />
+    <Compile Include="Notifications\WeatherAlertNotificationBuilder.cs" />
     <Compile Include="Notifications\WeatherNotificationBuilder.cs" />
     <Compile Include="Shortcuts\ShortcutCreator.cs" />
     <Compile Include="TextForecastPagerAdapter.cs" />
@@ -209,6 +212,8 @@
     <Compile Include="Utils\ImageUtils.cs" />
     <Compile Include="Utils\Pair.cs" />
     <Compile Include="Utils\Settings.cs" />
+    <Compile Include="WeatherAlertsFragment.cs" />
+    <Compile Include="WeatherAlerts\WeatherAlertHandler.cs" />
     <Compile Include="WeatherData\IWeatherProviderImpl.cs" />
     <Compile Include="WeatherData\WeatherProviderImpl.cs" />
     <Compile Include="WeatherNowFragment.cs" />
@@ -230,6 +235,7 @@
     <AndroidResource Include="Resources\values-v14\colors.xml">
       <SubType>Designer</SubType>
     </AndroidResource>
+    <AndroidResource Include="Resources\font\materialicons_regular.ttf" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\backgrounds\DaySky.jpg" />
@@ -2088,6 +2094,92 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable-nodpi\night_fog.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-nodpi\fire.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-nodpi\flood.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-nodpi\gale_warning.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-nodpi\hurricane_warning.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-nodpi\small_craft_advisory.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-nodpi\storm_warning.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-nodpi\tsunami.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-nodpi\volcano.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-hdpi\ic_error_white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-mdpi\ic_error_white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_error_white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_error_white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_error_white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-anydpi-v21\ic_error_white.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\fragment_weather_alerts.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-anydpi-v21\ic_expand_less_white_24dp.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-anydpi-v21\ic_expand_more_white_24dp.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-hdpi\ic_expand_less_white_24dp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-hdpi\ic_expand_more_white_24dp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-mdpi\ic_expand_less_white_24dp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-mdpi\ic_expand_more_white_24dp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_expand_less_white_24dp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_expand_more_white_24dp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_expand_less_white_24dp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_expand_more_white_24dp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_expand_more_white_24dp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_expand_less_white_24dp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\weather_alert_panel.xml" />
   </ItemGroup>
   <Import Project="..\SimpleWeather\SimpleWeather_Xamarin.projitems" Label="Shared" Condition="Exists('..\SimpleWeather\SimpleWeather_Xamarin.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

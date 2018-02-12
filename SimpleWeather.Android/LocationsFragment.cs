@@ -741,6 +741,8 @@ namespace SimpleWeather.Droid
 
                 // Save data
                 await Settings.AddLocation(location);
+                if (wm.SupportsAlerts && weather.weather_alerts != null)
+                    await Settings.SaveWeatherAlerts(location, weather.weather_alerts);
                 await Settings.SaveWeatherData(weather);
 
                 LocationPanelViewModel panel = new LocationPanelViewModel(weather)

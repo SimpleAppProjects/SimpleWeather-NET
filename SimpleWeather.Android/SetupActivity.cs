@@ -304,6 +304,8 @@ namespace SimpleWeather.Droid
                 Settings.SaveLastGPSLocData(location);
                 await Settings.DeleteLocations();
                 await Settings.AddLocation(new WeatherData.LocationData(view));
+                if (wm.SupportsAlerts && weather.weather_alerts != null)
+                    await Settings.SaveWeatherAlerts(location, weather.weather_alerts);
                 await Settings.SaveWeatherData(weather);
 
                 Settings.FollowGPS = true;

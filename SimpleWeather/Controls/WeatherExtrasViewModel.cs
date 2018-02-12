@@ -37,6 +37,9 @@ namespace SimpleWeather.Controls
         public static readonly DependencyProperty Qpf_SnowProperty =
             DependencyProperty.Register("Qpf_Snow", typeof(String),
             typeof(WeatherNowViewModel), new PropertyMetadata(""));
+        public static readonly DependencyProperty AlertsProperty =
+            DependencyProperty.Register("Alerts", typeof(ObservableCollection<WeatherAlertViewModel>),
+            typeof(WeatherNowViewModel), new PropertyMetadata(null));
 
         public event PropertyChangedEventHandler PropertyChanged;
         // Create the OnPropertyChanged method to raise the event
@@ -72,6 +75,11 @@ namespace SimpleWeather.Controls
             get { return (string)GetValue(Qpf_SnowProperty); }
             set { SetValue(Qpf_SnowProperty, value); OnPropertyChanged("Qpf_Snow"); }
         }
+        public ObservableCollection<WeatherAlertViewModel> Alerts
+        {
+            get { return (ObservableCollection<WeatherAlertViewModel>)GetValue(AlertsProperty); }
+            set { SetValue(AlertsProperty, value); OnPropertyChanged("Alerts"); }
+        }
         #endregion
 #elif __ANDROID__
         public ObservableCollection<HourlyForecastItemViewModel> HourlyForecast { get; set; }
@@ -80,18 +88,22 @@ namespace SimpleWeather.Controls
         public string Chance { get; set; }
         public string Qpf_Rain { get; set; }
         public string Qpf_Snow { get; set; }
+
+        public ObservableCollection<WeatherAlertViewModel> Alerts { get; set; }
 #endif
 
         public WeatherExtrasViewModel()
         {
             HourlyForecast = new ObservableCollection<HourlyForecastItemViewModel>();
             TextForecast = new ObservableCollection<TextForecastItemViewModel>();
+            Alerts = new ObservableCollection<WeatherAlertViewModel>();
         }
 
         public WeatherExtrasViewModel(Weather weather)
         {
             HourlyForecast = new ObservableCollection<HourlyForecastItemViewModel>();
             TextForecast = new ObservableCollection<TextForecastItemViewModel>();
+            Alerts = new ObservableCollection<WeatherAlertViewModel>();
             UpdateView(weather);
         }
 
@@ -129,6 +141,20 @@ namespace SimpleWeather.Controls
                 weather.precipitation.qpf_rain_in.ToString("0.00", culture) + " in" : weather.precipitation.qpf_rain_mm.ToString(culture) + " mm";
             Qpf_Snow = Settings.IsFahrenheit ?
                 weather.precipitation.qpf_snow_in.ToString("0.00", culture) + " in" : weather.precipitation.qpf_snow_cm.ToString(culture) + " cm";
+
+            Alerts.Clear();
+            if (weather.weather_alerts != null && weather.weather_alerts.Count > 0)
+            {
+                foreach(WeatherAlert alert in weather.weather_alerts)
+                {
+                    // Skip if alert has expired
+                    if (alert.ExpiresDate <= DateTimeOffset.Now)
+                        continue;
+
+                    WeatherAlertViewModel alertView = new WeatherAlertViewModel(alert);
+                    Alerts.Add(alertView);
+                }
+            }
         }
 
         public void Clear()
@@ -136,6 +162,7 @@ namespace SimpleWeather.Controls
             HourlyForecast.Clear();
             TextForecast.Clear();
             Chance = Qpf_Rain = Qpf_Snow = String.Empty;
+            Alerts.Clear();
         }
     }
 }

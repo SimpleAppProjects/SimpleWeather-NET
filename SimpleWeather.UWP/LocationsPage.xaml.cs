@@ -528,6 +528,8 @@ namespace SimpleWeather.UWP
 
             // Save data
             await Settings.AddLocation(location);
+            if (wm.SupportsAlerts && weather.weather_alerts != null)
+                await Settings.SaveWeatherAlerts(location, weather.weather_alerts);
             await Settings.SaveWeatherData(weather);
 
             LocationPanelViewModel panelView = new LocationPanelViewModel(weather)
