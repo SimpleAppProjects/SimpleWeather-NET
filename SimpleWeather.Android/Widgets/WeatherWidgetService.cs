@@ -493,6 +493,20 @@ namespace SimpleWeather.Droid.Widgets
             Console.WriteLine(string.Format("{0}: Refreshed date", TAG));
         }
 
+        private static PendingIntent GetDefaultCalendarIntent(Context context)
+        {
+            Intent onClickIntent = Intent.MakeMainSelectorActivity(Intent.ActionMain, Intent.CategoryAppCalendar);
+            return PendingIntent.GetActivity(context, 0, onClickIntent, 0);
+        }
+
+        private static PendingIntent GetDefaultClockIntent(Context context)
+        {
+            string clockAction = Build.VERSION.SdkInt >= BuildVersionCodes.Kitkat ?
+                Android.Provider.AlarmClock.ActionShowAlarms : Android.Provider.AlarmClock.ActionSetAlarm;
+            Intent onClickIntent = new Intent(clockAction);
+            return PendingIntent.GetActivity(context, 0, onClickIntent, 0);
+        }
+
         public RemoteViews BuildUpdate(Context context, WeatherWidgetProvider provider, Weather weather)
         {
             // Build an update that holds the updated widget contents
@@ -558,6 +572,13 @@ namespace SimpleWeather.Droid.Widgets
                     }
                     else
                         updateViews.SetViewVisibility(Resource.Id.condition_pop_panel, ViewStates.Gone);
+
+                    // Open default clock/calendar app
+                    if (provider.WidgetType == WidgetType.Widget4x2)
+                    {
+                        updateViews.SetOnClickPendingIntent(Resource.Id.date_panel, GetDefaultCalendarIntent(context));
+                        updateViews.SetOnClickPendingIntent(Resource.Id.clock_panel, GetDefaultClockIntent(context));
+                    }
                 }
             }
 
