@@ -302,7 +302,7 @@ namespace SimpleWeather.Droid
                 // Show Alert Fragment
                 if (weatherView.Extras.Alerts.Count > 0)
                     AppCompatActivity.SupportFragmentManager.BeginTransaction()
-                        .Add(Resource.Id.fragment_container, WeatherAlertsFragment.NewInstance(weatherView))
+                        .Add(Resource.Id.fragment_container, WeatherAlertsFragment.NewInstance(location, weatherView))
                         .Hide(this)
                         .AddToBackStack(null)
                         .Commit();
@@ -359,7 +359,7 @@ namespace SimpleWeather.Droid
         {
             if (IsLargeTablet(AppCompatActivity))
             {
-                mainView.Post(() =>
+                AppCompatActivity?.RunOnUiThread(() =>
                 {
                     if (this.View == null)
                         return;
@@ -404,6 +404,27 @@ namespace SimpleWeather.Droid
                     }
                     panel.RowCount = GridLayout.Undefined;
                     panel.ColumnCount = maxColumns;
+                });
+            }
+        }
+
+        private void ResizeAlertPanel()
+        {
+            if (IsLargeTablet(AppCompatActivity))
+            {
+                AppCompatActivity?.RunOnUiThread(() =>
+                {
+                    if (this.View == null || this.View.Width <= 0 || alertButton.Visibility != ViewStates.Visible)
+                        return;
+
+                    int viewWidth = this.View.Width;
+
+                    if (viewWidth <= 600)
+                        alertButton.LayoutParameters.Width = viewWidth;
+                    else if (viewWidth <= 1200)
+                        alertButton.LayoutParameters.Width = (int)(viewWidth * (0.75));
+                    else
+                        alertButton.LayoutParameters.Width = (int)(viewWidth * (0.50));
                 });
             }
         }
@@ -760,6 +781,7 @@ namespace SimpleWeather.Droid
                     }
 
                     alertButton.Visibility = ViewStates.Visible;
+                    ResizeAlertPanel();
                 }
                 else
                     alertButton.Visibility = ViewStates.Invisible;

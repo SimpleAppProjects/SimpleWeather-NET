@@ -13,23 +13,26 @@
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <CommandBar x:Name="CommandBar" RequestedTheme="Dark" Foreground="White" Background="#FF006FBF" Style="{StaticResource NoOverflow}" Grid.Row="0">
             <CommandBar.Content>
                 <Grid Height="48">
-                    <RichTextBlock Style="{StaticResource CommandBarRunLabel}" IsTextSelectionEnabled="False">
-                        <Paragraph>
-                            <Run x:Uid="Label_WeatherAlerts" Text="Severe Weather Alerts"/>
-                            <Run Text=" - "/>
-                            <Run Text="{x:Bind WeatherView.Location}"/>
-                        </Paragraph>
-                    </RichTextBlock>
+                    <TextBlock x:Uid="Label_WeatherAlerts" Text="Severe Weather Alerts"
+                               Style="{StaticResource CommandBarLabel}"/>
                 </Grid>
             </CommandBar.Content>
         </CommandBar>
 
-        <ScrollViewer Grid.Row="1">
+        <Border Grid.Row="1" BorderBrush="LightGray" BorderThickness="0,0,0,0.5">
+            <Viewbox Height="48" HorizontalAlignment="Left">
+                <TextBlock Text="{x:Bind WeatherView.Location, FallbackValue='New York, NY'}"
+                           FontSize="16" Padding="16" />
+            </Viewbox>
+        </Border>
+
+        <ScrollViewer Grid.Row="2">
             <ItemsControl x:Name="StackControl" ItemsSource="{x:Bind WeatherView.Extras.Alerts}" Margin="10">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="controls:WeatherAlertViewModel">

@@ -25,14 +25,14 @@
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/alert_icon"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="25dp"
                 android:layout_gravity="center_vertical"
                 android:adjustViewBounds="true"
                 android:paddingEnd="8dp"
                 android:paddingLeft="24dp"
                 android:paddingRight="8dp"
                 android:paddingStart="24dp"
-                app:srcCompat="@drawable/ic_error_white" />
+                app:srcCompat="@drawable/fire" />
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/alert_title"

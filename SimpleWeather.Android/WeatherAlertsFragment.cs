@@ -22,30 +22,30 @@ namespace SimpleWeather.Droid
     public class WeatherAlertsFragment : Fragment
     {
         private AppCompatActivity AppCompatActivity;
+        private LocationData location = null;
         private WeatherNowViewModel weatherView = null;
 
         private Toolbar toolbar;
         private Android.Widget.TextView locationHeader;
         private RecyclerView recyclerView;
 
-        public static WeatherAlertsFragment NewInstance(WeatherNowViewModel weatherViewModel)
-        {
-            WeatherAlertsFragment fragment = new WeatherAlertsFragment();
-            if (weatherViewModel != null)
-            {
-                fragment.weatherView = weatherViewModel;
-            }
-            return fragment;
-        }
-
         public static WeatherAlertsFragment NewInstance(LocationData location)
         {
             WeatherAlertsFragment fragment = new WeatherAlertsFragment();
             if (location != null)
             {
-                Bundle args = new Bundle();
-                args.PutString("data", location.ToJson());
-                fragment.Arguments = args;
+                fragment.location = location;
+            }
+            return fragment;
+        }
+
+        public static WeatherAlertsFragment NewInstance(LocationData location, WeatherNowViewModel weatherViewModel)
+        {
+            WeatherAlertsFragment fragment = new WeatherAlertsFragment();
+            if (location != null && weatherViewModel != null)
+            {
+                fragment.location = location;
+                fragment.weatherView = weatherViewModel;
             }
             return fragment;
         }
@@ -55,6 +55,12 @@ namespace SimpleWeather.Droid
             base.OnCreate(savedInstanceState);
 
             // Create your fragment here
+            if (location == null && savedInstanceState != null)
+            {
+                location = LocationData.FromJson(
+                    new Newtonsoft.Json.JsonTextReader(
+                        new System.IO.StringReader(savedInstanceState.GetString("data", null))));
+            }
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -79,7 +85,21 @@ namespace SimpleWeather.Droid
         {
             base.OnResume();
 
-            await Initialize();
+            // Don't resume if fragment is hidden
+            if (this.IsHidden)
+                return;
+            else
+                await Initialize();
+        }
+
+        public override async void OnHiddenChanged(bool hidden)
+        {
+            base.OnHiddenChanged(hidden);
+
+            if (!hidden && this.IsVisible)
+            {
+                await Initialize();
+            }
         }
 
         private async Task Initialize()
@@ -90,12 +110,8 @@ namespace SimpleWeather.Droid
                     new Color(ContextCompat.GetColor(AppCompatActivity, Resource.Color.colorPrimaryDark)));
             }
 
-            if (weatherView == null && Arguments != null)
+            if (weatherView == null)
             {
-                var location = LocationData.FromJson(
-                    new Newtonsoft.Json.JsonTextReader(
-                        new System.IO.StringReader(Arguments.GetString("data", null))));
-
                 if (location == null)
                     location = Settings.HomeData;
 
@@ -119,6 +135,14 @@ namespace SimpleWeather.Droid
                 // specify an adapter (see also next example)
                 recyclerView.SetAdapter(new WeatherAlertPanelAdapter(weatherView.Extras.Alerts.ToList()));
             }
+        }
+
+        public override void OnSaveInstanceState(Bundle outState)
+        {
+            // Save data
+            outState.PutString("data", location.ToJson());
+
+            base.OnSaveInstanceState(outState);
         }
 
         public override void OnAttach(Context context)
