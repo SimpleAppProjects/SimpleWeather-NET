@@ -1,5 +1,6 @@
 ﻿using SimpleWeather.Controls;
 using SimpleWeather.Utils;
+using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.UWP.Controls;
 using SimpleWeather.WeatherData;
 using System;
@@ -40,6 +41,7 @@ namespace SimpleWeather.UWP
 
         public bool EditMode { get; set; } = false;
         private bool DataChanged = false;
+        private bool HomeChanged = false;
         private bool[] ErrorCounter;
 
         public void OnWeatherLoaded(LocationData location, Weather weather)
@@ -59,8 +61,7 @@ namespace SimpleWeather.UWP
                         panelView = LocationPanels.First(panelVM => panelVM.LocationData.name.Equals(location.name) &&
                                                         panelVM.LocationData.latitude.Equals(location.latitude) &&
                                                         panelVM.LocationData.longitude.Equals(location.longitude) &&
-                                                        panelVM.LocationData.tz_offset.Equals(location.tz_offset) &&
-                                                        panelVM.LocationData.tz_short.Equals(location.tz_short));
+                                                        panelVM.LocationData.tz_long.Equals(location.tz_long));
                     }
                     panelView.SetWeather(weather);
                 }
@@ -198,6 +199,9 @@ namespace SimpleWeather.UWP
             // Flag that data has changed
             if (EditMode && dataMoved)
                 DataChanged = true;
+
+            if (EditMode && e.NewStartingIndex == App.HomeIdx)
+                HomeChanged = true;
 
             // Cancel edit Mode
             if (EditMode && onlyHomeIsLeft)
@@ -596,7 +600,11 @@ namespace SimpleWeather.UWP
                 }
             }
 
+            if (!EditMode && HomeChanged)
+                Task.Run(() => WeatherUpdateBackgroundTask.RequestAppTrigger());
+
             DataChanged = false;
+            HomeChanged = false;
         }
 
         private async void LocationPanel_DeleteClick(object sender, RoutedEventArgs e)
@@ -644,6 +652,8 @@ namespace SimpleWeather.UWP
 
             if (oldIndex != newIndex)
                 DataChanged = true;
+            if (newIndex == App.HomeIdx)
+                HomeChanged = true;
         }
 
         private void LocationPanel_Holding(object sender, HoldingRoutedEventArgs e)

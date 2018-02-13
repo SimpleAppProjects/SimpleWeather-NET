@@ -29,6 +29,7 @@ using Android.Content.PM;
 using Android.Runtime;
 using Android.Locations;
 using SimpleWeather.Controls;
+using SimpleWeather.Droid.Widgets;
 
 namespace SimpleWeather.Droid
 {
@@ -39,6 +40,7 @@ namespace SimpleWeather.Droid
         private bool Loaded = false;
         private bool EditMode = false;
         private bool DataChanged = false;
+        private bool HomeChanged = false;
         private bool[] ErrorCounter;
 
         AppCompatActivity AppCompatActivity;
@@ -124,8 +126,7 @@ namespace SimpleWeather.Droid
                         panel = mAdapter.Dataset.First(panelVM => panelVM.LocationData.name.Equals(location.name) &&
                                                         panelVM.LocationData.latitude.Equals(location.latitude) &&
                                                         panelVM.LocationData.longitude.Equals(location.longitude) &&
-                                                        panelVM.LocationData.tz_offset.Equals(location.tz_offset) &&
-                                                        panelVM.LocationData.tz_short.Equals(location.tz_short));
+                                                        panelVM.LocationData.tz_long.Equals(location.tz_long));
                     }
                     panel.SetWeather(weather);
                     AppCompatActivity?.RunOnUiThread(() => mAdapter.NotifyItemChanged(mAdapter.Dataset.IndexOf(panel)));
@@ -857,6 +858,9 @@ namespace SimpleWeather.Droid
             if (EditMode && dataMoved)
                 DataChanged = true;
 
+            if (EditMode && (e.NewStartingIndex == App.HomeIdx || e.OldStartingIndex == App.HomeIdx))
+                HomeChanged = true;
+
             // Cancel edit Mode
             if (EditMode && onlyHomeIsLeft)
                 ToggleEditMode();
@@ -918,7 +922,12 @@ namespace SimpleWeather.Droid
                 }
             }
 
+            if (!EditMode && HomeChanged)
+                WeatherWidgetService.EnqueueWork(AppCompatActivity, new Intent(AppCompatActivity, typeof(WeatherWidgetService))
+                    .SetAction(WeatherWidgetService.ACTION_UPDATEWEATHER));
+
             DataChanged = false;
+            HomeChanged = false;
         }
     }
 }
