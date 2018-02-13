@@ -72,34 +72,41 @@ namespace SimpleWeather.Droid.Helpers
             if (viewHolder.AdapterPosition == -1)
                 return;
 
-            if (actionState == ItemTouchHelper.ActionStateSwipe)
+            try
             {
-                View itemView = viewHolder.ItemView;
-
-                int iconLeft;
-                int iconRight;
-                int iconTop = itemView.Top + (itemView.Bottom - itemView.Top - deleteIcon.IntrinsicHeight) / 2;
-                int iconBottom = iconTop + deleteIcon.IntrinsicHeight;
-
-                if (dX > 0)
+                if (actionState == ItemTouchHelper.ActionStateSwipe)
                 {
-                    deleteBackground.SetBounds(itemView.Left, itemView.Top, itemView.Left + (int)dX, itemView.Bottom);
+                    View itemView = viewHolder.ItemView;
 
-                    iconLeft = itemView.Left + iconMargin;
-                    iconRight = itemView.Left + iconMargin + deleteIcon.IntrinsicWidth;
+                    int iconLeft;
+                    int iconRight;
+                    int iconTop = itemView.Top + (itemView.Bottom - itemView.Top - deleteIcon.IntrinsicHeight) / 2;
+                    int iconBottom = iconTop + deleteIcon.IntrinsicHeight;
+
+                    if (dX > 0)
+                    {
+                        deleteBackground.SetBounds(itemView.Left, itemView.Top, itemView.Left + (int)dX, itemView.Bottom);
+
+                        iconLeft = itemView.Left + iconMargin;
+                        iconRight = itemView.Left + iconMargin + deleteIcon.IntrinsicWidth;
+                    }
+                    else
+                    {
+                        deleteBackground.SetBounds(itemView.Right + (int)dX, itemView.Top, itemView.Right, itemView.Bottom);
+
+                        iconLeft = itemView.Right - iconMargin - deleteIcon.IntrinsicWidth;
+                        iconRight = itemView.Right - iconMargin;
+                    }
+
+                    deleteBackground.Draw(c);
+
+                    deleteIcon.SetBounds(iconLeft, iconTop, iconRight, iconBottom);
+                    deleteIcon.Draw(c);
                 }
-                else
-                {
-                    deleteBackground.SetBounds(itemView.Right + (int)dX, itemView.Top, itemView.Right, itemView.Bottom);
-
-                    iconLeft = itemView.Right - iconMargin - deleteIcon.IntrinsicWidth;
-                    iconRight = itemView.Right - iconMargin;
-                }
-
-                deleteBackground.Draw(c);
-
-                deleteIcon.SetBounds(iconLeft, iconTop, iconRight, iconBottom);
-                deleteIcon.Draw(c);
+            }
+            catch (ObjectDisposedException ex)
+            {
+                Console.WriteLine(ex.StackTrace);
             }
 
             base.OnChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
