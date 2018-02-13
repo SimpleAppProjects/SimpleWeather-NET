@@ -134,14 +134,11 @@ namespace SimpleWeather.WeatherData
 
         public override int GetHashCode()
         {
-            var hashCode = -302706095;
-            hashCode = hashCode * -1521134295 + base.GetHashCode();
+            var hashCode = -19042156;
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(query);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(name);
             hashCode = hashCode * -1521134295 + latitude.GetHashCode();
             hashCode = hashCode * -1521134295 + longitude.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<TimeSpan>.Default.GetHashCode(tz_offset);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(tz_short);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(tz_long);
             hashCode = hashCode * -1521134295 + locationType.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(source);
