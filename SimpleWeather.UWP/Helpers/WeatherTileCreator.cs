@@ -19,6 +19,7 @@ namespace SimpleWeather.UWP.Helpers
         const int LARGE_FORECAST_LENGTH = 5;
 
         private static WeatherManager wm = WeatherManager.GetInstance();
+        public static bool TileUpdated = false;
 
         public enum ForecastTileType
         {
@@ -620,6 +621,7 @@ namespace SimpleWeather.UWP.Helpers
             tileUpdater.Clear();
             tileUpdater.Update(currentTileNotif);
             tileUpdater.Update(forecastTileNotif);
+            TileUpdated = true;
         }
     }
 }

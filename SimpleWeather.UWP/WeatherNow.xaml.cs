@@ -84,7 +84,8 @@ namespace SimpleWeather.UWP
 
                 // Update home tile if it hasn't been already
                 if (Settings.HomeData.Equals(location) && 
-                    TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval)
+                    (TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval) ||
+                    !Helpers.WeatherTileCreator.TileUpdated)
                 {
                     await WeatherUpdateBackgroundTask.RequestAppTrigger();
                 }
