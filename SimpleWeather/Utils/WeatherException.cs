@@ -11,6 +11,7 @@ using SimpleWeather.Droid;
 
 namespace SimpleWeather.Utils
 {
+    [Serializable]
     public class WeatherException : Exception
     {
         public WeatherUtils.ErrorStatus ErrorStatus;

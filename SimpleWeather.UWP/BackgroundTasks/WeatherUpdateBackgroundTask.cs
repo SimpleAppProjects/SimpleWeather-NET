@@ -15,7 +15,7 @@ using Windows.Devices.Geolocation;
 
 namespace SimpleWeather.UWP.BackgroundTasks
 {
-    public sealed class WeatherUpdateBackgroundTask : IBackgroundTask
+    public sealed class WeatherUpdateBackgroundTask : IBackgroundTask, IDisposable
     {
         private const string taskName = "WeatherUpdateBackgroundTask";
         private CancellationTokenSource cts;
@@ -26,6 +26,11 @@ namespace SimpleWeather.UWP.BackgroundTasks
         {
             cts = new CancellationTokenSource();
             wm = WeatherManager.GetInstance();
+        }
+
+        public void Dispose()
+        {
+            ((IDisposable)cts).Dispose();
         }
 
         public async void Run(IBackgroundTaskInstance taskInstance)
