@@ -31,7 +31,8 @@ namespace SimpleWeather.WeatherYahoo
     {
         public override bool SupportsWeatherLocale => false;
         public override bool KeyRequired => false;
-        public override bool SupportsAlerts => false;
+        public override bool SupportsAlerts => true;
+        public override bool NeedsExternalAlertData => true;
 
         public override async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string location_query)
         {
@@ -348,11 +349,6 @@ namespace SimpleWeather.WeatherYahoo
             weather.update_time = weather.update_time.ToOffset(location.tz_offset);
 
             return weather;
-        }
-
-        public override Task<List<WeatherAlert>> GetAlerts(LocationData location)
-        {
-            throw new NotImplementedException();
         }
 
         public override async Task<string> UpdateLocationQuery(Weather weather)

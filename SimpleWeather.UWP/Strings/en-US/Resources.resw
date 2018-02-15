@@ -318,4 +318,19 @@
   <data name="Label_WeatherAlerts.Text" xml:space="preserve">
     <value>Severe Weather Alerts</value>
   </data>
+  <data name="DateTime_DayAgo" xml:space="preserve">
+    <value>{0}d ago</value>
+  </data>
+  <data name="DateTime_HrAgo" xml:space="preserve">
+    <value>{0}h ago</value>
+  </data>
+  <data name="DateTime_MinAgo" xml:space="preserve">
+    <value>{0}m ago</value>
+  </data>
+  <data name="DateTime_SecAgo" xml:space="preserve">
+    <value>{0}s ago</value>
+  </data>
+  <data name="DateTime_ValidUntil" xml:space="preserve">
+    <value>Valid until</value>
+  </data>
 </root>

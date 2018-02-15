@@ -19,6 +19,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\WeatherExtrasViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Metno\MetnoWeatherProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Metno\Weather.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NWS\Alert.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NWS\NWSAlertProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\AutoCompleteQuery.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\GeopositionQuery.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\Weather.cs" />
@@ -31,6 +33,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Settings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IWeatherAlertProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IWeatherErrorListener.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IWeatherProviderImpl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\LocationData.cs" />

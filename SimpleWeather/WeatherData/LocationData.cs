@@ -1,6 +1,7 @@
 ﻿using SimpleWeather.Utils;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using SQLite;
 using NodaTime;
@@ -61,6 +62,21 @@ namespace SimpleWeather.WeatherData
         }
         [Newtonsoft.Json.JsonProperty]
         public string tz_long { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        [Ignore]
+        public string country_code
+        {
+            get
+            {
+                if (!String.IsNullOrWhiteSpace(tz_long))
+                {
+                    var tzdbLocation = NodaTime.TimeZones.TzdbDateTimeZoneSource.Default.ZoneLocations
+                        .First(tzdbloc => tzdbloc.ZoneId.Equals(tz_long));
+                    return tzdbLocation.CountryCode;
+                }
+                return String.Empty;
+            }
+        }
         [Newtonsoft.Json.JsonProperty]
         public LocationType locationType { get; set; } = LocationType.Search;
         [Newtonsoft.Json.JsonProperty]

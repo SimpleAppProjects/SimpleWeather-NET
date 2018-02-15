@@ -372,10 +372,6 @@ namespace SimpleWeather.WeatherData
 
                 if (!conditionSet && condition != null && date.Equals(startDate) && time.to.Subtract(time.from).TotalHours >= 2)
                 {
-                    // TODO: Calculate with formula
-                    //condition.feelslike_f
-                    //condition.feelslike_c
-
                     // Set condition from id
                     if (time.location.symbol != null)
                     {
@@ -1302,7 +1298,7 @@ namespace SimpleWeather.WeatherData
             wind_degrees = (int)root.wind.deg;
             wind_mph = float.Parse(ConversionMethods.MSecToMph(root.wind.speed.ToString(CultureInfo.InvariantCulture)));
             wind_kph = float.Parse(ConversionMethods.MSecToKph(root.wind.speed.ToString(CultureInfo.InvariantCulture)));
-            // TODO: Calculate with formula
+            // This will be calculated after with formula
             feelslike_f = temp_f;
             feelslike_c = temp_c;
 
@@ -1324,7 +1320,7 @@ namespace SimpleWeather.WeatherData
             wind_degrees = (int)Math.Round(time.location.windDirection.deg);
             wind_mph = (float)Math.Round(double.Parse(ConversionMethods.MSecToMph(time.location.windSpeed.mps.ToString())));
             wind_kph = (float)Math.Round(double.Parse(ConversionMethods.MSecToKph(time.location.windSpeed.mps.ToString())));
-            // TODO: Calculate with formula
+            // This will be calculated after with formula
             feelslike_f = temp_f;
             feelslike_c = temp_c;
             // icon

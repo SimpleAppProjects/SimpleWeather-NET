@@ -380,26 +380,15 @@ namespace SimpleWeather.Controls
 #endif
 
             if (weather.source == WeatherAPI.WeatherUnderground)
-            {
                 WeatherCredit = string.Format("{0} WeatherUnderground", creditPrefix);
-                Extras.UpdateView(weather);
-            }
             else if (weather.source == WeatherAPI.Yahoo)
-            {
                 WeatherCredit = string.Format("{0} Yahoo!", creditPrefix);
-                // Clear data
-                Extras.Clear();
-            }
             else if (weather.source == WeatherAPI.OpenWeatherMap)
-            {
                 WeatherCredit = string.Format("{0} OpenWeatherMap", creditPrefix);
-                Extras.UpdateView(weather);
-            }
             else if (weather.source == WeatherAPI.MetNo)
-            {
                 WeatherCredit = string.Format("{0} MET Norway", creditPrefix);
-                Extras.UpdateView(weather);
-            }
+
+            Extras.UpdateView(weather);
 
             // Language
             WeatherLocale = weather.locale;

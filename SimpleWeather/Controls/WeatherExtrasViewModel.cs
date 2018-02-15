@@ -116,7 +116,9 @@ namespace SimpleWeather.Controls
             var culture = System.Globalization.CultureInfo.CurrentCulture;
 #endif
 
-            HourlyForecast.Clear();
+            // Clear all data
+            Clear();
+
             if (weather.hr_forecast != null && weather.hr_forecast.Length > 0)
             {
                 foreach (HourlyForecast hr_forecast in weather.hr_forecast)
@@ -126,7 +128,6 @@ namespace SimpleWeather.Controls
                 }
             }
 
-            TextForecast.Clear();
             if (weather.txt_forecast != null && weather.txt_forecast.Length > 0)
             {
                 foreach (TextForecast txt_forecast in weather.txt_forecast)
@@ -136,13 +137,15 @@ namespace SimpleWeather.Controls
                 }
             }
 
-            Chance = weather.precipitation.pop + "%";
-            Qpf_Rain = Settings.IsFahrenheit ?
-                weather.precipitation.qpf_rain_in.ToString("0.00", culture) + " in" : weather.precipitation.qpf_rain_mm.ToString(culture) + " mm";
-            Qpf_Snow = Settings.IsFahrenheit ?
-                weather.precipitation.qpf_snow_in.ToString("0.00", culture) + " in" : weather.precipitation.qpf_snow_cm.ToString(culture) + " cm";
+            if (weather.precipitation != null)
+            {
+                Chance = weather.precipitation.pop + "%";
+                Qpf_Rain = Settings.IsFahrenheit ?
+                    weather.precipitation.qpf_rain_in.ToString("0.00", culture) + " in" : weather.precipitation.qpf_rain_mm.ToString(culture) + " mm";
+                Qpf_Snow = Settings.IsFahrenheit ?
+                    weather.precipitation.qpf_snow_in.ToString("0.00", culture) + " in" : weather.precipitation.qpf_snow_cm.ToString(culture) + " cm";
+            }
 
-            Alerts.Clear();
             if (weather.weather_alerts != null && weather.weather_alerts.Count > 0)
             {
                 foreach(WeatherAlert alert in weather.weather_alerts)

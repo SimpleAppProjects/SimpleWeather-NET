@@ -120,6 +120,8 @@ namespace SimpleWeather.WeatherData
 
         public bool SupportsAlerts => WeatherProvider.SupportsAlerts;
 
+        public bool NeedsExternalAlertData => WeatherProvider.NeedsExternalAlertData;
+
         public async Task UpdateLocationData(LocationData location)
         {
             await WeatherProvider.UpdateLocationData(location);

@@ -80,7 +80,7 @@ namespace SimpleWeather.Droid.Controls
 
         public void SetAlert(WeatherAlertViewModel alertView)
         {
-            headerCard.SetCardBackgroundColor(GetColorFromAlertType(alertView.AlertType));
+            headerCard.SetCardBackgroundColor(GetColorFromAlertSeverity(alertView.AlertSeverity));
             alertIcon.SetImageResource(GetDrawableFromAlertType(alertView.AlertType));
             alertTitle.Text = alertView.Title;
             postDate.Text = alertView.PostDate;
@@ -127,6 +127,28 @@ namespace SimpleWeather.Droid.Controls
                 case WeatherData.WeatherAlertType.WinterWeather:
                     drawable = Resource.Drawable.snowflake_cold;
                     break;
+                case WeatherData.WeatherAlertType.DenseSmoke:
+                    drawable = Resource.Drawable.smoke;
+                    break;
+                case WeatherData.WeatherAlertType.DustAdvisory:
+                    drawable = Resource.Drawable.dust;
+                    break;
+                case WeatherData.WeatherAlertType.EarthquakeWarning:
+                    drawable = Resource.Drawable.earthquake;
+                    break;
+                case WeatherData.WeatherAlertType.GaleWarning:
+                    drawable = Resource.Drawable.gale_warning;
+                    break;
+                case WeatherData.WeatherAlertType.SmallCraft:
+                    drawable = Resource.Drawable.small_craft_advisory;
+                    break;
+                case WeatherData.WeatherAlertType.StormWarning:
+                    drawable = Resource.Drawable.storm_warning;
+                    break;
+                case WeatherData.WeatherAlertType.TsunamiWarning:
+                case WeatherData.WeatherAlertType.TsunamiWatch:
+                    drawable = Resource.Drawable.tsunami;
+                    break;
                 case WeatherData.WeatherAlertType.SevereWeather:
                 case WeatherData.WeatherAlertType.SpecialWeatherAlert:
                 default:
@@ -137,36 +159,21 @@ namespace SimpleWeather.Droid.Controls
             return drawable;
         }
 
-        private Color GetColorFromAlertType(WeatherData.WeatherAlertType type)
+        private Color GetColorFromAlertSeverity(WeatherData.WeatherAlertSeverity severity)
         {
-            Color color = Color.OrangeRed;
+            Color color = Color.Orange;
 
-            switch (type)
+            switch (severity)
             {
-                case WeatherData.WeatherAlertType.DenseFog:
-                case WeatherData.WeatherAlertType.FloodWatch:
-                case WeatherData.WeatherAlertType.SevereWeather:
-                case WeatherData.WeatherAlertType.SpecialWeatherAlert:
-                case WeatherData.WeatherAlertType.WinterWeather:
-                // Unsure
-                case WeatherData.WeatherAlertType.Volcano:
+                case WeatherData.WeatherAlertSeverity.Severe:
                     color = Color.OrangeRed;
                     break;
-                case WeatherData.WeatherAlertType.HighWind:
-                case WeatherData.WeatherAlertType.Fire:
-                // Unsure
-                case WeatherData.WeatherAlertType.Heat:
-                case WeatherData.WeatherAlertType.HurricaneLocalStatement:
-                case WeatherData.WeatherAlertType.SevereThunderstormWatch:
-                case WeatherData.WeatherAlertType.TornadoWatch:
-                    color = Color.Orange;
-                    break;
-                case WeatherData.WeatherAlertType.FloodWarning:
-                // Unsure
-                case WeatherData.WeatherAlertType.HurricaneWindWarning:
-                case WeatherData.WeatherAlertType.SevereThunderstormWarning:
-                case WeatherData.WeatherAlertType.TornadoWarning:
+                case WeatherData.WeatherAlertSeverity.Extreme:
                     color = Color.Red;
+                    break;
+                case WeatherData.WeatherAlertSeverity.Moderate:
+                default:
+                    color = Color.Orange;
                     break;
             }
 

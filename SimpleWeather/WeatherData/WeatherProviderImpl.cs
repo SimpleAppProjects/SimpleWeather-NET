@@ -18,6 +18,7 @@ namespace SimpleWeather.WeatherData
         public abstract bool SupportsWeatherLocale { get; }
         public abstract bool KeyRequired { get; }
         public abstract bool SupportsAlerts { get; }
+        public abstract bool NeedsExternalAlertData { get; }
 
         // Methods
         // AutoCompleteQuery
@@ -31,6 +32,9 @@ namespace SimpleWeather.WeatherData
         {
             var weather = await GetWeather(location.query);
 
+            if (SupportsAlerts && NeedsExternalAlertData)
+                weather.weather_alerts = await GetAlerts(location);
+
             if (String.IsNullOrWhiteSpace(weather.location.name))
                 weather.location.name = location.name;
 
@@ -43,7 +47,13 @@ namespace SimpleWeather.WeatherData
             return weather;
         }
         // Alerts
-        public abstract Task<List<WeatherAlert>> GetAlerts(LocationData location);
+        public virtual Task<List<WeatherAlert>> GetAlerts(LocationData location)
+        {
+            if ("US".Equals(location.country_code))
+                return new NWS.NWSAlertProvider().GetAlerts(location);
+            else
+                return null;
+        }
 
         // KeyCheck
         public abstract Task<bool> IsKeyValid(String key);

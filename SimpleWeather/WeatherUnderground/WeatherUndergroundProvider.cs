@@ -34,12 +34,13 @@ namespace SimpleWeather.WeatherUnderground
         public override bool SupportsWeatherLocale => true;
         public override bool KeyRequired => true;
         public override bool SupportsAlerts => true;
+        public override bool NeedsExternalAlertData => false;
 
         public override async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string query)
         {
             ObservableCollection<LocationQueryViewModel> locations = null;
 
-            string queryAPI = "http://autocomplete.wunderground.com/aq?query=";
+            string queryAPI = "https://autocomplete.wunderground.com/aq?query=";
             string options = "&h=0&cities=1";
             Uri queryURL = new Uri(queryAPI + query + options);
             // Limit amount of results shown
@@ -99,7 +100,7 @@ namespace SimpleWeather.WeatherUnderground
         {
             LocationQueryViewModel location = null;
 
-            string queryAPI = "http://api.wunderground.com/auto/wui/geo/GeoLookupXML/index.xml?query=";
+            string queryAPI = "https://api.wunderground.com/auto/wui/geo/GeoLookupXML/index.xml?query=";
             string options = "";
             string query = string.Format("{0},{1}", coord.Latitude, coord.Longitude);
             Uri queryURL = new Uri(queryAPI + query + options);
@@ -165,7 +166,7 @@ namespace SimpleWeather.WeatherUnderground
         {
             LocationQueryViewModel location = null;
 
-            string queryAPI = "http://autocomplete.wunderground.com/aq?query=";
+            string queryAPI = "https://autocomplete.wunderground.com/aq?query=";
             string options = "&h=0&cities=1";
             Uri queryURL = new Uri(queryAPI + query + options);
             AC_RESULT result;
@@ -228,7 +229,7 @@ namespace SimpleWeather.WeatherUnderground
 
         public override async Task<bool> IsKeyValid(string key)
         {
-            string queryAPI = "http://api.wunderground.com/api/";
+            string queryAPI = "https://api.wunderground.com/api/";
             string query = "/q/NY/New_York.json";
             Uri queryURL = new Uri(queryAPI + key + query);
             bool isValid = false;
@@ -311,7 +312,7 @@ namespace SimpleWeather.WeatherUnderground
 #endif
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
-            queryAPI = "http://api.wunderground.com/api/" + Settings.API_KEY + "/astronomy/conditions/forecast10day/hourly/alerts/lang:" + locale;
+            queryAPI = "https://api.wunderground.com/api/" + Settings.API_KEY + "/astronomy/conditions/forecast10day/hourly/alerts/lang:" + locale;
             string options = ".json";
             weatherURL = new Uri(queryAPI + location_query + options);
 
@@ -447,7 +448,7 @@ namespace SimpleWeather.WeatherUnderground
 #endif
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
-            queryAPI = "http://api.wunderground.com/api/" + Settings.API_KEY + "/alerts/lang:" + locale;
+            queryAPI = "https://api.wunderground.com/api/" + Settings.API_KEY + "/alerts/lang:" + locale;
             string options = ".json";
             weatherURL = new Uri(queryAPI + location.query + options);
 

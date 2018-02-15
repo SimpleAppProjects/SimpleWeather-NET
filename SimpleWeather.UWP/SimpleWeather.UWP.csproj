@@ -165,6 +165,7 @@
     <Content Include="Assets\WeatherIcons\png\day_thunderstorm.png" />
     <Content Include="Assets\WeatherIcons\png\day_windy.png" />
     <Content Include="Assets\WeatherIcons\png\dust.png" />
+    <Content Include="Assets\WeatherIcons\png\earthquake.png" />
     <Content Include="Assets\WeatherIcons\png\fire.png" />
     <Content Include="Assets\WeatherIcons\png\flood.png" />
     <Content Include="Assets\WeatherIcons\png\fog.png" />

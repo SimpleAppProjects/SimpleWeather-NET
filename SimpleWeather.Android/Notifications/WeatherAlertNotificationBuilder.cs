@@ -48,6 +48,7 @@ namespace SimpleWeather.Droid.Notifications
                     .SetLargeIcon(iconBmp)
                     .SetContentTitle(String.Format("{0} - {1}", alertVM.Title, location.name))
                     .SetContentText(alertVM.ExpireDate)
+                    .SetStyle(new NotificationCompat.BigTextStyle().BigText(alertVM.ExpireDate))
                     .SetGroup(TAG)
                     .SetOnlyAlertOnce(true)
                     .SetAutoCancel(true)

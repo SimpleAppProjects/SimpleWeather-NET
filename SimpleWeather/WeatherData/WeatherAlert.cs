@@ -4,10 +4,20 @@ using SQLite;
 using SQLiteNetExtensions.Attributes;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace SimpleWeather.WeatherData
 {
+    public enum WeatherAlertSeverity
+    {
+        Unknown = -1,
+        Minor = 0,
+        Moderate,
+        Severe,
+        Extreme,
+    }
+
     public enum WeatherAlertType
     {
         SpecialWeatherAlert = 0,
@@ -26,12 +36,21 @@ namespace SimpleWeather.WeatherData
         DenseFog,
         Fire,
         Volcano,
+        DenseSmoke,
+        DustAdvisory,
+        EarthquakeWarning,
+        GaleWarning,
+        SmallCraft,
+        StormWarning,
+        TsunamiWatch,
+        TsunamiWarning,
     }
 
     [JsonConverter(typeof(CustomJsonConverter))]
     public class WeatherAlert
     {
         public WeatherAlertType Type { get; set; } = WeatherAlertType.SpecialWeatherAlert;
+        public WeatherAlertSeverity Severity { get; set; } = WeatherAlertSeverity.Unknown;
         public string Title { get; set; }
         public string Message { get; set; }
         public string Attribution { get; set; }
@@ -52,50 +71,71 @@ namespace SimpleWeather.WeatherData
             {
                 case "HUR": // Hurricane Local Statement
                     Type = WeatherAlertType.HurricaneLocalStatement;
+                    Severity = WeatherAlertSeverity.Moderate;
                     break;
                 case "HWW": // Hurricane Wind Warning
                     Type = WeatherAlertType.HurricaneWindWarning;
+                    Severity = WeatherAlertSeverity.Extreme;
                     break;
                 case "TOR": // Tornado Warning
                     Type = WeatherAlertType.TornadoWarning;
+                    Severity = WeatherAlertSeverity.Extreme;
                     break;
                 case "TOW": // Tornado Watch
                     Type = WeatherAlertType.TornadoWatch;
+                    Severity = WeatherAlertSeverity.Moderate;
                     break;
                 case "WRN": // Severe Thunderstorm Warning
                     Type = WeatherAlertType.SevereThunderstormWarning;
+                    Severity = WeatherAlertSeverity.Extreme;
                     break;
                 case "SEW": // Severe Thunderstorm Watch
                     Type = WeatherAlertType.SevereThunderstormWatch;
+                    Severity = WeatherAlertSeverity.Moderate;
                     break;
                 case "WIN": // Winter Weather Advisory
                     Type = WeatherAlertType.WinterWeather;
+                    Severity = WeatherAlertSeverity.Severe;
                     break;
                 case "FLO": // Flood Warning
                     Type = WeatherAlertType.FloodWarning;
+                    Severity = WeatherAlertSeverity.Extreme;
                     break;
                 case "WAT": // Flood Watch
                     Type = WeatherAlertType.FloodWatch;
+                    Severity = WeatherAlertSeverity.Severe;
                     break;
                 case "WND": // High Wind Advisory
                     Type = WeatherAlertType.HighWind;
+                    Severity = WeatherAlertSeverity.Moderate;
                     break;
                 case "HEA": // Heat Advisory
                     Type = WeatherAlertType.Heat;
+                    Severity = WeatherAlertSeverity.Moderate;
                     break;
                 case "FOG": // Dense Fog Advisory
                     Type = WeatherAlertType.DenseFog;
+                    Severity = WeatherAlertSeverity.Severe;
                     break;
                 case "FIR": // Fire Weather Advisory
                     Type = WeatherAlertType.Fire;
+                    Severity = WeatherAlertSeverity.Moderate;
                     break;
                 case "VOL": // Volcanic Activity Statement
                     Type = WeatherAlertType.Volcano;
+                    Severity = WeatherAlertSeverity.Severe;
+                    break;
+                case "SVR": // Severe Weather Statement
+                    Type = WeatherAlertType.SevereWeather;
+                    Severity = WeatherAlertSeverity.Severe;
                     break;
                 case "SPE": // Special Weather Statement
-                case "SVR": // Severe Weather Statement
+                    Type = WeatherAlertType.SpecialWeatherAlert;
+                    Severity = WeatherAlertSeverity.Severe;
+                    break;
                 default:
                     Type = WeatherAlertType.SpecialWeatherAlert;
+                    Severity = WeatherAlertSeverity.Severe;
                     break;
             }
 
@@ -127,6 +167,128 @@ namespace SimpleWeather.WeatherData
                 else
                     ExpiresDate = DateTimeOffset.Parse(alert.expires);
             }
+        }
+
+        public WeatherAlert(NWS.Graph alert)
+        {
+            // Alert Type
+            switch (alert._event)
+            {
+                case "Hurricane Local Statement":
+                case "Hurricane Force Wind Watch":
+                case "Hurricane Watch":
+                case "Hurricane Force Wind Warning":
+                case "Hurricane Warning":
+                    Type = WeatherAlertType.HurricaneWindWarning;
+                    break;
+                case "Tornado Warning":
+                    Type = WeatherAlertType.TornadoWarning;
+                    break;
+                case "Tornado Watch":
+                    Type = WeatherAlertType.TornadoWatch;
+                    break;
+                case "Severe Thunderstorm Warning":
+                    Type = WeatherAlertType.SevereThunderstormWarning;
+                    break;
+                case "Severe Thunderstorm Watch":
+                    Type = WeatherAlertType.SevereThunderstormWatch;
+                    break;
+                case "Excessive Heat Warning":
+                case "Excessive Heat Watch":
+                case "Heat Advisory":
+                    Type = WeatherAlertType.Heat;
+                    break;
+                case "Dense Fog Advisory":
+                    Type = WeatherAlertType.DenseFog;
+                    break;
+                case "Dense Smoke Advisory":
+                    Type = WeatherAlertType.DenseSmoke;
+                    break;
+                case "Extreme Fire Danger":
+                case "Fire Warning":
+                case "Fire Weather Watch":
+                    Type = WeatherAlertType.Fire;
+                    break;
+                case "Volcano Warning":
+                    Type = WeatherAlertType.Volcano;
+                    break;
+                case "Extreme Wind Warning":
+                case "High Wind Warning":
+                case "High Wind Watch":
+                case "Lake Wind Advisory":
+                case "Wind Advisory":
+                    Type = WeatherAlertType.HighWind;
+                    break;
+                case "Lake Effect Snow Advisory":
+                case "Lake Effect Snow Warning":
+                case "Lake Effect Snow Watch":
+                case "Snow Squall Warning":
+                case "Ice Storm Warning":
+                case "Winter Storm Warning":
+                case "Winter Storm Watch":
+                case "Winter Weather Advisory":
+                    Type = WeatherAlertType.WinterWeather;
+                    break;
+                case "Earthquake Warning":
+                    Type = WeatherAlertType.EarthquakeWarning;
+                    break;
+                case "Gale Warning":
+                case "Gale Watch":
+                    Type = WeatherAlertType.GaleWarning;
+                    break;
+                default:
+                    if (alert._event.Contains("Flood Warning"))
+                        Type = WeatherAlertType.FloodWarning;
+                    else if (alert._event.Contains("Flood"))
+                        Type = WeatherAlertType.FloodWatch;
+                    else if (alert._event.Contains("Snow") || alert._event.Contains("Blizzard") ||
+                        alert._event.Contains("Winter") || alert._event.Contains("Ice") ||
+                        alert._event.Contains("Avalanche") || alert._event.Contains("Cold") ||
+                        alert._event.Contains("Freez") || alert._event.Contains("Frost") ||
+                        alert._event.Contains("Chill"))
+                    {
+                        Type = WeatherAlertType.WinterWeather;
+                    }
+                    else if (alert._event.Contains("Dust"))
+                        Type = WeatherAlertType.DustAdvisory;
+                    else if (alert._event.Contains("Small Craft"))
+                        Type = WeatherAlertType.SmallCraft;
+                    else if (alert._event.Contains("Storm"))
+                        Type = WeatherAlertType.StormWarning;
+                    else if (alert._event.Contains("Tsunami"))
+                        Type = WeatherAlertType.TsunamiWarning;
+                    else
+                        Type = WeatherAlertType.SpecialWeatherAlert;
+                    break;
+            }
+
+            switch (alert.severity)
+            {
+                case "Minor":
+                    Severity = WeatherAlertSeverity.Minor;
+                    break;
+                case "Moderate":
+                    Severity = WeatherAlertSeverity.Moderate;
+                    break;
+                case "Severe":
+                    Severity = WeatherAlertSeverity.Severe;
+                    break;
+                case "Extreme":
+                    Severity = WeatherAlertSeverity.Extreme;
+                    break;
+                case "Unknown":
+                default:
+                    Severity = WeatherAlertSeverity.Unknown;
+                    break;
+            }
+
+            Title = alert._event;
+            Message = string.Format("{0}\n{1}", alert.description, alert.instruction);
+
+            Date = alert.sent;
+            ExpiresDate = alert.expires;
+
+            Attribution = "Information provided by the U.S. National Weather Service";
         }
 
         public static WeatherAlert FromJson(JsonReader extReader)
@@ -232,6 +394,7 @@ namespace SimpleWeather.WeatherData
             var alert = obj as WeatherAlert;
             return alert != null &&
                    Type == alert.Type &&
+                   Severity == alert.Severity &&
                    Title == alert.Title &&
                    Message == alert.Message &&
                    Attribution == alert.Attribution &&
@@ -241,8 +404,9 @@ namespace SimpleWeather.WeatherData
 
         public override int GetHashCode()
         {
-            var hashCode = 1392804272;
+            var hashCode = 68217818;
             hashCode = hashCode * -1521134295 + Type.GetHashCode();
+            hashCode = hashCode * -1521134295 + Severity.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Title);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Message);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Attribution);

@@ -76,7 +76,7 @@
     <string name="pref_title_notificationicon">Notification Icon</string>
     <string name="pref_title_alerts">Weather Alerts</string>
     <string name="pref_summary_alerts">Show notifications for weather alerts</string>
-    <string name="pref_summary_alerts_disabled">Weather alerts are not supported with this weather provider</string>
+    <string name="pref_summary_alerts_disabled">Weather alerts are not supported by this weather provider</string>
 
     <!-- Locations -->
     <string name="label_btn_add_location">Add Location</string>
@@ -116,9 +116,14 @@
     <string name="notificationicon_condition">Weather Condition</string>
     <string name="not_channel_name_weather">Weather Notifications</string>
     <string name="not_channel_desc_weather">Weather notifications</string>
-
-    <!-- Notification -->
     <string name="not_channel_name_alerts">Weather Alerts</string>
     <string name="not_channel_desc_alerts">Notifications for weather alerts</string>
+  
+    <!-- Alerts -->
+    <string name="datetime_day_ago">%1$dd ago</string>
+    <string name="datetime_hr_ago">%1$dh ago</string>
+    <string name="datetime_min_ago">%1$dm ago</string>
+    <string name="datetime_sec_ago">%1$ds ago</string>
+    <string name="datetime_validuntil">Valid until</string>
 
 </resources>

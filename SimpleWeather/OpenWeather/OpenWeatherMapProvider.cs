@@ -33,13 +33,14 @@ namespace SimpleWeather.OpenWeather
     {
         public override bool SupportsWeatherLocale => true;
         public override bool KeyRequired => true;
-        public override bool SupportsAlerts => false;
+        public override bool SupportsAlerts => true;
+        public override bool NeedsExternalAlertData => true;
 
         public override async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string query)
         {
             ObservableCollection<LocationQueryViewModel> locations = null;
 
-            string queryAPI = "http://autocomplete.wunderground.com/aq?query=";
+            string queryAPI = "https://autocomplete.wunderground.com/aq?query=";
             string options = "&h=0&cities=1";
             Uri queryURL = new Uri(queryAPI + query + options);
             // Limit amount of results shown
@@ -98,7 +99,7 @@ namespace SimpleWeather.OpenWeather
         {
             LocationQueryViewModel location = null;
 
-            string queryAPI = "http://api.wunderground.com/auto/wui/geo/GeoLookupXML/index.xml?query=";
+            string queryAPI = "https://api.wunderground.com/auto/wui/geo/GeoLookupXML/index.xml?query=";
             string options = "";
             string query = string.Format("{0},{1}", coord.Latitude, coord.Longitude);
             Uri queryURL = new Uri(queryAPI + query + options);
@@ -163,7 +164,7 @@ namespace SimpleWeather.OpenWeather
         {
             LocationQueryViewModel location = null;
 
-            string queryAPI = "http://autocomplete.wunderground.com/aq?query=";
+            string queryAPI = "https://autocomplete.wunderground.com/aq?query=";
             string options = "&h=0&cities=1";
             Uri queryURL = new Uri(queryAPI + query + options);
             AC_RESULT result;
@@ -226,7 +227,7 @@ namespace SimpleWeather.OpenWeather
 
         public override async Task<bool> IsKeyValid(string key)
         {
-            string queryAPI = "http://api.openweathermap.org/data/2.5/";
+            string queryAPI = "https://api.openweathermap.org/data/2.5/";
             string query = "forecast?appid=";
             Uri queryURL = new Uri(queryAPI + query + key);
             bool isValid = false;
@@ -316,9 +317,9 @@ namespace SimpleWeather.OpenWeather
                 query = location_query;
             }
 
-            currentAPI = "http://api.openweathermap.org/data/2.5/weather?{0}&appid={1}&lang=" + locale;
+            currentAPI = "https://api.openweathermap.org/data/2.5/weather?{0}&appid={1}&lang=" + locale;
             currentURL = new Uri(string.Format(currentAPI, query, Settings.API_KEY));
-            forecastAPI = "http://api.openweathermap.org/data/2.5/forecast?{0}&appid={1}&lang=" + locale;
+            forecastAPI = "https://api.openweathermap.org/data/2.5/forecast?{0}&appid={1}&lang=" + locale;
             forecastURL = new Uri(string.Format(forecastAPI, query, Settings.API_KEY));
 
             HttpClient webClient = new HttpClient();
@@ -424,11 +425,6 @@ namespace SimpleWeather.OpenWeather
             weather.astronomy.sunset = weather.astronomy.sunset.Add(offset);
 
             return weather;
-        }
-
-        public override Task<List<WeatherAlert>> GetAlerts(LocationData location)
-        {
-            throw new NotImplementedException();
         }
 
         // Use location name here instead of query since we use the AutoComplete API

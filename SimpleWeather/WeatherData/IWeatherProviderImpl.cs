@@ -12,6 +12,7 @@ namespace SimpleWeather.WeatherData
         bool KeyRequired { get; }
         bool SupportsWeatherLocale { get; }
         bool SupportsAlerts { get; }
+        bool NeedsExternalAlertData { get; }
 
         Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coordinate);
         Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string ac_query);

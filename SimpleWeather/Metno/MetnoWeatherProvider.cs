@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Xml.Serialization;
 #if WINDOWS_UWP
 using SimpleWeather.UWP.Controls;
+using Windows.ApplicationModel;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI;
@@ -35,13 +36,14 @@ namespace SimpleWeather.Metno
     {
         public override bool SupportsWeatherLocale => false;
         public override bool KeyRequired => false;
-        public override bool SupportsAlerts => false;
+        public override bool SupportsAlerts => true;
+        public override bool NeedsExternalAlertData => true;
 
         public override async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string query)
         {
             ObservableCollection<LocationQueryViewModel> locations = null;
 
-            string queryAPI = "http://autocomplete.wunderground.com/aq?query=";
+            string queryAPI = "https://autocomplete.wunderground.com/aq?query=";
             string options = "&h=0&cities=1";
             Uri queryURL = new Uri(queryAPI + query + options);
             // Limit amount of results shown
@@ -101,7 +103,7 @@ namespace SimpleWeather.Metno
         {
             LocationQueryViewModel location = null;
 
-            string queryAPI = "http://api.wunderground.com/auto/wui/geo/GeoLookupXML/index.xml?query=";
+            string queryAPI = "https://api.wunderground.com/auto/wui/geo/GeoLookupXML/index.xml?query=";
             string options = "";
             string query = string.Format("{0},{1}", coord.Latitude, coord.Longitude);
             Uri queryURL = new Uri(queryAPI + query + options);
@@ -167,7 +169,7 @@ namespace SimpleWeather.Metno
         {
             LocationQueryViewModel location = null;
 
-            string queryAPI = "http://autocomplete.wunderground.com/aq?query=";
+            string queryAPI = "https://autocomplete.wunderground.com/aq?query=";
             string options = "&h=0&cities=1";
             Uri queryURL = new Uri(queryAPI + query + options);
             OpenWeather.AC_RESULT result;
@@ -252,9 +254,17 @@ namespace SimpleWeather.Metno
 
             // Use GZIP compression
 #if WINDOWS_UWP
+            var version = string.Format("v{0}.{1}.{2}",
+                Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
+
             webClient.DefaultRequestHeaders.AcceptEncoding.Add(new HttpContentCodingWithQualityHeaderValue("gzip"));
+            webClient.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
 #elif __ANDROID__
+            var packageInfo = Droid.App.Context.PackageManager.GetPackageInfo(Droid.App.Context.PackageName, 0);
+            var version = string.Format("v{0}", packageInfo.VersionName);
+
             webClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
+            webClient.DefaultRequestHeaders.TryAddWithoutValidation("user-agent", String.Format("SimpleWeather (thewizrd.dev@gmail.com) {0}", version));
 #endif
 
             WeatherException wEx = null;
@@ -368,11 +378,6 @@ namespace SimpleWeather.Metno
             weather.astronomy.sunset = weather.astronomy.sunset.Add(offset);
 
             return weather;
-        }
-
-        public override Task<List<WeatherAlert>> GetAlerts(LocationData location)
-        {
-            throw new NotImplementedException();
         }
 
         // TODO: Move this out

@@ -33,7 +33,7 @@ namespace SimpleWeather.UWP.Controls
             {
                 this.Bindings.Update();
 
-                AlertHeader.Background = new SolidColorBrush(GetColorFromAlertType(WeatherAlert.AlertType));
+                AlertHeader.Background = new SolidColorBrush(GetColorFromAlertSeverity(WeatherAlert.AlertSeverity));
                 AlertIcon.Source = GetAssetFromAlertType(WeatherAlert.AlertType);
             };
         }
@@ -79,6 +79,28 @@ namespace SimpleWeather.UWP.Controls
                 case WeatherData.WeatherAlertType.WinterWeather:
                     fileIcon = "snowflake_cold.png";
                     break;
+                case WeatherData.WeatherAlertType.DenseSmoke:
+                    fileIcon = "smoke.png";
+                    break;
+                case WeatherData.WeatherAlertType.DustAdvisory:
+                    fileIcon = "dust.png";
+                    break;
+                case WeatherData.WeatherAlertType.EarthquakeWarning:
+                    fileIcon = "earthquake.png";
+                    break;
+                case WeatherData.WeatherAlertType.GaleWarning:
+                    fileIcon = "gale_warning.png";
+                    break;
+                case WeatherData.WeatherAlertType.SmallCraft:
+                    fileIcon = "small_craft_advisory.png";
+                    break;
+                case WeatherData.WeatherAlertType.StormWarning:
+                    fileIcon = "storm_warning.png";
+                    break;
+                case WeatherData.WeatherAlertType.TsunamiWarning:
+                case WeatherData.WeatherAlertType.TsunamiWatch:
+                    fileIcon = "tsunami.png";
+                    break;
                 case WeatherData.WeatherAlertType.SevereWeather:
                 case WeatherData.WeatherAlertType.SpecialWeatherAlert:
                 default:
@@ -89,36 +111,21 @@ namespace SimpleWeather.UWP.Controls
             return baseuri + fileIcon;
         }
 
-        private Color GetColorFromAlertType(WeatherData.WeatherAlertType type)
+        private Color GetColorFromAlertSeverity(WeatherData.WeatherAlertSeverity severity)
         {
-            Color color = Colors.OrangeRed;
+            Color color = Colors.Orange;
 
-            switch (type)
+            switch (severity)
             {
-                case WeatherData.WeatherAlertType.DenseFog:
-                case WeatherData.WeatherAlertType.FloodWatch:
-                case WeatherData.WeatherAlertType.SevereWeather:
-                case WeatherData.WeatherAlertType.SpecialWeatherAlert:
-                case WeatherData.WeatherAlertType.WinterWeather:
-                // Unsure
-                case WeatherData.WeatherAlertType.Volcano:
+                case WeatherData.WeatherAlertSeverity.Severe:
                     color = Colors.OrangeRed;
                     break;
-                case WeatherData.WeatherAlertType.HighWind:
-                case WeatherData.WeatherAlertType.Fire:
-                // Unsure
-                case WeatherData.WeatherAlertType.Heat:
-                case WeatherData.WeatherAlertType.HurricaneLocalStatement:
-                case WeatherData.WeatherAlertType.SevereThunderstormWatch:
-                case WeatherData.WeatherAlertType.TornadoWatch:
-                    color = Colors.Orange;
-                    break;
-                case WeatherData.WeatherAlertType.FloodWarning:
-                // Unsure
-                case WeatherData.WeatherAlertType.HurricaneWindWarning:
-                case WeatherData.WeatherAlertType.SevereThunderstormWarning:
-                case WeatherData.WeatherAlertType.TornadoWarning:
+                case WeatherData.WeatherAlertSeverity.Extreme:
                     color = Colors.Red;
+                    break;
+                case WeatherData.WeatherAlertSeverity.Moderate:
+                default:
+                    color = Colors.Orange;
                     break;
             }
 
