@@ -430,6 +430,23 @@ namespace SimpleWeather.WeatherUnderground
                     hr_forecast.date = new DateTimeOffset(hr_forecast.date.DateTime, offset);
             }
 
+            // Update tz for weather alerts
+            if (weather.weather_alerts != null && weather.weather_alerts.Count > 0)
+            {
+                foreach(WeatherAlert alert in weather.weather_alerts)
+                {
+                    if (!alert.Date.Offset.Equals(offset))
+                    {
+                        alert.Date = alert.Date.ToOffset(offset);
+                    }
+
+                    if (!alert.ExpiresDate.Offset.Equals(offset))
+                    {
+                        alert.ExpiresDate = alert.ExpiresDate.ToOffset(offset);
+                    }
+                }
+            }
+
             return weather;
         }
 
