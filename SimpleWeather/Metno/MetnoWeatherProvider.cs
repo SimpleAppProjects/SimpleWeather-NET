@@ -318,18 +318,7 @@ namespace SimpleWeather.Metno
             // End Stream
             webClient.Dispose();
 
-            if (weather == null)
-            {
-                if (wEx == null)
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
-
-#if WINDOWS_UWP
-                await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
-#elif __ANDROID__
-                Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
-#endif
-            }
-            else
+            if (weather != null)
             {
                 weather.query = location_query;
                 // Add condition icons
