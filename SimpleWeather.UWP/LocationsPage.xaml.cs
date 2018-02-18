@@ -79,7 +79,7 @@ namespace SimpleWeather.UWP
                     if (!ErrorCounter[(int)wEx.ErrorStatus])
                     {
                         Snackbar snackBar = Snackbar.Make(Content as Grid, wEx.Message, SnackbarDuration.Long);
-                        snackBar.SetAction(App.ResLoader.GetString("Action_Retry"), async (sender) =>
+                        snackBar.SetAction(App.ResLoader.GetString("Action_Retry"), async () =>
                         {
                             await RefreshLocations();
                         });

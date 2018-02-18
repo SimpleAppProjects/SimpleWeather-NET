@@ -190,7 +190,7 @@ namespace SimpleWeather.UWP
                 case WeatherUtils.ErrorStatus.NoWeather:
                     // Show error message and prompt to refresh
                     Snackbar snackBar = Snackbar.Make(Content as Grid, wEx.Message, SnackbarDuration.Long);
-                    snackBar.SetAction(App.ResLoader.GetString("Action_Retry"), (sender) =>
+                    snackBar.SetAction(App.ResLoader.GetString("Action_Retry"), () =>
                     {
                         RefreshWeather(false);
                     });
