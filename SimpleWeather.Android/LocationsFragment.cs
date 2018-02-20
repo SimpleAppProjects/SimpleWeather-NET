@@ -58,7 +58,7 @@ namespace SimpleWeather.Droid
         private Android.Support.V7.View.ActionMode mActionMode;
         private View searchViewLayout;
         private EditText searchView;
-        private ImageView clearButtonView;
+        private TextView clearButtonView;
         private ProgressBar progressBar;
         private bool inSearchUI;
 
@@ -772,7 +772,7 @@ namespace SimpleWeather.Droid
         private void PrepareSearchView()
         {
             searchView = searchViewLayout.FindViewById<EditText>(Resource.Id.search_view);
-            clearButtonView = searchViewLayout.FindViewById<ImageView>(Resource.Id.search_close_button);
+            clearButtonView = searchViewLayout.FindViewById<TextView>(Resource.Id.search_close_button);
             progressBar = searchViewLayout.FindViewById<ProgressBar>(Resource.Id.search_progressBar);
             clearButtonView.Click += delegate { searchView.Text = String.Empty; };
             searchView.TextChanged += (object sender, TextChangedEventArgs e) =>

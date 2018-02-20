@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/search_view_container"
     android:layout_width="match_parent"
     android:layout_height="@dimen/searchview_height_region_search"
@@ -22,26 +23,29 @@
       android:paddingLeft="8dp"
       android:paddingStart="8dp">
 
-    <android.support.v7.widget.AppCompatImageView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/search_magnifying_glass"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        style="@style/MaterialIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:importantForAccessibility="no"
-        android:padding="2dp"
-        android:scaleType="center"
-        app:srcCompat="@drawable/ic_search_white_24dp"
-        android:tint="@android:color/darker_gray" />
+        android:padding="4dp"
+        android:text="@string/materialicon_search"
+        android:textColor="@android:color/darker_gray"
+        app:fontFamily="@font/materialicons_regular"
+        tools:fontFamily="@font/materialicons_regular" />
 
     <TextView
         android:id="@+id/search_box_start_search"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="22dp"
+        android:layout_marginStart="22dp"
         android:layout_weight="1"
         android:fontFamily="sans-serif"
         android:gravity="center_vertical"
         android:hint="@string/location_search_hint"
-        android:textColorHint="@android:color/darker_gray"
+        android:textColor="@android:color/darker_gray"
         android:textSize="14sp" />
   </LinearLayout>
 </android.support.v7.widget.CardView>

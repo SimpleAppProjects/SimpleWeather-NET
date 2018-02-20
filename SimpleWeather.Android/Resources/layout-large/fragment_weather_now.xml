@@ -72,14 +72,13 @@
                     tools:visibility="visible">
 
                     <android.support.v7.widget.AppCompatTextView
+                        style="@style/MaterialIcon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:includeFontPadding="false"
                         android:padding="4dp"
-                        android:text="&#xE000;"
+                        android:text="@string/materialicon_error"
                         android:textColor="@android:color/white"
-                        android:textSize="24sp"
                         app:fontFamily="@font/materialicons_regular"
                         tools:fontFamily="@font/materialicons_regular" />
 
@@ -94,14 +93,13 @@
                         android:textColor="@android:color/white" />
 
                     <android.support.v7.widget.AppCompatTextView
+                        style="@style/MaterialIcon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:includeFontPadding="false"
                         android:padding="4dp"
-                        android:text="&#xE5CC;"
+                        android:text="@string/materialicon_chevron_right"
                         android:textColor="@android:color/white"
-                        android:textSize="24sp"
                         app:fontFamily="@font/materialicons_regular"
                         tools:fontFamily="@font/materialicons_regular" />
 

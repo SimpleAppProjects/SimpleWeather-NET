@@ -209,7 +209,7 @@
                     android:paddingStart="2dp"
                     android:paddingTop="12dp"
                     android:scaleType="fitStart"
-                    tools:src="@drawable/ic_home_fill_white_24dp" />
+                    tools:src="@drawable/notification_temp_pos70" />
 
             </RelativeLayout>
 

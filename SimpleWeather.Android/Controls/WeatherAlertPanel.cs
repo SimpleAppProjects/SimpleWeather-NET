@@ -16,7 +16,7 @@ namespace SimpleWeather.Droid.Controls
         private TextView postDate;
         private CardView headerCard;
         private CardView bodyCard;
-        private AppCompatImageView expandIcon;
+        private TextView expandIcon;
         private TextView bodyTextView;
 
         private bool Expanded = false;
@@ -62,7 +62,7 @@ namespace SimpleWeather.Droid.Controls
             postDate = viewLayout.FindViewById<TextView>(Resource.Id.post_date);
             headerCard = viewLayout.FindViewById<CardView>(Resource.Id.header_card);
             bodyCard = viewLayout.FindViewById<CardView>(Resource.Id.body_card);
-            expandIcon = viewLayout.FindViewById<AppCompatImageView>(Resource.Id.expand_icon);
+            expandIcon = viewLayout.FindViewById<TextView>(Resource.Id.expand_icon);
             bodyTextView = viewLayout.FindViewById<TextView>(Resource.Id.body_textview);
 
             bodyCard.Visibility = ViewStates.Gone;
@@ -70,10 +70,10 @@ namespace SimpleWeather.Droid.Controls
             {
                 Expanded = !Expanded;
 
-                expandIcon.SetImageResource(
+                expandIcon.Text = App.Context.GetString(
                     Expanded ?
-                    Resource.Drawable.ic_expand_less_white_24dp :
-                    Resource.Drawable.ic_expand_more_white_24dp);
+                    Resource.String.materialicon_expand_less :
+                    Resource.String.materialicon_expand_more);
                 bodyCard.Visibility = Expanded ? ViewStates.Visible : ViewStates.Gone;
             };
         }

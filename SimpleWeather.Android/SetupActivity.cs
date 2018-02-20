@@ -39,7 +39,7 @@ namespace SimpleWeather.Droid
         private Spinner apiSpinner;
         private EditText keyEntry;
         private EditText searchView;
-        private ImageView clearButtonView;
+        private TextView clearButtonView;
         private bool inSearchUI;
 
         private Button gpsFollowButton;
@@ -490,7 +490,7 @@ namespace SimpleWeather.Droid
         private void PrepareSearchView()
         {
             searchView = searchViewLayout.FindViewById<EditText>(Resource.Id.search_view);
-            clearButtonView = searchViewLayout.FindViewById<ImageView>(Resource.Id.search_close_button);
+            clearButtonView = searchViewLayout.FindViewById<TextView>(Resource.Id.search_close_button);
             clearButtonView.Click += delegate { searchView.Text = String.Empty; };
             searchView.TextChanged += (object sender, TextChangedEventArgs e) =>
             {

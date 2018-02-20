@@ -66,8 +66,9 @@
         android:visibility="gone"
         tools:visibility="visible" />
 
-    <android.support.v7.widget.AppCompatImageView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/search_close_button"
+        style="@style/MaterialIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
@@ -77,6 +78,8 @@
         android:paddingRight="16dp"
         android:paddingStart="0dp"
         android:paddingTop="16dp"
-        app:srcCompat="@drawable/ic_clear_white_24dp"
-        android:tint="@color/colorPrimary" />
+        android:text="@string/materialicon_clear"
+        android:textColor="@color/colorPrimary"
+        app:fontFamily="@font/materialicons_regular"
+        tools:fontFamily="@font/materialicons_regular" />
 </LinearLayout>

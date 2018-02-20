@@ -51,4 +51,9 @@
   
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="MaterialIcon" parent="TextAppearance.AppCompat">
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textSize">24sp</item>
+    </style>
 </resources>
