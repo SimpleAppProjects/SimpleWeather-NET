@@ -47,10 +47,10 @@ namespace SimpleWeather.WeatherData
             return weather;
         }
         // Alerts
-        public virtual Task<List<WeatherAlert>> GetAlerts(LocationData location)
+        public virtual async Task<List<WeatherAlert>> GetAlerts(LocationData location)
         {
             if ("US".Equals(location.country_code))
-                return new NWS.NWSAlertProvider().GetAlerts(location);
+                return await new NWS.NWSAlertProvider().GetAlerts(location);
             else
                 return null;
         }
