@@ -23,7 +23,7 @@ namespace SimpleWeather.UWP.WeatherAlerts
             if (wm.SupportsAlerts && alerts != null && alerts.Count > 0)
             {
                 // Only alert if we're in the background
-                if (!Windows.UI.Xaml.Window.Current.Visible)
+                if (App.IsInBackground)
                 {
                     // Check if any of these alerts have been posted before
                     // or are past the expiration date

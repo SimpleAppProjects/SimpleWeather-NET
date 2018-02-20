@@ -29,6 +29,7 @@ namespace SimpleWeather.UWP
         public const int HomeIdx = 0;
         public static ResourceLoader ResLoader;
         public static Frame RootFrame { get; set; }
+        public static bool IsInBackground { get; set; } = true;
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -38,6 +39,8 @@ namespace SimpleWeather.UWP
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+            this.EnteredBackground += OnEnteredBackground;
+            this.LeavingBackground += OnLeavingBackground;
         }
 
         /// <summary>
@@ -233,6 +236,16 @@ namespace SimpleWeather.UWP
             }
 
             deferral.Complete();
+        }
+
+        private void OnLeavingBackground(object sender, LeavingBackgroundEventArgs e)
+        {
+            IsInBackground = false;
+        }
+
+        private void OnEnteredBackground(object sender, EnteredBackgroundEventArgs e)
+        {
+            IsInBackground = true;
         }
     }
 }
