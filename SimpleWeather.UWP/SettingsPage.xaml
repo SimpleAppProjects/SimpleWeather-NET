@@ -215,20 +215,7 @@
     </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <CommandBar x:Name="CommandBar" RequestedTheme="Dark" Background="#FF006FBF" Style="{StaticResource NoOverflow}" Grid.Row="0">
-            <CommandBar.Content>
-                <Grid Height="48">
-                    <TextBlock x:Uid="Nav_Settings" Text="Settings" Style="{StaticResource CommandBarLabel}"/>
-                </Grid>
-            </CommandBar.Content>
-        </CommandBar>
-
-        <Pivot Grid.Row="1" RequestedTheme="Light" Style="{StaticResource SettingsPivotStyle}"
-                   SelectionChanged="Pivot_SelectionChanged">
+        <Pivot RequestedTheme="Light" Style="{StaticResource SettingsPivotStyle}" SelectionChanged="Pivot_SelectionChanged">
             <Pivot.HeaderTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding}" Style="{StaticResource CommandBarLabel}" FontWeight="SemiBold" />
@@ -344,25 +331,5 @@
                 </StackPanel>
             </PivotItem>
         </Pivot>
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup>
-                <VisualState x:Name="Mobile">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="0"/>
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="CommandBar.Margin" Value="48,0,0,0"/>
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="Desktop">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="641"/>
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="CommandBar.Margin" Value="0,0,0,0"/>
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
     </Grid>
 </Page>

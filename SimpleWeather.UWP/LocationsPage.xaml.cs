@@ -2,6 +2,7 @@
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.UWP.Controls;
+using SimpleWeather.UWP.Helpers;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,7 @@ namespace SimpleWeather.UWP
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class LocationsPage : Page, IWeatherLoadedListener, IWeatherErrorListener, IDisposable
+    public sealed partial class LocationsPage : Page, ICommandBarPage, IWeatherLoadedListener, IWeatherErrorListener, IDisposable
     {
         private CancellationTokenSource cts = new CancellationTokenSource();
         private WeatherManager wm;
@@ -43,6 +44,10 @@ namespace SimpleWeather.UWP
         private bool DataChanged = false;
         private bool HomeChanged = false;
         private bool[] ErrorCounter;
+
+        public string CommandBarLabel { get; set; }
+        public List<ICommandBarElement> PrimaryCommands { get; set; }
+        private AppBarButton EditButton;
 
         public void OnWeatherLoaded(LocationData location, Weather weather)
         {
@@ -115,6 +120,19 @@ namespace SimpleWeather.UWP
 
             int max = Enum.GetValues(typeof(WeatherUtils.ErrorStatus)).Cast<int>().Max();
             ErrorCounter = new bool[max];
+
+            // CommandBar
+            CommandBarLabel = App.ResLoader.GetString("Nav_Locations/Text");
+            PrimaryCommands = new List<ICommandBarElement>()
+            {
+                new AppBarButton()
+                {
+                    Icon = new SymbolIcon(Symbol.Edit),
+                    Label = App.ResLoader.GetString("Label_Edit"),
+                }
+            };
+            EditButton = PrimaryCommands.First() as AppBarButton;
+            EditButton.Click += AppBarButton_Click;
         }
 
         private async void LocationsPage_Resuming(object sender, object e)

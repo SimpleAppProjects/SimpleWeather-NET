@@ -1,4 +1,5 @@
 ﻿using SimpleWeather.Controls;
+using SimpleWeather.UWP.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,13 +22,19 @@ namespace SimpleWeather.UWP
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class WeatherAlertPage : Page
+    public sealed partial class WeatherAlertPage : Page, ICommandBarPage
     {
         public WeatherNowViewModel WeatherView = null;
+
+        public string CommandBarLabel { get; set; }
+        public List<ICommandBarElement> PrimaryCommands { get; set; }
 
         public WeatherAlertPage()
         {
             this.InitializeComponent();
+
+            // CommandBar
+            CommandBarLabel = App.ResLoader.GetString("Label_WeatherAlerts/Text");
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)

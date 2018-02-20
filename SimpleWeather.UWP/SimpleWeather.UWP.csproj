@@ -231,6 +231,7 @@
     <Compile Include="Controls\WeatherAlertPanel.xaml.cs">
       <DependentUpon>WeatherAlertPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\ICommandBarPage.cs" />
     <Compile Include="Helpers\InverseVisibilityConverter.cs" />
     <Compile Include="WeatherAlertPage.xaml.cs">
       <DependentUpon>WeatherAlertPage.xaml</DependentUpon>

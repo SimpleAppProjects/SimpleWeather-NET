@@ -2,6 +2,7 @@
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.UWP.Controls;
+using SimpleWeather.UWP.Helpers;
 using SimpleWeather.UWP.WeatherAlerts;
 using SimpleWeather.WeatherData;
 using System;
@@ -28,11 +29,13 @@ namespace SimpleWeather.UWP
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class WeatherNow : Page, IWeatherLoadedListener, IWeatherErrorListener
+    public sealed partial class WeatherNow : Page, ICommandBarPage, IWeatherLoadedListener, IWeatherErrorListener
     {
         WeatherManager wm;
         WeatherDataLoader wLoader = null;
         WeatherNowViewModel WeatherView { get; set; }
+        public string CommandBarLabel { get; set; }
+        public List<ICommandBarElement> PrimaryCommands { get; set; }
 
         LocationData location = null;
         double BGAlpha = 1.0;
@@ -85,13 +88,13 @@ namespace SimpleWeather.UWP
                 // Update home tile if it hasn't been already
                 if (Settings.HomeData.Equals(location) && 
                     (TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval) ||
-                    !Helpers.WeatherTileCreator.TileUpdated)
+                    !WeatherTileCreator.TileUpdated)
                 {
                     await WeatherUpdateBackgroundTask.RequestAppTrigger();
                 }
 
                 // Shell
-                Shell.Instance.BurgerBackgroundColor = WeatherView.PendingBackgroundColor;
+                Shell.Instance.HamburgerButtonColor = WeatherView.PendingBackgroundColor;
                 if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
                 {
                     // Mobile
@@ -226,6 +229,19 @@ namespace SimpleWeather.UWP
             PrecipitationPanel.Visibility = Visibility.Collapsed;
 
             geolocal = new Geolocator() { DesiredAccuracyInMeters = 5000, ReportInterval = 900000, MovementThreshold = 1600 };
+
+            // CommandBar
+            CommandBarLabel = App.ResLoader.GetString("Nav_WeatherNow/Text");
+            PrimaryCommands = new List<ICommandBarElement>()
+            {
+                new AppBarButton()
+                {
+                    Icon = new SymbolIcon(Symbol.Refresh),
+                    Label = App.ResLoader.GetString("Button_Refresh/Label"),
+                }
+            };
+            var refreshButton = PrimaryCommands.First() as AppBarButton;
+            refreshButton.Click += RefreshButton_Click;
         }
 
         private async void WeatherNow_Resuming(object sender, object e)
@@ -475,7 +491,7 @@ namespace SimpleWeather.UWP
                     else
                     {
                         WeatherView.UpdateView(wLoader.GetWeather());
-                        Shell.Instance.BurgerBackgroundColor = WeatherView.PendingBackgroundColor;
+                        Shell.Instance.HamburgerButtonColor = WeatherView.PendingBackgroundColor;
                         if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
                         {
                             // Mobile

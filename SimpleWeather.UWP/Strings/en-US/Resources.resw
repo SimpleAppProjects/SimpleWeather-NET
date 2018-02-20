@@ -333,4 +333,7 @@
   <data name="DateTime_ValidUntil" xml:space="preserve">
     <value>Valid until</value>
   </data>
+  <data name="Button_Refresh.Label" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
 </root>

@@ -248,20 +248,7 @@
     </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <CommandBar x:Name="CommandBar" RequestedTheme="Dark" Background="#FF006FBF" Style="{StaticResource NoOverflow}" Grid.Row="0">
-            <CommandBar.Content>
-                <Grid Height="48">
-                    <TextBlock x:Uid="Nav_Locations" Text="Locations" Style="{StaticResource CommandBarLabel}"/>
-                </Grid>
-            </CommandBar.Content>
-            <AppBarButton x:Name="EditButton" Icon="Edit" Label="Edit" Click="AppBarButton_Click"/>
-        </CommandBar>
-
-        <ScrollViewer Grid.Row="1" RequestedTheme="Light" Name="theGrid" HorizontalScrollMode="Disabled" VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer RequestedTheme="Light" Name="theGrid" HorizontalScrollMode="Disabled" VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto">
             <StackPanel>
                 <Grid x:Name="GPSPanel" Visibility="Collapsed">
                     <ListView x:Name="GPSLocationsPanel" SelectionMode="None" IsItemClickEnabled="True"
@@ -394,26 +381,5 @@
                 </Button>
             </StackPanel>
         </ScrollViewer>
-
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup>
-                <VisualState x:Name="Mobile">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="0"/>
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="CommandBar.Margin" Value="48,0,0,0"/>
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="Desktop">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="641"/>
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="CommandBar.Margin" Value="0,0,0,0"/>
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
     </Grid>
 </Page>

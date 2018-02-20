@@ -437,22 +437,9 @@
             <SolidColorBrush Color="{x:Bind WeatherView.PendingBackgroundColor, FallbackValue='#FF006FBF', Mode=OneWay}" />
         </Grid.Background>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <CommandBar x:Name="CommandBar" RequestedTheme="Dark" Foreground="White" Style="{StaticResource NoOverflow}" Grid.Row="0">
-            <CommandBar.Background>
-                <SolidColorBrush Color="{x:Bind WeatherView.PendingBackgroundColor, FallbackValue='#FF006FBF', Mode=OneWay}" />
-            </CommandBar.Background>
-            <CommandBar.Content>
-                <Grid Height="48">
-                    <TextBlock Text="SimpleWeather" Style="{StaticResource CommandBarLabel}"/>
-                </Grid>
-            </CommandBar.Content>
-            <AppBarButton Icon="Refresh" Label="Refresh" Click="RefreshButton_Click"/>
-        </CommandBar>
-
-        <ScrollViewer x:Name="MainViewer" VerticalScrollMode="Auto" Grid.Row="1" Background="{x:Bind WeatherView.Background, FallbackValue='#FF006FBF', Mode=OneWay, TargetNullValue='#FF006FBF'}">
+        <ScrollViewer x:Name="MainViewer" VerticalScrollMode="Auto" Background="{x:Bind WeatherView.Background, FallbackValue='#FF006FBF', Mode=OneWay, TargetNullValue='#FF006FBF'}">
             <StackPanel>
                 <Viewbox Name="LocationBox" Margin="25,10,25,0" Height="50">
                     <TextBlock Name="Location" Text="{x:Bind WeatherView.Location, FallbackValue='New York, NY', Mode=OneWay}"
@@ -850,7 +837,6 @@
                         <AdaptiveTrigger MinWindowWidth="0"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="CommandBar.Margin" Value="48,0,0,0"/>
                         <Setter Target="LeftButton.Visibility" Value="Collapsed"/>
                         <Setter Target="RightButton.Visibility" Value="Collapsed"/>
                         <Setter Target="ForecastHeader.Padding" Value="15,0,0,0"/>
@@ -869,7 +855,6 @@
                         <AdaptiveTrigger MinWindowWidth="641"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="CommandBar.Margin" Value="0,0,0,0"/>
                         <Setter Target="Location.FontSize" Value="36"/>
                         <Setter Target="Humidity.FontSize" Value="18"/>
                         <Setter Target="Sunrise.Width" Value="100"/>

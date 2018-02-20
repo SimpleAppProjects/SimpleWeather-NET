@@ -13,31 +13,22 @@
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <CommandBar x:Name="CommandBar" RequestedTheme="Dark" Foreground="White" Background="#FF006FBF" Style="{StaticResource NoOverflow}" Grid.Row="0">
-            <CommandBar.Content>
-                <Grid Height="48">
-                    <TextBlock x:Uid="Label_WeatherAlerts" Text="Severe Weather Alerts"
-                               Style="{StaticResource CommandBarLabel}"/>
-                </Grid>
-            </CommandBar.Content>
-        </CommandBar>
-
-        <Border Grid.Row="1" BorderBrush="LightGray" BorderThickness="0,0,0,0.5">
+        <Border Grid.Row="0" BorderBrush="LightGray" BorderThickness="0,0,0,0.5">
             <Viewbox Height="48" HorizontalAlignment="Left">
                 <TextBlock Text="{x:Bind WeatherView.Location, FallbackValue='New York, NY'}"
-                           FontSize="16" Padding="16" />
+                           FontSize="16" Padding="16"
+                           Foreground="Black" />
             </Viewbox>
         </Border>
 
-        <ScrollViewer Grid.Row="2">
+        <ScrollViewer Grid.Row="1">
             <ItemsControl x:Name="StackControl" ItemsSource="{x:Bind WeatherView.Extras.Alerts}" Margin="10">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="controls:WeatherAlertViewModel">
                         <StackPanel>
-                            <localcontrols:WeatherAlertPanel x:Name="AlertItem" />
+                            <localcontrols:WeatherAlertPanel x:Name="AlertItem" Foreground="Black" />
                             <Rectangle Height="2" Fill="White" />
                         </StackPanel>
                     </DataTemplate>
@@ -49,25 +40,5 @@
                 </ItemsControl.ItemsPanel>
             </ItemsControl>
         </ScrollViewer>
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="WidthStates">
-                <VisualState x:Name="Mobile">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="0"/>
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="CommandBar.Margin" Value="48,0,0,0"/>
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="Medium">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="641"/>
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="CommandBar.Margin" Value="0,0,0,0"/>
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
     </Grid>
 </Page>

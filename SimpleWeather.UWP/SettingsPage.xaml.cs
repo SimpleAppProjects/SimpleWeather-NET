@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using SimpleWeather.Utils;
 using Windows.ApplicationModel;
 using Windows.Devices.Geolocation;
@@ -16,6 +18,7 @@ using Windows.UI.ViewManagement;
 using System.Threading.Tasks;
 using SimpleWeather.WeatherData;
 using SimpleWeather.UWP.BackgroundTasks;
+using SimpleWeather.UWP.Helpers;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 namespace SimpleWeather.UWP
@@ -23,13 +26,16 @@ namespace SimpleWeather.UWP
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class SettingsPage : Page
+    public sealed partial class SettingsPage : Page, ICommandBarPage
     {
         ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
         private static string KEY_APIKEY_VERIFIED = "API_KEY_VERIFIED";
         private bool keyVerified { get { return IsKeyVerfied(); } set { SetKeyVerified(value); } }
 
         private WeatherManager wm;
+
+        public string CommandBarLabel { get; set; }
+        public List<ICommandBarElement> PrimaryCommands { get; set; }
 
         private bool IsKeyVerfied()
         {
@@ -57,6 +63,9 @@ namespace SimpleWeather.UWP
 
         private void RestoreSettings()
         {
+            // CommandBar
+            CommandBarLabel = App.ResLoader.GetString("Nav_Settings/Text");
+
             localSettings.CreateContainer(WeatherAPI.WeatherUnderground, ApplicationDataCreateDisposition.Always);
 
             // Temperature
