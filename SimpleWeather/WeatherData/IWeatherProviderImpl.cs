@@ -14,8 +14,9 @@ namespace SimpleWeather.WeatherData
         bool SupportsAlerts { get; }
         bool NeedsExternalAlertData { get; }
 
-        Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coordinate);
         Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string ac_query);
+        Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coordinate);
+        Task<LocationQueryViewModel> GetLocation(string query);
         Task<Weather> GetWeather(string location_query);
         Task<Weather> GetWeather(LocationData location);
         Task<List<WeatherAlert>> GetAlerts(LocationData location);

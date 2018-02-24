@@ -518,23 +518,29 @@ namespace SimpleWeather.WeatherData
             }
             writer.WriteEndArray();
 
-            // "hr_forecast" : ""
-            writer.WritePropertyName("hr_forecast");
-            writer.WriteStartArray();
-            foreach (HourlyForecast hr_cast in hr_forecast)
+            if (hr_forecast != null)
             {
-                writer.WriteValue(hr_cast.ToJson());
+                // "hr_forecast" : ""
+                writer.WritePropertyName("hr_forecast");
+                writer.WriteStartArray();
+                foreach (HourlyForecast hr_cast in hr_forecast)
+                {
+                    writer.WriteValue(hr_cast.ToJson());
+                }
+                writer.WriteEndArray();
             }
-            writer.WriteEndArray();
 
-            // "txt_forecast" : ""
-            writer.WritePropertyName("txt_forecast");
-            writer.WriteStartArray();
-            foreach (TextForecast txt_cast in txt_forecast)
+            if (txt_forecast != null)
             {
-                writer.WriteValue(txt_cast.ToJson());
+                // "txt_forecast" : ""
+                writer.WritePropertyName("txt_forecast");
+                writer.WriteStartArray();
+                foreach (TextForecast txt_cast in txt_forecast)
+                {
+                    writer.WriteValue(txt_cast.ToJson());
+                }
+                writer.WriteEndArray();
             }
-            writer.WriteEndArray();
 
             // "condition" : ""
             writer.WritePropertyName("condition");
@@ -548,9 +554,12 @@ namespace SimpleWeather.WeatherData
             writer.WritePropertyName("astronomy");
             writer.WriteValue(astronomy.ToJson());
 
-            // "precipitation" : ""
-            writer.WritePropertyName("precipitation");
-            writer.WriteValue(precipitation.ToJson());
+            if (precipitation != null)
+            {
+                // "precipitation" : ""
+                writer.WritePropertyName("precipitation");
+                writer.WriteValue(precipitation.ToJson());
+            }
 
             // "ttl" : ""
             writer.WritePropertyName("ttl");
