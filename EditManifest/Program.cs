@@ -44,11 +44,11 @@ namespace EditManifest
                             var line = sReader.ReadLine();
                             if ("Debug".Equals(ConfigMode))
                             {
-                                line = line.Replace("package=\"com.thewizrd.simpleweather\"", "package=\"com.thewizrd.simpleweather-debug\"");
+                                line = line.Replace("package=\"com.thewizrd.simpleweather\"", "package=\"com.thewizrd.simpleweather_debug\"");
                             }
                             else
                             {
-                                line = line.Replace("package=\"com.thewizrd.simpleweather-debug\"", "package=\"com.thewizrd.simpleweather\"");
+                                line = line.Replace("package=\"com.thewizrd.simpleweather_debug\"", "package=\"com.thewizrd.simpleweather\"");
                             }
 
                             sBuilder.AppendLine(line);
