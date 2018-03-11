@@ -13,11 +13,6 @@
         <item name="windowActionBarOverlay">false</item>
     </style>
 
-    <style name="CloseButton" parent="@android:style/Widget.ActionButton.CloseMode">
-        <item name="android:tint">@color/colorPrimary</item>
-        <item name="android:padding">16dp</item>
-    </style>
-
     <style name="AppTheme.Launcher">
         <item name="android:background">@drawable/ic_splash_screen</item>
     </style>
@@ -26,6 +21,16 @@
         <item name="windowActionModeOverlay">false</item>
         <item name="windowActionBarOverlay">false</item>
     </style>
+
+    <style name="SettingsTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+      <item name="colorPrimary">@color/colorPrimary</item>
+      <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+      <item name="colorAccent">@color/colorPrimaryLight</item>
+      <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+    </style>
+  
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="WeatherDetails" parent="@android:style/Widget.TextView">
         <item name="android:textColor">@android:color/white</item>
@@ -42,18 +47,4 @@
         <item name="android:padding">8dp</item>
     </style>
 
-    <style name="SettingsTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-      <item name="colorPrimary">@color/colorPrimary</item>
-      <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-      <item name="colorAccent">@color/colorPrimaryLight</item>
-      <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
-    </style>
-  
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-    <style name="MaterialIcon" parent="TextAppearance.AppCompat">
-        <item name="android:includeFontPadding">false</item>
-        <item name="android:textSize">24sp</item>
-    </style>
 </resources>

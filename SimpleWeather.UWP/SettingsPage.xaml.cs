@@ -28,30 +28,10 @@ namespace SimpleWeather.UWP
     /// </summary>
     public sealed partial class SettingsPage : Page, ICommandBarPage
     {
-        ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-        private static string KEY_APIKEY_VERIFIED = "API_KEY_VERIFIED";
-        private bool keyVerified { get { return IsKeyVerfied(); } set { SetKeyVerified(value); } }
-
         private WeatherManager wm;
 
         public string CommandBarLabel { get; set; }
         public List<ICommandBarElement> PrimaryCommands { get; set; }
-
-        private bool IsKeyVerfied()
-        {
-            if (localSettings.Containers.ContainsKey(WeatherAPI.WeatherUnderground))
-            {
-                if (localSettings.Containers[WeatherAPI.WeatherUnderground].Values.TryGetValue(KEY_APIKEY_VERIFIED, out object value))
-                    return (bool)value;
-            }
-
-            return false;
-        }
-
-        private void SetKeyVerified(bool value)
-        {
-            localSettings.Containers[WeatherAPI.WeatherUnderground].Values[KEY_APIKEY_VERIFIED] = value;
-        }
 
         public SettingsPage()
         {
@@ -65,8 +45,6 @@ namespace SimpleWeather.UWP
         {
             // CommandBar
             CommandBarLabel = App.ResLoader.GetString("Nav_Settings/Text");
-
-            localSettings.CreateContainer(WeatherAPI.WeatherUnderground, ApplicationDataCreateDisposition.Always);
 
             // Temperature
             Fahrenheit.IsChecked = Settings.IsFahrenheit;
@@ -86,15 +64,14 @@ namespace SimpleWeather.UWP
 
             if (wm.KeyRequired)
             {
-                if (!String.IsNullOrWhiteSpace(Settings.API_KEY) && !keyVerified)
-                    keyVerified = true;
+                if (!String.IsNullOrWhiteSpace(Settings.API_KEY) && !Settings.KeyVerified)
+                    Settings.KeyVerified = true;
 
                 KeyPanel.Visibility = Visibility.Visible;
             }
             else
             {
-                keyVerified = false;
-                localSettings.Containers[WeatherAPI.WeatherUnderground].Values.Remove(KEY_APIKEY_VERIFIED);
+                Settings.KeyVerified = false;
 
                 KeyPanel.Visibility = Visibility.Collapsed;
             }
@@ -188,7 +165,7 @@ namespace SimpleWeather.UWP
                     // Do so when navigating away
                     await WeatherUpdateBackgroundTask.RequestAppTrigger();
 
-                    keyVerified = true;
+                    Settings.KeyVerified = true;
                     UpdateKeyBorder();
 
                     AlertSwitch.IsEnabled = wm.SupportsAlerts;
@@ -206,7 +183,7 @@ namespace SimpleWeather.UWP
 
         private void UpdateKeyBorder()
         {
-            if (keyVerified)
+            if (Settings.KeyVerified)
                 KeyBorder.BorderBrush = new SolidColorBrush(Colors.Green);
             else
                 KeyBorder.BorderBrush = new SolidColorBrush(Colors.DarkGray);
@@ -222,7 +199,7 @@ namespace SimpleWeather.UWP
                 if (KeyPanel != null)
                     KeyPanel.Visibility = Visibility.Visible;
 
-                if (keyVerified)
+                if (Settings.KeyVerified)
                 {
                     Settings.API = API;
                     Task.Run(async () => await WeatherUpdateBackgroundTask.RequestAppTrigger());
@@ -236,8 +213,7 @@ namespace SimpleWeather.UWP
                 // Clear API KEY entry to avoid issues
                 Settings.API_KEY = KeyEntry.Text = String.Empty;
 
-                keyVerified = false;
-                localSettings.Containers[WeatherAPI.WeatherUnderground].Values.Remove(KEY_APIKEY_VERIFIED);
+                Settings.KeyVerified = false;
             }
 
             wm.UpdateAPI();

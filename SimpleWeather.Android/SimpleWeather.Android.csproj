@@ -180,18 +180,16 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="AppCompatPreferenceActivity.cs" />
+    <Compile Include="Controls\LocationQuery.cs" />
     <Compile Include="Controls\WeatherAlertPanel.cs" />
     <Compile Include="Controls\ForecastItem.cs" />
     <Compile Include="Controls\HourlyForecastItem.cs" />
     <Compile Include="Controls\TextForecastItem.cs" />
     <Compile Include="Controls\LocationPanel.cs" />
     <Compile Include="Controls\LocationPanelViewModel.cs" />
-    <Compile Include="Controls\LocationQuery.cs" />
-    <Compile Include="Controls\WeatherIcon.cs" />
     <Compile Include="Helpers\IItemTouchHelperAdapter.cs" />
     <Compile Include="Helpers\ItemTouchHelperCallback.cs" />
     <Compile Include="Helpers\ActionModeCallback.cs" />
-    <Compile Include="Helpers\LocationListener.cs" />
     <Compile Include="WeatherAlertPanelAdapter.cs" />
     <Compile Include="Notifications\WeatherAlertNotificationBuilder.cs" />
     <Compile Include="Notifications\WeatherNotificationBuilder.cs" />
@@ -199,23 +197,15 @@
     <Compile Include="TextForecastPagerAdapter.cs" />
     <Compile Include="LaunchActivity.cs" />
     <Compile Include="LocationPanelAdapter.cs" />
-    <Compile Include="LocationQueryAdapter.cs" />
     <Compile Include="LocationSearchFragment.cs" />
     <Compile Include="LocationsFragment.cs" />
     <Compile Include="MainActivity.cs" />
-    <Compile Include="Helpers\RecyclerClickEventArgs.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingsActivity.cs" />
     <Compile Include="SetupActivity.cs" />
-    <Compile Include="Utils\FileUtils.cs" />
-    <Compile Include="Utils\ImageUtils.cs" />
-    <Compile Include="Utils\Pair.cs" />
-    <Compile Include="Utils\Settings.cs" />
     <Compile Include="WeatherAlertsFragment.cs" />
     <Compile Include="WeatherAlerts\WeatherAlertHandler.cs" />
-    <Compile Include="WeatherData\IWeatherProviderImpl.cs" />
-    <Compile Include="WeatherData\WeatherProviderImpl.cs" />
     <Compile Include="WeatherNowFragment.cs" />
     <Compile Include="Widgets\WeatherWidgetConfigActivity.cs" />
     <Compile Include="Widgets\WeatherWidgetProvider.cs" />
@@ -225,7 +215,6 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <AndroidResource Include="Resources\font\weathericons.ttf" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -235,46 +224,12 @@
     <AndroidResource Include="Resources\values-v14\colors.xml">
       <SubType>Designer</SubType>
     </AndroidResource>
-    <AndroidResource Include="Resources\font\materialicons_regular.ttf" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\backgrounds\DaySky.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\mipmap-xxxhdpi\ic_launcher.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\mipmap-xxxhdpi\ic_round_launcher.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\mipmap-hdpi\ic_launcher.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\mipmap-hdpi\ic_round_launcher.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\mipmap-mdpi\ic_launcher.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\mipmap-mdpi\ic_round_launcher.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\mipmap-xhdpi\ic_launcher.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\mipmap-xhdpi\ic_round_launcher.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\mipmap-xxhdpi\ic_launcher.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\mipmap-xxhdpi\ic_round_launcher.png" />
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\drawable\color_cursor.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\ic_splash_screen.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\side_nav_bar.xml" />
@@ -284,15 +239,6 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable-mdpi\ic_logo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-xhdpi\ic_logo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-xxhdpi\ic_logo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_logo.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\activity_main.xml" />
@@ -350,23 +296,12 @@
     <AndroidResource Include="Resources\values\arrays.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\values\colors.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\values\dimens.xml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\values\strings.xml">
-      <SubType>Designer</SubType>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\values\styles.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\values\weathericons.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values-v21\styles.xml" />
@@ -468,12 +403,6 @@
     <AndroidResource Include="Resources\layout\credit_yahoo.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\yahoo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\wunderground.png" />
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\layout\credit_wunderground.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -500,9 +429,6 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\app_widget_forecast_panel.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\na.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\app_widget_4x1.xml" />
@@ -1436,19 +1362,10 @@
     <AndroidResource Include="Resources\drawable-anydpi-v21\ic_list_icon.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable-anydpi-v21\ic_mode_edit_white_24dp.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-anydpi-v21\ic_my_location_white_24dp.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\drawable-anydpi-v21\ic_raindrop.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable-anydpi-v21\ic_refresh_white_24dp.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-anydpi-v21\ic_settings_black_24dp.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable-anydpi-v21\ic_strong_wind.xml" />
@@ -1692,45 +1609,6 @@
     <AndroidResource Include="Resources\layout-v14\pref_dropdown_material.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\mipmap-anydpi-v26\ic_launcher.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\mipmap-anydpi-v26\ic_launcher_round.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\mipmap-hdpi\ic_launcher_foreground.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\mipmap-hdpi\ic_launcher_round.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\mipmap-mdpi\ic_launcher_round.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\mipmap-mdpi\ic_launcher_foreground.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\mipmap-xhdpi\ic_launcher_foreground.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\mipmap-xhdpi\ic_launcher_round.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\mipmap-xxhdpi\ic_launcher_round.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\mipmap-xxhdpi\ic_launcher_foreground.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\mipmap-xxxhdpi\ic_launcher_round.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\mipmap-xxxhdpi\ic_launcher_foreground.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\values\ic_launcher_background.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\drawable\progressring.xml">
       <SubType>Designer</SubType>
     </AndroidResource>
@@ -1778,256 +1656,10 @@
     <AndroidResource Include="Resources\drawable-xxxhdpi\ic_wind_direction.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\openweathermap.png" />
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\layout\credit_openweathermap.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\credit_metno.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\metno.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\cloudy.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\cloudy_gusts.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\cloudy_windy.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\day_cloudy.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\day_cloudy_gusts.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\day_cloudy_high.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\day_cloudy_windy.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\day_fog.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\day_hail.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\day_haze.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\day_light_wind.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\day_lightning.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\day_rain.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\day_rain_mix.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\day_rain_wind.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\day_showers.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\day_sleet.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\day_sleet_storm.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\day_snow.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\day_snow_thunderstorm.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\day_snow_wind.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\day_sprinkle.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\day_storm_showers.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\day_sunny.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\day_sunny_overcast.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\day_thunderstorm.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\day_windy.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\dust.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\fog.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\hail.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\hot.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\hurricane.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\lightning.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\night_alt_cloudy.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\night_alt_cloudy_gusts.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\night_alt_cloudy_high.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\night_alt_cloudy_windy.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\night_alt_hail.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\night_alt_lightning.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\night_alt_partly_cloudy.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\night_alt_rain.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\night_alt_rain_mix.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\night_alt_rain_wind.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\night_alt_showers.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\night_alt_sleet.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\night_alt_sleet_storm.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\night_alt_snow.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\night_alt_snow_thunderstorm.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\night_alt_snow_wind.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\night_alt_sprinkle.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\night_alt_storm_showers.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\night_alt_thunderstorm.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\night_clear.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\rain.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\rain_mix.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\rain_wind.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\sandstorm.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\showers.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\sleet.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\smog.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\smoke.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\snow.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\snow_wind.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\snowflake_cold.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\sprinkle.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\storm_showers.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\strong_wind.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\thunderstorm.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\tornado.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\windy.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\cloud.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\night_fog.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\fire.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\flood.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\gale_warning.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\hurricane_warning.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\small_craft_advisory.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\storm_warning.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\tsunami.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\volcano.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable-hdpi\ic_error_white.png" />
@@ -2056,10 +1688,10 @@
     <AndroidResource Include="Resources\layout\weather_alert_panel.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable-nodpi\earthquake.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\values\materialicons.xml" />
+    <ProjectReference Include="..\SimpleWeather.Droid.Shared\SimpleWeather.Droid.Shared.csproj">
+      <Project>{a678f4b2-4601-4bd0-80b0-85fd38123b42}</Project>
+      <Name>SimpleWeather.Droid.Shared</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="..\SimpleWeather\SimpleWeather_Xamarin.projitems" Label="Shared" Condition="Exists('..\SimpleWeather\SimpleWeather_Xamarin.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

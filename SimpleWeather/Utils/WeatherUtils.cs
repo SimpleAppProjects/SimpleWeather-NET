@@ -1,4 +1,7 @@
-﻿using SimpleWeather.WeatherData;
+﻿#if __ANDROID__
+using Android.App;
+#endif
+using SimpleWeather.WeatherData;
 using System;
 using System.Globalization;
 using System.Runtime.Serialization;
@@ -22,7 +25,7 @@ namespace SimpleWeather.Utils
             String timeformat = update_time.ToString("t", culture);
 
 #if __ANDROID__
-            if (Android.Text.Format.DateFormat.Is24HourFormat(Droid.App.Context))
+            if (Android.Text.Format.DateFormat.Is24HourFormat(Application.Context))
                 timeformat = update_time.ToString("HH:mm");
             else
                 timeformat = update_time.ToString("h:mm tt");
@@ -35,7 +38,7 @@ namespace SimpleWeather.Utils
 #if WINDOWS_UWP
                 prefix = UWP.App.ResLoader.GetString("Update_PrefixDay");
 #elif __ANDROID__
-                prefix = Droid.App.Context.GetString(Droid.Resource.String.update_prefix_day);
+                prefix = Application.Context.GetString(Droid.Resource.String.update_prefix_day);
 #endif
                 date = string.Format("{0} {1}", prefix, timeformat);
             }
@@ -44,7 +47,7 @@ namespace SimpleWeather.Utils
 #if WINDOWS_UWP
                 prefix = UWP.App.ResLoader.GetString("Update_Prefix");
 #elif __ANDROID__
-                prefix = Droid.App.Context.GetString(Droid.Resource.String.update_prefix);
+                prefix = Application.Context.GetString(Droid.Resource.String.update_prefix);
 #endif
                 date = string.Format("{0} {1} {2}",
                     prefix, update_time.ToString("ddd", culture), timeformat);

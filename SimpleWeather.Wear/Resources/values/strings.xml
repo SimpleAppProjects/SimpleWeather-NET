@@ -1,0 +1,9 @@
+<resources>
+
+    <string name="action_setupfromphone">Setup from Phone</string>
+    <string name="action_changelocation">Change Location</string>
+    <string name="action_openonphone">Open on Phone</string>
+
+    <string name="message_openedonphone">Opened on Phone…</string>
+
+</resources>

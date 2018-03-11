@@ -18,11 +18,11 @@ using Windows.UI.Popups;
 using Windows.Web;
 using Windows.Web.Http;
 #elif __ANDROID__
+using Android.App;
 using Android.Graphics;
 using Android.Widget;
 using System.Net;
 using System.Net.Http;
-using SimpleWeather.Droid;
 #endif
 
 namespace SimpleWeather.WeatherYahoo
@@ -152,7 +152,7 @@ namespace SimpleWeather.WeatherYahoo
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                     new Android.OS.Handler(Android.OS.Looper.MainLooper).Post(() =>
                     {
-                        Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
+                        Toast.MakeText(Application.Context, wEx.Message, ToastLength.Short).Show();
                     });
                 }
 #endif
@@ -219,7 +219,7 @@ namespace SimpleWeather.WeatherYahoo
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                     new Android.OS.Handler(Android.OS.Looper.MainLooper).Post(() =>
                     {
-                        Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
+                        Toast.MakeText(Application.Context, wEx.Message, ToastLength.Short).Show();
                     });
                 }
 #endif

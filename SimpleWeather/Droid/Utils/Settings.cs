@@ -1,8 +1,13 @@
-﻿using Android.Content;
+﻿using Android.App;
+using Android.Content;
 using Android.Util;
 using Java.IO;
 using SimpleWeather.Droid;
+#if __ANDROID_WEAR__
+using SimpleWeather.Droid.Wear;
+#else
 using SimpleWeather.Droid.Widgets;
+#endif
 using SQLite;
 using System;
 using System.Threading.Tasks;
@@ -11,16 +16,19 @@ namespace SimpleWeather.Utils
 {
     public static partial class Settings
     {
+#if __ANDROID__
         private static String LOG_TAG = "Settings";
 
         // Shared Settings
         private static ISharedPreferences preferences = App.Preferences;
         private static ISharedPreferencesEditor editor = preferences.Edit();
         private static ISharedPreferencesOnSharedPreferenceChangeListener listener = new SettingsListener();
+        private static ISharedPreferences wuSharedPrefs = App.Context.GetSharedPreferences(WeatherData.WeatherAPI.WeatherUnderground, FileCreationMode.Private);
 
         // App data files
-        private static File appDataFolder = App.Context.FilesDir;
+        private static File appDataFolder = Application.Context.FilesDir;
 
+#if !__ANDROID_WEAR__
         // Android specific settings
         private const string KEY_ONGOINGNOTIFICATION = "key_ongoingnotification";
         private const string KEY_NOTIFICATIONICON = "key_notificationicon";
@@ -30,6 +38,7 @@ namespace SimpleWeather.Utils
 
         public const string TEMPERATURE_ICON = "0";
         public const string CONDITION_ICON = "1";
+#endif
 
         // Shared Preferences listener
         internal class SettingsListener : Java.Lang.Object, ISharedPreferencesOnSharedPreferenceChangeListener
@@ -51,6 +60,7 @@ namespace SimpleWeather.Utils
                     case KEY_FOLLOWGPS:
                     // Settings unit changed
                     case KEY_USECELSIUS:
+#if !__ANDROID_WEAR__
                         WeatherWidgetService.EnqueueWork(context, new Intent(context, typeof(WeatherWidgetService))
                             .SetAction(WeatherWidgetService.ACTION_UPDATEWEATHER));
                         break;
@@ -59,6 +69,7 @@ namespace SimpleWeather.Utils
                         WeatherWidgetService.EnqueueWork(context, new Intent(context, typeof(WeatherWidgetService))
                             .SetAction(WeatherWidgetService.ACTION_UPDATEALARM));
                         break;
+#endif
                     default:
                         break;
                 }
@@ -231,6 +242,7 @@ namespace SimpleWeather.Utils
             editor.Commit();
         }
 
+#if !__ANDROID_WEAR__
         private static int GetRefreshInterval()
         {
             return int.Parse(preferences.GetString(KEY_REFRESHINTERVAL, DEFAULT_UPDATE_INTERVAL));
@@ -276,17 +288,6 @@ namespace SimpleWeather.Utils
                 return preferences.GetString(KEY_NOTIFICATIONICON, TEMPERATURE_ICON);
         }
 
-        private static int GetDBVersion()
-        {
-            return int.Parse(preferences.GetString(KEY_DBVERSION, "0"));
-        }
-
-        private static void SetDBVersion(int value)
-        {
-            editor.PutString(KEY_DBVERSION, value.ToString());
-            editor.Commit();
-        }
-
         private static bool UseAlerts()
         {
             if (!preferences.Contains(KEY_USEALERTS))
@@ -303,5 +304,37 @@ namespace SimpleWeather.Utils
             editor.PutBoolean(KEY_USEALERTS, value);
             editor.Commit();
         }
+#endif
+
+        private static int GetDBVersion()
+        {
+            return int.Parse(preferences.GetString(KEY_DBVERSION, "0"));
+        }
+
+        private static void SetDBVersion(int value)
+        {
+            editor.PutString(KEY_DBVERSION, value.ToString());
+            editor.Commit();
+        }
+
+        private static bool IsKeyVerified()
+        {
+            if (!wuSharedPrefs.Contains(KEY_APIKEY_VERIFIED))
+            {
+                return false;
+            }
+            else
+                return wuSharedPrefs.GetBoolean(KEY_APIKEY_VERIFIED, false);
+        }
+
+        private static void SetKeyVerified(bool value)
+        {
+            wuSharedPrefs.Edit().PutBoolean(KEY_APIKEY_VERIFIED, value);
+            wuSharedPrefs.Edit().Apply();
+
+            if (!value)
+                wuSharedPrefs.Edit().Remove(KEY_APIKEY_VERIFIED).Apply();
+        }
     }
+#endif
 }

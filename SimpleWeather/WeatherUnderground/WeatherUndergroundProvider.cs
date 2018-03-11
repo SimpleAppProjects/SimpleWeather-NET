@@ -19,7 +19,7 @@ using Windows.UI.Popups;
 using Windows.Web;
 using Windows.Web.Http;
 #elif __ANDROID__
-using SimpleWeather.Droid;
+using Android.App;
 using Android.Graphics;
 using Android.Locations;
 using Android.Widget;
@@ -146,7 +146,7 @@ namespace SimpleWeather.WeatherUnderground
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                     new Android.OS.Handler(Android.OS.Looper.MainLooper).Post(() =>
                     {
-                        Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
+                        Toast.MakeText(Application.Context, wEx.Message, ToastLength.Short).Show();
                     });
                 }
 #endif
@@ -211,7 +211,7 @@ namespace SimpleWeather.WeatherUnderground
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                     new Android.OS.Handler(Android.OS.Looper.MainLooper).Post(() =>
                     {
-                        Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
+                        Toast.MakeText(Application.Context, wEx.Message, ToastLength.Short).Show();
                     });
                 }
 #endif
@@ -289,7 +289,7 @@ namespace SimpleWeather.WeatherUnderground
 #elif __ANDROID__
                 new Android.OS.Handler(Android.OS.Looper.MainLooper).Post(() =>
                 {
-                    Android.Widget.Toast.MakeText(Droid.App.Context, wEx.Message, Android.Widget.ToastLength.Short).Show();
+                    Toast.MakeText(Application.Context, wEx.Message, ToastLength.Short).Show();
                 });
 #endif
             }

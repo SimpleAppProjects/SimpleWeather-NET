@@ -11,6 +11,8 @@ using System.Text;
 using System.Threading.Tasks;
 #if WINDOWS_UWP
 using Windows.Storage;
+#elif __ANDROID__
+using Android.App;
 #endif
 
 namespace SimpleWeather.Utils
@@ -22,7 +24,7 @@ namespace SimpleWeather.Utils
 #if WINDOWS_UWP
             StorageFolder appDataFolder = ApplicationData.Current.LocalFolder;
 #elif __ANDROID__
-            Java.IO.File appDataFolder = Droid.App.Context.FilesDir;
+            Java.IO.File appDataFolder = Application.Context.FilesDir;
 #endif
             FileInfo locFileInfo = new FileInfo(Path.Combine(appDataFolder.Path, "locations.json"));
             FileInfo dataFileInfo = new FileInfo(Path.Combine(appDataFolder.Path, "data.json"));

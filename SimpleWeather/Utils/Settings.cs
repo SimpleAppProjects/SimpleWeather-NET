@@ -18,13 +18,16 @@ namespace SimpleWeather.Utils
         public static string Unit { get { return GetTempUnit(); } set { SetTempUnit(value); } }
         public static string API { get { return GetAPI(); } set { SetAPI(value); } }
         public static string API_KEY { get { return GetAPIKEY(); } set { SetAPIKEY(value); } }
+        public static bool KeyVerified { get { return IsKeyVerified(); } set { SetKeyVerified(value); } }
+        public static bool IsFahrenheit { get { return Unit == Fahrenheit; } }
         public static bool FollowGPS { get { return UseFollowGPS(); } set { SetFollowGPS(value); } }
         private static string LastGPSLocation { get { return GetLastGPSLocation(); } set { SetLastGPSLocation(value); } }
-        public static int RefreshInterval { get { return GetRefreshInterval(); } set { SetRefreshInterval(value); } }
         public static LocationData HomeData { get { return GetHomeData(); } }
+#if !__ANDROID_WEAR__
+        public static int RefreshInterval { get { return GetRefreshInterval(); } set { SetRefreshInterval(value); } }
         public static DateTime UpdateTime { get { return GetUpdateTime(); } set { SetUpdateTime(value); } }
-        public static bool IsFahrenheit { get { return Unit == Fahrenheit; } }
         public static bool ShowAlerts { get { return UseAlerts(); } set { SetAlerts(value); } }
+#endif
 
         // Database
         private static int DBVersion { get { return GetDBVersion(); } set { SetDBVersion(value); } }
@@ -43,6 +46,7 @@ namespace SimpleWeather.Utils
         // Settings Keys
         private const string KEY_API = "API";
         private const string KEY_APIKEY = "API_KEY";
+        private const string KEY_APIKEY_VERIFIED = "API_KEY_VERIFIED";
         private const string KEY_USECELSIUS = "key_usecelsius";
         private const string KEY_UNITS = "Units";
         private const string KEY_WEATHERLOADED = "weatherLoaded";

@@ -5,6 +5,7 @@ using SimpleWeather.OpenWeather;
 #if WINDOWS_UWP
 using SimpleWeather.UWP;
 #elif __ANDROID__
+using Android.App;
 using SimpleWeather.Droid;
 #endif
 
@@ -26,7 +27,7 @@ namespace SimpleWeather.Controls
 #if WINDOWS_UWP
             LocationName = App.ResLoader.GetString("Error_NoResults");
 #elif __ANDROID__
-            LocationName = App.Context.GetString(Resource.String.error_noresults);
+            LocationName = Application.Context.GetString(Resource.String.error_noresults);
 #else
             LocationName = "No results found";
 #endif

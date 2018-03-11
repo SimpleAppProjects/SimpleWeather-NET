@@ -10,6 +10,7 @@ using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 #elif __ANDROID__
+using Android.App;
 using Android.Graphics;
 using Android.Views;
 using SimpleWeather.Droid;
@@ -321,7 +322,7 @@ namespace SimpleWeather.Controls
             Sunrise = weather.astronomy.sunrise.ToString("t", culture);
             Sunset = weather.astronomy.sunset.ToString("t", culture);
 #elif __ANDROID__
-            if (Android.Text.Format.DateFormat.Is24HourFormat(App.Context))
+            if (Android.Text.Format.DateFormat.Is24HourFormat(Application.Context))
             {
                 Sunrise = weather.astronomy.sunrise.ToString("HH:mm");
                 Sunset = weather.astronomy.sunset.ToString("HH:mm");
@@ -376,7 +377,7 @@ namespace SimpleWeather.Controls
 #if WINDOWS_UWP
             creditPrefix = App.ResLoader.GetString("Credit_Prefix");
 #elif __ANDROID__
-            creditPrefix = App.Context.GetString(Resource.String.credit_prefix);
+            creditPrefix = Application.Context.GetString(Resource.String.credit_prefix);
 #endif
 
             if (weather.source == WeatherAPI.WeatherUnderground)

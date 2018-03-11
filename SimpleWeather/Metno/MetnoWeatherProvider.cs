@@ -21,7 +21,7 @@ using Windows.Web;
 using Windows.Web.Http;
 using Windows.Web.Http.Headers;
 #elif __ANDROID__
-using SimpleWeather.Droid;
+using Android.App;
 using Android.Graphics;
 using Android.Locations;
 using Android.Widget;
@@ -149,7 +149,7 @@ namespace SimpleWeather.Metno
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                     new Android.OS.Handler(Android.OS.Looper.MainLooper).Post(() =>
                     {
-                        Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
+                        Toast.MakeText(Application.Context, wEx.Message, ToastLength.Short).Show();
                     });
                 }
 #endif
@@ -214,7 +214,7 @@ namespace SimpleWeather.Metno
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                     new Android.OS.Handler(Android.OS.Looper.MainLooper).Post(() =>
                     {
-                        Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
+                        Toast.MakeText(Application.Context, wEx.Message, ToastLength.Short).Show();
                     });
                 }
 #endif
@@ -260,7 +260,7 @@ namespace SimpleWeather.Metno
             webClient.DefaultRequestHeaders.AcceptEncoding.Add(new HttpContentCodingWithQualityHeaderValue("gzip"));
             webClient.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
 #elif __ANDROID__
-            var packageInfo = Droid.App.Context.PackageManager.GetPackageInfo(Droid.App.Context.PackageName, 0);
+            var packageInfo = Application.Context.PackageManager.GetPackageInfo(Application.Context.PackageName, 0);
             var version = string.Format("v{0}", packageInfo.VersionName);
 
             webClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));

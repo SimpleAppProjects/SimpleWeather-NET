@@ -6,6 +6,7 @@ using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 #elif __ANDROID__
+using Android.App;
 using Android.Graphics;
 using Android.Views;
 using SimpleWeather.Droid;
@@ -52,7 +53,7 @@ namespace SimpleWeather.Controls
             else
                 Date = hr_forecast.date.ToString("ddd h tt", culture);
 #elif __ANDROID__
-            if (Android.Text.Format.DateFormat.Is24HourFormat(App.Context))
+            if (Android.Text.Format.DateFormat.Is24HourFormat(Application.Context))
                 Date = hr_forecast.date.ToString("ddd HH:00");
             else
                 Date = hr_forecast.date.ToString("ddd h tt");

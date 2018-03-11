@@ -1,4 +1,5 @@
-﻿using SQLite;
+﻿using SimpleWeather.WeatherData;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -26,6 +27,8 @@ namespace SimpleWeather.Utils
             if (weatherDB == null)
                 weatherDB = new SQLiteAsyncConnection(
                     Path.Combine(appDataFolder.Path, "weatherdata.db"));
+
+            localSettings.CreateContainer(WeatherAPI.WeatherUnderground, ApplicationDataCreateDisposition.Always);
         }
 
         private static string GetTempUnit()
@@ -226,6 +229,25 @@ namespace SimpleWeather.Utils
         private static void SetAlerts(bool value)
         {
             localSettings.Values[KEY_USEALERTS] = value;
+        }
+
+        private static bool IsKeyVerified()
+        {
+            if (localSettings.Containers.ContainsKey(WeatherAPI.WeatherUnderground))
+            {
+                if (localSettings.Containers[WeatherAPI.WeatherUnderground].Values.TryGetValue(KEY_APIKEY_VERIFIED, out object value))
+                    return (bool)value;
+            }
+
+            return false;
+        }
+
+        private static void SetKeyVerified(bool value)
+        {
+            localSettings.Containers[WeatherAPI.WeatherUnderground].Values[KEY_APIKEY_VERIFIED] = value;
+
+            if (!value)
+                localSettings.Containers[WeatherAPI.WeatherUnderground].Values.Remove(KEY_APIKEY_VERIFIED);
         }
     }
 }

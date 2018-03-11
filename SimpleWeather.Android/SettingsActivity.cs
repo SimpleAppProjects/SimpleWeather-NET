@@ -82,7 +82,6 @@ namespace SimpleWeather.Droid
             private const string KEY_FOLLOWGPS = "key_followgps";
             private const string KEY_API = "API";
             private const string KEY_APIKEY = "API_KEY";
-            private const string KEY_APIKEY_VERIFIED = "API_KEY_VERIFIED";
             private const string KEY_ONGOINGNOTIFICATION = "key_ongoingnotification";
             private const string KEY_NOTIFICATIONICON = "key_notificationicon";
             private const string KEY_USEALERTS = "key_usealerts";
@@ -94,8 +93,6 @@ namespace SimpleWeather.Droid
             private SwitchPreferenceCompat followGps;
             private DropDownPreference providerPref;
             private EditTextPreference keyEntry;
-            private ISharedPreferences wuSharedPrefs;
-            private bool keyVerified { get { return IsKeyVerfied(); } set { SetKeyVerified(value); } }
             private SwitchPreferenceCompat onGoingNotification;
             private DropDownPreference notificationIcon;
             private SwitchPreferenceCompat alertNotification;
@@ -103,22 +100,10 @@ namespace SimpleWeather.Droid
             private PreferenceCategory notCategory;
             private PreferenceCategory apiCategory;
 
-            private bool IsKeyVerfied()
-            {
-                return wuSharedPrefs.GetBoolean(KEY_APIKEY_VERIFIED, false);
-            }
-
-            private void SetKeyVerified(bool value)
-            {
-                wuSharedPrefs.Edit().PutBoolean(KEY_APIKEY_VERIFIED, value).Apply();
-            }
-
             public override void OnCreatePreferences(Bundle savedInstanceState, string rootKey)
             {
                 SetPreferencesFromResource(Resource.Xml.pref_general, null);
                 HasOptionsMenu = false;
-                // TODO: change pref name since this will eventually be used by other APIs
-                wuSharedPrefs = Activity.GetSharedPreferences(WeatherData.WeatherAPI.WeatherUnderground, FileCreationMode.Private);
 
                 notCategory = (PreferenceCategory)FindPreference(CATEGORY_NOTIFICATION);
                 apiCategory = (PreferenceCategory)FindPreference(CATEGORY_API);
@@ -169,7 +154,7 @@ namespace SimpleWeather.Droid
                         keyEntry.Enabled = true;
 
                         // Reset to old value if not verified
-                        if (!keyVerified)
+                        if (!Settings.KeyVerified)
                             Settings.API = pref.Value;
                         else
                             Settings.API = e.NewValue.ToString();
@@ -180,8 +165,7 @@ namespace SimpleWeather.Droid
                     }
                     else
                     {
-                        keyVerified = false;
-                        wuSharedPrefs.Edit().Remove(KEY_APIKEY_VERIFIED).Apply();
+                        Settings.KeyVerified = false;
                         keyEntry.Enabled = false;
 
                         Settings.API = e.NewValue.ToString();
@@ -200,14 +184,14 @@ namespace SimpleWeather.Droid
                 {
                     keyEntry.Enabled = true;
 
-                    if (!String.IsNullOrWhiteSpace(Settings.API_KEY) && !keyVerified)
-                        keyVerified = true;
+                    if (!String.IsNullOrWhiteSpace(Settings.API_KEY) && !Settings.KeyVerified)
+                        Settings.KeyVerified = true;
                 }
                 else
                 {
                     keyEntry.Enabled = false;
                     apiCategory.RemovePreference(keyEntry);
-                    wuSharedPrefs.Edit().Remove(KEY_APIKEY_VERIFIED).Apply();
+                    Settings.KeyVerified = false;
                 }
 
                 UpdateKeySummary();
@@ -291,7 +275,7 @@ namespace SimpleWeather.Droid
                             Settings.API_KEY = key;
                             Settings.API = API;
 
-                            keyVerified = true;
+                            Settings.KeyVerified = true;
                             UpdateKeySummary();
                             UpdateAlertPreference(WeatherData.WeatherManager.GetInstance().SupportsAlerts);
 
@@ -315,8 +299,10 @@ namespace SimpleWeather.Droid
 
             private void UpdateKeySummary(string providerAPI)
             {
-                if (wuSharedPrefs.Contains(KEY_APIKEY_VERIFIED))
+                if (!String.IsNullOrWhiteSpace(Settings.API_KEY))
                 {
+                    var keyVerified = Settings.KeyVerified;
+
                     ForegroundColorSpan colorSpan = new ForegroundColorSpan(keyVerified ?
                         Color.Green : Color.Red);
                     ISpannable summary = new SpannableString(keyVerified ?

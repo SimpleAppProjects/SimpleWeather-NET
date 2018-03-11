@@ -12,6 +12,7 @@ using Windows.Web;
 using Windows.Web.Http;
 using Windows.Web.Http.Headers;
 #elif __ANDROID__
+using Android.App;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -42,7 +43,7 @@ namespace SimpleWeather.NWS
                 webClient.DefaultRequestHeaders.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
                 webClient.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
 #elif __ANDROID__
-                var packageInfo = Droid.App.Context.PackageManager.GetPackageInfo(Droid.App.Context.PackageName, 0);
+                var packageInfo = Application.Context.PackageManager.GetPackageInfo(Application.Context.PackageName, 0);
                 var version = string.Format("v{0}", packageInfo.VersionName);
 
                 webClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/ld+json"));

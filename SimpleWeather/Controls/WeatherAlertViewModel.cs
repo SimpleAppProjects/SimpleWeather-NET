@@ -6,6 +6,7 @@ using System.Text;
 #if WINDOWS_UWP
 using SimpleWeather.UWP;
 #elif __ANDROID__
+using Android.App;
 using SimpleWeather.Droid;
 #endif
 
@@ -34,28 +35,28 @@ namespace SimpleWeather.Controls
 #if WINDOWS_UWP
                 PostDate = string.Format(App.ResLoader.GetString("DateTime_DayAgo"),
 #elif __ANDROID__
-                PostDate = App.Context.GetString(Resource.String.datetime_day_ago,
+                PostDate = Application.Context.GetString(Resource.String.datetime_day_ago,
 #endif
                     (int)Math.Floor(sincePost.TotalDays));
             else if (sincePost.TotalHours >= 1)
 #if WINDOWS_UWP
                 PostDate = string.Format(UWP.App.ResLoader.GetString("DateTime_HrAgo"),
 #elif __ANDROID__
-                PostDate = App.Context.GetString(Resource.String.datetime_hr_ago,
+                PostDate = Application.Context.GetString(Resource.String.datetime_hr_ago,
 #endif
                     (int)Math.Floor(sincePost.TotalHours));
             else if (sincePost.TotalMinutes >= 1)
 #if WINDOWS_UWP
                 PostDate = string.Format(UWP.App.ResLoader.GetString("DateTime_MinAgo"),
 #elif __ANDROID__
-                PostDate = App.Context.GetString(Resource.String.datetime_min_ago,
+                PostDate = Application.Context.GetString(Resource.String.datetime_min_ago,
 #endif
                     (int)Math.Floor(sincePost.TotalMinutes));
             else
 #if WINDOWS_UWP
                 PostDate = string.Format(UWP.App.ResLoader.GetString("DateTime_SecAgo"),
 #elif __ANDROID__
-                PostDate = App.Context.GetString(Resource.String.datetime_sec_ago,
+                PostDate = Application.Context.GetString(Resource.String.datetime_sec_ago,
 #endif
                     (int)Math.Floor(sincePost.TotalSeconds));
 
@@ -71,7 +72,7 @@ namespace SimpleWeather.Controls
 #if WINDOWS_UWP
                 UWP.App.ResLoader.GetString("DateTime_ValidUntil"),
 #elif __ANDROID__
-                App.Context.GetString(Resource.String.datetime_validuntil),
+                Application.Context.GetString(Resource.String.datetime_validuntil),
 #endif
                 WeatherAlert.ExpiresDate.ToString("f", culture),
                 WeatherAlert.ExpiresDate);
