@@ -17,9 +17,9 @@ using Android.Text.Style;
 using Android.Graphics;
 using Android.Text;
 using Android.Support.V7.Preferences;
-using SimpleWeather.Droid.Widgets;
+using SimpleWeather.Droid.App.Widgets;
 
-namespace SimpleWeather.Droid
+namespace SimpleWeather.Droid.App
 {
     [Android.App.Activity(Label = "@string/title_activity_settings", Theme = "@style/SettingsTheme")]
     public class SettingsActivity : AppCompatActivity

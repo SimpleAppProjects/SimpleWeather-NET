@@ -6,7 +6,7 @@ using SimpleWeather.Controls;
 using Android.Support.V7.Widget;
 using Android.Graphics;
 
-namespace SimpleWeather.Droid.Controls
+namespace SimpleWeather.Droid.App.Controls
 {
     public class WeatherAlertPanel : RelativeLayout
     {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if __ANDROID__
+using System;
 using Android.Views;
 
 namespace SimpleWeather.Droid.Helpers
@@ -9,3 +10,4 @@ namespace SimpleWeather.Droid.Helpers
         public int Position { get; set; }
     }
 }
+#endif

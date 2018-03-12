@@ -7,7 +7,7 @@ using Android.Views;
 using Android.Widget;
 using Android.Support.V4.App;
 using SimpleWeather.WeatherData;
-using SimpleWeather.Droid.Controls;
+using SimpleWeather.Droid.App.Controls;
 using Android.Support.V7.App;
 using SimpleWeather.Controls;
 using SimpleWeather.Droid.Utils;
@@ -20,7 +20,7 @@ using Android.Support.V4.Content;
 using Android.Content.Res;
 using Android.Support.V4.View;
 using Android.Support.Design.Widget;
-using SimpleWeather.Droid.Helpers;
+using SimpleWeather.Droid.App.Helpers;
 using Android.Runtime;
 using Android.Content.PM;
 using Android;
@@ -28,11 +28,12 @@ using Android.Locations;
 using Android.Graphics;
 using Com.Bumptech.Glide;
 using Android.Util;
-using SimpleWeather.Droid.Widgets;
-using SimpleWeather.Droid.WeatherAlerts;
+using SimpleWeather.Droid.App.Widgets;
+using SimpleWeather.Droid.App.WeatherAlerts;
 using Android.Support.V4.Graphics.Drawable;
+using SimpleWeather.Droid.Helpers;
 
-namespace SimpleWeather.Droid
+namespace SimpleWeather.Droid.App
 {
     public class WeatherNowFragment : Fragment, IWeatherLoadedListener, IWeatherErrorListener,
         ActivityCompat.IOnRequestPermissionsResultCallback

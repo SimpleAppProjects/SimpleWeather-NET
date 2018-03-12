@@ -7,7 +7,7 @@ using Android.OS;
 using Android.Support.V7.App;
 using Android.Util;
 
-namespace SimpleWeather.Droid
+namespace SimpleWeather.Droid.App
 {
     [Activity(MainLauncher = true)]
     public class LaunchActivity : AppCompatActivity

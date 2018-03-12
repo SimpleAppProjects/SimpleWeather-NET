@@ -8,7 +8,7 @@ using Android.Views;
 using Android.Widget;
 using Android.Appwidget;
 
-namespace SimpleWeather.Droid.Widgets
+namespace SimpleWeather.Droid.App.Widgets
 {
     public enum WidgetType
     {

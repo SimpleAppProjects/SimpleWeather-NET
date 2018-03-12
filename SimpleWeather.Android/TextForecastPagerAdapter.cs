@@ -12,10 +12,10 @@ using Android.Widget;
 using Android.Support.V4.View;
 using Java.Lang;
 using SimpleWeather.Controls;
-using SimpleWeather.Droid.Controls;
+using SimpleWeather.Droid.App.Controls;
 using System.Collections.ObjectModel;
 
-namespace SimpleWeather.Droid
+namespace SimpleWeather.Droid.App
 {
     public class TextForecastPagerAdapter : PagerAdapter
     {

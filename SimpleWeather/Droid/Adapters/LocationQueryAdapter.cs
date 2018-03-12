@@ -1,16 +1,17 @@
-﻿using System;
+﻿#if __ANDROID__
+using System;
 using System.Collections.Generic;
 using Android.Views;
 using Android.Support.V7.Widget;
 #if __ANDROID_WEAR__
 using SimpleWeather.Droid.Wear.Controls;
 #else
-using SimpleWeather.Droid.Controls;
+using SimpleWeather.Droid.App.Controls;
 #endif
 using SimpleWeather.Controls;
 using SimpleWeather.Droid.Helpers;
 
-namespace SimpleWeather.Droid
+namespace SimpleWeather.Droid.Adapters
 {
     public class LocationQueryAdapter : RecyclerView.Adapter
     {
@@ -73,3 +74,4 @@ namespace SimpleWeather.Droid
         protected void OnClick(RecyclerClickEventArgs args) => ItemClick?.Invoke(this, args);
     }
 }
+#endif

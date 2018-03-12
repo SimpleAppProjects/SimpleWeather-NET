@@ -10,7 +10,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using SimpleWeather.Droid.Controls;
+using SimpleWeather.Droid.App.Controls;
 using SimpleWeather.Controls;
 using SimpleWeather.Droid.Utils;
 using SimpleWeather.Droid.Helpers;
@@ -21,9 +21,10 @@ using Android.Graphics;
 using Android.Support.V4.Graphics.Drawable;
 using Android.Util;
 using Android.Appwidget;
-using SimpleWeather.Droid.Widgets;
+using SimpleWeather.Droid.App.Widgets;
+using SimpleWeather.Droid.Adapters;
 
-namespace SimpleWeather.Droid
+namespace SimpleWeather.Droid.App
 {
     public class LocationSearchFragment : Fragment
     {

@@ -16,14 +16,14 @@ using Android.Locations;
 using SimpleWeather.Droid.Utils;
 using Android.Views;
 using Android.Util;
-using SimpleWeather.Droid.Notifications;
+using SimpleWeather.Droid.App.Notifications;
 using Android.Text.Format;
 using Android.Text;
 using Android.Text.Style;
 using Android.Support.V4.App;
-using SimpleWeather.Droid.WeatherAlerts;
+using SimpleWeather.Droid.App.WeatherAlerts;
 
-namespace SimpleWeather.Droid.Widgets
+namespace SimpleWeather.Droid.App.Widgets
 {
     [BroadcastReceiver(Enabled = true, Exported = true)]
     public class WeatherWidgetBroadcastReceiver : BroadcastReceiver

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if __ANDROID__
+using System;
 using System.Text;
 using System.Threading.Tasks;
 using Java.IO;
@@ -9,7 +10,6 @@ namespace SimpleWeather.Utils
 {
     public static partial class FileUtils
     {
-#if __ANDROID__
         public async static Task<String> ReadFile(File file)
         {
             AtomicFile mFile = new AtomicFile(file);
@@ -99,5 +99,5 @@ namespace SimpleWeather.Utils
             return false;
         }
     }
-#endif
 }
+#endif

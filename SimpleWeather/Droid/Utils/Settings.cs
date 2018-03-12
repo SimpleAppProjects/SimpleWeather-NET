@@ -1,12 +1,13 @@
-﻿using Android.App;
+﻿#if __ANDROID__
+using Android.App;
 using Android.Content;
 using Android.Util;
 using Java.IO;
-using SimpleWeather.Droid;
 #if __ANDROID_WEAR__
 using SimpleWeather.Droid.Wear;
 #else
-using SimpleWeather.Droid.Widgets;
+using SimpleWeather.Droid.App;
+using SimpleWeather.Droid.App.Widgets;
 #endif
 using SQLite;
 using System;
@@ -16,14 +17,13 @@ namespace SimpleWeather.Utils
 {
     public static partial class Settings
     {
-#if __ANDROID__
         private static String LOG_TAG = "Settings";
 
         // Shared Settings
         private static ISharedPreferences preferences = App.Preferences;
         private static ISharedPreferencesEditor editor = preferences.Edit();
         private static ISharedPreferencesOnSharedPreferenceChangeListener listener = new SettingsListener();
-        private static ISharedPreferences wuSharedPrefs = App.Context.GetSharedPreferences(WeatherData.WeatherAPI.WeatherUnderground, FileCreationMode.Private);
+        private static ISharedPreferences wuSharedPrefs = Application.Context.GetSharedPreferences(WeatherData.WeatherAPI.WeatherUnderground, FileCreationMode.Private);
 
         // App data files
         private static File appDataFolder = Application.Context.FilesDir;
@@ -336,5 +336,5 @@ namespace SimpleWeather.Utils
                 wuSharedPrefs.Edit().Remove(KEY_APIKEY_VERIFIED).Apply();
         }
     }
-#endif
 }
+#endif

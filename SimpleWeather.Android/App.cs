@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using Android.OS;
 
-namespace SimpleWeather.Droid
+namespace SimpleWeather.Droid.App
 {
     public enum AppState
     {

@@ -9,11 +9,11 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using SimpleWeather.Droid.Notifications;
+using SimpleWeather.Droid.App.Notifications;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 
-namespace SimpleWeather.Droid.WeatherAlerts
+namespace SimpleWeather.Droid.App.WeatherAlerts
 {
     public static class WeatherAlertHandler
     {

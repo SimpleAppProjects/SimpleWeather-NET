@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if __ANDROID__
+using System;
 
 using Android.Content;
 using Android.Util;
@@ -33,3 +34,4 @@ namespace SimpleWeather.Droid.Controls
         }
     }
 }
+#endif

@@ -4,7 +4,7 @@ using Android.Widget;
 using Android.Util;
 using SimpleWeather.Controls;
 
-namespace SimpleWeather.Droid.Controls
+namespace SimpleWeather.Droid.App.Controls
 {
     public class ForecastItem : LinearLayout
     {

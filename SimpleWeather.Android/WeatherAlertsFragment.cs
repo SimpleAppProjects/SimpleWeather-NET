@@ -17,7 +17,7 @@ using SimpleWeather.Controls;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 
-namespace SimpleWeather.Droid
+namespace SimpleWeather.Droid.App
 {
     public class WeatherAlertsFragment : Fragment
     {

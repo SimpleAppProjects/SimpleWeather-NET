@@ -1,4 +1,5 @@
-﻿namespace SimpleWeather.Droid.Utils
+﻿#if __ANDROID__
+namespace SimpleWeather.Droid.Utils
 {
     public class Pair<TKey, TValue> : Java.Lang.Object
     {
@@ -24,3 +25,4 @@
         }
     }
 }
+#endif

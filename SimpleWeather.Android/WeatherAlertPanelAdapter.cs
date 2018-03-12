@@ -5,8 +5,8 @@ using Android.Content;
 using Android.Views;
 using Android.Widget;
 using Android.Support.V7.Widget;
-using SimpleWeather.Droid.Controls;
-using SimpleWeather.Droid.Helpers;
+using SimpleWeather.Droid.App.Controls;
+using SimpleWeather.Droid.App.Helpers;
 using SimpleWeather.Utils;
 using System.Collections.Specialized;
 using System.Collections.ObjectModel;
@@ -19,7 +19,7 @@ using SimpleWeather.Droid.Utils;
 using Android.Util;
 using SimpleWeather.Controls;
 
-namespace SimpleWeather.Droid
+namespace SimpleWeather.Droid.App
 {
     public class WeatherAlertPanelAdapter : RecyclerView.Adapter
     {

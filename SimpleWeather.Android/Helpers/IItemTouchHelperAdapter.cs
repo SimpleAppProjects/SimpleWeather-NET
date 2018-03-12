@@ -1,4 +1,4 @@
-﻿namespace SimpleWeather.Droid.Helpers
+﻿namespace SimpleWeather.Droid.App.Helpers
 {
     public interface IItemTouchHelperAdapter
     {

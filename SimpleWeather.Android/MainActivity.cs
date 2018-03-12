@@ -14,9 +14,9 @@ using Android.Content;
 using System.Threading.Tasks;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
-using SimpleWeather.Droid.Widgets;
+using SimpleWeather.Droid.App.Widgets;
 
-namespace SimpleWeather.Droid
+namespace SimpleWeather.Droid.App
 {
     [Android.App.Activity(Label = "@string/title_activity_weather_now", Theme = "@style/AppTheme",
         ClearTaskOnLaunch = true, FinishOnTaskLaunch = true)]

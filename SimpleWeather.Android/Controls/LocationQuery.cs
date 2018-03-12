@@ -12,7 +12,7 @@ using Android.Views;
 using Android.Widget;
 using SimpleWeather.Controls;
 
-namespace SimpleWeather.Droid.Controls
+namespace SimpleWeather.Droid.App.Controls
 {
     public class LocationQuery : LinearLayout
     {

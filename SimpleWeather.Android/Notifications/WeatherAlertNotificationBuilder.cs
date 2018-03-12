@@ -18,7 +18,7 @@ using Android.Graphics;
 using System.Threading.Tasks;
 using SimpleWeather.Controls;
 
-namespace SimpleWeather.Droid.Notifications
+namespace SimpleWeather.Droid.App.Notifications
 {
     public static class WeatherAlertNotificationBuilder
     {

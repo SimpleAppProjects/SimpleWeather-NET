@@ -1,4 +1,5 @@
-﻿using Android.Graphics;
+﻿#if __ANDROID__
+using Android.Graphics;
 using System;
 
 namespace SimpleWeather.WeatherData
@@ -10,3 +11,4 @@ namespace SimpleWeather.WeatherData
         int GetWeatherIconResource(string icon);
     }
 }
+#endif

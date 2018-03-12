@@ -7,7 +7,7 @@
     <ProjectGuid>{1DFDD63E-A0DB-4AC0-9C61-04EEC0CE1E15}</ProjectGuid>
     <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
-    <RootNamespace>SimpleWeather.Droid</RootNamespace>
+    <RootNamespace>SimpleWeather.Droid.App</RootNamespace>
     <AssemblyName>SimpleWeather.Android</AssemblyName>
     <TargetFrameworkVersion>v8.0</TargetFrameworkVersion>
     <AndroidApplication>True</AndroidApplication>

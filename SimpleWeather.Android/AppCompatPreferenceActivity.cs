@@ -8,7 +8,7 @@ using Android.Support.V7.Widget;
 using Android.Views;
 using Java.Lang;
 
-namespace SimpleWeather.Droid
+namespace SimpleWeather.Droid.App
 {
     /**
      * A {@link android.preference.PreferenceActivity} which implements and proxies the necessary calls

@@ -7,7 +7,7 @@ using Android.Support.V7.Widget;
 using Android.Support.V7.Widget.Helper;
 using Android.Views;
 
-namespace SimpleWeather.Droid.Helpers
+namespace SimpleWeather.Droid.App.Helpers
 {
     public class ItemTouchHelperCallback : ItemTouchHelper.Callback
     {

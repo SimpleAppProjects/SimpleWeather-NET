@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if __ANDROID__
+using System;
 using Android.OS;
 using Android.Runtime;
 using Android.Locations;
@@ -37,3 +38,4 @@ namespace SimpleWeather.Droid.Helpers
         }
     }
 }
+#endif

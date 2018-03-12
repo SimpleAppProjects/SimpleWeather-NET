@@ -8,7 +8,7 @@ using Android.Widget;
 using Android.Support.V4.App;
 using Android.Support.V7.Widget;
 using SimpleWeather.WeatherData;
-using SimpleWeather.Droid.Controls;
+using SimpleWeather.Droid.App.Controls;
 using SimpleWeather.Utils;
 using Android.Support.V7.App;
 using Android.Views.InputMethods;
@@ -16,7 +16,7 @@ using Android.Text;
 using Android.Views;
 using System.Collections.Specialized;
 using SimpleWeather.Droid.Utils;
-using SimpleWeather.Droid.Helpers;
+using SimpleWeather.Droid.App.Helpers;
 using Android.Support.Design.Widget;
 using Android.Support.V7.Widget.Helper;
 using System.Threading.Tasks;
@@ -29,9 +29,11 @@ using Android.Content.PM;
 using Android.Runtime;
 using Android.Locations;
 using SimpleWeather.Controls;
-using SimpleWeather.Droid.Widgets;
+using SimpleWeather.Droid.App.Widgets;
+using SimpleWeather.Droid.Helpers;
+using SimpleWeather.Droid.Adapters;
 
-namespace SimpleWeather.Droid
+namespace SimpleWeather.Droid.App
 {
     public class LocationsFragment : Fragment, 
         IWeatherLoadedListener, IWeatherErrorListener,

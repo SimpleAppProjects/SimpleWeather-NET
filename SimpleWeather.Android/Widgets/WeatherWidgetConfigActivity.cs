@@ -13,7 +13,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
-namespace SimpleWeather.Droid.Widgets
+namespace SimpleWeather.Droid.App.Widgets
 {
     [Activity(
         Name = "com.thewizrd.simpleweather.WeatherWidgetConfigActivity",

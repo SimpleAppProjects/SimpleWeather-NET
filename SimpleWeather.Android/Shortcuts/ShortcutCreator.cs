@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 using Android.Graphics;
 using Android.Support.V4.Content;
 
-namespace SimpleWeather.Droid.Shortcuts
+namespace SimpleWeather.Droid.App.Shortcuts
 {
     public static class ShortcutCreator
     {

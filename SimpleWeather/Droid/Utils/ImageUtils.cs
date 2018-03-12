@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if __ANDROID__
+using System;
 using Android.Graphics;
 using Android.Util;
 using Android.Content.Res;
@@ -7,6 +8,7 @@ using Android.Support.V4.Content.Res;
 using Android.Content;
 using Com.Bumptech.Glide.Request.Target;
 using Android.Graphics.Drawables;
+using Android;
 
 namespace SimpleWeather.Droid.Utils
 {
@@ -165,3 +167,4 @@ namespace SimpleWeather.Droid.Utils
         }
     }
 }
+#endif

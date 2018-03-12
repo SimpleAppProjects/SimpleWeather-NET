@@ -10,7 +10,7 @@ using Android.Support.V4.Content;
 using Com.Bumptech.Glide;
 using Android.OS;
 
-namespace SimpleWeather.Droid.Controls
+namespace SimpleWeather.Droid.App.Controls
 {
     public class LocationPanel : CardView
     {

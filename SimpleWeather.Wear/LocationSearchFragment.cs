@@ -20,6 +20,7 @@ using Android.Support.Design.Widget;
 using Android.Speech;
 using Android.Runtime;
 using SimpleWeather.Droid.Wear.Helpers;
+using SimpleWeather.Droid.Adapters;
 
 namespace SimpleWeather.Droid.Wear
 {

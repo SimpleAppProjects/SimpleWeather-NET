@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if __ANDROID__
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Android.Views;
@@ -7,7 +8,7 @@ using Android.Util;
 #if __ANDROID_WEAR__
 using SimpleWeather.Droid.Wear.Controls;
 #else
-using SimpleWeather.Droid.Controls;
+using SimpleWeather.Droid.App.Controls;
 #endif
 using SimpleWeather.Controls;
 
@@ -70,3 +71,4 @@ namespace SimpleWeather.Droid.Adapters
         }
     }
 }
+#endif

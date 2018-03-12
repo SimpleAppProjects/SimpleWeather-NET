@@ -4,7 +4,7 @@ using SimpleWeather.WeatherData;
 using SimpleWeather.Droid.Utils;
 using Android.Graphics;
 
-namespace SimpleWeather.Droid.Controls
+namespace SimpleWeather.Droid.App.Controls
 {
     public class LocationPanelViewModel
     {

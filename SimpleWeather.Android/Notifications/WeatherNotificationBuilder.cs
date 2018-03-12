@@ -14,7 +14,7 @@ using Android.Text.Format;
 using Android.OS;
 using Android.Service.Notification;
 
-namespace SimpleWeather.Droid.Notifications
+namespace SimpleWeather.Droid.App.Notifications
 {
     public static class WeatherNotificationBuilder
     {

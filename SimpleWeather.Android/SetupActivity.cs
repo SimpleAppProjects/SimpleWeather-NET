@@ -9,7 +9,7 @@ using Android.Text;
 using Android.Views.InputMethods;
 using Android.Content;
 using Android.Support.V4.App;
-using SimpleWeather.Droid.Helpers;
+using SimpleWeather.Droid.App.Helpers;
 using Android.Support.V4.Content;
 using Android.Locations;
 using System.Threading.Tasks;
@@ -17,15 +17,16 @@ using SimpleWeather.Controls;
 using Android;
 using Android.Content.PM;
 using Android.Runtime;
-using SimpleWeather.Droid.Controls;
+using SimpleWeather.Droid.App.Controls;
 using SimpleWeather.Droid.Utils;
 using System.Collections.Specialized;
 using System.Threading;
 using Android.Graphics;
 using Android.Appwidget;
-using SimpleWeather.Droid.Widgets;
+using SimpleWeather.Droid.App.Widgets;
+using SimpleWeather.Droid.Helpers;
 
-namespace SimpleWeather.Droid
+namespace SimpleWeather.Droid.App
 {
     [Android.App.Activity(
         Theme = "@style/SetupTheme",

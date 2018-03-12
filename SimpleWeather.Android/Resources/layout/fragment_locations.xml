@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    tools:context="SimpleWeather.Droid.Controls.LocationsFragment">
+    tools:context="SimpleWeather.Droid.App.LocationsFragment">
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -37,7 +37,7 @@
                     android:textAppearance="@android:style/TextAppearance.Widget.TextView"
                     android:textSize="18sp" />
 
-                <SimpleWeather.Droid.Controls.LocationPanel
+                <SimpleWeather.Droid.App.Controls.LocationPanel
                     android:id="@+id/gps_panel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

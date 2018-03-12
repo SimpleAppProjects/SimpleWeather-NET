@@ -1,4 +1,5 @@
-﻿using Android.Content.Res;
+﻿#if __ANDROID__
+using Android.Content.Res;
 using Android.Graphics;
 using SimpleWeather.Droid;
 using SimpleWeather.WeatherData;
@@ -371,3 +372,4 @@ namespace SimpleWeather.WeatherData
         }
     }
 }
+#endif

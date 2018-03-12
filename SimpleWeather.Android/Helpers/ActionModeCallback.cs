@@ -1,7 +1,7 @@
 ﻿using Android.Support.V7.View;
 using System;
 
-namespace SimpleWeather.Droid.Helpers
+namespace SimpleWeather.Droid.App.Helpers
 {
     public class ActionModeCallback : Java.Lang.Object, ActionMode.ICallback
     {

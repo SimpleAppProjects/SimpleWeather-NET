@@ -15,7 +15,7 @@
             android:summary="@string/pref_summary_currentlocation"
             android:title="@string/label_currentlocation" />
 
-        <SimpleWeather.Droid.SettingsActivity.CustomDropDownPreference
+        <SimpleWeather.Droid.App.SettingsActivity.CustomDropDownPreference
             android:defaultValue="30"
             android:entries="@array/refreshinterval_entries"
             android:entryValues="@array/refreshinterval_values"
@@ -35,7 +35,7 @@
             android:summary="@string/pref_summary_notification"
             android:title="@string/pref_title_onnotification" />
 
-        <SimpleWeather.Droid.SettingsActivity.CustomDropDownPreference
+        <SimpleWeather.Droid.App.SettingsActivity.CustomDropDownPreference
             android:defaultValue="0"
             android:dependency="key_ongoingnotification"
             android:entries="@array/notification_entries"
@@ -56,7 +56,7 @@
         android:title="@string/pref_title_api"
         android:key="category_api">
 
-        <SimpleWeather.Droid.SettingsActivity.CustomDropDownPreference
+        <SimpleWeather.Droid.App.SettingsActivity.CustomDropDownPreference
             android:key="API"
             android:summary="%s"
             android:title="@string/api_label" />
