@@ -19,7 +19,7 @@ using SimpleWeather.Droid.Utils;
 using Android.Util;
 using SimpleWeather.Controls;
 
-namespace SimpleWeather.Droid.App
+namespace SimpleWeather.Droid.App.Adapters
 {
     public class WeatherAlertPanelAdapter : RecyclerView.Adapter
     {

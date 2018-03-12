@@ -15,7 +15,7 @@ using SimpleWeather.Controls;
 using SimpleWeather.Droid.App.Controls;
 using System.Collections.ObjectModel;
 
-namespace SimpleWeather.Droid.App
+namespace SimpleWeather.Droid.App.Adapters
 {
     public class TextForecastPagerAdapter : PagerAdapter
     {

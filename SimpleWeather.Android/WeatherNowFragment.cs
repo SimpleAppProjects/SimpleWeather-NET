@@ -33,6 +33,7 @@ using SimpleWeather.Droid.App.WeatherAlerts;
 using Android.Support.V4.Graphics.Drawable;
 using SimpleWeather.Droid.Helpers;
 using SimpleWeather.Droid.Adapters;
+using SimpleWeather.Droid.App.Adapters;
 
 namespace SimpleWeather.Droid.App
 {

@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 using SimpleWeather.Droid.Utils;
 using Android.Util;
 
-namespace SimpleWeather.Droid.App
+namespace SimpleWeather.Droid.App.Adapters
 {
     public class LocationPanelAdapter : RecyclerView.Adapter, IItemTouchHelperAdapter
     {

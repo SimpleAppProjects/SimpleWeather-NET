@@ -32,6 +32,7 @@ using SimpleWeather.Controls;
 using SimpleWeather.Droid.App.Widgets;
 using SimpleWeather.Droid.Helpers;
 using SimpleWeather.Droid.Adapters;
+using SimpleWeather.Droid.App.Adapters;
 
 namespace SimpleWeather.Droid.App
 {

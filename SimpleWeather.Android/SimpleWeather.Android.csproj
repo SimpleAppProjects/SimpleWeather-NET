@@ -190,13 +190,13 @@
     <Compile Include="Helpers\IItemTouchHelperAdapter.cs" />
     <Compile Include="Helpers\ItemTouchHelperCallback.cs" />
     <Compile Include="Helpers\ActionModeCallback.cs" />
-    <Compile Include="WeatherAlertPanelAdapter.cs" />
+    <Compile Include="Adapters\WeatherAlertPanelAdapter.cs" />
     <Compile Include="Notifications\WeatherAlertNotificationBuilder.cs" />
     <Compile Include="Notifications\WeatherNotificationBuilder.cs" />
     <Compile Include="Shortcuts\ShortcutCreator.cs" />
-    <Compile Include="TextForecastPagerAdapter.cs" />
+    <Compile Include="Adapters\TextForecastPagerAdapter.cs" />
     <Compile Include="LaunchActivity.cs" />
-    <Compile Include="LocationPanelAdapter.cs" />
+    <Compile Include="Adapters\LocationPanelAdapter.cs" />
     <Compile Include="LocationSearchFragment.cs" />
     <Compile Include="LocationsFragment.cs" />
     <Compile Include="MainActivity.cs" />
