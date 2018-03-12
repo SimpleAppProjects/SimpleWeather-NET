@@ -32,6 +32,7 @@ using SimpleWeather.Droid.App.Widgets;
 using SimpleWeather.Droid.App.WeatherAlerts;
 using Android.Support.V4.Graphics.Drawable;
 using SimpleWeather.Droid.Helpers;
+using SimpleWeather.Droid.Adapters;
 
 namespace SimpleWeather.Droid.App
 {
@@ -71,13 +72,14 @@ namespace SimpleWeather.Droid.App
         private TextView sunset;
         // Forecast
         private RelativeLayout forecastPanel;
-        private LinearLayout forecastView;
+        private Android.Support.V7.Widget.RecyclerView forecastView;
+        private ForecastItemAdapter forecastAdapter;
         // Additional Details
         private Switch forecastSwitch;
-        private HorizontalScrollView forecastScrollView;
         private ViewPager txtForecastView;
         private LinearLayout hrforecastPanel;
-        private LinearLayout hrforecastView;
+        private Android.Support.V7.Widget.RecyclerView hrforecastView;
+        private HourlyForecastItemAdapter hrforecastAdapter;
         private RelativeLayout precipitationPanel;
         private TextView chanceLabel;
         private TextView chance;
@@ -276,18 +278,17 @@ namespace SimpleWeather.Droid.App
             // Forecast
             forecastPanel = view.FindViewById<RelativeLayout>(Resource.Id.forecast_panel);
             forecastPanel.Visibility = ViewStates.Invisible;
-            forecastView = view.FindViewById<LinearLayout>(Resource.Id.forecast_view);
+            forecastView = view.FindViewById<Android.Support.V7.Widget.RecyclerView>(Resource.Id.forecast_view);
             // Additional Details
             forecastSwitch = view.FindViewById<Switch>(Resource.Id.forecast_switch);
             forecastSwitch.CheckedChange += ForecastSwitch_CheckedChange;
             forecastSwitch.Visibility = ViewStates.Gone;
-            forecastScrollView = view.FindViewById<HorizontalScrollView>(Resource.Id.forecast_scrollview);
             txtForecastView = view.FindViewById<ViewPager>(Resource.Id.txt_forecast_viewpgr);
             txtForecastView.Adapter = new TextForecastPagerAdapter(this.Activity, new List<TextForecastItemViewModel>());
             txtForecastView.Visibility = ViewStates.Gone;
             hrforecastPanel = view.FindViewById<LinearLayout>(Resource.Id.hourly_forecast_panel);
             hrforecastPanel.Visibility = ViewStates.Gone;
-            hrforecastView = view.FindViewById<LinearLayout>(Resource.Id.hourly_forecast_view);
+            hrforecastView = view.FindViewById<Android.Support.V7.Widget.RecyclerView>(Resource.Id.hourly_forecast_view);
             precipitationPanel = view.FindViewById<RelativeLayout>(Resource.Id.precipitation_card);
             precipitationPanel.Visibility = ViewStates.Gone;
             chanceLabel = view.FindViewById<TextView>(Resource.Id.chance_label);
@@ -313,6 +314,22 @@ namespace SimpleWeather.Droid.App
             // Cloudiness only supported by OWM
             cloudinessLabel.Visibility = ViewStates.Gone;
             cloudiness.Visibility = ViewStates.Gone;
+
+            forecastView.HasFixedSize = true;
+            forecastView.SetLayoutManager(new Android.Support.V7.Widget.LinearLayoutManager(Activity)
+            {
+                Orientation = Android.Support.V7.Widget.LinearLayoutManager.Horizontal
+            });
+            forecastAdapter = new ForecastItemAdapter(new List<ForecastItemViewModel>());
+            forecastView.SetAdapter(forecastAdapter);
+
+            hrforecastView.HasFixedSize = true;
+            hrforecastView.SetLayoutManager(new Android.Support.V7.Widget.LinearLayoutManager(Activity)
+            {
+                Orientation = Android.Support.V7.Widget.LinearLayoutManager.Horizontal
+            });
+            hrforecastAdapter = new HourlyForecastItemAdapter(new List<HourlyForecastItemViewModel>());
+            hrforecastView.SetAdapter(hrforecastAdapter);
 
             // SwipeRefresh
             refreshLayout.SetColorSchemeColors(ContextCompat.GetColor(Activity, Resource.Color.colorPrimary));
@@ -620,7 +637,7 @@ namespace SimpleWeather.Droid.App
         {
             forecastSwitch.Text = e.IsChecked ?
                 AppCompatActivity.GetString(Resource.String.switch_details) : AppCompatActivity.GetString(Resource.String.switch_daily);
-            forecastScrollView.Visibility = e.IsChecked ? ViewStates.Gone : ViewStates.Visible;
+            forecastView.Visibility = e.IsChecked ? ViewStates.Gone : ViewStates.Visible;
             txtForecastView.Visibility = e.IsChecked ? ViewStates.Visible : ViewStates.Gone;
         }
 
@@ -677,21 +694,13 @@ namespace SimpleWeather.Droid.App
                 visiblity.Text = weatherView._Visibility;
 
                 // Add UI elements
-                forecastView.RemoveAllViews();
-                foreach (ForecastItemViewModel forecast in weatherView.Forecasts)
-                {
-                    forecastView.AddView(new ForecastItem(AppCompatActivity, forecast));
-                }
+                forecastAdapter.UpdateItems(weatherView.Forecasts);
                 forecastPanel.Visibility = ViewStates.Visible;
 
                 // Additional Details
-                hrforecastView.RemoveAllViews();
                 if (weatherView.Extras.HourlyForecast.Count >= 1)
                 {
-                    foreach (HourlyForecastItemViewModel hrforecast in weatherView.Extras.HourlyForecast)
-                    {
-                        hrforecastView.AddView(new HourlyForecastItem(AppCompatActivity, hrforecast));
-                    }
+                    hrforecastAdapter.UpdateItems(weatherView.Extras.HourlyForecast);
                     hrforecastPanel.Visibility = ViewStates.Visible;
                 }
                 else
