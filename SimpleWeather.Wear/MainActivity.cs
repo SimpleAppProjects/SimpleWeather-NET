@@ -86,7 +86,7 @@ namespace SimpleWeather.Droid.Wear
                     StartActivity(new Intent(this, typeof(SettingsActivity)));
                     break;
                 case Resource.Id.menu_openonphone:
-                    //
+                    Toast.MakeText(this, "Not implemented yet", ToastLength.Short).Show();
                     break;
             }
 
