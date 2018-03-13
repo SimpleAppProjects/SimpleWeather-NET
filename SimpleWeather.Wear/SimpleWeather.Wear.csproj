@@ -198,8 +198,7 @@
     <Compile Include="SetupActivity.cs" />
     <Compile Include="SwipeDismissFragment.cs" />
     <Compile Include="WeatherDetailsFragment.cs" />
-    <Compile Include="WeatherForecastFragment.cs" />
-    <Compile Include="WeatherAlertsFragment.cs" />
+    <Compile Include="WeatherListFragment.cs" />
     <Compile Include="WeatherNowFragment.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -321,13 +320,10 @@
     <AndroidResource Include="Resources\layout\weather_alert_panel.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\fragment_weather_alerts.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\layout\fragment_weather_details.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\fragment_weather_forecast.xml" />
+    <AndroidResource Include="Resources\layout\fragment_weather_list.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\ic_date_range_black_24dp.xml" />

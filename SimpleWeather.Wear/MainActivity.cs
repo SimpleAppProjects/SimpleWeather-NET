@@ -96,73 +96,82 @@ namespace SimpleWeather.Droid.Wear
         public void OnItemSelected(int position)
         {
             Fragment current = FragmentManager.FindFragmentById(Resource.Id.fragment_container);
+            Type targetFragmentType = null;
+            WeatherListType weatherListType = 0;
 
             switch (mNavDrawerAdapter.GetStringId(position))
             {
                 case Resource.String.label_condition:
                 default:
-                    if (Class.FromType(typeof(WeatherNowFragment)) != current.Class)
-                    {
-                        // Pop all since we're going home
-                        FragmentManager.PopBackStackImmediate(null, PopBackStackFlags.Inclusive);
-                    }
+                    targetFragmentType = typeof(WeatherNowFragment);
                     break;
                 case Resource.String.title_fragment_alerts:
-                    if (Class.FromType(typeof(WeatherAlertsFragment)) != current.Class)
-                    {
-                        if (FragmentManager.BackStackEntryCount > 0)
-                            FragmentManager.PopBackStackImmediate(null, PopBackStackFlags.Inclusive);
-
-                        // Add fragment to backstack
-                        FragmentManager.BeginTransaction()
-                            .Add(Resource.Id.fragment_container, WeatherAlertsFragment.NewInstance(mNavDrawerAdapter.WeatherNowView), null)
-                            //.Hide(current)
-                            .AddToBackStack(null)
-                            .Commit();
-                    }
+                    targetFragmentType = typeof(WeatherListFragment);
+                    weatherListType = WeatherListType.Alerts;
                     break;
                 case Resource.String.label_forecast:
-                    if (Class.FromType(typeof(WeatherForecastFragment)) != current.Class)
-                    {
-                        if (FragmentManager.BackStackEntryCount > 0)
-                            FragmentManager.PopBackStackImmediate(null, PopBackStackFlags.Inclusive);
-
-                        // Add fragment to backstack
-                        FragmentManager.BeginTransaction()
-                            .Add(Resource.Id.fragment_container, WeatherForecastFragment.NewInstance(false, mNavDrawerAdapter.WeatherNowView), null)
-                            //.Hide(current)
-                            .AddToBackStack(null)
-                            .Commit();
-                    }
+                    targetFragmentType = typeof(WeatherListFragment);
+                    weatherListType = WeatherListType.Forecast;
                     break;
                 case Resource.String.label_hourlyforecast:
-                    if (Class.FromType(typeof(WeatherForecastFragment)) != current.Class)
-                    {
-                        if (FragmentManager.BackStackEntryCount > 0)
-                            FragmentManager.PopBackStackImmediate(null, PopBackStackFlags.Inclusive);
-
-                        // Add fragment to backstack
-                        FragmentManager.BeginTransaction()
-                            .Add(Resource.Id.fragment_container, WeatherForecastFragment.NewInstance(true, mNavDrawerAdapter.WeatherNowView), null)
-                            //.Hide(current)
-                            .AddToBackStack(null)
-                            .Commit();
-                    }
+                    targetFragmentType = typeof(WeatherListFragment);
+                    weatherListType = WeatherListType.HourlyForecast;
                     break;
                 case Resource.String.label_details:
-                    if (Class.FromType(typeof(WeatherDetailsFragment)) != current.Class)
-                    {
-                        if (FragmentManager.BackStackEntryCount > 0)
-                            FragmentManager.PopBackStackImmediate(null, PopBackStackFlags.Inclusive);
-
-                        // Add fragment to backstack
-                        FragmentManager.BeginTransaction()
-                            .Add(Resource.Id.fragment_container, WeatherDetailsFragment.NewInstance(mNavDrawerAdapter.WeatherNowView), null)
-                            //.Hide(current)
-                            .AddToBackStack(null)
-                            .Commit();
-                    }
+                    targetFragmentType = typeof(WeatherDetailsFragment);
                     break;
+            }
+
+            if (typeof(WeatherNowFragment).Equals(targetFragmentType))
+            {
+                if (Class.FromType(typeof(WeatherNowFragment)) != current.Class)
+                {
+                    // Pop all since we're going home
+                    FragmentManager.PopBackStackImmediate(null, PopBackStackFlags.Inclusive);
+                }
+            }
+            else if (typeof(WeatherListFragment).Equals(targetFragmentType))
+            {
+                if (Class.FromType(targetFragmentType) != current.Class)
+                {
+                    // Add fragment to backstack
+                    var ft = FragmentManager.BeginTransaction();
+                    ft.Add(Resource.Id.fragment_container,
+                           WeatherListFragment.NewInstance(weatherListType, mNavDrawerAdapter.WeatherNowView),
+                           null)
+                      .AddToBackStack(null);
+
+                    if (FragmentManager.BackStackEntryCount > 0)
+                        ft.Remove(current);
+
+                    ft.Commit();
+                }
+                else if (current is WeatherListFragment forecastFragment)
+                {
+                    if (forecastFragment.Arguments != null &&
+                        ((WeatherListType)forecastFragment.Arguments.GetInt("WeatherListType", 0)) != weatherListType)
+                    {
+                        Bundle args = new Bundle();
+                        args.PutInt("WeatherListType", (int)weatherListType);
+                        forecastFragment.Arguments = args;
+                        forecastFragment.Initialize();
+                    }
+                }
+            }
+            else if (typeof(WeatherDetailsFragment).Equals(targetFragmentType))
+            {
+                if (Class.FromType(typeof(WeatherDetailsFragment)) != current.Class)
+                {
+                    // Add fragment to backstack
+                    var ft = FragmentManager.BeginTransaction();
+                    ft.Add(Resource.Id.fragment_container, WeatherDetailsFragment.NewInstance(mNavDrawerAdapter.WeatherNowView), null)
+                      .AddToBackStack(null);
+
+                    if (FragmentManager.BackStackEntryCount > 0)
+                        ft.Remove(current);
+
+                    ft.Commit();
+                }
             }
         }
 
