@@ -19,6 +19,7 @@ using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.Web;
 using Windows.Web.Http;
+using Windows.Web.Http.Filters;
 using Windows.Web.Http.Headers;
 #elif __ANDROID__
 using Android.App;
@@ -244,13 +245,27 @@ namespace SimpleWeather.Metno
             string sunrisesetAPI = null;
             Uri sunrisesetURL = null;
 
-            forecastAPI = "https://beta.api.met.no/weatherapi/locationforecastlts/1.3/?{0}";
+            forecastAPI = "https://api.met.no/weatherapi/locationforecastlts/1.3/?{0}";
             forecastURL = new Uri(string.Format(forecastAPI, location_query));
-            sunrisesetAPI = "https://beta.api.met.no/weatherapi/sunrise/1.1/?{0}&date={1}";
+            sunrisesetAPI = "https://api.met.no/weatherapi/sunrise/1.1/?{0}&date={1}";
             string date = DateTime.Now.ToString("yyyy-MM-dd");
             sunrisesetURL = new Uri(string.Format(sunrisesetAPI, location_query, date));
 
-            HttpClient webClient = new HttpClient();
+#if WINDOWS_UWP
+            var handler = new HttpBaseProtocolFilter()
+            {
+                AllowAutoRedirect = true,
+                AutomaticDecompression = true
+            };
+#else
+            var handler = new HttpClientHandler()
+            {
+                AllowAutoRedirect = true,
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+            };
+#endif
+
+            HttpClient webClient = new HttpClient(handler);
 
             // Use GZIP compression
 #if WINDOWS_UWP
