@@ -281,7 +281,7 @@
         </ToggleButton>
         <StackPanel Background="LightSlateGray" Grid.Row="1"
                     Padding="5"
-                    Visibility="{x:Bind AlertHeader.IsChecked}">
+                    Visibility="{x:Bind AlertHeader.IsChecked, Mode=OneWay}">
             <StackPanel Padding="10">
                 <TextBlock Text="{x:Bind WeatherAlert.ExpireDate}" IsTextSelectionEnabled="False"
                            TextWrapping="WrapWholeWords" FontSize="14" />
