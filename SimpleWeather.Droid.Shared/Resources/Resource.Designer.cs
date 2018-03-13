@@ -1912,205 +1912,208 @@ namespace SimpleWeather.Droid
 			public static int hurricane_warning = 2130837624;
 			
 			// aapt resource value: 0x7f020079
-			public static int ic_logo = 2130837625;
+			public static int ic_error_white = 2130837625;
 			
 			// aapt resource value: 0x7f02007a
-			public static int ic_mode_edit_white_24dp = 2130837626;
+			public static int ic_logo = 2130837626;
 			
 			// aapt resource value: 0x7f02007b
-			public static int ic_my_location_white_24dp = 2130837627;
+			public static int ic_mode_edit_white_24dp = 2130837627;
 			
 			// aapt resource value: 0x7f02007c
-			public static int ic_settings_black_24dp = 2130837628;
+			public static int ic_my_location_white_24dp = 2130837628;
 			
 			// aapt resource value: 0x7f02007d
-			public static int ic_splash_screen = 2130837629;
+			public static int ic_settings_black_24dp = 2130837629;
 			
 			// aapt resource value: 0x7f02007e
-			public static int lightning = 2130837630;
+			public static int ic_splash_screen = 2130837630;
 			
 			// aapt resource value: 0x7f02007f
-			public static int metno = 2130837631;
+			public static int lightning = 2130837631;
 			
 			// aapt resource value: 0x7f020080
-			public static int na = 2130837632;
+			public static int metno = 2130837632;
 			
 			// aapt resource value: 0x7f020081
-			public static int night_alt_cloudy = 2130837633;
+			public static int na = 2130837633;
 			
 			// aapt resource value: 0x7f020082
-			public static int night_alt_cloudy_gusts = 2130837634;
+			public static int night_alt_cloudy = 2130837634;
 			
 			// aapt resource value: 0x7f020083
-			public static int night_alt_cloudy_high = 2130837635;
+			public static int night_alt_cloudy_gusts = 2130837635;
 			
 			// aapt resource value: 0x7f020084
-			public static int night_alt_cloudy_windy = 2130837636;
+			public static int night_alt_cloudy_high = 2130837636;
 			
 			// aapt resource value: 0x7f020085
-			public static int night_alt_hail = 2130837637;
+			public static int night_alt_cloudy_windy = 2130837637;
 			
 			// aapt resource value: 0x7f020086
-			public static int night_alt_lightning = 2130837638;
+			public static int night_alt_hail = 2130837638;
 			
 			// aapt resource value: 0x7f020087
-			public static int night_alt_partly_cloudy = 2130837639;
+			public static int night_alt_lightning = 2130837639;
 			
 			// aapt resource value: 0x7f020088
-			public static int night_alt_rain = 2130837640;
+			public static int night_alt_partly_cloudy = 2130837640;
 			
 			// aapt resource value: 0x7f020089
-			public static int night_alt_rain_mix = 2130837641;
+			public static int night_alt_rain = 2130837641;
 			
 			// aapt resource value: 0x7f02008a
-			public static int night_alt_rain_wind = 2130837642;
+			public static int night_alt_rain_mix = 2130837642;
 			
 			// aapt resource value: 0x7f02008b
-			public static int night_alt_showers = 2130837643;
+			public static int night_alt_rain_wind = 2130837643;
 			
 			// aapt resource value: 0x7f02008c
-			public static int night_alt_sleet = 2130837644;
+			public static int night_alt_showers = 2130837644;
 			
 			// aapt resource value: 0x7f02008d
-			public static int night_alt_sleet_storm = 2130837645;
+			public static int night_alt_sleet = 2130837645;
 			
 			// aapt resource value: 0x7f02008e
-			public static int night_alt_snow = 2130837646;
+			public static int night_alt_sleet_storm = 2130837646;
 			
 			// aapt resource value: 0x7f02008f
-			public static int night_alt_snow_thunderstorm = 2130837647;
+			public static int night_alt_snow = 2130837647;
 			
 			// aapt resource value: 0x7f020090
-			public static int night_alt_snow_wind = 2130837648;
+			public static int night_alt_snow_thunderstorm = 2130837648;
 			
 			// aapt resource value: 0x7f020091
-			public static int night_alt_sprinkle = 2130837649;
+			public static int night_alt_snow_wind = 2130837649;
 			
 			// aapt resource value: 0x7f020092
-			public static int night_alt_storm_showers = 2130837650;
+			public static int night_alt_sprinkle = 2130837650;
 			
 			// aapt resource value: 0x7f020093
-			public static int night_alt_thunderstorm = 2130837651;
+			public static int night_alt_storm_showers = 2130837651;
 			
 			// aapt resource value: 0x7f020094
-			public static int night_clear = 2130837652;
+			public static int night_alt_thunderstorm = 2130837652;
 			
 			// aapt resource value: 0x7f020095
-			public static int night_fog = 2130837653;
+			public static int night_clear = 2130837653;
 			
 			// aapt resource value: 0x7f020096
-			public static int notification_action_background = 2130837654;
+			public static int night_fog = 2130837654;
 			
 			// aapt resource value: 0x7f020097
-			public static int notification_bg = 2130837655;
+			public static int notification_action_background = 2130837655;
 			
 			// aapt resource value: 0x7f020098
-			public static int notification_bg_low = 2130837656;
+			public static int notification_bg = 2130837656;
 			
 			// aapt resource value: 0x7f020099
-			public static int notification_bg_low_normal = 2130837657;
+			public static int notification_bg_low = 2130837657;
 			
 			// aapt resource value: 0x7f02009a
-			public static int notification_bg_low_pressed = 2130837658;
+			public static int notification_bg_low_normal = 2130837658;
 			
 			// aapt resource value: 0x7f02009b
-			public static int notification_bg_normal = 2130837659;
+			public static int notification_bg_low_pressed = 2130837659;
 			
 			// aapt resource value: 0x7f02009c
-			public static int notification_bg_normal_pressed = 2130837660;
+			public static int notification_bg_normal = 2130837660;
 			
 			// aapt resource value: 0x7f02009d
-			public static int notification_icon_background = 2130837661;
-			
-			// aapt resource value: 0x7f0200ba
-			public static int notification_template_icon_bg = 2130837690;
-			
-			// aapt resource value: 0x7f0200bb
-			public static int notification_template_icon_low_bg = 2130837691;
+			public static int notification_bg_normal_pressed = 2130837661;
 			
 			// aapt resource value: 0x7f02009e
-			public static int notification_tile_bg = 2130837662;
+			public static int notification_icon_background = 2130837662;
+			
+			// aapt resource value: 0x7f0200bb
+			public static int notification_template_icon_bg = 2130837691;
+			
+			// aapt resource value: 0x7f0200bc
+			public static int notification_template_icon_low_bg = 2130837692;
 			
 			// aapt resource value: 0x7f02009f
-			public static int notify_panel_notification_icon_bg = 2130837663;
+			public static int notification_tile_bg = 2130837663;
 			
 			// aapt resource value: 0x7f0200a0
-			public static int openweathermap = 2130837664;
+			public static int notify_panel_notification_icon_bg = 2130837664;
 			
 			// aapt resource value: 0x7f0200a1
-			public static int rain = 2130837665;
+			public static int openweathermap = 2130837665;
 			
 			// aapt resource value: 0x7f0200a2
-			public static int rain_mix = 2130837666;
+			public static int rain = 2130837666;
 			
 			// aapt resource value: 0x7f0200a3
-			public static int rain_wind = 2130837667;
+			public static int rain_mix = 2130837667;
 			
 			// aapt resource value: 0x7f0200a4
-			public static int sandstorm = 2130837668;
+			public static int rain_wind = 2130837668;
 			
 			// aapt resource value: 0x7f0200a5
-			public static int showers = 2130837669;
+			public static int sandstorm = 2130837669;
 			
 			// aapt resource value: 0x7f0200a6
-			public static int sleet = 2130837670;
+			public static int showers = 2130837670;
 			
 			// aapt resource value: 0x7f0200a7
-			public static int small_craft_advisory = 2130837671;
+			public static int sleet = 2130837671;
 			
 			// aapt resource value: 0x7f0200a8
-			public static int smog = 2130837672;
+			public static int small_craft_advisory = 2130837672;
 			
 			// aapt resource value: 0x7f0200a9
-			public static int smoke = 2130837673;
+			public static int smog = 2130837673;
 			
 			// aapt resource value: 0x7f0200aa
-			public static int snow = 2130837674;
+			public static int smoke = 2130837674;
 			
 			// aapt resource value: 0x7f0200ab
-			public static int snow_wind = 2130837675;
+			public static int snow = 2130837675;
 			
 			// aapt resource value: 0x7f0200ac
-			public static int snowflake_cold = 2130837676;
+			public static int snow_wind = 2130837676;
 			
 			// aapt resource value: 0x7f0200ad
-			public static int sprinkle = 2130837677;
+			public static int snowflake_cold = 2130837677;
 			
 			// aapt resource value: 0x7f0200ae
-			public static int storm_showers = 2130837678;
+			public static int sprinkle = 2130837678;
 			
 			// aapt resource value: 0x7f0200af
-			public static int storm_warning = 2130837679;
+			public static int storm_showers = 2130837679;
 			
 			// aapt resource value: 0x7f0200b0
-			public static int strong_wind = 2130837680;
+			public static int storm_warning = 2130837680;
 			
 			// aapt resource value: 0x7f0200b1
-			public static int thunderstorm = 2130837681;
+			public static int strong_wind = 2130837681;
 			
 			// aapt resource value: 0x7f0200b2
-			public static int tooltip_frame_dark = 2130837682;
+			public static int thunderstorm = 2130837682;
 			
 			// aapt resource value: 0x7f0200b3
-			public static int tooltip_frame_light = 2130837683;
+			public static int tooltip_frame_dark = 2130837683;
 			
 			// aapt resource value: 0x7f0200b4
-			public static int tornado = 2130837684;
+			public static int tooltip_frame_light = 2130837684;
 			
 			// aapt resource value: 0x7f0200b5
-			public static int tsunami = 2130837685;
+			public static int tornado = 2130837685;
 			
 			// aapt resource value: 0x7f0200b6
-			public static int volcano = 2130837686;
+			public static int tsunami = 2130837686;
 			
 			// aapt resource value: 0x7f0200b7
-			public static int windy = 2130837687;
+			public static int volcano = 2130837687;
 			
 			// aapt resource value: 0x7f0200b8
-			public static int wunderground = 2130837688;
+			public static int windy = 2130837688;
 			
 			// aapt resource value: 0x7f0200b9
-			public static int yahoo = 2130837689;
+			public static int wunderground = 2130837689;
+			
+			// aapt resource value: 0x7f0200ba
+			public static int yahoo = 2130837690;
 			
 			static Drawable()
 			{

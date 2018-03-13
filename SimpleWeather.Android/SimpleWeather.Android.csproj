@@ -185,7 +185,6 @@
     <Compile Include="Helpers\IItemTouchHelperAdapter.cs" />
     <Compile Include="Helpers\ItemTouchHelperCallback.cs" />
     <Compile Include="Helpers\ActionModeCallback.cs" />
-    <Compile Include="Adapters\WeatherAlertPanelAdapter.cs" />
     <Compile Include="Notifications\WeatherAlertNotificationBuilder.cs" />
     <Compile Include="Notifications\WeatherNotificationBuilder.cs" />
     <Compile Include="Shortcuts\ShortcutCreator.cs" />
@@ -1670,9 +1669,6 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable-xxxhdpi\ic_error_white.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-anydpi-v21\ic_error_white.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\fragment_weather_alerts.xml">

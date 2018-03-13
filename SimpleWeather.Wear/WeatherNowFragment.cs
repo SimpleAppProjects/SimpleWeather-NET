@@ -6,33 +6,19 @@ using Android.OS;
 using Android.Views;
 using Android.Widget;
 using SimpleWeather.WeatherData;
-using SimpleWeather.Droid.Wear.Controls;
 using SimpleWeather.Controls;
-using SimpleWeather.Droid.Utils;
 using SimpleWeather.Utils;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Android.Graphics.Drawables;
 using Android.Support.V4.Widget;
 using Android.Support.V4.Content;
-using Android.Content.Res;
-using Android.Support.V4.View;
-using Android.Support.Design.Widget;
-using SimpleWeather.Droid.Helpers;
 using Android.Runtime;
 using Android.Content.PM;
 using Android;
 using Android.Locations;
-using Android.Graphics;
-using Com.Bumptech.Glide;
-using Android.Util;
-using Android.Support.V4.Graphics.Drawable;
 using Android.App;
 using Android.Gms.Location;
-using Android.Support.Wear.Widget;
-using SimpleWeather.Droid.Adapters;
 using Android.Support.Wearable.Input;
-using Android.Support.V7.Widget;
 
 namespace SimpleWeather.Droid.Wear
 {
@@ -47,42 +33,17 @@ namespace SimpleWeather.Droid.Wear
 
         // Views
         private SwipeRefreshLayout refreshLayout;
+        private NestedScrollView scrollView;
         // Condition
         private TextView locationName;
         private TextView updateTime;
         private TextView weatherIcon;
         private TextView weatherCondition;
         private TextView weatherTemp;
-        // Details
-        private View detailsPanel;
-        private TextView humidity;
-        private TextView pressureState;
-        private TextView pressure;
-        private TextView visiblity;
-        private TextView feelslike;
-        private TextView windDirection;
-        private TextView windSpeed;
-        private TextView sunrise;
-        private TextView sunset;
-        // Forecast
-        private LinearLayout forecastPanel;
-        private WearableRecyclerView forecastView;
-        private ForecastItemAdapter forecastAdapter;
-        // Additional Details
-        private LinearLayout hrforecastPanel;
-        private WearableRecyclerView hrforecastView;
-        private HourlyForecastItemAdapter hrforecastAdapter;
-        private RelativeLayout precipitationPanel;
-        private TextView chanceLabel;
-        private TextView chance;
-        private TextView qpfRain;
-        private TextView qpfSnow;
-        private TextView cloudinessLabel;
-        private TextView cloudiness;
-        // Alerts
-        //private View alertButton;
         // Weather Credit
         private TextView weatherCredit;
+
+        Helpers.IWeatherViewLoadedListener mCallback;
 
         // GPS location
         private FusedLocationProviderClient mFusedLocationClient;
@@ -98,6 +59,7 @@ namespace SimpleWeather.Droid.Wear
                 wm.UpdateWeather(weather);
                 weatherView.UpdateView(weather);
                 SetView(weatherView);
+                mCallback?.OnWeatherViewUpdated(weatherView);
             }
 
             Activity?.RunOnUiThread(() => refreshLayout.Refreshing = false);
@@ -203,10 +165,8 @@ namespace SimpleWeather.Droid.Wear
         {
             // Inflate the layout for this fragment
             View view = inflater.Inflate(Resource.Layout.fragment_weather_now, container, false);
-
-            refreshLayout = (SwipeRefreshLayout)view;
-            var scrollView = view.FindViewById<NestedScrollView>(Resource.Id.fragment_weather_now);
-            scrollView.GenericMotion += (sender, e) =>
+            view.FocusableInTouchMode = true;
+            view.GenericMotion += (sender, e) =>
             {
                 if (e.Event.Action == MotionEventActions.Scroll && RotaryEncoder.IsFromRotaryEncoder(e.Event))
                 {
@@ -221,54 +181,15 @@ namespace SimpleWeather.Droid.Wear
 
                 e.Handled = false;
             };
-            scrollView.RequestFocus();
+
+            refreshLayout = (SwipeRefreshLayout)view;
+            scrollView = view.FindViewById<NestedScrollView>(Resource.Id.fragment_weather_now);
             // Condition
             locationName = view.FindViewById<TextView>(Resource.Id.label_location_name);
             updateTime = view.FindViewById<TextView>(Resource.Id.label_updatetime);
             weatherIcon = view.FindViewById<TextView>(Resource.Id.weather_icon);
             weatherCondition = view.FindViewById<TextView>(Resource.Id.weather_condition);
             weatherTemp = view.FindViewById<TextView>(Resource.Id.weather_temp);
-            // Details
-            detailsPanel = view.FindViewById(Resource.Id.details_panel);
-            humidity = view.FindViewById<TextView>(Resource.Id.humidity);
-            pressureState = view.FindViewById<TextView>(Resource.Id.pressure_state);
-            pressure = view.FindViewById<TextView>(Resource.Id.pressure);
-            visiblity = view.FindViewById<TextView>(Resource.Id.visibility_val);
-            feelslike = view.FindViewById<TextView>(Resource.Id.feelslike);
-            windDirection = view.FindViewById<TextView>(Resource.Id.wind_direction);
-            windSpeed = view.FindViewById<TextView>(Resource.Id.wind_speed);
-            sunrise = view.FindViewById<TextView>(Resource.Id.sunrise_time);
-            sunset = view.FindViewById<TextView>(Resource.Id.sunset_time);
-            // Forecast
-            forecastPanel = view.FindViewById<LinearLayout>(Resource.Id.forecast_panel);
-            forecastPanel.Visibility = ViewStates.Invisible;
-            forecastView = view.FindViewById<WearableRecyclerView>(Resource.Id.forecast_view);
-            // Additional Details
-            hrforecastPanel = view.FindViewById<LinearLayout>(Resource.Id.hourly_forecast_panel);
-            hrforecastPanel.Visibility = ViewStates.Gone;
-            hrforecastView = view.FindViewById<WearableRecyclerView>(Resource.Id.hourly_forecast_view);
-            precipitationPanel = view.FindViewById<RelativeLayout>(Resource.Id.precipitation_card);
-            precipitationPanel.Visibility = ViewStates.Gone;
-            chanceLabel = view.FindViewById<TextView>(Resource.Id.chance_label);
-            chance = view.FindViewById<TextView>(Resource.Id.chance_val);
-            cloudinessLabel = view.FindViewById<TextView>(Resource.Id.cloudiness_label);
-            cloudiness = view.FindViewById<TextView>(Resource.Id.cloudiness);
-            qpfRain = view.FindViewById<TextView>(Resource.Id.qpf_rain_val);
-            qpfSnow = view.FindViewById<TextView>(Resource.Id.qpf_snow_val);
-
-            forecastView.HasFixedSize = true;
-            forecastView.SetLayoutManager(new LinearLayoutManager(Activity));
-            forecastAdapter = new ForecastItemAdapter(new List<ForecastItemViewModel>());
-            forecastView.SetAdapter(forecastAdapter);
-
-            hrforecastView.HasFixedSize = true;
-            hrforecastView.SetLayoutManager(new LinearLayoutManager(Activity));
-            hrforecastAdapter = new HourlyForecastItemAdapter(new List<HourlyForecastItemViewModel>());
-            hrforecastView.SetAdapter(hrforecastAdapter);
-
-            // Cloudiness only supported by OWM
-            cloudinessLabel.Visibility = ViewStates.Gone;
-            cloudiness.Visibility = ViewStates.Gone;
 
             // SwipeRefresh
             refreshLayout.SetColorSchemeColors(ContextCompat.GetColor(Activity, Resource.Color.colorPrimary));
@@ -290,6 +211,20 @@ namespace SimpleWeather.Droid.Wear
             refreshLayout.Refreshing = true;
 
             return view;
+        }
+
+        public override void OnAttach(Context context)
+        {
+            base.OnAttach(context);
+
+            mCallback = (Helpers.IWeatherViewLoadedListener)context;
+        }
+
+        public override void OnDetach()
+        {
+            base.OnDetach();
+
+            mCallback = null;
         }
 
         private async Task Resume()
@@ -355,6 +290,7 @@ namespace SimpleWeather.Droid.Wear
                         {
                             weatherView.UpdateView(wLoader.GetWeather());
                             SetView(weatherView);
+                            mCallback?.OnWeatherViewUpdated(weatherView);
                             loaded = true;
                         }
                     }
@@ -459,78 +395,6 @@ namespace SimpleWeather.Droid.Wear
                 weatherTemp.Text = weatherView.CurTemp;
                 weatherCondition.Text = weatherView.CurCondition;
                 weatherIcon.Text = weatherView.WeatherIcon;
-
-                // WeatherDetails
-                // Astronomy
-                sunrise.Text = weatherView.Sunrise;
-                sunset.Text = weatherView.Sunset;
-
-                // Wind
-                feelslike.Text = weatherView.WindChill;
-                windSpeed.Text = weatherView.WindSpeed;
-                windDirection.Rotation = weatherView.WindDirection;
-
-                // Atmosphere
-                humidity.Text = weatherView.Humidity;
-                pressure.Text = weatherView.Pressure;
-
-                pressureState.Visibility = weatherView.RisingVisiblity;
-                pressureState.Text = weatherView.RisingIcon;
-
-                visiblity.Text = weatherView._Visibility;
-
-                // Add UI elements
-                forecastAdapter.UpdateItems(weatherView.Forecasts);
-                forecastPanel.Visibility = ViewStates.Visible;
-
-                // Additional Details
-                if (weatherView.Extras.HourlyForecast.Count >= 1)
-                {
-                    hrforecastAdapter.UpdateItems(weatherView.Extras.HourlyForecast);
-                    hrforecastPanel.Visibility = ViewStates.Visible;
-                }
-                else
-                    hrforecastPanel.Visibility = ViewStates.Gone;
-
-                if (!String.IsNullOrWhiteSpace(weatherView.Extras.Chance))
-                {
-                    chance.Text = cloudiness.Text = weatherView.Extras.Chance;
-                    qpfRain.Text = weatherView.Extras.Qpf_Rain;
-                    qpfSnow.Text = weatherView.Extras.Qpf_Snow;
-
-                    if (!Settings.API.Equals(WeatherAPI.MetNo))
-                    {
-                        precipitationPanel.Visibility = ViewStates.Visible;
-                    }
-                    else
-                    {
-                        precipitationPanel.Visibility = ViewStates.Gone;
-                    }
-
-                    if (Settings.API.Equals(WeatherAPI.OpenWeatherMap) || Settings.API.Equals(WeatherAPI.MetNo))
-                    {
-                        chanceLabel.Visibility = ViewStates.Gone;
-                        chance.Visibility = ViewStates.Gone;
-
-                        cloudinessLabel.Visibility = ViewStates.Visible;
-                        cloudiness.Visibility = ViewStates.Visible;
-                    }
-                    else
-                    {
-                        chanceLabel.Visibility = ViewStates.Visible;
-                        chance.Visibility = ViewStates.Visible;
-
-                        cloudinessLabel.Visibility = ViewStates.Gone;
-                        cloudiness.Visibility = ViewStates.Gone;
-                    }
-                }
-                else
-                {
-                    precipitationPanel.Visibility = ViewStates.Gone;
-
-                    cloudinessLabel.Visibility = ViewStates.Gone;
-                    cloudiness.Visibility = ViewStates.Gone;
-                }
 
                 weatherCredit.Text = weatherView.WeatherCredit;
             });

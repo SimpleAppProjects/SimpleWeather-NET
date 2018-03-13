@@ -18,4 +18,6 @@
     <dimen name="list_start_padding">10dp</dimen>
     <dimen name="list_end_padding">10dp</dimen>
 
+    <dimen name="horizontal_padding">4dp</dimen>
+
 </resources>

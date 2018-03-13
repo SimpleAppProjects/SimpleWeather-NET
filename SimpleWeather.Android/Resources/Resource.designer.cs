@@ -628,6 +628,7 @@ namespace SimpleWeather.Droid.App
 			global::SimpleWeather.Droid.Resource.Drawable.hot = global::SimpleWeather.Droid.App.Resource.Drawable.hot;
 			global::SimpleWeather.Droid.Resource.Drawable.hurricane = global::SimpleWeather.Droid.App.Resource.Drawable.hurricane;
 			global::SimpleWeather.Droid.Resource.Drawable.hurricane_warning = global::SimpleWeather.Droid.App.Resource.Drawable.hurricane_warning;
+			global::SimpleWeather.Droid.Resource.Drawable.ic_error_white = global::SimpleWeather.Droid.App.Resource.Drawable.ic_error_white;
 			global::SimpleWeather.Droid.Resource.Drawable.ic_logo = global::SimpleWeather.Droid.App.Resource.Drawable.ic_logo;
 			global::SimpleWeather.Droid.Resource.Drawable.ic_mode_edit_white_24dp = global::SimpleWeather.Droid.App.Resource.Drawable.ic_mode_edit_white_24dp;
 			global::SimpleWeather.Droid.Resource.Drawable.ic_my_location_white_24dp = global::SimpleWeather.Droid.App.Resource.Drawable.ic_my_location_white_24dp;

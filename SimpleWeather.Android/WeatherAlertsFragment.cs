@@ -14,7 +14,7 @@ using Android.Support.V7.Widget;
 using Android.Util;
 using Android.Views;
 using SimpleWeather.Controls;
-using SimpleWeather.Droid.App.Adapters;
+using SimpleWeather.Droid.Adapters;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 

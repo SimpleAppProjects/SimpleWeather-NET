@@ -1,25 +1,19 @@
-﻿using System;
+﻿#if __ANDROID__
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Android.Content;
 using Android.Views;
-using Android.Widget;
 using Android.Support.V7.Widget;
+#if __ANDROID_WEAR__
+using SimpleWeather.Droid.Wear.Controls;
+using SimpleWeather.Droid.Wear.Helpers;
+#else
 using SimpleWeather.Droid.App.Controls;
 using SimpleWeather.Droid.App.Helpers;
-using SimpleWeather.Utils;
-using System.Collections.Specialized;
-using System.Collections.ObjectModel;
-using Android.Support.V4.Content;
-using Com.Bumptech.Glide;
-using Android.Graphics;
-using Android.Graphics.Drawables;
-using System.Threading.Tasks;
-using SimpleWeather.Droid.Utils;
-using Android.Util;
+#endif
 using SimpleWeather.Controls;
 
-namespace SimpleWeather.Droid.App.Adapters
+namespace SimpleWeather.Droid.Adapters
 {
     public class WeatherAlertPanelAdapter : RecyclerView.Adapter
     {
@@ -69,3 +63,4 @@ namespace SimpleWeather.Droid.App.Adapters
         public override int ItemCount => mDataset.Count;
     }
 }
+#endif

@@ -7,18 +7,24 @@
     android:layout_height="match_parent"
     tools:deviceIds="wear">
 
+    <android.support.wear.widget.drawer.WearableNavigationDrawerView
+        android:id="@+id/top_nav_drawer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary"
+        app:navigationStyle="multiPage" />
+
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:nestedScrollingEnabled="true" />
+        android:layout_height="match_parent" />
 
     <android.support.wear.widget.drawer.WearableActionDrawerView
         android:id="@+id/bottom_action_drawer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="bottom"
-        android:backgroundTint="@color/colorPrimary"
+        android:background="@color/colorPrimary"
         app:actionMenu="@menu/main_botton_drawer_menu"
         app:showOverflowInPeek="true" />
 

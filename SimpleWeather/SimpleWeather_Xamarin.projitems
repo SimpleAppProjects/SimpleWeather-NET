@@ -19,6 +19,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\WeatherExtrasViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Droid\Adapters\HourlyForecastItemAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Droid\Adapters\ForecastItemAdapter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Droid\Adapters\WeatherAlertPanelAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Droid\Controls\WeatherIcon.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Droid\Helpers\LocationListener.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Droid\Helpers\RecyclerClickEventArgs.cs" />
