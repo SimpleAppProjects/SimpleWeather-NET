@@ -874,6 +874,10 @@ namespace SimpleWeather.Droid.App.Widgets
                         lastGPSLocData.SetData(query_vm, location);
                         Settings.SaveLastGPSLocData();
 
+                        App.Context.StartService(
+                            new Intent(App.Context, typeof(WearableDataListenerService))
+                                .SetAction(WearableDataListenerService.ACTION_SENDLOCATIONUPDATE));
+
                         locationChanged = true;
                     }
                 }

@@ -6,6 +6,12 @@ using System.Diagnostics;
 using System.Globalization;
 #if WINDOWS_UWP
 using Windows.System.UserProfile;
+#elif __ANDROID__
+using Android.App;
+using SimpleWeather.Droid;
+#if !__ANDROID_WEAR__
+using SimpleWeather.Droid.App;
+#endif
 #endif
 
 namespace SimpleWeather.WeatherData
@@ -153,7 +159,14 @@ namespace SimpleWeather.WeatherData
 
                         // Update database as well
                         if (location.locationType == LocationType.GPS)
+                        {
                             Settings.SaveLastGPSLocData(location);
+#if !__ANDROID_WEAR__ && __ANDROID__
+                            App.Context.StartService(
+                                new Android.Content.Intent(App.Context, typeof(WearableDataListenerService))
+                                    .SetAction(WearableDataListenerService.ACTION_SENDLOCATIONUPDATE));
+#endif
+                        }
                         else
                             await Settings.UpdateLocationWithKey(location, oldKey);
                     }
@@ -258,6 +271,13 @@ namespace SimpleWeather.WeatherData
             await SaveWeatherAlerts();
 
             await Settings.SaveWeatherData(weather);
+
+            // Update weather data for Wearables
+#if !__ANDROID_WEAR__ && __ANDROID__
+            Application.Context.StartService(
+                new Android.Content.Intent(Application.Context, typeof(WearableDataListenerService))
+                    .SetAction(WearableDataListenerService.ACTION_SENDWEATHERUPDATE));
+#endif
         }
 
         private async Task SaveWeatherAlerts()
@@ -285,6 +305,16 @@ namespace SimpleWeather.WeatherData
 
                 await Settings.SaveWeatherAlerts(location, weather.weather_alerts);
             }
+        }
+
+        public async Task ForceLoadSavedWeatherData()
+        {
+            await LoadSavedWeatherData(true);
+
+            if (weather != null)
+                callback?.OnWeatherLoaded(location, weather);
+            else
+                errorCallback?.OnWeatherError(new WeatherException(WeatherUtils.ErrorStatus.NoWeather));
         }
 
         public Weather GetWeather()

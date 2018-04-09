@@ -162,6 +162,14 @@ namespace SimpleWeather.Droid.App
             Settings.FollowGPS = false;
             Settings.WeatherLoaded = true;
 
+            // Send data for wearables
+            Activity.StartService(new Intent(Activity, typeof(WearableDataListenerService))
+                .SetAction(WearableDataListenerService.ACTION_SENDSETTINGSUPDATE));
+            Activity.StartService(new Intent(Activity, typeof(WearableDataListenerService))
+                .SetAction(WearableDataListenerService.ACTION_SENDLOCATIONUPDATE));
+            Activity.StartService(new Intent(Activity, typeof(WearableDataListenerService))
+                .SetAction(WearableDataListenerService.ACTION_SENDWEATHERUPDATE));
+
             if (mAppWidgetId == AppWidgetManager.InvalidAppwidgetId)
             {
                 // Start WeatherNow Activity with weather data

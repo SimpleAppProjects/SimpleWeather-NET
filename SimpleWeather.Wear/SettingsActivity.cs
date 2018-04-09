@@ -19,6 +19,10 @@ using Android.Preferences;
 using System.IO;
 using Google.Android.Wearable.Intent;
 using Android.Support.Wear.Widget;
+using Android.Gms.Common.Apis;
+using Android.Gms.Wearable;
+using Android.Support.V4.Content;
+using SimpleWeather.Droid.Wear.Helpers;
 
 namespace SimpleWeather.Droid.Wear
 {
@@ -71,6 +75,8 @@ namespace SimpleWeather.Droid.Wear
             private const string KEY_FOLLOWGPS = "key_followgps";
             private const string KEY_API = "API";
             private const string KEY_APIKEY = "API_KEY";
+            private const string KEY_DATASYNC = "key_datasync";
+            private const string KEY_CONNSTATUS = "key_connectionstatus";
 
             private const string CATEGORY_API = "category_api";
 
@@ -78,8 +84,12 @@ namespace SimpleWeather.Droid.Wear
             private SwitchPreference followGps;
             private ListPreference providerPref;
             private KeyEntryPreference keyEntry;
+            private ListPreference syncPreference;
+            private Preference connStatusPref;
 
             private PreferenceCategory apiCategory;
+
+            private ConnectionStatusReceiver connStatusReceiver;
 
             public override void OnCreate(Bundle savedInstanceState)
             {
@@ -184,6 +194,49 @@ namespace SimpleWeather.Droid.Wear
                 }
 
                 UpdateKeySummary();
+
+                syncPreference = (ListPreference)FindPreference(KEY_DATASYNC);
+                syncPreference.PreferenceChange += (object sender, Preference.PreferenceChangeEventArgs e) =>
+                {
+                    ListPreference pref = e.Preference as ListPreference;
+                    pref.Summary = pref.GetEntries()[int.Parse(e.NewValue.ToString())];
+                };
+                syncPreference.Summary = syncPreference.GetEntries()[int.Parse(syncPreference.Value)];
+
+                connStatusPref = FindPreference(KEY_CONNSTATUS);
+                connStatusReceiver = new ConnectionStatusReceiver();
+                connStatusReceiver.ConnectionStatusChanged += (status) =>
+                {
+                    switch (status)
+                    {
+                        case WearConnectionStatus.Disconnected:
+                            connStatusPref.Summary = GetString(Resource.String.status_disconnected);
+                            connStatusPref.PreferenceClick -= ConnStatusPref_PreferenceClick;
+                            break;
+                        case WearConnectionStatus.Connecting:
+                            connStatusPref.Summary = GetString(Resource.String.status_connecting);
+                            connStatusPref.PreferenceClick -= ConnStatusPref_PreferenceClick;
+                            break;
+                        case WearConnectionStatus.AppNotInstalled:
+                            connStatusPref.Summary = GetString(Resource.String.status_notinstalled);
+                            connStatusPref.PreferenceClick += ConnStatusPref_PreferenceClick;
+                            break;
+                        case WearConnectionStatus.Connected:
+                            connStatusPref.Summary = GetString(Resource.String.status_connected);
+                            connStatusPref.PreferenceClick -= ConnStatusPref_PreferenceClick;
+                            break;
+                    }
+                };
+            }
+
+            private void ConnStatusPref_PreferenceClick(object sender, Preference.PreferenceClickEventArgs e)
+            {
+                var intentAndroid = new Intent(Intent.ActionView)
+                    .AddCategory(Intent.CategoryBrowsable)
+                    .SetData(WearableHelper.PlayStoreURI);
+
+                RemoteIntent.StartRemoteActivity(Activity, intentAndroid,
+                    new ConfirmationResultReceiver(Activity));
             }
 
             private void UpdateKeySummary()
@@ -235,6 +288,38 @@ namespace SimpleWeather.Droid.Wear
                             }
                             return;
                         }
+                }
+            }
+
+            public override void OnResume()
+            {
+                base.OnResume();
+
+                LocalBroadcastManager.GetInstance(Activity)
+                    .RegisterReceiver(connStatusReceiver, new IntentFilter(WearableDataListenerService.ACTION_UPDATECONNECTIONSTATUS));
+                Activity.StartService(new Intent(Activity, typeof(WearableDataListenerService))
+                    .SetAction(WearableDataListenerService.ACTION_UPDATECONNECTIONSTATUS));
+            }
+
+            public override void OnPause()
+            {
+                LocalBroadcastManager.GetInstance(Activity)
+                    .UnregisterReceiver(connStatusReceiver);
+
+                base.OnPause();
+            }
+        }
+
+        internal class ConnectionStatusReceiver : BroadcastReceiver
+        {
+            public event Action<WearConnectionStatus> ConnectionStatusChanged;
+
+            public override void OnReceive(Context context, Intent intent)
+            {
+                if (WearableDataListenerService.ACTION_UPDATECONNECTIONSTATUS.Equals(intent?.Action))
+                {
+                    var connStatus = (WearConnectionStatus)intent.GetIntExtra(WearableDataListenerService.EXTRA_CONNECTIONSTATUS, 0);
+                    ConnectionStatusChanged?.Invoke(connStatus);
                 }
             }
         }

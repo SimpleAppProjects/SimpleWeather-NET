@@ -36,6 +36,24 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="Sync"
+        android:key="category_sync">
+
+        <ListPreference
+            android:key="key_datasync"
+            android:defaultValue="0"
+            android:entries="@array/datasync_entries"
+            android:entryValues="@array/datasync_values"
+            android:title="Data Synchronization" />
+
+        <Preference
+            android:key="key_connectionstatus"
+            android:title="Connection Status"
+            android:summary="" />
+
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="@string/pref_title_about">
 
         <Preference

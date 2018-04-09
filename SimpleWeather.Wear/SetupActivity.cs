@@ -25,6 +25,7 @@ using Android.Support.Wear.Widget.Drawer;
 using Android.Views.InputMethods;
 using Android.Text;
 using Android.Util;
+using Android.Support.Wearable.Views;
 
 namespace SimpleWeather.Droid.Wear
 {
@@ -45,6 +46,8 @@ namespace SimpleWeather.Droid.Wear
         private CancellationTokenSource cts;
 
         private WeatherData.WeatherManager wm;
+
+        private const int REQUEST_CODE_SYNC_ACTIVITY = 10;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -85,7 +88,7 @@ namespace SimpleWeather.Droid.Wear
             progressBar.Visibility = ViewStates.Gone;
 
             // Location client
-            if (App.IsGooglePlayServicesInstalled && !App.HasGPS)
+            if (WearableHelper.IsGooglePlayServicesInstalled && !WearableHelper.HasGPS)
             {
                 mFusedLocationClient = new FusedLocationProviderClient(this);
                 mLocCallback = new LocationCallback();
@@ -156,11 +159,40 @@ namespace SimpleWeather.Droid.Wear
                     StartActivity(new Intent(this, typeof(SettingsActivity)));
                     break;
                 case Resource.Id.menu_setupfromphone:
-                    Toast.MakeText(this, "Not implemented yet", ToastLength.Short).Show();
+                    var alertBuilder = new AlertDialog.Builder(this);
+                    alertBuilder.SetMessage(Resource.String.prompt_confirmsetup);
+                    alertBuilder.SetNegativeButton(Resource.String.generic_cancel, (s, e) => { });
+                    alertBuilder.SetPositiveButton(Resource.String.generic_yes, (sender, e) =>
+                    {
+                        StartActivityForResult(typeof(SetupSyncActivity), REQUEST_CODE_SYNC_ACTIVITY);
+                    });
+                    alertBuilder.Create().Show();
                     break;
             }
 
             return true;
+        }
+
+        protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+
+            switch (requestCode)
+            {
+                case REQUEST_CODE_SYNC_ACTIVITY:
+                    if (resultCode == Result.Ok)
+                    {
+                        if (Settings.HomeData is WeatherData.LocationData location)
+                        {
+                            Settings.DataSync = WearableDataSync.WhenAvailable;
+                            Settings.WeatherLoaded = true;
+                            // Start WeatherNow Activity
+                            StartActivity(new Intent(this, typeof(MainActivity)));
+                            FinishAffinity();
+                        }
+                    }
+                    break;
+            }
         }
 
         private void EnableControls(bool enable)
@@ -296,7 +328,7 @@ namespace SimpleWeather.Droid.Wear
 
             Location location = null;
 
-            if (App.IsGooglePlayServicesInstalled && !App.HasGPS)
+            if (WearableHelper.IsGooglePlayServicesInstalled && !WearableHelper.HasGPS)
             {
                 location = await mFusedLocationClient.GetLastLocationAsync();
 

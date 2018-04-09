@@ -55,9 +55,23 @@ namespace SimpleWeather.Utils
                     // Weather Provider changed
                     case KEY_API:
                         WeatherData.WeatherManager.GetInstance().UpdateAPI();
-                        goto case KEY_FOLLOWGPS;
+#if !__ANDROID_WEAR__
+                        Application.Context.StartService(
+                            new Intent(Application.Context, typeof(WearableDataListenerService))
+                                .SetAction(WearableDataListenerService.ACTION_SENDSETTINGSUPDATE));
+#endif
+                        goto case KEY_USECELSIUS;
                     // FollowGPS changed
                     case KEY_FOLLOWGPS:
+#if !__ANDROID_WEAR__
+                        Application.Context.StartService(
+                            new Intent(Application.Context, typeof(WearableDataListenerService))
+                                .SetAction(WearableDataListenerService.ACTION_SENDSETTINGSUPDATE));
+                        Application.Context.StartService(
+                            new Intent(Application.Context, typeof(WearableDataListenerService))
+                                .SetAction(WearableDataListenerService.ACTION_SENDLOCATIONUPDATE));
+                        goto case KEY_USECELSIUS;
+#endif
                     // Settings unit changed
                     case KEY_USECELSIUS:
 #if !__ANDROID_WEAR__

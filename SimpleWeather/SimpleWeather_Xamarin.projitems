@@ -28,6 +28,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Droid\Utils\ImageUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Droid\Utils\Pair.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Droid\Utils\Settings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Droid\WearableHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Droid\WeatherData\IWeatherProviderImpl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Droid\WeatherData\WeatherProviderImpl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Metno\MetnoWeatherProvider.cs" />

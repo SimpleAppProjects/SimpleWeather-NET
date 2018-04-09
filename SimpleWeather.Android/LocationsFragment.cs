@@ -596,6 +596,10 @@ namespace SimpleWeather.Droid.App
                             {
                                 Settings.SaveLastGPSLocData(locData);
                                 await LoadGPSPanel();
+
+                                App.Context.StartService(
+                                    new Intent(App.Context, typeof(WearableDataListenerService))
+                                        .SetAction(WearableDataListenerService.ACTION_SENDLOCATIONUPDATE));
                             }
                             else
                             {
@@ -926,8 +930,17 @@ namespace SimpleWeather.Droid.App
             }
 
             if (!EditMode && HomeChanged)
+            {
                 WeatherWidgetService.EnqueueWork(AppCompatActivity, new Intent(AppCompatActivity, typeof(WeatherWidgetService))
-                    .SetAction(WeatherWidgetService.ACTION_UPDATEWEATHER));
+                        .SetAction(WeatherWidgetService.ACTION_UPDATEWEATHER));
+
+                App.Context.StartService(
+                    new Intent(App.Context, typeof(WearableDataListenerService))
+                        .SetAction(WearableDataListenerService.ACTION_SENDLOCATIONUPDATE));
+                App.Context.StartService(
+                    new Intent(App.Context, typeof(WearableDataListenerService))
+                        .SetAction(WearableDataListenerService.ACTION_SENDWEATHERUPDATE));
+            }
 
             DataChanged = false;
             HomeChanged = false;

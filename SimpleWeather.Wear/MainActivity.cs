@@ -1,30 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 using Android.App;
 using Android.Content;
 using Android.Graphics.Drawables;
 using Android.OS;
-using Android.Runtime;
+using Android.Support.V4.Content;
 using Android.Support.Wear.Widget.Drawer;
-using Android.Support.Wearable.Input;
+using Android.Support.Wearable.Activity;
+using Android.Support.Wearable.Views;
 using Android.Views;
-using Android.Widget;
+using Google.Android.Wearable.Intent;
 using Java.Lang;
 using SimpleWeather.Controls;
+using SimpleWeather.Droid.Wear.Helpers;
 
 namespace SimpleWeather.Droid.Wear
 {
     [Activity(Label = "MainActivity", Theme = "@style/WearAppTheme")]
     public class MainActivity : Activity,
         IMenuItemOnMenuItemClickListener, WearableNavigationDrawerView.IOnItemSelectedListener,
-        Helpers.IWeatherViewLoadedListener
+        IWeatherViewLoadedListener
     {
         private WearableNavigationDrawerView mWearableNavigationDrawer;
         private WearableActionDrawerView mWearableActionDrawer;
         private NavDrawerAdapter mNavDrawerAdapter;
+        private LocalBroadcastReceiver mBroadcastReceiver;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -40,6 +42,32 @@ namespace SimpleWeather.Droid.Wear
             mWearableNavigationDrawer.PeekOnScrollDownEnabled = true;
             mNavDrawerAdapter = new NavDrawerAdapter(this);
             mWearableNavigationDrawer.SetAdapter(mNavDrawerAdapter);
+
+            mBroadcastReceiver = new LocalBroadcastReceiver();
+            mBroadcastReceiver.BroadcastReceived += (context, intent) =>
+            {
+                if (WearableDataListenerService.ACTION_SHOWSTORELISTING.Equals(intent?.Action))
+                {
+                    var intentAndroid = new Intent(Intent.ActionView)
+                        .AddCategory(Intent.CategoryBrowsable)
+                        .SetData(WearableHelper.PlayStoreURI);
+
+                    RemoteIntent.StartRemoteActivity(this, intentAndroid,
+                        new ConfirmationResultReceiver(this));
+                }
+                else if (WearableDataListenerService.ACTION_OPENONPHONE.Equals(intent?.Action))
+                {
+                    bool success = (bool)intent?.GetBooleanExtra(WearableDataListenerService.EXTRA_SUCCESS, false);
+
+                    new ConfirmationOverlay()
+                        .SetType(success ? ConfirmationOverlay.OpenOnPhoneAnimation : ConfirmationOverlay.FailureAnimation)
+                        .ShowOn(this);
+                }
+            };
+            var filter = new IntentFilter();
+            filter.AddAction(WearableDataListenerService.ACTION_SHOWSTORELISTING);
+            filter.AddAction(WearableDataListenerService.ACTION_OPENONPHONE);
+            LocalBroadcastManager.GetInstance(this).RegisterReceiver(mBroadcastReceiver, filter);
 
             // Create your application here
             Fragment fragment = FragmentManager.FindFragmentById(Resource.Id.fragment_container);
@@ -86,7 +114,8 @@ namespace SimpleWeather.Droid.Wear
                     StartActivity(new Intent(this, typeof(SettingsActivity)));
                     break;
                 case Resource.Id.menu_openonphone:
-                    Toast.MakeText(this, "Not implemented yet", ToastLength.Short).Show();
+                    StartService(new Intent(this, typeof(WearableDataListenerService))
+                        .SetAction(WearableDataListenerService.ACTION_OPENONPHONE));
                     break;
             }
 
@@ -173,6 +202,12 @@ namespace SimpleWeather.Droid.Wear
                     ft.Commit();
                 }
             }
+        }
+
+        protected override void OnDestroy()
+        {
+            LocalBroadcastManager.GetInstance(this).UnregisterReceiver(mBroadcastReceiver);
+            base.OnDestroy();
         }
 
         public void OnWeatherViewUpdated(WeatherNowViewModel weatherNowView)

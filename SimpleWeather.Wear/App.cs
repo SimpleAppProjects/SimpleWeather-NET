@@ -3,15 +3,10 @@
 using Android.App;
 using Android.Runtime;
 using Android.Content;
-using Android.Content.PM;
 using Android.Preferences;
-using SimpleWeather.Droid.Utils;
 using SimpleWeather.Utils;
-using System.Threading.Tasks;
 using System.Threading;
 using Android.OS;
-using Android.Gms.Common;
-using Android.Util;
 
 namespace SimpleWeather.Droid.Wear
 {
@@ -33,6 +28,7 @@ namespace SimpleWeather.Droid.Wear
         Debuggable = false
 #endif
         )]
+    [MetaData("com.google.android.wearable.standalone", Value = "true")]
     public class App : Application, Application.IActivityLifecycleCallbacks
     {
         public const int HomeIdx = 0;
@@ -112,36 +108,6 @@ namespace SimpleWeather.Droid.Wear
 
         public void OnActivitySaveInstanceState(Activity activity, Bundle outState)
         {
-        }
-
-        public static bool IsGooglePlayServicesInstalled
-        {
-            get
-            {
-                var queryResult = GoogleApiAvailability.Instance.IsGooglePlayServicesAvailable(Context);
-                if (queryResult == ConnectionResult.Success)
-                {
-                    Log.Info("App", "Google Play Services is installed on this device.");
-                    return true;
-                }
-
-                if (GoogleApiAvailability.Instance.IsUserResolvableError(queryResult))
-                {
-                    var errorString = GoogleApiAvailability.Instance.GetErrorString(queryResult);
-                    Log.Error("App", "There is a problem with Google Play Services on this device: {0} - {1}",
-                              queryResult, errorString);
-                }
-
-                return false;
-            }
-        }
-
-        public static bool HasGPS
-        {
-            get
-            {
-                return Context.PackageManager.HasSystemFeature(PackageManager.FeatureLocationGps);
-            }
         }
     }
 }
