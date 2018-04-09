@@ -23,9 +23,9 @@ namespace SimpleWeather.Utils
         public static bool FollowGPS { get { return UseFollowGPS(); } set { SetFollowGPS(value); } }
         private static string LastGPSLocation { get { return GetLastGPSLocation(); } set { SetLastGPSLocation(value); } }
         public static LocationData HomeData { get { return GetHomeData(); } }
+        public static DateTime UpdateTime { get { return GetUpdateTime(); } set { SetUpdateTime(value); } }
 #if !__ANDROID_WEAR__
         public static int RefreshInterval { get { return GetRefreshInterval(); } set { SetRefreshInterval(value); } }
-        public static DateTime UpdateTime { get { return GetUpdateTime(); } set { SetUpdateTime(value); } }
         public static bool ShowAlerts { get { return UseAlerts(); } set { SetAlerts(value); } }
 #endif
 
@@ -34,7 +34,9 @@ namespace SimpleWeather.Utils
 
         // Data
         private const int CurrentDBVersion = 2;
+#if !__ANDROID_WEAR__
         private static SQLiteAsyncConnection locationDB;
+#endif
         private static SQLiteAsyncConnection weatherDB;
         private const int CACHE_LIMIT = 10;
 
@@ -78,14 +80,17 @@ namespace SimpleWeather.Utils
         private static async Task Load()
         {
             // Create DB tables
+#if !__ANDROID_WEAR__
             await locationDB.CreateTableAsync<LocationData>();
             await locationDB.CreateTableAsync<Favorites>();
+#endif
             await weatherDB.CreateTableAsync<Weather>();
             await weatherDB.CreateTableAsync<WeatherAlerts>();
 
             // Migrate old data if available
             if (GetDBVersion() < CurrentDBVersion)
             {
+#if !__ANDROID_WEAR__
                 switch (GetDBVersion())
                 {
                     // Move data from json to db
@@ -99,10 +104,12 @@ namespace SimpleWeather.Utils
                             await DBUtils.SetLocationData(locationDB);
                         break;
                 }
+#endif
 
                 SetDBVersion(CurrentDBVersion);
             }
 
+#if !__ANDROID_WEAR__
             if (!String.IsNullOrWhiteSpace(LastGPSLocation))
             {
                 try
@@ -119,8 +126,27 @@ namespace SimpleWeather.Utils
                         lastGPSLocData = new LocationData();
                 }
             }
+#else
+            if (!String.IsNullOrWhiteSpace(LastGPSLocation))
+            {
+                try
+                {
+                    lastGPSLocData = LocationData.FromJson(new JsonTextReader(new StringReader(LastGPSLocation)));
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.StackTrace);
+                }
+                finally
+                {
+                    if (lastGPSLocData == null || String.IsNullOrWhiteSpace(lastGPSLocData.tz_long))
+                        lastGPSLocData = new LocationData();
+                }
+            }
+#endif
         }
 
+#if !__ANDROID_WEAR__
         public static async Task<List<LocationData>> GetFavorites()
         {
             await LoadIfNeeded();
@@ -146,6 +172,7 @@ namespace SimpleWeather.Utils
             await LoadIfNeeded();
             return await locationDB.Table<LocationData>().ToListAsync();
         }
+#endif
 
         public static async Task<Weather> GetWeatherData(string key)
         {
@@ -212,8 +239,12 @@ namespace SimpleWeather.Utils
         {
             Task.Run(async () => 
             {
+#if !__ANDROID_WEAR__
                 var locs = await locationDB.Table<LocationData>().ToListAsync();
                 if (FollowGPS) locs.Add(lastGPSLocData);
+#else
+                var locs = new List<LocationData>() { HomeData };
+#endif
                 var data = await weatherDB.Table<Weather>().ToListAsync();
                 var weatherToDelete = data.Where(w => locs.All(l => l.query != w.query));
 
@@ -228,8 +259,12 @@ namespace SimpleWeather.Utils
         {
             Task.Run(async () =>
             {
+#if !__ANDROID_WEAR__
                 var locs = await locationDB.Table<LocationData>().ToListAsync();
                 if (FollowGPS) locs.Add(lastGPSLocData);
+#else
+                var locs = new List<LocationData>() { HomeData };
+#endif
                 var data = await weatherDB.Table<WeatherAlerts>().ToListAsync();
                 var weatherToDelete = data.Where(w => locs.All(l => l.query != w.query));
 
@@ -240,6 +275,7 @@ namespace SimpleWeather.Utils
             });
         }
 
+#if !__ANDROID_WEAR__
         public static async Task SaveLocationData(List<LocationData> locationData)
         {
             var favs = new List<Favorites>(locationData.Count);
@@ -322,11 +358,6 @@ namespace SimpleWeather.Utils
             }
         }
 
-        public static void SaveLastGPSLocData()
-        {
-            LastGPSLocation = lastGPSLocData.ToJson();
-        }
-
         public static void SaveLastGPSLocData(LocationData data)
         {
             lastGPSLocData = data;
@@ -344,5 +375,6 @@ namespace SimpleWeather.Utils
 
             return homeData;
         }
+#endif
     }
 }

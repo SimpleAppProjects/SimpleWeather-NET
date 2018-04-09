@@ -293,12 +293,11 @@ namespace SimpleWeather.Droid.Wear
                 EnableControls(false);
 
                 // Save weather data
-                Settings.SaveLastGPSLocData(location);
-                await Settings.DeleteLocations();
-                await Settings.AddLocation(new WeatherData.LocationData(view));
+                Settings.SaveHomeData(location);
                 if (wm.SupportsAlerts && weather.weather_alerts != null)
                     await Settings.SaveWeatherAlerts(location, weather.weather_alerts);
                 await Settings.SaveWeatherData(weather);
+                Settings.UpdateTime = weather.update_time.UtcDateTime;
 
                 Settings.FollowGPS = true;
                 Settings.WeatherLoaded = true;

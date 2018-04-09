@@ -512,7 +512,11 @@ namespace SimpleWeather.WeatherUnderground
                 location.tz_long = qview.LocationTZ_Long;
 
                 // Update DB here or somewhere else
+#if !__ANDROID_WEAR__
                 await Settings.UpdateLocation(location);
+#else
+                Settings.SaveHomeData(location);
+#endif
             }
         }
 

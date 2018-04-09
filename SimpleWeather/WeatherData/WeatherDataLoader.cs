@@ -85,13 +85,21 @@ namespace SimpleWeather.WeatherData
                     location.name = weather.location.name;
                     location.tz_long = weather.location.tz_long;
 
+#if !__ANDROID_WEAR__
                     await Settings.UpdateLocation(location);
+#else
+                    Settings.SaveHomeData(location);
+#endif
                 }
                 if (location.latitude == 0 && location.longitude == 0)
                 {
                     location.latitude = double.Parse(weather.location.latitude);
                     location.longitude = double.Parse(weather.location.longitude);
+#if !__ANDROID_WEAR__
                     await Settings.UpdateLocation(location);
+#else
+                    Settings.SaveHomeData(location);
+#endif
                 }
 
                 await SaveWeatherData();
@@ -158,10 +166,11 @@ namespace SimpleWeather.WeatherData
                         location.source = Settings.API;
 
                         // Update database as well
+#if !__ANDROID_WEAR__
                         if (location.locationType == LocationType.GPS)
                         {
                             Settings.SaveLastGPSLocData(location);
-#if !__ANDROID_WEAR__ && __ANDROID__
+#if __ANDROID__
                             App.Context.StartService(
                                 new Android.Content.Intent(App.Context, typeof(WearableDataListenerService))
                                     .SetAction(WearableDataListenerService.ACTION_SENDLOCATIONUPDATE));
@@ -169,6 +178,9 @@ namespace SimpleWeather.WeatherData
                         }
                         else
                             await Settings.UpdateLocationWithKey(location, oldKey);
+#else
+                        Settings.SaveHomeData(location);
+#endif
                     }
 
                     await GetWeatherData();
@@ -277,6 +289,8 @@ namespace SimpleWeather.WeatherData
             Application.Context.StartService(
                 new Android.Content.Intent(Application.Context, typeof(WearableDataListenerService))
                     .SetAction(WearableDataListenerService.ACTION_SENDWEATHERUPDATE));
+#elif __ANDROID_WEAR__
+            Settings.UpdateTime = weather.update_time.UtcDateTime;
 #endif
         }
 

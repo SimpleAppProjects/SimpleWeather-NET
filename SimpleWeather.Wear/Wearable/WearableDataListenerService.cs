@@ -437,7 +437,7 @@ namespace SimpleWeather.Droid.Wear
             }
         }
 
-        private async void UpdateLocation(DataMap dataMap)
+        private void UpdateLocation(DataMap dataMap)
         {
             if (dataMap != null && !dataMap.IsEmpty)
             {
@@ -452,11 +452,7 @@ namespace SimpleWeather.Droid.Wear
                     {
                         if (!locationData.Equals(Settings.HomeData))
                         {
-                            await Settings.DeleteLocations();
-                            await Settings.AddLocation(locationData);
-
-                            if (Settings.FollowGPS)
-                                Settings.SaveLastGPSLocData(locationData);
+                            Settings.SaveHomeData(locationData);
                         }
 
                         // Send callback to receiver
@@ -476,17 +472,18 @@ namespace SimpleWeather.Droid.Wear
                 {
                     if (Settings.HomeData is WeatherData.LocationData location)
                     {
-                        var weatherData = await Settings.GetWeatherData(location.query);
-                        if (weatherData != null)
+                        var upDateTime = new DateTime(update_time, DateTimeKind.Utc);
+                        /*
+                            DateTime < 0 - This instance is earlier than value.
+                            DateTime == 0 - This instance is the same as value.
+                            DateTime > 0 - This instance is later than value.
+                        */
+                        if (Settings.UpdateTime.CompareTo(upDateTime) >= 0)
                         {
-                            var ticks = weatherData.update_time.UtcTicks;
-                            if (ticks.Equals(update_time))
-                            {
-                                // Send callback to receiver
-                                LocalBroadcastManager.GetInstance(this).SendBroadcast(
-                                    new Intent(WearableHelper.WeatherPath));
-                                return;
-                            }
+                            // Send callback to receiver
+                            LocalBroadcastManager.GetInstance(this).SendBroadcast(
+                                new Intent(WearableHelper.WeatherPath));
+                            return;
                         }
                     }
                 }
@@ -515,8 +512,9 @@ namespace SimpleWeather.Droid.Wear
                             }
                         }
 
-                        await Settings.SaveWeatherData(weatherData);
                         await Settings.SaveWeatherAlerts(Settings.HomeData, weatherData.weather_alerts);
+                        await Settings.SaveWeatherData(weatherData);
+                        Settings.UpdateTime = weatherData.update_time.UtcDateTime;
 
                         // Send callback to receiver
                         LocalBroadcastManager.GetInstance(this).SendBroadcast(

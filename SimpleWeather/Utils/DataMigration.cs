@@ -19,6 +19,7 @@ namespace SimpleWeather.Utils
 {
     public partial class DBUtils
     {
+#if !__ANDROID_WEAR__
         public static async Task MigrateDataJsonToDB(SQLiteAsyncConnection locationDB, SQLiteAsyncConnection weatherDB)
         {
 #if WINDOWS_UWP
@@ -116,6 +117,7 @@ namespace SimpleWeather.Utils
 #endif
             }
         }
+#endif
 
         public static async Task SetLocationData(SQLiteAsyncConnection locationDB)
         {

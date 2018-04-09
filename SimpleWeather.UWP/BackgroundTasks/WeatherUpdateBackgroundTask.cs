@@ -244,7 +244,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
 
                     // Save location as last known
                     lastGPSLocData.SetData(view, newGeoPos);
-                    Settings.SaveLastGPSLocData();
+                    Settings.SaveLastGPSLocData(lastGPSLocData);
 
                     locationChanged = true;
                 }

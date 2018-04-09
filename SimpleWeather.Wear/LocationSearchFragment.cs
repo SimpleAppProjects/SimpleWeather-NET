@@ -153,11 +153,11 @@ namespace SimpleWeather.Droid.Wear
             mRecyclerView.Enabled = false;
 
             // Save weather data
-            await Settings.DeleteLocations();
-            await Settings.AddLocation(location);
+            Settings.SaveHomeData(location);
             if (wm.SupportsAlerts && weather.weather_alerts != null)
                 await Settings.SaveWeatherAlerts(location, weather.weather_alerts);
             await Settings.SaveWeatherData(weather);
+            Settings.UpdateTime = weather.update_time.UtcDateTime;
 
             // If we're using search
             // make sure gps feature is off

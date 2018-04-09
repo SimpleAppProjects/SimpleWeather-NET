@@ -93,9 +93,11 @@ namespace SimpleWeather.Utils
         // Initialize file
         private static void Init()
         {
+#if !__ANDROID_WEAR__
             if (locationDB == null)
                 locationDB = new SQLiteAsyncConnection(
                     System.IO.Path.Combine(appDataFolder.Path, "locations.db"));
+#endif
 
             if (weatherDB == null)
                 weatherDB = new SQLiteAsyncConnection(
@@ -128,14 +130,18 @@ namespace SimpleWeather.Utils
 
         private static bool IsWeatherLoaded()
         {
+#if !__ANDROID_WEAR__
             if (!Task.Run(() => DBUtils.LocationDataExists(locationDB)).Result)
             {
+#endif
                 if (!Task.Run(() => DBUtils.WeatherDataExists(weatherDB)).Result)
                 {
                     SetWeatherLoaded(false);
                     return false;
                 }
+#if !__ANDROID_WEAR__
             }
+#endif
 
             if (preferences.Contains(KEY_WEATHERLOADED) && preferences.GetBoolean(KEY_WEATHERLOADED, false))
             {
@@ -256,18 +262,6 @@ namespace SimpleWeather.Utils
             editor.Commit();
         }
 
-#if !__ANDROID_WEAR__
-        private static int GetRefreshInterval()
-        {
-            return int.Parse(preferences.GetString(KEY_REFRESHINTERVAL, DEFAULT_UPDATE_INTERVAL));
-        }
-
-        private static void SetRefreshInterval(int value)
-        {
-            editor.PutString(KEY_REFRESHINTERVAL, value.ToString());
-            editor.Commit();
-        }
-
         private static DateTime GetUpdateTime()
         {
             if (!preferences.Contains(KEY_UPDATETIME))
@@ -279,6 +273,18 @@ namespace SimpleWeather.Utils
         private static void SetUpdateTime(DateTime value)
         {
             editor.PutString(KEY_UPDATETIME, value.ToString());
+            editor.Commit();
+        }
+
+#if !__ANDROID_WEAR__
+        private static int GetRefreshInterval()
+        {
+            return int.Parse(preferences.GetString(KEY_REFRESHINTERVAL, DEFAULT_UPDATE_INTERVAL));
+        }
+
+        private static void SetRefreshInterval(int value)
+        {
+            editor.PutString(KEY_REFRESHINTERVAL, value.ToString());
             editor.Commit();
         }
 

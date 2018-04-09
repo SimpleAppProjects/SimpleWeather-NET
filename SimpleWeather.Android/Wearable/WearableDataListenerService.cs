@@ -207,7 +207,7 @@ namespace SimpleWeather.Droid.App
             mapRequest.DataMap.PutString("API_KEY", Settings.API_KEY);
             mapRequest.DataMap.PutBoolean("KeyVerified", Settings.KeyVerified);
             mapRequest.DataMap.PutBoolean("FollowGPS", Settings.FollowGPS);
-            mapRequest.DataMap.PutLong("update_time", DateTimeOffset.Now.ToUnixTimeSeconds());
+            mapRequest.DataMap.PutLong("update_time", DateTime.UtcNow.Ticks);
             PutDataRequest request = mapRequest.AsPutDataRequest();
             if (urgent) request.SetUrgent();
             WearableClass.DataApi.PutDataItem(mGoogleApiClient, request);
@@ -233,7 +233,7 @@ namespace SimpleWeather.Droid.App
             PutDataMapRequest mapRequest = PutDataMapRequest.Create(WearableHelper.LocationPath);
             var homeData = Settings.HomeData;
             mapRequest.DataMap.PutString("locationData", homeData.ToJson());
-            mapRequest.DataMap.PutLong("update_time", DateTimeOffset.Now.ToUnixTimeSeconds());
+            mapRequest.DataMap.PutLong("update_time", DateTime.UtcNow.Ticks);
             PutDataRequest request = mapRequest.AsPutDataRequest();
             if (urgent) request.SetUrgent();
             WearableClass.DataApi.PutDataItem(mGoogleApiClient, request);

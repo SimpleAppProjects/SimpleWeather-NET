@@ -641,7 +641,7 @@ namespace SimpleWeather.UWP
 
                     // Save location as last known
                     lastGPSLocData.SetData(view, newGeoPos);
-                    Settings.SaveLastGPSLocData();
+                    Settings.SaveLastGPSLocData(lastGPSLocData);
 
                     location = lastGPSLocData;
                     geoPos = newGeoPos;

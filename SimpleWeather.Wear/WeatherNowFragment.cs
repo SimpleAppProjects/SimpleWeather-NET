@@ -496,7 +496,7 @@ namespace SimpleWeather.Droid.Wear
                 {
                     // Reset locdata if source is different
                     if (locData.source != Settings.API)
-                        Settings.SaveLastGPSLocData(new LocationData());
+                        Settings.SaveHomeData(new LocationData());
 
                     if (await UpdateLocation())
                     {
@@ -640,7 +640,7 @@ namespace SimpleWeather.Droid.Wear
 
                     // Save location as last known
                     lastGPSLocData.SetData(view, location);
-                    Settings.SaveLastGPSLocData();
+                    Settings.SaveHomeData(lastGPSLocData);
 
                     this.location = lastGPSLocData;
                     mLocation = location;
