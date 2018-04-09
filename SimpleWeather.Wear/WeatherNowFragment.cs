@@ -215,9 +215,9 @@ namespace SimpleWeather.Droid.Wear
                         if (isDeviceSetup &&
                             connStatus == WearConnectionStatus.Connected)
                         {
-                            Activity.StartService(new Intent(Activity, typeof(WearableDataListenerService))
+                            Activity?.StartService(new Intent(Activity, typeof(WearableDataListenerService))
                                 .SetAction(WearableDataListenerService.ACTION_REQUESTLOCATIONUPDATE));
-                            Activity.StartService(new Intent(Activity, typeof(WearableDataListenerService))
+                            Activity?.StartService(new Intent(Activity, typeof(WearableDataListenerService))
                                 .SetAction(WearableDataListenerService.ACTION_REQUESTWEATHERUPDATE));
 
                             ResetTimer();
@@ -380,8 +380,8 @@ namespace SimpleWeather.Droid.Wear
             }
 
             // Send request to service to get weather data
-            refreshLayout.Refreshing = true;
-            Activity.StartService(new Intent(Activity, typeof(WearableDataListenerService))
+            Activity?.RunOnUiThread(() => refreshLayout.Refreshing = true);
+            Activity?.StartService(new Intent(Activity, typeof(WearableDataListenerService))
                 .SetAction(WearableDataListenerService.ACTION_REQUESTSETUPSTATUS));
 
             timer.Start();
@@ -525,7 +525,7 @@ namespace SimpleWeather.Droid.Wear
 
         private async Task RefreshWeather(bool forceRefresh)
         {
-            refreshLayout.Refreshing = true;
+            Activity?.RunOnUiThread(() => refreshLayout.Refreshing = true);
             if (Settings.DataSync == WearableDataSync.Off)
                 await wLoader.LoadWeatherData(forceRefresh);
             else
