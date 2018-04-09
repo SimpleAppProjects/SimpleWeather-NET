@@ -4,6 +4,7 @@ using SQLite;
 using SQLiteNetExtensions.Attributes;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -310,6 +311,9 @@ namespace SimpleWeather.WeatherData
 
                 while (reader.Read() && reader.TokenType != JsonToken.EndObject)
                 {
+                    if (reader.TokenType == JsonToken.StartObject)
+                        reader.Read(); // StartObject
+
                     string property = reader.Value?.ToString();
                     reader.Read(); // prop value
 
@@ -328,10 +332,16 @@ namespace SimpleWeather.WeatherData
                             obj.Attribution = reader.Value.ToString();
                             break;
                         case "Date":
-                            obj.Date = DateTimeOffset.Parse(reader.Value.ToString());
+                            bool parsed = DateTimeOffset.TryParseExact(reader.Value.ToString(), "dd.MM.yyyy HH:mm:ss zzzz", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset result);
+                            if (!parsed) // If we can't parse try without format
+                                result = DateTimeOffset.Parse(reader.Value.ToString());
+                            obj.Date = result;
                             break;
                         case "ExpiresDate":
-                            obj.ExpiresDate = DateTimeOffset.Parse(reader.Value.ToString());
+                            parsed = DateTimeOffset.TryParseExact(reader.Value.ToString(), "dd.MM.yyyy HH:mm:ss zzzz", CultureInfo.InvariantCulture, DateTimeStyles.None, out result);
+                            if (!parsed) // If we can't parse try without format
+                                result = DateTimeOffset.Parse(reader.Value.ToString());
+                            obj.ExpiresDate = result;
                             break;
                         case "Notified":
                             obj.Notified = (bool)reader.Value;
@@ -373,11 +383,11 @@ namespace SimpleWeather.WeatherData
 
             // "Date" : ""
             writer.WritePropertyName("Date");
-            writer.WriteValue(Date);
+            writer.WriteValue(Date.ToString("dd.MM.yyyy HH:mm:ss zzzz"));
 
             // "ExpiresDate" : ""
             writer.WritePropertyName("ExpiresDate");
-            writer.WriteValue(ExpiresDate);
+            writer.WriteValue(ExpiresDate.ToString("dd.MM.yyyy HH:mm:ss zzzz"));
 
             // "Notified" : ""
             writer.WritePropertyName("Notified");

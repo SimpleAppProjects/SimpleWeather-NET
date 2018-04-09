@@ -248,7 +248,7 @@ namespace SimpleWeather.Utils
                 await locationDB.InsertOrReplaceAsync(loc);
                 var fav = new Favorites() { query = loc.query, position = locationData.IndexOf(loc) };
                 favs.Add(fav);
-                await locationDB.InsertAsync(fav);
+                await locationDB.InsertOrReplaceAsync(fav);
             }
 
             var locs = await locationDB.Table<LocationData>().ToListAsync();
@@ -269,7 +269,7 @@ namespace SimpleWeather.Utils
         {
             await locationDB.InsertOrReplaceAsync(location);
             int pos = await locationDB.Table<LocationData>().CountAsync();
-            await locationDB.InsertAsync(new Favorites() { query = location.query, position = pos });
+            await locationDB.InsertOrReplaceAsync(new Favorites() { query = location.query, position = pos });
         }
 
         public static async Task UpdateLocation(LocationData location)
@@ -290,7 +290,7 @@ namespace SimpleWeather.Utils
 
             // Add updated location with new query (pkey)
             await locationDB.InsertOrReplaceAsync(location);
-            await locationDB.InsertAsync(new Favorites() { query = location.query, position = pos });
+            await locationDB.InsertOrReplaceAsync(new Favorites() { query = location.query, position = pos });
         }
 
         public static async Task DeleteLocations()
@@ -340,7 +340,7 @@ namespace SimpleWeather.Utils
             if (FollowGPS)
                 homeData = Task.Run(() => GetLastGPSLocData()).Result;
             else
-                homeData = Task.Run(async () => (await GetFavorites()).First()).Result;
+                homeData = Task.Run(async () => (await GetFavorites()).FirstOrDefault()).Result;
 
             return homeData;
         }

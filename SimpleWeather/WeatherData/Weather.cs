@@ -419,7 +419,7 @@ namespace SimpleWeather.WeatherData
                             obj.location = Location.FromJson(reader);
                             break;
                         case "update_time":
-                            bool parsed = DateTimeOffset.TryParse(reader.Value.ToString(), out DateTimeOffset result);
+                            bool parsed = DateTimeOffset.TryParseExact(reader.Value.ToString(), "dd.MM.yyyy HH:mm:ss zzzz", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset result);
                             if (!parsed) // If we can't parse as DateTimeOffset try DateTime (data could be old)
                                 result = DateTime.Parse(reader.Value.ToString());
                             else
@@ -471,16 +471,16 @@ namespace SimpleWeather.WeatherData
                             obj.precipitation = Precipitation.FromJson(reader);
                             break;
                         case "ttl":
-                            obj.ttl = reader.Value.ToString();
+                            obj.ttl = reader.Value?.ToString();
                             break;
                         case "source":
-                            obj.source = reader.Value.ToString();
+                            obj.source = reader.Value?.ToString();
                             break;
                         case "query":
-                            obj.query = reader.Value.ToString();
+                            obj.query = reader.Value?.ToString();
                             break;
                         case "locale":
-                            obj.locale = reader.Value.ToString();
+                            obj.locale = reader.Value?.ToString();
                             break;
                     }
                 }
@@ -507,7 +507,7 @@ namespace SimpleWeather.WeatherData
 
             // "update_time" : ""
             writer.WritePropertyName("update_time");
-            writer.WriteValue(update_time);
+            writer.WriteValue(update_time.ToString("dd.MM.yyyy HH:mm:ss zzzz"));
 
             // "forecast" : ""
             writer.WritePropertyName("forecast");
@@ -689,6 +689,9 @@ namespace SimpleWeather.WeatherData
 
                 while (reader.Read() && reader.TokenType != JsonToken.EndObject)
                 {
+                    if (reader.TokenType == JsonToken.StartObject)
+                        reader.Read(); // StartObject
+
                     string property = reader.Value?.ToString();
                     reader.Read(); // prop value
 
@@ -847,6 +850,9 @@ namespace SimpleWeather.WeatherData
 
                 while (reader.Read() && reader.TokenType != JsonToken.EndObject)
                 {
+                    if (reader.TokenType == JsonToken.StartObject)
+                        reader.Read(); // StartObject
+
                     string property = reader.Value?.ToString();
                     reader.Read(); // prop value
 
@@ -1040,6 +1046,9 @@ namespace SimpleWeather.WeatherData
 
                 while (reader.Read() && reader.TokenType != JsonToken.EndObject)
                 {
+                    if (reader.TokenType == JsonToken.StartObject)
+                        reader.Read(); // StartObject
+
                     string property = reader.Value?.ToString();
                     reader.Read(); // prop value
 
@@ -1180,6 +1189,9 @@ namespace SimpleWeather.WeatherData
 
                 while (reader.Read() && reader.TokenType != JsonToken.EndObject)
                 {
+                    if (reader.TokenType == JsonToken.StartObject)
+                        reader.Read(); // StartObject
+
                     string property = reader.Value?.ToString();
                     reader.Read(); // prop value
 
@@ -1354,6 +1366,9 @@ namespace SimpleWeather.WeatherData
 
                 while (reader.Read() && reader.TokenType != JsonToken.EndObject)
                 {
+                    if (reader.TokenType == JsonToken.StartObject)
+                        reader.Read(); // StartObject
+
                     string property = reader.Value?.ToString();
                     reader.Read(); // prop value
 
@@ -1523,6 +1538,9 @@ namespace SimpleWeather.WeatherData
 
                 while (reader.Read() && reader.TokenType != JsonToken.EndObject)
                 {
+                    if (reader.TokenType == JsonToken.StartObject)
+                        reader.Read(); // StartObject
+
                     string property = reader.Value?.ToString();
                     reader.Read(); // prop value
 
@@ -1661,6 +1679,9 @@ namespace SimpleWeather.WeatherData
 
                 while (reader.Read() && reader.TokenType != JsonToken.EndObject)
                 {
+                    if (reader.TokenType == JsonToken.StartObject)
+                        reader.Read(); // StartObject
+
                     string property = reader.Value?.ToString();
                     reader.Read(); // prop value
 
@@ -1772,6 +1793,9 @@ namespace SimpleWeather.WeatherData
 
                 while (reader.Read() && reader.TokenType != JsonToken.EndObject)
                 {
+                    if (reader.TokenType == JsonToken.StartObject)
+                        reader.Read(); // StartObject
+
                     string property = reader.Value?.ToString();
                     reader.Read(); // prop value
 
