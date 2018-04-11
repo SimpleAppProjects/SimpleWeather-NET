@@ -14,6 +14,7 @@ using Android.Runtime;
 using Android.Util;
 using Android.Views;
 using Android.Widget;
+using SimpleWeather.Droid.App.Widgets;
 using SimpleWeather.Utils;
 
 namespace SimpleWeather.Droid.App
@@ -121,7 +122,19 @@ namespace SimpleWeather.Droid.App
             }
             else if (messageEvent.Path.Equals(WearableHelper.WeatherPath))
             {
-                CreateWeatherDataRequest(true);
+                var data = messageEvent.GetData();
+                bool force = false;
+                if (data != null && data.Length > 0)
+                    force = BitConverter.ToBoolean(data, 0);
+
+                if (!force)
+                    CreateWeatherDataRequest(true);
+                else
+                {
+                    // Refresh weather data
+                    WeatherWidgetService.EnqueueWork(this, new Intent(this, typeof(WeatherWidgetService))
+                        .SetAction(WeatherWidgetService.ACTION_UPDATEWEATHER));
+                }
             }
             else if (messageEvent.Path.Equals(WearableHelper.IsSetupPath))
             {

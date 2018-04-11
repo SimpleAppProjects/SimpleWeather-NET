@@ -192,6 +192,7 @@
     <Compile Include="Controls\LocationQuery.cs" />
     <Compile Include="Controls\TextForecastItem.cs" />
     <Compile Include="Controls\WeatherAlertPanel.cs" />
+    <Compile Include="Helpers\AcceptDenyDialogBuilder.cs" />
     <Compile Include="Helpers\ActionModeCallback.cs" />
     <Compile Include="Helpers\ConfirmationResultReceiver.cs" />
     <Compile Include="Helpers\IWeatherViewLoadedListener.cs" />

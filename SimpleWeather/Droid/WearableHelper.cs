@@ -14,7 +14,6 @@ namespace SimpleWeather.Droid
     {
         Off = 0,
         DeviceOnly,
-        WhenAvailable
     }
 
     public enum WearConnectionStatus

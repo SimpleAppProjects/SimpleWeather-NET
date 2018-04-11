@@ -3,11 +3,9 @@
     <string-array name="datasync_entries">
         <item>@string/pref_sync_off</item>
         <item>@string/pref_sync_deviceonly</item>
-        <item>@string/pref_sync_whenavailable</item>
     </string-array>
     <string-array name="datasync_values">
         <item>0</item>
         <item>1</item>
-        <item>2</item>
     </string-array>
 </resources>

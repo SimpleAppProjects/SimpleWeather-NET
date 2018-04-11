@@ -43,7 +43,13 @@ namespace SimpleWeather.Utils
         // Units
         public const string Fahrenheit = "F";
         public const string Celsius = "C";
-        private const string DEFAULT_UPDATE_INTERVAL = "30"; // 30 minutes
+#if !__ANDROID_WEAR__
+        private const string DEFAULT_UPDATE_INTERVAL = "60"; // 60 minutes (1hr)
+        public const int DefaultInterval = 60;
+#else
+        private const string DEFAULT_UPDATE_INTERVAL = "120"; // 120 minutes (2hrs)
+        public const int DefaultInterval = 120;
+#endif
 
         // Settings Keys
         private const string KEY_API = "API";

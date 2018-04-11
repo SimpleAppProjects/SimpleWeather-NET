@@ -26,6 +26,7 @@ using Android.Views.InputMethods;
 using Android.Text;
 using Android.Util;
 using Android.Support.Wearable.Views;
+using SimpleWeather.Droid.Wear.Helpers;
 
 namespace SimpleWeather.Droid.Wear
 {
@@ -159,14 +160,14 @@ namespace SimpleWeather.Droid.Wear
                     StartActivity(new Intent(this, typeof(SettingsActivity)));
                     break;
                 case Resource.Id.menu_setupfromphone:
-                    var alertBuilder = new AlertDialog.Builder(this);
-                    alertBuilder.SetMessage(Resource.String.prompt_confirmsetup);
-                    alertBuilder.SetNegativeButton(Resource.String.generic_cancel, (s, e) => { });
-                    alertBuilder.SetPositiveButton(Resource.String.generic_yes, (sender, e) =>
-                    {
-                        StartActivityForResult(typeof(SetupSyncActivity), REQUEST_CODE_SYNC_ACTIVITY);
-                    });
-                    alertBuilder.Create().Show();
+                    var alertBuilder = new AcceptDenyDialogBuilder(this)
+                        .SetMessage(Resource.String.prompt_confirmsetup)
+                        .SetNegativeButton((sender, e) => { })
+                        .SetPositiveButton((sender, e) =>
+                        {
+                            StartActivityForResult(typeof(SetupSyncActivity), REQUEST_CODE_SYNC_ACTIVITY);
+                        })
+                        .Show();
                     break;
             }
 
@@ -184,7 +185,7 @@ namespace SimpleWeather.Droid.Wear
                     {
                         if (Settings.HomeData is WeatherData.LocationData location)
                         {
-                            Settings.DataSync = WearableDataSync.WhenAvailable;
+                            Settings.DataSync = WearableDataSync.DeviceOnly;
                             Settings.WeatherLoaded = true;
                             // Start WeatherNow Activity
                             StartActivity(new Intent(this, typeof(MainActivity)));

@@ -75,6 +75,7 @@ namespace SimpleWeather.Droid.Wear
             private const string KEY_FOLLOWGPS = "key_followgps";
             private const string KEY_API = "API";
             private const string KEY_APIKEY = "API_KEY";
+            private const string KEY_USECELSIUS = "key_usecelsius";
             private const string KEY_DATASYNC = "key_datasync";
             private const string KEY_CONNSTATUS = "key_connectionstatus";
 
@@ -198,10 +199,15 @@ namespace SimpleWeather.Droid.Wear
                 syncPreference = (ListPreference)FindPreference(KEY_DATASYNC);
                 syncPreference.PreferenceChange += (object sender, Preference.PreferenceChangeEventArgs e) =>
                 {
+                    int newValue = int.Parse(e.NewValue.ToString());
+
                     ListPreference pref = e.Preference as ListPreference;
-                    pref.Summary = pref.GetEntries()[int.Parse(e.NewValue.ToString())];
+                    pref.Summary = pref.GetEntries()[newValue];
+
+                    EnableSyncedSettings((WearableDataSync)newValue == WearableDataSync.Off);
                 };
                 syncPreference.Summary = syncPreference.GetEntries()[int.Parse(syncPreference.Value)];
+                EnableSyncedSettings(Settings.DataSync == WearableDataSync.Off);
 
                 connStatusPref = FindPreference(KEY_CONNSTATUS);
                 connStatusReceiver = new ConnectionStatusReceiver();
@@ -227,6 +233,13 @@ namespace SimpleWeather.Droid.Wear
                             break;
                     }
                 };
+            }
+
+            private void EnableSyncedSettings(bool enable)
+            {
+                FindPreference(KEY_USECELSIUS).Enabled = enable;
+                followGps.Enabled = enable;
+                apiCategory.Enabled = enable;
             }
 
             private void ConnStatusPref_PreferenceClick(object sender, Preference.PreferenceClickEventArgs e)

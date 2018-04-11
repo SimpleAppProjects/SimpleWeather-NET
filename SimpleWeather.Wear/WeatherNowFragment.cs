@@ -44,7 +44,7 @@ namespace SimpleWeather.Droid.Wear
         // Weather Credit
         private TextView weatherCredit;
 
-        Helpers.IWeatherViewLoadedListener mCallback;
+        private IWeatherViewLoadedListener mCallback;
 
         // GPS location
         private FusedLocationProviderClient mFusedLocationClient;
@@ -54,11 +54,12 @@ namespace SimpleWeather.Droid.Wear
         private const int PERMISSION_LOCATION_REQUEST_CODE = 0;
 
         // Data
-        LocalBroadcastReceiver dataReceiver;
+        private LocalBroadcastReceiver dataReceiver;
         private bool receiverRegistered = false;
-        System.Timers.Timer timer;
+        // Timer for timing out of operations
+        private System.Timers.Timer timer;
 
-        public async void OnWeatherLoaded(LocationData location, Weather weather)
+        public void OnWeatherLoaded(LocationData location, Weather weather)
         {
             if (weather != null)
             {
@@ -69,20 +70,23 @@ namespace SimpleWeather.Droid.Wear
                     SetView(weatherView);
                     mCallback?.OnWeatherViewUpdated(weatherView);
                 });
-            }
 
-            if (!loaded)
-            {
-                TimeSpan span = DateTimeOffset.Now - weather.update_time;
-                if (span.TotalMinutes > 120 && Settings.DataSync != WearableDataSync.DeviceOnly)
+                if (!loaded)
                 {
-                    await Restore();
-                }
+                    TimeSpan span = DateTimeOffset.Now - weather.update_time;
+                    if (span.TotalMinutes > Settings.DefaultInterval)
+                    {
+                        // send request to refresh data on connected device
+                        Activity?.StartService(new Intent(Activity, typeof(WearableDataListenerService))
+                            .SetAction(WearableDataListenerService.ACTION_REQUESTWEATHERUPDATE)
+                            .PutExtra(WearableDataListenerService.EXTRA_FORCEUPDATE, true));
+                    }
 
-                loaded = true;
+                    loaded = true;
+                }
             }
-            else
-                Activity?.RunOnUiThread(() => refreshLayout.Refreshing = false);
+
+            Activity?.RunOnUiThread(() => refreshLayout.Refreshing = false);
         }
 
         public void OnWeatherError(WeatherException wEx)
@@ -191,18 +195,24 @@ namespace SimpleWeather.Droid.Wear
                     if (WearableHelper.WeatherPath.Equals(intent.Action) ||
                         (!loaded && location != null))
                     {
+                        if (timer.Enabled)
+                            timer.Stop();
+
+                        // We got all our data; now load the weather
                         wLoader = new WeatherDataLoader(this, this, location);
                         await wLoader.ForceLoadSavedWeatherData();
                     }
 
                     if (WearableHelper.LocationPath.Equals(intent.Action))
                     {
+                        // We got the location data
                         location = Settings.HomeData;
                         loaded = false;
                     }
                 }
                 else if (WearableHelper.ErrorPath.Equals(intent?.Action))
                 {
+                    // An error occurred; cancel the sync operation
                     await CancelDataSync();
                 }
                 else if (WearableHelper.IsSetupPath.Equals(intent?.Action))
@@ -215,6 +225,7 @@ namespace SimpleWeather.Droid.Wear
                         if (isDeviceSetup &&
                             connStatus == WearConnectionStatus.Connected)
                         {
+                            // Device is setup and connected; proceed with sync
                             Activity?.StartService(new Intent(Activity, typeof(WearableDataListenerService))
                                 .SetAction(WearableDataListenerService.ACTION_REQUESTLOCATIONUPDATE));
                             Activity?.StartService(new Intent(Activity, typeof(WearableDataListenerService))
@@ -224,6 +235,7 @@ namespace SimpleWeather.Droid.Wear
                         }
                         else
                         {
+                            // Device is not connected; cancel sync
                             await CancelDataSync();
                         }
                     }
@@ -285,7 +297,9 @@ namespace SimpleWeather.Droid.Wear
             timer = new System.Timers.Timer(30000); // 30sec
             timer.Elapsed += async (sender, e) =>
             {
-                // We hit interval, stop and load saved data
+                // We hit the interval
+                // Data syncing is taking a long time to setup
+                // Stop and load saved data
                 await CancelDataSync();
             };
 
@@ -306,126 +320,6 @@ namespace SimpleWeather.Droid.Wear
             mCallback = null;
         }
 
-        private async Task Resume()
-        {
-            /* Update view on resume
-             * ex. If temperature unit changed
-             */
-            LocationData homeData = Settings.HomeData;
-
-            // New Page = loaded - true
-            // Navigating back to frag = !loaded - false
-            if (loaded || wLoader == null)
-            {
-                await Restore();
-                loaded = true;
-            }
-            else if (wLoader != null && !loaded)
-            {
-                var culture = System.Globalization.CultureInfo.CurrentCulture;
-                var locale = wm.LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
-
-                // Reset if source || locale is different
-                if (weatherView.WeatherSource != Settings.API ||
-                    wm.SupportsWeatherLocale && weatherView.WeatherLocale != locale)
-                {
-                    await Restore();
-                    loaded = true;
-                }
-                else if (wLoader.GetWeather() != null)
-                {
-                    Weather weather = wLoader.GetWeather();
-
-                    // Update weather if needed on resume
-                    if (Settings.FollowGPS && await UpdateLocation())
-                    {
-                        // Setup loader from updated location
-                        wLoader = new WeatherDataLoader(this, this, this.location);
-                        await RefreshWeather(false);
-                        loaded = true;
-                    }
-                    else
-                    {
-                        // Check weather data expiration
-                        if (!int.TryParse(weather.ttl, out int ttl))
-                            ttl = 60;
-                        TimeSpan span = DateTimeOffset.Now - weather.update_time;
-                        if (span.TotalMinutes > ttl)
-                            await RefreshWeather(false);
-                        else
-                        {
-                            weatherView.UpdateView(wLoader.GetWeather());
-                            SetView(weatherView);
-                            mCallback?.OnWeatherViewUpdated(weatherView);
-                            loaded = true;
-                        }
-                    }
-                }
-            }
-        }
-
-        private void DataSyncResume()
-        {
-            if (!receiverRegistered)
-            {
-                IntentFilter filter = new IntentFilter();
-                filter.AddAction(WearableHelper.SettingsPath);
-                filter.AddAction(WearableHelper.LocationPath);
-                filter.AddAction(WearableHelper.WeatherPath);
-                filter.AddAction(WearableHelper.IsSetupPath);
-
-                LocalBroadcastManager.GetInstance(Activity)
-                    .RegisterReceiver(dataReceiver, filter);
-                receiverRegistered = true;
-            }
-
-            // Send request to service to get weather data
-            Activity?.RunOnUiThread(() => refreshLayout.Refreshing = true);
-            Activity?.StartService(new Intent(Activity, typeof(WearableDataListenerService))
-                .SetAction(WearableDataListenerService.ACTION_REQUESTSETUPSTATUS));
-
-            timer.Start();
-        }
-
-        private async Task CancelDataSync()
-        {
-            if (Settings.DataSync == WearableDataSync.WhenAvailable)
-            {
-                await Resume();
-            }
-            else if (Settings.DataSync == WearableDataSync.DeviceOnly)
-            {
-                if (location == null && Settings.HomeData != null)
-                {
-                    location = Settings.HomeData;
-                    wLoader = new WeatherDataLoader(this, this, Settings.HomeData);
-                    await wLoader.ForceLoadSavedWeatherData();
-                }
-                else
-                {
-                    Activity?.RunOnUiThread(() => 
-                    {
-                        Toast.MakeText(Activity, GetString(Resource.String.werror_noweather), ToastLength.Long).Show();
-                    });
-                }
-            }
-            else
-            {
-                Activity?.RunOnUiThread(() =>
-                {
-                    Toast.MakeText(Activity, GetString(Resource.String.werror_noweather), ToastLength.Long).Show();
-                });
-            }
-
-            timer.Stop();
-        }
-
-        private void ResetTimer()
-        {
-            timer.Stop();
-            timer.Start();
-        }
-
         public override async void OnResume()
         {
             base.OnResume();
@@ -439,7 +333,7 @@ namespace SimpleWeather.Droid.Wear
                 if (Settings.DataSync == WearableDataSync.Off)
                     await Resume();
                 else
-                    DataSyncResume();
+                    await DataSyncResume();
             }
         }
 
@@ -453,7 +347,7 @@ namespace SimpleWeather.Droid.Wear
                 if (Settings.DataSync == WearableDataSync.Off)
                     await Resume();
                 else
-                    DataSyncResume();
+                    await DataSyncResume();
             }
             else if (hidden)
                 loaded = false;
@@ -523,13 +417,180 @@ namespace SimpleWeather.Droid.Wear
             await RefreshWeather(forceRefresh);
         }
 
+        private async Task Resume()
+        {
+            /* Update view on resume
+             * ex. If temperature unit changed
+             */
+            // New Page = loaded - true
+            // Navigating back to frag = !loaded - false
+            if (loaded || wLoader == null)
+            {
+                await Restore();
+                loaded = true;
+            }
+            else if (wLoader != null && !loaded)
+            {
+                var culture = System.Globalization.CultureInfo.CurrentCulture;
+                var locale = wm.LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
+
+                // Reset if source || locale is different
+                if (weatherView.WeatherSource != Settings.API ||
+                    wm.SupportsWeatherLocale && weatherView.WeatherLocale != locale)
+                {
+                    await Restore();
+                    loaded = true;
+                }
+                else if (wLoader.GetWeather() != null)
+                {
+                    Weather weather = wLoader.GetWeather();
+
+                    // Update weather if needed on resume
+                    if (Settings.FollowGPS && await UpdateLocation())
+                    {
+                        // Setup loader from updated location
+                        wLoader = new WeatherDataLoader(this, this, this.location);
+                        await RefreshWeather(false);
+                        loaded = true;
+                    }
+                    else
+                    {
+                        // Check weather data expiration
+                        TimeSpan span = DateTimeOffset.Now - weather.update_time;
+                        if (span.TotalMinutes > Settings.DefaultInterval)
+                            await RefreshWeather(false);
+                        else
+                        {
+                            weatherView.UpdateView(wLoader.GetWeather());
+                            SetView(weatherView);
+                            mCallback?.OnWeatherViewUpdated(weatherView);
+                            loaded = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void DataSyncRestore()
+        {
+            // Send request to service to get weather data
+            Activity?.RunOnUiThread(() => refreshLayout.Refreshing = true);
+            Activity?.StartService(new Intent(Activity, typeof(WearableDataListenerService))
+                .SetAction(WearableDataListenerService.ACTION_REQUESTSETUPSTATUS));
+
+            // Start timeout timer
+            ResetTimer();
+        }
+
+        private async Task DataSyncResume()
+        {
+            if (!receiverRegistered)
+            {
+                IntentFilter filter = new IntentFilter();
+                filter.AddAction(WearableHelper.SettingsPath);
+                filter.AddAction(WearableHelper.LocationPath);
+                filter.AddAction(WearableHelper.WeatherPath);
+                filter.AddAction(WearableHelper.IsSetupPath);
+
+                LocalBroadcastManager.GetInstance(Activity)
+                    .RegisterReceiver(dataReceiver, filter);
+                receiverRegistered = true;
+            }
+
+            /* Update view on resume
+             * ex. If temperature unit changed
+             */
+            // New Page = loaded - true
+            // Navigating back to frag = !loaded - false
+            if (loaded || wLoader == null)
+            {
+                DataSyncRestore();
+            }
+            else if (wLoader != null && !loaded)
+            {
+                if (wLoader.GetWeather() != null)
+                {
+                    Weather weather = wLoader.GetWeather();
+                    /*
+                        DateTime < 0 - This instance is earlier than value.
+                        DateTime == 0 - This instance is the same as value.
+                        DateTime > 0 - This instance is later than value.
+                    */
+                    if (Settings.UpdateTime.CompareTo(weather.update_time.UtcDateTime) > 0)
+                    {
+                        // Data was updated while we we're away; loaded it up
+                        if (location == null || !location.Equals(Settings.HomeData))
+                            location = Settings.HomeData;
+
+                        Activity?.RunOnUiThread(() => refreshLayout.Refreshing = true);
+
+                        wLoader = new WeatherDataLoader(this, this, this.location);
+                        await wLoader.ForceLoadSavedWeatherData();
+                    }
+                    else
+                    {
+                        // Check weather data expiration
+                        TimeSpan span = DateTimeOffset.Now - weather.update_time;
+                        if (span.TotalMinutes > Settings.DefaultInterval)
+                        {
+                            // send request to refresh data on connected device
+                            Activity?.StartService(new Intent(Activity, typeof(WearableDataListenerService))
+                                .SetAction(WearableDataListenerService.ACTION_REQUESTWEATHERUPDATE)
+                                .PutExtra(WearableDataListenerService.EXTRA_FORCEUPDATE, true));
+                        }
+
+                        weatherView.UpdateView(wLoader.GetWeather());
+                        SetView(weatherView);
+                        mCallback?.OnWeatherViewUpdated(weatherView);
+                        loaded = true;
+                    }
+                }
+                else
+                {
+                    // Data is null; restore
+                    DataSyncRestore();
+                }
+            }
+        }
+
+        private async Task CancelDataSync()
+        {
+            if (timer.Enabled)
+                timer.Stop();
+
+            if (Settings.DataSync == WearableDataSync.DeviceOnly)
+            {
+                if (location == null && Settings.HomeData != null)
+                {
+                    // Load whatever we have available
+                    location = Settings.HomeData;
+                    wLoader = new WeatherDataLoader(this, this, location);
+                    await wLoader.ForceLoadSavedWeatherData();
+                }
+                else
+                {
+                    Activity?.RunOnUiThread(() =>
+                    {
+                        Toast.MakeText(Activity, GetString(Resource.String.werror_noweather), ToastLength.Long).Show();
+                    });
+                }
+            }
+        }
+
+        private void ResetTimer()
+        {
+            if (timer.Enabled)
+                timer.Stop();
+            timer.Start();
+        }
+
         private async Task RefreshWeather(bool forceRefresh)
         {
             Activity?.RunOnUiThread(() => refreshLayout.Refreshing = true);
             if (Settings.DataSync == WearableDataSync.Off)
                 await wLoader.LoadWeatherData(forceRefresh);
             else
-                DataSyncResume();
+                await DataSyncResume();
         }
 
         private void SetView(WeatherNowViewModel weatherView)

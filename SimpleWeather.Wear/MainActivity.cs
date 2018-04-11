@@ -11,10 +11,12 @@ using Android.Support.Wear.Widget.Drawer;
 using Android.Support.Wearable.Activity;
 using Android.Support.Wearable.Views;
 using Android.Views;
+using Android.Widget;
 using Google.Android.Wearable.Intent;
 using Java.Lang;
 using SimpleWeather.Controls;
 using SimpleWeather.Droid.Wear.Helpers;
+using SimpleWeather.Utils;
 
 namespace SimpleWeather.Droid.Wear
 {
@@ -213,6 +215,28 @@ namespace SimpleWeather.Droid.Wear
         public void OnWeatherViewUpdated(WeatherNowViewModel weatherNowView)
         {
             mNavDrawerAdapter.UpdateNavDrawerItems(weatherNowView);
+        }
+
+        protected override void OnResume()
+        {
+            base.OnResume();
+
+            if (mWearableActionDrawer != null)
+            {
+                var menuitem = mWearableActionDrawer.Menu?.FindItem(Resource.Id.menu_changelocation);
+
+                if (Settings.DataSync != WearableDataSync.Off && menuitem != null)
+                {
+                    // remove change location if exists
+                    mWearableActionDrawer.Menu.RemoveItem(Resource.Id.menu_changelocation);
+                }
+                else if (Settings.DataSync == WearableDataSync.Off && menuitem == null)
+                {
+                    // restore all menu options
+                    mWearableActionDrawer.Menu.Clear();
+                    MenuInflater.Inflate(Resource.Menu.main_botton_drawer_menu, mWearableActionDrawer.Menu);
+                }
+            }
         }
     }
 

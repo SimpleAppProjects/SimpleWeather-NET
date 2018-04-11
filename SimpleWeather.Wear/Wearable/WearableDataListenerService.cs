@@ -51,6 +51,7 @@ namespace SimpleWeather.Droid.Wear
         public const String EXTRA_SUCCESS = "SimpleWeather.Droid.Wear.extra.SUCCESS";
         public const String EXTRA_CONNECTIONSTATUS = "SimpleWeather.Droid.Wear.extra.CONNECTION_STATUS";
         public const String EXTRA_DEVICESETUPSTATUS = "SimpleWeather.Droid.Wear.extra.DEVICE_SETUP_STATUS";
+        public const String EXTRA_FORCEUPDATE = "SimpleWeather.Droid.Wear.extra.FORCE_UPDATE";
 
         private GoogleApiClient mGoogleApiClient;
         private INode mPhoneNodeWithApp;
@@ -220,7 +221,11 @@ namespace SimpleWeather.Droid.Wear
             }
             else if (ACTION_REQUESTWEATHERUPDATE.Equals(intent?.Action))
             {
-                SendWeatherRequest();
+                bool forceUpdate = (bool)intent?.GetBooleanExtra(EXTRA_FORCEUPDATE, false);
+                if (!forceUpdate)
+                    SendWeatherRequest();
+                else
+                    SendWeatherUpdateRequest();
                 return StartCommandResult.NotSticky;
             }
             else if (ACTION_REQUESTSETUPSTATUS.Equals(intent?.Action))
@@ -392,6 +397,20 @@ namespace SimpleWeather.Droid.Wear
                 // Update with data
                 UpdateWeather(DataMapItem.FromDataItem(data.DataItem).DataMap);
             }
+        }
+
+        private async void SendWeatherUpdateRequest()
+        {
+            if (!(await Connect()))
+            {
+                LocalBroadcastManager.GetInstance(this).SendBroadcast(
+                    new Intent(WearableHelper.ErrorPath));
+                return;
+            }
+
+            // Send message to device to get settings
+            var sendMessageResult = await WearableClass.MessageApi.SendMessageAsync(mGoogleApiClient, mPhoneNodeWithApp.Id,
+                WearableHelper.WeatherPath, BitConverter.GetBytes(true));
         }
 
         private async void SendSetupStatusRequest()
