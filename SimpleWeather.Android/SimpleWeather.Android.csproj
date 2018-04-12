@@ -248,12 +248,6 @@
     <AndroidResource Include="Resources\drawable\side_nav_bar.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable-hdpi\ic_logo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable-mdpi\ic_logo.png" />
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\layout\activity_main.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -411,12 +405,6 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\xml\pref_credits.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout\credit_yahoo.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout\credit_wunderground.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\xml\pref_oslibs.xml" />
@@ -1667,12 +1655,6 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable-xxxhdpi\ic_wind_direction.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout\credit_openweathermap.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout\credit_metno.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable-hdpi\ic_error_white.png" />
