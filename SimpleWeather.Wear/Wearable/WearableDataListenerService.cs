@@ -58,6 +58,7 @@ namespace SimpleWeather.Droid.Wear
         private INode mPhoneNodeWithApp;
         private WearConnectionStatus mConnectionStatus = WearConnectionStatus.Disconnected;
         private bool Loaded = false;
+        public static bool AcceptDataUpdates = false;
 
         public override void OnCreate()
         {
@@ -135,25 +136,32 @@ namespace SimpleWeather.Droid.Wear
 
         public override void OnDataChanged(DataEventBuffer dataEvents)
         {
-            foreach (IDataEvent @event in dataEvents)
+            // Only handle data changes if
+            // DataSync is on,
+            // App hasn't been setup yet,
+            // Or if we are setup but want to change location and sync data (SetupSyncActivity)
+            if (Settings.DataSync != WearableDataSync.Off || AcceptDataUpdates)
             {
-                if (@event.Type == DataEvent.TypeChanged)
+                foreach (IDataEvent @event in dataEvents)
                 {
-                    IDataItem item = @event.DataItem;
-                    if (item.Uri.Path.CompareTo(WearableHelper.SettingsPath) == 0)
+                    if (@event.Type == DataEvent.TypeChanged)
                     {
-                        DataMap dataMap = DataMapItem.FromDataItem(item).DataMap;
-                        UpdateSettings(dataMap);
-                    }
-                    else if (item.Uri.Path.CompareTo(WearableHelper.LocationPath) == 0)
-                    {
-                        DataMap dataMap = DataMapItem.FromDataItem(item).DataMap;
-                        UpdateLocation(dataMap);
-                    }
-                    else if (item.Uri.Path.CompareTo(WearableHelper.WeatherPath) == 0)
-                    {
-                        DataMap dataMap = DataMapItem.FromDataItem(item).DataMap;
-                        UpdateWeather(dataMap);
+                        IDataItem item = @event.DataItem;
+                        if (item.Uri.Path.CompareTo(WearableHelper.SettingsPath) == 0)
+                        {
+                            DataMap dataMap = DataMapItem.FromDataItem(item).DataMap;
+                            UpdateSettings(dataMap);
+                        }
+                        else if (item.Uri.Path.CompareTo(WearableHelper.LocationPath) == 0)
+                        {
+                            DataMap dataMap = DataMapItem.FromDataItem(item).DataMap;
+                            UpdateLocation(dataMap);
+                        }
+                        else if (item.Uri.Path.CompareTo(WearableHelper.WeatherPath) == 0)
+                        {
+                            DataMap dataMap = DataMapItem.FromDataItem(item).DataMap;
+                            UpdateWeather(dataMap);
+                        }
                     }
                 }
             }

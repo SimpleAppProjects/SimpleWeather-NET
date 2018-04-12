@@ -79,6 +79,8 @@ namespace SimpleWeather.Droid.Wear
 
             LocalBroadcastManager.GetInstance(this)
                 .RegisterReceiver(mBroadcastReceiver, intentFilter);
+            // Allow service to parse OnDataChanged updates
+            WearableDataListenerService.AcceptDataUpdates = true;
         }
 
         protected override void OnPause()
@@ -89,6 +91,9 @@ namespace SimpleWeather.Droid.Wear
             SettingsDataReceived = false;
             LocationDataReceived = false;
             WeatherDataReceived = false;
+
+            // Disallow service to parse OnDataChanged updates
+            WearableDataListenerService.AcceptDataUpdates = false;
 
             base.OnPause();
         }
