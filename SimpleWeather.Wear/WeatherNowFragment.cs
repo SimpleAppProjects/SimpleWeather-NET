@@ -20,6 +20,7 @@ using Android.App;
 using Android.Gms.Location;
 using Android.Support.Wearable.Input;
 using SimpleWeather.Droid.Wear.Helpers;
+using SimpleWeather.Droid.Wear.Wearable;
 
 namespace SimpleWeather.Droid.Wear
 {
@@ -70,6 +71,11 @@ namespace SimpleWeather.Droid.Wear
                     SetView(weatherView);
                     mCallback?.OnWeatherViewUpdated(weatherView);
                 });
+
+                // Update complications if they haven't been already
+                WeatherComplicationIntentService.EnqueueWork(Activity,
+                    new Intent(Activity, typeof(WeatherComplicationIntentService))
+                        .SetAction(WeatherComplicationIntentService.ACTION_UPDATECOMPLICATIONS));
 
                 if (!loaded)
                 {

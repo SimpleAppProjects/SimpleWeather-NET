@@ -5,6 +5,7 @@ using Android.Util;
 using Java.IO;
 #if __ANDROID_WEAR__
 using SimpleWeather.Droid.Wear;
+using SimpleWeather.Droid.Wear.Wearable;
 #else
 using SimpleWeather.Droid.App;
 using SimpleWeather.Droid.App.Widgets;
@@ -70,11 +71,17 @@ namespace SimpleWeather.Utils
                         Application.Context.StartService(
                             new Intent(Application.Context, typeof(WearableDataListenerService))
                                 .SetAction(WearableDataListenerService.ACTION_SENDLOCATIONUPDATE));
-                        goto case KEY_USECELSIUS;
 #endif
+                        goto case KEY_USECELSIUS;
                     // Settings unit changed
                     case KEY_USECELSIUS:
-#if !__ANDROID_WEAR__
+#if __ANDROID_WEAR__
+                        WeatherComplicationIntentService.EnqueueWork(context,
+                            new Intent(Application.Context, typeof(WeatherComplicationIntentService))
+                                .SetAction(WeatherComplicationIntentService.ACTION_UPDATECOMPLICATIONS)
+                                .PutExtra(WeatherComplicationIntentService.EXTRA_FORCEUPDATE, true));
+                        break;
+#else
                         WeatherWidgetService.EnqueueWork(context, new Intent(context, typeof(WeatherWidgetService))
                             .SetAction(WeatherWidgetService.ACTION_UPDATEWEATHER));
                         break;

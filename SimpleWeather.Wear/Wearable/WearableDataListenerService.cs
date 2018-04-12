@@ -20,6 +20,7 @@ using Android.Views;
 using Android.Widget;
 using Google.Android.Wearable.Intent;
 using SimpleWeather.Droid.Wear.Helpers;
+using SimpleWeather.Droid.Wear.Wearable;
 using SimpleWeather.Utils;
 
 namespace SimpleWeather.Droid.Wear
@@ -538,6 +539,12 @@ namespace SimpleWeather.Droid.Wear
                         // Send callback to receiver
                         LocalBroadcastManager.GetInstance(this).SendBroadcast(
                             new Intent(WearableHelper.WeatherPath));
+
+                        // Update complications
+                        WeatherComplicationIntentService.EnqueueWork(this,
+                            new Intent(this, typeof(WeatherComplicationIntentService))
+                                .SetAction(WeatherComplicationIntentService.ACTION_UPDATECOMPLICATIONS)
+                                .PutExtra(WeatherComplicationIntentService.EXTRA_FORCEUPDATE, true));
                     }
                 }
             }

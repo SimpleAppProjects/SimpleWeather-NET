@@ -209,6 +209,7 @@
     <Compile Include="SwipeDismissFragment.cs" />
     <Compile Include="Utils\Settings.cs" />
     <Compile Include="Wearable\WearableDataListenerService.cs" />
+    <Compile Include="Wearable\WeatherComplicationService.cs" />
     <Compile Include="WeatherDetailsFragment.cs" />
     <Compile Include="WeatherListFragment.cs" />
     <Compile Include="WeatherNowFragment.cs" />
