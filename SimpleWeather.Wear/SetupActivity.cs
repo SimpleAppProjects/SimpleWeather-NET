@@ -298,7 +298,6 @@ namespace SimpleWeather.Droid.Wear
                 if (wm.SupportsAlerts && weather.weather_alerts != null)
                     await Settings.SaveWeatherAlerts(location, weather.weather_alerts);
                 await Settings.SaveWeatherData(weather);
-                Settings.UpdateTime = weather.update_time.UtcDateTime;
 
                 Settings.FollowGPS = true;
                 Settings.WeatherLoaded = true;

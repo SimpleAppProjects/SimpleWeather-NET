@@ -24,7 +24,9 @@ using SimpleWeather.Droid.Wear.Wearable;
 
 namespace SimpleWeather.Droid.Wear
 {
-    public class WeatherNowFragment : Fragment, IWeatherLoadedListener, IWeatherErrorListener
+    public class WeatherNowFragment : Fragment,
+        IWeatherLoadedListener, IWeatherErrorListener,
+        ISharedPreferencesOnSharedPreferenceChangeListener
     {
         private LocationData location = null;
         private bool loaded = false;
@@ -317,6 +319,7 @@ namespace SimpleWeather.Droid.Wear
             base.OnAttach(context);
 
             mCallback = (IWeatherViewLoadedListener)context;
+            App.Preferences.RegisterOnSharedPreferenceChangeListener(this);
         }
 
         public override void OnDetach()
@@ -324,6 +327,7 @@ namespace SimpleWeather.Droid.Wear
             base.OnDetach();
 
             mCallback = null;
+            App.Preferences.UnregisterOnSharedPreferenceChangeListener(this);
         }
 
         public override async void OnResume()
@@ -474,6 +478,22 @@ namespace SimpleWeather.Droid.Wear
                         }
                     }
                 }
+            }
+        }
+
+        public void OnSharedPreferenceChanged(ISharedPreferences sharedPreferences, string key)
+        {
+            if (String.IsNullOrWhiteSpace(key))
+                return;
+
+            switch(key)
+            {
+                case "key_datasync":
+                    // If data sync settings changes,
+                    // reset so we can properly reload
+                    wLoader = null;
+                    location = null;
+                    break;
             }
         }
 

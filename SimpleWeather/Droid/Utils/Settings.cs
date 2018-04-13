@@ -91,6 +91,13 @@ namespace SimpleWeather.Utils
                             .SetAction(WeatherWidgetService.ACTION_UPDATEALARM));
                         break;
 #endif
+#if __ANDROID_WEAR__
+                    // Data sync setting changed
+                    case KEY_DATASYNC:
+                        // Reset UpdateTime value to force a refresh
+                        UpdateTime = DateTime.MinValue;
+                        break;
+#endif
                     default:
                         break;
                 }

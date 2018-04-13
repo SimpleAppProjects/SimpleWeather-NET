@@ -157,7 +157,6 @@ namespace SimpleWeather.Droid.Wear
             if (wm.SupportsAlerts && weather.weather_alerts != null)
                 await Settings.SaveWeatherAlerts(location, weather.weather_alerts);
             await Settings.SaveWeatherData(weather);
-            Settings.UpdateTime = weather.update_time.UtcDateTime;
 
             // If we're using search
             // make sure gps feature is off
