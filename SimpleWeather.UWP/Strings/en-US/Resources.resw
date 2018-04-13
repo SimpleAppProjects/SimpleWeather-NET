@@ -336,4 +336,19 @@
   <data name="Button_Refresh.Label" xml:space="preserve">
     <value>Refresh</value>
   </data>
+  <data name="Cloudiness_Label" xml:space="preserve">
+    <value>Cloudiness</value>
+  </data>
+  <data name="FeelsLike_Label" xml:space="preserve">
+    <value>Feels like</value>
+  </data>
+  <data name="Precipitation_Label" xml:space="preserve">
+    <value>Precipitation</value>
+  </data>
+  <data name="Temp_Label" xml:space="preserve">
+    <value>Temp</value>
+  </data>
+  <data name="Wind_Label" xml:space="preserve">
+    <value>Wind</value>
+  </data>
 </root>
