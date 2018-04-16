@@ -507,7 +507,7 @@ namespace SimpleWeather.Droid.App.Widgets
             return PendingIntent.GetActivity(context, 0, onClickIntent, 0);
         }
 
-        public RemoteViews BuildUpdate(Context context, WeatherWidgetProvider provider, Weather weather)
+        private RemoteViews BuildUpdate(Context context, WeatherWidgetProvider provider, Weather weather)
         {
             // Build an update that holds the updated widget contents
             RemoteViews updateViews = new RemoteViews(context.PackageName, provider.WidgetLayoutId);

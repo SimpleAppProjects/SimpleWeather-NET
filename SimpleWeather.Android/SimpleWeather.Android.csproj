@@ -223,6 +223,7 @@
     <Compile Include="Widgets\WeatherWidgetConfigActivity.cs" />
     <Compile Include="Widgets\WeatherWidgetProvider.cs" />
     <Compile Include="Widgets\WeatherWidgetService.cs" />
+    <Compile Include="Widgets\WidgetUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">

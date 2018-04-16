@@ -178,6 +178,12 @@ namespace SimpleWeather.Utils
             await LoadIfNeeded();
             return await locationDB.Table<LocationData>().ToListAsync();
         }
+
+        public static async Task<LocationData> GetLocation(string key)
+        {
+            await LoadIfNeeded();
+            return await locationDB.FindAsync<LocationData>(key);
+        }
 #endif
 
         public static async Task<Weather> GetWeatherData(string key)
