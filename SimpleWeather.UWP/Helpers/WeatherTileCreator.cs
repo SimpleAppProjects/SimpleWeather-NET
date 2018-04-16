@@ -818,7 +818,7 @@ namespace SimpleWeather.UWP.Helpers
             return content;
         }
 
-        public static void TileUpdater(Weather weather)
+        private static void UpdateContent(TileUpdater tileUpdater, Weather weather)
         {
             bool hasHourly = weather.hr_forecast != null && weather.hr_forecast.Length > 0;
             TileContent forecastTileContent = null;
@@ -931,8 +931,6 @@ namespace SimpleWeather.UWP.Helpers
             var forecastTileNotif = new TileNotification(forecastTileContent.GetXml()) { Tag = "Forecast" };
             var currentTileNotif = new TileNotification(currentTileContent.GetXml()) { Tag = "Conditions" };
 
-            // And send the notification to the primary tile
-            var tileUpdater = TileUpdateManager.CreateTileUpdaterForApplication();
             tileUpdater.EnableNotificationQueue(true);
             tileUpdater.Clear();
             tileUpdater.Update(currentTileNotif);
@@ -942,7 +940,45 @@ namespace SimpleWeather.UWP.Helpers
                 var hrforecastTileNotif = new TileNotification(hrforecastTileContent.GetXml()) { Tag = "Hourly Forecast" };
                 tileUpdater.Update(hrforecastTileNotif);
             }
-            TileUpdated = true;
+        }
+
+        public static async void TileUpdater(LocationData location)
+        {
+            var wloader = new WeatherDataLoader(null, location);
+            await wloader.LoadWeatherData(false);
+
+            if (wloader.GetWeather() != null)
+            {
+                TileUpdater(location, wloader.GetWeather());
+            }
+        }
+
+        public static void TileUpdater(LocationData location, Weather weather)
+        {
+            // And send the notification to the tile
+            if (location.Equals(Settings.HomeData))
+            {
+                // Update both primary and secondary tile if it exists
+                UpdateContent(TileUpdateManager.CreateTileUpdaterForApplication(), weather);
+                if (SecondaryTileUtils.Exists(location.query))
+                {
+                    UpdateContent(
+                        TileUpdateManager.CreateTileUpdaterForSecondaryTile(
+                            SecondaryTileUtils.GetTileId(location.query)), weather);
+                }
+
+                TileUpdated = true;
+            }
+            else
+            {
+                // Update secondary tile
+                if (SecondaryTileUtils.Exists(location.query))
+                {
+                    UpdateContent(
+                        TileUpdateManager.CreateTileUpdaterForSecondaryTile(
+                            SecondaryTileUtils.GetTileId(location.query)), weather);
+                }
+            }
         }
     }
 }

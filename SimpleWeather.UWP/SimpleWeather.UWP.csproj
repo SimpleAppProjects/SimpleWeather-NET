@@ -233,6 +233,7 @@
     </Compile>
     <Compile Include="Helpers\ICommandBarPage.cs" />
     <Compile Include="Helpers\InverseVisibilityConverter.cs" />
+    <Compile Include="Helpers\SecondaryTileUtils.cs" />
     <Compile Include="WeatherAlertPage.xaml.cs">
       <DependentUpon>WeatherAlertPage.xaml</DependentUpon>
     </Compile>

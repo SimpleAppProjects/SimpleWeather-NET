@@ -351,4 +351,10 @@
   <data name="Wind_Label" xml:space="preserve">
     <value>Wind</value>
   </data>
+  <data name="Label_Pin.Text" xml:space="preserve">
+    <value>Pin to Start</value>
+  </data>
+  <data name="Label_Unpin.Text" xml:space="preserve">
+    <value>Unpin from Start</value>
+  </data>
 </root>

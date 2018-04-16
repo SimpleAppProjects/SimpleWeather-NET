@@ -12,11 +12,14 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Windows.ApplicationModel;
 using Windows.ApplicationModel.Core;
 using Windows.Devices.Geolocation;
 using Windows.Foundation.Metadata;
 using Windows.System.UserProfile;
 using Windows.UI.Core;
+using Windows.UI.Popups;
+using Windows.UI.StartScreen;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -91,6 +94,12 @@ namespace SimpleWeather.UWP
                     !WeatherTileCreator.TileUpdated)
                 {
                     await WeatherUpdateBackgroundTask.RequestAppTrigger();
+                }
+
+                // If secondary tile exists
+                if (App.SupportsTiles && SecondaryTileUtils.Exists(location.query))
+                {
+                    WeatherTileCreator.TileUpdater(location, weather);
                 }
 
                 // Shell
@@ -236,12 +245,30 @@ namespace SimpleWeather.UWP
             {
                 new AppBarButton()
                 {
+                    Icon = new SymbolIcon(Symbol.Pin),
+                    Label = App.ResLoader.GetString("Label_Pin/Text"),
+                    Tag = "pin",
+                    Visibility = Visibility.Collapsed
+                },
+                new AppBarButton()
+                {
                     Icon = new SymbolIcon(Symbol.Refresh),
                     Label = App.ResLoader.GetString("Button_Refresh/Label"),
+                    Tag = "refresh"
                 }
             };
-            var refreshButton = PrimaryCommands.First() as AppBarButton;
-            refreshButton.Click += RefreshButton_Click;
+            GetRefreshBtn().Click += RefreshButton_Click;
+            GetPinBtn().Click += PinButton_Click;
+        }
+
+        private AppBarButton GetRefreshBtn()
+        {
+            return PrimaryCommands.Last() as AppBarButton;
+        }
+
+        private AppBarButton GetPinBtn()
+        {
+            return PrimaryCommands.First() as AppBarButton;
         }
 
         private async void WeatherNow_Resuming(object sender, object e)
@@ -249,7 +276,12 @@ namespace SimpleWeather.UWP
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => 
             {
                 if (Shell.Instance.AppFrame.SourcePageType == this.GetType())
+                {
+                    // Check pin tile status
+                    CheckTiles();
+
                     await Resume();
+                }
             });
         }
 
@@ -469,6 +501,9 @@ namespace SimpleWeather.UWP
             // Save index before update
             int index = TextForecastControl.SelectedIndex;
 
+            // Check pin tile status
+            CheckTiles();
+
             if (wLoader.GetWeather() != null)
             {
                 Weather weather = wLoader.GetWeather();
@@ -559,6 +594,9 @@ namespace SimpleWeather.UWP
                 wLoader = new WeatherDataLoader(this, this, location);
             }
 
+            // Check pin tile status
+            CheckTiles();
+
             // Load up weather data
             RefreshWeather(forceRefresh);
         }
@@ -639,9 +677,18 @@ namespace SimpleWeather.UWP
                         return false;
                     }
 
+                    // Save oldkey
+                    string oldkey = lastGPSLocData.query;
+
                     // Save location as last known
                     lastGPSLocData.SetData(view, newGeoPos);
                     Settings.SaveLastGPSLocData(lastGPSLocData);
+
+                    // Update tile id for location
+                    if (oldkey != null && SecondaryTileUtils.Exists(oldkey))
+                    {
+                        SecondaryTileUtils.UpdateTileId(oldkey, lastGPSLocData.query);
+                    }
 
                     location = lastGPSLocData;
                     geoPos = newGeoPos;
@@ -817,6 +864,105 @@ namespace SimpleWeather.UWP
         private void AlertButton_Click(object sender, RoutedEventArgs e)
         {
             GotoAlertsPage();
+        }
+
+        private void CheckTiles()
+        {
+            var pinBtn = GetPinBtn();
+            pinBtn.IsEnabled = false;
+
+            // Check if Start supports your app
+            if (App.SupportsTiles)
+            {
+                // Primary tile API's supported!
+                // Check if your app is currently pinned
+                bool isPinned = SecondaryTileUtils.Exists(location.query);
+
+                SetPinButton(isPinned);
+                pinBtn.Visibility = Visibility.Visible;
+                pinBtn.IsEnabled = true;
+            }
+            else
+            {
+                // Older version of Windows, no primary tile API's
+                pinBtn.Visibility = Visibility.Collapsed;
+                pinBtn.IsEnabled = false;
+            }
+        }
+
+        private void SetPinButton(bool isPinned)
+        {
+            var pinBtn = GetPinBtn();
+
+            if (isPinned)
+            {
+                pinBtn.Icon = new SymbolIcon(Symbol.UnPin);
+                pinBtn.Label = App.ResLoader.GetString("Label_Unpin/Text");
+            }
+            else
+            {
+                pinBtn.Icon = new SymbolIcon(Symbol.Pin);
+                pinBtn.Label = App.ResLoader.GetString("Label_Pin/Text");
+            }
+        }
+
+        private async void PinButton_Click(object sender, RoutedEventArgs e)
+        {
+            var pinBtn = sender as AppBarButton;
+            pinBtn.IsEnabled = false;
+
+            if (SecondaryTileUtils.Exists(location.query))
+            {
+                bool deleted = await new SecondaryTile(
+                    SecondaryTileUtils.GetTileId(location.query)).RequestDeleteAsync();
+                if (deleted)
+                {
+                    SecondaryTileUtils.RemoveTileId(location.query);
+                }
+
+                SetPinButton(!deleted);
+
+                GetPinBtn().IsEnabled = true;
+            }
+            else
+            {
+                // Initialize the tile with required arguments
+                var tileID = DateTime.Now.Ticks.ToString();
+                SecondaryTile tile = new SecondaryTile(
+                    tileID,
+                    "SimpleWeather",
+                    "action=view-weather&query=" + location.query,
+                    new Uri("ms-appx:///Assets/Square150x150Logo.png"),
+                    TileSize.Default);
+
+                // Enable wide and large tile sizes
+                tile.VisualElements.Wide310x150Logo = new Uri("ms-appx:///Assets/Wide310x150Logo.png");
+                tile.VisualElements.Square310x310Logo = new Uri("ms-appx:///Assets/Square310x310Logo.png");
+
+                // Add a small size logo for better looking small tile
+                tile.VisualElements.Square71x71Logo = new Uri("ms-appx:///Assets/Square71x71Logo.png");
+
+                // Add a unique corner logo for the secondary tile
+                tile.VisualElements.Square44x44Logo = new Uri("ms-appx:///Assets/Square44x44Logo.png");
+
+                // Show the display name on all sizes
+                tile.VisualElements.ShowNameOnSquare150x150Logo = true;
+                tile.VisualElements.ShowNameOnWide310x150Logo = true;
+                tile.VisualElements.ShowNameOnSquare310x310Logo = true;
+
+                bool isPinned = await tile.RequestCreateAsync();
+                if (isPinned)
+                {
+                    // Update tile with notifications
+                    SecondaryTileUtils.AddTileId(location.query, tileID);
+                    WeatherTileCreator.TileUpdater(location);
+                    await tile.UpdateAsync();
+                }
+
+                SetPinButton(isPinned);
+
+                GetPinBtn().IsEnabled = true;
+            }
         }
     }
 }

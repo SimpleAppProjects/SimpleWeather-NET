@@ -17,6 +17,7 @@ using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 using Windows.UI.Input;
 using Windows.UI.Popups;
+using Windows.UI.StartScreen;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -231,6 +232,9 @@ namespace SimpleWeather.UWP
 
         private async Task LoadLocations()
         {
+            // Disable EditMode button
+            EditButton.IsEnabled = false;
+
             // Lets load it up...
             var locations = await Settings.GetFavorites();
             LocationPanels.Clear();
@@ -253,6 +257,9 @@ namespace SimpleWeather.UWP
                 var wLoader = new WeatherDataLoader(this, this, location);
                 await wLoader.LoadWeatherData(false);
             }
+
+            // Enable EditMode button
+            EditButton.IsEnabled = true;
         }
 
         private async Task LoadGPSPanel()
@@ -283,6 +290,9 @@ namespace SimpleWeather.UWP
 
         private async Task RefreshLocations()
         {
+            // Disable EditMode button
+            EditButton.IsEnabled = false;
+
             // Reload all panels if needed
             var locations = await Settings.GetLocationData();
             var homeData = await Settings.GetLastGPSLocData();
@@ -315,6 +325,9 @@ namespace SimpleWeather.UWP
                     await wLoader.LoadWeatherData(false);
                 }
             }
+
+            // Enable EditMode button
+            EditButton.IsEnabled = true;
         }
 
         private async Task<LocationData> UpdateLocation()
@@ -619,7 +632,9 @@ namespace SimpleWeather.UWP
             }
 
             if (!EditMode && HomeChanged)
+            {
                 Task.Run(() => WeatherUpdateBackgroundTask.RequestAppTrigger());
+            }
 
             DataChanged = false;
             HomeChanged = false;
@@ -639,6 +654,13 @@ namespace SimpleWeather.UWP
 
             // Remove panel
             LocationPanels.Remove(view);
+
+            // Remove secondary tile if it exists
+            if (App.SupportsTiles && SecondaryTileUtils.Exists(data.query))
+            {
+                await new SecondaryTile(
+                    SecondaryTileUtils.GetTileId(data.query)).RequestDeleteAsync();
+            }
         }
 
         private void MoveData(LocationPanelViewModel view, int fromIdx, int toIdx)

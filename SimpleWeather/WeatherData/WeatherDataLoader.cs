@@ -5,6 +5,8 @@ using SimpleWeather.Utils;
 using System.Diagnostics;
 using System.Globalization;
 #if WINDOWS_UWP
+using SimpleWeather.UWP;
+using SimpleWeather.UWP.Helpers;
 using Windows.System.UserProfile;
 #elif __ANDROID__
 using Android.App;
@@ -180,6 +182,14 @@ namespace SimpleWeather.WeatherData
                             await Settings.UpdateLocationWithKey(location, oldKey);
 #else
                         Settings.SaveHomeData(location);
+#endif
+
+#if WINDOWS_UWP
+                        // Update tile id for location
+                        if (App.SupportsTiles && SecondaryTileUtils.Exists(oldKey))
+                        {
+                            SecondaryTileUtils.UpdateTileId(oldKey, location.query);
+                        }
 #endif
                     }
 

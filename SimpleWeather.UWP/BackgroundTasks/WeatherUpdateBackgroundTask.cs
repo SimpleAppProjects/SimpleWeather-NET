@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
 using Windows.Devices.Geolocation;
+using Windows.UI.StartScreen;
 
 namespace SimpleWeather.UWP.BackgroundTasks
 {
@@ -50,9 +51,26 @@ namespace SimpleWeather.UWP.BackgroundTasks
 
                 // Update the live tile with data.
                 if (weather != null)
-                    WeatherTileCreator.TileUpdater(weather);
+                    WeatherTileCreator.TileUpdater(Settings.HomeData, weather);
 
                 if (cts.IsCancellationRequested) return;
+
+                // Update secondary tiles
+                if (App.SupportsTiles)
+                {
+                    var tiles = await SecondaryTile.FindAllAsync();
+                    foreach (SecondaryTile tile in tiles)
+                    {
+                        var locations = await Settings.GetLocationData();
+                        var location = locations.FirstOrDefault(
+                            loc => loc.query.Equals(SecondaryTileUtils.GetQueryFromId(tile.TileId)));
+
+                        if (location != null)
+                            WeatherTileCreator.TileUpdater(location);
+
+                        if (cts.IsCancellationRequested) return;
+                    }
+                }
 
                 // Post alerts if setting is on
                 if (Settings.ShowAlerts && wm.SupportsAlerts && weather != null)
@@ -242,9 +260,18 @@ namespace SimpleWeather.UWP.BackgroundTasks
 
                     if (cts.IsCancellationRequested) return locationChanged;
 
+                    // Save oldkey
+                    string oldkey = lastGPSLocData.query;
+
                     // Save location as last known
                     lastGPSLocData.SetData(view, newGeoPos);
                     Settings.SaveLastGPSLocData(lastGPSLocData);
+
+                    // Update tile id for location
+                    if (oldkey != null && SecondaryTileUtils.Exists(oldkey))
+                    {
+                        SecondaryTileUtils.UpdateTileId(oldkey, lastGPSLocData.query);
+                    }
 
                     locationChanged = true;
                 }

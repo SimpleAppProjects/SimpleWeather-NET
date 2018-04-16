@@ -2,17 +2,21 @@
 using Newtonsoft.Json;
 using SimpleWeather.Controls;
 using SimpleWeather.Utils;
+using SimpleWeather.UWP.Helpers;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Core;
+using Windows.UI.StartScreen;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -29,7 +33,8 @@ namespace SimpleWeather.UWP
         public const int HomeIdx = 0;
         public static ResourceLoader ResLoader;
         public static Frame RootFrame { get; set; }
-        public static bool IsInBackground { get; set; } = true;
+        public static bool IsInBackground { get; private set; } = true;
+        public static bool SupportsTiles { get; private set; } = true;
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -56,10 +61,47 @@ namespace SimpleWeather.UWP
                 //this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
+            // App loaded for first time
             await Initialize(e);
 
             if (e.PrelaunchActivated == false)
             {
+                if (Settings.WeatherLoaded && !String.IsNullOrEmpty(e.TileId) && !e.TileId.Equals("App"))
+                {
+                    if (RootFrame.Content == null)
+                    {
+                        RootFrame.Navigate(typeof(Shell), "suppressNavigate");
+                    }
+
+                    // Navigate to WeatherNow page for location
+                    if (Shell.Instance != null)
+                    {
+                        List<LocationData> locations = new List<LocationData>(await Settings.GetLocationData())
+                        {
+                            Settings.HomeData,
+                        };
+                        var location = locations.FirstOrDefault(loc => loc.query.Equals(SecondaryTileUtils.GetQueryFromId(e.TileId)));
+                        if (location != null)
+                        {
+                            var isHome = location.Equals(Settings.HomeData);
+
+                            Shell.Instance.AppFrame.Navigate(typeof(WeatherNow), location);
+                            Shell.Instance.AppFrame.BackStack.Clear();
+                            if (!isHome)
+                            {
+                                Shell.Instance.AppFrame.BackStack.Add(new PageStackEntry(typeof(WeatherNow), null, null));
+                                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+                            }
+                        }
+
+                        // If Shell content is empty navigate to default page
+                        if (Shell.Instance.AppFrame.CurrentSourcePageType == null)
+                        {
+                            Shell.Instance.AppFrame.Navigate(typeof(WeatherNow), null);
+                        }
+                    }
+                }
+
                 if (RootFrame.Content == null)
                 {
                     // When the navigation stack isn't restored navigate to the first page,
@@ -70,6 +112,7 @@ namespace SimpleWeather.UWP
                     else
                         RootFrame.Navigate(typeof(SetupPage), e.Arguments);
                 }
+
                 // Ensure the current window is active
                 Window.Current.Activate();
             }
@@ -126,6 +169,20 @@ namespace SimpleWeather.UWP
                 titlebar.BackgroundColor = App.AppColor;
                 titlebar.ButtonBackgroundColor = titlebar.BackgroundColor;
                 titlebar.ForegroundColor = Colors.White;
+            }
+
+            if (ApiInformation.IsTypePresent("Windows.UI.StartScreen.StartScreenManager"))
+            {
+                // Get your own app list entry
+                // (which is always the first app list entry assuming you are not a multi-app package)
+                AppListEntry entry = (await Package.Current.GetAppListEntriesAsync())[0];
+
+                // Check if Start supports your app
+                SupportsTiles = StartScreenManager.GetDefault().SupportsAppListEntry(entry);
+            }
+            else
+            {
+                SupportsTiles = false;
             }
         }
 
