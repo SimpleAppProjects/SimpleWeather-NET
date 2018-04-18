@@ -34,7 +34,7 @@ namespace SimpleWeather.UWP
         public static ResourceLoader ResLoader;
         public static Frame RootFrame { get; set; }
         public static bool IsInBackground { get; private set; } = true;
-        public static bool SupportsTiles { get; private set; } = true;
+        private static bool Initialized { get; set; } = false;
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -92,6 +92,8 @@ namespace SimpleWeather.UWP
                                 Shell.Instance.AppFrame.BackStack.Add(new PageStackEntry(typeof(WeatherNow), null, null));
                                 SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
                             }
+                            else
+                                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
                         }
 
                         // If Shell content is empty navigate to default page
@@ -120,6 +122,9 @@ namespace SimpleWeather.UWP
 
         private async Task Initialize(IActivatedEventArgs e)
         {
+            if (Initialized)
+                return;
+
             RootFrame = Window.Current.Content as Frame;
 
             // Do not repeat app initialization when the Window already has content,
@@ -171,19 +176,21 @@ namespace SimpleWeather.UWP
                 titlebar.ForegroundColor = Colors.White;
             }
 
-            if (ApiInformation.IsTypePresent("Windows.UI.StartScreen.StartScreenManager"))
-            {
-                // Get your own app list entry
-                // (which is always the first app list entry assuming you are not a multi-app package)
-                AppListEntry entry = (await Package.Current.GetAppListEntriesAsync())[0];
+            Initialized = true;
+        }
 
-                // Check if Start supports your app
-                SupportsTiles = StartScreenManager.GetDefault().SupportsAppListEntry(entry);
-            }
-            else
-            {
-                SupportsTiles = false;
-            }
+        private async Task Initialize(IBackgroundActivatedEventArgs e)
+        {
+            if (Initialized)
+                return;
+
+            if (ResLoader == null)
+                ResLoader = new ResourceLoader();
+
+            // Load data if needed
+            await Settings.LoadIfNeeded();
+
+            Initialized = true;
         }
 
         /// <summary>
@@ -285,14 +292,17 @@ namespace SimpleWeather.UWP
 
             var deferral = args.TaskInstance.GetDeferral();
 
-            switch (args.TaskInstance.Task.Name)
+            Initialize(args).ContinueWith((t) =>
             {
-                case "WeatherUpdateBackgroundTask":
-                    new BackgroundTasks.WeatherUpdateBackgroundTask().Run(args.TaskInstance);
-                    break;
-            }
+                switch (args.TaskInstance.Task.Name)
+                {
+                    case "WeatherUpdateBackgroundTask":
+                        new BackgroundTasks.WeatherUpdateBackgroundTask().Run(args.TaskInstance);
+                        break;
+                }
 
-            deferral.Complete();
+                deferral.Complete();
+            });
         }
 
         private void OnLeavingBackground(object sender, LeavingBackgroundEventArgs e)

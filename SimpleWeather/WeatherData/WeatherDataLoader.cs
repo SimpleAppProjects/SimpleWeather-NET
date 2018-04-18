@@ -186,7 +186,7 @@ namespace SimpleWeather.WeatherData
 
 #if WINDOWS_UWP
                         // Update tile id for location
-                        if (App.SupportsTiles && SecondaryTileUtils.Exists(oldKey))
+                        if (SecondaryTileUtils.Exists(oldKey))
                         {
                             SecondaryTileUtils.UpdateTileId(oldKey, location.query);
                         }

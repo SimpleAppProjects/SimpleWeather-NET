@@ -95,9 +95,7 @@ namespace SimpleWeather.UWP
                 {
                     await WeatherUpdateBackgroundTask.RequestAppTrigger();
                 }
-
-                // If secondary tile exists
-                if (App.SupportsTiles && SecondaryTileUtils.Exists(location.query))
+                else if (SecondaryTileUtils.Exists(location.query))
                 {
                     WeatherTileCreator.TileUpdater(location, weather);
                 }
@@ -871,23 +869,12 @@ namespace SimpleWeather.UWP
             var pinBtn = GetPinBtn();
             pinBtn.IsEnabled = false;
 
-            // Check if Start supports your app
-            if (App.SupportsTiles)
-            {
-                // Primary tile API's supported!
-                // Check if your app is currently pinned
-                bool isPinned = SecondaryTileUtils.Exists(location.query);
+            // Check if your app is currently pinned
+            bool isPinned = SecondaryTileUtils.Exists(location.query);
 
-                SetPinButton(isPinned);
-                pinBtn.Visibility = Visibility.Visible;
-                pinBtn.IsEnabled = true;
-            }
-            else
-            {
-                // Older version of Windows, no primary tile API's
-                pinBtn.Visibility = Visibility.Collapsed;
-                pinBtn.IsEnabled = false;
-            }
+            SetPinButton(isPinned);
+            pinBtn.Visibility = Visibility.Visible;
+            pinBtn.IsEnabled = true;
         }
 
         private void SetPinButton(bool isPinned)

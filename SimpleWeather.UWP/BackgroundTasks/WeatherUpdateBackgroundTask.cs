@@ -56,20 +56,17 @@ namespace SimpleWeather.UWP.BackgroundTasks
                 if (cts.IsCancellationRequested) return;
 
                 // Update secondary tiles
-                if (App.SupportsTiles)
+                var tiles = await SecondaryTile.FindAllAsync();
+                foreach (SecondaryTile tile in tiles)
                 {
-                    var tiles = await SecondaryTile.FindAllAsync();
-                    foreach (SecondaryTile tile in tiles)
-                    {
-                        var locations = await Settings.GetLocationData();
-                        var location = locations.FirstOrDefault(
-                            loc => loc.query.Equals(SecondaryTileUtils.GetQueryFromId(tile.TileId)));
+                    var locations = await Settings.GetLocationData();
+                    var location = locations.FirstOrDefault(
+                        loc => loc.query.Equals(SecondaryTileUtils.GetQueryFromId(tile.TileId)));
 
-                        if (location != null)
-                            WeatherTileCreator.TileUpdater(location);
+                    if (location != null)
+                        WeatherTileCreator.TileUpdater(location);
 
-                        if (cts.IsCancellationRequested) return;
-                    }
+                    if (cts.IsCancellationRequested) return;
                 }
 
                 // Post alerts if setting is on

@@ -832,14 +832,11 @@ namespace SimpleWeather.UWP.Helpers
                     Visual = new TileVisual()
                     {
                         DisplayName = weather.location.name,
-                        /*
-                         * Too small
                         TileSmall = new TileBinding()
                         {
                             Branding = TileBranding.None,
                             Content = GenerateHrForecast(weather, ForecastTileType.Small),
                         },
-                        */
                         TileMedium = new TileBinding()
                         {
                             // Mini forecast (3-hr)
@@ -866,14 +863,11 @@ namespace SimpleWeather.UWP.Helpers
                 Visual = new TileVisual()
                 {
                     DisplayName = weather.location.name,
-                    /*
-                     * All ready shown in current tile
                     TileSmall = new TileBinding()
                     {
                         Branding = TileBranding.None,
                         Content = GenerateForecast(weather, ForecastTileType.Small),
                     },
-                    */
                     TileMedium = new TileBinding()
                     {
                         // Mini forecast (2-day)
@@ -959,12 +953,21 @@ namespace SimpleWeather.UWP.Helpers
             if (location.Equals(Settings.HomeData))
             {
                 // Update both primary and secondary tile if it exists
-                UpdateContent(TileUpdateManager.CreateTileUpdaterForApplication(), weather);
+                var appTileUpdater = TileUpdateManager.CreateTileUpdaterForApplication();
+                // Lock instance to avoid rare concurrency issue
+                // (when BGTask is running and tile is updated via WeatherNowPage)
+                lock (appTileUpdater)
+                {
+                    UpdateContent(appTileUpdater, weather);
+                }
                 if (SecondaryTileUtils.Exists(location.query))
                 {
-                    UpdateContent(
-                        TileUpdateManager.CreateTileUpdaterForSecondaryTile(
-                            SecondaryTileUtils.GetTileId(location.query)), weather);
+                    var tileUpdater = TileUpdateManager.CreateTileUpdaterForSecondaryTile(
+                            SecondaryTileUtils.GetTileId(location.query));
+                    lock (tileUpdater)
+                    {
+                        UpdateContent(tileUpdater, weather);
+                    }
                 }
 
                 TileUpdated = true;
@@ -974,9 +977,14 @@ namespace SimpleWeather.UWP.Helpers
                 // Update secondary tile
                 if (SecondaryTileUtils.Exists(location.query))
                 {
-                    UpdateContent(
-                        TileUpdateManager.CreateTileUpdaterForSecondaryTile(
-                            SecondaryTileUtils.GetTileId(location.query)), weather);
+                    var tileUpdater = TileUpdateManager.CreateTileUpdaterForSecondaryTile(
+                            SecondaryTileUtils.GetTileId(location.query));
+                    // Lock instance to avoid rare concurrency issue
+                    // (when BGTask is running and tile is updated via WeatherNowPage)
+                    lock (tileUpdater)
+                    {
+                        UpdateContent(tileUpdater, weather);
+                    }
                 }
             }
         }

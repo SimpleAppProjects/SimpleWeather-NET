@@ -317,6 +317,30 @@ namespace SimpleWeather.UWP
                 }
             }
 
+            // Update ids when switching GPS feature
+            if (sw.IsOn)
+            {
+                var prevLoc = (await Settings.GetFavorites()).FirstOrDefault();
+                if (prevLoc?.query != null && SecondaryTileUtils.Exists(prevLoc.query))
+                {
+                    var gpsLoc = await Settings.GetLastGPSLocData();
+                    if (gpsLoc?.query == null)
+                        Settings.SaveLastGPSLocData(prevLoc);
+                    else
+                        SecondaryTileUtils.UpdateTileId(prevLoc.query, gpsLoc.query);
+                }
+            }
+            else
+            {
+                var prevLoc = await Settings.GetLastGPSLocData();
+                if (prevLoc?.query != null && SecondaryTileUtils.Exists(prevLoc.query))
+                {
+                    var favLoc = (await Settings.GetFavorites()).FirstOrDefault();
+                    if (favLoc?.query != null)
+                        SecondaryTileUtils.UpdateTileId(prevLoc.query, favLoc.query);
+                }
+            }
+
             Settings.FollowGPS = sw.IsOn;
             await WeatherUpdateBackgroundTask.RequestAppTrigger();
         }

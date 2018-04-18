@@ -656,7 +656,7 @@ namespace SimpleWeather.UWP
             LocationPanels.Remove(view);
 
             // Remove secondary tile if it exists
-            if (App.SupportsTiles && SecondaryTileUtils.Exists(data.query))
+            if (SecondaryTileUtils.Exists(data.query))
             {
                 await new SecondaryTile(
                     SecondaryTileUtils.GetTileId(data.query)).RequestDeleteAsync();
