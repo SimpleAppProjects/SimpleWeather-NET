@@ -19,7 +19,7 @@ namespace SimpleWeather.UWP.Helpers
         private static WeatherManager wm = WeatherManager.GetInstance();
         private const string Tag = "WeatherAlerts";
 
-        public static void CreateAlerts(String query, List<WeatherAlert> alerts)
+        public static void CreateAlerts(LocationData location, List<WeatherAlert> alerts)
         {
             var toastNotifier = ToastNotificationManager.CreateToastNotifier();
 
@@ -57,14 +57,18 @@ namespace SimpleWeather.UWP.Helpers
                     Launch = new QueryString()
                     {
                         { "action", "view-alerts" },
-                        { "query", query },
+                        { "query", location.query },
                     }.ToString()
                 };
+
+                // Set a unique ID for the notification
+                var notID = String.Format("{0}:{1}", location.query, ((int)alertVM.AlertType).ToString());
 
                 // Create the toast notification
                 var toastNotif = new ToastNotification(toastContent.GetXml())
                 {
                     Group = Tag,
+                    Tag = notID,
                     ExpirationTime = alert.ExpiresDate,
                 };
 

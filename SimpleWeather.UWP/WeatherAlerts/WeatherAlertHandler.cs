@@ -30,7 +30,7 @@ namespace SimpleWeather.UWP.WeatherAlerts
                     var unotifiedAlerts = alerts.Where(alert => alert.Notified == false && alert.ExpiresDate > DateTimeOffset.Now);
 
                     // Post any un-notified alerts
-                    Helpers.WeatherAlertCreator.CreateAlerts(location.query, unotifiedAlerts.ToList());
+                    Helpers.WeatherAlertCreator.CreateAlerts(location, unotifiedAlerts.ToList());
 
                     // Update all alerts
                     alerts.ForEach(alert => alert.Notified = true);

@@ -4284,6 +4284,9 @@ namespace SimpleWeather.Droid.App
 			// aapt resource value: 0x7f0e0001
 			public const int action_choose_symmetrical_dimen = 2131623937;
 			
+			// aapt resource value: 0x7f0e0007
+			public const int enable_alertnotifservice = 2131623943;
+			
 			static Boolean()
 			{
 				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
