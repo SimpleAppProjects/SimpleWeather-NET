@@ -45,10 +45,12 @@ namespace EditManifest
                             if ("Debug".Equals(ConfigMode))
                             {
                                 line = line.Replace("package=\"com.thewizrd.simpleweather\"", "package=\"com.thewizrd.simpleweather_debug\"");
+                                line = line.Replace("com.thewizrd.simpleweather.", "com.thewizrd.simpleweather_debug.");
                             }
                             else
                             {
                                 line = line.Replace("package=\"com.thewizrd.simpleweather_debug\"", "package=\"com.thewizrd.simpleweather\"");
+                                line = line.Replace("com.thewizrd.simpleweather_debug.", "com.thewizrd.simpleweather.");
                             }
 
                             sBuilder.AppendLine(line);
