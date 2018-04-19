@@ -232,6 +232,7 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <ProguardConfiguration Include="proguard.cfg" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Properties\AndroidManifest.xml">
       <SubType>Designer</SubType>
