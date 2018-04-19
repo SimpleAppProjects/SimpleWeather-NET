@@ -78,16 +78,16 @@ namespace SimpleWeather.Droid.Wear.Helpers
 
             public void OnClick(IDialogInterface dialog, int which)
             {
-                if (which.Equals(DialogButtonType.Positive))
+                switch (which)
                 {
-                    builder.PositiveButtonEvent?.Invoke(dialog, new DialogClickEventArgs(which));
-                }
-                else if (which.Equals(DialogButtonType.Negative))
-                {
-                    builder.NegativeButtonEvent?.Invoke(dialog, new DialogClickEventArgs(which));
-                }
-                else if (which.Equals(DialogButtonType.Neutral))
-                {
+                    case (int)DialogButtonType.Positive:
+                        builder.PositiveButtonEvent?.Invoke(dialog, new DialogClickEventArgs(which));
+                        break;
+                    case (int)DialogButtonType.Negative:
+                        builder.NegativeButtonEvent?.Invoke(dialog, new DialogClickEventArgs(which));
+                        break;
+                    case (int)DialogButtonType.Neutral:
+                        break;
                 }
             }
         }
