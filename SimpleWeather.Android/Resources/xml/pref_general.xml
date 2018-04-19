@@ -16,7 +16,7 @@
             android:title="@string/label_currentlocation" />
 
         <SimpleWeather.Droid.App.SettingsActivity.CustomDropDownPreference
-            android:defaultValue="30"
+            android:defaultValue="60"
             android:entries="@array/refreshinterval_entries"
             android:entryValues="@array/refreshinterval_values"
             android:key="key_refreshinterval"
