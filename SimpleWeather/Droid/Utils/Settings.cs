@@ -363,8 +363,9 @@ namespace SimpleWeather.Utils
 
         private static void SetKeyVerified(bool value)
         {
-            wuSharedPrefs.Edit().PutBoolean(KEY_APIKEY_VERIFIED, value);
-            wuSharedPrefs.Edit().Apply();
+            var editor = wuSharedPrefs.Edit();
+            editor.PutBoolean(KEY_APIKEY_VERIFIED, value);
+            editor.Apply();
 
             if (!value)
                 wuSharedPrefs.Edit().Remove(KEY_APIKEY_VERIFIED).Apply();

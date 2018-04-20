@@ -134,7 +134,7 @@ namespace SimpleWeather.Droid.App
                 // use a linear layout manager
                 recyclerView.SetLayoutManager(new LinearLayoutManager(AppCompatActivity));
                 // specify an adapter (see also next example)
-                recyclerView.SetAdapter(new WeatherAlertPanelAdapter(weatherView.Extras.Alerts.ToList()));
+                recyclerView.SetAdapter(new WeatherAlertPanelAdapter(weatherView.Extras?.Alerts?.ToList()));
             }
         }
 

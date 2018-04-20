@@ -35,7 +35,10 @@ namespace SimpleWeather.Droid.Adapters
         // Provide a suitable constructor (depends on the kind of dataset)
         public WeatherAlertPanelAdapter(List<WeatherAlertViewModel> myDataset)
         {
-            mDataset = myDataset;
+            if (myDataset != null)
+                mDataset = myDataset;
+            else
+                mDataset = new List<WeatherAlertViewModel>(0);
         }
 
         // Create new views (invoked by the layout manager)

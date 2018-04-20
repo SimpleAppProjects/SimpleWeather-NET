@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using Android.Graphics;
 using System.Threading.Tasks;
 using SimpleWeather.Controls;
+using Android.Util;
 
 namespace SimpleWeather.Droid.App.Notifications
 {
@@ -178,8 +179,31 @@ namespace SimpleWeather.Droid.App.Notifications
                 mNotifyMgr.Notify(location.query, (int)alertVM.AlertType, mBuilder.Build());
             }
 
-            if (Build.VERSION.SdkInt >= BuildVersionCodes.N ||
-                WeatherAlertNotificationService.GetNotificationsCount() > MIN_GROUPCOUNT)
+            bool buildSummary = false;
+
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.M)
+            {
+                try
+                {
+                    NotificationManager mNotifyMgrV23 = (NotificationManager)App.Context.GetSystemService(App.NotificationService);
+                    var statNotifs = mNotifyMgrV23.GetActiveNotifications();
+
+                    if (statNotifs?.Length > 0)
+                    {
+                        buildSummary = statNotifs.Where(not => location.query.Equals(not.Tag)).Count() > MIN_GROUPCOUNT;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Debug("WeatherAlertNotificationBuilder", ex.StackTrace);
+                }
+            }
+            else
+            {
+                buildSummary = WeatherAlertNotificationService.GetNotificationsCount() > MIN_GROUPCOUNT;
+            }
+
+            if (buildSummary)
             {
                 // Notification inboxStyle for grouped notifications
                 var inboxStyle = new NotificationCompat.InboxStyle();

@@ -13,6 +13,7 @@ using SimpleWeather.WeatherData;
 using Android.Text.Format;
 using Android.OS;
 using Android.Service.Notification;
+using Android.Util;
 
 namespace SimpleWeather.Droid.App.Notifications
 {
@@ -133,25 +134,32 @@ namespace SimpleWeather.Droid.App.Notifications
 
             if (mNotification == null)
             {
-                StatusBarNotification statNot = null;
-                if (Build.VERSION.SdkInt >= BuildVersionCodes.M)
+                try
                 {
-                    var statNots = mNotifyMgr.GetActiveNotifications();
-                    if (statNots.Length > 0)
-                        statNot = statNots.FirstOrDefault(not => not.Id == PERSISTENT_NOT_ID);
+                    StatusBarNotification statNot = null;
+                    if (Build.VERSION.SdkInt >= BuildVersionCodes.M)
+                    {
+                        var statNots = mNotifyMgr.GetActiveNotifications();
+                        if (statNots?.Length > 0)
+                            statNot = statNots.FirstOrDefault(not => not.Id == PERSISTENT_NOT_ID);
+                    }
+
+                    if (statNot != null && statNot.Notification != null)
+                        mNotification = statNot.Notification;
+                    else
+                    {
+                        NotificationCompat.Builder mBuilder =
+                            new NotificationCompat.Builder(App.Context, NOT_CHANNEL_ID)
+                            .SetSmallIcon(Resource.Drawable.ic_logo)
+                            .SetPriority(NotificationCompat.PriorityLow)
+                            .SetOngoing(true) as NotificationCompat.Builder;
+
+                        mNotification = mBuilder.Build();
+                    }
                 }
-
-                if (statNot != null && statNot.Notification != null)
-                    mNotification = statNot.Notification;
-                else
+                catch (Exception ex)
                 {
-                    NotificationCompat.Builder mBuilder =
-                        new NotificationCompat.Builder(App.Context, NOT_CHANNEL_ID)
-                        .SetSmallIcon(Resource.Drawable.ic_logo)
-                        .SetPriority(NotificationCompat.PriorityLow)
-                        .SetOngoing(true) as NotificationCompat.Builder;
-
-                    mNotification = mBuilder.Build();
+                    Log.Debug("WeatherNotificationBuilder", ex.StackTrace);
                 }
             }
 
