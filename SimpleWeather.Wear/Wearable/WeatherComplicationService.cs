@@ -34,7 +34,7 @@ namespace SimpleWeather.Droid.Wear.Wearable
         }
     }
 
-    [Service(Exported = false, Permission = "android.permission.BIND_JOB_SERVICE")]
+    [Service(Exported = false, Enabled = true, Permission = "android.permission.BIND_JOB_SERVICE")]
     public class WeatherComplicationIntentService : JobIntentService
     {
         private const string TAG = "WeatherComplicationIntentService";
@@ -166,13 +166,21 @@ namespace SimpleWeather.Droid.Wear.Wearable
 
         internal static DateTime UpdateTime = DateTime.MinValue;
 
+        static WeatherComplicationService()
+        {
+            if (complicationIds == null)
+                complicationIds = new List<int>();
+        }
+
         public override void OnCreate()
         {
             base.OnCreate();
 
             mContext = ApplicationContext;
             wm = WeatherManager.GetInstance();
-            complicationIds = new List<int>();
+
+            if (complicationIds == null)
+                complicationIds = new List<int>();
         }
 
         internal static int[] GetComplicationIds()
