@@ -57,19 +57,19 @@ namespace SimpleWeather.Utils
                     case KEY_API:
                         WeatherData.WeatherManager.GetInstance().UpdateAPI();
 #if !__ANDROID_WEAR__
-                        Application.Context.StartService(
-                            new Intent(Application.Context, typeof(WearableDataListenerService))
+                        context.StartService(
+                            new Intent(context, typeof(WearableDataListenerService))
                                 .SetAction(WearableDataListenerService.ACTION_SENDSETTINGSUPDATE));
 #endif
                         goto case KEY_USECELSIUS;
                     // FollowGPS changed
                     case KEY_FOLLOWGPS:
 #if !__ANDROID_WEAR__
-                        Application.Context.StartService(
-                            new Intent(Application.Context, typeof(WearableDataListenerService))
+                        context.StartService(
+                            new Intent(context, typeof(WearableDataListenerService))
                                 .SetAction(WearableDataListenerService.ACTION_SENDSETTINGSUPDATE));
-                        Application.Context.StartService(
-                            new Intent(Application.Context, typeof(WearableDataListenerService))
+                        context.StartService(
+                            new Intent(context, typeof(WearableDataListenerService))
                                 .SetAction(WearableDataListenerService.ACTION_SENDLOCATIONUPDATE));
 #endif
                         goto case KEY_USECELSIUS;
@@ -77,7 +77,7 @@ namespace SimpleWeather.Utils
                     case KEY_USECELSIUS:
 #if __ANDROID_WEAR__
                         WeatherComplicationIntentService.EnqueueWork(context,
-                            new Intent(Application.Context, typeof(WeatherComplicationIntentService))
+                            new Intent(context, typeof(WeatherComplicationIntentService))
                                 .SetAction(WeatherComplicationIntentService.ACTION_UPDATECOMPLICATIONS)
                                 .PutExtra(WeatherComplicationIntentService.EXTRA_FORCEUPDATE, true));
                         break;
