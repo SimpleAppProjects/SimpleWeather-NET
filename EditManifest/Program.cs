@@ -9,10 +9,18 @@ namespace EditManifest
 {
     class Program
     {
+        enum OSVersion
+        {
+            Unknown = -1,
+            Android = 0,
+            UWP
+        }
+
         static void Main(string[] args)
         {
             String ConfigMode = "Release";
             String FilePath = String.Empty;
+            OSVersion OSVersion = OSVersion.Unknown;
 
             if (args == null || args.Length < 1)
             {
@@ -31,6 +39,22 @@ namespace EditManifest
                 Console.WriteLine("File path: {0}", FilePath);
                 Console.WriteLine("Config mode: {0}", ConfigMode);
 
+                if (FilePath.EndsWith("AndroidManifest.xml", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    OSVersion = OSVersion.Android;
+                }
+                else if (FilePath.EndsWith("Package.appxmanifest", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    OSVersion = OSVersion.UWP;
+                }
+
+                if (OSVersion == OSVersion.Unknown)
+                {
+                    Console.WriteLine("Unknown manifest filetype", FilePath);
+                    Environment.ExitCode = 1;
+                    return;
+                }
+
                 try
                 {
                     var fStream = File.Open(FilePath, FileMode.Open, FileAccess.ReadWrite);
@@ -42,15 +66,29 @@ namespace EditManifest
                         while (!sReader.EndOfStream)
                         {
                             var line = sReader.ReadLine();
-                            if ("Debug".Equals(ConfigMode))
+                            if (OSVersion == OSVersion.Android)
                             {
-                                line = line.Replace("package=\"com.thewizrd.simpleweather\"", "package=\"com.thewizrd.simpleweather_debug\"");
-                                line = line.Replace("com.thewizrd.simpleweather.", "com.thewizrd.simpleweather_debug.");
+                                if ("Debug".Equals(ConfigMode))
+                                {
+                                    line = line.Replace("package=\"com.thewizrd.simpleweather\"", "package=\"com.thewizrd.simpleweather_debug\"");
+                                    line = line.Replace("com.thewizrd.simpleweather.", "com.thewizrd.simpleweather_debug.");
+                                }
+                                else
+                                {
+                                    line = line.Replace("package=\"com.thewizrd.simpleweather_debug\"", "package=\"com.thewizrd.simpleweather\"");
+                                    line = line.Replace("com.thewizrd.simpleweather_debug.", "com.thewizrd.simpleweather.");
+                                }
                             }
-                            else
+                            else if (OSVersion == OSVersion.UWP)
                             {
-                                line = line.Replace("package=\"com.thewizrd.simpleweather_debug\"", "package=\"com.thewizrd.simpleweather\"");
-                                line = line.Replace("com.thewizrd.simpleweather_debug.", "com.thewizrd.simpleweather.");
+                                if ("Debug".Equals(ConfigMode))
+                                {
+                                    line = line.Replace("Name=\"49586DaveAntoine.SimpleWeather - Asimpleweatherapp\"", "Name=\"49586DaveAntoine.SimpleWeather - Asimpleweatherapp_debug\"");
+                                }
+                                else
+                                {
+                                    line = line.Replace("Name=\"49586DaveAntoine.SimpleWeather - Asimpleweatherapp_debug\"", "Name=\"49586DaveAntoine.SimpleWeather - Asimpleweatherapp\"");
+                                }
                             }
 
                             sBuilder.AppendLine(line);
