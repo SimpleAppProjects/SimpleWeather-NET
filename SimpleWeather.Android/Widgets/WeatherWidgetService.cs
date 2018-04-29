@@ -67,8 +67,6 @@ namespace SimpleWeather.Droid.App.Widgets
         private static BroadcastReceiver mTickReceiver;
 
         private WeatherManager wm;
-        private static Weather weather;
-        private static LocationData locData;
 
         // Weather Widget Providers
         private WeatherWidgetProvider1x1 mAppWidget1x1 =
@@ -104,9 +102,6 @@ namespace SimpleWeather.Droid.App.Widgets
         {
             if (ACTION_REFRESHWIDGET.Equals(intent.Action))
             {
-                if (Settings.WeatherLoaded && (weather == null || (locData == null || !locData.Equals(Settings.HomeData))))
-                    weather = await GetWeather();
-
                 int[] appWidgetIds = intent.GetIntArrayExtra(WeatherWidgetProvider.EXTRA_WIDGET_IDS);
                 WidgetType widgetType = (WidgetType)intent.GetIntExtra(WeatherWidgetProvider.EXTRA_WIDGET_TYPE, -1);
 
@@ -134,9 +129,6 @@ namespace SimpleWeather.Droid.App.Widgets
             }
             else if (ACTION_RESIZEWIDGET.Equals(intent.Action))
             {
-                if (Settings.WeatherLoaded && (weather == null || (locData == null || !locData.Equals(Settings.HomeData))))
-                    weather = await GetWeather();
-
                 int appWidgetId = intent.GetIntExtra(WeatherWidgetProvider.EXTRA_WIDGET_ID, -1);
                 WidgetType widgetType = (WidgetType)intent.GetIntExtra(WeatherWidgetProvider.EXTRA_WIDGET_TYPE, -1);
                 Bundle newOptions = intent.GetBundleExtra(WeatherWidgetProvider.EXTRA_WIDGET_OPTIONS);
@@ -199,8 +191,7 @@ namespace SimpleWeather.Droid.App.Widgets
             {
                 if (Settings.WeatherLoaded)
                 {
-                    if (weather == null || (locData == null || !locData.Equals(Settings.HomeData)))
-                        weather = await GetWeather();
+                    var weather = await GetWeather();
 
                     if (Settings.OnGoingNotification && weather != null)
                         WeatherNotificationBuilder.UpdateNotification(weather);
@@ -223,14 +214,18 @@ namespace SimpleWeather.Droid.App.Widgets
                     if (Settings.OnGoingNotification && Build.VERSION.SdkInt >= BuildVersionCodes.M)
                         WeatherNotificationBuilder.ShowRefresh();
 
-                    weather = await GetWeather();
-
                     if (WidgetsExist(App.Context))
                         RefreshWidgets();
-                    if (Settings.OnGoingNotification)
-                        WeatherNotificationBuilder.UpdateNotification(weather);
-                    if (Settings.ShowAlerts && wm.SupportsAlerts && weather != null)
-                        await WeatherAlertHandler.PostAlerts(locData, weather.weather_alerts);
+
+                    // Update for home
+                    var weather = await GetWeather();
+                    if (weather != null)
+                    {
+                        if (Settings.OnGoingNotification)
+                            WeatherNotificationBuilder.UpdateNotification(weather);
+                        if (Settings.ShowAlerts && wm.SupportsAlerts && weather != null)
+                            await WeatherAlertHandler.PostAlerts(Settings.HomeData, weather.weather_alerts);
+                    }
                 }
             }
 
@@ -348,21 +343,47 @@ namespace SimpleWeather.Droid.App.Widgets
         private void ResizeWidget(WeatherWidgetProvider provider, int appWidgetId, Bundle newOptions)
         {
             if (Settings.WeatherLoaded)
-                RebuildForecast(provider, weather, appWidgetId, newOptions);
+                RebuildForecast(provider, appWidgetId, newOptions);
         }
 
-        private void RefreshWidget(WeatherWidgetProvider provider, int[] appWidgetIds)
+        private async void RefreshWidget(WeatherWidgetProvider provider, int[] appWidgetIds)
         {
             if (appWidgetIds == null || appWidgetIds.Length == 0)
                 appWidgetIds = mAppWidgetManager.GetAppWidgetIds(provider.ComponentName);
 
-            if (Settings.WeatherLoaded && weather != null)
+            if (Settings.WeatherLoaded)
             {
-                // Build the widget update for provider
-                var views = BuildUpdate(mContext, provider, weather);
-                // Push update for this widget to the home screen
-                mAppWidgetManager.UpdateAppWidget(appWidgetIds, views);
-                BuildForecast(provider, weather, appWidgetIds);
+                foreach (int id in appWidgetIds)
+                {
+                    var locData = WidgetUtils.GetLocationData(id);
+                    Weather weather = null;
+
+                    if (locData != null)
+                    {
+                        if (locData.Equals(Settings.HomeData))
+                        {
+                            weather = await GetWeather();
+                        }
+                        else
+                        {
+                            var wloader = new WeatherDataLoader(null, locData);
+                            await wloader.LoadWeatherData(false);
+                            weather = wloader.GetWeather();
+                        }
+
+                        if (weather != null)
+                        {
+                            // Save weather data
+                            WidgetUtils.SaveWeatherData(id, weather);
+
+                            // Build the widget update for provider
+                            var views = BuildUpdate(mContext, provider, id, locData, weather);
+                            // Push update for this widget to the home screen
+                            mAppWidgetManager.UpdateAppWidget(id, views);
+                            BuildForecast(provider, weather, id);
+                        }
+                    }
+                }
             }
 
             if (provider.WidgetType == WidgetType.Widget4x2)
@@ -372,7 +393,7 @@ namespace SimpleWeather.Droid.App.Widgets
             }
         }
 
-        private void RefreshWidgets()
+        private async void RefreshWidgets()
         {
             if (Settings.WeatherLoaded)
             {
@@ -380,50 +401,149 @@ namespace SimpleWeather.Droid.App.Widgets
                 // Add widget providers here
                 if (mAppWidget1x1.HasInstances(this))
                 {
-                    if (weather == null) return;
-
                     int[] appWidgetIds = mAppWidgetManager.GetAppWidgetIds(mAppWidget1x1.ComponentName);
 
-                    var views = BuildUpdate(mContext, mAppWidget1x1, weather);
-                    // Push update for this widget to the home screen
-                    mAppWidgetManager.UpdateAppWidget(appWidgetIds, views);
-                    BuildForecast(mAppWidget1x1, weather, appWidgetIds);
+                    foreach (int id in appWidgetIds)
+                    {
+                        var locData = WidgetUtils.GetLocationData(id);
+                        Weather weather = null;
+
+                        if (locData != null)
+                        {
+                            if (locData.Equals(Settings.HomeData))
+                            {
+                                weather = await GetWeather();
+                            }
+                            else
+                            {
+                                var wloader = new WeatherDataLoader(null, locData);
+                                await wloader.LoadWeatherData(false);
+                                weather = wloader.GetWeather();
+                            }
+
+                            if (weather != null)
+                            {
+                                // Save weather data
+                                WidgetUtils.SaveWeatherData(id, weather);
+
+                                // Build the widget update for provider
+                                var views = BuildUpdate(mContext, mAppWidget1x1, id, locData, weather);
+                                // Push update for this widget to the home screen
+                                mAppWidgetManager.UpdateAppWidget(id, views);
+                                BuildForecast(mAppWidget1x1, weather, id);
+                            }
+                        }
+                    }
                 }
 
                 if (mAppWidget2x2.HasInstances(this))
                 {
-                    if (weather == null) return;
-
                     int[] appWidgetIds = mAppWidgetManager.GetAppWidgetIds(mAppWidget2x2.ComponentName);
 
-                    var views = BuildUpdate(mContext, mAppWidget2x2, weather);
-                    // Push update for this widget to the home screen
-                    mAppWidgetManager.UpdateAppWidget(appWidgetIds, views);
-                    BuildForecast(mAppWidget2x2, weather);
+                    foreach (int id in appWidgetIds)
+                    {
+                        var locData = WidgetUtils.GetLocationData(id);
+                        Weather weather = null;
+
+                        if (locData != null)
+                        {
+                            if (locData.Equals(Settings.HomeData))
+                            {
+                                weather = await GetWeather();
+                            }
+                            else
+                            {
+                                var wloader = new WeatherDataLoader(null, locData);
+                                await wloader.LoadWeatherData(false);
+                                weather = wloader.GetWeather();
+                            }
+
+                            if (weather != null)
+                            {
+                                // Save weather data
+                                WidgetUtils.SaveWeatherData(id, weather);
+
+                                // Build the widget update for provider
+                                var views = BuildUpdate(mContext, mAppWidget2x2, id, locData, weather);
+                                // Push update for this widget to the home screen
+                                mAppWidgetManager.UpdateAppWidget(id, views);
+                                BuildForecast(mAppWidget2x2, weather, id);
+                            }
+                        }
+                    }
                 }
 
                 if (mAppWidget4x1.HasInstances(this))
                 {
-                    if (weather == null) return;
-
                     int[] appWidgetIds = mAppWidgetManager.GetAppWidgetIds(mAppWidget4x1.ComponentName);
 
-                    var views = BuildUpdate(mContext, mAppWidget4x1, weather);
-                    // Push update for this widget to the home screen
-                    mAppWidgetManager.UpdateAppWidget(appWidgetIds, views);
-                    BuildForecast(mAppWidget4x1, weather, appWidgetIds);
+                    foreach (int id in appWidgetIds)
+                    {
+                        var locData = WidgetUtils.GetLocationData(id);
+                        Weather weather = null;
+
+                        if (locData != null)
+                        {
+                            if (locData.Equals(Settings.HomeData))
+                            {
+                                weather = await GetWeather();
+                            }
+                            else
+                            {
+                                var wloader = new WeatherDataLoader(null, locData);
+                                await wloader.LoadWeatherData(false);
+                                weather = wloader.GetWeather();
+                            }
+
+                            if (weather != null)
+                            {
+                                // Save weather data
+                                WidgetUtils.SaveWeatherData(id, weather);
+
+                                // Build the widget update for provider
+                                var views = BuildUpdate(mContext, mAppWidget4x1, id, locData, weather);
+                                // Push update for this widget to the home screen
+                                mAppWidgetManager.UpdateAppWidget(id, views);
+                                BuildForecast(mAppWidget4x1, weather, id);
+                            }
+                        }
+                    }
                 }
 
                 if (mAppWidget4x2.HasInstances(this))
                 {
                     int[] appWidgetIds = mAppWidgetManager.GetAppWidgetIds(mAppWidget4x2.ComponentName);
 
-                    if (weather != null)
+                    foreach (int id in appWidgetIds)
                     {
-                        var views = BuildUpdate(mContext, mAppWidget4x2, weather);
-                        // Push update for this widget to the home screen
-                        mAppWidgetManager.UpdateAppWidget(appWidgetIds, views);
-                        BuildForecast(mAppWidget4x2, weather, appWidgetIds);
+                        var locData = WidgetUtils.GetLocationData(id);
+                        Weather weather = null;
+
+                        if (locData != null)
+                        {
+                            if (locData.Equals(Settings.HomeData))
+                            {
+                                weather = await GetWeather();
+                            }
+                            else
+                            {
+                                var wloader = new WeatherDataLoader(null, locData);
+                                await wloader.LoadWeatherData(false);
+                                weather = wloader.GetWeather();
+                            }
+
+                            if (weather != null)
+                            {
+                                // Save weather data
+                                WidgetUtils.SaveWeatherData(id, weather);
+
+                                // Build the widget update for provider
+                                var views = BuildUpdate(mContext, mAppWidget4x2, id, locData, weather);
+                                // Push update for this widget to the home screen
+                                mAppWidgetManager.UpdateAppWidget(id, views);
+                                BuildForecast(mAppWidget4x2, weather, id);
+                            }
+                        }
                     }
 
                     RefreshClock(appWidgetIds);
@@ -507,7 +627,7 @@ namespace SimpleWeather.Droid.App.Widgets
             return PendingIntent.GetActivity(context, 0, onClickIntent, 0);
         }
 
-        private RemoteViews BuildUpdate(Context context, WeatherWidgetProvider provider, Weather weather)
+        private RemoteViews BuildUpdate(Context context, WeatherWidgetProvider provider, int appWidgetId, LocationData location, Weather weather)
         {
             // Build an update that holds the updated widget contents
             RemoteViews updateViews = new RemoteViews(context.PackageName, provider.WidgetLayoutId);
@@ -515,7 +635,9 @@ namespace SimpleWeather.Droid.App.Widgets
             // Progress bar
             updateViews.SetViewVisibility(Resource.Id.refresh_button, ViewStates.Visible);
             updateViews.SetViewVisibility(Resource.Id.refresh_progress, ViewStates.Gone);
-            updateViews.SetOnClickPendingIntent(Resource.Id.refresh_button, GetAlarmIntent(context));
+
+            // Set on click refresh intent
+            SetOnRefreshIntent(context, provider, appWidgetId, updateViews);
 
             // Temperature
             string temp = Settings.IsFahrenheit ?
@@ -550,7 +672,7 @@ namespace SimpleWeather.Droid.App.Widgets
                 if (provider.WidgetType == WidgetType.Widget2x2 || provider.WidgetType == WidgetType.Widget4x2)
                 {
                     // Feels like temp
-                    updateViews.SetTextViewText(Resource.Id.condition_feelslike, 
+                    updateViews.SetTextViewText(Resource.Id.condition_feelslike,
                         (Settings.IsFahrenheit ?
                             Math.Round(weather.condition.feelslike_f) : Math.Round(weather.condition.feelslike_c)) + "º");
 
@@ -582,20 +704,55 @@ namespace SimpleWeather.Droid.App.Widgets
                 }
             }
 
-            // When user clicks on widget, launch to WeatherNow page
-            Intent onClickIntent = new Intent(context.ApplicationContext, typeof(MainActivity))
-                .SetFlags(ActivityFlags.ClearTop | ActivityFlags.NewTask | ActivityFlags.ClearTask);
-            PendingIntent clickPendingIntent = PendingIntent.GetActivity(context, 0, onClickIntent, 0);
-            updateViews.SetOnClickPendingIntent(Resource.Id.widgetBackground, clickPendingIntent);
+            SetOnClickIntent(context, location, updateViews);
 
             return updateViews;
         }
 
-        // TODO: Merge into function below
-        private void RebuildForecast(WeatherWidgetProvider provider, Weather weather, int appWidgetId, Bundle newOptions)
+        private void SetOnRefreshIntent(Context context, WeatherWidgetProvider provider, int appWidgetId, RemoteViews updateViews)
         {
+            Intent refreshIntent = new Intent(context, typeof(WeatherWidgetBroadcastReceiver))
+                .SetAction(ACTION_REFRESHWIDGET)
+                .PutExtra(WeatherWidgetProvider.EXTRA_WIDGET_IDS, new int[] { appWidgetId })
+                .PutExtra(WeatherWidgetProvider.EXTRA_WIDGET_TYPE, (int)provider.WidgetType);
+            PendingIntent refreshPendingIntent =
+                PendingIntent.GetBroadcast(context, appWidgetId, refreshIntent, PendingIntentFlags.UpdateCurrent);
+            updateViews?.SetOnClickPendingIntent(Resource.Id.refresh_button, refreshPendingIntent);
+        }
+
+        private void SetOnClickIntent(Context context, LocationData location, RemoteViews updateViews)
+        {
+            // When user clicks on widget, launch to WeatherNow page
+            Intent onClickIntent = new Intent(context.ApplicationContext, typeof(MainActivity))
+                .SetFlags(ActivityFlags.ClearTop | ActivityFlags.NewTask | ActivityFlags.ClearTask);
+
+            if (!Settings.HomeData.Equals(location))
+                onClickIntent.PutExtra("shortcut-data", location?.ToJson());
+
+            PendingIntent clickPendingIntent = 
+                PendingIntent.GetActivity(context, location.GetHashCode(), onClickIntent, PendingIntentFlags.UpdateCurrent);
+            updateViews?.SetOnClickPendingIntent(Resource.Id.widgetBackground, clickPendingIntent);
+        }
+
+        // TODO: Merge into function below
+        private async void RebuildForecast(WeatherWidgetProvider provider, int appWidgetId, Bundle newOptions)
+        {
+            var weather = WidgetUtils.GetWeatherData(appWidgetId);
+
             if (weather == null)
-                return;
+            {
+                var locData = WidgetUtils.GetLocationData(appWidgetId);
+                if (locData != null)
+                {
+                    var wloader = new WeatherDataLoader(null, locData);
+                    await wloader.LoadWeatherData(false);
+                    weather = wloader.GetWeather();
+                    if (weather != null)
+                        WidgetUtils.SaveWeatherData(appWidgetId, weather);
+                    else
+                        return;
+                }
+            }
 
             RemoteViews updateViews = new RemoteViews(mContext.PackageName, provider.WidgetLayoutId);
 
@@ -640,6 +797,11 @@ namespace SimpleWeather.Droid.App.Widgets
         {
             int[] appWidgetIds = mAppWidgetManager.GetAppWidgetIds(provider.ComponentName);
             BuildForecast(provider, weather, appWidgetIds);
+        }
+
+        private void BuildForecast(WeatherWidgetProvider provider, Weather weather, int appWidgetId)
+        {
+            BuildForecast(provider, weather, new int[] { appWidgetId });
         }
 
         private void BuildForecast(WeatherWidgetProvider provider, Weather weather, int[] appWidgetIds)
@@ -800,7 +962,6 @@ namespace SimpleWeather.Droid.App.Widgets
                 var wloader = new WeatherDataLoader(null, Settings.HomeData);
                 await wloader.LoadWeatherData(false);
 
-                locData = Settings.HomeData;
                 weather = wloader.GetWeather();
 
                 if (weather != null)
@@ -870,6 +1031,9 @@ namespace SimpleWeather.Droid.App.Widgets
                             return false;
                         }
 
+                        // Save oldkey
+                        string oldkey = lastGPSLocData.query;
+
                         // Save location as last known
                         lastGPSLocData.SetData(query_vm, location);
                         Settings.SaveLastGPSLocData(lastGPSLocData);
@@ -877,6 +1041,12 @@ namespace SimpleWeather.Droid.App.Widgets
                         App.Context.StartService(
                             new Intent(App.Context, typeof(WearableDataListenerService))
                                 .SetAction(WearableDataListenerService.ACTION_SENDLOCATIONUPDATE));
+
+                        // Update widget ids for location
+                        if (oldkey != null && WidgetUtils.Exists(oldkey))
+                        {
+                            WidgetUtils.UpdateWidgetIds(oldkey, lastGPSLocData);
+                        }
 
                         locationChanged = true;
                     }

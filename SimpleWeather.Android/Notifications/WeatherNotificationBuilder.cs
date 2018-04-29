@@ -71,7 +71,7 @@ namespace SimpleWeather.Droid.App.Notifications
             updateViews.SetViewVisibility(Resource.Id.refresh_button, ViewStates.Visible);
             updateViews.SetViewVisibility(Resource.Id.refresh_progress, ViewStates.Gone);
             Intent refreshClickIntent = new Intent(App.Context, typeof(Widgets.WeatherWidgetBroadcastReceiver))
-                .SetAction(Widgets.WeatherWidgetService.ACTION_UPDATEWEATHER);
+                .SetAction(Widgets.WeatherWidgetService.ACTION_REFRESHNOTIFICATION);
             PendingIntent prgPendingIntent = PendingIntent.GetBroadcast(App.Context, 0, refreshClickIntent, 0);
             updateViews.SetOnClickPendingIntent(Resource.Id.refresh_button, prgPendingIntent);
 

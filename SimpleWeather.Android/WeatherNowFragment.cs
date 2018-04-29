@@ -876,6 +876,9 @@ namespace SimpleWeather.Droid.App
                             return false;
                         }
 
+                        // Save oldkey
+                        string oldkey = lastGPSLocData.query;
+
                         // Save location as last known
                         lastGPSLocData.SetData(view, location);
                         Settings.SaveLastGPSLocData(lastGPSLocData);
@@ -886,6 +889,13 @@ namespace SimpleWeather.Droid.App
 
                         this.location = lastGPSLocData;
                         mLocation = location;
+
+                        // Update widget ids for location
+                        if (oldkey != null && WidgetUtils.Exists(oldkey))
+                        {
+                            WidgetUtils.UpdateWidgetIds(oldkey, lastGPSLocData);
+                        }
+
                         locationChanged = true;
                     }
                 }

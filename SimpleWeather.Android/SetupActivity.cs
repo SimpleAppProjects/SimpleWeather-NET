@@ -331,15 +331,10 @@ namespace SimpleWeather.Droid.App
                 }
                 else
                 {
-                    // Trigger widget service to update widget
-                    WeatherWidgetService.EnqueueWork(this,
-                        new Intent(this, typeof(WeatherWidgetService))
-                        .SetAction(WeatherWidgetService.ACTION_REFRESHWIDGET)
-                        .PutExtra(AppWidgetManager.ExtraAppwidgetIds, new int[] { mAppWidgetId }));
-
                     // Create return intent
                     Intent resultValue = new Intent();
                     resultValue.PutExtra(AppWidgetManager.ExtraAppwidgetId, mAppWidgetId);
+                    resultValue.PutExtra("data", location.ToJson());
                     SetResult(Android.App.Result.Ok, resultValue);
                     Finish();
                 }

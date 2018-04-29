@@ -13,6 +13,7 @@ using Android.App;
 using SimpleWeather.Droid;
 #if !__ANDROID_WEAR__
 using SimpleWeather.Droid.App;
+using SimpleWeather.Droid.App.Widgets;
 #endif
 #endif
 
@@ -190,6 +191,11 @@ namespace SimpleWeather.WeatherData
                         {
                             SecondaryTileUtils.UpdateTileId(oldKey, location.query);
                         }
+#elif __ANDROID__ && !__ANDROID_WEAR__
+                        if (WidgetUtils.Exists(oldKey))
+                        {
+                            WidgetUtils.UpdateWidgetIds(oldKey, location);
+                        }
 #endif
                     }
 
@@ -294,11 +300,24 @@ namespace SimpleWeather.WeatherData
 
             await Settings.SaveWeatherData(weather);
 
-            // Update weather data for Wearables
 #if !__ANDROID_WEAR__ && __ANDROID__
+            // Update weather data for Wearables
             Application.Context.StartService(
                 new Android.Content.Intent(Application.Context, typeof(WearableDataListenerService))
                     .SetAction(WearableDataListenerService.ACTION_SENDWEATHERUPDATE));
+
+            // Update cached weather data for widgets
+            await Task.Run(() =>
+            {
+                if (WidgetUtils.Exists(location.query))
+                {
+                    var ids = WidgetUtils.GetWidgetIds(location.query);
+                    foreach (int id in ids)
+                    {
+                        WidgetUtils.SaveWeatherData(id, weather);
+                    }
+                }
+            });
 #elif __ANDROID_WEAR__
             Settings.UpdateTime = weather.update_time.UtcDateTime;
 #endif

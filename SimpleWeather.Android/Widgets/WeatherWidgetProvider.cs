@@ -134,6 +134,16 @@ namespace SimpleWeather.Droid.App.Widgets
         public override void OnDeleted(Context context, int[] appWidgetIds)
         {
             base.OnDeleted(context, appWidgetIds);
+
+            foreach(int id in appWidgetIds)
+            {
+                // Remove id from list
+                var locData = WidgetUtils.GetLocationData(id);
+                if (locData != null)
+                {
+                    WidgetUtils.RemoveWidgetId(locData.query, id);
+                }
+            }
         }
     }
 

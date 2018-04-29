@@ -1698,6 +1698,12 @@
   <ItemGroup>
     <AndroidResource Include="Resources\values-v24\bools.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\activity_widget_setup.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\menu\menu_widgetsetup.xml" />
+  </ItemGroup>
   <Import Project="..\SimpleWeather\SimpleWeather_Xamarin.projitems" Label="Shared" Condition="Exists('..\SimpleWeather\SimpleWeather_Xamarin.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
