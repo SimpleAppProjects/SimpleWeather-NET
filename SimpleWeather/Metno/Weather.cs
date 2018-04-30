@@ -1797,6 +1797,8 @@ namespace SimpleWeather.Metno
 
         private bool never_riseField;
 
+        private bool never_setField;
+
         /// <remarks/>
         public astrodataTimeLocationSunNoon noon
         {
@@ -1849,6 +1851,20 @@ namespace SimpleWeather.Metno
             set
             {
                 this.never_riseField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public bool never_set
+        {
+            get
+            {
+                return this.never_setField;
+            }
+            set
+            {
+                this.never_setField = value;
             }
         }
     }

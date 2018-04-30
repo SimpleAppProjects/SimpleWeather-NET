@@ -336,24 +336,11 @@ namespace SimpleWeather.Metno
             if (weather != null)
             {
                 weather.query = location_query;
-                // Add condition icons
-                var now = DateTimeOffset.UtcNow.TimeOfDay;
-                var sunrise = weather.astronomy.sunrise.TimeOfDay;
-                var sunset = weather.astronomy.sunset.TimeOfDay;
-
-                weather.condition.weather = GetWeatherCondition(weather.condition.icon);
-                weather.condition.icon = GetWeatherIcon(now < sunrise || now > sunset, weather.condition.icon);
 
                 foreach (Forecast forecast in weather.forecast)
                 {
                     forecast.condition = GetWeatherCondition(forecast.icon);
                     forecast.icon = GetWeatherIcon(forecast.icon);
-                }
-
-                foreach (HourlyForecast hr_forecast in weather.hr_forecast)
-                {
-                    hr_forecast.condition = GetWeatherCondition(hr_forecast.icon);
-                    hr_forecast.icon = GetWeatherIcon(hr_forecast.date.TimeOfDay < sunrise || hr_forecast.date.TimeOfDay > sunset, hr_forecast.icon);
                 }
             }
 
@@ -370,16 +357,41 @@ namespace SimpleWeather.Metno
             // OWM reports datetime in UTC; add location tz_offset
             var offset = location.tz_offset;
             weather.update_time = weather.update_time.ToOffset(offset);
-            foreach (HourlyForecast hr_forecast in weather.hr_forecast)
-            {
-                hr_forecast.date = hr_forecast.date.ToOffset(offset);
-            }
+
+            // The time of day is set to max if the sun never sets/rises and
+            // DateTime is set to min if not found
+            // Don't change this if its set that way
+            if (weather.astronomy.sunrise > DateTime.MinValue &&
+                weather.astronomy.sunrise.TimeOfDay < DateTimeUtils.MaxTimeOfDay())
+                weather.astronomy.sunrise = weather.astronomy.sunrise.Add(offset);
+            if (weather.astronomy.sunset > DateTime.MinValue &&
+                weather.astronomy.sunset.TimeOfDay < DateTimeUtils.MaxTimeOfDay())
+                weather.astronomy.sunset = weather.astronomy.sunset.Add(offset);
+
+            // Set condition here
+            var now = DateTimeOffset.UtcNow.ToOffset(offset).TimeOfDay;
+            var sunrise = weather.astronomy.sunrise.TimeOfDay;
+            var sunset = weather.astronomy.sunset.TimeOfDay;
+
+            weather.condition.weather = GetWeatherCondition(weather.condition.icon);
+            weather.condition.icon = GetWeatherIcon(now < sunrise || now > sunset, weather.condition.icon);
+
             foreach (Forecast forecast in weather.forecast)
             {
                 forecast.date = forecast.date.Add(offset);
             }
-            weather.astronomy.sunrise = weather.astronomy.sunrise.Add(offset);
-            weather.astronomy.sunset = weather.astronomy.sunset.Add(offset);
+
+            foreach (HourlyForecast hr_forecast in weather.hr_forecast)
+            {
+                hr_forecast.date = hr_forecast.date.ToOffset(offset);
+
+                var hrnow = hr_forecast.date.TimeOfDay;
+                var sunriseTime = weather.astronomy.sunrise.TimeOfDay;
+                var sunsetTime = weather.astronomy.sunset.TimeOfDay;
+
+                hr_forecast.condition = GetWeatherCondition(hr_forecast.icon);
+                hr_forecast.icon = GetWeatherIcon(hrnow < sunriseTime || hrnow > sunsetTime, hr_forecast.icon);
+            }
 
             return weather;
         }

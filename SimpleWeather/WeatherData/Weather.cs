@@ -1648,15 +1648,17 @@ namespace SimpleWeather.WeatherData
 
         public Astronomy(Metno.astrodata astroRoot)
         {
-            if (astroRoot.time.location.sun.rise != null && astroRoot.time.location.sun.set != null)
+            sunrise = astroRoot.time.location.sun.rise;
+            sunset = astroRoot.time.location.sun.set;
+
+            // If the sun won't set/rise, set time to the future
+            if ((bool)astroRoot?.time?.location?.sun?.never_rise)
             {
-                sunrise = astroRoot.time.location.sun.rise;
-                sunset = astroRoot.time.location.sun.set;
+                sunrise = DateTime.Now.Date.AddYears(1).AddTicks(-1);
             }
-            else
+            else if ((bool)astroRoot?.time?.location?.sun?.never_set)
             {
-                sunrise = DateTime.MinValue;
-                sunset = DateTime.MinValue;
+                sunset = DateTime.Now.Date.AddYears(1).AddTicks(-1);
             }
         }
 
