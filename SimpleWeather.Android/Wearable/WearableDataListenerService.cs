@@ -245,7 +245,7 @@ namespace SimpleWeather.Droid.App
 
             PutDataMapRequest mapRequest = PutDataMapRequest.Create(WearableHelper.LocationPath);
             var homeData = Settings.HomeData;
-            mapRequest.DataMap.PutString("locationData", homeData.ToJson());
+            mapRequest.DataMap.PutString("locationData", homeData?.ToJson());
             mapRequest.DataMap.PutLong("update_time", DateTime.UtcNow.Ticks);
             PutDataRequest request = mapRequest.AsPutDataRequest();
             if (urgent) request.SetUrgent();
@@ -273,38 +273,42 @@ namespace SimpleWeather.Droid.App
             var homeData = Settings.HomeData;
             var weatherData = await Settings.GetWeatherData(homeData.query);
             var alertData = await Settings.GetWeatherAlertData(homeData.query);
-            weatherData.weather_alerts = alertData;
 
-            // location
-            // update_time
-            // forecast
-            // hr_forecast
-            // txt_forecast
-            // condition
-            // atmosphere
-            // astronomy
-            // precipitation
-            // ttl
-            // source
-            // query
-            // locale
-
-            mapRequest.DataMap.PutString("weatherData", weatherData.ToJson());
-            List<String> alerts = new List<String>();
-            if (weatherData.weather_alerts.Count > 0)
+            if (weatherData != null)
             {
-                foreach(WeatherData.WeatherAlert alert in weatherData.weather_alerts)
-                {
-                    alerts.Add(alert.ToJson());
-                }
-            }
-            mapRequest.DataMap.PutStringArrayList("weatherAlerts", alerts);
-            mapRequest.DataMap.PutLong("update_time", weatherData.update_time.UtcTicks);
-            PutDataRequest request = mapRequest.AsPutDataRequest();
-            if (urgent) request.SetUrgent();
-            WearableClass.DataApi.PutDataItem(mGoogleApiClient, request);
+                weatherData.weather_alerts = alertData;
 
-            Log.Info(TAG, "CreateWeatherDataRequest(): urgent: ", urgent.ToString());
+                // location
+                // update_time
+                // forecast
+                // hr_forecast
+                // txt_forecast
+                // condition
+                // atmosphere
+                // astronomy
+                // precipitation
+                // ttl
+                // source
+                // query
+                // locale
+
+                mapRequest.DataMap.PutString("weatherData", weatherData?.ToJson());
+                List<String> alerts = new List<String>();
+                if (weatherData.weather_alerts.Count > 0)
+                {
+                    foreach (WeatherData.WeatherAlert alert in weatherData.weather_alerts)
+                    {
+                        alerts.Add(alert.ToJson());
+                    }
+                }
+                mapRequest.DataMap.PutStringArrayList("weatherAlerts", alerts);
+                mapRequest.DataMap.PutLong("update_time", weatherData.update_time.UtcTicks);
+                PutDataRequest request = mapRequest.AsPutDataRequest();
+                if (urgent) request.SetUrgent();
+                WearableClass.DataApi.PutDataItem(mGoogleApiClient, request);
+
+                Log.Info(TAG, "CreateWeatherDataRequest(): urgent: ", urgent.ToString());
+            }
         }
 
         private void SendSetupStatus(String NodeID)
