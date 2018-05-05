@@ -317,18 +317,10 @@ namespace SimpleWeather.Droid.App
             cloudiness.Visibility = ViewStates.Gone;
 
             forecastView.HasFixedSize = true;
-            forecastView.SetLayoutManager(new Android.Support.V7.Widget.LinearLayoutManager(Activity)
-            {
-                Orientation = Android.Support.V7.Widget.LinearLayoutManager.Horizontal
-            });
             forecastAdapter = new ForecastItemAdapter(new List<ForecastItemViewModel>());
             forecastView.SetAdapter(forecastAdapter);
 
             hrforecastView.HasFixedSize = true;
-            hrforecastView.SetLayoutManager(new Android.Support.V7.Widget.LinearLayoutManager(Activity)
-            {
-                Orientation = Android.Support.V7.Widget.LinearLayoutManager.Horizontal
-            });
             hrforecastAdapter = new HourlyForecastItemAdapter(new List<HourlyForecastItemViewModel>());
             hrforecastView.SetAdapter(hrforecastAdapter);
 

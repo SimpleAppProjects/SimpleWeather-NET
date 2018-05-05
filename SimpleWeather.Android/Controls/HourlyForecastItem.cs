@@ -3,10 +3,11 @@ using Android.Views;
 using Android.Widget;
 using Android.Util;
 using SimpleWeather.Controls;
+using Android.Support.Constraints;
 
 namespace SimpleWeather.Droid.App.Controls
 {
-    public class HourlyForecastItem : LinearLayout
+    public class HourlyForecastItem : ConstraintLayout
     {
         private Context mContext;
         private View viewLayout;
@@ -40,12 +41,6 @@ namespace SimpleWeather.Droid.App.Controls
 
         public HourlyForecastItem(Context context, IAttributeSet attrs, int defStyleAttr) :
             base(context, attrs, defStyleAttr)
-        {
-            Initialize(context);
-        }
-
-        public HourlyForecastItem(Context context, IAttributeSet attrs, int defStyleAttr, int defStyleRes) :
-            base(context, attrs, defStyleAttr, defStyleRes)
         {
             Initialize(context);
         }

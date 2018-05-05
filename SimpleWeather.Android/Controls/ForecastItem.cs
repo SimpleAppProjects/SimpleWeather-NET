@@ -3,10 +3,11 @@ using Android.Views;
 using Android.Widget;
 using Android.Util;
 using SimpleWeather.Controls;
+using Android.Support.Constraints;
 
 namespace SimpleWeather.Droid.App.Controls
 {
-    public class ForecastItem : LinearLayout
+    public class ForecastItem : ConstraintLayout
     {
         private View viewLayout;
         private TextView forecastDate;
@@ -36,12 +37,6 @@ namespace SimpleWeather.Droid.App.Controls
 
         public ForecastItem(Context context, IAttributeSet attrs, int defStyleAttr) :
             base(context, attrs, defStyleAttr)
-        {
-            Initialize(context);
-        }
-
-        public ForecastItem(Context context, IAttributeSet attrs, int defStyleAttr, int defStyleRes) :
-            base(context, attrs, defStyleAttr, defStyleRes)
         {
             Initialize(context);
         }

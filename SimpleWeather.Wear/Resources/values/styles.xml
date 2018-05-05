@@ -30,7 +30,7 @@
         <item name="autoSizeTextType">uniform</item>
         <item name="android:gravity">center_vertical</item>
 <!--
-        app:autoSizeMinTextSize="2sp"
+        app:autoSizeMinTextSize="6sp"
         app:autoSizeMaxTextSize="14sp"
         app:autoSizeTextType="uniform" />
 -->

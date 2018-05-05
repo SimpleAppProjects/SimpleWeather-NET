@@ -4,7 +4,7 @@
     android:id="@+id/widgetBackground"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black"
+    android:background="@color/color_background_day"
     android:padding="@dimen/widget_margin"
     tools:layout_height="72dp"
     tools:layout_width="72dp">
@@ -50,7 +50,8 @@
             android:gravity="center"
             android:maxWidth="75dp"
             android:scaleType="fitCenter"
-            android:tint="@android:color/white" />
+            android:tint="@android:color/white"
+            tools:src="@drawable/day_sunny" />
 
         <ImageView
             android:id="@+id/condition_temp"
@@ -62,7 +63,8 @@
             android:adjustViewBounds="true"
             android:gravity="center"
             android:maxWidth="75dp"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitCenter"
+            tools:src="@drawable/notification_temp_pos75" />
 
         <TextView
             android:id="@+id/location_name"

@@ -6,8 +6,10 @@ using Android.Views;
 using Android.Support.V7.Widget;
 using Android.Util;
 #if __ANDROID_WEAR__
+using SimpleWeather.Droid.Wear;
 using SimpleWeather.Droid.Wear.Controls;
 #else
+using SimpleWeather.Droid.App;
 using SimpleWeather.Droid.App.Controls;
 #endif
 using SimpleWeather.Controls;

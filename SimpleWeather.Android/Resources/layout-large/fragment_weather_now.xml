@@ -190,7 +190,10 @@
                         android:id="@+id/forecast_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/forecast_border"/>
+                        android:layout_below="@+id/forecast_border"
+                        android:orientation="horizontal"
+                        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                        tools:listitem="@layout/weather_forecast_panel" />
 
                     <android.support.v4.view.ViewPager
                         android:id="@+id/txt_forecast_viewpgr"
@@ -236,7 +239,10 @@
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/hourly_forecast_view"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                        tools:listitem="@layout/weather_hrforecast_panel" />
 
                 </LinearLayout>
 

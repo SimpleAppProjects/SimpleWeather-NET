@@ -43,7 +43,7 @@
                 android:textColor="@android:color/white"
                 android:textSize="12sp"
                 app:autoSizeMaxTextSize="12sp"
-                app:autoSizeMinTextSize="2sp"
+                app:autoSizeMinTextSize="6sp"
                 app:autoSizeTextType="uniform"
                 tools:text="Winter Weather Advisory" />
 

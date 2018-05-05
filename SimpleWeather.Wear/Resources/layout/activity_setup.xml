@@ -42,7 +42,7 @@
             android:textColor="@android:color/white"
             android:textSize="14sp"
             app:autoSizeMaxTextSize="14sp"
-            app:autoSizeMinTextSize="2sp"
+            app:autoSizeMinTextSize="6sp"
             app:autoSizeStepGranularity="1sp"
             app:autoSizeTextType="uniform" />
 
