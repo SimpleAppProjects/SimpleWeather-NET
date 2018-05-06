@@ -1,11 +1,11 @@
 ﻿{
   "dependencies": {
     "Coding4Fun.Toolkit.Controls": "2.1.8",
-    "Microsoft.NETCore.UniversalWindowsPlatform": "6.0.6",
-    "Microsoft.Toolkit.Uwp.Notifications": "2.1.1",
+    "Microsoft.NETCore.UniversalWindowsPlatform": "6.1.4",
+    "Microsoft.Toolkit.Uwp.Notifications": "2.2.0",
     "Microsoft.Toolkit.Uwp.UI.Controls": "2.1.1",
-    "Newtonsoft.Json": "10.0.3",
-    "NodaTime": "2.2.4",
+    "Newtonsoft.Json": "11.0.2",
+    "NodaTime": "2.2.6",
     "QueryString.NET": "1.0.0",
     "sqlite-net-pcl": "1.5.166-beta",
     "SQLiteNetExtensions": "2.0.0",
