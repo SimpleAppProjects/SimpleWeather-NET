@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace EditManifest
@@ -39,7 +40,8 @@ namespace EditManifest
                 Console.WriteLine("File path: {0}", FilePath);
                 Console.WriteLine("Config mode: {0}", ConfigMode);
 
-                if (FilePath.EndsWith("AndroidManifest.xml", StringComparison.InvariantCultureIgnoreCase))
+                if (FilePath.EndsWith("AndroidManifest.xml", StringComparison.InvariantCultureIgnoreCase) ||
+                    Regex.IsMatch(FilePath, "app_widget_.x._info.xml\\z"))
                 {
                     OSVersion = OSVersion.Android;
                 }
