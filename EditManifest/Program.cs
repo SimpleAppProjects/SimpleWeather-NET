@@ -85,11 +85,11 @@ namespace EditManifest
                             {
                                 if ("Debug".Equals(ConfigMode))
                                 {
-                                    line = line.Replace("Name=\"49586DaveAntoine.SimpleWeather - Asimpleweatherapp\"", "Name=\"49586DaveAntoine.SimpleWeather - Asimpleweatherapp_debug\"");
+                                    line = line.Replace("Name=\"49586DaveAntoine.SimpleWeather-Asimpleweatherapp\"", "Name=\"49586com.thewizrd.simpleweather-debug\"");
                                 }
                                 else
                                 {
-                                    line = line.Replace("Name=\"49586DaveAntoine.SimpleWeather - Asimpleweatherapp_debug\"", "Name=\"49586DaveAntoine.SimpleWeather - Asimpleweatherapp\"");
+                                    line = line.Replace("Name=\"49586com.thewizrd.simpleweather-debug\"", "Name=\"49586DaveAntoine.SimpleWeather-Asimpleweatherapp\"");
                                 }
                             }
 
