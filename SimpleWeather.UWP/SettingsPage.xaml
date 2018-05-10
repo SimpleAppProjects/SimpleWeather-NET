@@ -253,7 +253,7 @@
                                 <ToggleSwitch x:Name="AlertSwitch" />
                             </StackPanel>
                             <ComboBox x:Name="APIComboBox" HorizontalAlignment="Left" MinWidth="260" Margin="0,10"
-                                  x:Uid="API_Box" PlaceholderText="Select Weather Provider">
+                                      x:Uid="API_Box" PlaceholderText="Select Weather Provider">
                                 <ComboBox.Header>
                                     <TextBlock x:Uid="API_Label" Text="Weather Provider" />
                                 </ComboBox.Header>
@@ -261,14 +261,17 @@
                             <StackPanel x:Name="KeyPanel">
                                 <TextBlock x:Uid="KeyBox" Text="API Key" Padding="0,5"/>
                                 <Border x:Name="KeyBorder" BorderThickness="2" Background="White" BorderBrush="DarkGray"
-                                    HorizontalAlignment="Left" Padding="10,4" MinWidth="260"
-                                    Visibility="{x:Bind KeyEntry.Visibility, Mode=OneWay}">
+                                        HorizontalAlignment="Left" Padding="10,4" MinWidth="260"
+                                        Visibility="{x:Bind KeyEntry.Visibility, Mode=OneWay}">
                                     <TextBlock x:Name="KeyEntry"
-                                           Visibility="Visible"
-                                           Tapped="KeyEntry_Tapped"
-                                           x:Uid="KeyBox" Text="API Key"
-                                           GotFocus="KeyEntry_GotFocus" />
+                                               Visibility="Visible"
+                                               Tapped="KeyEntry_Tapped"
+                                               x:Uid="KeyBox" Text="API Key"
+                                               GotFocus="KeyEntry_GotFocus" />
                                 </Border>
+                                <HyperlinkButton x:Name="RegisterKeyButton"
+                                                 x:Uid="RegisterKeyBox" Content="Register for API Key here"
+                                                 Padding="0,10" />
                             </StackPanel>
                         </StackPanel>
                     </Grid>

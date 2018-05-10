@@ -271,8 +271,8 @@ namespace SimpleWeather.UWP
                 KeyEntry.Text = String.Empty;
 
             SearchGrid.Visibility = Visibility.Visible;
-            // Set WUnderground as default API
-            APIComboBox.SelectedValue = WeatherAPI.WeatherUnderground;
+            // Set Yahoo as default API
+            APIComboBox.SelectedValue = WeatherAPI.Yahoo;
         }
 
         private async void GPS_Click(object sender, RoutedEventArgs e)
@@ -451,18 +451,23 @@ namespace SimpleWeather.UWP
             Settings.API = box.SelectedValue.ToString();
             wm.UpdateAPI();
 
-            if (KeyEntry != null)
+            if (wm.KeyRequired)
             {
-                if (wm.KeyRequired)
+                if (KeyEntry != null)
                     KeyEntry.Visibility = Visibility.Visible;
-                else
-                    KeyEntry.Visibility = Visibility.Collapsed;
+                if (RegisterKeyButton != null)
+                    RegisterKeyButton.Visibility = Visibility.Visible;
             }
-
-            if (!wm.KeyRequired)
+            else
             {
+                if (KeyEntry != null)
+                    KeyEntry.Visibility = Visibility.Collapsed;
+                if (RegisterKeyButton != null)
+                    RegisterKeyButton.Visibility = Visibility.Collapsed;
                 Settings.API_KEY = KeyEntry.Text = String.Empty;
             }
+
+            UpdateRegisterLink();
         }
 
         private void KeyEntry_TextChanged(object sender, TextChangedEventArgs e)
@@ -474,6 +479,24 @@ namespace SimpleWeather.UWP
         private void KeyEntry_GotFocus(object sender, RoutedEventArgs e)
         {
             KeyEntry.BorderThickness = new Thickness(0);
+        }
+
+        private void UpdateRegisterLink()
+        {
+            string API = APIComboBox?.SelectedValue?.ToString();
+
+            switch (API)
+            {
+                case WeatherAPI.WeatherUnderground:
+                case WeatherAPI.OpenWeatherMap:
+                    RegisterKeyButton.NavigateUri =
+                        new Uri(WeatherAPI.APIs.First(prov => prov.Value == API).APIRegisterURL);
+                    break;
+                default:
+                    RegisterKeyButton.NavigateUri =
+                        new Uri(WeatherAPI.APIs.First(prov => prov.Value == API).MainURL);
+                    break;
+            }
         }
     }
 }

@@ -61,6 +61,11 @@
             android:summary="%s"
             android:title="@string/api_label" />
 
+        <Preference
+            android:key="key_apiregister"
+            android:summary="@string/pref_summary_apiregister"
+            android:title="@string/pref_title_apiregister" />
+
         <EditTextPreference
             android:key="API_KEY"
             android:singleLine="true"

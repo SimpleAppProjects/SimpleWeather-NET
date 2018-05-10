@@ -78,6 +78,7 @@ namespace SimpleWeather.Droid.Wear
             private const string KEY_USECELSIUS = "key_usecelsius";
             private const string KEY_DATASYNC = "key_datasync";
             private const string KEY_CONNSTATUS = "key_connectionstatus";
+            private const string KEY_APIREGISTER = "key_apiregister";
 
             private const string CATEGORY_API = "category_api";
 
@@ -87,6 +88,7 @@ namespace SimpleWeather.Droid.Wear
             private KeyEntryPreference keyEntry;
             private ListPreference syncPreference;
             private Preference connStatusPref;
+            private Preference registerPref;
 
             private PreferenceCategory apiCategory;
 
@@ -163,7 +165,11 @@ namespace SimpleWeather.Droid.Wear
 
                         if (apiCategory.FindPreference(KEY_APIKEY) == null)
                             apiCategory.AddPreference(keyEntry);
-                        UpdateKeySummary(providers.Find(provider => provider.Value == e.NewValue.ToString()).Display);
+                        if (apiCategory.FindPreference(KEY_APIREGISTER) == null)
+                            apiCategory.AddPreference(registerPref);
+                        var providerEntry = providers.Find(provider => provider.Value == e.NewValue.ToString());
+                        UpdateKeySummary(providerEntry.Display);
+                        UpdateRegisterLink(providerEntry.Value);
                     }
                     else
                     {
@@ -176,8 +182,12 @@ namespace SimpleWeather.Droid.Wear
 
                         apiCategory.RemovePreference(keyEntry);
                         UpdateKeySummary();
+                        UpdateRegisterLink();
                     }
                 };
+
+                registerPref = FindPreference(KEY_APIREGISTER);
+                registerPref.PreferenceClick += RegisterPref_PreferenceClick;
 
                 // Set key as verified if API Key is req for API and its set
                 if (WeatherData.WeatherManager.GetInstance().KeyRequired)
@@ -191,10 +201,12 @@ namespace SimpleWeather.Droid.Wear
                 {
                     keyEntry.Enabled = false;
                     apiCategory.RemovePreference(keyEntry);
+                    apiCategory.RemovePreference(registerPref);
                     Settings.KeyVerified = false;
                 }
 
                 UpdateKeySummary();
+                UpdateRegisterLink();
 
                 syncPreference = (ListPreference)FindPreference(KEY_DATASYNC);
                 syncPreference.PreferenceChange += (object sender, Preference.PreferenceChangeEventArgs e) =>
@@ -252,6 +264,15 @@ namespace SimpleWeather.Droid.Wear
                     new ConfirmationResultReceiver(Activity));
             }
 
+            private void RegisterPref_PreferenceClick(object sender, Preference.PreferenceClickEventArgs e)
+            {
+                var intentAndroid = new Intent(e.Preference.Intent)
+                    .AddCategory(Intent.CategoryBrowsable);
+
+                RemoteIntent.StartRemoteActivity(Activity, intentAndroid,
+                    new ConfirmationResultReceiver(Activity));
+            }
+
             private void UpdateKeySummary()
             {
                 UpdateKeySummary(providerPref.Entry);
@@ -273,6 +294,29 @@ namespace SimpleWeather.Droid.Wear
                 else
                 {
                     keyEntry.Summary = Activity.GetString(Resource.String.pref_summary_apikey, providerAPI);
+                }
+            }
+
+            private void UpdateRegisterLink()
+            {
+                UpdateRegisterLink(providerPref.Value);
+            }
+
+            private void UpdateRegisterLink(string providerAPI)
+            {
+                switch (providerAPI)
+                {
+                    case WeatherData.WeatherAPI.WeatherUnderground:
+                    case WeatherData.WeatherAPI.OpenWeatherMap:
+                        registerPref.Intent = new Intent(Intent.ActionView)
+                            .SetData(Android.Net.Uri.Parse(
+                                WeatherData.WeatherAPI.APIs.First(prov => prov.Value == providerAPI).APIRegisterURL));
+                        break;
+                    default:
+                        registerPref.Intent = new Intent(Intent.ActionView)
+                            .SetData(Android.Net.Uri.Parse(
+                                WeatherData.WeatherAPI.APIs.First(prov => prov.Value == providerAPI).MainURL));
+                        break;
                 }
             }
 

@@ -43,6 +43,8 @@ namespace SimpleWeather.Droid.App
         private TextView clearButtonView;
         private bool inSearchUI;
 
+        private Button registerButton;
+
         private Button gpsFollowButton;
         private ProgressBar progressBar;
         private Location mLocation;
@@ -120,9 +122,10 @@ namespace SimpleWeather.Droid.App
             gpsFollowButton = FindViewById<Button>(Resource.Id.gps_follow);
             progressBar = FindViewById<ProgressBar>(Resource.Id.progressBar);
             progressBar.Visibility = ViewStates.Gone;
+            registerButton = FindViewById<Button>(Resource.Id.register_button);
 
             // Setup spinner
-            var spinnerAdapter = new ArrayAdapter<ComboBoxItem>(
+            var spinnerAdapter = new ArrayAdapter<ProviderEntry>(
                 this, Android.Resource.Layout.SimpleSpinnerItem,
                 WeatherData.WeatherAPI.APIs.ToArray());
             spinnerAdapter.SetDropDownViewResource(Android.Resource.Layout.SimpleSpinnerDropDownItem);
@@ -136,14 +139,18 @@ namespace SimpleWeather.Droid.App
             apiSpinner.ItemSelected += (object sender, AdapterView.ItemSelectedEventArgs e) =>
             {
                 Spinner spinner = sender as Spinner;
-                Settings.API = (spinner.SelectedItem as ComboBoxItem).Value;
+                Settings.API = (spinner.SelectedItem as ProviderEntry).Value;
                 wm.UpdateAPI();
 
                 if (wm.KeyRequired)
+                {
                     FindViewById(Resource.Id.key_entry_box).Visibility = ViewStates.Visible;
+                    registerButton.Visibility = ViewStates.Visible;
+                }
                 else
                 {
                     FindViewById(Resource.Id.key_entry_box).Visibility = ViewStates.Invisible;
+                    registerButton.Visibility = ViewStates.Invisible;
                     Settings.API_KEY = keyEntry.Text = String.Empty;
                 }
             };
@@ -198,10 +205,19 @@ namespace SimpleWeather.Droid.App
                 await FetchGeoLocation();
             };
 
+            registerButton.Click += delegate
+            {
+                var selectedAPI = apiSpinner.SelectedItem as ProviderEntry;
+
+                Intent viewIntent = new Intent(Intent.ActionView)
+                    .SetData(Android.Net.Uri.Parse(selectedAPI.APIRegisterURL));
+                StartActivity(viewIntent);
+            };
+
             // Reset focus
             FindViewById(Resource.Id.activity_setup).RequestFocus();
 
-            // Set WUnderground as default API
+            // Set Yahoo as default API
             apiSpinner.SetSelection(0);
 
             // Load API key

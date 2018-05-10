@@ -21,17 +21,21 @@ namespace SimpleWeather.WeatherData
     public static class WeatherAPI
     {
         // APIs
-        public const string WeatherUnderground = "WUnderground";
         public const string Yahoo = "Yahoo";
+        public const string WeatherUnderground = "WUnderground";
         public const string OpenWeatherMap = "OpenWeather";
         public const string MetNo = "Metno";
 
-        public static List<ComboBoxItem> APIs = new List<ComboBoxItem>()
+        public static List<ProviderEntry> APIs = new List<ProviderEntry>()
         {
-            new ComboBoxItem("WeatherUnderground", WeatherUnderground),
-            new ComboBoxItem("Yahoo Weather", Yahoo),
-            new ComboBoxItem("OpenWeatherMap", OpenWeatherMap),
-            new ComboBoxItem("MET Norway", MetNo),
+            new ProviderEntry("Yahoo Weather", Yahoo,
+                "https://www.yahoo.com/weather?ilc=401", "https://www.yahoo.com/weather?ilc=401"),
+            new ProviderEntry("WeatherUnderground", WeatherUnderground,
+                "https://www.wunderground.com", "https://www.wunderground.com/signup?mode=api_signup"),
+            new ProviderEntry("OpenWeatherMap", OpenWeatherMap,
+                "http://www.openweathermap.org", "https://home.openweathermap.org/users/sign_up"),
+            new ProviderEntry("MET Norway", MetNo,
+                "https://www.met.no/en", "https://www.met.no/en"),
         };
     }
 
@@ -75,11 +79,11 @@ namespace SimpleWeather.WeatherData
 
             switch (API)
             {
-                case WeatherAPI.WeatherUnderground:
-                    providerImpl = new WeatherUndergroundProvider();
-                    break;
                 case WeatherAPI.Yahoo:
                     providerImpl = new YahooWeatherProvider();
+                    break;
+                case WeatherAPI.WeatherUnderground:
+                    providerImpl = new WeatherUndergroundProvider();
                     break;
                 case WeatherAPI.OpenWeatherMap:
                     providerImpl = new OpenWeatherMapProvider();

@@ -11,6 +11,7 @@
     <string name="api_wu">WeatherUnderground</string>
     <string name="api_yahoo">Yahoo Weather</string>
     <string name="label_gpsfollow">Follow Location via GPS</string>
+    <string name="label_apiregister">Register for API key here</string>
     <!-- MainActivity -->
     <string name="title_activity_weather_now">SimpleWeather</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -77,6 +78,8 @@
     <string name="pref_title_alerts">Weather Alerts</string>
     <string name="pref_summary_alerts">Show notifications for weather alerts</string>
     <string name="pref_summary_alerts_disabled">Weather alerts are not supported by this weather provider</string>
+    <string name="pref_title_apiregister">Create an account</string>
+    <string name="pref_summary_apiregister">Create an account to register for an API key</string>
 
     <!-- Locations -->
     <string name="label_btn_add_location">Add Location</string>

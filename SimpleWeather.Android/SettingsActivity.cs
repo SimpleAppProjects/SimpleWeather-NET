@@ -85,6 +85,7 @@ namespace SimpleWeather.Droid.App
             private const string KEY_ONGOINGNOTIFICATION = "key_ongoingnotification";
             private const string KEY_NOTIFICATIONICON = "key_notificationicon";
             private const string KEY_USEALERTS = "key_usealerts";
+            private const string KEY_APIREGISTER = "key_apiregister";
 
             private const string CATEGORY_NOTIFICATION = "category_notification";
             private const string CATEGORY_API = "category_api";
@@ -96,6 +97,7 @@ namespace SimpleWeather.Droid.App
             private SwitchPreferenceCompat onGoingNotification;
             private DropDownPreference notificationIcon;
             private SwitchPreferenceCompat alertNotification;
+            private Preference registerPref;
 
             private PreferenceCategory notCategory;
             private PreferenceCategory apiCategory;
@@ -161,7 +163,11 @@ namespace SimpleWeather.Droid.App
 
                         if (apiCategory.FindPreference(KEY_APIKEY) == null)
                             apiCategory.AddPreference(keyEntry);
-                        UpdateKeySummary(providers.Find(provider => provider.Value == e.NewValue.ToString()).Display);
+                        if (apiCategory.FindPreference(KEY_APIREGISTER) == null)
+                            apiCategory.AddPreference(registerPref);
+                        var providerEntry = providers.Find(provider => provider.Value == e.NewValue.ToString());
+                        UpdateKeySummary(providerEntry.Display);
+                        UpdateRegisterLink(providerEntry.Value);
                     }
                     else
                     {
@@ -173,11 +179,15 @@ namespace SimpleWeather.Droid.App
                         Settings.API_KEY = String.Empty;
 
                         apiCategory.RemovePreference(keyEntry);
+                        apiCategory.RemovePreference(registerPref);
                         UpdateKeySummary();
+                        UpdateRegisterLink();
                     }
 
                     UpdateAlertPreference(WeatherData.WeatherManager.GetInstance().SupportsAlerts);
                 };
+
+                registerPref = FindPreference(KEY_APIREGISTER);
 
                 // Set key as verified if API Key is req for API and its set
                 if (WeatherData.WeatherManager.GetInstance().KeyRequired)
@@ -191,10 +201,12 @@ namespace SimpleWeather.Droid.App
                 {
                     keyEntry.Enabled = false;
                     apiCategory.RemovePreference(keyEntry);
+                    apiCategory.RemovePreference(registerPref);
                     Settings.KeyVerified = false;
                 }
 
                 UpdateKeySummary();
+                UpdateRegisterLink();
 
                 onGoingNotification = (SwitchPreferenceCompat)FindPreference(KEY_ONGOINGNOTIFICATION);
                 onGoingNotification.PreferenceChange += (object sender, Preference.PreferenceChangeEventArgs e) =>
@@ -313,6 +325,29 @@ namespace SimpleWeather.Droid.App
                 else
                 {
                     keyEntry.Summary = Activity.GetString(Resource.String.pref_summary_apikey, providerAPI);
+                }
+            }
+
+            private void UpdateRegisterLink()
+            {
+                UpdateRegisterLink(providerPref.Value);
+            }
+
+            private void UpdateRegisterLink(string providerAPI)
+            {
+                switch (providerAPI)
+                {
+                    case WeatherData.WeatherAPI.WeatherUnderground:
+                    case WeatherData.WeatherAPI.OpenWeatherMap:
+                        registerPref.Intent = new Intent(Intent.ActionView)
+                            .SetData(Android.Net.Uri.Parse(
+                                WeatherData.WeatherAPI.APIs.First(prov => prov.Value == providerAPI).APIRegisterURL));
+                        break;
+                    default:
+                        registerPref.Intent = new Intent(Intent.ActionView)
+                            .SetData(Android.Net.Uri.Parse(
+                                WeatherData.WeatherAPI.APIs.First(prov => prov.Value == providerAPI).MainURL));
+                        break;
                 }
             }
 

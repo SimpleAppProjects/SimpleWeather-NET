@@ -68,12 +68,14 @@ namespace SimpleWeather.UWP
                     Settings.KeyVerified = true;
 
                 KeyPanel.Visibility = Visibility.Visible;
+                RegisterKeyButton.Visibility = Visibility.Visible;
             }
             else
             {
                 Settings.KeyVerified = false;
 
                 KeyPanel.Visibility = Visibility.Collapsed;
+                RegisterKeyButton.Visibility = Visibility.Collapsed;
             }
 
             // Update Interval
@@ -99,6 +101,7 @@ namespace SimpleWeather.UWP
 
             KeyEntry.Text = Settings.API_KEY;
             UpdateKeyBorder();
+            UpdateRegisterLink();
 
             // Alerts
             AlertSwitch.IsEnabled = wm.SupportsAlerts;
@@ -198,6 +201,8 @@ namespace SimpleWeather.UWP
             {
                 if (KeyPanel != null)
                     KeyPanel.Visibility = Visibility.Visible;
+                if (RegisterKeyButton != null)
+                    RegisterKeyButton.Visibility = Visibility.Visible;
 
                 if (Settings.KeyVerified)
                 {
@@ -209,6 +214,8 @@ namespace SimpleWeather.UWP
             {
                 if (KeyPanel != null)
                     KeyPanel.Visibility = Visibility.Collapsed;
+                if (RegisterKeyButton != null)
+                    RegisterKeyButton.Visibility = Visibility.Collapsed;
                 Settings.API = API;
                 // Clear API KEY entry to avoid issues
                 Settings.API_KEY = KeyEntry.Text = String.Empty;
@@ -218,10 +225,29 @@ namespace SimpleWeather.UWP
 
             wm.UpdateAPI();
             UpdateKeyBorder();
+            UpdateRegisterLink();
 
             AlertSwitch.IsEnabled = wm.SupportsAlerts;
             if (!wm.SupportsAlerts)
                 AlertSwitch.IsOn = false;
+        }
+
+        private void UpdateRegisterLink()
+        {
+            string API = APIComboBox?.SelectedValue?.ToString();
+
+            switch (API)
+            {
+                case WeatherAPI.WeatherUnderground:
+                case WeatherAPI.OpenWeatherMap:
+                    RegisterKeyButton.NavigateUri =
+                        new Uri(WeatherAPI.APIs.First(prov => prov.Value == API).APIRegisterURL);
+                    break;
+                default:
+                    RegisterKeyButton.NavigateUri = 
+                        new Uri(WeatherAPI.APIs.First(prov => prov.Value == API).MainURL);
+                    break;
+            }
         }
 
         private void KeyEntry_GotFocus(object sender, RoutedEventArgs e)

@@ -294,20 +294,26 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <ComboBox x:Name="APIComboBox" HorizontalAlignment="Center" VerticalAlignment="Top" Width="300" Margin="0,10"
-                  Background="White" BorderThickness="0" Grid.Row="0" x:Uid="API_Box" PlaceholderText="Select Weather Provider" SelectionChanged="APIComboBox_SelectionChanged" FontSize="12">
+                          Background="White" BorderThickness="0" Grid.Row="0" x:Uid="API_Box" PlaceholderText="Select Weather Provider" SelectionChanged="APIComboBox_SelectionChanged" FontSize="12">
                     <ComboBox.Header>
                         <TextBlock x:Uid="API_Label" Text="Weather Provider" Foreground="White" Padding="5,0" FontSize="12" />
                     </ComboBox.Header>
                 </ComboBox>
                 <TextBox x:Name="KeyEntry" HorizontalAlignment="Center" Width="300" Grid.Row="1" FontSize="12"
-                 BorderThickness="0" x:Uid="KeyEntry" PlaceholderText="API Key" Padding="10,7" Visibility="Visible"
-                     TextChanged="KeyEntry_TextChanged" GotFocus="KeyEntry_GotFocus">
+                         BorderThickness="0" x:Uid="KeyEntry" PlaceholderText="API Key" Padding="10,7" Visibility="Visible"
+                         TextChanged="KeyEntry_TextChanged" GotFocus="KeyEntry_GotFocus">
                     <TextBox.Header>
                         <TextBlock x:Uid="Message_EnterAPIKey" Text="Please enter an API key" Foreground="White" Padding="5,0" FontSize="12" Visibility="Collapsed" />
                     </TextBox.Header>
                 </TextBox>
+                <HyperlinkButton x:Name="RegisterKeyButton"
+                                 x:Uid="RegisterKeyBox" Content="Register for API Key here"
+                                 Grid.Row="2" HorizontalAlignment="Center"
+                                 Foreground="White"
+                                 Padding="0,15" FontSize="12" />
             </Grid>
         </StackPanel>
     </ScrollViewer>

@@ -357,4 +357,7 @@
   <data name="Label_Unpin.Text" xml:space="preserve">
     <value>Unpin from Start</value>
   </data>
+  <data name="RegisterKeyBox.Content" xml:space="preserve">
+    <value>Register for API Key here</value>
+  </data>
 </root>
