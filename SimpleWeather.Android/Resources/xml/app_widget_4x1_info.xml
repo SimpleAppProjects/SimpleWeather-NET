@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:configure="com.thewizrd.simpleweather_debug.WeatherWidgetConfigActivity"
+    android:configure="com.thewizrd.simpleweather.WeatherWidgetConfigActivity"
     android:initialLayout="@layout/app_widget_4x1"
     android:minHeight="40dp"
     android:minWidth="250dp"
