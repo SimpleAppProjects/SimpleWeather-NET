@@ -33,6 +33,8 @@ namespace SimpleWeather.UWP
         public string CommandBarLabel { get; set; }
         public List<ICommandBarElement> PrimaryCommands { get; set; }
 
+        private bool RequestAppTrigger = false;
+
         public SettingsPage()
         {
             this.InitializeComponent();
@@ -137,6 +139,12 @@ namespace SimpleWeather.UWP
             }
         }
 
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            RequestAppTrigger = false;
+        }
+
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
             if (String.IsNullOrWhiteSpace(Settings.API_KEY) && WeatherManager.IsKeyRequired(APIComboBox.SelectedValue.ToString()))
@@ -144,8 +152,17 @@ namespace SimpleWeather.UWP
                 e.Cancel = true;
             }
             else
+            {
                 // Unsubscribe from event
                 SystemNavigationManager.GetForCurrentView().BackRequested -= SettingsPage_BackRequested;
+
+                // Trigger background task if necessary
+                if (RequestAppTrigger)
+                {
+                    Task.Run(async () => await WeatherUpdateBackgroundTask.RequestAppTrigger());
+                    RequestAppTrigger = false;
+                }
+            }
         }
 
         private async void KeyEntry_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
@@ -164,9 +181,7 @@ namespace SimpleWeather.UWP
                     Settings.API = API;
                     wm.UpdateAPI();
 
-                    // TODO: try not to trigger right away
-                    // Do so when navigating away
-                    await WeatherUpdateBackgroundTask.RequestAppTrigger();
+                    RequestAppTrigger = true;
 
                     Settings.KeyVerified = true;
                     UpdateKeyBorder();
@@ -207,7 +222,7 @@ namespace SimpleWeather.UWP
                 if (Settings.KeyVerified)
                 {
                     Settings.API = API;
-                    Task.Run(async () => await WeatherUpdateBackgroundTask.RequestAppTrigger());
+                    RequestAppTrigger = true;
                 }
             }
             else
@@ -285,15 +300,13 @@ namespace SimpleWeather.UWP
         private void Fahrenheit_Checked(object sender, RoutedEventArgs e)
         {
             Settings.Unit = Settings.Fahrenheit;
-
-            Task.Run(async () => await WeatherUpdateBackgroundTask.RequestAppTrigger());
+            RequestAppTrigger = true;
         }
 
         private void Celsius_Checked(object sender, RoutedEventArgs e)
         {
             Settings.Unit = Settings.Celsius;
-
-            Task.Run(async () => await WeatherUpdateBackgroundTask.RequestAppTrigger());
+            RequestAppTrigger = true;
         }
 
         private async void FollowGPS_Toggled(object sender, RoutedEventArgs e)
@@ -368,7 +381,7 @@ namespace SimpleWeather.UWP
             }
 
             Settings.FollowGPS = sw.IsOn;
-            await WeatherUpdateBackgroundTask.RequestAppTrigger();
+            RequestAppTrigger = true;
         }
 
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)

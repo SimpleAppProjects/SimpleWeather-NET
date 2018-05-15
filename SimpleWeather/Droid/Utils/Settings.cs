@@ -23,7 +23,6 @@ namespace SimpleWeather.Utils
         // Shared Settings
         private static ISharedPreferences preferences = App.Preferences;
         private static ISharedPreferencesEditor editor = preferences.Edit();
-        private static ISharedPreferencesOnSharedPreferenceChangeListener listener = new SettingsListener();
         private static ISharedPreferences wuSharedPrefs = Application.Context.GetSharedPreferences(WeatherData.WeatherAPI.WeatherUnderground, FileCreationMode.Private);
 
         // App data files
@@ -117,7 +116,7 @@ namespace SimpleWeather.Utils
                 weatherDB = new SQLiteAsyncConnection(
                     System.IO.Path.Combine(appDataFolder.Path, "weatherdata.db"));
 
-            preferences.RegisterOnSharedPreferenceChangeListener(listener);
+            preferences.RegisterOnSharedPreferenceChangeListener(App.SharedPreferenceListener);
         }
 
         private static string GetTempUnit()

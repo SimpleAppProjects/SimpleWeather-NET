@@ -18,6 +18,8 @@ using Android.Graphics;
 using Android.Text;
 using Android.Support.V7.Preferences;
 using SimpleWeather.Droid.App.Widgets;
+using System.Collections.Generic;
+using SimpleWeather.Droid.Helpers;
 
 namespace SimpleWeather.Droid.App
 {
@@ -73,7 +75,8 @@ namespace SimpleWeather.Droid.App
             base.OnBackPressed();
         }
 
-        public class SettingsFragment : PreferenceFragmentCompat, ActivityCompat.IOnRequestPermissionsResultCallback
+        public class SettingsFragment : PreferenceFragmentCompat, ActivityCompat.IOnRequestPermissionsResultCallback,
+            ISharedPreferencesOnSharedPreferenceChangeListener
         {
             private const int PERMISSION_LOCATION_REQUEST_CODE = 0;
 
@@ -82,6 +85,8 @@ namespace SimpleWeather.Droid.App
             private const string KEY_FOLLOWGPS = "key_followgps";
             private const string KEY_API = "API";
             private const string KEY_APIKEY = "API_KEY";
+            private const string KEY_USECELSIUS = "key_usecelsius";
+            private const string KEY_REFRESHINTERVAL = "key_refreshinterval";
             private const string KEY_ONGOINGNOTIFICATION = "key_ongoingnotification";
             private const string KEY_NOTIFICATIONICON = "key_notificationicon";
             private const string KEY_USEALERTS = "key_usealerts";
@@ -101,6 +106,9 @@ namespace SimpleWeather.Droid.App
 
             private PreferenceCategory notCategory;
             private PreferenceCategory apiCategory;
+
+            // Intent queue
+            private HashSet<Intent> intentQueue;
 
             public override void OnCreatePreferences(Bundle savedInstanceState, string rootKey)
             {
@@ -393,6 +401,82 @@ namespace SimpleWeather.Droid.App
                 // Title
                 AppCompatActivity activity = (AppCompatActivity)Activity;
                 activity.SupportActionBar.Title = GetString(Resource.String.title_activity_settings);
+
+                // Register listener
+                App.Preferences.UnregisterOnSharedPreferenceChangeListener(App.SharedPreferenceListener);
+                App.Preferences.RegisterOnSharedPreferenceChangeListener(this);
+
+                // Initialize queue
+                intentQueue = new HashSet<Intent>(new IntentEqualityComparer());
+            }
+
+            public override void OnPause()
+            {
+                // Unregister listener
+                App.Preferences.UnregisterOnSharedPreferenceChangeListener(this);
+                App.Preferences.RegisterOnSharedPreferenceChangeListener(App.SharedPreferenceListener);
+
+                // Process queue
+                foreach (Intent intent in intentQueue)
+                {
+                    if (intent.Component.ClassName.Equals(Java.Lang.Class.FromType(typeof(WeatherWidgetService)).Name))
+                    {
+                        WeatherWidgetService.EnqueueWork(Activity, intent);
+                    }
+                    else
+                    {
+                        this.Activity.StartService(intent);
+                    }
+                }
+
+                base.OnPause();
+            }
+
+            public bool EnqueueIntent(Intent intent)
+            {
+                if (intent == null)
+                    return false;
+                else
+                {
+                    return intentQueue.Add(intent);
+                }
+            }
+
+            public void OnSharedPreferenceChanged(ISharedPreferences sharedPreferences, string key)
+            {
+                if (String.IsNullOrWhiteSpace(key))
+                    return;
+
+                Context context = Activity;
+                
+                switch (key)
+                {
+                    // Weather Provider changed
+                    case KEY_API:
+                        WeatherData.WeatherManager.GetInstance().UpdateAPI();
+                        EnqueueIntent(new Intent(context, typeof(WearableDataListenerService))
+                                .SetAction(WearableDataListenerService.ACTION_SENDSETTINGSUPDATE));
+                        goto case KEY_USECELSIUS;
+                    // FollowGPS changed
+                    case KEY_FOLLOWGPS:
+                        EnqueueIntent(new Intent(context, typeof(WearableDataListenerService))
+                                .SetAction(WearableDataListenerService.ACTION_SENDSETTINGSUPDATE));
+                        EnqueueIntent(new Intent(context, typeof(WearableDataListenerService))
+                                .SetAction(WearableDataListenerService.ACTION_SENDLOCATIONUPDATE));
+                        goto case KEY_USECELSIUS;
+                    // Settings unit changed
+                    case KEY_USECELSIUS:
+                        EnqueueIntent(new Intent(context, typeof(WeatherWidgetService))
+                            .SetAction(WeatherWidgetService.ACTION_UPDATEWEATHER));
+                        break;
+                    // Refresh interval changed
+                    case KEY_REFRESHINTERVAL:
+                        WeatherWidgetService.EnqueueWork(context, new Intent(context, typeof(WeatherWidgetService))
+                            .SetAction(WeatherWidgetService.ACTION_UPDATEALARM));
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 

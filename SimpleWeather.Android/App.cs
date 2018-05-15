@@ -34,6 +34,7 @@ namespace SimpleWeather.Droid.App
     {
         public const int HomeIdx = 0;
         public static ISharedPreferences Preferences => PreferenceManager.GetDefaultSharedPreferences(Context);
+        public static ISharedPreferencesOnSharedPreferenceChangeListener SharedPreferenceListener;
 
         public static AppState ApplicationState;
         private int mActivitiesStarted;
@@ -51,6 +52,9 @@ namespace SimpleWeather.Droid.App
             RegisterActivityLifecycleCallbacks(this);
             ApplicationState = AppState.Closed;
             mActivitiesStarted = 0;
+
+            // Initialize preference listener
+            SharedPreferenceListener = new Settings.SettingsListener();
 
             // Load data if needed
             var th = new Thread(() => Settings.LoadIfNeeded().ConfigureAwait(false).GetAwaiter().GetResult());
