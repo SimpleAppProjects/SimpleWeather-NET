@@ -294,6 +294,12 @@ namespace SimpleWeather.Droid.App
 
                 // Get Weather Data
                 var location = new WeatherData.LocationData(view, mLocation);
+                if (!location.IsValid())
+                {
+                    Toast.MakeText(App.Context, App.Context.GetString(Resource.String.werror_noweather), ToastLength.Short).Show();
+                    EnableControls(true);
+                    return;
+                }
                 WeatherData.Weather weather = await Settings.GetWeatherData(location.query);
                 if (weather == null)
                 {

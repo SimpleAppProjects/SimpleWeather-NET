@@ -192,17 +192,16 @@ namespace SimpleWeather.Droid.App
         private void OnPanelClick(object sender, EventArgs e)
         {
             View view = sender as View;
-            if (view == null && e != null)
+            if (view == null && e != null && e is RecyclerClickEventArgs)
                 view = (e as RecyclerClickEventArgs).View;
 
-            if (view != null && view.Enabled)
+            if (view != null && view.Enabled && view.Tag is LocationData locData)
             {
-                var locData = (LocationData)view.Tag;
-
                 if (locData.Equals(Settings.HomeData))
                 {
                     // Pop all since we're going home
-                    AppCompatActivity.SupportFragmentManager.PopBackStack(null, (int)Android.App.PopBackStackFlags.Inclusive);
+                    AppCompatActivity.SupportFragmentManager
+                        .PopBackStack(null, (int)Android.App.PopBackStackFlags.Inclusive);
                 }
                 else
                 {
@@ -680,6 +679,9 @@ namespace SimpleWeather.Droid.App
             LocationSearchFragment searchFragment = new LocationSearchFragment();
             searchFragment.SetClickListener(async (object sender, RecyclerClickEventArgs e) =>
             {
+                if (mSearchFragment == null)
+                    return;
+
                 LocationQueryAdapter adapter = sender as LocationQueryAdapter;
                 LocationQuery v = (LocationQuery)e.View;
                 LocationQueryViewModel query_vm = null;
@@ -722,6 +724,12 @@ namespace SimpleWeather.Droid.App
                 }
 
                 var location = new LocationData(query_vm);
+                if (!location.IsValid())
+                {
+                    Toast.MakeText(App.Context, App.Context.GetString(Resource.String.werror_noweather), ToastLength.Short).Show();
+                    ShowLoading(false);
+                    return;
+                }
                 Weather weather = await Settings.GetWeatherData(location.query);
                 if (weather == null)
                 {
@@ -745,7 +753,12 @@ namespace SimpleWeather.Droid.App
                 // We got our data so disable controls just in case
                 mAdapter.Dataset.Clear();
                 mAdapter.NotifyDataSetChanged();
-                searchFragment.View.FindViewById<RecyclerView>(Resource.Id.recycler_view).Enabled = false;
+
+                if (mSearchFragment.View != null &&
+                    mSearchFragment.View.FindViewById(Resource.Id.recycler_view) is RecyclerView recyclerView)
+                {
+                    recyclerView.Enabled = false;
+                }
 
                 // Save data
                 await Settings.AddLocation(location);

@@ -333,7 +333,11 @@ namespace SimpleWeather.Metno
             // End Stream
             webClient.Dispose();
 
-            if (weather != null)
+            if (weather == null || !weather.IsValid())
+            {
+                wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
+            }
+            else if (weather != null)
             {
                 weather.query = location_query;
 

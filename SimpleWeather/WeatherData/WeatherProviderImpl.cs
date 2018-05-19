@@ -30,6 +30,9 @@ namespace SimpleWeather.WeatherData
         public abstract Task<Weather> GetWeather(String location_query);
         public virtual async Task<Weather> GetWeather(LocationData location)
         {
+            if (location == null || location.query == null)
+                throw new WeatherException(WeatherUtils.ErrorStatus.Unknown);
+
             var weather = await GetWeather(location.query);
 
             if (SupportsAlerts && NeedsExternalAlertData)

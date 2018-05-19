@@ -577,6 +577,13 @@ namespace SimpleWeather.Droid.App.Widgets
                             {
                                 locData = new LocationData(query_vm);
 
+                                if (!locData.IsValid())
+                                {
+                                    SetResult(Result.Canceled, new Intent().PutExtra(AppWidgetManager.ExtraAppwidgetId, mAppWidgetId));
+                                    Finish();
+                                    return;
+                                }
+
                                 // Add location to favs
                                 await Settings.AddLocation(locData);
                             }

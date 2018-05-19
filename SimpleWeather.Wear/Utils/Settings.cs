@@ -34,7 +34,7 @@ namespace SimpleWeather.Utils
         public static void SaveHomeData(LocationData data)
         {
             lastGPSLocData = data;
-            LastGPSLocation = lastGPSLocData.ToJson();
+            LastGPSLocation = lastGPSLocData?.ToJson();
         }
 
         private static WearableDataSync GetDataSync()

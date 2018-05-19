@@ -392,7 +392,11 @@ namespace SimpleWeather.WeatherUnderground
             // End Stream
             webClient.Dispose();
 
-            if (weather != null)
+            if (weather == null || !weather.IsValid())
+            {
+                wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
+            }
+            else if (weather != null)
             {
                 if (SupportsWeatherLocale)
                     weather.locale = locale;

@@ -122,6 +122,16 @@ namespace SimpleWeather.WeatherData
             for (int i = 0; i < forecast.Length; i++)
             {
                 forecast[i] = new Forecast(root.forecast.simpleforecast.forecastday[i]);
+
+                if (i == 0)
+                {
+                    // Note: WUnderground API bug
+                    // Data sometimes returns forecast from some date in the past
+                    // If we come across this invalidate the data
+                    var diffSpan = DateTime.UtcNow - forecast[i].date.ToUniversalTime();
+                    if (forecast[i].date.ToUniversalTime() < DateTime.UtcNow && diffSpan.TotalDays > 2)
+                        throw new WeatherException(WeatherUtils.ErrorStatus.Unknown);
+                }
             }
             hr_forecast = new HourlyForecast[root.hourly_forecast.Length];
             for (int i = 0; i < hr_forecast.Length; i++)
@@ -132,6 +142,14 @@ namespace SimpleWeather.WeatherData
             for (int i = 0; i < txt_forecast.Length; i++)
             {
                 txt_forecast[i] = new TextForecast(root.forecast.txt_forecast.forecastday[i]);
+
+                // Note: WUnderground API bug
+                // If array is not null and we're expecting data
+                // and that data is invalid, invalidate weather data
+                if (String.IsNullOrWhiteSpace(txt_forecast[i].title) &&
+                    String.IsNullOrWhiteSpace(txt_forecast[i].fcttext) &&
+                    String.IsNullOrWhiteSpace(txt_forecast[i].fcttext_metric))
+                    throw new WeatherException(WeatherUtils.ErrorStatus.Unknown);
             }
             condition = new Condition(root.current_observation);
             atmosphere = new Atmosphere(root.current_observation);
@@ -510,17 +528,20 @@ namespace SimpleWeather.WeatherData
             writer.WriteValue(update_time.ToString("dd.MM.yyyy HH:mm:ss zzzz"));
 
             // "forecast" : ""
-            writer.WritePropertyName("forecast");
-            writer.WriteStartArray();
-            foreach (Forecast cast in forecast)
+            if (forecast != null)
             {
-                writer.WriteValue(cast?.ToJson());
+                writer.WritePropertyName("forecast");
+                writer.WriteStartArray();
+                foreach (Forecast cast in forecast)
+                {
+                    writer.WriteValue(cast?.ToJson());
+                }
+                writer.WriteEndArray();
             }
-            writer.WriteEndArray();
 
+            // "hr_forecast" : ""
             if (hr_forecast != null)
             {
-                // "hr_forecast" : ""
                 writer.WritePropertyName("hr_forecast");
                 writer.WriteStartArray();
                 foreach (HourlyForecast hr_cast in hr_forecast)
@@ -530,9 +551,9 @@ namespace SimpleWeather.WeatherData
                 writer.WriteEndArray();
             }
 
+            // "txt_forecast" : ""
             if (txt_forecast != null)
             {
-                // "txt_forecast" : ""
                 writer.WritePropertyName("txt_forecast");
                 writer.WriteStartArray();
                 foreach (TextForecast txt_cast in txt_forecast)
@@ -554,9 +575,9 @@ namespace SimpleWeather.WeatherData
             writer.WritePropertyName("astronomy");
             writer.WriteValue(astronomy?.ToJson());
 
+            // "precipitation" : ""
             if (precipitation != null)
             {
-                // "precipitation" : ""
                 writer.WritePropertyName("precipitation");
                 writer.WriteValue(precipitation?.ToJson());
             }

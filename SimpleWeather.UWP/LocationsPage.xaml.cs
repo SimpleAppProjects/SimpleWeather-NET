@@ -408,14 +408,16 @@ namespace SimpleWeather.UWP
 
         private void LocationsPanel_ItemClick(object sender, ItemClickEventArgs e)
         {
-            LocationPanelViewModel panel = e.ClickedItem as LocationPanelViewModel;
-            this.Frame.Navigate(typeof(WeatherNow), panel.LocationData);
-
-            if (panel.LocationData.Equals(Settings.HomeData))
+            if (e.ClickedItem is LocationPanelViewModel panel)
             {
-                // Clear backstack since we're going home
-                Frame.BackStack.Clear();
-                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                this.Frame.Navigate(typeof(WeatherNow), panel.LocationData);
+
+                if (panel.LocationData.Equals(Settings.HomeData))
+                {
+                    // Clear backstack since we're going home
+                    Frame.BackStack.Clear();
+                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                }
             }
         }
 
@@ -538,6 +540,12 @@ namespace SimpleWeather.UWP
             }
 
             var location = new LocationData(query_vm);
+            if (!location.IsValid())
+            {
+                await Toast.ShowToastAsync(App.ResLoader.GetString("WError_NoWeather"), ToastDuration.Short);
+                LoadingRing.IsActive = false;
+                return;
+            }
             Weather weather = await Settings.GetWeatherData(location.query);
             if (weather == null)
             {

@@ -252,6 +252,14 @@ namespace SimpleWeather.WeatherData
 
             return sw.ToString();
         }
+
+        public bool IsValid()
+        {
+            if (String.IsNullOrWhiteSpace(query) || String.IsNullOrWhiteSpace(source))
+                return false;
+            else
+                return true;
+        }
     }
 
     [Table("favorites")]

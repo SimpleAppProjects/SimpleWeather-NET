@@ -360,4 +360,7 @@
   <data name="RegisterKeyBox.Content" xml:space="preserve">
     <value>Register for API Key here</value>
   </data>
+  <data name="WError_Unknown" xml:space="preserve">
+    <value>Unknown error occurred!!</value>
+  </data>
 </root>

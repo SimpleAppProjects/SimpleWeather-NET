@@ -68,7 +68,13 @@ namespace SimpleWeather.Utils
                     break;
                 case WeatherUtils.ErrorStatus.Unknown:
                 default:
-                    errorMsg = base.Message;
+#if WINDOWS_UWP
+                    errorMsg = App.ResLoader.GetString("WError_Unknown");
+#elif __ANDROID__
+                    errorMsg = Application.Context.GetString(Resource.String.werror_unknown);
+#else
+                    errorMsg = "Unknown error occurred!!";
+#endif
                     break;
             }
 

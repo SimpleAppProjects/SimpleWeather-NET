@@ -198,6 +198,12 @@ namespace SimpleWeather.UWP
 
             // Weather Data
             var location = new LocationData(query_vm);
+            if (!location.IsValid())
+            {
+                await Toast.ShowToastAsync(App.ResLoader.GetString("WError_NoWeather"), ToastDuration.Short);
+                EnableControls(true);
+                return;
+            }
             Weather weather = await Settings.GetWeatherData(location.query);
             if (weather == null)
             {
@@ -404,6 +410,12 @@ namespace SimpleWeather.UWP
 
                 // Weather Data
                 var location = new LocationData(view, geoPos);
+                if (!location.IsValid())
+                {
+                    await Toast.ShowToastAsync(App.ResLoader.GetString("WError_NoWeather"), ToastDuration.Short);
+                    EnableControls(true);
+                    return;
+                }
                 Weather weather = await Settings.GetWeatherData(location.query);
                 if (weather == null)
                 {

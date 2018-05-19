@@ -230,8 +230,11 @@ namespace SimpleWeather.Utils
 
         public static async Task SaveWeatherData(Weather weather)
         {
-            await weatherDB.InsertOrReplaceAsync(weather);
-            await WriteOperations.UpdateWithChildrenAsync(weatherDB, weather);
+            if (weather != null && weather.IsValid())
+            {
+                await weatherDB.InsertOrReplaceAsync(weather);
+                await WriteOperations.UpdateWithChildrenAsync(weatherDB, weather);
+            }
 
             if (await weatherDB.Table<Weather>().CountAsync() > CACHE_LIMIT)
                 CleanupWeatherData();
@@ -239,9 +242,12 @@ namespace SimpleWeather.Utils
 
         public static async Task SaveWeatherAlerts(LocationData location, List<WeatherAlert> alerts)
         {
-            var alertdata = new WeatherAlerts(location.query, alerts);
-            await weatherDB.InsertOrReplaceAsync(alertdata);
-            await WriteOperations.UpdateWithChildrenAsync(weatherDB, alertdata);
+            if (location != null && location.IsValid())
+            {
+                var alertdata = new WeatherAlerts(location.query, alerts);
+                await weatherDB.InsertOrReplaceAsync(alertdata);
+                await WriteOperations.UpdateWithChildrenAsync(weatherDB, alertdata);
+            }
 
             if (await weatherDB.Table<WeatherAlerts>().CountAsync() > CACHE_LIMIT)
                 CleanupWeatherAlertData();
@@ -290,55 +296,70 @@ namespace SimpleWeather.Utils
 #if !__ANDROID_WEAR__
         public static async Task SaveLocationData(List<LocationData> locationData)
         {
-            var favs = new List<Favorites>(locationData.Count);
-            foreach (LocationData loc in locationData)
+            if (locationData != null)
             {
-                await locationDB.InsertOrReplaceAsync(loc);
-                var fav = new Favorites() { query = loc.query, position = locationData.IndexOf(loc) };
-                favs.Add(fav);
-                await locationDB.InsertOrReplaceAsync(fav);
-            }
-
-            var locs = await locationDB.Table<LocationData>().ToListAsync();
-            var locToDelete = locs.Where(l => locationData.All(l2 => !l2.Equals(l)));
-            int count = locToDelete.Count();
-
-            if (count > 0)
-            {
-                foreach (LocationData loc in locToDelete)
+                var favs = new List<Favorites>(locationData.Count);
+                foreach (LocationData loc in locationData)
                 {
-                    await locationDB.DeleteAsync<LocationData>(loc.query);
-                    await locationDB.DeleteAsync<Favorites>(loc.query);
+                    if (loc != null && loc.IsValid())
+                    {
+                        await locationDB.InsertOrReplaceAsync(loc);
+                        var fav = new Favorites() { query = loc.query, position = locationData.IndexOf(loc) };
+                        favs.Add(fav);
+                        await locationDB.InsertOrReplaceAsync(fav);
+                    }
+                }
+
+                var locs = await locationDB.Table<LocationData>().ToListAsync();
+                var locToDelete = locs.Where(l => locationData.All(l2 => !l2.Equals(l)));
+                int count = locToDelete.Count();
+
+                if (count > 0)
+                {
+                    foreach (LocationData loc in locToDelete)
+                    {
+                        await locationDB.DeleteAsync<LocationData>(loc.query);
+                        await locationDB.DeleteAsync<Favorites>(loc.query);
+                    }
                 }
             }
         }
 
         public static async Task AddLocation(LocationData location)
         {
-            await locationDB.InsertOrReplaceAsync(location);
-            int pos = await locationDB.Table<LocationData>().CountAsync();
-            await locationDB.InsertOrReplaceAsync(new Favorites() { query = location.query, position = pos });
+            if (location != null && location.IsValid())
+            {
+                await locationDB.InsertOrReplaceAsync(location);
+                int pos = await locationDB.Table<LocationData>().CountAsync();
+                await locationDB.InsertOrReplaceAsync(new Favorites() { query = location.query, position = pos });
+            }
         }
 
         public static async Task UpdateLocation(LocationData location)
         {
-            await locationDB.UpdateAsync(location);
+            if (location != null && location.IsValid())
+            {
+                await locationDB.UpdateAsync(location);
+            }
         }
 
         public static async Task UpdateLocationWithKey(LocationData location, string oldKey)
         {
-            // Get position from favorites table
-            var favs = await locationDB.Table<Favorites>().ToListAsync();
-            var fav = favs.Find(f => f.query == oldKey);
-            int pos = fav.position;
+            if (location != null && location.IsValid() && !String.IsNullOrWhiteSpace(oldKey))
+            {
+                // Get position from favorites table
+                var favs = await locationDB.Table<Favorites>().ToListAsync();
+                var fav = favs.Find(f => f.query == oldKey);
+                int pos = fav.position;
 
-            // Remove location from table
-            await locationDB.DeleteAsync<LocationData>(oldKey);
-            await locationDB.QueryAsync<Favorites>("delete from favorites where query = ?", oldKey);
+                // Remove location from table
+                await locationDB.DeleteAsync<LocationData>(oldKey);
+                await locationDB.QueryAsync<Favorites>("delete from favorites where query = ?", oldKey);
 
-            // Add updated location with new query (pkey)
-            await locationDB.InsertOrReplaceAsync(location);
-            await locationDB.InsertOrReplaceAsync(new Favorites() { query = location.query, position = pos });
+                // Add updated location with new query (pkey)
+                await locationDB.InsertOrReplaceAsync(location);
+                await locationDB.InsertOrReplaceAsync(new Favorites() { query = location.query, position = pos });
+            }
         }
 
         public static async Task DeleteLocations()
@@ -349,15 +370,21 @@ namespace SimpleWeather.Utils
 
         public static async Task DeleteLocation(string key)
         {
-            await locationDB.DeleteAsync<LocationData>(key);
-            await locationDB.QueryAsync<Favorites>("delete from favorites where query = ?", key);
-            await ResetPosition();
+            if (!String.IsNullOrWhiteSpace(key))
+            {
+                await locationDB.DeleteAsync<LocationData>(key);
+                await locationDB.QueryAsync<Favorites>("delete from favorites where query = ?", key);
+                await ResetPosition();
+            }
         }
 
         public static async Task MoveLocation(string key, int toPos)
         {
-            await locationDB.QueryAsync<Favorites>("update favorites set position = ? where query = ?",
-                toPos, key);
+            if (!String.IsNullOrWhiteSpace(key))
+            {
+                await locationDB.QueryAsync<Favorites>("update favorites set position = ? where query = ?",
+                    toPos, key);
+            }
         }
 
         private static async Task ResetPosition()
@@ -373,7 +400,7 @@ namespace SimpleWeather.Utils
         public static void SaveLastGPSLocData(LocationData data)
         {
             lastGPSLocData = data;
-            LastGPSLocation = lastGPSLocData.ToJson();
+            LastGPSLocation = lastGPSLocData?.ToJson();
         }
 
         private static LocationData GetHomeData()

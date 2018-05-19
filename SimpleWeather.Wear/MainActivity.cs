@@ -130,7 +130,7 @@ namespace SimpleWeather.Droid.Wear
             Type targetFragmentType = null;
             WeatherListType weatherListType = 0;
 
-            switch (mNavDrawerAdapter.GetStringId(position))
+            switch (mNavDrawerAdapter?.GetStringId(position))
             {
                 case Resource.String.label_condition:
                 default:
@@ -155,7 +155,7 @@ namespace SimpleWeather.Droid.Wear
 
             if (typeof(WeatherNowFragment).Equals(targetFragmentType))
             {
-                if (Class.FromType(typeof(WeatherNowFragment)) != current.Class)
+                if (!Class.FromType(typeof(WeatherNowFragment)).Equals(current.Class))
                 {
                     // Pop all since we're going home
                     FragmentManager.PopBackStackImmediate(null, PopBackStackFlags.Inclusive);
@@ -163,7 +163,7 @@ namespace SimpleWeather.Droid.Wear
             }
             else if (typeof(WeatherListFragment).Equals(targetFragmentType))
             {
-                if (Class.FromType(targetFragmentType) != current.Class)
+                if (!Class.FromType(targetFragmentType).Equals(current.Class))
                 {
                     // Add fragment to backstack
                     var ft = FragmentManager.BeginTransaction();
@@ -191,7 +191,7 @@ namespace SimpleWeather.Droid.Wear
             }
             else if (typeof(WeatherDetailsFragment).Equals(targetFragmentType))
             {
-                if (Class.FromType(typeof(WeatherDetailsFragment)) != current.Class)
+                if (!Class.FromType(typeof(WeatherDetailsFragment)).Equals(current.Class))
                 {
                     // Add fragment to backstack
                     var ft = FragmentManager.BeginTransaction();
