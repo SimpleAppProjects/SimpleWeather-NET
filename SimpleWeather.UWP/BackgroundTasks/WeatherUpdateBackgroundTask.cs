@@ -162,7 +162,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
 
                 cts.Token.ThrowIfCancellationRequested();
 
-                var wloader = new WeatherDataLoader(null, Settings.HomeData);
+                var wloader = new WeatherDataLoader(Settings.HomeData);
                 await wloader.LoadWeatherData(false);
 
                 weather = wloader.GetWeather();

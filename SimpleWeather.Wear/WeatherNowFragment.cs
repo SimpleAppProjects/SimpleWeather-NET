@@ -157,7 +157,7 @@ namespace SimpleWeather.Droid.Wear
                         new System.IO.StringReader(Arguments.GetString("data", null))));
 
                 if (location != null && wLoader == null)
-                    wLoader = new WeatherDataLoader(this, this, location);
+                    wLoader = new WeatherDataLoader(location, this, this);
             }
 
             if (WearableHelper.IsGooglePlayServicesInstalled && !WearableHelper.HasGPS)
@@ -171,7 +171,7 @@ namespace SimpleWeather.Droid.Wear
                     if (Settings.FollowGPS && await UpdateLocation())
                     {
                         // Setup loader from updated location
-                        wLoader = new WeatherDataLoader(this, this, this.location);
+                        wLoader = new WeatherDataLoader(this.location, this, this);
 
                         await RefreshWeather(false);
                     }
@@ -187,7 +187,7 @@ namespace SimpleWeather.Droid.Wear
                     if (Settings.FollowGPS && await UpdateLocation())
                     {
                         // Setup loader from updated location
-                        wLoader = new WeatherDataLoader(this, this, this.location);
+                        wLoader = new WeatherDataLoader(this.location, this, this);
 
                         await RefreshWeather(false);
                     }
@@ -207,7 +207,7 @@ namespace SimpleWeather.Droid.Wear
                             timer.Stop();
 
                         // We got all our data; now load the weather
-                        wLoader = new WeatherDataLoader(this, this, location);
+                        wLoader = new WeatherDataLoader(location, this, this);
                         await wLoader.ForceLoadSavedWeatherData();
                     }
 
@@ -291,7 +291,7 @@ namespace SimpleWeather.Droid.Wear
                 {
                     if (Settings.FollowGPS && await UpdateLocation())
                         // Setup loader from updated location
-                        wLoader = new WeatherDataLoader(this, this, this.location);
+                        wLoader = new WeatherDataLoader(this.location, this, this);
 
                     await RefreshWeather(true);
                 });
@@ -393,7 +393,7 @@ namespace SimpleWeather.Droid.Wear
                 {
                     // Update location if not setup
                     await UpdateLocation();
-                    wLoader = new WeatherDataLoader(this, this, location);
+                    wLoader = new WeatherDataLoader(location, this, this);
                     forceRefresh = true;
                 }
                 else
@@ -405,14 +405,14 @@ namespace SimpleWeather.Droid.Wear
                     if (await UpdateLocation())
                     {
                         // Setup loader from updated location
-                        wLoader = new WeatherDataLoader(this, this, location);
+                        wLoader = new WeatherDataLoader(location, this, this);
                         forceRefresh = true;
                     }
                     else
                     {
                         // Setup loader saved location data
                         location = locData;
-                        wLoader = new WeatherDataLoader(this, this, location);
+                        wLoader = new WeatherDataLoader(location, this, this);
                     }
                 }
             }
@@ -420,7 +420,7 @@ namespace SimpleWeather.Droid.Wear
             {
                 // Weather was loaded before. Lets load it up...
                 location = Settings.HomeData;
-                wLoader = new WeatherDataLoader(this, this, location);
+                wLoader = new WeatherDataLoader(location, this, this);
             }
 
             // Load up weather data
@@ -459,7 +459,7 @@ namespace SimpleWeather.Droid.Wear
                     if (Settings.FollowGPS && await UpdateLocation())
                     {
                         // Setup loader from updated location
-                        wLoader = new WeatherDataLoader(this, this, this.location);
+                        wLoader = new WeatherDataLoader(this.location, this, this);
                         await RefreshWeather(false);
                         loaded = true;
                     }
@@ -550,7 +550,7 @@ namespace SimpleWeather.Droid.Wear
 
                         Activity?.RunOnUiThread(() => refreshLayout.Refreshing = true);
 
-                        wLoader = new WeatherDataLoader(this, this, this.location);
+                        wLoader = new WeatherDataLoader(this.location, this, this);
                         await wLoader.ForceLoadSavedWeatherData();
                     }
                     else
@@ -590,7 +590,7 @@ namespace SimpleWeather.Droid.Wear
                 {
                     // Load whatever we have available
                     location = Settings.HomeData;
-                    wLoader = new WeatherDataLoader(this, this, location);
+                    wLoader = new WeatherDataLoader(location, this, this);
                     await wLoader.ForceLoadSavedWeatherData();
                 }
                 else

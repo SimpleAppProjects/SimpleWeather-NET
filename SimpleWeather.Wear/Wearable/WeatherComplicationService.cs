@@ -310,7 +310,7 @@ namespace SimpleWeather.Droid.Wear.Wearable
                 if (Settings.DataSync == WearableDataSync.Off && Settings.FollowGPS)
                     await UpdateLocation();
 
-                var wloader = new WeatherDataLoader(null, Settings.HomeData);
+                var wloader = new WeatherDataLoader(Settings.HomeData);
 
                 if (Settings.DataSync == WearableDataSync.Off)
                     await wloader.LoadWeatherData(false);

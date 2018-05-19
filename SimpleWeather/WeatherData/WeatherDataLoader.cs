@@ -28,21 +28,26 @@ namespace SimpleWeather.WeatherData
         private Weather weather = null;
         private WeatherManager wm;
 
-        public WeatherDataLoader(IWeatherLoadedListener listener, LocationData location)
+        public WeatherDataLoader(LocationData location)
         {
             wm = WeatherManager.GetInstance();
 
-            callback = listener;
             this.location = location;
+
+            if (this.location == null)
+                throw new ArgumentNullException("location");
         }
 
-        public WeatherDataLoader(IWeatherLoadedListener listener, IWeatherErrorListener errorListener, LocationData location)
+        public WeatherDataLoader(LocationData location, IWeatherLoadedListener listener)
+            : this(location)
         {
-            wm = WeatherManager.GetInstance();
-
             callback = listener;
+        }
+
+        public WeatherDataLoader(LocationData location, IWeatherLoadedListener listener, IWeatherErrorListener errorListener)
+            : this(location, listener)
+        {
             errorCallback = errorListener;
-            this.location = location;
         }
 
         public void SetWeatherLoadedListener(IWeatherLoadedListener listener)

@@ -1836,6 +1836,7 @@
       <Version>60.1142.1</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="..\SimpleWeather\SimpleWeather_Xamarin.projitems" Label="Shared" Condition="Exists('..\SimpleWeather\SimpleWeather_Xamarin.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <PropertyGroup>

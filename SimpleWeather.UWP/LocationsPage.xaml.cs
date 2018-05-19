@@ -254,7 +254,7 @@ namespace SimpleWeather.UWP
 
             foreach (LocationData location in locations)
             {
-                var wLoader = new WeatherDataLoader(this, this, location);
+                var wLoader = new WeatherDataLoader(location, this, this);
                 await wLoader.LoadWeatherData(false);
             }
 
@@ -282,7 +282,7 @@ namespace SimpleWeather.UWP
                     };
                     GPSPanelViewModel[0] = panel;
 
-                    var wLoader = new WeatherDataLoader(this, this, locData);
+                    var wLoader = new WeatherDataLoader(locData, this, this);
                     await wLoader.LoadWeatherData(false);
                 }
             }
@@ -321,7 +321,7 @@ namespace SimpleWeather.UWP
                 foreach (LocationPanelViewModel view in dataset)
                 {
                     WeatherDataLoader wLoader =
-                        new WeatherDataLoader(this, this, view.LocationData);
+                        new WeatherDataLoader(view.LocationData, this, this);
                     await wLoader.LoadWeatherData(false);
                 }
             }

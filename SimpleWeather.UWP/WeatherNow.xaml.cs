@@ -442,7 +442,7 @@ namespace SimpleWeather.UWP
                 if (LocParameter != null)
                 {
                     location = LocParameter;
-                    wLoader = new WeatherDataLoader(this, this, location);
+                    wLoader = new WeatherDataLoader(location, this, this);
                 }
 
                 Restore();
@@ -510,7 +510,7 @@ namespace SimpleWeather.UWP
                 if (Settings.FollowGPS && await UpdateLocation())
                 {
                     // Setup loader from updated location
-                    wLoader = new WeatherDataLoader(this, this, this.location);
+                    wLoader = new WeatherDataLoader(location, this, this);
                     RefreshWeather(false);
                 }
                 else
@@ -561,7 +561,7 @@ namespace SimpleWeather.UWP
                 {
                     // Update location if not setup
                     await UpdateLocation();
-                    wLoader = new WeatherDataLoader(this, this, location);
+                    wLoader = new WeatherDataLoader(location, this, this);
                     forceRefresh = true;
                 }
                 else
@@ -573,14 +573,14 @@ namespace SimpleWeather.UWP
                     if (await UpdateLocation())
                     {
                         // Setup loader from updated location
-                        wLoader = new WeatherDataLoader(this, this, location);
+                        wLoader = new WeatherDataLoader(location, this, this);
                         forceRefresh = true;
                     }
                     else
                     {
                         // Setup loader saved location data
                         location = locData;
-                        wLoader = new WeatherDataLoader(this, this, location);
+                        wLoader = new WeatherDataLoader(location, this, this);
                     }
                 }
             }
@@ -589,7 +589,7 @@ namespace SimpleWeather.UWP
             {
                 // Weather was loaded before. Lets load it up...
                 location = Settings.HomeData;
-                wLoader = new WeatherDataLoader(this, this, location);
+                wLoader = new WeatherDataLoader(location, this, this);
             }
 
             // Check pin tile status
@@ -701,7 +701,7 @@ namespace SimpleWeather.UWP
         {
             if (Settings.FollowGPS && await UpdateLocation())
                 // Setup loader from updated location
-                wLoader = new WeatherDataLoader(this, this, location);
+                wLoader = new WeatherDataLoader(location, this, this);
 
             RefreshWeather(true);
         }

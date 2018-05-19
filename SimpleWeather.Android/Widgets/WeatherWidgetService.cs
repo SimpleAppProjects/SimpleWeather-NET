@@ -366,7 +366,7 @@ namespace SimpleWeather.Droid.App.Widgets
                         }
                         else
                         {
-                            var wloader = new WeatherDataLoader(null, locData);
+                            var wloader = new WeatherDataLoader(locData);
                             await wloader.LoadWeatherData(false);
                             weather = wloader.GetWeather();
                         }
@@ -416,7 +416,7 @@ namespace SimpleWeather.Droid.App.Widgets
                             }
                             else
                             {
-                                var wloader = new WeatherDataLoader(null, locData);
+                                var wloader = new WeatherDataLoader(locData);
                                 await wloader.LoadWeatherData(false);
                                 weather = wloader.GetWeather();
                             }
@@ -453,7 +453,7 @@ namespace SimpleWeather.Droid.App.Widgets
                             }
                             else
                             {
-                                var wloader = new WeatherDataLoader(null, locData);
+                                var wloader = new WeatherDataLoader(locData);
                                 await wloader.LoadWeatherData(false);
                                 weather = wloader.GetWeather();
                             }
@@ -490,7 +490,7 @@ namespace SimpleWeather.Droid.App.Widgets
                             }
                             else
                             {
-                                var wloader = new WeatherDataLoader(null, locData);
+                                var wloader = new WeatherDataLoader(locData);
                                 await wloader.LoadWeatherData(false);
                                 weather = wloader.GetWeather();
                             }
@@ -527,7 +527,7 @@ namespace SimpleWeather.Droid.App.Widgets
                             }
                             else
                             {
-                                var wloader = new WeatherDataLoader(null, locData);
+                                var wloader = new WeatherDataLoader(locData);
                                 await wloader.LoadWeatherData(false);
                                 weather = wloader.GetWeather();
                             }
@@ -744,7 +744,7 @@ namespace SimpleWeather.Droid.App.Widgets
                 var locData = WidgetUtils.GetLocationData(appWidgetId);
                 if (locData != null)
                 {
-                    var wloader = new WeatherDataLoader(null, locData);
+                    var wloader = new WeatherDataLoader(locData);
                     await wloader.LoadWeatherData(false);
                     weather = wloader.GetWeather();
                     if (weather != null)
@@ -959,7 +959,7 @@ namespace SimpleWeather.Droid.App.Widgets
                 if (Settings.FollowGPS)
                     await UpdateLocation();
 
-                var wloader = new WeatherDataLoader(null, Settings.HomeData);
+                var wloader = new WeatherDataLoader(Settings.HomeData);
                 await wloader.LoadWeatherData(false);
 
                 weather = wloader.GetWeather();
