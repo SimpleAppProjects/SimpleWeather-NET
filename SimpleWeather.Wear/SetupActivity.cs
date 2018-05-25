@@ -223,8 +223,9 @@ namespace SimpleWeather.Droid.Wear
                 // Cancel other tasks
                 cts.Cancel();
                 cts = new CancellationTokenSource();
+                var ctsToken = cts.Token;
 
-                if (cts.IsCancellationRequested)
+                if (ctsToken.IsCancellationRequested)
                 {
                     EnableControls(true);
                     return;
@@ -235,7 +236,7 @@ namespace SimpleWeather.Droid.Wear
 
                 await Task.Run(async () =>
                 {
-                    if (cts.IsCancellationRequested)
+                    if (ctsToken.IsCancellationRequested)
                     {
                         EnableControls(true);
                         return;
@@ -262,7 +263,7 @@ namespace SimpleWeather.Droid.Wear
                     return;
                 }
 
-                if (cts.IsCancellationRequested)
+                if (ctsToken.IsCancellationRequested)
                 {
                     EnableControls(true);
                     return;

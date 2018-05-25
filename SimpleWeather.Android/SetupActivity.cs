@@ -58,6 +58,12 @@ namespace SimpleWeather.Droid.App
         // Widget id for ConfigurationActivity
         private int mAppWidgetId = AppWidgetManager.InvalidAppwidgetId;
 
+        private void CtsCancel()
+        {
+            cts.Cancel();
+            cts = new CancellationTokenSource();
+        }
+
         private bool OnCreateActionMode(Android.Support.V7.View.ActionMode mode, IMenu menu)
         {
             if (searchViewLayout == null)
@@ -245,10 +251,10 @@ namespace SimpleWeather.Droid.App
                 LocationQueryViewModel view = null;
 
                 // Cancel other tasks
-                cts.Cancel();
-                cts = new CancellationTokenSource();
+                CtsCancel();
+                var ctsToken = cts.Token;
 
-                if (cts.IsCancellationRequested)
+                if (ctsToken.IsCancellationRequested)
                 {
                     EnableControls(true);
                     return;
@@ -259,7 +265,7 @@ namespace SimpleWeather.Droid.App
 
                 await Task.Run(async () =>
                 {
-                    if (cts.IsCancellationRequested)
+                    if (ctsToken.IsCancellationRequested)
                     {
                         EnableControls(true);
                         return;
@@ -286,7 +292,7 @@ namespace SimpleWeather.Droid.App
                     return;
                 }
 
-                if (cts.IsCancellationRequested)
+                if (ctsToken.IsCancellationRequested)
                 {
                     EnableControls(true);
                     return;

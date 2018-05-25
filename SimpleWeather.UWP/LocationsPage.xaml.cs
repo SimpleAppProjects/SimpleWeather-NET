@@ -433,11 +433,13 @@ namespace SimpleWeather.UWP
 
                 Task.Run(async () =>
                 {
-                    if (cts.IsCancellationRequested) return;
+                    var ctsToken = cts.Token;
+
+                    if (ctsToken.IsCancellationRequested) return;
 
                     var results = await wm.GetLocations(query);
 
-                    if (cts.IsCancellationRequested) return;
+                    if (ctsToken.IsCancellationRequested) return;
 
                     // Refresh list
                     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -515,10 +517,11 @@ namespace SimpleWeather.UWP
             // Cancel other tasks
             cts.Cancel();
             cts = new CancellationTokenSource();
+            var ctsToken = cts.Token;
 
             LoadingRing.IsActive = true;
 
-            if (cts.IsCancellationRequested)
+            if (ctsToken.IsCancellationRequested)
             {
                 LoadingRing.IsActive = false;
                 return;
@@ -533,7 +536,7 @@ namespace SimpleWeather.UWP
                 return;
             }
 
-            if (cts.IsCancellationRequested)
+            if (ctsToken.IsCancellationRequested)
             {
                 LoadingRing.IsActive = false;
                 return;

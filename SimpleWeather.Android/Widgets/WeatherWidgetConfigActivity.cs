@@ -626,14 +626,9 @@ namespace SimpleWeather.Droid.App.Widgets
             cts = new CancellationTokenSource();
         }
 
-        private bool CtsCancelRequested()
-        {
-            return (bool)cts?.IsCancellationRequested;
-        }
-
         private async Task FetchGeoLocation()
         {
-            if (cts.IsCancellationRequested)
+            if (cts.Token.IsCancellationRequested)
             {
                 return;
             }
@@ -644,15 +639,16 @@ namespace SimpleWeather.Droid.App.Widgets
 
                 // Cancel other tasks
                 CtsCancel();
+                var ctsToken = cts.Token;
 
-                if (cts.IsCancellationRequested)
+                if (ctsToken.IsCancellationRequested)
                 {
                     return;
                 }
 
                 await Task.Run(async () =>
                 {
-                    if (cts.IsCancellationRequested)
+                    if (ctsToken.IsCancellationRequested)
                     {
                         return;
                     }
@@ -670,7 +666,7 @@ namespace SimpleWeather.Droid.App.Widgets
                     return;
                 }
 
-                if (CtsCancelRequested())
+                if (ctsToken.IsCancellationRequested)
                 {
                     return;
                 }

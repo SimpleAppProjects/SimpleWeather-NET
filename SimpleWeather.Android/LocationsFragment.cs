@@ -686,10 +686,20 @@ namespace SimpleWeather.Droid.App
                 LocationQuery v = (LocationQuery)e.View;
                 LocationQueryViewModel query_vm = null;
 
-                if (!String.IsNullOrEmpty(adapter.Dataset[e.Position].LocationQuery))
-                    query_vm = adapter.Dataset[e.Position];
-                else
-                    query_vm = new LocationQueryViewModel();
+                try
+                {
+                    if (!String.IsNullOrEmpty(adapter.Dataset[e.Position].LocationQuery))
+                        query_vm = adapter.Dataset[e.Position];
+                }
+                catch (Exception)
+                {
+                    query_vm = null;
+                }
+                finally
+                {
+                    if (query_vm == null)
+                        query_vm = new LocationQueryViewModel();
+                }
 
                 if (String.IsNullOrWhiteSpace(query_vm.LocationQuery))
                 {
@@ -699,10 +709,11 @@ namespace SimpleWeather.Droid.App
 
                 // Cancel other tasks
                 mSearchFragment.CtsCancel();
+                var ctsToken = mSearchFragment.GetCancellationTokenSource().Token;
 
                 ShowLoading(true);
 
-                if (mSearchFragment.CtsCancelRequested())
+                if (ctsToken.IsCancellationRequested)
                 {
                     ShowLoading(false);
                     return;
@@ -717,7 +728,7 @@ namespace SimpleWeather.Droid.App
                     return;
                 }
 
-                if (mSearchFragment.CtsCancelRequested())
+                if (ctsToken.IsCancellationRequested)
                 {
                     ShowLoading(false);
                     return;
@@ -754,8 +765,8 @@ namespace SimpleWeather.Droid.App
                 mAdapter.Dataset.Clear();
                 mAdapter.NotifyDataSetChanged();
 
-                if (mSearchFragment.View != null &&
-                    mSearchFragment.View.FindViewById(Resource.Id.recycler_view) is RecyclerView recyclerView)
+                if (mSearchFragment?.View != null &&
+                    mSearchFragment?.View?.FindViewById(Resource.Id.recycler_view) is RecyclerView recyclerView)
                 {
                     recyclerView.Enabled = false;
                 }

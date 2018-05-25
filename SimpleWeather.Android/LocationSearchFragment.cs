@@ -51,6 +51,11 @@ namespace SimpleWeather.Droid.App
             wm = WeatherData.WeatherManager.GetInstance();
         }
 
+        public CancellationTokenSource GetCancellationTokenSource()
+        {
+            return cts;
+        }
+
         public void CtsCancel()
         {
             cts.Cancel();
@@ -59,7 +64,7 @@ namespace SimpleWeather.Droid.App
 
         public bool CtsCancelRequested()
         {
-            return (bool)cts?.IsCancellationRequested;
+            return (bool)cts?.Token.IsCancellationRequested;
         }
 
         public event EventHandler<RecyclerClickEventArgs> ClickListener;
@@ -93,10 +98,20 @@ namespace SimpleWeather.Droid.App
             LocationQuery v = (LocationQuery)e.View;
             LocationQueryViewModel query_vm = null;
 
-            if (!String.IsNullOrEmpty(mAdapter.Dataset[e.Position].LocationQuery))
-                query_vm = mAdapter.Dataset[e.Position];
-            else
-                query_vm = new LocationQueryViewModel();
+            try
+            {
+                if (!String.IsNullOrEmpty(mAdapter.Dataset[e.Position].LocationQuery))
+                    query_vm = mAdapter.Dataset[e.Position];
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                query_vm = null;
+            }
+            finally
+            {
+                if (query_vm == null)
+                    query_vm = new LocationQueryViewModel();
+            }
 
             if (String.IsNullOrWhiteSpace(query_vm.LocationQuery))
             {
@@ -106,18 +121,17 @@ namespace SimpleWeather.Droid.App
 
             if (String.IsNullOrWhiteSpace(Settings.API_KEY) && wm.KeyRequired)
             {
-                String errorMsg = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey).Message;
-                Toast.MakeText(App.Context, errorMsg, ToastLength.Short).Show();
+                Toast.MakeText(App.Context, App.Context.GetString(Resource.String.werror_invalidkey), ToastLength.Short).Show();
                 return;
             }
 
             // Cancel pending searches
-            cts.Cancel();
-            cts = new CancellationTokenSource();
+            CtsCancel();
+            var ctsToken = cts.Token;
 
             ShowLoading(true);
 
-            if (cts.IsCancellationRequested)
+            if (ctsToken.IsCancellationRequested)
             {
                 ShowLoading(false);
                 return;
@@ -169,11 +183,11 @@ namespace SimpleWeather.Droid.App
             Settings.WeatherLoaded = true;
 
             // Send data for wearables
-            Activity.StartService(new Intent(Activity, typeof(WearableDataListenerService))
+            mActivity.StartService(new Intent(mActivity, typeof(WearableDataListenerService))
                 .SetAction(WearableDataListenerService.ACTION_SENDSETTINGSUPDATE));
-            Activity.StartService(new Intent(Activity, typeof(WearableDataListenerService))
+            mActivity.StartService(new Intent(mActivity, typeof(WearableDataListenerService))
                 .SetAction(WearableDataListenerService.ACTION_SENDLOCATIONUPDATE));
-            Activity.StartService(new Intent(Activity, typeof(WearableDataListenerService))
+            mActivity.StartService(new Intent(mActivity, typeof(WearableDataListenerService))
                 .SetAction(WearableDataListenerService.ACTION_SENDWEATHERUPDATE));
 
             if (mAppWidgetId == AppWidgetManager.InvalidAppwidgetId)
@@ -257,19 +271,20 @@ namespace SimpleWeather.Droid.App
         public void FetchLocations(String queryString)
         {
             // Cancel pending searches
-            cts.Cancel();
-            cts = new CancellationTokenSource();
+            CtsCancel();
 
             // Get locations
             if (!String.IsNullOrWhiteSpace(queryString))
             {
                 Task.Run(async () =>
                 {
-                    if (cts.IsCancellationRequested) return;
+                    var ctsToken = cts.Token;
+
+                    if (ctsToken.IsCancellationRequested) return;
 
                     var results = await wm.GetLocations(queryString);
 
-                    if (cts.IsCancellationRequested) return;
+                    if (ctsToken.IsCancellationRequested) return;
 
                     mActivity?.RunOnUiThread(() => mAdapter.SetLocations(results.ToList()));
                 });
@@ -277,7 +292,7 @@ namespace SimpleWeather.Droid.App
             else if (String.IsNullOrWhiteSpace(queryString))
             {
                 // Cancel pending searches
-                cts.Cancel();
+                CtsCancel();
                 // Hide flyout if query is empty or null
                 mAdapter.Dataset.Clear();
                 mAdapter.NotifyDataSetChanged();

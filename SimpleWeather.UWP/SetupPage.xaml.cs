@@ -90,6 +90,7 @@ namespace SimpleWeather.UWP
             // Cancel pending searches
             cts.Cancel();
             cts = new CancellationTokenSource();
+            var ctsToken = cts.Token;
 
             if (!String.IsNullOrWhiteSpace(sender.Text) && args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
             {
@@ -97,9 +98,11 @@ namespace SimpleWeather.UWP
 
                 Task.Run(async () =>
                 {
-                    if (cts.IsCancellationRequested) return;
+                    if (ctsToken.IsCancellationRequested) return;
 
                     var results = await wm.GetLocations(query);
+
+                    if (ctsToken.IsCancellationRequested) return;
 
                     // Refresh list
                     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -151,8 +154,20 @@ namespace SimpleWeather.UWP
             }
             else if (!String.IsNullOrEmpty(args.QueryText))
             {
+                if (cts.Token.IsCancellationRequested)
+                {
+                    EnableControls(true);
+                    return;
+                }
+
                 // Use args.QueryText to determine what to do.
                 LocationQueryViewModel result = (await wm.GetLocations(args.QueryText)).First();
+
+                if (cts.Token.IsCancellationRequested)
+                {
+                    EnableControls(true);
+                    return;
+                }
 
                 if (result != null && !String.IsNullOrWhiteSpace(result.LocationQuery))
                 {
@@ -187,10 +202,11 @@ namespace SimpleWeather.UWP
             // Cancel other tasks
             cts.Cancel();
             cts = new CancellationTokenSource();
+            var ctsToken = cts.Token;
 
             LoadingRing.IsActive = true;
 
-            if (cts.IsCancellationRequested)
+            if (ctsToken.IsCancellationRequested)
             {
                 EnableControls(true);
                 return;
@@ -290,8 +306,9 @@ namespace SimpleWeather.UWP
             // Cancel other tasks
             cts.Cancel();
             cts = new CancellationTokenSource();
+            var ctsToken = cts.Token;
 
-            if (cts.IsCancellationRequested)
+            if (ctsToken.IsCancellationRequested)
             {
                 EnableControls(true);
                 return;
@@ -309,7 +326,7 @@ namespace SimpleWeather.UWP
                 System.Diagnostics.Debug.WriteLine(ex.StackTrace);
             }
 
-            if (cts.IsCancellationRequested)
+            if (ctsToken.IsCancellationRequested)
             {
                 EnableControls(true);
                 return;
@@ -361,7 +378,7 @@ namespace SimpleWeather.UWP
             {
                 LocationQueryViewModel view = null;
 
-                if (cts.IsCancellationRequested)
+                if (ctsToken.IsCancellationRequested)
                 {
                     EnableControls(true);
                     return;
@@ -371,7 +388,7 @@ namespace SimpleWeather.UWP
 
                 await Task.Run(async () =>
                 {
-                    if (cts.IsCancellationRequested)
+                    if (ctsToken.IsCancellationRequested)
                     {
                         EnableControls(true);
                         return;
@@ -402,7 +419,7 @@ namespace SimpleWeather.UWP
                     return;
                 }
 
-                if (cts.IsCancellationRequested)
+                if (ctsToken.IsCancellationRequested)
                 {
                     EnableControls(true);
                     return;

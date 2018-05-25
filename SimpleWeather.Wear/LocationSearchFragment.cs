@@ -61,7 +61,7 @@ namespace SimpleWeather.Droid.Wear
 
         public bool CtsCancelRequested()
         {
-            return (bool)cts?.IsCancellationRequested;
+            return (bool)cts?.Token.IsCancellationRequested;
         }
 
         public event EventHandler<RecyclerClickEventArgs> ClickListener;
@@ -108,18 +108,18 @@ namespace SimpleWeather.Droid.Wear
 
             if (String.IsNullOrWhiteSpace(Settings.API_KEY) && wm.KeyRequired)
             {
-                String errorMsg = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey).Message;
-                Toast.MakeText(App.Context, errorMsg, ToastLength.Short).Show();
+                Toast.MakeText(App.Context, App.Context.GetString(Resource.String.werror_invalidkey), ToastLength.Short).Show();
                 return;
             }
 
             // Cancel pending searches
             cts.Cancel();
             cts = new CancellationTokenSource();
+            var ctsToken = cts.Token;
 
             ShowLoading(true);
 
-            if (cts.IsCancellationRequested)
+            if (ctsToken.IsCancellationRequested)
             {
                 ShowLoading(false);
                 return;
@@ -290,11 +290,13 @@ namespace SimpleWeather.Droid.Wear
             {
                 Task.Run(async () =>
                 {
-                    if (cts.IsCancellationRequested) return;
+                    var ctsToken = cts.Token;
+
+                    if (ctsToken.IsCancellationRequested) return;
 
                     var results = await wm.GetLocations(queryString);
 
-                    if (cts.IsCancellationRequested) return;
+                    if (ctsToken.IsCancellationRequested) return;
 
                     mActivity?.RunOnUiThread(() =>
                     {
@@ -307,6 +309,7 @@ namespace SimpleWeather.Droid.Wear
             {
                 // Cancel pending searches
                 cts.Cancel();
+                cts = new CancellationTokenSource();
                 // Hide flyout if query is empty or null
                 mAdapter.Dataset.Clear();
                 mAdapter.NotifyDataSetChanged();
