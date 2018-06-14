@@ -35,6 +35,7 @@
     <EnableLLVM>false</EnableLLVM>
     <BundleAssemblies>false</BundleAssemblies>
     <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
+    <CodeAnalysisRuleSet>SimpleWeather.Wear.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>PdbOnly</DebugType>
@@ -52,6 +53,7 @@
     <EnableProguard>true</EnableProguard>
     <DefineConstants>__ANDROID_WEAR__</DefineConstants>
     <AndroidSupportedAbis />
+    <CodeAnalysisRuleSet>SimpleWeather.Wear.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
@@ -98,6 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="SimpleWeather.Wear.ruleset" />
     <ProguardConfiguration Include="proguard.cfg" />
     <None Include="Properties\AndroidManifest.xml">
       <SubType>Designer</SubType>
