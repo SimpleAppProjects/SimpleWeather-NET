@@ -68,7 +68,7 @@ namespace SimpleWeather.Metno
                 // Load data
                 locations = new ObservableCollection<LocationQueryViewModel>();
 
-                OpenWeather.AC_Rootobject root = JSONParser.Deserializer<OpenWeather.AC_Rootobject>(contentStream);
+                var root = JSONParser.Deserializer<OpenWeather.AC_Rootobject>(contentStream);
 
                 foreach (OpenWeather.AC_RESULT result in root.RESULTS)
                 {
@@ -193,7 +193,7 @@ namespace SimpleWeather.Metno
                 webClient.Dispose();
 
                 // Load data
-                OpenWeather.AC_Rootobject root = JSONParser.Deserializer<OpenWeather.AC_Rootobject>(contentStream);
+                var root = JSONParser.Deserializer<OpenWeather.AC_Rootobject>(contentStream);
                 result = root.RESULTS.FirstOrDefault();
 
                 // End Stream
@@ -401,7 +401,7 @@ namespace SimpleWeather.Metno
         }
 
         // TODO: Move this out
-        public string GetWeatherCondition(string icon)
+        public static string GetWeatherCondition(string icon)
         {
             string condition = String.Empty;
 
@@ -662,6 +662,9 @@ namespace SimpleWeather.Metno
 
                 case "50": // HeavySnow
                     WeatherIcon = WeatherIcons.SNOW_WIND;
+                    break;
+
+                default:
                     break;
             }
 

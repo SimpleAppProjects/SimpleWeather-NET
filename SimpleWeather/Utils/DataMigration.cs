@@ -23,12 +23,12 @@ namespace SimpleWeather.Utils
         public static async Task MigrateDataJsonToDB(SQLiteAsyncConnection locationDB, SQLiteAsyncConnection weatherDB)
         {
 #if WINDOWS_UWP
-            StorageFolder appDataFolder = ApplicationData.Current.LocalFolder;
+            var appDataFolder = ApplicationData.Current.LocalFolder;
 #elif __ANDROID__
             Java.IO.File appDataFolder = Application.Context.FilesDir;
 #endif
-            FileInfo locFileInfo = new FileInfo(Path.Combine(appDataFolder.Path, "locations.json"));
-            FileInfo dataFileInfo = new FileInfo(Path.Combine(appDataFolder.Path, "data.json"));
+            var locFileInfo = new FileInfo(Path.Combine(appDataFolder.Path, "locations.json"));
+            var dataFileInfo = new FileInfo(Path.Combine(appDataFolder.Path, "data.json"));
 
             if (!locFileInfo.Exists)
             {
@@ -37,8 +37,8 @@ namespace SimpleWeather.Utils
             }
 
 #if WINDOWS_UWP
-            StorageFile locDataFile = (await appDataFolder.TryGetItemAsync("locations.json")) as StorageFile;
-            StorageFile dataFile = (await appDataFolder.TryGetItemAsync("data.json")) as StorageFile;
+            var locDataFile = (await appDataFolder.TryGetItemAsync("locations.json")) as StorageFile;
+            var dataFile = (await appDataFolder.TryGetItemAsync("data.json")) as StorageFile;
 #elif __ANDROID__
             Java.IO.File locDataFile = new Java.IO.File(appDataFolder, "locations.json");
             Java.IO.File dataFile = new Java.IO.File(appDataFolder, "data.json");
@@ -87,9 +87,7 @@ namespace SimpleWeather.Utils
                 if (locationData == null || locationData.Count == 0)
                 {
                     List<LocationData> data = new List<LocationData>();
-                    List<string> weatherDataKeys = oldWeather.Keys.Cast<string>().ToList();
-
-                    foreach (string query in weatherDataKeys)
+                    foreach (string query in oldWeather.Keys.Cast<string>().ToList())
                     {
                         var weather = oldWeather[query] as Weather;
                         var prov = WeatherManager.GetProvider(weather.source);
@@ -121,11 +119,12 @@ namespace SimpleWeather.Utils
 
         public static async Task SetLocationData(SQLiteAsyncConnection locationDB)
         {
-            List<LocationData> data = await locationDB.Table<LocationData>().ToListAsync();
-
-            foreach(LocationData location in data)
+            foreach (LocationData location in await locationDB.Table<LocationData>().ToListAsync()
+                    .ConfigureAwait(false))
             {
-                await WeatherManager.GetProvider(location.source).UpdateLocationData(location);
+                await WeatherManager.GetProvider(location.source)
+                    .UpdateLocationData(location)
+                    .ConfigureAwait(false);
             }
         }
     }

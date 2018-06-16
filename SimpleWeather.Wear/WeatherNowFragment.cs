@@ -126,7 +126,7 @@ namespace SimpleWeather.Droid.Wear
          */
         public static WeatherNowFragment NewInstance(LocationData data)
         {
-            WeatherNowFragment fragment = new WeatherNowFragment();
+            var fragment = new WeatherNowFragment();
             if (data != null)
             {
                 Bundle args = new Bundle();
@@ -138,7 +138,7 @@ namespace SimpleWeather.Droid.Wear
 
         public static WeatherNowFragment NewInstance(Bundle args)
         {
-            WeatherNowFragment fragment = new WeatherNowFragment()
+            var fragment = new WeatherNowFragment()
             {
                 Arguments = args
             };
@@ -152,9 +152,11 @@ namespace SimpleWeather.Droid.Wear
             // Create your fragment here
             if (Arguments != null)
             {
-                location = LocationData.FromJson(
-                    new Newtonsoft.Json.JsonTextReader(
-                        new System.IO.StringReader(Arguments.GetString("data", null))));
+                using (var jsonTextReader = new Newtonsoft.Json.JsonTextReader(
+                        new System.IO.StringReader(Arguments.GetString("data", null))))
+                {
+                    location = LocationData.FromJson(jsonTextReader);
+                }
 
                 if (location != null && wLoader == null)
                     wLoader = new WeatherDataLoader(location, this, this);
@@ -330,37 +332,43 @@ namespace SimpleWeather.Droid.Wear
             App.Preferences.UnregisterOnSharedPreferenceChangeListener(this);
         }
 
-        public override async void OnResume()
+        public override void OnResume()
         {
             base.OnResume();
 
             // Don't resume if fragment is hidden
-            if (this.IsHidden)
-                return;
-            else
+            if (!this.IsHidden)
             {
-                // Use normal resume if sync is off
-                if (Settings.DataSync == WearableDataSync.Off)
-                    await Resume();
-                else
-                    await DataSyncResume();
+                Task.Run(async () =>
+                {
+                    // Use normal resume if sync is off
+                    if (Settings.DataSync == WearableDataSync.Off)
+                        await Resume();
+                    else
+                        await DataSyncResume();
+                });
             }
         }
 
-        public override async void OnHiddenChanged(bool hidden)
+        public override void OnHiddenChanged(bool hidden)
         {
             base.OnHiddenChanged(hidden);
 
             if (!hidden && weatherView != null && this.IsVisible)
             {
-                // Use normal resume if sync is off
-                if (Settings.DataSync == WearableDataSync.Off)
-                    await Resume();
-                else
-                    await DataSyncResume();
+                Task.Run(async () =>
+                {
+                    // Use normal resume if sync is off
+                    if (Settings.DataSync == WearableDataSync.Off)
+                        await Resume();
+                    else
+                        await DataSyncResume();
+                });
             }
             else if (hidden)
+            {
                 loaded = false;
+            }
         }
 
         public override void OnPause()
@@ -453,7 +461,7 @@ namespace SimpleWeather.Droid.Wear
                 }
                 else if (wLoader.GetWeather() != null)
                 {
-                    Weather weather = wLoader.GetWeather();
+                    var weather = wLoader.GetWeather();
 
                     // Update weather if needed on resume
                     if (Settings.FollowGPS && await UpdateLocation())
@@ -493,6 +501,8 @@ namespace SimpleWeather.Droid.Wear
                     // reset so we can properly reload
                     wLoader = null;
                     location = null;
+                    break;
+                default:
                     break;
             }
         }
@@ -696,14 +706,14 @@ namespace SimpleWeather.Droid.Wear
                     LocationData lastGPSLocData = await Settings.GetLastGPSLocData();
 
                     // Check previous location difference
-                    if (lastGPSLocData.query != null &&
-                        mLocation != null && ConversionMethods.CalculateGeopositionDistance(mLocation, location) < 1600)
+                    if (lastGPSLocData.query != null
+                        && mLocation != null && ConversionMethods.CalculateGeopositionDistance(mLocation, location) < 1600)
                     {
                         return false;
                     }
 
-                    if (lastGPSLocData.query != null &&
-                        Math.Abs(ConversionMethods.CalculateHaversine(lastGPSLocData.latitude, lastGPSLocData.longitude,
+                    if (lastGPSLocData.query != null
+                        && Math.Abs(ConversionMethods.CalculateHaversine(lastGPSLocData.latitude, lastGPSLocData.longitude,
                         location.Latitude, location.Longitude)) < 1600)
                     {
                         return false;
@@ -738,7 +748,7 @@ namespace SimpleWeather.Droid.Wear
             return locationChanged;
         }
 
-        public override async void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
+        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
         {
             switch (requestCode)
             {
@@ -752,7 +762,7 @@ namespace SimpleWeather.Droid.Wear
                             // permission was granted, yay!
                             // Do the task you need to do.
                             //FetchGeoLocation();
-                            await UpdateLocation();
+                            Task.Run(UpdateLocation);
                         }
                         else
                         {
@@ -763,6 +773,8 @@ namespace SimpleWeather.Droid.Wear
                         }
                         return;
                     }
+                default:
+                    break;
             }
         }
     }

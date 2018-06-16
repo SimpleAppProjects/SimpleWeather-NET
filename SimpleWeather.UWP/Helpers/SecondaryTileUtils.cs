@@ -32,7 +32,9 @@ namespace SimpleWeather.UWP.Helpers
                 return tileIdContainer.Values[query].ToString();
             }
             else
+            {
                 return null;
+            }
         }
 
         public static String GetQueryFromId(String tileId)
@@ -48,7 +50,7 @@ namespace SimpleWeather.UWP.Helpers
             }
         }
 
-        public static async void UpdateTileId(String oldQuery, String newQuery)
+        public static async Task UpdateTileId(String oldQuery, String newQuery)
         {
             String oldId = tileIdContainer.Values[oldQuery]?.ToString();
 

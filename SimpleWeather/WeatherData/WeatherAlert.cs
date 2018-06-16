@@ -319,32 +319,34 @@ namespace SimpleWeather.WeatherData
 
                     switch (property)
                     {
-                        case "Type":
+                        case nameof(Type):
                             obj.Type = (WeatherAlertType)int.Parse(reader.Value.ToString());
                             break;
-                        case "Title":
+                        case nameof(Title):
                             obj.Title = reader.Value.ToString();
                             break;
-                        case "Message":
+                        case nameof(Message):
                             obj.Message = reader.Value.ToString();
                             break;
-                        case "Attribution":
+                        case nameof(Attribution):
                             obj.Attribution = reader.Value.ToString();
                             break;
-                        case "Date":
+                        case nameof(Date):
                             bool parsed = DateTimeOffset.TryParseExact(reader.Value.ToString(), "dd.MM.yyyy HH:mm:ss zzzz", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset result);
                             if (!parsed) // If we can't parse try without format
                                 result = DateTimeOffset.Parse(reader.Value.ToString());
                             obj.Date = result;
                             break;
-                        case "ExpiresDate":
+                        case nameof(ExpiresDate):
                             parsed = DateTimeOffset.TryParseExact(reader.Value.ToString(), "dd.MM.yyyy HH:mm:ss zzzz", CultureInfo.InvariantCulture, DateTimeStyles.None, out result);
                             if (!parsed) // If we can't parse try without format
                                 result = DateTimeOffset.Parse(reader.Value.ToString());
                             obj.ExpiresDate = result;
                             break;
-                        case "Notified":
+                        case nameof(Notified):
                             obj.Notified = (bool)reader.Value;
+                            break;
+                        default:
                             break;
                     }
                 }
@@ -359,44 +361,45 @@ namespace SimpleWeather.WeatherData
 
         public string ToJson()
         {
-            System.IO.StringWriter sw = new System.IO.StringWriter();
-            JsonTextWriter writer = new JsonTextWriter(sw);
+            using (var sw = new System.IO.StringWriter())
+            using (var writer = new JsonTextWriter(sw))
+            {
+                // {
+                writer.WriteStartObject();
 
-            // {
-            writer.WriteStartObject();
+                // "Type" : ""
+                writer.WritePropertyName(nameof(Type));
+                writer.WriteValue((int)Type);
 
-            // "Type" : ""
-            writer.WritePropertyName("Type");
-            writer.WriteValue((int)Type);
+                // "Title" : ""
+                writer.WritePropertyName(nameof(Title));
+                writer.WriteValue(Title);
 
-            // "Title" : ""
-            writer.WritePropertyName("Title");
-            writer.WriteValue(Title);
+                // "Message" : ""
+                writer.WritePropertyName(nameof(Message));
+                writer.WriteValue(Message);
 
-            // "Message" : ""
-            writer.WritePropertyName("Message");
-            writer.WriteValue(Message);
+                // "Attribution" : ""
+                writer.WritePropertyName(nameof(Attribution));
+                writer.WriteValue(Attribution);
 
-            // "Attribution" : ""
-            writer.WritePropertyName("Attribution");
-            writer.WriteValue(Attribution);
+                // "Date" : ""
+                writer.WritePropertyName(nameof(Date));
+                writer.WriteValue(Date.ToString("dd.MM.yyyy HH:mm:ss zzzz"));
 
-            // "Date" : ""
-            writer.WritePropertyName("Date");
-            writer.WriteValue(Date.ToString("dd.MM.yyyy HH:mm:ss zzzz"));
+                // "ExpiresDate" : ""
+                writer.WritePropertyName(nameof(ExpiresDate));
+                writer.WriteValue(ExpiresDate.ToString("dd.MM.yyyy HH:mm:ss zzzz"));
 
-            // "ExpiresDate" : ""
-            writer.WritePropertyName("ExpiresDate");
-            writer.WriteValue(ExpiresDate.ToString("dd.MM.yyyy HH:mm:ss zzzz"));
+                // "Notified" : ""
+                writer.WritePropertyName(nameof(Notified));
+                writer.WriteValue(Notified);
 
-            // "Notified" : ""
-            writer.WritePropertyName("Notified");
-            writer.WriteValue(Notified);
+                // }
+                writer.WriteEndObject();
 
-            // }
-            writer.WriteEndObject();
-
-            return sw.ToString();
+                return sw.ToString();
+            }
         }
 
         public override bool Equals(object obj)

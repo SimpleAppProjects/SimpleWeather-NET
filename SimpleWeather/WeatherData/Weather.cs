@@ -20,7 +20,7 @@ namespace SimpleWeather.WeatherData
         [JsonIgnore]
         public const string NA = "N/A";
 
-        [TextBlob("locationblob")]
+        [TextBlob(nameof(locationblob))]
         public Location location { get; set; }
         [Ignore] 
         // Doesn't store this in db
@@ -38,19 +38,19 @@ namespace SimpleWeather.WeatherData
             }
             set { updatetimeblob = value.ToString("dd.MM.yyyy HH:mm:ss zzzz"); }
         }
-        [TextBlob("forecastblob")]
+        [TextBlob(nameof(forecastblob))]
         public Forecast[] forecast { get; set; }
-        [TextBlob("hrforecastblob")]
+        [TextBlob(nameof(hrforecastblob))]
         public HourlyForecast[] hr_forecast { get; set; }
-        [TextBlob("txtforecastblob")]
+        [TextBlob(nameof(txtforecastblob))]
         public TextForecast[] txt_forecast { get; set; }
-        [TextBlob("conditionblob")]
+        [TextBlob(nameof(conditionblob))]
         public Condition condition { get; set; }
-        [TextBlob("atmosphereblob")]
+        [TextBlob(nameof(atmosphereblob))]
         public Atmosphere atmosphere { get; set; }
-        [TextBlob("astronomyblob")]
+        [TextBlob(nameof(astronomyblob))]
         public Astronomy astronomy { get; set; }
-        [TextBlob("precipitationblob")]
+        [TextBlob(nameof(precipitationblob))]
         public Precipitation precipitation { get; set; }
         [JsonIgnore]
         [Ignore]
@@ -433,10 +433,10 @@ namespace SimpleWeather.WeatherData
 
                     switch (property)
                     {
-                        case "location":
+                        case nameof(location):
                             obj.location = Location.FromJson(reader);
                             break;
-                        case "update_time":
+                        case nameof(update_time):
                             bool parsed = DateTimeOffset.TryParseExact(reader.Value.ToString(), "dd.MM.yyyy HH:mm:ss zzzz", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset result);
                             if (!parsed) // If we can't parse as DateTimeOffset try DateTime (data could be old)
                                 result = DateTime.Parse(reader.Value.ToString());
@@ -449,8 +449,8 @@ namespace SimpleWeather.WeatherData
                             }
                             obj.update_time = result;
                             break;
-                        case "forecast":
-                            List<Forecast> forecasts = new List<Forecast>();
+                        case nameof(forecast):
+                            var forecasts = new List<Forecast>();
                             while(reader.Read() && reader.TokenType != JsonToken.EndArray)
                             {
                                 if (reader.TokenType == JsonToken.String)
@@ -458,8 +458,8 @@ namespace SimpleWeather.WeatherData
                             }
                             obj.forecast = forecasts.ToArray();
                             break;
-                        case "hr_forecast":
-                            List<HourlyForecast> hr_forecasts = new List<HourlyForecast>();
+                        case nameof(hr_forecast):
+                            var hr_forecasts = new List<HourlyForecast>();
                             while (reader.Read() && reader.TokenType != JsonToken.EndArray)
                             {
                                 if (reader.TokenType == JsonToken.String)
@@ -467,8 +467,8 @@ namespace SimpleWeather.WeatherData
                             }
                             obj.hr_forecast = hr_forecasts.ToArray();
                             break;
-                        case "txt_forecast":
-                            List<TextForecast> txt_forecasts = new List<TextForecast>();
+                        case nameof(txt_forecast):
+                            var txt_forecasts = new List<TextForecast>();
                             while (reader.Read() && reader.TokenType != JsonToken.EndArray)
                             {
                                 if (reader.TokenType == JsonToken.String)
@@ -476,29 +476,31 @@ namespace SimpleWeather.WeatherData
                             }
                             obj.txt_forecast = txt_forecasts.ToArray();
                             break;
-                        case "condition":
+                        case nameof(condition):
                             obj.condition = Condition.FromJson(reader);
                             break;
-                        case "atmosphere":
+                        case nameof(atmosphere):
                             obj.atmosphere = Atmosphere.FromJson(reader);
                             break;
-                        case "astronomy":
+                        case nameof(astronomy):
                             obj.astronomy = Astronomy.FromJson(reader);
                             break;
-                        case "precipitation":
+                        case nameof(precipitation):
                             obj.precipitation = Precipitation.FromJson(reader);
                             break;
-                        case "ttl":
+                        case nameof(ttl):
                             obj.ttl = reader.Value?.ToString();
                             break;
-                        case "source":
+                        case nameof(source):
                             obj.source = reader.Value?.ToString();
                             break;
-                        case "query":
+                        case nameof(query):
                             obj.query = reader.Value?.ToString();
                             break;
-                        case "locale":
+                        case nameof(locale):
                             obj.locale = reader.Value?.ToString();
+                            break;
+                        default:
                             break;
                     }
                 }
@@ -513,95 +515,96 @@ namespace SimpleWeather.WeatherData
 
         public string ToJson()
         {
-            System.IO.StringWriter sw = new System.IO.StringWriter();
-            JsonTextWriter writer = new JsonTextWriter(sw);
-
-            // {
-            writer.WriteStartObject();
-
-            // "location" : ""
-            writer.WritePropertyName("location");
-            writer.WriteValue(location?.ToJson());
-
-            // "update_time" : ""
-            writer.WritePropertyName("update_time");
-            writer.WriteValue(update_time.ToString("dd.MM.yyyy HH:mm:ss zzzz"));
-
-            // "forecast" : ""
-            if (forecast != null)
+            using (var sw = new System.IO.StringWriter())
+            using (var writer = new JsonTextWriter(sw))
             {
-                writer.WritePropertyName("forecast");
-                writer.WriteStartArray();
-                foreach (Forecast cast in forecast)
+                // {
+                writer.WriteStartObject();
+
+                // "location" : ""
+                writer.WritePropertyName(nameof(location));
+                writer.WriteValue(location?.ToJson());
+
+                // "update_time" : ""
+                writer.WritePropertyName(nameof(update_time));
+                writer.WriteValue(update_time.ToString("dd.MM.yyyy HH:mm:ss zzzz"));
+
+                // "forecast" : ""
+                if (forecast != null)
                 {
-                    writer.WriteValue(cast?.ToJson());
+                    writer.WritePropertyName(nameof(forecast));
+                    writer.WriteStartArray();
+                    foreach (Forecast cast in forecast)
+                    {
+                        writer.WriteValue(cast?.ToJson());
+                    }
+                    writer.WriteEndArray();
                 }
-                writer.WriteEndArray();
-            }
 
-            // "hr_forecast" : ""
-            if (hr_forecast != null)
-            {
-                writer.WritePropertyName("hr_forecast");
-                writer.WriteStartArray();
-                foreach (HourlyForecast hr_cast in hr_forecast)
+                // "hr_forecast" : ""
+                if (hr_forecast != null)
                 {
-                    writer.WriteValue(hr_cast?.ToJson());
+                    writer.WritePropertyName(nameof(hr_forecast));
+                    writer.WriteStartArray();
+                    foreach (HourlyForecast hr_cast in hr_forecast)
+                    {
+                        writer.WriteValue(hr_cast?.ToJson());
+                    }
+                    writer.WriteEndArray();
                 }
-                writer.WriteEndArray();
-            }
 
-            // "txt_forecast" : ""
-            if (txt_forecast != null)
-            {
-                writer.WritePropertyName("txt_forecast");
-                writer.WriteStartArray();
-                foreach (TextForecast txt_cast in txt_forecast)
+                // "txt_forecast" : ""
+                if (txt_forecast != null)
                 {
-                    writer.WriteValue(txt_cast?.ToJson());
+                    writer.WritePropertyName(nameof(txt_forecast));
+                    writer.WriteStartArray();
+                    foreach (TextForecast txt_cast in txt_forecast)
+                    {
+                        writer.WriteValue(txt_cast?.ToJson());
+                    }
+                    writer.WriteEndArray();
                 }
-                writer.WriteEndArray();
+
+                // "condition" : ""
+                writer.WritePropertyName(nameof(condition));
+                writer.WriteValue(condition?.ToJson());
+
+                // "atmosphere" : ""
+                writer.WritePropertyName(nameof(atmosphere));
+                writer.WriteValue(atmosphere?.ToJson());
+
+                // "astronomy" : ""
+                writer.WritePropertyName(nameof(astronomy));
+                writer.WriteValue(astronomy?.ToJson());
+
+                // "precipitation" : ""
+                if (precipitation != null)
+                {
+                    writer.WritePropertyName(nameof(precipitation));
+                    writer.WriteValue(precipitation?.ToJson());
+                }
+
+                // "ttl" : ""
+                writer.WritePropertyName(nameof(ttl));
+                writer.WriteValue(ttl);
+
+                // "source" : ""
+                writer.WritePropertyName(nameof(source));
+                writer.WriteValue(source);
+
+                // "query" : ""
+                writer.WritePropertyName(nameof(query));
+                writer.WriteValue(query);
+
+                // "locale" : ""
+                writer.WritePropertyName(nameof(locale));
+                writer.WriteValue(locale);
+
+                // }
+                writer.WriteEndObject();
+
+                return sw.ToString();
             }
-
-            // "condition" : ""
-            writer.WritePropertyName("condition");
-            writer.WriteValue(condition?.ToJson());
-
-            // "atmosphere" : ""
-            writer.WritePropertyName("atmosphere");
-            writer.WriteValue(atmosphere?.ToJson());
-
-            // "astronomy" : ""
-            writer.WritePropertyName("astronomy");
-            writer.WriteValue(astronomy?.ToJson());
-
-            // "precipitation" : ""
-            if (precipitation != null)
-            {
-                writer.WritePropertyName("precipitation");
-                writer.WriteValue(precipitation?.ToJson());
-            }
-
-            // "ttl" : ""
-            writer.WritePropertyName("ttl");
-            writer.WriteValue(ttl);
-
-            // "source" : ""
-            writer.WritePropertyName("source");
-            writer.WriteValue(source);
-
-            // "query" : ""
-            writer.WritePropertyName("query");
-            writer.WriteValue(query);
-
-            // "locale" : ""
-            writer.WritePropertyName("locale");
-            writer.WriteValue(locale);
-
-            // }
-            writer.WriteEndObject();
-
-            return sw.ToString();
         }
 
         public bool IsValid()
@@ -718,23 +721,25 @@ namespace SimpleWeather.WeatherData
 
                     switch (property)
                     {
-                        case "name":
+                        case nameof(name):
                             obj.name = reader.Value.ToString();
                             break;
-                        case "latitude":
+                        case nameof(latitude):
                             obj.latitude = reader.Value.ToString();
                             break;
-                        case "longitude":
+                        case nameof(longitude):
                             obj.longitude = reader.Value.ToString();
                             break;
-                        case "tz_offset":
+                        case nameof(tz_offset):
                             obj.tz_offset = TimeSpan.Parse(reader.Value.ToString());
                             break;
-                        case "tz_short":
+                        case nameof(tz_short):
                             obj.tz_short = reader.Value.ToString();
                             break;
-                        case "tz_long":
+                        case nameof(tz_long):
                             obj.tz_long = reader.Value?.ToString();
+                            break;
+                        default:
                             break;
                     }
                 }
@@ -749,40 +754,41 @@ namespace SimpleWeather.WeatherData
 
         public string ToJson()
         {
-            System.IO.StringWriter sw = new System.IO.StringWriter();
-            JsonTextWriter writer = new JsonTextWriter(sw);
+            using (var sw = new System.IO.StringWriter())
+            using (var writer = new JsonTextWriter(sw))
+            {
+                // {
+                writer.WriteStartObject();
 
-            // {
-            writer.WriteStartObject();
+                // "name" : ""
+                writer.WritePropertyName(nameof(name));
+                writer.WriteValue(name);
 
-            // "name" : ""
-            writer.WritePropertyName("name");
-            writer.WriteValue(name);
+                // "latitude" : ""
+                writer.WritePropertyName(nameof(latitude));
+                writer.WriteValue(latitude);
 
-            // "latitude" : ""
-            writer.WritePropertyName("latitude");
-            writer.WriteValue(latitude);
+                // "longitude" : ""
+                writer.WritePropertyName(nameof(longitude));
+                writer.WriteValue(longitude);
 
-            // "longitude" : ""
-            writer.WritePropertyName("longitude");
-            writer.WriteValue(longitude);
+                // "tz_offset" : ""
+                writer.WritePropertyName(nameof(tz_offset));
+                writer.WriteValue(tz_offset);
 
-            // "tz_offset" : ""
-            writer.WritePropertyName("tz_offset");
-            writer.WriteValue(tz_offset);
+                // "tz_short" : ""
+                writer.WritePropertyName(nameof(tz_short));
+                writer.WriteValue(tz_short);
 
-            // "tz_short" : ""
-            writer.WritePropertyName("tz_short");
-            writer.WriteValue(tz_short);
+                // "tz_long" : ""
+                writer.WritePropertyName(nameof(tz_long));
+                writer.WriteValue(tz_long);
 
-            // "tz_long" : ""
-            writer.WritePropertyName("tz_long");
-            writer.WriteValue(tz_long);
+                // }
+                writer.WriteEndObject();
 
-            // }
-            writer.WriteEndObject();
-
-            return sw.ToString();
+                return sw.ToString();
+            }
         }
     }
 
@@ -879,26 +885,28 @@ namespace SimpleWeather.WeatherData
 
                     switch (property)
                     {
-                        case "date":
+                        case nameof(date):
                             obj.date = DateTime.Parse(reader.Value.ToString());
                             break;
-                        case "high_f":
+                        case nameof(high_f):
                             obj.high_f = reader.Value.ToString();
                             break;
-                        case "high_c":
+                        case nameof(high_c):
                             obj.high_c = reader.Value.ToString();
                             break;
-                        case "low_f":
+                        case nameof(low_f):
                             obj.low_f = reader.Value.ToString();
                             break;
-                        case "low_c":
+                        case nameof(low_c):
                             obj.low_c = reader.Value.ToString();
                             break;
-                        case "condition":
+                        case nameof(condition):
                             obj.condition = reader.Value.ToString();
                             break;
-                        case "icon":
+                        case nameof(icon):
                             obj.icon = reader.Value.ToString();
+                            break;
+                        default:
                             break;
                     }
                 }
@@ -913,44 +921,45 @@ namespace SimpleWeather.WeatherData
 
         public string ToJson()
         {
-            System.IO.StringWriter sw = new System.IO.StringWriter();
-            JsonTextWriter writer = new JsonTextWriter(sw);
+            using (var sw = new System.IO.StringWriter())
+            using (var writer = new JsonTextWriter(sw))
+            {
+                // {
+                writer.WriteStartObject();
 
-            // {
-            writer.WriteStartObject();
+                // "date" : ""
+                writer.WritePropertyName(nameof(date));
+                writer.WriteValue(date);
 
-            // "date" : ""
-            writer.WritePropertyName("date");
-            writer.WriteValue(date);
+                // "high_f" : ""
+                writer.WritePropertyName(nameof(high_f));
+                writer.WriteValue(high_f);
 
-            // "high_f" : ""
-            writer.WritePropertyName("high_f");
-            writer.WriteValue(high_f);
+                // "high_c" : ""
+                writer.WritePropertyName(nameof(high_c));
+                writer.WriteValue(high_c);
 
-            // "high_c" : ""
-            writer.WritePropertyName("high_c");
-            writer.WriteValue(high_c);
+                // "low_f" : ""
+                writer.WritePropertyName(nameof(low_f));
+                writer.WriteValue(low_f);
 
-            // "low_f" : ""
-            writer.WritePropertyName("low_f");
-            writer.WriteValue(low_f);
+                // "low_c" : ""
+                writer.WritePropertyName(nameof(low_c));
+                writer.WriteValue(low_c);
 
-            // "low_c" : ""
-            writer.WritePropertyName("low_c");
-            writer.WriteValue(low_c);
+                // "condition" : ""
+                writer.WritePropertyName(nameof(condition));
+                writer.WriteValue(condition);
 
-            // "condition" : ""
-            writer.WritePropertyName("condition");
-            writer.WriteValue(condition);
+                // "icon" : ""
+                writer.WritePropertyName(nameof(icon));
+                writer.WriteValue(icon);
 
-            // "icon" : ""
-            writer.WritePropertyName("icon");
-            writer.WriteValue(icon);
+                // }
+                writer.WriteEndObject();
 
-            // }
-            writer.WriteEndObject();
-
-            return sw.ToString();
+                return sw.ToString();
+            }
         }
     }
 
@@ -978,7 +987,7 @@ namespace SimpleWeather.WeatherData
         public float wind_mph { get; set; }
         public float wind_kph { get; set; }
 
-        [JsonProperty(PropertyName = "date")]
+        [JsonProperty(PropertyName = nameof(date))]
         private string _date { get; set; }
 
         [JsonConstructor]
@@ -1075,32 +1084,34 @@ namespace SimpleWeather.WeatherData
 
                     switch (property)
                     {
-                        case "date":
+                        case nameof(date):
                             obj._date = reader.Value.ToString();
                             break;
-                        case "high_f":
+                        case nameof(high_f):
                             obj.high_f = reader.Value.ToString();
                             break;
-                        case "high_c":
+                        case nameof(high_c):
                             obj.high_c = reader.Value.ToString();
                             break;
-                        case "condition":
+                        case nameof(condition):
                             obj.condition = reader.Value.ToString();
                             break;
-                        case "icon":
+                        case nameof(icon):
                             obj.icon = reader.Value.ToString();
                             break;
-                        case "pop":
+                        case nameof(pop):
                             obj.pop = reader.Value.ToString();
                             break;
-                        case "wind_degrees":
+                        case nameof(wind_degrees):
                             obj.wind_degrees = int.Parse(reader.Value.ToString());
                             break;
-                        case "wind_mph":
+                        case nameof(wind_mph):
                             obj.wind_mph = float.Parse(reader.Value.ToString());
                             break;
-                        case "wind_kph":
+                        case nameof(wind_kph):
                             obj.wind_kph = float.Parse(reader.Value.ToString());
+                            break;
+                        default:
                             break;
                     }
                 }
@@ -1115,52 +1126,53 @@ namespace SimpleWeather.WeatherData
 
         public string ToJson()
         {
-            System.IO.StringWriter sw = new System.IO.StringWriter();
-            JsonTextWriter writer = new JsonTextWriter(sw);
+            using (var sw = new System.IO.StringWriter())
+            using (var writer = new JsonTextWriter(sw))
+            {
+                // {
+                writer.WriteStartObject();
 
-            // {
-            writer.WriteStartObject();
+                // "date" : ""
+                writer.WritePropertyName(nameof(date));
+                writer.WriteValue(_date);
 
-            // "date" : ""
-            writer.WritePropertyName("date");
-            writer.WriteValue(_date);
+                // "high_f" : ""
+                writer.WritePropertyName(nameof(high_f));
+                writer.WriteValue(high_f);
 
-            // "high_f" : ""
-            writer.WritePropertyName("high_f");
-            writer.WriteValue(high_f);
+                // "high_c" : ""
+                writer.WritePropertyName(nameof(high_c));
+                writer.WriteValue(high_c);
 
-            // "high_c" : ""
-            writer.WritePropertyName("high_c");
-            writer.WriteValue(high_c);
+                // "condition" : ""
+                writer.WritePropertyName(nameof(condition));
+                writer.WriteValue(condition);
 
-            // "condition" : ""
-            writer.WritePropertyName("condition");
-            writer.WriteValue(condition);
+                // "icon" : ""
+                writer.WritePropertyName(nameof(icon));
+                writer.WriteValue(icon);
 
-            // "icon" : ""
-            writer.WritePropertyName("icon");
-            writer.WriteValue(icon);
+                // "pop" : ""
+                writer.WritePropertyName(nameof(pop));
+                writer.WriteValue(pop);
 
-            // "pop" : ""
-            writer.WritePropertyName("pop");
-            writer.WriteValue(pop);
+                // "wind_degrees" : ""
+                writer.WritePropertyName(nameof(wind_degrees));
+                writer.WriteValue(wind_degrees);
 
-            // "wind_degrees" : ""
-            writer.WritePropertyName("wind_degrees");
-            writer.WriteValue(wind_degrees);
+                // "wind_mph" : ""
+                writer.WritePropertyName(nameof(wind_mph));
+                writer.WriteValue(wind_mph);
 
-            // "wind_mph" : ""
-            writer.WritePropertyName("wind_mph");
-            writer.WriteValue(wind_mph);
+                // "wind_kph" : ""
+                writer.WritePropertyName(nameof(wind_kph));
+                writer.WriteValue(wind_kph);
 
-            // "wind_kph" : ""
-            writer.WritePropertyName("wind_kph");
-            writer.WriteValue(wind_kph);
+                // }
+                writer.WriteEndObject();
 
-            // }
-            writer.WriteEndObject();
-
-            return sw.ToString();
+                return sw.ToString();
+            }
         }
     }
 
@@ -1218,20 +1230,22 @@ namespace SimpleWeather.WeatherData
 
                     switch (property)
                     {
-                        case "title":
+                        case nameof(title):
                             obj.title = reader.Value.ToString();
                             break;
-                        case "fcttext":
+                        case nameof(fcttext):
                             obj.fcttext = reader.Value.ToString();
                             break;
-                        case "fcttext_metric":
+                        case nameof(fcttext_metric):
                             obj.fcttext_metric = reader.Value.ToString();
                             break;
-                        case "icon":
+                        case nameof(icon):
                             obj.icon = reader.Value.ToString();
                             break;
-                        case "pop":
+                        case nameof(pop):
                             obj.pop = reader.Value.ToString();
+                            break;
+                        default:
                             break;
                     }
                 }
@@ -1246,36 +1260,37 @@ namespace SimpleWeather.WeatherData
 
         public string ToJson()
         {
-            System.IO.StringWriter sw = new System.IO.StringWriter();
-            JsonTextWriter writer = new JsonTextWriter(sw);
+            using (var sw = new System.IO.StringWriter())
+            using (var writer = new JsonTextWriter(sw))
+            {
+                // {
+                writer.WriteStartObject();
 
-            // {
-            writer.WriteStartObject();
+                // "title" : ""
+                writer.WritePropertyName(nameof(title));
+                writer.WriteValue(title);
 
-            // "title" : ""
-            writer.WritePropertyName("title");
-            writer.WriteValue(title);
+                // "fcttext" : ""
+                writer.WritePropertyName(nameof(fcttext));
+                writer.WriteValue(fcttext);
 
-            // "fcttext" : ""
-            writer.WritePropertyName("fcttext");
-            writer.WriteValue(fcttext);
+                // "fcttext_metric" : ""
+                writer.WritePropertyName(nameof(fcttext_metric));
+                writer.WriteValue(fcttext_metric);
 
-            // "fcttext_metric" : ""
-            writer.WritePropertyName("fcttext_metric");
-            writer.WriteValue(fcttext_metric);
+                // "icon" : ""
+                writer.WritePropertyName(nameof(icon));
+                writer.WriteValue(icon);
 
-            // "icon" : ""
-            writer.WritePropertyName("icon");
-            writer.WriteValue(icon);
+                // "pop" : ""
+                writer.WritePropertyName(nameof(pop));
+                writer.WriteValue(pop);
 
-            // "pop" : ""
-            writer.WritePropertyName("pop");
-            writer.WriteValue(pop);
+                // }
+                writer.WriteEndObject();
 
-            // }
-            writer.WriteEndObject();
-
-            return sw.ToString();
+                return sw.ToString();
+            }
         }
     }
 
@@ -1395,32 +1410,34 @@ namespace SimpleWeather.WeatherData
 
                     switch (property)
                     {
-                        case "weather":
+                        case nameof(weather):
                             obj.weather = reader.Value.ToString();
                             break;
-                        case "temp_f":
+                        case nameof(temp_f):
                             obj.temp_f = float.Parse(reader.Value.ToString());
                             break;
-                        case "temp_c":
+                        case nameof(temp_c):
                             obj.temp_c = float.Parse(reader.Value.ToString());
                             break;
-                        case "wind_degrees":
+                        case nameof(wind_degrees):
                             obj.wind_degrees = int.Parse(reader.Value.ToString());
                             break;
-                        case "wind_mph":
+                        case nameof(wind_mph):
                             obj.wind_mph = float.Parse(reader.Value.ToString());
                             break;
-                        case "wind_kph":
+                        case nameof(wind_kph):
                             obj.wind_kph = float.Parse(reader.Value.ToString());
                             break;
-                        case "feelslike_f":
+                        case nameof(feelslike_f):
                             obj.feelslike_f = float.Parse(reader.Value.ToString());
                             break;
-                        case "feelslike_c":
+                        case nameof(feelslike_c):
                             obj.feelslike_c = float.Parse(reader.Value.ToString());
                             break;
-                        case "icon":
+                        case nameof(icon):
                             obj.icon = reader.Value.ToString();
+                            break;
+                        default:
                             break;
                     }
                 }
@@ -1435,52 +1452,53 @@ namespace SimpleWeather.WeatherData
 
         public string ToJson()
         {
-            System.IO.StringWriter sw = new System.IO.StringWriter();
-            JsonTextWriter writer = new JsonTextWriter(sw);
+            using (var sw = new System.IO.StringWriter())
+            using (var writer = new JsonTextWriter(sw))
+            {
+                // {
+                writer.WriteStartObject();
 
-            // {
-            writer.WriteStartObject();
+                // "weather" : ""
+                writer.WritePropertyName(nameof(weather));
+                writer.WriteValue(weather);
 
-            // "weather" : ""
-            writer.WritePropertyName("weather");
-            writer.WriteValue(weather);
+                // "temp_f" : ""
+                writer.WritePropertyName(nameof(temp_f));
+                writer.WriteValue(temp_f);
 
-            // "temp_f" : ""
-            writer.WritePropertyName("temp_f");
-            writer.WriteValue(temp_f);
+                // "temp_c" : ""
+                writer.WritePropertyName(nameof(temp_c));
+                writer.WriteValue(temp_c);
 
-            // "temp_c" : ""
-            writer.WritePropertyName("temp_c");
-            writer.WriteValue(temp_c);
+                // "wind_degrees" : ""
+                writer.WritePropertyName(nameof(wind_degrees));
+                writer.WriteValue(wind_degrees);
 
-            // "wind_degrees" : ""
-            writer.WritePropertyName("wind_degrees");
-            writer.WriteValue(wind_degrees);
+                // "wind_mph" : ""
+                writer.WritePropertyName(nameof(wind_mph));
+                writer.WriteValue(wind_mph);
 
-            // "wind_mph" : ""
-            writer.WritePropertyName("wind_mph");
-            writer.WriteValue(wind_mph);
+                // "wind_kph" : ""
+                writer.WritePropertyName(nameof(wind_kph));
+                writer.WriteValue(wind_kph);
 
-            // "wind_kph" : ""
-            writer.WritePropertyName("wind_kph");
-            writer.WriteValue(wind_kph);
+                // "feelslike_f" : ""
+                writer.WritePropertyName(nameof(feelslike_f));
+                writer.WriteValue(feelslike_f);
 
-            // "feelslike_f" : ""
-            writer.WritePropertyName("feelslike_f");
-            writer.WriteValue(feelslike_f);
+                // "feelslike_c" : ""
+                writer.WritePropertyName(nameof(feelslike_c));
+                writer.WriteValue(feelslike_c);
 
-            // "feelslike_c" : ""
-            writer.WritePropertyName("feelslike_c");
-            writer.WriteValue(feelslike_c);
+                // "icon" : ""
+                writer.WritePropertyName(nameof(icon));
+                writer.WriteValue(icon);
 
-            // "icon" : ""
-            writer.WritePropertyName("icon");
-            writer.WriteValue(icon);
+                // }
+                writer.WriteEndObject();
 
-            // }
-            writer.WriteEndObject();
-
-            return sw.ToString();
+                return sw.ToString();
+            }
         }
     }
 
@@ -1567,23 +1585,25 @@ namespace SimpleWeather.WeatherData
 
                     switch (property)
                     {
-                        case "humidity":
+                        case nameof(humidity):
                             obj.humidity = reader.Value.ToString();
                             break;
-                        case "pressure_mb":
+                        case nameof(pressure_mb):
                             obj.pressure_mb = reader.Value.ToString();
                             break;
-                        case "pressure_in":
+                        case nameof(pressure_in):
                             obj.pressure_in = reader.Value.ToString();
                             break;
-                        case "pressure_trend":
+                        case nameof(pressure_trend):
                             obj.pressure_trend = reader.Value.ToString();
                             break;
-                        case "visibility_mi":
+                        case nameof(visibility_mi):
                             obj.visibility_mi = reader.Value.ToString();
                             break;
-                        case "visibility_km":
+                        case nameof(visibility_km):
                             obj.visibility_km = reader.Value.ToString();
+                            break;
+                        default:
                             break;
                     }
                 }
@@ -1598,40 +1618,41 @@ namespace SimpleWeather.WeatherData
 
         public string ToJson()
         {
-            System.IO.StringWriter sw = new System.IO.StringWriter();
-            JsonTextWriter writer = new JsonTextWriter(sw);
+            using (var sw = new System.IO.StringWriter())
+            using (var writer = new JsonTextWriter(sw))
+            {
+                // {
+                writer.WriteStartObject();
 
-            // {
-            writer.WriteStartObject();
+                // "humidity" : ""
+                writer.WritePropertyName(nameof(humidity));
+                writer.WriteValue(humidity);
 
-            // "humidity" : ""
-            writer.WritePropertyName("humidity");
-            writer.WriteValue(humidity);
+                // "pressure_mb" : ""
+                writer.WritePropertyName(nameof(pressure_mb));
+                writer.WriteValue(pressure_mb);
 
-            // "pressure_mb" : ""
-            writer.WritePropertyName("pressure_mb");
-            writer.WriteValue(pressure_mb);
+                // "pressure_in" : ""
+                writer.WritePropertyName(nameof(pressure_in));
+                writer.WriteValue(pressure_in);
 
-            // "pressure_in" : ""
-            writer.WritePropertyName("pressure_in");
-            writer.WriteValue(pressure_in);
+                // "pressure_trend" : ""
+                writer.WritePropertyName(nameof(pressure_trend));
+                writer.WriteValue(pressure_trend);
 
-            // "pressure_trend" : ""
-            writer.WritePropertyName("pressure_trend");
-            writer.WriteValue(pressure_trend);
+                // "visibility_mi" : ""
+                writer.WritePropertyName(nameof(visibility_mi));
+                writer.WriteValue(visibility_mi);
 
-            // "visibility_mi" : ""
-            writer.WritePropertyName("visibility_mi");
-            writer.WriteValue(visibility_mi);
+                // "visibility_km" : ""
+                writer.WritePropertyName(nameof(visibility_km));
+                writer.WriteValue(visibility_km);
 
-            // "visibility_km" : ""
-            writer.WritePropertyName("visibility_km");
-            writer.WriteValue(visibility_km);
+                // }
+                writer.WriteEndObject();
 
-            // }
-            writer.WriteEndObject();
-
-            return sw.ToString();
+                return sw.ToString();
+            }
         }
     }
 
@@ -1710,11 +1731,13 @@ namespace SimpleWeather.WeatherData
 
                     switch (property)
                     {
-                        case "sunrise":
+                        case nameof(sunrise):
                             obj.sunrise = DateTime.Parse(reader.Value.ToString());
                             break;
-                        case "sunset":
+                        case nameof(sunset):
                             obj.sunset = DateTime.Parse(reader.Value.ToString());
+                            break;
+                        default:
                             break;
                     }
                 }
@@ -1729,24 +1752,25 @@ namespace SimpleWeather.WeatherData
 
         public string ToJson()
         {
-            System.IO.StringWriter sw = new System.IO.StringWriter();
-            JsonTextWriter writer = new JsonTextWriter(sw);
+            using (var sw = new System.IO.StringWriter())
+            using (var writer = new JsonTextWriter(sw))
+            {
+                // {
+                writer.WriteStartObject();
 
-            // {
-            writer.WriteStartObject();
+                // "sunrise" : ""
+                writer.WritePropertyName(nameof(sunrise));
+                writer.WriteValue(sunrise);
 
-            // "sunrise" : ""
-            writer.WritePropertyName("sunrise");
-            writer.WriteValue(sunrise);
+                // "sunset" : ""
+                writer.WritePropertyName(nameof(sunset));
+                writer.WriteValue(sunset);
 
-            // "sunset" : ""
-            writer.WritePropertyName("sunset");
-            writer.WriteValue(sunset);
+                // }
+                writer.WriteEndObject();
 
-            // }
-            writer.WriteEndObject();
-
-            return sw.ToString();
+                return sw.ToString();
+            }
         }
     }
 
@@ -1824,20 +1848,22 @@ namespace SimpleWeather.WeatherData
 
                     switch (property)
                     {
-                        case "pop":
+                        case nameof(pop):
                             obj.pop = reader.Value.ToString();
                             break;
-                        case "qpf_rain_in":
+                        case nameof(qpf_rain_in):
                             obj.qpf_rain_in = float.Parse(reader.Value.ToString());
                             break;
-                        case "qpf_rain_mm":
+                        case nameof(qpf_rain_mm):
                             obj.qpf_rain_mm = float.Parse(reader.Value.ToString());
                             break;
-                        case "qpf_snow_in":
+                        case nameof(qpf_snow_in):
                             obj.qpf_snow_in = float.Parse(reader.Value.ToString());
                             break;
-                        case "qpf_snow_cm":
+                        case nameof(qpf_snow_cm):
                             obj.qpf_snow_cm = float.Parse(reader.Value.ToString());
+                            break;
+                        default:
                             break;
                     }
                 }
@@ -1852,36 +1878,37 @@ namespace SimpleWeather.WeatherData
 
         public string ToJson()
         {
-            System.IO.StringWriter sw = new System.IO.StringWriter();
-            JsonTextWriter writer = new JsonTextWriter(sw);
+            using (var sw = new System.IO.StringWriter())
+            using (var writer = new JsonTextWriter(sw))
+            {
+                // {
+                writer.WriteStartObject();
 
-            // {
-            writer.WriteStartObject();
+                // "pop" : ""
+                writer.WritePropertyName(nameof(pop));
+                writer.WriteValue(pop);
 
-            // "pop" : ""
-            writer.WritePropertyName("pop");
-            writer.WriteValue(pop);
+                // "qpf_rain_in" : ""
+                writer.WritePropertyName(nameof(qpf_rain_in));
+                writer.WriteValue(qpf_rain_in);
 
-            // "qpf_rain_in" : ""
-            writer.WritePropertyName("qpf_rain_in");
-            writer.WriteValue(qpf_rain_in);
+                // "qpf_rain_mm" : ""
+                writer.WritePropertyName(nameof(qpf_rain_mm));
+                writer.WriteValue(qpf_rain_mm);
 
-            // "qpf_rain_mm" : ""
-            writer.WritePropertyName("qpf_rain_mm");
-            writer.WriteValue(qpf_rain_mm);
+                // "qpf_snow_in" : ""
+                writer.WritePropertyName(nameof(qpf_snow_in));
+                writer.WriteValue(qpf_snow_in);
 
-            // "qpf_snow_in" : ""
-            writer.WritePropertyName("qpf_snow_in");
-            writer.WriteValue(qpf_snow_in);
+                // "qpf_snow_cm" : ""
+                writer.WritePropertyName(nameof(qpf_snow_cm));
+                writer.WriteValue(qpf_snow_cm);
 
-            // "qpf_snow_cm" : ""
-            writer.WritePropertyName("qpf_snow_cm");
-            writer.WriteValue(qpf_snow_cm);
+                // }
+                writer.WriteEndObject();
 
-            // }
-            writer.WriteEndObject();
-
-            return sw.ToString();
+                return sw.ToString();
+            }
         }
     }
 }

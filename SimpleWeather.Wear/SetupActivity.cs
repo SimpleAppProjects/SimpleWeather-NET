@@ -149,12 +149,14 @@ namespace SimpleWeather.Droid.Wear
                 EnableControls(true);
             }
             else
+            {
                 base.OnBackPressed();
+            }
         }
 
-        public bool OnMenuItemClick(IMenuItem menuItem)
+        public bool OnMenuItemClick(IMenuItem item)
         {
-            switch (menuItem.ItemId)
+            switch (item.ItemId)
             {
                 case Resource.Id.menu_settings:
                     StartActivity(new Intent(this, typeof(SettingsActivity)));
@@ -168,6 +170,8 @@ namespace SimpleWeather.Droid.Wear
                             StartActivityForResult(typeof(SetupSyncActivity), REQUEST_CODE_SYNC_ACTIVITY);
                         })
                         .Show();
+                    break;
+                default:
                     break;
             }
 
@@ -193,28 +197,36 @@ namespace SimpleWeather.Droid.Wear
                         }
                     }
                     break;
+                default:
+                    break;
             }
         }
 
         private void EnableControls(bool enable)
         {
-            searchButton.Enabled = enable;
-            locationButton.Enabled = enable;
-            if (enable)
+            RunOnUiThread(() =>
             {
-                mWearableActionDrawer.Controller.PeekDrawer();
-                progressBar.Visibility = ViewStates.Gone;
-            }
-            else
-            {
-                mWearableActionDrawer.Controller.CloseDrawer();
-                progressBar.Visibility = ViewStates.Visible;
-            }
+                searchButton.Enabled = enable;
+                locationButton.Enabled = enable;
+                if (enable)
+                {
+                    mWearableActionDrawer.Controller.PeekDrawer();
+                    progressBar.Visibility = ViewStates.Gone;
+                }
+                else
+                {
+                    mWearableActionDrawer.Controller.CloseDrawer();
+                    progressBar.Visibility = ViewStates.Visible;
+                }
+            });
         }
 
         public async Task FetchGeoLocation()
         {
-            locationButton.Enabled = false;
+            RunOnUiThread(() =>
+            {
+                locationButton.Enabled = false;
+            });
 
             if (mLocation != null)
             {
@@ -232,7 +244,10 @@ namespace SimpleWeather.Droid.Wear
                 }
 
                 // Show loading bar
-                progressBar.Visibility = ViewStates.Visible;
+                RunOnUiThread(() =>
+                {
+                    progressBar.Visibility = ViewStates.Visible;
+                });
 
                 await Task.Run(async () =>
                 {
@@ -258,8 +273,11 @@ namespace SimpleWeather.Droid.Wear
 
                 if (String.IsNullOrWhiteSpace(Settings.API_KEY) && wm.KeyRequired)
                 {
-                    Toast.MakeText(this.ApplicationContext, Resource.String.werror_invalidkey, ToastLength.Short).Show();
-                    EnableControls(true);
+                    RunOnUiThread(() =>
+                    {
+                        Toast.MakeText(this.ApplicationContext, Resource.String.werror_invalidkey, ToastLength.Short).Show();
+                        EnableControls(true);
+                    });
                     return;
                 }
 
@@ -271,7 +289,7 @@ namespace SimpleWeather.Droid.Wear
 
                 // Get Weather Data
                 var location = new WeatherData.LocationData(view, mLocation);
-                WeatherData.Weather weather = await Settings.GetWeatherData(location.query);
+                var weather = await Settings.GetWeatherData(location.query);
                 if (weather == null)
                 {
                     try
@@ -281,7 +299,10 @@ namespace SimpleWeather.Droid.Wear
                     catch (WeatherException wEx)
                     {
                         weather = null;
-                        Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
+                        RunOnUiThread(() =>
+                        {
+                            Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
+                        });
                     }
                 }
 
@@ -369,7 +390,10 @@ namespace SimpleWeather.Droid.Wear
                 else
                 {
                     EnableControls(true);
-                    Toast.MakeText(this, Resource.String.error_retrieve_location, ToastLength.Short).Show();
+                    RunOnUiThread(() =>
+                    {
+                        Toast.MakeText(this, Resource.String.error_retrieve_location, ToastLength.Short).Show();
+                    });
                 }
             }
 
@@ -380,7 +404,7 @@ namespace SimpleWeather.Droid.Wear
             }
         }
 
-        public override async void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
+        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
         {
             switch (requestCode)
             {
@@ -392,7 +416,7 @@ namespace SimpleWeather.Droid.Wear
                         {
                             // permission was granted, yay!
                             // Do the task you need to do.
-                            await FetchGeoLocation();
+                            Task.Run(async () => await FetchGeoLocation());
                         }
                         else
                         {
@@ -403,6 +427,8 @@ namespace SimpleWeather.Droid.Wear
                         }
                         return;
                     }
+                default:
+                    break;
             }
         }
     }

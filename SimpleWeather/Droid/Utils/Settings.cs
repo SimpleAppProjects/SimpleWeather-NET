@@ -18,7 +18,7 @@ namespace SimpleWeather.Utils
 {
     public static partial class Settings
     {
-        private static String LOG_TAG = "Settings";
+        private static readonly String LOG_TAG = nameof(Settings);
 
         // Shared Settings
         private static ISharedPreferences preferences = App.Preferences;
@@ -48,7 +48,7 @@ namespace SimpleWeather.Utils
                 if (String.IsNullOrWhiteSpace(key))
                     return;
 
-                Context context = App.Context;
+                var context = Application.Context;
 
                 switch (key)
                 {
@@ -108,13 +108,17 @@ namespace SimpleWeather.Utils
         {
 #if !__ANDROID_WEAR__
             if (locationDB == null)
+            {
                 locationDB = new SQLiteAsyncConnection(
-                    System.IO.Path.Combine(appDataFolder.Path, "locations.db"));
+                   System.IO.Path.Combine(appDataFolder.Path, "locations.db"));
+            }
 #endif
 
             if (weatherDB == null)
+            {
                 weatherDB = new SQLiteAsyncConnection(
-                    System.IO.Path.Combine(appDataFolder.Path, "weatherdata.db"));
+                   System.IO.Path.Combine(appDataFolder.Path, "weatherdata.db"));
+            }
 
             preferences.RegisterOnSharedPreferenceChangeListener(App.SharedPreferenceListener);
         }
@@ -181,7 +185,9 @@ namespace SimpleWeather.Utils
                 return WeatherData.WeatherAPI.WeatherUnderground;
             }
             else
+            {
                 return preferences.GetString(KEY_API, null);
+            }
         }
 
         private static void SetAPI(string value)
@@ -203,7 +209,9 @@ namespace SimpleWeather.Utils
                 return key;
             }
             else
+            {
                 return preferences.GetString(KEY_APIKEY, null);
+            }
         }
 
         private static string ReadAPIKEYfile()
@@ -215,7 +223,7 @@ namespace SimpleWeather.Utils
             try
             {
                 reader = new BufferedReader(
-                        new InputStreamReader(App.Context.Assets.Open("API_KEY.txt")));
+                            new InputStreamReader(App.Context.Assets.Open("API_KEY.txt")));
 
                 key = reader.ReadLine();
             }
@@ -362,7 +370,7 @@ namespace SimpleWeather.Utils
 
         private static void SetKeyVerified(bool value)
         {
-            var editor = wuSharedPrefs.Edit();
+            var wuEditor = wuSharedPrefs.Edit();
             editor.PutBoolean(KEY_APIKEY_VERIFIED, value);
             editor.Apply();
 

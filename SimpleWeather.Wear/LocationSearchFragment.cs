@@ -127,7 +127,7 @@ namespace SimpleWeather.Droid.Wear
 
             // Get Weather Data
             var location = new WeatherData.LocationData(query_vm);
-            WeatherData.Weather weather = await Settings.GetWeatherData(location.query);
+            var weather = await Settings.GetWeatherData(location.query);
             if (weather == null)
             {
                 try
@@ -251,7 +251,7 @@ namespace SimpleWeather.Droid.Wear
 
             // To align the edge children (first and last) with the center of the screen
             mRecyclerView.EdgeItemsCenteringEnabled = true;
-            
+
             // use a linear layout manager
             mLayoutManager = new WearableLinearLayoutManager(mActivity);
             mRecyclerView.SetLayoutManager(mLayoutManager);
@@ -334,20 +334,20 @@ namespace SimpleWeather.Droid.Wear
                         DoSearchAction();
                     }
                     break;
+                default:
+                    break;
             }
         }
 
         private void ShowInputMethod(View view)
         {
-            InputMethodManager imm = (InputMethodManager)mActivity.GetSystemService(
-                    Context.InputMethodService);
+            var imm = (InputMethodManager)mActivity.GetSystemService(Context.InputMethodService);
             imm.ToggleSoftInput(ShowFlags.Forced, HideSoftInputFlags.ImplicitOnly);
         }
 
         private void HideInputMethod(View view)
         {
-            InputMethodManager imm = (InputMethodManager)mActivity.GetSystemService(
-                    Context.InputMethodService);
+            var imm = (InputMethodManager)mActivity.GetSystemService(Context.InputMethodService);
             if (imm != null && view != null)
             {
                 imm.HideSoftInputFromWindow(view.WindowToken, 0);

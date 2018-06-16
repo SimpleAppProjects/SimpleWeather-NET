@@ -76,7 +76,7 @@ namespace SimpleWeather.UWP
 
         public void Dispose()
         {
-            ((IDisposable)cts).Dispose();
+            cts.Dispose();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -145,7 +145,7 @@ namespace SimpleWeather.UWP
             if (args.ChosenSuggestion != null)
             {
                 // User selected an item from the suggestion list, take an action on it here.
-                LocationQueryViewModel theChosenOne = args.ChosenSuggestion as LocationQueryViewModel;
+                var theChosenOne = args.ChosenSuggestion as LocationQueryViewModel;
 
                 if (!String.IsNullOrEmpty(theChosenOne.LocationQuery))
                     query_vm = theChosenOne;
@@ -161,7 +161,7 @@ namespace SimpleWeather.UWP
                 }
 
                 // Use args.QueryText to determine what to do.
-                LocationQueryViewModel result = (await wm.GetLocations(args.QueryText)).First();
+                var result = (await wm.GetLocations(args.QueryText)).First();
 
                 if (cts.Token.IsCancellationRequested)
                 {
@@ -175,7 +175,9 @@ namespace SimpleWeather.UWP
                     query_vm = result;
                 }
                 else
+                {
                     query_vm = new LocationQueryViewModel();
+                }
             }
             else if (String.IsNullOrWhiteSpace(args.QueryText))
             {
@@ -276,7 +278,7 @@ namespace SimpleWeather.UWP
 
         private void Restore()
         {
-            var mainPanel = FindName("MainPanel") as FrameworkElement;
+            var mainPanel = FindName(nameof(MainPanel)) as FrameworkElement;
             mainPanel.Visibility = Visibility.Visible;
 
             // Sizing
@@ -314,7 +316,7 @@ namespace SimpleWeather.UWP
                 return;
             }
 
-            GeolocationAccessStatus geoStatus = GeolocationAccessStatus.Unspecified;
+            var geoStatus = GeolocationAccessStatus.Unspecified;
 
             try
             {
@@ -368,6 +370,7 @@ namespace SimpleWeather.UWP
                     await error.ShowAsync();
                     break;
                 case GeolocationAccessStatus.Unspecified:
+                default:
                     error = new MessageDialog(App.ResLoader.GetString("Error_Location"), App.ResLoader.GetString("Label_ErrorLocation"));
                     await error.ShowAsync();
                     break;
@@ -470,7 +473,9 @@ namespace SimpleWeather.UWP
                 this.Frame.Navigate(typeof(Shell), location);
             }
             else
+            {
                 EnableControls(true);
+            }
         }
 
         private void APIComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

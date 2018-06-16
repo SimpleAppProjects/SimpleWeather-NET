@@ -21,7 +21,7 @@ namespace SimpleWeather.Droid.App.Widgets
 
     public abstract class WeatherWidgetProvider : AppWidgetProvider
     {
-        private static string TAG = "WeatherWidgetProvider";
+        private static string TAG = nameof(WeatherWidgetProvider);
 
         // Actions
         public const string ACTION_SHOWREFRESH = "SimpleWeather.Droid.action.SHOWREFRESH";
@@ -86,7 +86,7 @@ namespace SimpleWeather.Droid.App.Widgets
             if (appWidgetIds == null || appWidgetIds.Length == 0)
                 appWidgetIds = appWidgetManager.GetAppWidgetIds(componentname);
 
-            RemoteViews views = new RemoteViews(context.PackageName, WidgetLayoutId);
+            var views = new RemoteViews(context.PackageName, WidgetLayoutId);
             views.SetViewVisibility(Resource.Id.refresh_button, ViewStates.Gone);
             views.SetViewVisibility(Resource.Id.refresh_progress, ViewStates.Visible);
             appWidgetManager.PartiallyUpdateAppWidget(appWidgetIds, views);
@@ -177,7 +177,7 @@ namespace SimpleWeather.Droid.App.Widgets
 
         public override bool HasInstances(Context context)
         {
-            AppWidgetManager appWidgetManager = AppWidgetManager.GetInstance(context);
+            var appWidgetManager = AppWidgetManager.GetInstance(context);
             int[] appWidgetIds = appWidgetManager.GetAppWidgetIds(
                 new ComponentName(context, ClassName));
             return (appWidgetIds.Length > 0);
@@ -214,7 +214,7 @@ namespace SimpleWeather.Droid.App.Widgets
 
         public override bool HasInstances(Context context)
         {
-            AppWidgetManager appWidgetManager = AppWidgetManager.GetInstance(context);
+            var appWidgetManager = AppWidgetManager.GetInstance(context);
             int[] appWidgetIds = appWidgetManager.GetAppWidgetIds(
                 new ComponentName(context, ClassName));
             return (appWidgetIds.Length > 0);
@@ -251,7 +251,7 @@ namespace SimpleWeather.Droid.App.Widgets
 
         public override bool HasInstances(Context context)
         {
-            AppWidgetManager appWidgetManager = AppWidgetManager.GetInstance(context);
+            var appWidgetManager = AppWidgetManager.GetInstance(context);
             int[] appWidgetIds = appWidgetManager.GetAppWidgetIds(
                 new ComponentName(context, ClassName));
             return (appWidgetIds.Length > 0);
@@ -290,7 +290,7 @@ namespace SimpleWeather.Droid.App.Widgets
 
         public override bool HasInstances(Context context)
         {
-            AppWidgetManager appWidgetManager = AppWidgetManager.GetInstance(context);
+            var appWidgetManager = AppWidgetManager.GetInstance(context);
             int[] appWidgetIds = appWidgetManager.GetAppWidgetIds(
                 new ComponentName(context, ClassName));
             return (appWidgetIds.Length > 0);

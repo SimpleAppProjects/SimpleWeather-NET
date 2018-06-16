@@ -140,23 +140,26 @@ namespace SimpleWeather.Droid.App
 
         public void OnWeatherError(WeatherException wEx)
         {
-            switch (wEx.ErrorStatus)
+            AppCompatActivity?.RunOnUiThread(() =>
             {
-                case WeatherUtils.ErrorStatus.NetworkError:
-                case WeatherUtils.ErrorStatus.NoWeather:
-                    // Show error message and prompt to refresh
-                    Snackbar snackBar = Snackbar.Make(mainView, wEx.Message, Snackbar.LengthLong);
-                    snackBar.SetAction(Resource.String.action_retry, async (View v) =>
-                    {
-                        await RefreshWeather(false);
-                    });
-                    snackBar.Show();
-                    break;
-                default:
-                    // Show error message
-                    Snackbar.Make(mainView, wEx.Message, Snackbar.LengthLong).Show();
-                    break;
-            }
+                switch (wEx.ErrorStatus)
+                {
+                    case WeatherUtils.ErrorStatus.NetworkError:
+                    case WeatherUtils.ErrorStatus.NoWeather:
+                        // Show error message and prompt to refresh
+                        Snackbar snackBar = Snackbar.Make(mainView, wEx.Message, Snackbar.LengthLong);
+                        snackBar.SetAction(Resource.String.action_retry, async (View v) =>
+                        {
+                            await RefreshWeather(false);
+                        });
+                        snackBar.Show();
+                        break;
+                    default:
+                        // Show error message
+                        Snackbar.Make(mainView, wEx.Message, Snackbar.LengthLong).Show();
+                        break;
+                }
+            });
         }
 
         public WeatherNowFragment()
@@ -176,10 +179,10 @@ namespace SimpleWeather.Droid.App
          */
         public static WeatherNowFragment NewInstance(LocationData data)
         {
-            WeatherNowFragment fragment = new WeatherNowFragment();
+            var fragment = new WeatherNowFragment();
             if (data != null)
             {
-                Bundle args = new Bundle();
+                var args = new Bundle();
                 args.PutString("data", data.ToJson());
                 fragment.Arguments = args;
             }
@@ -188,11 +191,10 @@ namespace SimpleWeather.Droid.App
 
         public static WeatherNowFragment NewInstance(Bundle args)
         {
-            WeatherNowFragment fragment = new WeatherNowFragment()
+            return new WeatherNowFragment()
             {
                 Arguments = args
             };
-            return fragment;
         }
 
         public override void OnAttach(Context context)
@@ -220,9 +222,11 @@ namespace SimpleWeather.Droid.App
             // Create your fragment here
             if (Arguments != null)
             {
-                location = LocationData.FromJson(
-                    new Newtonsoft.Json.JsonTextReader(
-                        new System.IO.StringReader(Arguments.GetString("data", null))));
+                using (var jsonTextReader = new Newtonsoft.Json.JsonTextReader(
+                        new System.IO.StringReader(Arguments.GetString("data", null))))
+                {
+                    location = LocationData.FromJson(jsonTextReader);
+                }
 
                 if (location != null && wLoader == null)
                     wLoader = new WeatherDataLoader(location, this, this);
@@ -375,7 +379,7 @@ namespace SimpleWeather.Droid.App
                     if (this.View == null)
                         return;
 
-                    Android.Support.V7.Widget.GridLayout panel = (Android.Support.V7.Widget.GridLayout)detailsPanel;
+                    var panel = (Android.Support.V7.Widget.GridLayout)detailsPanel;
 
                     // Minimum width for ea. card
                     int minWidth = 600;
@@ -400,8 +404,10 @@ namespace SimpleWeather.Droid.App
 
                         var layoutParams = new Android.Support.V7.Widget.GridLayout.LayoutParams(
                             Android.Support.V7.Widget.GridLayout.InvokeSpec(currRow, 1.0f),
-                            Android.Support.V7.Widget.GridLayout.InvokeSpec(currCol, 1.0f));
-                        layoutParams.Width = 0;
+                            Android.Support.V7.Widget.GridLayout.InvokeSpec(currCol, 1.0f))
+                        {
+                            Width = 0
+                        };
                         int paddingVert = (int)TypedValue.ApplyDimension(ComplexUnitType.Dip, 10, view.Context.Resources.DisplayMetrics);
                         ViewCompat.SetPaddingRelative(view, paddingVert, 0, paddingVert, 0); // s, t, e, b
                         view.LayoutParameters = layoutParams;
@@ -478,8 +484,8 @@ namespace SimpleWeather.Droid.App
                 var locale = wm.LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
                 // Reset if source || locale is different
-                if (weatherView.WeatherSource != Settings.API ||
-                    wm.SupportsWeatherLocale && weatherView.WeatherLocale != locale)
+                if (weatherView.WeatherSource != Settings.API
+                    || wm.SupportsWeatherLocale && weatherView.WeatherLocale != locale)
                 {
                     await Restore();
                     loaded = true;
@@ -515,7 +521,7 @@ namespace SimpleWeather.Droid.App
             }
         }
 
-        public override async void OnResume()
+        public override void OnResume()
         {
             base.OnResume();
 
@@ -539,24 +545,26 @@ namespace SimpleWeather.Droid.App
             if (this.IsHidden)
                 return;
             else
-                await Resume();
+                Task.Run(async () => await Resume());
 
             // Title
             if (AppCompatActivity != null)
                 AppCompatActivity.SupportActionBar.Title = GetString(Resource.String.title_activity_weather_now);
         }
 
-        public override async void OnHiddenChanged(bool hidden)
+        public override void OnHiddenChanged(bool hidden)
         {
             base.OnHiddenChanged(hidden);
 
             if (!hidden && weatherView != null && this.IsVisible)
             {
                 UpdateNavHeader(weatherView);
-                await Resume();
+                Task.Run(async () => await Resume());
             }
             else if (hidden)
+            {
                 loaded = false;
+            }
         }
 
         public override void OnPause()
@@ -622,7 +630,10 @@ namespace SimpleWeather.Droid.App
 
         private async Task RefreshWeather(bool forceRefresh)
         {
-            refreshLayout.Refreshing = true;
+            AppCompatActivity?.RunOnUiThread(() =>
+            {
+                refreshLayout.Refreshing = true;
+            });
             await wLoader.LoadWeatherData(forceRefresh);
         }
 
@@ -720,7 +731,7 @@ namespace SimpleWeather.Droid.App
                         if (IsLargeTablet(AppCompatActivity))
                         {
                             // Add back panel if not present
-                            Android.Support.V7.Widget.GridLayout panel = (Android.Support.V7.Widget.GridLayout)detailsPanel;
+                            var panel = (Android.Support.V7.Widget.GridLayout)detailsPanel;
                             int childIdx = panel.IndexOfChild(panel.FindViewById(Resource.Id.precipitation_card));
                             if (childIdx < 0)
                                 panel.AddView(precipitationPanel, 0);
@@ -730,11 +741,13 @@ namespace SimpleWeather.Droid.App
                     {
                         if (IsLargeTablet(AppCompatActivity))
                         {
-                            Android.Support.V7.Widget.GridLayout panel = (Android.Support.V7.Widget.GridLayout)detailsPanel;
+                            var panel = (Android.Support.V7.Widget.GridLayout)detailsPanel;
                             panel.RemoveView(panel.FindViewById(Resource.Id.precipitation_card));
                         }
                         else
+                        {
                             precipitationPanel.Visibility = ViewStates.Gone;
+                        }
                     }
 
                     if (Settings.API.Equals(WeatherAPI.OpenWeatherMap) || Settings.API.Equals(WeatherAPI.MetNo))
@@ -758,11 +771,13 @@ namespace SimpleWeather.Droid.App
                 {
                     if (IsLargeTablet(AppCompatActivity))
                     {
-                        Android.Support.V7.Widget.GridLayout panel = (Android.Support.V7.Widget.GridLayout)detailsPanel;
+                        var panel = (Android.Support.V7.Widget.GridLayout)detailsPanel;
                         panel.RemoveView(panel.FindViewById(Resource.Id.precipitation_card));
                     }
                     else
+                    {
                         precipitationPanel.Visibility = ViewStates.Gone;
+                    }
 
                     cloudinessLabel.Visibility = ViewStates.Gone;
                     cloudiness.Visibility = ViewStates.Gone;
@@ -787,7 +802,9 @@ namespace SimpleWeather.Droid.App
                     ResizeAlertPanel();
                 }
                 else
+                {
                     alertButton.Visibility = ViewStates.Invisible;
+                }
 
                 // Fix DetailsLayout
                 AdjustDetailsLayout();
@@ -893,14 +910,17 @@ namespace SimpleWeather.Droid.App
                 }
                 else
                 {
-                    Toast.MakeText(AppCompatActivity, Resource.String.error_retrieve_location, ToastLength.Short).Show();
+                    AppCompatActivity?.RunOnUiThread(() =>
+                    {
+                        Toast.MakeText(AppCompatActivity, Resource.String.error_retrieve_location, ToastLength.Short).Show();
+                    });
                 }
             }
 
             return locationChanged;
         }
 
-        public override async void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
+        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
         {
             switch (requestCode)
             {
@@ -914,7 +934,7 @@ namespace SimpleWeather.Droid.App
                             // permission was granted, yay!
                             // Do the task you need to do.
                             //FetchGeoLocation();
-                            await UpdateLocation();
+                            Task.Run(UpdateLocation);
                         }
                         else
                         {
@@ -925,6 +945,8 @@ namespace SimpleWeather.Droid.App
                         }
                         return;
                     }
+                default:
+                    break;
             }
         }
     }

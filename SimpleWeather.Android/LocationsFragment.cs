@@ -33,10 +33,11 @@ using SimpleWeather.Droid.App.Widgets;
 using SimpleWeather.Droid.Helpers;
 using SimpleWeather.Droid.Adapters;
 using SimpleWeather.Droid.App.Adapters;
+using System.Threading;
 
 namespace SimpleWeather.Droid.App
 {
-    public class LocationsFragment : Fragment, 
+    public class LocationsFragment : Fragment,
         IWeatherLoadedListener, IWeatherErrorListener,
         ActivityCompat.IOnRequestPermissionsResultCallback
     {
@@ -53,6 +54,7 @@ namespace SimpleWeather.Droid.App
         private RecyclerView mRecyclerView;
         private LocationPanelAdapter mAdapter;
         private RecyclerView.LayoutManager mLayoutManager;
+        private ItemTouchHelper mItemTouchHelper;
         private ItemTouchHelperCallback mITHCallback;
         private FloatingActionButton addLocationsButton;
 
@@ -106,6 +108,11 @@ namespace SimpleWeather.Droid.App
             AppCompatActivity = null;
         }
 
+        void IDisposable.Dispose()
+        {
+            mActionModeCallback.Dispose();
+        }
+
         public void OnWeatherLoaded(LocationData location, Weather weather)
         {
             if (weather != null)
@@ -122,7 +129,7 @@ namespace SimpleWeather.Droid.App
                 else
                 {
                     // Update panel weather
-                    LocationPanelViewModel panel = mAdapter.Dataset.First(panelVM => panelVM.LocationData.query.Equals(location.query));
+                    var panel = mAdapter.Dataset.First(panelVM => panelVM.LocationData.query.Equals(location.query));
                     // Just in case
                     if (panel == null)
                     {
@@ -147,7 +154,7 @@ namespace SimpleWeather.Droid.App
                     // Only warn once
                     if (!ErrorCounter[(int)wEx.ErrorStatus])
                     {
-                        Snackbar snackBar = Snackbar.Make(mMainView, wEx.Message, Snackbar.LengthLong);
+                        var snackBar = Snackbar.Make(mMainView, wEx.Message, Snackbar.LengthLong);
                         snackBar.SetAction(Resource.String.action_retry, async (View v) =>
                         {
                             await RefreshLocations();
@@ -289,8 +296,9 @@ namespace SimpleWeather.Droid.App
             mAdapter.ItemLongClick += OnPanelLongClick;
             mAdapter.CollectionChanged += LocationPanels_CollectionChanged;
             mRecyclerView.SetAdapter(mAdapter);
-            new ItemTouchHelper(mITHCallback = new ItemTouchHelperCallback(mAdapter))
-                .AttachToRecyclerView(mRecyclerView);
+            mITHCallback = new ItemTouchHelperCallback(mAdapter);
+            mItemTouchHelper = new ItemTouchHelper(mITHCallback);
+            mItemTouchHelper.AttachToRecyclerView(mRecyclerView);
 
             // Turn off by default
             mITHCallback.SetLongPressDragEnabled(false);
@@ -335,23 +343,28 @@ namespace SimpleWeather.Droid.App
         {
             // Update view on resume
             // ex. If temperature unit changed
-            AppCompatActivity?.SupportActionBar.SetBackgroundDrawable(
-                new ColorDrawable(new Color(ContextCompat.GetColor(AppCompatActivity, Resource.Color.colorPrimary))));
-            if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
+            AppCompatActivity?.RunOnUiThread(() =>
             {
-                AppCompatActivity?.Window.SetStatusBarColor(
-                    new Color(ContextCompat.GetColor(AppCompatActivity, Resource.Color.colorPrimaryDark)));
-            }
+                var colorDrawable = new ColorDrawable(
+                    new Color(ContextCompat.GetColor(AppCompatActivity, Resource.Color.colorPrimary)));
+                AppCompatActivity?.SupportActionBar.SetBackgroundDrawable(colorDrawable);
 
-            if (Settings.FollowGPS)
-            {
-                gpsPanelLayout.Visibility = ViewStates.Visible;
-            }
-            else
-            {
-                gpsPanelViewModel = null;
-                gpsPanelLayout.Visibility = ViewStates.Gone;
-            }
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
+                {
+                    AppCompatActivity?.Window.SetStatusBarColor(
+                        new Color(ContextCompat.GetColor(AppCompatActivity, Resource.Color.colorPrimaryDark)));
+                }
+
+                if (Settings.FollowGPS)
+                {
+                    gpsPanelLayout.Visibility = ViewStates.Visible;
+                }
+                else
+                {
+                    gpsPanelViewModel = null;
+                    gpsPanelLayout.Visibility = ViewStates.Gone;
+                }
+            });
 
             if (mAdapter.ItemCount == 0 || Settings.FollowGPS && gpsPanelViewModel == null)
             {
@@ -366,7 +379,7 @@ namespace SimpleWeather.Droid.App
             }
         }
 
-        public override async void OnResume()
+        public override void OnResume()
         {
             base.OnResume();
 
@@ -374,7 +387,7 @@ namespace SimpleWeather.Droid.App
             if (this.IsHidden)
                 return;
             else
-                await Resume();
+                Task.Run(async () => await Resume());
 
             // Title
             if (AppCompatActivity != null)
@@ -390,13 +403,13 @@ namespace SimpleWeather.Droid.App
             Array.Clear(ErrorCounter, 0, ErrorCounter.Length);
         }
 
-        public override async void OnHiddenChanged(bool hidden)
+        public override void OnHiddenChanged(bool hidden)
         {
             base.OnHiddenChanged(hidden);
 
             if (!hidden && this.IsVisible)
             {
-                await Resume();
+                Task.Run(async () => await Resume());
             }
             else if (hidden)
             {
@@ -421,27 +434,29 @@ namespace SimpleWeather.Droid.App
         {
             // Load up saved locations
             var locations = await Settings.GetFavorites();
-            mAdapter.RemoveAll();
+            AppCompatActivity?.RunOnUiThread(() => mAdapter.RemoveAll());
 
             // Setup saved favorite locations
             await LoadGPSPanel();
             foreach (LocationData location in locations)
             {
-                LocationPanelViewModel panel = new LocationPanelViewModel()
+                var panel = new LocationPanelViewModel()
                 {
                     LocationData = location
                 };
 
-                mAdapter.Add(panel);
+                AppCompatActivity?.RunOnUiThread(() => mAdapter.Add(panel));
             }
 
             foreach (LocationData location in locations)
             {
-                await Task.Run(async () =>
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                Task.Run(async () =>
                 {
                     var wLoader = new WeatherDataLoader(location, this, this);
                     await wLoader.LoadWeatherData(false);
                 });
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             }
         }
 
@@ -450,7 +465,10 @@ namespace SimpleWeather.Droid.App
             // Setup gps panel
             if (Settings.FollowGPS)
             {
-                gpsPanelLayout.Visibility = ViewStates.Visible;
+                AppCompatActivity?.RunOnUiThread(() =>
+                {
+                    gpsPanelLayout.Visibility = ViewStates.Visible;
+                });
                 var locData = await Settings.GetLastGPSLocData();
 
                 if (locData == null || locData.query == null)
@@ -460,17 +478,18 @@ namespace SimpleWeather.Droid.App
 
                 if (locData != null && locData.query != null)
                 {
-                    LocationPanelViewModel panel = new LocationPanelViewModel()
+                    gpsPanelViewModel = new LocationPanelViewModel()
                     {
                         LocationData = locData
                     };
-                    gpsPanelViewModel = panel;
 
-                    await Task.Run(async () =>
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                    Task.Run(async () =>
                     {
                         var wLoader = new WeatherDataLoader(locData, this, this);
                         await wLoader.LoadWeatherData(false);
                     });
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                 }
             }
         }
@@ -493,23 +512,25 @@ namespace SimpleWeather.Droid.App
 
             if (reload)
             {
-                mAdapter.RemoveAll();
+                AppCompatActivity?.RunOnUiThread(() => mAdapter.RemoveAll());
                 await LoadLocations();
             }
             else
             {
-                List<LocationPanelViewModel> dataset = mAdapter.Dataset;
+                var dataset = mAdapter.Dataset;
                 if (gpsPanelViewModel != null)
                     dataset.Add(gpsPanelViewModel);
 
                 foreach (LocationPanelViewModel view in dataset)
                 {
-                    await Task.Run(async () =>
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                    Task.Run(async () =>
                     {
                         var wLoader =
                             new WeatherDataLoader(view.LocationData, this, this);
                         await wLoader.LoadWeatherData(false);
                     });
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                 }
             }
         }
@@ -557,8 +578,11 @@ namespace SimpleWeather.Droid.App
                         if (String.IsNullOrWhiteSpace(view.LocationQuery))
                         {
                             // Stop since there is no valid query
-                            gpsPanelViewModel = null;
-                            gpsPanelLayout.Visibility = ViewStates.Gone;
+                            AppCompatActivity?.RunOnUiThread(() =>
+                            {
+                                gpsPanelViewModel = null;
+                                gpsPanelLayout.Visibility = ViewStates.Gone;
+                            });
                             return null;
                         }
 
@@ -568,16 +592,19 @@ namespace SimpleWeather.Droid.App
                 }
                 else
                 {
-                    Toast.MakeText(AppCompatActivity, Resource.String.error_retrieve_location, ToastLength.Short).Show();
-                    gpsPanelViewModel = null;
-                    gpsPanelLayout.Visibility = ViewStates.Gone;
+                    AppCompatActivity?.RunOnUiThread(() =>
+                    {
+                        Toast.MakeText(AppCompatActivity, Resource.String.error_retrieve_location, ToastLength.Short).Show();
+                        gpsPanelViewModel = null;
+                        gpsPanelLayout.Visibility = ViewStates.Gone;
+                    });
                 }
             }
 
             return locationData;
         }
 
-        public override async void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
+        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
         {
             switch (requestCode)
             {
@@ -590,21 +617,24 @@ namespace SimpleWeather.Droid.App
 
                             // permission was granted, yay!
                             // Do the task you need to do.
-                            var locData = await UpdateLocation();
-                            if (locData != null)
+                            Task.Run(async () =>
                             {
-                                Settings.SaveLastGPSLocData(locData);
-                                await LoadGPSPanel();
+                                var locData = await UpdateLocation();
+                                if (locData != null)
+                                {
+                                    Settings.SaveLastGPSLocData(locData);
+                                    await LoadGPSPanel();
 
-                                App.Context.StartService(
-                                    new Intent(App.Context, typeof(WearableDataListenerService))
-                                        .SetAction(WearableDataListenerService.ACTION_SENDLOCATIONUPDATE));
-                            }
-                            else
-                            {
-                                gpsPanelViewModel = null;
-                                gpsPanelLayout.Visibility = ViewStates.Gone;
-                            }
+                                    App.Context.StartService(
+                                        new Intent(App.Context, typeof(WearableDataListenerService))
+                                            .SetAction(WearableDataListenerService.ACTION_SENDLOCATIONUPDATE));
+                                }
+                                else
+                                {
+                                    gpsPanelViewModel = null;
+                                    gpsPanelLayout.Visibility = ViewStates.Gone;
+                                }
+                            });
                         }
                         else
                         {
@@ -617,6 +647,8 @@ namespace SimpleWeather.Droid.App
                         }
                         return;
                     }
+                default:
+                    break;
             }
         }
 
@@ -777,7 +809,7 @@ namespace SimpleWeather.Droid.App
                     await Settings.SaveWeatherAlerts(location, weather.weather_alerts);
                 await Settings.SaveWeatherData(weather);
 
-                LocationPanelViewModel panel = new LocationPanelViewModel(weather)
+                var panel = new LocationPanelViewModel(weather)
                 {
                     LocationData = location
                 };
@@ -789,7 +821,7 @@ namespace SimpleWeather.Droid.App
                 mAdapter.Add(panel);
 
                 // Update shortcuts
-                await Task.Run(() => Shortcuts.ShortcutCreator.UpdateShortcuts());
+                Task.Run(Shortcuts.ShortcutCreator.UpdateShortcuts);
 
                 // Hide dialog
                 ShowLoading(false);

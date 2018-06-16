@@ -20,7 +20,7 @@ using SimpleWeather.Utils;
 namespace SimpleWeather.Droid.App
 {
     [Service(Enabled = true)]
-    [IntentFilter(new string[] 
+    [IntentFilter(new string[]
     {
         DataApi.ActionDataChanged,
         MessageApi.ActionMessageReceived,
@@ -31,7 +31,7 @@ namespace SimpleWeather.Droid.App
         GoogleApiClient.IOnConnectionFailedListener,
         GoogleApiClient.IConnectionCallbacks
     {
-        private const String TAG = "WearableDataListenerService";
+        private const String TAG = nameof(WearableDataListenerService);
 
         // Actions
         public const String ACTION_SENDSETTINGSUPDATE = "SimpleWeather.Droid.action.SEND_SETTINGS_UPDATE";
@@ -60,31 +60,37 @@ namespace SimpleWeather.Droid.App
                 mGoogleApiClient.Connect();
         }
 
-        public async void OnConnected(Bundle connectionHint)
+        public void OnConnected(Bundle connectionHint)
         {
-            await WearableClass.CapabilityApi.AddCapabilityListenerAsync(
-                mGoogleApiClient,
-                this,
-                WearableHelper.CAPABILITY_WEAR_APP);
-
-            mWearNodesWithApp = await FindWearDevicesWithApp();
-            mAllConnectedNodes = await FindAllWearDevices();
-
-            Loaded = true;
-        }
-
-        public override async void OnDestroy()
-        {
-            if ((mGoogleApiClient != null) && mGoogleApiClient.IsConnected)
+            Task.Run(async () =>
             {
-                await WearableClass.CapabilityApi.RemoveCapabilityListenerAsync(
+                await WearableClass.CapabilityApi.AddCapabilityListenerAsync(
                     mGoogleApiClient,
                     this,
                     WearableHelper.CAPABILITY_WEAR_APP);
 
-                mGoogleApiClient.Disconnect();
-            }
-            Loaded = false;
+                mWearNodesWithApp = await FindWearDevicesWithApp();
+                mAllConnectedNodes = await FindAllWearDevices();
+
+                Loaded = true;
+            });
+        }
+
+        public override void OnDestroy()
+        {
+            Task.Run(async () =>
+            {
+                if ((mGoogleApiClient != null) && mGoogleApiClient.IsConnected)
+                {
+                    await WearableClass.CapabilityApi.RemoveCapabilityListenerAsync(
+                        mGoogleApiClient,
+                        this,
+                        WearableHelper.CAPABILITY_WEAR_APP);
+
+                    mGoogleApiClient.Disconnect();
+                }
+                Loaded = false;
+            });
 
             base.OnDestroy();
         }
@@ -114,11 +120,11 @@ namespace SimpleWeather.Droid.App
             }
             else if (messageEvent.Path.Equals(WearableHelper.SettingsPath))
             {
-                CreateSettingsDataRequest(true);
+                Task.Run(async () => await CreateSettingsDataRequest(true));
             }
             else if (messageEvent.Path.Equals(WearableHelper.LocationPath))
             {
-                CreateLocationDataRequest(true);
+                Task.Run(async () => await CreateLocationDataRequest(true));
             }
             else if (messageEvent.Path.Equals(WearableHelper.WeatherPath))
             {
@@ -128,7 +134,9 @@ namespace SimpleWeather.Droid.App
                     force = BitConverter.ToBoolean(data, 0);
 
                 if (!force)
-                    CreateWeatherDataRequest(true);
+                {
+                    Task.Run(async () => await CreateWeatherDataRequest(true));
+                }
                 else
                 {
                     // Refresh weather data
@@ -142,10 +150,13 @@ namespace SimpleWeather.Droid.App
             }
         }
 
-        public override async void OnCapabilityChanged(ICapabilityInfo capabilityInfo)
+        public override void OnCapabilityChanged(ICapabilityInfo capabilityInfo)
         {
-            mWearNodesWithApp = capabilityInfo.Nodes;
-            mAllConnectedNodes = await FindAllWearDevices();
+            Task.Run(async () =>
+            {
+                mWearNodesWithApp = capabilityInfo.Nodes;
+                mAllConnectedNodes = await FindAllWearDevices();
+            });
         }
 
         [return: GeneratedEnum]
@@ -154,17 +165,17 @@ namespace SimpleWeather.Droid.App
             // Create requests if nodes exist with app support
             if (ACTION_SENDSETTINGSUPDATE.Equals(intent?.Action))
             {
-                CreateSettingsDataRequest(true);
+                Task.Run(async () => await CreateSettingsDataRequest(true));
                 return StartCommandResult.NotSticky;
             }
             else if (ACTION_SENDLOCATIONUPDATE.Equals(intent?.Action))
             {
-                CreateLocationDataRequest(true);
+                Task.Run(async () => await CreateLocationDataRequest(true));
                 return StartCommandResult.NotSticky;
             }
             else if (ACTION_SENDWEATHERUPDATE.Equals(intent?.Action))
             {
-                CreateWeatherDataRequest(true);
+                Task.Run(async () => await CreateWeatherDataRequest(true));
                 return StartCommandResult.NotSticky;
             }
 
@@ -200,7 +211,7 @@ namespace SimpleWeather.Droid.App
             return null;
         }
 
-        private async void CreateSettingsDataRequest(bool urgent)
+        private async Task CreateSettingsDataRequest(bool urgent)
         {
             // Don't send anything unless we're setup
             if (!Settings.WeatherLoaded)
@@ -223,12 +234,12 @@ namespace SimpleWeather.Droid.App
             mapRequest.DataMap.PutLong("update_time", DateTime.UtcNow.Ticks);
             PutDataRequest request = mapRequest.AsPutDataRequest();
             if (urgent) request.SetUrgent();
-            WearableClass.DataApi.PutDataItem(mGoogleApiClient, request);
+            await WearableClass.DataApi.PutDataItem(mGoogleApiClient, request);
 
             Log.Info(TAG, "CreateSettingsDataRequest(): urgent: ", urgent.ToString());
         }
 
-        private async void CreateLocationDataRequest(bool urgent)
+        private async Task CreateLocationDataRequest(bool urgent)
         {
             // Don't send anything unless we're setup
             if (!Settings.WeatherLoaded)
@@ -249,12 +260,12 @@ namespace SimpleWeather.Droid.App
             mapRequest.DataMap.PutLong("update_time", DateTime.UtcNow.Ticks);
             PutDataRequest request = mapRequest.AsPutDataRequest();
             if (urgent) request.SetUrgent();
-            WearableClass.DataApi.PutDataItem(mGoogleApiClient, request);
+            await WearableClass.DataApi.PutDataItem(mGoogleApiClient, request);
 
             Log.Info(TAG, "CreateLocationDataRequest(): urgent: ", urgent.ToString());
         }
 
-        private async void CreateWeatherDataRequest(bool urgent)
+        private async Task CreateWeatherDataRequest(bool urgent)
         {
             // Don't send anything unless we're setup
             if (!Settings.WeatherLoaded)
@@ -305,7 +316,7 @@ namespace SimpleWeather.Droid.App
                 mapRequest.DataMap.PutLong("update_time", weatherData.update_time.UtcTicks);
                 PutDataRequest request = mapRequest.AsPutDataRequest();
                 if (urgent) request.SetUrgent();
-                WearableClass.DataApi.PutDataItem(mGoogleApiClient, request);
+                await WearableClass.DataApi.PutDataItem(mGoogleApiClient, request);
 
                 Log.Info(TAG, "CreateWeatherDataRequest(): urgent: ", urgent.ToString());
             }

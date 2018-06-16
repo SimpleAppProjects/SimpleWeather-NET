@@ -13,23 +13,50 @@ namespace SimpleWeather.Utils
 {
     public static class JSONParser
     {
-        private static JsonSerializerSettings DefaultSettings =
-                new JsonSerializerSettings()
+        private static readonly JsonSerializerSettings DefaultSettings =
+                new JsonSerializerSettings
                 { TypeNameHandling = TypeNameHandling.All };
 
         public static Object Deserializer(String response, Type type)
         {
-            return JsonConvert.DeserializeObject(response, type, DefaultSettings);
+            Object obj = null;
+
+            try
+            {
+                obj = JsonConvert.DeserializeObject(response, type, DefaultSettings);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
+
+            return obj;
         }
 
         public static Object Deserializer(Stream stream, Type type)
         {
-            using (StreamReader sReader = new StreamReader(stream))
-            using (JsonReader reader = new JsonTextReader(sReader))
+            Object obj = null;
+            StreamReader sReader = null;
+            JsonReader reader = null;
+
+            try
             {
-                JsonSerializer serializer = JsonSerializer.Create(DefaultSettings);
-                return serializer.Deserialize(reader, type);
+                sReader = new StreamReader(stream);
+                reader = new JsonTextReader(sReader);
+
+                var serializer = JsonSerializer.Create(DefaultSettings);
+                obj = serializer.Deserialize(reader, type);
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
+            finally
+            {
+                reader?.Close();
+            }
+
+            return obj;
         }
 
         public static T Deserializer<T>(String response)
@@ -39,101 +66,147 @@ namespace SimpleWeather.Utils
 
         public static T Deserializer<T>(Stream stream)
         {
-            using (StreamReader sReader = new StreamReader(stream))
-            using (JsonReader reader = new JsonTextReader(sReader))
+            var obj = default(T);
+            StreamReader sReader = null;
+            JsonReader reader = null;
+
+            try
             {
-                JsonSerializer serializer = JsonSerializer.Create(DefaultSettings);
-                return serializer.Deserialize<T>(reader);
+                sReader = new StreamReader(stream);
+                reader = new JsonTextReader(sReader);
+
+                var serializer = JsonSerializer.Create(DefaultSettings);
+                obj = serializer.Deserialize<T>(reader);
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
+            finally
+            {
+                reader?.Close();
+            }
+
+            return obj;
         }
 
-        public static async Task<Object> DeserializerAsync(String response, Type type)
+        public static Task<Object> DeserializerAsync(String response, Type type)
         {
-            return await Task.Run(() =>
-            {
-                return JsonConvert.DeserializeObject(response, type, DefaultSettings);
-            });
+            return Task.Run(() => JsonConvert.DeserializeObject(response, type, DefaultSettings));
         }
 
-        public static async Task<Object> DeserializerAsync(Stream stream, Type type)
+        public static Task<Object> DeserializerAsync(Stream stream, Type type)
         {
-            return await Task.Run(() =>
+            Object obj = null;
+            StreamReader sReader = null;
+            JsonReader reader = null;
+
+            return Task.Run(() =>
             {
-                using (StreamReader sReader = new StreamReader(stream))
-                using (JsonReader reader = new JsonTextReader(sReader))
+                try
                 {
-                    JsonSerializer serializer = JsonSerializer.Create(DefaultSettings);
-                    return serializer.Deserialize(reader, type);
+                    sReader = new StreamReader(stream);
+                    reader = new JsonTextReader(sReader);
+
+                    var serializer = JsonSerializer.Create(DefaultSettings);
+                    obj = serializer.Deserialize(reader, type);
                 }
-            });
-        }
-
-        public static async Task<T> DeserializerAsync<T>(String response)
-        {
-            return await Task.Run(() =>
-            {
-                return JsonConvert.DeserializeObject<T>(response, DefaultSettings);
-            });
-        }
-
-        public static async Task<T> DeserializerAsync<T>(Stream stream)
-        {
-            return await Task.Run(() =>
-            {
-                using (StreamReader sReader = new StreamReader(stream))
-                using (JsonReader reader = new JsonTextReader(sReader))
+                catch (Exception ex)
                 {
-                    JsonSerializer serializer = JsonSerializer.Create(DefaultSettings);
-                    return serializer.Deserialize<T>(reader);
+                    Console.WriteLine(ex.StackTrace);
                 }
+                finally
+                {
+                    reader?.Close();
+                }
+
+                return obj;
+            });
+        }
+
+        public static Task<T> DeserializerAsync<T>(String response)
+        {
+            return Task.Run(() => JsonConvert.DeserializeObject<T>(response, DefaultSettings));
+        }
+
+        public static Task<T> DeserializerAsync<T>(Stream stream)
+        {
+            var obj = default(T);
+            StreamReader sReader = null;
+            JsonReader reader = null;
+
+            return Task.Run(() =>
+            {
+                try
+                {
+                    sReader = new StreamReader(stream);
+                    reader = new JsonTextReader(sReader);
+
+                    var serializer = JsonSerializer.Create(DefaultSettings);
+                    obj = serializer.Deserialize<T>(reader);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.StackTrace);
+                }
+                finally
+                {
+                    reader?.Close();
+                }
+
+                return obj;
             });
         }
 
 #if WINDOWS_UWP
-        public static async Task<T> DeserializerAsync<T>(StorageFile file)
+        public static Task<T> DeserializerAsync<T>(StorageFile file)
 #elif __ANDROID__
-        public static async Task<T> DeserializerAsync<T>(Java.IO.File file)
+        public static Task<T> DeserializerAsync<T>(Java.IO.File file)
 #endif
         {
-            return await Task.Run(async () =>
+            return Task.Run(async () =>
             {
                 // Wait for file to be free
                 while (FileUtils.IsFileLocked(file))
                 {
-                    await Task.Delay(100);
+                    await Task.Delay(100).ConfigureAwait(false);
                 }
 
-                Stream fStream;
+                Stream fStream = null;
+                StreamReader sReader = null;
+                JsonReader reader = null;
+                var obj = default(T);
 #if __ANDROID__
-                AtomicFile mFile = new AtomicFile(file);
+                var mFile = new AtomicFile(file);
                 try
                 {
                     fStream = mFile.OpenRead();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.StackTrace);
-                    return default(T);
-                }
 #else
                 try
                 {
                     fStream = new FileStream(file.Path, FileMode.Open, FileAccess.Read);
+#endif
+                    sReader = new StreamReader(fStream);
+                    reader = new JsonTextReader(sReader);
+
+                    var serializer = JsonSerializer.Create(DefaultSettings);
+                    obj = serializer.Deserialize<T>(reader);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.StackTrace);
-                    return default(T);
+                    obj = default(T);
                 }
-#endif
-                using (fStream)
-                using (StreamReader sReader = new StreamReader(fStream))
-                using (JsonReader reader = new JsonTextReader(sReader))
+                finally
                 {
-                    JsonSerializer serializer = JsonSerializer.Create(DefaultSettings);
-                    return serializer.Deserialize<T>(reader);
+                    reader?.Close();
+#if __ANDROID__
+                    mFile?.Dispose();
+#endif
                 }
-            }).ConfigureAwait(false);
+
+                return obj;
+            });
         }
 
 #if WINDOWS_UWP
@@ -144,7 +217,7 @@ namespace SimpleWeather.Utils
                 // Wait for file to be free
                 while (FileUtils.IsFileLocked(file))
                 {
-                    await Task.Delay(100);
+                    await Task.Delay(100).ConfigureAwait(false);
                 }
 
                 using (StorageStreamTransaction transaction = await file.OpenTransactedWriteAsync())
@@ -154,9 +227,9 @@ namespace SimpleWeather.Utils
                     // Clear file before writing
                     fStream.SetLength(0);
 
-                    JsonSerializer serializer = JsonSerializer.Create(DefaultSettings);
+                    var serializer = JsonSerializer.Create(DefaultSettings);
                     serializer.Serialize(writer, obj);
-                    await writer.FlushAsync();
+                    await writer.FlushAsync().ConfigureAwait(false);
                     await transaction.CommitAsync();
                 }
             }).ConfigureAwait(false);
@@ -169,38 +242,38 @@ namespace SimpleWeather.Utils
                 // Wait for file to be free
                 while (FileUtils.IsFileLocked(file))
                 {
-                    await Task.Delay(100);
+                    await Task.Delay(100).ConfigureAwait(false);
                 }
 
-                AtomicFile mFile = new AtomicFile(file);
-                Stream fStream;
+                var mFile = new AtomicFile(file);
+                Stream fStream = null;
+                JsonTextWriter writer = null;
 
                 try
                 {
                     fStream = mFile.StartWrite();
-                }
-                catch (Exception ex)
-                {
-                    System.Console.WriteLine(ex.StackTrace);
-                    return;
-                }
 
-                try
-                {
-                    JsonTextWriter writer = new JsonTextWriter(new StreamWriter(fStream))
+                    writer = new JsonTextWriter(new StreamWriter(fStream))
                     {
                         CloseOutput = false,
                     };
 
-                    JsonSerializer serializer = JsonSerializer.Create(DefaultSettings);
+                    var serializer = JsonSerializer.Create(DefaultSettings);
                     serializer.Serialize(writer, obj);
-                    await writer.FlushAsync();
+                    await writer.FlushAsync().ConfigureAwait(false);
                     mFile.FinishWrite(fStream);
                 }
                 catch (Exception ex)
                 {
-                    System.Console.WriteLine(ex.StackTrace);
-                    mFile.FailWrite(fStream);
+                    Console.WriteLine(ex.StackTrace);
+
+                    if (mFile != null && fStream != null)
+                        mFile.FailWrite(fStream);
+                }
+                finally
+                {
+                    mFile?.Dispose();
+                    writer?.Close();
                 }
             }).ConfigureAwait(false);
         }
@@ -211,12 +284,9 @@ namespace SimpleWeather.Utils
             return JsonConvert.SerializeObject(obj, type, DefaultSettings);
         }
 
-        public static async Task<string> SerializerAsync(Object obj, Type type)
+        public static Task<string> SerializerAsync(Object obj, Type type)
         {
-            return await Task.Run(() => 
-            {
-                return JsonConvert.SerializeObject(obj, type, DefaultSettings);
-            });
+            return Task.Run(() => JsonConvert.SerializeObject(obj, type, DefaultSettings));
         }
     }
 
@@ -224,18 +294,15 @@ namespace SimpleWeather.Utils
     {
         public override bool CanConvert(Type objectType)
         {
-            MethodInfo fromjson = objectType.GetMethod("FromJson", new Type[] { typeof(JsonReader) });
-            MethodInfo tojson = objectType.GetMethod("ToJson");
+            var fromjson = objectType.GetMethod("FromJson", new Type[] { typeof(JsonReader) });
+            var tojson = objectType.GetMethod("ToJson");
 
-            if (fromjson != null && tojson != null && fromjson.IsStatic && fromjson.ReturnType == objectType)
-                return true;
-            else
-                return false;
+            return fromjson != null && tojson != null && fromjson.IsStatic && fromjson.ReturnType == objectType;
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            MethodInfo fromjson = objectType.GetMethod("FromJson", new Type[] { typeof(JsonReader) });
+            var fromjson = objectType.GetMethod("FromJson", new Type[] { typeof(JsonReader) });
             if (fromjson != null && fromjson.IsStatic && fromjson.ReturnType == objectType)
             {
                 object obj = null;
@@ -245,20 +312,19 @@ namespace SimpleWeather.Utils
                 }
                 catch (Exception ex)
                 {
-                    System.Console.WriteLine(ex.StackTrace);
+                    Console.WriteLine(ex.StackTrace);
                 }
 
                 if (obj != null)
                     return obj;
             }
 
-            throw new JsonSerializationException(string.Format("{0} type does not implement FromJson(string) method",
-                objectType.Name));
+            throw new JsonSerializationException(string.Format("{0} type does not implement FromJson(string) method", objectType.Name));
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            MethodInfo tojson = value.GetType().GetMethod("ToJson");
+            var tojson = value.GetType().GetMethod("ToJson");
             if (tojson != null)
                 writer.WriteValue((string)tojson.Invoke(value, null));
         }

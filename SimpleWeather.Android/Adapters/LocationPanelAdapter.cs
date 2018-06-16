@@ -36,10 +36,10 @@ namespace SimpleWeather.Droid.App.Adapters
         // Provide a reference to the views for each data item
         // Complex data items may need more than one view per item, and
         // you provide access to all the views for a data item in a view holder
-        class ViewHolder : RecyclerView.ViewHolder
+        private class ViewHolder : RecyclerView.ViewHolder
         {
-            public LocationPanel mLocView;
             public ImageView mBgImageView;
+            public LocationPanel mLocView;
             public ViewHolder(LocationPanel v,
                 Action<RecyclerClickEventArgs> clickListener, Action<RecyclerClickEventArgs> longClickListener)
                 : base(v)
@@ -47,8 +47,8 @@ namespace SimpleWeather.Droid.App.Adapters
                 mLocView = v;
                 mBgImageView = v.FindViewById<ImageView>(Resource.Id.image_view);
 
-                mLocView.Click += (sender, e) => clickListener(new RecyclerClickEventArgs { View = mLocView, Position = AdapterPosition });
-                mLocView.LongClick += (sender, e) => longClickListener(new RecyclerClickEventArgs { View = mLocView, Position = AdapterPosition });
+                mLocView.Click += (sender, e) => clickListener?.Invoke(new RecyclerClickEventArgs { View = mLocView, Position = AdapterPosition });
+                mLocView.LongClick += (sender, e) => longClickListener?.Invoke(new RecyclerClickEventArgs { View = mLocView, Position = AdapterPosition });
             }
         }
 
@@ -117,7 +117,7 @@ namespace SimpleWeather.Droid.App.Adapters
             return mDataset[position];
         }
 
-        private async void RemoveLocation(int position)
+        private async Task RemoveLocation(int position)
         {
             // Remove location from list
             await Settings.DeleteLocation(mDataset[position].LocationData.query);
@@ -140,8 +140,8 @@ namespace SimpleWeather.Droid.App.Adapters
 
         public void OnItemDismiss(int position)
         {
-            RemoveLocation(position);
-            Task.Run(() => Shortcuts.ShortcutCreator.UpdateShortcuts());
+            Task.Run(async () => await RemoveLocation(position))
+                .ContinueWith((t) => Task.Run(Shortcuts.ShortcutCreator.UpdateShortcuts));
         }
 
         protected void OnClick(RecyclerClickEventArgs args) => ItemClick?.Invoke(this, args);

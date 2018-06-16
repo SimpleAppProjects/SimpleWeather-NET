@@ -60,7 +60,7 @@ namespace SimpleWeather.UWP
                 }
                 else
                 {
-                    LocationPanelViewModel panelView = LocationPanels.First(panelVM => panelVM.LocationData.query == location.query);
+                    var panelView = LocationPanels.First(panelVM => panelVM.LocationData.query == location.query);
                     // Just in case
                     if (panelView == null)
                     {
@@ -138,12 +138,12 @@ namespace SimpleWeather.UWP
 
         private async void LocationsPage_Resuming(object sender, object e)
         {
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => { await RefreshLocations(); });
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => await RefreshLocations());
         }
 
         public void Dispose()
         {
-            ((IDisposable)cts).Dispose();
+            cts.Dispose();
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -176,15 +176,17 @@ namespace SimpleWeather.UWP
             }
 
             if (Settings.FollowGPS)
+            {
                 GPSPanel.Visibility = Visibility.Visible;
+            }
             else
             {
                 GPSPanelViewModel[0] = null;
                 GPSPanel.Visibility = Visibility.Collapsed;
             }
 
-            bool reload = (!Settings.FollowGPS && LocationPanels.Count == 0) ||
-                (Settings.FollowGPS && GPSPanelViewModel.First() == null);
+            bool reload = (!Settings.FollowGPS && LocationPanels.Count == 0)
+                || (Settings.FollowGPS && GPSPanelViewModel.First() == null);
 
             if (reload || e.NavigationMode == NavigationMode.New)
             {
@@ -243,7 +245,7 @@ namespace SimpleWeather.UWP
             await LoadGPSPanel();
             foreach (LocationData location in locations)
             {
-                LocationPanelViewModel panel = new LocationPanelViewModel()
+                var panel = new LocationPanelViewModel()
                 {
                     // Save index to tag (to easily retreive)
                     LocationData = location
@@ -276,7 +278,7 @@ namespace SimpleWeather.UWP
 
                 if (locData != null && locData.query != null)
                 {
-                    LocationPanelViewModel panel = new LocationPanelViewModel()
+                    var panel = new LocationPanelViewModel()
                     {
                         LocationData = locData
                     };
@@ -296,12 +298,14 @@ namespace SimpleWeather.UWP
             // Reload all panels if needed
             var locations = await Settings.GetLocationData();
             var homeData = await Settings.GetLastGPSLocData();
-            bool reload = (locations.Count != LocationPanels.Count || Settings.FollowGPS && (GPSPanelViewModel.First() == null));
+            bool reload = (locations.Count != LocationPanels.Count || (Settings.FollowGPS && (GPSPanelViewModel.First() == null)));
 
             // Reload if weather source differs
-            if ((GPSPanelViewModel.First() != null && GPSPanelViewModel.First().WeatherSource != Settings.API) ||
-                (LocationPanels.Count >= 1 && LocationPanels[0].WeatherSource != Settings.API))
+            if ((GPSPanelViewModel.First() != null && GPSPanelViewModel.First().WeatherSource != Settings.API)
+                || (LocationPanels.Count >= 1 && LocationPanels[0].WeatherSource != Settings.API))
+            {
                 reload = true;
+            }
 
             // Reload if panel queries dont match
             if (!reload && (GPSPanelViewModel.First() != null && homeData.query != GPSPanelViewModel.First().LocationData.query))
@@ -314,14 +318,13 @@ namespace SimpleWeather.UWP
             }
             else
             {
-                List<LocationPanelViewModel> dataset = LocationPanels.ToList();
+                var dataset = LocationPanels.ToList();
                 if (GPSPanelViewModel.First() != null)
                     dataset.Add(GPSPanelViewModel.First());
 
                 foreach (LocationPanelViewModel view in dataset)
                 {
-                    WeatherDataLoader wLoader =
-                        new WeatherDataLoader(view.LocationData, this, this);
+                    var wLoader = new WeatherDataLoader(view.LocationData, this, this);
                     await wLoader.LoadWeatherData(false);
                 }
             }
@@ -344,7 +347,7 @@ namespace SimpleWeather.UWP
                 }
                 catch (Exception)
                 {
-                    GeolocationAccessStatus geoStatus = GeolocationAccessStatus.Unspecified;
+                    var geoStatus = GeolocationAccessStatus.Unspecified;
 
                     try
                     {
@@ -482,7 +485,7 @@ namespace SimpleWeather.UWP
             if (args.ChosenSuggestion != null)
             {
                 // User selected an item from the suggestion list, take an action on it here.
-                LocationQueryViewModel theChosenOne = args.ChosenSuggestion as LocationQueryViewModel;
+                var theChosenOne = args.ChosenSuggestion as LocationQueryViewModel;
 
                 if (!String.IsNullOrEmpty(theChosenOne.LocationQuery))
                     query_vm = theChosenOne;
@@ -492,7 +495,7 @@ namespace SimpleWeather.UWP
             else if (!String.IsNullOrEmpty(args.QueryText))
             {
                 // Use args.QueryText to determine what to do.
-                LocationQueryViewModel result = (await wm.GetLocations(args.QueryText)).First();
+                var result = (await wm.GetLocations(args.QueryText)).First();
 
                 if (result != null && !String.IsNullOrWhiteSpace(result.LocationQuery))
                 {
@@ -500,7 +503,9 @@ namespace SimpleWeather.UWP
                     query_vm = result;
                 }
                 else
+                {
                     query_vm = new LocationQueryViewModel();
+                }
             }
             else if (String.IsNullOrWhiteSpace(args.QueryText))
             {
@@ -549,7 +554,7 @@ namespace SimpleWeather.UWP
                 LoadingRing.IsActive = false;
                 return;
             }
-            Weather weather = await Settings.GetWeatherData(location.query);
+            var weather = await Settings.GetWeatherData(location.query);
             if (weather == null)
             {
                 try
@@ -578,7 +583,7 @@ namespace SimpleWeather.UWP
                 await Settings.SaveWeatherAlerts(location, weather.weather_alerts);
             await Settings.SaveWeatherData(weather);
 
-            LocationPanelViewModel panelView = new LocationPanelViewModel(weather)
+            var panelView = new LocationPanelViewModel(weather)
             {
                 LocationData = location
             };
@@ -644,7 +649,7 @@ namespace SimpleWeather.UWP
 
             if (!EditMode && HomeChanged)
             {
-                Task.Run(() => WeatherUpdateBackgroundTask.RequestAppTrigger());
+                Task.Run(WeatherUpdateBackgroundTask.RequestAppTrigger);
             }
 
             DataChanged = false;

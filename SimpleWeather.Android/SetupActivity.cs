@@ -31,7 +31,7 @@ namespace SimpleWeather.Droid.App
     [Android.App.Activity(
         Theme = "@style/SetupTheme",
         WindowSoftInputMode = SoftInput.StateHidden | SoftInput.AdjustPan)]
-    public class SetupActivity : AppCompatActivity, ActivityCompat.IOnRequestPermissionsResultCallback
+    public class SetupActivity : AppCompatActivity, IDisposable
     {
         private LocationSearchFragment mSearchFragment;
         private Android.Support.V7.View.ActionMode mActionMode;
@@ -57,6 +57,12 @@ namespace SimpleWeather.Droid.App
 
         // Widget id for ConfigurationActivity
         private int mAppWidgetId = AppWidgetManager.InvalidAppwidgetId;
+
+        void IDisposable.Dispose()
+        {
+            mActionModeCallback.Dispose();
+            GC.SuppressFinalize(this);
+        }
 
         private void CtsCancel()
         {
@@ -306,7 +312,7 @@ namespace SimpleWeather.Droid.App
                     EnableControls(true);
                     return;
                 }
-                WeatherData.Weather weather = await Settings.GetWeatherData(location.query);
+                var weather = await Settings.GetWeatherData(location.query);
                 if (weather == null)
                 {
                     try
@@ -423,7 +429,7 @@ namespace SimpleWeather.Droid.App
             }
         }
 
-        public override async void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
+        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
         {
             switch (requestCode)
             {
@@ -435,7 +441,7 @@ namespace SimpleWeather.Droid.App
                         {
                             // permission was granted, yay!
                             // Do the task you need to do.
-                            await FetchGeoLocation();
+                            Task.Run(async () => await FetchGeoLocation());
                         }
                         else
                         {
@@ -446,14 +452,16 @@ namespace SimpleWeather.Droid.App
                         }
                         return;
                     }
+                default:
+                    break;
             }
         }
 
         public override void OnAttachFragment(Fragment fragment)
         {
-            if (fragment is LocationSearchFragment)
+            if (fragment is LocationSearchFragment locationSearchFragment)
             {
-                mSearchFragment = (LocationSearchFragment)fragment;
+                mSearchFragment = locationSearchFragment;
                 SetupSearchUi();
             }
         }
@@ -478,8 +486,7 @@ namespace SimpleWeather.Droid.App
                 return;
             }
             mSearchFragment.UserVisibleHint = true;
-            FragmentTransaction transaction = SupportFragmentManager
-                    .BeginTransaction();
+            var transaction = SupportFragmentManager.BeginTransaction();
             transaction.Show(mSearchFragment);
             transaction.CommitAllowingStateLoss();
             FragmentManager.ExecutePendingTransactions();
@@ -501,7 +508,7 @@ namespace SimpleWeather.Droid.App
             {
                 return;
             }
-            FragmentTransaction ft = SupportFragmentManager.BeginTransaction();
+            var ft = SupportFragmentManager.BeginTransaction();
             Fragment searchFragment = new LocationSearchFragment()
             {
                 UserVisibleHint = false
@@ -591,8 +598,7 @@ namespace SimpleWeather.Droid.App
             {
                 mSearchFragment.UserVisibleHint = false;
 
-                FragmentTransaction transaction = SupportFragmentManager
-                        .BeginTransaction();
+                var transaction = SupportFragmentManager.BeginTransaction();
                 transaction.Remove(mSearchFragment);
                 mSearchFragment = null;
                 transaction.CommitAllowingStateLoss();
@@ -606,15 +612,13 @@ namespace SimpleWeather.Droid.App
 
         private void ShowInputMethod(View view)
         {
-            InputMethodManager imm = (InputMethodManager)GetSystemService(
-                    Context.InputMethodService);
+            var imm = (InputMethodManager)GetSystemService(Context.InputMethodService);
             imm.ToggleSoftInput(0, HideSoftInputFlags.NotAlways);
         }
 
         private void HideInputMethod(View view)
         {
-            InputMethodManager imm = (InputMethodManager)GetSystemService(
-                    Context.InputMethodService);
+            var imm = (InputMethodManager)GetSystemService(Context.InputMethodService);
             if (imm != null && view != null)
             {
                 imm.HideSoftInputFromWindow(view.WindowToken, 0);

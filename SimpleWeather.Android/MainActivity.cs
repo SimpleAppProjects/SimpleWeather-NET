@@ -22,7 +22,7 @@ namespace SimpleWeather.Droid.App
         ClearTaskOnLaunch = true, FinishOnTaskLaunch = true)]
     public class MainActivity : AppCompatActivity, NavigationView.IOnNavigationItemSelectedListener
     {
-        protected override async void OnCreate(Bundle savedInstanceState)
+        protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.activity_main);
@@ -86,25 +86,27 @@ namespace SimpleWeather.Droid.App
 
             if ((bool)Intent?.HasExtra("shortcut-data"))
             {
-                var locData = LocationData.FromJson(
-                    new Newtonsoft.Json.JsonTextReader(
-                        new System.IO.StringReader(Intent.GetStringExtra("shortcut-data"))));
+                using (var jsonTextReader = new Newtonsoft.Json.JsonTextReader(
+                        new System.IO.StringReader(Intent.GetStringExtra("shortcut-data"))))
+                {
+                    var locData = LocationData.FromJson(jsonTextReader);
 
-                // Navigate to WeatherNowFragment
-                Fragment newFragment = WeatherNowFragment.NewInstance(locData);
+                    // Navigate to WeatherNowFragment
+                    Fragment newFragment = WeatherNowFragment.NewInstance(locData);
 
-                SupportFragmentManager.BeginTransaction()
-                    .Replace(Resource.Id.fragment_container, newFragment, "shortcut")
-                    .Commit();
+                    SupportFragmentManager.BeginTransaction()
+                        .Replace(Resource.Id.fragment_container, newFragment, "shortcut")
+                        .Commit();
 
-                // Disable navigation
-                toggle.DrawerIndicatorEnabled = false;
-                drawer.SetDrawerLockMode(DrawerLayout.LockModeLockedClosed);
+                    // Disable navigation
+                    toggle.DrawerIndicatorEnabled = false;
+                    drawer.SetDrawerLockMode(DrawerLayout.LockModeLockedClosed);
+                }
             }
 
             navigationView.SetCheckedItem(Resource.Id.nav_weathernow);
 
-            await Task.Run(() => Shortcuts.ShortcutCreator.UpdateShortcuts());
+            Task.Run(Shortcuts.ShortcutCreator.UpdateShortcuts);
         }
 
         public override void OnBackPressed()

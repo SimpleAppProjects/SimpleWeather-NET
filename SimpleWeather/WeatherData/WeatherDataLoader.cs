@@ -35,7 +35,7 @@ namespace SimpleWeather.WeatherData
             this.location = location;
 
             if (this.location == null)
-                throw new ArgumentNullException("location");
+                throw new ArgumentNullException(nameof(location));
         }
 
         public WeatherDataLoader(LocationData location, IWeatherLoadedListener listener)
@@ -160,8 +160,8 @@ namespace SimpleWeather.WeatherData
             {
                 try
                 {
-                    if (weather != null && weather.source != Settings.API ||
-                        weather == null && location != null && location.source != Settings.API)
+                    if ((weather != null && weather.source != Settings.API)
+                        || (weather == null && location != null && location.source != Settings.API))
                     {
                         // Update location query and source for new API
                         string oldKey = location.query;
@@ -194,7 +194,7 @@ namespace SimpleWeather.WeatherData
                         // Update tile id for location
                         if (SecondaryTileUtils.Exists(oldKey))
                         {
-                            SecondaryTileUtils.UpdateTileId(oldKey, location.query);
+                            await SecondaryTileUtils.UpdateTileId(oldKey, location.query);
                         }
 #elif __ANDROID__ && !__ANDROID_WEAR__
                         if (WidgetUtils.Exists(oldKey))
@@ -239,13 +239,11 @@ namespace SimpleWeather.WeatherData
 #endif
                 var locale = wm.LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
-                bool isValid = weather == null || !weather.IsValid() || weather.source != Settings.API;
-                if (wm.SupportsWeatherLocale && !isValid)
-                    isValid = weather.locale != locale;
+                bool isInvalid = weather == null || !weather.IsValid() || weather.source != Settings.API;
+                if (wm.SupportsWeatherLocale && !isInvalid)
+                    isInvalid = weather.locale != locale;
 
-                if (isValid) return false;
-
-                return true;
+                return !isInvalid;
             }
             else
                 return await LoadSavedWeatherData();
@@ -289,10 +287,7 @@ namespace SimpleWeather.WeatherData
             DateTimeOffset updateTime = weather.update_time;
 
             TimeSpan span = DateTimeOffset.Now - updateTime;
-            if (span.TotalMinutes < ttl)
-                return true;
-            else
-                return false;
+            return span.TotalMinutes < ttl;
         }
 
         private async Task SaveWeatherData()

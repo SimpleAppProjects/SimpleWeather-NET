@@ -46,7 +46,7 @@ namespace SimpleWeather.UWP
         Geolocator geolocal = null;
         Geoposition geoPos = null;
 
-        public async void OnWeatherLoaded(LocationData location, Weather weather)
+        public void OnWeatherLoaded(LocationData location, Weather weather)
         {
             // Save index before update
             int index = TextForecastControl.SelectedIndex;
@@ -61,7 +61,10 @@ namespace SimpleWeather.UWP
                     if (weather.weather_alerts != null && weather.weather_alerts.Count > 0)
                     {
                         // Alerts are posted to the user here. Set them as notified.
-                        await WeatherAlertHandler.SetasNotified(location, weather.weather_alerts);
+                        Task.Run(async () =>
+                        {
+                            await WeatherAlertHandler.SetasNotified(location, weather.weather_alerts);
+                        });
                     }
 
                     // Show/Hide Alert panel
@@ -69,7 +72,7 @@ namespace SimpleWeather.UWP
                     {
                         FrameworkElement alertButton = AlertButton;
                         if (alertButton == null)
-                            alertButton = FindName("AlertButton") as FrameworkElement;
+                            alertButton = FindName(nameof(AlertButton)) as FrameworkElement;
 
                         ResizeAlertPanel();
                         alertButton.Visibility = Visibility.Visible;
@@ -89,11 +92,11 @@ namespace SimpleWeather.UWP
                 }
 
                 // Update home tile if it hasn't been already
-                if (Settings.HomeData.Equals(location) && 
-                    (TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval) ||
-                    !WeatherTileCreator.TileUpdated)
+                if (Settings.HomeData.Equals(location)
+                    && (TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval)
+                    || !WeatherTileCreator.TileUpdated)
                 {
-                    await WeatherUpdateBackgroundTask.RequestAppTrigger();
+                    Task.Run(async () => await WeatherUpdateBackgroundTask.RequestAppTrigger());
                 }
                 else if (SecondaryTileUtils.Exists(location.query))
                 {
@@ -160,7 +163,7 @@ namespace SimpleWeather.UWP
 
                     FrameworkElement cloudinessItem = CloudinessItem;
                     if (cloudinessItem == null)
-                        cloudinessItem = FindName("CloudinessItem") as FrameworkElement;
+                        cloudinessItem = FindName(nameof(CloudinessItem)) as FrameworkElement;
 
                     if (cloudinessItem != null && !AtmospherePanel.Children.Contains(cloudinessItem))
                         AtmospherePanel.Children.Insert(2, cloudinessItem);
@@ -169,7 +172,7 @@ namespace SimpleWeather.UWP
                 {
                     FrameworkElement chanceItem = ChanceItem;
                     if (chanceItem == null)
-                        chanceItem = FindName("ChanceItem") as FrameworkElement;
+                        chanceItem = FindName(nameof(ChanceItem)) as FrameworkElement;
 
                     if (chanceItem != null && !PrecipitationPanel.Children.Contains(chanceItem))
                         PrecipitationPanel.Children.Insert(2, chanceItem);
@@ -202,7 +205,7 @@ namespace SimpleWeather.UWP
                     Snackbar snackBar = Snackbar.Make(Content as Grid, wEx.Message, SnackbarDuration.Long);
                     snackBar.SetAction(App.ResLoader.GetString("Action_Retry"), () =>
                     {
-                        RefreshWeather(false);
+                        Task.Run(async () => await RefreshWeather(false));
                     });
                     snackBar.Show();
                     break;
@@ -445,7 +448,7 @@ namespace SimpleWeather.UWP
                     wLoader = new WeatherDataLoader(location, this, this);
                 }
 
-                Restore();
+                await Restore();
             }
             else
             {
@@ -490,7 +493,9 @@ namespace SimpleWeather.UWP
                     }
                 }
                 else
-                    Restore();
+                {
+                    await Restore();
+                }
             }
         }
 
@@ -511,7 +516,7 @@ namespace SimpleWeather.UWP
                 {
                     // Setup loader from updated location
                     wLoader = new WeatherDataLoader(location, this, this);
-                    RefreshWeather(false);
+                    await RefreshWeather(false);
                 }
                 else
                 {
@@ -520,7 +525,9 @@ namespace SimpleWeather.UWP
                         ttl = Settings.DefaultInterval;
                     TimeSpan span = DateTimeOffset.Now - weather.update_time;
                     if (span.TotalMinutes > ttl)
-                        RefreshWeather(false);
+                    {
+                        await RefreshWeather(false);
+                    }
                     else
                     {
                         WeatherView.UpdateView(wLoader.GetWeather());
@@ -548,7 +555,7 @@ namespace SimpleWeather.UWP
             TextForecastControl.SelectedIndex = index;
         }
 
-        private async void Restore()
+        private async Task Restore()
         {
             bool forceRefresh = false;
 
@@ -596,7 +603,7 @@ namespace SimpleWeather.UWP
             CheckTiles();
 
             // Load up weather data
-            RefreshWeather(forceRefresh);
+            await RefreshWeather(forceRefresh);
         }
 
         private async Task<bool> UpdateLocation()
@@ -613,7 +620,7 @@ namespace SimpleWeather.UWP
                 }
                 catch (Exception)
                 {
-                    GeolocationAccessStatus geoStatus = GeolocationAccessStatus.Unspecified;
+                    var geoStatus = GeolocationAccessStatus.Unspecified;
 
                     try
                     {
@@ -646,14 +653,14 @@ namespace SimpleWeather.UWP
                     LocationData lastGPSLocData = await Settings.GetLastGPSLocData();
 
                     // Check previous location difference
-                    if (lastGPSLocData.query != null &&
-                        geoPos != null && ConversionMethods.CalculateGeopositionDistance(geoPos, newGeoPos) < geolocal.MovementThreshold)
+                    if (lastGPSLocData.query != null
+                        && geoPos != null && ConversionMethods.CalculateGeopositionDistance(geoPos, newGeoPos) < geolocal.MovementThreshold)
                     {
                         return false;
                     }
 
-                    if (lastGPSLocData.query != null && 
-                        Math.Abs(ConversionMethods.CalculateHaversine(lastGPSLocData.latitude, lastGPSLocData.longitude,
+                    if (lastGPSLocData.query != null
+                        && Math.Abs(ConversionMethods.CalculateHaversine(lastGPSLocData.latitude, lastGPSLocData.longitude,
                         newGeoPos.Coordinate.Point.Position.Latitude, newGeoPos.Coordinate.Point.Position.Longitude)) < geolocal.MovementThreshold)
                     {
                         return false;
@@ -685,7 +692,7 @@ namespace SimpleWeather.UWP
                     // Update tile id for location
                     if (oldkey != null && SecondaryTileUtils.Exists(oldkey))
                     {
-                        SecondaryTileUtils.UpdateTileId(oldkey, lastGPSLocData.query);
+                        await SecondaryTileUtils.UpdateTileId(oldkey, lastGPSLocData.query);
                     }
 
                     location = lastGPSLocData;
@@ -703,10 +710,10 @@ namespace SimpleWeather.UWP
                 // Setup loader from updated location
                 wLoader = new WeatherDataLoader(location, this, this);
 
-            RefreshWeather(true);
+            await RefreshWeather(true);
         }
 
-        private async void RefreshWeather(bool forceRefresh)
+        private async Task RefreshWeather(bool forceRefresh)
         {
             LoadingRing.IsActive = true;
             await wLoader.LoadWeatherData(forceRefresh);
@@ -714,9 +721,9 @@ namespace SimpleWeather.UWP
 
         private void LeftButton_Click(object sender, RoutedEventArgs e)
         {
-            var controlName = (sender as FrameworkElement).Name;
+            var controlName = (sender as FrameworkElement)?.Name;
 
-            if (controlName.Contains("Hourly"))
+            if ((bool)controlName?.Contains("Hourly"))
                 ScrollLeft(HourlyForecastViewer);
             else
                 ScrollLeft(ForecastViewer);
@@ -724,9 +731,9 @@ namespace SimpleWeather.UWP
 
         private void RightButton_Click(object sender, RoutedEventArgs e)
         {
-            var controlName = (sender as FrameworkElement).Name;
+            var controlName = (sender as FrameworkElement)?.Name;
 
-            if (controlName.Contains("Hourly"))
+            if ((bool)controlName?.Contains("Hourly"))
                 ScrollRight(HourlyForecastViewer);
             else
                 ScrollRight(ForecastViewer);
@@ -831,12 +838,12 @@ namespace SimpleWeather.UWP
             }
         }
 
-        private void ScrollLeft(ScrollViewer viewer)
+        private static void ScrollLeft(ScrollViewer viewer)
         {
             viewer.ChangeView(viewer.HorizontalOffset - viewer.ActualWidth, null, null);
         }
 
-        private void ScrollRight(ScrollViewer viewer)
+        private static void ScrollRight(ScrollViewer viewer)
         {
             viewer.ChangeView(viewer.HorizontalOffset + viewer.ActualWidth, null, null);
         }
@@ -915,7 +922,7 @@ namespace SimpleWeather.UWP
             {
                 // Initialize the tile with required arguments
                 var tileID = DateTime.Now.Ticks.ToString();
-                SecondaryTile tile = new SecondaryTile(
+                var tile = new SecondaryTile(
                     tileID,
                     "SimpleWeather",
                     "action=view-weather&query=" + location.query,
@@ -942,7 +949,7 @@ namespace SimpleWeather.UWP
                 {
                     // Update tile with notifications
                     SecondaryTileUtils.AddTileId(location.query, tileID);
-                    WeatherTileCreator.TileUpdater(location);
+                    await WeatherTileCreator.TileUpdater(location);
                     await tile.UpdateAsync();
                 }
 

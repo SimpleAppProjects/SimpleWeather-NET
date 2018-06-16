@@ -37,7 +37,7 @@ namespace SimpleWeather.Droid.Wear
         GoogleApiClient.IOnConnectionFailedListener,
         GoogleApiClient.IConnectionCallbacks
     {
-        private const String TAG = "WearableDataListenerService";
+        private const String TAG = nameof(WearableDataListenerService);
 
         // Actions
         public const String ACTION_OPENONPHONE = "SimpleWeather.Droid.Wear.action.OPEN_APP_ON_PHONE";
@@ -77,43 +77,49 @@ namespace SimpleWeather.Droid.Wear
                 mGoogleApiClient.Connect();
         }
 
-        public async void OnConnected(Bundle connectionHint)
+        public void OnConnected(Bundle connectionHint)
         {
-            await WearableClass.CapabilityApi.AddCapabilityListenerAsync(
-                mGoogleApiClient,
-                this,
-                WearableHelper.CAPABILITY_PHONE_APP);
-            await WearableClass.DataApi.AddListenerAsync(mGoogleApiClient, this);
-            await WearableClass.MessageApi.AddListenerAsync(mGoogleApiClient, this);
-
-            mPhoneNodeWithApp = await CheckIfPhoneHasApp();
-
-            if (mPhoneNodeWithApp == null)
-                mConnectionStatus = WearConnectionStatus.AppNotInstalled;
-            else
-                mConnectionStatus = WearConnectionStatus.Connected;
-
-            LocalBroadcastManager.GetInstance(this)
-                .SendBroadcast(new Intent(ACTION_UPDATECONNECTIONSTATUS)
-                    .PutExtra(EXTRA_CONNECTIONSTATUS, (int)mConnectionStatus));
-
-            Loaded = true;
-        }
-
-        public override async void OnDestroy()
-        {
-            if ((mGoogleApiClient != null) && mGoogleApiClient.IsConnected)
+            Task.Run(async () =>
             {
-                await WearableClass.CapabilityApi.RemoveCapabilityListenerAsync(
+                await WearableClass.CapabilityApi.AddCapabilityListenerAsync(
                     mGoogleApiClient,
                     this,
                     WearableHelper.CAPABILITY_PHONE_APP);
-                await WearableClass.DataApi.RemoveListenerAsync(mGoogleApiClient, this);
-                await WearableClass.MessageApi.RemoveListenerAsync(mGoogleApiClient, this);
+                await WearableClass.DataApi.AddListenerAsync(mGoogleApiClient, this);
+                await WearableClass.MessageApi.AddListenerAsync(mGoogleApiClient, this);
 
-                mGoogleApiClient.Disconnect();
-            }
-            Loaded = false;
+                mPhoneNodeWithApp = await CheckIfPhoneHasApp();
+
+                if (mPhoneNodeWithApp == null)
+                    mConnectionStatus = WearConnectionStatus.AppNotInstalled;
+                else
+                    mConnectionStatus = WearConnectionStatus.Connected;
+
+                LocalBroadcastManager.GetInstance(this)
+                    .SendBroadcast(new Intent(ACTION_UPDATECONNECTIONSTATUS)
+                        .PutExtra(EXTRA_CONNECTIONSTATUS, (int)mConnectionStatus));
+
+                Loaded = true;
+            });
+        }
+
+        public override void OnDestroy()
+        {
+            Task.Run(async () =>
+            {
+                if ((mGoogleApiClient != null) && mGoogleApiClient.IsConnected)
+                {
+                    await WearableClass.CapabilityApi.RemoveCapabilityListenerAsync(
+                        mGoogleApiClient,
+                        this,
+                        WearableHelper.CAPABILITY_PHONE_APP);
+                    await WearableClass.DataApi.RemoveListenerAsync(mGoogleApiClient, this);
+                    await WearableClass.MessageApi.RemoveListenerAsync(mGoogleApiClient, this);
+
+                    mGoogleApiClient.Disconnect();
+                }
+                Loaded = false;
+            });
 
             base.OnDestroy();
         }
@@ -160,7 +166,7 @@ namespace SimpleWeather.Droid.Wear
                         else if (item.Uri.Path.CompareTo(WearableHelper.WeatherPath) == 0)
                         {
                             DataMap dataMap = DataMapItem.FromDataItem(item).DataMap;
-                            UpdateWeather(dataMap);
+                            Task.Run(async () => await UpdateWeather(dataMap));
                         }
                     }
                 }
@@ -194,9 +200,13 @@ namespace SimpleWeather.Droid.Wear
             mPhoneNodeWithApp = PickBestNodeId(capabilityInfo.Nodes);
 
             if (mPhoneNodeWithApp == null)
+            {
                 mConnectionStatus = WearConnectionStatus.AppNotInstalled;
+            }
             else
+            {
                 mConnectionStatus = WearConnectionStatus.Connected;
+            }
 
             LocalBroadcastManager.GetInstance(this)
                 .SendBroadcast(new Intent(ACTION_UPDATECONNECTIONSTATUS)
@@ -208,7 +218,7 @@ namespace SimpleWeather.Droid.Wear
         {
             if (ACTION_OPENONPHONE.Equals(intent?.Action))
             {
-                OpenAppOnPhone();
+                Task.Run(async () => await OpenAppOnPhone());
                 return StartCommandResult.NotSticky;
             }
             else if (ACTION_UPDATECONNECTIONSTATUS.Equals(intent?.Action))
@@ -220,26 +230,29 @@ namespace SimpleWeather.Droid.Wear
             }
             else if (ACTION_REQUESTSETTINGSUPDATE.Equals(intent?.Action))
             {
-                SendSettingsRequest();
+                Task.Run(async () => await SendSettingsRequest());
                 return StartCommandResult.NotSticky;
             }
             else if (ACTION_REQUESTLOCATIONUPDATE.Equals(intent?.Action))
             {
-                SendLocationRequest();
+                Task.Run(async () => await SendLocationRequest());
                 return StartCommandResult.NotSticky;
             }
             else if (ACTION_REQUESTWEATHERUPDATE.Equals(intent?.Action))
             {
-                bool forceUpdate = (bool)intent?.GetBooleanExtra(EXTRA_FORCEUPDATE, false);
-                if (!forceUpdate)
-                    SendWeatherRequest();
-                else
-                    SendWeatherUpdateRequest();
+                Task.Run(async () =>
+                {
+                    bool forceUpdate = (bool)intent?.GetBooleanExtra(EXTRA_FORCEUPDATE, false);
+                    if (!forceUpdate)
+                        await SendWeatherRequest();
+                    else
+                        await SendWeatherUpdateRequest();
+                });
                 return StartCommandResult.NotSticky;
             }
             else if (ACTION_REQUESTSETUPSTATUS.Equals(intent?.Action))
             {
-                SendSetupStatusRequest();
+                Task.Run(async () => await SendSetupStatusRequest());
                 return StartCommandResult.NotSticky;
             }
 
@@ -266,7 +279,7 @@ namespace SimpleWeather.Droid.Wear
          * There should only ever be one phone in a node set (much less w/ the correct capability), so
          * I am just grabbing the first one (which should be the only one).
          */
-        private INode PickBestNodeId(ICollection<INode> nodes)
+        private static INode PickBestNodeId(ICollection<INode> nodes)
         {
             INode bestNodeId = null;
             // Find a nearby node/phone or pick one arbitrarily. Realistically, there is only one phone.
@@ -294,13 +307,10 @@ namespace SimpleWeather.Droid.Wear
             if (!Loaded && mPhoneNodeWithApp == null)
                 mPhoneNodeWithApp = await CheckIfPhoneHasApp();
 
-            if (mPhoneNodeWithApp == null)
-                return false;
-            else
-                return true;
+            return mPhoneNodeWithApp != null;
         }
 
-        private async void OpenAppOnPhone()
+        private async Task OpenAppOnPhone()
         {
             await Connect();
 
@@ -333,7 +343,7 @@ namespace SimpleWeather.Droid.Wear
             }
         }
 
-        private async void SendSettingsRequest()
+        private async Task SendSettingsRequest()
         {
             if (!(await Connect()))
             {
@@ -342,7 +352,7 @@ namespace SimpleWeather.Droid.Wear
                 return;
             }
 
-            IDataApiDataItemResult data = await WearableClass.DataApi.GetDataItemAsync(
+            var data = await WearableClass.DataApi.GetDataItemAsync(
                 mGoogleApiClient, WearableHelper.GetWearDataUri(mPhoneNodeWithApp.Id, WearableHelper.SettingsPath));
 
             if (!data.Status.IsSuccess || data.DataItem == null)
@@ -358,7 +368,7 @@ namespace SimpleWeather.Droid.Wear
             }
         }
 
-        private async void SendLocationRequest()
+        private async Task SendLocationRequest()
         {
             if (!(await Connect()))
             {
@@ -367,7 +377,7 @@ namespace SimpleWeather.Droid.Wear
                 return;
             }
 
-            IDataApiDataItemResult data = await WearableClass.DataApi.GetDataItemAsync(
+            var data = await WearableClass.DataApi.GetDataItemAsync(
                 mGoogleApiClient, WearableHelper.GetWearDataUri(mPhoneNodeWithApp.Id, WearableHelper.LocationPath));
 
             if (!data.Status.IsSuccess || data.DataItem == null)
@@ -383,7 +393,7 @@ namespace SimpleWeather.Droid.Wear
             }
         }
 
-        private async void SendWeatherRequest()
+        private async Task SendWeatherRequest()
         {
             if (!(await Connect()))
             {
@@ -392,7 +402,7 @@ namespace SimpleWeather.Droid.Wear
                 return;
             }
 
-            IDataApiDataItemResult data = await WearableClass.DataApi.GetDataItemAsync(
+            var data = await WearableClass.DataApi.GetDataItemAsync(
                 mGoogleApiClient, WearableHelper.GetWearDataUri(mPhoneNodeWithApp.Id, WearableHelper.WeatherPath));
 
             if (!data.Status.IsSuccess || data.DataItem == null)
@@ -404,11 +414,11 @@ namespace SimpleWeather.Droid.Wear
             else
             {
                 // Update with data
-                UpdateWeather(DataMapItem.FromDataItem(data.DataItem).DataMap);
+                await UpdateWeather(DataMapItem.FromDataItem(data.DataItem).DataMap);
             }
         }
 
-        private async void SendWeatherUpdateRequest()
+        private async Task SendWeatherUpdateRequest()
         {
             if (!(await Connect()))
             {
@@ -422,7 +432,7 @@ namespace SimpleWeather.Droid.Wear
                 WearableHelper.WeatherPath, BitConverter.GetBytes(true));
         }
 
-        private async void SendSetupStatusRequest()
+        private async Task SendSetupStatusRequest()
         {
             if (!(await Connect()))
             {
@@ -456,8 +466,7 @@ namespace SimpleWeather.Droid.Wear
                     }
                 }
 
-                var FollowGPS = dataMap.GetBoolean("FollowGPS", false);
-                Settings.FollowGPS = FollowGPS;
+                Settings.FollowGPS = dataMap.GetBoolean("FollowGPS", false);
 
                 // Send callback to receiver
                 LocalBroadcastManager.GetInstance(this).SendBroadcast(
@@ -472,26 +481,27 @@ namespace SimpleWeather.Droid.Wear
                 var locationJSON = dataMap.GetString("locationData", String.Empty);
                 if (!String.IsNullOrWhiteSpace(locationJSON))
                 {
-                    var locationData = WeatherData.LocationData.FromJson(
-                        new Newtonsoft.Json.JsonTextReader(
-                            new System.IO.StringReader(locationJSON)));
-
-                    if (locationData != null)
+                    using (var jsonTextReader = new Newtonsoft.Json.JsonTextReader(new System.IO.StringReader(locationJSON)))
                     {
-                        if (!locationData.Equals(Settings.HomeData))
-                        {
-                            Settings.SaveHomeData(locationData);
-                        }
+                        var locationData = WeatherData.LocationData.FromJson(jsonTextReader);
 
-                        // Send callback to receiver
-                        LocalBroadcastManager.GetInstance(this).SendBroadcast(
-                            new Intent(WearableHelper.LocationPath));
+                        if (locationData != null)
+                        {
+                            if (!locationData.Equals(Settings.HomeData))
+                            {
+                                Settings.SaveHomeData(locationData);
+                            }
+
+                            // Send callback to receiver
+                            LocalBroadcastManager.GetInstance(this).SendBroadcast(
+                                new Intent(WearableHelper.LocationPath));
+                        }
                     }
                 }
             }
         }
 
-        private async void UpdateWeather(DataMap dataMap)
+        private async Task UpdateWeather(DataMap dataMap)
         {
             if (dataMap != null && !dataMap.IsEmpty)
             {
@@ -519,40 +529,44 @@ namespace SimpleWeather.Droid.Wear
                 var weatherJSON = dataMap.GetString("weatherData", String.Empty);
                 if (!String.IsNullOrWhiteSpace(weatherJSON))
                 {
-                    var weatherData = WeatherData.Weather.FromJson(
-                        new Newtonsoft.Json.JsonTextReader(
-                            new System.IO.StringReader(weatherJSON)));
-                    var alerts = dataMap.GetStringArrayList("weatherAlerts");
-
-                    if (weatherData != null && weatherData.IsValid())
+                    using (var weatherTextReader = new Newtonsoft.Json.JsonTextReader(
+                            new System.IO.StringReader(weatherJSON)))
                     {
-                        if (alerts.Count > 0)
+                        var weatherData = WeatherData.Weather.FromJson(weatherTextReader);
+                        var alerts = dataMap.GetStringArrayList("weatherAlerts");
+
+                        if (weatherData != null && weatherData.IsValid())
                         {
-                            weatherData.weather_alerts = new List<WeatherData.WeatherAlert>();
-                            foreach(String alertJSON in alerts)
+                            if (alerts.Count > 0)
                             {
-                                var alert = WeatherData.WeatherAlert.FromJson(
-                                    new Newtonsoft.Json.JsonTextReader(
-                                        new System.IO.StringReader(alertJSON)));
+                                weatherData.weather_alerts = new List<WeatherData.WeatherAlert>();
+                                foreach (String alertJSON in alerts)
+                                {
+                                    using (var alertTextReader = new Newtonsoft.Json.JsonTextReader(
+                                            new System.IO.StringReader(alertJSON)))
+                                    {
+                                        var alert = WeatherData.WeatherAlert.FromJson(alertTextReader);
 
-                                if (alert != null)
-                                    weatherData.weather_alerts.Add(alert);
+                                        if (alert != null)
+                                            weatherData.weather_alerts.Add(alert);
+                                    }
+                                }
                             }
+
+                            await Settings.SaveWeatherAlerts(Settings.HomeData, weatherData.weather_alerts);
+                            await Settings.SaveWeatherData(weatherData);
+                            Settings.UpdateTime = weatherData.update_time.UtcDateTime;
+
+                            // Send callback to receiver
+                            LocalBroadcastManager.GetInstance(this).SendBroadcast(
+                                new Intent(WearableHelper.WeatherPath));
+
+                            // Update complications
+                            WeatherComplicationIntentService.EnqueueWork(this,
+                                new Intent(this, typeof(WeatherComplicationIntentService))
+                                    .SetAction(WeatherComplicationIntentService.ACTION_UPDATECOMPLICATIONS)
+                                    .PutExtra(WeatherComplicationIntentService.EXTRA_FORCEUPDATE, true));
                         }
-
-                        await Settings.SaveWeatherAlerts(Settings.HomeData, weatherData.weather_alerts);
-                        await Settings.SaveWeatherData(weatherData);
-                        Settings.UpdateTime = weatherData.update_time.UtcDateTime;
-
-                        // Send callback to receiver
-                        LocalBroadcastManager.GetInstance(this).SendBroadcast(
-                            new Intent(WearableHelper.WeatherPath));
-
-                        // Update complications
-                        WeatherComplicationIntentService.EnqueueWork(this,
-                            new Intent(this, typeof(WeatherComplicationIntentService))
-                                .SetAction(WeatherComplicationIntentService.ACTION_UPDATECOMPLICATIONS)
-                                .PutExtra(WeatherComplicationIntentService.EXTRA_FORCEUPDATE, true));
                     }
                 }
             }

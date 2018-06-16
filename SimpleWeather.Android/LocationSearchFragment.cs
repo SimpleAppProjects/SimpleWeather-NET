@@ -248,7 +248,7 @@ namespace SimpleWeather.Droid.App
 
             if (Build.VERSION.SdkInt < BuildVersionCodes.Lollipop)
             {
-                mProgressBar.IndeterminateDrawable = 
+                mProgressBar.IndeterminateDrawable =
                     ContextCompat.GetDrawable(mActivity, Resource.Drawable.progressring);
             }
 

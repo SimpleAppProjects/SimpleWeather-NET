@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using SimpleWeather.Controls;
 using SimpleWeather.Utils;
+using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.UWP.Helpers;
 using SimpleWeather.WeatherData;
 using System;
@@ -27,14 +28,11 @@ namespace SimpleWeather.UWP
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
-    sealed partial class App : Application
+    public sealed partial class App : Application
     {
-        public static readonly Color AppColor = Color.FromArgb(255, 0, 111, 191);
         public const int HomeIdx = 0;
+        public static readonly Color AppColor = Color.FromArgb(255, 0, 111, 191);
         public static ResourceLoader ResLoader;
-        public static Frame RootFrame { get; set; }
-        public static bool IsInBackground { get; private set; } = true;
-        private static bool Initialized { get; set; } = false;
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -48,178 +46,15 @@ namespace SimpleWeather.UWP
             this.LeavingBackground += OnLeavingBackground;
         }
 
-        /// <summary>
-        /// Invoked when the application is launched normally by the end user.  Other entry points
-        /// will be used such as when the application is launched to open a specific file.
-        /// </summary>
-        /// <param name="e">Details about the launch request and process.</param>
-        protected override async void OnLaunched(LaunchActivatedEventArgs e)
-        {
-#if DEBUG
-            if (System.Diagnostics.Debugger.IsAttached)
-            {
-                //this.DebugSettings.EnableFrameRateCounter = true;
-            }
-#endif
-            // App loaded for first time
-            await Initialize(e);
+        public static bool IsInBackground { get; private set; } = true;
+        public static Frame RootFrame { get; set; }
+        private static bool Initialized { get; set; } = false;
 
-            if (e.PrelaunchActivated == false)
-            {
-                if (Settings.WeatherLoaded && !String.IsNullOrEmpty(e.TileId) && !e.TileId.Equals("App"))
-                {
-                    if (RootFrame.Content == null)
-                    {
-                        RootFrame.Navigate(typeof(Shell), "suppressNavigate");
-                    }
-
-                    // Navigate to WeatherNow page for location
-                    if (Shell.Instance != null)
-                    {
-                        List<LocationData> locations = new List<LocationData>(await Settings.GetLocationData())
-                        {
-                            Settings.HomeData,
-                        };
-                        var location = locations.FirstOrDefault(loc => loc.query.Equals(SecondaryTileUtils.GetQueryFromId(e.TileId)));
-                        if (location != null)
-                        {
-                            var isHome = location.Equals(Settings.HomeData);
-
-                            Shell.Instance.AppFrame.Navigate(typeof(WeatherNow), location);
-                            Shell.Instance.AppFrame.BackStack.Clear();
-                            if (!isHome)
-                            {
-                                Shell.Instance.AppFrame.BackStack.Add(new PageStackEntry(typeof(WeatherNow), null, null));
-                                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
-                            }
-                            else
-                                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-                        }
-
-                        // If Shell content is empty navigate to default page
-                        if (Shell.Instance.AppFrame.CurrentSourcePageType == null)
-                        {
-                            Shell.Instance.AppFrame.Navigate(typeof(WeatherNow), null);
-                        }
-                    }
-                }
-
-                if (RootFrame.Content == null)
-                {
-                    // When the navigation stack isn't restored navigate to the first page,
-                    // configuring the new page by passing required information as a navigation
-                    // parameter
-                    if (Settings.WeatherLoaded)
-                        RootFrame.Navigate(typeof(Shell), e.Arguments);
-                    else
-                        RootFrame.Navigate(typeof(SetupPage), e.Arguments);
-                }
-
-                // Ensure the current window is active
-                Window.Current.Activate();
-            }
-        }
-
-        private async Task Initialize(IActivatedEventArgs e)
-        {
-            if (Initialized)
-                return;
-
-            RootFrame = Window.Current.Content as Frame;
-
-            // Do not repeat app initialization when the Window already has content,
-            // just ensure that the window is active
-            if (RootFrame == null)
-            {
-                // Create a Frame to act as the navigation context and navigate to the first page
-                RootFrame = new Frame();
-
-                RootFrame.NavigationFailed += OnNavigationFailed;
-
-                if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
-                {
-                    //TODO: Load state from previously suspended application
-                }
-
-                // Place the frame in the current Window
-                Window.Current.Content = RootFrame;
-            }
-
-            if (ResLoader == null)
-                ResLoader = new ResourceLoader();
-
-            // Load data if needed
-            await Settings.LoadIfNeeded();
-
-            // TitleBar
-            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
-            {
-                // Mobile
-                StatusBar.GetForCurrentView().BackgroundOpacity = 1;
-                StatusBar.GetForCurrentView().BackgroundColor = App.AppColor;
-                StatusBar.GetForCurrentView().ForegroundColor = Colors.White;
-
-                Window.Current.SizeChanged += async (sender, eventArgs) =>
-                {
-                    if (ApplicationView.GetForCurrentView().Orientation == ApplicationViewOrientation.Landscape)
-                        await StatusBar.GetForCurrentView().HideAsync();
-                    else
-                        await StatusBar.GetForCurrentView().ShowAsync();
-                };
-            }
-            else
-            {
-                // Desktop
-                var titlebar = ApplicationView.GetForCurrentView().TitleBar;
-                titlebar.BackgroundColor = App.AppColor;
-                titlebar.ButtonBackgroundColor = titlebar.BackgroundColor;
-                titlebar.ForegroundColor = Colors.White;
-            }
-
-            Initialized = true;
-        }
-
-        private async Task Initialize(IBackgroundActivatedEventArgs e)
-        {
-            if (Initialized)
-                return;
-
-            if (ResLoader == null)
-                ResLoader = new ResourceLoader();
-
-            // Load data if needed
-            await Settings.LoadIfNeeded();
-
-            Initialized = true;
-        }
-
-        /// <summary>
-        /// Invoked when Navigation to a certain page fails
-        /// </summary>
-        /// <param name="sender">The Frame which failed navigation</param>
-        /// <param name="e">Details about the navigation failure</param>
-        void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
-        {
-            throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
-        }
-
-        /// <summary>
-        /// Invoked when application execution is being suspended.  Application state is saved
-        /// without knowing whether the application will be terminated or resumed with the contents
-        /// of memory still intact.
-        /// </summary>
-        /// <param name="sender">The source of the suspend request.</param>
-        /// <param name="e">Details about the suspend request.</param>
-        private void OnSuspending(object sender, SuspendingEventArgs e)
-        {
-            var deferral = e.SuspendingOperation.GetDeferral();
-            //TODO: Save application state and stop any background activity
-            deferral.Complete();
-        }
-
-        protected override async void OnActivated(IActivatedEventArgs e)
+        protected override void OnActivated(IActivatedEventArgs e)
         {
             base.OnActivated(e);
+
+            var Dispatcher = CoreApplication.MainView.CoreWindow.Dispatcher;
 
             // Handle toast activation
             if (e is ToastNotificationActivatedEventArgs)
@@ -230,7 +65,7 @@ namespace SimpleWeather.UWP
                 var toastActivationArgs = e as ToastNotificationActivatedEventArgs;
 
                 // Parse the query string (using QueryString.NET)
-                QueryString args = QueryString.Parse(toastActivationArgs.Argument);
+                var args = QueryString.Parse(toastActivationArgs.Argument);
 
                 if (!args.Contains("action"))
                     return;
@@ -241,37 +76,48 @@ namespace SimpleWeather.UWP
                     case "view-alerts":
                         if (Settings.WeatherLoaded)
                         {
-                            String key = args["query"];
-
-                            // App loaded for first time
-                            await Initialize(e);
-
-                            if (RootFrame.Content == null)
+                            Task.Run(async () =>
                             {
-                                RootFrame.Navigate(typeof(Shell), "suppressNavigate");
-                            }
+                                var key = args["query"];
 
-                            if (Shell.Instance != null)
-                            {
-                                var weather = await Settings.GetWeatherData(key);
-                                weather.weather_alerts = await Settings.GetWeatherAlertData(key);
+                                // App loaded for first time
+                                await Initialize(e);
 
-                                // If we're already on WeatherNow navigate to Alert page
-                                if (Shell.Instance.AppFrame.Content != null && Shell.Instance.AppFrame.SourcePageType.IsTypeOf(typeof(WeatherNow)))
+                                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                                 {
-                                    Shell.Instance.AppFrame.Navigate(typeof(WeatherAlertPage), new WeatherNowViewModel(weather));
-                                }
-                                // If not clear backstack and navigate to Alert page
-                                // Add a WeatherNow page in backstack to go back to
-                                else
+                                    if (RootFrame.Content == null)
+                                    {
+                                        RootFrame.Navigate(typeof(Shell), "suppressNavigate");
+                                    }
+                                });
+
+                                if (Shell.Instance != null)
                                 {
-                                    Shell.Instance.AppFrame.Navigate(typeof(WeatherAlertPage), new WeatherNowViewModel(weather));
-                                    Shell.Instance.AppFrame.BackStack.Clear();
-                                    Shell.Instance.AppFrame.BackStack.Add(new PageStackEntry(typeof(WeatherNow), null, null));
-                                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+                                    var weather = await Settings.GetWeatherData(key);
+                                    weather.weather_alerts = await Settings.GetWeatherAlertData(key);
+
+                                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                                    {
+                                        // If we're already on WeatherNow navigate to Alert page
+                                        if (Shell.Instance.AppFrame.Content != null && Shell.Instance.AppFrame.SourcePageType.IsTypeOf(typeof(WeatherNow)))
+                                        {
+                                            Shell.Instance.AppFrame.Navigate(typeof(WeatherAlertPage), new WeatherNowViewModel(weather));
+                                        }
+                                        // If not clear backstack and navigate to Alert page
+                                        // Add a WeatherNow page in backstack to go back to
+                                        else
+                                        {
+                                            Shell.Instance.AppFrame.Navigate(typeof(WeatherAlertPage), new WeatherNowViewModel(weather));
+                                            Shell.Instance.AppFrame.BackStack.Clear();
+                                            Shell.Instance.AppFrame.BackStack.Add(new PageStackEntry(typeof(WeatherNow), null, null));
+                                            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+                                        }
+                                    });
                                 }
-                            }
+                            });
                         }
+                        break;
+                    default:
                         break;
                 }
             }
@@ -296,8 +142,10 @@ namespace SimpleWeather.UWP
             {
                 switch (args.TaskInstance.Task.Name)
                 {
-                    case "WeatherUpdateBackgroundTask":
-                        new BackgroundTasks.WeatherUpdateBackgroundTask().Run(args.TaskInstance);
+                    case nameof(WeatherUpdateBackgroundTask):
+                        new WeatherUpdateBackgroundTask().Run(args.TaskInstance);
+                        break;
+                    default:
                         break;
                 }
 
@@ -305,14 +153,210 @@ namespace SimpleWeather.UWP
             });
         }
 
-        private void OnLeavingBackground(object sender, LeavingBackgroundEventArgs e)
+        /// <summary>
+        /// Invoked when the application is launched normally by the end user.  Other entry points
+        /// will be used such as when the application is launched to open a specific file.
+        /// </summary>
+        /// <param name="e">Details about the launch request and process.</param>
+        protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
-            IsInBackground = false;
+#if DEBUG
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                //this.DebugSettings.EnableFrameRateCounter = true;
+            }
+#endif
+            var Dispatcher = CoreApplication.MainView.CoreWindow.Dispatcher;
+
+            // App loaded for first time
+            Initialize(e).ContinueWith(async (t) =>
+            {
+                if (!e.PrelaunchActivated)
+                {
+                    if (Settings.WeatherLoaded && !String.IsNullOrEmpty(e.TileId) && !e.TileId.Equals("App"))
+                    {
+                        await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        {
+                             if (RootFrame.Content == null)
+                             {
+                                 RootFrame.Navigate(typeof(Shell), "suppressNavigate");
+                             }
+                        });
+
+                        // Navigate to WeatherNow page for location
+                        if (Shell.Instance != null)
+                        {
+                            var locData = Task.Run(Settings.GetLocationData).Result;
+                            var locations = new List<LocationData>(locData)
+                            {
+                                Settings.HomeData,
+                            };
+                            var location = locations.FirstOrDefault(loc => loc.query.Equals(SecondaryTileUtils.GetQueryFromId(e.TileId)));
+                            if (location != null)
+                            {
+                                var isHome = location.Equals(Settings.HomeData);
+
+                                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                                {
+                                    Shell.Instance.AppFrame.Navigate(typeof(WeatherNow), location);
+                                    Shell.Instance.AppFrame.BackStack.Clear();
+                                    if (!isHome)
+                                    {
+                                        Shell.Instance.AppFrame.BackStack.Add(new PageStackEntry(typeof(WeatherNow), null, null));
+                                        SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+                                    }
+                                    else
+                                    {
+                                        SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                                    }
+                                });
+                            }
+
+                            // If Shell content is empty navigate to default page
+                            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                            {
+                                if (Shell.Instance.AppFrame.CurrentSourcePageType == null)
+                                {
+                                    Shell.Instance.AppFrame.Navigate(typeof(WeatherNow), null);
+                                }
+                            });
+                        }
+                    }
+
+                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                         if (RootFrame.Content == null)
+                         {
+                            // When the navigation stack isn't restored navigate to the first page,
+                            // configuring the new page by passing required information as a navigation
+                            // parameter
+                            if (Settings.WeatherLoaded)
+                                 RootFrame.Navigate(typeof(Shell), e.Arguments);
+                             else
+                                 RootFrame.Navigate(typeof(SetupPage), e.Arguments);
+                         }
+
+                        // Ensure the current window is active
+                        Window.Current.Activate();
+                    });
+                }
+            });
         }
 
         private void OnEnteredBackground(object sender, EnteredBackgroundEventArgs e)
         {
             IsInBackground = true;
+        }
+
+        private void OnLeavingBackground(object sender, LeavingBackgroundEventArgs e)
+        {
+            IsInBackground = false;
+        }
+
+        private async Task Initialize(IActivatedEventArgs e)
+        {
+            if (Initialized)
+                return;
+
+            var Dispatcher = CoreApplication.MainView.CoreWindow.Dispatcher;
+
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                RootFrame = Window.Current.Content as Frame;
+
+                // Do not repeat app initialization when the Window already has content,
+                // just ensure that the window is active
+                if (RootFrame == null)
+                {
+                    // Create a Frame to act as the navigation context and navigate to the first page
+                    RootFrame = new Frame();
+
+                    RootFrame.NavigationFailed += OnNavigationFailed;
+
+                    if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
+                    {
+                        //TODO: Load state from previously suspended application
+                    }
+
+                    // Place the frame in the current Window
+                    Window.Current.Content = RootFrame;
+                }
+            });
+
+            if (ResLoader == null)
+                ResLoader = new ResourceLoader();
+
+            // Load data if needed
+            await Settings.LoadIfNeeded();
+
+            // TitleBar
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+                {
+                    // Mobile
+                    StatusBar.GetForCurrentView().BackgroundOpacity = 1;
+                    StatusBar.GetForCurrentView().BackgroundColor = App.AppColor;
+                    StatusBar.GetForCurrentView().ForegroundColor = Colors.White;
+
+                    Window.Current.SizeChanged += async (sender, eventArgs) =>
+                    {
+                        if (ApplicationView.GetForCurrentView().Orientation == ApplicationViewOrientation.Landscape)
+                            await StatusBar.GetForCurrentView().HideAsync();
+                        else
+                            await StatusBar.GetForCurrentView().ShowAsync();
+                    };
+                }
+                else
+                {
+                    // Desktop
+                    var titlebar = ApplicationView.GetForCurrentView().TitleBar;
+                    titlebar.BackgroundColor = App.AppColor;
+                    titlebar.ButtonBackgroundColor = titlebar.BackgroundColor;
+                    titlebar.ForegroundColor = Colors.White;
+                }
+            });
+
+            Initialized = true;
+        }
+
+        private async Task Initialize(IBackgroundActivatedEventArgs e)
+        {
+            if (Initialized)
+                return;
+
+            if (ResLoader == null)
+                ResLoader = new ResourceLoader();
+
+            // Load data if needed
+            await Settings.LoadIfNeeded();
+
+            Initialized = true;
+        }
+
+        /// <summary>
+        /// Invoked when Navigation to a certain page fails
+        /// </summary>
+        /// <param name="sender">The Frame which failed navigation</param>
+        /// <param name="e">Details about the navigation failure</param>
+        private void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
+        {
+            throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
+        }
+
+        /// <summary>
+        /// Invoked when application execution is being suspended.  Application state is saved
+        /// without knowing whether the application will be terminated or resumed with the contents
+        /// of memory still intact.
+        /// </summary>
+        /// <param name="sender">The source of the suspend request.</param>
+        /// <param name="e">Details about the suspend request.</param>
+        private void OnSuspending(object sender, SuspendingEventArgs e)
+        {
+            var deferral = e.SuspendingOperation.GetDeferral();
+            //TODO: Save application state and stop any background activity
+            deferral.Complete();
+            Initialized = false;
         }
     }
 }

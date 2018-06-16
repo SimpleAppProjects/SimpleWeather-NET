@@ -72,8 +72,8 @@ namespace SimpleWeather.Droid.App
 
         public void OnActivityCreated(Activity activity, Bundle savedInstanceState)
         {
-            if (activity.LocalClassName.Contains("LaunchActivity")
-                || activity.LocalClassName.Contains("MainActivity"))
+            if (activity.LocalClassName.Contains(nameof(LaunchActivity))
+                || activity.LocalClassName.Contains(nameof(MainActivity)))
             {
                 ApplicationState = AppState.Foreground;
             }
@@ -105,7 +105,7 @@ namespace SimpleWeather.Droid.App
 
         public void OnActivityDestroyed(Activity activity)
         {
-            if (activity.LocalClassName.Contains("MainActivity"))
+            if (activity.LocalClassName.Contains(nameof(MainActivity)))
             {
                 ApplicationState = AppState.Closed;
             }

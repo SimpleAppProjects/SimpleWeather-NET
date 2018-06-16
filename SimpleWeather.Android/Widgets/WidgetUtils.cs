@@ -58,6 +58,8 @@ namespace SimpleWeather.Droid.App.Widgets
                             SaveIds(homeLocation.query, currentIds);
                         }
                         break;
+                    default:
+                        break;
                 }
 
                 // Set to latest version
@@ -126,12 +128,13 @@ namespace SimpleWeather.Droid.App.Widgets
             {
                 var parentPath = Application.Context.FilesDir.Parent;
                 var sharedPrefsPath = String.Format("{0}/shared_prefs/appwidget_{1}.xml", parentPath, widgetId);
-                Java.IO.File sharedPrefsFile = new Java.IO.File(sharedPrefsPath);
-
-                if (sharedPrefsFile.Exists() &&
-                    sharedPrefsFile.CanWrite() && sharedPrefsFile.ParentFile.CanWrite())
+                using (var sharedPrefsFile = new Java.IO.File(sharedPrefsPath))
                 {
-                    sharedPrefsFile.Delete();
+                    if (sharedPrefsFile.Exists() &&
+                        sharedPrefsFile.CanWrite() && sharedPrefsFile.ParentFile.CanWrite())
+                    {
+                        sharedPrefsFile.Delete();
+                    }
                 }
             }
         }
@@ -242,8 +245,10 @@ namespace SimpleWeather.Droid.App.Widgets
             }
             else
             {
-                return LocationData.FromJson(
-                    new Newtonsoft.Json.JsonTextReader(new System.IO.StringReader(locDataJson)));
+                using (var jsonTextReader = new Newtonsoft.Json.JsonTextReader(new System.IO.StringReader(locDataJson)))
+                {
+                    return LocationData.FromJson(jsonTextReader);
+                }
             }
         }
 
@@ -258,8 +263,10 @@ namespace SimpleWeather.Droid.App.Widgets
             }
             else
             {
-                return Weather.FromJson(
-                    new Newtonsoft.Json.JsonTextReader(new System.IO.StringReader(weatherDataJson)));
+                using (var jsonTextReader = new Newtonsoft.Json.JsonTextReader(new System.IO.StringReader(weatherDataJson)))
+                {
+                    return Weather.FromJson(jsonTextReader);
+                }
             }
         }
     }

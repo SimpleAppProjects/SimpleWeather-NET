@@ -109,6 +109,8 @@ namespace SimpleWeather.Utils
                         if (await locationDB.Table<LocationData>().CountAsync() > 0)
                             await DBUtils.SetLocationData(locationDB);
                         break;
+                    default:
+                        break;
                 }
 #endif
 
@@ -120,7 +122,10 @@ namespace SimpleWeather.Utils
             {
                 try
                 {
-                    lastGPSLocData = LocationData.FromJson(new JsonTextReader(new StringReader(LastGPSLocation)));
+                    using (var jsonTextReader = new JsonTextReader(new StringReader(LastGPSLocation)))
+                    {
+                        lastGPSLocData = LocationData.FromJson(jsonTextReader);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -137,7 +142,10 @@ namespace SimpleWeather.Utils
             {
                 try
                 {
-                    lastGPSLocData = LocationData.FromJson(new JsonTextReader(new StringReader(LastGPSLocation)));
+                    using (var jsonTextReader = new JsonTextReader(new StringReader(LastGPSLocation)))
+                    {
+                        lastGPSLocData = LocationData.FromJson(jsonTextReader);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -160,7 +168,7 @@ namespace SimpleWeather.Utils
                         join favs in await locationDB.Table<Favorites>().ToListAsync()
                         on loc.query equals favs.query
                         orderby favs.position
-                        select new LocationData()
+                        select new LocationData
                         {
                             query = loc.query,
                             name = loc.name,
@@ -246,7 +254,7 @@ namespace SimpleWeather.Utils
             {
                 var alertdata = new WeatherAlerts(location.query, alerts);
                 await weatherDB.InsertOrReplaceAsync(alertdata);
-                await WriteOperations.UpdateWithChildrenAsync(weatherDB, alertdata);
+                await weatherDB.UpdateWithChildrenAsync(alertdata);
             }
 
             if (await weatherDB.Table<WeatherAlerts>().CountAsync() > CACHE_LIMIT)
@@ -255,7 +263,7 @@ namespace SimpleWeather.Utils
 
         private static void CleanupWeatherData()
         {
-            Task.Run(async () => 
+            Task.Run(async () =>
             {
 #if !__ANDROID_WEAR__
                 var locs = await locationDB.Table<LocationData>().ToListAsync();

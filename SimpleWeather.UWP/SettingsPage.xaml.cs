@@ -287,14 +287,14 @@ namespace SimpleWeather.UWP
                 Settings.RefreshInterval = 360; // 6 hr
 
             // Re-register background task
-            Task.Run(() => WeatherUpdateBackgroundTask.RegisterBackgroundTask());
+            Task.Run(WeatherUpdateBackgroundTask.RegisterBackgroundTask);
         }
 
         private void OSSLicenseWebview_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
         {
             // Cancel navigation and open link in ext. browser
             args.Cancel = true;
-            Windows.Foundation.IAsyncOperation<bool> b = Windows.System.Launcher.LaunchUriAsync(args.Uri);
+            var b = Windows.System.Launcher.LaunchUriAsync(args.Uri);
         }
 
         private void Fahrenheit_Checked(object sender, RoutedEventArgs e)
@@ -315,7 +315,7 @@ namespace SimpleWeather.UWP
 
             if (sw.IsOn)
             {
-                GeolocationAccessStatus geoStatus = GeolocationAccessStatus.Unspecified;
+                var geoStatus = GeolocationAccessStatus.Unspecified;
 
                 try
                 {
@@ -353,6 +353,8 @@ namespace SimpleWeather.UWP
                         await error.ShowAsync();
                         sw.IsOn = false;
                         break;
+                    default:
+                        break;
                 }
             }
 
@@ -366,7 +368,7 @@ namespace SimpleWeather.UWP
                     if (gpsLoc?.query == null)
                         Settings.SaveLastGPSLocData(prevLoc);
                     else
-                        SecondaryTileUtils.UpdateTileId(prevLoc.query, gpsLoc.query);
+                        await SecondaryTileUtils.UpdateTileId(prevLoc.query, gpsLoc.query);
                 }
             }
             else
@@ -376,7 +378,7 @@ namespace SimpleWeather.UWP
                 {
                     var favLoc = (await Settings.GetFavorites()).FirstOrDefault();
                     if (favLoc?.query != null)
-                        SecondaryTileUtils.UpdateTileId(prevLoc.query, favLoc.query);
+                        await SecondaryTileUtils.UpdateTileId(prevLoc.query, favLoc.query);
                 }
             }
 
@@ -391,7 +393,7 @@ namespace SimpleWeather.UWP
             if (pivot.SelectedIndex == 2)
             {
                 // Load webview
-                var webview = (FrameworkElement)FindName("OSSLicenseWebview");
+                var webview = (FrameworkElement)FindName(nameof(OSSLicenseWebview));
                 webview.Visibility = Visibility.Visible;
 
                 if (OSSLicenseWebview.Source == null)

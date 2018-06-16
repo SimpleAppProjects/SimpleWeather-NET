@@ -16,9 +16,9 @@ using Windows.UI.StartScreen;
 
 namespace SimpleWeather.UWP.BackgroundTasks
 {
-    public sealed class WeatherUpdateBackgroundTask : IBackgroundTask, IDisposable
+    public sealed class WeatherUpdateBackgroundTask : IBackgroundTask
     {
-        private const string taskName = "WeatherUpdateBackgroundTask";
+        private const string taskName = nameof(WeatherUpdateBackgroundTask);
         private CancellationTokenSource cts;
         private WeatherManager wm;
         private static ApplicationTrigger AppTrigger = null;
@@ -29,59 +29,60 @@ namespace SimpleWeather.UWP.BackgroundTasks
             wm = WeatherManager.GetInstance();
         }
 
-        public void Dispose()
-        {
-            ((IDisposable)cts).Dispose();
-        }
-
-        public async void Run(IBackgroundTaskInstance taskInstance)
+        public void Run(IBackgroundTaskInstance taskInstance)
         {
             // Get a deferral, to prevent the task from closing prematurely
             // while asynchronous code is still running.
-            BackgroundTaskDeferral deferral = taskInstance.GetDeferral();
+            var deferral = taskInstance.GetDeferral();
 
-            taskInstance.Canceled += new BackgroundTaskCanceledEventHandler(OnCanceled);
+            taskInstance.Canceled += OnCanceled;
 
-            if (Settings.WeatherLoaded)
+            Task.Run(async () =>
             {
-                // Retrieve weather data.
-                var weather = await GetWeather();
-
-                if (cts.IsCancellationRequested) return;
-
-                // Update the live tile with data.
-                if (weather != null)
-                    WeatherTileCreator.TileUpdater(Settings.HomeData, weather);
-
-                if (cts.IsCancellationRequested) return;
-
-                // Update secondary tiles
-                var tiles = await SecondaryTile.FindAllAsync();
-                foreach (SecondaryTile tile in tiles)
+                if (Settings.WeatherLoaded)
                 {
-                    var locations = await Settings.GetLocationData();
-                    var location = locations.FirstOrDefault(
-                        loc => loc.query.Equals(SecondaryTileUtils.GetQueryFromId(tile.TileId)));
-
-                    if (location != null)
-                        WeatherTileCreator.TileUpdater(location);
+                    // Retrieve weather data.
+                    var weather = await GetWeather();
 
                     if (cts.IsCancellationRequested) return;
+
+                    // Update the live tile with data.
+                    if (weather != null)
+                        WeatherTileCreator.TileUpdater(Settings.HomeData, weather);
+
+                    if (cts.IsCancellationRequested) return;
+
+                    // Update secondary tiles
+                    var tiles = await SecondaryTile.FindAllAsync();
+                    foreach (SecondaryTile tile in tiles)
+                    {
+                        var locations = await Settings.GetLocationData();
+                        var location = locations.FirstOrDefault(
+                            loc => loc.query.Equals(SecondaryTileUtils.GetQueryFromId(tile.TileId)));
+
+                        if (location != null)
+                            await WeatherTileCreator.TileUpdater(location);
+
+                        if (cts.IsCancellationRequested) return;
+                    }
+
+                    // Post alerts if setting is on
+                    if (Settings.ShowAlerts && wm.SupportsAlerts && weather != null)
+                        await WeatherAlertHandler.PostAlerts(Settings.HomeData, weather.weather_alerts);
+
+                    if (cts.IsCancellationRequested) return;
+
+                    // Set update time
+                    if (weather != null)
+                        Settings.UpdateTime = DateTime.Now;
                 }
+            }).ContinueWith((t) =>
+            {
+                // Inform the system that the task is finished.
+                deferral.Complete();
 
-                // Post alerts if setting is on
-                if (Settings.ShowAlerts && wm.SupportsAlerts && weather != null)
-                    await WeatherAlertHandler.PostAlerts(Settings.HomeData, weather.weather_alerts);
-
-                if (cts.IsCancellationRequested) return;
-
-                // Set update time
-                if (weather != null)
-                    Settings.UpdateTime = DateTime.Now;
-            }
-
-            // Inform the system that the task is finished.
-            deferral.Complete();
+                cts.Dispose();
+            });
         }
 
         private void OnCanceled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason)
@@ -100,8 +101,8 @@ namespace SimpleWeather.UWP.BackgroundTasks
             var backgroundAccessStatus = await BackgroundExecutionManager.RequestAccessAsync();
 
             // If allowed
-            if (backgroundAccessStatus == BackgroundAccessStatus.AlwaysAllowed ||
-                backgroundAccessStatus == BackgroundAccessStatus.AllowedSubjectToSystemPolicy)
+            if (backgroundAccessStatus == BackgroundAccessStatus.AlwaysAllowed
+                || backgroundAccessStatus == BackgroundAccessStatus.AllowedSubjectToSystemPolicy)
             {
                 await AppTrigger.RequestAsync();
             }
@@ -123,8 +124,8 @@ namespace SimpleWeather.UWP.BackgroundTasks
             var backgroundAccessStatus = await BackgroundExecutionManager.RequestAccessAsync();
 
             // If allowed
-            if (backgroundAccessStatus == BackgroundAccessStatus.AlwaysAllowed ||
-                backgroundAccessStatus == BackgroundAccessStatus.AllowedSubjectToSystemPolicy)
+            if (backgroundAccessStatus == BackgroundAccessStatus.AlwaysAllowed
+                || backgroundAccessStatus == BackgroundAccessStatus.AllowedSubjectToSystemPolicy)
             {
                 // Register a task for each trigger
                 var tb1 = new BackgroundTaskBuilder() { Name = taskName };
@@ -200,7 +201,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                 }
                 catch (Exception)
                 {
-                    GeolocationAccessStatus geoStatus = GeolocationAccessStatus.Unspecified;
+                    var geoStatus = GeolocationAccessStatus.Unspecified;
 
                     try
                     {
@@ -227,13 +228,13 @@ namespace SimpleWeather.UWP.BackgroundTasks
                 // Access to location granted
                 if (newGeoPos != null)
                 {
-                    LocationData lastGPSLocData = await Settings.GetLastGPSLocData();
+                    var lastGPSLocData = await Settings.GetLastGPSLocData();
 
                     if (cts.IsCancellationRequested) return locationChanged;
 
                     // Check previous location difference
-                    if (lastGPSLocData.query != null &&
-                        Math.Abs(ConversionMethods.CalculateHaversine(lastGPSLocData.latitude, lastGPSLocData.longitude,
+                    if (lastGPSLocData.query != null
+                        && Math.Abs(ConversionMethods.CalculateHaversine(lastGPSLocData.latitude, lastGPSLocData.longitude,
                         newGeoPos.Coordinate.Point.Position.Latitude, newGeoPos.Coordinate.Point.Position.Longitude)) < geolocal.MovementThreshold)
                     {
                         return false;
@@ -267,7 +268,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                     // Update tile id for location
                     if (oldkey != null && SecondaryTileUtils.Exists(oldkey))
                     {
-                        SecondaryTileUtils.UpdateTileId(oldkey, lastGPSLocData.query);
+                        await SecondaryTileUtils.UpdateTileId(oldkey, lastGPSLocData.query);
                     }
 
                     locationChanged = true;

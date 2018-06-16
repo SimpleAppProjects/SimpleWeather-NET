@@ -39,7 +39,7 @@ namespace SimpleWeather.Droid.App.Widgets
     [Service(Exported = false, Permission = "android.permission.BIND_JOB_SERVICE")]
     public partial class WeatherWidgetService : JobIntentService
     {
-        private static string TAG = "WeatherWidgetService";
+        private static string TAG = nameof(WeatherWidgetService);
 
         public const string ACTION_REFRESHWIDGET = "SimpleWeather.Droid.action.REFRESH_WIDGET";
         public const string ACTION_RESIZEWIDGET = "SimpleWeather.Droid.action.RESIZE_WIDGET";
@@ -98,7 +98,7 @@ namespace SimpleWeather.Droid.App.Widgets
             wm = WeatherManager.GetInstance();
         }
 
-        protected override async void OnHandleWork(Intent intent)
+        protected override void OnHandleWork(Intent intent)
         {
             if (ACTION_REFRESHWIDGET.Equals(intent.Action))
             {
@@ -108,22 +108,22 @@ namespace SimpleWeather.Droid.App.Widgets
                 switch (widgetType)
                 {
                     case WidgetType.Widget1x1:
-                        RefreshWidget(mAppWidget1x1, appWidgetIds);
+                        Task.Run(async () => await RefreshWidget(mAppWidget1x1, appWidgetIds));
                         break;
                     case WidgetType.Widget2x2:
-                        RefreshWidget(mAppWidget2x2, appWidgetIds);
+                        Task.Run(async () => await RefreshWidget(mAppWidget2x2, appWidgetIds));
                         break;
                     case WidgetType.Widget4x1:
-                        RefreshWidget(mAppWidget4x1, appWidgetIds);
+                        Task.Run(async () => await RefreshWidget(mAppWidget4x1, appWidgetIds));
                         break;
                     case WidgetType.Widget4x2:
-                        RefreshWidget(mAppWidget4x2, appWidgetIds);
+                        Task.Run(async () => await RefreshWidget(mAppWidget4x2, appWidgetIds));
                         break;
                     // We don't know the widget type to update,
                     // so just update all
                     case WidgetType.Unknown:
                     default:
-                        RefreshWidgets();
+                        Task.Run(async () => await RefreshWidgets());
                         break;
                 }
             }
@@ -136,16 +136,17 @@ namespace SimpleWeather.Droid.App.Widgets
                 switch (widgetType)
                 {
                     case WidgetType.Widget1x1:
+                    default:
                         // Widget resizes itself; no need to adjust
                         break;
                     case WidgetType.Widget2x2:
-                        ResizeWidget(mAppWidget2x2, appWidgetId, newOptions);
+                        Task.Run(async () => await ResizeWidget(mAppWidget2x2, appWidgetId, newOptions));
                         break;
                     case WidgetType.Widget4x1:
-                        ResizeWidget(mAppWidget4x1, appWidgetId, newOptions);
+                        Task.Run(async () => await ResizeWidget(mAppWidget4x1, appWidgetId, newOptions));
                         break;
                     case WidgetType.Widget4x2:
-                        ResizeWidget(mAppWidget4x2, appWidgetId, newOptions);
+                        Task.Run(async () => await ResizeWidget(mAppWidget4x2, appWidgetId, newOptions));
                         break;
                 }
             }
@@ -191,7 +192,7 @@ namespace SimpleWeather.Droid.App.Widgets
             {
                 if (Settings.WeatherLoaded)
                 {
-                    var weather = await GetWeather();
+                    var weather = Task.Run(GetWeather).Result;
 
                     if (Settings.OnGoingNotification && weather != null)
                         WeatherNotificationBuilder.UpdateNotification(weather);
@@ -215,16 +216,16 @@ namespace SimpleWeather.Droid.App.Widgets
                         WeatherNotificationBuilder.ShowRefresh();
 
                     if (WidgetsExist(App.Context))
-                        RefreshWidgets();
+                        Task.Run(async () => await RefreshWidgets());
 
                     // Update for home
-                    var weather = await GetWeather();
+                    var weather = Task.Run(GetWeather).Result;
                     if (weather != null)
                     {
                         if (Settings.OnGoingNotification)
                             WeatherNotificationBuilder.UpdateNotification(weather);
                         if (Settings.ShowAlerts && wm.SupportsAlerts && weather != null)
-                            await WeatherAlertHandler.PostAlerts(Settings.HomeData, weather.weather_alerts);
+                            Task.Run(async () => await WeatherAlertHandler.PostAlerts(Settings.HomeData, weather.weather_alerts));
                     }
                 }
             }
@@ -232,7 +233,7 @@ namespace SimpleWeather.Droid.App.Widgets
             Console.WriteLine(string.Format("{0}: Intent Action = {1}", TAG, intent.Action));
         }
 
-        private PendingIntent GetAlarmIntent(Context context)
+        private static PendingIntent GetAlarmIntent(Context context)
         {
             Intent intent = new Intent(context, typeof(WeatherWidgetBroadcastReceiver))
                 .SetAction(ACTION_UPDATEWEATHER);
@@ -240,7 +241,7 @@ namespace SimpleWeather.Droid.App.Widgets
             return PendingIntent.GetBroadcast(context, 0, intent, 0);
         }
 
-        private void UpdateAlarm(Context context)
+        private static void UpdateAlarm(Context context)
         {
             AlarmManager am = (AlarmManager)context.GetSystemService(Context.AlarmService);
             int interval = Settings.RefreshInterval;
@@ -260,7 +261,7 @@ namespace SimpleWeather.Droid.App.Widgets
         private void CancelAlarms(Context context)
         {
             // Cancel alarm if dependent features are turned off
-            if ((!WidgetsExist(context) && !Settings.OnGoingNotification && !Settings.ShowAlerts))
+            if (!WidgetsExist(context) && !Settings.OnGoingNotification && !Settings.ShowAlerts)
             {
                 AlarmManager am = (AlarmManager)context.GetSystemService(Context.AlarmService);
                 am.Cancel(GetAlarmIntent(context));
@@ -288,7 +289,7 @@ namespace SimpleWeather.Droid.App.Widgets
             return PendingIntent.GetBroadcast(context, 0, intent, 0);
         }
 
-        private void StartTickReceiver(Context context)
+        private static void StartTickReceiver(Context context)
         {
             StopTickReceiver(context);
 
@@ -309,7 +310,7 @@ namespace SimpleWeather.Droid.App.Widgets
             }
         }
 
-        private void CancelClockAlarm(Context context)
+        private static void CancelClockAlarm(Context context)
         {
             AlarmManager am = (AlarmManager)context.GetSystemService(Context.AlarmService);
             am.Cancel(GetClockRefreshIntent(context));
@@ -340,13 +341,13 @@ namespace SimpleWeather.Droid.App.Widgets
             return mAppWidget1x1.HasInstances(context) || mAppWidget2x2.HasInstances(context) || mAppWidget4x1.HasInstances(context) || mAppWidget4x2.HasInstances(context);
         }
 
-        private void ResizeWidget(WeatherWidgetProvider provider, int appWidgetId, Bundle newOptions)
+        private async Task ResizeWidget(WeatherWidgetProvider provider, int appWidgetId, Bundle newOptions)
         {
             if (Settings.WeatherLoaded)
-                RebuildForecast(provider, appWidgetId, newOptions);
+                await RebuildForecast(provider, appWidgetId, newOptions);
         }
 
-        private async void RefreshWidget(WeatherWidgetProvider provider, int[] appWidgetIds)
+        private async Task RefreshWidget(WeatherWidgetProvider provider, int[] appWidgetIds)
         {
             if (appWidgetIds == null || appWidgetIds.Length == 0)
                 appWidgetIds = mAppWidgetManager.GetAppWidgetIds(provider.ComponentName);
@@ -393,7 +394,7 @@ namespace SimpleWeather.Droid.App.Widgets
             }
         }
 
-        private async void RefreshWidgets()
+        private async Task RefreshWidgets()
         {
             if (Settings.WeatherLoaded)
             {
@@ -693,7 +694,9 @@ namespace SimpleWeather.Droid.App.Widgets
                             updateViews.SetImageViewResource(Resource.Id.condition_pop_label, Resource.Drawable.ic_raindrop);
                     }
                     else
+                    {
                         updateViews.SetViewVisibility(Resource.Id.condition_pop_panel, ViewStates.Gone);
+                    }
 
                     // Open default clock/calendar app
                     if (provider.WidgetType == WidgetType.Widget4x2)
@@ -709,7 +712,7 @@ namespace SimpleWeather.Droid.App.Widgets
             return updateViews;
         }
 
-        private void SetOnRefreshIntent(Context context, WeatherWidgetProvider provider, int appWidgetId, RemoteViews updateViews)
+        private static void SetOnRefreshIntent(Context context, WeatherWidgetProvider provider, int appWidgetId, RemoteViews updateViews)
         {
             Intent refreshIntent = new Intent(context, typeof(WeatherWidgetBroadcastReceiver))
                 .SetAction(ACTION_REFRESHWIDGET)
@@ -720,7 +723,7 @@ namespace SimpleWeather.Droid.App.Widgets
             updateViews?.SetOnClickPendingIntent(Resource.Id.refresh_button, refreshPendingIntent);
         }
 
-        private void SetOnClickIntent(Context context, LocationData location, RemoteViews updateViews)
+        private static void SetOnClickIntent(Context context, LocationData location, RemoteViews updateViews)
         {
             // When user clicks on widget, launch to WeatherNow page
             Intent onClickIntent = new Intent(context.ApplicationContext, typeof(MainActivity))
@@ -729,13 +732,13 @@ namespace SimpleWeather.Droid.App.Widgets
             if (!Settings.HomeData.Equals(location))
                 onClickIntent.PutExtra("shortcut-data", location?.ToJson());
 
-            PendingIntent clickPendingIntent = 
+            PendingIntent clickPendingIntent =
                 PendingIntent.GetActivity(context, location.GetHashCode(), onClickIntent, PendingIntentFlags.UpdateCurrent);
             updateViews?.SetOnClickPendingIntent(Resource.Id.widgetBackground, clickPendingIntent);
         }
 
         // TODO: Merge into function below
-        private async void RebuildForecast(WeatherWidgetProvider provider, int appWidgetId, Bundle newOptions)
+        private async Task RebuildForecast(WeatherWidgetProvider provider, int appWidgetId, Bundle newOptions)
         {
             var weather = WidgetUtils.GetWeatherData(appWidgetId);
 
@@ -890,7 +893,7 @@ namespace SimpleWeather.Droid.App.Widgets
          * @param size Widget size in dp.
          * @return Size in number of cells.
          */
-        private int GetCellsForSize(int size)
+        private static int GetCellsForSize(int size)
         {
             // The hardwired sizes in this function come from the hardwired formula found in
             // Android's UI guidelines for widget design:
@@ -898,7 +901,7 @@ namespace SimpleWeather.Droid.App.Widgets
             return (size + 30) / 70;
         }
 
-        private int GetForecastLength(WidgetType widgetType, int cellWidth)
+        private static int GetForecastLength(WidgetType widgetType, int cellWidth)
         {
             int forecastLength = (widgetType == WidgetType.Widget4x2) ? WIDE_FORECAST_LENGTH : FORECAST_LENGTH;
 

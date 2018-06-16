@@ -8,16 +8,16 @@ using System.Threading.Tasks;
 
 namespace EditManifest
 {
-    class Program
+    public static class Program
     {
-        enum OSVersion
+        private enum OSVersion
         {
             Unknown = -1,
             Android = 0,
             UWP
         }
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             String ConfigMode = "Release";
             String FilePath = String.Empty;
@@ -52,57 +52,58 @@ namespace EditManifest
 
                 if (OSVersion == OSVersion.Unknown)
                 {
-                    Console.WriteLine("Unknown manifest filetype", FilePath);
+                    Console.WriteLine("Unknown manifest filetype");
                     Environment.ExitCode = 1;
                     return;
                 }
 
+                StreamReader sReader = null;
+                StreamWriter sWriter = null;
+
                 try
                 {
+                    var sBuilder = new StringBuilder();
                     var fStream = File.Open(FilePath, FileMode.Open, FileAccess.ReadWrite);
-                    StringBuilder sBuilder = new StringBuilder();
+                    sReader = new StreamReader(fStream);
+                    sWriter = new StreamWriter(fStream);
 
-                    using (StreamReader sReader = new StreamReader(fStream))
-                    using (StreamWriter sWriter = new StreamWriter(fStream))
+                    while (!sReader.EndOfStream)
                     {
-                        while (!sReader.EndOfStream)
+                        var line = sReader.ReadLine();
+                        if (OSVersion == OSVersion.Android)
                         {
-                            var line = sReader.ReadLine();
-                            if (OSVersion == OSVersion.Android)
+                            if ("Debug".Equals(ConfigMode))
                             {
-                                if ("Debug".Equals(ConfigMode))
-                                {
-                                    line = line.Replace("package=\"com.thewizrd.simpleweather\"", "package=\"com.thewizrd.simpleweather_debug\"");
-                                    line = line.Replace("com.thewizrd.simpleweather.", "com.thewizrd.simpleweather_debug.");
-                                }
-                                else
-                                {
-                                    line = line.Replace("package=\"com.thewizrd.simpleweather_debug\"", "package=\"com.thewizrd.simpleweather\"");
-                                    line = line.Replace("com.thewizrd.simpleweather_debug.", "com.thewizrd.simpleweather.");
-                                }
+                                line = line.Replace("package=\"com.thewizrd.simpleweather\"", "package=\"com.thewizrd.simpleweather_debug\"");
+                                line = line.Replace("com.thewizrd.simpleweather.", "com.thewizrd.simpleweather_debug.");
                             }
-                            else if (OSVersion == OSVersion.UWP)
+                            else
                             {
-                                if ("Debug".Equals(ConfigMode))
-                                {
-                                    line = line.Replace("Name=\"49586DaveAntoine.SimpleWeather-Asimpleweatherapp\"", "Name=\"49586com.thewizrd.simpleweather-debug\"");
-                                }
-                                else
-                                {
-                                    line = line.Replace("Name=\"49586com.thewizrd.simpleweather-debug\"", "Name=\"49586DaveAntoine.SimpleWeather-Asimpleweatherapp\"");
-                                }
+                                line = line.Replace("package=\"com.thewizrd.simpleweather_debug\"", "package=\"com.thewizrd.simpleweather\"");
+                                line = line.Replace("com.thewizrd.simpleweather_debug.", "com.thewizrd.simpleweather.");
                             }
-
-                            sBuilder.AppendLine(line);
+                        }
+                        else if (OSVersion == OSVersion.UWP)
+                        {
+                            if ("Debug".Equals(ConfigMode))
+                            {
+                                line = line.Replace("Name=\"49586DaveAntoine.SimpleWeather-Asimpleweatherapp\"", "Name=\"49586com.thewizrd.simpleweather-debug\"");
+                            }
+                            else
+                            {
+                                line = line.Replace("Name=\"49586com.thewizrd.simpleweather-debug\"", "Name=\"49586DaveAntoine.SimpleWeather-Asimpleweatherapp\"");
+                            }
                         }
 
-                        // Wipe file
-                        fStream.SetLength(0);
-
-                        // Write to file
-                        sWriter.Write(sBuilder.ToString());
-                        sWriter.Flush();
+                        sBuilder.AppendLine(line);
                     }
+
+                    // Wipe file
+                    fStream.SetLength(0);
+
+                    // Write to file
+                    sWriter.Write(sBuilder.ToString());
+                    sWriter.Flush();
                 }
                 catch (FileNotFoundException)
                 {
@@ -113,6 +114,11 @@ namespace EditManifest
                 {
                     Console.WriteLine("Error accessing file!!");
                     Environment.ExitCode = 1;
+                }
+                finally
+                {
+                    sWriter?.Dispose();
+                    sReader?.Dispose();
                 }
             }
         }

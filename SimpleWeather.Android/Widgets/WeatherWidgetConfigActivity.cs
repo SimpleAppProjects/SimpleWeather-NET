@@ -45,7 +45,7 @@ namespace SimpleWeather.Droid.App.Widgets
     {
         AppWidgetManager.ActionAppwidgetConfigure
     })]
-    public class WeatherWidgetConfigActivity : AppCompatActivity, ActivityCompat.IOnRequestPermissionsResultCallback
+    public class WeatherWidgetConfigActivity : AppCompatActivity, IDisposable
     {
         // Widget id for ConfigurationActivity
         private int mAppWidgetId = AppWidgetManager.InvalidAppwidgetId;
@@ -83,7 +83,13 @@ namespace SimpleWeather.Droid.App.Widgets
         private const int PERMISSION_LOCATION_REQUEST_CODE = 0;
         private const int SETUP_REQUEST_CODE = 10;
 
-        protected override async void OnCreate(Bundle savedInstanceState)
+        void IDisposable.Dispose()
+        {
+            mActionModeCallback.Dispose();
+            GC.SuppressFinalize(this);
+        }
+
+        protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
 
@@ -116,7 +122,7 @@ namespace SimpleWeather.Droid.App.Widgets
                 new ComboBoxItem(GetString(Resource.String.pref_item_gpslocation), "GPS"),
                 new ComboBoxItem(GetString(Resource.String.label_btn_add_location), "Search")
             };
-            var favs = await Settings.GetFavorites();
+            var favs = Task.Run(Settings.GetFavorites).Result;
             Favorites = new ReadOnlyCollection<LocationData>(favs);
             foreach (LocationData location in Favorites)
             {
@@ -281,9 +287,9 @@ namespace SimpleWeather.Droid.App.Widgets
 
         public override void OnAttachFragment(Android.Support.V4.App.Fragment fragment)
         {
-            if (fragment is LocationSearchFragment)
+            if (fragment is LocationSearchFragment locationSearchFragment)
             {
-                mSearchFragment = (LocationSearchFragment)fragment;
+                mSearchFragment = locationSearchFragment;
                 SetupSearchUi();
             }
         }
@@ -294,11 +300,11 @@ namespace SimpleWeather.Droid.App.Widgets
                 return;
 
             var ft = SupportFragmentManager.BeginTransaction();
-            LocationSearchFragment searchFragment = new LocationSearchFragment();
+            var searchFragment = new LocationSearchFragment();
             searchFragment.SetClickListener((object sender, RecyclerClickEventArgs e) =>
             {
-                LocationQueryAdapter adapter = sender as LocationQueryAdapter;
-                LocationQuery v = (LocationQuery)e.View;
+                var adapter = sender as LocationQueryAdapter;
+                var v = (LocationQuery)e.View;
 
                 if (!String.IsNullOrEmpty(adapter.Dataset[e.Position].LocationQuery))
                     query_vm = adapter.Dataset[e.Position];
@@ -438,15 +444,13 @@ namespace SimpleWeather.Droid.App.Widgets
 
         private void ShowInputMethod(View view)
         {
-            InputMethodManager imm = GetSystemService(
-                    InputMethodService) as InputMethodManager;
+            var imm = GetSystemService(InputMethodService) as InputMethodManager;
             imm?.ToggleSoftInput(0, HideSoftInputFlags.NotAlways);
         }
 
         private void HideInputMethod(View view)
         {
-            InputMethodManager imm = GetSystemService(
-                    InputMethodService) as InputMethodManager;
+            var imm = GetSystemService(InputMethodService) as InputMethodManager;
             if (imm != null && view != null)
             {
                 imm.HideSoftInputFromWindow(view.WindowToken, 0);
@@ -464,23 +468,25 @@ namespace SimpleWeather.Droid.App.Widgets
 
                     if (!String.IsNullOrWhiteSpace(dataJson))
                     {
-                        var locData = LocationData.FromJson(
-                            new Newtonsoft.Json.JsonTextReader(
-                                new System.IO.StringReader(dataJson)));
+                        using (var jsonTextReader = new Newtonsoft.Json.JsonTextReader(
+                                new System.IO.StringReader(dataJson)))
+                        {
+                            var locData = LocationData.FromJson(jsonTextReader);
 
-                        if (locData.locationType == LocationType.Search)
-                        {
-                            // Add location to adapter and select it
-                            Favorites = new ReadOnlyCollection<LocationData>(Favorites.Append(locData).ToList());
-                            var item = new ComboBoxItem(locData.name, locData.query);
-                            var idx = locAdapter.Count - 1;
-                            locAdapter.Insert(item, idx);
-                            locSpinner.SetSelection(idx);
-                        }
-                        else
-                        {
-                            // GPS; set to first selection
-                            locSpinner.SetSelection(0);
+                            if (locData.locationType == LocationType.Search)
+                            {
+                                // Add location to adapter and select it
+                                Favorites = new ReadOnlyCollection<LocationData>(Favorites.Append(locData).ToList());
+                                var item = new ComboBoxItem(locData.name, locData.query);
+                                var idx = locAdapter.Count - 1;
+                                locAdapter.Insert(item, idx);
+                                locSpinner.SetSelection(idx);
+                            }
+                            else
+                            {
+                                // GPS; set to first selection
+                                locSpinner.SetSelection(0);
+                            }
                         }
                     }
                 }
@@ -527,14 +533,16 @@ namespace SimpleWeather.Droid.App.Widgets
                     }
                     return true;
                 case Resource.Id.action_done:
-                    PrepareWidget();
+                    Task.Run(async () => await PrepareWidget());
                     return true;
+                default:
+                    break;
             }
 
             return base.OnOptionsItemSelected(item);
         }
 
-        private async void PrepareWidget()
+        private async Task PrepareWidget()
         {
             // Update Settings
             if (refreshSpinner.SelectedItem is ComboBoxItem refreshItem)
@@ -675,7 +683,7 @@ namespace SimpleWeather.Droid.App.Widgets
                 gpsQuery_vm = view;
 
                 // We got our location data, so setup the widget
-                PrepareWidget();
+                await PrepareWidget();
             }
             else
             {
@@ -707,7 +715,9 @@ namespace SimpleWeather.Droid.App.Widgets
                     location = locMan.GetLastKnownLocation(LocationManager.NetworkProvider);
 
                 if (location == null)
+                {
                     locMan.RequestSingleUpdate(LocationManager.GpsProvider, mLocListnr, null);
+                }
                 else
                 {
                     mLocation = location;
@@ -719,7 +729,9 @@ namespace SimpleWeather.Droid.App.Widgets
                 location = locMan.GetLastKnownLocation(LocationManager.NetworkProvider);
 
                 if (location == null)
+                {
                     locMan.RequestSingleUpdate(LocationManager.NetworkProvider, mLocListnr, null);
+                }
                 else
                 {
                     mLocation = location;
@@ -728,11 +740,14 @@ namespace SimpleWeather.Droid.App.Widgets
             }
             else
             {
-                Toast.MakeText(this, Resource.String.error_retrieve_location, ToastLength.Short).Show();
+                RunOnUiThread(() =>
+                {
+                    Toast.MakeText(this, Resource.String.error_retrieve_location, ToastLength.Short).Show();
+                });
             }
         }
 
-        public override async void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
+        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
         {
             switch (requestCode)
             {
@@ -744,7 +759,7 @@ namespace SimpleWeather.Droid.App.Widgets
                         {
                             // permission was granted, yay!
                             // Do the task you need to do.
-                            await FetchGeoLocation();
+                            Task.Run(async () => await FetchGeoLocation());
                         }
                         else
                         {
@@ -754,6 +769,8 @@ namespace SimpleWeather.Droid.App.Widgets
                         }
                         return;
                     }
+                default:
+                    break;
             }
         }
     }

@@ -243,6 +243,8 @@ namespace SimpleWeather.Droid.Wear
                             connStatusPref.Summary = GetString(Resource.String.status_connected);
                             connStatusPref.PreferenceClick -= ConnStatusPref_PreferenceClick;
                             break;
+                        default:
+                            break;
                     }
                 };
             }
@@ -345,6 +347,8 @@ namespace SimpleWeather.Droid.Wear
                             }
                             return;
                         }
+                    default:
+                        break;
                 }
             }
 
@@ -460,8 +464,6 @@ namespace SimpleWeather.Droid.Wear
 
         public class CreditsFragment : SwipeDismissPreferenceFragment
         {
-            private const int SETTINGS_REQUEST_CODE = 1;
-
             public override void OnCreate(Bundle savedInstanceState)
             {
                 base.OnCreate(savedInstanceState);
@@ -532,7 +534,6 @@ namespace SimpleWeather.Droid.Wear
                 using (StreamReader sReader = new StreamReader(Context.Assets.Open("credits/licenses.txt")))
                 {
                     text = sReader.ReadToEnd();
-                    sReader.Dispose();
                 }
 
                 textview.Text = text;

@@ -13,13 +13,19 @@ using Android.Widget;
 
 namespace SimpleWeather.Droid.Wear.Helpers
 {
-    public class AcceptDenyDialogBuilder
+    public class AcceptDenyDialogBuilder : IDisposable
     {
         private Context mContext;
         private String Message;
         private EventHandler<DialogClickEventArgs> NegativeButtonEvent;
         private EventHandler<DialogClickEventArgs> PositiveButtonEvent;
         private IDialogInterfaceOnClickListener clickListener;
+
+        public void Dispose()
+        {
+            clickListener.Dispose();
+            GC.SuppressFinalize(this);
+        }
 
         public AcceptDenyDialogBuilder(Context context)
         {

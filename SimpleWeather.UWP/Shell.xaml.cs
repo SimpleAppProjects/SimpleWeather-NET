@@ -25,14 +25,15 @@ namespace SimpleWeather.UWP
     {
         public Frame AppFrame { get { return FrameContent; } }
         public static Shell Instance { get; set; }
+
         public Color HamburgerButtonColor
         {
             get { return (CommandBar.Background as SolidColorBrush).Color; }
             set { (CommandBar.Background as SolidColorBrush).Color = value; }
         }
 
-        private List<MenuItem> MainMenuItems { get; set; }
-        private List<MenuItem> OptionMenuItems { get; set; }
+        private List<MenuItem> MainMenuItems { get; }
+        private List<MenuItem> OptionMenuItems { get; }
 
         public Shell()
         {
@@ -80,17 +81,8 @@ namespace SimpleWeather.UWP
         {
             bool suppressNavigate = false;
 
-            if (e.Parameter != null)
-            {
-                string arg = e.Parameter.ToString();
-
-                switch (arg)
-                {
-                    case "suppressNavigate":
-                        suppressNavigate = true;
-                        break;
-                }
-            }
+            if ("suppressNavigate".Equals(e?.Parameter?.ToString()))
+                suppressNavigate = true;
 
             // Navigate to WeatherNow page
             if (AppFrame.Content == null && !suppressNavigate)

@@ -32,7 +32,7 @@ namespace SimpleWeather.Droid.App
 
         public static WeatherAlertsFragment NewInstance(LocationData location)
         {
-            WeatherAlertsFragment fragment = new WeatherAlertsFragment();
+            var fragment = new WeatherAlertsFragment();
             if (location != null)
             {
                 fragment.location = location;
@@ -42,7 +42,7 @@ namespace SimpleWeather.Droid.App
 
         public static WeatherAlertsFragment NewInstance(LocationData location, WeatherNowViewModel weatherViewModel)
         {
-            WeatherAlertsFragment fragment = new WeatherAlertsFragment();
+            var fragment = new WeatherAlertsFragment();
             if (location != null && weatherViewModel != null)
             {
                 fragment.location = location;
@@ -58,9 +58,11 @@ namespace SimpleWeather.Droid.App
             // Create your fragment here
             if (location == null && savedInstanceState != null)
             {
-                location = LocationData.FromJson(
-                    new Newtonsoft.Json.JsonTextReader(
-                        new System.IO.StringReader(savedInstanceState.GetString("data", null))));
+                using (var jsonTextReader = new Newtonsoft.Json.JsonTextReader(
+                        new System.IO.StringReader(savedInstanceState.GetString("data", null))))
+                {
+                    location = LocationData.FromJson(jsonTextReader);
+                }
             }
         }
 
@@ -82,7 +84,7 @@ namespace SimpleWeather.Droid.App
             return view;
         }
 
-        public override async void OnResume()
+        public override void OnResume()
         {
             base.OnResume();
 
@@ -90,16 +92,16 @@ namespace SimpleWeather.Droid.App
             if (this.IsHidden)
                 return;
             else
-                await Initialize();
+                Task.Run(async () => await Initialize());
         }
 
-        public override async void OnHiddenChanged(bool hidden)
+        public override void OnHiddenChanged(bool hidden)
         {
             base.OnHiddenChanged(hidden);
 
             if (!hidden && this.IsVisible)
             {
-                await Initialize();
+                Task.Run(async () => await Initialize());
             }
         }
 
@@ -107,8 +109,11 @@ namespace SimpleWeather.Droid.App
         {
             if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
             {
-                AppCompatActivity?.Window.SetStatusBarColor(
-                    new Color(ContextCompat.GetColor(AppCompatActivity, Resource.Color.colorPrimaryDark)));
+                AppCompatActivity?.RunOnUiThread(() =>
+                {
+                    AppCompatActivity?.Window.SetStatusBarColor(
+                        new Color(ContextCompat.GetColor(AppCompatActivity, Resource.Color.colorPrimaryDark)));
+                });
             }
 
             if (weatherView == null)
@@ -127,14 +132,17 @@ namespace SimpleWeather.Droid.App
 
             if (weatherView != null)
             {
-                locationHeader.Text = weatherView.Location;
-                // use this setting to improve performance if you know that changes
-                // in content do not change the layout size of the RecyclerView
-                recyclerView.HasFixedSize = true;
-                // use a linear layout manager
-                recyclerView.SetLayoutManager(new LinearLayoutManager(AppCompatActivity));
-                // specify an adapter (see also next example)
-                recyclerView.SetAdapter(new WeatherAlertPanelAdapter(weatherView.Extras?.Alerts?.ToList()));
+                AppCompatActivity?.RunOnUiThread(() =>
+                {
+                    locationHeader.Text = weatherView.Location;
+                    // use this setting to improve performance if you know that changes
+                    // in content do not change the layout size of the RecyclerView
+                    recyclerView.HasFixedSize = true;
+                    // use a linear layout manager
+                    recyclerView.SetLayoutManager(new LinearLayoutManager(AppCompatActivity));
+                    // specify an adapter (see also next example)
+                    recyclerView.SetAdapter(new WeatherAlertPanelAdapter(weatherView.Extras?.Alerts?.ToList()));
+                });
             }
         }
 

@@ -936,7 +936,7 @@ namespace SimpleWeather.UWP.Helpers
             }
         }
 
-        public static async void TileUpdater(LocationData location)
+        public static async Task TileUpdater(LocationData location)
         {
             var wloader = new WeatherDataLoader(location);
             await wloader.LoadWeatherData(false);

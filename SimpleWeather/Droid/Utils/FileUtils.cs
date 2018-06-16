@@ -12,53 +12,55 @@ namespace SimpleWeather.Utils
     {
         public async static Task<String> ReadFile(File file)
         {
-            AtomicFile mFile = new AtomicFile(file);
-
-            // Wait for file to be free
-            while (IsFileLocked(file))
+            using (AtomicFile mFile = new AtomicFile(file))
             {
-                await Task.Delay(100);
-            }
-
-            String data;
-
-            using (BufferedReader reader = new BufferedReader(new InputStreamReader(mFile.OpenRead())))
-            {
-                String line = await reader.ReadLineAsync();
-                StringBuilder sBuilder = new StringBuilder();
-
-                while (line != null)
+                // Wait for file to be free
+                while (IsFileLocked(file))
                 {
-                    sBuilder.Append(line).Append("\n");
-                    line = await reader.ReadLineAsync();
+                    await Task.Delay(100);
                 }
 
-                reader.Dispose();
-                data = sBuilder.ToString();
-            }
+                String data;
 
-            return data;
+                using (BufferedReader reader = new BufferedReader(new InputStreamReader(mFile.OpenRead())))
+                {
+                    String line = await reader.ReadLineAsync();
+                    StringBuilder sBuilder = new StringBuilder();
+
+                    while (line != null)
+                    {
+                        sBuilder.Append(line).Append("\n");
+                        line = await reader.ReadLineAsync();
+                    }
+
+                    reader.Dispose();
+                    data = sBuilder.ToString();
+                }
+
+                return data;
+            }
         }
 
         public static async Task WriteFile(String data, File file)
         {
-            AtomicFile mFile = new AtomicFile(file);
-
-            // Wait for file to be free
-            while (IsFileLocked(file))
+            using (AtomicFile mFile = new AtomicFile(file))
             {
-                await Task.Delay(100);
-            }
+                // Wait for file to be free
+                while (IsFileLocked(file))
+                {
+                    await Task.Delay(100);
+                }
 
-            using (System.IO.Stream outputStream = mFile.StartWrite())
-            using (System.IO.StreamWriter writer = new System.IO.StreamWriter(outputStream))
-            {
-                // Clear file before writing
-                outputStream.SetLength(0);
+                using (System.IO.Stream outputStream = mFile.StartWrite())
+                using (System.IO.StreamWriter writer = new System.IO.StreamWriter(outputStream))
+                {
+                    // Clear file before writing
+                    outputStream.SetLength(0);
 
-                await writer.WriteAsync(data);
-                await writer.FlushAsync();
-                mFile.FinishWrite(outputStream);
+                    await writer.WriteAsync(data);
+                    await writer.FlushAsync();
+                    mFile.FinishWrite(outputStream);
+                }
             }
         }
 

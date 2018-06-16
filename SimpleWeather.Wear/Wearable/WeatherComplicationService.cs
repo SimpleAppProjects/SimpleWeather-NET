@@ -231,34 +231,37 @@ namespace SimpleWeather.Droid.Wear.Wearable
                 return complicationIds.Count > 0;
         }
 
-        public override async void OnComplicationUpdate(int complicationId, int type, ComplicationManager manager)
+        public override void OnComplicationUpdate(int complicationId, int type, ComplicationManager manager)
         {
-            ComplicationData complicationData = null;
+            Task.Run(async () =>
+            {
+                ComplicationData complicationData = null;
 
-            if (Settings.WeatherLoaded)
-            {
-                weather = await GetWeather();
-                complicationData = BuildUpdate(type, weather);
-            }
+                if (Settings.WeatherLoaded)
+                {
+                    weather = await GetWeather();
+                    complicationData = BuildUpdate(type, weather);
+                }
 
-            if (complicationData != null)
-            {
-                manager.UpdateComplicationData(complicationId, complicationData);
-                UpdateTime = DateTime.Now;
-            }
-            else
-            {
-                // If no data is sent, we still need to inform the ComplicationManager, so
-                // the update job can finish and the wake lock isn't held any longer.
-                manager.NoUpdateRequired(complicationId);
-            }
+                if (complicationData != null)
+                {
+                    manager.UpdateComplicationData(complicationId, complicationData);
+                    UpdateTime = DateTime.Now;
+                }
+                else
+                {
+                    // If no data is sent, we still need to inform the ComplicationManager, so
+                    // the update job can finish and the wake lock isn't held any longer.
+                    manager.NoUpdateRequired(complicationId);
+                }
 
-            // Add id to list in case it wasn't before
-            if (complicationIds.Count == 0)
-            {
-                complicationIds.Add(complicationId);
-                StartAlarm(App.Context);
-            }
+                // Add id to list in case it wasn't before
+                if (complicationIds.Count == 0)
+                {
+                    complicationIds.Add(complicationId);
+                    StartAlarm(App.Context);
+                }
+            });
         }
 
         private PendingIntent GetTapIntent(Context context)

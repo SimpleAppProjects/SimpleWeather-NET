@@ -39,7 +39,7 @@ namespace SimpleWeather.WeatherData
         };
     }
 
-    public class WeatherManager : IWeatherProviderImpl
+    public sealed class WeatherManager : IWeatherProviderImpl
     {
         private static WeatherManager Instance;
         private static WeatherProviderImpl WeatherProvider;
@@ -91,10 +91,12 @@ namespace SimpleWeather.WeatherData
                 case WeatherAPI.MetNo:
                     providerImpl = new MetnoWeatherProvider();
                     break;
+                default:
+                    break;
             }
 
             if (providerImpl == null)
-                throw new ArgumentNullException("API", "Invalid API name! This API is not supported");
+                throw new ArgumentNullException(nameof(API), "Invalid API name! This API is not supported");
 
             return providerImpl;
         }
