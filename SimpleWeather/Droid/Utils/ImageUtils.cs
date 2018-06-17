@@ -1,7 +1,6 @@
 ﻿#if __ANDROID__
 using System;
 using Android.Graphics;
-using Android.Util;
 using Android.Content.Res;
 using System.IO;
 using Android.Support.V4.Content.Res;
@@ -9,6 +8,7 @@ using Android.Content;
 using Com.Bumptech.Glide.Request.Target;
 using Android.Graphics.Drawables;
 using Android;
+using SimpleWeather.Utils;
 
 namespace SimpleWeather.Droid.Utils
 {
@@ -25,7 +25,7 @@ namespace SimpleWeather.Droid.Utils
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.StackTrace);
+                Logger.WriteLine(LoggerLevel.Error, ex, "SimpleWeather: ImageUtils: BitmapFromAssets: error");
                 bmp = null;
             }
 
@@ -126,7 +126,7 @@ namespace SimpleWeather.Droid.Utils
             catch (Exception ex)
             {
                 dest = null;
-                Log.WriteLine(LogPriority.Error, "CenterCropper", ex.StackTrace);
+                Logger.WriteLine(LoggerLevel.Error, ex, "SimpleWeather: ImageUtils: {0}: error", nameof(CenterCropper));
             }
             finally
             {

@@ -628,7 +628,7 @@ namespace SimpleWeather.UWP
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+                        Logger.WriteLine(LoggerLevel.Error, ex, "WeatherNow: GetWeather error");
                     }
                     finally
                     {

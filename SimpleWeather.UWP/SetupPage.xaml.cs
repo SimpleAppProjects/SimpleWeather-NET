@@ -325,6 +325,7 @@ namespace SimpleWeather.UWP
             }
             catch (Exception ex)
             {
+                Logger.WriteLine(LoggerLevel.Error, ex, "SetupPage: error requesting location permission");
                 System.Diagnostics.Debug.WriteLine(ex.StackTrace);
             }
 
@@ -355,7 +356,7 @@ namespace SimpleWeather.UWP
                             error = new MessageDialog(App.ResLoader.GetString("Error_Location"), App.ResLoader.GetString("Label_ErrorLocation"));
                         await error.ShowAsync();
 
-                        System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+                        Logger.WriteLine(LoggerLevel.Error, ex, "SetupPage: error getting geolocation");
                     }
                     break;
                 case GeolocationAccessStatus.Denied:

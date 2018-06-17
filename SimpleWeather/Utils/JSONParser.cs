@@ -27,7 +27,7 @@ namespace SimpleWeather.Utils
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.StackTrace);
+                Logger.WriteLine(LoggerLevel.Error, ex, "SimpleWeather: JSONParser: error deserializing");
             }
 
             return obj;
@@ -49,7 +49,7 @@ namespace SimpleWeather.Utils
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.StackTrace);
+                Logger.WriteLine(LoggerLevel.Error, ex, "SimpleWeather: JSONParser: error deserializing");
             }
             finally
             {
@@ -80,7 +80,7 @@ namespace SimpleWeather.Utils
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.StackTrace);
+                Logger.WriteLine(LoggerLevel.Error, ex, "SimpleWeather: JSONParser: error deserializing");
             }
             finally
             {
@@ -113,7 +113,7 @@ namespace SimpleWeather.Utils
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.StackTrace);
+                    Logger.WriteLine(LoggerLevel.Error, ex, "SimpleWeather: JSONParser: error deserializing");
                 }
                 finally
                 {
@@ -147,7 +147,7 @@ namespace SimpleWeather.Utils
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.StackTrace);
+                    Logger.WriteLine(LoggerLevel.Error, ex, "SimpleWeather: JSONParser: error deserializing");
                 }
                 finally
                 {
@@ -194,7 +194,7 @@ namespace SimpleWeather.Utils
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.StackTrace);
+                    Logger.WriteLine(LoggerLevel.Error, ex, "SimpleWeather: JSONParser: error deserializing or with file");
                     obj = default(T);
                 }
                 finally
@@ -265,7 +265,7 @@ namespace SimpleWeather.Utils
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.StackTrace);
+                    Logger.WriteLine(LoggerLevel.Error, ex, "SimpleWeather: JSONParser: error serializing or with file");
 
                     if (mFile != null && fStream != null)
                         mFile.FailWrite(fStream);
@@ -312,7 +312,7 @@ namespace SimpleWeather.Utils
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.StackTrace);
+                    Logger.WriteLine(LoggerLevel.Error, ex, "SimpleWeather: CustomJsonConverter: error invoking FromJson method");
                 }
 
                 if (obj != null)
@@ -326,7 +326,14 @@ namespace SimpleWeather.Utils
         {
             var tojson = value.GetType().GetMethod("ToJson");
             if (tojson != null)
+            {
                 writer.WriteValue((string)tojson.Invoke(value, null));
+            }
+            else
+            {
+                Logger.WriteLine(LoggerLevel.Error, "SimpleWeather: CustomJsonConverter: error invoking ToJson method");
+                Logger.WriteLine(LoggerLevel.Error, "SimpleWeather: CustomJsonConverter: object: {0}", value?.ToString());
+            }
         }
     }
 }

@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using SimpleWeather.Utils;
-using System.Diagnostics;
 using System.Globalization;
 #if WINDOWS_UWP
 using SimpleWeather.UWP;
@@ -76,7 +75,7 @@ namespace SimpleWeather.WeatherData
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.StackTrace);
+                Logger.WriteLine(LoggerLevel.Error, ex, "WeatherDataLoader: error getting weather data");
                 weather = null;
             }
 
@@ -228,7 +227,7 @@ namespace SimpleWeather.WeatherData
                 catch (Exception ex)
                 {
                     weather = null;
-                    Debug.WriteLine(ex.StackTrace);
+                    Logger.WriteLine(LoggerLevel.Error, ex, "WeatherDataLoader: error loading saved weather data");
                 }
 
 #if WINDOWS_UWP
@@ -262,7 +261,7 @@ namespace SimpleWeather.WeatherData
             catch (Exception ex)
             {
                 weather = null;
-                Debug.WriteLine(ex.StackTrace);
+                Logger.WriteLine(LoggerLevel.Error, ex, "WeatherDataLoader: error loading saved weather data");
             }
 
 #if WINDOWS_UWP

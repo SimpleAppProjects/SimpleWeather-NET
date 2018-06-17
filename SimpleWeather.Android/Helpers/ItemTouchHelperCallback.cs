@@ -6,6 +6,7 @@ using Android.Support.V4.Content;
 using Android.Support.V7.Widget;
 using Android.Support.V7.Widget.Helper;
 using Android.Views;
+using SimpleWeather.Utils;
 
 namespace SimpleWeather.Droid.App.Helpers
 {
@@ -106,7 +107,7 @@ namespace SimpleWeather.Droid.App.Helpers
             }
             catch (ObjectDisposedException ex)
             {
-                Console.WriteLine(ex.StackTrace);
+                Logger.WriteLine(LoggerLevel.Info, ex, "SimpleWeather: ItemTouchHelperCallback: object disposed error");
             }
 
             base.OnChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);

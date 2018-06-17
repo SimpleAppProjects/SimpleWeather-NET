@@ -13,12 +13,13 @@ using SimpleWeather.WeatherData;
 using Android.Text.Format;
 using Android.OS;
 using Android.Service.Notification;
-using Android.Util;
 
 namespace SimpleWeather.Droid.App.Notifications
 {
     public static class WeatherNotificationBuilder
     {
+        private const string TAG = nameof(WeatherNotificationBuilder);
+
         // Sets an ID for the notification
         private const int PERSISTENT_NOT_ID = 0;
         private const string NOT_CHANNEL_ID = "SimpleWeather.ongoingweather";
@@ -159,7 +160,7 @@ namespace SimpleWeather.Droid.App.Notifications
                 }
                 catch (Exception ex)
                 {
-                    Log.Debug("WeatherNotificationBuilder", ex.StackTrace);
+                    Logger.WriteLine(LoggerLevel.Debug, ex, "SimpleWeather: {0}: error access notifications");
                 }
             }
 

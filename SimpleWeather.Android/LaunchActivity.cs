@@ -5,14 +5,13 @@ using Android.App;
 using Android.Content;
 using Android.OS;
 using Android.Support.V7.App;
-using Android.Util;
 
 namespace SimpleWeather.Droid.App
 {
     [Activity(MainLauncher = true)]
     public class LaunchActivity : AppCompatActivity
     {
-        private static String LOG_TAG = "LaunchActivity";
+        private static String TAG = nameof(LaunchActivity);
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -34,7 +33,7 @@ namespace SimpleWeather.Droid.App
             }
             catch (Exception e)
             {
-                Log.WriteLine(LogPriority.Error, LOG_TAG, e.StackTrace);
+                Logger.WriteLine(LoggerLevel.Error, e, "SimpleWeather: {0}: error loading", TAG);
             }
             finally
             {

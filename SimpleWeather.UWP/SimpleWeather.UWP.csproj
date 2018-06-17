@@ -228,6 +228,9 @@
     <Content Include="Assets\WeatherIcons\png\volcano.png" />
     <Content Include="Assets\WeatherIcons\png\windy.png" />
     <Content Include="Assets\WeatherIcons\weathericons-regular-webfont.ttf" />
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="project.json" />
     <PRIResource Include="Strings\en-US\Resources.resw" />
     <None Include="SimpleWeather.UWP.ruleset" />
@@ -393,8 +396,8 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <SDKReference Include="SQLite.UWP.2015, Version=3.23.1">
-      <Name>SQLite for Universal Windows Platform %28SQLite.UWP.2015, Version=3.23.1%29</Name>
+    <SDKReference Include="SQLite.UWP.2015, Version=3.24.0">
+      <Name>SQLite for Universal Windows Platform %28SQLite.UWP.2015, Version=3.24.0%29</Name>
     </SDKReference>
     <SDKReference Include="WindowsMobile, Version=10.0.14393.0">
       <Name>Windows Mobile Extensions for the UWP %28WindowsMobile, Version=10.0.14393.0%29</Name>

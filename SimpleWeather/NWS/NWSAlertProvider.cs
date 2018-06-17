@@ -2,7 +2,6 @@
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -63,7 +62,7 @@ namespace SimpleWeather.NWS
                 // Load data
                 alerts = new List<WeatherAlert>();
 
-                AlertRootobject root = JSONParser.Deserializer<AlertRootobject>(contentStream);
+                var root = JSONParser.Deserializer<AlertRootobject>(contentStream);
 
                 foreach (Graph result in root.graph)
                 {
@@ -77,7 +76,7 @@ namespace SimpleWeather.NWS
             catch (Exception ex)
             {
                 alerts = new List<WeatherAlert>();
-                Debug.WriteLine(ex.StackTrace);
+                Logger.WriteLine(LoggerLevel.Error, ex, "NWSAlertProvider: error getting weather alert data");
             }
 
             if (alerts == null)

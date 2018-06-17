@@ -129,7 +129,7 @@ namespace SimpleWeather.Utils
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.StackTrace);
+                    Logger.WriteLine(LoggerLevel.Error, ex, "SimpleWeather: Settings.Load(): LastGPSLocation");
                 }
                 finally
                 {
@@ -149,7 +149,7 @@ namespace SimpleWeather.Utils
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.StackTrace);
+                    Logger.WriteLine(LoggerLevel.Error, ex, "SimpleWeather: Settings.Load(): LastGPSLocation");
                 }
                 finally
                 {
@@ -215,7 +215,7 @@ namespace SimpleWeather.Utils
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.StackTrace);
+                Logger.WriteLine(LoggerLevel.Error, ex, "SimpleWeather: Settings.GetWeatherAlertData()");
             }
             finally
             {

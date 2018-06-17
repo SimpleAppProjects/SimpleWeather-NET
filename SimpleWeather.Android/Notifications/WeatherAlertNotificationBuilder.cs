@@ -17,7 +17,6 @@ using System.Collections.Generic;
 using Android.Graphics;
 using System.Threading.Tasks;
 using SimpleWeather.Controls;
-using Android.Util;
 
 namespace SimpleWeather.Droid.App.Notifications
 {
@@ -44,7 +43,7 @@ namespace SimpleWeather.Droid.App.Notifications
 #endif
     public class WeatherAlertNotificationService : JobIntentService
     {
-        private static string TAG = "WeatherAlertNotificationService";
+        private static string TAG = nameof(WeatherAlertNotificationService);
 
         public const string ACTION_CANCELNOTIFICATION = "SimpleWeather.Droid.action.CANCEL_NOTIFICATION";
         public const string ACTION_CANCELALLNOTIFICATIONS = "SimpleWeather.Droid.action.CANCEL_ALL_NOTIFICATIONS";
@@ -115,6 +114,8 @@ namespace SimpleWeather.Droid.App.Notifications
 
     public static class WeatherAlertNotificationBuilder
     {
+        private const string LOG_TAG = nameof(WeatherAlertNotificationBuilder);
+
         // Sets an ID for the notification
         private const string TAG = "SimpleWeather.WeatherAlerts";
         private const int PERSISTENT_NOT_ID = 0;
@@ -166,8 +167,8 @@ namespace SimpleWeather.Droid.App.Notifications
                     mBuilder.SetDeleteIntent(GetDeleteNotificationIntent((int)alertVM.AlertType));
                 }
 
-                if (Build.VERSION.SdkInt >= BuildVersionCodes.N ||
-                    WeatherAlertNotificationService.GetNotificationsCount() > MIN_GROUPCOUNT)
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.N
+                    || WeatherAlertNotificationService.GetNotificationsCount() > MIN_GROUPCOUNT)
                 {
                     mBuilder.SetGroup(TAG);
                 }
@@ -190,12 +191,12 @@ namespace SimpleWeather.Droid.App.Notifications
 
                     if (statNotifs?.Length > 0)
                     {
-                        buildSummary = statNotifs.Where(not => location.query.Equals(not.Tag)).Count() > MIN_GROUPCOUNT;
+                        buildSummary = statNotifs.Count(not => location.query.Equals(not.Tag)) > MIN_GROUPCOUNT;
                     }
                 }
                 catch (Exception ex)
                 {
-                    Log.Debug("WeatherAlertNotificationBuilder", ex.StackTrace);
+                    Logger.WriteLine(LoggerLevel.Debug, ex, "SimpleWeather: {0}: error accessing notifications", LOG_TAG);
                 }
             }
             else

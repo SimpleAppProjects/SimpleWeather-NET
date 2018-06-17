@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using SimpleWeather.Controls;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
-using System.Diagnostics;
 using System.Xml.Serialization;
 #if WINDOWS_UWP
 using SimpleWeather.UWP.Controls;
@@ -91,7 +90,7 @@ namespace SimpleWeather.Metno
             catch (Exception ex)
             {
                 locations = new ObservableCollection<LocationQueryViewModel>();
-                Debug.WriteLine(ex.StackTrace);
+                Logger.WriteLine(LoggerLevel.Error, ex, "MetnoWeatherProvider: error getting locations");
             }
 
             if (locations == null || locations.Count == 0)
@@ -154,8 +153,7 @@ namespace SimpleWeather.Metno
                     });
                 }
 #endif
-
-                Debug.WriteLine(ex.StackTrace);
+                Logger.WriteLine(LoggerLevel.Error, ex, "MetnoWeatherProvider: error getting location");
             }
 
             if (result != null && !String.IsNullOrWhiteSpace(result.query))
@@ -219,8 +217,7 @@ namespace SimpleWeather.Metno
                     });
                 }
 #endif
-
-                Debug.WriteLine(ex.StackTrace);
+                Logger.WriteLine(LoggerLevel.Error, ex, "MetnoWeatherProvider: error getting location");
             }
 
             if (result != null && !String.IsNullOrWhiteSpace(result.l))
@@ -327,7 +324,7 @@ namespace SimpleWeather.Metno
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                 }
 
-                Debug.WriteLine(ex.StackTrace);
+                Logger.WriteLine(LoggerLevel.Error, ex, "MetnoWeatherProvider: error getting weather data");
             }
 
             // End Stream

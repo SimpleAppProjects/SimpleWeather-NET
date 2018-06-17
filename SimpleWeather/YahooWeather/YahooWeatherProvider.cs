@@ -90,7 +90,7 @@ namespace SimpleWeather.WeatherYahoo
             catch (Exception ex)
             {
                 locations = new ObservableCollection<LocationQueryViewModel>();
-                System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+                Logger.WriteLine(LoggerLevel.Error, ex, "YahooWeatherProvider: error getting locations");
             }
 
             if (locations == null || locations.Count == 0)
@@ -156,7 +156,7 @@ namespace SimpleWeather.WeatherYahoo
                     });
                 }
 #endif
-                System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+                Logger.WriteLine(LoggerLevel.Error, ex, "YahooWeatherProvider: error getting location");
             }
 
             if (result != null && !String.IsNullOrWhiteSpace(result.woeid))
@@ -223,7 +223,7 @@ namespace SimpleWeather.WeatherYahoo
                     });
                 }
 #endif
-                System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+                Logger.WriteLine(LoggerLevel.Error, ex, "YahooWeatherProvider: error getting location");
             }
 
             if (result != null && !String.IsNullOrWhiteSpace(result.woeid))
@@ -311,7 +311,7 @@ namespace SimpleWeather.WeatherYahoo
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                 }
 
-                System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+                Logger.WriteLine(LoggerLevel.Error, ex, "YahooWeatherProvider: error getting weather data");
             }
 
             // End Stream
@@ -385,6 +385,8 @@ namespace SimpleWeather.WeatherYahoo
                     case 31: // Clear (Night)
                     case 33: // Fair (Night)
                         isNight = true;
+                        break;
+                    default:
                         break;
                 }
             }
@@ -551,6 +553,8 @@ namespace SimpleWeather.WeatherYahoo
                         if (now < sunrise || now > sunset)
                             isNight = true;
                     }
+                    break;
+                default:
                     break;
             }
 

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using SimpleWeather.Controls;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
-using System.Diagnostics;
 using System.Xml.Serialization;
 #if WINDOWS_UWP
 using SimpleWeather.UWP.Controls;
@@ -64,7 +63,7 @@ namespace SimpleWeather.OpenWeather
                 // Load data
                 locations = new ObservableCollection<LocationQueryViewModel>();
 
-                AC_Rootobject root = JSONParser.Deserializer<AC_Rootobject>(contentStream);
+                var root = JSONParser.Deserializer<AC_Rootobject>(contentStream);
 
                 foreach (AC_RESULT result in root.RESULTS)
                 {
@@ -86,7 +85,7 @@ namespace SimpleWeather.OpenWeather
             catch (Exception ex)
             {
                 locations = new ObservableCollection<LocationQueryViewModel>();
-                Debug.WriteLine(ex.StackTrace);
+                Logger.WriteLine(LoggerLevel.Error, ex, "OpenWeatherMapProvider: error getting locations");
             }
 
             if (locations == null || locations.Count == 0)
@@ -148,8 +147,7 @@ namespace SimpleWeather.OpenWeather
                     });
                 }
 #endif
-
-                Debug.WriteLine(ex.StackTrace);
+                Logger.WriteLine(LoggerLevel.Error, ex, "OpenWeatherMapProvider: error getting location");
             }
 
             if (result != null && !String.IsNullOrWhiteSpace(result.query))
@@ -187,7 +185,7 @@ namespace SimpleWeather.OpenWeather
                 webClient.Dispose();
 
                 // Load data
-                AC_Rootobject root = JSONParser.Deserializer<AC_Rootobject>(contentStream);
+                var root = JSONParser.Deserializer<AC_Rootobject>(contentStream);
                 result = root.RESULTS.FirstOrDefault();
 
                 // End Stream
@@ -213,8 +211,7 @@ namespace SimpleWeather.OpenWeather
                     });
                 }
 #endif
-
-                Debug.WriteLine(ex.StackTrace);
+                Logger.WriteLine(LoggerLevel.Error, ex, "OpenWeatherMapProvider: error getting location");
             }
 
             if (result != null && !String.IsNullOrWhiteSpace(result.l))
@@ -375,7 +372,7 @@ namespace SimpleWeather.OpenWeather
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                 }
 
-                Debug.WriteLine(ex.StackTrace);
+                Logger.WriteLine(LoggerLevel.Error, ex, "OpenWeatherMapProvider: error getting weather data");
             }
 
             // End Stream
@@ -769,6 +766,9 @@ namespace SimpleWeather.OpenWeather
                 // strong wind
                 case "957":
                     WeatherIcon = WeatherIcons.STRONG_WIND;
+                    break;
+
+                default:
                     break;
             }
 

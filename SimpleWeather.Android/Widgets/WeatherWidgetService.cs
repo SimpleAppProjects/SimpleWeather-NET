@@ -22,6 +22,7 @@ using Android.Text;
 using Android.Text.Style;
 using Android.Support.V4.App;
 using SimpleWeather.Droid.App.WeatherAlerts;
+using SimpleWeather.Droid.Helpers;
 
 namespace SimpleWeather.Droid.App.Widgets
 {
@@ -96,11 +97,28 @@ namespace SimpleWeather.Droid.App.Widgets
             mContext = ApplicationContext;
             mAppWidgetManager = AppWidgetManager.GetInstance(mContext);
             wm = WeatherManager.GetInstance();
+
+            var oldHandler = Java.Lang.Thread.DefaultUncaughtExceptionHandler;
+
+            Java.Lang.Thread.DefaultUncaughtExceptionHandler =
+                new UncaughtExceptionHandler((thread, throwable) =>
+                {
+                    Logger.WriteLine(LoggerLevel.Error, throwable, "{0}: Unhandled Exception {1}", TAG, throwable?.Message);
+
+                    if (oldHandler != null)
+                    {
+                        oldHandler.UncaughtException(thread, throwable);
+                    }
+                    else
+                    {
+                        Java.Lang.JavaSystem.Exit(2);
+                    }
+                });
         }
 
         protected override void OnHandleWork(Intent intent)
         {
-            if (ACTION_REFRESHWIDGET.Equals(intent.Action))
+            if (ACTION_REFRESHWIDGET.Equals(intent?.Action))
             {
                 int[] appWidgetIds = intent.GetIntArrayExtra(WeatherWidgetProvider.EXTRA_WIDGET_IDS);
                 WidgetType widgetType = (WidgetType)intent.GetIntExtra(WeatherWidgetProvider.EXTRA_WIDGET_TYPE, -1);
@@ -127,7 +145,7 @@ namespace SimpleWeather.Droid.App.Widgets
                         break;
                 }
             }
-            else if (ACTION_RESIZEWIDGET.Equals(intent.Action))
+            else if (ACTION_RESIZEWIDGET.Equals(intent?.Action))
             {
                 int appWidgetId = intent.GetIntExtra(WeatherWidgetProvider.EXTRA_WIDGET_ID, -1);
                 WidgetType widgetType = (WidgetType)intent.GetIntExtra(WeatherWidgetProvider.EXTRA_WIDGET_TYPE, -1);
@@ -150,45 +168,45 @@ namespace SimpleWeather.Droid.App.Widgets
                         break;
                 }
             }
-            else if (ACTION_STARTALARM.Equals(intent.Action))
+            else if (ACTION_STARTALARM.Equals(intent?.Action))
             {
                 // Start alarm if it hasn't started already
                 StartAlarm(mContext);
             }
-            else if (ACTION_CANCELALARM.Equals(intent.Action))
+            else if (ACTION_CANCELALARM.Equals(intent?.Action))
             {
                 // Cancel all alarms if no widgets exist
                 CancelAlarms(mContext);
             }
-            else if (ACTION_UPDATEALARM.Equals(intent.Action))
+            else if (ACTION_UPDATEALARM.Equals(intent?.Action))
             {
                 // Refresh interval was changed
                 // Update alarm
                 UpdateAlarm(mContext);
             }
-            else if (ACTION_STARTCLOCK.Equals(intent.Action))
+            else if (ACTION_STARTCLOCK.Equals(intent?.Action))
             {
                 // Schedule clock updates
                 StartTickReceiver(mContext);
             }
-            else if (ACTION_CANCELCLOCK.Equals(intent.Action))
+            else if (ACTION_CANCELCLOCK.Equals(intent?.Action))
             {
                 // Cancel clock alarm
                 CancelClockAlarm(mContext);
             }
-            else if (ACTION_UPDATECLOCK.Equals(intent.Action))
+            else if (ACTION_UPDATECLOCK.Equals(intent?.Action))
             {
                 // Update clock widget instances
                 int[] appWidgetIds = intent.GetIntArrayExtra(WeatherWidgetProvider.EXTRA_WIDGET_IDS);
                 RefreshClock(appWidgetIds);
             }
-            else if (ACTION_UPDATEDATE.Equals(intent.Action))
+            else if (ACTION_UPDATEDATE.Equals(intent?.Action))
             {
                 // Update clock widget instances
                 int[] appWidgetIds = intent.GetIntArrayExtra(WeatherWidgetProvider.EXTRA_WIDGET_IDS);
                 RefreshDate(appWidgetIds);
             }
-            else if (ACTION_REFRESHNOTIFICATION.Equals(intent.Action))
+            else if (ACTION_REFRESHNOTIFICATION.Equals(intent?.Action))
             {
                 if (Settings.WeatherLoaded)
                 {
@@ -198,11 +216,11 @@ namespace SimpleWeather.Droid.App.Widgets
                         WeatherNotificationBuilder.UpdateNotification(weather);
                 }
             }
-            else if (ACTION_REMOVENOTIFICATION.Equals(intent.Action))
+            else if (ACTION_REMOVENOTIFICATION.Equals(intent?.Action))
             {
                 WeatherNotificationBuilder.RemoveNotification();
             }
-            else if (ACTION_UPDATEWEATHER.Equals(intent.Action))
+            else if (ACTION_UPDATEWEATHER.Equals(intent?.Action))
             {
                 if (Settings.WeatherLoaded)
                 {
@@ -230,7 +248,7 @@ namespace SimpleWeather.Droid.App.Widgets
                 }
             }
 
-            Console.WriteLine(string.Format("{0}: Intent Action = {1}", TAG, intent.Action));
+            Logger.WriteLine(LoggerLevel.Info, "{0}: Intent Action = {1}", TAG, intent?.Action);
         }
 
         private static PendingIntent GetAlarmIntent(Context context)
@@ -255,7 +273,7 @@ namespace SimpleWeather.Droid.App.Widgets
             am.SetInexactRepeating(AlarmType.ElapsedRealtime, triggerAtTime, intervalMillis, pendingIntent);
             alarmStarted = true;
 
-            Console.WriteLine(string.Format("{0}: Updated alarm", TAG));
+            Logger.WriteLine(LoggerLevel.Info, "{0}: Updated alarm", TAG);
         }
 
         private void CancelAlarms(Context context)
@@ -267,7 +285,7 @@ namespace SimpleWeather.Droid.App.Widgets
                 am.Cancel(GetAlarmIntent(context));
                 alarmStarted = false;
 
-                Console.WriteLine(string.Format("{0}: Canceled alarm", TAG));
+                Logger.WriteLine(LoggerLevel.Info, "{0}: Canceled alarm", TAG);
             }
         }
 
@@ -296,7 +314,7 @@ namespace SimpleWeather.Droid.App.Widgets
             mTickReceiver = new TickReceiver();
             context.RegisterReceiver(mTickReceiver, new IntentFilter(Intent.ActionTimeTick));
 
-            Console.WriteLine(string.Format("{0}: Started tick receiver", TAG));
+            Logger.WriteLine(LoggerLevel.Info, "{0}: Started tick receiver", TAG);
         }
 
         private static void StopTickReceiver(Context context)
@@ -306,7 +324,7 @@ namespace SimpleWeather.Droid.App.Widgets
                 context.UnregisterReceiver(mTickReceiver);
                 mTickReceiver = null;
 
-                Console.WriteLine(string.Format("{0}: Unregistered tick receiver", TAG));
+                Logger.WriteLine(LoggerLevel.Info, "{0}: Unregistered tick receiver", TAG);
             }
         }
 
@@ -315,14 +333,14 @@ namespace SimpleWeather.Droid.App.Widgets
             AlarmManager am = (AlarmManager)context.GetSystemService(Context.AlarmService);
             am.Cancel(GetClockRefreshIntent(context));
 
-            Console.WriteLine(string.Format("{0}: Canceled clock alarm", TAG));
+            Logger.WriteLine(LoggerLevel.Info, "{0}: Canceled clock alarm", TAG);
         }
 
         internal class TickReceiver : BroadcastReceiver
         {
             public override void OnReceive(Context context, Intent intent)
             {
-                if (Intent.ActionTimeTick.Equals(intent.Action))
+                if (Intent.ActionTimeTick.Equals(intent?.Action))
                 {
                     AlarmManager am = (AlarmManager)context.GetSystemService(Context.AlarmService);
                     PendingIntent pendingIntent = GetClockRefreshIntent(context);
@@ -331,7 +349,7 @@ namespace SimpleWeather.Droid.App.Widgets
 
                     StopTickReceiver(context);
 
-                    Console.WriteLine(string.Format("{0}: Receieved tick in receiver", TAG));
+                    Logger.WriteLine(LoggerLevel.Info, "{0}: Receieved tick in receiver", TAG);
                 }
             }
         }
@@ -598,7 +616,7 @@ namespace SimpleWeather.Droid.App.Widgets
 
             mAppWidgetManager.PartiallyUpdateAppWidget(appWidgetIds, views);
 
-            Console.WriteLine(string.Format("{0}: Refreshed clock", TAG));
+            Logger.WriteLine(LoggerLevel.Info, "{0}: Refreshed clock", TAG);
         }
 
         private void RefreshDate(int[] appWidgetIds)
@@ -611,7 +629,7 @@ namespace SimpleWeather.Droid.App.Widgets
             views.SetTextViewText(Resource.Id.date_panel, DateTime.Now.ToString("ddd, MMM dd"));
             mAppWidgetManager.PartiallyUpdateAppWidget(appWidgetIds, views);
 
-            Console.WriteLine(string.Format("{0}: Refreshed date", TAG));
+            Logger.WriteLine(LoggerLevel.Info, "{0}: Refreshed date", TAG);
         }
 
         private static PendingIntent GetDefaultCalendarIntent(Context context)
@@ -976,7 +994,7 @@ namespace SimpleWeather.Droid.App.Widgets
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                Logger.WriteLine(LoggerLevel.Error, ex, ex.Message);
             }
 
             return weather;

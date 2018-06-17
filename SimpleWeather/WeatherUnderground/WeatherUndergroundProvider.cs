@@ -9,7 +9,6 @@ using SimpleWeather.Controls;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System.Xml.Serialization;
-using System.Diagnostics;
 #if WINDOWS_UWP
 using SimpleWeather.UWP.Controls;
 using Windows.Storage.Streams;
@@ -64,7 +63,7 @@ namespace SimpleWeather.WeatherUnderground
                 // Load data
                 locations = new ObservableCollection<LocationQueryViewModel>();
 
-                AC_Rootobject root = JSONParser.Deserializer<AC_Rootobject>(contentStream);
+                var root = JSONParser.Deserializer<AC_Rootobject>(contentStream);
 
                 foreach (AC_RESULT result in root.RESULTS)
                 {
@@ -87,7 +86,7 @@ namespace SimpleWeather.WeatherUnderground
             catch (Exception ex)
             {
                 locations = new ObservableCollection<LocationQueryViewModel>();
-                Debug.WriteLine(ex.StackTrace);
+                Logger.WriteLine(LoggerLevel.Error, ex, "WeatherUndergroundProvider: error getting locations");
             }
 
             if (locations == null || locations.Count == 0)
@@ -151,7 +150,7 @@ namespace SimpleWeather.WeatherUnderground
                 }
 #endif
 
-                Debug.WriteLine(ex.StackTrace);
+                Logger.WriteLine(LoggerLevel.Error, ex, "WeatherUndergroundProvider: error getting location");
             }
 
             if (result != null && !String.IsNullOrWhiteSpace(result.query))
@@ -216,7 +215,7 @@ namespace SimpleWeather.WeatherUnderground
                 }
 #endif
 
-                Debug.WriteLine(ex.StackTrace);
+                Logger.WriteLine(LoggerLevel.Error, ex, "WeatherUndergroundProvider: error getting location");
             }
 
             if (result != null && !String.IsNullOrWhiteSpace(result.l))
@@ -386,7 +385,7 @@ namespace SimpleWeather.WeatherUnderground
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                 }
 
-                Debug.WriteLine(ex.StackTrace);
+                Logger.WriteLine(LoggerLevel.Error, ex, "WeatherUndergroundProvider: error getting weather data");
             }
 
             // End Stream
@@ -494,7 +493,7 @@ namespace SimpleWeather.WeatherUnderground
             catch (Exception ex)
             {
                 alerts = new List<WeatherAlert>();
-                Debug.WriteLine(ex.StackTrace);
+                Logger.WriteLine(LoggerLevel.Error, ex, "WeatherUndergroundProvider: error getting weather alert data");
             }
 
             if (alerts == null)

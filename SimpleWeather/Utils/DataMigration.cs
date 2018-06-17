@@ -54,7 +54,7 @@ namespace SimpleWeather.Utils
                 }
                 catch (JsonSerializationException jsEx)
                 {
-                    Console.WriteLine(jsEx.StackTrace);
+                    Logger.WriteLine(LoggerLevel.Error, jsEx, "SimpleWeather: DataMigration: location json error");
                     locationData = null;
                 }
 
@@ -78,7 +78,7 @@ namespace SimpleWeather.Utils
                 }
                 catch (JsonSerializationException jsEx)
                 {
-                    Console.WriteLine(jsEx.StackTrace);
+                    Logger.WriteLine(LoggerLevel.Error, jsEx, "SimpleWeather: DataMigration: weather json error");
                     if (oldWeather == null)
                         oldWeather = new OrderedDictionary();
                 }

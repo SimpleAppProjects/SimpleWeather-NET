@@ -5,7 +5,6 @@ using SimpleWeather.UWP.WeatherAlerts;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -89,7 +88,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
         {
             // TODO: Add code to notify the background task that it is cancelled.
             cts.Cancel();
-            Debug.WriteLine("Background " + sender.Task.Name + " Cancel Requested...");
+            Logger.WriteLine(LoggerLevel.Info, "Background " + sender.Task.Name + " Cancel Requested...");
         }
 
         public static async Task RequestAppTrigger()
@@ -108,7 +107,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
             }
             else
             {
-                Debug.WriteLine("BackgroundTaskHandler: Can't trigger ApplicationTrigger, background access not allowed");
+                Logger.WriteLine(LoggerLevel.Error, "{0}: Can't trigger ApplicationTrigger, background access not allowed", taskName);
             }
         }
 
@@ -170,12 +169,12 @@ namespace SimpleWeather.UWP.BackgroundTasks
             }
             catch (OperationCanceledException cancelEx)
             {
-                Debug.WriteLine(cancelEx.ToString());
+                Logger.WriteLine(LoggerLevel.Info, cancelEx, "{0}: GetWeather cancelled", taskName);
                 return null;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.ToString());
+                Logger.WriteLine(LoggerLevel.Error, ex, "{0}: GetWeather error", taskName);
             }
 
             return weather;
@@ -214,7 +213,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine(ex.StackTrace);
+                        Logger.WriteLine(LoggerLevel.Error, ex, "{0}: error requesting location permission", taskName);
                     }
                     finally
                     {

@@ -18,6 +18,7 @@ using Android.Support.Wearable.Complications;
 using Android.Views;
 using Android.Widget;
 using SimpleWeather.Controls;
+using SimpleWeather.Droid.Helpers;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 
@@ -37,7 +38,7 @@ namespace SimpleWeather.Droid.Wear.Wearable
     [Service(Exported = false, Enabled = true, Permission = "android.permission.BIND_JOB_SERVICE")]
     public class WeatherComplicationIntentService : JobIntentService
     {
-        private const string TAG = "WeatherComplicationIntentService";
+        private const string TAG = nameof(WeatherComplicationIntentService);
 
         public const string ACTION_UPDATECOMPLICATIONS = "SimpleWeather.Droid.Wear.action.UPDATE_COMPLICATIONS";
         public const string ACTION_STARTALARM = "SimpleWeather.Droid.Wear.action.START_ALARM";
@@ -67,6 +68,23 @@ namespace SimpleWeather.Droid.Wear.Wearable
             mContext = ApplicationContext;
             updateRequester = new ProviderUpdateRequester(mContext,
                 new ComponentName(mContext, Java.Lang.Class.FromType(typeof(WeatherComplicationService))));
+
+            var oldHandler = Java.Lang.Thread.DefaultUncaughtExceptionHandler;
+
+            Java.Lang.Thread.DefaultUncaughtExceptionHandler =
+                new UncaughtExceptionHandler((thread, throwable) =>
+                {
+                    Logger.WriteLine(LoggerLevel.Error, throwable, "SimpleWeather: {0}: UncaughtException", TAG);
+
+                    if (oldHandler != null)
+                    {
+                        oldHandler.UncaughtException(thread, throwable);
+                    }
+                    else
+                    {
+                        Java.Lang.JavaSystem.Exit(2);
+                    }
+                });
         }
 
         protected override void OnHandleWork(Intent intent)
@@ -117,7 +135,7 @@ namespace SimpleWeather.Droid.Wear.Wearable
             am.SetInexactRepeating(AlarmType.ElapsedRealtime, triggerAtTime, intervalMillis, pendingIntent);
             alarmStarted = true;
 
-            Console.WriteLine(string.Format("{0}: Updated alarm", TAG));
+            Logger.WriteLine(LoggerLevel.Info, "{0}: Updated alarm", TAG);
         }
 
         private void CancelAlarms(Context context)
@@ -129,7 +147,7 @@ namespace SimpleWeather.Droid.Wear.Wearable
                 am.Cancel(GetAlarmIntent(context));
                 alarmStarted = false;
 
-                Console.WriteLine(string.Format("{0}: Canceled alarm", TAG));
+                Logger.WriteLine(LoggerLevel.Info, "{0}: Canceled alarm", TAG);
             }
         }
 
@@ -154,7 +172,7 @@ namespace SimpleWeather.Droid.Wear.Wearable
     [MetaData(MetadataKeyUpdatePeriodSeconds, Value = "0")]
     public class WeatherComplicationService : ComplicationProviderService
     {
-        private const string TAG = "WeatherComplicationService";
+        private const string TAG = nameof(WeatherComplicationService);
 
         private Context mContext;
 
@@ -181,6 +199,23 @@ namespace SimpleWeather.Droid.Wear.Wearable
 
             if (complicationIds == null)
                 complicationIds = new List<int>();
+
+            var oldHandler = Java.Lang.Thread.DefaultUncaughtExceptionHandler;
+
+            Java.Lang.Thread.DefaultUncaughtExceptionHandler =
+                new UncaughtExceptionHandler((thread, throwable) =>
+                {
+                    Logger.WriteLine(LoggerLevel.Error, throwable, "SimpleWeather: {0}: UncaughtException", TAG);
+
+                    if (oldHandler != null)
+                    {
+                        oldHandler.UncaughtException(thread, throwable);
+                    }
+                    else
+                    {
+                        Java.Lang.JavaSystem.Exit(2);
+                    }
+                });
         }
 
         internal static int[] GetComplicationIds()
@@ -325,7 +360,7 @@ namespace SimpleWeather.Droid.Wear.Wearable
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                Logger.WriteLine(LoggerLevel.Error, ex, "SimpleWeather: {0}: GetWeather: error", TAG);
             }
 
             return weather;

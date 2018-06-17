@@ -11,10 +11,10 @@ using Android.Gms.Common.Apis;
 using Android.Gms.Wearable;
 using Android.OS;
 using Android.Runtime;
-using Android.Util;
 using Android.Views;
 using Android.Widget;
 using SimpleWeather.Droid.App.Widgets;
+using SimpleWeather.Droid.Helpers;
 using SimpleWeather.Utils;
 
 namespace SimpleWeather.Droid.App
@@ -58,6 +58,23 @@ namespace SimpleWeather.Droid.App
 
             if (!mGoogleApiClient.IsConnected)
                 mGoogleApiClient.Connect();
+
+            var oldHandler = Java.Lang.Thread.DefaultUncaughtExceptionHandler;
+
+            Java.Lang.Thread.DefaultUncaughtExceptionHandler =
+                new UncaughtExceptionHandler((thread, throwable) =>
+                {
+                    Logger.WriteLine(LoggerLevel.Error, throwable, "SimpleWeather: {0}: UncaughtException", TAG);
+
+                    if (oldHandler != null)
+                    {
+                        oldHandler.UncaughtException(thread, throwable);
+                    }
+                    else
+                    {
+                        Java.Lang.JavaSystem.Exit(2);
+                    }
+                });
         }
 
         public void OnConnected(Bundle connectionHint)
@@ -97,12 +114,12 @@ namespace SimpleWeather.Droid.App
 
         public void OnConnectionSuspended(int cause)
         {
-            Log.Debug(TAG, "onConnectionSuspended(): connection to location client suspended: " + cause);
+            Logger.WriteLine(LoggerLevel.Debug, "{0}: onConnectionSuspended(): connection to location client suspended: " + cause, TAG);
         }
 
         public void OnConnectionFailed(ConnectionResult result)
         {
-            Log.Error(TAG, "onConnectionFailed(): " + result);
+            Logger.WriteLine(LoggerLevel.Debug, "{0}: onConnectionFailed(): " + result, TAG);
         }
 
         public override void OnDataChanged(DataEventBuffer dataEvents)
@@ -226,17 +243,17 @@ namespace SimpleWeather.Droid.App
                     return;
             }
 
-            PutDataMapRequest mapRequest = PutDataMapRequest.Create(WearableHelper.SettingsPath);
+            var mapRequest = PutDataMapRequest.Create(WearableHelper.SettingsPath);
             mapRequest.DataMap.PutString("API", Settings.API);
             mapRequest.DataMap.PutString("API_KEY", Settings.API_KEY);
             mapRequest.DataMap.PutBoolean("KeyVerified", Settings.KeyVerified);
             mapRequest.DataMap.PutBoolean("FollowGPS", Settings.FollowGPS);
             mapRequest.DataMap.PutLong("update_time", DateTime.UtcNow.Ticks);
-            PutDataRequest request = mapRequest.AsPutDataRequest();
+            var request = mapRequest.AsPutDataRequest();
             if (urgent) request.SetUrgent();
             await WearableClass.DataApi.PutDataItem(mGoogleApiClient, request);
 
-            Log.Info(TAG, "CreateSettingsDataRequest(): urgent: ", urgent.ToString());
+            Logger.WriteLine(LoggerLevel.Info, "{0}: CreateSettingsDataRequest(): urgent: {1}", TAG, urgent.ToString());
         }
 
         private async Task CreateLocationDataRequest(bool urgent)
@@ -262,7 +279,7 @@ namespace SimpleWeather.Droid.App
             if (urgent) request.SetUrgent();
             await WearableClass.DataApi.PutDataItem(mGoogleApiClient, request);
 
-            Log.Info(TAG, "CreateLocationDataRequest(): urgent: ", urgent.ToString());
+            Logger.WriteLine(LoggerLevel.Info, "{0}: CreateLocationDataRequest(): urgent: {1}", TAG, urgent.ToString());
         }
 
         private async Task CreateWeatherDataRequest(bool urgent)
@@ -318,7 +335,7 @@ namespace SimpleWeather.Droid.App
                 if (urgent) request.SetUrgent();
                 await WearableClass.DataApi.PutDataItem(mGoogleApiClient, request);
 
-                Log.Info(TAG, "CreateWeatherDataRequest(): urgent: ", urgent.ToString());
+                Logger.WriteLine(LoggerLevel.Info, "{0}: CreateWeatherDataRequest(): urgent: {1}", TAG, urgent.ToString());
             }
         }
 

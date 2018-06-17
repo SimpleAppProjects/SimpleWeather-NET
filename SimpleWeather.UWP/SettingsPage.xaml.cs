@@ -324,7 +324,7 @@ namespace SimpleWeather.UWP
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+                    Logger.WriteLine(LoggerLevel.Error, ex, "SettingsPage: error getting location permission");
                 }
 
                 // Setup error just in case

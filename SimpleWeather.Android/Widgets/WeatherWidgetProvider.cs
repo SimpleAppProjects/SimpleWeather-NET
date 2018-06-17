@@ -7,6 +7,7 @@ using Android.OS;
 using Android.Views;
 using Android.Widget;
 using Android.Appwidget;
+using SimpleWeather.Utils;
 
 namespace SimpleWeather.Droid.App.Widgets
 {
@@ -44,7 +45,7 @@ namespace SimpleWeather.Droid.App.Widgets
 
         public override void OnReceive(Context context, Intent intent)
         {
-            if (Intent.ActionBootCompleted.Equals(intent.Action))
+            if (Intent.ActionBootCompleted.Equals(intent?.Action))
             {
                 // Reset weather update time
                 SimpleWeather.Utils.Settings.UpdateTime = DateTime.MinValue;
@@ -52,29 +53,29 @@ namespace SimpleWeather.Droid.App.Widgets
                 WeatherWidgetService.EnqueueWork(context, new Intent(context, typeof(WeatherWidgetService))
                     .SetAction(WeatherWidgetService.ACTION_STARTALARM));
             }
-            else if (Intent.ActionLocaleChanged.Equals(intent.Action))
+            else if (Intent.ActionLocaleChanged.Equals(intent?.Action))
             {
                 UpdateWidgets(context, null);
             }
-            else if (ACTION_SHOWREFRESH.Equals(intent.Action))
+            else if (ACTION_SHOWREFRESH.Equals(intent?.Action))
             {
                 // Update widgets
                 int[] appWidgetIds = intent.GetIntArrayExtra(EXTRA_WIDGET_IDS);
                 ShowRefresh(context, appWidgetIds);
             }
-            else if (ACTION_REFRESHWIDGETS.Equals(intent.Action))
+            else if (ACTION_REFRESHWIDGETS.Equals(intent?.Action))
             {
                 // Update widgets
                 int[] appWidgetIds = intent.GetIntArrayExtra(EXTRA_WIDGET_IDS);
                 UpdateWidgets(context, appWidgetIds);
             }
-            else if (AppWidgetManager.ActionAppwidgetUpdate.Equals(intent.Action))
+            else if (AppWidgetManager.ActionAppwidgetUpdate.Equals(intent?.Action))
             {
                 UpdateWidgets(context, null);
             }
             else
             {
-                Console.WriteLine("{0}: Unhandled action: {1}", TAG, intent.Action);
+                Logger.WriteLine(LoggerLevel.Info, "{0}: Unhandled action: {1}", TAG, intent?.Action);
                 base.OnReceive(context, intent);
             }
         }
@@ -322,7 +323,7 @@ namespace SimpleWeather.Droid.App.Widgets
 
         public override void OnReceive(Context context, Intent intent)
         {
-            string action = intent.Action;
+            string action = intent?.Action;
 
             if (Intent.ActionTimeChanged.Equals(action)
                 || Intent.ActionTimezoneChanged.Equals(action))

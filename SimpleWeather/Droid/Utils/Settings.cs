@@ -1,7 +1,6 @@
 ﻿#if __ANDROID__
 using Android.App;
 using Android.Content;
-using Android.Util;
 using Java.IO;
 #if __ANDROID_WEAR__
 using SimpleWeather.Droid.Wear;
@@ -18,7 +17,7 @@ namespace SimpleWeather.Utils
 {
     public static partial class Settings
     {
-        private static readonly String LOG_TAG = nameof(Settings);
+        private static readonly String TAG = nameof(Settings);
 
         // Shared Settings
         private static ISharedPreferences preferences = App.Preferences;
@@ -229,7 +228,7 @@ namespace SimpleWeather.Utils
             }
             catch (Exception e)
             {
-                Log.WriteLine(LogPriority.Error, LOG_TAG, e.StackTrace);
+                Logger.WriteLine(LoggerLevel.Info, e, "SimpleWeather: {0}: error reading API key file", TAG);
             }
             finally
             {
@@ -241,7 +240,7 @@ namespace SimpleWeather.Utils
                     }
                     catch (Exception e)
                     {
-                        Log.WriteLine(LogPriority.Error, LOG_TAG, e.StackTrace);
+                        Logger.WriteLine(LoggerLevel.Error, e, "SimpleWeather: {0}: error closing reader", TAG);
                     }
                 }
             }

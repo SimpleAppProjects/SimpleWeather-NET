@@ -108,6 +108,7 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <AndroidAsset Include="Assets\NLog.config" />
     <None Include="SimpleWeather.Android.ruleset" />
     <ProguardConfiguration Include="proguard.cfg" />
     <None Include="Resources\AboutResources.txt" />
@@ -1596,6 +1597,15 @@
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>11.0.2</Version>
+    </PackageReference>
+    <PackageReference Include="NLog">
+      <Version>4.5.6</Version>
+    </PackageReference>
+    <PackageReference Include="NLog.Config">
+      <Version>4.5.6</Version>
+    </PackageReference>
+    <PackageReference Include="NLog.Schema">
+      <Version>4.5.6</Version>
     </PackageReference>
     <PackageReference Include="NodaTime">
       <Version>2.2.6</Version>

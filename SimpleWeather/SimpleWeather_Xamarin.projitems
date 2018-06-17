@@ -26,6 +26,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Droid\Helpers\LocationListener.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Droid\Helpers\RecyclerClickEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Droid\Adapters\LocationQueryAdapter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Droid\Helpers\UncaughtExceptionHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Droid\Utils\FileUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Droid\Utils\ImageUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Droid\Utils\Pair.cs" />
@@ -47,6 +48,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\DBUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\FileUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\JSONParser.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\Logger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Settings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.cs" />

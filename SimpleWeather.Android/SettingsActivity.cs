@@ -63,7 +63,7 @@ namespace SimpleWeather.Droid.App
 
             if (SupportFragmentManager.FindFragmentById(Android.Resource.Id.Content) is SettingsFragment fragment)
             {
-                ListPreference keyPref = fragment.FindPreference(KEY_API) as ListPreference;
+                var keyPref = fragment.FindPreference(KEY_API) as ListPreference;
                 if (String.IsNullOrWhiteSpace(Settings.API_KEY) && WeatherData.WeatherManager.IsKeyRequired(keyPref.Value))
                 {
                     // Set keyentrypref color to red
@@ -130,7 +130,7 @@ namespace SimpleWeather.Droid.App
                 followGps = (SwitchPreferenceCompat)FindPreference(KEY_FOLLOWGPS);
                 followGps.PreferenceChange += (object sender, Preference.PreferenceChangeEventArgs e) =>
                 {
-                    SwitchPreferenceCompat pref = e.Preference as SwitchPreferenceCompat;
+                    var pref = e.Preference as SwitchPreferenceCompat;
                     if ((bool)e.NewValue)
                     {
                         if (ContextCompat.CheckSelfPermission(Activity, Manifest.Permission.AccessFineLocation) != Permission.Granted &&
@@ -155,9 +155,9 @@ namespace SimpleWeather.Droid.App
                 providerPref.SetEntries(providers.Select(provider => provider.Display).ToArray());
                 providerPref.SetEntryValues(providers.Select(provider => provider.Value).ToArray());
                 providerPref.Persistent = false;
-                providerPref.PreferenceChange += (object sender, Preference.PreferenceChangeEventArgs e) => 
+                providerPref.PreferenceChange += (object sender, Preference.PreferenceChangeEventArgs e) =>
                 {
-                    ListPreference pref = e.Preference as ListPreference;
+                    var pref = e.Preference as ListPreference;
 
                     if (WeatherData.WeatherManager.IsKeyRequired(e.NewValue.ToString()))
                     {
@@ -219,7 +219,7 @@ namespace SimpleWeather.Droid.App
                 onGoingNotification = (SwitchPreferenceCompat)FindPreference(KEY_ONGOINGNOTIFICATION);
                 onGoingNotification.PreferenceChange += (object sender, Preference.PreferenceChangeEventArgs e) =>
                 {
-                    SwitchPreferenceCompat pref = e.Preference as SwitchPreferenceCompat;
+                    var pref = e.Preference as SwitchPreferenceCompat;
                     var context = App.Context;
 
                     // On-going notification
@@ -257,7 +257,7 @@ namespace SimpleWeather.Droid.App
                 alertNotification = (SwitchPreferenceCompat)FindPreference(KEY_USEALERTS);
                 alertNotification.PreferenceChange += (object sender, Preference.PreferenceChangeEventArgs e) =>
                 {
-                    SwitchPreferenceCompat pref = e.Preference as SwitchPreferenceCompat;
+                    var pref = e.Preference as SwitchPreferenceCompat;
                     var context = App.Context;
 
                     // Alert notification
@@ -277,7 +277,7 @@ namespace SimpleWeather.Droid.App
 
             public override void OnDisplayPreferenceDialog(Preference preference)
             {
-                const String TAG = "KeyEntryPreferenceDialogFragment";
+                const String TAG = nameof(KeyEntryPreferenceDialogFragment);
 
                 if (FragmentManager.FindFragmentByTag(TAG) != null)
                     return;
@@ -323,7 +323,7 @@ namespace SimpleWeather.Droid.App
                 {
                     var keyVerified = Settings.KeyVerified;
 
-                    ForegroundColorSpan colorSpan = new ForegroundColorSpan(keyVerified ?
+                    var colorSpan = new ForegroundColorSpan(keyVerified ?
                         Color.Green : Color.Red);
                     ISpannable summary = new SpannableString(keyVerified ?
                         GetString(Resource.String.message_keyverified) : GetString(Resource.String.message_keyinvalid));
@@ -362,7 +362,7 @@ namespace SimpleWeather.Droid.App
             private void UpdateAlertPreference(bool enable)
             {
                 alertNotification.Enabled = enable;
-                alertNotification.Summary = enable ? 
+                alertNotification.Summary = enable ?
                     Activity.GetString(Resource.String.pref_summary_alerts) : Activity.GetString(Resource.String.pref_summary_alerts_disabled);
             }
 
@@ -387,10 +387,11 @@ namespace SimpleWeather.Droid.App
                                 // functionality that depends on this permission.
                                 Toast.MakeText(Activity, Resource.String.error_location_denied, ToastLength.Short).Show();
                                 followGps.Checked = false;
-                                Console.WriteLine(Settings.FollowGPS);
                             }
                             return;
                         }
+                    default:
+                        break;
                 }
             }
 
@@ -399,7 +400,7 @@ namespace SimpleWeather.Droid.App
                 base.OnResume();
 
                 // Title
-                AppCompatActivity activity = (AppCompatActivity)Activity;
+                var activity = (AppCompatActivity)Activity;
                 activity.SupportActionBar.Title = GetString(Resource.String.title_activity_settings);
 
                 // Register listener
@@ -448,7 +449,7 @@ namespace SimpleWeather.Droid.App
                     return;
 
                 Context context = Activity;
-                
+
                 switch (key)
                 {
                     // Weather Provider changed
@@ -494,7 +495,7 @@ namespace SimpleWeather.Droid.App
 
             public static new KeyEntryPreferenceDialogFragment NewInstance(String key)
             {
-                KeyEntryPreferenceDialogFragment fragment = new KeyEntryPreferenceDialogFragment();
+                var fragment = new KeyEntryPreferenceDialogFragment();
                 Bundle b = new Bundle(1);
                 b.PutString(ArgKey, key);
                 fragment.Arguments = b;
@@ -511,8 +512,8 @@ namespace SimpleWeather.Droid.App
             public override void SetupDialog(Android.App.Dialog dialog, int style)
             {
                 base.SetupDialog(dialog, style);
-                AlertDialog alertdialog = dialog as AlertDialog;
-                alertdialog.ShowEvent += (s, e) => 
+                var alertdialog = dialog as AlertDialog;
+                alertdialog.ShowEvent += (s, e) =>
                 {
                     View posButton = alertdialog.GetButton((int)DialogButtonType.Positive);
                     View negButton = alertdialog.GetButton((int)DialogButtonType.Negative);
@@ -565,7 +566,7 @@ namespace SimpleWeather.Droid.App
                 base.OnResume();
 
                 // Title
-                AppCompatActivity activity = (AppCompatActivity)Activity;
+                var activity = (AppCompatActivity)Activity;
                 activity.SupportActionBar.Title = GetString(Resource.String.pref_title_about);
             }
         }
@@ -583,7 +584,7 @@ namespace SimpleWeather.Droid.App
                 base.OnResume();
 
                 // Title
-                AppCompatActivity activity = (AppCompatActivity)Activity;
+                var activity = (AppCompatActivity)Activity;
                 activity.SupportActionBar.Title = GetString(Resource.String.pref_title_credits);
             }
         }
@@ -601,7 +602,7 @@ namespace SimpleWeather.Droid.App
                 base.OnResume();
 
                 // Title
-                AppCompatActivity activity = (AppCompatActivity)Activity;
+                var activity = (AppCompatActivity)Activity;
                 activity.SupportActionBar.Title = GetString(Resource.String.pref_title_oslibs);
             }
         }

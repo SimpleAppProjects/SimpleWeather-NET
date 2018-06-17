@@ -9,6 +9,7 @@ using SimpleWeather.Utils;
 using System.Threading.Tasks;
 using System.Threading;
 using Android.OS;
+using SimpleWeather.Droid.Helpers;
 
 namespace SimpleWeather.Droid.App
 {
@@ -53,6 +54,28 @@ namespace SimpleWeather.Droid.App
             ApplicationState = AppState.Closed;
             mActivitiesStarted = 0;
 
+            Logger.WriteLine(LoggerLevel.Info, "Started logger...");
+
+            AndroidEnvironment.UnhandledExceptionRaiser += App_UnhandledExceptionRaiser;
+            AppDomain.CurrentDomain.UnhandledException += AppDomain_UnhandledException;
+
+            var oldHandler = Java.Lang.Thread.DefaultUncaughtExceptionHandler;
+
+            Java.Lang.Thread.DefaultUncaughtExceptionHandler =
+                new UncaughtExceptionHandler((thread, throwable) =>
+                {
+                    Logger.WriteLine(LoggerLevel.Error, throwable, "SimpleWeather: Unhandled Exception {0}", throwable?.Message);
+
+                    if (oldHandler != null)
+                    {
+                        oldHandler.UncaughtException(thread, throwable);
+                    }
+                    else
+                    {
+                        Java.Lang.JavaSystem.Exit(2);
+                    }
+                });
+
             // Initialize preference listener
             SharedPreferenceListener = new Settings.SettingsListener();
 
@@ -64,10 +87,21 @@ namespace SimpleWeather.Droid.App
                 Thread.Sleep(100);
         }
 
+        private void AppDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Logger.WriteLine(LoggerLevel.Error, (Exception)e.ExceptionObject, "SimpleWeather: Unhandled Exception");
+        }
+
+        private void App_UnhandledExceptionRaiser(object sender, RaiseThrowableEventArgs e)
+        {
+            Logger.WriteLine(LoggerLevel.Error, e.Exception, "SimpleWeather: Unhandled Exception {0}", e?.Exception?.Message);
+        }
+
         public override void OnTerminate()
         {
             base.OnTerminate();
             UnregisterActivityLifecycleCallbacks(this);
+            Logger.ForceShutdown();
         }
 
         public void OnActivityCreated(Activity activity, Bundle savedInstanceState)

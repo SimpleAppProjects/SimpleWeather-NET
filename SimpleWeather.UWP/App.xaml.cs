@@ -44,6 +44,7 @@ namespace SimpleWeather.UWP
             this.Suspending += OnSuspending;
             this.EnteredBackground += OnEnteredBackground;
             this.LeavingBackground += OnLeavingBackground;
+            this.UnhandledException += OnUnhandledException;
         }
 
         public static bool IsInBackground { get; private set; } = true;
@@ -166,6 +167,8 @@ namespace SimpleWeather.UWP
                 //this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
+            Logger.WriteLine(LoggerLevel.Info, "Started logger...");
+
             var Dispatcher = CoreApplication.MainView.CoreWindow.Dispatcher;
 
             // App loaded for first time
@@ -357,6 +360,11 @@ namespace SimpleWeather.UWP
             //TODO: Save application state and stop any background activity
             deferral.Complete();
             Initialized = false;
+        }
+
+        private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Logger.WriteLine(LoggerLevel.Error, e.Exception, "Unhandled Exception {0}", e.Message);
         }
     }
 }

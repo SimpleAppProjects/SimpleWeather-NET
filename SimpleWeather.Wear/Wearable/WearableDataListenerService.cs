@@ -19,6 +19,7 @@ using Android.Util;
 using Android.Views;
 using Android.Widget;
 using Google.Android.Wearable.Intent;
+using SimpleWeather.Droid.Helpers;
 using SimpleWeather.Droid.Wear.Helpers;
 using SimpleWeather.Droid.Wear.Wearable;
 using SimpleWeather.Utils;
@@ -33,7 +34,7 @@ namespace SimpleWeather.Droid.Wear
         CapabilityApi.ActionCapabilityChanged
     },
         DataScheme = "wear", DataHost = "*")]
-    public class WearableDataListenerService : WearableListenerService, 
+    public class WearableDataListenerService : WearableListenerService,
         GoogleApiClient.IOnConnectionFailedListener,
         GoogleApiClient.IConnectionCallbacks
     {
@@ -75,6 +76,23 @@ namespace SimpleWeather.Droid.Wear
 
             if (!mGoogleApiClient.IsConnected)
                 mGoogleApiClient.Connect();
+
+            var oldHandler = Java.Lang.Thread.DefaultUncaughtExceptionHandler;
+
+            Java.Lang.Thread.DefaultUncaughtExceptionHandler =
+                new UncaughtExceptionHandler((thread, throwable) =>
+                {
+                    Logger.WriteLine(LoggerLevel.Error, throwable, "SimpleWeather: {0}: UncaughtException", TAG);
+
+                    if (oldHandler != null)
+                    {
+                        oldHandler.UncaughtException(thread, throwable);
+                    }
+                    else
+                    {
+                        Java.Lang.JavaSystem.Exit(2);
+                    }
+                });
         }
 
         public void OnConnected(Bundle connectionHint)
@@ -126,12 +144,12 @@ namespace SimpleWeather.Droid.Wear
 
         public void OnConnectionSuspended(int cause)
         {
-            Log.Debug(TAG, "onConnectionSuspended(): connection to location client suspended: " + cause);
+            Logger.WriteLine(LoggerLevel.Debug, "SimpleWeather: {0}: onConnectionSuspended(): connection to location client suspended: " + cause, TAG);
         }
 
         public void OnConnectionFailed(ConnectionResult result)
         {
-            Log.Error(TAG, "onConnectionFailed(): " + result);
+            Logger.WriteLine(LoggerLevel.Error, "SimpleWeather: {0}: onConnectionFailed(): " + result, TAG);
 
             mConnectionStatus = WearConnectionStatus.Disconnected;
 

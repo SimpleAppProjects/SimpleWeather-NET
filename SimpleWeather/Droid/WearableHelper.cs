@@ -3,7 +3,7 @@ using Android.App;
 using Android.Content.PM;
 using Android.Gms.Common;
 using Android.Gms.Wearable;
-using Android.Util;
+using SimpleWeather.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -24,7 +24,7 @@ namespace SimpleWeather.Droid
         Connected
     }
 
-    public class WearableHelper
+    public static class WearableHelper
     {
         // Name of capability listed in Phone app's wear.xml
         public const String CAPABILITY_PHONE_APP = "com.thewizrd.simpleweather_phone_app";
@@ -51,14 +51,15 @@ namespace SimpleWeather.Droid
                 var queryResult = GoogleApiAvailability.Instance.IsGooglePlayServicesAvailable(Application.Context);
                 if (queryResult == ConnectionResult.Success)
                 {
-                    Log.Info("App", "Google Play Services is installed on this device.");
+                    Logger.WriteLine(LoggerLevel.Info, "App: Google Play Services is installed on this device.");
                     return true;
                 }
 
                 if (GoogleApiAvailability.Instance.IsUserResolvableError(queryResult))
                 {
                     var errorString = GoogleApiAvailability.Instance.GetErrorString(queryResult);
-                    Log.Error("App", "There is a problem with Google Play Services on this device: {0} - {1}",
+                    Logger.WriteLine(LoggerLevel.Info,
+                        "App: There is a problem with Google Play Services on this device: {0} - {1}",
                               queryResult, errorString);
                 }
 
