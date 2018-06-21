@@ -137,8 +137,6 @@ namespace SimpleWeather.UWP
         {
             base.OnBackgroundActivated(args);
 
-            var deferral = args.TaskInstance.GetDeferral();
-
             Initialize(args).ContinueWith((t) =>
             {
                 switch (args.TaskInstance.Task.Name)
@@ -149,8 +147,6 @@ namespace SimpleWeather.UWP
                     default:
                         break;
                 }
-
-                deferral.Complete();
             });
         }
 
@@ -258,9 +254,6 @@ namespace SimpleWeather.UWP
 
         private async Task Initialize(IActivatedEventArgs e)
         {
-            if (Initialized)
-                return;
-
             var Dispatcher = CoreApplication.MainView.CoreWindow.Dispatcher;
 
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>

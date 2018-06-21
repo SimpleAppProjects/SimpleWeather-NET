@@ -127,7 +127,7 @@ namespace SimpleWeather.Droid.App.Notifications
             }
         }
 
-        public static void ShowRefresh()
+        public static void ShowRefresh(bool show)
         {
             // Gets an instance of the NotificationManager service
             NotificationManager mNotifyMgr = (NotificationManager)App.Context.GetSystemService(App.NotificationService);
@@ -172,8 +172,8 @@ namespace SimpleWeather.Droid.App.Notifications
             else
                 updateViews = mNotification.ContentView;
 
-            updateViews.SetViewVisibility(Resource.Id.refresh_button, ViewStates.Gone);
-            updateViews.SetViewVisibility(Resource.Id.refresh_progress, ViewStates.Visible);
+            updateViews.SetViewVisibility(Resource.Id.refresh_button, show ? ViewStates.Gone : ViewStates.Visible);
+            updateViews.SetViewVisibility(Resource.Id.refresh_progress, show ? ViewStates.Visible : ViewStates.Gone);
 
             mNotification.ContentView = updateViews;
 

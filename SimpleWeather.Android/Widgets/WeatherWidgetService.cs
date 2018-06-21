@@ -23,6 +23,7 @@ using Android.Text.Style;
 using Android.Support.V4.App;
 using SimpleWeather.Droid.App.WeatherAlerts;
 using SimpleWeather.Droid.Helpers;
+using System.Threading;
 
 namespace SimpleWeather.Droid.App.Widgets
 {
@@ -83,6 +84,8 @@ namespace SimpleWeather.Droid.App.Widgets
         private const int MEDIUM_FORECAST_LENGTH = 4; // 4-day
         private const int WIDE_FORECAST_LENGTH = 5; // 5-day
 
+        private CancellationTokenSource cts;
+
         public static void EnqueueWork(Context context, Intent work)
         {
             EnqueueWork(context,
@@ -114,141 +117,169 @@ namespace SimpleWeather.Droid.App.Widgets
                         Java.Lang.JavaSystem.Exit(2);
                     }
                 });
+
+            cts = new CancellationTokenSource();
+        }
+
+        public override void OnDestroy()
+        {
+            if (Settings.OnGoingNotification && Build.VERSION.SdkInt >= BuildVersionCodes.M)
+                WeatherNotificationBuilder.ShowRefresh(false);
+
+            Logger.WriteLine(LoggerLevel.Info, "{0}: destroying service and cancelling tasks...", TAG);
+
+            try
+            {
+                cts?.Cancel();
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLine(LoggerLevel.Error, ex, "{0}: Error cancelling task...", TAG);
+            }
+
+            base.OnDestroy();
         }
 
         protected override void OnHandleWork(Intent intent)
         {
-            if (ACTION_REFRESHWIDGET.Equals(intent?.Action))
+            try
             {
-                int[] appWidgetIds = intent.GetIntArrayExtra(WeatherWidgetProvider.EXTRA_WIDGET_IDS);
-                WidgetType widgetType = (WidgetType)intent.GetIntExtra(WeatherWidgetProvider.EXTRA_WIDGET_TYPE, -1);
-
-                switch (widgetType)
+                if (ACTION_REFRESHWIDGET.Equals(intent?.Action))
                 {
-                    case WidgetType.Widget1x1:
-                        Task.Run(async () => await RefreshWidget(mAppWidget1x1, appWidgetIds));
-                        break;
-                    case WidgetType.Widget2x2:
-                        Task.Run(async () => await RefreshWidget(mAppWidget2x2, appWidgetIds));
-                        break;
-                    case WidgetType.Widget4x1:
-                        Task.Run(async () => await RefreshWidget(mAppWidget4x1, appWidgetIds));
-                        break;
-                    case WidgetType.Widget4x2:
-                        Task.Run(async () => await RefreshWidget(mAppWidget4x2, appWidgetIds));
-                        break;
-                    // We don't know the widget type to update,
-                    // so just update all
-                    case WidgetType.Unknown:
-                    default:
-                        Task.Run(async () => await RefreshWidgets());
-                        break;
-                }
-            }
-            else if (ACTION_RESIZEWIDGET.Equals(intent?.Action))
-            {
-                int appWidgetId = intent.GetIntExtra(WeatherWidgetProvider.EXTRA_WIDGET_ID, -1);
-                WidgetType widgetType = (WidgetType)intent.GetIntExtra(WeatherWidgetProvider.EXTRA_WIDGET_TYPE, -1);
-                Bundle newOptions = intent.GetBundleExtra(WeatherWidgetProvider.EXTRA_WIDGET_OPTIONS);
+                    int[] appWidgetIds = intent.GetIntArrayExtra(WeatherWidgetProvider.EXTRA_WIDGET_IDS);
+                    WidgetType widgetType = (WidgetType)intent.GetIntExtra(WeatherWidgetProvider.EXTRA_WIDGET_TYPE, -1);
 
-                switch (widgetType)
-                {
-                    case WidgetType.Widget1x1:
-                    default:
-                        // Widget resizes itself; no need to adjust
-                        break;
-                    case WidgetType.Widget2x2:
-                        Task.Run(async () => await ResizeWidget(mAppWidget2x2, appWidgetId, newOptions));
-                        break;
-                    case WidgetType.Widget4x1:
-                        Task.Run(async () => await ResizeWidget(mAppWidget4x1, appWidgetId, newOptions));
-                        break;
-                    case WidgetType.Widget4x2:
-                        Task.Run(async () => await ResizeWidget(mAppWidget4x2, appWidgetId, newOptions));
-                        break;
-                }
-            }
-            else if (ACTION_STARTALARM.Equals(intent?.Action))
-            {
-                // Start alarm if it hasn't started already
-                StartAlarm(mContext);
-            }
-            else if (ACTION_CANCELALARM.Equals(intent?.Action))
-            {
-                // Cancel all alarms if no widgets exist
-                CancelAlarms(mContext);
-            }
-            else if (ACTION_UPDATEALARM.Equals(intent?.Action))
-            {
-                // Refresh interval was changed
-                // Update alarm
-                UpdateAlarm(mContext);
-            }
-            else if (ACTION_STARTCLOCK.Equals(intent?.Action))
-            {
-                // Schedule clock updates
-                StartTickReceiver(mContext);
-            }
-            else if (ACTION_CANCELCLOCK.Equals(intent?.Action))
-            {
-                // Cancel clock alarm
-                CancelClockAlarm(mContext);
-            }
-            else if (ACTION_UPDATECLOCK.Equals(intent?.Action))
-            {
-                // Update clock widget instances
-                int[] appWidgetIds = intent.GetIntArrayExtra(WeatherWidgetProvider.EXTRA_WIDGET_IDS);
-                RefreshClock(appWidgetIds);
-            }
-            else if (ACTION_UPDATEDATE.Equals(intent?.Action))
-            {
-                // Update clock widget instances
-                int[] appWidgetIds = intent.GetIntArrayExtra(WeatherWidgetProvider.EXTRA_WIDGET_IDS);
-                RefreshDate(appWidgetIds);
-            }
-            else if (ACTION_REFRESHNOTIFICATION.Equals(intent?.Action))
-            {
-                if (Settings.WeatherLoaded)
-                {
-                    var weather = Task.Run(GetWeather).Result;
-
-                    if (Settings.OnGoingNotification && weather != null)
-                        WeatherNotificationBuilder.UpdateNotification(weather);
-                }
-            }
-            else if (ACTION_REMOVENOTIFICATION.Equals(intent?.Action))
-            {
-                WeatherNotificationBuilder.RemoveNotification();
-            }
-            else if (ACTION_UPDATEWEATHER.Equals(intent?.Action))
-            {
-                if (Settings.WeatherLoaded)
-                {
-                    // Send broadcast to signal update
-                    if (WidgetsExist(App.Context))
-                        SendBroadcast(new Intent(WeatherWidgetProvider.ACTION_SHOWREFRESH));
-                    // NOTE: Don't try to show refresh for pre-M devices
-                    // If app gets killed, instance of notif is lost & view is reset
-                    // and might get stuck
-                    if (Settings.OnGoingNotification && Build.VERSION.SdkInt >= BuildVersionCodes.M)
-                        WeatherNotificationBuilder.ShowRefresh();
-
-                    if (WidgetsExist(App.Context))
-                        Task.Run(async () => await RefreshWidgets());
-
-                    // Update for home
-                    var weather = Task.Run(GetWeather).Result;
-                    if (weather != null)
+                    switch (widgetType)
                     {
-                        if (Settings.OnGoingNotification)
-                            WeatherNotificationBuilder.UpdateNotification(weather);
-                        if (Settings.ShowAlerts && wm.SupportsAlerts && weather != null)
-                            Task.Run(async () => await WeatherAlertHandler.PostAlerts(Settings.HomeData, weather.weather_alerts));
+                        case WidgetType.Widget1x1:
+                            Task.Run(async () => await RefreshWidget(mAppWidget1x1, appWidgetIds));
+                            break;
+                        case WidgetType.Widget2x2:
+                            Task.Run(async () => await RefreshWidget(mAppWidget2x2, appWidgetIds));
+                            break;
+                        case WidgetType.Widget4x1:
+                            Task.Run(async () => await RefreshWidget(mAppWidget4x1, appWidgetIds));
+                            break;
+                        case WidgetType.Widget4x2:
+                            Task.Run(async () => await RefreshWidget(mAppWidget4x2, appWidgetIds));
+                            break;
+                        // We don't know the widget type to update,
+                        // so just update all
+                        case WidgetType.Unknown:
+                        default:
+                            Task.Run(async () => await RefreshWidgets());
+                            break;
                     }
                 }
-            }
+                else if (ACTION_RESIZEWIDGET.Equals(intent?.Action))
+                {
+                    int appWidgetId = intent.GetIntExtra(WeatherWidgetProvider.EXTRA_WIDGET_ID, -1);
+                    WidgetType widgetType = (WidgetType)intent.GetIntExtra(WeatherWidgetProvider.EXTRA_WIDGET_TYPE, -1);
+                    Bundle newOptions = intent.GetBundleExtra(WeatherWidgetProvider.EXTRA_WIDGET_OPTIONS);
 
-            Logger.WriteLine(LoggerLevel.Info, "{0}: Intent Action = {1}", TAG, intent?.Action);
+                    switch (widgetType)
+                    {
+                        case WidgetType.Widget1x1:
+                        default:
+                            // Widget resizes itself; no need to adjust
+                            break;
+                        case WidgetType.Widget2x2:
+                            Task.Run(async () => await ResizeWidget(mAppWidget2x2, appWidgetId, newOptions));
+                            break;
+                        case WidgetType.Widget4x1:
+                            Task.Run(async () => await ResizeWidget(mAppWidget4x1, appWidgetId, newOptions));
+                            break;
+                        case WidgetType.Widget4x2:
+                            Task.Run(async () => await ResizeWidget(mAppWidget4x2, appWidgetId, newOptions));
+                            break;
+                    }
+                }
+                else if (ACTION_STARTALARM.Equals(intent?.Action))
+                {
+                    // Start alarm if it hasn't started already
+                    StartAlarm(mContext);
+                }
+                else if (ACTION_CANCELALARM.Equals(intent?.Action))
+                {
+                    // Cancel all alarms if no widgets exist
+                    CancelAlarms(mContext);
+                }
+                else if (ACTION_UPDATEALARM.Equals(intent?.Action))
+                {
+                    // Refresh interval was changed
+                    // Update alarm
+                    UpdateAlarm(mContext);
+                }
+                else if (ACTION_STARTCLOCK.Equals(intent?.Action))
+                {
+                    // Schedule clock updates
+                    StartTickReceiver(mContext);
+                }
+                else if (ACTION_CANCELCLOCK.Equals(intent?.Action))
+                {
+                    // Cancel clock alarm
+                    CancelClockAlarm(mContext);
+                }
+                else if (ACTION_UPDATECLOCK.Equals(intent?.Action))
+                {
+                    // Update clock widget instances
+                    int[] appWidgetIds = intent.GetIntArrayExtra(WeatherWidgetProvider.EXTRA_WIDGET_IDS);
+                    RefreshClock(appWidgetIds);
+                }
+                else if (ACTION_UPDATEDATE.Equals(intent?.Action))
+                {
+                    // Update clock widget instances
+                    int[] appWidgetIds = intent.GetIntArrayExtra(WeatherWidgetProvider.EXTRA_WIDGET_IDS);
+                    RefreshDate(appWidgetIds);
+                }
+                else if (ACTION_REFRESHNOTIFICATION.Equals(intent?.Action))
+                {
+                    if (Settings.WeatherLoaded)
+                    {
+                        var weather = Task.Run(GetWeather).Result;
+
+                        if (Settings.OnGoingNotification && weather != null)
+                            WeatherNotificationBuilder.UpdateNotification(weather);
+                    }
+                }
+                else if (ACTION_REMOVENOTIFICATION.Equals(intent?.Action))
+                {
+                    WeatherNotificationBuilder.RemoveNotification();
+                }
+                else if (ACTION_UPDATEWEATHER.Equals(intent?.Action))
+                {
+                    if (Settings.WeatherLoaded)
+                    {
+                        // Send broadcast to signal update
+                        if (WidgetsExist(App.Context))
+                            SendBroadcast(new Intent(WeatherWidgetProvider.ACTION_SHOWREFRESH));
+                        // NOTE: Don't try to show refresh for pre-M devices
+                        // If app gets killed, instance of notif is lost & view is reset
+                        // and might get stuck
+                        if (Settings.OnGoingNotification && Build.VERSION.SdkInt >= BuildVersionCodes.M)
+                            WeatherNotificationBuilder.ShowRefresh(true);
+
+                        if (WidgetsExist(App.Context))
+                            Task.Run(async () => await RefreshWidgets());
+
+                        // Update for home
+                        var weather = Task.Run(GetWeather).Result;
+                        if (weather != null)
+                        {
+                            if (Settings.OnGoingNotification)
+                                WeatherNotificationBuilder.UpdateNotification(weather);
+                            if (Settings.ShowAlerts && wm.SupportsAlerts && weather != null)
+                                Task.Run(async () => await WeatherAlertHandler.PostAlerts(Settings.HomeData, weather.weather_alerts));
+                        }
+                    }
+                }
+
+                Logger.WriteLine(LoggerLevel.Info, "{0}: Intent Action = {1}", TAG, intent?.Action);
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLine(LoggerLevel.Error, ex, "{0}: exception occurred...", TAG);
+            }
         }
 
         private static PendingIntent GetAlarmIntent(Context context)
@@ -375,10 +406,15 @@ namespace SimpleWeather.Droid.App.Widgets
                 foreach (int id in appWidgetIds)
                 {
                     var locData = WidgetUtils.GetLocationData(id);
+
+                    cts.Token.ThrowIfCancellationRequested();
+
                     Weather weather = null;
 
                     if (locData != null)
                     {
+                        cts.Token.ThrowIfCancellationRequested();
+
                         if (locData.Equals(Settings.HomeData))
                         {
                             weather = await GetWeather();
@@ -425,10 +461,15 @@ namespace SimpleWeather.Droid.App.Widgets
                     foreach (int id in appWidgetIds)
                     {
                         var locData = WidgetUtils.GetLocationData(id);
+
+                        cts.Token.ThrowIfCancellationRequested();
+
                         Weather weather = null;
 
                         if (locData != null)
                         {
+                            cts.Token.ThrowIfCancellationRequested();
+
                             if (locData.Equals(Settings.HomeData))
                             {
                                 weather = await GetWeather();
@@ -462,10 +503,15 @@ namespace SimpleWeather.Droid.App.Widgets
                     foreach (int id in appWidgetIds)
                     {
                         var locData = WidgetUtils.GetLocationData(id);
+
+                        cts.Token.ThrowIfCancellationRequested();
+
                         Weather weather = null;
 
                         if (locData != null)
                         {
+                            cts.Token.ThrowIfCancellationRequested();
+
                             if (locData.Equals(Settings.HomeData))
                             {
                                 weather = await GetWeather();
@@ -499,10 +545,15 @@ namespace SimpleWeather.Droid.App.Widgets
                     foreach (int id in appWidgetIds)
                     {
                         var locData = WidgetUtils.GetLocationData(id);
+
+                        cts.Token.ThrowIfCancellationRequested();
+
                         Weather weather = null;
 
                         if (locData != null)
                         {
+                            cts.Token.ThrowIfCancellationRequested();
+
                             if (locData.Equals(Settings.HomeData))
                             {
                                 weather = await GetWeather();
@@ -536,10 +587,15 @@ namespace SimpleWeather.Droid.App.Widgets
                     foreach (int id in appWidgetIds)
                     {
                         var locData = WidgetUtils.GetLocationData(id);
+
+                        cts.Token.ThrowIfCancellationRequested();
+
                         Weather weather = null;
 
                         if (locData != null)
                         {
+                            cts.Token.ThrowIfCancellationRequested();
+
                             if (locData.Equals(Settings.HomeData))
                             {
                                 weather = await GetWeather();
@@ -758,13 +814,22 @@ namespace SimpleWeather.Droid.App.Widgets
         // TODO: Merge into function below
         private async Task RebuildForecast(WeatherWidgetProvider provider, int appWidgetId, Bundle newOptions)
         {
+            cts.Token.ThrowIfCancellationRequested();
+
             var weather = WidgetUtils.GetWeatherData(appWidgetId);
+
+            cts.Token.ThrowIfCancellationRequested();
 
             if (weather == null)
             {
                 var locData = WidgetUtils.GetLocationData(appWidgetId);
+
+                cts.Token.ThrowIfCancellationRequested();
+
                 if (locData != null)
                 {
+                    cts.Token.ThrowIfCancellationRequested();
+
                     var wloader = new WeatherDataLoader(locData);
                     await wloader.LoadWeatherData(false);
                     weather = wloader.GetWeather();
@@ -980,6 +1045,8 @@ namespace SimpleWeather.Droid.App.Widgets
                 if (Settings.FollowGPS)
                     await UpdateLocation();
 
+                cts.Token.ThrowIfCancellationRequested();
+
                 var wloader = new WeatherDataLoader(Settings.HomeData);
                 await wloader.LoadWeatherData(false);
 
@@ -992,9 +1059,15 @@ namespace SimpleWeather.Droid.App.Widgets
                     Settings.UpdateTime = DateTime.Now;
                 }
             }
+            catch (System.OperationCanceledException cancelEx)
+            {
+                Logger.WriteLine(LoggerLevel.Error, cancelEx, "{0}: GetWeather cancelled", TAG);
+                return null;
+            }
             catch (Exception ex)
             {
-                Logger.WriteLine(LoggerLevel.Error, ex, ex.Message);
+                Logger.WriteLine(LoggerLevel.Error, ex, "{0}: GetWeather error", TAG);
+                return null;
             }
 
             return weather;
@@ -1018,15 +1091,17 @@ namespace SimpleWeather.Droid.App.Widgets
 
                 Android.Locations.Location location = null;
 
-                if (isGPSEnabled || isNetEnabled)
+                if (isGPSEnabled || isNetEnabled && !cts.IsCancellationRequested)
                 {
                     Criteria locCriteria = new Criteria() { Accuracy = Accuracy.Coarse, CostAllowed = false, PowerRequirement = Power.Low };
                     string provider = locMan.GetBestProvider(locCriteria, true);
                     location = locMan.GetLastKnownLocation(provider);
 
-                    if (location != null)
+                    if (location != null && !cts.IsCancellationRequested)
                     {
                         LocationData lastGPSLocData = await Settings.GetLastGPSLocData();
+
+                        if (cts.IsCancellationRequested) return locationChanged;
 
                         // Check previous location difference
                         if (lastGPSLocData.query != null &&
@@ -1044,13 +1119,15 @@ namespace SimpleWeather.Droid.App.Widgets
 
                             if (String.IsNullOrEmpty(query_vm.LocationQuery))
                                 query_vm = new LocationQueryViewModel();
-                        });
+                        }, cts.Token);
 
                         if (String.IsNullOrWhiteSpace(query_vm.LocationQuery))
                         {
                             // Stop since there is no valid query
                             return false;
                         }
+
+                        if (cts.IsCancellationRequested) return locationChanged;
 
                         // Save oldkey
                         string oldkey = lastGPSLocData.query;

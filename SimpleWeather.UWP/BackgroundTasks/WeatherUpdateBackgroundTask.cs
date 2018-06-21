@@ -38,42 +38,49 @@ namespace SimpleWeather.UWP.BackgroundTasks
 
             Task.Run(async () =>
             {
-                if (Settings.WeatherLoaded)
+                try
                 {
-                    // Retrieve weather data.
-                    var weather = await GetWeather();
-
-                    if (cts.IsCancellationRequested) return;
-
-                    // Update the live tile with data.
-                    if (weather != null)
-                        WeatherTileCreator.TileUpdater(Settings.HomeData, weather);
-
-                    if (cts.IsCancellationRequested) return;
-
-                    // Update secondary tiles
-                    var tiles = await SecondaryTile.FindAllAsync();
-                    foreach (SecondaryTile tile in tiles)
+                    if (Settings.WeatherLoaded)
                     {
-                        var locations = await Settings.GetLocationData();
-                        var location = locations.FirstOrDefault(
-                            loc => loc.query.Equals(SecondaryTileUtils.GetQueryFromId(tile.TileId)));
-
-                        if (location != null)
-                            await WeatherTileCreator.TileUpdater(location);
+                        // Retrieve weather data.
+                        var weather = await GetWeather();
 
                         if (cts.IsCancellationRequested) return;
+
+                        // Update the live tile with data.
+                        if (weather != null)
+                            WeatherTileCreator.TileUpdater(Settings.HomeData, weather);
+
+                        if (cts.IsCancellationRequested) return;
+
+                        // Update secondary tiles
+                        var tiles = await SecondaryTile.FindAllAsync();
+                        foreach (SecondaryTile tile in tiles)
+                        {
+                            var locations = await Settings.GetLocationData();
+                            var location = locations.FirstOrDefault(
+                                loc => loc.query.Equals(SecondaryTileUtils.GetQueryFromId(tile.TileId)));
+
+                            if (location != null)
+                                await WeatherTileCreator.TileUpdater(location);
+
+                            if (cts.IsCancellationRequested) return;
+                        }
+
+                        // Post alerts if setting is on
+                        if (Settings.ShowAlerts && wm.SupportsAlerts && weather != null)
+                            await WeatherAlertHandler.PostAlerts(Settings.HomeData, weather.weather_alerts);
+
+                        if (cts.IsCancellationRequested) return;
+
+                        // Set update time
+                        if (weather != null)
+                            Settings.UpdateTime = DateTime.Now;
                     }
-
-                    // Post alerts if setting is on
-                    if (Settings.ShowAlerts && wm.SupportsAlerts && weather != null)
-                        await WeatherAlertHandler.PostAlerts(Settings.HomeData, weather.weather_alerts);
-
-                    if (cts.IsCancellationRequested) return;
-
-                    // Set update time
-                    if (weather != null)
-                        Settings.UpdateTime = DateTime.Now;
+                }
+                catch (Exception ex)
+                {
+                    Logger.WriteLine(LoggerLevel.Error, ex, "{0}: exception occurred...", taskName);
                 }
             }).ContinueWith((t) =>
             {
@@ -87,7 +94,15 @@ namespace SimpleWeather.UWP.BackgroundTasks
         private void OnCanceled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason)
         {
             // TODO: Add code to notify the background task that it is cancelled.
-            cts.Cancel();
+            try
+            {
+                cts?.Cancel();
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLine(LoggerLevel.Error, ex, "{0}: Error cancelling task...", taskName);
+            }
+
             Logger.WriteLine(LoggerLevel.Info, "Background " + sender.Task.Name + " Cancel Requested...");
         }
 
@@ -175,6 +190,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
             catch (Exception ex)
             {
                 Logger.WriteLine(LoggerLevel.Error, ex, "{0}: GetWeather error", taskName);
+                return null;
             }
 
             return weather;
@@ -192,7 +208,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                 try
                 {
                     cts.Token.ThrowIfCancellationRequested();
-                    newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10));
+                    newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10)).AsTask(cts.Token);
                 }
                 catch (OperationCanceledException)
                 {
@@ -205,7 +221,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                     try
                     {
                         cts.Token.ThrowIfCancellationRequested();
-                        geoStatus = await Geolocator.RequestAccessAsync();
+                        geoStatus = await Geolocator.RequestAccessAsync().AsTask(cts.Token);
                     }
                     catch (OperationCanceledException)
                     {
@@ -219,7 +235,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                     {
                         if (!cts.IsCancellationRequested && geoStatus == GeolocationAccessStatus.Allowed)
                         {
-                            newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10));
+                            newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10)).AsTask(cts.Token);
                         }
                     }
                 }
