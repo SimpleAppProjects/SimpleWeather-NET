@@ -168,7 +168,7 @@ namespace SimpleWeather.Droid.App.Notifications
                 }
 
                 if (Build.VERSION.SdkInt >= BuildVersionCodes.N
-                    || WeatherAlertNotificationService.GetNotificationsCount() > MIN_GROUPCOUNT)
+                    || WeatherAlertNotificationService.GetNotificationsCount() >= MIN_GROUPCOUNT)
                 {
                     mBuilder.SetGroup(TAG);
                 }
@@ -191,7 +191,7 @@ namespace SimpleWeather.Droid.App.Notifications
 
                     if (statNotifs?.Length > 0)
                     {
-                        buildSummary = statNotifs.Count(not => location.query.Equals(not.Tag)) > MIN_GROUPCOUNT;
+                        buildSummary = statNotifs.Count(not => location.query.Equals(not.Tag)) >= MIN_GROUPCOUNT;
                     }
                 }
                 catch (Exception ex)
@@ -201,7 +201,7 @@ namespace SimpleWeather.Droid.App.Notifications
             }
             else
             {
-                buildSummary = WeatherAlertNotificationService.GetNotificationsCount() > MIN_GROUPCOUNT;
+                buildSummary = WeatherAlertNotificationService.GetNotificationsCount() >= MIN_GROUPCOUNT;
             }
 
             if (buildSummary)
