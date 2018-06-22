@@ -141,7 +141,7 @@ namespace SimpleWeather.Droid.App.Adapters
         public void OnItemDismiss(int position)
         {
             Task.Run(async () => await RemoveLocation(position))
-                .ContinueWith((t) => Task.Run(Shortcuts.ShortcutCreator.UpdateShortcuts));
+                .ContinueWith((t) => Task.Run(Shortcuts.ShortcutCreator.UpdateShortcuts), TaskContinuationOptions.OnlyOnRanToCompletion);
         }
 
         protected void OnClick(RecyclerClickEventArgs args) => ItemClick?.Invoke(this, args);

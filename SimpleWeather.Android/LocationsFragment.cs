@@ -631,8 +631,11 @@ namespace SimpleWeather.Droid.App
                                 }
                                 else
                                 {
-                                    gpsPanelViewModel = null;
-                                    gpsPanelLayout.Visibility = ViewStates.Gone;
+                                    AppCompatActivity?.RunOnUiThread(() =>
+                                    {
+                                        gpsPanelViewModel = null;
+                                        gpsPanelLayout.Visibility = ViewStates.Gone;
+                                    });
                                 }
                             });
                         }

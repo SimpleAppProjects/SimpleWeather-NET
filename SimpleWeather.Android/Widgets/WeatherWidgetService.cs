@@ -152,22 +152,22 @@ namespace SimpleWeather.Droid.App.Widgets
                     switch (widgetType)
                     {
                         case WidgetType.Widget1x1:
-                            Task.Run(async () => await RefreshWidget(mAppWidget1x1, appWidgetIds));
+                            Task.Run(async () => await RefreshWidget(mAppWidget1x1, appWidgetIds)).Wait();
                             break;
                         case WidgetType.Widget2x2:
-                            Task.Run(async () => await RefreshWidget(mAppWidget2x2, appWidgetIds));
+                            Task.Run(async () => await RefreshWidget(mAppWidget2x2, appWidgetIds)).Wait();
                             break;
                         case WidgetType.Widget4x1:
-                            Task.Run(async () => await RefreshWidget(mAppWidget4x1, appWidgetIds));
+                            Task.Run(async () => await RefreshWidget(mAppWidget4x1, appWidgetIds)).Wait();
                             break;
                         case WidgetType.Widget4x2:
-                            Task.Run(async () => await RefreshWidget(mAppWidget4x2, appWidgetIds));
+                            Task.Run(async () => await RefreshWidget(mAppWidget4x2, appWidgetIds)).Wait();
                             break;
                         // We don't know the widget type to update,
                         // so just update all
                         case WidgetType.Unknown:
                         default:
-                            Task.Run(async () => await RefreshWidgets());
+                            Task.Run(async () => await RefreshWidgets()).Wait();
                             break;
                     }
                 }
@@ -184,13 +184,13 @@ namespace SimpleWeather.Droid.App.Widgets
                             // Widget resizes itself; no need to adjust
                             break;
                         case WidgetType.Widget2x2:
-                            Task.Run(async () => await ResizeWidget(mAppWidget2x2, appWidgetId, newOptions));
+                            Task.Run(async () => await ResizeWidget(mAppWidget2x2, appWidgetId, newOptions)).Wait();
                             break;
                         case WidgetType.Widget4x1:
-                            Task.Run(async () => await ResizeWidget(mAppWidget4x1, appWidgetId, newOptions));
+                            Task.Run(async () => await ResizeWidget(mAppWidget4x1, appWidgetId, newOptions)).Wait();
                             break;
                         case WidgetType.Widget4x2:
-                            Task.Run(async () => await ResizeWidget(mAppWidget4x2, appWidgetId, newOptions));
+                            Task.Run(async () => await ResizeWidget(mAppWidget4x2, appWidgetId, newOptions)).Wait();
                             break;
                     }
                 }
@@ -260,7 +260,7 @@ namespace SimpleWeather.Droid.App.Widgets
                             WeatherNotificationBuilder.ShowRefresh(true);
 
                         if (WidgetsExist(App.Context))
-                            Task.Run(async () => await RefreshWidgets());
+                            Task.Run(async () => await RefreshWidgets()).Wait();
 
                         // Update for home
                         var weather = Task.Run(GetWeather).Result;

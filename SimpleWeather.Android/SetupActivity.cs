@@ -241,11 +241,14 @@ namespace SimpleWeather.Droid.App
 
         private void EnableControls(bool enable)
         {
-            searchViewContainer.Enabled = enable;
-            apiSpinner.Enabled = enable;
-            keyEntry.Enabled = enable;
-            gpsFollowButton.Enabled = enable;
-            progressBar.Visibility = enable ? ViewStates.Gone : ViewStates.Visible;
+            RunOnUiThread(() =>
+            {
+                searchViewContainer.Enabled = enable;
+                apiSpinner.Enabled = enable;
+                keyEntry.Enabled = enable;
+                gpsFollowButton.Enabled = enable;
+                progressBar.Visibility = enable ? ViewStates.Gone : ViewStates.Visible;
+            });
         }
 
         public async Task FetchGeoLocation()
@@ -267,7 +270,7 @@ namespace SimpleWeather.Droid.App
                 }
 
                 // Show loading bar
-                progressBar.Visibility = ViewStates.Visible;
+                RunOnUiThread(() => progressBar.Visibility = ViewStates.Visible);
 
                 await Task.Run(async () =>
                 {
@@ -293,7 +296,10 @@ namespace SimpleWeather.Droid.App
 
                 if (String.IsNullOrWhiteSpace(Settings.API_KEY) && wm.KeyRequired)
                 {
-                    Toast.MakeText(this.ApplicationContext, Resource.String.werror_invalidkey, ToastLength.Short).Show();
+                    RunOnUiThread(() =>
+                    {
+                        Toast.MakeText(this.ApplicationContext, Resource.String.werror_invalidkey, ToastLength.Short).Show();
+                    });
                     EnableControls(true);
                     return;
                 }
@@ -308,7 +314,10 @@ namespace SimpleWeather.Droid.App
                 var location = new WeatherData.LocationData(view, mLocation);
                 if (!location.IsValid())
                 {
-                    Toast.MakeText(App.Context, App.Context.GetString(Resource.String.werror_noweather), ToastLength.Short).Show();
+                    RunOnUiThread(() =>
+                    {
+                        Toast.MakeText(App.Context, App.Context.GetString(Resource.String.werror_noweather), ToastLength.Short).Show();
+                    });
                     EnableControls(true);
                     return;
                 }
@@ -322,7 +331,10 @@ namespace SimpleWeather.Droid.App
                     catch (WeatherException wEx)
                     {
                         weather = null;
-                        Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
+                        RunOnUiThread(() =>
+                        {
+                            Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
+                        });
                     }
                 }
 
@@ -441,7 +453,13 @@ namespace SimpleWeather.Droid.App
                         {
                             // permission was granted, yay!
                             // Do the task you need to do.
-                            Task.Run(async () => await FetchGeoLocation());
+                            Task.Run(async () => await FetchGeoLocation())
+                                .ContinueWith((t) =>
+                                {
+                                    if (t.IsFaulted)
+                                        Logger.WriteLine(LoggerLevel.Error, t.Exception, "{0}: error fetching geolocation", nameof(SetupActivity));
+                                },
+                                TaskContinuationOptions.OnlyOnFaulted);
                         }
                         else
                         {
