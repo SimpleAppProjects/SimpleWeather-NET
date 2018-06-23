@@ -37,13 +37,9 @@ namespace SimpleWeather.Droid.App
         private Android.Support.V7.View.ActionMode mActionMode;
         private View searchViewLayout;
         private View searchViewContainer;
-        private Spinner apiSpinner;
-        private EditText keyEntry;
         private EditText searchView;
         private TextView clearButtonView;
         private bool inSearchUI;
-
-        private Button registerButton;
 
         private Button gpsFollowButton;
         private ProgressBar progressBar;
@@ -128,72 +124,16 @@ namespace SimpleWeather.Droid.App
 
             wm = WeatherData.WeatherManager.GetInstance();
 
-            searchViewContainer = FindViewById(Resource.Id.search_view_container);
-            apiSpinner = FindViewById<Spinner>(Resource.Id.api_spinner);
-            keyEntry = FindViewById<EditText>(Resource.Id.key_entry);
+            searchViewContainer = FindViewById(Resource.Id.search_bar);
             gpsFollowButton = FindViewById<Button>(Resource.Id.gps_follow);
             progressBar = FindViewById<ProgressBar>(Resource.Id.progressBar);
             progressBar.Visibility = ViewStates.Gone;
-            registerButton = FindViewById<Button>(Resource.Id.register_button);
-
-            // Setup spinner
-            var spinnerAdapter = new ArrayAdapter<ProviderEntry>(
-                this, Android.Resource.Layout.SimpleSpinnerItem,
-                WeatherData.WeatherAPI.APIs.ToArray());
-            spinnerAdapter.SetDropDownViewResource(Android.Resource.Layout.SimpleSpinnerDropDownItem);
-            apiSpinner.Adapter = spinnerAdapter;
 
             // NOTE: Bug: Explicitly set tintmode on Lollipop devices
             if (Build.VERSION.SdkInt == BuildVersionCodes.Lollipop)
                 progressBar.IndeterminateTintMode = PorterDuff.Mode.SrcIn;
 
             /* Event Listeners */
-            apiSpinner.ItemSelected += (object sender, AdapterView.ItemSelectedEventArgs e) =>
-            {
-                Spinner spinner = sender as Spinner;
-                Settings.API = (spinner.SelectedItem as ProviderEntry).Value;
-                wm.UpdateAPI();
-
-                if (wm.KeyRequired)
-                {
-                    FindViewById(Resource.Id.key_entry_box).Visibility = ViewStates.Visible;
-                    registerButton.Visibility = ViewStates.Visible;
-                }
-                else
-                {
-                    FindViewById(Resource.Id.key_entry_box).Visibility = ViewStates.Invisible;
-                    registerButton.Visibility = ViewStates.Invisible;
-                    Settings.API_KEY = keyEntry.Text = String.Empty;
-                }
-            };
-
-            keyEntry.FocusChange += (object sender, View.FocusChangeEventArgs e) =>
-            {
-                View v = sender as View;
-
-                if (e.HasFocus)
-                {
-                    ShowInputMethod(v.FindFocus());
-                }
-                else
-                {
-                    HideInputMethod(v);
-                }
-            };
-
-            keyEntry.TextChanged += (object sender, TextChangedEventArgs e) =>
-            {
-                if (!String.IsNullOrWhiteSpace(e.Text.ToString()))
-                {
-                    Settings.API_KEY = e.Text.ToString();
-                }
-            };
-
-            FindViewById(Resource.Id.activity_setup).Click += delegate
-            {
-                keyEntry.ClearFocus();
-            };
-
             searchViewContainer.Click += delegate
             {
                 mActionMode = StartSupportActionMode(mActionModeCallback);
@@ -217,26 +157,12 @@ namespace SimpleWeather.Droid.App
                 await FetchGeoLocation();
             };
 
-            registerButton.Click += delegate
-            {
-                var selectedAPI = apiSpinner.SelectedItem as ProviderEntry;
-
-                Intent viewIntent = new Intent(Intent.ActionView)
-                    .SetData(Android.Net.Uri.Parse(selectedAPI.APIRegisterURL));
-                StartActivity(viewIntent);
-            };
-
             // Reset focus
             FindViewById(Resource.Id.activity_setup).RequestFocus();
 
-            // Set Yahoo as default API
-            apiSpinner.SetSelection(0);
-
-            // Load API key
-            if (Settings.API_KEY != null)
-            {
-                keyEntry.Text = Settings.API_KEY;
-            }
+            // Set default API to Yahoo
+            Settings.API = WeatherData.WeatherAPI.Yahoo;
+            wm.UpdateAPI();
         }
 
         private void EnableControls(bool enable)
@@ -244,8 +170,6 @@ namespace SimpleWeather.Droid.App
             RunOnUiThread(() =>
             {
                 searchViewContainer.Enabled = enable;
-                apiSpinner.Enabled = enable;
-                keyEntry.Enabled = enable;
                 gpsFollowButton.Enabled = enable;
                 progressBar.Visibility = enable ? ViewStates.Gone : ViewStates.Visible;
             });

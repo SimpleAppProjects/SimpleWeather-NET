@@ -51,17 +51,6 @@ namespace SimpleWeather.UWP
         {
             if (MainPanel != null)
             {
-                if (Math.Abs(MainPanel.ActualHeight - this.ActualHeight) <= 100)
-                {
-                    MainPanel.Margin = new Thickness(0);
-                    MainPanel.VerticalAlignment = VerticalAlignment.Center;
-                }
-                else
-                {
-                    MainPanel.Margin = new Thickness(0, (this.ActualHeight / 8), 0, 0);
-                    MainPanel.VerticalAlignment = VerticalAlignment.Top;
-                }
-
                 if (this.ActualWidth > 640)
                     Location.Width = ActualWidth / 2;
                 else
@@ -191,16 +180,6 @@ namespace SimpleWeather.UWP
                 return;
             }
 
-            // Stop if using provider that req's a key and is empty
-            if (String.IsNullOrWhiteSpace(Settings.API_KEY) && wm.KeyRequired)
-            {
-                TextBlock header = KeyEntry.Header as TextBlock;
-                header.Visibility = Visibility.Visible;
-                KeyEntry.BorderBrush = new SolidColorBrush(Colors.Red);
-                KeyEntry.BorderThickness = new Thickness(2);
-                return;
-            }
-
             // Cancel other tasks
             cts.Cancel();
             cts = new CancellationTokenSource();
@@ -271,8 +250,6 @@ namespace SimpleWeather.UWP
         {
             Location.IsEnabled = Enable;
             GPSButton.IsEnabled = Enable;
-            APIComboBox.IsEnabled = Enable;
-            KeyEntry.IsEnabled = Enable;
             LoadingRing.IsActive = !Enable;
         }
 
@@ -284,19 +261,9 @@ namespace SimpleWeather.UWP
             // Sizing
             ResizeControls();
 
-            APIComboBox.ItemsSource = WeatherAPI.APIs;
-            APIComboBox.DisplayMemberPath = "Display";
-            APIComboBox.SelectedValuePath = "Value";
-
-            // Check for key
-            if (!String.IsNullOrEmpty(Settings.API_KEY))
-                KeyEntry.Text = Settings.API_KEY;
-            else
-                KeyEntry.Text = String.Empty;
-
-            SearchGrid.Visibility = Visibility.Visible;
             // Set Yahoo as default API
-            APIComboBox.SelectedValue = WeatherAPI.Yahoo;
+            Settings.API = WeatherData.WeatherAPI.Yahoo;
+            wm.UpdateAPI();
         }
 
         private async void GPS_Click(object sender, RoutedEventArgs e)
@@ -411,18 +378,6 @@ namespace SimpleWeather.UWP
                     return;
                 }
 
-                // Stop if using provider that req's a key and is empty
-                if (String.IsNullOrWhiteSpace(Settings.API_KEY) && wm.KeyRequired)
-                {
-                    TextBlock header = KeyEntry.Header as TextBlock;
-                    header.Visibility = Visibility.Visible;
-                    KeyEntry.BorderBrush = new SolidColorBrush(Colors.Red);
-                    KeyEntry.BorderThickness = new Thickness(2);
-
-                    EnableControls(true);
-                    return;
-                }
-
                 if (ctsToken.IsCancellationRequested)
                 {
                     EnableControls(true);
@@ -476,61 +431,6 @@ namespace SimpleWeather.UWP
             else
             {
                 EnableControls(true);
-            }
-        }
-
-        private void APIComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            ComboBox box = sender as ComboBox;
-
-            Settings.API = box.SelectedValue.ToString();
-            wm.UpdateAPI();
-
-            if (wm.KeyRequired)
-            {
-                if (KeyEntry != null)
-                    KeyEntry.Visibility = Visibility.Visible;
-                if (RegisterKeyButton != null)
-                    RegisterKeyButton.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                if (KeyEntry != null)
-                    KeyEntry.Visibility = Visibility.Collapsed;
-                if (RegisterKeyButton != null)
-                    RegisterKeyButton.Visibility = Visibility.Collapsed;
-                Settings.API_KEY = KeyEntry.Text = String.Empty;
-            }
-
-            UpdateRegisterLink();
-        }
-
-        private void KeyEntry_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (!String.IsNullOrWhiteSpace(KeyEntry.Text) && KeyEntry.IsEnabled)
-                Settings.API_KEY = KeyEntry.Text;
-        }
-
-        private void KeyEntry_GotFocus(object sender, RoutedEventArgs e)
-        {
-            KeyEntry.BorderThickness = new Thickness(0);
-        }
-
-        private void UpdateRegisterLink()
-        {
-            string API = APIComboBox?.SelectedValue?.ToString();
-
-            switch (API)
-            {
-                case WeatherAPI.WeatherUnderground:
-                case WeatherAPI.OpenWeatherMap:
-                    RegisterKeyButton.NavigateUri =
-                        new Uri(WeatherAPI.APIs.First(prov => prov.Value == API).APIRegisterURL);
-                    break;
-                default:
-                    RegisterKeyButton.NavigateUri =
-                        new Uri(WeatherAPI.APIs.First(prov => prov.Value == API).MainURL);
-                    break;
             }
         }
     }
