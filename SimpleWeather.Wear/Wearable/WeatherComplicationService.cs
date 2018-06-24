@@ -128,7 +128,13 @@ namespace SimpleWeather.Droid.Wear.Wearable
 
             bool startNow = !alarmStarted;
             long intervalMillis = (long)TimeSpan.FromMinutes(interval).TotalMilliseconds;
-            long triggerAtTime = startNow ? SystemClock.ElapsedRealtime() : SystemClock.ElapsedRealtime() + intervalMillis;
+            long triggerAtTime = SystemClock.ElapsedRealtime() + intervalMillis;
+
+            if (startNow)
+            {
+                EnqueueWork(context, new Intent(context, typeof(WeatherComplicationIntentService))
+                    .SetAction(ACTION_UPDATECOMPLICATIONS));
+            }
 
             PendingIntent pendingIntent = GetAlarmIntent(context);
             am.Cancel(pendingIntent);

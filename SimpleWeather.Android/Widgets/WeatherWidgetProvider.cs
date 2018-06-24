@@ -48,7 +48,7 @@ namespace SimpleWeather.Droid.App.Widgets
             if (Intent.ActionBootCompleted.Equals(intent?.Action))
             {
                 // Reset weather update time
-                SimpleWeather.Utils.Settings.UpdateTime = DateTime.MinValue;
+                Settings.UpdateTime = DateTime.MinValue;
                 // Restart update alarm
                 WeatherWidgetService.EnqueueWork(context, new Intent(context, typeof(WeatherWidgetService))
                     .SetAction(WeatherWidgetService.ACTION_STARTALARM));

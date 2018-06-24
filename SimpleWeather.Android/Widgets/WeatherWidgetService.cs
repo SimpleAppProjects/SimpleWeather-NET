@@ -297,7 +297,13 @@ namespace SimpleWeather.Droid.App.Widgets
 
             bool startNow = !alarmStarted;
             long intervalMillis = (long)TimeSpan.FromMinutes(interval).TotalMilliseconds;
-            long triggerAtTime = startNow ? SystemClock.ElapsedRealtime() : SystemClock.ElapsedRealtime() + intervalMillis;
+            long triggerAtTime = SystemClock.ElapsedRealtime() + intervalMillis;
+
+            if (startNow)
+            {
+                EnqueueWork(context, new Intent(context, typeof(WeatherWidgetService))
+                    .SetAction(ACTION_UPDATEWEATHER));
+            }
 
             PendingIntent pendingIntent = GetAlarmIntent(context);
             am.Cancel(pendingIntent);
