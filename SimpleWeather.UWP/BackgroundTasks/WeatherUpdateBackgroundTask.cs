@@ -40,14 +40,19 @@ namespace SimpleWeather.UWP.BackgroundTasks
             {
                 try
                 {
+                    Logger.WriteLine(LoggerLevel.Debug, "WeatherUpdateBackgroundTask: Run...");
+
                     if (Settings.WeatherLoaded)
                     {
+                        Logger.WriteLine(LoggerLevel.Debug, "WeatherUpdateBackgroundTask: Getting weather data...");
                         // Retrieve weather data.
                         var weather = await GetWeather();
 
                         if (cts.IsCancellationRequested) return;
 
                         // Update the live tile with data.
+                        Logger.WriteLine(LoggerLevel.Debug, "WeatherUpdateBackgroundTask: Weather is NULL = " + (weather == null).ToString());
+                        Logger.WriteLine(LoggerLevel.Debug, "WeatherUpdateBackgroundTask: Updating primary tile...");
                         if (weather != null)
                             WeatherTileCreator.TileUpdater(Settings.HomeData, weather);
 
@@ -57,9 +62,14 @@ namespace SimpleWeather.UWP.BackgroundTasks
                         var tiles = await SecondaryTile.FindAllAsync();
                         foreach (SecondaryTile tile in tiles)
                         {
+                            Logger.WriteLine(LoggerLevel.Debug, "WeatherUpdateBackgroundTask: Updating secondary tile...");
+
                             var locations = await Settings.GetLocationData();
                             var location = locations.FirstOrDefault(
                                 loc => loc.query.Equals(SecondaryTileUtils.GetQueryFromId(tile.TileId)));
+
+                            Logger.WriteLine(LoggerLevel.Debug, "Location = " + location?.name);
+                            Logger.WriteLine(LoggerLevel.Debug, "TileID = " + tile.TileId);
 
                             if (location != null)
                                 await WeatherTileCreator.TileUpdater(location);
@@ -68,6 +78,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                         }
 
                         // Post alerts if setting is on
+                        Logger.WriteLine(LoggerLevel.Debug, "WeatherUpdateBackgroundTask: Posting alerts...");
                         if (Settings.ShowAlerts && wm.SupportsAlerts && weather != null)
                             await WeatherAlertHandler.PostAlerts(Settings.HomeData, weather.weather_alerts);
 
@@ -77,6 +88,8 @@ namespace SimpleWeather.UWP.BackgroundTasks
                         if (weather != null)
                             Settings.UpdateTime = DateTime.Now;
                     }
+
+                    Logger.WriteLine(LoggerLevel.Debug, "WeatherUpdateBackgroundTask: End of run...");
                 }
                 catch (Exception ex)
                 {

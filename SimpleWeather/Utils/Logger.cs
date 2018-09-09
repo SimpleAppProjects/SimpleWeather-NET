@@ -54,7 +54,6 @@ namespace SimpleWeather.Utils
         {
             switch (loggerLevel)
             {
-#if DEBUG
                 case LoggerLevel.Debug:
                     if (ex == null)
                         logger.Log(LogLevel.Debug, message, args);
@@ -67,7 +66,6 @@ namespace SimpleWeather.Utils
                     else
                         logger.Log(LogLevel.Info, ex, message, args);
                     break;
-#endif
                 case LoggerLevel.Warn:
                     if (ex == null)
                         logger.Log(LogLevel.Warn, message, args);

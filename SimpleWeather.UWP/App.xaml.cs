@@ -137,14 +137,18 @@ namespace SimpleWeather.UWP
         {
             base.OnBackgroundActivated(args);
 
+            Logger.WriteLine(LoggerLevel.Debug, "App: Background Activated");
+
             Initialize(args).ContinueWith((t) =>
             {
                 switch (args.TaskInstance.Task.Name)
                 {
                     case nameof(WeatherUpdateBackgroundTask):
+                        Logger.WriteLine(LoggerLevel.Debug, "App: Starting WeatherUpdateBackgroundTask");
                         new WeatherUpdateBackgroundTask().Run(args.TaskInstance);
                         break;
                     default:
+                        Logger.WriteLine(LoggerLevel.Debug, "App: Unknown task: {0}", args.TaskInstance.Task.Name);
                         break;
                 }
             });
@@ -318,8 +322,13 @@ namespace SimpleWeather.UWP
 
         private async Task Initialize(IBackgroundActivatedEventArgs e)
         {
+            Logger.WriteLine(LoggerLevel.Debug, "App: Initializing...");
+
             if (Initialized)
+            {
+                Logger.WriteLine(LoggerLevel.Debug, "App: Already initialized...");
                 return;
+            }
 
             if (ResLoader == null)
                 ResLoader = new ResourceLoader();
@@ -328,6 +337,8 @@ namespace SimpleWeather.UWP
             await Settings.LoadIfNeeded();
 
             Initialized = true;
+
+            Logger.WriteLine(LoggerLevel.Debug, "App: Initialize complete...");
         }
 
         /// <summary>
