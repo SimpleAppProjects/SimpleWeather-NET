@@ -7,7 +7,8 @@ using Android.Support.V7.Widget;
 using Android.Graphics;
 using Android.Graphics.Drawables;
 using Android.Support.V4.Content;
-using Com.Bumptech.Glide;
+using Bumptech.Glide;
+using Bumptech.Glide.Request;
 using Android.OS;
 
 namespace SimpleWeather.Droid.App.Controls
@@ -79,9 +80,10 @@ namespace SimpleWeather.Droid.App.Controls
             // Background
             Glide.With(Context)
                  .Load(panelView.Background)
-                 .CenterCrop()
-                 .Error(colorDrawable)
-                 .Placeholder(colorDrawable)
+                 .Apply(new RequestOptions()
+                        .CenterCrop()
+                        .Error(colorDrawable)
+                        .Placeholder(colorDrawable))
                  .Into(bgImageView);
         }
 

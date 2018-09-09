@@ -12,7 +12,8 @@ using SimpleWeather.Utils;
 using System.Collections.Specialized;
 using System.Collections.ObjectModel;
 using Android.Support.V4.Content;
-using Com.Bumptech.Glide;
+using Bumptech.Glide;
+using Bumptech.Glide.Request;
 using Android.Graphics;
 using Android.Graphics.Drawables;
 using System.Threading.Tasks;
@@ -83,11 +84,12 @@ namespace SimpleWeather.Droid.App.Adapters
             LocationPanelViewModel panelView = mDataset[position];
 
             // Background
-            Glide.Load(panelView.Background)
-                 .AsBitmap()
-                 .CenterCrop()
-                 .Error(vh.mLocView.colorDrawable)
-                 .Placeholder(vh.mLocView.colorDrawable)
+            Glide.AsBitmap()
+                 .Load(panelView.Background)
+                 .Apply(new RequestOptions()
+                        .CenterCrop()
+                        .Error(vh.mLocView.colorDrawable)
+                        .Placeholder(vh.mLocView.colorDrawable))
                  .Into(new GlideBitmapViewTarget(vh.mBgImageView, () => vh.mLocView.SetWeather(panelView)));
         }
 

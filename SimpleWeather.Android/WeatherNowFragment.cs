@@ -26,7 +26,7 @@ using Android.Content.PM;
 using Android;
 using Android.Locations;
 using Android.Graphics;
-using Com.Bumptech.Glide;
+using Bumptech.Glide;
 using Android.Util;
 using SimpleWeather.Droid.App.Widgets;
 using SimpleWeather.Droid.App.WeatherAlerts;
@@ -34,6 +34,7 @@ using Android.Support.V4.Graphics.Drawable;
 using SimpleWeather.Droid.Helpers;
 using SimpleWeather.Droid.Adapters;
 using SimpleWeather.Droid.App.Adapters;
+using Bumptech.Glide.Request;
 
 namespace SimpleWeather.Droid.App
 {
@@ -652,9 +653,9 @@ namespace SimpleWeather.Droid.App
                 // Background
                 refreshLayout.Background = new ColorDrawable(weatherView.PendingBackground);
                 bgImageView.ImageAlpha = BGAlpha;
-                Glide.With(this)
+                Glide.With(this.Context)
                      .Load(weatherView.Background)
-                     .CenterCrop()
+                     .Apply(new RequestOptions().CenterCrop())
                      .Into(bgImageView);
 
                 // Actionbar & StatusBar
