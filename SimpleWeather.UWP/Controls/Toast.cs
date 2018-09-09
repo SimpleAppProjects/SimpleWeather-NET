@@ -21,9 +21,9 @@ namespace SimpleWeather.UWP.Controls
         Long = 5000
     }
 
-    public class Toast
+    public static class Toast
     {
-        public static async Task ShowToastNotifcation(String Message, ToastDuration Length)
+        private static async Task ShowToastNotifcation(String Message, ToastDuration Length)
         {
             var toastContent = new ToastContent()
             {
@@ -61,6 +61,7 @@ namespace SimpleWeather.UWP.Controls
             ToastNotificationManager.History.Remove(toastNotif.Tag);
         }
 
+        /* NOT USING THIS ANYMORE
         public static async Task ShowToastNotifcation(String Message, String ActionLabel, String ActionTag, String PageTag, ToastDuration Length)
         {
             var toastContent = new ToastContent()
@@ -108,34 +109,43 @@ namespace SimpleWeather.UWP.Controls
             await Task.Delay((int)Length);
             ToastNotificationManager.History.Remove(toastNotif.Tag);
         }
+        */
 
         public static async Task ShowToastAsync(String Message, ToastDuration Length)
         {
-            CoreDispatcher Dispatcher;
-
-            if (CoreWindow.GetForCurrentThread() == null)
-                Dispatcher = CoreApplication.MainView.Dispatcher;
-            else
-                Dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
-
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            if (!App.IsInBackground)
             {
-                new Coding4Fun.Toolkit.Controls.ToastPrompt()
+                CoreDispatcher Dispatcher;
+
+                if (CoreWindow.GetForCurrentThread() == null)
+                    Dispatcher = CoreApplication.MainView.Dispatcher;
+                else
+                    Dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
+
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
-                    Message = Message,
-                    MillisecondsUntilHidden = (int)Length,
-                    Background = new SolidColorBrush(Colors.SlateGray),
-                    Foreground = new SolidColorBrush(Colors.White),
-                    IsHitTestVisible = false,
-                    Margin = new Thickness(0, 0, 0, 50),
-                    HorizontalContentAlignment = HorizontalAlignment.Center,
-                    VerticalContentAlignment = VerticalAlignment.Center,
-                    Stretch = Stretch.Uniform,
-                    VerticalAlignment = VerticalAlignment.Bottom,
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    Template = App.Current.Resources["ToastPromptStyle"] as ControlTemplate
-                }.Show();
-            });
+                    /* TODO: Remove all together??? */
+                    new Coding4Fun.Toolkit.Controls.ToastPrompt()
+                    {
+                        Message = Message,
+                        MillisecondsUntilHidden = (int)Length,
+                        Background = new SolidColorBrush(Colors.SlateGray),
+                        Foreground = new SolidColorBrush(Colors.White),
+                        IsHitTestVisible = false,
+                        Margin = new Thickness(0, 0, 0, 50),
+                        HorizontalContentAlignment = HorizontalAlignment.Center,
+                        VerticalContentAlignment = VerticalAlignment.Center,
+                        Stretch = Stretch.Uniform,
+                        VerticalAlignment = VerticalAlignment.Bottom,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        Template = App.Current.Resources["ToastPromptStyle"] as ControlTemplate
+                    }.Show();
+                });
+            }
+            else
+            {
+                await ShowToastNotifcation(Message, Length);
+            }
         }
     }
 }

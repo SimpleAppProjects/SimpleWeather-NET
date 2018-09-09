@@ -175,7 +175,7 @@ namespace SimpleWeather.UWP
             {
                 if (!e.PrelaunchActivated)
                 {
-                    if (Settings.WeatherLoaded && !String.IsNullOrEmpty(e.TileId) && !e.TileId.Equals("App"))
+                    if (Settings.WeatherLoaded && !String.IsNullOrEmpty(e.TileId) && !e.TileId.Equals("App", StringComparison.OrdinalIgnoreCase))
                     {
                         await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
