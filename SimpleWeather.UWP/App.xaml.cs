@@ -139,19 +139,18 @@ namespace SimpleWeather.UWP
 
             Logger.WriteLine(LoggerLevel.Debug, "App: Background Activated");
 
-            Initialize(args).ContinueWith((t) =>
+            Initialize(args);
+
+            switch (args.TaskInstance.Task.Name)
             {
-                switch (args.TaskInstance.Task.Name)
-                {
-                    case nameof(WeatherUpdateBackgroundTask):
-                        Logger.WriteLine(LoggerLevel.Debug, "App: Starting WeatherUpdateBackgroundTask");
-                        new WeatherUpdateBackgroundTask().Run(args.TaskInstance);
-                        break;
-                    default:
-                        Logger.WriteLine(LoggerLevel.Debug, "App: Unknown task: {0}", args.TaskInstance.Task.Name);
-                        break;
-                }
-            });
+                case nameof(WeatherUpdateBackgroundTask):
+                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting WeatherUpdateBackgroundTask");
+                    new WeatherUpdateBackgroundTask().Run(args.TaskInstance);
+                    break;
+                default:
+                    Logger.WriteLine(LoggerLevel.Debug, "App: Unknown task: {0}", args.TaskInstance.Task.Name);
+                    break;
+            }
         }
 
         /// <summary>
@@ -286,9 +285,6 @@ namespace SimpleWeather.UWP
             if (ResLoader == null)
                 ResLoader = new ResourceLoader();
 
-            // Load data if needed
-            await Settings.LoadIfNeeded();
-
             // TitleBar
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
@@ -320,7 +316,7 @@ namespace SimpleWeather.UWP
             Initialized = true;
         }
 
-        private async Task Initialize(IBackgroundActivatedEventArgs e)
+        private void Initialize(IBackgroundActivatedEventArgs e)
         {
             Logger.WriteLine(LoggerLevel.Debug, "App: Initializing...");
 
@@ -332,9 +328,6 @@ namespace SimpleWeather.UWP
 
             if (ResLoader == null)
                 ResLoader = new ResourceLoader();
-
-            // Load data if needed
-            await Settings.LoadIfNeeded();
 
             Initialized = true;
 

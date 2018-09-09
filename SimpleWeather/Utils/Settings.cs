@@ -74,7 +74,7 @@ namespace SimpleWeather.Utils
             Init();
         }
 
-        public static async Task LoadIfNeeded()
+        private static async Task LoadIfNeeded()
         {
             if (!loaded)
             {

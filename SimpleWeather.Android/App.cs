@@ -78,13 +78,6 @@ namespace SimpleWeather.Droid.App
 
             // Initialize preference listener
             SharedPreferenceListener = new Settings.SettingsListener();
-
-            // Load data if needed
-            var th = new Thread(() => Settings.LoadIfNeeded().ConfigureAwait(false).GetAwaiter().GetResult());
-            th.Start();
-
-            while (th.ThreadState != ThreadState.Stopped)
-                Thread.Sleep(100);
         }
 
         private void AppDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
