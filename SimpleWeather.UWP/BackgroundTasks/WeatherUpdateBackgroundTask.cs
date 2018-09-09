@@ -248,7 +248,14 @@ namespace SimpleWeather.UWP.BackgroundTasks
                     {
                         if (!cts.IsCancellationRequested && geoStatus == GeolocationAccessStatus.Allowed)
                         {
-                            newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10)).AsTask(cts.Token);
+                            try
+                            {
+                                newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10)).AsTask(cts.Token);
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.WriteLine(LoggerLevel.Error, ex, "{0}: GetWeather error", taskName);
+                            }
                         }
                     }
                 }

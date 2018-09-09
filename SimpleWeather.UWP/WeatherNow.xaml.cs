@@ -634,7 +634,14 @@ namespace SimpleWeather.UWP
                     {
                         if (geoStatus == GeolocationAccessStatus.Allowed)
                         {
-                            newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10));
+                            try
+                            {
+                                newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10));
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.WriteLine(LoggerLevel.Error, ex, "WeatherNow: GetWeather error");
+                            }
                         }
                         else if (geoStatus == GeolocationAccessStatus.Denied)
                         {
