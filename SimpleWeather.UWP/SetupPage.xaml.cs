@@ -268,169 +268,166 @@ namespace SimpleWeather.UWP
 
         private async void GPS_Click(object sender, RoutedEventArgs e)
         {
-            Button button = sender as Button;
-            button.IsEnabled = false;
-            LoadingRing.IsActive = true;
-
-            // Cancel other tasks
-            cts.Cancel();
-            cts = new CancellationTokenSource();
-            var ctsToken = cts.Token;
-
-            if (ctsToken.IsCancellationRequested)
-            {
-                EnableControls(true);
-                return;
-            }
-
-            var geoStatus = GeolocationAccessStatus.Unspecified;
-
             try
             {
-                // Catch error in case dialog is dismissed
-                geoStatus = await Geolocator.RequestAccessAsync();
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteLine(LoggerLevel.Error, ex, "SetupPage: error requesting location permission");
-                System.Diagnostics.Debug.WriteLine(ex.StackTrace);
-            }
+                Button button = sender as Button;
+                button.IsEnabled = false;
+                LoadingRing.IsActive = true;
 
-            if (ctsToken.IsCancellationRequested)
-            {
-                EnableControls(true);
-                return;
-            }
+                // Cancel other tasks
+                cts.Cancel();
+                cts = new CancellationTokenSource();
+                var ctsToken = cts.Token;
 
-            Geolocator geolocal = new Geolocator() { DesiredAccuracyInMeters = 5000, ReportInterval = 900000, MovementThreshold = 1600 };
-            Geoposition geoPos = null;
+                ctsToken.ThrowIfCancellationRequested();
 
-            // Setup error just in case
-            MessageDialog error = null;
+                var geoStatus = GeolocationAccessStatus.Unspecified;
 
-            switch (geoStatus)
-            {
-                case GeolocationAccessStatus.Allowed:
-                    try
-                    {
-                        geoPos = await geolocal.GetGeopositionAsync();
-                    }
-                    catch (Exception ex)
-                    {
-                        if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
-                            error = new MessageDialog(App.ResLoader.GetString("WError_NetworkError"), App.ResLoader.GetString("Label_Error"));
-                        else
-                            error = new MessageDialog(App.ResLoader.GetString("Error_Location"), App.ResLoader.GetString("Label_ErrorLocation"));
-                        await error.ShowAsync();
-
-                        Logger.WriteLine(LoggerLevel.Error, ex, "SetupPage: error getting geolocation");
-                    }
-                    break;
-                case GeolocationAccessStatus.Denied:
-                    error = new MessageDialog(App.ResLoader.GetString("Msg_LocDeniedSettings"), App.ResLoader.GetString("Label_ErrLocationDenied"));
-                    error.Commands.Add(new UICommand(App.ResLoader.GetString("Label_Settings"), async (command) =>
-                    {
-                        await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:privacy-location"));
-                    }, 0));
-                    error.Commands.Add(new UICommand(App.ResLoader.GetString("Label_Cancel"), null, 1));
-                    error.DefaultCommandIndex = 0;
-                    error.CancelCommandIndex = 1;
-                    await error.ShowAsync();
-                    break;
-                case GeolocationAccessStatus.Unspecified:
-                default:
-                    error = new MessageDialog(App.ResLoader.GetString("Error_Location"), App.ResLoader.GetString("Label_ErrorLocation"));
-                    await error.ShowAsync();
-                    break;
-            }
-
-            // Access to location granted
-            if (geoPos != null)
-            {
-                LocationQueryViewModel view = null;
-
-                if (ctsToken.IsCancellationRequested)
+                try
                 {
-                    EnableControls(true);
-                    return;
+                    // Catch error in case dialog is dismissed
+                    geoStatus = await Geolocator.RequestAccessAsync();
+                }
+                catch (Exception ex)
+                {
+                    Logger.WriteLine(LoggerLevel.Error, ex, "SetupPage: error requesting location permission");
+                    System.Diagnostics.Debug.WriteLine(ex.StackTrace);
                 }
 
-                button.IsEnabled = false;
+                ctsToken.ThrowIfCancellationRequested();
 
-                await Task.Run(async () =>
+                Geolocator geolocal = new Geolocator() { DesiredAccuracyInMeters = 5000, ReportInterval = 900000, MovementThreshold = 1600 };
+                Geoposition geoPos = null;
+
+                // Setup error just in case
+                MessageDialog error = null;
+
+                switch (geoStatus)
                 {
-                    if (ctsToken.IsCancellationRequested)
+                    case GeolocationAccessStatus.Allowed:
+                        try
+                        {
+                            geoPos = await geolocal.GetGeopositionAsync();
+                        }
+                        catch (Exception ex)
+                        {
+                            if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
+                                error = new MessageDialog(App.ResLoader.GetString("WError_NetworkError"), App.ResLoader.GetString("Label_Error"));
+                            else
+                                error = new MessageDialog(App.ResLoader.GetString("Error_Location"), App.ResLoader.GetString("Label_ErrorLocation"));
+                            await error.ShowAsync();
+
+                            Logger.WriteLine(LoggerLevel.Error, ex, "SetupPage: error getting geolocation");
+                        }
+                        break;
+                    case GeolocationAccessStatus.Denied:
+                        error = new MessageDialog(App.ResLoader.GetString("Msg_LocDeniedSettings"), App.ResLoader.GetString("Label_ErrLocationDenied"));
+                        error.Commands.Add(new UICommand(App.ResLoader.GetString("Label_Settings"), async (command) =>
+                        {
+                            await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:privacy-location"));
+                        }, 0));
+                        error.Commands.Add(new UICommand(App.ResLoader.GetString("Label_Cancel"), null, 1));
+                        error.DefaultCommandIndex = 0;
+                        error.CancelCommandIndex = 1;
+                        await error.ShowAsync();
+                        break;
+                    case GeolocationAccessStatus.Unspecified:
+                    default:
+                        error = new MessageDialog(App.ResLoader.GetString("Error_Location"), App.ResLoader.GetString("Label_ErrorLocation"));
+                        await error.ShowAsync();
+                        break;
+                }
+
+                // Access to location granted
+                if (geoPos != null)
+                {
+                    LocationQueryViewModel view = null;
+
+                    ctsToken.ThrowIfCancellationRequested();
+
+                    button.IsEnabled = false;
+
+                    await Task.Run(async () =>
+                    {
+                        ctsToken.ThrowIfCancellationRequested();
+
+                        view = await wm.GetLocation(geoPos);
+
+                        if (String.IsNullOrEmpty(view.LocationQuery))
+                            view = new LocationQueryViewModel();
+                    });
+
+                    if (String.IsNullOrWhiteSpace(view.LocationQuery))
+                    {
+                        // Stop since there is no valid query
+                        EnableControls(true);
+                        return;
+                    }
+
+                    ctsToken.ThrowIfCancellationRequested();
+
+                    // Weather Data
+                    var location = new LocationData(view, geoPos);
+                    if (!location.IsValid())
+                    {
+                        await Toast.ShowToastAsync(App.ResLoader.GetString("WError_NoWeather"), ToastDuration.Short);
+                        EnableControls(true);
+                        return;
+                    }
+
+                    ctsToken.ThrowIfCancellationRequested();
+
+                    Weather weather = await Settings.GetWeatherData(location.query);
+                    if (weather == null)
+                    {
+                        ctsToken.ThrowIfCancellationRequested();
+
+                        try
+                        {
+                            weather = await wm.GetWeather(location);
+                        }
+                        catch (WeatherException wEx)
+                        {
+                            weather = null;
+                            await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
+                        }
+                    }
+
+                    if (weather == null)
                     {
                         EnableControls(true);
                         return;
                     }
 
-                    view = await wm.GetLocation(geoPos);
+                    ctsToken.ThrowIfCancellationRequested();
 
-                    if (String.IsNullOrEmpty(view.LocationQuery))
-                        view = new LocationQueryViewModel();
-                });
+                    // We got our data so disable controls just in case
+                    EnableControls(false);
 
-                if (String.IsNullOrWhiteSpace(view.LocationQuery))
-                {
-                    // Stop since there is no valid query
-                    EnableControls(true);
-                    return;
+                    // Save weather data
+                    Settings.SaveLastGPSLocData(location);
+                    await Settings.DeleteLocations();
+                    await Settings.AddLocation(new LocationData(view));
+                    if (wm.SupportsAlerts && weather.weather_alerts != null)
+                        await Settings.SaveWeatherAlerts(location, weather.weather_alerts);
+                    await Settings.SaveWeatherData(weather);
+
+                    Settings.FollowGPS = true;
+                    Settings.WeatherLoaded = true;
+
+                    this.Frame.Navigate(typeof(Shell), location);
                 }
-
-                if (ctsToken.IsCancellationRequested)
-                {
-                    EnableControls(true);
-                    return;
-                }
-
-                // Weather Data
-                var location = new LocationData(view, geoPos);
-                if (!location.IsValid())
-                {
-                    await Toast.ShowToastAsync(App.ResLoader.GetString("WError_NoWeather"), ToastDuration.Short);
-                    EnableControls(true);
-                    return;
-                }
-                Weather weather = await Settings.GetWeatherData(location.query);
-                if (weather == null)
-                {
-                    try
-                    {
-                        weather = await wm.GetWeather(location);
-                    }
-                    catch (WeatherException wEx)
-                    {
-                        weather = null;
-                        await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
-                    }
-                }
-
-                if (weather == null)
+                else
                 {
                     EnableControls(true);
-                    return;
                 }
-
-                // We got our data so disable controls just in case
-                EnableControls(false);
-
-                // Save weather data
-                Settings.SaveLastGPSLocData(location);
-                await Settings.DeleteLocations();
-                await Settings.AddLocation(new LocationData(view));
-                if (wm.SupportsAlerts && weather.weather_alerts != null)
-                    await Settings.SaveWeatherAlerts(location, weather.weather_alerts);
-                await Settings.SaveWeatherData(weather);
-
-                Settings.FollowGPS = true;
-                Settings.WeatherLoaded = true;
-
-                this.Frame.Navigate(typeof(Shell), location);
             }
-            else
+            catch (OperationCanceledException)
             {
+                // Restore controls
                 EnableControls(true);
+                Settings.FollowGPS = false;
+                Settings.WeatherLoaded = false;
             }
         }
     }

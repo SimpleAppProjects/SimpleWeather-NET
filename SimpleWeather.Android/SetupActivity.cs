@@ -60,12 +60,6 @@ namespace SimpleWeather.Droid.App
             GC.SuppressFinalize(this);
         }
 
-        private void CtsCancel()
-        {
-            cts.Cancel();
-            cts = new CancellationTokenSource();
-        }
-
         private bool OnCreateActionMode(Android.Support.V7.View.ActionMode mode, IMenu menu)
         {
             if (searchViewLayout == null)
@@ -107,8 +101,6 @@ namespace SimpleWeather.Droid.App
             }
 
             SetContentView(Resource.Layout.activity_setup);
-
-            cts = new CancellationTokenSource();
 
             mActionModeCallback.CreateActionMode += OnCreateActionMode;
             mActionModeCallback.DestroyActionMode += OnDestroyActionMode;
@@ -177,141 +169,147 @@ namespace SimpleWeather.Droid.App
 
         public async Task FetchGeoLocation()
         {
-            gpsFollowButton.Enabled = false;
-
-            if (mLocation != null)
+            try
             {
-                LocationQueryViewModel view = null;
+                gpsFollowButton.Enabled = false;
 
-                // Cancel other tasks
-                CtsCancel();
-                var ctsToken = cts.Token;
-
-                if (ctsToken.IsCancellationRequested)
+                if (mLocation != null)
                 {
-                    EnableControls(true);
-                    return;
-                }
+                    LocationQueryViewModel view = null;
 
-                // Show loading bar
-                RunOnUiThread(() => progressBar.Visibility = ViewStates.Visible);
+                    // Cancel other tasks
+                    cts?.Cancel();
+                    cts = new CancellationTokenSource();
+                    var ctsToken = cts.Token;
 
-                await Task.Run(async () =>
-                {
-                    if (ctsToken.IsCancellationRequested)
+                    ctsToken.ThrowIfCancellationRequested();
+
+                    // Show loading bar
+                    RunOnUiThread(() => progressBar.Visibility = ViewStates.Visible);
+
+                    await Task.Run(async () =>
+                    {
+                        ctsToken.ThrowIfCancellationRequested();
+
+                        // Get geo location
+                        view = await wm.GetLocation(mLocation);
+
+                        if (String.IsNullOrEmpty(view.LocationQuery))
+                            view = new LocationQueryViewModel();
+                    });
+
+                    if (String.IsNullOrWhiteSpace(view.LocationQuery))
+                    {
+                        // Stop since there is no valid query
+                        EnableControls(true);
+                        return;
+                    }
+
+                    if (String.IsNullOrWhiteSpace(Settings.API_KEY) && wm.KeyRequired)
+                    {
+                        RunOnUiThread(() =>
+                        {
+                            Toast.MakeText(this.ApplicationContext, Resource.String.werror_invalidkey, ToastLength.Short).Show();
+                        });
+                        EnableControls(true);
+                        return;
+                    }
+
+                    ctsToken.ThrowIfCancellationRequested();
+
+                    // Get Weather Data
+                    var location = new WeatherData.LocationData(view, mLocation);
+                    if (!location.IsValid())
+                    {
+                        RunOnUiThread(() =>
+                        {
+                            Toast.MakeText(App.Context, App.Context.GetString(Resource.String.werror_noweather), ToastLength.Short).Show();
+                        });
+                        EnableControls(true);
+                        return;
+                    }
+
+                    ctsToken.ThrowIfCancellationRequested();
+
+                    var weather = await Settings.GetWeatherData(location.query);
+                    if (weather == null)
+                    {
+                        ctsToken.ThrowIfCancellationRequested();
+
+                        try
+                        {
+                            weather = await Task.Run(() => wm.GetWeather(location), ctsToken);
+                        }
+                        catch (WeatherException wEx)
+                        {
+                            weather = null;
+                            RunOnUiThread(() =>
+                            {
+                                Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
+                            });
+                        }
+                    }
+
+                    if (weather == null)
                     {
                         EnableControls(true);
                         return;
                     }
 
-                    // Get geo location
-                    view = await wm.GetLocation(mLocation);
+                    ctsToken.ThrowIfCancellationRequested();
 
-                    if (String.IsNullOrEmpty(view.LocationQuery))
-                        view = new LocationQueryViewModel();
-                });
+                    // We got our data so disable controls just in case
+                    EnableControls(false);
 
-                if (String.IsNullOrWhiteSpace(view.LocationQuery))
-                {
-                    // Stop since there is no valid query
-                    EnableControls(true);
-                    return;
-                }
+                    // Save weather data
+                    Settings.SaveLastGPSLocData(location);
+                    await Settings.DeleteLocations();
+                    await Settings.AddLocation(new WeatherData.LocationData(view));
+                    if (wm.SupportsAlerts && weather.weather_alerts != null)
+                        await Settings.SaveWeatherAlerts(location, weather.weather_alerts);
+                    await Settings.SaveWeatherData(weather);
 
-                if (String.IsNullOrWhiteSpace(Settings.API_KEY) && wm.KeyRequired)
-                {
-                    RunOnUiThread(() =>
+                    Settings.FollowGPS = true;
+                    Settings.WeatherLoaded = true;
+
+                    // Send data for wearables
+                    StartService(new Intent(this, typeof(WearableDataListenerService))
+                         .SetAction(WearableDataListenerService.ACTION_SENDSETTINGSUPDATE));
+                    StartService(new Intent(this, typeof(WearableDataListenerService))
+                        .SetAction(WearableDataListenerService.ACTION_SENDLOCATIONUPDATE));
+                    StartService(new Intent(this, typeof(WearableDataListenerService))
+                        .SetAction(WearableDataListenerService.ACTION_SENDWEATHERUPDATE));
+
+                    if (mAppWidgetId == AppWidgetManager.InvalidAppwidgetId)
                     {
-                        Toast.MakeText(this.ApplicationContext, Resource.String.werror_invalidkey, ToastLength.Short).Show();
-                    });
-                    EnableControls(true);
-                    return;
-                }
+                        // Start WeatherNow Activity with weather data
+                        Intent intent = new Intent(this, typeof(MainActivity));
+                        intent.PutExtra("data", location.ToJson());
 
-                if (ctsToken.IsCancellationRequested)
-                {
-                    EnableControls(true);
-                    return;
-                }
-
-                // Get Weather Data
-                var location = new WeatherData.LocationData(view, mLocation);
-                if (!location.IsValid())
-                {
-                    RunOnUiThread(() =>
-                    {
-                        Toast.MakeText(App.Context, App.Context.GetString(Resource.String.werror_noweather), ToastLength.Short).Show();
-                    });
-                    EnableControls(true);
-                    return;
-                }
-                var weather = await Settings.GetWeatherData(location.query);
-                if (weather == null)
-                {
-                    try
-                    {
-                        weather = await wm.GetWeather(location);
+                        StartActivity(intent);
+                        FinishAffinity();
                     }
-                    catch (WeatherException wEx)
+                    else
                     {
-                        weather = null;
-                        RunOnUiThread(() =>
-                        {
-                            Toast.MakeText(App.Context, wEx.Message, ToastLength.Short).Show();
-                        });
+                        // Create return intent
+                        Intent resultValue = new Intent();
+                        resultValue.PutExtra(AppWidgetManager.ExtraAppwidgetId, mAppWidgetId);
+                        resultValue.PutExtra("data", location.ToJson());
+                        SetResult(Android.App.Result.Ok, resultValue);
+                        Finish();
                     }
-                }
-
-                if (weather == null)
-                {
-                    EnableControls(true);
-                    return;
-                }
-
-                // We got our data so disable controls just in case
-                EnableControls(false);
-
-                // Save weather data
-                Settings.SaveLastGPSLocData(location);
-                await Settings.DeleteLocations();
-                await Settings.AddLocation(new WeatherData.LocationData(view));
-                if (wm.SupportsAlerts && weather.weather_alerts != null)
-                    await Settings.SaveWeatherAlerts(location, weather.weather_alerts);
-                await Settings.SaveWeatherData(weather);
-
-                Settings.FollowGPS = true;
-                Settings.WeatherLoaded = true;
-
-                // Send data for wearables
-                StartService(new Intent(this, typeof(WearableDataListenerService))
-                    .SetAction(WearableDataListenerService.ACTION_SENDSETTINGSUPDATE));
-                StartService(new Intent(this, typeof(WearableDataListenerService))
-                    .SetAction(WearableDataListenerService.ACTION_SENDLOCATIONUPDATE));
-                StartService(new Intent(this, typeof(WearableDataListenerService))
-                    .SetAction(WearableDataListenerService.ACTION_SENDWEATHERUPDATE));
-
-                if (mAppWidgetId == AppWidgetManager.InvalidAppwidgetId)
-                {
-                    // Start WeatherNow Activity with weather data
-                    Intent intent = new Intent(this, typeof(MainActivity));
-                    intent.PutExtra("data", location.ToJson());
-
-                    StartActivity(intent);
-                    FinishAffinity();
                 }
                 else
                 {
-                    // Create return intent
-                    Intent resultValue = new Intent();
-                    resultValue.PutExtra(AppWidgetManager.ExtraAppwidgetId, mAppWidgetId);
-                    resultValue.PutExtra("data", location.ToJson());
-                    SetResult(Android.App.Result.Ok, resultValue);
-                    Finish();
+                    await UpdateLocation();
                 }
             }
-            else
+            catch (System.OperationCanceledException)
             {
-                await UpdateLocation();
+                // Restore controls
+                EnableControls(true);
+                Settings.FollowGPS = false;
+                Settings.WeatherLoaded = false;
             }
         }
 
@@ -478,15 +476,15 @@ namespace SimpleWeather.Droid.App
                 if (mSearchFragment != null)
                 {
                     // Cancel pending searches
-                    cts.Cancel();
-                    cts = new CancellationTokenSource();
-
-                    clearButtonView.Visibility = String.IsNullOrEmpty(e.Text.ToString()) ? ViewStates.Gone : ViewStates.Visible;
-                    mSearchFragment.FetchLocations(e.Text.ToString());
+                    cts?.Cancel();
+                    progressBar.Visibility = ViewStates.Gone;
 
                     // If we're using searchfragment
                     // make sure gps feature is off
                     Settings.FollowGPS = false;
+
+                    clearButtonView.Visibility = String.IsNullOrEmpty(e.Text.ToString()) ? ViewStates.Gone : ViewStates.Visible;
+                    mSearchFragment.FetchLocations(e.Text.ToString());
                 }
             };
             clearButtonView.Visibility = ViewStates.Gone;
