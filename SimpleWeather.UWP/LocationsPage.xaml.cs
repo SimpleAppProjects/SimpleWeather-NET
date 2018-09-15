@@ -52,7 +52,7 @@ namespace SimpleWeather.UWP
 
         public void OnWeatherLoaded(LocationData location, Weather weather)
         {
-            if (weather != null)
+            if (weather?.IsValid() == true)
             {
                 if (Settings.FollowGPS && location.locationType == LocationType.GPS)
                 {

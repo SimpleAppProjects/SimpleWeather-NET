@@ -115,33 +115,33 @@ namespace SimpleWeather.Droid.App
 
         public void OnWeatherLoaded(LocationData location, Weather weather)
         {
-            if (weather != null)
+            AppCompatActivity?.RunOnUiThread(() =>
             {
-                if (Settings.FollowGPS && location.locationType == LocationType.GPS)
+                if (weather?.IsValid() == true)
                 {
-                    gpsPanelViewModel.SetWeather(weather);
-                    AppCompatActivity?.RunOnUiThread(() => 
+                    if (Settings.FollowGPS && location.locationType == LocationType.GPS)
                     {
+                        gpsPanelViewModel.SetWeather(weather);
                         gpsPanel.SetWeatherBackground(gpsPanelViewModel);
                         gpsPanel.SetWeather(gpsPanelViewModel);
-                    });
-                }
-                else
-                {
-                    // Update panel weather
-                    var panel = mAdapter.Dataset.First(panelVM => panelVM.LocationData.query.Equals(location.query));
-                    // Just in case
-                    if (panel == null)
-                    {
-                        panel = mAdapter.Dataset.First(panelVM => panelVM.LocationData.name.Equals(location.name) &&
-                                                        panelVM.LocationData.latitude.Equals(location.latitude) &&
-                                                        panelVM.LocationData.longitude.Equals(location.longitude) &&
-                                                        panelVM.LocationData.tz_long.Equals(location.tz_long));
                     }
-                    panel.SetWeather(weather);
-                    AppCompatActivity?.RunOnUiThread(() => mAdapter.NotifyItemChanged(mAdapter.Dataset.IndexOf(panel)));
+                    else
+                    {
+                        // Update panel weather
+                        var panel = mAdapter.Dataset.First(panelVM => panelVM.LocationData.query.Equals(location.query));
+                        // Just in case
+                        if (panel == null)
+                        {
+                            panel = mAdapter.Dataset.First(panelVM => panelVM.LocationData.name.Equals(location.name) &&
+                                                            panelVM.LocationData.latitude.Equals(location.latitude) &&
+                                                            panelVM.LocationData.longitude.Equals(location.longitude) &&
+                                                            panelVM.LocationData.tz_long.Equals(location.tz_long));
+                        }
+                        panel.SetWeather(weather);
+                        mAdapter.NotifyItemChanged(mAdapter.Dataset.IndexOf(panel));
+                    }
                 }
-            }
+            });
         }
 
         public void OnWeatherError(WeatherException wEx)

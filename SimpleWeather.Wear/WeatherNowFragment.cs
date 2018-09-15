@@ -64,37 +64,37 @@ namespace SimpleWeather.Droid.Wear
 
         public void OnWeatherLoaded(LocationData location, Weather weather)
         {
-            if (weather != null)
+            Activity?.RunOnUiThread(() =>
             {
-                Activity?.RunOnUiThread(() =>
+                if (weather?.IsValid() == true)
                 {
                     wm.UpdateWeather(weather);
                     weatherView.UpdateView(weather);
                     SetView(weatherView);
                     mCallback?.OnWeatherViewUpdated(weatherView);
-                });
 
-                // Update complications if they haven't been already
-                WeatherComplicationIntentService.EnqueueWork(Activity,
-                    new Intent(Activity, typeof(WeatherComplicationIntentService))
-                        .SetAction(WeatherComplicationIntentService.ACTION_UPDATECOMPLICATIONS));
+                    // Update complications if they haven't been already
+                    WeatherComplicationIntentService.EnqueueWork(Activity,
+                        new Intent(Activity, typeof(WeatherComplicationIntentService))
+                            .SetAction(WeatherComplicationIntentService.ACTION_UPDATECOMPLICATIONS));
 
-                if (!loaded)
-                {
-                    TimeSpan span = DateTimeOffset.Now - weather.update_time;
-                    if (span.TotalMinutes > Settings.DefaultInterval)
+                    if (!loaded)
                     {
-                        // send request to refresh data on connected device
-                        Activity?.StartService(new Intent(Activity, typeof(WearableDataListenerService))
-                            .SetAction(WearableDataListenerService.ACTION_REQUESTWEATHERUPDATE)
-                            .PutExtra(WearableDataListenerService.EXTRA_FORCEUPDATE, true));
+                        TimeSpan span = DateTimeOffset.Now - weather.update_time;
+                        if (span.TotalMinutes > Settings.DefaultInterval)
+                        {
+                            // send request to refresh data on connected device
+                            Activity?.StartService(new Intent(Activity, typeof(WearableDataListenerService))
+                                .SetAction(WearableDataListenerService.ACTION_REQUESTWEATHERUPDATE)
+                                .PutExtra(WearableDataListenerService.EXTRA_FORCEUPDATE, true));
+                        }
+
+                        loaded = true;
                     }
-
-                    loaded = true;
                 }
-            }
 
-            Activity?.RunOnUiThread(() => refreshLayout.Refreshing = false);
+                refreshLayout.Refreshing = false;
+            });
         }
 
         public void OnWeatherError(WeatherException wEx)
@@ -459,7 +459,7 @@ namespace SimpleWeather.Droid.Wear
                     await Restore();
                     loaded = true;
                 }
-                else if (wLoader.GetWeather() != null)
+                else if (wLoader.GetWeather()?.IsValid() == true)
                 {
                     var weather = wLoader.GetWeather();
 
@@ -544,7 +544,7 @@ namespace SimpleWeather.Droid.Wear
             }
             else if (wLoader != null && !loaded)
             {
-                if (wLoader.GetWeather() != null)
+                if (wLoader.GetWeather()?.IsValid() == true)
                 {
                     Weather weather = wLoader.GetWeather();
                     /*
@@ -779,4 +779,3 @@ namespace SimpleWeather.Droid.Wear
         }
     }
 }
- 

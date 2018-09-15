@@ -314,7 +314,7 @@ namespace SimpleWeather.Droid.Wear.Wearable
 
         private ComplicationData BuildUpdate(int dataType, Weather weather)
         {
-            if (weather == null || (dataType != ComplicationData.TypeShortText && dataType != ComplicationData.TypeLongText))
+            if (weather?.IsValid() == false || (dataType != ComplicationData.TypeShortText && dataType != ComplicationData.TypeLongText))
             {
                 return null;
             }

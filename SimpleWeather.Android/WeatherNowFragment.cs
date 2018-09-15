@@ -105,38 +105,41 @@ namespace SimpleWeather.Droid.App
 
         public void OnWeatherLoaded(LocationData location, Weather weather)
         {
-            if (weather != null)
+            AppCompatActivity?.RunOnUiThread(() =>
             {
-                wm.UpdateWeather(weather);
-                weatherView.UpdateView(weather);
-                SetView(weatherView);
-
-                if (Settings.HomeData.Equals(location))
+                if (weather?.IsValid() == true)
                 {
-                    // Update widgets if they haven't been already
-                    if (TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval)
+                    wm.UpdateWeather(weather);
+                    weatherView.UpdateView(weather);
+                    SetView(weatherView);
+
+                    if (Settings.HomeData.Equals(location))
                     {
-                        WeatherWidgetService.EnqueueWork(App.Context, new Intent(App.Context, typeof(WeatherWidgetService))
-                            .SetAction(WeatherWidgetService.ACTION_UPDATEWEATHER));
+                        // Update widgets if they haven't been already
+                        if (TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval)
+                        {
+                            WeatherWidgetService.EnqueueWork(App.Context, new Intent(App.Context, typeof(WeatherWidgetService))
+                                .SetAction(WeatherWidgetService.ACTION_UPDATEWEATHER));
+                        }
+
+                        // Update ongoing notification if its not showing
+                        if (Settings.OnGoingNotification && !Notifications.WeatherNotificationBuilder.IsShowing)
+                        {
+                            WeatherWidgetService.EnqueueWork(App.Context, new Intent(App.Context, typeof(WeatherWidgetService))
+                                .SetAction(WeatherWidgetService.ACTION_REFRESHNOTIFICATION));
+                        }
                     }
 
-                    // Update ongoing notification if its not showing
-                    if (Settings.OnGoingNotification && !Notifications.WeatherNotificationBuilder.IsShowing)
+                    if (wm.SupportsAlerts && Settings.ShowAlerts &&
+                        weather.weather_alerts != null && weather.weather_alerts.Count > 0)
                     {
-                        WeatherWidgetService.EnqueueWork(App.Context, new Intent(App.Context, typeof(WeatherWidgetService))
-                            .SetAction(WeatherWidgetService.ACTION_REFRESHNOTIFICATION));
+                        // Alerts are posted to the user here. Set them as notified.
+                        Task.Run(async () => await WeatherAlertHandler.SetasNotified(location, weather.weather_alerts));
                     }
                 }
 
-                if (wm.SupportsAlerts && Settings.ShowAlerts &&
-                    weather.weather_alerts != null && weather.weather_alerts.Count > 0)
-                {
-                    // Alerts are posted to the user here. Set them as notified.
-                    Task.Run(async () => await WeatherAlertHandler.SetasNotified(location, weather.weather_alerts));
-                }
-            }
-
-            AppCompatActivity?.RunOnUiThread(() => refreshLayout.Refreshing = false);
+                refreshLayout.Refreshing = false;
+            });
         }
 
         public void OnWeatherError(WeatherException wEx)
@@ -491,7 +494,7 @@ namespace SimpleWeather.Droid.App
                     await Restore();
                     loaded = true;
                 }
-                else if (wLoader.GetWeather() != null)
+                else if (wLoader.GetWeather()?.IsValid() == true)
                 {
                     Weather weather = wLoader.GetWeather();
 

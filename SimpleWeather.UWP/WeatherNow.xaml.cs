@@ -51,7 +51,7 @@ namespace SimpleWeather.UWP
             // Save index before update
             int index = TextForecastControl.SelectedIndex;
 
-            if (weather != null)
+            if (weather?.IsValid() == true)
             {
                 wm.UpdateWeather(weather);
                 WeatherView.UpdateView(weather);
@@ -507,7 +507,7 @@ namespace SimpleWeather.UWP
             // Check pin tile status
             CheckTiles();
 
-            if (wLoader.GetWeather() != null)
+            if (wLoader.GetWeather()?.IsValid() == true)
             {
                 Weather weather = wLoader.GetWeather();
 
