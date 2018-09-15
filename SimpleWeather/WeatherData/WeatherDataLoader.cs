@@ -27,6 +27,8 @@ namespace SimpleWeather.WeatherData
         private Weather weather = null;
         private WeatherManager wm;
 
+        private const String TAG = nameof(WeatherDataLoader);
+
         public WeatherDataLoader(LocationData location)
         {
             wm = WeatherManager.GetInstance();
@@ -143,6 +145,9 @@ namespace SimpleWeather.WeatherData
             else
                 await LoadWeatherData();
 
+            Logger.WriteLine(LoggerLevel.Debug, "{0}: Sending weather data to callback", TAG);
+            Logger.WriteLine(LoggerLevel.Debug, "{0}: Weather data for {1} is valid = {2}", TAG, location?.ToString(), weather?.IsValid());
+
             callback?.OnWeatherLoaded(location, weather);
         }
 
@@ -153,10 +158,15 @@ namespace SimpleWeather.WeatherData
              * Refresh weather data
             */
 
+            Logger.WriteLine(LoggerLevel.Debug, "{0}: Loading weather data for {1}", TAG, location?.ToString());
+
             bool gotData = await LoadSavedWeatherData();
 
             if (!gotData)
             {
+                Logger.WriteLine(LoggerLevel.Debug, "{0}: Saved weather data invalid for {1}", TAG, location?.ToString());
+                Logger.WriteLine(LoggerLevel.Debug, "{0}: Retrieving data from weather provider", TAG);
+
                 try
                 {
                     if ((weather != null && weather.source != Settings.API)
@@ -352,6 +362,9 @@ namespace SimpleWeather.WeatherData
         public async Task ForceLoadSavedWeatherData()
         {
             await LoadSavedWeatherData(true);
+
+            Logger.WriteLine(LoggerLevel.Debug, "{0}: Sending weather data to callback", TAG);
+            Logger.WriteLine(LoggerLevel.Debug, "{0}: Weather data for {1} is valid = {2}", TAG, location?.ToString(), weather?.IsValid());
 
             if (weather != null)
                 callback?.OnWeatherLoaded(location, weather);

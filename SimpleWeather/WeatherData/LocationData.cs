@@ -260,6 +260,11 @@ namespace SimpleWeather.WeatherData
             else
                 return true;
         }
+
+        public override string ToString()
+        {
+            return String.Format("{0}|{1}|{2}", this.query, this.name, this.locationType.ToString());
+        }
     }
 
     [Table("favorites")]
