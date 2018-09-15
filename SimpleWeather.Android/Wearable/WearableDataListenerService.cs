@@ -43,6 +43,26 @@ namespace SimpleWeather.Droid.App
         private ICollection<INode> mAllConnectedNodes;
         private bool Loaded = false;
 
+        private const int JOB_ID = 1002;
+
+        public static void EnqueueWork(Context context, Intent work)
+        {
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
+            {
+                var jb = new Android.App.Job.JobInfo.Builder(JOB_ID,
+                    new ComponentName(context, Java.Lang.Class.FromType(typeof(WearableDataListenerService))));
+                jb.SetOverrideDeadline(0);
+
+                var js = (Android.App.Job.JobScheduler)context.ApplicationContext
+                    .GetSystemService(Context.JobSchedulerService);
+                js.Enqueue(jb.Build(), new Android.App.Job.JobWorkItem(work));
+            }
+            else
+            {
+                context.StartService(work);
+            }
+        }
+
         public override void OnCreate()
         {
             base.OnCreate();

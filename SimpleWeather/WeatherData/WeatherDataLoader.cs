@@ -178,7 +178,7 @@ namespace SimpleWeather.WeatherData
                         {
                             Settings.SaveLastGPSLocData(location);
 #if __ANDROID__
-                            App.Context.StartService(
+                            WearableDataListenerService.EnqueueWork(App.Context,
                                 new Android.Content.Intent(App.Context, typeof(WearableDataListenerService))
                                     .SetAction(WearableDataListenerService.ACTION_SENDLOCATIONUPDATE));
 #endif
@@ -301,7 +301,7 @@ namespace SimpleWeather.WeatherData
 
 #if !__ANDROID_WEAR__ && __ANDROID__
             // Update weather data for Wearables
-            Application.Context.StartService(
+            WearableDataListenerService.EnqueueWork(Application.Context,
                 new Android.Content.Intent(Application.Context, typeof(WearableDataListenerService))
                     .SetAction(WearableDataListenerService.ACTION_SENDWEATHERUPDATE));
 

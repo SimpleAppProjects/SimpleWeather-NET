@@ -1142,9 +1142,9 @@ namespace SimpleWeather.Droid.App.Widgets
                         lastGPSLocData.SetData(query_vm, location);
                         Settings.SaveLastGPSLocData(lastGPSLocData);
 
-                        App.Context.StartService(
+                        WearableDataListenerService.EnqueueWork(App.Context,
                             new Intent(App.Context, typeof(WearableDataListenerService))
-                                .SetAction(WearableDataListenerService.ACTION_SENDLOCATIONUPDATE));
+                                        .SetAction(WearableDataListenerService.ACTION_SENDLOCATIONUPDATE));
 
                         // Update widget ids for location
                         if (oldkey != null && WidgetUtils.Exists(oldkey))
