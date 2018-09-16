@@ -81,7 +81,7 @@ namespace SimpleWeather.Droid.Wear
                     if (!loaded)
                     {
                         TimeSpan span = DateTimeOffset.Now - weather.update_time;
-                        if (span.TotalMinutes > Settings.DefaultInterval)
+                        if (Settings.DataSync != WearableDataSync.Off && span.TotalMinutes > Settings.DefaultInterval)
                         {
                             // send request to refresh data on connected device
                             Activity?.StartService(new Intent(Activity, typeof(WearableDataListenerService))

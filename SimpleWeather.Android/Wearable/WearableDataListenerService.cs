@@ -19,7 +19,7 @@ using SimpleWeather.Utils;
 
 namespace SimpleWeather.Droid.App
 {
-    [Service(Enabled = true)]
+    [Service(Enabled = true, Permission = "android.permission.BIND_JOB_SERVICE")]
     [IntentFilter(new string[]
     {
         DataApi.ActionDataChanged,
