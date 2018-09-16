@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- NOTE: Version Code Format (TargetSDK, Version Name, Build Number, Variant Code (Android: 00, WearOS: 01)-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.thewizrd.simpleweather" android:installLocation="auto"
-          android:versionCode="271340000" android:versionName="1.3.4">
+          android:versionCode="271340100" android:versionName="1.3.4">
 	<uses-sdk android:minSdkVersion="16" android:targetSdkVersion="27" />
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
