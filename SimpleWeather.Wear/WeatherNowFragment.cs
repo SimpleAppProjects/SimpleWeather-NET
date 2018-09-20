@@ -655,7 +655,8 @@ namespace SimpleWeather.Droid.Wear
         {
             bool locationChanged = false;
 
-            if (Settings.FollowGPS && (location == null || location.locationType == LocationType.GPS))
+            if (Settings.DataSync == WearableDataSync.Off &&
+                Settings.FollowGPS && (location == null || location.locationType == LocationType.GPS))
             {
                 if (Activity != null && ContextCompat.CheckSelfPermission(Activity, Manifest.Permission.AccessFineLocation) != Permission.Granted)
                 {
