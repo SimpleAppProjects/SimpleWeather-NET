@@ -11,6 +11,7 @@ using Android.Gms.Common.Apis;
 using Android.Gms.Wearable;
 using Android.OS;
 using Android.Runtime;
+using Android.Support.V4.App;
 using Android.Views;
 using Android.Widget;
 using SimpleWeather.Droid.App.Widgets;
@@ -19,7 +20,7 @@ using SimpleWeather.Utils;
 
 namespace SimpleWeather.Droid.App
 {
-    [Service(Enabled = true, Permission = "android.permission.BIND_JOB_SERVICE")]
+    [Service(Enabled = true, Exported = true)]
     [IntentFilter(new string[]
     {
         DataApi.ActionDataChanged,
@@ -44,18 +45,13 @@ namespace SimpleWeather.Droid.App
         private bool Loaded = false;
 
         private const int JOB_ID = 1002;
+        private const string NOT_CHANNEL_ID = "SimpleWeather.generalnotif";
 
         public static void EnqueueWork(Context context, Intent work)
         {
             if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
             {
-                var jb = new Android.App.Job.JobInfo.Builder(JOB_ID,
-                    new ComponentName(context, Java.Lang.Class.FromType(typeof(WearableDataListenerService))));
-                jb.SetOverrideDeadline(0);
-
-                var js = (Android.App.Job.JobScheduler)context.ApplicationContext
-                    .GetSystemService(Context.JobSchedulerService);
-                js.Enqueue(jb.Build(), new Android.App.Job.JobWorkItem(work));
+                context.StartForegroundService(work);
             }
             else
             {
@@ -63,9 +59,47 @@ namespace SimpleWeather.Droid.App
             }
         }
 
+        private static void InitChannel()
+        {
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
+            {
+                // Gets an instance of the NotificationManager service
+                NotificationManager mNotifyMgr = (NotificationManager)App.Context.GetSystemService(App.NotificationService);
+                NotificationChannel mChannel = mNotifyMgr.GetNotificationChannel(NOT_CHANNEL_ID);
+
+                if (mChannel == null)
+                {
+                    String notchannel_name = App.Context.Resources.GetString(Resource.String.not_channel_name_general);
+
+                    mChannel = new NotificationChannel(NOT_CHANNEL_ID, notchannel_name, NotificationImportance.Low);
+                    // Configure the notification channel.
+                    mChannel.SetShowBadge(false);
+                    mChannel.EnableLights(false);
+                    mChannel.EnableVibration(false);
+                    mNotifyMgr.CreateNotificationChannel(mChannel);
+                }
+            }
+        }
+
         public override void OnCreate()
         {
             base.OnCreate();
+
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
+            {
+                InitChannel();
+
+                NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(App.Context, NOT_CHANNEL_ID)
+                    .SetSmallIcon(Resource.Drawable.ic_logo)
+                    .SetContentTitle(GetString(Resource.String.not_title_wearable_sync))
+                    .SetProgress(0, 0, true)
+                    .SetColor(GetColor(Resource.Color.colorPrimary))
+                    .SetOnlyAlertOnce(true)
+                    .SetPriority(NotificationCompat.PriorityLow) as NotificationCompat.Builder;
+
+                StartForeground(JOB_ID, mBuilder.Build());
+            }
 
             if (mGoogleApiClient == null)
             {
@@ -128,6 +162,11 @@ namespace SimpleWeather.Droid.App
                 }
                 Loaded = false;
             });
+
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
+            {
+                StopForeground(true);
+            }
 
             base.OnDestroy();
         }
@@ -199,24 +238,31 @@ namespace SimpleWeather.Droid.App
         [return: GeneratedEnum]
         public override StartCommandResult OnStartCommand(Intent intent, [GeneratedEnum] StartCommandFlags flags, int startId)
         {
-            // Create requests if nodes exist with app support
-            if (ACTION_SENDSETTINGSUPDATE.Equals(intent?.Action))
+            Task.Run(async () =>
             {
-                Task.Run(async () => await CreateSettingsDataRequest(true));
-                return StartCommandResult.NotSticky;
-            }
-            else if (ACTION_SENDLOCATIONUPDATE.Equals(intent?.Action))
+                // Create requests if nodes exist with app support
+                if (ACTION_SENDSETTINGSUPDATE.Equals(intent?.Action))
+                {
+                    await CreateSettingsDataRequest(true);
+                }
+                else if (ACTION_SENDLOCATIONUPDATE.Equals(intent?.Action))
+                {
+                    await CreateLocationDataRequest(true);
+                }
+                else if (ACTION_SENDWEATHERUPDATE.Equals(intent?.Action))
+                {
+                    await CreateWeatherDataRequest(true);
+                }
+            })
+            .ContinueWith((t) =>
             {
-                Task.Run(async () => await CreateLocationDataRequest(true));
-                return StartCommandResult.NotSticky;
-            }
-            else if (ACTION_SENDWEATHERUPDATE.Equals(intent?.Action))
-            {
-                Task.Run(async () => await CreateWeatherDataRequest(true));
-                return StartCommandResult.NotSticky;
-            }
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
+                {
+                    StopForeground(true);
+                }
+            });
 
-            return base.OnStartCommand(intent, flags, startId);
+            return StartCommandResult.NotSticky;
         }
 
         private async Task<ICollection<INode>> FindWearDevicesWithApp()
