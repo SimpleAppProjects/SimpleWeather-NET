@@ -238,10 +238,9 @@ namespace SimpleWeather.OpenWeather
                 // Connect to webstream
                 HttpClient webClient = new HttpClient();
                 HttpResponseMessage response = await webClient.GetAsync(queryURL);
-                var responseCode = response.StatusCode;
 
                 // Check for errors
-                switch (responseCode)
+                switch (response.StatusCode)
                 {
                     // 400 (OK since this isn't a valid request)
                     case HttpStatusCode.BadRequest:

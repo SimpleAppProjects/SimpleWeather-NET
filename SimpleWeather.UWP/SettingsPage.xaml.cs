@@ -167,7 +167,8 @@ namespace SimpleWeather.UWP
 
         private async void KeyEntry_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
-            var keydialog = new Controls.KeyEntryDialog();
+            var keydialog = new Controls.KeyEntryDialog(APIComboBox.SelectedValue.ToString());
+
             keydialog.PrimaryButtonClick += async (ContentDialog dialog, ContentDialogButtonClickEventArgs args) =>
             {
                 var diag = dialog as Controls.KeyEntryDialog;
@@ -250,19 +251,8 @@ namespace SimpleWeather.UWP
         private void UpdateRegisterLink()
         {
             string API = APIComboBox?.SelectedValue?.ToString();
-
-            switch (API)
-            {
-                case WeatherAPI.WeatherUnderground:
-                case WeatherAPI.OpenWeatherMap:
-                    RegisterKeyButton.NavigateUri =
-                        new Uri(WeatherAPI.APIs.First(prov => prov.Value == API).APIRegisterURL);
-                    break;
-                default:
-                    RegisterKeyButton.NavigateUri = 
-                        new Uri(WeatherAPI.APIs.First(prov => prov.Value == API).MainURL);
-                    break;
-            }
+            RegisterKeyButton.NavigateUri =
+                new Uri(WeatherAPI.APIs.First(prov => prov.Value == API).APIRegisterURL);
         }
 
         private void KeyEntry_GotFocus(object sender, RoutedEventArgs e)

@@ -292,6 +292,152 @@ namespace SimpleWeather.WeatherData
             Attribution = "Information provided by the U.S. National Weather Service";
         }
 
+        public WeatherAlert(HERE.Alert alert)
+        {
+            // Alert Type
+            switch (alert.type)
+            {
+                case "2": // Coastal Flood Warning, Watch, or Statement
+                case "3": // Flash Flood Watch
+                case "4": // Flash Flood Statement
+                case "6": // Flood Statement
+                    Type = WeatherAlertType.FloodWatch;
+                    Severity = WeatherAlertSeverity.Severe;
+                    break;
+                case "5": // Flash Flood Warning
+                case "7": // Flood Warning
+                case "8": // Urban and Small Stream Flood Advisory
+                    Type = WeatherAlertType.FloodWarning;
+                    Severity = WeatherAlertSeverity.Extreme;
+                    break;
+                case "9": // Hurricane Local Statement
+                    Type = WeatherAlertType.HurricaneLocalStatement;
+                    Severity = WeatherAlertSeverity.Moderate;
+                    break;
+                case "13": // Public Severe Weather Alert
+                case "29": // Severe Weather Statement
+                    Type = WeatherAlertType.SevereWeather;
+                    Severity = WeatherAlertSeverity.Severe;
+                    break;
+                case "14": // Red Flag Warning
+                    Type = WeatherAlertType.SpecialWeatherAlert;
+                    Severity = WeatherAlertSeverity.Extreme;
+                    break;
+                case "15": // River Ice Statement
+                case "18": // Snow Avalanche Bulletin
+                case "37": // Winter Weather Advisory
+                    Type = WeatherAlertType.WinterWeather;
+                    Severity = WeatherAlertSeverity.Severe;
+                    break;
+                case "21": // Severe Local Storm Watch or Watch Cancellation
+                case "23": // Severe Local Storm Watch and Areal Outline
+                case "24": // Marine Subtropical Storm Advisory
+                    Type = WeatherAlertType.StormWarning;
+                    Severity = WeatherAlertSeverity.Severe;
+                    break;
+                case "27": // Special Weather Statement
+                    Type = WeatherAlertType.SpecialWeatherAlert;
+                    Severity = WeatherAlertSeverity.Severe;
+                    break;
+                case "28": // Severe Thunderstorm Warning
+                    Type = WeatherAlertType.SevereThunderstormWarning;
+                    Severity = WeatherAlertSeverity.Extreme;
+                    break;
+                case "30": // Tropical Cyclone Advisory
+                case "31": // Tropical Cyclone Advisory for Marine and Aviation Interests
+                case "32": // Public Tropical Cyclone Advisory
+                case "33": // Tropical Cyclone Update
+                    Type = WeatherAlertType.HurricaneWindWarning;
+                    Severity = WeatherAlertSeverity.Severe;
+                    break;
+                case "34": // Tornado Warning
+                    Type = WeatherAlertType.TornadoWarning;
+                    Severity = WeatherAlertSeverity.Extreme;
+                    break;
+                case "35": // Tsunami Watch or Warning
+                    Type = WeatherAlertType.TsunamiWarning;
+                    Severity = WeatherAlertSeverity.Severe;
+                    break;
+                case "36": // Volcanic Activity Statement
+                    Type = WeatherAlertType.Volcano;
+                    Severity = WeatherAlertSeverity.Severe;
+                    break;
+                default:
+                    Type = WeatherAlertType.SpecialWeatherAlert;
+                    Severity = WeatherAlertSeverity.Severe;
+                    break;
+            }
+
+            Title = alert.description;
+            Message = alert.description;
+
+            SetDateTimeFromSegment(alert.timeSegment);
+
+            Attribution = "Information provided by HERE Weather";
+        }
+
+        private void SetDateTimeFromSegment(HERE.Timesegment[] timeSegment)
+        {
+            if (timeSegment.Length > 1)
+            {
+                var startDate = DateTimeUtils.GetClosestWeekday((DayOfWeek)(int.Parse(timeSegment[0].day_of_week) - 1));
+                var endDate = DateTimeUtils.GetClosestWeekday((DayOfWeek)(int.Parse(timeSegment[1].day_of_week) - 1));
+
+                Date = new DateTimeOffset(startDate.Add(GetTimeFromSegment(timeSegment[0].segment)), TimeSpan.Zero);
+                ExpiresDate = new DateTimeOffset(endDate.Add(GetTimeFromSegment(timeSegment[1].segment)), TimeSpan.Zero);
+            }
+            else
+            {
+                var today = DateTimeUtils.GetClosestWeekday((DayOfWeek)(int.Parse(timeSegment[0].day_of_week) - 1));
+
+                switch (timeSegment[0].segment)
+                {
+                    case "M": // Morning
+                    default:
+                        Date = new DateTimeOffset(today.Add(GetTimeFromSegment("M")), TimeSpan.Zero);
+                        ExpiresDate = new DateTimeOffset(today.Add(GetTimeFromSegment("A")), TimeSpan.Zero);
+                        break;
+                    case "A": // Afternoon
+                        Date = new DateTimeOffset(today.Add(GetTimeFromSegment("A")), TimeSpan.Zero);
+                        ExpiresDate = new DateTimeOffset(today.Add(GetTimeFromSegment("E")), TimeSpan.Zero);
+                        break;
+                    case "E": // Evening
+                        Date = new DateTimeOffset(today.Add(GetTimeFromSegment("E")), TimeSpan.Zero);
+                        ExpiresDate = new DateTimeOffset(today.Add(GetTimeFromSegment("N")), TimeSpan.Zero);
+                        break;
+                    case "N": // Night
+                        Date = new DateTimeOffset(today.Add(GetTimeFromSegment("N")), TimeSpan.Zero);
+                        ExpiresDate = new DateTimeOffset(today.AddDays(1).Add(GetTimeFromSegment("M")), TimeSpan.Zero); // The next morning
+                        break;
+                }
+            }
+        }
+
+        private TimeSpan GetTimeFromSegment(String segment)
+        {
+            TimeSpan span = TimeSpan.Zero;
+
+            switch (segment)
+            {
+                case "M": // Morning
+                    span = new TimeSpan(5, 0, 0); // hh:mm:ss
+                    break;
+                case "A": // Afternoon
+                    span = new TimeSpan(12, 0, 0); // hh:mm:ss
+                    break;
+                case "E": // Evening
+                    span = new TimeSpan(17, 0, 0); // hh:mm:ss
+                    break;
+                case "N": // Night
+                    span = new TimeSpan(21, 0, 0); // hh:mm:ss
+                    break;
+                default:
+                    break;
+            }
+
+            return span;
+        }
+
         public static WeatherAlert FromJson(JsonReader extReader)
         {
             WeatherAlert obj = null;
@@ -320,27 +466,27 @@ namespace SimpleWeather.WeatherData
                     switch (property)
                     {
                         case nameof(Type):
-                            obj.Type = (WeatherAlertType)int.Parse(reader.Value.ToString());
+                            obj.Type = (WeatherAlertType)int.Parse(reader.Value?.ToString());
                             break;
                         case nameof(Title):
-                            obj.Title = reader.Value.ToString();
+                            obj.Title = reader.Value?.ToString();
                             break;
                         case nameof(Message):
-                            obj.Message = reader.Value.ToString();
+                            obj.Message = reader.Value?.ToString();
                             break;
                         case nameof(Attribution):
-                            obj.Attribution = reader.Value.ToString();
+                            obj.Attribution = reader.Value?.ToString();
                             break;
                         case nameof(Date):
-                            bool parsed = DateTimeOffset.TryParseExact(reader.Value.ToString(), "dd.MM.yyyy HH:mm:ss zzzz", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset result);
+                            bool parsed = DateTimeOffset.TryParseExact(reader.Value?.ToString(), "dd.MM.yyyy HH:mm:ss zzzz", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset result);
                             if (!parsed) // If we can't parse try without format
-                                result = DateTimeOffset.Parse(reader.Value.ToString());
+                                result = DateTimeOffset.Parse(reader.Value?.ToString());
                             obj.Date = result;
                             break;
                         case nameof(ExpiresDate):
-                            parsed = DateTimeOffset.TryParseExact(reader.Value.ToString(), "dd.MM.yyyy HH:mm:ss zzzz", CultureInfo.InvariantCulture, DateTimeStyles.None, out result);
+                            parsed = DateTimeOffset.TryParseExact(reader.Value?.ToString(), "dd.MM.yyyy HH:mm:ss zzzz", CultureInfo.InvariantCulture, DateTimeStyles.None, out result);
                             if (!parsed) // If we can't parse try without format
-                                result = DateTimeOffset.Parse(reader.Value.ToString());
+                                result = DateTimeOffset.Parse(reader.Value?.ToString());
                             obj.ExpiresDate = result;
                             break;
                         case nameof(Notified):

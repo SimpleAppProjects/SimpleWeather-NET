@@ -21,14 +21,53 @@ namespace SimpleWeather.UWP.Controls
     {
         public string Key { get; set; }
         public bool CanClose { get; set; }
+        private string CurrentAPI { get; }
+
+        public KeyEntryDialog(String CurrentAPI)
+        {
+            this.CurrentAPI = CurrentAPI;
+            Initialize();
+        }
 
         public KeyEntryDialog()
+        {
+            if (String.IsNullOrWhiteSpace(CurrentAPI))
+                CurrentAPI = Utils.Settings.API;
+
+            Initialize();
+        }
+
+        public void Initialize()
         {
             this.InitializeComponent();
             this.Closing += KeyEntryDialog_Closing;
             KeyEntry.TextChanged += KeyEntry_TextChanged;
+            KeyEntry_2.TextChanged += KeyEntry_TextChanged;
 
-            KeyEntry.Text = Key = Utils.Settings.API_KEY;
+            if (CurrentAPI == WeatherData.WeatherAPI.Here)
+            {
+                Key = Utils.Settings.API_KEY;
+
+                string app_id = String.Empty;
+                string app_code = String.Empty;
+
+                if (!String.IsNullOrWhiteSpace(Key))
+                {
+                    var keyArr = Key.Split(';');
+                    app_id = keyArr.First();
+                    app_code = keyArr.Last();
+                }
+
+                KeyEntry.PlaceholderText = "App ID";
+                KeyEntry_2.PlaceholderText = "App Code";
+
+                KeyEntry.Text = app_id;
+                KeyEntry_2.Text = app_code;
+
+                KeyEntry_2.Visibility = Visibility.Visible;
+            }
+            else
+                KeyEntry.Text = Key = Utils.Settings.API_KEY;
         }
 
         private void KeyEntryDialog_Closing(ContentDialog sender, ContentDialogClosingEventArgs args)
@@ -45,7 +84,10 @@ namespace SimpleWeather.UWP.Controls
 
         private void KeyEntry_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Key = KeyEntry.Text;
+            if (CurrentAPI == WeatherData.WeatherAPI.Here)
+                Key = String.Format("{0};{1}", KeyEntry.Text, KeyEntry_2.Text);
+            else
+                Key = KeyEntry.Text;
         }
     }
 }

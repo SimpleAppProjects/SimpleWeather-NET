@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
 using SimpleWeather.Controls;
+using SimpleWeather.HERE;
 using SimpleWeather.Metno;
 using SimpleWeather.OpenWeather;
 using SimpleWeather.Utils;
@@ -25,6 +26,7 @@ namespace SimpleWeather.WeatherData
         public const string WeatherUnderground = "WUnderground";
         public const string OpenWeatherMap = "OpenWeather";
         public const string MetNo = "Metno";
+        public const string Here = "Here";
 
         public static List<ProviderEntry> APIs = new List<ProviderEntry>()
         {
@@ -32,6 +34,8 @@ namespace SimpleWeather.WeatherData
                 "https://www.yahoo.com/weather?ilc=401", "https://www.yahoo.com/weather?ilc=401"),
             new ProviderEntry("WeatherUnderground", WeatherUnderground,
                 "https://www.wunderground.com", "https://www.wunderground.com/signup?mode=api_signup"),
+            new ProviderEntry("HERE Weather", Here,
+                "https://www.here.com/en", "https://developer.here.com/?create=Freemium-Basic&keepState=true&step=account"),
             new ProviderEntry("OpenWeatherMap", OpenWeatherMap,
                 "http://www.openweathermap.org", "https://home.openweathermap.org/users/sign_up"),
             new ProviderEntry("MET Norway", MetNo,
@@ -84,6 +88,9 @@ namespace SimpleWeather.WeatherData
                     break;
                 case WeatherAPI.WeatherUnderground:
                     providerImpl = new WeatherUndergroundProvider();
+                    break;
+                case WeatherAPI.Here:
+                    providerImpl = new HEREWeatherProvider();
                     break;
                 case WeatherAPI.OpenWeatherMap:
                     providerImpl = new OpenWeatherMapProvider();

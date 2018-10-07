@@ -12,6 +12,14 @@
                 android:data="https://www.wunderground.com" />
         </Preference>
         <Preference
+            android:summary="@string/copyright_here"
+            android:title="@string/api_here" />
+        <Preference android:layout="@layout/credit_here">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://here.com/en" />
+        </Preference>
+        <Preference
             android:summary="@string/copyright_yahoo"
             android:title="@string/api_yahoo" />
         <Preference android:layout="@layout/credit_yahoo">

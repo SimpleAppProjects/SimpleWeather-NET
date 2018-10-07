@@ -1,5 +1,7 @@
 ﻿using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
+using System;
+using System.Globalization;
 #if WINDOWS_UWP
 using System.ComponentModel;
 using Windows.UI;
@@ -41,9 +43,9 @@ namespace SimpleWeather.Controls
 
 #if WINDOWS_UWP
             var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages[0];
-            var culture = new System.Globalization.CultureInfo(userlang);
+            var culture = new CultureInfo(userlang);
 #else
-            var culture = System.Globalization.CultureInfo.CurrentCulture;
+            var culture = CultureInfo.CurrentCulture;
 #endif
             WeatherIcon = hr_forecast.icon;
 
@@ -59,11 +61,12 @@ namespace SimpleWeather.Controls
                 Date = hr_forecast.date.ToString("ddd h tt");
 #endif
             Condition = hr_forecast.condition;
-            HiTemp = (Settings.IsFahrenheit ? hr_forecast.high_f : hr_forecast.high_c) + "º ";
+            HiTemp = (Settings.IsFahrenheit ?
+                Math.Round(double.Parse(hr_forecast.high_f)).ToString() : Math.Round(double.Parse(hr_forecast.high_c)).ToString()) + "º ";
             PoP = hr_forecast.pop + "%";
             UpdateWindDirection(hr_forecast.wind_degrees);
             WindSpeed = (Settings.IsFahrenheit ?
-               hr_forecast.wind_mph.ToString(culture) + " mph" : hr_forecast.wind_kph.ToString(culture) + " kph");
+               Math.Round(hr_forecast.wind_mph) + " mph" : Math.Round(hr_forecast.wind_kph) + " kph");
         }
 
         private void UpdateWindDirection(int angle)

@@ -1903,217 +1903,220 @@ namespace SimpleWeather.Droid
 			public static int hail = 2130837621;
 			
 			// aapt resource value: 0x7f020076
-			public static int hot = 2130837622;
+			public static int here = 2130837622;
 			
 			// aapt resource value: 0x7f020077
-			public static int hurricane = 2130837623;
+			public static int hot = 2130837623;
 			
 			// aapt resource value: 0x7f020078
-			public static int hurricane_warning = 2130837624;
+			public static int hurricane = 2130837624;
 			
 			// aapt resource value: 0x7f020079
-			public static int ic_error_white = 2130837625;
+			public static int hurricane_warning = 2130837625;
 			
 			// aapt resource value: 0x7f02007a
-			public static int ic_logo = 2130837626;
+			public static int ic_error_white = 2130837626;
 			
 			// aapt resource value: 0x7f02007b
-			public static int ic_mode_edit_white_24dp = 2130837627;
+			public static int ic_logo = 2130837627;
 			
 			// aapt resource value: 0x7f02007c
-			public static int ic_my_location_white_24dp = 2130837628;
+			public static int ic_mode_edit_white_24dp = 2130837628;
 			
 			// aapt resource value: 0x7f02007d
-			public static int ic_settings_black_24dp = 2130837629;
+			public static int ic_my_location_white_24dp = 2130837629;
 			
 			// aapt resource value: 0x7f02007e
-			public static int ic_splash_screen = 2130837630;
+			public static int ic_settings_black_24dp = 2130837630;
 			
 			// aapt resource value: 0x7f02007f
-			public static int lightning = 2130837631;
+			public static int ic_splash_screen = 2130837631;
 			
 			// aapt resource value: 0x7f020080
-			public static int metno = 2130837632;
+			public static int lightning = 2130837632;
 			
 			// aapt resource value: 0x7f020081
-			public static int na = 2130837633;
+			public static int metno = 2130837633;
 			
 			// aapt resource value: 0x7f020082
-			public static int night_alt_cloudy = 2130837634;
+			public static int na = 2130837634;
 			
 			// aapt resource value: 0x7f020083
-			public static int night_alt_cloudy_gusts = 2130837635;
+			public static int night_alt_cloudy = 2130837635;
 			
 			// aapt resource value: 0x7f020084
-			public static int night_alt_cloudy_high = 2130837636;
+			public static int night_alt_cloudy_gusts = 2130837636;
 			
 			// aapt resource value: 0x7f020085
-			public static int night_alt_cloudy_windy = 2130837637;
+			public static int night_alt_cloudy_high = 2130837637;
 			
 			// aapt resource value: 0x7f020086
-			public static int night_alt_hail = 2130837638;
+			public static int night_alt_cloudy_windy = 2130837638;
 			
 			// aapt resource value: 0x7f020087
-			public static int night_alt_lightning = 2130837639;
+			public static int night_alt_hail = 2130837639;
 			
 			// aapt resource value: 0x7f020088
-			public static int night_alt_partly_cloudy = 2130837640;
+			public static int night_alt_lightning = 2130837640;
 			
 			// aapt resource value: 0x7f020089
-			public static int night_alt_rain = 2130837641;
+			public static int night_alt_partly_cloudy = 2130837641;
 			
 			// aapt resource value: 0x7f02008a
-			public static int night_alt_rain_mix = 2130837642;
+			public static int night_alt_rain = 2130837642;
 			
 			// aapt resource value: 0x7f02008b
-			public static int night_alt_rain_wind = 2130837643;
+			public static int night_alt_rain_mix = 2130837643;
 			
 			// aapt resource value: 0x7f02008c
-			public static int night_alt_showers = 2130837644;
+			public static int night_alt_rain_wind = 2130837644;
 			
 			// aapt resource value: 0x7f02008d
-			public static int night_alt_sleet = 2130837645;
+			public static int night_alt_showers = 2130837645;
 			
 			// aapt resource value: 0x7f02008e
-			public static int night_alt_sleet_storm = 2130837646;
+			public static int night_alt_sleet = 2130837646;
 			
 			// aapt resource value: 0x7f02008f
-			public static int night_alt_snow = 2130837647;
+			public static int night_alt_sleet_storm = 2130837647;
 			
 			// aapt resource value: 0x7f020090
-			public static int night_alt_snow_thunderstorm = 2130837648;
+			public static int night_alt_snow = 2130837648;
 			
 			// aapt resource value: 0x7f020091
-			public static int night_alt_snow_wind = 2130837649;
+			public static int night_alt_snow_thunderstorm = 2130837649;
 			
 			// aapt resource value: 0x7f020092
-			public static int night_alt_sprinkle = 2130837650;
+			public static int night_alt_snow_wind = 2130837650;
 			
 			// aapt resource value: 0x7f020093
-			public static int night_alt_storm_showers = 2130837651;
+			public static int night_alt_sprinkle = 2130837651;
 			
 			// aapt resource value: 0x7f020094
-			public static int night_alt_thunderstorm = 2130837652;
+			public static int night_alt_storm_showers = 2130837652;
 			
 			// aapt resource value: 0x7f020095
-			public static int night_clear = 2130837653;
+			public static int night_alt_thunderstorm = 2130837653;
 			
 			// aapt resource value: 0x7f020096
-			public static int night_fog = 2130837654;
+			public static int night_clear = 2130837654;
 			
 			// aapt resource value: 0x7f020097
-			public static int notification_action_background = 2130837655;
+			public static int night_fog = 2130837655;
 			
 			// aapt resource value: 0x7f020098
-			public static int notification_bg = 2130837656;
+			public static int notification_action_background = 2130837656;
 			
 			// aapt resource value: 0x7f020099
-			public static int notification_bg_low = 2130837657;
+			public static int notification_bg = 2130837657;
 			
 			// aapt resource value: 0x7f02009a
-			public static int notification_bg_low_normal = 2130837658;
+			public static int notification_bg_low = 2130837658;
 			
 			// aapt resource value: 0x7f02009b
-			public static int notification_bg_low_pressed = 2130837659;
+			public static int notification_bg_low_normal = 2130837659;
 			
 			// aapt resource value: 0x7f02009c
-			public static int notification_bg_normal = 2130837660;
+			public static int notification_bg_low_pressed = 2130837660;
 			
 			// aapt resource value: 0x7f02009d
-			public static int notification_bg_normal_pressed = 2130837661;
+			public static int notification_bg_normal = 2130837661;
 			
 			// aapt resource value: 0x7f02009e
-			public static int notification_icon_background = 2130837662;
-			
-			// aapt resource value: 0x7f0200bb
-			public static int notification_template_icon_bg = 2130837691;
-			
-			// aapt resource value: 0x7f0200bc
-			public static int notification_template_icon_low_bg = 2130837692;
+			public static int notification_bg_normal_pressed = 2130837662;
 			
 			// aapt resource value: 0x7f02009f
-			public static int notification_tile_bg = 2130837663;
+			public static int notification_icon_background = 2130837663;
+			
+			// aapt resource value: 0x7f0200bc
+			public static int notification_template_icon_bg = 2130837692;
+			
+			// aapt resource value: 0x7f0200bd
+			public static int notification_template_icon_low_bg = 2130837693;
 			
 			// aapt resource value: 0x7f0200a0
-			public static int notify_panel_notification_icon_bg = 2130837664;
+			public static int notification_tile_bg = 2130837664;
 			
 			// aapt resource value: 0x7f0200a1
-			public static int openweathermap = 2130837665;
+			public static int notify_panel_notification_icon_bg = 2130837665;
 			
 			// aapt resource value: 0x7f0200a2
-			public static int rain = 2130837666;
+			public static int openweathermap = 2130837666;
 			
 			// aapt resource value: 0x7f0200a3
-			public static int rain_mix = 2130837667;
+			public static int rain = 2130837667;
 			
 			// aapt resource value: 0x7f0200a4
-			public static int rain_wind = 2130837668;
+			public static int rain_mix = 2130837668;
 			
 			// aapt resource value: 0x7f0200a5
-			public static int sandstorm = 2130837669;
+			public static int rain_wind = 2130837669;
 			
 			// aapt resource value: 0x7f0200a6
-			public static int showers = 2130837670;
+			public static int sandstorm = 2130837670;
 			
 			// aapt resource value: 0x7f0200a7
-			public static int sleet = 2130837671;
+			public static int showers = 2130837671;
 			
 			// aapt resource value: 0x7f0200a8
-			public static int small_craft_advisory = 2130837672;
+			public static int sleet = 2130837672;
 			
 			// aapt resource value: 0x7f0200a9
-			public static int smog = 2130837673;
+			public static int small_craft_advisory = 2130837673;
 			
 			// aapt resource value: 0x7f0200aa
-			public static int smoke = 2130837674;
+			public static int smog = 2130837674;
 			
 			// aapt resource value: 0x7f0200ab
-			public static int snow = 2130837675;
+			public static int smoke = 2130837675;
 			
 			// aapt resource value: 0x7f0200ac
-			public static int snow_wind = 2130837676;
+			public static int snow = 2130837676;
 			
 			// aapt resource value: 0x7f0200ad
-			public static int snowflake_cold = 2130837677;
+			public static int snow_wind = 2130837677;
 			
 			// aapt resource value: 0x7f0200ae
-			public static int sprinkle = 2130837678;
+			public static int snowflake_cold = 2130837678;
 			
 			// aapt resource value: 0x7f0200af
-			public static int storm_showers = 2130837679;
+			public static int sprinkle = 2130837679;
 			
 			// aapt resource value: 0x7f0200b0
-			public static int storm_warning = 2130837680;
+			public static int storm_showers = 2130837680;
 			
 			// aapt resource value: 0x7f0200b1
-			public static int strong_wind = 2130837681;
+			public static int storm_warning = 2130837681;
 			
 			// aapt resource value: 0x7f0200b2
-			public static int thunderstorm = 2130837682;
+			public static int strong_wind = 2130837682;
 			
 			// aapt resource value: 0x7f0200b3
-			public static int tooltip_frame_dark = 2130837683;
+			public static int thunderstorm = 2130837683;
 			
 			// aapt resource value: 0x7f0200b4
-			public static int tooltip_frame_light = 2130837684;
+			public static int tooltip_frame_dark = 2130837684;
 			
 			// aapt resource value: 0x7f0200b5
-			public static int tornado = 2130837685;
+			public static int tooltip_frame_light = 2130837685;
 			
 			// aapt resource value: 0x7f0200b6
-			public static int tsunami = 2130837686;
+			public static int tornado = 2130837686;
 			
 			// aapt resource value: 0x7f0200b7
-			public static int volcano = 2130837687;
+			public static int tsunami = 2130837687;
 			
 			// aapt resource value: 0x7f0200b8
-			public static int windy = 2130837688;
+			public static int volcano = 2130837688;
 			
 			// aapt resource value: 0x7f0200b9
-			public static int wunderground = 2130837689;
+			public static int windy = 2130837689;
 			
 			// aapt resource value: 0x7f0200ba
-			public static int yahoo = 2130837690;
+			public static int wunderground = 2130837690;
+			
+			// aapt resource value: 0x7f0200bb
+			public static int yahoo = 2130837691;
 			
 			static Drawable()
 			{
@@ -2165,8 +2168,8 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f0c0029
 			public static int SYM = 2131492905;
 			
-			// aapt resource value: 0x7f0c0069
-			public static int action0 = 2131492969;
+			// aapt resource value: 0x7f0c006a
+			public static int action0 = 2131492970;
 			
 			// aapt resource value: 0x7f0c0057
 			public static int action_bar = 2131492951;
@@ -2189,17 +2192,17 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f0c0035
 			public static int action_bar_title = 2131492917;
 			
-			// aapt resource value: 0x7f0c0066
-			public static int action_container = 2131492966;
+			// aapt resource value: 0x7f0c0067
+			public static int action_container = 2131492967;
 			
 			// aapt resource value: 0x7f0c0058
 			public static int action_context_bar = 2131492952;
 			
-			// aapt resource value: 0x7f0c006d
-			public static int action_divider = 2131492973;
+			// aapt resource value: 0x7f0c006e
+			public static int action_divider = 2131492974;
 			
-			// aapt resource value: 0x7f0c0067
-			public static int action_image = 2131492967;
+			// aapt resource value: 0x7f0c0068
+			public static int action_image = 2131492968;
 			
 			// aapt resource value: 0x7f0c0002
 			public static int action_menu_divider = 2131492866;
@@ -2216,11 +2219,11 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f0c0037
 			public static int action_mode_close_button = 2131492919;
 			
-			// aapt resource value: 0x7f0c0068
-			public static int action_text = 2131492968;
+			// aapt resource value: 0x7f0c0069
+			public static int action_text = 2131492969;
 			
-			// aapt resource value: 0x7f0c0076
-			public static int actions = 2131492982;
+			// aapt resource value: 0x7f0c0077
+			public static int actions = 2131492983;
 			
 			// aapt resource value: 0x7f0c0038
 			public static int activity_chooser_view_content = 2131492920;
@@ -2249,14 +2252,14 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f0c003e
 			public static int buttonPanel = 2131492926;
 			
-			// aapt resource value: 0x7f0c006a
-			public static int cancel_action = 2131492970;
+			// aapt resource value: 0x7f0c006b
+			public static int cancel_action = 2131492971;
 			
 			// aapt resource value: 0x7f0c004e
 			public static int checkbox = 2131492942;
 			
-			// aapt resource value: 0x7f0c0072
-			public static int chronometer = 2131492978;
+			// aapt resource value: 0x7f0c0073
+			public static int chronometer = 2131492979;
 			
 			// aapt resource value: 0x7f0c002b
 			public static int collapseActionView = 2131492907;
@@ -2285,8 +2288,8 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f0c0022
 			public static int end = 2131492898;
 			
-			// aapt resource value: 0x7f0c0078
-			public static int end_padder = 2131492984;
+			// aapt resource value: 0x7f0c0079
+			public static int end_padder = 2131492985;
 			
 			// aapt resource value: 0x7f0c0039
 			public static int expand_activities_button = 2131492921;
@@ -2306,8 +2309,8 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f0c003d
 			public static int icon = 2131492925;
 			
-			// aapt resource value: 0x7f0c0077
-			public static int icon_group = 2131492983;
+			// aapt resource value: 0x7f0c0078
+			public static int icon_group = 2131492984;
 			
 			// aapt resource value: 0x7f0c002c
 			public static int ifRoom = 2131492908;
@@ -2315,11 +2318,14 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f0c003a
 			public static int image = 2131492922;
 			
-			// aapt resource value: 0x7f0c0073
-			public static int info = 2131492979;
+			// aapt resource value: 0x7f0c0074
+			public static int info = 2131492980;
 			
 			// aapt resource value: 0x7f0c0034
 			public static int italic = 2131492916;
+			
+			// aapt resource value: 0x7f0c0066
+			public static int keyEntry2 = 2131492966;
 			
 			// aapt resource value: 0x7f0c0009
 			public static int line1 = 2131492873;
@@ -2333,11 +2339,11 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f0c003c
 			public static int list_item = 2131492924;
 			
-			// aapt resource value: 0x7f0c006c
-			public static int media_actions = 2131492972;
+			// aapt resource value: 0x7f0c006d
+			public static int media_actions = 2131492973;
 			
-			// aapt resource value: 0x7f0c0079
-			public static int message = 2131492985;
+			// aapt resource value: 0x7f0c007a
+			public static int message = 2131492986;
 			
 			// aapt resource value: 0x7f0c0023
 			public static int middle = 2131492899;
@@ -2354,14 +2360,14 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f0c0010
 			public static int normal = 2131492880;
 			
-			// aapt resource value: 0x7f0c0075
-			public static int notification_background = 2131492981;
+			// aapt resource value: 0x7f0c0076
+			public static int notification_background = 2131492982;
+			
+			// aapt resource value: 0x7f0c0070
+			public static int notification_main_column = 2131492976;
 			
 			// aapt resource value: 0x7f0c006f
-			public static int notification_main_column = 2131492975;
-			
-			// aapt resource value: 0x7f0c006e
-			public static int notification_main_column_container = 2131492974;
+			public static int notification_main_column_container = 2131492975;
 			
 			// aapt resource value: 0x7f0c0040
 			public static int parentPanel = 2131492928;
@@ -2375,11 +2381,11 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f0c0050
 			public static int radio = 2131492944;
 			
-			// aapt resource value: 0x7f0c0074
-			public static int right_icon = 2131492980;
+			// aapt resource value: 0x7f0c0075
+			public static int right_icon = 2131492981;
 			
-			// aapt resource value: 0x7f0c0070
-			public static int right_side = 2131492976;
+			// aapt resource value: 0x7f0c0071
+			public static int right_side = 2131492977;
 			
 			// aapt resource value: 0x7f0c001b
 			public static int screen = 2131492891;
@@ -2453,8 +2459,8 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f0c001e
 			public static int src_over = 2131492894;
 			
-			// aapt resource value: 0x7f0c006b
-			public static int status_bar_latest_event_content = 2131492971;
+			// aapt resource value: 0x7f0c006c
+			public static int status_bar_latest_event_content = 2131492972;
 			
 			// aapt resource value: 0x7f0c0051
 			public static int submenuarrow = 2131492945;
@@ -2480,8 +2486,8 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f0c0044
 			public static int textSpacerNoTitle = 2131492932;
 			
-			// aapt resource value: 0x7f0c0071
-			public static int time = 2131492977;
+			// aapt resource value: 0x7f0c0072
+			public static int time = 2131492978;
 			
 			// aapt resource value: 0x7f0c000e
 			public static int title = 2131492878;
@@ -2633,76 +2639,82 @@ namespace SimpleWeather.Droid
 			public static int abc_select_dialog_material = 2131034137;
 			
 			// aapt resource value: 0x7f05001a
-			public static int credit_metno = 2131034138;
+			public static int credit_here = 2131034138;
 			
 			// aapt resource value: 0x7f05001b
-			public static int credit_openweathermap = 2131034139;
+			public static int credit_metno = 2131034139;
 			
 			// aapt resource value: 0x7f05001c
-			public static int credit_wunderground = 2131034140;
+			public static int credit_openweathermap = 2131034140;
 			
 			// aapt resource value: 0x7f05001d
-			public static int credit_yahoo = 2131034141;
+			public static int credit_wunderground = 2131034141;
 			
 			// aapt resource value: 0x7f05001e
-			public static int notification_action = 2131034142;
+			public static int credit_yahoo = 2131034142;
 			
 			// aapt resource value: 0x7f05001f
-			public static int notification_action_tombstone = 2131034143;
+			public static int layout_keyentry2_dialog = 2131034143;
 			
 			// aapt resource value: 0x7f050020
-			public static int notification_media_action = 2131034144;
+			public static int notification_action = 2131034144;
 			
 			// aapt resource value: 0x7f050021
-			public static int notification_media_cancel_action = 2131034145;
+			public static int notification_action_tombstone = 2131034145;
 			
 			// aapt resource value: 0x7f050022
-			public static int notification_template_big_media = 2131034146;
+			public static int notification_media_action = 2131034146;
 			
 			// aapt resource value: 0x7f050023
-			public static int notification_template_big_media_custom = 2131034147;
+			public static int notification_media_cancel_action = 2131034147;
 			
 			// aapt resource value: 0x7f050024
-			public static int notification_template_big_media_narrow = 2131034148;
+			public static int notification_template_big_media = 2131034148;
 			
 			// aapt resource value: 0x7f050025
-			public static int notification_template_big_media_narrow_custom = 2131034149;
+			public static int notification_template_big_media_custom = 2131034149;
 			
 			// aapt resource value: 0x7f050026
-			public static int notification_template_custom_big = 2131034150;
+			public static int notification_template_big_media_narrow = 2131034150;
 			
 			// aapt resource value: 0x7f050027
-			public static int notification_template_icon_group = 2131034151;
+			public static int notification_template_big_media_narrow_custom = 2131034151;
 			
 			// aapt resource value: 0x7f050028
-			public static int notification_template_lines_media = 2131034152;
+			public static int notification_template_custom_big = 2131034152;
 			
 			// aapt resource value: 0x7f050029
-			public static int notification_template_media = 2131034153;
+			public static int notification_template_icon_group = 2131034153;
 			
 			// aapt resource value: 0x7f05002a
-			public static int notification_template_media_custom = 2131034154;
+			public static int notification_template_lines_media = 2131034154;
 			
 			// aapt resource value: 0x7f05002b
-			public static int notification_template_part_chronometer = 2131034155;
+			public static int notification_template_media = 2131034155;
 			
 			// aapt resource value: 0x7f05002c
-			public static int notification_template_part_time = 2131034156;
+			public static int notification_template_media_custom = 2131034156;
 			
 			// aapt resource value: 0x7f05002d
-			public static int select_dialog_item_material = 2131034157;
+			public static int notification_template_part_chronometer = 2131034157;
 			
 			// aapt resource value: 0x7f05002e
-			public static int select_dialog_multichoice_material = 2131034158;
+			public static int notification_template_part_time = 2131034158;
 			
 			// aapt resource value: 0x7f05002f
-			public static int select_dialog_singlechoice_material = 2131034159;
+			public static int select_dialog_item_material = 2131034159;
 			
 			// aapt resource value: 0x7f050030
-			public static int support_simple_spinner_dropdown_item = 2131034160;
+			public static int select_dialog_multichoice_material = 2131034160;
 			
 			// aapt resource value: 0x7f050031
-			public static int tooltip = 2131034161;
+			public static int select_dialog_singlechoice_material = 2131034161;
+			
+			// aapt resource value: 0x7f050032
+			public static int support_simple_spinner_dropdown_item = 2131034162;
+			
+			// aapt resource value: 0x7f050033
+			public static int tooltip = 2131034163;
 			
 			static Layout()
 			{
@@ -2829,158 +2841,176 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f070010
 			public static int abc_toolbar_collapse_description = 2131165200;
 			
-			// aapt resource value: 0x7f07006b
-			public static int action_editmode = 2131165291;
-			
-			// aapt resource value: 0x7f070033
-			public static int action_refresh = 2131165235;
-			
-			// aapt resource value: 0x7f070035
-			public static int action_retry = 2131165237;
+			// aapt resource value: 0x7f07006f
+			public static int action_editmode = 2131165295;
 			
 			// aapt resource value: 0x7f070034
-			public static int action_settings = 2131165236;
+			public static int action_refresh = 2131165236;
+			
+			// aapt resource value: 0x7f070036
+			public static int action_retry = 2131165238;
+			
+			// aapt resource value: 0x7f070035
+			public static int action_settings = 2131165237;
+			
+			// aapt resource value: 0x7f07002a
+			public static int api_here = 2131165226;
 			
 			// aapt resource value: 0x7f070028
 			public static int api_label = 2131165224;
 			
-			// aapt resource value: 0x7f07002a
-			public static int api_metno = 2131165226;
-			
 			// aapt resource value: 0x7f07002b
-			public static int api_owm = 2131165227;
+			public static int api_metno = 2131165227;
 			
 			// aapt resource value: 0x7f07002c
-			public static int api_wu = 2131165228;
+			public static int api_owm = 2131165228;
 			
 			// aapt resource value: 0x7f07002d
-			public static int api_yahoo = 2131165229;
+			public static int api_wu = 2131165229;
+			
+			// aapt resource value: 0x7f07002e
+			public static int api_yahoo = 2131165230;
 			
 			// aapt resource value: 0x7f070025
 			public static int app_name = 2131165221;
 			
-			// aapt resource value: 0x7f070081
-			public static int clock_24_hours_format = 2131165313;
+			// aapt resource value: 0x7f070085
+			public static int clock_24_hours_format = 2131165317;
 			
-			// aapt resource value: 0x7f070059
-			public static int copyright_wunderground = 2131165273;
+			// aapt resource value: 0x7f07005c
+			public static int copyright_here = 2131165276;
 			
-			// aapt resource value: 0x7f07005a
-			public static int copyright_yahoo = 2131165274;
+			// aapt resource value: 0x7f07005d
+			public static int copyright_wunderground = 2131165277;
 			
-			// aapt resource value: 0x7f07004a
-			public static int credit_prefix = 2131165258;
+			// aapt resource value: 0x7f07005e
+			public static int copyright_yahoo = 2131165278;
 			
-			// aapt resource value: 0x7f07008e
-			public static int datetime_day_ago = 2131165326;
-			
-			// aapt resource value: 0x7f07008f
-			public static int datetime_hr_ago = 2131165327;
-			
-			// aapt resource value: 0x7f070090
-			public static int datetime_min_ago = 2131165328;
-			
-			// aapt resource value: 0x7f070091
-			public static int datetime_sec_ago = 2131165329;
+			// aapt resource value: 0x7f07004b
+			public static int credit_prefix = 2131165259;
 			
 			// aapt resource value: 0x7f070092
-			public static int datetime_validuntil = 2131165330;
+			public static int datetime_day_ago = 2131165330;
 			
-			// aapt resource value: 0x7f07006f
-			public static int error_location_denied = 2131165295;
+			// aapt resource value: 0x7f070093
+			public static int datetime_hr_ago = 2131165331;
 			
-			// aapt resource value: 0x7f070071
-			public static int error_noresults = 2131165297;
+			// aapt resource value: 0x7f070094
+			public static int datetime_min_ago = 2131165332;
 			
-			// aapt resource value: 0x7f070070
-			public static int error_retrieve_location = 2131165296;
+			// aapt resource value: 0x7f070095
+			public static int datetime_sec_ago = 2131165333;
+			
+			// aapt resource value: 0x7f070096
+			public static int datetime_validuntil = 2131165334;
+			
+			// aapt resource value: 0x7f070073
+			public static int error_location_denied = 2131165299;
+			
+			// aapt resource value: 0x7f070075
+			public static int error_noresults = 2131165301;
+			
+			// aapt resource value: 0x7f070074
+			public static int error_retrieve_location = 2131165300;
+			
+			// aapt resource value: 0x7f070097
+			public static int here_key1_name = 2131165335;
+			
+			// aapt resource value: 0x7f070098
+			public static int here_key2_name = 2131165336;
 			
 			// aapt resource value: 0x7f070029
 			public static int key_hint = 2131165225;
 			
-			// aapt resource value: 0x7f07002f
-			public static int label_apiregister = 2131165231;
-			
-			// aapt resource value: 0x7f07003d
-			public static int label_atmosphere = 2131165245;
-			
-			// aapt resource value: 0x7f07006a
-			public static int label_btn_add_location = 2131165290;
-			
-			// aapt resource value: 0x7f070044
-			public static int label_chance = 2131165252;
-			
-			// aapt resource value: 0x7f070045
-			public static int label_cloudiness = 2131165253;
+			// aapt resource value: 0x7f070030
+			public static int label_apiregister = 2131165232;
 			
 			// aapt resource value: 0x7f07003e
-			public static int label_condition = 2131165246;
-			
-			// aapt resource value: 0x7f07006d
-			public static int label_currentlocation = 2131165293;
-			
-			// aapt resource value: 0x7f070036
-			public static int label_details = 2131165238;
-			
-			// aapt resource value: 0x7f070072
-			public static int label_fab_add_location = 2131165298;
+			public static int label_atmosphere = 2131165246;
 			
 			// aapt resource value: 0x7f07006e
-			public static int label_favoritelocations = 2131165294;
+			public static int label_btn_add_location = 2131165294;
 			
-			// aapt resource value: 0x7f07003a
-			public static int label_feelslike = 2131165242;
-			
-			// aapt resource value: 0x7f07003c
-			public static int label_forecast = 2131165244;
-			
-			// aapt resource value: 0x7f07002e
-			public static int label_gpsfollow = 2131165230;
-			
-			// aapt resource value: 0x7f070042
-			public static int label_hourlyforecast = 2131165250;
-			
-			// aapt resource value: 0x7f070037
-			public static int label_humidity = 2131165239;
-			
-			// aapt resource value: 0x7f07004c
-			public static int label_nav_locations = 2131165260;
-			
-			// aapt resource value: 0x7f07004b
-			public static int label_nav_weathernow = 2131165259;
-			
-			// aapt resource value: 0x7f070043
-			public static int label_precipitation = 2131165251;
-			
-			// aapt resource value: 0x7f070038
-			public static int label_pressure = 2131165240;
+			// aapt resource value: 0x7f070045
+			public static int label_chance = 2131165253;
 			
 			// aapt resource value: 0x7f070046
-			public static int label_qpf_rain = 2131165254;
-			
-			// aapt resource value: 0x7f070047
-			public static int label_qpf_snow = 2131165255;
-			
-			// aapt resource value: 0x7f070040
-			public static int label_sunrise = 2131165248;
+			public static int label_cloudiness = 2131165254;
 			
 			// aapt resource value: 0x7f07003f
-			public static int label_sunriseset = 2131165247;
+			public static int label_condition = 2131165247;
 			
-			// aapt resource value: 0x7f070041
-			public static int label_sunset = 2131165249;
+			// aapt resource value: 0x7f070071
+			public static int label_currentlocation = 2131165297;
 			
-			// aapt resource value: 0x7f070039
-			public static int label_visibility = 2131165241;
+			// aapt resource value: 0x7f070037
+			public static int label_details = 2131165239;
+			
+			// aapt resource value: 0x7f070076
+			public static int label_fab_add_location = 2131165302;
+			
+			// aapt resource value: 0x7f070072
+			public static int label_favoritelocations = 2131165298;
 			
 			// aapt resource value: 0x7f07003b
-			public static int label_wind = 2131165243;
+			public static int label_feelslike = 2131165243;
+			
+			// aapt resource value: 0x7f07003d
+			public static int label_forecast = 2131165245;
+			
+			// aapt resource value: 0x7f07002f
+			public static int label_gpsfollow = 2131165231;
+			
+			// aapt resource value: 0x7f07004c
+			public static int label_high = 2131165260;
+			
+			// aapt resource value: 0x7f070043
+			public static int label_hourlyforecast = 2131165251;
+			
+			// aapt resource value: 0x7f070038
+			public static int label_humidity = 2131165240;
+			
+			// aapt resource value: 0x7f07004d
+			public static int label_low = 2131165261;
+			
+			// aapt resource value: 0x7f07004f
+			public static int label_nav_locations = 2131165263;
+			
+			// aapt resource value: 0x7f07004e
+			public static int label_nav_weathernow = 2131165262;
+			
+			// aapt resource value: 0x7f070044
+			public static int label_precipitation = 2131165252;
+			
+			// aapt resource value: 0x7f070039
+			public static int label_pressure = 2131165241;
+			
+			// aapt resource value: 0x7f070047
+			public static int label_qpf_rain = 2131165255;
+			
+			// aapt resource value: 0x7f070048
+			public static int label_qpf_snow = 2131165256;
+			
+			// aapt resource value: 0x7f070041
+			public static int label_sunrise = 2131165249;
+			
+			// aapt resource value: 0x7f070040
+			public static int label_sunriseset = 2131165248;
+			
+			// aapt resource value: 0x7f070042
+			public static int label_sunset = 2131165250;
+			
+			// aapt resource value: 0x7f07003a
+			public static int label_visibility = 2131165242;
+			
+			// aapt resource value: 0x7f07003c
+			public static int label_wind = 2131165244;
 			
 			// aapt resource value: 0x7f070027
 			public static int location_search_hint = 2131165223;
 			
-			// aapt resource value: 0x7f070082
-			public static int main_widget_12_hours_format = 2131165314;
+			// aapt resource value: 0x7f070086
+			public static int main_widget_12_hours_format = 2131165318;
 			
 			// aapt resource value: 0x7f07001f
 			public static int materialicon_chevron_right = 2131165215;
@@ -3000,140 +3030,140 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f070024
 			public static int materialicon_search = 2131165220;
 			
-			// aapt resource value: 0x7f07005d
-			public static int message_enter_apikey = 2131165277;
-			
-			// aapt resource value: 0x7f07005f
-			public static int message_keyinvalid = 2131165279;
-			
-			// aapt resource value: 0x7f07005e
-			public static int message_keyverified = 2131165278;
-			
-			// aapt resource value: 0x7f07006c
-			public static int message_loading = 2131165292;
-			
-			// aapt resource value: 0x7f070032
-			public static int navigation_drawer_close = 2131165234;
-			
-			// aapt resource value: 0x7f070031
-			public static int navigation_drawer_open = 2131165233;
-			
-			// aapt resource value: 0x7f07008b
-			public static int not_channel_desc_alerts = 2131165323;
-			
-			// aapt resource value: 0x7f070089
-			public static int not_channel_desc_weather = 2131165321;
-			
-			// aapt resource value: 0x7f07008a
-			public static int not_channel_name_alerts = 2131165322;
-			
-			// aapt resource value: 0x7f07008c
-			public static int not_channel_name_general = 2131165324;
-			
-			// aapt resource value: 0x7f070088
-			public static int not_channel_name_weather = 2131165320;
-			
-			// aapt resource value: 0x7f07008d
-			public static int not_title_wearable_sync = 2131165325;
-			
-			// aapt resource value: 0x7f070087
-			public static int notificationicon_condition = 2131165319;
-			
-			// aapt resource value: 0x7f070086
-			public static int notificationicon_temperature = 2131165318;
+			// aapt resource value: 0x7f070061
+			public static int message_enter_apikey = 2131165281;
 			
 			// aapt resource value: 0x7f070063
-			public static int pref_category_notification = 2131165283;
-			
-			// aapt resource value: 0x7f070058
-			public static int pref_category_providers = 2131165272;
-			
-			// aapt resource value: 0x7f070050
-			public static int pref_category_version = 2131165264;
-			
-			// aapt resource value: 0x7f070084
-			public static int pref_item_gpslocation = 2131165316;
-			
-			// aapt resource value: 0x7f070083
-			public static int pref_location = 2131165315;
-			
-			// aapt resource value: 0x7f070066
-			public static int pref_summary_alerts = 2131165286;
-			
-			// aapt resource value: 0x7f070067
-			public static int pref_summary_alerts_disabled = 2131165287;
-			
-			// aapt resource value: 0x7f07005c
-			public static int pref_summary_apikey = 2131165276;
-			
-			// aapt resource value: 0x7f070069
-			public static int pref_summary_apiregister = 2131165289;
-			
-			// aapt resource value: 0x7f070053
-			public static int pref_summary_celsius = 2131165267;
-			
-			// aapt resource value: 0x7f07005b
-			public static int pref_summary_currentlocation = 2131165275;
-			
-			// aapt resource value: 0x7f070052
-			public static int pref_summary_fahrenheit = 2131165266;
-			
-			// aapt resource value: 0x7f070061
-			public static int pref_summary_notification = 2131165281;
-			
-			// aapt resource value: 0x7f070054
-			public static int pref_title_about = 2131165268;
-			
-			// aapt resource value: 0x7f070055
-			public static int pref_title_about_app = 2131165269;
-			
-			// aapt resource value: 0x7f070065
-			public static int pref_title_alerts = 2131165285;
+			public static int message_keyinvalid = 2131165283;
 			
 			// aapt resource value: 0x7f070062
-			public static int pref_title_api = 2131165282;
+			public static int message_keyverified = 2131165282;
 			
-			// aapt resource value: 0x7f070068
-			public static int pref_title_apiregister = 2131165288;
+			// aapt resource value: 0x7f070070
+			public static int message_loading = 2131165296;
 			
-			// aapt resource value: 0x7f070056
-			public static int pref_title_credits = 2131165270;
+			// aapt resource value: 0x7f070033
+			public static int navigation_drawer_close = 2131165235;
 			
-			// aapt resource value: 0x7f07004f
-			public static int pref_title_general = 2131165263;
+			// aapt resource value: 0x7f070032
+			public static int navigation_drawer_open = 2131165234;
 			
-			// aapt resource value: 0x7f070064
-			public static int pref_title_notificationicon = 2131165284;
+			// aapt resource value: 0x7f07008f
+			public static int not_channel_desc_alerts = 2131165327;
+			
+			// aapt resource value: 0x7f07008d
+			public static int not_channel_desc_weather = 2131165325;
+			
+			// aapt resource value: 0x7f07008e
+			public static int not_channel_name_alerts = 2131165326;
+			
+			// aapt resource value: 0x7f070090
+			public static int not_channel_name_general = 2131165328;
+			
+			// aapt resource value: 0x7f07008c
+			public static int not_channel_name_weather = 2131165324;
+			
+			// aapt resource value: 0x7f070091
+			public static int not_title_wearable_sync = 2131165329;
+			
+			// aapt resource value: 0x7f07008b
+			public static int notificationicon_condition = 2131165323;
+			
+			// aapt resource value: 0x7f07008a
+			public static int notificationicon_temperature = 2131165322;
+			
+			// aapt resource value: 0x7f070067
+			public static int pref_category_notification = 2131165287;
+			
+			// aapt resource value: 0x7f07005b
+			public static int pref_category_providers = 2131165275;
+			
+			// aapt resource value: 0x7f070053
+			public static int pref_category_version = 2131165267;
+			
+			// aapt resource value: 0x7f070088
+			public static int pref_item_gpslocation = 2131165320;
+			
+			// aapt resource value: 0x7f070087
+			public static int pref_location = 2131165319;
+			
+			// aapt resource value: 0x7f07006a
+			public static int pref_summary_alerts = 2131165290;
+			
+			// aapt resource value: 0x7f07006b
+			public static int pref_summary_alerts_disabled = 2131165291;
 			
 			// aapt resource value: 0x7f070060
-			public static int pref_title_onnotification = 2131165280;
+			public static int pref_summary_apikey = 2131165280;
+			
+			// aapt resource value: 0x7f07006d
+			public static int pref_summary_apiregister = 2131165293;
+			
+			// aapt resource value: 0x7f070056
+			public static int pref_summary_celsius = 2131165270;
+			
+			// aapt resource value: 0x7f07005f
+			public static int pref_summary_currentlocation = 2131165279;
+			
+			// aapt resource value: 0x7f070055
+			public static int pref_summary_fahrenheit = 2131165269;
+			
+			// aapt resource value: 0x7f070065
+			public static int pref_summary_notification = 2131165285;
 			
 			// aapt resource value: 0x7f070057
-			public static int pref_title_oslibs = 2131165271;
+			public static int pref_title_about = 2131165271;
 			
-			// aapt resource value: 0x7f070078
-			public static int pref_title_refreshinterval = 2131165304;
+			// aapt resource value: 0x7f070058
+			public static int pref_title_about_app = 2131165272;
 			
-			// aapt resource value: 0x7f070051
-			public static int pref_title_units = 2131165265;
+			// aapt resource value: 0x7f070069
+			public static int pref_title_alerts = 2131165289;
 			
-			// aapt resource value: 0x7f070085
-			public static int prompt_setup_app_first = 2131165317;
+			// aapt resource value: 0x7f070066
+			public static int pref_title_api = 2131165286;
 			
-			// aapt resource value: 0x7f07007d
-			public static int refresh_12hrs = 2131165309;
+			// aapt resource value: 0x7f07006c
+			public static int pref_title_apiregister = 2131165292;
 			
-			// aapt resource value: 0x7f070079
-			public static int refresh_30min = 2131165305;
+			// aapt resource value: 0x7f070059
+			public static int pref_title_credits = 2131165273;
 			
-			// aapt resource value: 0x7f07007b
-			public static int refresh_3hrs = 2131165307;
+			// aapt resource value: 0x7f070052
+			public static int pref_title_general = 2131165266;
 			
-			// aapt resource value: 0x7f07007a
-			public static int refresh_60min = 2131165306;
+			// aapt resource value: 0x7f070068
+			public static int pref_title_notificationicon = 2131165288;
+			
+			// aapt resource value: 0x7f070064
+			public static int pref_title_onnotification = 2131165284;
+			
+			// aapt resource value: 0x7f07005a
+			public static int pref_title_oslibs = 2131165274;
 			
 			// aapt resource value: 0x7f07007c
-			public static int refresh_6hrs = 2131165308;
+			public static int pref_title_refreshinterval = 2131165308;
+			
+			// aapt resource value: 0x7f070054
+			public static int pref_title_units = 2131165268;
+			
+			// aapt resource value: 0x7f070089
+			public static int prompt_setup_app_first = 2131165321;
+			
+			// aapt resource value: 0x7f070081
+			public static int refresh_12hrs = 2131165313;
+			
+			// aapt resource value: 0x7f07007d
+			public static int refresh_30min = 2131165309;
+			
+			// aapt resource value: 0x7f07007f
+			public static int refresh_3hrs = 2131165311;
+			
+			// aapt resource value: 0x7f07007e
+			public static int refresh_60min = 2131165310;
+			
+			// aapt resource value: 0x7f070080
+			public static int refresh_6hrs = 2131165312;
 			
 			// aapt resource value: 0x7f070026
 			public static int search = 2131165222;
@@ -3144,1832 +3174,1832 @@ namespace SimpleWeather.Droid
 			// aapt resource value: 0x7f07001e
 			public static int status_bar_notification_info_overflow = 2131165214;
 			
-			// aapt resource value: 0x7f070048
-			public static int switch_daily = 2131165256;
-			
 			// aapt resource value: 0x7f070049
-			public static int switch_details = 2131165257;
+			public static int switch_daily = 2131165257;
 			
-			// aapt resource value: 0x7f07004d
-			public static int title_activity_settings = 2131165261;
+			// aapt resource value: 0x7f07004a
+			public static int switch_details = 2131165258;
 			
-			// aapt resource value: 0x7f070030
-			public static int title_activity_weather_now = 2131165232;
+			// aapt resource value: 0x7f070050
+			public static int title_activity_settings = 2131165264;
 			
-			// aapt resource value: 0x7f07004e
-			public static int title_fragment_alerts = 2131165262;
+			// aapt resource value: 0x7f070031
+			public static int title_activity_weather_now = 2131165233;
 			
-			// aapt resource value: 0x7f07007f
-			public static int update_prefix = 2131165311;
+			// aapt resource value: 0x7f070051
+			public static int title_fragment_alerts = 2131165265;
 			
-			// aapt resource value: 0x7f070080
-			public static int update_prefix_day = 2131165312;
+			// aapt resource value: 0x7f070083
+			public static int update_prefix = 2131165315;
 			
-			// aapt resource value: 0x7f070075
-			public static int werror_invalidkey = 2131165301;
+			// aapt resource value: 0x7f070084
+			public static int update_prefix_day = 2131165316;
 			
-			// aapt resource value: 0x7f070074
-			public static int werror_networkerror = 2131165300;
+			// aapt resource value: 0x7f070079
+			public static int werror_invalidkey = 2131165305;
 			
-			// aapt resource value: 0x7f070073
-			public static int werror_noweather = 2131165299;
-			
-			// aapt resource value: 0x7f070076
-			public static int werror_querynotfound = 2131165302;
+			// aapt resource value: 0x7f070078
+			public static int werror_networkerror = 2131165304;
 			
 			// aapt resource value: 0x7f070077
-			public static int werror_unknown = 2131165303;
+			public static int werror_noweather = 2131165303;
 			
-			// aapt resource value: 0x7f0700fe
-			public static int wi_alien = 2131165438;
+			// aapt resource value: 0x7f07007a
+			public static int werror_querynotfound = 2131165306;
 			
-			// aapt resource value: 0x7f070111
-			public static int wi_barometer = 2131165457;
-			
-			// aapt resource value: 0x7f0700ff
-			public static int wi_celsius = 2131165439;
-			
-			// aapt resource value: 0x7f0700d9
-			public static int wi_cloud = 2131165401;
-			
-			// aapt resource value: 0x7f070105
-			public static int wi_cloud_down = 2131165445;
-			
-			// aapt resource value: 0x7f070107
-			public static int wi_cloud_refresh = 2131165447;
-			
-			// aapt resource value: 0x7f070106
-			public static int wi_cloud_up = 2131165446;
-			
-			// aapt resource value: 0x7f0700da
-			public static int wi_cloudy = 2131165402;
-			
-			// aapt resource value: 0x7f0700db
-			public static int wi_cloudy_gusts = 2131165403;
-			
-			// aapt resource value: 0x7f0700dc
-			public static int wi_cloudy_windy = 2131165404;
-			
-			// aapt resource value: 0x7f070094
-			public static int wi_day_cloudy = 2131165332;
-			
-			// aapt resource value: 0x7f070095
-			public static int wi_day_cloudy_gusts = 2131165333;
-			
-			// aapt resource value: 0x7f0700ab
-			public static int wi_day_cloudy_high = 2131165355;
-			
-			// aapt resource value: 0x7f070096
-			public static int wi_day_cloudy_windy = 2131165334;
-			
-			// aapt resource value: 0x7f070097
-			public static int wi_day_fog = 2131165335;
-			
-			// aapt resource value: 0x7f070098
-			public static int wi_day_hail = 2131165336;
-			
-			// aapt resource value: 0x7f070099
-			public static int wi_day_haze = 2131165337;
-			
-			// aapt resource value: 0x7f0700ac
-			public static int wi_day_light_wind = 2131165356;
-			
-			// aapt resource value: 0x7f07009a
-			public static int wi_day_lightning = 2131165338;
-			
-			// aapt resource value: 0x7f07009b
-			public static int wi_day_rain = 2131165339;
-			
-			// aapt resource value: 0x7f07009c
-			public static int wi_day_rain_mix = 2131165340;
-			
-			// aapt resource value: 0x7f07009d
-			public static int wi_day_rain_wind = 2131165341;
-			
-			// aapt resource value: 0x7f07009e
-			public static int wi_day_showers = 2131165342;
-			
-			// aapt resource value: 0x7f07009f
-			public static int wi_day_sleet = 2131165343;
-			
-			// aapt resource value: 0x7f0700a0
-			public static int wi_day_sleet_storm = 2131165344;
-			
-			// aapt resource value: 0x7f0700a1
-			public static int wi_day_snow = 2131165345;
-			
-			// aapt resource value: 0x7f0700a2
-			public static int wi_day_snow_thunderstorm = 2131165346;
-			
-			// aapt resource value: 0x7f0700a3
-			public static int wi_day_snow_wind = 2131165347;
-			
-			// aapt resource value: 0x7f0700a4
-			public static int wi_day_sprinkle = 2131165348;
-			
-			// aapt resource value: 0x7f0700a5
-			public static int wi_day_storm_showers = 2131165349;
-			
-			// aapt resource value: 0x7f070093
-			public static int wi_day_sunny = 2131165331;
-			
-			// aapt resource value: 0x7f0700a6
-			public static int wi_day_sunny_overcast = 2131165350;
-			
-			// aapt resource value: 0x7f0700a7
-			public static int wi_day_thunderstorm = 2131165351;
-			
-			// aapt resource value: 0x7f0700a8
-			public static int wi_day_windy = 2131165352;
-			
-			// aapt resource value: 0x7f070101
-			public static int wi_degrees = 2131165441;
-			
-			// aapt resource value: 0x7f070179
-			public static int wi_direction_down = 2131165561;
-			
-			// aapt resource value: 0x7f07017a
-			public static int wi_direction_down_left = 2131165562;
-			
-			// aapt resource value: 0x7f070178
-			public static int wi_direction_down_right = 2131165560;
-			
-			// aapt resource value: 0x7f07017b
-			public static int wi_direction_left = 2131165563;
-			
-			// aapt resource value: 0x7f070177
-			public static int wi_direction_right = 2131165559;
-			
-			// aapt resource value: 0x7f070175
-			public static int wi_direction_up = 2131165557;
-			
-			// aapt resource value: 0x7f07017c
-			public static int wi_direction_up_left = 2131165564;
-			
-			// aapt resource value: 0x7f070176
-			public static int wi_direction_up_right = 2131165558;
-			
-			// aapt resource value: 0x7f0700ec
-			public static int wi_dust = 2131165420;
-			
-			// aapt resource value: 0x7f0700f1
-			public static int wi_earthquake = 2131165425;
-			
-			// aapt resource value: 0x7f070100
-			public static int wi_fahrenheit = 2131165440;
-			
-			// aapt resource value: 0x7f0700f2
-			public static int wi_fire = 2131165426;
-			
-			// aapt resource value: 0x7f0700f3
-			public static int wi_flood = 2131165427;
-			
-			// aapt resource value: 0x7f0700dd
-			public static int wi_fog = 2131165405;
-			
-			// aapt resource value: 0x7f0701bb
-			public static int wi_forecast_io_clear_day = 2131165627;
-			
-			// aapt resource value: 0x7f0701bc
-			public static int wi_forecast_io_clear_night = 2131165628;
-			
-			// aapt resource value: 0x7f0701c2
-			public static int wi_forecast_io_cloudy = 2131165634;
-			
-			// aapt resource value: 0x7f0701c1
-			public static int wi_forecast_io_fog = 2131165633;
-			
-			// aapt resource value: 0x7f0701c5
-			public static int wi_forecast_io_hail = 2131165637;
-			
-			// aapt resource value: 0x7f0701c3
-			public static int wi_forecast_io_partly_cloudy_day = 2131165635;
-			
-			// aapt resource value: 0x7f0701c4
-			public static int wi_forecast_io_partly_cloudy_night = 2131165636;
-			
-			// aapt resource value: 0x7f0701bd
-			public static int wi_forecast_io_rain = 2131165629;
-			
-			// aapt resource value: 0x7f0701bf
-			public static int wi_forecast_io_sleet = 2131165631;
-			
-			// aapt resource value: 0x7f0701be
-			public static int wi_forecast_io_snow = 2131165630;
-			
-			// aapt resource value: 0x7f0701c6
-			public static int wi_forecast_io_thunderstorm = 2131165638;
-			
-			// aapt resource value: 0x7f0701c7
-			public static int wi_forecast_io_tornado = 2131165639;
-			
-			// aapt resource value: 0x7f0701c0
-			public static int wi_forecast_io_wind = 2131165632;
-			
-			// aapt resource value: 0x7f0700fa
-			public static int wi_gale_warning = 2131165434;
-			
-			// aapt resource value: 0x7f0700de
-			public static int wi_hail = 2131165406;
-			
-			// aapt resource value: 0x7f070108
-			public static int wi_horizon = 2131165448;
-			
-			// aapt resource value: 0x7f070109
-			public static int wi_horizon_alt = 2131165449;
-			
-			// aapt resource value: 0x7f0700aa
-			public static int wi_hot = 2131165354;
-			
-			// aapt resource value: 0x7f070112
-			public static int wi_humidity = 2131165458;
-			
-			// aapt resource value: 0x7f0700f7
-			public static int wi_hurricane = 2131165431;
-			
-			// aapt resource value: 0x7f0700fc
-			public static int wi_hurricane_warning = 2131165436;
-			
-			// aapt resource value: 0x7f0700e9
-			public static int wi_lightning = 2131165417;
-			
-			// aapt resource value: 0x7f0700d2
-			public static int wi_lunar_eclipse = 2131165394;
-			
-			// aapt resource value: 0x7f0700f4
-			public static int wi_meteor = 2131165428;
-			
-			// aapt resource value: 0x7f07014d
-			public static int wi_moon_0 = 2131165517;
-			
-			// aapt resource value: 0x7f07014e
-			public static int wi_moon_1 = 2131165518;
-			
-			// aapt resource value: 0x7f070157
-			public static int wi_moon_10 = 2131165527;
-			
-			// aapt resource value: 0x7f070158
-			public static int wi_moon_11 = 2131165528;
-			
-			// aapt resource value: 0x7f070159
-			public static int wi_moon_12 = 2131165529;
-			
-			// aapt resource value: 0x7f07015a
-			public static int wi_moon_13 = 2131165530;
-			
-			// aapt resource value: 0x7f07015b
-			public static int wi_moon_14 = 2131165531;
-			
-			// aapt resource value: 0x7f07015c
-			public static int wi_moon_15 = 2131165532;
-			
-			// aapt resource value: 0x7f07015d
-			public static int wi_moon_16 = 2131165533;
-			
-			// aapt resource value: 0x7f07015e
-			public static int wi_moon_17 = 2131165534;
-			
-			// aapt resource value: 0x7f07015f
-			public static int wi_moon_18 = 2131165535;
-			
-			// aapt resource value: 0x7f070160
-			public static int wi_moon_19 = 2131165536;
-			
-			// aapt resource value: 0x7f07014f
-			public static int wi_moon_2 = 2131165519;
-			
-			// aapt resource value: 0x7f070161
-			public static int wi_moon_20 = 2131165537;
-			
-			// aapt resource value: 0x7f070162
-			public static int wi_moon_21 = 2131165538;
-			
-			// aapt resource value: 0x7f070163
-			public static int wi_moon_22 = 2131165539;
-			
-			// aapt resource value: 0x7f070164
-			public static int wi_moon_23 = 2131165540;
-			
-			// aapt resource value: 0x7f070165
-			public static int wi_moon_24 = 2131165541;
-			
-			// aapt resource value: 0x7f070166
-			public static int wi_moon_25 = 2131165542;
-			
-			// aapt resource value: 0x7f070167
-			public static int wi_moon_26 = 2131165543;
-			
-			// aapt resource value: 0x7f070168
-			public static int wi_moon_27 = 2131165544;
-			
-			// aapt resource value: 0x7f070150
-			public static int wi_moon_3 = 2131165520;
-			
-			// aapt resource value: 0x7f070151
-			public static int wi_moon_4 = 2131165521;
-			
-			// aapt resource value: 0x7f070152
-			public static int wi_moon_5 = 2131165522;
-			
-			// aapt resource value: 0x7f070153
-			public static int wi_moon_6 = 2131165523;
-			
-			// aapt resource value: 0x7f070154
-			public static int wi_moon_7 = 2131165524;
-			
-			// aapt resource value: 0x7f070155
-			public static int wi_moon_8 = 2131165525;
-			
-			// aapt resource value: 0x7f070156
-			public static int wi_moon_9 = 2131165526;
-			
-			// aapt resource value: 0x7f070138
-			public static int wi_moon_alt_first_quarter = 2131165496;
-			
-			// aapt resource value: 0x7f07013f
-			public static int wi_moon_alt_full = 2131165503;
-			
-			// aapt resource value: 0x7f070131
-			public static int wi_moon_alt_new = 2131165489;
-			
-			// aapt resource value: 0x7f070146
-			public static int wi_moon_alt_third_quarter = 2131165510;
-			
-			// aapt resource value: 0x7f070147
-			public static int wi_moon_alt_waning_crescent_1 = 2131165511;
-			
-			// aapt resource value: 0x7f070148
-			public static int wi_moon_alt_waning_crescent_2 = 2131165512;
-			
-			// aapt resource value: 0x7f070149
-			public static int wi_moon_alt_waning_crescent_3 = 2131165513;
-			
-			// aapt resource value: 0x7f07014a
-			public static int wi_moon_alt_waning_crescent_4 = 2131165514;
-			
-			// aapt resource value: 0x7f07014b
-			public static int wi_moon_alt_waning_crescent_5 = 2131165515;
-			
-			// aapt resource value: 0x7f07014c
-			public static int wi_moon_alt_waning_crescent_6 = 2131165516;
-			
-			// aapt resource value: 0x7f070140
-			public static int wi_moon_alt_waning_gibbous_1 = 2131165504;
-			
-			// aapt resource value: 0x7f070141
-			public static int wi_moon_alt_waning_gibbous_2 = 2131165505;
-			
-			// aapt resource value: 0x7f070142
-			public static int wi_moon_alt_waning_gibbous_3 = 2131165506;
-			
-			// aapt resource value: 0x7f070143
-			public static int wi_moon_alt_waning_gibbous_4 = 2131165507;
-			
-			// aapt resource value: 0x7f070144
-			public static int wi_moon_alt_waning_gibbous_5 = 2131165508;
-			
-			// aapt resource value: 0x7f070145
-			public static int wi_moon_alt_waning_gibbous_6 = 2131165509;
-			
-			// aapt resource value: 0x7f070132
-			public static int wi_moon_alt_waxing_crescent_1 = 2131165490;
-			
-			// aapt resource value: 0x7f070133
-			public static int wi_moon_alt_waxing_crescent_2 = 2131165491;
-			
-			// aapt resource value: 0x7f070134
-			public static int wi_moon_alt_waxing_crescent_3 = 2131165492;
-			
-			// aapt resource value: 0x7f070135
-			public static int wi_moon_alt_waxing_crescent_4 = 2131165493;
-			
-			// aapt resource value: 0x7f070136
-			public static int wi_moon_alt_waxing_crescent_5 = 2131165494;
-			
-			// aapt resource value: 0x7f070137
-			public static int wi_moon_alt_waxing_crescent_6 = 2131165495;
-			
-			// aapt resource value: 0x7f070139
-			public static int wi_moon_alt_waxing_gibbous_1 = 2131165497;
-			
-			// aapt resource value: 0x7f07013a
-			public static int wi_moon_alt_waxing_gibbous_2 = 2131165498;
-			
-			// aapt resource value: 0x7f07013b
-			public static int wi_moon_alt_waxing_gibbous_3 = 2131165499;
-			
-			// aapt resource value: 0x7f07013c
-			public static int wi_moon_alt_waxing_gibbous_4 = 2131165500;
-			
-			// aapt resource value: 0x7f07013d
-			public static int wi_moon_alt_waxing_gibbous_5 = 2131165501;
-			
-			// aapt resource value: 0x7f07013e
-			public static int wi_moon_alt_waxing_gibbous_6 = 2131165502;
-			
-			// aapt resource value: 0x7f07011c
-			public static int wi_moon_first_quarter = 2131165468;
-			
-			// aapt resource value: 0x7f070123
-			public static int wi_moon_full = 2131165475;
-			
-			// aapt resource value: 0x7f070115
-			public static int wi_moon_new = 2131165461;
-			
-			// aapt resource value: 0x7f07012a
-			public static int wi_moon_third_quarter = 2131165482;
-			
-			// aapt resource value: 0x7f07012b
-			public static int wi_moon_waning_crescent_1 = 2131165483;
-			
-			// aapt resource value: 0x7f07012c
-			public static int wi_moon_waning_crescent_2 = 2131165484;
-			
-			// aapt resource value: 0x7f07012d
-			public static int wi_moon_waning_crescent_3 = 2131165485;
-			
-			// aapt resource value: 0x7f07012e
-			public static int wi_moon_waning_crescent_4 = 2131165486;
-			
-			// aapt resource value: 0x7f07012f
-			public static int wi_moon_waning_crescent_5 = 2131165487;
-			
-			// aapt resource value: 0x7f070130
-			public static int wi_moon_waning_crescent_6 = 2131165488;
-			
-			// aapt resource value: 0x7f070124
-			public static int wi_moon_waning_gibbous_1 = 2131165476;
-			
-			// aapt resource value: 0x7f070125
-			public static int wi_moon_waning_gibbous_2 = 2131165477;
-			
-			// aapt resource value: 0x7f070126
-			public static int wi_moon_waning_gibbous_3 = 2131165478;
-			
-			// aapt resource value: 0x7f070127
-			public static int wi_moon_waning_gibbous_4 = 2131165479;
-			
-			// aapt resource value: 0x7f070128
-			public static int wi_moon_waning_gibbous_5 = 2131165480;
-			
-			// aapt resource value: 0x7f070129
-			public static int wi_moon_waning_gibbous_6 = 2131165481;
-			
-			// aapt resource value: 0x7f070116
-			public static int wi_moon_waxing_crescent_1 = 2131165462;
-			
-			// aapt resource value: 0x7f070117
-			public static int wi_moon_waxing_crescent_2 = 2131165463;
-			
-			// aapt resource value: 0x7f070118
-			public static int wi_moon_waxing_crescent_3 = 2131165464;
-			
-			// aapt resource value: 0x7f070119
-			public static int wi_moon_waxing_crescent_4 = 2131165465;
-			
-			// aapt resource value: 0x7f07011a
-			public static int wi_moon_waxing_crescent_5 = 2131165466;
-			
-			// aapt resource value: 0x7f07011b
-			public static int wi_moon_waxing_crescent_6 = 2131165467;
-			
-			// aapt resource value: 0x7f07011d
-			public static int wi_moon_waxing_gibbous_1 = 2131165469;
-			
-			// aapt resource value: 0x7f07011e
-			public static int wi_moon_waxing_gibbous_2 = 2131165470;
-			
-			// aapt resource value: 0x7f07011f
-			public static int wi_moon_waxing_gibbous_3 = 2131165471;
-			
-			// aapt resource value: 0x7f070120
-			public static int wi_moon_waxing_gibbous_4 = 2131165472;
-			
-			// aapt resource value: 0x7f070121
-			public static int wi_moon_waxing_gibbous_5 = 2131165473;
-			
-			// aapt resource value: 0x7f070122
-			public static int wi_moon_waxing_gibbous_6 = 2131165474;
-			
-			// aapt resource value: 0x7f07010c
-			public static int wi_moonrise = 2131165452;
-			
-			// aapt resource value: 0x7f07010d
-			public static int wi_moonset = 2131165453;
-			
-			// aapt resource value: 0x7f070113
-			public static int wi_na = 2131165459;
-			
-			// aapt resource value: 0x7f0700ae
-			public static int wi_night_alt_cloudy = 2131165358;
-			
-			// aapt resource value: 0x7f0700af
-			public static int wi_night_alt_cloudy_gusts = 2131165359;
-			
-			// aapt resource value: 0x7f0700d6
-			public static int wi_night_alt_cloudy_high = 2131165398;
-			
-			// aapt resource value: 0x7f0700b0
-			public static int wi_night_alt_cloudy_windy = 2131165360;
-			
-			// aapt resource value: 0x7f0700b1
-			public static int wi_night_alt_hail = 2131165361;
-			
-			// aapt resource value: 0x7f0700b2
-			public static int wi_night_alt_lightning = 2131165362;
-			
-			// aapt resource value: 0x7f0700d8
-			public static int wi_night_alt_partly_cloudy = 2131165400;
-			
-			// aapt resource value: 0x7f0700b3
-			public static int wi_night_alt_rain = 2131165363;
-			
-			// aapt resource value: 0x7f0700b4
-			public static int wi_night_alt_rain_mix = 2131165364;
-			
-			// aapt resource value: 0x7f0700b5
-			public static int wi_night_alt_rain_wind = 2131165365;
-			
-			// aapt resource value: 0x7f0700b6
-			public static int wi_night_alt_showers = 2131165366;
-			
-			// aapt resource value: 0x7f0700b7
-			public static int wi_night_alt_sleet = 2131165367;
-			
-			// aapt resource value: 0x7f0700b8
-			public static int wi_night_alt_sleet_storm = 2131165368;
-			
-			// aapt resource value: 0x7f0700b9
-			public static int wi_night_alt_snow = 2131165369;
-			
-			// aapt resource value: 0x7f0700ba
-			public static int wi_night_alt_snow_thunderstorm = 2131165370;
-			
-			// aapt resource value: 0x7f0700bb
-			public static int wi_night_alt_snow_wind = 2131165371;
-			
-			// aapt resource value: 0x7f0700bc
-			public static int wi_night_alt_sprinkle = 2131165372;
-			
-			// aapt resource value: 0x7f0700bd
-			public static int wi_night_alt_storm_showers = 2131165373;
-			
-			// aapt resource value: 0x7f0700be
-			public static int wi_night_alt_thunderstorm = 2131165374;
-			
-			// aapt resource value: 0x7f0700ad
-			public static int wi_night_clear = 2131165357;
-			
-			// aapt resource value: 0x7f0700bf
-			public static int wi_night_cloudy = 2131165375;
-			
-			// aapt resource value: 0x7f0700c0
-			public static int wi_night_cloudy_gusts = 2131165376;
-			
-			// aapt resource value: 0x7f0700d7
-			public static int wi_night_cloudy_high = 2131165399;
-			
-			// aapt resource value: 0x7f0700c1
-			public static int wi_night_cloudy_windy = 2131165377;
-			
-			// aapt resource value: 0x7f0700c2
-			public static int wi_night_fog = 2131165378;
-			
-			// aapt resource value: 0x7f0700c3
-			public static int wi_night_hail = 2131165379;
-			
-			// aapt resource value: 0x7f0700c4
-			public static int wi_night_lightning = 2131165380;
-			
-			// aapt resource value: 0x7f0700c5
-			public static int wi_night_partly_cloudy = 2131165381;
-			
-			// aapt resource value: 0x7f0700c6
-			public static int wi_night_rain = 2131165382;
-			
-			// aapt resource value: 0x7f0700c7
-			public static int wi_night_rain_mix = 2131165383;
-			
-			// aapt resource value: 0x7f0700c8
-			public static int wi_night_rain_wind = 2131165384;
-			
-			// aapt resource value: 0x7f0700c9
-			public static int wi_night_showers = 2131165385;
-			
-			// aapt resource value: 0x7f0700ca
-			public static int wi_night_sleet = 2131165386;
-			
-			// aapt resource value: 0x7f0700cb
-			public static int wi_night_sleet_storm = 2131165387;
-			
-			// aapt resource value: 0x7f0700cc
-			public static int wi_night_snow = 2131165388;
-			
-			// aapt resource value: 0x7f0700cd
-			public static int wi_night_snow_thunderstorm = 2131165389;
-			
-			// aapt resource value: 0x7f0700ce
-			public static int wi_night_snow_wind = 2131165390;
-			
-			// aapt resource value: 0x7f0700cf
-			public static int wi_night_sprinkle = 2131165391;
-			
-			// aapt resource value: 0x7f0700d0
-			public static int wi_night_storm_showers = 2131165392;
-			
-			// aapt resource value: 0x7f0700d1
-			public static int wi_night_thunderstorm = 2131165393;
-			
-			// aapt resource value: 0x7f07021d
-			public static int wi_owm_200 = 2131165725;
-			
-			// aapt resource value: 0x7f07021e
-			public static int wi_owm_201 = 2131165726;
-			
-			// aapt resource value: 0x7f07021f
-			public static int wi_owm_202 = 2131165727;
-			
-			// aapt resource value: 0x7f070220
-			public static int wi_owm_210 = 2131165728;
-			
-			// aapt resource value: 0x7f070221
-			public static int wi_owm_211 = 2131165729;
-			
-			// aapt resource value: 0x7f070222
-			public static int wi_owm_212 = 2131165730;
-			
-			// aapt resource value: 0x7f070223
-			public static int wi_owm_221 = 2131165731;
-			
-			// aapt resource value: 0x7f070224
-			public static int wi_owm_230 = 2131165732;
-			
-			// aapt resource value: 0x7f070225
-			public static int wi_owm_231 = 2131165733;
-			
-			// aapt resource value: 0x7f070226
-			public static int wi_owm_232 = 2131165734;
-			
-			// aapt resource value: 0x7f070227
-			public static int wi_owm_300 = 2131165735;
-			
-			// aapt resource value: 0x7f070228
-			public static int wi_owm_301 = 2131165736;
-			
-			// aapt resource value: 0x7f070229
-			public static int wi_owm_302 = 2131165737;
-			
-			// aapt resource value: 0x7f07022a
-			public static int wi_owm_310 = 2131165738;
-			
-			// aapt resource value: 0x7f07022b
-			public static int wi_owm_311 = 2131165739;
-			
-			// aapt resource value: 0x7f07022c
-			public static int wi_owm_312 = 2131165740;
-			
-			// aapt resource value: 0x7f07022d
-			public static int wi_owm_313 = 2131165741;
-			
-			// aapt resource value: 0x7f07022e
-			public static int wi_owm_314 = 2131165742;
-			
-			// aapt resource value: 0x7f07022f
-			public static int wi_owm_321 = 2131165743;
-			
-			// aapt resource value: 0x7f070230
-			public static int wi_owm_500 = 2131165744;
-			
-			// aapt resource value: 0x7f070231
-			public static int wi_owm_501 = 2131165745;
-			
-			// aapt resource value: 0x7f070232
-			public static int wi_owm_502 = 2131165746;
-			
-			// aapt resource value: 0x7f070233
-			public static int wi_owm_503 = 2131165747;
-			
-			// aapt resource value: 0x7f070234
-			public static int wi_owm_504 = 2131165748;
-			
-			// aapt resource value: 0x7f070235
-			public static int wi_owm_511 = 2131165749;
-			
-			// aapt resource value: 0x7f070236
-			public static int wi_owm_520 = 2131165750;
-			
-			// aapt resource value: 0x7f070237
-			public static int wi_owm_521 = 2131165751;
-			
-			// aapt resource value: 0x7f070238
-			public static int wi_owm_522 = 2131165752;
-			
-			// aapt resource value: 0x7f070239
-			public static int wi_owm_531 = 2131165753;
-			
-			// aapt resource value: 0x7f07023a
-			public static int wi_owm_600 = 2131165754;
-			
-			// aapt resource value: 0x7f07023b
-			public static int wi_owm_601 = 2131165755;
-			
-			// aapt resource value: 0x7f07023c
-			public static int wi_owm_602 = 2131165756;
-			
-			// aapt resource value: 0x7f07023d
-			public static int wi_owm_611 = 2131165757;
-			
-			// aapt resource value: 0x7f07023e
-			public static int wi_owm_612 = 2131165758;
-			
-			// aapt resource value: 0x7f07023f
-			public static int wi_owm_615 = 2131165759;
-			
-			// aapt resource value: 0x7f070240
-			public static int wi_owm_616 = 2131165760;
-			
-			// aapt resource value: 0x7f070241
-			public static int wi_owm_620 = 2131165761;
-			
-			// aapt resource value: 0x7f070242
-			public static int wi_owm_621 = 2131165762;
-			
-			// aapt resource value: 0x7f070243
-			public static int wi_owm_622 = 2131165763;
-			
-			// aapt resource value: 0x7f070244
-			public static int wi_owm_701 = 2131165764;
-			
-			// aapt resource value: 0x7f070245
-			public static int wi_owm_711 = 2131165765;
-			
-			// aapt resource value: 0x7f070246
-			public static int wi_owm_721 = 2131165766;
-			
-			// aapt resource value: 0x7f070247
-			public static int wi_owm_731 = 2131165767;
-			
-			// aapt resource value: 0x7f070248
-			public static int wi_owm_741 = 2131165768;
-			
-			// aapt resource value: 0x7f070249
-			public static int wi_owm_761 = 2131165769;
-			
-			// aapt resource value: 0x7f07024a
-			public static int wi_owm_762 = 2131165770;
-			
-			// aapt resource value: 0x7f07024b
-			public static int wi_owm_771 = 2131165771;
-			
-			// aapt resource value: 0x7f07024c
-			public static int wi_owm_781 = 2131165772;
-			
-			// aapt resource value: 0x7f07024d
-			public static int wi_owm_800 = 2131165773;
-			
-			// aapt resource value: 0x7f07024e
-			public static int wi_owm_801 = 2131165774;
-			
-			// aapt resource value: 0x7f07024f
-			public static int wi_owm_802 = 2131165775;
-			
-			// aapt resource value: 0x7f070250
-			public static int wi_owm_803 = 2131165776;
-			
-			// aapt resource value: 0x7f070251
-			public static int wi_owm_804 = 2131165777;
-			
-			// aapt resource value: 0x7f070252
-			public static int wi_owm_900 = 2131165778;
-			
-			// aapt resource value: 0x7f070253
-			public static int wi_owm_901 = 2131165779;
-			
-			// aapt resource value: 0x7f070254
-			public static int wi_owm_902 = 2131165780;
-			
-			// aapt resource value: 0x7f070255
-			public static int wi_owm_903 = 2131165781;
-			
-			// aapt resource value: 0x7f070256
-			public static int wi_owm_904 = 2131165782;
-			
-			// aapt resource value: 0x7f070257
-			public static int wi_owm_905 = 2131165783;
-			
-			// aapt resource value: 0x7f070258
-			public static int wi_owm_906 = 2131165784;
-			
-			// aapt resource value: 0x7f070259
-			public static int wi_owm_957 = 2131165785;
-			
-			// aapt resource value: 0x7f07025a
-			public static int wi_owm_day_200 = 2131165786;
-			
-			// aapt resource value: 0x7f07025b
-			public static int wi_owm_day_201 = 2131165787;
-			
-			// aapt resource value: 0x7f07025c
-			public static int wi_owm_day_202 = 2131165788;
-			
-			// aapt resource value: 0x7f07025d
-			public static int wi_owm_day_210 = 2131165789;
-			
-			// aapt resource value: 0x7f07025e
-			public static int wi_owm_day_211 = 2131165790;
-			
-			// aapt resource value: 0x7f07025f
-			public static int wi_owm_day_212 = 2131165791;
-			
-			// aapt resource value: 0x7f070260
-			public static int wi_owm_day_221 = 2131165792;
-			
-			// aapt resource value: 0x7f070261
-			public static int wi_owm_day_230 = 2131165793;
-			
-			// aapt resource value: 0x7f070262
-			public static int wi_owm_day_231 = 2131165794;
-			
-			// aapt resource value: 0x7f070263
-			public static int wi_owm_day_232 = 2131165795;
-			
-			// aapt resource value: 0x7f070264
-			public static int wi_owm_day_300 = 2131165796;
-			
-			// aapt resource value: 0x7f070265
-			public static int wi_owm_day_301 = 2131165797;
-			
-			// aapt resource value: 0x7f070266
-			public static int wi_owm_day_302 = 2131165798;
-			
-			// aapt resource value: 0x7f070267
-			public static int wi_owm_day_310 = 2131165799;
-			
-			// aapt resource value: 0x7f070268
-			public static int wi_owm_day_311 = 2131165800;
-			
-			// aapt resource value: 0x7f070269
-			public static int wi_owm_day_312 = 2131165801;
-			
-			// aapt resource value: 0x7f07026a
-			public static int wi_owm_day_313 = 2131165802;
-			
-			// aapt resource value: 0x7f07026b
-			public static int wi_owm_day_314 = 2131165803;
-			
-			// aapt resource value: 0x7f07026c
-			public static int wi_owm_day_321 = 2131165804;
-			
-			// aapt resource value: 0x7f07026d
-			public static int wi_owm_day_500 = 2131165805;
-			
-			// aapt resource value: 0x7f07026e
-			public static int wi_owm_day_501 = 2131165806;
-			
-			// aapt resource value: 0x7f07026f
-			public static int wi_owm_day_502 = 2131165807;
-			
-			// aapt resource value: 0x7f070270
-			public static int wi_owm_day_503 = 2131165808;
-			
-			// aapt resource value: 0x7f070271
-			public static int wi_owm_day_504 = 2131165809;
-			
-			// aapt resource value: 0x7f070272
-			public static int wi_owm_day_511 = 2131165810;
-			
-			// aapt resource value: 0x7f070273
-			public static int wi_owm_day_520 = 2131165811;
-			
-			// aapt resource value: 0x7f070274
-			public static int wi_owm_day_521 = 2131165812;
-			
-			// aapt resource value: 0x7f070275
-			public static int wi_owm_day_522 = 2131165813;
-			
-			// aapt resource value: 0x7f070276
-			public static int wi_owm_day_531 = 2131165814;
-			
-			// aapt resource value: 0x7f070277
-			public static int wi_owm_day_600 = 2131165815;
-			
-			// aapt resource value: 0x7f070278
-			public static int wi_owm_day_601 = 2131165816;
-			
-			// aapt resource value: 0x7f070279
-			public static int wi_owm_day_602 = 2131165817;
-			
-			// aapt resource value: 0x7f07027a
-			public static int wi_owm_day_611 = 2131165818;
-			
-			// aapt resource value: 0x7f07027b
-			public static int wi_owm_day_612 = 2131165819;
-			
-			// aapt resource value: 0x7f07027c
-			public static int wi_owm_day_615 = 2131165820;
-			
-			// aapt resource value: 0x7f07027d
-			public static int wi_owm_day_616 = 2131165821;
-			
-			// aapt resource value: 0x7f07027e
-			public static int wi_owm_day_620 = 2131165822;
-			
-			// aapt resource value: 0x7f07027f
-			public static int wi_owm_day_621 = 2131165823;
-			
-			// aapt resource value: 0x7f070280
-			public static int wi_owm_day_622 = 2131165824;
-			
-			// aapt resource value: 0x7f070281
-			public static int wi_owm_day_701 = 2131165825;
-			
-			// aapt resource value: 0x7f070282
-			public static int wi_owm_day_711 = 2131165826;
-			
-			// aapt resource value: 0x7f070283
-			public static int wi_owm_day_721 = 2131165827;
-			
-			// aapt resource value: 0x7f070284
-			public static int wi_owm_day_731 = 2131165828;
-			
-			// aapt resource value: 0x7f070285
-			public static int wi_owm_day_741 = 2131165829;
-			
-			// aapt resource value: 0x7f070286
-			public static int wi_owm_day_761 = 2131165830;
-			
-			// aapt resource value: 0x7f070287
-			public static int wi_owm_day_762 = 2131165831;
-			
-			// aapt resource value: 0x7f070288
-			public static int wi_owm_day_771 = 2131165832;
-			
-			// aapt resource value: 0x7f070289
-			public static int wi_owm_day_781 = 2131165833;
-			
-			// aapt resource value: 0x7f07028a
-			public static int wi_owm_day_800 = 2131165834;
-			
-			// aapt resource value: 0x7f07028b
-			public static int wi_owm_day_801 = 2131165835;
-			
-			// aapt resource value: 0x7f07028c
-			public static int wi_owm_day_802 = 2131165836;
-			
-			// aapt resource value: 0x7f07028d
-			public static int wi_owm_day_803 = 2131165837;
-			
-			// aapt resource value: 0x7f07028e
-			public static int wi_owm_day_804 = 2131165838;
-			
-			// aapt resource value: 0x7f07028f
-			public static int wi_owm_day_900 = 2131165839;
-			
-			// aapt resource value: 0x7f070290
-			public static int wi_owm_day_901 = 2131165840;
-			
-			// aapt resource value: 0x7f070291
-			public static int wi_owm_day_902 = 2131165841;
-			
-			// aapt resource value: 0x7f070292
-			public static int wi_owm_day_903 = 2131165842;
-			
-			// aapt resource value: 0x7f070293
-			public static int wi_owm_day_904 = 2131165843;
-			
-			// aapt resource value: 0x7f070294
-			public static int wi_owm_day_905 = 2131165844;
-			
-			// aapt resource value: 0x7f070295
-			public static int wi_owm_day_906 = 2131165845;
-			
-			// aapt resource value: 0x7f070296
-			public static int wi_owm_day_957 = 2131165846;
-			
-			// aapt resource value: 0x7f070297
-			public static int wi_owm_night_200 = 2131165847;
-			
-			// aapt resource value: 0x7f070298
-			public static int wi_owm_night_201 = 2131165848;
-			
-			// aapt resource value: 0x7f070299
-			public static int wi_owm_night_202 = 2131165849;
-			
-			// aapt resource value: 0x7f07029a
-			public static int wi_owm_night_210 = 2131165850;
-			
-			// aapt resource value: 0x7f07029b
-			public static int wi_owm_night_211 = 2131165851;
-			
-			// aapt resource value: 0x7f07029c
-			public static int wi_owm_night_212 = 2131165852;
-			
-			// aapt resource value: 0x7f07029d
-			public static int wi_owm_night_221 = 2131165853;
-			
-			// aapt resource value: 0x7f07029e
-			public static int wi_owm_night_230 = 2131165854;
-			
-			// aapt resource value: 0x7f07029f
-			public static int wi_owm_night_231 = 2131165855;
-			
-			// aapt resource value: 0x7f0702a0
-			public static int wi_owm_night_232 = 2131165856;
-			
-			// aapt resource value: 0x7f0702a1
-			public static int wi_owm_night_300 = 2131165857;
-			
-			// aapt resource value: 0x7f0702a2
-			public static int wi_owm_night_301 = 2131165858;
-			
-			// aapt resource value: 0x7f0702a3
-			public static int wi_owm_night_302 = 2131165859;
-			
-			// aapt resource value: 0x7f0702a4
-			public static int wi_owm_night_310 = 2131165860;
-			
-			// aapt resource value: 0x7f0702a5
-			public static int wi_owm_night_311 = 2131165861;
-			
-			// aapt resource value: 0x7f0702a6
-			public static int wi_owm_night_312 = 2131165862;
-			
-			// aapt resource value: 0x7f0702a7
-			public static int wi_owm_night_313 = 2131165863;
-			
-			// aapt resource value: 0x7f0702a8
-			public static int wi_owm_night_314 = 2131165864;
-			
-			// aapt resource value: 0x7f0702a9
-			public static int wi_owm_night_321 = 2131165865;
-			
-			// aapt resource value: 0x7f0702aa
-			public static int wi_owm_night_500 = 2131165866;
-			
-			// aapt resource value: 0x7f0702ab
-			public static int wi_owm_night_501 = 2131165867;
-			
-			// aapt resource value: 0x7f0702ac
-			public static int wi_owm_night_502 = 2131165868;
-			
-			// aapt resource value: 0x7f0702ad
-			public static int wi_owm_night_503 = 2131165869;
-			
-			// aapt resource value: 0x7f0702ae
-			public static int wi_owm_night_504 = 2131165870;
-			
-			// aapt resource value: 0x7f0702af
-			public static int wi_owm_night_511 = 2131165871;
-			
-			// aapt resource value: 0x7f0702b0
-			public static int wi_owm_night_520 = 2131165872;
-			
-			// aapt resource value: 0x7f0702b1
-			public static int wi_owm_night_521 = 2131165873;
-			
-			// aapt resource value: 0x7f0702b2
-			public static int wi_owm_night_522 = 2131165874;
-			
-			// aapt resource value: 0x7f0702b3
-			public static int wi_owm_night_531 = 2131165875;
-			
-			// aapt resource value: 0x7f0702b4
-			public static int wi_owm_night_600 = 2131165876;
-			
-			// aapt resource value: 0x7f0702b5
-			public static int wi_owm_night_601 = 2131165877;
-			
-			// aapt resource value: 0x7f0702b6
-			public static int wi_owm_night_602 = 2131165878;
-			
-			// aapt resource value: 0x7f0702b7
-			public static int wi_owm_night_611 = 2131165879;
-			
-			// aapt resource value: 0x7f0702b8
-			public static int wi_owm_night_612 = 2131165880;
-			
-			// aapt resource value: 0x7f0702b9
-			public static int wi_owm_night_615 = 2131165881;
-			
-			// aapt resource value: 0x7f0702ba
-			public static int wi_owm_night_616 = 2131165882;
-			
-			// aapt resource value: 0x7f0702bb
-			public static int wi_owm_night_620 = 2131165883;
-			
-			// aapt resource value: 0x7f0702bc
-			public static int wi_owm_night_621 = 2131165884;
-			
-			// aapt resource value: 0x7f0702bd
-			public static int wi_owm_night_622 = 2131165885;
-			
-			// aapt resource value: 0x7f0702be
-			public static int wi_owm_night_701 = 2131165886;
-			
-			// aapt resource value: 0x7f0702bf
-			public static int wi_owm_night_711 = 2131165887;
-			
-			// aapt resource value: 0x7f0702c0
-			public static int wi_owm_night_721 = 2131165888;
-			
-			// aapt resource value: 0x7f0702c1
-			public static int wi_owm_night_731 = 2131165889;
-			
-			// aapt resource value: 0x7f0702c2
-			public static int wi_owm_night_741 = 2131165890;
-			
-			// aapt resource value: 0x7f0702c3
-			public static int wi_owm_night_761 = 2131165891;
-			
-			// aapt resource value: 0x7f0702c4
-			public static int wi_owm_night_762 = 2131165892;
-			
-			// aapt resource value: 0x7f0702c5
-			public static int wi_owm_night_771 = 2131165893;
-			
-			// aapt resource value: 0x7f0702c6
-			public static int wi_owm_night_781 = 2131165894;
-			
-			// aapt resource value: 0x7f0702c7
-			public static int wi_owm_night_800 = 2131165895;
-			
-			// aapt resource value: 0x7f0702c8
-			public static int wi_owm_night_801 = 2131165896;
-			
-			// aapt resource value: 0x7f0702c9
-			public static int wi_owm_night_802 = 2131165897;
-			
-			// aapt resource value: 0x7f0702ca
-			public static int wi_owm_night_803 = 2131165898;
-			
-			// aapt resource value: 0x7f0702cb
-			public static int wi_owm_night_804 = 2131165899;
-			
-			// aapt resource value: 0x7f0702cc
-			public static int wi_owm_night_900 = 2131165900;
-			
-			// aapt resource value: 0x7f0702cd
-			public static int wi_owm_night_901 = 2131165901;
-			
-			// aapt resource value: 0x7f0702ce
-			public static int wi_owm_night_902 = 2131165902;
-			
-			// aapt resource value: 0x7f0702cf
-			public static int wi_owm_night_903 = 2131165903;
-			
-			// aapt resource value: 0x7f0702d0
-			public static int wi_owm_night_904 = 2131165904;
-			
-			// aapt resource value: 0x7f0702d1
-			public static int wi_owm_night_905 = 2131165905;
-			
-			// aapt resource value: 0x7f0702d2
-			public static int wi_owm_night_906 = 2131165906;
-			
-			// aapt resource value: 0x7f0702d3
-			public static int wi_owm_night_957 = 2131165907;
-			
-			// aapt resource value: 0x7f0700df
-			public static int wi_rain = 2131165407;
-			
-			// aapt resource value: 0x7f0700e0
-			public static int wi_rain_mix = 2131165408;
-			
-			// aapt resource value: 0x7f0700e1
-			public static int wi_rain_wind = 2131165409;
-			
-			// aapt resource value: 0x7f0700eb
-			public static int wi_raindrop = 2131165419;
-			
-			// aapt resource value: 0x7f0700ea
-			public static int wi_raindrops = 2131165418;
-			
-			// aapt resource value: 0x7f07010e
-			public static int wi_refresh = 2131165454;
-			
-			// aapt resource value: 0x7f07010f
-			public static int wi_refresh_alt = 2131165455;
-			
-			// aapt resource value: 0x7f0700f0
-			public static int wi_sandstorm = 2131165424;
-			
-			// aapt resource value: 0x7f0700e2
-			public static int wi_showers = 2131165410;
-			
-			// aapt resource value: 0x7f0700e3
-			public static int wi_sleet = 2131165411;
-			
-			// aapt resource value: 0x7f0700f9
-			public static int wi_small_craft_advisory = 2131165433;
-			
-			// aapt resource value: 0x7f0700e7
-			public static int wi_smog = 2131165415;
-			
-			// aapt resource value: 0x7f0700e8
-			public static int wi_smoke = 2131165416;
-			
-			// aapt resource value: 0x7f0700e4
-			public static int wi_snow = 2131165412;
-			
-			// aapt resource value: 0x7f0700e6
-			public static int wi_snow_wind = 2131165414;
-			
-			// aapt resource value: 0x7f0700ed
-			public static int wi_snowflake_cold = 2131165421;
-			
-			// aapt resource value: 0x7f0700a9
-			public static int wi_solar_eclipse = 2131165353;
-			
-			// aapt resource value: 0x7f0700e5
-			public static int wi_sprinkle = 2131165413;
-			
-			// aapt resource value: 0x7f0700d3
-			public static int wi_stars = 2131165395;
-			
-			// aapt resource value: 0x7f0700d4
-			public static int wi_storm_showers = 2131165396;
-			
-			// aapt resource value: 0x7f0700fb
-			public static int wi_storm_warning = 2131165435;
-			
-			// aapt resource value: 0x7f0700ef
-			public static int wi_strong_wind = 2131165423;
-			
-			// aapt resource value: 0x7f07010a
-			public static int wi_sunrise = 2131165450;
-			
-			// aapt resource value: 0x7f07010b
-			public static int wi_sunset = 2131165451;
-			
-			// aapt resource value: 0x7f070102
-			public static int wi_thermometer = 2131165442;
-			
-			// aapt resource value: 0x7f070103
-			public static int wi_thermometer_exterior = 2131165443;
+			// aapt resource value: 0x7f07007b
+			public static int werror_unknown = 2131165307;
 			
 			// aapt resource value: 0x7f070104
-			public static int wi_thermometer_internal = 2131165444;
+			public static int wi_alien = 2131165444;
 			
-			// aapt resource value: 0x7f0700d5
-			public static int wi_thunderstorm = 2131165397;
+			// aapt resource value: 0x7f070117
+			public static int wi_barometer = 2131165463;
 			
-			// aapt resource value: 0x7f070169
-			public static int wi_time_1 = 2131165545;
+			// aapt resource value: 0x7f070105
+			public static int wi_celsius = 2131165445;
 			
-			// aapt resource value: 0x7f070172
-			public static int wi_time_10 = 2131165554;
+			// aapt resource value: 0x7f0700df
+			public static int wi_cloud = 2131165407;
 			
-			// aapt resource value: 0x7f070173
-			public static int wi_time_11 = 2131165555;
+			// aapt resource value: 0x7f07010b
+			public static int wi_cloud_down = 2131165451;
 			
-			// aapt resource value: 0x7f070174
-			public static int wi_time_12 = 2131165556;
+			// aapt resource value: 0x7f07010d
+			public static int wi_cloud_refresh = 2131165453;
 			
-			// aapt resource value: 0x7f07016a
-			public static int wi_time_2 = 2131165546;
+			// aapt resource value: 0x7f07010c
+			public static int wi_cloud_up = 2131165452;
 			
-			// aapt resource value: 0x7f07016b
-			public static int wi_time_3 = 2131165547;
+			// aapt resource value: 0x7f0700e0
+			public static int wi_cloudy = 2131165408;
 			
-			// aapt resource value: 0x7f07016c
-			public static int wi_time_4 = 2131165548;
+			// aapt resource value: 0x7f0700e1
+			public static int wi_cloudy_gusts = 2131165409;
 			
-			// aapt resource value: 0x7f07016d
-			public static int wi_time_5 = 2131165549;
+			// aapt resource value: 0x7f0700e2
+			public static int wi_cloudy_windy = 2131165410;
 			
-			// aapt resource value: 0x7f07016e
-			public static int wi_time_6 = 2131165550;
+			// aapt resource value: 0x7f07009a
+			public static int wi_day_cloudy = 2131165338;
 			
-			// aapt resource value: 0x7f07016f
-			public static int wi_time_7 = 2131165551;
+			// aapt resource value: 0x7f07009b
+			public static int wi_day_cloudy_gusts = 2131165339;
 			
-			// aapt resource value: 0x7f070170
-			public static int wi_time_8 = 2131165552;
+			// aapt resource value: 0x7f0700b1
+			public static int wi_day_cloudy_high = 2131165361;
 			
-			// aapt resource value: 0x7f070171
-			public static int wi_time_9 = 2131165553;
+			// aapt resource value: 0x7f07009c
+			public static int wi_day_cloudy_windy = 2131165340;
 			
-			// aapt resource value: 0x7f0700f8
-			public static int wi_tornado = 2131165432;
+			// aapt resource value: 0x7f07009d
+			public static int wi_day_fog = 2131165341;
 			
-			// aapt resource value: 0x7f070114
-			public static int wi_train = 2131165460;
+			// aapt resource value: 0x7f07009e
+			public static int wi_day_hail = 2131165342;
 			
-			// aapt resource value: 0x7f0700f5
-			public static int wi_tsunami = 2131165429;
+			// aapt resource value: 0x7f07009f
+			public static int wi_day_haze = 2131165343;
 			
-			// aapt resource value: 0x7f070110
-			public static int wi_umbrella = 2131165456;
+			// aapt resource value: 0x7f0700b2
+			public static int wi_day_light_wind = 2131165362;
 			
-			// aapt resource value: 0x7f0700f6
-			public static int wi_volcano = 2131165430;
+			// aapt resource value: 0x7f0700a0
+			public static int wi_day_lightning = 2131165344;
 			
-			// aapt resource value: 0x7f07017d
-			public static int wi_wind_beaufort_0 = 2131165565;
+			// aapt resource value: 0x7f0700a1
+			public static int wi_day_rain = 2131165345;
 			
-			// aapt resource value: 0x7f07017e
-			public static int wi_wind_beaufort_1 = 2131165566;
+			// aapt resource value: 0x7f0700a2
+			public static int wi_day_rain_mix = 2131165346;
 			
-			// aapt resource value: 0x7f070187
-			public static int wi_wind_beaufort_10 = 2131165575;
+			// aapt resource value: 0x7f0700a3
+			public static int wi_day_rain_wind = 2131165347;
 			
-			// aapt resource value: 0x7f070188
-			public static int wi_wind_beaufort_11 = 2131165576;
+			// aapt resource value: 0x7f0700a4
+			public static int wi_day_showers = 2131165348;
 			
-			// aapt resource value: 0x7f070189
-			public static int wi_wind_beaufort_12 = 2131165577;
+			// aapt resource value: 0x7f0700a5
+			public static int wi_day_sleet = 2131165349;
+			
+			// aapt resource value: 0x7f0700a6
+			public static int wi_day_sleet_storm = 2131165350;
+			
+			// aapt resource value: 0x7f0700a7
+			public static int wi_day_snow = 2131165351;
+			
+			// aapt resource value: 0x7f0700a8
+			public static int wi_day_snow_thunderstorm = 2131165352;
+			
+			// aapt resource value: 0x7f0700a9
+			public static int wi_day_snow_wind = 2131165353;
+			
+			// aapt resource value: 0x7f0700aa
+			public static int wi_day_sprinkle = 2131165354;
+			
+			// aapt resource value: 0x7f0700ab
+			public static int wi_day_storm_showers = 2131165355;
+			
+			// aapt resource value: 0x7f070099
+			public static int wi_day_sunny = 2131165337;
+			
+			// aapt resource value: 0x7f0700ac
+			public static int wi_day_sunny_overcast = 2131165356;
+			
+			// aapt resource value: 0x7f0700ad
+			public static int wi_day_thunderstorm = 2131165357;
+			
+			// aapt resource value: 0x7f0700ae
+			public static int wi_day_windy = 2131165358;
+			
+			// aapt resource value: 0x7f070107
+			public static int wi_degrees = 2131165447;
 			
 			// aapt resource value: 0x7f07017f
-			public static int wi_wind_beaufort_2 = 2131165567;
+			public static int wi_direction_down = 2131165567;
 			
 			// aapt resource value: 0x7f070180
-			public static int wi_wind_beaufort_3 = 2131165568;
+			public static int wi_direction_down_left = 2131165568;
+			
+			// aapt resource value: 0x7f07017e
+			public static int wi_direction_down_right = 2131165566;
 			
 			// aapt resource value: 0x7f070181
-			public static int wi_wind_beaufort_4 = 2131165569;
+			public static int wi_direction_left = 2131165569;
+			
+			// aapt resource value: 0x7f07017d
+			public static int wi_direction_right = 2131165565;
+			
+			// aapt resource value: 0x7f07017b
+			public static int wi_direction_up = 2131165563;
 			
 			// aapt resource value: 0x7f070182
-			public static int wi_wind_beaufort_5 = 2131165570;
+			public static int wi_direction_up_left = 2131165570;
 			
-			// aapt resource value: 0x7f070183
-			public static int wi_wind_beaufort_6 = 2131165571;
+			// aapt resource value: 0x7f07017c
+			public static int wi_direction_up_right = 2131165564;
 			
-			// aapt resource value: 0x7f070184
-			public static int wi_wind_beaufort_7 = 2131165572;
+			// aapt resource value: 0x7f0700f2
+			public static int wi_dust = 2131165426;
 			
-			// aapt resource value: 0x7f070185
-			public static int wi_wind_beaufort_8 = 2131165573;
+			// aapt resource value: 0x7f0700f7
+			public static int wi_earthquake = 2131165431;
 			
-			// aapt resource value: 0x7f070186
-			public static int wi_wind_beaufort_9 = 2131165574;
+			// aapt resource value: 0x7f070106
+			public static int wi_fahrenheit = 2131165446;
 			
-			// aapt resource value: 0x7f0700fd
-			public static int wi_wind_direction = 2131165437;
+			// aapt resource value: 0x7f0700f8
+			public static int wi_fire = 2131165432;
 			
-			// aapt resource value: 0x7f0700ee
-			public static int wi_windy = 2131165422;
+			// aapt resource value: 0x7f0700f9
+			public static int wi_flood = 2131165433;
+			
+			// aapt resource value: 0x7f0700e3
+			public static int wi_fog = 2131165411;
+			
+			// aapt resource value: 0x7f0701c1
+			public static int wi_forecast_io_clear_day = 2131165633;
+			
+			// aapt resource value: 0x7f0701c2
+			public static int wi_forecast_io_clear_night = 2131165634;
 			
 			// aapt resource value: 0x7f0701c8
-			public static int wi_wmo4680_0 = 2131165640;
+			public static int wi_forecast_io_cloudy = 2131165640;
 			
-			// aapt resource value: 0x7f0701c9
-			public static int wi_wmo4680_00 = 2131165641;
+			// aapt resource value: 0x7f0701c7
+			public static int wi_forecast_io_fog = 2131165639;
 			
 			// aapt resource value: 0x7f0701cb
-			public static int wi_wmo4680_01 = 2131165643;
+			public static int wi_forecast_io_hail = 2131165643;
 			
-			// aapt resource value: 0x7f0701cd
-			public static int wi_wmo4680_02 = 2131165645;
-			
-			// aapt resource value: 0x7f0701cf
-			public static int wi_wmo4680_03 = 2131165647;
-			
-			// aapt resource value: 0x7f0701d1
-			public static int wi_wmo4680_04 = 2131165649;
-			
-			// aapt resource value: 0x7f0701d3
-			public static int wi_wmo4680_05 = 2131165651;
+			// aapt resource value: 0x7f0701c9
+			public static int wi_forecast_io_partly_cloudy_day = 2131165641;
 			
 			// aapt resource value: 0x7f0701ca
-			public static int wi_wmo4680_1 = 2131165642;
+			public static int wi_forecast_io_partly_cloudy_night = 2131165642;
 			
-			// aapt resource value: 0x7f0701d4
-			public static int wi_wmo4680_10 = 2131165652;
+			// aapt resource value: 0x7f0701c3
+			public static int wi_forecast_io_rain = 2131165635;
 			
-			// aapt resource value: 0x7f0701d5
-			public static int wi_wmo4680_11 = 2131165653;
+			// aapt resource value: 0x7f0701c5
+			public static int wi_forecast_io_sleet = 2131165637;
 			
-			// aapt resource value: 0x7f0701d6
-			public static int wi_wmo4680_12 = 2131165654;
-			
-			// aapt resource value: 0x7f0701d7
-			public static int wi_wmo4680_18 = 2131165655;
+			// aapt resource value: 0x7f0701c4
+			public static int wi_forecast_io_snow = 2131165636;
 			
 			// aapt resource value: 0x7f0701cc
-			public static int wi_wmo4680_2 = 2131165644;
+			public static int wi_forecast_io_thunderstorm = 2131165644;
 			
-			// aapt resource value: 0x7f0701d8
-			public static int wi_wmo4680_20 = 2131165656;
+			// aapt resource value: 0x7f0701cd
+			public static int wi_forecast_io_tornado = 2131165645;
 			
-			// aapt resource value: 0x7f0701d9
-			public static int wi_wmo4680_21 = 2131165657;
+			// aapt resource value: 0x7f0701c6
+			public static int wi_forecast_io_wind = 2131165638;
 			
-			// aapt resource value: 0x7f0701da
-			public static int wi_wmo4680_22 = 2131165658;
+			// aapt resource value: 0x7f070100
+			public static int wi_gale_warning = 2131165440;
 			
-			// aapt resource value: 0x7f0701db
-			public static int wi_wmo4680_23 = 2131165659;
+			// aapt resource value: 0x7f0700e4
+			public static int wi_hail = 2131165412;
 			
-			// aapt resource value: 0x7f0701dc
-			public static int wi_wmo4680_24 = 2131165660;
+			// aapt resource value: 0x7f07010e
+			public static int wi_horizon = 2131165454;
 			
-			// aapt resource value: 0x7f0701dd
-			public static int wi_wmo4680_25 = 2131165661;
+			// aapt resource value: 0x7f07010f
+			public static int wi_horizon_alt = 2131165455;
 			
-			// aapt resource value: 0x7f0701de
-			public static int wi_wmo4680_26 = 2131165662;
+			// aapt resource value: 0x7f0700b0
+			public static int wi_hot = 2131165360;
 			
-			// aapt resource value: 0x7f0701df
-			public static int wi_wmo4680_27 = 2131165663;
+			// aapt resource value: 0x7f070118
+			public static int wi_humidity = 2131165464;
 			
-			// aapt resource value: 0x7f0701e0
-			public static int wi_wmo4680_28 = 2131165664;
+			// aapt resource value: 0x7f0700fd
+			public static int wi_hurricane = 2131165437;
 			
-			// aapt resource value: 0x7f0701e1
-			public static int wi_wmo4680_29 = 2131165665;
+			// aapt resource value: 0x7f070102
+			public static int wi_hurricane_warning = 2131165442;
 			
-			// aapt resource value: 0x7f0701ce
-			public static int wi_wmo4680_3 = 2131165646;
+			// aapt resource value: 0x7f0700ef
+			public static int wi_lightning = 2131165423;
 			
-			// aapt resource value: 0x7f0701e2
-			public static int wi_wmo4680_30 = 2131165666;
+			// aapt resource value: 0x7f0700d8
+			public static int wi_lunar_eclipse = 2131165400;
 			
-			// aapt resource value: 0x7f0701e3
-			public static int wi_wmo4680_31 = 2131165667;
+			// aapt resource value: 0x7f0700fa
+			public static int wi_meteor = 2131165434;
 			
-			// aapt resource value: 0x7f0701e4
-			public static int wi_wmo4680_32 = 2131165668;
+			// aapt resource value: 0x7f070153
+			public static int wi_moon_0 = 2131165523;
 			
-			// aapt resource value: 0x7f0701e5
-			public static int wi_wmo4680_33 = 2131165669;
+			// aapt resource value: 0x7f070154
+			public static int wi_moon_1 = 2131165524;
 			
-			// aapt resource value: 0x7f0701e6
-			public static int wi_wmo4680_34 = 2131165670;
+			// aapt resource value: 0x7f07015d
+			public static int wi_moon_10 = 2131165533;
 			
-			// aapt resource value: 0x7f0701e7
-			public static int wi_wmo4680_35 = 2131165671;
+			// aapt resource value: 0x7f07015e
+			public static int wi_moon_11 = 2131165534;
 			
-			// aapt resource value: 0x7f0701d0
-			public static int wi_wmo4680_4 = 2131165648;
+			// aapt resource value: 0x7f07015f
+			public static int wi_moon_12 = 2131165535;
 			
-			// aapt resource value: 0x7f0701e8
-			public static int wi_wmo4680_40 = 2131165672;
+			// aapt resource value: 0x7f070160
+			public static int wi_moon_13 = 2131165536;
 			
-			// aapt resource value: 0x7f0701e9
-			public static int wi_wmo4680_41 = 2131165673;
+			// aapt resource value: 0x7f070161
+			public static int wi_moon_14 = 2131165537;
 			
-			// aapt resource value: 0x7f0701ea
-			public static int wi_wmo4680_42 = 2131165674;
+			// aapt resource value: 0x7f070162
+			public static int wi_moon_15 = 2131165538;
 			
-			// aapt resource value: 0x7f0701eb
-			public static int wi_wmo4680_43 = 2131165675;
+			// aapt resource value: 0x7f070163
+			public static int wi_moon_16 = 2131165539;
 			
-			// aapt resource value: 0x7f0701ec
-			public static int wi_wmo4680_44 = 2131165676;
+			// aapt resource value: 0x7f070164
+			public static int wi_moon_17 = 2131165540;
 			
-			// aapt resource value: 0x7f0701ed
-			public static int wi_wmo4680_45 = 2131165677;
+			// aapt resource value: 0x7f070165
+			public static int wi_moon_18 = 2131165541;
 			
-			// aapt resource value: 0x7f0701ee
-			public static int wi_wmo4680_46 = 2131165678;
+			// aapt resource value: 0x7f070166
+			public static int wi_moon_19 = 2131165542;
 			
-			// aapt resource value: 0x7f0701ef
-			public static int wi_wmo4680_47 = 2131165679;
+			// aapt resource value: 0x7f070155
+			public static int wi_moon_2 = 2131165525;
 			
-			// aapt resource value: 0x7f0701f0
-			public static int wi_wmo4680_48 = 2131165680;
+			// aapt resource value: 0x7f070167
+			public static int wi_moon_20 = 2131165543;
 			
-			// aapt resource value: 0x7f0701d2
-			public static int wi_wmo4680_5 = 2131165650;
+			// aapt resource value: 0x7f070168
+			public static int wi_moon_21 = 2131165544;
 			
-			// aapt resource value: 0x7f0701f1
-			public static int wi_wmo4680_50 = 2131165681;
+			// aapt resource value: 0x7f070169
+			public static int wi_moon_22 = 2131165545;
 			
-			// aapt resource value: 0x7f0701f2
-			public static int wi_wmo4680_51 = 2131165682;
+			// aapt resource value: 0x7f07016a
+			public static int wi_moon_23 = 2131165546;
 			
-			// aapt resource value: 0x7f0701f3
-			public static int wi_wmo4680_52 = 2131165683;
+			// aapt resource value: 0x7f07016b
+			public static int wi_moon_24 = 2131165547;
 			
-			// aapt resource value: 0x7f0701f4
-			public static int wi_wmo4680_53 = 2131165684;
+			// aapt resource value: 0x7f07016c
+			public static int wi_moon_25 = 2131165548;
 			
-			// aapt resource value: 0x7f0701f5
-			public static int wi_wmo4680_54 = 2131165685;
+			// aapt resource value: 0x7f07016d
+			public static int wi_moon_26 = 2131165549;
 			
-			// aapt resource value: 0x7f0701f6
-			public static int wi_wmo4680_55 = 2131165686;
+			// aapt resource value: 0x7f07016e
+			public static int wi_moon_27 = 2131165550;
 			
-			// aapt resource value: 0x7f0701f7
-			public static int wi_wmo4680_56 = 2131165687;
+			// aapt resource value: 0x7f070156
+			public static int wi_moon_3 = 2131165526;
 			
-			// aapt resource value: 0x7f0701f8
-			public static int wi_wmo4680_57 = 2131165688;
+			// aapt resource value: 0x7f070157
+			public static int wi_moon_4 = 2131165527;
 			
-			// aapt resource value: 0x7f0701f9
-			public static int wi_wmo4680_58 = 2131165689;
+			// aapt resource value: 0x7f070158
+			public static int wi_moon_5 = 2131165528;
 			
-			// aapt resource value: 0x7f0701fa
-			public static int wi_wmo4680_60 = 2131165690;
+			// aapt resource value: 0x7f070159
+			public static int wi_moon_6 = 2131165529;
 			
-			// aapt resource value: 0x7f0701fb
-			public static int wi_wmo4680_61 = 2131165691;
+			// aapt resource value: 0x7f07015a
+			public static int wi_moon_7 = 2131165530;
 			
-			// aapt resource value: 0x7f0701fc
-			public static int wi_wmo4680_62 = 2131165692;
+			// aapt resource value: 0x7f07015b
+			public static int wi_moon_8 = 2131165531;
 			
-			// aapt resource value: 0x7f0701fd
-			public static int wi_wmo4680_63 = 2131165693;
+			// aapt resource value: 0x7f07015c
+			public static int wi_moon_9 = 2131165532;
 			
-			// aapt resource value: 0x7f0701fe
-			public static int wi_wmo4680_64 = 2131165694;
+			// aapt resource value: 0x7f07013e
+			public static int wi_moon_alt_first_quarter = 2131165502;
 			
-			// aapt resource value: 0x7f0701ff
-			public static int wi_wmo4680_65 = 2131165695;
+			// aapt resource value: 0x7f070145
+			public static int wi_moon_alt_full = 2131165509;
 			
-			// aapt resource value: 0x7f070200
-			public static int wi_wmo4680_66 = 2131165696;
+			// aapt resource value: 0x7f070137
+			public static int wi_moon_alt_new = 2131165495;
 			
-			// aapt resource value: 0x7f070201
-			public static int wi_wmo4680_67 = 2131165697;
+			// aapt resource value: 0x7f07014c
+			public static int wi_moon_alt_third_quarter = 2131165516;
 			
-			// aapt resource value: 0x7f070202
-			public static int wi_wmo4680_68 = 2131165698;
+			// aapt resource value: 0x7f07014d
+			public static int wi_moon_alt_waning_crescent_1 = 2131165517;
 			
-			// aapt resource value: 0x7f070203
-			public static int wi_wmo4680_70 = 2131165699;
+			// aapt resource value: 0x7f07014e
+			public static int wi_moon_alt_waning_crescent_2 = 2131165518;
 			
-			// aapt resource value: 0x7f070204
-			public static int wi_wmo4680_71 = 2131165700;
+			// aapt resource value: 0x7f07014f
+			public static int wi_moon_alt_waning_crescent_3 = 2131165519;
 			
-			// aapt resource value: 0x7f070205
-			public static int wi_wmo4680_72 = 2131165701;
+			// aapt resource value: 0x7f070150
+			public static int wi_moon_alt_waning_crescent_4 = 2131165520;
 			
-			// aapt resource value: 0x7f070206
-			public static int wi_wmo4680_73 = 2131165702;
+			// aapt resource value: 0x7f070151
+			public static int wi_moon_alt_waning_crescent_5 = 2131165521;
 			
-			// aapt resource value: 0x7f070207
-			public static int wi_wmo4680_74 = 2131165703;
+			// aapt resource value: 0x7f070152
+			public static int wi_moon_alt_waning_crescent_6 = 2131165522;
 			
-			// aapt resource value: 0x7f070208
-			public static int wi_wmo4680_75 = 2131165704;
+			// aapt resource value: 0x7f070146
+			public static int wi_moon_alt_waning_gibbous_1 = 2131165510;
 			
-			// aapt resource value: 0x7f070209
-			public static int wi_wmo4680_76 = 2131165705;
+			// aapt resource value: 0x7f070147
+			public static int wi_moon_alt_waning_gibbous_2 = 2131165511;
 			
-			// aapt resource value: 0x7f07020a
-			public static int wi_wmo4680_77 = 2131165706;
+			// aapt resource value: 0x7f070148
+			public static int wi_moon_alt_waning_gibbous_3 = 2131165512;
 			
-			// aapt resource value: 0x7f07020b
-			public static int wi_wmo4680_78 = 2131165707;
+			// aapt resource value: 0x7f070149
+			public static int wi_moon_alt_waning_gibbous_4 = 2131165513;
 			
-			// aapt resource value: 0x7f07020c
-			public static int wi_wmo4680_80 = 2131165708;
+			// aapt resource value: 0x7f07014a
+			public static int wi_moon_alt_waning_gibbous_5 = 2131165514;
 			
-			// aapt resource value: 0x7f07020d
-			public static int wi_wmo4680_81 = 2131165709;
+			// aapt resource value: 0x7f07014b
+			public static int wi_moon_alt_waning_gibbous_6 = 2131165515;
 			
-			// aapt resource value: 0x7f07020e
-			public static int wi_wmo4680_82 = 2131165710;
+			// aapt resource value: 0x7f070138
+			public static int wi_moon_alt_waxing_crescent_1 = 2131165496;
 			
-			// aapt resource value: 0x7f07020f
-			public static int wi_wmo4680_83 = 2131165711;
+			// aapt resource value: 0x7f070139
+			public static int wi_moon_alt_waxing_crescent_2 = 2131165497;
 			
-			// aapt resource value: 0x7f070210
-			public static int wi_wmo4680_84 = 2131165712;
+			// aapt resource value: 0x7f07013a
+			public static int wi_moon_alt_waxing_crescent_3 = 2131165498;
 			
-			// aapt resource value: 0x7f070211
-			public static int wi_wmo4680_85 = 2131165713;
+			// aapt resource value: 0x7f07013b
+			public static int wi_moon_alt_waxing_crescent_4 = 2131165499;
 			
-			// aapt resource value: 0x7f070212
-			public static int wi_wmo4680_86 = 2131165714;
+			// aapt resource value: 0x7f07013c
+			public static int wi_moon_alt_waxing_crescent_5 = 2131165500;
 			
-			// aapt resource value: 0x7f070213
-			public static int wi_wmo4680_87 = 2131165715;
+			// aapt resource value: 0x7f07013d
+			public static int wi_moon_alt_waxing_crescent_6 = 2131165501;
 			
-			// aapt resource value: 0x7f070214
-			public static int wi_wmo4680_89 = 2131165716;
+			// aapt resource value: 0x7f07013f
+			public static int wi_moon_alt_waxing_gibbous_1 = 2131165503;
 			
-			// aapt resource value: 0x7f070215
-			public static int wi_wmo4680_90 = 2131165717;
+			// aapt resource value: 0x7f070140
+			public static int wi_moon_alt_waxing_gibbous_2 = 2131165504;
 			
-			// aapt resource value: 0x7f070216
-			public static int wi_wmo4680_91 = 2131165718;
+			// aapt resource value: 0x7f070141
+			public static int wi_moon_alt_waxing_gibbous_3 = 2131165505;
 			
-			// aapt resource value: 0x7f070217
-			public static int wi_wmo4680_92 = 2131165719;
+			// aapt resource value: 0x7f070142
+			public static int wi_moon_alt_waxing_gibbous_4 = 2131165506;
 			
-			// aapt resource value: 0x7f070218
-			public static int wi_wmo4680_93 = 2131165720;
+			// aapt resource value: 0x7f070143
+			public static int wi_moon_alt_waxing_gibbous_5 = 2131165507;
 			
-			// aapt resource value: 0x7f070219
-			public static int wi_wmo4680_94 = 2131165721;
+			// aapt resource value: 0x7f070144
+			public static int wi_moon_alt_waxing_gibbous_6 = 2131165508;
 			
-			// aapt resource value: 0x7f07021a
-			public static int wi_wmo4680_95 = 2131165722;
+			// aapt resource value: 0x7f070122
+			public static int wi_moon_first_quarter = 2131165474;
 			
-			// aapt resource value: 0x7f07021b
-			public static int wi_wmo4680_96 = 2131165723;
+			// aapt resource value: 0x7f070129
+			public static int wi_moon_full = 2131165481;
 			
-			// aapt resource value: 0x7f07021c
-			public static int wi_wmo4680_99 = 2131165724;
+			// aapt resource value: 0x7f07011b
+			public static int wi_moon_new = 2131165467;
+			
+			// aapt resource value: 0x7f070130
+			public static int wi_moon_third_quarter = 2131165488;
+			
+			// aapt resource value: 0x7f070131
+			public static int wi_moon_waning_crescent_1 = 2131165489;
+			
+			// aapt resource value: 0x7f070132
+			public static int wi_moon_waning_crescent_2 = 2131165490;
+			
+			// aapt resource value: 0x7f070133
+			public static int wi_moon_waning_crescent_3 = 2131165491;
+			
+			// aapt resource value: 0x7f070134
+			public static int wi_moon_waning_crescent_4 = 2131165492;
+			
+			// aapt resource value: 0x7f070135
+			public static int wi_moon_waning_crescent_5 = 2131165493;
+			
+			// aapt resource value: 0x7f070136
+			public static int wi_moon_waning_crescent_6 = 2131165494;
+			
+			// aapt resource value: 0x7f07012a
+			public static int wi_moon_waning_gibbous_1 = 2131165482;
+			
+			// aapt resource value: 0x7f07012b
+			public static int wi_moon_waning_gibbous_2 = 2131165483;
+			
+			// aapt resource value: 0x7f07012c
+			public static int wi_moon_waning_gibbous_3 = 2131165484;
+			
+			// aapt resource value: 0x7f07012d
+			public static int wi_moon_waning_gibbous_4 = 2131165485;
+			
+			// aapt resource value: 0x7f07012e
+			public static int wi_moon_waning_gibbous_5 = 2131165486;
+			
+			// aapt resource value: 0x7f07012f
+			public static int wi_moon_waning_gibbous_6 = 2131165487;
+			
+			// aapt resource value: 0x7f07011c
+			public static int wi_moon_waxing_crescent_1 = 2131165468;
+			
+			// aapt resource value: 0x7f07011d
+			public static int wi_moon_waxing_crescent_2 = 2131165469;
+			
+			// aapt resource value: 0x7f07011e
+			public static int wi_moon_waxing_crescent_3 = 2131165470;
+			
+			// aapt resource value: 0x7f07011f
+			public static int wi_moon_waxing_crescent_4 = 2131165471;
+			
+			// aapt resource value: 0x7f070120
+			public static int wi_moon_waxing_crescent_5 = 2131165472;
+			
+			// aapt resource value: 0x7f070121
+			public static int wi_moon_waxing_crescent_6 = 2131165473;
+			
+			// aapt resource value: 0x7f070123
+			public static int wi_moon_waxing_gibbous_1 = 2131165475;
+			
+			// aapt resource value: 0x7f070124
+			public static int wi_moon_waxing_gibbous_2 = 2131165476;
+			
+			// aapt resource value: 0x7f070125
+			public static int wi_moon_waxing_gibbous_3 = 2131165477;
+			
+			// aapt resource value: 0x7f070126
+			public static int wi_moon_waxing_gibbous_4 = 2131165478;
+			
+			// aapt resource value: 0x7f070127
+			public static int wi_moon_waxing_gibbous_5 = 2131165479;
+			
+			// aapt resource value: 0x7f070128
+			public static int wi_moon_waxing_gibbous_6 = 2131165480;
+			
+			// aapt resource value: 0x7f070112
+			public static int wi_moonrise = 2131165458;
+			
+			// aapt resource value: 0x7f070113
+			public static int wi_moonset = 2131165459;
+			
+			// aapt resource value: 0x7f070119
+			public static int wi_na = 2131165465;
+			
+			// aapt resource value: 0x7f0700b4
+			public static int wi_night_alt_cloudy = 2131165364;
+			
+			// aapt resource value: 0x7f0700b5
+			public static int wi_night_alt_cloudy_gusts = 2131165365;
+			
+			// aapt resource value: 0x7f0700dc
+			public static int wi_night_alt_cloudy_high = 2131165404;
+			
+			// aapt resource value: 0x7f0700b6
+			public static int wi_night_alt_cloudy_windy = 2131165366;
+			
+			// aapt resource value: 0x7f0700b7
+			public static int wi_night_alt_hail = 2131165367;
+			
+			// aapt resource value: 0x7f0700b8
+			public static int wi_night_alt_lightning = 2131165368;
+			
+			// aapt resource value: 0x7f0700de
+			public static int wi_night_alt_partly_cloudy = 2131165406;
+			
+			// aapt resource value: 0x7f0700b9
+			public static int wi_night_alt_rain = 2131165369;
+			
+			// aapt resource value: 0x7f0700ba
+			public static int wi_night_alt_rain_mix = 2131165370;
+			
+			// aapt resource value: 0x7f0700bb
+			public static int wi_night_alt_rain_wind = 2131165371;
+			
+			// aapt resource value: 0x7f0700bc
+			public static int wi_night_alt_showers = 2131165372;
+			
+			// aapt resource value: 0x7f0700bd
+			public static int wi_night_alt_sleet = 2131165373;
+			
+			// aapt resource value: 0x7f0700be
+			public static int wi_night_alt_sleet_storm = 2131165374;
+			
+			// aapt resource value: 0x7f0700bf
+			public static int wi_night_alt_snow = 2131165375;
+			
+			// aapt resource value: 0x7f0700c0
+			public static int wi_night_alt_snow_thunderstorm = 2131165376;
+			
+			// aapt resource value: 0x7f0700c1
+			public static int wi_night_alt_snow_wind = 2131165377;
+			
+			// aapt resource value: 0x7f0700c2
+			public static int wi_night_alt_sprinkle = 2131165378;
+			
+			// aapt resource value: 0x7f0700c3
+			public static int wi_night_alt_storm_showers = 2131165379;
+			
+			// aapt resource value: 0x7f0700c4
+			public static int wi_night_alt_thunderstorm = 2131165380;
+			
+			// aapt resource value: 0x7f0700b3
+			public static int wi_night_clear = 2131165363;
+			
+			// aapt resource value: 0x7f0700c5
+			public static int wi_night_cloudy = 2131165381;
+			
+			// aapt resource value: 0x7f0700c6
+			public static int wi_night_cloudy_gusts = 2131165382;
+			
+			// aapt resource value: 0x7f0700dd
+			public static int wi_night_cloudy_high = 2131165405;
+			
+			// aapt resource value: 0x7f0700c7
+			public static int wi_night_cloudy_windy = 2131165383;
+			
+			// aapt resource value: 0x7f0700c8
+			public static int wi_night_fog = 2131165384;
+			
+			// aapt resource value: 0x7f0700c9
+			public static int wi_night_hail = 2131165385;
+			
+			// aapt resource value: 0x7f0700ca
+			public static int wi_night_lightning = 2131165386;
+			
+			// aapt resource value: 0x7f0700cb
+			public static int wi_night_partly_cloudy = 2131165387;
+			
+			// aapt resource value: 0x7f0700cc
+			public static int wi_night_rain = 2131165388;
+			
+			// aapt resource value: 0x7f0700cd
+			public static int wi_night_rain_mix = 2131165389;
+			
+			// aapt resource value: 0x7f0700ce
+			public static int wi_night_rain_wind = 2131165390;
+			
+			// aapt resource value: 0x7f0700cf
+			public static int wi_night_showers = 2131165391;
+			
+			// aapt resource value: 0x7f0700d0
+			public static int wi_night_sleet = 2131165392;
+			
+			// aapt resource value: 0x7f0700d1
+			public static int wi_night_sleet_storm = 2131165393;
+			
+			// aapt resource value: 0x7f0700d2
+			public static int wi_night_snow = 2131165394;
+			
+			// aapt resource value: 0x7f0700d3
+			public static int wi_night_snow_thunderstorm = 2131165395;
+			
+			// aapt resource value: 0x7f0700d4
+			public static int wi_night_snow_wind = 2131165396;
+			
+			// aapt resource value: 0x7f0700d5
+			public static int wi_night_sprinkle = 2131165397;
+			
+			// aapt resource value: 0x7f0700d6
+			public static int wi_night_storm_showers = 2131165398;
+			
+			// aapt resource value: 0x7f0700d7
+			public static int wi_night_thunderstorm = 2131165399;
+			
+			// aapt resource value: 0x7f070223
+			public static int wi_owm_200 = 2131165731;
+			
+			// aapt resource value: 0x7f070224
+			public static int wi_owm_201 = 2131165732;
+			
+			// aapt resource value: 0x7f070225
+			public static int wi_owm_202 = 2131165733;
+			
+			// aapt resource value: 0x7f070226
+			public static int wi_owm_210 = 2131165734;
+			
+			// aapt resource value: 0x7f070227
+			public static int wi_owm_211 = 2131165735;
+			
+			// aapt resource value: 0x7f070228
+			public static int wi_owm_212 = 2131165736;
+			
+			// aapt resource value: 0x7f070229
+			public static int wi_owm_221 = 2131165737;
+			
+			// aapt resource value: 0x7f07022a
+			public static int wi_owm_230 = 2131165738;
+			
+			// aapt resource value: 0x7f07022b
+			public static int wi_owm_231 = 2131165739;
+			
+			// aapt resource value: 0x7f07022c
+			public static int wi_owm_232 = 2131165740;
+			
+			// aapt resource value: 0x7f07022d
+			public static int wi_owm_300 = 2131165741;
+			
+			// aapt resource value: 0x7f07022e
+			public static int wi_owm_301 = 2131165742;
+			
+			// aapt resource value: 0x7f07022f
+			public static int wi_owm_302 = 2131165743;
+			
+			// aapt resource value: 0x7f070230
+			public static int wi_owm_310 = 2131165744;
+			
+			// aapt resource value: 0x7f070231
+			public static int wi_owm_311 = 2131165745;
+			
+			// aapt resource value: 0x7f070232
+			public static int wi_owm_312 = 2131165746;
+			
+			// aapt resource value: 0x7f070233
+			public static int wi_owm_313 = 2131165747;
+			
+			// aapt resource value: 0x7f070234
+			public static int wi_owm_314 = 2131165748;
+			
+			// aapt resource value: 0x7f070235
+			public static int wi_owm_321 = 2131165749;
+			
+			// aapt resource value: 0x7f070236
+			public static int wi_owm_500 = 2131165750;
+			
+			// aapt resource value: 0x7f070237
+			public static int wi_owm_501 = 2131165751;
+			
+			// aapt resource value: 0x7f070238
+			public static int wi_owm_502 = 2131165752;
+			
+			// aapt resource value: 0x7f070239
+			public static int wi_owm_503 = 2131165753;
+			
+			// aapt resource value: 0x7f07023a
+			public static int wi_owm_504 = 2131165754;
+			
+			// aapt resource value: 0x7f07023b
+			public static int wi_owm_511 = 2131165755;
+			
+			// aapt resource value: 0x7f07023c
+			public static int wi_owm_520 = 2131165756;
+			
+			// aapt resource value: 0x7f07023d
+			public static int wi_owm_521 = 2131165757;
+			
+			// aapt resource value: 0x7f07023e
+			public static int wi_owm_522 = 2131165758;
+			
+			// aapt resource value: 0x7f07023f
+			public static int wi_owm_531 = 2131165759;
+			
+			// aapt resource value: 0x7f070240
+			public static int wi_owm_600 = 2131165760;
+			
+			// aapt resource value: 0x7f070241
+			public static int wi_owm_601 = 2131165761;
+			
+			// aapt resource value: 0x7f070242
+			public static int wi_owm_602 = 2131165762;
+			
+			// aapt resource value: 0x7f070243
+			public static int wi_owm_611 = 2131165763;
+			
+			// aapt resource value: 0x7f070244
+			public static int wi_owm_612 = 2131165764;
+			
+			// aapt resource value: 0x7f070245
+			public static int wi_owm_615 = 2131165765;
+			
+			// aapt resource value: 0x7f070246
+			public static int wi_owm_616 = 2131165766;
+			
+			// aapt resource value: 0x7f070247
+			public static int wi_owm_620 = 2131165767;
+			
+			// aapt resource value: 0x7f070248
+			public static int wi_owm_621 = 2131165768;
+			
+			// aapt resource value: 0x7f070249
+			public static int wi_owm_622 = 2131165769;
+			
+			// aapt resource value: 0x7f07024a
+			public static int wi_owm_701 = 2131165770;
+			
+			// aapt resource value: 0x7f07024b
+			public static int wi_owm_711 = 2131165771;
+			
+			// aapt resource value: 0x7f07024c
+			public static int wi_owm_721 = 2131165772;
+			
+			// aapt resource value: 0x7f07024d
+			public static int wi_owm_731 = 2131165773;
+			
+			// aapt resource value: 0x7f07024e
+			public static int wi_owm_741 = 2131165774;
+			
+			// aapt resource value: 0x7f07024f
+			public static int wi_owm_761 = 2131165775;
+			
+			// aapt resource value: 0x7f070250
+			public static int wi_owm_762 = 2131165776;
+			
+			// aapt resource value: 0x7f070251
+			public static int wi_owm_771 = 2131165777;
+			
+			// aapt resource value: 0x7f070252
+			public static int wi_owm_781 = 2131165778;
+			
+			// aapt resource value: 0x7f070253
+			public static int wi_owm_800 = 2131165779;
+			
+			// aapt resource value: 0x7f070254
+			public static int wi_owm_801 = 2131165780;
+			
+			// aapt resource value: 0x7f070255
+			public static int wi_owm_802 = 2131165781;
+			
+			// aapt resource value: 0x7f070256
+			public static int wi_owm_803 = 2131165782;
+			
+			// aapt resource value: 0x7f070257
+			public static int wi_owm_804 = 2131165783;
+			
+			// aapt resource value: 0x7f070258
+			public static int wi_owm_900 = 2131165784;
+			
+			// aapt resource value: 0x7f070259
+			public static int wi_owm_901 = 2131165785;
+			
+			// aapt resource value: 0x7f07025a
+			public static int wi_owm_902 = 2131165786;
+			
+			// aapt resource value: 0x7f07025b
+			public static int wi_owm_903 = 2131165787;
+			
+			// aapt resource value: 0x7f07025c
+			public static int wi_owm_904 = 2131165788;
+			
+			// aapt resource value: 0x7f07025d
+			public static int wi_owm_905 = 2131165789;
+			
+			// aapt resource value: 0x7f07025e
+			public static int wi_owm_906 = 2131165790;
+			
+			// aapt resource value: 0x7f07025f
+			public static int wi_owm_957 = 2131165791;
+			
+			// aapt resource value: 0x7f070260
+			public static int wi_owm_day_200 = 2131165792;
+			
+			// aapt resource value: 0x7f070261
+			public static int wi_owm_day_201 = 2131165793;
+			
+			// aapt resource value: 0x7f070262
+			public static int wi_owm_day_202 = 2131165794;
+			
+			// aapt resource value: 0x7f070263
+			public static int wi_owm_day_210 = 2131165795;
+			
+			// aapt resource value: 0x7f070264
+			public static int wi_owm_day_211 = 2131165796;
+			
+			// aapt resource value: 0x7f070265
+			public static int wi_owm_day_212 = 2131165797;
+			
+			// aapt resource value: 0x7f070266
+			public static int wi_owm_day_221 = 2131165798;
+			
+			// aapt resource value: 0x7f070267
+			public static int wi_owm_day_230 = 2131165799;
+			
+			// aapt resource value: 0x7f070268
+			public static int wi_owm_day_231 = 2131165800;
+			
+			// aapt resource value: 0x7f070269
+			public static int wi_owm_day_232 = 2131165801;
+			
+			// aapt resource value: 0x7f07026a
+			public static int wi_owm_day_300 = 2131165802;
+			
+			// aapt resource value: 0x7f07026b
+			public static int wi_owm_day_301 = 2131165803;
+			
+			// aapt resource value: 0x7f07026c
+			public static int wi_owm_day_302 = 2131165804;
+			
+			// aapt resource value: 0x7f07026d
+			public static int wi_owm_day_310 = 2131165805;
+			
+			// aapt resource value: 0x7f07026e
+			public static int wi_owm_day_311 = 2131165806;
+			
+			// aapt resource value: 0x7f07026f
+			public static int wi_owm_day_312 = 2131165807;
+			
+			// aapt resource value: 0x7f070270
+			public static int wi_owm_day_313 = 2131165808;
+			
+			// aapt resource value: 0x7f070271
+			public static int wi_owm_day_314 = 2131165809;
+			
+			// aapt resource value: 0x7f070272
+			public static int wi_owm_day_321 = 2131165810;
+			
+			// aapt resource value: 0x7f070273
+			public static int wi_owm_day_500 = 2131165811;
+			
+			// aapt resource value: 0x7f070274
+			public static int wi_owm_day_501 = 2131165812;
+			
+			// aapt resource value: 0x7f070275
+			public static int wi_owm_day_502 = 2131165813;
+			
+			// aapt resource value: 0x7f070276
+			public static int wi_owm_day_503 = 2131165814;
+			
+			// aapt resource value: 0x7f070277
+			public static int wi_owm_day_504 = 2131165815;
+			
+			// aapt resource value: 0x7f070278
+			public static int wi_owm_day_511 = 2131165816;
+			
+			// aapt resource value: 0x7f070279
+			public static int wi_owm_day_520 = 2131165817;
+			
+			// aapt resource value: 0x7f07027a
+			public static int wi_owm_day_521 = 2131165818;
+			
+			// aapt resource value: 0x7f07027b
+			public static int wi_owm_day_522 = 2131165819;
+			
+			// aapt resource value: 0x7f07027c
+			public static int wi_owm_day_531 = 2131165820;
+			
+			// aapt resource value: 0x7f07027d
+			public static int wi_owm_day_600 = 2131165821;
+			
+			// aapt resource value: 0x7f07027e
+			public static int wi_owm_day_601 = 2131165822;
+			
+			// aapt resource value: 0x7f07027f
+			public static int wi_owm_day_602 = 2131165823;
+			
+			// aapt resource value: 0x7f070280
+			public static int wi_owm_day_611 = 2131165824;
+			
+			// aapt resource value: 0x7f070281
+			public static int wi_owm_day_612 = 2131165825;
+			
+			// aapt resource value: 0x7f070282
+			public static int wi_owm_day_615 = 2131165826;
+			
+			// aapt resource value: 0x7f070283
+			public static int wi_owm_day_616 = 2131165827;
+			
+			// aapt resource value: 0x7f070284
+			public static int wi_owm_day_620 = 2131165828;
+			
+			// aapt resource value: 0x7f070285
+			public static int wi_owm_day_621 = 2131165829;
+			
+			// aapt resource value: 0x7f070286
+			public static int wi_owm_day_622 = 2131165830;
+			
+			// aapt resource value: 0x7f070287
+			public static int wi_owm_day_701 = 2131165831;
+			
+			// aapt resource value: 0x7f070288
+			public static int wi_owm_day_711 = 2131165832;
+			
+			// aapt resource value: 0x7f070289
+			public static int wi_owm_day_721 = 2131165833;
+			
+			// aapt resource value: 0x7f07028a
+			public static int wi_owm_day_731 = 2131165834;
+			
+			// aapt resource value: 0x7f07028b
+			public static int wi_owm_day_741 = 2131165835;
+			
+			// aapt resource value: 0x7f07028c
+			public static int wi_owm_day_761 = 2131165836;
+			
+			// aapt resource value: 0x7f07028d
+			public static int wi_owm_day_762 = 2131165837;
+			
+			// aapt resource value: 0x7f07028e
+			public static int wi_owm_day_771 = 2131165838;
+			
+			// aapt resource value: 0x7f07028f
+			public static int wi_owm_day_781 = 2131165839;
+			
+			// aapt resource value: 0x7f070290
+			public static int wi_owm_day_800 = 2131165840;
+			
+			// aapt resource value: 0x7f070291
+			public static int wi_owm_day_801 = 2131165841;
+			
+			// aapt resource value: 0x7f070292
+			public static int wi_owm_day_802 = 2131165842;
+			
+			// aapt resource value: 0x7f070293
+			public static int wi_owm_day_803 = 2131165843;
+			
+			// aapt resource value: 0x7f070294
+			public static int wi_owm_day_804 = 2131165844;
+			
+			// aapt resource value: 0x7f070295
+			public static int wi_owm_day_900 = 2131165845;
+			
+			// aapt resource value: 0x7f070296
+			public static int wi_owm_day_901 = 2131165846;
+			
+			// aapt resource value: 0x7f070297
+			public static int wi_owm_day_902 = 2131165847;
+			
+			// aapt resource value: 0x7f070298
+			public static int wi_owm_day_903 = 2131165848;
+			
+			// aapt resource value: 0x7f070299
+			public static int wi_owm_day_904 = 2131165849;
+			
+			// aapt resource value: 0x7f07029a
+			public static int wi_owm_day_905 = 2131165850;
+			
+			// aapt resource value: 0x7f07029b
+			public static int wi_owm_day_906 = 2131165851;
+			
+			// aapt resource value: 0x7f07029c
+			public static int wi_owm_day_957 = 2131165852;
+			
+			// aapt resource value: 0x7f07029d
+			public static int wi_owm_night_200 = 2131165853;
+			
+			// aapt resource value: 0x7f07029e
+			public static int wi_owm_night_201 = 2131165854;
+			
+			// aapt resource value: 0x7f07029f
+			public static int wi_owm_night_202 = 2131165855;
+			
+			// aapt resource value: 0x7f0702a0
+			public static int wi_owm_night_210 = 2131165856;
+			
+			// aapt resource value: 0x7f0702a1
+			public static int wi_owm_night_211 = 2131165857;
+			
+			// aapt resource value: 0x7f0702a2
+			public static int wi_owm_night_212 = 2131165858;
+			
+			// aapt resource value: 0x7f0702a3
+			public static int wi_owm_night_221 = 2131165859;
+			
+			// aapt resource value: 0x7f0702a4
+			public static int wi_owm_night_230 = 2131165860;
+			
+			// aapt resource value: 0x7f0702a5
+			public static int wi_owm_night_231 = 2131165861;
+			
+			// aapt resource value: 0x7f0702a6
+			public static int wi_owm_night_232 = 2131165862;
+			
+			// aapt resource value: 0x7f0702a7
+			public static int wi_owm_night_300 = 2131165863;
+			
+			// aapt resource value: 0x7f0702a8
+			public static int wi_owm_night_301 = 2131165864;
+			
+			// aapt resource value: 0x7f0702a9
+			public static int wi_owm_night_302 = 2131165865;
+			
+			// aapt resource value: 0x7f0702aa
+			public static int wi_owm_night_310 = 2131165866;
+			
+			// aapt resource value: 0x7f0702ab
+			public static int wi_owm_night_311 = 2131165867;
+			
+			// aapt resource value: 0x7f0702ac
+			public static int wi_owm_night_312 = 2131165868;
+			
+			// aapt resource value: 0x7f0702ad
+			public static int wi_owm_night_313 = 2131165869;
+			
+			// aapt resource value: 0x7f0702ae
+			public static int wi_owm_night_314 = 2131165870;
+			
+			// aapt resource value: 0x7f0702af
+			public static int wi_owm_night_321 = 2131165871;
+			
+			// aapt resource value: 0x7f0702b0
+			public static int wi_owm_night_500 = 2131165872;
+			
+			// aapt resource value: 0x7f0702b1
+			public static int wi_owm_night_501 = 2131165873;
+			
+			// aapt resource value: 0x7f0702b2
+			public static int wi_owm_night_502 = 2131165874;
+			
+			// aapt resource value: 0x7f0702b3
+			public static int wi_owm_night_503 = 2131165875;
+			
+			// aapt resource value: 0x7f0702b4
+			public static int wi_owm_night_504 = 2131165876;
+			
+			// aapt resource value: 0x7f0702b5
+			public static int wi_owm_night_511 = 2131165877;
+			
+			// aapt resource value: 0x7f0702b6
+			public static int wi_owm_night_520 = 2131165878;
+			
+			// aapt resource value: 0x7f0702b7
+			public static int wi_owm_night_521 = 2131165879;
+			
+			// aapt resource value: 0x7f0702b8
+			public static int wi_owm_night_522 = 2131165880;
+			
+			// aapt resource value: 0x7f0702b9
+			public static int wi_owm_night_531 = 2131165881;
+			
+			// aapt resource value: 0x7f0702ba
+			public static int wi_owm_night_600 = 2131165882;
+			
+			// aapt resource value: 0x7f0702bb
+			public static int wi_owm_night_601 = 2131165883;
+			
+			// aapt resource value: 0x7f0702bc
+			public static int wi_owm_night_602 = 2131165884;
+			
+			// aapt resource value: 0x7f0702bd
+			public static int wi_owm_night_611 = 2131165885;
+			
+			// aapt resource value: 0x7f0702be
+			public static int wi_owm_night_612 = 2131165886;
+			
+			// aapt resource value: 0x7f0702bf
+			public static int wi_owm_night_615 = 2131165887;
+			
+			// aapt resource value: 0x7f0702c0
+			public static int wi_owm_night_616 = 2131165888;
+			
+			// aapt resource value: 0x7f0702c1
+			public static int wi_owm_night_620 = 2131165889;
+			
+			// aapt resource value: 0x7f0702c2
+			public static int wi_owm_night_621 = 2131165890;
+			
+			// aapt resource value: 0x7f0702c3
+			public static int wi_owm_night_622 = 2131165891;
+			
+			// aapt resource value: 0x7f0702c4
+			public static int wi_owm_night_701 = 2131165892;
+			
+			// aapt resource value: 0x7f0702c5
+			public static int wi_owm_night_711 = 2131165893;
+			
+			// aapt resource value: 0x7f0702c6
+			public static int wi_owm_night_721 = 2131165894;
+			
+			// aapt resource value: 0x7f0702c7
+			public static int wi_owm_night_731 = 2131165895;
+			
+			// aapt resource value: 0x7f0702c8
+			public static int wi_owm_night_741 = 2131165896;
+			
+			// aapt resource value: 0x7f0702c9
+			public static int wi_owm_night_761 = 2131165897;
+			
+			// aapt resource value: 0x7f0702ca
+			public static int wi_owm_night_762 = 2131165898;
+			
+			// aapt resource value: 0x7f0702cb
+			public static int wi_owm_night_771 = 2131165899;
+			
+			// aapt resource value: 0x7f0702cc
+			public static int wi_owm_night_781 = 2131165900;
+			
+			// aapt resource value: 0x7f0702cd
+			public static int wi_owm_night_800 = 2131165901;
+			
+			// aapt resource value: 0x7f0702ce
+			public static int wi_owm_night_801 = 2131165902;
+			
+			// aapt resource value: 0x7f0702cf
+			public static int wi_owm_night_802 = 2131165903;
+			
+			// aapt resource value: 0x7f0702d0
+			public static int wi_owm_night_803 = 2131165904;
+			
+			// aapt resource value: 0x7f0702d1
+			public static int wi_owm_night_804 = 2131165905;
+			
+			// aapt resource value: 0x7f0702d2
+			public static int wi_owm_night_900 = 2131165906;
+			
+			// aapt resource value: 0x7f0702d3
+			public static int wi_owm_night_901 = 2131165907;
 			
 			// aapt resource value: 0x7f0702d4
-			public static int wi_wu_chanceflurries = 2131165908;
+			public static int wi_owm_night_902 = 2131165908;
 			
 			// aapt resource value: 0x7f0702d5
-			public static int wi_wu_chancerain = 2131165909;
+			public static int wi_owm_night_903 = 2131165909;
 			
 			// aapt resource value: 0x7f0702d6
-			public static int wi_wu_chancesleat = 2131165910;
+			public static int wi_owm_night_904 = 2131165910;
 			
 			// aapt resource value: 0x7f0702d7
-			public static int wi_wu_chancesnow = 2131165911;
+			public static int wi_owm_night_905 = 2131165911;
 			
 			// aapt resource value: 0x7f0702d8
-			public static int wi_wu_chancetstorms = 2131165912;
+			public static int wi_owm_night_906 = 2131165912;
 			
 			// aapt resource value: 0x7f0702d9
-			public static int wi_wu_clear = 2131165913;
+			public static int wi_owm_night_957 = 2131165913;
 			
-			// aapt resource value: 0x7f0702da
-			public static int wi_wu_cloudy = 2131165914;
+			// aapt resource value: 0x7f0700e5
+			public static int wi_rain = 2131165413;
 			
-			// aapt resource value: 0x7f0702db
-			public static int wi_wu_flurries = 2131165915;
+			// aapt resource value: 0x7f0700e6
+			public static int wi_rain_mix = 2131165414;
 			
-			// aapt resource value: 0x7f0702dc
-			public static int wi_wu_hazy = 2131165916;
+			// aapt resource value: 0x7f0700e7
+			public static int wi_rain_wind = 2131165415;
 			
-			// aapt resource value: 0x7f0702dd
-			public static int wi_wu_mostlycloudy = 2131165917;
+			// aapt resource value: 0x7f0700f1
+			public static int wi_raindrop = 2131165425;
 			
-			// aapt resource value: 0x7f0702de
-			public static int wi_wu_mostlysunny = 2131165918;
+			// aapt resource value: 0x7f0700f0
+			public static int wi_raindrops = 2131165424;
 			
-			// aapt resource value: 0x7f0702df
-			public static int wi_wu_partlycloudy = 2131165919;
+			// aapt resource value: 0x7f070114
+			public static int wi_refresh = 2131165460;
 			
-			// aapt resource value: 0x7f0702e0
-			public static int wi_wu_partlysunny = 2131165920;
+			// aapt resource value: 0x7f070115
+			public static int wi_refresh_alt = 2131165461;
 			
-			// aapt resource value: 0x7f0702e1
-			public static int wi_wu_rain = 2131165921;
+			// aapt resource value: 0x7f0700f6
+			public static int wi_sandstorm = 2131165430;
 			
-			// aapt resource value: 0x7f0702e2
-			public static int wi_wu_sleat = 2131165922;
+			// aapt resource value: 0x7f0700e8
+			public static int wi_showers = 2131165416;
 			
-			// aapt resource value: 0x7f0702e3
-			public static int wi_wu_snow = 2131165923;
+			// aapt resource value: 0x7f0700e9
+			public static int wi_sleet = 2131165417;
 			
-			// aapt resource value: 0x7f0702e4
-			public static int wi_wu_sunny = 2131165924;
+			// aapt resource value: 0x7f0700ff
+			public static int wi_small_craft_advisory = 2131165439;
 			
-			// aapt resource value: 0x7f0702e5
-			public static int wi_wu_tstorms = 2131165925;
+			// aapt resource value: 0x7f0700ed
+			public static int wi_smog = 2131165421;
 			
-			// aapt resource value: 0x7f0702e6
-			public static int wi_wu_unknown = 2131165926;
+			// aapt resource value: 0x7f0700ee
+			public static int wi_smoke = 2131165422;
 			
-			// aapt resource value: 0x7f07018a
-			public static int wi_yahoo_0 = 2131165578;
+			// aapt resource value: 0x7f0700ea
+			public static int wi_snow = 2131165418;
 			
-			// aapt resource value: 0x7f07018b
-			public static int wi_yahoo_1 = 2131165579;
+			// aapt resource value: 0x7f0700ec
+			public static int wi_snow_wind = 2131165420;
 			
-			// aapt resource value: 0x7f070194
-			public static int wi_yahoo_10 = 2131165588;
+			// aapt resource value: 0x7f0700f3
+			public static int wi_snowflake_cold = 2131165427;
 			
-			// aapt resource value: 0x7f070195
-			public static int wi_yahoo_11 = 2131165589;
+			// aapt resource value: 0x7f0700af
+			public static int wi_solar_eclipse = 2131165359;
 			
-			// aapt resource value: 0x7f070196
-			public static int wi_yahoo_12 = 2131165590;
+			// aapt resource value: 0x7f0700eb
+			public static int wi_sprinkle = 2131165419;
 			
-			// aapt resource value: 0x7f070197
-			public static int wi_yahoo_13 = 2131165591;
+			// aapt resource value: 0x7f0700d9
+			public static int wi_stars = 2131165401;
 			
-			// aapt resource value: 0x7f070198
-			public static int wi_yahoo_14 = 2131165592;
+			// aapt resource value: 0x7f0700da
+			public static int wi_storm_showers = 2131165402;
 			
-			// aapt resource value: 0x7f070199
-			public static int wi_yahoo_15 = 2131165593;
+			// aapt resource value: 0x7f070101
+			public static int wi_storm_warning = 2131165441;
 			
-			// aapt resource value: 0x7f07019a
-			public static int wi_yahoo_16 = 2131165594;
+			// aapt resource value: 0x7f0700f5
+			public static int wi_strong_wind = 2131165429;
 			
-			// aapt resource value: 0x7f07019b
-			public static int wi_yahoo_17 = 2131165595;
+			// aapt resource value: 0x7f070110
+			public static int wi_sunrise = 2131165456;
 			
-			// aapt resource value: 0x7f07019c
-			public static int wi_yahoo_18 = 2131165596;
+			// aapt resource value: 0x7f070111
+			public static int wi_sunset = 2131165457;
 			
-			// aapt resource value: 0x7f07019d
-			public static int wi_yahoo_19 = 2131165597;
+			// aapt resource value: 0x7f070108
+			public static int wi_thermometer = 2131165448;
 			
-			// aapt resource value: 0x7f07018c
-			public static int wi_yahoo_2 = 2131165580;
+			// aapt resource value: 0x7f070109
+			public static int wi_thermometer_exterior = 2131165449;
 			
-			// aapt resource value: 0x7f07019e
-			public static int wi_yahoo_20 = 2131165598;
+			// aapt resource value: 0x7f07010a
+			public static int wi_thermometer_internal = 2131165450;
 			
-			// aapt resource value: 0x7f07019f
-			public static int wi_yahoo_21 = 2131165599;
+			// aapt resource value: 0x7f0700db
+			public static int wi_thunderstorm = 2131165403;
 			
-			// aapt resource value: 0x7f0701a0
-			public static int wi_yahoo_22 = 2131165600;
+			// aapt resource value: 0x7f07016f
+			public static int wi_time_1 = 2131165551;
 			
-			// aapt resource value: 0x7f0701a1
-			public static int wi_yahoo_23 = 2131165601;
+			// aapt resource value: 0x7f070178
+			public static int wi_time_10 = 2131165560;
 			
-			// aapt resource value: 0x7f0701a2
-			public static int wi_yahoo_24 = 2131165602;
+			// aapt resource value: 0x7f070179
+			public static int wi_time_11 = 2131165561;
 			
-			// aapt resource value: 0x7f0701a3
-			public static int wi_yahoo_25 = 2131165603;
+			// aapt resource value: 0x7f07017a
+			public static int wi_time_12 = 2131165562;
 			
-			// aapt resource value: 0x7f0701a4
-			public static int wi_yahoo_26 = 2131165604;
+			// aapt resource value: 0x7f070170
+			public static int wi_time_2 = 2131165552;
 			
-			// aapt resource value: 0x7f0701a5
-			public static int wi_yahoo_27 = 2131165605;
+			// aapt resource value: 0x7f070171
+			public static int wi_time_3 = 2131165553;
 			
-			// aapt resource value: 0x7f0701a6
-			public static int wi_yahoo_28 = 2131165606;
+			// aapt resource value: 0x7f070172
+			public static int wi_time_4 = 2131165554;
 			
-			// aapt resource value: 0x7f0701a7
-			public static int wi_yahoo_29 = 2131165607;
+			// aapt resource value: 0x7f070173
+			public static int wi_time_5 = 2131165555;
+			
+			// aapt resource value: 0x7f070174
+			public static int wi_time_6 = 2131165556;
+			
+			// aapt resource value: 0x7f070175
+			public static int wi_time_7 = 2131165557;
+			
+			// aapt resource value: 0x7f070176
+			public static int wi_time_8 = 2131165558;
+			
+			// aapt resource value: 0x7f070177
+			public static int wi_time_9 = 2131165559;
+			
+			// aapt resource value: 0x7f0700fe
+			public static int wi_tornado = 2131165438;
+			
+			// aapt resource value: 0x7f07011a
+			public static int wi_train = 2131165466;
+			
+			// aapt resource value: 0x7f0700fb
+			public static int wi_tsunami = 2131165435;
+			
+			// aapt resource value: 0x7f070116
+			public static int wi_umbrella = 2131165462;
+			
+			// aapt resource value: 0x7f0700fc
+			public static int wi_volcano = 2131165436;
+			
+			// aapt resource value: 0x7f070183
+			public static int wi_wind_beaufort_0 = 2131165571;
+			
+			// aapt resource value: 0x7f070184
+			public static int wi_wind_beaufort_1 = 2131165572;
 			
 			// aapt resource value: 0x7f07018d
-			public static int wi_yahoo_3 = 2131165581;
-			
-			// aapt resource value: 0x7f0701a8
-			public static int wi_yahoo_30 = 2131165608;
-			
-			// aapt resource value: 0x7f0701a9
-			public static int wi_yahoo_31 = 2131165609;
-			
-			// aapt resource value: 0x7f0701aa
-			public static int wi_yahoo_32 = 2131165610;
-			
-			// aapt resource value: 0x7f0701ba
-			public static int wi_yahoo_3200 = 2131165626;
-			
-			// aapt resource value: 0x7f0701ab
-			public static int wi_yahoo_33 = 2131165611;
-			
-			// aapt resource value: 0x7f0701ac
-			public static int wi_yahoo_34 = 2131165612;
-			
-			// aapt resource value: 0x7f0701ad
-			public static int wi_yahoo_35 = 2131165613;
-			
-			// aapt resource value: 0x7f0701ae
-			public static int wi_yahoo_36 = 2131165614;
-			
-			// aapt resource value: 0x7f0701af
-			public static int wi_yahoo_37 = 2131165615;
-			
-			// aapt resource value: 0x7f0701b0
-			public static int wi_yahoo_38 = 2131165616;
-			
-			// aapt resource value: 0x7f0701b1
-			public static int wi_yahoo_39 = 2131165617;
+			public static int wi_wind_beaufort_10 = 2131165581;
 			
 			// aapt resource value: 0x7f07018e
-			public static int wi_yahoo_4 = 2131165582;
-			
-			// aapt resource value: 0x7f0701b2
-			public static int wi_yahoo_40 = 2131165618;
-			
-			// aapt resource value: 0x7f0701b3
-			public static int wi_yahoo_41 = 2131165619;
-			
-			// aapt resource value: 0x7f0701b4
-			public static int wi_yahoo_42 = 2131165620;
-			
-			// aapt resource value: 0x7f0701b5
-			public static int wi_yahoo_43 = 2131165621;
-			
-			// aapt resource value: 0x7f0701b6
-			public static int wi_yahoo_44 = 2131165622;
-			
-			// aapt resource value: 0x7f0701b7
-			public static int wi_yahoo_45 = 2131165623;
-			
-			// aapt resource value: 0x7f0701b8
-			public static int wi_yahoo_46 = 2131165624;
-			
-			// aapt resource value: 0x7f0701b9
-			public static int wi_yahoo_47 = 2131165625;
+			public static int wi_wind_beaufort_11 = 2131165582;
 			
 			// aapt resource value: 0x7f07018f
-			public static int wi_yahoo_5 = 2131165583;
+			public static int wi_wind_beaufort_12 = 2131165583;
+			
+			// aapt resource value: 0x7f070185
+			public static int wi_wind_beaufort_2 = 2131165573;
+			
+			// aapt resource value: 0x7f070186
+			public static int wi_wind_beaufort_3 = 2131165574;
+			
+			// aapt resource value: 0x7f070187
+			public static int wi_wind_beaufort_4 = 2131165575;
+			
+			// aapt resource value: 0x7f070188
+			public static int wi_wind_beaufort_5 = 2131165576;
+			
+			// aapt resource value: 0x7f070189
+			public static int wi_wind_beaufort_6 = 2131165577;
+			
+			// aapt resource value: 0x7f07018a
+			public static int wi_wind_beaufort_7 = 2131165578;
+			
+			// aapt resource value: 0x7f07018b
+			public static int wi_wind_beaufort_8 = 2131165579;
+			
+			// aapt resource value: 0x7f07018c
+			public static int wi_wind_beaufort_9 = 2131165580;
+			
+			// aapt resource value: 0x7f070103
+			public static int wi_wind_direction = 2131165443;
+			
+			// aapt resource value: 0x7f0700f4
+			public static int wi_windy = 2131165428;
+			
+			// aapt resource value: 0x7f0701ce
+			public static int wi_wmo4680_0 = 2131165646;
+			
+			// aapt resource value: 0x7f0701cf
+			public static int wi_wmo4680_00 = 2131165647;
+			
+			// aapt resource value: 0x7f0701d1
+			public static int wi_wmo4680_01 = 2131165649;
+			
+			// aapt resource value: 0x7f0701d3
+			public static int wi_wmo4680_02 = 2131165651;
+			
+			// aapt resource value: 0x7f0701d5
+			public static int wi_wmo4680_03 = 2131165653;
+			
+			// aapt resource value: 0x7f0701d7
+			public static int wi_wmo4680_04 = 2131165655;
+			
+			// aapt resource value: 0x7f0701d9
+			public static int wi_wmo4680_05 = 2131165657;
+			
+			// aapt resource value: 0x7f0701d0
+			public static int wi_wmo4680_1 = 2131165648;
+			
+			// aapt resource value: 0x7f0701da
+			public static int wi_wmo4680_10 = 2131165658;
+			
+			// aapt resource value: 0x7f0701db
+			public static int wi_wmo4680_11 = 2131165659;
+			
+			// aapt resource value: 0x7f0701dc
+			public static int wi_wmo4680_12 = 2131165660;
+			
+			// aapt resource value: 0x7f0701dd
+			public static int wi_wmo4680_18 = 2131165661;
+			
+			// aapt resource value: 0x7f0701d2
+			public static int wi_wmo4680_2 = 2131165650;
+			
+			// aapt resource value: 0x7f0701de
+			public static int wi_wmo4680_20 = 2131165662;
+			
+			// aapt resource value: 0x7f0701df
+			public static int wi_wmo4680_21 = 2131165663;
+			
+			// aapt resource value: 0x7f0701e0
+			public static int wi_wmo4680_22 = 2131165664;
+			
+			// aapt resource value: 0x7f0701e1
+			public static int wi_wmo4680_23 = 2131165665;
+			
+			// aapt resource value: 0x7f0701e2
+			public static int wi_wmo4680_24 = 2131165666;
+			
+			// aapt resource value: 0x7f0701e3
+			public static int wi_wmo4680_25 = 2131165667;
+			
+			// aapt resource value: 0x7f0701e4
+			public static int wi_wmo4680_26 = 2131165668;
+			
+			// aapt resource value: 0x7f0701e5
+			public static int wi_wmo4680_27 = 2131165669;
+			
+			// aapt resource value: 0x7f0701e6
+			public static int wi_wmo4680_28 = 2131165670;
+			
+			// aapt resource value: 0x7f0701e7
+			public static int wi_wmo4680_29 = 2131165671;
+			
+			// aapt resource value: 0x7f0701d4
+			public static int wi_wmo4680_3 = 2131165652;
+			
+			// aapt resource value: 0x7f0701e8
+			public static int wi_wmo4680_30 = 2131165672;
+			
+			// aapt resource value: 0x7f0701e9
+			public static int wi_wmo4680_31 = 2131165673;
+			
+			// aapt resource value: 0x7f0701ea
+			public static int wi_wmo4680_32 = 2131165674;
+			
+			// aapt resource value: 0x7f0701eb
+			public static int wi_wmo4680_33 = 2131165675;
+			
+			// aapt resource value: 0x7f0701ec
+			public static int wi_wmo4680_34 = 2131165676;
+			
+			// aapt resource value: 0x7f0701ed
+			public static int wi_wmo4680_35 = 2131165677;
+			
+			// aapt resource value: 0x7f0701d6
+			public static int wi_wmo4680_4 = 2131165654;
+			
+			// aapt resource value: 0x7f0701ee
+			public static int wi_wmo4680_40 = 2131165678;
+			
+			// aapt resource value: 0x7f0701ef
+			public static int wi_wmo4680_41 = 2131165679;
+			
+			// aapt resource value: 0x7f0701f0
+			public static int wi_wmo4680_42 = 2131165680;
+			
+			// aapt resource value: 0x7f0701f1
+			public static int wi_wmo4680_43 = 2131165681;
+			
+			// aapt resource value: 0x7f0701f2
+			public static int wi_wmo4680_44 = 2131165682;
+			
+			// aapt resource value: 0x7f0701f3
+			public static int wi_wmo4680_45 = 2131165683;
+			
+			// aapt resource value: 0x7f0701f4
+			public static int wi_wmo4680_46 = 2131165684;
+			
+			// aapt resource value: 0x7f0701f5
+			public static int wi_wmo4680_47 = 2131165685;
+			
+			// aapt resource value: 0x7f0701f6
+			public static int wi_wmo4680_48 = 2131165686;
+			
+			// aapt resource value: 0x7f0701d8
+			public static int wi_wmo4680_5 = 2131165656;
+			
+			// aapt resource value: 0x7f0701f7
+			public static int wi_wmo4680_50 = 2131165687;
+			
+			// aapt resource value: 0x7f0701f8
+			public static int wi_wmo4680_51 = 2131165688;
+			
+			// aapt resource value: 0x7f0701f9
+			public static int wi_wmo4680_52 = 2131165689;
+			
+			// aapt resource value: 0x7f0701fa
+			public static int wi_wmo4680_53 = 2131165690;
+			
+			// aapt resource value: 0x7f0701fb
+			public static int wi_wmo4680_54 = 2131165691;
+			
+			// aapt resource value: 0x7f0701fc
+			public static int wi_wmo4680_55 = 2131165692;
+			
+			// aapt resource value: 0x7f0701fd
+			public static int wi_wmo4680_56 = 2131165693;
+			
+			// aapt resource value: 0x7f0701fe
+			public static int wi_wmo4680_57 = 2131165694;
+			
+			// aapt resource value: 0x7f0701ff
+			public static int wi_wmo4680_58 = 2131165695;
+			
+			// aapt resource value: 0x7f070200
+			public static int wi_wmo4680_60 = 2131165696;
+			
+			// aapt resource value: 0x7f070201
+			public static int wi_wmo4680_61 = 2131165697;
+			
+			// aapt resource value: 0x7f070202
+			public static int wi_wmo4680_62 = 2131165698;
+			
+			// aapt resource value: 0x7f070203
+			public static int wi_wmo4680_63 = 2131165699;
+			
+			// aapt resource value: 0x7f070204
+			public static int wi_wmo4680_64 = 2131165700;
+			
+			// aapt resource value: 0x7f070205
+			public static int wi_wmo4680_65 = 2131165701;
+			
+			// aapt resource value: 0x7f070206
+			public static int wi_wmo4680_66 = 2131165702;
+			
+			// aapt resource value: 0x7f070207
+			public static int wi_wmo4680_67 = 2131165703;
+			
+			// aapt resource value: 0x7f070208
+			public static int wi_wmo4680_68 = 2131165704;
+			
+			// aapt resource value: 0x7f070209
+			public static int wi_wmo4680_70 = 2131165705;
+			
+			// aapt resource value: 0x7f07020a
+			public static int wi_wmo4680_71 = 2131165706;
+			
+			// aapt resource value: 0x7f07020b
+			public static int wi_wmo4680_72 = 2131165707;
+			
+			// aapt resource value: 0x7f07020c
+			public static int wi_wmo4680_73 = 2131165708;
+			
+			// aapt resource value: 0x7f07020d
+			public static int wi_wmo4680_74 = 2131165709;
+			
+			// aapt resource value: 0x7f07020e
+			public static int wi_wmo4680_75 = 2131165710;
+			
+			// aapt resource value: 0x7f07020f
+			public static int wi_wmo4680_76 = 2131165711;
+			
+			// aapt resource value: 0x7f070210
+			public static int wi_wmo4680_77 = 2131165712;
+			
+			// aapt resource value: 0x7f070211
+			public static int wi_wmo4680_78 = 2131165713;
+			
+			// aapt resource value: 0x7f070212
+			public static int wi_wmo4680_80 = 2131165714;
+			
+			// aapt resource value: 0x7f070213
+			public static int wi_wmo4680_81 = 2131165715;
+			
+			// aapt resource value: 0x7f070214
+			public static int wi_wmo4680_82 = 2131165716;
+			
+			// aapt resource value: 0x7f070215
+			public static int wi_wmo4680_83 = 2131165717;
+			
+			// aapt resource value: 0x7f070216
+			public static int wi_wmo4680_84 = 2131165718;
+			
+			// aapt resource value: 0x7f070217
+			public static int wi_wmo4680_85 = 2131165719;
+			
+			// aapt resource value: 0x7f070218
+			public static int wi_wmo4680_86 = 2131165720;
+			
+			// aapt resource value: 0x7f070219
+			public static int wi_wmo4680_87 = 2131165721;
+			
+			// aapt resource value: 0x7f07021a
+			public static int wi_wmo4680_89 = 2131165722;
+			
+			// aapt resource value: 0x7f07021b
+			public static int wi_wmo4680_90 = 2131165723;
+			
+			// aapt resource value: 0x7f07021c
+			public static int wi_wmo4680_91 = 2131165724;
+			
+			// aapt resource value: 0x7f07021d
+			public static int wi_wmo4680_92 = 2131165725;
+			
+			// aapt resource value: 0x7f07021e
+			public static int wi_wmo4680_93 = 2131165726;
+			
+			// aapt resource value: 0x7f07021f
+			public static int wi_wmo4680_94 = 2131165727;
+			
+			// aapt resource value: 0x7f070220
+			public static int wi_wmo4680_95 = 2131165728;
+			
+			// aapt resource value: 0x7f070221
+			public static int wi_wmo4680_96 = 2131165729;
+			
+			// aapt resource value: 0x7f070222
+			public static int wi_wmo4680_99 = 2131165730;
+			
+			// aapt resource value: 0x7f0702da
+			public static int wi_wu_chanceflurries = 2131165914;
+			
+			// aapt resource value: 0x7f0702db
+			public static int wi_wu_chancerain = 2131165915;
+			
+			// aapt resource value: 0x7f0702dc
+			public static int wi_wu_chancesleat = 2131165916;
+			
+			// aapt resource value: 0x7f0702dd
+			public static int wi_wu_chancesnow = 2131165917;
+			
+			// aapt resource value: 0x7f0702de
+			public static int wi_wu_chancetstorms = 2131165918;
+			
+			// aapt resource value: 0x7f0702df
+			public static int wi_wu_clear = 2131165919;
+			
+			// aapt resource value: 0x7f0702e0
+			public static int wi_wu_cloudy = 2131165920;
+			
+			// aapt resource value: 0x7f0702e1
+			public static int wi_wu_flurries = 2131165921;
+			
+			// aapt resource value: 0x7f0702e2
+			public static int wi_wu_hazy = 2131165922;
+			
+			// aapt resource value: 0x7f0702e3
+			public static int wi_wu_mostlycloudy = 2131165923;
+			
+			// aapt resource value: 0x7f0702e4
+			public static int wi_wu_mostlysunny = 2131165924;
+			
+			// aapt resource value: 0x7f0702e5
+			public static int wi_wu_partlycloudy = 2131165925;
+			
+			// aapt resource value: 0x7f0702e6
+			public static int wi_wu_partlysunny = 2131165926;
+			
+			// aapt resource value: 0x7f0702e7
+			public static int wi_wu_rain = 2131165927;
+			
+			// aapt resource value: 0x7f0702e8
+			public static int wi_wu_sleat = 2131165928;
+			
+			// aapt resource value: 0x7f0702e9
+			public static int wi_wu_snow = 2131165929;
+			
+			// aapt resource value: 0x7f0702ea
+			public static int wi_wu_sunny = 2131165930;
+			
+			// aapt resource value: 0x7f0702eb
+			public static int wi_wu_tstorms = 2131165931;
+			
+			// aapt resource value: 0x7f0702ec
+			public static int wi_wu_unknown = 2131165932;
 			
 			// aapt resource value: 0x7f070190
-			public static int wi_yahoo_6 = 2131165584;
+			public static int wi_yahoo_0 = 2131165584;
 			
 			// aapt resource value: 0x7f070191
-			public static int wi_yahoo_7 = 2131165585;
+			public static int wi_yahoo_1 = 2131165585;
+			
+			// aapt resource value: 0x7f07019a
+			public static int wi_yahoo_10 = 2131165594;
+			
+			// aapt resource value: 0x7f07019b
+			public static int wi_yahoo_11 = 2131165595;
+			
+			// aapt resource value: 0x7f07019c
+			public static int wi_yahoo_12 = 2131165596;
+			
+			// aapt resource value: 0x7f07019d
+			public static int wi_yahoo_13 = 2131165597;
+			
+			// aapt resource value: 0x7f07019e
+			public static int wi_yahoo_14 = 2131165598;
+			
+			// aapt resource value: 0x7f07019f
+			public static int wi_yahoo_15 = 2131165599;
+			
+			// aapt resource value: 0x7f0701a0
+			public static int wi_yahoo_16 = 2131165600;
+			
+			// aapt resource value: 0x7f0701a1
+			public static int wi_yahoo_17 = 2131165601;
+			
+			// aapt resource value: 0x7f0701a2
+			public static int wi_yahoo_18 = 2131165602;
+			
+			// aapt resource value: 0x7f0701a3
+			public static int wi_yahoo_19 = 2131165603;
 			
 			// aapt resource value: 0x7f070192
-			public static int wi_yahoo_8 = 2131165586;
+			public static int wi_yahoo_2 = 2131165586;
+			
+			// aapt resource value: 0x7f0701a4
+			public static int wi_yahoo_20 = 2131165604;
+			
+			// aapt resource value: 0x7f0701a5
+			public static int wi_yahoo_21 = 2131165605;
+			
+			// aapt resource value: 0x7f0701a6
+			public static int wi_yahoo_22 = 2131165606;
+			
+			// aapt resource value: 0x7f0701a7
+			public static int wi_yahoo_23 = 2131165607;
+			
+			// aapt resource value: 0x7f0701a8
+			public static int wi_yahoo_24 = 2131165608;
+			
+			// aapt resource value: 0x7f0701a9
+			public static int wi_yahoo_25 = 2131165609;
+			
+			// aapt resource value: 0x7f0701aa
+			public static int wi_yahoo_26 = 2131165610;
+			
+			// aapt resource value: 0x7f0701ab
+			public static int wi_yahoo_27 = 2131165611;
+			
+			// aapt resource value: 0x7f0701ac
+			public static int wi_yahoo_28 = 2131165612;
+			
+			// aapt resource value: 0x7f0701ad
+			public static int wi_yahoo_29 = 2131165613;
 			
 			// aapt resource value: 0x7f070193
-			public static int wi_yahoo_9 = 2131165587;
+			public static int wi_yahoo_3 = 2131165587;
 			
-			// aapt resource value: 0x7f07007e
-			public static int widget_getstarted_prompt = 2131165310;
+			// aapt resource value: 0x7f0701ae
+			public static int wi_yahoo_30 = 2131165614;
+			
+			// aapt resource value: 0x7f0701af
+			public static int wi_yahoo_31 = 2131165615;
+			
+			// aapt resource value: 0x7f0701b0
+			public static int wi_yahoo_32 = 2131165616;
+			
+			// aapt resource value: 0x7f0701c0
+			public static int wi_yahoo_3200 = 2131165632;
+			
+			// aapt resource value: 0x7f0701b1
+			public static int wi_yahoo_33 = 2131165617;
+			
+			// aapt resource value: 0x7f0701b2
+			public static int wi_yahoo_34 = 2131165618;
+			
+			// aapt resource value: 0x7f0701b3
+			public static int wi_yahoo_35 = 2131165619;
+			
+			// aapt resource value: 0x7f0701b4
+			public static int wi_yahoo_36 = 2131165620;
+			
+			// aapt resource value: 0x7f0701b5
+			public static int wi_yahoo_37 = 2131165621;
+			
+			// aapt resource value: 0x7f0701b6
+			public static int wi_yahoo_38 = 2131165622;
+			
+			// aapt resource value: 0x7f0701b7
+			public static int wi_yahoo_39 = 2131165623;
+			
+			// aapt resource value: 0x7f070194
+			public static int wi_yahoo_4 = 2131165588;
+			
+			// aapt resource value: 0x7f0701b8
+			public static int wi_yahoo_40 = 2131165624;
+			
+			// aapt resource value: 0x7f0701b9
+			public static int wi_yahoo_41 = 2131165625;
+			
+			// aapt resource value: 0x7f0701ba
+			public static int wi_yahoo_42 = 2131165626;
+			
+			// aapt resource value: 0x7f0701bb
+			public static int wi_yahoo_43 = 2131165627;
+			
+			// aapt resource value: 0x7f0701bc
+			public static int wi_yahoo_44 = 2131165628;
+			
+			// aapt resource value: 0x7f0701bd
+			public static int wi_yahoo_45 = 2131165629;
+			
+			// aapt resource value: 0x7f0701be
+			public static int wi_yahoo_46 = 2131165630;
+			
+			// aapt resource value: 0x7f0701bf
+			public static int wi_yahoo_47 = 2131165631;
+			
+			// aapt resource value: 0x7f070195
+			public static int wi_yahoo_5 = 2131165589;
+			
+			// aapt resource value: 0x7f070196
+			public static int wi_yahoo_6 = 2131165590;
+			
+			// aapt resource value: 0x7f070197
+			public static int wi_yahoo_7 = 2131165591;
+			
+			// aapt resource value: 0x7f070198
+			public static int wi_yahoo_8 = 2131165592;
+			
+			// aapt resource value: 0x7f070199
+			public static int wi_yahoo_9 = 2131165593;
+			
+			// aapt resource value: 0x7f070082
+			public static int widget_getstarted_prompt = 2131165314;
 			
 			static String()
 			{

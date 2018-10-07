@@ -284,10 +284,10 @@ namespace SimpleWeather.Droid.App
 
                 if (preference is EditTextPreference && preference.Key == KEY_APIKEY)
                 {
-                    var fragment = KeyEntryPreferenceDialogFragment.NewInstance(preference.Key);
+                    var fragment = KeyEntryPreferenceDialogFragment.NewInstance(providerPref.Value, preference.Key);
                     fragment.PositiveButtonClick += async (sender, e) =>
                     {
-                        String key = fragment.EditText.Text;
+                        String key = fragment.Key;
 
                         String API = providerPref.Value;
                         if (await WeatherData.WeatherManager.IsKeyValid(key, API))
@@ -486,27 +486,72 @@ namespace SimpleWeather.Droid.App
             public EventHandler PositiveButtonClick { get; set; }
             public EventHandler NegativeButtonClick { get; set; }
 
-            public EditText EditText;
+            private String CurrentAPI { get; }
+            public String Key { get; set; }
+
+            private EditText keyEntry;
+            private EditText keyEntry2;
 
             public KeyEntryPreferenceDialogFragment() :
                 base()
             {
+                if (String.IsNullOrWhiteSpace(CurrentAPI))
+                    CurrentAPI = Settings.API;
             }
 
-            public static new KeyEntryPreferenceDialogFragment NewInstance(String key)
+            public KeyEntryPreferenceDialogFragment(String CurrentAPI) :
+                base()
             {
-                var fragment = new KeyEntryPreferenceDialogFragment();
+                this.CurrentAPI = CurrentAPI;
+            }
+
+            public static KeyEntryPreferenceDialogFragment NewInstance(String API, String key)
+            {
+                var fragment = new KeyEntryPreferenceDialogFragment(API);
                 Bundle b = new Bundle(1);
                 b.PutString(ArgKey, key);
                 fragment.Arguments = b;
                 return fragment;
             }
 
+            protected override View OnCreateDialogView(Context context)
+            {
+                if (CurrentAPI == WeatherData.WeatherAPI.Here)
+                {
+                    LayoutInflater inflater = LayoutInflater.From(context);
+                    return inflater.Inflate(Resource.Layout.layout_keyentry2_dialog, null);
+                }
+                else
+                {
+                    return base.OnCreateDialogView(context);
+                }
+            }
+
             protected override void OnBindDialogView(View view)
             {
                 base.OnBindDialogView(view);
 
-                EditText = view.FindViewById<EditText>(Android.Resource.Id.Edit);
+                keyEntry = view.FindViewById<EditText>(Android.Resource.Id.Edit);
+                keyEntry.TextChanged += EditText_TextChanged;
+
+                if (CurrentAPI == WeatherData.WeatherAPI.Here)
+                {
+                    keyEntry2 = view.FindViewById<EditText>(Resource.Id.keyEntry2);
+                    keyEntry2.TextChanged += EditText_TextChanged;
+                }
+            }
+
+            private void EditText_TextChanged(object sender, TextChangedEventArgs e)
+            {
+                if (CurrentAPI == WeatherData.WeatherAPI.Here)
+                {
+                    string app_id = keyEntry?.Text;
+                    string app_code = keyEntry2?.Text;
+
+                    Key = String.Format("{0};{1}", app_id, app_code);
+                }
+                else
+                    Key = e.Text.ToString();
             }
 
             public override void SetupDialog(Android.App.Dialog dialog, int style)
@@ -524,7 +569,23 @@ namespace SimpleWeather.Droid.App
                         negButton.Click += NegativeButtonClick;
                 };
 
-                EditText.Text = Settings.API_KEY;
+                Key = Settings.API_KEY;
+
+                if (CurrentAPI == WeatherData.WeatherAPI.Here)
+                {
+                    string app_id = String.Empty;
+                    string app_code = String.Empty;
+
+                    if (!String.IsNullOrWhiteSpace(Key))
+                    {
+                        var keyArr = Key.Split(';');
+                        app_id = keyArr.First();
+                        app_code = keyArr.Last();
+                    }
+
+                    keyEntry.Text = app_id;
+                    keyEntry2.Text = app_code;
+                }
             }
         }
 

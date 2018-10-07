@@ -298,6 +298,17 @@
                                 </HyperlinkButton>
                             </StackPanel>
                             <StackPanel Padding="10">
+                                <TextBlock Text="HERE Weather" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                                <RichTextBlock Padding="0,10">
+                                    <Paragraph>
+                                        The HERE Logo is a trademark or registered trademark of HERE Global B.V.
+                                    </Paragraph>
+                                </RichTextBlock>
+                                <HyperlinkButton NavigateUri="https://here.com/en">
+                                    <Image Source="Assets/Providers/here.png" Height="50" HorizontalAlignment="Left" />
+                                </HyperlinkButton>
+                            </StackPanel>
+                            <StackPanel Padding="10">
                                 <TextBlock Text="Yahoo Weather" Style="{StaticResource SubtitleTextBlockStyle}"/>
                                 <RichTextBlock Padding="0,10">
                                     <Paragraph>

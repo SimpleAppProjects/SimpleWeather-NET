@@ -87,13 +87,24 @@ namespace SimpleWeather.Controls
             {
                 town = location.name;
 
-                if (location.locality1 != null
-                    && !String.IsNullOrEmpty(location.locality1.Value))
-                    town += " - " + location.locality1.Value;
+                if (location.locality2 != null
+                    && !String.IsNullOrEmpty(location.locality2.Value))
+                {
+                    town += " - " + location.locality2.Value;
+                }
+                else
+                {
+                    if (location.locality1 != null
+                        && !String.IsNullOrEmpty(location.locality1.Value))
+                        town += " - " + location.locality1.Value;
+                }
             }
             else
             {
-                if (location.locality1 != null
+                if (location.locality2 != null
+                    && !String.IsNullOrEmpty(location.locality2.Value))
+                    town = location.locality2.Value;
+                else if (location.locality1 != null
                     && !String.IsNullOrEmpty(location.locality1.Value))
                     town = location.locality1.Value;
                 else
@@ -156,5 +167,64 @@ namespace SimpleWeather.Controls
             LocationTZ_Long = location.tz_unix;
         }
         #endregion
+
+        public LocationQueryViewModel(HERE.place location)
+        {
+            SetLocation(location);
+        }
+
+        public void SetLocation(HERE.place location)
+        {
+            string town, region;
+
+            // If location type is ZipCode append it to location name
+            if ((location.placeTypeName.Value == "Zip Code"
+                || location.placeTypeName.Value == "Postal Code"))
+            {
+                town = location.name;
+
+                if (location.locality2 != null
+                    && !String.IsNullOrEmpty(location.locality2.Value))
+                {
+                    town += " - " + location.locality2.Value;
+                }
+                else
+                {
+                    if (location.locality1 != null
+                        && !String.IsNullOrEmpty(location.locality1.Value))
+                        town += " - " + location.locality1.Value;
+                }
+            }
+            else
+            {
+                if (location.locality2 != null
+                    && !String.IsNullOrEmpty(location.locality2.Value))
+                    town = location.locality2.Value;
+                else if (location.locality1 != null
+                    && !String.IsNullOrEmpty(location.locality1.Value))
+                    town = location.locality1.Value;
+                else
+                    town = location.name;
+            }
+
+            // Try to get region name or fallback to country name
+            if (location.admin1 != null
+                && !String.IsNullOrEmpty(location.admin1.Value))
+                region = location.admin1.Value;
+            else if (location.admin2 != null
+                && !String.IsNullOrEmpty(location.admin2.Value))
+                region = location.admin2.Value;
+            else
+                region = location.country.Value;
+
+            LocationName = string.Format("{0}, {1}", town, region);
+            LocationCountry = location.country.code;
+            LocationQuery = string.Format("latitude={0}&longitude={1}", (double)location.centroid.latitude, (double)location.centroid.longitude);
+
+            LocationLat = (double)location.centroid.latitude;
+            LocationLong = (double)location.centroid.longitude;
+
+            LocationTZ_Long = location.timezone.Value;
+        }
     }
 }

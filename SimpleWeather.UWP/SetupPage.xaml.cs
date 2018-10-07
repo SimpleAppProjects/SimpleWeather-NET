@@ -262,7 +262,7 @@ namespace SimpleWeather.UWP
             ResizeControls();
 
             // Set Yahoo as default API
-            Settings.API = WeatherData.WeatherAPI.Yahoo;
+            Settings.API = WeatherAPI.Yahoo;
             wm.UpdateAPI();
         }
 

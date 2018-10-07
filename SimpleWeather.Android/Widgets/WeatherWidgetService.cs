@@ -760,7 +760,7 @@ namespace SimpleWeather.Droid.App.Widgets
                     // Wind
                     updateViews.SetTextViewText(Resource.Id.condition_wind,
                         (Settings.IsFahrenheit ?
-                             weather.condition.wind_mph.ToString() + " mph" : weather.condition.wind_kph.ToString() + " kph"));
+                             Math.Round(weather.condition.wind_mph) + " mph" : Math.Round(weather.condition.wind_kph) + " kph"));
 
                     // Show precipitation % if available
                     if (weather.precipitation != null)
@@ -968,9 +968,9 @@ namespace SimpleWeather.Droid.App.Widgets
                 forecastPanel.SetImageViewResource(Resource.Id.forecast_icon,
                     wm.GetWeatherIconResource(forecast.icon));
                 forecastPanel.SetTextViewText(Resource.Id.forecast_hi,
-                    (Settings.IsFahrenheit ? forecast.high_f : forecast.high_c) + "º");
+                    (Settings.IsFahrenheit ? Math.Round(double.Parse(forecast.high_f)).ToString() : Math.Round(double.Parse(forecast.high_c)).ToString()) + "º");
                 forecastPanel.SetTextViewText(Resource.Id.forecast_lo,
-                    (Settings.IsFahrenheit ? forecast.low_f : forecast.low_c) + "º");
+                    (Settings.IsFahrenheit ? Math.Round(double.Parse(forecast.low_f)).ToString() : Math.Round(double.Parse(forecast.low_c)).ToString()) + "º");
 
                 updateViews.AddView(Resource.Id.forecast_layout, forecastPanel);
             }

@@ -34,6 +34,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Droid\WearableHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Droid\WeatherData\IWeatherProviderImpl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Droid\WeatherData\WeatherProviderImpl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HERE\Alerts.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HERE\AutoCompleteQuery.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HERE\HEREWeatherKey.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HERE\HEREWeatherProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HERE\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Metno\MetnoWeatherProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Metno\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NWS\Alert.cs" />
@@ -50,6 +55,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\JSONParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Logger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Settings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\StringUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IWeatherAlertProvider.cs" />

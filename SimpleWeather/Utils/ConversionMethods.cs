@@ -12,6 +12,7 @@ namespace SimpleWeather.Utils
         private const double MSEC_TO_MPH = 2.23694;
         private const double MSEC_TO_KPH = 3.6;
         private const double MM_TO_IN = 1 / 25.4;
+        private const double IN_TO_MM = 25.4;
 
         public static string MBToInHg(String input)
         {
@@ -40,6 +41,12 @@ namespace SimpleWeather.Utils
         public static string MMToIn(String input)
         {
             double result = MM_TO_IN * double.Parse(input);
+            return Math.Round(result).ToString();
+        }
+
+        public static string InToMM(String input)
+        {
+            double result = IN_TO_MM * double.Parse(input);
             return Math.Round(result).ToString();
         }
 

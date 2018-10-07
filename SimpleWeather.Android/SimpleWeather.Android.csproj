@@ -68,7 +68,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
-    <Compile Include="AppCompatPreferenceActivity.cs" />
     <Compile Include="Controls\LocationQuery.cs" />
     <Compile Include="Controls\WeatherAlertPanel.cs" />
     <Compile Include="Controls\ForecastItem.cs" />

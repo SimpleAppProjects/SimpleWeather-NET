@@ -363,4 +363,16 @@
   <data name="WError_Unknown" xml:space="preserve">
     <value>Unknown error occurred!!</value>
   </data>
+  <data name="ConfirmDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Ok</value>
+  </data>
+  <data name="ConfirmDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Label_High" xml:space="preserve">
+    <value>High</value>
+  </data>
+  <data name="Label_Low" xml:space="preserve">
+    <value>Low</value>
+  </data>
 </root>

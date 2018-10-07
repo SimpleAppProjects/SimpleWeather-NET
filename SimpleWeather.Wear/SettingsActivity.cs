@@ -127,9 +127,14 @@ namespace SimpleWeather.Droid.Wear
                 };
 
                 keyEntry = (KeyEntryPreference)FindPreference(KEY_APIKEY);
+                keyEntry.BeforeDialogCreated += (object sender, EventArgs e) =>
+                {
+                    keyEntry?.UpdateAPI(providerPref.Value);
+                };
+
                 keyEntry.PositiveButtonClick += async (sender, e) =>
                 {
-                    String key = keyEntry.EditText.Text;
+                    String key = keyEntry.APIKey;
 
                     String API = providerPref.Value;
                     if (await WeatherData.WeatherManager.IsKeyValid(key, API))
@@ -387,27 +392,85 @@ namespace SimpleWeather.Droid.Wear
 
         public class KeyEntryPreference : EditTextPreference
         {
+            public EventHandler BeforeDialogCreated { get; set; }
             public EventHandler PositiveButtonClick { get; set; }
             public EventHandler NegativeButtonClick { get; set; }
+
+            private String CurrentAPI { get; set; }
+            public String APIKey { get; private set; }
+
+            private EditText keyEntry;
+            private EditText keyEntry2;
 
             public KeyEntryPreference(Context context)
                 : base(context)
             {
+                CurrentAPI = Settings.API;
             }
 
             public KeyEntryPreference(Context context, IAttributeSet attrs)
                 : base(context, attrs)
             {
+                CurrentAPI = Settings.API;
             }
 
             public KeyEntryPreference(Context context, IAttributeSet attrs, int defStyleAttr)
                 : base(context, attrs, defStyleAttr)
             {
+                CurrentAPI = Settings.API;
             }
 
             public KeyEntryPreference(Context context, IAttributeSet attrs, int defStyleAttr, int defStyleRes)
                 : base(context, attrs, defStyleAttr, defStyleRes)
             {
+                CurrentAPI = Settings.API;
+            }
+
+            public void UpdateAPI(String CurrentAPI)
+            {
+                this.CurrentAPI = CurrentAPI;
+            }
+
+            protected override View OnCreateDialogView()
+            {
+                BeforeDialogCreated?.Invoke(this, EventArgs.Empty);
+
+                if (CurrentAPI == WeatherData.WeatherAPI.Here)
+                {
+                    LayoutInflater inflater = LayoutInflater.From(Context);
+                    return inflater.Inflate(Resource.Layout.layout_keyentry2_dialog, null);
+                }
+                else
+                {
+                    return base.OnCreateDialogView();
+                }
+            }
+
+            protected override void OnBindDialogView(View view)
+            {
+                base.OnBindDialogView(view);
+
+                keyEntry = view.FindViewById<EditText>(Android.Resource.Id.Edit);
+                keyEntry.TextChanged += EditText_TextChanged;
+
+                if (CurrentAPI == WeatherData.WeatherAPI.Here)
+                {
+                    keyEntry2 = view.FindViewById<EditText>(Resource.Id.keyEntry2);
+                    keyEntry2.TextChanged += EditText_TextChanged;
+                }
+            }
+
+            private void EditText_TextChanged(object sender, TextChangedEventArgs e)
+            {
+                if (CurrentAPI == WeatherData.WeatherAPI.Here)
+                {
+                    string app_id = keyEntry?.Text;
+                    string app_code = keyEntry2?.Text;
+
+                    APIKey = String.Format("{0};{1}", app_id, app_code);
+                }
+                else
+                    APIKey = e.Text.ToString();
             }
 
             protected override void ShowDialog(Bundle state)
@@ -424,7 +487,23 @@ namespace SimpleWeather.Droid.Wear
                 else
                     negButton.Click += NegativeButtonClick;
 
-                EditText.Text = Settings.API_KEY;
+                APIKey = Settings.API_KEY;
+
+                if (CurrentAPI == WeatherData.WeatherAPI.Here)
+                {
+                    string app_id = String.Empty;
+                    string app_code = String.Empty;
+
+                    if (!String.IsNullOrWhiteSpace(APIKey))
+                    {
+                        var keyArr = APIKey.Split(';');
+                        app_id = keyArr.First();
+                        app_code = keyArr.Last();
+                    }
+
+                    keyEntry.Text = app_id;
+                    keyEntry2.Text = app_code;
+                }
             }
         }
 

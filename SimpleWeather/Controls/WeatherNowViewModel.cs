@@ -291,7 +291,7 @@ namespace SimpleWeather.Controls
         {
 #if WINDOWS_UWP
             var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages[0];
-            var culture = new System.Globalization.CultureInfo(userlang);
+            var culture = new CultureInfo(userlang);
 #else
             var culture = CultureInfo.CurrentCulture;
 #endif
@@ -338,11 +338,13 @@ namespace SimpleWeather.Controls
             WindChill = Settings.IsFahrenheit ?
                 Math.Round(weather.condition.feelslike_f) + "º" : Math.Round(weather.condition.feelslike_c) + "º";
             WindSpeed = Settings.IsFahrenheit ?
-                weather.condition.wind_mph.ToString(culture) + " mph" : weather.condition.wind_kph.ToString(culture) + " kph";
+                Math.Round(weather.condition.wind_mph) + " mph" : Math.Round(weather.condition.wind_kph) + " kph";
             UpdateWindDirection(weather.condition.wind_degrees);
 
             // Atmosphere
             Humidity = weather.atmosphere.humidity;
+            if (!Humidity.EndsWith("%", StringComparison.Ordinal))
+                Humidity += "%";
 
             var pressureVal = Settings.IsFahrenheit ? weather.atmosphere.pressure_in : weather.atmosphere.pressure_mb;
             var pressureUnit = Settings.IsFahrenheit ? "in" : "mb";
@@ -361,7 +363,7 @@ namespace SimpleWeather.Controls
                 _Visibility = string.Format("{0} {1}", visibility.ToString(culture), visibilityUnit);
             else
                 _Visibility = string.Format("-- {0}", visibilityUnit);
-            
+
             // Add UI elements
             Forecasts.Clear();
             foreach (Forecast forecast in weather.forecast)
@@ -388,6 +390,8 @@ namespace SimpleWeather.Controls
                 WeatherCredit = string.Format("{0} OpenWeatherMap", creditPrefix);
             else if (weather.source == WeatherAPI.MetNo)
                 WeatherCredit = string.Format("{0} MET Norway", creditPrefix);
+            else if (weather.source == WeatherAPI.Here)
+                WeatherCredit = string.Format("{0} HERE Weather", creditPrefix);
 
             Extras.UpdateView(weather);
 
@@ -412,6 +416,7 @@ namespace SimpleWeather.Controls
                 // Rising
                 case "1":
                 case "+":
+                case "Rising":
 #if WINDOWS_UWP
                     RisingVisiblity = Visibility.Visible;
 #elif __ANDROID__
@@ -422,6 +427,7 @@ namespace SimpleWeather.Controls
                 // Falling
                 case "2":
                 case "-":
+                case "Falling":
 #if WINDOWS_UWP
                     RisingVisiblity = Visibility.Visible;
 #elif __ANDROID__

@@ -7,9 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-#if WINDOWS_UWP
-using SimpleWeather.UWP.Helpers;
-#endif
 
 namespace SimpleWeather.WeatherData
 {
@@ -415,6 +412,40 @@ namespace SimpleWeather.WeatherData
             source = WeatherAPI.MetNo;
         }
 
+        public Weather(HERE.Rootobject root)
+        {
+            var now = root.feedCreation;
+
+            location = new Location(root.observations.location[0]);
+            update_time = root.feedCreation;
+            forecast = new Forecast[root.dailyForecasts.forecastLocation.forecast.Length];
+            for (int i = 0; i < forecast.Length; i++)
+            {
+                forecast[i] = new Forecast(root.dailyForecasts.forecastLocation.forecast[i]);
+            }
+            var tmp_hr_forecast = new List<HourlyForecast>(root.hourlyForecasts.forecastLocation.forecast.Length);
+            foreach (HERE.Forecast1 forecast1 in root.hourlyForecasts.forecastLocation.forecast)
+            {
+                if (forecast1.utcTime.UtcDateTime < now.UtcDateTime)
+                    continue;
+
+                tmp_hr_forecast.Add(new HourlyForecast(forecast1));
+            }
+            hr_forecast = tmp_hr_forecast.ToArray();
+            txt_forecast = new TextForecast[root.dailyForecasts.forecastLocation.forecast.Length];
+            for (int i = 0; i < txt_forecast.Length; i++)
+            {
+                txt_forecast[i] = new TextForecast(root.dailyForecasts.forecastLocation.forecast[i]);
+            }
+            condition = new Condition(root.observations.location[0].observation[0]);
+            atmosphere = new Atmosphere(root.observations.location[0].observation[0]);
+            astronomy = new Astronomy(root.astronomy.astronomy);
+            precipitation = new Precipitation(root.dailyForecasts.forecastLocation.forecast[0]);
+            ttl = "180";
+
+            source = WeatherAPI.Here;
+        }
+
         public static Weather FromJson(JsonReader reader)
         {
             Weather obj = null;
@@ -674,6 +705,16 @@ namespace SimpleWeather.WeatherData
             tz_short = "UTC";
         }
 
+        public Location(HERE.Location location)
+        {
+            // Use location name from location provider
+            name = null;
+            latitude = location.latitude.ToString();
+            longitude = location.longitude.ToString();
+            tz_offset = TimeSpan.Zero;
+            tz_short = "UTC";
+        }
+
         private void saveTimeZone(WeatherYahoo.Query query)
         {
             /* Get TimeZone info by using UTC and local build time */
@@ -811,7 +852,7 @@ namespace SimpleWeather.WeatherData
 
         public Forecast(WeatherYahoo.Forecast forecast)
         {
-            date = DateTime.Parse(forecast.date, 
+            date = DateTime.Parse(forecast.date,
                 CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
             high_f = forecast.high;
             high_c = ConversionMethods.FtoC(high_f);
@@ -841,13 +882,7 @@ namespace SimpleWeather.WeatherData
             high_c = ConversionMethods.KtoC(forecast.main.temp_max.ToString(CultureInfo.InvariantCulture));
             low_f = ConversionMethods.KtoF(forecast.main.temp_min.ToString(CultureInfo.InvariantCulture));
             low_c = ConversionMethods.KtoC(forecast.main.temp_min.ToString(CultureInfo.InvariantCulture));
-
-#if WINDOWS_UWP
-            condition = forecast.weather[0].description.ToTitleCase();
-#else
-            var culture = CultureInfo.CurrentCulture;
-            condition = culture.TextInfo.ToTitleCase(forecast.weather[0].description);
-#endif
+            condition = forecast.weather[0].description.ToUpperCase();
             icon = WeatherManager.GetProvider(WeatherAPI.OpenWeatherMap)
                    .GetWeatherIcon(forecast.weather[0].id.ToString());
         }
@@ -856,6 +891,18 @@ namespace SimpleWeather.WeatherData
         {
             date = time.from;
             // Don't bother setting other values; they're not available yet
+        }
+
+        public Forecast(HERE.Forecast forecast)
+        {
+            date = forecast.utcTime.UtcDateTime;
+            high_f = forecast.highTemperature;
+            high_c = ConversionMethods.FtoC(forecast.highTemperature);
+            low_f = forecast.lowTemperature;
+            low_c = ConversionMethods.FtoC(forecast.lowTemperature);
+            condition = forecast.description.ToPascalCase();
+            icon = WeatherManager.GetProvider(WeatherAPI.Here)
+                   .GetWeatherIcon(string.Format("{0}_{1}", forecast.daylight, forecast.iconName));
         }
 
         public static Forecast FromJson(JsonReader extReader)
@@ -1018,13 +1065,7 @@ namespace SimpleWeather.WeatherData
             date = DateTimeOffset.FromUnixTimeSeconds(hr_forecast.dt);
             high_f = ConversionMethods.KtoF(hr_forecast.main.temp.ToString(CultureInfo.InvariantCulture));
             high_c = ConversionMethods.KtoC(hr_forecast.main.temp.ToString(CultureInfo.InvariantCulture));
-
-#if WINDOWS_UWP
-            condition = hr_forecast.weather[0].description.ToTitleCase();
-#else
-            var culture = CultureInfo.CurrentCulture;
-            condition = culture.TextInfo.ToTitleCase(hr_forecast.weather[0].description);
-#endif
+            condition = hr_forecast.weather[0].description.ToUpperCase();
 
             // Use icon to determine if day or night
             string ico = hr_forecast.weather[0].icon;
@@ -1055,6 +1096,22 @@ namespace SimpleWeather.WeatherData
             wind_degrees = (int)Math.Round(hr_forecast.location.windDirection.deg);
             wind_mph = (float)Math.Round(double.Parse(ConversionMethods.MSecToMph(hr_forecast.location.windSpeed.mps.ToString())));
             wind_kph = (float)Math.Round(double.Parse(ConversionMethods.MSecToKph(hr_forecast.location.windSpeed.mps.ToString())));
+        }
+
+        public HourlyForecast(HERE.Forecast1 hr_forecast)
+        {
+            date = hr_forecast.utcTime;
+            high_f = hr_forecast.temperature;
+            high_c = ConversionMethods.FtoC(hr_forecast.temperature);
+            condition = hr_forecast.description.ToPascalCase();
+
+            icon = WeatherManager.GetProvider(WeatherAPI.Here)
+                   .GetWeatherIcon(string.Format("{0}_{1}", hr_forecast.daylight, hr_forecast.iconName));
+
+            pop = hr_forecast.precipitationProbability;
+            wind_degrees = int.Parse(hr_forecast.windDirection);
+            wind_mph = float.Parse(hr_forecast.windSpeed);
+            wind_kph = float.Parse(ConversionMethods.MphToKph(hr_forecast.windSpeed));
         }
 
         public static HourlyForecast FromJson(JsonReader extReader)
@@ -1203,6 +1260,81 @@ namespace SimpleWeather.WeatherData
             pop = txt_forecast.pop;
         }
 
+        public TextForecast(HERE.Forecast forecast)
+        {
+            title = forecast.weekday;
+
+            String fctxt = String.Format("{0} {1} {2}: {3}",
+                forecast.description.ToPascalCase(), forecast.beaufortDescription.ToPascalCase(),
+#if WINDOWS_UWP
+                UWP.App.ResLoader.GetString("Label_Humidity/Text"),
+#elif __ANDROID__
+                Android.App.Application.Context.GetString(Droid.Resource.String.label_humidity),
+#else
+                "Humidity",
+#endif
+                forecast.humidity + "%");
+
+            fcttext = String.Format("{0} {1} {2}F. {3} {4}F. {5} {6} {7}mph",
+                fctxt,
+#if WINDOWS_UWP
+                UWP.App.ResLoader.GetString("Label_High"),
+#elif __ANDROID__
+                Android.App.Application.Context.GetString(Droid.Resource.String.label_high),
+#else
+                "High",
+#endif
+                Math.Round(double.Parse(forecast.highTemperature)),
+#if WINDOWS_UWP
+                UWP.App.ResLoader.GetString("Label_Low"),
+#elif __ANDROID__
+                Android.App.Application.Context.GetString(Droid.Resource.String.label_low),
+#else
+                "Low",
+#endif
+                Math.Round(double.Parse(forecast.lowTemperature)),
+#if WINDOWS_UWP
+                UWP.App.ResLoader.GetString("Label_Wind/Text"),
+#elif __ANDROID__
+                Android.App.Application.Context.GetString(Droid.Resource.String.label_wind),
+#else
+                "Wind",
+#endif
+                forecast.windDesc, Math.Round(double.Parse(forecast.windSpeed)));
+
+            fcttext_metric = String.Format("{0} {1} {2}C. {3} {4}C. {5} {6} {7}kph",
+                fctxt,
+#if WINDOWS_UWP
+                UWP.App.ResLoader.GetString("Label_High"),
+#elif __ANDROID__
+                Android.App.Application.Context.GetString(Droid.Resource.String.label_high),
+#else
+                "High",
+#endif
+                ConversionMethods.FtoC(forecast.highTemperature),
+#if WINDOWS_UWP
+                UWP.App.ResLoader.GetString("Label_Low"),
+#elif __ANDROID__
+                Android.App.Application.Context.GetString(Droid.Resource.String.label_low),
+#else
+                "Low",
+#endif
+                ConversionMethods.FtoC(forecast.lowTemperature),
+#if WINDOWS_UWP
+                UWP.App.ResLoader.GetString("Label_Wind/Text"),
+#elif __ANDROID__
+                Android.App.Application.Context.GetString(Droid.Resource.String.label_wind),
+#else
+                "Wind",
+#endif
+                forecast.windDesc, Math.Round(double.Parse(ConversionMethods.MphToKph(forecast.windSpeed))));
+
+            icon = WeatherManager.GetProvider(WeatherAPI.Here)
+                   .GetWeatherIcon(string.Format("{0}_{1}", forecast.daylight, forecast.iconName));
+
+            pop = forecast.precipitationProbability;
+        }
+
         public static TextForecast FromJson(JsonReader extReader)
         {
             TextForecast obj = null;
@@ -1343,13 +1475,7 @@ namespace SimpleWeather.WeatherData
 
         public Condition(OpenWeather.CurrentRootobject root)
         {
-#if WINDOWS_UWP
-            weather = root.weather[0].description.ToTitleCase();
-#else
-            var culture = CultureInfo.CurrentCulture;
-            weather = culture.TextInfo.ToTitleCase(root.weather[0].description);
-#endif
-
+            weather = root.weather[0].description.ToUpperCase();
             temp_f = float.Parse(ConversionMethods.KtoF(root.main.temp.ToString(CultureInfo.InvariantCulture)));
             temp_c = float.Parse(ConversionMethods.KtoC(root.main.temp.ToString(CultureInfo.InvariantCulture)));
             wind_degrees = (int)root.wind.deg;
@@ -1381,6 +1507,20 @@ namespace SimpleWeather.WeatherData
             feelslike_f = temp_f;
             feelslike_c = temp_c;
             // icon
+        }
+
+        public Condition(HERE.Observation observation)
+        {
+            weather = observation.description.ToPascalCase();
+            temp_f = float.Parse(observation.temperature);
+            temp_c = float.Parse(ConversionMethods.FtoC(observation.temperature));
+            wind_degrees = int.Parse(observation.windDirection);
+            wind_mph = float.Parse(observation.windSpeed);
+            wind_kph = float.Parse(ConversionMethods.MphToKph(observation.windSpeed));
+            feelslike_f = float.Parse(observation.comfort);
+            feelslike_c = float.Parse(ConversionMethods.FtoC(observation.comfort));
+            icon = WeatherManager.GetProvider(WeatherAPI.Here)
+                   .GetWeatherIcon(string.Format("{0}_{1}", observation.daylight, observation.iconName));
         }
 
         public static Condition FromJson(JsonReader extReader)
@@ -1550,12 +1690,26 @@ namespace SimpleWeather.WeatherData
 
         public Atmosphere(Metno.weatherdataProductTime time)
         {
-            humidity = Math.Round(time.location.humidity.value).ToString() + "%";
+            humidity = Math.Round(time.location.humidity.value).ToString();
             pressure_mb = time.location.pressure.value.ToString(CultureInfo.InvariantCulture);
             pressure_in = ConversionMethods.MBToInHg(time.location.pressure.value.ToString(CultureInfo.InvariantCulture));
             pressure_trend = String.Empty;
             visibility_mi = Weather.NA;
             visibility_km = Weather.NA;
+        }
+
+        public Atmosphere(HERE.Observation observation)
+        {
+            humidity = observation.humidity;
+            pressure_mb = ConversionMethods.InHgToMB(observation.barometerPressure);
+            pressure_in = observation.barometerPressure;
+            pressure_trend = observation.barometerTrend;
+            visibility_mi = observation.visibility;
+
+            if (float.TryParse(observation.visibility, NumberStyles.Float, CultureInfo.InvariantCulture, out float visible_mi))
+                visibility_km = ConversionMethods.MiToKm(visible_mi.ToString(CultureInfo.InvariantCulture));
+            else
+                visibility_km = observation.visibility;
         }
 
         public static Atmosphere FromJson(JsonReader extReader)
@@ -1704,6 +1858,14 @@ namespace SimpleWeather.WeatherData
             }
         }
 
+        public Astronomy(HERE.Astronomy1[] astronomy)
+        {
+            var astroData = astronomy[0];
+
+            sunrise = DateTime.Parse(astroData.sunrise);
+            sunset = DateTime.Parse(astroData.sunset);
+        }
+
         public static Astronomy FromJson(JsonReader extReader)
         {
             Astronomy obj = null;
@@ -1819,6 +1981,25 @@ namespace SimpleWeather.WeatherData
             // Use cloudiness value here
             pop = Math.Round(time.location.cloudiness.percent).ToString();
             // The rest DNE
+        }
+
+        public Precipitation(HERE.Forecast forecast)
+        {
+            pop = forecast.precipitationProbability;
+
+            if (float.TryParse(forecast.rainFall, NumberStyles.Float, CultureInfo.InvariantCulture, out float rain_in))
+                qpf_rain_in = rain_in;
+            else
+                qpf_rain_in = 0.00f;
+
+            qpf_rain_mm = float.Parse(ConversionMethods.InToMM(qpf_rain_in.ToString(CultureInfo.InvariantCulture)));
+
+            if (float.TryParse(forecast.snowFall, NumberStyles.Float, CultureInfo.InvariantCulture, out float snow_in))
+                qpf_snow_in = snow_in;
+            else
+                qpf_snow_in = 0.00f;
+
+            qpf_snow_cm = float.Parse(ConversionMethods.InToMM(qpf_snow_in.ToString(CultureInfo.InvariantCulture))) / 10;
         }
 
         public static Precipitation FromJson(JsonReader extReader)

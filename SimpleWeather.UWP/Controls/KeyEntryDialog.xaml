@@ -6,12 +6,18 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Title="Please enter an API key"
+    x:Uid="ConfirmDialog"
     PrimaryButtonText="Ok"
     SecondaryButtonText="Cancel"
     SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
 
-    <Grid>
+    <ContentDialog.Title>
+        <TextBlock x:Uid="Message_EnterAPIKey" Text="Please enter an API Key"/>
+    </ContentDialog.Title>
+
+    <StackPanel Orientation="Vertical">
         <TextBox x:Name="KeyEntry" FontSize="12" x:Uid="KeyEntry" PlaceholderText="API Key" Padding="10,7" VerticalAlignment="Center"/>
-    </Grid>
+        <TextBox x:Name="KeyEntry_2" FontSize="12" x:Uid="KeyEntry" PlaceholderText="API Key" Padding="10,7" VerticalAlignment="Center"
+                 Visibility="Collapsed"/>
+    </StackPanel>
 </ContentDialog>

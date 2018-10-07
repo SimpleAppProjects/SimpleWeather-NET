@@ -1,5 +1,7 @@
 ﻿using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
+using System;
+using System.Globalization;
 
 namespace SimpleWeather.Controls
 {
@@ -24,16 +26,18 @@ namespace SimpleWeather.Controls
 
 #if WINDOWS_UWP
             var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages[0];
-            var culture = new System.Globalization.CultureInfo(userlang);
+            var culture = new CultureInfo(userlang);
 #else
-            var culture = System.Globalization.CultureInfo.CurrentCulture;
+            var culture = CultureInfo.CurrentCulture;
 #endif
 
             WeatherIcon = forecast.icon;
             Date = forecast.date.ToString("dddd dd", culture);
             Condition = forecast.condition;
-            HiTemp = (Settings.IsFahrenheit ? forecast.high_f : forecast.high_c) + "º ";
-            LoTemp = (Settings.IsFahrenheit ? forecast.low_f : forecast.low_c) + "º ";
+            HiTemp = (Settings.IsFahrenheit ?
+                Math.Round(double.Parse(forecast.high_f)).ToString() : Math.Round(double.Parse(forecast.high_c)).ToString()) + "º ";
+            LoTemp = (Settings.IsFahrenheit ?
+                Math.Round(double.Parse(forecast.low_f)).ToString() : Math.Round(double.Parse(forecast.low_c)).ToString()) + "º ";
         }
     }
 }
