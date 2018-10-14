@@ -81,6 +81,20 @@ namespace SimpleWeather.Droid.App
             }
         }
 
+        private static Notification GetForegroundNotification()
+        {
+            NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(App.Context, NOT_CHANNEL_ID)
+                .SetSmallIcon(Resource.Drawable.ic_logo)
+                .SetContentTitle(App.Context.GetString(Resource.String.not_title_wearable_sync))
+                .SetProgress(0, 0, true)
+                .SetColor(App.Context.GetColor(Resource.Color.colorPrimary))
+                .SetOnlyAlertOnce(true)
+                .SetPriority(NotificationCompat.PriorityLow) as NotificationCompat.Builder;
+
+            return mBuilder.Build();
+        }
+
         public override void OnCreate()
         {
             base.OnCreate();
@@ -89,16 +103,7 @@ namespace SimpleWeather.Droid.App
             {
                 InitChannel();
 
-                NotificationCompat.Builder mBuilder =
-                    new NotificationCompat.Builder(App.Context, NOT_CHANNEL_ID)
-                    .SetSmallIcon(Resource.Drawable.ic_logo)
-                    .SetContentTitle(GetString(Resource.String.not_title_wearable_sync))
-                    .SetProgress(0, 0, true)
-                    .SetColor(GetColor(Resource.Color.colorPrimary))
-                    .SetOnlyAlertOnce(true)
-                    .SetPriority(NotificationCompat.PriorityLow) as NotificationCompat.Builder;
-
-                StartForeground(JOB_ID, mBuilder.Build());
+                StartForeground(JOB_ID, GetForegroundNotification());
             }
 
             if (mGoogleApiClient == null)
@@ -238,6 +243,8 @@ namespace SimpleWeather.Droid.App
         [return: GeneratedEnum]
         public override StartCommandResult OnStartCommand(Intent intent, [GeneratedEnum] StartCommandFlags flags, int startId)
         {
+            StartForeground(JOB_ID, GetForegroundNotification());
+
             Task.Run(async () =>
             {
                 // Create requests if nodes exist with app support
