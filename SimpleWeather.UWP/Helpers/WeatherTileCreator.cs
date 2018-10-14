@@ -113,7 +113,8 @@ namespace SimpleWeather.UWP.Helpers
                         {
                             new AdaptiveText()
                             {
-                                Text = (Settings.IsFahrenheit ? forecast.high_f : forecast.high_c) + "º",
+                                Text = (Settings.IsFahrenheit ?
+                                    Math.Round(double.Parse(forecast.high_f)).ToString() : Math.Round(double.Parse(forecast.high_c)).ToString()) + "º",
                                 HintStyle = AdaptiveTextStyle.Caption,
                                 HintAlign = AdaptiveTextAlign.Center
                             }
@@ -177,13 +178,15 @@ namespace SimpleWeather.UWP.Helpers
                         {
                             new AdaptiveText()
                             {
-                                Text = (Settings.IsFahrenheit ? forecast.high_f : forecast.high_c) + "º",
+                                Text = (Settings.IsFahrenheit ?
+                                    Math.Round(double.Parse(forecast.high_f)).ToString() : Math.Round(double.Parse(forecast.high_c)).ToString()) + "º",
                                 HintStyle = AdaptiveTextStyle.Caption,
                                 HintAlign = AdaptiveTextAlign.Center
                             },
                             new AdaptiveText()
                             {
-                                Text = (Settings.IsFahrenheit ? forecast.low_f : forecast.low_c) + "º",
+                                Text = (Settings.IsFahrenheit ?
+                                    Math.Round(double.Parse(forecast.low_f)).ToString() : Math.Round(double.Parse(forecast.low_c)).ToString()) + "º",
                                 HintStyle = AdaptiveTextStyle.CaptionSubtle,
                                 HintAlign = AdaptiveTextAlign.Center
                             }
@@ -249,7 +252,7 @@ namespace SimpleWeather.UWP.Helpers
                                 new AdaptiveText()
                                 {
                                     Text = string.Format("{0}: {1}", App.ResLoader.GetString("Wind_Label"),
-                                        Settings.IsFahrenheit ? weather.condition.wind_mph.ToString() + " mph" : weather.condition.wind_kph.ToString() + " kph"),
+                                        Settings.IsFahrenheit ? Math.Round(weather.condition.wind_mph) + " mph" : Math.Round(weather.condition.wind_kph) + " kph"),
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle
                                 }
                             }
@@ -282,12 +285,14 @@ namespace SimpleWeather.UWP.Helpers
                             },
                             new AdaptiveText()
                             {
-                                Text = (Settings.IsFahrenheit ? forecast.high_f : forecast.high_c) + "º",
+                                Text = (Settings.IsFahrenheit ?
+                                    Math.Round(double.Parse(forecast.high_f)).ToString() : Math.Round(double.Parse(forecast.high_c)).ToString()) + "º",
                                 HintAlign = AdaptiveTextAlign.Center
                             },
                             new AdaptiveText()
                             {
-                                Text = (Settings.IsFahrenheit ? forecast.low_f : forecast.low_c) + "º",
+                                Text = (Settings.IsFahrenheit ?
+                                    Math.Round(double.Parse(forecast.low_f)).ToString() : Math.Round(double.Parse(forecast.low_c)).ToString()) + "º",
                                 HintStyle = AdaptiveTextStyle.CaptionSubtle,
                                 HintAlign = AdaptiveTextAlign.Center
                             }
@@ -396,7 +401,8 @@ namespace SimpleWeather.UWP.Helpers
                         {
                             new AdaptiveText()
                             {
-                                Text = (Settings.IsFahrenheit ? hrforecast.high_f : hrforecast.high_c) + "º",
+                                Text = (Settings.IsFahrenheit ?
+                                    Math.Round(double.Parse(hrforecast.high_f)).ToString() : Math.Round(double.Parse(hrforecast.high_c)).ToString()) + "º",
                                 HintStyle = AdaptiveTextStyle.Caption,
                                 HintAlign = AdaptiveTextAlign.Center
                             }
@@ -445,7 +451,8 @@ namespace SimpleWeather.UWP.Helpers
                             },
                             new AdaptiveText()
                             {
-                                Text = (Settings.IsFahrenheit ? hrforecast.high_f : hrforecast.high_c) + "º",
+                                Text = (Settings.IsFahrenheit ?
+                                    Math.Round(double.Parse(hrforecast.high_f)).ToString() : Math.Round(double.Parse(hrforecast.high_c)).ToString()) + "º",
                                 HintAlign = AdaptiveTextAlign.Center
                             },
                         }
@@ -511,7 +518,7 @@ namespace SimpleWeather.UWP.Helpers
                                 new AdaptiveText()
                                 {
                                     Text = string.Format("{0}: {1}", App.ResLoader.GetString("Wind_Label"),
-                                        Settings.IsFahrenheit ? weather.condition.wind_mph.ToString() + " mph" : weather.condition.wind_kph.ToString() + " kph"),
+                                        Settings.IsFahrenheit ? Math.Round(weather.condition.wind_mph) + " mph" : Math.Round(weather.condition.wind_kph) + " kph"),
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle
                                 },
                                 new AdaptiveText()
@@ -550,7 +557,8 @@ namespace SimpleWeather.UWP.Helpers
                             },
                             new AdaptiveText()
                             {
-                                Text = (Settings.IsFahrenheit ? hrforecast.high_f : hrforecast.high_c) + "º",
+                                Text = (Settings.IsFahrenheit ?
+                                    Math.Round(double.Parse(hrforecast.high_f)).ToString() : Math.Round(double.Parse(hrforecast.high_c)).ToString()) + "º",
                                 HintAlign = AdaptiveTextAlign.Center
                             },
                         }
@@ -701,7 +709,7 @@ namespace SimpleWeather.UWP.Helpers
                         new AdaptiveText()
                         {
                             Text = string.Format("{0}: {1}", App.ResLoader.GetString("Wind_Label"),
-                                Settings.IsFahrenheit ? weather.condition.wind_mph.ToString() + " mph" : weather.condition.wind_kph.ToString() + " kph"),
+                                Settings.IsFahrenheit ? Math.Round(weather.condition.wind_mph) + " mph" : Math.Round(weather.condition.wind_kph) + " kph"),
                             HintStyle = AdaptiveTextStyle.CaptionSubtle
                         }
                     }
@@ -762,7 +770,7 @@ namespace SimpleWeather.UWP.Helpers
                                 new AdaptiveText()
                                 {
                                     Text = string.Format("{0}: {1}", App.ResLoader.GetString("Wind_Label"),
-                                        Settings.IsFahrenheit ? weather.condition.wind_mph.ToString() + " mph" : weather.condition.wind_kph.ToString() + " kph"),
+                                        Settings.IsFahrenheit ? Math.Round(weather.condition.wind_mph) + " mph" : Math.Round(weather.condition.wind_kph) + " kph"),
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle
                                 }
                             }
@@ -795,12 +803,14 @@ namespace SimpleWeather.UWP.Helpers
                             },
                             new AdaptiveText()
                             {
-                                Text = (Settings.IsFahrenheit ? forecast.high_f : forecast.high_c) + "º",
+                                Text = (Settings.IsFahrenheit ?
+                                    Math.Round(double.Parse(forecast.high_f)).ToString() : Math.Round(double.Parse(forecast.high_c)).ToString()) + "º",
                                 HintAlign = AdaptiveTextAlign.Center
                             },
                             new AdaptiveText()
                             {
-                                Text = (Settings.IsFahrenheit ? forecast.low_f : forecast.low_c) + "º",
+                                Text = (Settings.IsFahrenheit ?
+                                    Math.Round(double.Parse(forecast.low_f)).ToString() : Math.Round(double.Parse(forecast.low_c)).ToString()) + "º",
                                 HintStyle = AdaptiveTextStyle.CaptionSubtle,
                                 HintAlign = AdaptiveTextAlign.Center
                             }
