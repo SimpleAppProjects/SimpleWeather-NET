@@ -253,3 +253,6 @@ API_KEY.txt
 /SimpleWeather.UWP/_pkginfo.txt
 /Components
 /MigrationBackup
+/SimpleWeather/HERE/HEREWeatherKey.cs
+/SimpleWeather/OpenWeather/OWMKey.cs
+/SimpleWeather/WeatherUnderground/WUKey.cs
