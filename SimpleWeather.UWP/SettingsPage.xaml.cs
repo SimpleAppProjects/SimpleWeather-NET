@@ -88,6 +88,10 @@ namespace SimpleWeather.UWP
                     Settings.KeyVerified = true;
                     KeyEntry.Visibility = Visibility.Collapsed;
                 }
+                else
+                {
+                    KeyEntry.Visibility = Visibility.Visible;
+                }
 
                 KeyPanel.Visibility = Visibility.Visible;
             }

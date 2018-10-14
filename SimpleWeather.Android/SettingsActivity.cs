@@ -287,6 +287,15 @@ namespace SimpleWeather.Droid.App
                         apiCategory.RemovePreference(keyEntry);
                         apiCategory.RemovePreference(registerPref);
                     }
+                    else
+                    {
+                        keyEntry.Enabled = true;
+
+                        if (apiCategory.FindPreference(KEY_APIKEY) == null)
+                            apiCategory.AddPreference(keyEntry);
+                        if (apiCategory.FindPreference(KEY_APIREGISTER) == null)
+                            apiCategory.AddPreference(registerPref);
+                    }
                 }
                 else
                 {
