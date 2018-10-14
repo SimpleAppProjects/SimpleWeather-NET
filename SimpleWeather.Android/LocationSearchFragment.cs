@@ -119,7 +119,7 @@ namespace SimpleWeather.Droid.App
                 return;
             }
 
-            if (String.IsNullOrWhiteSpace(Settings.API_KEY) && wm.KeyRequired)
+            if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.API_KEY) && wm.KeyRequired)
             {
                 Toast.MakeText(App.Context, App.Context.GetString(Resource.String.werror_invalidkey), ToastLength.Short).Show();
                 return;

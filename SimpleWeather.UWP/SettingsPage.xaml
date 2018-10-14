@@ -259,7 +259,11 @@
                                 </ComboBox.Header>
                             </ComboBox>
                             <StackPanel x:Name="KeyPanel">
-                                <TextBlock x:Uid="KeyBox" Text="API Key" Padding="0,5"/>
+                                <TextBlock x:Uid="Pref_PersonalKey" Text="Use personal provider key:" Padding="0,5" />
+                                <StackPanel Orientation="Horizontal" Padding="10,5">
+                                    <ToggleSwitch x:Name="PersonalKeySwitch" />
+                                </StackPanel>
+                                <TextBlock x:Uid="KeyBox" Text="API Key" Padding="0,5" Visibility="{x:Bind KeyEntry.Visibility, Mode=OneWay}"/>
                                 <Border x:Name="KeyBorder" BorderThickness="2" Background="White" BorderBrush="DarkGray"
                                         HorizontalAlignment="Left" Padding="10,4" MinWidth="260"
                                         Visibility="{x:Bind KeyEntry.Visibility, Mode=OneWay}">
@@ -271,7 +275,7 @@
                                 </Border>
                                 <HyperlinkButton x:Name="RegisterKeyButton"
                                                  x:Uid="RegisterKeyBox" Content="Register for API Key here"
-                                                 Padding="0,10" />
+                                                 Padding="0,10" Visibility="{x:Bind KeyEntry.Visibility, Mode=OneWay}" />
                             </StackPanel>
                         </StackPanel>
                     </Grid>

@@ -60,10 +60,28 @@ namespace SimpleWeather.Droid.Wear
             cts = new CancellationTokenSource();
             wm = WeatherData.WeatherManager.GetInstance();
 
-            // Set default API to Yahoo
+            // Set default API to HERE
             // if a valid API key hasn't been entered yet
             if (wm.KeyRequired && !Settings.KeyVerified)
-                Settings.API = WeatherData.WeatherAPI.Yahoo;
+            {
+                Settings.API = WeatherData.WeatherAPI.Here;
+                wm.UpdateAPI();
+
+                if (String.IsNullOrWhiteSpace(wm.GetAPIKey()))
+                {
+                    // If (internal) key doesn't exist, fallback to Yahoo
+                    Settings.API = WeatherData.WeatherAPI.Yahoo;
+                    wm.UpdateAPI();
+                    Settings.UsePersonalKey = true;
+                    Settings.KeyVerified = false;
+                }
+                else
+                {
+                    // If key exists, go ahead
+                    Settings.UsePersonalKey = false;
+                    Settings.KeyVerified = true;
+                }
+            }
 
             // Controls
             searchButton = FindViewById<FloatingActionButton>(Resource.Id.search_button);
@@ -271,7 +289,7 @@ namespace SimpleWeather.Droid.Wear
                     return;
                 }
 
-                if (String.IsNullOrWhiteSpace(Settings.API_KEY) && wm.KeyRequired)
+                if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.API_KEY) && wm.KeyRequired)
                 {
                     RunOnUiThread(() =>
                     {

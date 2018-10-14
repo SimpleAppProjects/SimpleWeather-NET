@@ -313,10 +313,12 @@ namespace SimpleWeather.OpenWeather
                 query = location_query;
             }
 
+            string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
+
             currentAPI = "https://api.openweathermap.org/data/2.5/weather?{0}&appid={1}&lang=" + locale;
-            currentURL = new Uri(string.Format(currentAPI, query, Settings.API_KEY));
+            currentURL = new Uri(string.Format(currentAPI, query, key));
             forecastAPI = "https://api.openweathermap.org/data/2.5/forecast?{0}&appid={1}&lang=" + locale;
-            forecastURL = new Uri(string.Format(forecastAPI, query, Settings.API_KEY));
+            forecastURL = new Uri(string.Format(forecastAPI, query, key));
 
             HttpClient webClient = new HttpClient();
             WeatherException wEx = null;

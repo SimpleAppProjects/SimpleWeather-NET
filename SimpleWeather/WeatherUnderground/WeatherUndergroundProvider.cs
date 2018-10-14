@@ -311,7 +311,9 @@ namespace SimpleWeather.WeatherUnderground
 #endif
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
-            queryAPI = "https://api.wunderground.com/api/" + Settings.API_KEY + "/astronomy/conditions/forecast10day/hourly/alerts/lang:" + locale;
+            string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
+
+            queryAPI = "https://api.wunderground.com/api/" + key + "/astronomy/conditions/forecast10day/hourly/alerts/lang:" + locale;
             string options = ".json";
             weatherURL = new Uri(queryAPI + location_query + options);
 
@@ -457,7 +459,9 @@ namespace SimpleWeather.WeatherUnderground
 #endif
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
-            queryAPI = "https://api.wunderground.com/api/" + Settings.API_KEY + "/alerts/lang:" + locale;
+            string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
+
+            queryAPI = "https://api.wunderground.com/api/" + key + "/alerts/lang:" + locale;
             string options = ".json";
             weatherURL = new Uri(queryAPI + location.query + options);
 

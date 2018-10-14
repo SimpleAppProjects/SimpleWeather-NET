@@ -261,9 +261,24 @@ namespace SimpleWeather.UWP
             // Sizing
             ResizeControls();
 
-            // Set Yahoo as default API
-            Settings.API = WeatherAPI.Yahoo;
+            // Set HERE as default API
+            Settings.API = WeatherAPI.Here;
             wm.UpdateAPI();
+
+            if (String.IsNullOrWhiteSpace(wm.GetAPIKey()))
+            {
+                // If (internal) key doesn't exist, fallback to Yahoo
+                Settings.API = WeatherAPI.Yahoo;
+                wm.UpdateAPI();
+                Settings.UsePersonalKey = true;
+                Settings.KeyVerified = false;
+            }
+            else
+            {
+                // If key exists, go ahead
+                Settings.UsePersonalKey = false;
+                Settings.KeyVerified = true;
+            }
         }
 
         private async void GPS_Click(object sender, RoutedEventArgs e)

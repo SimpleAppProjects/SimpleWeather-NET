@@ -26,15 +26,12 @@
                 android:layout_gravity="center_horizontal"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center_horizontal"
-                android:maxLines="1"
-                android:paddingEnd="@dimen/header_start_padding"
                 android:paddingStart="@dimen/header_start_padding"
                 android:paddingTop="16dp"
+                android:paddingEnd="@dimen/header_start_padding"
                 android:textAppearance="@android:style/TextAppearance.Material.Large.Inverse"
                 android:textColor="@android:color/white"
-                app:autoSizeMaxTextSize="22sp"
-                app:autoSizeMinTextSize="8sp"
-                tools:text="New York, NY" />
+                tools:text="New York, New York" />
 
             <TextView
                 android:id="@+id/label_updatetime"
@@ -68,11 +65,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:gravity="center"
                 android:maxLines="2"
                 android:padding="4dp"
                 android:textColor="@android:color/white"
                 android:textSize="18sp"
-                tools:text="Sunny" />
+                tools:text="Mostly Cloudy. Breezy. Cool" />
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/weather_temp"

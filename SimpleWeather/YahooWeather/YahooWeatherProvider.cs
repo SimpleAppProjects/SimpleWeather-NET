@@ -239,6 +239,11 @@ namespace SimpleWeather.WeatherYahoo
             throw new NotImplementedException();
         }
 
+        public override String GetAPIKey()
+        {
+            return null;
+        }
+
         public override async Task<Weather> GetWeather(string location_query)
         {
             Weather weather = null;

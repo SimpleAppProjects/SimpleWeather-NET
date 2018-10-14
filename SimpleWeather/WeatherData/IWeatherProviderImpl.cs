@@ -23,6 +23,7 @@ namespace SimpleWeather.WeatherData
         string GetWeatherIcon(string icon);
         string GetWeatherIcon(bool isNight, string icon);
         Task<bool> IsKeyValid(string key);
+        string GetAPIKey();
         bool IsNight(Weather weather);
         string LocaleToLangCode(string iso, string name);
         Task UpdateLocationData(LocationData location);

@@ -211,6 +211,11 @@ namespace SimpleWeather.WeatherData
             return await WeatherProvider.IsKeyValid(key);
         }
 
+        public string GetAPIKey()
+        {
+            return WeatherProvider.GetAPIKey();
+        }
+
         public bool IsNight(Weather weather)
         {
             return WeatherProvider.IsNight(weather);

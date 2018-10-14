@@ -152,9 +152,24 @@ namespace SimpleWeather.Droid.App
             // Reset focus
             FindViewById(Resource.Id.activity_setup).RequestFocus();
 
-            // Set default API to Yahoo
-            Settings.API = WeatherData.WeatherAPI.Yahoo;
+            // Set default API to HERE
+            Settings.API = WeatherData.WeatherAPI.Here;
             wm.UpdateAPI();
+
+            if (String.IsNullOrWhiteSpace(wm.GetAPIKey()))
+            {
+                // If (internal) key doesn't exist, fallback to Yahoo
+                Settings.API = WeatherData.WeatherAPI.Yahoo;
+                wm.UpdateAPI();
+                Settings.UsePersonalKey = true;
+                Settings.KeyVerified = false;
+            }
+            else
+            {
+                // If key exists, go ahead
+                Settings.UsePersonalKey = false;
+                Settings.KeyVerified = true;
+            }
         }
 
         private void EnableControls(bool enable)
@@ -205,7 +220,7 @@ namespace SimpleWeather.Droid.App
                         return;
                     }
 
-                    if (String.IsNullOrWhiteSpace(Settings.API_KEY) && wm.KeyRequired)
+                    if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.API_KEY) && wm.KeyRequired)
                     {
                         RunOnUiThread(() =>
                         {

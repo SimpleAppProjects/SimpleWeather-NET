@@ -64,7 +64,7 @@ namespace SimpleWeather.Droid.App
             if (SupportFragmentManager.FindFragmentById(Android.Resource.Id.Content) is SettingsFragment fragment)
             {
                 var keyPref = fragment.FindPreference(KEY_API) as ListPreference;
-                if (String.IsNullOrWhiteSpace(Settings.API_KEY) && WeatherData.WeatherManager.IsKeyRequired(keyPref.Value))
+                if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.API_KEY) && WeatherData.WeatherManager.IsKeyRequired(keyPref.Value))
                 {
                     // Set keyentrypref color to red
                     Toast.MakeText(this, Resource.String.message_enter_apikey, ToastLength.Long).Show();
@@ -91,6 +91,7 @@ namespace SimpleWeather.Droid.App
             private const string KEY_NOTIFICATIONICON = "key_notificationicon";
             private const string KEY_USEALERTS = "key_usealerts";
             private const string KEY_APIREGISTER = "key_apiregister";
+            private const string KEY_USEPERSONALKEY = "key_usepersonalkey";
 
             private const string CATEGORY_NOTIFICATION = "category_notification";
             private const string CATEGORY_API = "category_api";
@@ -98,6 +99,7 @@ namespace SimpleWeather.Droid.App
             // Preferences
             private SwitchPreferenceCompat followGps;
             private DropDownPreference providerPref;
+            private SwitchPreferenceCompat personalKeyPref;
             private EditTextPreference keyEntry;
             private SwitchPreferenceCompat onGoingNotification;
             private DropDownPreference notificationIcon;
@@ -149,6 +151,34 @@ namespace SimpleWeather.Droid.App
                 };
 
                 keyEntry = (EditTextPreference)FindPreference(KEY_APIKEY);
+                personalKeyPref = (SwitchPreferenceCompat)FindPreference(KEY_USEPERSONALKEY);
+                personalKeyPref.PreferenceChange += (object sender, Preference.PreferenceChangeEventArgs e) =>
+                {
+                    var pref = e.Preference as SwitchPreferenceCompat;
+                    if ((bool)e.NewValue)
+                    {
+                        if (apiCategory.FindPreference(KEY_APIKEY) == null)
+                            apiCategory.AddPreference(keyEntry);
+                        if (apiCategory.FindPreference(KEY_APIREGISTER) == null)
+                            apiCategory.AddPreference(registerPref);
+                        keyEntry.Enabled = true;
+                    }
+                    else
+                    {
+                        var selectedWProv = WeatherData.WeatherManager.GetProvider(providerPref.Value);
+
+                        if (!String.IsNullOrWhiteSpace(selectedWProv.GetAPIKey()))
+                        {
+                            // We're using our own (verified) keys
+                            Settings.KeyVerified = true;
+                            Settings.API = providerPref.Value;
+                        }
+
+                        keyEntry.Enabled = false;
+                        apiCategory.RemovePreference(keyEntry);
+                        apiCategory.RemovePreference(registerPref);
+                    }
+                };
 
                 var providers = WeatherData.WeatherAPI.APIs;
                 providerPref = (DropDownPreference)FindPreference(KEY_API);
@@ -158,10 +188,43 @@ namespace SimpleWeather.Droid.App
                 providerPref.PreferenceChange += (object sender, Preference.PreferenceChangeEventArgs e) =>
                 {
                     var pref = e.Preference as ListPreference;
+                    var selectedWProv = WeatherData.WeatherManager.GetProvider(e.NewValue.ToString());
 
-                    if (WeatherData.WeatherManager.IsKeyRequired(e.NewValue.ToString()))
+                    if (selectedWProv.KeyRequired)
                     {
-                        keyEntry.Enabled = true;
+                        if (String.IsNullOrWhiteSpace(selectedWProv.GetAPIKey()))
+                        {
+                            personalKeyPref.Checked = Settings.UsePersonalKey = true;
+                            personalKeyPref.Enabled = false;
+                            keyEntry.Enabled = false;
+                            apiCategory.RemovePreference(keyEntry);
+                            apiCategory.RemovePreference(registerPref);
+                        }
+                        else
+                        {
+                            personalKeyPref.Enabled = true;
+                        }
+
+                        if (!Settings.UsePersonalKey)
+                        {
+                            // We're using our own (verified) keys
+                            Settings.KeyVerified = true;
+                            keyEntry.Enabled = false;
+                            apiCategory.RemovePreference(keyEntry);
+                            apiCategory.RemovePreference(registerPref);
+                        }
+                        else
+                        {
+                            keyEntry.Enabled = true;
+
+                            if (apiCategory.FindPreference(KEY_APIKEY) == null)
+                                apiCategory.AddPreference(keyEntry);
+                            if (apiCategory.FindPreference(KEY_APIREGISTER) == null)
+                                apiCategory.AddPreference(registerPref);
+                        }
+
+                        if (apiCategory.FindPreference(KEY_USEPERSONALKEY) == null)
+                            apiCategory.AddPreference(personalKeyPref);
 
                         // Reset to old value if not verified
                         if (!Settings.KeyVerified)
@@ -169,10 +232,6 @@ namespace SimpleWeather.Droid.App
                         else
                             Settings.API = e.NewValue.ToString();
 
-                        if (apiCategory.FindPreference(KEY_APIKEY) == null)
-                            apiCategory.AddPreference(keyEntry);
-                        if (apiCategory.FindPreference(KEY_APIREGISTER) == null)
-                            apiCategory.AddPreference(registerPref);
                         var providerEntry = providers.Find(provider => provider.Value == e.NewValue.ToString());
                         UpdateKeySummary(providerEntry.Display);
                         UpdateRegisterLink(providerEntry.Value);
@@ -181,11 +240,13 @@ namespace SimpleWeather.Droid.App
                     {
                         Settings.KeyVerified = false;
                         keyEntry.Enabled = false;
+                        personalKeyPref.Enabled = false;
 
                         Settings.API = e.NewValue.ToString();
                         // Clear API KEY entry to avoid issues
                         Settings.API_KEY = String.Empty;
 
+                        apiCategory.RemovePreference(personalKeyPref);
                         apiCategory.RemovePreference(keyEntry);
                         apiCategory.RemovePreference(registerPref);
                         UpdateKeySummary();
@@ -204,10 +265,34 @@ namespace SimpleWeather.Droid.App
 
                     if (!String.IsNullOrWhiteSpace(Settings.API_KEY) && !Settings.KeyVerified)
                         Settings.KeyVerified = true;
+
+                    if (String.IsNullOrWhiteSpace(WeatherData.WeatherManager.GetInstance().GetAPIKey()))
+                    {
+                        personalKeyPref.Checked = Settings.UsePersonalKey = true;
+                        personalKeyPref.Enabled = false;
+                        keyEntry.Enabled = false;
+                        apiCategory.RemovePreference(keyEntry);
+                        apiCategory.RemovePreference(registerPref);
+                    }
+                    else
+                    {
+                        personalKeyPref.Enabled = true;
+                    }
+
+                    if (!Settings.UsePersonalKey)
+                    {
+                        // We're using our own (verified) keys
+                        Settings.KeyVerified = true;
+                        keyEntry.Enabled = false;
+                        apiCategory.RemovePreference(keyEntry);
+                        apiCategory.RemovePreference(registerPref);
+                    }
                 }
                 else
                 {
                     keyEntry.Enabled = false;
+                    personalKeyPref.Enabled = false;
+                    apiCategory.RemovePreference(personalKeyPref);
                     apiCategory.RemovePreference(keyEntry);
                     apiCategory.RemovePreference(registerPref);
                     Settings.KeyVerified = false;
@@ -343,20 +428,9 @@ namespace SimpleWeather.Droid.App
 
             private void UpdateRegisterLink(string providerAPI)
             {
-                switch (providerAPI)
-                {
-                    case WeatherData.WeatherAPI.WeatherUnderground:
-                    case WeatherData.WeatherAPI.OpenWeatherMap:
-                        registerPref.Intent = new Intent(Intent.ActionView)
-                            .SetData(Android.Net.Uri.Parse(
-                                WeatherData.WeatherAPI.APIs.First(prov => prov.Value == providerAPI).APIRegisterURL));
-                        break;
-                    default:
-                        registerPref.Intent = new Intent(Intent.ActionView)
-                            .SetData(Android.Net.Uri.Parse(
-                                WeatherData.WeatherAPI.APIs.First(prov => prov.Value == providerAPI).MainURL));
-                        break;
-                }
+                registerPref.Intent = new Intent(Intent.ActionView)
+                    .SetData(Android.Net.Uri.Parse(
+                        WeatherData.WeatherAPI.APIs.First(prov => prov.Value == providerAPI).APIRegisterURL));
             }
 
             private void UpdateAlertPreference(bool enable)

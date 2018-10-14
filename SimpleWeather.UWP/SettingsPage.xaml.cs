@@ -69,15 +69,32 @@ namespace SimpleWeather.UWP
                 if (!String.IsNullOrWhiteSpace(Settings.API_KEY) && !Settings.KeyVerified)
                     Settings.KeyVerified = true;
 
+                PersonalKeySwitch.IsOn = Settings.UsePersonalKey;
+
+                if (String.IsNullOrWhiteSpace(wm.GetAPIKey()))
+                {
+                    PersonalKeySwitch.IsOn = Settings.UsePersonalKey = true;
+                    PersonalKeySwitch.IsEnabled = false;
+                    KeyEntry.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    PersonalKeySwitch.IsEnabled = true;
+                }
+
+                if (!Settings.UsePersonalKey)
+                {
+                    // We're using our own (verified) keys
+                    Settings.KeyVerified = true;
+                    KeyEntry.Visibility = Visibility.Collapsed;
+                }
+
                 KeyPanel.Visibility = Visibility.Visible;
-                RegisterKeyButton.Visibility = Visibility.Visible;
             }
             else
             {
                 Settings.KeyVerified = false;
-
                 KeyPanel.Visibility = Visibility.Collapsed;
-                RegisterKeyButton.Visibility = Visibility.Collapsed;
             }
 
             // Update Interval
@@ -87,10 +104,10 @@ namespace SimpleWeather.UWP
                     RefreshComboBox.SelectedIndex = 0;
                     break;
                 case 30:
-                default:
                     RefreshComboBox.SelectedIndex = 1;
                     break;
                 case 60:
+                default:
                     RefreshComboBox.SelectedIndex = 2;
                     break;
                 case 180:
@@ -120,6 +137,7 @@ namespace SimpleWeather.UWP
             AlertSwitch.Toggled += AlertSwitch_Toggled;
             APIComboBox.SelectionChanged += APIComboBox_SelectionChanged;
             RefreshComboBox.SelectionChanged += RefreshComboBox_SelectionChanged;
+            PersonalKeySwitch.Toggled += PersonalKeySwitch_Toggled;
             if (OSSLicenseWebview != null)
                 OSSLicenseWebview.NavigationStarting += OSSLicenseWebview_NavigationStarting;
         }
@@ -132,7 +150,7 @@ namespace SimpleWeather.UWP
 
         private async void SettingsPage_BackRequested(object sender, BackRequestedEventArgs e)
         {
-            if (String.IsNullOrWhiteSpace(Settings.API_KEY) && WeatherManager.IsKeyRequired(APIComboBox.SelectedValue.ToString()))
+            if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.API_KEY) && WeatherManager.IsKeyRequired(APIComboBox.SelectedValue.ToString()))
             {
                 KeyBorder.BorderBrush = new SolidColorBrush(Colors.Red);
                 await new MessageDialog(App.ResLoader.GetString("Msg_EnterAPIKey")).ShowAsync();
@@ -147,7 +165,7 @@ namespace SimpleWeather.UWP
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
-            if (String.IsNullOrWhiteSpace(Settings.API_KEY) && WeatherManager.IsKeyRequired(APIComboBox.SelectedValue.ToString()))
+            if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.API_KEY) && WeatherManager.IsKeyRequired(APIComboBox.SelectedValue.ToString()))
             {
                 e.Cancel = true;
             }
@@ -212,13 +230,34 @@ namespace SimpleWeather.UWP
         {
             ComboBox box = sender as ComboBox;
             string API = box.SelectedValue.ToString();
+            var selectedWProv = WeatherManager.GetProvider(API);
 
-            if (WeatherManager.IsKeyRequired(API))
+            if (selectedWProv.KeyRequired)
             {
+                if (String.IsNullOrWhiteSpace(selectedWProv.GetAPIKey()))
+                {
+                    PersonalKeySwitch.IsOn = Settings.UsePersonalKey = true;
+                    PersonalKeySwitch.IsEnabled = false;
+                    KeyEntry.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    PersonalKeySwitch.IsEnabled = true;
+                }
+
+                if (!Settings.UsePersonalKey)
+                {
+                    // We're using our own (verified) keys
+                    Settings.KeyVerified = true;
+                    KeyEntry.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    KeyEntry.Visibility = Visibility.Visible;
+                }
+
                 if (KeyPanel != null)
                     KeyPanel.Visibility = Visibility.Visible;
-                if (RegisterKeyButton != null)
-                    RegisterKeyButton.Visibility = Visibility.Visible;
 
                 if (Settings.KeyVerified)
                 {
@@ -228,15 +267,14 @@ namespace SimpleWeather.UWP
             }
             else
             {
-                if (KeyPanel != null)
-                    KeyPanel.Visibility = Visibility.Collapsed;
-                if (RegisterKeyButton != null)
-                    RegisterKeyButton.Visibility = Visibility.Collapsed;
+                Settings.KeyVerified = false;
+
                 Settings.API = API;
                 // Clear API KEY entry to avoid issues
                 Settings.API_KEY = KeyEntry.Text = String.Empty;
 
-                Settings.KeyVerified = false;
+                if (KeyPanel != null)
+                    KeyPanel.Visibility = Visibility.Collapsed;
             }
 
             wm.UpdateAPI();
@@ -246,6 +284,27 @@ namespace SimpleWeather.UWP
             AlertSwitch.IsEnabled = wm.SupportsAlerts;
             if (!wm.SupportsAlerts)
                 AlertSwitch.IsOn = false;
+        }
+
+        private void PersonalKeySwitch_Toggled(object sender, RoutedEventArgs e)
+        {
+            ToggleSwitch sw = sender as ToggleSwitch;
+            Settings.UsePersonalKey = sw.IsOn;
+
+            if (!sw.IsOn)
+            {
+                string API = APIComboBox.SelectedValue.ToString();
+                var selectedWProv = WeatherManager.GetProvider(API);
+
+                if (!String.IsNullOrWhiteSpace(selectedWProv.GetAPIKey()))
+                {
+                    // We're using our own (verified) keys
+                    Settings.KeyVerified = true;
+                    Settings.API = API;
+                }
+            }
+
+            KeyEntry.Visibility = sw.IsOn ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void UpdateRegisterLink()

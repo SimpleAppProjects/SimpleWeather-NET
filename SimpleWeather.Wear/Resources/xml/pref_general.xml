@@ -28,6 +28,12 @@
             android:summary="%s"
             android:title="@string/api_label" />
 
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="key_usepersonalkey"
+            android:summary="@string/pref_summary_personalkey"
+            android:title="@string/pref_title_personalkey" />
+
         <Preference
             android:key="key_apiregister"
             android:summary="@string/pref_summary_apiregister"

@@ -60,6 +60,7 @@ namespace SimpleWeather.WeatherData
 
         // KeyCheck
         public abstract Task<bool> IsKeyValid(String key);
+        public abstract String GetAPIKey();
 
         // Utils Methods
         public virtual async Task UpdateLocationData(LocationData location)

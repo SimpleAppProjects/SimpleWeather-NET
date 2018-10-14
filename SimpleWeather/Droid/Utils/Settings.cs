@@ -180,8 +180,8 @@ namespace SimpleWeather.Utils
         {
             if (!preferences.Contains(KEY_API))
             {
-                SetAPI(WeatherData.WeatherAPI.WeatherUnderground);
-                return WeatherData.WeatherAPI.WeatherUnderground;
+                SetAPI(WeatherData.WeatherAPI.Here);
+                return WeatherData.WeatherAPI.Here;
             }
             else
             {
@@ -199,53 +199,12 @@ namespace SimpleWeather.Utils
         {
             if (!preferences.Contains(KEY_APIKEY))
             {
-                String key;
-                key = ReadAPIKEYfile();
-
-                if (!String.IsNullOrWhiteSpace(key))
-                    SetAPIKEY(key);
-
-                return key;
+                return String.Empty;
             }
             else
             {
                 return preferences.GetString(KEY_APIKEY, null);
             }
-        }
-
-        private static string ReadAPIKEYfile()
-        {
-            // Read key from file
-            String key = String.Empty;
-            BufferedReader reader = null;
-
-            try
-            {
-                reader = new BufferedReader(
-                            new InputStreamReader(App.Context.Assets.Open("API_KEY.txt")));
-
-                key = reader.ReadLine();
-            }
-            catch (Exception e)
-            {
-                Logger.WriteLine(LoggerLevel.Info, e, "SimpleWeather: {0}: error reading API key file", TAG);
-            }
-            finally
-            {
-                if (reader != null)
-                {
-                    try
-                    {
-                        reader.Close();
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WriteLine(LoggerLevel.Error, e, "SimpleWeather: {0}: error closing reader", TAG);
-                    }
-                }
-            }
-
-            return key;
         }
 
         private static void SetAPIKEY(string key)
@@ -375,6 +334,22 @@ namespace SimpleWeather.Utils
 
             if (!value)
                 wuSharedPrefs.Edit().Remove(KEY_APIKEY_VERIFIED).Apply();
+        }
+
+        private static bool IsPersonalKey()
+        {
+            if (!preferences.Contains(KEY_USEPERSONALKEY))
+            {
+                return false;
+            }
+            else
+                return preferences.GetBoolean(KEY_USEPERSONALKEY, false);
+        }
+
+        private static void SetPersonalKey(bool value)
+        {
+            editor.PutBoolean(KEY_USEPERSONALKEY, value);
+            editor.Commit();
         }
     }
 }

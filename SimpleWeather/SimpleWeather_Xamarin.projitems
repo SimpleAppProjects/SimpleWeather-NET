@@ -45,6 +45,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)NWS\NWSAlertProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\AutoCompleteQuery.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\GeopositionQuery.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\OWMKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\OpenWeatherMapProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\ConversionMethods.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)WeatherUnderground\GeopositionQuery.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherUnderground\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherUnderground\WeatherUndergroundProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WeatherUnderground\WUKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)YahooWeather\AutoCompleteQuery.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)YahooWeather\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)YahooWeather\YahooWeatherProvider.cs" />

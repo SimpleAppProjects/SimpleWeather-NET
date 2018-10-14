@@ -28,6 +28,7 @@ namespace SimpleWeather.Utils
         public static int RefreshInterval { get { return GetRefreshInterval(); } set { SetRefreshInterval(value); } }
         public static bool ShowAlerts { get { return UseAlerts(); } set { SetAlerts(value); } }
 #endif
+        public static bool UsePersonalKey { get { return IsPersonalKey(); } set { SetPersonalKey(value); } }
 
         // Database
         private static int DBVersion { get { return GetDBVersion(); } set { SetDBVersion(value); } }
@@ -64,6 +65,7 @@ namespace SimpleWeather.Utils
         private const string KEY_UPDATETIME = "key_updatetime";
         private const string KEY_DBVERSION = "key_dbversion";
         private const string KEY_USEALERTS = "key_usealerts";
+        private const string KEY_USEPERSONALKEY = "key_usepersonalkey";
 
         // Weather Data
         private static LocationData lastGPSLocData = new LocationData();

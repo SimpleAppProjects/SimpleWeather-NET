@@ -85,8 +85,8 @@ namespace SimpleWeather.Utils
         {
             if (!localSettings.Values.ContainsKey(KEY_API) || localSettings.Values[KEY_API] == null)
             {
-                SetAPI(WeatherData.WeatherAPI.WeatherUnderground);
-                return WeatherData.WeatherAPI.WeatherUnderground;
+                SetAPI(WeatherAPI.Here);
+                return WeatherAPI.Here;
             }
             else
                 return (string)localSettings.Values[KEY_API];
@@ -102,37 +102,10 @@ namespace SimpleWeather.Utils
         {
             if (!localSettings.Values.ContainsKey(KEY_APIKEY) || localSettings.Values[KEY_APIKEY] == null)
             {
-                String key = String.Empty;
-                key = Task.Run(() => ReadAPIKEYfile()).Result;
-
-                if (!String.IsNullOrWhiteSpace(key))
-                    SetAPIKEY(key);
-
-                return key;
+                return String.Empty;
             }
             else
                 return (string)localSettings.Values[KEY_APIKEY];
-        }
-
-        private static async Task<string> ReadAPIKEYfile()
-        {
-            // Read key from file
-            String key = String.Empty;
-            try
-            {
-                StorageFile keyFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///API_KEY.txt"));
-                FileInfo fileinfo = new FileInfo(keyFile.Path);
-
-                if (fileinfo.Length != 0 || fileinfo.Exists)
-                {
-                    StreamReader reader = new StreamReader(await keyFile.OpenStreamForReadAsync());
-                    key = reader.ReadLine();
-                    reader.Dispose();
-                }
-            }
-            catch (FileNotFoundException) { }
-
-            return key;
         }
 
         private static void SetAPIKEY(string API_KEY)
@@ -248,6 +221,22 @@ namespace SimpleWeather.Utils
 
             if (!value)
                 localSettings.Containers[WeatherAPI.WeatherUnderground].Values.Remove(KEY_APIKEY_VERIFIED);
+        }
+
+        private static bool IsPersonalKey()
+        {
+            if (localSettings.Containers.ContainsKey(WeatherAPI.WeatherUnderground))
+            {
+                if (localSettings.Containers[WeatherAPI.WeatherUnderground].Values.TryGetValue(KEY_USEPERSONALKEY, out object value))
+                    return (bool)value;
+            }
+
+            return false;
+        }
+
+        private static void SetPersonalKey(bool value)
+        {
+            localSettings.Containers[WeatherAPI.WeatherUnderground].Values[KEY_USEPERSONALKEY] = value;
         }
     }
 }

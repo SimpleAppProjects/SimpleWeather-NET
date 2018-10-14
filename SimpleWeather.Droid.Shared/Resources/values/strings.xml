@@ -144,5 +144,7 @@
     <!-- HERE API -->
     <string name="here_key1_name">App ID</string>
     <string name="here_key2_name">App Code</string>
+    <string name="pref_title_personalkey">Personal API Key</string>
+    <string name="pref_summary_personalkey">Use personal weather provider key</string>
 
 </resources>

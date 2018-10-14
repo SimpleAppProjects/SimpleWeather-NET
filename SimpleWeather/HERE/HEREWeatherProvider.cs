@@ -301,6 +301,14 @@ namespace SimpleWeather.HERE
             return isValid;
         }
 
+        public override String GetAPIKey()
+        {
+            if (String.IsNullOrWhiteSpace(GetAppID()) && String.IsNullOrWhiteSpace(GetAppCode()))
+                return String.Empty;
+            else
+                return String.Format("{0};{1}", GetAppID(), GetAppCode());
+        }
+
         public override async Task<Weather> GetWeather(string location_query)
         {
             Weather weather = null;
@@ -318,7 +326,8 @@ namespace SimpleWeather.HERE
             queryAPI = "https://weather.cit.api.here.com/weather/1.0/report.json?product=alerts&product=forecast_7days_simple" +
                 "&product=forecast_hourly&product=forecast_astronomy&product=observation&oneobservation=true&{0}" +
                 "&language={1}&metric=false&app_id={2}&app_code={3}";
-            string key = Settings.API_KEY;
+
+            string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
             string app_id = key.Split(';').First();
             string app_code = key.Split(';').Last();
             weatherURL = new Uri(String.Format(queryAPI, location_query, locale, app_id, app_code));
@@ -471,7 +480,9 @@ namespace SimpleWeather.HERE
 
             queryAPI = "https://weather.cit.api.here.com/weather/1.0/report.json?product=alerts&{0}" +
                 "&language={1}&metric=false&app_id={2}&app_code={3}";
-            string key = Settings.API_KEY;
+
+            string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
+
             string app_id = key.Split(';').First();
             string app_code = key.Split(';').Last();
             weatherURL = new Uri(String.Format(queryAPI, location.query, locale, app_id, app_code));
