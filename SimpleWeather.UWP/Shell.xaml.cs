@@ -171,8 +171,15 @@ namespace SimpleWeather.UWP
 
                 if (menuItem.PageType == typeof(WeatherNow))
                 {
-                    AppFrame.BackStack.Clear();
-                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                    try
+                    {
+                        AppFrame.BackStack.Clear();
+                        SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                    }
+                    catch (System.Runtime.InteropServices.COMException ex)
+                    {
+                        Logger.WriteLine(LoggerLevel.Error, ex, "Exception!!");
+                    }
                 }
             }
         }
