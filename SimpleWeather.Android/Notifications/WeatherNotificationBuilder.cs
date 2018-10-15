@@ -42,12 +42,12 @@ namespace SimpleWeather.Droid.App.Notifications
                     Math.Round(weather.condition.temp_f) : Math.Round(weather.condition.temp_c)) + "º";
             string condition = weather.condition.weather;
             string hitemp = (Settings.IsFahrenheit ?
-                    weather.forecast[0].high_f : weather.forecast[0].high_c) + "º";
+                    Math.Round(double.Parse(weather.forecast[0].high_f)) : Math.Round(double.Parse(weather.forecast[0].high_c))) + "º";
             string lotemp = (Settings.IsFahrenheit ?
-                    weather.forecast[0].low_f : weather.forecast[0].low_c) + "º";
+                    Math.Round(double.Parse(weather.forecast[0].low_f)) : Math.Round(double.Parse(weather.forecast[0].low_c))) + "º";
 
             // Weather icon
-            updateViews.SetImageViewResource(Resource.Id.weather_icon, 
+            updateViews.SetImageViewResource(Resource.Id.weather_icon,
                 wm.GetWeatherIconResource(weather.condition.icon));
 
             // Location Name
