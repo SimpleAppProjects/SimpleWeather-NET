@@ -243,7 +243,8 @@ namespace SimpleWeather.Droid.App
         [return: GeneratedEnum]
         public override StartCommandResult OnStartCommand(Intent intent, [GeneratedEnum] StartCommandFlags flags, int startId)
         {
-            StartForeground(JOB_ID, GetForegroundNotification());
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
+                StartForeground(JOB_ID, GetForegroundNotification());
 
             Task.Run(async () =>
             {
