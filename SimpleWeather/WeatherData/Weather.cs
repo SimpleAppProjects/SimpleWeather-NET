@@ -19,7 +19,7 @@ namespace SimpleWeather.WeatherData
 
         [TextBlob(nameof(locationblob))]
         public Location location { get; set; }
-        [Ignore] 
+        [Ignore]
         // Doesn't store this in db
         // For DateTimeOffset, offset isn't stored when saving to db
         // Store as string (blob) instead
@@ -1512,13 +1512,43 @@ namespace SimpleWeather.WeatherData
         public Condition(HERE.Observation observation)
         {
             weather = observation.description.ToPascalCase();
-            temp_f = float.Parse(observation.temperature);
-            temp_c = float.Parse(ConversionMethods.FtoC(observation.temperature));
-            wind_degrees = int.Parse(observation.windDirection);
-            wind_mph = float.Parse(observation.windSpeed);
-            wind_kph = float.Parse(ConversionMethods.MphToKph(observation.windSpeed));
-            feelslike_f = float.Parse(observation.comfort);
-            feelslike_c = float.Parse(ConversionMethods.FtoC(observation.comfort));
+            if (float.TryParse(observation.temperature, out float tempF))
+            {
+                temp_f = tempF;
+                temp_c = float.Parse(ConversionMethods.FtoC(tempF.ToString()));
+            }
+            else
+            {
+                temp_f = 0.00f;
+                temp_c = 0.00f;
+            }
+
+            if (int.TryParse(observation.windDirection, out int windDegrees))
+                wind_degrees = windDegrees;
+            else
+                wind_degrees = 0;
+
+            if (float.TryParse(observation.windSpeed, out float wind_Speed))
+            {
+                wind_mph = wind_Speed;
+                wind_kph = float.Parse(ConversionMethods.MphToKph(observation.windSpeed));
+            }
+            else
+            {
+                wind_mph = 0.00f;
+                wind_kph = 0.00f;
+            }
+
+            if (float.TryParse(observation.comfort, out float comfortTempF))
+            {
+                feelslike_f = comfortTempF;
+                feelslike_c = float.Parse(ConversionMethods.FtoC(comfortTempF.ToString()));
+            }
+            else
+            {
+                feelslike_f = 0.00f;
+                feelslike_c = 0.00f;
+            }
             icon = WeatherManager.GetProvider(WeatherAPI.Here)
                    .GetWeatherIcon(string.Format("{0}_{1}", observation.daylight, observation.iconName));
         }
