@@ -239,8 +239,17 @@ namespace SimpleWeather.HERE
         public override async Task<bool> IsKeyValid(string key)
         {
             string queryAPI = "https://weather.cit.api.here.com/weather/1.0/report.json";
-            string app_id = key.Split(';').First();
-            string app_code = key.Split(';').Last();
+
+            string app_id = "";
+            string app_code = "";
+
+            if (!String.IsNullOrWhiteSpace(key))
+            {
+                string[] keyArr = key.Split(';');
+                app_id = keyArr[0];
+                app_code = keyArr[keyArr.Length > 1 ? keyArr.Length - 1 : 0];
+            }
+
             Uri queryURL = new Uri(String.Format("{0}?app_id={1}&app_code={2}", queryAPI, app_id, app_code));
             bool isValid = false;
             WeatherException wEx = null;
@@ -328,8 +337,16 @@ namespace SimpleWeather.HERE
                 "&language={1}&metric=false&app_id={2}&app_code={3}";
 
             string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
-            string app_id = key.Split(';').First();
-            string app_code = key.Split(';').Last();
+            string app_id = "";
+            string app_code = "";
+
+            if (!String.IsNullOrWhiteSpace(key))
+            {
+                string[] keyArr = key.Split(';');
+                app_id = keyArr[0];
+                app_code = keyArr[keyArr.Length > 1 ? keyArr.Length - 1 : 0];
+            }
+
             weatherURL = new Uri(String.Format(queryAPI, location_query, locale, app_id, app_code));
 
             HttpClient webClient = new HttpClient();
@@ -483,8 +500,16 @@ namespace SimpleWeather.HERE
 
             string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
 
-            string app_id = key.Split(';').First();
-            string app_code = key.Split(';').Last();
+            string app_id = "";
+            string app_code = "";
+
+            if (!String.IsNullOrWhiteSpace(key))
+            {
+                string[] keyArr = key.Split(';');
+                app_id = keyArr[0];
+                app_code = keyArr[keyArr.Length > 1 ? keyArr.Length - 1 : 0];
+            }
+
             weatherURL = new Uri(String.Format(queryAPI, location.query, locale, app_id, app_code));
 
             try
