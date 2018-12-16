@@ -54,8 +54,11 @@ namespace SimpleWeather.UWP.Controls
                 if (!String.IsNullOrWhiteSpace(Key))
                 {
                     var keyArr = Key.Split(';');
-                    app_id = keyArr.First();
-                    app_code = keyArr.Last();
+                    if (keyArr.Length > 0)
+                    {
+                        app_id = keyArr[0];
+                        app_code = keyArr[keyArr.Length > 1 ? keyArr.Length - 1 : 0];
+                    }
                 }
 
                 KeyEntry.PlaceholderText = "App ID";

@@ -246,8 +246,11 @@ namespace SimpleWeather.HERE
             if (!String.IsNullOrWhiteSpace(key))
             {
                 string[] keyArr = key.Split(';');
-                app_id = keyArr[0];
-                app_code = keyArr[keyArr.Length > 1 ? keyArr.Length - 1 : 0];
+                if (keyArr.Length > 0)
+                {
+                    app_id = keyArr[0];
+                    app_code = keyArr[keyArr.Length > 1 ? keyArr.Length - 1 : 0];
+                }
             }
 
             Uri queryURL = new Uri(String.Format("{0}?app_id={1}&app_code={2}", queryAPI, app_id, app_code));
@@ -343,8 +346,11 @@ namespace SimpleWeather.HERE
             if (!String.IsNullOrWhiteSpace(key))
             {
                 string[] keyArr = key.Split(';');
-                app_id = keyArr[0];
-                app_code = keyArr[keyArr.Length > 1 ? keyArr.Length - 1 : 0];
+                if (keyArr.Length > 0)
+                {
+                    app_id = keyArr[0];
+                    app_code = keyArr[keyArr.Length > 1 ? keyArr.Length - 1 : 0];
+                }
             }
 
             weatherURL = new Uri(String.Format(queryAPI, location_query, locale, app_id, app_code));
@@ -506,8 +512,11 @@ namespace SimpleWeather.HERE
             if (!String.IsNullOrWhiteSpace(key))
             {
                 string[] keyArr = key.Split(';');
-                app_id = keyArr[0];
-                app_code = keyArr[keyArr.Length > 1 ? keyArr.Length - 1 : 0];
+                if (keyArr.Length > 0)
+                {
+                    app_id = keyArr[0];
+                    app_code = keyArr[keyArr.Length > 1 ? keyArr.Length - 1 : 0];
+                }
             }
 
             weatherURL = new Uri(String.Format(queryAPI, location.query, locale, app_id, app_code));
