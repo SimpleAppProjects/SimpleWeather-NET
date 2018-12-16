@@ -2,13 +2,11 @@
 
 A simple weather application
 
-Available for Windows 10 & Android devices
+Available for <a href='https://github.com/bryan2894-playgrnd/SimpleWeather-Xamarin'>Windows 10</a> & <a href='https://github.com/bryan2894-playgrnd/SimpleWeather-Android'>Android</a> devices
 
 Created using Xamarin
 
 ## Release
-
-<a href='https://play.google.com/store/apps/details?id=com.thewizrd.simpleweather&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width=300/></a>
 
 <a href="https://www.microsoft.com/store/apps/9NKC37BC8SRX?ocid=badge"><img src="https://assets.windowsphone.com/f2f77ec7-9ba9-4850-9ebe-77e366d08adc/English_Get_it_Win_10_InvariantCulture_Default.png" alt="Get it on Windows 10" width=250 /></a>
 
