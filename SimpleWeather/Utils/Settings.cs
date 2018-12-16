@@ -42,8 +42,8 @@ namespace SimpleWeather.Utils
         private const int CACHE_LIMIT = 10;
 
         // Units
-        public const string Fahrenheit = "F";
-        public const string Celsius = "C";
+        private const string Fahrenheit = "F";
+        private const string Celsius = "C";
 #if !__ANDROID_WEAR__
         private const string DEFAULT_UPDATE_INTERVAL = "60"; // 60 minutes (1hr)
         public const int DefaultInterval = 60;
@@ -360,6 +360,12 @@ namespace SimpleWeather.Utils
                 // Get position from favorites table
                 var favs = await locationDB.Table<Favorites>().ToListAsync();
                 var fav = favs.Find(f => f.query == oldKey);
+
+                if (fav == null)
+                {
+                    return;
+                }
+
                 int pos = fav.position;
 
                 // Remove location from table
