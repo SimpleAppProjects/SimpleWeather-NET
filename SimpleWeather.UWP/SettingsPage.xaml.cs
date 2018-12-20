@@ -165,6 +165,34 @@ namespace SimpleWeather.UWP
         {
             base.OnNavigatedTo(e);
             RequestAppTrigger = false;
+            Application.Current.Suspending += OnSuspending;
+        }
+
+        private void OnSuspending(object sender, SuspendingEventArgs e)
+        {
+            if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.API_KEY) && WeatherManager.IsKeyRequired(APIComboBox.SelectedValue.ToString()))
+            {
+                // Fallback to supported weather provider
+                APIComboBox.SelectedValue = WeatherAPI.Here;
+                Settings.API = WeatherAPI.Here;
+                wm.UpdateAPI();
+
+                if (String.IsNullOrWhiteSpace(wm.GetAPIKey()))
+                {
+                    // If (internal) key doesn't exist, fallback to Yahoo
+                    APIComboBox.SelectedValue = WeatherAPI.Yahoo;
+                    Settings.API = WeatherAPI.Yahoo;
+                    wm.UpdateAPI();
+                    Settings.UsePersonalKey = true;
+                    Settings.KeyVerified = false;
+                }
+                else
+                {
+                    // If key exists, go ahead
+                    Settings.UsePersonalKey = false;
+                    Settings.KeyVerified = true;
+                }
+            }
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
@@ -177,6 +205,7 @@ namespace SimpleWeather.UWP
             {
                 // Unsubscribe from event
                 SystemNavigationManager.GetForCurrentView().BackRequested -= SettingsPage_BackRequested;
+                Application.Current.Suspending -= OnSuspending;
 
                 // Trigger background task if necessary
                 if (RequestAppTrigger)

@@ -42,8 +42,8 @@ namespace SimpleWeather.Utils
         private const int CACHE_LIMIT = 10;
 
         // Units
-        private const string Fahrenheit = "F";
-        private const string Celsius = "C";
+        public const string Fahrenheit = "F";
+        public const string Celsius = "C";
 #if !__ANDROID_WEAR__
         private const string DEFAULT_UPDATE_INTERVAL = "60"; // 60 minutes (1hr)
         public const int DefaultInterval = 60;
