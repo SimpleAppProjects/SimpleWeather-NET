@@ -90,6 +90,11 @@ namespace SimpleWeather.UWP
                 }
                 else
                 {
+                    // User is using personal (unverified) keys
+                    Settings.KeyVerified = false;
+                    // Clear API KEY entry to avoid issues
+                    Settings.API_KEY = String.Empty;
+
                     KeyEntry.Visibility = Visibility.Visible;
                 }
 
@@ -98,6 +103,8 @@ namespace SimpleWeather.UWP
             else
             {
                 Settings.KeyVerified = false;
+                // Clear API KEY entry to avoid issues
+                Settings.API_KEY = String.Empty;
                 KeyPanel.Visibility = Visibility.Collapsed;
             }
 
@@ -286,6 +293,11 @@ namespace SimpleWeather.UWP
                 }
                 else
                 {
+                    // User is using personal (unverified) keys
+                    Settings.KeyVerified = false;
+                    // Clear API KEY entry to avoid issues
+                    Settings.API_KEY = String.Empty;
+
                     KeyEntry.Visibility = Visibility.Visible;
                 }
 
