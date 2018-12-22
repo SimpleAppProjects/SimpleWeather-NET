@@ -381,10 +381,10 @@ namespace SimpleWeather.WeatherData
             if (timeSegment.Length > 1)
             {
                 var startDate = DateTimeUtils.GetClosestWeekday((DayOfWeek)(int.Parse(timeSegment[0].day_of_week) - 1));
-                var endDate = DateTimeUtils.GetClosestWeekday((DayOfWeek)(int.Parse(timeSegment[1].day_of_week) - 1));
+                var endDate = DateTimeUtils.GetClosestWeekday((DayOfWeek)(int.Parse(timeSegment.Last().day_of_week) - 1));
 
                 Date = new DateTimeOffset(startDate.Add(GetTimeFromSegment(timeSegment[0].segment)), TimeSpan.Zero);
-                ExpiresDate = new DateTimeOffset(endDate.Add(GetTimeFromSegment(timeSegment[1].segment)), TimeSpan.Zero);
+                ExpiresDate = new DateTimeOffset(endDate.Add(GetTimeFromSegment(timeSegment.Last().segment)), TimeSpan.Zero);
             }
             else
             {
