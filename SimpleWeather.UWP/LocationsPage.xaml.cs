@@ -56,7 +56,7 @@ namespace SimpleWeather.UWP
             {
                 if (Settings.FollowGPS && location.locationType == LocationType.GPS)
                 {
-                    GPSPanelViewModel.First().SetWeather(weather);
+                    GPSPanelViewModel.First()?.SetWeather(weather);
                 }
                 else
                 {
@@ -69,7 +69,7 @@ namespace SimpleWeather.UWP
                                                         panelVM.LocationData.longitude.Equals(location.longitude) &&
                                                         panelVM.LocationData.tz_long.Equals(location.tz_long));
                     }
-                    panelView.SetWeather(weather);
+                    panelView?.SetWeather(weather);
                 }
             }
         }

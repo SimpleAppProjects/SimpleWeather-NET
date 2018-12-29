@@ -116,7 +116,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                 Logger.WriteLine(LoggerLevel.Error, ex, "{0}: Error cancelling task...", taskName);
             }
 
-            Logger.WriteLine(LoggerLevel.Info, "Background " + sender.Task.Name + " Cancel Requested...");
+            Logger.WriteLine(LoggerLevel.Info, "Background " + sender?.Task?.Name + " Cancel Requested...");
         }
 
         public static async Task RequestAppTrigger()
