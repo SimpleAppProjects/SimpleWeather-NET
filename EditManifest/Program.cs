@@ -13,7 +13,6 @@ namespace EditManifest
         private enum OSVersion
         {
             Unknown = -1,
-            Android = 0,
             UWP
         }
 
@@ -40,12 +39,7 @@ namespace EditManifest
                 Console.WriteLine("File path: {0}", FilePath);
                 Console.WriteLine("Config mode: {0}", ConfigMode);
 
-                if (FilePath.EndsWith("AndroidManifest.xml", StringComparison.InvariantCultureIgnoreCase) ||
-                    Regex.IsMatch(FilePath, "app_widget_.x._info.xml\\z"))
-                {
-                    OSVersion = OSVersion.Android;
-                }
-                else if (FilePath.EndsWith("Package.appxmanifest", StringComparison.InvariantCultureIgnoreCase))
+                if (FilePath.EndsWith("Package.appxmanifest", StringComparison.InvariantCultureIgnoreCase))
                 {
                     OSVersion = OSVersion.UWP;
                 }
@@ -70,20 +64,7 @@ namespace EditManifest
                     while (!sReader.EndOfStream)
                     {
                         var line = sReader.ReadLine();
-                        if (OSVersion == OSVersion.Android)
-                        {
-                            if ("Debug".Equals(ConfigMode))
-                            {
-                                line = line.Replace("package=\"com.thewizrd.simpleweather\"", "package=\"com.thewizrd.simpleweather_debug\"");
-                                line = line.Replace("com.thewizrd.simpleweather.", "com.thewizrd.simpleweather_debug.");
-                            }
-                            else
-                            {
-                                line = line.Replace("package=\"com.thewizrd.simpleweather_debug\"", "package=\"com.thewizrd.simpleweather\"");
-                                line = line.Replace("com.thewizrd.simpleweather_debug.", "com.thewizrd.simpleweather.");
-                            }
-                        }
-                        else if (OSVersion == OSVersion.UWP)
+                        if (OSVersion == OSVersion.UWP)
                         {
                             if ("Debug".Equals(ConfigMode))
                             {
