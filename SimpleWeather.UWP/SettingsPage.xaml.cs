@@ -91,9 +91,9 @@ namespace SimpleWeather.UWP
                 else
                 {
                     // User is using personal (unverified) keys
-                    Settings.KeyVerified = false;
+                    //Settings.KeyVerified = false;
                     // Clear API KEY entry to avoid issues
-                    Settings.API_KEY = String.Empty;
+                    //Settings.API_KEY = String.Empty;
 
                     KeyEntry.Visibility = Visibility.Visible;
                 }
