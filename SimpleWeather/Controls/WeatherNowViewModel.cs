@@ -289,114 +289,117 @@ namespace SimpleWeather.Controls
 
         public void UpdateView(Weather weather)
         {
+            if (weather.IsValid())
+            {
 #if WINDOWS_UWP
-            var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages[0];
-            var culture = new CultureInfo(userlang);
+                var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages[0];
+                var culture = new CultureInfo(userlang);
 #else
-            var culture = CultureInfo.CurrentCulture;
+                var culture = CultureInfo.CurrentCulture;
 #endif
-            // Update backgrounds
+                // Update backgrounds
 #if WINDOWS_UWP
-            wm.SetBackground(Background, weather);
-            PendingBackgroundColor = wm.GetWeatherBackgroundColor(weather);
+                wm.SetBackground(Background, weather);
+                PendingBackgroundColor = wm.GetWeatherBackgroundColor(weather);
 #elif __ANDROID__
-            Background = wm.GetBackgroundURI(weather);
-            PendingBackground = wm.GetWeatherBackgroundColor(weather);
+                Background = wm.GetBackgroundURI(weather);
+                PendingBackground = wm.GetWeatherBackgroundColor(weather);
 #endif
 
-            // Location
-            Location = weather.location.name;
+                // Location
+                Location = weather.location.name;
 
-            // Date Updated
-            UpdateDate = WeatherUtils.GetLastBuildDate(weather);
+                // Date Updated
+                UpdateDate = WeatherUtils.GetLastBuildDate(weather);
 
-            // Update Current Condition
-            CurTemp = Settings.IsFahrenheit ?
-                Math.Round(weather.condition.temp_f) + "\uf045" : Math.Round(weather.condition.temp_c) + "\uf03c";
-            CurCondition = (String.IsNullOrWhiteSpace(weather.condition.weather)) ? "---" : weather.condition.weather;
-            WeatherIcon = weather.condition.icon;
+                // Update Current Condition
+                CurTemp = Settings.IsFahrenheit ?
+                    Math.Round(weather.condition.temp_f) + "\uf045" : Math.Round(weather.condition.temp_c) + "\uf03c";
+                CurCondition = (String.IsNullOrWhiteSpace(weather.condition.weather)) ? "---" : weather.condition.weather;
+                WeatherIcon = weather.condition.icon;
 
-            // WeatherDetails
-            // Astronomy
+                // WeatherDetails
+                // Astronomy
 #if WINDOWS_UWP
-            Sunrise = weather.astronomy.sunrise.ToString("t", culture);
-            Sunset = weather.astronomy.sunset.ToString("t", culture);
+                Sunrise = weather.astronomy.sunrise.ToString("t", culture);
+                Sunset = weather.astronomy.sunset.ToString("t", culture);
 #elif __ANDROID__
-            if (Android.Text.Format.DateFormat.Is24HourFormat(Application.Context))
-            {
-                Sunrise = weather.astronomy.sunrise.ToString("HH:mm");
-                Sunset = weather.astronomy.sunset.ToString("HH:mm");
-            }
-            else
-            {
-                Sunrise = weather.astronomy.sunrise.ToString("h:mm tt");
-                Sunset = weather.astronomy.sunset.ToString("h:mm tt");
-            }
+                if (Android.Text.Format.DateFormat.Is24HourFormat(Application.Context))
+                {
+                    Sunrise = weather.astronomy.sunrise.ToString("HH:mm");
+                    Sunset = weather.astronomy.sunset.ToString("HH:mm");
+                }
+                else
+                {
+                    Sunrise = weather.astronomy.sunrise.ToString("h:mm tt");
+                    Sunset = weather.astronomy.sunset.ToString("h:mm tt");
+                }
 #endif
 
-            // Wind
-            WindChill = Settings.IsFahrenheit ?
-                Math.Round(weather.condition.feelslike_f) + "º" : Math.Round(weather.condition.feelslike_c) + "º";
-            WindSpeed = Settings.IsFahrenheit ?
-                Math.Round(weather.condition.wind_mph) + " mph" : Math.Round(weather.condition.wind_kph) + " kph";
-            UpdateWindDirection(weather.condition.wind_degrees);
+                // Wind
+                WindChill = Settings.IsFahrenheit ?
+                    Math.Round(weather.condition.feelslike_f) + "º" : Math.Round(weather.condition.feelslike_c) + "º";
+                WindSpeed = Settings.IsFahrenheit ?
+                    Math.Round(weather.condition.wind_mph) + " mph" : Math.Round(weather.condition.wind_kph) + " kph";
+                UpdateWindDirection(weather.condition.wind_degrees);
 
-            // Atmosphere
-            Humidity = weather.atmosphere.humidity;
-            if (!Humidity.EndsWith("%", StringComparison.Ordinal))
-                Humidity += "%";
+                // Atmosphere
+                Humidity = weather.atmosphere.humidity;
+                if (!Humidity.EndsWith("%", StringComparison.Ordinal))
+                    Humidity += "%";
 
-            var pressureVal = Settings.IsFahrenheit ? weather.atmosphere.pressure_in : weather.atmosphere.pressure_mb;
-            var pressureUnit = Settings.IsFahrenheit ? "in" : "mb";
+                var pressureVal = Settings.IsFahrenheit ? weather.atmosphere.pressure_in : weather.atmosphere.pressure_mb;
+                var pressureUnit = Settings.IsFahrenheit ? "in" : "mb";
 
-            if (float.TryParse(pressureVal, NumberStyles.Float, CultureInfo.InvariantCulture, out float pressure))
-                Pressure = string.Format("{0} {1}", pressure.ToString(culture), pressureUnit);
-            else
-                Pressure = string.Format("-- {0}", pressureUnit);
+                if (float.TryParse(pressureVal, NumberStyles.Float, CultureInfo.InvariantCulture, out float pressure))
+                    Pressure = string.Format("{0} {1}", pressure.ToString(culture), pressureUnit);
+                else
+                    Pressure = string.Format("-- {0}", pressureUnit);
 
-            UpdatePressureState(weather.atmosphere.pressure_trend);
+                UpdatePressureState(weather.atmosphere.pressure_trend);
 
-            var visibilityVal = Settings.IsFahrenheit ? weather.atmosphere.visibility_mi : weather.atmosphere.visibility_km;
-            var visibilityUnit = Settings.IsFahrenheit ? "mi" : "km";
+                var visibilityVal = Settings.IsFahrenheit ? weather.atmosphere.visibility_mi : weather.atmosphere.visibility_km;
+                var visibilityUnit = Settings.IsFahrenheit ? "mi" : "km";
 
-            if (float.TryParse(visibilityVal, NumberStyles.Float, CultureInfo.InvariantCulture, out float visibility))
-                _Visibility = string.Format("{0} {1}", visibility.ToString(culture), visibilityUnit);
-            else
-                _Visibility = string.Format("-- {0}", visibilityUnit);
+                if (float.TryParse(visibilityVal, NumberStyles.Float, CultureInfo.InvariantCulture, out float visibility))
+                    _Visibility = string.Format("{0} {1}", visibility.ToString(culture), visibilityUnit);
+                else
+                    _Visibility = string.Format("-- {0}", visibilityUnit);
 
-            // Add UI elements
-            Forecasts.Clear();
-            foreach (Forecast forecast in weather.forecast)
-            {
-                ForecastItemViewModel forecastView = new ForecastItemViewModel(forecast);
-                Forecasts.Add(forecastView);
-            }
+                // Add UI elements
+                Forecasts.Clear();
+                foreach (Forecast forecast in weather.forecast)
+                {
+                    ForecastItemViewModel forecastView = new ForecastItemViewModel(forecast);
+                    Forecasts.Add(forecastView);
+                }
 
-            // Additional Details
-            WeatherSource = weather.source;
-            string creditPrefix = "Data from";
+                // Additional Details
+                WeatherSource = weather.source;
+                string creditPrefix = "Data from";
 
 #if WINDOWS_UWP
-            creditPrefix = App.ResLoader.GetString("Credit_Prefix");
+                creditPrefix = App.ResLoader.GetString("Credit_Prefix");
 #elif __ANDROID__
-            creditPrefix = Application.Context.GetString(Resource.String.credit_prefix);
+                creditPrefix = Application.Context.GetString(Resource.String.credit_prefix);
 #endif
 
-            if (weather.source == WeatherAPI.WeatherUnderground)
-                WeatherCredit = string.Format("{0} WeatherUnderground", creditPrefix);
-            else if (weather.source == WeatherAPI.Yahoo)
-                WeatherCredit = string.Format("{0} Yahoo!", creditPrefix);
-            else if (weather.source == WeatherAPI.OpenWeatherMap)
-                WeatherCredit = string.Format("{0} OpenWeatherMap", creditPrefix);
-            else if (weather.source == WeatherAPI.MetNo)
-                WeatherCredit = string.Format("{0} MET Norway", creditPrefix);
-            else if (weather.source == WeatherAPI.Here)
-                WeatherCredit = string.Format("{0} HERE Weather", creditPrefix);
+                if (weather.source == WeatherAPI.WeatherUnderground)
+                    WeatherCredit = string.Format("{0} WeatherUnderground", creditPrefix);
+                else if (weather.source == WeatherAPI.Yahoo)
+                    WeatherCredit = string.Format("{0} Yahoo!", creditPrefix);
+                else if (weather.source == WeatherAPI.OpenWeatherMap)
+                    WeatherCredit = string.Format("{0} OpenWeatherMap", creditPrefix);
+                else if (weather.source == WeatherAPI.MetNo)
+                    WeatherCredit = string.Format("{0} MET Norway", creditPrefix);
+                else if (weather.source == WeatherAPI.Here)
+                    WeatherCredit = string.Format("{0} HERE Weather", creditPrefix);
 
-            Extras.UpdateView(weather);
+                Extras.UpdateView(weather);
 
-            // Language
-            WeatherLocale = weather.locale;
+                // Language
+                WeatherLocale = weather.locale;
+            }
         }
 
         private void UpdatePressureState(string state)
