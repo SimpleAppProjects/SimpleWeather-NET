@@ -29,6 +29,7 @@ namespace SimpleWeather.Utils
         public static bool ShowAlerts { get { return UseAlerts(); } set { SetAlerts(value); } }
 #endif
         public static bool UsePersonalKey { get { return IsPersonalKey(); } set { SetPersonalKey(value); } }
+        public static int VersionCode { get { return GetVersionCode(); } set { SetVersionCode(value); } }
 
         // Database
         private static int DBVersion { get { return GetDBVersion(); } set { SetDBVersion(value); } }
@@ -66,6 +67,7 @@ namespace SimpleWeather.Utils
         private const string KEY_DBVERSION = "key_dbversion";
         private const string KEY_USEALERTS = "key_usealerts";
         private const string KEY_USEPERSONALKEY = "key_usepersonalkey";
+        private const string KEY_CURRENTVERSION = "key_currentversion";
 
         // Weather Data
         private static LocationData lastGPSLocData = new LocationData();
@@ -109,7 +111,7 @@ namespace SimpleWeather.Utils
                     // Add and set tz_long column in db
                     case 1:
                         if (await locationDB.Table<LocationData>().CountAsync() > 0)
-                            await DBUtils.SetLocationData(locationDB);
+                            await DBUtils.SetLocationData(locationDB, API);
                         break;
                     default:
                         break;
@@ -159,6 +161,24 @@ namespace SimpleWeather.Utils
                         lastGPSLocData = new LocationData();
                 }
             }
+#endif
+
+#if WINDOWS_UWP
+            var PackageVersion = Windows.ApplicationModel.Package.Current.Id.Version;
+            var version = string.Format("{0}{1}{2}{3}",
+                PackageVersion.Major, PackageVersion.Minor, PackageVersion.Build, PackageVersion.Revision);
+            var CurrentVersionCode = int.Parse(version);
+            if (WeatherLoaded && VersionCode < CurrentVersionCode)
+            {
+                // v1.3.7 - Yahoo (YQL) is no longer in service
+                // Update location data from HERE Geocoder service
+                if (WeatherAPI.Here.Equals(Settings.API) && VersionCode < 1370)
+                {
+                    await DBUtils.SetLocationData(locationDB, WeatherAPI.Here);
+                    SaveLastGPSLocData(lastGPSLocData);
+                }
+            }
+            SetVersionCode(CurrentVersionCode);
 #endif
         }
 

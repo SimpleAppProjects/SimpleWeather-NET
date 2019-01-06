@@ -117,12 +117,12 @@ namespace SimpleWeather.Utils
         }
 #endif
 
-        public static async Task SetLocationData(SQLiteAsyncConnection locationDB)
+        public static async Task SetLocationData(SQLiteAsyncConnection locationDB, String API)
         {
             foreach (LocationData location in await locationDB.Table<LocationData>().ToListAsync()
                     .ConfigureAwait(false))
             {
-                await WeatherManager.GetProvider(location.source)
+                await WeatherManager.GetProvider(API)
                     .UpdateLocationData(location)
                     .ConfigureAwait(false);
             }

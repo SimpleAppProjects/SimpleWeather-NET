@@ -29,6 +29,7 @@ namespace SimpleWeather.Utils
                     Path.Combine(appDataFolder.Path, "weatherdata.db"));
 
             localSettings.CreateContainer(WeatherAPI.WeatherUnderground, ApplicationDataCreateDisposition.Always);
+            localSettings.CreateContainer("version", ApplicationDataCreateDisposition.Always);
         }
 
         private static string GetTempUnit()
@@ -237,6 +238,22 @@ namespace SimpleWeather.Utils
         private static void SetPersonalKey(bool value)
         {
             localSettings.Containers[WeatherAPI.WeatherUnderground].Values[KEY_USEPERSONALKEY] = value;
+        }
+
+        private static int GetVersionCode()
+        {
+            if (!localSettings.Containers["version"].Values.ContainsKey(KEY_CURRENTVERSION) || localSettings.Values[KEY_CURRENTVERSION] == null)
+            {
+                SetVersionCode(0);
+                return 0;
+            }
+            else
+                return (int)localSettings.Containers["version"].Values[KEY_CURRENTVERSION];
+        }
+
+        private static void SetVersionCode(int value)
+        {
+            localSettings.Containers["version"].Values[KEY_CURRENTVERSION] = value;
         }
     }
 }
