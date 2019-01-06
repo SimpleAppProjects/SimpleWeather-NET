@@ -2,6 +2,7 @@
 using SimpleWeather.WeatherUnderground;
 using SimpleWeather.WeatherYahoo;
 using SimpleWeather.OpenWeather;
+using System.Collections.Generic;
 #if WINDOWS_UWP
 using SimpleWeather.UWP;
 #elif __ANDROID__
@@ -168,63 +169,109 @@ namespace SimpleWeather.Controls
         }
         #endregion
 
-        public LocationQueryViewModel(HERE.place location)
+        public LocationQueryViewModel(HERE.Suggestion location)
         {
             SetLocation(location);
         }
 
-        public void SetLocation(HERE.place location)
+        public void SetLocation(HERE.Suggestion location)
         {
             string town, region;
 
-            // If location type is ZipCode append it to location name
-            if ((location.placeTypeName.Value == "Zip Code"
-                || location.placeTypeName.Value == "Postal Code"))
-            {
-                town = location.name;
+            // Try to get district name or fallback to city name
+            if (!String.IsNullOrEmpty(location.address.district))
+                town = location.address.district;
+            else
+                town = location.address.city;
 
-                if (location.locality2 != null
-                    && !String.IsNullOrEmpty(location.locality2.Value))
+            // Try to get district name or fallback to city name
+            if (!String.IsNullOrEmpty(location.address.state))
+                region = location.address.state;
+            else
+                region = location.address.country;
+
+            if (!String.IsNullOrEmpty(location.address.county)
+                    && !(location.address.county.Equals(region) || location.address.county.Equals(town)))
+                LocationName = string.Format("{0}, {1}, {2}", town, location.address.county, region);
+            else
+                LocationName = string.Format("{0}, {1}", town, region);
+
+            LocationCountry = location.countryCode;
+            LocationQuery = location.locationId;
+
+            LocationLat = -1;
+            LocationLong = -1;
+
+            LocationTZ_Long = null;
+        }
+
+        public LocationQueryViewModel(HERE.Result location)
+        {
+            SetLocation(location);
+        }
+
+        public void SetLocation(HERE.Result location)
+        {
+            string country = null, town = null, region = null;
+
+            if (location.location.address.additionalData != null)
+            {
+                foreach(HERE.Additionaldata item in location.location.address.additionalData)
                 {
-                    town += " - " + location.locality2.Value;
-                }
-                else
-                {
-                    if (location.locality1 != null
-                        && !String.IsNullOrEmpty(location.locality1.Value))
-                        town += " - " + location.locality1.Value;
+                    if ("Country2".Equals(item.key))
+                        country = item.value;
+                    else if ("StateName".Equals(item.key))
+                        region = item.value;
+
+                    if (country != null && region != null)
+                        break;
                 }
             }
+
+            // Try to get district name or fallback to city name
+            if (!String.IsNullOrEmpty(location.location.address.district))
+                town = location.location.address.district;
             else
-            {
-                if (location.locality2 != null
-                    && !String.IsNullOrEmpty(location.locality2.Value))
-                    town = location.locality2.Value;
-                else if (location.locality1 != null
-                    && !String.IsNullOrEmpty(location.locality1.Value))
-                    town = location.locality1.Value;
-                else
-                    town = location.name;
-            }
+                town = location.location.address.city;
 
-            // Try to get region name or fallback to country name
-            if (location.admin1 != null
-                && !String.IsNullOrEmpty(location.admin1.Value))
-                region = location.admin1.Value;
-            else if (location.admin2 != null
-                && !String.IsNullOrEmpty(location.admin2.Value))
-                region = location.admin2.Value;
+            if (String.IsNullOrEmpty(region))
+                region = location.location.address.state;
+
+            if (String.IsNullOrEmpty(country))
+                region = location.location.address.country;
+
+            if (!String.IsNullOrEmpty(location.location.address.county)
+                    && !(location.location.address.county.Equals(region) || location.location.address.county.Equals(town)))
+                LocationName = string.Format("{0}, {1}, {2}", town, location.location.address.county, region);
             else
-                region = location.country.Value;
+                LocationName = string.Format("{0}, {1}", town, region);
 
-            LocationName = string.Format("{0}, {1}", town, region);
-            LocationCountry = location.country.code;
-            LocationQuery = string.Format("latitude={0}&longitude={1}", (double)location.centroid.latitude, (double)location.centroid.longitude);
+            LocationCountry = country;
+            LocationQuery = string.Format("latitude={0}&longitude={1}",
+                location.location.displayPosition.latitude, location.location.displayPosition.longitude);
 
-            LocationLat = (double)location.centroid.latitude;
-            LocationLong = (double)location.centroid.longitude;
+            LocationLat = location.location.displayPosition.latitude;
+            LocationLong = location.location.displayPosition.longitude;
 
-            LocationTZ_Long = location.timezone.Value;
+            LocationTZ_Long = location.location.adminInfo.timeZone.id;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var model = obj as LocationQueryViewModel;
+            return model != null &&
+                   LocationName == model.LocationName &&
+                   LocationCountry == model.LocationCountry/* &&
+                   LocationQuery == model.LocationQuery*/;
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = 879653843;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(LocationName);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(LocationCountry);
+            //hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(LocationQuery);
+            return hashCode;
         }
     }
 }

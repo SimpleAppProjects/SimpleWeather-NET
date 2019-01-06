@@ -40,9 +40,32 @@ namespace SimpleWeather.HERE
         {
             ObservableCollection<LocationQueryViewModel> locations = null;
 
-            string yahooAPI = "https://query.yahooapis.com/v1/public/yql?q=";
-            string query = "select * from geo.places where text=\"" + location_query + "*\"";
-            Uri queryURL = new Uri(yahooAPI + query);
+#if WINDOWS_UWP
+            var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages.First();
+            var culture = new CultureInfo(userlang);
+#else
+            var culture = CultureInfo.CurrentCulture;
+#endif
+            string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
+
+            string queryAPI = "https://autocomplete.geocoder.cit.api.here.com/6.2/suggest.json";
+            string query = "?query={0}&app_id={1}&app_code={2}&language={3}&maxresults=10";
+
+            string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
+            string app_id = "";
+            string app_code = "";
+
+            if (!String.IsNullOrWhiteSpace(key))
+            {
+                string[] keyArr = key.Split(';');
+                if (keyArr.Length > 0)
+                {
+                    app_id = keyArr[0];
+                    app_code = keyArr[keyArr.Length > 1 ? keyArr.Length - 1 : 0];
+                }
+            }
+
+            Uri queryURL = new Uri(String.Format(queryAPI + query, location_query, app_id, app_code, locale));
             // Limit amount of results shown
             int maxResults = 10;
 
@@ -62,28 +85,34 @@ namespace SimpleWeather.HERE
                 webClient.Dispose();
 
                 // Load data
-                locations = new ObservableCollection<LocationQueryViewModel>();
-                XmlSerializer deserializer = new XmlSerializer(typeof(query));
-                query root = (query)deserializer.Deserialize(contentStream);
+                var locationSet = new HashSet<LocationQueryViewModel>();
+                AC_Rootobject root = null;
+                await Task.Run(() =>
+                {
+                    root = JSONParser.Deserializer<AC_Rootobject>(contentStream);
+                });
 
-                foreach (place result in root.results)
+                foreach (Suggestion result in root.suggestions)
                 {
                     // Filter: only store city results
-                    if (result.placeTypeName.Value == "Town"
-                        || result.placeTypeName.Value == "Suburb"
-                        || (result.placeTypeName.Value == "Zip Code"
-                        || result.placeTypeName.Value == "Postal Code" &&
-                            (result.locality1 != null && result.locality1.type == "Town")
-                            || (result.locality1 != null && result.locality1.type == "Suburb")))
-                        locations.Add(new LocationQueryViewModel(result));
+                    bool added = false;
+                    if ("city".Equals(result.matchLevel)
+                            || "district".Equals(result.matchLevel)
+                            || "postalCode".Equals(result.matchLevel))
+                        added = locationSet.Add(new LocationQueryViewModel(result));
                     else
                         continue;
 
                     // Limit amount of results
-                    maxResults--;
-                    if (maxResults <= 0)
-                        break;
+                    if (added)
+                    {
+                        maxResults--;
+                        if (maxResults <= 0)
+                            break;
+                    }
                 }
+
+                locations = new ObservableCollection<LocationQueryViewModel>(locationSet);
 
                 // End Stream
                 if (contentStream != null)
@@ -105,11 +134,35 @@ namespace SimpleWeather.HERE
         {
             LocationQueryViewModel location = null;
 
-            string yahooAPI = "https://query.yahooapis.com/v1/public/yql?q=";
-            string location_query = string.Format("({0},{1})", coord.Latitude, coord.Longitude);
-            string query = "select * from geo.places where text=\"" + location_query + "\"";
-            Uri queryURL = new Uri(yahooAPI + query);
-            place result = null;
+#if WINDOWS_UWP
+            var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages.First();
+            var culture = new CultureInfo(userlang);
+#else
+            var culture = CultureInfo.CurrentCulture;
+#endif
+            string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
+
+            string queryAPI = "https://reverse.geocoder.cit.api.here.com/6.2/reversegeocode.json";
+            string location_query = string.Format("{0},{1}", coord.Latitude, coord.Longitude);
+            string query = "?prox={0},150&mode=retrieveAddresses&maxresults=1&additionaldata=Country2,true&gen=9&jsonattributes=1" +
+                "&locationattributes=adminInfo,timeZone,-mapView,-mapReference&language={1}&app_id={2}&app_code={3}";
+
+            string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
+            string app_id = "";
+            string app_code = "";
+
+            if (!String.IsNullOrWhiteSpace(key))
+            {
+                string[] keyArr = key.Split(';');
+                if (keyArr.Length > 0)
+                {
+                    app_id = keyArr[0];
+                    app_code = keyArr[keyArr.Length > 1 ? keyArr.Length - 1 : 0];
+                }
+            }
+
+            Uri queryURL = new Uri(String.Format(queryAPI + query, location_query, locale, app_id, app_code));
+            Result result = null;
             WeatherException wEx = null;
 
             try
@@ -129,11 +182,14 @@ namespace SimpleWeather.HERE
                 webClient.Dispose();
 
                 // Load data
-                XmlSerializer deserializer = new XmlSerializer(typeof(query));
-                query root = (query)deserializer.Deserialize(contentStream);
+                Geo_Rootobject root = null;
+                await Task.Run(() =>
+                {
+                    root = JSONParser.Deserializer<Geo_Rootobject>(contentStream);
+                });
 
-                if (root.results != null)
-                    result = root.results[0];
+                if (root.response.view.Length > 0 && root.response.view[0].result.Length > 0)
+                    result = root.response.view[0].result[0];
 
                 // End Stream
                 if (contentStream != null)
@@ -161,7 +217,7 @@ namespace SimpleWeather.HERE
                 Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting location");
             }
 
-            if (result != null && !String.IsNullOrWhiteSpace(result.woeid))
+            if (result != null && !String.IsNullOrWhiteSpace(result.location.locationId))
                 location = new LocationQueryViewModel(result);
             else
                 location = new LocationQueryViewModel();
@@ -173,10 +229,34 @@ namespace SimpleWeather.HERE
         {
             LocationQueryViewModel location = null;
 
-            string yahooAPI = "https://query.yahooapis.com/v1/public/yql?q=";
-            string query = "select * from geo.places where text=\"" + location_query + "\"";
-            Uri queryURL = new Uri(yahooAPI + query);
-            place result = null;
+#if WINDOWS_UWP
+            var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages.First();
+            var culture = new CultureInfo(userlang);
+#else
+            var culture = CultureInfo.CurrentCulture;
+#endif
+            string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
+
+            string queryAPI = "https://reverse.geocoder.cit.api.here.com/6.2/reversegeocode.json";
+            string query = "?prox={0},150&mode=retrieveAddresses&maxresults=1&additionaldata=Country2,true&gen=9&jsonattributes=1" +
+                "&locationattributes=adminInfo,timeZone,-mapView,-mapReference&language={1}&app_id={2}&app_code={3}";
+
+            string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
+            string app_id = "";
+            string app_code = "";
+
+            if (!String.IsNullOrWhiteSpace(key))
+            {
+                string[] keyArr = key.Split(';');
+                if (keyArr.Length > 0)
+                {
+                    app_id = keyArr[0];
+                    app_code = keyArr[keyArr.Length > 1 ? keyArr.Length - 1 : 0];
+                }
+            }
+
+            Uri queryURL = new Uri(String.Format(queryAPI + query, location_query, locale, app_id, app_code));
+            Result result = null;
             WeatherException wEx = null;
 
             try
@@ -196,11 +276,14 @@ namespace SimpleWeather.HERE
                 webClient.Dispose();
 
                 // Load data
-                XmlSerializer deserializer = new XmlSerializer(typeof(query));
-                query root = (query)deserializer.Deserialize(contentStream);
+                Geo_Rootobject root = null;
+                await Task.Run(() =>
+                {
+                    root = JSONParser.Deserializer<Geo_Rootobject>(contentStream);
+                });
 
-                if (root.results != null)
-                    result = root.results[0];
+                if (root.response.view.Length > 0 && root.response.view[0].result.Length > 0)
+                    result = root.response.view[0].result[0];
 
                 // End Stream
                 if (contentStream != null)
@@ -228,7 +311,101 @@ namespace SimpleWeather.HERE
                 Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting location");
             }
 
-            if (result != null && !String.IsNullOrWhiteSpace(result.woeid))
+            if (result != null && !String.IsNullOrWhiteSpace(result.location.locationId))
+                location = new LocationQueryViewModel(result);
+            else
+                location = new LocationQueryViewModel();
+
+            return location;
+        }
+
+        public async Task<LocationQueryViewModel> GetLocationFromLocID(string locationID)
+        {
+            LocationQueryViewModel location = null;
+
+#if WINDOWS_UWP
+            var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages.First();
+            var culture = new CultureInfo(userlang);
+#else
+            var culture = CultureInfo.CurrentCulture;
+#endif
+            string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
+
+            string queryAPI = "https://geocoder.cit.api.here.com/6.2/geocode.json";
+            string query = "?locationid={0}&mode=retrieveAddresses&maxresults=1&additionaldata=Country2,true&gen=9&jsonattributes=1" +
+                "&locationattributes=adminInfo,timeZone,-mapView,-mapReference&language={1}&app_id={2}&app_code={3}";
+
+            string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
+            string app_id = "";
+            string app_code = "";
+
+            if (!String.IsNullOrWhiteSpace(key))
+            {
+                string[] keyArr = key.Split(';');
+                if (keyArr.Length > 0)
+                {
+                    app_id = keyArr[0];
+                    app_code = keyArr[keyArr.Length > 1 ? keyArr.Length - 1 : 0];
+                }
+            }
+
+            Uri queryURL = new Uri(String.Format(queryAPI + query, locationID, locale, app_id, app_code));
+            Result result = null;
+            WeatherException wEx = null;
+
+            try
+            {
+                // Connect to webstream
+                HttpClient webClient = new HttpClient();
+                HttpResponseMessage response = await webClient.GetAsync(queryURL);
+                response.EnsureSuccessStatusCode();
+                Stream contentStream = null;
+#if WINDOWS_UWP
+                contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+#elif __ANDROID__
+                contentStream = await response.Content.ReadAsStreamAsync();
+#endif
+
+                // End Stream
+                webClient.Dispose();
+
+                // Load data
+                Geo_Rootobject root = null;
+                await Task.Run(() =>
+                {
+                    root = JSONParser.Deserializer<Geo_Rootobject>(contentStream);
+                });
+
+                if (root.response.view.Length > 0 && root.response.view[0].result.Length > 0)
+                    result = root.response.view[0].result[0];
+
+                // End Stream
+                if (contentStream != null)
+                    contentStream.Dispose();
+            }
+            catch (Exception ex)
+            {
+                result = null;
+#if WINDOWS_UWP
+                if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
+                }
+#elif __ANDROID__
+                if (ex is System.Net.WebException || ex is HttpRequestException)
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    new Android.OS.Handler(Android.OS.Looper.MainLooper).Post(() =>
+                    {
+                        Toast.MakeText(Application.Context, wEx.Message, ToastLength.Short).Show();
+                    });
+                }
+#endif
+                Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting location");
+            }
+
+            if (result != null && !String.IsNullOrWhiteSpace(result.location.locationId))
                 location = new LocationQueryViewModel(result);
             else
                 location = new LocationQueryViewModel();
@@ -562,10 +739,10 @@ namespace SimpleWeather.HERE
             return alerts;
         }
 
-        // Fix format of query to pass to Yahoo API
+        // Fix format of query to pass to Geocoder API
         public override async Task UpdateLocationData(LocationData location)
         {
-            string location_query = string.Format("({0},{1})", location.latitude, location.longitude);
+            string location_query = string.Format("{0},{1}", location.latitude, location.longitude);
 
             var qview = await GetLocation(location_query);
 

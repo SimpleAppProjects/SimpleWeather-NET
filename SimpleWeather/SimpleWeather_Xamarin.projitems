@@ -20,6 +20,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\WeatherExtrasViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HERE\Alerts.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HERE\AutoCompleteQuery.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HERE\GeopositionQuery.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HERE\HEREWeatherKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HERE\HEREWeatherProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HERE\Weather.cs" />
