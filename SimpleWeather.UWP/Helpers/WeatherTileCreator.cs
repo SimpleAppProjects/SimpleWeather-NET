@@ -105,6 +105,17 @@ namespace SimpleWeather.UWP.Helpers
                             },
                         }
                     };
+                    String forecastHi;
+                    try
+                    {
+                        forecastHi = (Settings.IsFahrenheit ?
+                            Math.Round(double.Parse(forecast.high_f)).ToString() : Math.Round(double.Parse(forecast.high_c)).ToString()) + "º";
+                    }
+                    catch (FormatException ex)
+                    {
+                        forecastHi = "--º";
+                        Logger.WriteLine(LoggerLevel.Error, "Invalid number format", ex);
+                    }
                     var tempSubgroup = new AdaptiveSubgroup()
                     {
                         HintWeight = 1,
@@ -113,8 +124,7 @@ namespace SimpleWeather.UWP.Helpers
                         {
                             new AdaptiveText()
                             {
-                                Text = (Settings.IsFahrenheit ?
-                                    Math.Round(double.Parse(forecast.high_f)).ToString() : Math.Round(double.Parse(forecast.high_c)).ToString()) + "º",
+                                Text = forecastHi,
                                 HintStyle = AdaptiveTextStyle.Caption,
                                 HintAlign = AdaptiveTextAlign.Center
                             }
@@ -171,6 +181,27 @@ namespace SimpleWeather.UWP.Helpers
                         }
                     };
 
+                    String forecastHi, forecastLo;
+                    try
+                    {
+                        forecastHi = (Settings.IsFahrenheit ?
+                            Math.Round(double.Parse(forecast.high_f)).ToString() : Math.Round(double.Parse(forecast.high_c)).ToString()) + "º";
+                    }
+                    catch (FormatException ex)
+                    {
+                        forecastHi = "--º";
+                        Logger.WriteLine(LoggerLevel.Error, "Invalid number format", ex);
+                    }
+                    try
+                    {
+                        forecastLo = (Settings.IsFahrenheit ?
+                            Math.Round(double.Parse(forecast.low_f)).ToString() : Math.Round(double.Parse(forecast.low_c)).ToString()) + "º";
+                    }
+                    catch (FormatException ex)
+                    {
+                        forecastLo = "--º";
+                        Logger.WriteLine(LoggerLevel.Error, "Invalid number format", ex);
+                    }
                     var tempSubgroup = new AdaptiveSubgroup()
                     {
                         HintWeight = 1,
@@ -178,15 +209,13 @@ namespace SimpleWeather.UWP.Helpers
                         {
                             new AdaptiveText()
                             {
-                                Text = (Settings.IsFahrenheit ?
-                                    Math.Round(double.Parse(forecast.high_f)).ToString() : Math.Round(double.Parse(forecast.high_c)).ToString()) + "º",
+                                Text = forecastHi,
                                 HintStyle = AdaptiveTextStyle.Caption,
                                 HintAlign = AdaptiveTextAlign.Center
                             },
                             new AdaptiveText()
                             {
-                                Text = (Settings.IsFahrenheit ?
-                                    Math.Round(double.Parse(forecast.low_f)).ToString() : Math.Round(double.Parse(forecast.low_c)).ToString()) + "º",
+                                Text = forecastLo,
                                 HintStyle = AdaptiveTextStyle.CaptionSubtle,
                                 HintAlign = AdaptiveTextAlign.Center
                             }
@@ -268,6 +297,27 @@ namespace SimpleWeather.UWP.Helpers
                 {
                     var forecast = weather.forecast[i];
 
+                    String forecastHi, forecastLo;
+                    try
+                    {
+                        forecastHi = (Settings.IsFahrenheit ?
+                            Math.Round(double.Parse(forecast.high_f)).ToString() : Math.Round(double.Parse(forecast.high_c)).ToString()) + "º";
+                    }
+                    catch (FormatException ex)
+                    {
+                        forecastHi = "--º";
+                        Logger.WriteLine(LoggerLevel.Error, "Invalid number format", ex);
+                    }
+                    try
+                    {
+                        forecastLo = (Settings.IsFahrenheit ?
+                            Math.Round(double.Parse(forecast.low_f)).ToString() : Math.Round(double.Parse(forecast.low_c)).ToString()) + "º";
+                    }
+                    catch (FormatException ex)
+                    {
+                        forecastLo = "--º";
+                        Logger.WriteLine(LoggerLevel.Error, "Invalid number format", ex);
+                    }
                     var subgroup = new AdaptiveSubgroup()
                     {
                         HintWeight = 1,
@@ -285,14 +335,12 @@ namespace SimpleWeather.UWP.Helpers
                             },
                             new AdaptiveText()
                             {
-                                Text = (Settings.IsFahrenheit ?
-                                    Math.Round(double.Parse(forecast.high_f)).ToString() : Math.Round(double.Parse(forecast.high_c)).ToString()) + "º",
+                                Text = forecastHi,
                                 HintAlign = AdaptiveTextAlign.Center
                             },
                             new AdaptiveText()
                             {
-                                Text = (Settings.IsFahrenheit ?
-                                    Math.Round(double.Parse(forecast.low_f)).ToString() : Math.Round(double.Parse(forecast.low_c)).ToString()) + "º",
+                                Text = forecastLo,
                                 HintStyle = AdaptiveTextStyle.CaptionSubtle,
                                 HintAlign = AdaptiveTextAlign.Center
                             }
@@ -393,6 +441,17 @@ namespace SimpleWeather.UWP.Helpers
                             },
                         }
                     };
+                    String hrforecastHi;
+                    try
+                    {
+                        hrforecastHi = (Settings.IsFahrenheit ?
+                            Math.Round(double.Parse(hrforecast.high_f)).ToString() : Math.Round(double.Parse(hrforecast.high_c)).ToString()) + "º";
+                    }
+                    catch (FormatException ex)
+                    {
+                        hrforecastHi = "--º";
+                        Logger.WriteLine(LoggerLevel.Error, "Invalid number format", ex);
+                    }
                     var tempSubgroup = new AdaptiveSubgroup()
                     {
                         HintWeight = 1,
@@ -401,8 +460,7 @@ namespace SimpleWeather.UWP.Helpers
                         {
                             new AdaptiveText()
                             {
-                                Text = (Settings.IsFahrenheit ?
-                                    Math.Round(double.Parse(hrforecast.high_f)).ToString() : Math.Round(double.Parse(hrforecast.high_c)).ToString()) + "º",
+                                Text = hrforecastHi,
                                 HintStyle = AdaptiveTextStyle.Caption,
                                 HintAlign = AdaptiveTextAlign.Center
                             }
@@ -786,6 +844,27 @@ namespace SimpleWeather.UWP.Helpers
                 {
                     var forecast = weather.forecast[i];
 
+                    String forecastHi, forecastLo;
+                    try
+                    {
+                        forecastHi = (Settings.IsFahrenheit ?
+                            Math.Round(double.Parse(forecast.high_f)).ToString() : Math.Round(double.Parse(forecast.high_c)).ToString()) + "º";
+                    }
+                    catch (FormatException ex)
+                    {
+                        forecastHi = "--º";
+                        Logger.WriteLine(LoggerLevel.Error, "Invalid number format", ex);
+                    }
+                    try
+                    {
+                        forecastLo = (Settings.IsFahrenheit ?
+                            Math.Round(double.Parse(forecast.low_f)).ToString() : Math.Round(double.Parse(forecast.low_c)).ToString()) + "º";
+                    }
+                    catch (FormatException ex)
+                    {
+                        forecastLo = "--º";
+                        Logger.WriteLine(LoggerLevel.Error, "Invalid number format", ex);
+                    }
                     var subgroup = new AdaptiveSubgroup()
                     {
                         HintWeight = 1,
@@ -803,14 +882,12 @@ namespace SimpleWeather.UWP.Helpers
                             },
                             new AdaptiveText()
                             {
-                                Text = (Settings.IsFahrenheit ?
-                                    Math.Round(double.Parse(forecast.high_f)).ToString() : Math.Round(double.Parse(forecast.high_c)).ToString()) + "º",
+                                Text = forecastHi,
                                 HintAlign = AdaptiveTextAlign.Center
                             },
                             new AdaptiveText()
                             {
-                                Text = (Settings.IsFahrenheit ?
-                                    Math.Round(double.Parse(forecast.low_f)).ToString() : Math.Round(double.Parse(forecast.low_c)).ToString()) + "º",
+                                Text = forecastLo,
                                 HintStyle = AdaptiveTextStyle.CaptionSubtle,
                                 HintAlign = AdaptiveTextAlign.Center
                             }

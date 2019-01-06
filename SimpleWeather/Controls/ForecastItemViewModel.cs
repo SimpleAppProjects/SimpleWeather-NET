@@ -34,10 +34,26 @@ namespace SimpleWeather.Controls
             WeatherIcon = forecast.icon;
             Date = forecast.date.ToString("dddd dd", culture);
             Condition = forecast.condition;
-            HiTemp = (Settings.IsFahrenheit ?
-                Math.Round(double.Parse(forecast.high_f)).ToString() : Math.Round(double.Parse(forecast.high_c)).ToString()) + "º ";
-            LoTemp = (Settings.IsFahrenheit ?
-                Math.Round(double.Parse(forecast.low_f)).ToString() : Math.Round(double.Parse(forecast.low_c)).ToString()) + "º ";
+            try
+            {
+                HiTemp = (Settings.IsFahrenheit ?
+                    Math.Round(double.Parse(forecast.high_f)).ToString() : Math.Round(double.Parse(forecast.high_c)).ToString()) + "º ";
+            }
+            catch (FormatException ex)
+            {
+                HiTemp = "--º ";
+                Logger.WriteLine(LoggerLevel.Error, "Invalid number format", ex);
+            }
+            try
+            {
+                LoTemp = (Settings.IsFahrenheit ?
+                    Math.Round(double.Parse(forecast.low_f)).ToString() : Math.Round(double.Parse(forecast.low_c)).ToString()) + "º ";
+            }
+            catch (FormatException ex)
+            {
+                LoTemp = "--º ";
+                Logger.WriteLine(LoggerLevel.Error, "Invalid number format", ex);
+            }
         }
     }
 }

@@ -61,8 +61,16 @@ namespace SimpleWeather.Controls
                 Date = hr_forecast.date.ToString("ddd h tt");
 #endif
             Condition = hr_forecast.condition;
-            HiTemp = (Settings.IsFahrenheit ?
-                Math.Round(double.Parse(hr_forecast.high_f)).ToString() : Math.Round(double.Parse(hr_forecast.high_c)).ToString()) + "º ";
+            try
+            {
+                HiTemp = (Settings.IsFahrenheit ?
+                    Math.Round(double.Parse(hr_forecast.high_f)).ToString() : Math.Round(double.Parse(hr_forecast.high_c)).ToString()) + "º ";
+            }
+            catch (FormatException ex)
+            {
+                HiTemp = "--º ";
+                Logger.WriteLine(LoggerLevel.Error, "Invalid number format", ex);
+            }
             PoP = hr_forecast.pop + "%";
             UpdateWindDirection(hr_forecast.wind_degrees);
             WindSpeed = (Settings.IsFahrenheit ?
