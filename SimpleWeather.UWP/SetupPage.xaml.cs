@@ -276,8 +276,8 @@ namespace SimpleWeather.UWP
 
             if (String.IsNullOrWhiteSpace(wm.GetAPIKey()))
             {
-                // If (internal) key doesn't exist, fallback to Yahoo
-                Settings.API = WeatherAPI.Yahoo;
+                // If (internal) key doesn't exist, fallback to Met.no
+                Settings.API = WeatherAPI.MetNo;
                 wm.UpdateAPI();
                 Settings.UsePersonalKey = true;
                 Settings.KeyVerified = false;

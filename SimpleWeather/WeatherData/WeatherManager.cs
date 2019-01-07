@@ -30,12 +30,12 @@ namespace SimpleWeather.WeatherData
 
         public static List<ProviderEntry> APIs = new List<ProviderEntry>()
         {
-            new ProviderEntry("Yahoo Weather", Yahoo,
-                "https://www.yahoo.com/weather?ilc=401", "https://www.yahoo.com/weather?ilc=401"),
-            new ProviderEntry("WeatherUnderground", WeatherUnderground,
-                "https://www.wunderground.com", "https://www.wunderground.com/signup?mode=api_signup"),
             new ProviderEntry("HERE Weather", Here,
                 "https://www.here.com/en", "https://developer.here.com/?create=Freemium-Basic&keepState=true&step=account"),
+            //new ProviderEntry("Yahoo Weather", Yahoo,
+            //    "https://www.yahoo.com/weather?ilc=401", "https://www.yahoo.com/weather?ilc=401"),
+            new ProviderEntry("WeatherUnderground", WeatherUnderground,
+                "https://www.wunderground.com", "https://www.wunderground.com/signup?mode=api_signup"),
             new ProviderEntry("OpenWeatherMap", OpenWeatherMap,
                 "http://www.openweathermap.org", "https://home.openweathermap.org/users/sign_up"),
             new ProviderEntry("MET Norway", MetNo,
