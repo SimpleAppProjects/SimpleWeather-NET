@@ -237,6 +237,9 @@ namespace SimpleWeather.Controls
             if (String.IsNullOrEmpty(region))
                 region = location.location.address.state;
 
+            if (String.IsNullOrEmpty(region))
+                region = location.location.address.county;
+
             if (String.IsNullOrEmpty(country))
                 region = location.location.address.country;
 
