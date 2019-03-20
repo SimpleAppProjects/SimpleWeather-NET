@@ -98,7 +98,6 @@ namespace SimpleWeather.Utils
             localSettings.Values[KEY_API] = value;
         }
 
-        #region WeatherUnderground
         private static string GetAPIKEY()
         {
             if (!localSettings.Values.ContainsKey(KEY_APIKEY) || localSettings.Values[KEY_APIKEY] == null)
@@ -113,7 +112,6 @@ namespace SimpleWeather.Utils
         {
             localSettings.Values[KEY_APIKEY] = API_KEY;
         }
-        #endregion
 
         private static bool UseFollowGPS()
         {
@@ -254,6 +252,22 @@ namespace SimpleWeather.Utils
         private static void SetVersionCode(int value)
         {
             localSettings.Containers["version"].Values[KEY_CURRENTVERSION] = value;
+        }
+
+        private static bool IsOnBoardingComplete()
+        {
+            if (!localSettings.Values.ContainsKey(KEY_ONBOARDINGCOMPLETE) || localSettings.Values[KEY_ONBOARDINGCOMPLETE] == null)
+            {
+                SetOnBoardingComplete(false);
+                return false;
+            }
+            else
+                return (bool)localSettings.Values[KEY_ONBOARDINGCOMPLETE];
+        }
+
+        private static void SetOnBoardingComplete(bool value)
+        {
+            localSettings.Values[KEY_ONBOARDINGCOMPLETE] = value;
         }
     }
 }

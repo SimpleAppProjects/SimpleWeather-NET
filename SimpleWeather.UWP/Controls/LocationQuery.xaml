@@ -10,6 +10,7 @@
     d:DesignWidth="400"
     d:DataContext="{d:DesignInstance Type=local:LocationQueryViewModel, IsDesignTimeCreatable=True}"
     Background="White">
+
     <UserControl.Resources>
         <Style x:Key="LocationQueryControlStyle" TargetType="UserControl">
             <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}"/>
@@ -82,8 +83,9 @@
             </Setter>
         </Style>
     </UserControl.Resources>
+
     <UserControl.Style>
-        <StaticResource ResourceKey="LocationQueryControlStyle"/>
+        <StaticResource ResourceKey="LocationQueryControlStyle" />
     </UserControl.Style>
 
     <Grid Height="55">
@@ -91,7 +93,15 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="LocationName" Text="{x:Bind ViewModel.LocationName, Mode=OneWay}" FontSize="14" Padding="5" TextAlignment="Left" Grid.Row="0"/>
-        <TextBlock x:Name="LocationCountry" Text="{x:Bind ViewModel.LocationCountry, Mode=OneWay}" FontSize="12" Padding="5" TextAlignment="Left" Grid.Row="1"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <FontIcon x:Name="PinIcon" FontFamily="Segoe MDL2 Assets" Glyph="&#xE7B7;" Margin="-8,0,0,0"
+                  Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Width="50" Foreground="{StaticResource SimpleBlue}" />
+        <TextBlock x:Name="LocationName" Text="{x:Bind ViewModel.LocationName, Mode=OneWay}"
+                   FontSize="14" Padding="5" TextAlignment="Left" Grid.Row="0" Grid.Column="1" />
+        <TextBlock x:Name="LocationCountry" Text="{x:Bind ViewModel.LocationCountry, Mode=OneWay}"
+                   FontSize="12" Padding="5" TextAlignment="Left" Grid.Row="1" Grid.Column="1" />
     </Grid>
 </UserControl>

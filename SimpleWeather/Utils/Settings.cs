@@ -15,6 +15,7 @@ namespace SimpleWeather.Utils
     {
         // Settings Members
         public static bool WeatherLoaded { get { return IsWeatherLoaded(); } set { SetWeatherLoaded(value); } }
+        public static bool OnBoardComplete { get { return IsOnBoardingComplete(); } set { SetOnBoardingComplete(value); } }
         public static string Unit { get { return GetTempUnit(); } set { SetTempUnit(value); } }
         public static string API { get { return GetAPI(); } set { SetAPI(value); } }
         public static string API_KEY { get { return GetAPIKEY(); } set { SetAPIKEY(value); } }
@@ -57,17 +58,18 @@ namespace SimpleWeather.Utils
         private const string KEY_API = "API";
         private const string KEY_APIKEY = "API_KEY";
         private const string KEY_APIKEY_VERIFIED = "API_KEY_VERIFIED";
-        private const string KEY_USECELSIUS = "key_usecelsius";
-        private const string KEY_UNITS = "Units";
+        public const string KEY_USECELSIUS = "key_usecelsius";
+        public const string KEY_UNITS = "Units";
         private const string KEY_WEATHERLOADED = "weatherLoaded";
         private const string KEY_FOLLOWGPS = "key_followgps";
         private const string KEY_LASTGPSLOCATION = "key_lastgpslocation";
-        private const string KEY_REFRESHINTERVAL = "key_refreshinterval";
+        public const string KEY_REFRESHINTERVAL = "key_refreshinterval";
         private const string KEY_UPDATETIME = "key_updatetime";
         private const string KEY_DBVERSION = "key_dbversion";
-        private const string KEY_USEALERTS = "key_usealerts";
+        public const string KEY_USEALERTS = "key_usealerts";
         private const string KEY_USEPERSONALKEY = "key_usepersonalkey";
         private const string KEY_CURRENTVERSION = "key_currentversion";
+        private const string KEY_ONBOARDINGCOMPLETE = "key_onboardcomplete";
 
         // Weather Data
         private static LocationData lastGPSLocData = new LocationData();

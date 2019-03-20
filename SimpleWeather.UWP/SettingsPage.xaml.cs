@@ -111,20 +111,20 @@ namespace SimpleWeather.UWP
             // Update Interval
             switch (Settings.RefreshInterval)
             {
-                case 15:
-                    RefreshComboBox.SelectedIndex = 0;
-                    break;
-                case 30:
-                    RefreshComboBox.SelectedIndex = 1;
-                    break;
                 case 60:
                 default:
-                    RefreshComboBox.SelectedIndex = 2;
+                    RefreshComboBox.SelectedIndex = 0;
+                    break;
+                case 120:
+                    RefreshComboBox.SelectedIndex = 1;
                     break;
                 case 180:
-                    RefreshComboBox.SelectedIndex = 3;
+                    RefreshComboBox.SelectedIndex = 2;
                     break;
                 case 360:
+                    RefreshComboBox.SelectedIndex = 3;
+                    break;
+                case 720:
                     RefreshComboBox.SelectedIndex = 4;
                     break;
             }

@@ -75,7 +75,7 @@ namespace SimpleWeather.UWP
                 switch (args["action"])
                 {
                     case "view-alerts":
-                        if (Settings.WeatherLoaded)
+                        if (Settings.WeatherLoaded && Settings.OnBoardComplete)
                         {
                             Task.Run(async () =>
                             {
@@ -175,7 +175,7 @@ namespace SimpleWeather.UWP
             {
                 if (!e.PrelaunchActivated)
                 {
-                    if (Settings.WeatherLoaded && !String.IsNullOrEmpty(e.TileId) && !e.TileId.Equals("App", StringComparison.OrdinalIgnoreCase))
+                    if (Settings.WeatherLoaded && Settings.OnBoardComplete && !String.IsNullOrEmpty(e.TileId) && !e.TileId.Equals("App", StringComparison.OrdinalIgnoreCase))
                     {
                         await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
@@ -232,7 +232,7 @@ namespace SimpleWeather.UWP
                             // When the navigation stack isn't restored navigate to the first page,
                             // configuring the new page by passing required information as a navigation
                             // parameter
-                            if (Settings.WeatherLoaded)
+                            if (Settings.WeatherLoaded && Settings.OnBoardComplete)
                                  RootFrame.Navigate(typeof(Shell), e.Arguments);
                              else
                                  RootFrame.Navigate(typeof(SetupPage), e.Arguments);

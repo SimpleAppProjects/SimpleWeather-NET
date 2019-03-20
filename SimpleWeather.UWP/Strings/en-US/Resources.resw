@@ -181,7 +181,7 @@
     <value>Forecast</value>
   </data>
   <data name="Label_GPSFollow.Text" xml:space="preserve">
-    <value>Follow Location via GPS</value>
+    <value>Current Location</value>
   </data>
   <data name="Label_Hourly.Text" xml:space="preserve">
     <value>Hourly</value>
@@ -220,7 +220,7 @@
     <value>Wind</value>
   </data>
   <data name="LocationSearchHint.PlaceholderText" xml:space="preserve">
-    <value>Enter Location</value>
+    <value>Add a location to start</value>
   </data>
   <data name="Message_EnterAPIKey.Text" xml:space="preserve">
     <value>Please enter an API key</value>
@@ -279,11 +279,11 @@
   <data name="Pref_GeneralHeader.Text" xml:space="preserve">
     <value>General Settings</value>
   </data>
-  <data name="Pref_Refresh15Min.Text" xml:space="preserve">
-    <value>15 minutes</value>
+  <data name="Pref_Refresh2Hrs.Text" xml:space="preserve">
+    <value>2 hours</value>
   </data>
-  <data name="Pref_Refresh30Min.Text" xml:space="preserve">
-    <value>30 minutes</value>
+  <data name="Pref_Refresh12Hrs.Text" xml:space="preserve">
+    <value>12 hours</value>
   </data>
   <data name="Pref_Refresh60Min.Text" xml:space="preserve">
     <value>1 hour (default)</value>
@@ -377,5 +377,8 @@
   </data>
   <data name="Pref_PersonalKey.Text" xml:space="preserve">
     <value>Use personal provider key:</value>
+  </data>
+  <data name="Label_Next" xml:space="preserve">
+    <value>Next</value>
   </data>
 </root>
