@@ -228,13 +228,13 @@
   <data name="Msg_LocDeniedSettings" xml:space="preserve">
     <value>Access to location was denied. Please enable in Settings.</value>
   </data>
-  <data name="Nav_Locations.Text" xml:space="preserve">
+  <data name="Nav_Locations.Label" xml:space="preserve">
     <value>Locations</value>
   </data>
-  <data name="Nav_Settings.Text" xml:space="preserve">
+  <data name="Nav_Settings.Label" xml:space="preserve">
     <value>Settings</value>
   </data>
-  <data name="Nav_WeatherNow.Text" xml:space="preserve">
+  <data name="Nav_WeatherNow.Label" xml:space="preserve">
     <value>Weather</value>
   </data>
   <data name="OSSLibs.Header" xml:space="preserve">
@@ -380,5 +380,104 @@
   </data>
   <data name="Label_Next" xml:space="preserve">
     <value>Next</value>
+  </data>
+  <data name="Beaufort_0" xml:space="preserve">
+    <value>Calm</value>
+  </data>
+  <data name="Beaufort_1" xml:space="preserve">
+    <value>Light Air</value>
+  </data>
+  <data name="Beaufort_10" xml:space="preserve">
+    <value>Storm</value>
+  </data>
+  <data name="Beaufort_11" xml:space="preserve">
+    <value>Violent Storm</value>
+  </data>
+  <data name="Beaufort_12" xml:space="preserve">
+    <value>Hurricane</value>
+  </data>
+  <data name="Beaufort_2" xml:space="preserve">
+    <value>Light Breeze</value>
+  </data>
+  <data name="Beaufort_3" xml:space="preserve">
+    <value>Gentle Breeze</value>
+  </data>
+  <data name="Beaufort_4" xml:space="preserve">
+    <value>Moderate Breeze</value>
+  </data>
+  <data name="Beaufort_5" xml:space="preserve">
+    <value>Fresh Breeze</value>
+  </data>
+  <data name="Beaufort_6" xml:space="preserve">
+    <value>Strong Breeze</value>
+  </data>
+  <data name="Beaufort_7" xml:space="preserve">
+    <value>Near Gale</value>
+  </data>
+  <data name="Beaufort_8" xml:space="preserve">
+    <value>Gale</value>
+  </data>
+  <data name="Beaufort_9" xml:space="preserve">
+    <value>Severe Gale</value>
+  </data>
+  <data name="Beaufort_Label" xml:space="preserve">
+    <value>Beaufort</value>
+  </data>
+  <data name="Dewpoint_Label" xml:space="preserve">
+    <value>Dew Point</value>
+  </data>
+  <data name="MoonPhase_FirstQtr" xml:space="preserve">
+    <value>First Quarter</value>
+  </data>
+  <data name="MoonPhase_Full" xml:space="preserve">
+    <value>Full Moon</value>
+  </data>
+  <data name="MoonPhase_Label" xml:space="preserve">
+    <value>Moon Phase</value>
+  </data>
+  <data name="MoonPhase_LastQtr" xml:space="preserve">
+    <value>Last Quarter</value>
+  </data>
+  <data name="MoonPhase_New" xml:space="preserve">
+    <value>New Moon</value>
+  </data>
+  <data name="MoonPhase_WanCrescent" xml:space="preserve">
+    <value>Waning Crescent</value>
+  </data>
+  <data name="MoonPhase_WanGibbous" xml:space="preserve">
+    <value>Waning Gibbous</value>
+  </data>
+  <data name="MoonPhase_WaxCrescent" xml:space="preserve">
+    <value>Waxing Crescent</value>
+  </data>
+  <data name="MoonPhase_WaxGibbous" xml:space="preserve">
+    <value>Waxing Gibbous</value>
+  </data>
+  <data name="Moonrise_Label" xml:space="preserve">
+    <value>Moonrise</value>
+  </data>
+  <data name="Moonset_Label" xml:space="preserve">
+    <value>Moonset</value>
+  </data>
+  <data name="UV_0" xml:space="preserve">
+    <value>Low</value>
+  </data>
+  <data name="UV_11" xml:space="preserve">
+    <value>Extreme</value>
+  </data>
+  <data name="UV_3" xml:space="preserve">
+    <value>Moderate</value>
+  </data>
+  <data name="UV_6" xml:space="preserve">
+    <value>High</value>
+  </data>
+  <data name="UV_8" xml:space="preserve">
+    <value>Very High</value>
+  </data>
+  <data name="UV_Label" xml:space="preserve">
+    <value>UV Index</value>
+  </data>
+  <data name="Label_Delete" xml:space="preserve">
+    <value>Delete</value>
   </data>
 </root>

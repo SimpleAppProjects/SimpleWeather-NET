@@ -32,7 +32,7 @@ namespace SimpleWeather.Controls
 #endif
 
             WeatherIcon = forecast.icon;
-            Date = forecast.date.ToString("dddd dd", culture);
+            Date = forecast.date.ToString("ddd dd", culture);
             Condition = forecast.condition;
             try
             {

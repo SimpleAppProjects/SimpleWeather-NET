@@ -8,8 +8,9 @@
     mc:Ignorable="d"
     Name="Control"
     d:DesignHeight="200"
-    d:DesignWidth="155"
-    Width="155">
+    d:DesignWidth="135"
+    Width="135">
+
     <UserControl.Resources>
         <Style x:Key="ForecastIcon" TargetType="Viewbox">
             <Setter Property="Height" Value="75" />
@@ -39,7 +40,7 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid>
+    <Grid Background="#10FFFFFF" CornerRadius="2.5">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -58,7 +59,7 @@
         </StackPanel>
         <TextBlock Name="ForecastCondition" Style="{StaticResource ForecastCondition}" Grid.Row="2" 
                    Text="{x:Bind HourlyForecasts.Condition, FallbackValue='Scattered Thunderstorms', Mode=OneWay}"
-                   Width="145" HorizontalAlignment="Left" TextWrapping="WrapWholeWords"/>
+                   TextWrapping="WrapWholeWords"/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="3">
             <TextBlock Name="PoPIcon"
                        Style="{StaticResource WeatherIcon}" Text="&#xf013;" Padding="5"
@@ -80,7 +81,6 @@
                         <AdaptiveTrigger MinWindowHeight="0"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="Control.Width" Value="160"/>
                         <Setter Target="WeatherBox.Height" Value="50"/>
                         <Setter Target="ForecastDate.FontSize" Value="12"/>
                         <Setter Target="ForecastCondition.FontSize" Value="12"/>
@@ -94,7 +94,6 @@
                         <AdaptiveTrigger MinWindowHeight="641"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="Control.Width" Value="165"/>
                         <Setter Target="WeatherBox.Height" Value="75"/>
                         <Setter Target="ForecastDate.FontSize" Value="16"/>
                         <Setter Target="ForecastCondition.FontSize" Value="14"/>
@@ -108,7 +107,6 @@
                         <AdaptiveTrigger MinWindowHeight="691"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="Control.Width" Value="175"/>
                         <Setter Target="WeatherBox.Height" Value="75"/>
                         <Setter Target="ForecastDate.FontSize" Value="16"/>
                         <Setter Target="ForecastCondition.FontSize" Value="14"/>

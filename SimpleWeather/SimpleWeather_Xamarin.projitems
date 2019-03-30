@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ComboBoxItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\DetailItemViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ProviderEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\TextForecastItemViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\HourlyForecastItemViewModel.cs" />
@@ -24,6 +25,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)HERE\HEREWeatherKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HERE\HEREWeatherProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HERE\Weather.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Metno\Astrodata.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Metno\MetnoWeatherProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Metno\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NWS\Alert.cs" />

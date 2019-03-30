@@ -19,7 +19,7 @@
             <helpers:BooleanToVisibilityConverter x:Key="inverseBooleanToVisibilityConverter" IsInverse="True" />
             <helpers:InverseBooleanConverter x:Key="inverseBooleanConverter" />
             <helpers:InverseVisibilityConverter x:Key="inverseVisibilityConverter" />
-            <toolkitConverters:StringVisibilityConverter x:Key="stringVisibilityConverter" />
+            <helpers:StringVisibilityConverter x:Key="stringVisibilityConverter" />
             <SolidColorBrush x:Key="SimpleBlue" Color="#0070c0" />
             <SolidColorBrush x:Key="SimpleBlueDark" Color="#00468f" />
             <SolidColorBrush x:Key="SimpleBlueLight" Color="#599ef3" />

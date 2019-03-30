@@ -62,8 +62,8 @@ namespace SimpleWeather.WeatherUnderground
         public string pressure_in { get; set; }
         public string pressure_trend { get; set; }
         public string dewpoint_string { get; set; }
-        public int dewpoint_f { get; set; }
-        public int dewpoint_c { get; set; }
+        public string dewpoint_f { get; set; }
+        public string dewpoint_c { get; set; }
         public string heat_index_string { get; set; }
         public string heat_index_f { get; set; }
         public string heat_index_c { get; set; }

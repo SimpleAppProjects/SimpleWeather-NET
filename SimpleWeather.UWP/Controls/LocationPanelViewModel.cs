@@ -85,6 +85,15 @@ namespace SimpleWeather.Controls
             get { return (string)GetValue(WeatherSourceProperty); }
             set { SetValue(WeatherSourceProperty, value); OnPropertyChanged("WeatherSource"); }
         }
+        public int LocationType
+        {
+            get
+            {
+                if (LocationData != null)
+                    return (int)LocationData.locationType;
+                return (int)WeatherData.LocationType.Search;
+            }
+        }
         #endregion
 
         private WeatherManager wm;

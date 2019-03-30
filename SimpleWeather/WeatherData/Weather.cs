@@ -7,6 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+#if WINDOWS_UWP
+using SimpleWeather.UWP;
+#endif
 
 namespace SimpleWeather.WeatherData
 {
@@ -150,7 +153,7 @@ namespace SimpleWeather.WeatherData
             }
             condition = new Condition(root.current_observation);
             atmosphere = new Atmosphere(root.current_observation);
-            astronomy = new Astronomy(root.sun_phase);
+            astronomy = new Astronomy(root.sun_phase, root.moon_phase);
             precipitation = new Precipitation(root.forecast.simpleforecast.forecastday[0]);
             ttl = "60";
 
@@ -437,7 +440,7 @@ namespace SimpleWeather.WeatherData
             {
                 txt_forecast[i] = new TextForecast(root.dailyForecasts.forecastLocation.forecast[i]);
             }
-            condition = new Condition(root.observations.location[0].observation[0]);
+            condition = new Condition(root.observations.location[0].observation[0], root.dailyForecasts.forecastLocation.forecast[0]);
             atmosphere = new Atmosphere(root.observations.location[0].observation[0]);
             astronomy = new Astronomy(root.astronomy.astronomy);
             precipitation = new Precipitation(root.dailyForecasts.forecastLocation.forecast[0]);
@@ -1438,6 +1441,8 @@ namespace SimpleWeather.WeatherData
         public float feelslike_f { get; set; }
         public float feelslike_c { get; set; }
         public string icon { get; set; }
+        public Beaufort beaufort { get; set; }
+        public UV uv { get; set; }
 
         [JsonConstructor]
         private Condition()
@@ -1457,6 +1462,8 @@ namespace SimpleWeather.WeatherData
             feelslike_c = condition.feelslike_c;
             icon = WeatherManager.GetProvider(WeatherAPI.WeatherUnderground)
                    .GetWeatherIcon(condition.icon_url.Replace("http://icons.wxug.com/i/c/k/", "").Replace(".gif", ""));
+            if (float.TryParse(condition.UV, out float uv))
+                this.uv = new UV(uv);
         }
 
         public Condition(WeatherYahoo.Channel channel)
@@ -1507,9 +1514,10 @@ namespace SimpleWeather.WeatherData
             feelslike_f = temp_f;
             feelslike_c = temp_c;
             // icon
+            beaufort = new Beaufort(time.location.windSpeed.beaufort);
         }
 
-        public Condition(HERE.Observation observation)
+        public Condition(HERE.Observation observation, HERE.Forecast forecastItem)
         {
             weather = observation.description.ToPascalCase();
             if (float.TryParse(observation.temperature, out float tempF))
@@ -1551,6 +1559,12 @@ namespace SimpleWeather.WeatherData
             }
             icon = WeatherManager.GetProvider(WeatherAPI.Here)
                    .GetWeatherIcon(string.Format("{0}_{1}", observation.daylight, observation.iconName));
+
+            if (int.TryParse(forecastItem.beaufortScale, out int scale))
+                beaufort = new Beaufort(scale, forecastItem.beaufortDescription);
+
+            if (float.TryParse(forecastItem.uvIndex, out float index))
+                uv = new UV(index, forecastItem.uvDesc);
         }
 
         public static Condition FromJson(JsonReader extReader)
@@ -1606,6 +1620,12 @@ namespace SimpleWeather.WeatherData
                             break;
                         case nameof(icon):
                             obj.icon = reader.Value.ToString();
+                            break;
+                        case nameof(beaufort):
+                            obj.beaufort = Beaufort.FromJson(reader);
+                            break;
+                        case nameof(uv):
+                            obj.uv = UV.FromJson(reader);
                             break;
                         default:
                             break;
@@ -1664,6 +1684,20 @@ namespace SimpleWeather.WeatherData
                 writer.WritePropertyName(nameof(icon));
                 writer.WriteValue(icon);
 
+                // "beaufort" : ""
+                if (beaufort != null)
+                {
+                    writer.WritePropertyName(nameof(beaufort));
+                    writer.WriteValue(beaufort?.ToJson());
+                }
+
+                // "uv" : ""
+                if (uv != null)
+                {
+                    writer.WritePropertyName(nameof(uv));
+                    writer.WriteValue(uv?.ToJson());
+                }
+
                 // }
                 writer.WriteEndObject();
 
@@ -1681,6 +1715,8 @@ namespace SimpleWeather.WeatherData
         public string pressure_trend { get; set; }
         public string visibility_mi { get; set; }
         public string visibility_km { get; set; }
+        public string dewpoint_f { get; set; }
+        public string dewpoint_c { get; set; }
 
         [JsonConstructor]
         private Atmosphere()
@@ -1696,6 +1732,8 @@ namespace SimpleWeather.WeatherData
             pressure_trend = condition.pressure_trend;
             visibility_mi = condition.visibility_mi;
             visibility_km = condition.visibility_km;
+            dewpoint_f = condition.dewpoint_f;
+            dewpoint_c = condition.dewpoint_c;
         }
 
         public Atmosphere(WeatherYahoo.Atmosphere atmosphere)
@@ -1724,8 +1762,29 @@ namespace SimpleWeather.WeatherData
             pressure_mb = time.location.pressure.value.ToString(CultureInfo.InvariantCulture);
             pressure_in = ConversionMethods.MBToInHg(time.location.pressure.value.ToString(CultureInfo.InvariantCulture));
             pressure_trend = String.Empty;
-            visibility_mi = Weather.NA;
-            visibility_km = Weather.NA;
+
+            try
+            {
+                float visMi = 10.0f;
+                visibility_mi = (visMi - (visMi * (float)time.location.fog.percent / 100)).ToString(CultureInfo.InvariantCulture);
+                visibility_km = ConversionMethods.MiToKm(visibility_mi);
+            }
+            catch (FormatException)
+            {
+                visibility_mi = Weather.NA;
+                visibility_km = Weather.NA;
+            }
+
+            try
+            {
+                dewpoint_f = ConversionMethods.CtoF(time.location.dewpointTemperature.value.ToString(CultureInfo.InvariantCulture));
+                dewpoint_c = ((float)time.location.dewpointTemperature.value).ToString(CultureInfo.InvariantCulture);
+            }
+            catch (FormatException)
+            {
+                dewpoint_f = null;
+                dewpoint_c = null;
+            }
         }
 
         public Atmosphere(HERE.Observation observation)
@@ -1740,6 +1799,17 @@ namespace SimpleWeather.WeatherData
                 visibility_km = ConversionMethods.MiToKm(visible_mi.ToString(CultureInfo.InvariantCulture));
             else
                 visibility_km = observation.visibility;
+
+            try
+            {
+                dewpoint_f = observation.dewPoint;
+                dewpoint_c = ConversionMethods.FtoC(observation.dewPoint);
+            }
+            catch (FormatException)
+            {
+                dewpoint_f = null;
+                dewpoint_c = null;
+            }
         }
 
         public static Atmosphere FromJson(JsonReader extReader)
@@ -1787,6 +1857,12 @@ namespace SimpleWeather.WeatherData
                         case nameof(visibility_km):
                             obj.visibility_km = reader.Value.ToString();
                             break;
+                        case nameof(dewpoint_f):
+                            obj.dewpoint_f = reader.Value.ToString();
+                            break;
+                        case nameof(dewpoint_c):
+                            obj.dewpoint_c = reader.Value.ToString();
+                            break;
                         default:
                             break;
                     }
@@ -1832,6 +1908,14 @@ namespace SimpleWeather.WeatherData
                 writer.WritePropertyName(nameof(visibility_km));
                 writer.WriteValue(visibility_km);
 
+                // "dewpoint_f" : ""
+                writer.WritePropertyName(nameof(dewpoint_f));
+                writer.WriteValue(dewpoint_f);
+
+                // "dewpoint_c" : ""
+                writer.WritePropertyName(nameof(dewpoint_c));
+                writer.WriteValue(dewpoint_c);
+
                 // }
                 writer.WriteEndObject();
 
@@ -1845,6 +1929,9 @@ namespace SimpleWeather.WeatherData
     {
         public DateTime sunrise { get; set; }
         public DateTime sunset { get; set; }
+        public DateTime moonrise { get; set; }
+        public DateTime moonset { get; set; }
+        public MoonPhase moonphase { get; set; }
 
         [JsonConstructor]
         private Astronomy()
@@ -1852,48 +1939,217 @@ namespace SimpleWeather.WeatherData
             // Needed for deserialization
         }
 
-        public Astronomy(WeatherUnderground.Sun_Phase sun_phase)
+        public Astronomy(WeatherUnderground.Sun_Phase sun_phase, WeatherUnderground.Moon_Phase moon_phase)
         {
             sunset = DateTime.Parse(string.Format("{0}:{1}",
                 sun_phase.sunset.hour, sun_phase.sunset.minute));
             sunrise = DateTime.Parse(string.Format("{0}:{1}",
                 sun_phase.sunrise.hour, sun_phase.sunrise.minute));
+
+            moonset = DateTime.Parse(string.Format("{0}:{1}",
+                moon_phase.moonset.hour, moon_phase.moonset.minute));
+            moonrise = DateTime.Parse(string.Format("{0}:{1}",
+                moon_phase.moonrise.hour, moon_phase.moonrise.minute));
+
+            try
+            {
+                MoonPhase.MoonPhaseType moonPhaseType;
+
+                int ageOfMoon = int.Parse(moon_phase.ageOfMoon);
+                if (ageOfMoon >= 2 && ageOfMoon < 8)
+                {
+                    moonPhaseType = MoonPhase.MoonPhaseType.WaxingCrescent;
+                }
+                else if (ageOfMoon == 8)
+                {
+                    moonPhaseType = MoonPhase.MoonPhaseType.FirstQtr;
+                }
+                else if (ageOfMoon >= 9 && ageOfMoon < 16)
+                {
+                    moonPhaseType = MoonPhase.MoonPhaseType.WaxingGibbous;
+                }
+                else if (ageOfMoon == 16)
+                {
+                    moonPhaseType = MoonPhase.MoonPhaseType.FullMoon;
+                }
+                else if (ageOfMoon >= 17 && ageOfMoon < 23)
+                {
+                    moonPhaseType = MoonPhase.MoonPhaseType.WaningGibbous;
+                }
+                else if (ageOfMoon == 23)
+                {
+                    moonPhaseType = MoonPhase.MoonPhaseType.LastQtr;
+                }
+                else if (ageOfMoon >= 24 && ageOfMoon < 29)
+                {
+                    moonPhaseType = MoonPhase.MoonPhaseType.WaningCrescent;
+                }
+                else
+                {
+                    moonPhaseType = MoonPhase.MoonPhaseType.NewMoon;
+                }
+
+                this.moonphase = new MoonPhase(moonPhaseType, moon_phase.phaseofMoon);
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLine(LoggerLevel.Error, ex, "Exception!!");
+            }
         }
 
         public Astronomy(WeatherYahoo.Astronomy astronomy)
         {
             sunrise = DateTime.Parse(astronomy.sunrise);
             sunset = DateTime.Parse(astronomy.sunset);
+
+            moonrise = DateTime.MinValue;
+            moonset = DateTime.MinValue;
         }
 
         public Astronomy(OpenWeather.CurrentRootobject root)
         {
             sunrise = DateTimeOffset.FromUnixTimeSeconds(root.sys.sunrise).DateTime;
             sunset = DateTimeOffset.FromUnixTimeSeconds(root.sys.sunset).DateTime;
+
+            moonrise = DateTime.MinValue;
+            moonset = DateTime.MinValue;
         }
 
         public Astronomy(Metno.astrodata astroRoot)
         {
-            sunrise = astroRoot.time.location.sun.rise;
-            sunset = astroRoot.time.location.sun.set;
+            int moonPhaseValue = -1;
+
+            foreach (Metno.astrodataLocationTime time in astroRoot.location.time)
+            {
+                if (time.sunrise != null)
+                {
+                    sunrise = time.sunrise.time;
+                }
+                if (time.sunset != null)
+                {
+                    sunset = time.sunset.time;
+                }
+
+                if (time.moonrise != null)
+                {
+                    moonrise = time.moonrise.time;
+                }
+                if (time.moonset != null)
+                {
+                    moonset = time.moonset.time;
+                }
+
+                if (time.moonphase != null)
+                {
+                    moonPhaseValue = (int)Math.Round(time.moonphase.value);
+                }
+            }
 
             // If the sun won't set/rise, set time to the future
-            if ((bool)astroRoot?.time?.location?.sun?.never_rise)
+            if (sunrise == null)
             {
                 sunrise = DateTime.Now.Date.AddYears(1).AddTicks(-1);
             }
-            else if ((bool)astroRoot?.time?.location?.sun?.never_set)
+            if (sunset == null)
             {
                 sunset = DateTime.Now.Date.AddYears(1).AddTicks(-1);
             }
+            if (moonrise == null)
+            {
+                moonrise = DateTime.MinValue;
+            }
+            if (moonset == null)
+            {
+                moonset = DateTime.MinValue;
+            }
+
+            MoonPhase.MoonPhaseType moonPhaseType;
+            if (moonPhaseValue >= 2 && moonPhaseValue < 23)
+            {
+                moonPhaseType = MoonPhase.MoonPhaseType.WaxingCrescent;
+            }
+            else if (moonPhaseValue >= 23 && moonPhaseValue < 26)
+            {
+                moonPhaseType = MoonPhase.MoonPhaseType.FirstQtr;
+            }
+            else if (moonPhaseValue >= 26 && moonPhaseValue < 48)
+            {
+                moonPhaseType = MoonPhase.MoonPhaseType.WaxingGibbous;
+            }
+            else if (moonPhaseValue >= 48 && moonPhaseValue < 52)
+            {
+                moonPhaseType = MoonPhase.MoonPhaseType.FullMoon;
+            }
+            else if (moonPhaseValue >= 52 && moonPhaseValue < 73)
+            {
+                moonPhaseType = MoonPhase.MoonPhaseType.WaningGibbous;
+            }
+            else if (moonPhaseValue >= 73 && moonPhaseValue < 76)
+            {
+                moonPhaseType = MoonPhase.MoonPhaseType.LastQtr;
+            }
+            else if (moonPhaseValue >= 76 && moonPhaseValue < 98)
+            {
+                moonPhaseType = MoonPhase.MoonPhaseType.WaningCrescent;
+            }
+            else
+            {
+                // 0, 1, 98, 99, 100
+                moonPhaseType = MoonPhase.MoonPhaseType.NewMoon;
+            }
+
+            this.moonphase = new MoonPhase(moonPhaseType);
         }
 
         public Astronomy(HERE.Astronomy1[] astronomy)
         {
             var astroData = astronomy[0];
 
-            sunrise = DateTime.Parse(astroData.sunrise);
-            sunset = DateTime.Parse(astroData.sunset);
+            if (DateTime.TryParse(astroData.sunrise, out DateTime sunrise))
+                this.sunrise = sunrise;
+            if (DateTime.TryParse(astroData.sunset, out DateTime sunset))
+                this.sunset = sunset;
+            if (DateTime.TryParse(astroData.moonrise, out DateTime moonrise))
+                this.moonrise = moonrise;
+            if (DateTime.TryParse(astroData.moonset, out DateTime moonset))
+                this.moonset = moonset;
+
+            switch (astroData.iconName)
+            {
+                case "cw_new_moon":
+                default:
+                    this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.NewMoon,
+                            astroData.moonPhaseDesc);
+                    break;
+                case "cw_waxing_crescent":
+                    this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.WaxingCrescent,
+                            astroData.moonPhaseDesc);
+                    break;
+                case "cw_first_qtr":
+                    this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.FirstQtr,
+                            astroData.moonPhaseDesc);
+                    break;
+                case "cw_waxing_gibbous":
+                    this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.WaxingGibbous,
+                            astroData.moonPhaseDesc);
+                    break;
+                case "cw_full_moon":
+                    this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.FullMoon,
+                            astroData.moonPhaseDesc);
+                    break;
+                case "cw_waning_gibbous":
+                    this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.WaningGibbous,
+                            astroData.moonPhaseDesc);
+                    break;
+                case "cw_last_quarter":
+                    this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.LastQtr,
+                            astroData.moonPhaseDesc);
+                    break;
+                case "cw_waning_crescent":
+                    this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.WaningCrescent,
+                            astroData.moonPhaseDesc);
+                    break;
+            }
         }
 
         public static Astronomy FromJson(JsonReader extReader)
@@ -1929,6 +2185,15 @@ namespace SimpleWeather.WeatherData
                         case nameof(sunset):
                             obj.sunset = DateTime.Parse(reader.Value.ToString());
                             break;
+                        case nameof(moonrise):
+                            obj.moonrise = DateTime.Parse(reader.Value.ToString());
+                            break;
+                        case nameof(moonset):
+                            obj.moonset = DateTime.Parse(reader.Value.ToString());
+                            break;
+                        case nameof(moonphase):
+                            obj.moonphase = MoonPhase.FromJson(reader);
+                            break;
                         default:
                             break;
                     }
@@ -1957,6 +2222,21 @@ namespace SimpleWeather.WeatherData
                 // "sunset" : ""
                 writer.WritePropertyName(nameof(sunset));
                 writer.WriteValue(sunset);
+
+                // "moonrise" : ""
+                writer.WritePropertyName(nameof(moonrise));
+                writer.WriteValue(moonrise);
+
+                // "moonset" : ""
+                writer.WritePropertyName(nameof(moonset));
+                writer.WriteValue(moonset);
+
+                // "moonphase" : ""
+                if (moonphase != null)
+                {
+                    writer.WritePropertyName(nameof(moonphase));
+                    writer.WriteValue(moonphase?.ToJson());
+                }
 
                 // }
                 writer.WriteEndObject();
@@ -2114,6 +2394,472 @@ namespace SimpleWeather.WeatherData
                 // "qpf_snow_cm" : ""
                 writer.WritePropertyName(nameof(qpf_snow_cm));
                 writer.WriteValue(qpf_snow_cm);
+
+                // }
+                writer.WriteEndObject();
+
+                return sw.ToString();
+            }
+        }
+    }
+
+    [JsonConverter(typeof(CustomJsonConverter))]
+    public class Beaufort
+    {
+        public enum BeaufortScale
+        {
+            B0 = 0,
+            B1 = 1,
+            B2 = 2,
+            B3 = 3,
+            B4 = 4,
+            B5 = 5,
+            B6 = 6,
+            B7 = 7,
+            B8 = 8,
+            B9 = 9,
+            B10 = 10,
+            B11 = 11,
+            B12 = 12
+        }
+
+        public BeaufortScale scale;
+        public string desc { get; set; }
+
+        [JsonConstructor]
+        private Beaufort()
+        {
+            // Needed for deserialization
+        }
+
+        public Beaufort(int beaufortScale)
+        {
+            switch (beaufortScale)
+            {
+                case 0:
+                    scale = BeaufortScale.B0;
+#if WINDOWS_UWP
+                    desc = App.ResLoader.GetString("Beaufort_0");
+#endif
+                    break;
+                case 1:
+                    scale = BeaufortScale.B1;
+#if WINDOWS_UWP
+                    desc = App.ResLoader.GetString("Beaufort_1");
+#endif
+                    break;
+                case 2:
+                    scale = BeaufortScale.B2;
+#if WINDOWS_UWP
+                    desc = App.ResLoader.GetString("Beaufort_2");
+#endif
+                    break;
+                case 3:
+                    scale = BeaufortScale.B3;
+#if WINDOWS_UWP
+                    desc = App.ResLoader.GetString("Beaufort_3");
+#endif
+                    break;
+                case 4:
+                    scale = BeaufortScale.B4;
+#if WINDOWS_UWP
+                    desc = App.ResLoader.GetString("Beaufort_4");
+#endif
+                    break;
+                case 5:
+                    scale = BeaufortScale.B5;
+#if WINDOWS_UWP
+                    desc = App.ResLoader.GetString("Beaufort_5");
+#endif
+                    break;
+                case 6:
+                    scale = BeaufortScale.B6;
+#if WINDOWS_UWP
+                    desc = App.ResLoader.GetString("Beaufort_6");
+#endif
+                    break;
+                case 7:
+                    scale = BeaufortScale.B7;
+#if WINDOWS_UWP
+                    desc = App.ResLoader.GetString("Beaufort_7");
+#endif
+                    break;
+                case 8:
+                    scale = BeaufortScale.B8;
+#if WINDOWS_UWP
+                    desc = App.ResLoader.GetString("Beaufort_8");
+#endif
+                    break;
+                case 9:
+                    scale = BeaufortScale.B9;
+#if WINDOWS_UWP
+                    desc = App.ResLoader.GetString("Beaufort_9");
+#endif
+                    break;
+                case 10:
+                    scale = BeaufortScale.B10;
+#if WINDOWS_UWP
+                    desc = App.ResLoader.GetString("Beaufort_10");
+#endif
+                    break;
+                case 11:
+                    scale = BeaufortScale.B11;
+#if WINDOWS_UWP
+                    desc = App.ResLoader.GetString("Beaufort_11");
+#endif
+                    break;
+                case 12:
+                    scale = BeaufortScale.B12;
+#if WINDOWS_UWP
+                    desc = App.ResLoader.GetString("Beaufort_12");
+#endif
+                    break;
+            }
+        }
+
+        public Beaufort(int beaufortScale, String description)
+            : this(beaufortScale)
+        {
+            if (!String.IsNullOrWhiteSpace(description))
+                this.desc = description;
+        }
+
+        public static Beaufort FromJson(JsonReader extReader)
+        {
+            Beaufort obj = null;
+
+            try
+            {
+                obj = new Beaufort();
+                JsonReader reader;
+
+                if (extReader.Value == null)
+                    reader = extReader;
+                else
+                {
+                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString()));
+                    reader.Read(); // StartObject
+                }
+
+                while (reader.Read() && reader.TokenType != JsonToken.EndObject)
+                {
+                    if (reader.TokenType == JsonToken.StartObject)
+                        reader.Read(); // StartObject
+
+                    string property = reader.Value?.ToString();
+                    reader.Read(); // prop value
+
+                    switch (property)
+                    {
+                        case nameof(scale):
+                            obj.scale = (BeaufortScale)int.Parse(reader.Value.ToString());
+                            break;
+                        case nameof(desc):
+                            obj.desc = reader.Value.ToString();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                obj = null;
+            }
+
+            return obj;
+        }
+
+        public string ToJson()
+        {
+            using (var sw = new System.IO.StringWriter())
+            using (var writer = new JsonTextWriter(sw))
+            {
+                // {
+                writer.WriteStartObject();
+
+                // "scale" : ""
+                writer.WritePropertyName(nameof(scale));
+                writer.WriteValue((int)scale);
+
+                // "desc" : ""
+                writer.WritePropertyName(nameof(desc));
+                writer.WriteValue(desc);
+
+                // }
+                writer.WriteEndObject();
+
+                return sw.ToString();
+            }
+        }
+    }
+
+    [JsonConverter(typeof(CustomJsonConverter))]
+    public class MoonPhase
+    {
+        public enum MoonPhaseType
+        {
+            NewMoon = 0,
+            WaxingCrescent,
+            FirstQtr,
+            WaxingGibbous,
+            FullMoon,
+            WaningGibbous,
+            LastQtr,
+            WaningCrescent
+        }
+
+        public MoonPhaseType phase;
+        public string desc { get; set; }
+
+        [JsonConstructor]
+        private MoonPhase()
+        {
+            // Needed for deserialization
+        }
+
+        public MoonPhase(MoonPhaseType moonPhaseType)
+        {
+            this.phase = moonPhaseType;
+
+            switch (moonPhaseType)
+            {
+                case MoonPhaseType.NewMoon:
+#if WINDOWS_UWP
+                    desc = App.ResLoader.GetString("MoonPhase_New");
+#endif
+                    break;
+                case MoonPhaseType.WaxingCrescent:
+#if WINDOWS_UWP
+                    desc = App.ResLoader.GetString("MoonPhase_WaxCrescent");
+#endif
+                    break;
+                case MoonPhaseType.FirstQtr:
+#if WINDOWS_UWP
+                    desc = App.ResLoader.GetString("MoonPhase_FirstQtr");
+#endif
+                    break;
+                case MoonPhaseType.WaxingGibbous:
+#if WINDOWS_UWP
+                    desc = App.ResLoader.GetString("MoonPhase_WaxGibbous");
+#endif
+                    break;
+                case MoonPhaseType.FullMoon:
+#if WINDOWS_UWP
+                    desc = App.ResLoader.GetString("MoonPhase_Full");
+#endif
+                    break;
+                case MoonPhaseType.WaningGibbous:
+#if WINDOWS_UWP
+                    desc = App.ResLoader.GetString("MoonPhase_WanGibbous");
+#endif
+                    break;
+                case MoonPhaseType.LastQtr:
+#if WINDOWS_UWP
+                    desc = App.ResLoader.GetString("MoonPhase_LastQtr");
+#endif
+                    break;
+                case MoonPhaseType.WaningCrescent:
+#if WINDOWS_UWP
+                    desc = App.ResLoader.GetString("MoonPhase_WanCrescent");
+#endif
+                    break;
+            }
+        }
+
+        public MoonPhase(MoonPhaseType moonPhaseType, String description)
+            : this(moonPhaseType)
+        {
+            if (!String.IsNullOrWhiteSpace(description))
+                this.desc = description;
+        }
+
+        public static MoonPhase FromJson(JsonReader extReader)
+        {
+            MoonPhase obj = null;
+
+            try
+            {
+                obj = new MoonPhase();
+                JsonReader reader;
+
+                if (extReader.Value == null)
+                    reader = extReader;
+                else
+                {
+                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString()));
+                    reader.Read(); // StartObject
+                }
+
+                while (reader.Read() && reader.TokenType != JsonToken.EndObject)
+                {
+                    if (reader.TokenType == JsonToken.StartObject)
+                        reader.Read(); // StartObject
+
+                    string property = reader.Value?.ToString();
+                    reader.Read(); // prop value
+
+                    switch (property)
+                    {
+                        case nameof(phase):
+                            obj.phase = (MoonPhaseType)int.Parse(reader.Value.ToString());
+                            break;
+                        case nameof(desc):
+                            obj.desc = reader.Value.ToString();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                obj = null;
+            }
+
+            return obj;
+        }
+
+        public string ToJson()
+        {
+            using (var sw = new System.IO.StringWriter())
+            using (var writer = new JsonTextWriter(sw))
+            {
+                // {
+                writer.WriteStartObject();
+
+                // "phase" : ""
+                writer.WritePropertyName(nameof(phase));
+                writer.WriteValue((int)phase);
+
+                // "desc" : ""
+                writer.WritePropertyName(nameof(desc));
+                writer.WriteValue(desc);
+
+                // }
+                writer.WriteEndObject();
+
+                return sw.ToString();
+            }
+        }
+    }
+
+    [JsonConverter(typeof(CustomJsonConverter))]
+    public class UV
+    {
+        public float index { get; set; } = -1;
+        public string desc { get; set; }
+
+        [JsonConstructor]
+        private UV()
+        {
+            // Needed for deserialization
+        }
+
+        public UV(float index)
+        {
+            this.index = index;
+
+            if (index >= 0 && index < 3)
+            {
+#if WINDOWS_UWP
+                desc = App.ResLoader.GetString("UV_0");
+#endif
+            }
+            else if (index >= 3 && index < 6)
+            {
+#if WINDOWS_UWP
+                desc = App.ResLoader.GetString("UV_3");
+#endif
+            }
+            else if (index >= 6 && index < 8)
+            {
+#if WINDOWS_UWP
+                desc = App.ResLoader.GetString("UV_6");
+#endif
+            }
+            else if (index >= 8 && index < 11)
+            {
+#if WINDOWS_UWP
+                desc = App.ResLoader.GetString("UV_8");
+#endif
+            }
+            else if (index >= 11)
+            {
+#if WINDOWS_UWP
+                desc = App.ResLoader.GetString("UV_11");
+#endif
+            }
+        }
+
+        public UV(float index, String description)
+            : this(index)
+        {
+            if (!String.IsNullOrWhiteSpace(description))
+                this.desc = description;
+        }
+
+        public static UV FromJson(JsonReader extReader)
+        {
+            UV obj = null;
+
+            try
+            {
+                obj = new UV();
+                JsonReader reader;
+
+                if (extReader.Value == null)
+                    reader = extReader;
+                else
+                {
+                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString()));
+                    reader.Read(); // StartObject
+                }
+
+                while (reader.Read() && reader.TokenType != JsonToken.EndObject)
+                {
+                    if (reader.TokenType == JsonToken.StartObject)
+                        reader.Read(); // StartObject
+
+                    string property = reader.Value?.ToString();
+                    reader.Read(); // prop value
+
+                    switch (property)
+                    {
+                        case nameof(index):
+                            obj.index = float.Parse(reader.Value.ToString());
+                            break;
+                        case nameof(desc):
+                            obj.desc = reader.Value.ToString();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                obj = null;
+            }
+
+            return obj;
+        }
+
+        public string ToJson()
+        {
+            using (var sw = new System.IO.StringWriter())
+            using (var writer = new JsonTextWriter(sw))
+            {
+                // {
+                writer.WriteStartObject();
+
+                // "scale" : ""
+                writer.WritePropertyName(nameof(index));
+                writer.WriteValue(index);
+
+                // "desc" : ""
+                writer.WritePropertyName(nameof(desc));
+                writer.WriteValue(desc);
 
                 // }
                 writer.WriteEndObject();

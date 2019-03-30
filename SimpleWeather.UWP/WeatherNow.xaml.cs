@@ -48,9 +48,6 @@ namespace SimpleWeather.UWP
 
         public void OnWeatherLoaded(LocationData location, Weather weather)
         {
-            // Save index before update
-            int index = TextForecastControl.SelectedIndex;
-
             if (weather?.IsValid() == true)
             {
                 wm.UpdateWeather(weather);
@@ -104,7 +101,7 @@ namespace SimpleWeather.UWP
                 }
 
                 // Shell
-                Shell.Instance.HamburgerButtonColor = WeatherView.PendingBackgroundColor;
+                Shell.Instance.AppBarColor = WeatherView.PendingBackgroundColor;
                 if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
                 {
                     // Mobile
@@ -119,78 +116,10 @@ namespace SimpleWeather.UWP
                 }
             }
 
-            // Set saved index from before update
-            // Note: needed since ItemSource is cleared and index is reset
-            if (index == 0) // Note: UWP Mobile Bug
-                TextForecastControl.SelectedIndex = index + 1;
-            TextForecastControl.SelectedIndex = index;
-
             if (WeatherView.Extras.HourlyForecast.Count >= 1)
                 HourlyForecastPanel.Visibility = Visibility.Visible;
             else
                 HourlyForecastPanel.Visibility = Visibility.Collapsed;
-
-            if (WeatherView.Extras.TextForecast.Count >= 1)
-                ForecastSwitch.Visibility = Visibility.Visible;
-            else
-                ForecastSwitch.Visibility = Visibility.Collapsed;
-
-            if (!String.IsNullOrWhiteSpace(WeatherView.Extras.Chance))
-            {
-                if (!Settings.API.Equals(WeatherAPI.MetNo))
-                {
-                    if (!DetailsWrapGrid.Children.Contains(PrecipitationPanel))
-                    {
-                        DetailsWrapGrid.Children.Insert(0, PrecipitationPanel);
-                        ResizeDetailItems();
-                    }
-
-                    PrecipitationPanel.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    DetailsWrapGrid.Children.Remove(PrecipitationPanel);
-                    ResizeDetailItems();
-                }
-
-                int precipCount = PrecipitationPanel.Children.Count;
-                int atmosCount = AtmospherePanel.Children.Count;
-
-                if (Settings.API.Equals(WeatherAPI.OpenWeatherMap) || Settings.API.Equals(WeatherAPI.MetNo))
-                {
-                    if (ChanceItem != null)
-                        PrecipitationPanel.Children.Remove(ChanceItem);
-
-                    FrameworkElement cloudinessItem = CloudinessItem;
-                    if (cloudinessItem == null)
-                        cloudinessItem = FindName(nameof(CloudinessItem)) as FrameworkElement;
-
-                    if (cloudinessItem != null && !AtmospherePanel.Children.Contains(cloudinessItem))
-                        AtmospherePanel.Children.Insert(2, cloudinessItem);
-                }
-                else
-                {
-                    FrameworkElement chanceItem = ChanceItem;
-                    if (chanceItem == null)
-                        chanceItem = FindName(nameof(ChanceItem)) as FrameworkElement;
-
-                    if (chanceItem != null && !PrecipitationPanel.Children.Contains(chanceItem))
-                        PrecipitationPanel.Children.Insert(2, chanceItem);
-
-                    if (CloudinessItem != null)
-                        AtmospherePanel.Children.Remove(CloudinessItem);
-                }
-
-                if (precipCount != PrecipitationPanel.Children.Count || atmosCount != AtmospherePanel.Children.Count)
-                    ResizeDetailItems();
-            }
-            else
-            {
-                DetailsWrapGrid.Children.Remove(PrecipitationPanel);
-                if (CloudinessItem != null)
-                    AtmospherePanel.Children.Remove(CloudinessItem);
-                ResizeDetailItems();
-            }
 
             LoadingRing.IsActive = false;
         }
@@ -225,23 +154,17 @@ namespace SimpleWeather.UWP
             wm = WeatherManager.GetInstance();
             WeatherView = new WeatherNowViewModel();
             StackControl.SizeChanged += StackControl_SizeChanged;
-            DetailsPanel.SizeChanged += DetailsPanel_SizeChanged;
             MainViewer.SizeChanged += MainViewer_SizeChanged;
             MainViewer.ViewChanged += MainViewer_ViewChanged;
 
-            HeaderLeft.Click += delegate { ScrollTxtPanel(false); };
-            HeaderRight.Click += delegate { ScrollTxtPanel(true); };
-
             // Additional Details (Extras)
-            ForecastSwitch.Visibility = Visibility.Collapsed;
-            TextForecastPanel.Visibility = Visibility.Collapsed;
+            HourlySwitch.Visibility = Visibility.Collapsed;
             HourlyForecastPanel.Visibility = Visibility.Collapsed;
-            PrecipitationPanel.Visibility = Visibility.Collapsed;
 
             geolocal = new Geolocator() { DesiredAccuracyInMeters = 5000, ReportInterval = 900000, MovementThreshold = 1600 };
 
             // CommandBar
-            CommandBarLabel = App.ResLoader.GetString("Nav_WeatherNow/Text");
+            CommandBarLabel = App.ResLoader.GetString("Nav_WeatherNow/Label");
             PrimaryCommands = new List<ICommandBarElement>()
             {
                 new AppBarButton()
@@ -290,17 +213,15 @@ namespace SimpleWeather.UWP
         {
             if (sender is ScrollViewer viewer && viewer.Background != null)
             {
-                double alpha = 1 - (viewer.VerticalOffset / viewer.ScrollableHeight);
+                // Default adj = 1
+                float adj = 2.5f;
+                double alpha = 1 - (adj * viewer.VerticalOffset / viewer.ScrollableHeight);
                 MainViewer.Background.Opacity = (alpha >= 0) ? BGAlpha = alpha : BGAlpha = 0;
             }
         }
 
         private void StackControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            // TextForecastPanel resizing
-            TextForecastPanel.Height = e.NewSize.Height;
-            TextForecastControl.Height = TextForecastPanel.Height - 50;
-
             ResizeForecastItems();
         }
 
@@ -341,53 +262,15 @@ namespace SimpleWeather.UWP
             }
         }
 
-        private void DetailsPanel_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            ResizeDetailItems();
-        }
-
-        private void ResizeDetailItems()
-        {
-            double w = this.ActualWidth;
-
-            if (w <= 0)
-                return;
-
-            if (w <= 600)
-            {
-                // Keep as one column on smaller screens
-                foreach (FrameworkElement element in DetailsWrapGrid.Children)
-                {
-                    // Increase card width based on screen size
-                    element.Width = w - DetailsPanel.Padding.Right;
-                }
-            }
-            else
-            {
-                // Minimum width for ea. card
-                int minWidth = 250;
-                // Size of the view
-                int viewWidth = (int)(w - DetailsPanel.Padding.Right - DetailsPanel.Padding.Left);
-                // Available columns based on min card width
-                int availColumns = (viewWidth / minWidth) == 0 ? 1 : viewWidth / minWidth;
-                // Maximum columns to use
-                int maxColumns = (availColumns > DetailsWrapGrid.Children.Count) ? DetailsWrapGrid.Children.Count : availColumns;
-
-                int freeSpace = viewWidth - (minWidth * maxColumns);
-                // Increase card width to fill available space
-                int itemWidth = minWidth + (freeSpace / maxColumns);
-
-                // Resizing needed if first details element is less than others
-                foreach (FrameworkElement element in DetailsWrapGrid.Children)
-                {
-                    element.Width = itemWidth - 1;
-                }
-            }
-        }
-
         private void MainViewer_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             ResizeAlertPanel();
+
+            double w = this.ActualWidth;
+            double h = this.ActualHeight;
+
+            ConditionPanel.Height = h;
+            ConditionPanel.Width = w;
         }
 
         private void ResizeAlertPanel()
@@ -497,13 +380,12 @@ namespace SimpleWeather.UWP
                     await Restore();
                 }
             }
+
+            MainViewer.ChangeView(null, 0, null);
         }
 
         private async Task Resume()
         {
-            // Save index before update
-            int index = TextForecastControl.SelectedIndex;
-
             // Check pin tile status
             CheckTiles();
 
@@ -531,7 +413,7 @@ namespace SimpleWeather.UWP
                     else
                     {
                         WeatherView.UpdateView(wLoader.GetWeather());
-                        Shell.Instance.HamburgerButtonColor = WeatherView.PendingBackgroundColor;
+                        Shell.Instance.AppBarColor = WeatherView.PendingBackgroundColor;
                         if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
                         {
                             // Mobile
@@ -547,12 +429,6 @@ namespace SimpleWeather.UWP
                     }
                 }
             }
-
-            // Set saved index from before update
-            // Note: needed since ItemSource is cleared and index is reset
-            if (index == 0) // Note: UWP Mobile Bug
-                TextForecastControl.SelectedIndex = index + 1;
-            TextForecastControl.SelectedIndex = index;
         }
 
         private async Task Restore()
@@ -784,67 +660,6 @@ namespace SimpleWeather.UWP
             }
         }
 
-        private void ScrollTxtPanel(bool right)
-        {
-            if (right && TextForecastControl.SelectedIndex < TextForecastControl.Items.Count - 1)
-            {
-                TextForecastControl.SelectedIndex++;
-            }
-            else if (!right && TextForecastControl.SelectedIndex > 0)
-            {
-                TextForecastControl.SelectedIndex--;
-            }
-        }
-
-        private void TextForecastControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (sender is Pivot control && control.ItemsSource != null)
-            {
-                var source = (ObservableCollection<TextForecastItemViewModel>)control.ItemsSource;
-
-                if (source != null && source.Count > 1)
-                {
-                    if (control.SelectedItem == null)
-                    {
-                        control.SelectedIndex = 0;
-                    }
-                    else if (control.SelectedIndex == 0)
-                    {
-                        HeaderLeft.IsEnabled = false;
-
-                        HeaderLeft.Content = String.Empty;
-                        Header.Text = source[control.SelectedIndex].Title ?? String.Empty; // set to empty if null
-                        HeaderRight.Content = source[control.SelectedIndex + 1].Title;
-
-                        if (!HeaderRight.IsEnabled)
-                            HeaderRight.IsEnabled = true;
-                    }
-                    else if (control.SelectedIndex == source.Count - 1)
-                    {
-                        if (!HeaderLeft.IsEnabled)
-                            HeaderLeft.IsEnabled = true;
-
-                        HeaderLeft.Content = source[control.SelectedIndex - 1].Title;
-                        Header.Text = source[control.SelectedIndex].Title ?? String.Empty; // set to empty if null
-                        HeaderRight.Content = String.Empty;
-
-                        HeaderRight.IsEnabled = false;
-                    }
-                    else
-                    {
-                        if (!HeaderLeft.IsEnabled)
-                            HeaderLeft.IsEnabled = true;
-                        if (!HeaderRight.IsEnabled)
-                            HeaderRight.IsEnabled = true;
-
-                        HeaderLeft.Content = source[control.SelectedIndex - 1].Title;
-                        Header.Text = source[control.SelectedIndex].Title ?? String.Empty; // set to empty if null
-                        HeaderRight.Content = source[control.SelectedIndex + 1].Title;
-                    }
-                }
-            }
-        }
-
         private static void ScrollLeft(ScrollViewer viewer)
         {
             viewer.ChangeView(viewer.HorizontalOffset - viewer.ActualWidth, null, null);
@@ -855,8 +670,9 @@ namespace SimpleWeather.UWP
             viewer.ChangeView(viewer.HorizontalOffset + viewer.ActualWidth, null, null);
         }
 
-        private void ForecastSwitch_Toggled(object sender, RoutedEventArgs e)
+        private void HourlySwitch_Toggled(object sender, RoutedEventArgs e)
         {
+            /*
             ForecastGrid.Visibility = ForecastSwitch.IsOn ?
                 Visibility.Collapsed : Visibility.Visible;
             TextForecastPanel.Visibility = ForecastSwitch.IsOn ? 
@@ -866,6 +682,7 @@ namespace SimpleWeather.UWP
                 TextForecastControl_SelectionChanged(TextForecastControl, null);
             else
                 ForecastViewer_ViewChanged(ForecastViewer, null);
+            */
         }
 
         private void GotoAlertsPage()

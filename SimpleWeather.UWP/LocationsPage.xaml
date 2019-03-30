@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:SimpleWeather.Controls"
     xmlns:localcontrols="using:SimpleWeather.UWP.Controls"
+    xmlns:ui="using:Microsoft.UI.Xaml.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -250,37 +251,38 @@
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <ScrollViewer RequestedTheme="Light" Name="theGrid" HorizontalScrollMode="Disabled" VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto">
             <StackPanel>
-                <Grid x:Name="GPSPanel" Visibility="Collapsed">
-                    <ListView x:Name="GPSLocationsPanel" SelectionMode="None" IsItemClickEnabled="True"
-                              Header="Current Location"
+                <GridView x:Name="GPSLocationsPanel" SelectionMode="None" IsItemClickEnabled="True"
+                              Header="Current Location" Visibility="Collapsed"
                               ItemsSource="{x:Bind GPSPanelViewModel}"
                               ItemClick="LocationsPanel_ItemClick"
                               IsSwipeEnabled="False" AllowDrop="False"
                               CanReorderItems="False" CanDragItems="False"
                               HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
                               ScrollViewer.VerticalScrollMode="Disabled">
-                        <ListView.HeaderTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding}" Margin="10,5" />
-                            </DataTemplate>
-                        </ListView.HeaderTemplate>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate x:DataType="controls:LocationPanelViewModel">
-                                <UserControl>
-                                    <Grid Margin="5">
-                                        <localcontrols:LocationPanel IsEnabled="False"/>
-                                    </Grid>
-                                </UserControl>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="ListViewItem">
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                            </Style>
-                        </ListView.ItemContainerStyle>
-                    </ListView>
-                </Grid>
-                <ListView x:Name="LocationsPanel" SelectionMode="None" IsItemClickEnabled="True"
+                    <GridView.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" Margin="16,8" FontWeight="SemiBold" />
+                        </DataTemplate>
+                    </GridView.HeaderTemplate>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="controls:LocationPanelViewModel">
+                            <Grid Margin="5">
+                                <localcontrols:LocationPanel IsEnabled="False"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <ItemsWrapGrid HorizontalAlignment="Stretch" MaximumRowsOrColumns="1" Orientation="Horizontal" Margin="12,0" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="GridViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                </GridView>
+                <GridView x:Name="LocationsPanel" SelectionMode="None" IsItemClickEnabled="True"
                           Header="Favorite Locations"
                           ItemsSource="{x:Bind LocationPanels}"
                           ItemClick="LocationsPanel_ItemClick"
@@ -289,60 +291,38 @@
                           DragItemsStarting="LocationsPanel_DragItemsStarting"
                           DragItemsCompleted="LocationsPanel_DragItemsCompleted"
                           HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
-                    <ListView.HeaderTemplate>
+                    <GridView.HeaderTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding}" Margin="10,5" />
+                            <TextBlock Text="{Binding}" Margin="16,8" FontWeight="SemiBold" />
                         </DataTemplate>
-                    </ListView.HeaderTemplate>
+                    </GridView.HeaderTemplate>
+                    <ItemsControl.Resources>
+                        <ui:FontIconSource x:Key="DeleteIcon" Glyph="&#xE107;"/>
+                        <ui:SwipeItems x:Key="right" Mode="Execute">
+                            <ui:SwipeItem Text="Delete" IconSource="{StaticResource DeleteIcon}" Background="#FFDB4437" Invoked="SwipeItem_Invoked" />
+                        </ui:SwipeItems>
+                    </ItemsControl.Resources>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="controls:LocationPanelViewModel">
-                            <UserControl>
-                                <Grid Margin="5">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <localcontrols:LocationPanel Grid.Column="0" IsEnabled="False" Holding="LocationPanel_Holding"/>
-                                    <StackPanel Background="Black" Grid.Column="1"
-                                            Visibility="{x:Bind EditMode, Mode=OneWay}">
-                                        <Button x:Name="DeleteButton" Style="{StaticResource BurgerButton}"
-                                            Click="LocationPanel_DeleteClick">
-                                            <FontIcon Name="DeleteButtonFontIco" Height="100" Width="50" Glyph="&#xE107;" Foreground="White"/>
-                                        </Button>
-                                    </StackPanel>
-                                    <VisualStateManager.VisualStateGroups>
-                                        <VisualStateGroup>
-                                            <VisualState x:Name="Mobile">
-                                                <VisualState.StateTriggers>
-                                                    <AdaptiveTrigger MinWindowWidth="0"/>
-                                                </VisualState.StateTriggers>
-                                                <VisualState.Setters>
-                                                    <Setter Target="DeleteButtonFontIco.Height" Value="75"/>
-                                                    <Setter Target="DeleteButtonFontIco.Width" Value="35"/>
-                                                </VisualState.Setters>
-                                            </VisualState>
-                                            <VisualState x:Name="Desktop">
-                                                <VisualState.StateTriggers>
-                                                    <AdaptiveTrigger MinWindowWidth="641"/>
-                                                </VisualState.StateTriggers>
-                                                <VisualState.Setters>
-                                                    <Setter Target="DeleteButtonFontIco.Height" Value="100"/>
-                                                    <Setter Target="DeleteButtonFontIco.Width" Value="50"/>
-                                                </VisualState.Setters>
-                                            </VisualState>
-                                        </VisualStateGroup>
-                                    </VisualStateManager.VisualStateGroups>
-                                </Grid>
-                            </UserControl>
+                            <Grid Margin="5">
+                                <ui:SwipeControl RightItems="{StaticResource right}" IsEnabled="{x:Bind EditMode, Mode=OneWay}">
+                                    <localcontrols:LocationPanel IsEnabled="False" Holding="LocationPanel_Holding"/>
+                                </ui:SwipeControl>
+                            </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <ItemsWrapGrid MaximumRowsOrColumns="2" Orientation="Horizontal" Margin="12,0" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="GridViewItem">
                             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                         </Style>
-                    </ListView.ItemContainerStyle>
-                </ListView>
-                <Grid x:Name="AddLocationPanel" Margin="10,0" Padding="0,5" Visibility="Collapsed">
+                    </ItemsControl.ItemContainerStyle>
+                </GridView>
+                <Grid x:Name="AddLocationPanel" Margin="12,0,16,0" Padding="5" Visibility="Collapsed">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
@@ -362,22 +342,28 @@
                             </ItemsPanelTemplate>
                         </AutoSuggestBox.ItemsPanel>
                     </AutoSuggestBox>
-                    <Button x:Name="Cancel" Content="Cancel" Width="75" Click="Cancel_Click" Grid.Column="1"/>
+                    <Button x:Name="Cancel" Content="Cancel" Width="75" Click="Cancel_Click" Grid.Column="1"
+                            Background="{StaticResource SimpleBlueLight}" Foreground="White"/>
                     <ProgressRing Name="LoadingRing" Grid.Column="2" Foreground="#FF006FBF" Margin="10,0"
                                   Height="{x:Bind Cancel.ActualHeight}" Width="{x:Bind Cancel.ActualHeight}"
                                   Visibility="{x:Bind LoadingRing.IsActive, Mode=OneWay}" IsActive="False"/>
                 </Grid>
-                <Button x:Name="AddLocationsButton" HorizontalAlignment="Stretch" Margin="10,5" Height="35" Click="AddLocationsButton_Click">
-                    <Grid Width="Auto">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <Viewbox Grid.Column="0">
-                            <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" Padding="2.5"/>
-                        </Viewbox>
-                        <TextBlock x:Uid="Label_AddLocation" Text="Add Location" VerticalAlignment="Center" Padding="5" Grid.Column="1" />
-                    </Grid>
+                <Button x:Name="AddLocationsButton" HorizontalAlignment="Stretch" Click="AddLocationsButton_Click"
+                        Background="Transparent" RequestedTheme="Dark" HorizontalContentAlignment="Stretch"
+                        Margin="7,0,10,0">
+                    <Border CornerRadius="2.5" BorderBrush="{StaticResource SimpleBlueLight}" BorderThickness="1"
+                            Background="{StaticResource SimpleBlueLight}" Padding="0,5">
+                        <Grid Width="Auto" HorizontalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Viewbox Grid.Column="0">
+                                <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" Padding="2.5"/>
+                            </Viewbox>
+                            <TextBlock x:Uid="Label_AddLocation" Text="Add Location" VerticalAlignment="Center" Padding="5" Grid.Column="1" />
+                        </Grid>
+                    </Border>
                 </Button>
             </StackPanel>
         </ScrollViewer>

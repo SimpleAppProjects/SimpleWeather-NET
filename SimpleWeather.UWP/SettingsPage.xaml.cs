@@ -46,7 +46,7 @@ namespace SimpleWeather.UWP
         private void RestoreSettings()
         {
             // CommandBar
-            CommandBarLabel = App.ResLoader.GetString("Nav_Settings/Text");
+            CommandBarLabel = App.ResLoader.GetString("Nav_Settings/Label");
 
             // Temperature
             Fahrenheit.IsChecked = Settings.IsFahrenheit;

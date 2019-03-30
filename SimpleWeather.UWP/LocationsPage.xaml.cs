@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.Devices.Geolocation;
 using Windows.Foundation.Metadata;
+using Windows.System.Profile;
 using Windows.UI.Core;
 using Windows.UI.Input;
 using Windows.UI.Popups;
@@ -110,6 +111,7 @@ namespace SimpleWeather.UWP
             this.InitializeComponent();
             this.NavigationCacheMode = NavigationCacheMode.Required;
             Application.Current.Resuming += LocationsPage_Resuming;
+            LocationsPanel.SizeChanged += StackControl_SizeChanged;
 
             wm = WeatherManager.GetInstance();
 
@@ -123,7 +125,7 @@ namespace SimpleWeather.UWP
             ErrorCounter = new bool[max];
 
             // CommandBar
-            CommandBarLabel = App.ResLoader.GetString("Nav_Locations/Text");
+            CommandBarLabel = App.ResLoader.GetString("Nav_Locations/Label");
             PrimaryCommands = new List<ICommandBarElement>()
             {
                 new AppBarButton()
@@ -177,12 +179,12 @@ namespace SimpleWeather.UWP
 
             if (Settings.FollowGPS)
             {
-                GPSPanel.Visibility = Visibility.Visible;
+                GPSLocationsPanel.Visibility = Visibility.Visible;
             }
             else
             {
                 GPSPanelViewModel[0] = null;
-                GPSPanel.Visibility = Visibility.Collapsed;
+                GPSLocationsPanel.Visibility = Visibility.Collapsed;
             }
 
             bool reload = (!Settings.FollowGPS && LocationPanels.Count == 0)
@@ -210,6 +212,31 @@ namespace SimpleWeather.UWP
 
             // Reset error counter
             Array.Clear(ErrorCounter, 0, ErrorCounter.Length);
+        }
+
+        private void StackControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            // Resize StackControl items
+            double StackWidth = LocationsPanel.ActualWidth;
+
+            if (StackWidth <= 0)
+                return;
+
+            if (LocationsPanel.ItemsPanelRoot is ItemsWrapGrid WrapsGrid)
+            {
+                if (StackWidth >= 1007)
+                {
+                    WrapsGrid.ItemWidth = (StackWidth - WrapsGrid.Margin.Left - WrapsGrid.Margin.Right) / 2;
+                }
+                else
+                {
+                    WrapsGrid.ItemWidth = Double.NaN;
+                }
+            }
+            if (GPSLocationsPanel.ItemsPanelRoot is ItemsWrapGrid GPSWrapsGrid)
+            {
+                GPSWrapsGrid.ItemWidth = StackWidth - GPSWrapsGrid.Margin.Left - GPSWrapsGrid.Margin.Right;
+            }
         }
 
         private void LocationPanels_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -268,7 +295,7 @@ namespace SimpleWeather.UWP
         {
             if (Settings.FollowGPS)
             {
-                GPSPanel.Visibility = Visibility.Visible;
+                GPSLocationsPanel.Visibility = Visibility.Visible;
                 var locData = await Settings.GetLastGPSLocData();
 
                 if (locData == null || locData.query == null)
@@ -375,12 +402,12 @@ namespace SimpleWeather.UWP
                             // Disable gps feature
                             Settings.FollowGPS = false;
                             GPSPanelViewModel[0] = null;
-                            GPSPanel.Visibility = Visibility.Collapsed;
+                            GPSLocationsPanel.Visibility = Visibility.Collapsed;
                         }
                         else
                         {
                             GPSPanelViewModel[0] = null;
-                            GPSPanel.Visibility = Visibility.Collapsed;
+                            GPSLocationsPanel.Visibility = Visibility.Collapsed;
                         }
                     }
 
@@ -405,7 +432,7 @@ namespace SimpleWeather.UWP
                     {
                         // Stop since there is no valid query
                         GPSPanelViewModel[0] = null;
-                        GPSPanel.Visibility = Visibility.Collapsed;
+                        GPSLocationsPanel.Visibility = Visibility.Collapsed;
                     }
 
                     // Save location as last known
@@ -650,6 +677,29 @@ namespace SimpleWeather.UWP
             EditButton.Icon = new SymbolIcon(EditMode ? Symbol.Accept : Symbol.Edit);
             EditButton.Label = EditMode ? App.ResLoader.GetString("Label_Done") : App.ResLoader.GetString("Label_Edit");
             LocationsPanel.IsItemClickEnabled = !EditMode;
+            // Enable selection mode for non-Mobile (non-Touch devices)
+            if (!ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            {
+                LocationsPanel.IsMultiSelectCheckBoxEnabled = EditMode;
+                LocationsPanel.SelectionMode = EditMode ? ListViewSelectionMode.Multiple : ListViewSelectionMode.None;
+                if (EditMode && PrimaryCommands.Count == 1)
+                {
+                    PrimaryCommands.Insert(0,
+                        new AppBarButton()
+                        {
+                            Icon = new SymbolIcon(Symbol.Delete),
+                            Label = App.ResLoader.GetString("Label_Delete"),
+                        }
+                    );
+                    var deleteBtn = PrimaryCommands[0] as AppBarButton;
+                    deleteBtn.Click += DeleteBtn_Click;
+                }
+                else if (PrimaryCommands.Count > 1)
+                {
+                    PrimaryCommands.Remove(PrimaryCommands[0]);
+                }
+                Shell.Instance.RequestCommandBarUpdate();
+            }
 
             foreach (LocationPanelViewModel view in LocationPanels)
             {
@@ -672,26 +722,40 @@ namespace SimpleWeather.UWP
             HomeChanged = false;
         }
 
-        private async void LocationPanel_DeleteClick(object sender, RoutedEventArgs e)
+        private void SwipeItem_Invoked(Microsoft.UI.Xaml.Controls.SwipeItem sender, Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs args)
         {
-            FrameworkElement button = sender as FrameworkElement;
-            if (button == null || (button != null && button.DataContext == null))
-                return;
-
-            LocationPanelViewModel view = button.DataContext as LocationPanelViewModel;
-            LocationData data = view.LocationData;
-
-            // Remove location from list
-            await Settings.DeleteLocation(data.query);
-
-            // Remove panel
-            LocationPanels.Remove(view);
-
-            // Remove secondary tile if it exists
-            if (SecondaryTileUtils.Exists(data.query))
+            if (args.SwipeControl is FrameworkElement button && button.DataContext is LocationPanelViewModel view)
             {
-                await new SecondaryTile(
-                    SecondaryTileUtils.GetTileId(data.query)).RequestDeleteAsync();
+                DeleteItem(view);
+            }
+        }
+
+        private void DeleteBtn_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (LocationPanelViewModel view in LocationsPanel.SelectedItems)
+            {
+                DeleteItem(view);
+            }
+        }
+
+        private async void DeleteItem(LocationPanelViewModel view)
+        {
+            if (view != null)
+            {
+                LocationData data = view.LocationData;
+
+                // Remove location from list
+                await Settings.DeleteLocation(data.query);
+
+                // Remove panel
+                LocationPanels.Remove(view);
+
+                // Remove secondary tile if it exists
+                if (SecondaryTileUtils.Exists(data.query))
+                {
+                    await new SecondaryTile(
+                        SecondaryTileUtils.GetTileId(data.query)).RequestDeleteAsync();
+                }
             }
         }
 

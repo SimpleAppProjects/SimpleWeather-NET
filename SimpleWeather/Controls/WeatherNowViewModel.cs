@@ -40,38 +40,11 @@ namespace SimpleWeather.Controls
         public static readonly DependencyProperty WeatherIconProperty =
             DependencyProperty.Register("WeatherIcon", typeof(String),
             typeof(WeatherNowViewModel), new PropertyMetadata(""));
-        public static readonly DependencyProperty HumidityProperty =
-            DependencyProperty.Register("Humidity", typeof(String),
-            typeof(WeatherNowViewModel), new PropertyMetadata(""));
-        public static readonly DependencyProperty PressureProperty =
-            DependencyProperty.Register("Pressure", typeof(String),
-            typeof(WeatherNowViewModel), new PropertyMetadata(""));
-        public static readonly DependencyProperty RisingVisiblityProperty =
-            DependencyProperty.Register("RisingVisiblity", typeof(Visibility),
-            typeof(WeatherNowViewModel), new PropertyMetadata(Visibility.Visible));
-        public static readonly DependencyProperty RisingIconProperty =
-            DependencyProperty.Register("RisingIcon", typeof(String),
-            typeof(WeatherNowViewModel), new PropertyMetadata(""));
-        public static readonly DependencyProperty _VisibilityProperty =
-            DependencyProperty.Register("_Visibility", typeof(String),
-            typeof(WeatherNowViewModel), new PropertyMetadata(""));
-        public static readonly DependencyProperty WindChillProperty =
-            DependencyProperty.Register("WindChill", typeof(String),
-            typeof(WeatherNowViewModel), new PropertyMetadata(""));
-        public static readonly DependencyProperty WindDirectionProperty =
-            DependencyProperty.Register("WindDirection", typeof(Transform),
-            typeof(WeatherNowViewModel), new PropertyMetadata(new RotateTransform()));
-        public static readonly DependencyProperty WindSpeedProperty =
-            DependencyProperty.Register("WindSpeed", typeof(String),
-            typeof(WeatherNowViewModel), new PropertyMetadata(""));
-        public static readonly DependencyProperty SunriseProperty =
-            DependencyProperty.Register("Sunrise", typeof(String),
-            typeof(WeatherNowViewModel), new PropertyMetadata(""));
-        public static readonly DependencyProperty SunsetProperty =
-            DependencyProperty.Register("Sunset", typeof(String),
-            typeof(WeatherNowViewModel), new PropertyMetadata(""));
         public static readonly DependencyProperty ForecastsProperty =
             DependencyProperty.Register("Forecasts", typeof(ObservableCollection<ForecastItemViewModel>),
+            typeof(WeatherNowViewModel), new PropertyMetadata(null));
+        public static readonly DependencyProperty WeatherDetailsProperty =
+            DependencyProperty.Register("WeatherDetails", typeof(ObservableCollection<DetailItemViewModel>),
             typeof(WeatherNowViewModel), new PropertyMetadata(null));
         public static readonly DependencyProperty ExtrasProperty =
             DependencyProperty.Register("ExtrasProperty", typeof(WeatherExtrasViewModel),
@@ -127,62 +100,17 @@ namespace SimpleWeather.Controls
             get { return (string)GetValue(WeatherIconProperty); }
             set { SetValue(WeatherIconProperty, value); OnPropertyChanged("WeatherIcon"); }
         }
-        // Weather Details
-        public string Humidity
-        {
-            get { return (string)GetValue(HumidityProperty); }
-            set { SetValue(HumidityProperty, value); OnPropertyChanged("Humidity"); }
-        }
-        public string Pressure
-        {
-            get { return (string)GetValue(PressureProperty); }
-            set { SetValue(PressureProperty, value); OnPropertyChanged("Pressure"); }
-        }
-        public Visibility RisingVisiblity
-        {
-            get { return (Visibility)GetValue(RisingVisiblityProperty); }
-            set { SetValue(RisingVisiblityProperty, value); OnPropertyChanged("RisingVisiblity"); }
-        }
-        public string RisingIcon
-        {
-            get { return (string)GetValue(RisingIconProperty); }
-            set { SetValue(RisingIconProperty, value); OnPropertyChanged("RisingIcon"); }
-        }
-        public string _Visibility
-        {
-            get { return (string)GetValue(_VisibilityProperty); }
-            set { SetValue(_VisibilityProperty, value); OnPropertyChanged("_Visibility"); }
-        }
-        public string WindChill
-        {
-            get { return (string)GetValue(WindChillProperty); }
-            set { SetValue(WindChillProperty, value); OnPropertyChanged("WindChill"); }
-        }
-        public Transform WindDirection
-        {
-            get { return (Transform)GetValue(WindDirectionProperty); }
-            set { SetValue(WindDirectionProperty, value); OnPropertyChanged("WindDirection"); }
-        }
-        public string WindSpeed
-        {
-            get { return (string)GetValue(WindSpeedProperty); }
-            set { SetValue(WindSpeedProperty, value); OnPropertyChanged("WindSpeed"); }
-        }
-        public string Sunrise
-        {
-            get { return (string)GetValue(SunriseProperty); }
-            set { SetValue(SunriseProperty, value); OnPropertyChanged("Sunrise"); }
-        }
-        public string Sunset
-        {
-            get { return (string)GetValue(SunsetProperty); }
-            set { SetValue(SunsetProperty, value); OnPropertyChanged("Sunset"); }
-        }
         // Forecast
         public ObservableCollection<ForecastItemViewModel> Forecasts
         {
             get { return (ObservableCollection<ForecastItemViewModel>)GetValue(ForecastsProperty); }
             set { SetValue(ForecastsProperty, value); OnPropertyChanged("Forecasts"); }
+        }
+        // Weather Details
+        public ObservableCollection<DetailItemViewModel> WeatherDetails
+        {
+            get { return (ObservableCollection<DetailItemViewModel>)GetValue(WeatherDetailsProperty); }
+            set { SetValue(WeatherDetailsProperty, value); OnPropertyChanged("WeatherDetails"); }
         }
         // Additional Details
         public WeatherExtrasViewModel Extras
@@ -227,16 +155,7 @@ namespace SimpleWeather.Controls
         public string WeatherIcon { get; set; }
 
         // Weather Details
-        public string Humidity { get; set; }
-        public string Pressure { get; set; }
-        public ViewStates RisingVisiblity { get; set; }
-        public string RisingIcon { get; set; }
-        public string _Visibility { get; set; }
-        public string WindChill { get; set; }
-        public int WindDirection { get; set; }
-        public string WindSpeed { get; set; }
-        public string Sunrise { get; set; }
-        public string Sunset { get; set; }
+        public ObservableCollection<DetailItemViewModel> WeatherDetails { get; set; }
 
         // Forecast
         public ObservableCollection<ForecastItemViewModel> Forecasts { get; set; }
@@ -268,6 +187,7 @@ namespace SimpleWeather.Controls
             };
 #endif
             Forecasts = new ObservableCollection<ForecastItemViewModel>();
+            WeatherDetails = new ObservableCollection<DetailItemViewModel>();
             Extras = new WeatherExtrasViewModel();
         }
 
@@ -283,6 +203,7 @@ namespace SimpleWeather.Controls
             };
 #endif
             Forecasts = new ObservableCollection<ForecastItemViewModel>();
+            WeatherDetails = new ObservableCollection<DetailItemViewModel>();
             Extras = new WeatherExtrasViewModel();
             UpdateView(weather);
         }
@@ -319,52 +240,132 @@ namespace SimpleWeather.Controls
                 WeatherIcon = weather.condition.icon;
 
                 // WeatherDetails
-                // Astronomy
-#if WINDOWS_UWP
-                Sunrise = weather.astronomy.sunrise.ToString("t", culture);
-                Sunset = weather.astronomy.sunset.ToString("t", culture);
-#elif __ANDROID__
-                if (Android.Text.Format.DateFormat.Is24HourFormat(Application.Context))
+                WeatherDetails.Clear();
+                // Precipitation
+                if (weather.precipitation != null)
                 {
-                    Sunrise = weather.astronomy.sunrise.ToString("HH:mm");
-                    Sunset = weather.astronomy.sunset.ToString("HH:mm");
-                }
-                else
-                {
-                    Sunrise = weather.astronomy.sunrise.ToString("h:mm tt");
-                    Sunset = weather.astronomy.sunset.ToString("h:mm tt");
-                }
-#endif
+                    string Chance = weather.precipitation.pop + "%";
+                    string Qpf_Rain = Settings.IsFahrenheit ?
+                        weather.precipitation.qpf_rain_in.ToString("0.00", culture) + " in" : weather.precipitation.qpf_rain_mm.ToString(culture) + " mm";
+                    string Qpf_Snow = Settings.IsFahrenheit ?
+                        weather.precipitation.qpf_snow_in.ToString("0.00", culture) + " in" : weather.precipitation.qpf_snow_cm.ToString(culture) + " cm";
 
-                // Wind
-                WindChill = Settings.IsFahrenheit ?
-                    Math.Round(weather.condition.feelslike_f) + "º" : Math.Round(weather.condition.feelslike_c) + "º";
-                WindSpeed = Settings.IsFahrenheit ?
-                    Math.Round(weather.condition.wind_mph) + " mph" : Math.Round(weather.condition.wind_kph) + " kph";
-                UpdateWindDirection(weather.condition.wind_degrees);
+                    if (WeatherAPI.OpenWeatherMap.Equals(Settings.API) || WeatherAPI.MetNo.Equals(Settings.API))
+                    {
+                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPRain, Qpf_Rain));
+                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPSnow, Qpf_Snow));
+                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPCloudiness, Chance));
+                    }
+                    else
+                    {
+                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPChance, Chance));
+                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPRain, Qpf_Rain));
+                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPSnow, Qpf_Snow));
+                    }
+                }
 
                 // Atmosphere
-                Humidity = weather.atmosphere.humidity;
-                if (!Humidity.EndsWith("%", StringComparison.Ordinal))
-                    Humidity += "%";
-
                 var pressureVal = Settings.IsFahrenheit ? weather.atmosphere.pressure_in : weather.atmosphere.pressure_mb;
                 var pressureUnit = Settings.IsFahrenheit ? "in" : "mb";
 
                 if (float.TryParse(pressureVal, NumberStyles.Float, CultureInfo.InvariantCulture, out float pressure))
-                    Pressure = string.Format("{0} {1}", pressure.ToString(culture), pressureUnit);
-                else
-                    Pressure = string.Format("-- {0}", pressureUnit);
+                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Pressure,
+                        string.Format("{0} {1} {2}", GetPressureStateIcon(weather.atmosphere.pressure_trend), pressure.ToString(culture), pressureUnit)));
 
-                UpdatePressureState(weather.atmosphere.pressure_trend);
+                WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Humidity,
+                    weather.atmosphere.humidity.EndsWith("%", StringComparison.Ordinal) ?
+                            weather.atmosphere.humidity : weather.atmosphere.humidity + "%"));
+
+                if (!String.IsNullOrWhiteSpace(weather.atmosphere.dewpoint_f))
+                {
+                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Dewpoint,
+                           Settings.IsFahrenheit ?
+                                Math.Round(float.Parse(weather.atmosphere.dewpoint_f)) + "º" :
+                                Math.Round(float.Parse(weather.atmosphere.dewpoint_c)) + "º"));
+                }
 
                 var visibilityVal = Settings.IsFahrenheit ? weather.atmosphere.visibility_mi : weather.atmosphere.visibility_km;
                 var visibilityUnit = Settings.IsFahrenheit ? "mi" : "km";
 
                 if (float.TryParse(visibilityVal, NumberStyles.Float, CultureInfo.InvariantCulture, out float visibility))
-                    _Visibility = string.Format("{0} {1}", visibility.ToString(culture), visibilityUnit);
+                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Visibility,
+                           string.Format("{0} {1}", visibility.ToString(culture), visibilityUnit)));
+
+                if (weather.condition.uv != null)
+                {
+                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.UV,
+                           string.Format("{0}, {1}", weather.condition.uv.index, weather.condition.uv.desc)));
+                }
+
+                // Wind
+                WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.FeelsLike,
+                       Settings.IsFahrenheit ?
+                            Math.Round(weather.condition.feelslike_f) + "º" : Math.Round(weather.condition.feelslike_c) + "º"));
+                WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.WindSpeed,
+                       Settings.IsFahrenheit ?
+                            Math.Round(weather.condition.wind_mph) + " mph" : Math.Round(weather.condition.wind_kph) + " kph", GetWindIconRotation(weather.condition.wind_degrees)));
+
+                if (weather.condition.beaufort != null)
+                {
+                    WeatherDetails.Add(new DetailItemViewModel(weather.condition.beaufort.scale,
+                            weather.condition.beaufort.desc));
+                }
+
+                // Astronomy
+#if WINDOWS_UWP
+                WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Sunrise,
+                       weather.astronomy.sunrise.ToString("t", culture)));
+                WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Sunset,
+                       weather.astronomy.sunset.ToString("t", culture)));
+#elif __ANDROID__
+                if (Android.Text.Format.DateFormat.Is24HourFormat(Application.Context))
+                {
+                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Sunrise,
+                           weather.astronomy.sunrise.ToString("HH:mm")));
+                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Sunset,
+                           weather.astronomy.sunset.ToString("HH:mm")));
+                }
                 else
-                    _Visibility = string.Format("-- {0}", visibilityUnit);
+                {
+                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Sunrise,
+                           weather.astronomy.sunrise.ToString("h:mm tt")));
+                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Sunset,
+                           weather.astronomy.sunset.ToString("h:mm tt")));
+                }
+#endif
+
+                if (weather.astronomy.moonrise != null && weather.astronomy.moonset != null
+                        && weather.astronomy.moonrise.CompareTo(DateTime.MinValue) > 0
+                        && weather.astronomy.moonset.CompareTo(DateTime.MinValue) > 0)
+                {
+#if WINDOWS_UWP
+                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Moonrise,
+                           weather.astronomy.moonrise.ToString("t", culture)));
+                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Moonset,
+                           weather.astronomy.moonset.ToString("t", culture)));
+#elif __ANDROID__
+                    if (Android.Text.Format.DateFormat.Is24HourFormat(Application.Context))
+                    {
+                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Moonrise,
+                               weather.astronomy.moonrise.ToString("HH:mm")));
+                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Moonset,
+                               weather.astronomy.moonset.ToString("HH:mm")));
+                    }
+                    else
+                    {
+                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Moonrise,
+                               weather.astronomy.moonrise.ToString("h:mm tt")));
+                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Moonset,
+                               weather.astronomy.moonset.ToString("h:mm tt")));
+                    }
+#endif
+                }
+
+                if (weather.astronomy.moonphase != null)
+                {
+                    WeatherDetails.Add(new DetailItemViewModel(weather.astronomy.moonphase.phase,
+                           weather.astronomy.moonphase.desc));
+                }
 
                 // Add UI elements
                 Forecasts.Clear();
@@ -402,56 +403,30 @@ namespace SimpleWeather.Controls
             }
         }
 
-        private void UpdatePressureState(string state)
+        private String GetPressureStateIcon(string state)
         {
             switch (state)
             {
                 // Steady
                 case "0":
                 default:
-#if WINDOWS_UWP
-                    RisingVisiblity = Visibility.Collapsed;
-#elif __ANDROID__
-                    RisingVisiblity = ViewStates.Gone;
-#endif
-                    RisingIcon = string.Empty;
-                    break;
+                    return string.Empty;
                 // Rising
                 case "1":
                 case "+":
                 case "Rising":
-#if WINDOWS_UWP
-                    RisingVisiblity = Visibility.Visible;
-#elif __ANDROID__
-                    RisingVisiblity = ViewStates.Visible;
-#endif
-                    RisingIcon = "\uf058\uf058";
-                    break;
+                    return "\uf058\uf058";
                 // Falling
                 case "2":
                 case "-":
                 case "Falling":
-#if WINDOWS_UWP
-                    RisingVisiblity = Visibility.Visible;
-#elif __ANDROID__
-                    RisingVisiblity = ViewStates.Visible;
-#endif
-                    RisingIcon = "\uf044\uf044";
-                    break;
+                    return "\uf044\uf044";
             }
         }
 
-        private void UpdateWindDirection(int angle)
+        private int GetWindIconRotation(int angle)
         {
-#if WINDOWS_UWP
-            RotateTransform rotation = new RotateTransform()
-            {
-                Angle = angle - 180
-            };
-            WindDirection = rotation;
-#elif __ANDROID__
-            WindDirection = angle - 180;
-#endif
+            return angle - 180;
         }
     }
 }

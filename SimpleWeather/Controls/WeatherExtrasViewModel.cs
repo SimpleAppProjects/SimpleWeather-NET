@@ -28,15 +28,6 @@ namespace SimpleWeather.Controls
         public static readonly DependencyProperty TextForecastProperty =
             DependencyProperty.Register("TextForecast", typeof(ObservableCollection<TextForecastItemViewModel>),
             typeof(WeatherNowViewModel), new PropertyMetadata(null));
-        public static readonly DependencyProperty ChanceProperty =
-            DependencyProperty.Register("Chance", typeof(String),
-            typeof(WeatherNowViewModel), new PropertyMetadata(""));
-        public static readonly DependencyProperty Qpf_RainProperty =
-            DependencyProperty.Register("Qpf_Rain", typeof(String),
-            typeof(WeatherNowViewModel), new PropertyMetadata(""));
-        public static readonly DependencyProperty Qpf_SnowProperty =
-            DependencyProperty.Register("Qpf_Snow", typeof(String),
-            typeof(WeatherNowViewModel), new PropertyMetadata(""));
         public static readonly DependencyProperty AlertsProperty =
             DependencyProperty.Register("Alerts", typeof(ObservableCollection<WeatherAlertViewModel>),
             typeof(WeatherNowViewModel), new PropertyMetadata(null));
@@ -60,21 +51,6 @@ namespace SimpleWeather.Controls
             get { return (ObservableCollection<TextForecastItemViewModel>)GetValue(TextForecastProperty); }
             set { SetValue(TextForecastProperty, value); OnPropertyChanged("TextForecast"); }
         }
-        public string Chance
-        {
-            get { return (string)GetValue(ChanceProperty); }
-            set { SetValue(ChanceProperty, value); OnPropertyChanged("Chance"); }
-        }
-        public string Qpf_Rain
-        {
-            get { return (string)GetValue(Qpf_RainProperty); }
-            set { SetValue(Qpf_RainProperty, value); OnPropertyChanged("Qpf_Rain"); }
-        }
-        public string Qpf_Snow
-        {
-            get { return (string)GetValue(Qpf_SnowProperty); }
-            set { SetValue(Qpf_SnowProperty, value); OnPropertyChanged("Qpf_Snow"); }
-        }
         public ObservableCollection<WeatherAlertViewModel> Alerts
         {
             get { return (ObservableCollection<WeatherAlertViewModel>)GetValue(AlertsProperty); }
@@ -84,10 +60,6 @@ namespace SimpleWeather.Controls
 #elif __ANDROID__
         public ObservableCollection<HourlyForecastItemViewModel> HourlyForecast { get; set; }
         public ObservableCollection<TextForecastItemViewModel> TextForecast { get; set; }
-
-        public string Chance { get; set; }
-        public string Qpf_Rain { get; set; }
-        public string Qpf_Snow { get; set; }
 
         public ObservableCollection<WeatherAlertViewModel> Alerts { get; set; }
 #endif
@@ -137,15 +109,6 @@ namespace SimpleWeather.Controls
                 }
             }
 
-            if (weather.precipitation != null)
-            {
-                Chance = weather.precipitation.pop + "%";
-                Qpf_Rain = Settings.IsFahrenheit ?
-                    weather.precipitation.qpf_rain_in.ToString("0.00", culture) + " in" : weather.precipitation.qpf_rain_mm.ToString(culture) + " mm";
-                Qpf_Snow = Settings.IsFahrenheit ?
-                    weather.precipitation.qpf_snow_in.ToString("0.00", culture) + " in" : weather.precipitation.qpf_snow_cm.ToString(culture) + " cm";
-            }
-
             if (weather.weather_alerts != null && weather.weather_alerts.Count > 0)
             {
                 foreach(WeatherAlert alert in weather.weather_alerts)
@@ -164,7 +127,6 @@ namespace SimpleWeather.Controls
         {
             HourlyForecast.Clear();
             TextForecast.Clear();
-            Chance = Qpf_Rain = Qpf_Snow = String.Empty;
             Alerts.Clear();
         }
     }

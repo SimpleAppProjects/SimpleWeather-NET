@@ -26,14 +26,19 @@ namespace SimpleWeather.UWP
         public Frame AppFrame { get { return FrameContent; } }
         public static Shell Instance { get; set; }
 
-        public Color HamburgerButtonColor
+        private Color appbarColor = Color.FromArgb(0xff, 0x0, 0x70, 0xc0);
+        public Color AppBarColor
         {
-            get { return (CommandBar.Background as SolidColorBrush).Color; }
-            set { (CommandBar.Background as SolidColorBrush).Color = value; }
+            get { return appbarColor; }
+            set
+            {
+                appbarColor = value;
+                (CommandBar.Background as SolidColorBrush).Color = value;
+                (NavBar.Background as SolidColorBrush).Color = value;
+            }
         }
 
-        private List<MenuItem> MainMenuItems { get; }
-        private List<MenuItem> OptionMenuItems { get; }
+        private List<AppBarButton> NavBarItems { get; }
 
         public Shell()
         {
@@ -43,38 +48,49 @@ namespace SimpleWeather.UWP
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
             SystemNavigationManager.GetForCurrentView().BackRequested += Shell_BackRequested;
 
-            MainMenuItems = new List<MenuItem>
+            NavBarItems = new List<AppBarButton>
             {
-                new MenuItem()
+                new AppBarButton()
                 {
-                    Icon = WeatherIcons.DAY_SUNNY,
-                    Name = App.ResLoader.GetString("Nav_WeatherNow/Text"),
-                    PageType = typeof(WeatherNow),
-                    FontFamily = new FontFamily("/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons")
+                    Icon = new FontIcon()
+                    {
+                        Glyph = WeatherIcons.DAY_SUNNY,
+                        FontFamily = new FontFamily("/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons"),
+                        Height = 60,
+                        Width = 72,
+                        FontSize = 60
+                    },
+                    Label = App.ResLoader.GetString("Nav_WeatherNow/Label"),
+                    Tag = typeof(WeatherNow)
                 },
-                new MenuItem()
+                new AppBarButton()
                 {
-                    Icon = "\uEA37",
-                    Name = App.ResLoader.GetString("Nav_Locations/Text"),
-                    PageType = typeof(LocationsPage),
-                    FontFamily = new FontFamily("Segoe MDL2 Assets")
+                    Icon = new FontIcon()
+                    {
+                        Glyph = "\uEA37",
+                        FontFamily = new FontFamily("Segoe MDL2 Assets")
+                    },
+                    Label = App.ResLoader.GetString("Nav_Locations/Label"),
+                    Tag = typeof(LocationsPage)
                 },
-                new MenuItem()
+                new AppBarButton()
                 {
-                    Icon = "\uE713",
-                    Name = App.ResLoader.GetString("Nav_Settings/Text"),
-                    PageType = typeof(SettingsPage),
-                    FontFamily = new FontFamily("Segoe MDL2 Assets")
-                },
+                    Icon = new SymbolIcon()
+                    {
+                        Symbol = Symbol.Setting
+                    },
+                    Label = App.ResLoader.GetString("Nav_Settings/Label"),
+                    Tag = typeof(SettingsPage)
+                }
             };
-            OptionMenuItems = null;
-
-            HamBurgerMenu.ItemsSource = MainMenuItems;
-            HamBurgerMenu.OptionsItemsSource = OptionMenuItems;
-
-            AppFrame.Navigating += AppFrame_Navigating;
+            FindName("NavBar");
+            NavBar.PrimaryCommands.Clear();
+            NavBarItems.ForEach(btn => 
+            {
+                btn.Click += NavBarItem_Click;
+                NavBar.PrimaryCommands.Add(btn);
+            });
             AppFrame.Navigated += AppFrame_Navigated;
-            AppFrame.CacheSize = 1;
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -102,22 +118,33 @@ namespace SimpleWeather.UWP
             else
                 SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
 
-            int idx = MainMenuItems.FindIndex(item => item.PageType == e.SourcePageType);
-            if (idx >= 0) HamBurgerMenu.SelectedIndex = idx;
+            int idx = NavBarItems.FindIndex(item => item.Tag == e.SourcePageType);
+            if (idx >=0)
+            {
+                NavBar.PrimaryCommands.Clear();
+                NavBarItems.ForEach(btn => 
+                {
+                    if (NavBarItems.IndexOf(btn) == idx)
+                        btn.Foreground = new SolidColorBrush(Colors.White);
+                    else
+                        btn.Foreground = new SolidColorBrush(Color.FromArgb(0x80, 0xff, 0xff, 0xff));
+                    NavBar.PrimaryCommands.Add(btn);
+                });
+            }
 
             if (e.SourcePageType != typeof(WeatherNow))
             {
-                HamburgerButtonColor = App.AppColor;
+                AppBarColor = App.AppColor;
                 if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
                 {
                     // Mobile
-                    StatusBar.GetForCurrentView().BackgroundColor = HamburgerButtonColor;
+                    StatusBar.GetForCurrentView().BackgroundColor = AppBarColor;
                 }
                 else
                 {
                     // Desktop
                     var titlebar = ApplicationView.GetForCurrentView().TitleBar;
-                    titlebar.BackgroundColor = HamburgerButtonColor;
+                    titlebar.BackgroundColor = AppBarColor;
                     titlebar.ButtonBackgroundColor = titlebar.BackgroundColor;
                 }
             }
@@ -136,12 +163,6 @@ namespace SimpleWeather.UWP
             }
         }
 
-        private void AppFrame_Navigating(object sender, NavigatingCancelEventArgs e)
-        {
-            if (HamBurgerMenu.IsPaneOpen)
-                HamBurgerMenu.IsPaneOpen = !HamBurgerMenu.IsPaneOpen;
-        }
-
         private void Shell_BackRequested(object sender, BackRequestedEventArgs e)
         {
             if (AppFrame == null)
@@ -149,27 +170,29 @@ namespace SimpleWeather.UWP
 
             // Navigate back if possible, and if the event has not 
             // already been handled .
-            if (AppFrame.CanGoBack && e.Handled == false)
+            if (e.Handled == false)
             {
                 e.Handled = true;
-                AppFrame.GoBack();
+                AppFrame.Navigate(typeof(WeatherNow));
+                try
+                {
+                    AppFrame.BackStack.Clear();
+                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                }
+                catch (Exception ex)
+                {
+                    Logger.WriteLine(LoggerLevel.Error, ex, "Exception!!");
+                }
             }
         }
 
-        private void HamburgerButton_Click(object sender, RoutedEventArgs e)
+        private void NavBarItem_Click(object sender, RoutedEventArgs e)
         {
-            HamBurgerMenu.IsPaneOpen = !HamBurgerMenu.IsPaneOpen;
-        }
-
-        private void HamBurgerMenu_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            var menuItem = e.ClickedItem as MenuItem;
-
-            if (menuItem.PageType != AppFrame.SourcePageType)
+            if (sender is AppBarButton btn && btn.Tag is Type pageType && pageType != AppFrame.SourcePageType)
             {
-                AppFrame.Navigate(menuItem.PageType, null);
+                AppFrame.Navigate(pageType, null);
 
-                if (menuItem.PageType == typeof(WeatherNow))
+                if (pageType == typeof(WeatherNow))
                 {
                     try
                     {
@@ -183,13 +206,26 @@ namespace SimpleWeather.UWP
                 }
             }
         }
-    }
 
-    internal class MenuItem
-    {
-        public string Icon { get; set; }
-        public string Name { get; set; }
-        public Type PageType { get; set; }
-        public FontFamily FontFamily { get; set; }
+        public void RequestCommandBarUpdate()
+        {
+            UpdateCommandBar();
+        }
+
+        private void UpdateCommandBar()
+        {
+            if (AppFrame.Content is ICommandBarPage cmdBarPage)
+            {
+                CommandBarTitle.Text = cmdBarPage.CommandBarLabel;
+                CommandBar.PrimaryCommands.Clear();
+                if (cmdBarPage.PrimaryCommands != null)
+                    cmdBarPage.PrimaryCommands.ForEach(cmd => CommandBar.PrimaryCommands.Add(cmd));
+            }
+            else
+            {
+                CommandBarTitle.Text = "SimpleWeather";
+                CommandBar.PrimaryCommands.Clear();
+            }
+        }
     }
 }
