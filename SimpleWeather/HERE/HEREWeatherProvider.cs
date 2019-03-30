@@ -647,9 +647,14 @@ namespace SimpleWeather.HERE
                     }
                 }
             }
-            else if (weather.weather_alerts?.Count == 0 && "US".Equals(location.country_code))
+            else if ("US".Equals(location.country_code))
             {
-                weather.weather_alerts = await new NWS.NWSAlertProvider().GetAlerts(location);
+                List<WeatherAlert> alerts = await new NWS.NWSAlertProvider().GetAlerts(location);
+
+                if (weather.weather_alerts != null)
+                    alerts.AddRange(weather.weather_alerts);
+
+                weather.weather_alerts = alerts;
             }
 
             // Update tz for weather properties
