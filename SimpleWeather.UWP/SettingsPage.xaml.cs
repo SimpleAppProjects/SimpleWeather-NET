@@ -370,15 +370,15 @@ namespace SimpleWeather.UWP
             int index = box.SelectedIndex;
 
             if (index == 0)
-                Settings.RefreshInterval = 15; // 15 min
-            else if (index == 1)
-                Settings.RefreshInterval = 30; // 30 min
-            else if (index == 2)
                 Settings.RefreshInterval = 60; // 1 hr
-            else if (index == 3)
+            else if (index == 1)
+                Settings.RefreshInterval = 120; // 2 hr
+            else if (index == 2)
                 Settings.RefreshInterval = 180; // 3 hr
-            else if (index == 4)
+            else if (index == 3)
                 Settings.RefreshInterval = 360; // 6 hr
+            else if (index == 4)
+                Settings.RefreshInterval = 720; // 12 hr
 
             // Re-register background task
             Task.Run(WeatherUpdateBackgroundTask.RegisterBackgroundTask);
