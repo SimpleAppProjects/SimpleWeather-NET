@@ -42,6 +42,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\FileUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\JSONParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Logger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\OAuthUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Settings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\StringUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherException.cs" />
@@ -64,7 +65,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)WeatherUnderground\WeatherUndergroundProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherUnderground\WUKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)YahooWeather\AutoCompleteQuery.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)YahooWeather\GeopositionQuery.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)YahooWeather\Weather.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)YahooWeather\YahooKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)YahooWeather\YahooWeatherProvider.cs" />
   </ItemGroup>
 </Project>

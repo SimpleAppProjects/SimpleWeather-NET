@@ -255,4 +255,5 @@ API_KEY.txt
 /MigrationBackup
 /SimpleWeather/HERE/HEREWeatherKey.cs
 /SimpleWeather/OpenWeather/OWMKey.cs
+/SimpleWeather/YahooWeather/YahooKey.cs
 /SimpleWeather/WeatherUnderground/WUKey.cs

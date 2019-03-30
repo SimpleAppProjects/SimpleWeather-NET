@@ -179,29 +179,12 @@ namespace SimpleWeather.Utils
                     await DBUtils.SetLocationData(locationDB, WeatherAPI.Here);
                     SaveLastGPSLocData(lastGPSLocData);
                 }
-                // The current Yahoo (YQL) API is no longer in service
-                // Disable this provider until I migrate to the OAuth API
-                if (WeatherAPI.Yahoo.Equals(API))
+                // v1.3.8+ - Yahoo API is back in service (but updated)
+                // Update location data from current geocoder service
+                if (WeatherAPI.Yahoo.Equals(API) && VersionCode < 1380)
                 {
-                    // Set HERE as default API
-                    API = WeatherAPI.Here;
-                    var wm = WeatherManager.GetInstance();
-                    wm.UpdateAPI();
-
-                    if (String.IsNullOrWhiteSpace(wm.GetAPIKey()))
-                    {
-                        // If (internal) key doesn't exist, fallback to Met.no
-                        API = WeatherAPI.MetNo;
-                        wm.UpdateAPI();
-                        UsePersonalKey = true;
-                        KeyVerified = false;
-                    }
-                    else
-                    {
-                        // If key exists, go ahead
-                        UsePersonalKey = false;
-                        KeyVerified = true;
-                    }
+                    await DBUtils.SetLocationData(locationDB, WeatherAPI.Yahoo);
+                    SaveLastGPSLocData(lastGPSLocData);
                 }
             }
             SetVersionCode(CurrentVersionCode);

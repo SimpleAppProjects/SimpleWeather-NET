@@ -6,52 +6,30 @@ namespace SimpleWeather.WeatherYahoo
 {
     public class Rootobject
     {
-        public Query query { get; set; }
-    }
-
-    public class Query
-    {
-        public int count { get; set; }
-        public string created { get; set; }
-        public string lang { get; set; }
-        public Results results { get; set; }
-    }
-
-    public class Results
-    {
-        public Channel channel { get; set; }
-    }
-
-    public class Channel
-    {
-        public Units units { get; set; }
-        public string title { get; set; }
-        public string link { get; set; }
-        public string description { get; set; }
-        public string language { get; set; }
-        public string lastBuildDate { get; set; }
-        public string ttl { get; set; }
         public Location location { get; set; }
-        public Wind wind { get; set; }
-        public Atmosphere atmosphere { get; set; }
-        public Astronomy astronomy { get; set; }
-        public Image image { get; set; }
-        public Item item { get; set; }
-    }
-
-    public class Units
-    {
-        public string distance { get; set; }
-        public string pressure { get; set; }
-        public string speed { get; set; }
-        public string temperature { get; set; }
+        public Current_Observation current_observation { get; set; }
+        public Forecast[] forecasts { get; set; }
     }
 
     public class Location
     {
+        public string woeid { get; set; }
         public string city { get; set; }
-        public string country { get; set; }
         public string region { get; set; }
+        public string country { get; set; }
+        public string lat { get; set; }
+        [Newtonsoft.Json.JsonProperty(PropertyName = "long")]
+        public string _long { get; set; }
+        public string timezone_id { get; set; }
+    }
+
+    public class Current_Observation
+    {
+        public Wind wind { get; set; }
+        public Atmosphere atmosphere { get; set; }
+        public Astronomy astronomy { get; set; }
+        public Condition condition { get; set; }
+        public string pubDate { get; set; }
     }
 
     public class Wind
@@ -79,40 +57,11 @@ namespace SimpleWeather.WeatherYahoo
         public string sunset { get; set; }
     }
 
-    public class Image
-    {
-        public string title { get; set; }
-        public string width { get; set; }
-        public string height { get; set; }
-        public string link { get; set; }
-        public string url { get; set; }
-    }
-
-    public class Item
-    {
-        public string title { get; set; }
-        public string lat { get; set; }
-        [Newtonsoft.Json.JsonProperty(PropertyName = "long")]
-        public string _long { get; set; }
-        public string link { get; set; }
-        public string pubDate { get; set; }
-        public Condition condition { get; set; }
-        public Forecast[] forecast { get; set; }
-        public string description { get; set; }
-        public Guid guid { get; set; }
-    }
-
     public class Condition
     {
         public string code { get; set; }
-        public string date { get; set; }
-        public string temp { get; set; }
+        public string temperature { get; set; }
         public string text { get; set; }
-    }
-
-    public class Guid
-    {
-        public string isPermaLink { get; set; }
     }
 
     public class Forecast

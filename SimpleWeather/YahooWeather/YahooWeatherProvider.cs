@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using System.Globalization;
 #if WINDOWS_UWP
 using SimpleWeather.UWP.Controls;
 using Windows.Storage.Streams;
@@ -17,6 +18,7 @@ using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.Web;
 using Windows.Web.Http;
+using Windows.Web.Http.Headers;
 #elif __ANDROID__
 using Android.App;
 using Android.Graphics;
@@ -38,9 +40,9 @@ namespace SimpleWeather.WeatherYahoo
         {
             ObservableCollection<LocationQueryViewModel> locations = null;
 
-            string yahooAPI = "https://query.yahooapis.com/v1/public/yql?q=";
-            string query = "select * from geo.places where text=\"" + location_query + "*\"";
-            Uri queryURL = new Uri(yahooAPI + query);
+            string queryAPI = "https://autocomplete.wunderground.com/aq?query=";
+            string options = "&h=0&cities=1";
+            Uri queryURL = new Uri(queryAPI + location_query + options);
             // Limit amount of results shown
             int maxResults = 10;
 
@@ -61,21 +63,16 @@ namespace SimpleWeather.WeatherYahoo
 
                 // Load data
                 locations = new ObservableCollection<LocationQueryViewModel>();
-                XmlSerializer deserializer = new XmlSerializer(typeof(query));
-                query root = (query)deserializer.Deserialize(contentStream);
 
-                foreach (place result in root.results)
+                var root = JSONParser.Deserializer<AC_Rootobject>(contentStream);
+
+                foreach (AC_RESULT result in root.RESULTS)
                 {
                     // Filter: only store city results
-                    if (result.placeTypeName.Value == "Town"
-                        || result.placeTypeName.Value == "Suburb"
-                        || (result.placeTypeName.Value == "Zip Code"
-                        || result.placeTypeName.Value == "Postal Code" &&
-                            (result.locality1 != null && result.locality1.type == "Town")
-                            || (result.locality1 != null && result.locality1.type == "Suburb")))
-                        locations.Add(new LocationQueryViewModel(result));
-                    else
+                    if (result.type != "city")
                         continue;
+
+                    locations.Add(new LocationQueryViewModel(result));
 
                     // Limit amount of results
                     maxResults--;
@@ -103,11 +100,11 @@ namespace SimpleWeather.WeatherYahoo
         {
             LocationQueryViewModel location = null;
 
-            string yahooAPI = "https://query.yahooapis.com/v1/public/yql?q=";
-            string location_query = string.Format("({0},{1})", coord.Latitude, coord.Longitude);
-            string query = "select * from geo.places where text=\"" + location_query + "\"";
-            Uri queryURL = new Uri(yahooAPI + query);
-            place result = null;
+            string queryAPI = "https://api.wunderground.com/auto/wui/geo/GeoLookupXML/index.xml?query=";
+            string options = "";
+            string query = string.Format("{0},{1}", coord.Latitude, coord.Longitude);
+            Uri queryURL = new Uri(queryAPI + query + options);
+            location result;
             WeatherException wEx = null;
 
             try
@@ -127,11 +124,8 @@ namespace SimpleWeather.WeatherYahoo
                 webClient.Dispose();
 
                 // Load data
-                XmlSerializer deserializer = new XmlSerializer(typeof(query));
-                query root = (query)deserializer.Deserialize(contentStream);
-
-                if (root.results != null)
-                    result = root.results[0];
+                XmlSerializer deserializer = new XmlSerializer(typeof(location));
+                result = (location)deserializer.Deserialize(contentStream);
 
                 // End Stream
                 if (contentStream != null)
@@ -159,7 +153,7 @@ namespace SimpleWeather.WeatherYahoo
                 Logger.WriteLine(LoggerLevel.Error, ex, "YahooWeatherProvider: error getting location");
             }
 
-            if (result != null && !String.IsNullOrWhiteSpace(result.woeid))
+            if (result != null && !String.IsNullOrWhiteSpace(result.query))
                 location = new LocationQueryViewModel(result);
             else
                 location = new LocationQueryViewModel();
@@ -171,10 +165,10 @@ namespace SimpleWeather.WeatherYahoo
         {
             LocationQueryViewModel location = null;
 
-            string yahooAPI = "https://query.yahooapis.com/v1/public/yql?q=";
-            string query = "select * from geo.places where woeid=\"" + location_query + "\"";
-            Uri queryURL = new Uri(yahooAPI + query);
-            place result = null;
+            string queryAPI = "https://autocomplete.wunderground.com/aq?query=";
+            string options = "&h=0&cities=1";
+            Uri queryURL = new Uri(queryAPI + location_query + options);
+            AC_RESULT result;
             WeatherException wEx = null;
 
             try
@@ -194,11 +188,8 @@ namespace SimpleWeather.WeatherYahoo
                 webClient.Dispose();
 
                 // Load data
-                XmlSerializer deserializer = new XmlSerializer(typeof(query));
-                query root = (query)deserializer.Deserialize(contentStream);
-
-                if (root.results != null)
-                    result = root.results[0];
+                AC_Rootobject root = JSONParser.Deserializer<AC_Rootobject>(contentStream);
+                result = root.RESULTS.FirstOrDefault();
 
                 // End Stream
                 if (contentStream != null)
@@ -226,7 +217,7 @@ namespace SimpleWeather.WeatherYahoo
                 Logger.WriteLine(LoggerLevel.Error, ex, "YahooWeatherProvider: error getting location");
             }
 
-            if (result != null && !String.IsNullOrWhiteSpace(result.woeid))
+            if (result != null && !String.IsNullOrWhiteSpace(result.l))
                 location = new LocationQueryViewModel(result);
             else
                 location = new LocationQueryViewModel();
@@ -239,70 +230,56 @@ namespace SimpleWeather.WeatherYahoo
             throw new NotImplementedException();
         }
 
-        public override String GetAPIKey()
-        {
-            return null;
-        }
-
         public override async Task<Weather> GetWeather(string location_query)
         {
             Weather weather = null;
 
-            string queryAPI = null;
+            string queryAPI = "https://weather-ydn-yql.media.yahoo.com/forecastrss";
             Uri weatherURL = null;
 
-#if WINDOWS_UWP
-            var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages.First();
-            var culture = new System.Globalization.CultureInfo(userlang);
-#else
-            var culture = System.Globalization.CultureInfo.CurrentCulture;
-#endif
-            string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
-
-            if (int.TryParse(location_query, out int woeid))
-            {
-                queryAPI = "https://query.yahooapis.com/v1/public/yql?q=";
-                string query = "select * from weather.forecast where woeid=\""
-                    + woeid + "\" and u='F'&format=json";
-                weatherURL = new Uri(queryAPI + query);
-            }
-            else
-            {
-                queryAPI = "https://query.yahooapis.com/v1/public/yql?q=";
-                string query = "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text=\""
-                    + location_query + "\") and u='F'&format=json";
-                weatherURL = new Uri(queryAPI + query);
-            }
+            OAuthRequest authRequest = new OAuthRequest(GetCliID(), GetCliSecr());
 
             HttpClient webClient = new HttpClient();
             WeatherException wEx = null;
 
             try
             {
+                string query = "?" + location_query + "&format=json&u=f";
+                weatherURL = new Uri(queryAPI + query);
+                string authorization = authRequest.GetAuthorizationHeader(weatherURL);
+
                 // Get response
-                HttpResponseMessage response = await webClient.GetAsync(weatherURL);
-                response.EnsureSuccessStatusCode();
-                Stream contentStream = null;
-#if WINDOWS_UWP
-                contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-#elif __ANDROID__
-                contentStream = await response.Content.ReadAsStreamAsync();
-#endif
-                // Reset exception
-                wEx = null;
-
-                // Load weather
-                Rootobject root = null;
-                await Task.Run(() =>
+                using (var request = new HttpRequestMessage(HttpMethod.Get, weatherURL))
                 {
-                    root = JSONParser.Deserializer<Rootobject>(contentStream);
-                });
+                    // Add headers to request
+                    request.Headers.Add("Authorization", authorization);
+                    request.Headers.Add("Yahoo-App-Id", GetAppID());
+                    request.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/json"));
 
-                // End Stream
-                if (contentStream != null)
-                    contentStream.Dispose();
+                    HttpResponseMessage response = await webClient.SendRequestAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                    response.EnsureSuccessStatusCode();
+                    Stream contentStream = null;
+#if WINDOWS_UWP
+                    contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+#elif __ANDROID__
+                    contentStream = await response.Content.ReadAsStreamAsync();
+#endif
+                    // Reset exception
+                    wEx = null;
 
-                weather = new Weather(root);
+                    // Load weather
+                    Rootobject root = null;
+                    await Task.Run(() =>
+                    {
+                        root = JSONParser.Deserializer<Rootobject>(contentStream);
+                    });
+
+                    // End Stream
+                    if (contentStream != null)
+                        contentStream.Dispose();
+
+                    weather = new Weather(root);
+                }
             }
             catch (Exception ex)
             {
@@ -328,9 +305,6 @@ namespace SimpleWeather.WeatherYahoo
             }
             else if (weather != null)
             {
-                if (SupportsWeatherLocale)
-                    weather.locale = locale;
-
                 weather.query = location_query;
             }
 
@@ -349,14 +323,35 @@ namespace SimpleWeather.WeatherYahoo
             return weather;
         }
 
+        // Use location name here instead of query since we use the AutoComplete API
+        public override async Task UpdateLocationData(LocationData location)
+        {
+            var qview = await GetLocation(location.name);
+
+            if (qview != null)
+            {
+                location.name = qview.LocationName;
+                location.latitude = qview.LocationLat;
+                location.longitude = qview.LocationLong;
+                location.tz_long = qview.LocationTZ_Long;
+
+                // Update DB here or somewhere else
+#if !__ANDROID_WEAR__
+                await Settings.UpdateLocation(location);
+#else
+                Settings.SaveHomeData(location);
+#endif
+            }
+        }
+
         public override async Task<string> UpdateLocationQuery(Weather weather)
         {
             string query = string.Empty;
-            string coord = string.Format("{0},{1}", weather.location.latitude, weather.location.longitude);
-            var qview = await GetLocation(new WeatherUtils.Coordinate(coord));
+            WeatherUtils.Coordinate coord = new WeatherUtils.Coordinate(double.Parse(weather.location.latitude), double.Parse(weather.location.longitude));
+            var qview = await GetLocation(coord);
 
             if (String.IsNullOrEmpty(qview.LocationQuery))
-                query = string.Format("({0})", coord);
+                query = string.Format(CultureInfo.InvariantCulture, "lat={0}&lon={1}", coord.Latitude, coord.Longitude);
             else
                 query = qview.LocationQuery;
 
@@ -366,11 +361,11 @@ namespace SimpleWeather.WeatherYahoo
         public override async Task<string> UpdateLocationQuery(LocationData location)
         {
             string query = string.Empty;
-            string coord = string.Format("{0},{1}", location.latitude, location.longitude);
-            var qview = await GetLocation(new WeatherUtils.Coordinate(coord));
+            WeatherUtils.Coordinate coord = new WeatherUtils.Coordinate(location.latitude, location.longitude);
+            var qview = await GetLocation(coord);
 
             if (String.IsNullOrEmpty(qview.LocationQuery))
-                query = string.Format("({0})", coord);
+                query = string.Format(CultureInfo.InvariantCulture, "lat={0}&lon={1}", coord.Latitude, coord.Longitude);
             else
                 query = qview.LocationQuery;
 

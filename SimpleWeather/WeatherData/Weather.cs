@@ -91,18 +91,17 @@ namespace SimpleWeather.WeatherData
 
         public Weather(WeatherYahoo.Rootobject root)
         {
-            location = new Location(root.query);
-            update_time = DateTimeOffset.ParseExact(root.query.created,
-                            "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
-            forecast = new Forecast[root.query.results.channel.item.forecast.Length];
+            location = new Location(root.location);
+            update_time = ConversionMethods.ToEpochDateTime(root.current_observation.pubDate);
+            forecast = new Forecast[root.forecasts.Length];
             for (int i = 0; i < forecast.Length; i++)
             {
-                forecast[i] = new Forecast(root.query.results.channel.item.forecast[i]);
+                forecast[i] = new Forecast(root.forecasts[i]);
             }
-            condition = new Condition(root.query.results.channel);
-            atmosphere = new Atmosphere(root.query.results.channel.atmosphere);
-            astronomy = new Astronomy(root.query.results.channel.astronomy);
-            ttl = root.query.results.channel.ttl;
+            condition = new Condition(root.current_observation);
+            atmosphere = new Atmosphere(root.current_observation.atmosphere);
+            astronomy = new Astronomy(root.current_observation.astronomy);
+            ttl = "60";
 
             // Set feelslike temp
             if (condition.temp_f > 80)
@@ -471,9 +470,9 @@ namespace SimpleWeather.WeatherData
                             obj.location = Location.FromJson(reader);
                             break;
                         case nameof(update_time):
-                            bool parsed = DateTimeOffset.TryParseExact(reader.Value.ToString(), "dd.MM.yyyy HH:mm:ss zzzz", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset result);
+                            bool parsed = DateTimeOffset.TryParseExact(reader.Value?.ToString(), "dd.MM.yyyy HH:mm:ss zzzz", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset result);
                             if (!parsed) // If we can't parse as DateTimeOffset try DateTime (data could be old)
-                                result = DateTime.Parse(reader.Value.ToString());
+                                result = DateTime.Parse(reader.Value?.ToString());
                             else
                             {
                                 // DateTimeOffset date stored in SQLite.NET doesn't store offset
@@ -680,12 +679,15 @@ namespace SimpleWeather.WeatherData
             tz_long = condition.local_tz_long;
         }
 
-        public Location(WeatherYahoo.Query query)
+        public Location(WeatherYahoo.Location location)
         {
-            name = query.results.channel.location.city + "," + query.results.channel.location.region;
-            latitude = query.results.channel.item.lat;
-            longitude = query.results.channel.item._long;
-            saveTimeZone(query);
+            // Use location name from location provider
+            name = null;
+            latitude = location.lat;
+            longitude = location._long;
+            tz_offset = TimeSpan.Zero;
+            tz_short = "UTC";
+            tz_long = location.timezone_id;
         }
 
         public Location(OpenWeather.ForecastRootobject root)
@@ -718,26 +720,6 @@ namespace SimpleWeather.WeatherData
             tz_short = "UTC";
         }
 
-        private void saveTimeZone(WeatherYahoo.Query query)
-        {
-            /* Get TimeZone info by using UTC and local build time */
-            // Now
-            DateTime utc = DateTime.ParseExact(query.created,
-                            "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'", CultureInfo.InvariantCulture);
-
-            // There
-            int AMPMidx = query.results.channel.lastBuildDate.LastIndexOf(" AM ");
-            if (AMPMidx < 0)
-                AMPMidx = query.results.channel.lastBuildDate.LastIndexOf(" PM ");
-
-            DateTime there = DateTime.ParseExact(query.results.channel.lastBuildDate.Substring(0, AMPMidx + 4),
-                "ddd, dd MMM yyyy hh:mm tt ", null);
-            TimeSpan offset = there - utc;
-
-            tz_offset = TimeSpan.Parse(string.Format("{0}:{1}", offset.Hours, offset.Minutes));
-            tz_short = query.results.channel.lastBuildDate.Substring(AMPMidx + 4);
-        }
-
         public static Location FromJson(JsonReader extReader)
         {
             Location obj = null;
@@ -766,19 +748,19 @@ namespace SimpleWeather.WeatherData
                     switch (property)
                     {
                         case nameof(name):
-                            obj.name = reader.Value.ToString();
+                            obj.name = reader.Value?.ToString();
                             break;
                         case nameof(latitude):
-                            obj.latitude = reader.Value.ToString();
+                            obj.latitude = reader.Value?.ToString();
                             break;
                         case nameof(longitude):
-                            obj.longitude = reader.Value.ToString();
+                            obj.longitude = reader.Value?.ToString();
                             break;
                         case nameof(tz_offset):
-                            obj.tz_offset = TimeSpan.Parse(reader.Value.ToString());
+                            obj.tz_offset = TimeSpan.Parse(reader.Value?.ToString());
                             break;
                         case nameof(tz_short):
-                            obj.tz_short = reader.Value.ToString();
+                            obj.tz_short = reader.Value?.ToString();
                             break;
                         case nameof(tz_long):
                             obj.tz_long = reader.Value?.ToString();
@@ -855,8 +837,7 @@ namespace SimpleWeather.WeatherData
 
         public Forecast(WeatherYahoo.Forecast forecast)
         {
-            date = DateTime.Parse(forecast.date,
-                CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
+            date = ConversionMethods.ToEpochDateTime(forecast.date);
             high_f = forecast.high;
             high_c = ConversionMethods.FtoC(high_f);
             low_f = forecast.low;
@@ -936,25 +917,25 @@ namespace SimpleWeather.WeatherData
                     switch (property)
                     {
                         case nameof(date):
-                            obj.date = DateTime.Parse(reader.Value.ToString());
+                            obj.date = DateTime.Parse(reader.Value?.ToString());
                             break;
                         case nameof(high_f):
-                            obj.high_f = reader.Value.ToString();
+                            obj.high_f = reader.Value?.ToString();
                             break;
                         case nameof(high_c):
-                            obj.high_c = reader.Value.ToString();
+                            obj.high_c = reader.Value?.ToString();
                             break;
                         case nameof(low_f):
-                            obj.low_f = reader.Value.ToString();
+                            obj.low_f = reader.Value?.ToString();
                             break;
                         case nameof(low_c):
-                            obj.low_c = reader.Value.ToString();
+                            obj.low_c = reader.Value?.ToString();
                             break;
                         case nameof(condition):
-                            obj.condition = reader.Value.ToString();
+                            obj.condition = reader.Value?.ToString();
                             break;
                         case nameof(icon):
-                            obj.icon = reader.Value.ToString();
+                            obj.icon = reader.Value?.ToString();
                             break;
                         default:
                             break;
@@ -1145,31 +1126,31 @@ namespace SimpleWeather.WeatherData
                     switch (property)
                     {
                         case nameof(date):
-                            obj._date = reader.Value.ToString();
+                            obj._date = reader.Value?.ToString();
                             break;
                         case nameof(high_f):
-                            obj.high_f = reader.Value.ToString();
+                            obj.high_f = reader.Value?.ToString();
                             break;
                         case nameof(high_c):
-                            obj.high_c = reader.Value.ToString();
+                            obj.high_c = reader.Value?.ToString();
                             break;
                         case nameof(condition):
-                            obj.condition = reader.Value.ToString();
+                            obj.condition = reader.Value?.ToString();
                             break;
                         case nameof(icon):
-                            obj.icon = reader.Value.ToString();
+                            obj.icon = reader.Value?.ToString();
                             break;
                         case nameof(pop):
-                            obj.pop = reader.Value.ToString();
+                            obj.pop = reader.Value?.ToString();
                             break;
                         case nameof(wind_degrees):
-                            obj.wind_degrees = int.Parse(reader.Value.ToString());
+                            obj.wind_degrees = int.Parse(reader.Value?.ToString());
                             break;
                         case nameof(wind_mph):
-                            obj.wind_mph = float.Parse(reader.Value.ToString());
+                            obj.wind_mph = float.Parse(reader.Value?.ToString());
                             break;
                         case nameof(wind_kph):
-                            obj.wind_kph = float.Parse(reader.Value.ToString());
+                            obj.wind_kph = float.Parse(reader.Value?.ToString());
                             break;
                         default:
                             break;
@@ -1366,19 +1347,19 @@ namespace SimpleWeather.WeatherData
                     switch (property)
                     {
                         case nameof(title):
-                            obj.title = reader.Value.ToString();
+                            obj.title = reader.Value?.ToString();
                             break;
                         case nameof(fcttext):
-                            obj.fcttext = reader.Value.ToString();
+                            obj.fcttext = reader.Value?.ToString();
                             break;
                         case nameof(fcttext_metric):
-                            obj.fcttext_metric = reader.Value.ToString();
+                            obj.fcttext_metric = reader.Value?.ToString();
                             break;
                         case nameof(icon):
-                            obj.icon = reader.Value.ToString();
+                            obj.icon = reader.Value?.ToString();
                             break;
                         case nameof(pop):
-                            obj.pop = reader.Value.ToString();
+                            obj.pop = reader.Value?.ToString();
                             break;
                         default:
                             break;
@@ -1466,18 +1447,18 @@ namespace SimpleWeather.WeatherData
                 this.uv = new UV(uv);
         }
 
-        public Condition(WeatherYahoo.Channel channel)
+        public Condition(WeatherYahoo.Current_Observation observation)
         {
-            weather = channel.item.condition.text;
-            temp_f = float.Parse(channel.item.condition.temp);
-            temp_c = float.Parse(ConversionMethods.FtoC(channel.item.condition.temp));
-            wind_degrees = int.Parse(channel.wind.direction);
-            wind_kph = float.Parse(channel.wind.speed);
-            wind_mph = float.Parse(ConversionMethods.KphToMph(channel.wind.speed));
-            feelslike_f = float.Parse(channel.wind.chill);
-            feelslike_c = float.Parse(ConversionMethods.FtoC(channel.wind.chill));
+            weather = observation.condition.text;
+            temp_f = float.Parse(observation.condition.temperature);
+            temp_c = float.Parse(ConversionMethods.FtoC(observation.condition.temperature));
+            wind_degrees = int.Parse(observation.wind.direction);
+            wind_kph = float.Parse(observation.wind.speed);
+            wind_mph = float.Parse(ConversionMethods.KphToMph(observation.wind.speed));
+            feelslike_f = float.Parse(observation.wind.chill);
+            feelslike_c = float.Parse(ConversionMethods.FtoC(observation.wind.chill));
             icon = WeatherManager.GetProvider(WeatherAPI.Yahoo)
-                   .GetWeatherIcon(channel.item.condition.code);
+                   .GetWeatherIcon(observation.condition.code);
         }
 
         public Condition(OpenWeather.CurrentRootobject root)
@@ -1595,31 +1576,31 @@ namespace SimpleWeather.WeatherData
                     switch (property)
                     {
                         case nameof(weather):
-                            obj.weather = reader.Value.ToString();
+                            obj.weather = reader.Value?.ToString();
                             break;
                         case nameof(temp_f):
-                            obj.temp_f = float.Parse(reader.Value.ToString());
+                            obj.temp_f = float.Parse(reader.Value?.ToString());
                             break;
                         case nameof(temp_c):
-                            obj.temp_c = float.Parse(reader.Value.ToString());
+                            obj.temp_c = float.Parse(reader.Value?.ToString());
                             break;
                         case nameof(wind_degrees):
-                            obj.wind_degrees = int.Parse(reader.Value.ToString());
+                            obj.wind_degrees = int.Parse(reader.Value?.ToString());
                             break;
                         case nameof(wind_mph):
-                            obj.wind_mph = float.Parse(reader.Value.ToString());
+                            obj.wind_mph = float.Parse(reader.Value?.ToString());
                             break;
                         case nameof(wind_kph):
-                            obj.wind_kph = float.Parse(reader.Value.ToString());
+                            obj.wind_kph = float.Parse(reader.Value?.ToString());
                             break;
                         case nameof(feelslike_f):
-                            obj.feelslike_f = float.Parse(reader.Value.ToString());
+                            obj.feelslike_f = float.Parse(reader.Value?.ToString());
                             break;
                         case nameof(feelslike_c):
-                            obj.feelslike_c = float.Parse(reader.Value.ToString());
+                            obj.feelslike_c = float.Parse(reader.Value?.ToString());
                             break;
                         case nameof(icon):
-                            obj.icon = reader.Value.ToString();
+                            obj.icon = reader.Value?.ToString();
                             break;
                         case nameof(beaufort):
                             obj.beaufort = Beaufort.FromJson(reader);
@@ -1840,28 +1821,28 @@ namespace SimpleWeather.WeatherData
                     switch (property)
                     {
                         case nameof(humidity):
-                            obj.humidity = reader.Value.ToString();
+                            obj.humidity = reader.Value?.ToString();
                             break;
                         case nameof(pressure_mb):
-                            obj.pressure_mb = reader.Value.ToString();
+                            obj.pressure_mb = reader.Value?.ToString();
                             break;
                         case nameof(pressure_in):
-                            obj.pressure_in = reader.Value.ToString();
+                            obj.pressure_in = reader.Value?.ToString();
                             break;
                         case nameof(pressure_trend):
-                            obj.pressure_trend = reader.Value.ToString();
+                            obj.pressure_trend = reader.Value?.ToString();
                             break;
                         case nameof(visibility_mi):
-                            obj.visibility_mi = reader.Value.ToString();
+                            obj.visibility_mi = reader.Value?.ToString();
                             break;
                         case nameof(visibility_km):
-                            obj.visibility_km = reader.Value.ToString();
+                            obj.visibility_km = reader.Value?.ToString();
                             break;
                         case nameof(dewpoint_f):
-                            obj.dewpoint_f = reader.Value.ToString();
+                            obj.dewpoint_f = reader.Value?.ToString();
                             break;
                         case nameof(dewpoint_c):
-                            obj.dewpoint_c = reader.Value.ToString();
+                            obj.dewpoint_c = reader.Value?.ToString();
                             break;
                         default:
                             break;
@@ -2180,16 +2161,16 @@ namespace SimpleWeather.WeatherData
                     switch (property)
                     {
                         case nameof(sunrise):
-                            obj.sunrise = DateTime.Parse(reader.Value.ToString());
+                            obj.sunrise = DateTime.Parse(reader.Value?.ToString());
                             break;
                         case nameof(sunset):
-                            obj.sunset = DateTime.Parse(reader.Value.ToString());
+                            obj.sunset = DateTime.Parse(reader.Value?.ToString());
                             break;
                         case nameof(moonrise):
-                            obj.moonrise = DateTime.Parse(reader.Value.ToString());
+                            obj.moonrise = DateTime.Parse(reader.Value?.ToString());
                             break;
                         case nameof(moonset):
-                            obj.moonset = DateTime.Parse(reader.Value.ToString());
+                            obj.moonset = DateTime.Parse(reader.Value?.ToString());
                             break;
                         case nameof(moonphase):
                             obj.moonphase = MoonPhase.FromJson(reader);
@@ -2340,19 +2321,19 @@ namespace SimpleWeather.WeatherData
                     switch (property)
                     {
                         case nameof(pop):
-                            obj.pop = reader.Value.ToString();
+                            obj.pop = reader.Value?.ToString();
                             break;
                         case nameof(qpf_rain_in):
-                            obj.qpf_rain_in = float.Parse(reader.Value.ToString());
+                            obj.qpf_rain_in = float.Parse(reader.Value?.ToString());
                             break;
                         case nameof(qpf_rain_mm):
-                            obj.qpf_rain_mm = float.Parse(reader.Value.ToString());
+                            obj.qpf_rain_mm = float.Parse(reader.Value?.ToString());
                             break;
                         case nameof(qpf_snow_in):
-                            obj.qpf_snow_in = float.Parse(reader.Value.ToString());
+                            obj.qpf_snow_in = float.Parse(reader.Value?.ToString());
                             break;
                         case nameof(qpf_snow_cm):
-                            obj.qpf_snow_cm = float.Parse(reader.Value.ToString());
+                            obj.qpf_snow_cm = float.Parse(reader.Value?.ToString());
                             break;
                         default:
                             break;
@@ -2552,10 +2533,10 @@ namespace SimpleWeather.WeatherData
                     switch (property)
                     {
                         case nameof(scale):
-                            obj.scale = (BeaufortScale)int.Parse(reader.Value.ToString());
+                            obj.scale = (BeaufortScale)int.Parse(reader.Value?.ToString());
                             break;
                         case nameof(desc):
-                            obj.desc = reader.Value.ToString();
+                            obj.desc = reader.Value?.ToString();
                             break;
                         default:
                             break;
@@ -2702,10 +2683,10 @@ namespace SimpleWeather.WeatherData
                     switch (property)
                     {
                         case nameof(phase):
-                            obj.phase = (MoonPhaseType)int.Parse(reader.Value.ToString());
+                            obj.phase = (MoonPhaseType)int.Parse(reader.Value?.ToString());
                             break;
                         case nameof(desc):
-                            obj.desc = reader.Value.ToString();
+                            obj.desc = reader.Value?.ToString();
                             break;
                         default:
                             break;
@@ -2827,10 +2808,10 @@ namespace SimpleWeather.WeatherData
                     switch (property)
                     {
                         case nameof(index):
-                            obj.index = float.Parse(reader.Value.ToString());
+                            obj.index = float.Parse(reader.Value?.ToString());
                             break;
                         case nameof(desc):
-                            obj.desc = reader.Value.ToString();
+                            obj.desc = reader.Value?.ToString();
                             break;
                         default:
                             break;
