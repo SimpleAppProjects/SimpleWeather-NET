@@ -245,6 +245,9 @@
     <Compile Include="Controls\DetailItem.xaml.cs">
       <DependentUpon>DetailItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\SunPhasePanel.xaml.cs">
+      <DependentUpon>SunPhasePanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\WeatherAlertPanel.xaml.cs">
       <DependentUpon>WeatherAlertPanel.xaml</DependentUpon>
     </Compile>
@@ -380,6 +383,10 @@
     <Page Include="Controls\LocationQuery.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\SunPhasePanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\TextForecastItem.xaml">
       <SubType>Designer</SubType>

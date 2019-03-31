@@ -43,6 +43,12 @@ namespace SimpleWeather.Controls
         public static readonly DependencyProperty ForecastsProperty =
             DependencyProperty.Register("Forecasts", typeof(ObservableCollection<ForecastItemViewModel>),
             typeof(WeatherNowViewModel), new PropertyMetadata(null));
+        public static readonly DependencyProperty SunriseProperty =
+            DependencyProperty.Register("Sunrise", typeof(String),
+            typeof(WeatherNowViewModel), new PropertyMetadata(""));
+        public static readonly DependencyProperty SunsetProperty =
+            DependencyProperty.Register("Sunset", typeof(String),
+            typeof(WeatherNowViewModel), new PropertyMetadata(""));
         public static readonly DependencyProperty WeatherDetailsProperty =
             DependencyProperty.Register("WeatherDetails", typeof(ObservableCollection<DetailItemViewModel>),
             typeof(WeatherNowViewModel), new PropertyMetadata(null));
@@ -100,6 +106,16 @@ namespace SimpleWeather.Controls
             get { return (string)GetValue(WeatherIconProperty); }
             set { SetValue(WeatherIconProperty, value); OnPropertyChanged("WeatherIcon"); }
         }
+        public string Sunrise
+        {
+            get { return (string)GetValue(SunriseProperty); }
+            set { SetValue(SunriseProperty, value); OnPropertyChanged("Sunrise"); }
+        }
+        public string Sunset
+        {
+            get { return (string)GetValue(SunsetProperty); }
+            set { SetValue(SunsetProperty, value); OnPropertyChanged("Sunset"); }
+        }
         // Forecast
         public ObservableCollection<ForecastItemViewModel> Forecasts
         {
@@ -153,6 +169,8 @@ namespace SimpleWeather.Controls
         public string CurTemp { get; set; }
         public string CurCondition { get; set; }
         public string WeatherIcon { get; set; }
+        public string Sunrise { get; set; }
+        public string Sunset { get; set; }
 
         // Weather Details
         public ObservableCollection<DetailItemViewModel> WeatherDetails { get; set; }
@@ -313,10 +331,10 @@ namespace SimpleWeather.Controls
 
                 // Astronomy
 #if WINDOWS_UWP
-                WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Sunrise,
-                       weather.astronomy.sunrise.ToString("t", culture)));
-                WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Sunset,
-                       weather.astronomy.sunset.ToString("t", culture)));
+                Sunrise = weather.astronomy.sunrise.ToString("t", culture);
+                Sunset = weather.astronomy.sunset.ToString("t", culture);
+                WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Sunrise, Sunrise));
+                WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Sunset, Sunset));
 #elif __ANDROID__
                 if (Android.Text.Format.DateFormat.Is24HourFormat(Application.Context))
                 {

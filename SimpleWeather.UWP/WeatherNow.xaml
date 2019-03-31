@@ -11,6 +11,7 @@
     mc:Ignorable="d"
     d:DesignHeight="1500"
     DataContext="{x:Bind WeatherView}">
+
     <Page.Resources>
         <TransitionCollection x:Name="TextTransitions">
             <EntranceThemeTransition />
@@ -615,6 +616,17 @@
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                     </ItemsControl>
+                </StackPanel>
+                <Rectangle Height="25"/>
+                <StackPanel>
+                    <TextBlock Name="SunriseSetLabel" x:Uid="Label_Sunriseset" Text="Sunrise / Sunset"
+                               Margin="{x:Bind ForecastHeader.Padding, Mode=OneWay}"
+                               FontSize="{x:Bind ForecastLabel.FontSize, Mode=OneWay}"
+                               Style="{StaticResource SectionLabel}" />
+                    <Border Style="{StaticResource Divider}"/>
+                    <localcontrols:SunPhasePanel x:Name="SunPhasePanel" Height="250" MaxWidth="640"
+                                                 Margin="0,0,0,0">
+                    </localcontrols:SunPhasePanel>
                 </StackPanel>
                 <TextBlock Text="{x:Bind WeatherView.WeatherCredit, FallbackValue='Data from Weather Provider', Mode=OneWay}" 
                            Margin="{x:Bind ForecastHeader.Margin, Mode=OneWay}"

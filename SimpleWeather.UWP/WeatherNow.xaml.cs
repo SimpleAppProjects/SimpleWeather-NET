@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -153,6 +154,7 @@ namespace SimpleWeather.UWP
 
             wm = WeatherManager.GetInstance();
             WeatherView = new WeatherNowViewModel();
+            WeatherView.PropertyChanged += WeatherView_PropertyChanged;
             StackControl.SizeChanged += StackControl_SizeChanged;
             MainViewer.SizeChanged += MainViewer_SizeChanged;
             MainViewer.ViewChanged += MainViewer_ViewChanged;
@@ -183,6 +185,22 @@ namespace SimpleWeather.UWP
             };
             GetRefreshBtn().Click += RefreshButton_Click;
             GetPinBtn().Click += PinButton_Click;
+        }
+
+        private void WeatherView_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "Sunrise":
+                case "Sunset":
+                    if (!String.IsNullOrWhiteSpace(WeatherView.Sunrise) && !String.IsNullOrWhiteSpace(WeatherView.Sunset))
+                    {
+                        SunPhasePanel.SetSunriseSetTimes(
+                            DateTime.Parse(WeatherView.Sunrise).TimeOfDay, DateTime.Parse(WeatherView.Sunset).TimeOfDay,
+                            location.tz_offset);
+                    }
+                    break;
+            }
         }
 
         private AppBarButton GetRefreshBtn()
