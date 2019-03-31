@@ -2,25 +2,17 @@
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.ObjectModel;
-#if WINDOWS_UWP
 using System.ComponentModel;
+using System.Globalization;
+using Windows.System.UserProfile;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
-#elif __ANDROID__
-using Android.Graphics;
-using Android.Views;
-using SimpleWeather.Droid;
-#endif
 
 namespace SimpleWeather.Controls
 {
-    public class WeatherExtrasViewModel
-#if WINDOWS_UWP
-        : DependencyObject, INotifyPropertyChanged
-#endif
+    public class WeatherExtrasViewModel : DependencyObject, INotifyPropertyChanged
     {
-#if WINDOWS_UWP
         #region DependencyProperties
         public static readonly DependencyProperty HourlyForecastProperty =
             DependencyProperty.Register("HourlyForecast", typeof(ObservableCollection<HourlyForecastItemViewModel>),
@@ -57,12 +49,6 @@ namespace SimpleWeather.Controls
             set { SetValue(AlertsProperty, value); OnPropertyChanged("Alerts"); }
         }
         #endregion
-#elif __ANDROID__
-        public ObservableCollection<HourlyForecastItemViewModel> HourlyForecast { get; set; }
-        public ObservableCollection<TextForecastItemViewModel> TextForecast { get; set; }
-
-        public ObservableCollection<WeatherAlertViewModel> Alerts { get; set; }
-#endif
 
         public WeatherExtrasViewModel()
         {
@@ -81,12 +67,8 @@ namespace SimpleWeather.Controls
 
         public void UpdateView(Weather weather)
         {
-#if WINDOWS_UWP
-            var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages[0];
-            var culture = new System.Globalization.CultureInfo(userlang);
-#else
-            var culture = System.Globalization.CultureInfo.CurrentCulture;
-#endif
+            var userlang = GlobalizationPreferences.Languages[0];
+            var culture = new CultureInfo(userlang);
 
             // Clear all data
             Clear();

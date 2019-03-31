@@ -3,12 +3,7 @@ using SimpleWeather.WeatherUnderground;
 using SimpleWeather.WeatherYahoo;
 using SimpleWeather.OpenWeather;
 using System.Collections.Generic;
-#if WINDOWS_UWP
 using SimpleWeather.UWP;
-#elif __ANDROID__
-using Android.App;
-using SimpleWeather.Droid;
-#endif
 
 namespace SimpleWeather.Controls
 {
@@ -25,13 +20,7 @@ namespace SimpleWeather.Controls
 
         public LocationQueryViewModel()
         {
-#if WINDOWS_UWP
             LocationName = App.ResLoader.GetString("Error_NoResults");
-#elif __ANDROID__
-            LocationName = Application.Context.GetString(Resource.String.error_noresults);
-#else
-            LocationName = "No results found";
-#endif
             LocationCountry = string.Empty;
             LocationQuery = string.Empty;
         }

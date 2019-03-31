@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using NLog;
+using Windows.Storage;
 
 namespace SimpleWeather.Utils
 {
@@ -26,13 +27,8 @@ namespace SimpleWeather.Utils
 
         private static void Init()
         {
-#if WINDOWS_UWP
-            var storageFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+            var storageFolder = ApplicationData.Current.LocalFolder;
             LogManager.Configuration.Variables["LogPath"] = storageFolder.Path;
-#elif __ANDROID__
-            var extFilesDir = Android.App.Application.Context.GetExternalFilesDir(null);
-            LogManager.Configuration.Variables["LogPath"] = extFilesDir.Path;
-#endif
         }
 
         public static void ForceShutdown()

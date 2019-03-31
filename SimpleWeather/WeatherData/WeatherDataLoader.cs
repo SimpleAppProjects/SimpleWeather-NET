@@ -3,18 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using SimpleWeather.Utils;
 using System.Globalization;
-#if WINDOWS_UWP
 using SimpleWeather.UWP;
 using SimpleWeather.UWP.Helpers;
 using Windows.System.UserProfile;
-#elif __ANDROID__
-using Android.App;
-using SimpleWeather.Droid;
-#if !__ANDROID_WEAR__
-using SimpleWeather.Droid.App;
-using SimpleWeather.Droid.App.Widgets;
-#endif
-#endif
 
 namespace SimpleWeather.WeatherData
 {
@@ -94,21 +85,14 @@ namespace SimpleWeather.WeatherData
                     location.name = weather.location.name;
                     location.tz_long = weather.location.tz_long;
 
-#if !__ANDROID_WEAR__
                     await Settings.UpdateLocation(location);
-#else
-                    Settings.SaveHomeData(location);
-#endif
                 }
                 if (location.latitude == 0 && location.longitude == 0)
                 {
                     location.latitude = double.Parse(weather.location.latitude);
                     location.longitude = double.Parse(weather.location.longitude);
-#if !__ANDROID_WEAR__
+
                     await Settings.UpdateLocation(location);
-#else
-                    Settings.SaveHomeData(location);
-#endif
                 }
 
                 await SaveWeatherData();
@@ -183,34 +167,16 @@ namespace SimpleWeather.WeatherData
                         location.source = Settings.API;
 
                         // Update database as well
-#if !__ANDROID_WEAR__
                         if (location.locationType == LocationType.GPS)
-                        {
                             Settings.SaveLastGPSLocData(location);
-#if __ANDROID__
-                            WearableDataListenerService.EnqueueWork(App.Context,
-                                new Android.Content.Intent(App.Context, typeof(WearableDataListenerService))
-                                    .SetAction(WearableDataListenerService.ACTION_SENDLOCATIONUPDATE));
-#endif
-                        }
                         else
                             await Settings.UpdateLocationWithKey(location, oldKey);
-#else
-                        Settings.SaveHomeData(location);
-#endif
 
-#if WINDOWS_UWP
                         // Update tile id for location
                         if (SecondaryTileUtils.Exists(oldKey))
                         {
                             await SecondaryTileUtils.UpdateTileId(oldKey, location.query);
                         }
-#elif __ANDROID__ && !__ANDROID_WEAR__
-                        if (WidgetUtils.Exists(oldKey))
-                        {
-                            WidgetUtils.UpdateWidgetIds(oldKey, location);
-                        }
-#endif
                     }
 
                     await GetWeatherData();
@@ -240,12 +206,8 @@ namespace SimpleWeather.WeatherData
                     Logger.WriteLine(LoggerLevel.Error, ex, "WeatherDataLoader: error loading saved weather data");
                 }
 
-#if WINDOWS_UWP
                 var userlang = GlobalizationPreferences.Languages.First();
                 var culture = new CultureInfo(userlang);
-#else
-                var culture = CultureInfo.CurrentCulture;
-#endif
                 var locale = wm.LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
                 bool isInvalid = weather == null || !weather.IsValid() || weather.source != Settings.API;
@@ -274,12 +236,8 @@ namespace SimpleWeather.WeatherData
                 Logger.WriteLine(LoggerLevel.Error, ex, "WeatherDataLoader: error loading saved weather data");
             }
 
-#if WINDOWS_UWP
             var userlang = GlobalizationPreferences.Languages.First();
             var culture = new CultureInfo(userlang);
-#else
-            var culture = CultureInfo.CurrentCulture;
-#endif
             var locale = wm.LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
             bool isValid = weather == null || !weather.IsValid() || weather.source != Settings.API;
@@ -308,28 +266,6 @@ namespace SimpleWeather.WeatherData
             await SaveWeatherAlerts();
 
             await Settings.SaveWeatherData(weather);
-
-#if !__ANDROID_WEAR__ && __ANDROID__
-            // Update weather data for Wearables
-            WearableDataListenerService.EnqueueWork(Application.Context,
-                new Android.Content.Intent(Application.Context, typeof(WearableDataListenerService))
-                    .SetAction(WearableDataListenerService.ACTION_SENDWEATHERUPDATE));
-
-            // Update cached weather data for widgets
-            await Task.Run(() =>
-            {
-                if (WidgetUtils.Exists(location.query))
-                {
-                    var ids = WidgetUtils.GetWidgetIds(location.query);
-                    foreach (int id in ids)
-                    {
-                        WidgetUtils.SaveWeatherData(id, weather);
-                    }
-                }
-            });
-#elif __ANDROID_WEAR__
-            Settings.UpdateTime = weather.update_time.UtcDateTime;
-#endif
         }
 
         private async Task SaveWeatherAlerts()

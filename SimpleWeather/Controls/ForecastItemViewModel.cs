@@ -2,6 +2,7 @@
 using SimpleWeather.WeatherData;
 using System;
 using System.Globalization;
+using Windows.System.UserProfile;
 
 namespace SimpleWeather.Controls
 {
@@ -24,12 +25,8 @@ namespace SimpleWeather.Controls
         {
             wm = WeatherManager.GetInstance();
 
-#if WINDOWS_UWP
-            var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages[0];
+            var userlang = GlobalizationPreferences.Languages[0];
             var culture = new CultureInfo(userlang);
-#else
-            var culture = CultureInfo.CurrentCulture;
-#endif
 
             WeatherIcon = forecast.icon;
             Date = forecast.date.ToString("ddd dd", culture);

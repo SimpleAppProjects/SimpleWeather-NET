@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Text;
-#if WINDOWS_UWP
 using SimpleWeather.UWP.Helpers;
-#endif
 
 namespace SimpleWeather.Utils
 {
@@ -11,12 +9,7 @@ namespace SimpleWeather.Utils
     {
         public static String ToUpperCase(this String @string)
         {
-#if WINDOWS_UWP
             return @string.ToTitleCase();
-#else
-            var culture = CultureInfo.CurrentCulture;
-            return culture.TextInfo.ToTitleCase(@string);
-#endif
         }
 
         public static String ToPascalCase(this String @string)

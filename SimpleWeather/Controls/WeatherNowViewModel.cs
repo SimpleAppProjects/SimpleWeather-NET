@@ -3,27 +3,17 @@ using SimpleWeather.WeatherData;
 using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
-#if WINDOWS_UWP
 using SimpleWeather.UWP;
 using System.ComponentModel;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
-#elif __ANDROID__
-using Android.App;
-using Android.Graphics;
-using Android.Views;
-using SimpleWeather.Droid;
-#endif
+using Windows.System.UserProfile;
 
 namespace SimpleWeather.Controls
 {
-    public class WeatherNowViewModel
-#if WINDOWS_UWP
-        : DependencyObject, INotifyPropertyChanged
-#endif
+    public class WeatherNowViewModel : DependencyObject, INotifyPropertyChanged
     {
-#if WINDOWS_UWP
         #region DependencyProperties
         public static readonly DependencyProperty LocationProperty =
             DependencyProperty.Register("Location", typeof(String),
@@ -161,35 +151,6 @@ namespace SimpleWeather.Controls
             set { SetValue(WeatherLocaleProperty, value); OnPropertyChanged("WeatherLocale"); }
         }
         #endregion
-#elif __ANDROID__
-        public string Location { get; set; }
-        public string UpdateDate { get; set; }
-
-        // Current Condition
-        public string CurTemp { get; set; }
-        public string CurCondition { get; set; }
-        public string WeatherIcon { get; set; }
-        public string Sunrise { get; set; }
-        public string Sunset { get; set; }
-
-        // Weather Details
-        public ObservableCollection<DetailItemViewModel> WeatherDetails { get; set; }
-
-        // Forecast
-        public ObservableCollection<ForecastItemViewModel> Forecasts { get; set; }
-
-        // Additional Details
-        public WeatherExtrasViewModel Extras { get; set; }
-
-        // Background
-        public string Background { get; set; }
-        public Color PendingBackground { get; set; }
-
-        public string WeatherCredit { get; set; }
-        public string WeatherSource { get; set; }
-
-        public string WeatherLocale { get; set; }
-#endif
 
         private WeatherManager wm;
 
@@ -197,13 +158,12 @@ namespace SimpleWeather.Controls
         {
             wm = WeatherManager.GetInstance();
 
-#if WINDOWS_UWP
             Background = new ImageBrush()
             {
                 Stretch = Stretch.UniformToFill,
                 AlignmentX = AlignmentX.Center
             };
-#endif
+
             Forecasts = new ObservableCollection<ForecastItemViewModel>();
             WeatherDetails = new ObservableCollection<DetailItemViewModel>();
             Extras = new WeatherExtrasViewModel();
@@ -213,13 +173,12 @@ namespace SimpleWeather.Controls
         {
             wm = WeatherManager.GetInstance();
 
-#if WINDOWS_UWP
             Background = new ImageBrush()
             {
                 Stretch = Stretch.UniformToFill,
                 AlignmentX = AlignmentX.Center
             };
-#endif
+
             Forecasts = new ObservableCollection<ForecastItemViewModel>();
             WeatherDetails = new ObservableCollection<DetailItemViewModel>();
             Extras = new WeatherExtrasViewModel();
@@ -230,20 +189,12 @@ namespace SimpleWeather.Controls
         {
             if (weather.IsValid())
             {
-#if WINDOWS_UWP
-                var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages[0];
+                var userlang = GlobalizationPreferences.Languages[0];
                 var culture = new CultureInfo(userlang);
-#else
-                var culture = CultureInfo.CurrentCulture;
-#endif
+
                 // Update backgrounds
-#if WINDOWS_UWP
                 wm.SetBackground(Background, weather);
                 PendingBackgroundColor = wm.GetWeatherBackgroundColor(weather);
-#elif __ANDROID__
-                Background = wm.GetBackgroundURI(weather);
-                PendingBackground = wm.GetWeatherBackgroundColor(weather);
-#endif
 
                 // Location
                 Location = weather.location.name;
@@ -330,53 +281,19 @@ namespace SimpleWeather.Controls
                 }
 
                 // Astronomy
-#if WINDOWS_UWP
                 Sunrise = weather.astronomy.sunrise.ToString("t", culture);
                 Sunset = weather.astronomy.sunset.ToString("t", culture);
                 WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Sunrise, Sunrise));
                 WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Sunset, Sunset));
-#elif __ANDROID__
-                if (Android.Text.Format.DateFormat.Is24HourFormat(Application.Context))
-                {
-                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Sunrise,
-                           weather.astronomy.sunrise.ToString("HH:mm")));
-                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Sunset,
-                           weather.astronomy.sunset.ToString("HH:mm")));
-                }
-                else
-                {
-                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Sunrise,
-                           weather.astronomy.sunrise.ToString("h:mm tt")));
-                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Sunset,
-                           weather.astronomy.sunset.ToString("h:mm tt")));
-                }
-#endif
 
                 if (weather.astronomy.moonrise != null && weather.astronomy.moonset != null
                         && weather.astronomy.moonrise.CompareTo(DateTime.MinValue) > 0
                         && weather.astronomy.moonset.CompareTo(DateTime.MinValue) > 0)
                 {
-#if WINDOWS_UWP
                     WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Moonrise,
                            weather.astronomy.moonrise.ToString("t", culture)));
                     WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Moonset,
                            weather.astronomy.moonset.ToString("t", culture)));
-#elif __ANDROID__
-                    if (Android.Text.Format.DateFormat.Is24HourFormat(Application.Context))
-                    {
-                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Moonrise,
-                               weather.astronomy.moonrise.ToString("HH:mm")));
-                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Moonset,
-                               weather.astronomy.moonset.ToString("HH:mm")));
-                    }
-                    else
-                    {
-                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Moonrise,
-                               weather.astronomy.moonrise.ToString("h:mm tt")));
-                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Moonset,
-                               weather.astronomy.moonset.ToString("h:mm tt")));
-                    }
-#endif
                 }
 
                 if (weather.astronomy.moonphase != null)
@@ -397,11 +314,7 @@ namespace SimpleWeather.Controls
                 WeatherSource = weather.source;
                 string creditPrefix = "Data from";
 
-#if WINDOWS_UWP
                 creditPrefix = App.ResLoader.GetString("Credit_Prefix");
-#elif __ANDROID__
-                creditPrefix = Application.Context.GetString(Resource.String.credit_prefix);
-#endif
 
                 if (weather.source == WeatherAPI.WeatherUnderground)
                     WeatherCredit = string.Format("{0} WeatherUnderground", creditPrefix);

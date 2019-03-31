@@ -3,11 +3,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Reflection;
-#if WINDOWS_UWP
 using Windows.Storage;
-#elif __ANDROID__
-using Android.Support.V4.Util;
-#endif
 
 namespace SimpleWeather.Utils
 {
@@ -158,11 +154,7 @@ namespace SimpleWeather.Utils
             });
         }
 
-#if WINDOWS_UWP
         public static Task<T> DeserializerAsync<T>(StorageFile file)
-#elif __ANDROID__
-        public static Task<T> DeserializerAsync<T>(Java.IO.File file)
-#endif
         {
             return Task.Run(async () =>
             {
@@ -176,16 +168,9 @@ namespace SimpleWeather.Utils
                 StreamReader sReader = null;
                 JsonReader reader = null;
                 var obj = default(T);
-#if __ANDROID__
-                var mFile = new AtomicFile(file);
-                try
-                {
-                    fStream = mFile.OpenRead();
-#else
                 try
                 {
                     fStream = new FileStream(file.Path, FileMode.Open, FileAccess.Read);
-#endif
                     sReader = new StreamReader(fStream);
                     reader = new JsonTextReader(sReader);
 
@@ -200,16 +185,12 @@ namespace SimpleWeather.Utils
                 finally
                 {
                     reader?.Close();
-#if __ANDROID__
-                    mFile?.Dispose();
-#endif
                 }
 
                 return obj;
             });
         }
 
-#if WINDOWS_UWP
         public static void Serializer(Object obj, StorageFile file)
         {
             Task.Run(async () =>
@@ -234,50 +215,6 @@ namespace SimpleWeather.Utils
                 }
             }).ConfigureAwait(false);
         }
-#elif __ANDROID__
-        public static void Serializer(Object obj, Java.IO.File file)
-        {
-            Task.Run(async () =>
-            {
-                // Wait for file to be free
-                while (FileUtils.IsFileLocked(file))
-                {
-                    await Task.Delay(100).ConfigureAwait(false);
-                }
-
-                var mFile = new AtomicFile(file);
-                Stream fStream = null;
-                JsonTextWriter writer = null;
-
-                try
-                {
-                    fStream = mFile.StartWrite();
-
-                    writer = new JsonTextWriter(new StreamWriter(fStream))
-                    {
-                        CloseOutput = false,
-                    };
-
-                    var serializer = JsonSerializer.Create(DefaultSettings);
-                    serializer.Serialize(writer, obj);
-                    await writer.FlushAsync().ConfigureAwait(false);
-                    mFile.FinishWrite(fStream);
-                }
-                catch (Exception ex)
-                {
-                    Logger.WriteLine(LoggerLevel.Error, ex, "SimpleWeather: JSONParser: error serializing or with file");
-
-                    if (mFile != null && fStream != null)
-                        mFile.FailWrite(fStream);
-                }
-                finally
-                {
-                    mFile?.Dispose();
-                    writer?.Close();
-                }
-            }).ConfigureAwait(false);
-        }
-#endif
 
         public static string Serializer(Object obj, Type type)
         {

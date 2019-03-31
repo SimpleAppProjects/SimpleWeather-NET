@@ -10,7 +10,6 @@ using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System.Xml.Serialization;
 using System.Globalization;
-#if WINDOWS_UWP
 using SimpleWeather.UWP.Controls;
 using Windows.Storage.Streams;
 using Windows.UI;
@@ -18,14 +17,7 @@ using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.Web;
 using Windows.Web.Http;
-#elif __ANDROID__
-using Android.App;
-using Android.Graphics;
-using Android.Locations;
-using Android.Widget;
-using System.Net;
-using System.Net.Http;
-#endif
+using Windows.System.UserProfile;
 
 namespace SimpleWeather.HERE
 {
@@ -40,12 +32,9 @@ namespace SimpleWeather.HERE
         {
             ObservableCollection<LocationQueryViewModel> locations = null;
 
-#if WINDOWS_UWP
             var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages.First();
             var culture = new CultureInfo(userlang);
-#else
-            var culture = CultureInfo.CurrentCulture;
-#endif
+
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
             string queryAPI = "https://autocomplete.geocoder.cit.api.here.com/6.2/suggest.json";
@@ -75,12 +64,7 @@ namespace SimpleWeather.HERE
                 HttpClient webClient = new HttpClient();
                 HttpResponseMessage response = await webClient.GetAsync(queryURL);
                 response.EnsureSuccessStatusCode();
-                Stream contentStream = null;
-#if WINDOWS_UWP
-                contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-#elif __ANDROID__
-                contentStream = await response.Content.ReadAsStreamAsync();
-#endif
+                Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
                 // End Stream
                 webClient.Dispose();
 
@@ -134,12 +118,9 @@ namespace SimpleWeather.HERE
         {
             LocationQueryViewModel location = null;
 
-#if WINDOWS_UWP
-            var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages.First();
+            var userlang = GlobalizationPreferences.Languages.First();
             var culture = new CultureInfo(userlang);
-#else
-            var culture = CultureInfo.CurrentCulture;
-#endif
+
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
             string queryAPI = "https://reverse.geocoder.cit.api.here.com/6.2/reversegeocode.json";
@@ -171,12 +152,7 @@ namespace SimpleWeather.HERE
                 HttpClient webClient = new HttpClient();
                 HttpResponseMessage response = await webClient.GetAsync(queryURL);
                 response.EnsureSuccessStatusCode();
-                Stream contentStream = null;
-#if WINDOWS_UWP
-                contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-#elif __ANDROID__
-                contentStream = await response.Content.ReadAsStreamAsync();
-#endif
+                Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
                 // End Stream
                 webClient.Dispose();
@@ -198,22 +174,13 @@ namespace SimpleWeather.HERE
             catch (Exception ex)
             {
                 result = null;
-#if WINDOWS_UWP
-                if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
+
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                     await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
                 }
-#elif __ANDROID__
-                if (ex is System.Net.WebException || ex is HttpRequestException)
-                {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                    new Android.OS.Handler(Android.OS.Looper.MainLooper).Post(() =>
-                    {
-                        Toast.MakeText(Application.Context, wEx.Message, ToastLength.Short).Show();
-                    });
-                }
-#endif
+
                 Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting location");
             }
 
@@ -229,12 +196,9 @@ namespace SimpleWeather.HERE
         {
             LocationQueryViewModel location = null;
 
-#if WINDOWS_UWP
-            var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages.First();
+            var userlang = GlobalizationPreferences.Languages.First();
             var culture = new CultureInfo(userlang);
-#else
-            var culture = CultureInfo.CurrentCulture;
-#endif
+
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
             string queryAPI = "https://reverse.geocoder.cit.api.here.com/6.2/reversegeocode.json";
@@ -265,12 +229,7 @@ namespace SimpleWeather.HERE
                 HttpClient webClient = new HttpClient();
                 HttpResponseMessage response = await webClient.GetAsync(queryURL);
                 response.EnsureSuccessStatusCode();
-                Stream contentStream = null;
-#if WINDOWS_UWP
-                contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-#elif __ANDROID__
-                contentStream = await response.Content.ReadAsStreamAsync();
-#endif
+                Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
                 // End Stream
                 webClient.Dispose();
@@ -292,22 +251,12 @@ namespace SimpleWeather.HERE
             catch (Exception ex)
             {
                 result = null;
-#if WINDOWS_UWP
-                if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                     await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
                 }
-#elif __ANDROID__
-                if (ex is System.Net.WebException || ex is HttpRequestException)
-                {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                    new Android.OS.Handler(Android.OS.Looper.MainLooper).Post(() =>
-                    {
-                        Toast.MakeText(Application.Context, wEx.Message, ToastLength.Short).Show();
-                    });
-                }
-#endif
+
                 Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting location");
             }
 
@@ -323,12 +272,9 @@ namespace SimpleWeather.HERE
         {
             LocationQueryViewModel location = null;
 
-#if WINDOWS_UWP
-            var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages.First();
+            var userlang = GlobalizationPreferences.Languages.First();
             var culture = new CultureInfo(userlang);
-#else
-            var culture = CultureInfo.CurrentCulture;
-#endif
+
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
             string queryAPI = "https://geocoder.cit.api.here.com/6.2/geocode.json";
@@ -359,12 +305,7 @@ namespace SimpleWeather.HERE
                 HttpClient webClient = new HttpClient();
                 HttpResponseMessage response = await webClient.GetAsync(queryURL);
                 response.EnsureSuccessStatusCode();
-                Stream contentStream = null;
-#if WINDOWS_UWP
-                contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-#elif __ANDROID__
-                contentStream = await response.Content.ReadAsStreamAsync();
-#endif
+                Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
                 // End Stream
                 webClient.Dispose();
@@ -386,22 +327,13 @@ namespace SimpleWeather.HERE
             catch (Exception ex)
             {
                 result = null;
-#if WINDOWS_UWP
-                if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
+
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                     await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
                 }
-#elif __ANDROID__
-                if (ex is System.Net.WebException || ex is HttpRequestException)
-                {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                    new Android.OS.Handler(Android.OS.Looper.MainLooper).Post(() =>
-                    {
-                        Toast.MakeText(Application.Context, wEx.Message, ToastLength.Short).Show();
-                    });
-                }
-#endif
+
                 Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting location");
             }
 
@@ -463,11 +395,7 @@ namespace SimpleWeather.HERE
             }
             catch (Exception ex)
             {
-#if WINDOWS_UWP
                 if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
-#elif __ANDROID__
-                if (ex is WebException || ex is HttpRequestException)
-#endif
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                 }
@@ -477,14 +405,7 @@ namespace SimpleWeather.HERE
 
             if (wEx != null)
             {
-#if WINDOWS_UWP
                 await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
-#elif __ANDROID__
-                new Android.OS.Handler(Android.OS.Looper.MainLooper).Post(() =>
-                {
-                    Toast.MakeText(Application.Context, wEx.Message, ToastLength.Short).Show();
-                });
-#endif
             }
 
             return isValid;
@@ -505,12 +426,9 @@ namespace SimpleWeather.HERE
             string queryAPI = null;
             Uri weatherURL = null;
 
-#if WINDOWS_UWP
-            var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages.First();
+            var userlang = GlobalizationPreferences.Languages.First();
             var culture = new CultureInfo(userlang);
-#else
-            var culture = CultureInfo.CurrentCulture;
-#endif
+
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
             queryAPI = "https://weather.cit.api.here.com/weather/1.0/report.json?product=alerts&product=forecast_7days_simple" +
                 "&product=forecast_hourly&product=forecast_astronomy&product=observation&oneobservation=true&{0}" +
@@ -540,12 +458,7 @@ namespace SimpleWeather.HERE
                 // Get response
                 HttpResponseMessage response = await webClient.GetAsync(weatherURL);
                 response.EnsureSuccessStatusCode();
-                Stream contentStream = null;
-#if WINDOWS_UWP
-                contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-#elif __ANDROID__
-                contentStream = await response.Content.ReadAsStreamAsync();
-#endif
+                Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
                 // Reset exception
                 wEx = null;
 
@@ -593,11 +506,7 @@ namespace SimpleWeather.HERE
             catch (Exception ex)
             {
                 weather = null;
-#if WINDOWS_UWP
                 if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
-#elif __ANDROID__
-                if (ex is WebException || ex is HttpRequestException)
-#endif
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                 }
@@ -675,12 +584,9 @@ namespace SimpleWeather.HERE
             string queryAPI = null;
             Uri weatherURL = null;
 
-#if WINDOWS_UWP
-            var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages.First();
+            var userlang = GlobalizationPreferences.Languages.First();
             var culture = new CultureInfo(userlang);
-#else
-            var culture = CultureInfo.CurrentCulture;
-#endif
+
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
             queryAPI = "https://weather.cit.api.here.com/weather/1.0/report.json?product=alerts&{0}" +
@@ -709,12 +615,7 @@ namespace SimpleWeather.HERE
                 HttpClient webClient = new HttpClient();
                 HttpResponseMessage response = await webClient.GetAsync(weatherURL);
                 response.EnsureSuccessStatusCode();
-                Stream contentStream = null;
-#if WINDOWS_UWP
-                contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-#elif __ANDROID__
-                contentStream = await response.Content.ReadAsStreamAsync();
-#endif
+                Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
                 // End Stream
                 webClient.Dispose();
 
@@ -759,11 +660,7 @@ namespace SimpleWeather.HERE
                 location.tz_long = qview.LocationTZ_Long;
 
                 // Update DB here or somewhere else
-#if !__ANDROID_WEAR__
                 await Settings.UpdateLocation(location);
-#else
-                Settings.SaveHomeData(location);
-#endif
             }
         }
 

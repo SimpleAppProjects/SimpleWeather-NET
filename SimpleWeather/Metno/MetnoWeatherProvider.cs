@@ -8,7 +8,6 @@ using SimpleWeather.Controls;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System.Xml.Serialization;
-#if WINDOWS_UWP
 using SimpleWeather.UWP.Controls;
 using Windows.ApplicationModel;
 using Windows.Storage;
@@ -20,15 +19,6 @@ using Windows.Web;
 using Windows.Web.Http;
 using Windows.Web.Http.Filters;
 using Windows.Web.Http.Headers;
-#elif __ANDROID__
-using Android.App;
-using Android.Graphics;
-using Android.Locations;
-using Android.Widget;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-#endif
 
 namespace SimpleWeather.Metno
 {
@@ -55,12 +45,7 @@ namespace SimpleWeather.Metno
                 HttpClient webClient = new HttpClient();
                 HttpResponseMessage response = await webClient.GetAsync(queryURL);
                 response.EnsureSuccessStatusCode();
-                Stream contentStream = null;
-#if WINDOWS_UWP
-                contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-#elif __ANDROID__
-                contentStream = await response.Content.ReadAsStreamAsync();
-#endif
+                Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
                 // End Stream
                 webClient.Dispose();
 
@@ -116,12 +101,7 @@ namespace SimpleWeather.Metno
                 HttpClient webClient = new HttpClient();
                 HttpResponseMessage response = await webClient.GetAsync(queryURL);
                 response.EnsureSuccessStatusCode();
-                Stream contentStream = null;
-#if WINDOWS_UWP
-                contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-#elif __ANDROID__
-                contentStream = await response.Content.ReadAsStreamAsync();
-#endif
+                Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
                 // End Stream
                 webClient.Dispose();
@@ -137,22 +117,12 @@ namespace SimpleWeather.Metno
             catch (Exception ex)
             {
                 result = null;
-#if WINDOWS_UWP
                 if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                     await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
                 }
-#elif __ANDROID__
-                if (ex is WebException || ex is HttpRequestException)
-                {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                    new Android.OS.Handler(Android.OS.Looper.MainLooper).Post(() =>
-                    {
-                        Toast.MakeText(Application.Context, wEx.Message, ToastLength.Short).Show();
-                    });
-                }
-#endif
+
                 Logger.WriteLine(LoggerLevel.Error, ex, "MetnoWeatherProvider: error getting location");
             }
 
@@ -180,12 +150,7 @@ namespace SimpleWeather.Metno
                 HttpClient webClient = new HttpClient();
                 HttpResponseMessage response = await webClient.GetAsync(queryURL);
                 response.EnsureSuccessStatusCode();
-                Stream contentStream = null;
-#if WINDOWS_UWP
-                contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-#elif __ANDROID__
-                contentStream = await response.Content.ReadAsStreamAsync();
-#endif
+                Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
                 // End Stream
                 webClient.Dispose();
@@ -201,22 +166,13 @@ namespace SimpleWeather.Metno
             catch (Exception ex)
             {
                 result = null;
-#if WINDOWS_UWP
+
                 if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                     await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
                 }
-#elif __ANDROID__
-                if (ex is WebException || ex is HttpRequestException)
-                {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                    new Android.OS.Handler(Android.OS.Looper.MainLooper).Post(() =>
-                    {
-                        Toast.MakeText(Application.Context, wEx.Message, ToastLength.Short).Show();
-                    });
-                }
-#endif
+
                 Logger.WriteLine(LoggerLevel.Error, ex, "MetnoWeatherProvider: error getting location");
             }
 
@@ -253,36 +209,20 @@ namespace SimpleWeather.Metno
             string date = DateTime.Now.ToString("yyyy-MM-dd");
             sunrisesetURL = new Uri(string.Format(sunrisesetAPI, location_query, date));
 
-#if WINDOWS_UWP
             var handler = new HttpBaseProtocolFilter()
             {
                 AllowAutoRedirect = true,
                 AutomaticDecompression = true
             };
-#else
-            var handler = new HttpClientHandler()
-            {
-                AllowAutoRedirect = true,
-                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
-            };
-#endif
 
             HttpClient webClient = new HttpClient(handler);
 
             // Use GZIP compression
-#if WINDOWS_UWP
             var version = string.Format("v{0}.{1}.{2}",
                 Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
 
             webClient.DefaultRequestHeaders.AcceptEncoding.Add(new HttpContentCodingWithQualityHeaderValue("gzip"));
             webClient.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
-#elif __ANDROID__
-            var packageInfo = Application.Context.PackageManager.GetPackageInfo(Application.Context.PackageName, 0);
-            var version = string.Format("v{0}", packageInfo.VersionName);
-
-            webClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
-            webClient.DefaultRequestHeaders.TryAddWithoutValidation("user-agent", String.Format("SimpleWeather (thewizrd.dev@gmail.com) {0}", version));
-#endif
 
             WeatherException wEx = null;
 
@@ -294,15 +234,9 @@ namespace SimpleWeather.Metno
                 HttpResponseMessage sunrisesetResponse = await webClient.GetAsync(sunrisesetURL);
                 sunrisesetResponse.EnsureSuccessStatusCode();
 
-                Stream forecastStream = null;
-                Stream sunrisesetStream = null;
-#if WINDOWS_UWP
-                forecastStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await forecastResponse.Content.ReadAsInputStreamAsync());
-                sunrisesetStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await sunrisesetResponse.Content.ReadAsInputStreamAsync());
-#elif __ANDROID__
-                forecastStream = await forecastResponse.Content.ReadAsStreamAsync();
-                sunrisesetStream = await sunrisesetResponse.Content.ReadAsStreamAsync();
-#endif
+                Stream forecastStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await forecastResponse.Content.ReadAsInputStreamAsync());
+                Stream sunrisesetStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await sunrisesetResponse.Content.ReadAsInputStreamAsync());
+
                 // Reset exception
                 wEx = null;
 
@@ -320,11 +254,8 @@ namespace SimpleWeather.Metno
             catch (Exception ex)
             {
                 weather = null;
-#if WINDOWS_UWP
+
                 if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
-#elif __ANDROID__
-                if (ex is WebException || ex is HttpRequestException)
-#endif
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                 }
@@ -493,11 +424,7 @@ namespace SimpleWeather.Metno
                 location.tz_long = qview.LocationTZ_Long;
 
                 // Update DB here or somewhere else
-#if !__ANDROID_WEAR__
                 await Settings.UpdateLocation(location);
-#else
-                Settings.SaveHomeData(location);
-#endif
             }
         }
 

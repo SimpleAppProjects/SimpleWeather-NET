@@ -1,10 +1,8 @@
-﻿#if __ANDROID__
-using Android.App;
-#endif
-using SimpleWeather.WeatherData;
+﻿using SimpleWeather.WeatherData;
 using System;
 using System.Globalization;
 using System.Runtime.Serialization;
+using Windows.System.UserProfile;
 
 namespace SimpleWeather.Utils
 {
@@ -12,43 +10,24 @@ namespace SimpleWeather.Utils
     {
         public static String GetLastBuildDate(Weather weather)
         {
-#if WINDOWS_UWP
-            var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages[0];
-            var culture = new System.Globalization.CultureInfo(userlang);
-#else
-            var culture = System.Globalization.CultureInfo.CurrentCulture;
-#endif
+            var userlang = GlobalizationPreferences.Languages[0];
+            var culture = new CultureInfo(userlang);
 
             String date;
             String prefix;
             DateTime update_time = weather.update_time.DateTime;
             String timeformat = update_time.ToString("t", culture);
 
-#if __ANDROID__
-            if (Android.Text.Format.DateFormat.Is24HourFormat(Application.Context))
-                timeformat = update_time.ToString("HH:mm");
-            else
-                timeformat = update_time.ToString("h:mm tt");
-#endif
-
             timeformat = string.Format("{0} {1}", timeformat, weather.location.tz_short);
 
             if (update_time.DayOfWeek == DateTime.Now.DayOfWeek)
             {
-#if WINDOWS_UWP
                 prefix = UWP.App.ResLoader.GetString("Update_PrefixDay");
-#elif __ANDROID__
-                prefix = Application.Context.GetString(Droid.Resource.String.update_prefix_day);
-#endif
                 date = string.Format("{0} {1}", prefix, timeformat);
             }
             else
             {
-#if WINDOWS_UWP
                 prefix = UWP.App.ResLoader.GetString("Update_Prefix");
-#elif __ANDROID__
-                prefix = Application.Context.GetString(Droid.Resource.String.update_prefix);
-#endif
                 date = string.Format("{0} {1} {2}",
                     prefix, update_time.ToString("ddd", culture), timeformat);
             }
@@ -142,21 +121,11 @@ namespace SimpleWeather.Utils
                 _long = longitude;
             }
 
-#if WINDOWS_UWP
             public Coordinate(Windows.Devices.Geolocation.Geoposition geoPos)
             {
                 lat = geoPos.Coordinate.Point.Position.Latitude;
                 _long = geoPos.Coordinate.Point.Position.Longitude;
             }
-#endif
-
-#if __ANDROID__
-            public Coordinate(Android.Locations.Location location)
-            {
-                lat = location.Latitude;
-                _long = location.Longitude;
-            }
-#endif
 
             public void SetCoordinate(string coordinatePair)
             {

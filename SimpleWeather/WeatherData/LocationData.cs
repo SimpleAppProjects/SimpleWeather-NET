@@ -17,9 +17,6 @@ namespace SimpleWeather.WeatherData
     [Newtonsoft.Json.JsonConverter(typeof(CustomJsonConverter))]
     [Table("locations")]
     public class LocationData
-#if __ANDROID__
-        : Java.Lang.Object
-#endif
     {
         [Newtonsoft.Json.JsonProperty]
         [PrimaryKey]
@@ -97,7 +94,6 @@ namespace SimpleWeather.WeatherData
             source = Settings.API;
         }
 
-#if WINDOWS_UWP
         public LocationData(Controls.LocationQueryViewModel query_vm, Windows.Devices.Geolocation.Geoposition geoPos)
         {
             SetData(query_vm, geoPos);
@@ -113,29 +109,8 @@ namespace SimpleWeather.WeatherData
             locationType = LocationType.GPS;
             source = Settings.API;
         }
-#elif __ANDROID__
-        public LocationData(Controls.LocationQueryViewModel query_vm, Android.Locations.Location location)
-        {
-            SetData(query_vm, location);
-        }
 
-        public void SetData(Controls.LocationQueryViewModel query_vm, Android.Locations.Location location)
-        {
-            query = query_vm.LocationQuery;
-            name = query_vm.LocationName;
-            latitude = location.Latitude;
-            longitude = location.Longitude;
-            tz_long = query_vm.LocationTZ_Long;
-            locationType = LocationType.GPS;
-            source = Settings.API;
-        }
-#endif
-
-#if WINDOWS_UWP
         public override bool Equals(System.Object obj)
-#elif __ANDROID__
-        public override bool Equals(Java.Lang.Object obj)
-#endif
         {
             if ((obj == null) || !this.GetType().Equals(obj.GetType()))
             {

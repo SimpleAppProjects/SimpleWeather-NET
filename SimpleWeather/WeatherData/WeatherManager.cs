@@ -10,12 +10,8 @@ using SimpleWeather.OpenWeather;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherUnderground;
 using SimpleWeather.WeatherYahoo;
-#if WINDOWS_UWP
 using Windows.UI;
 using Windows.UI.Xaml.Media;
-#elif __ANDROID__
-using Android.Graphics;
-#endif
 
 namespace SimpleWeather.WeatherData
 {
@@ -155,17 +151,11 @@ namespace SimpleWeather.WeatherData
             return await WeatherProvider.GetLocations(ac_query);
         }
 
-#if WINDOWS_UWP
         public async Task<LocationQueryViewModel> GetLocation(Windows.Devices.Geolocation.Geoposition geoPos)
         {
             return await GetLocation(new WeatherUtils.Coordinate(geoPos));
         }
-#elif __ANDROID__
-        public async Task<LocationQueryViewModel> GetLocation(Android.Locations.Location location)
-        {
-            return await GetLocation(new WeatherUtils.Coordinate(location));
-        }
-#endif
+
         public async Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coord)
         {
             return await WeatherProvider.GetLocation(coord);
@@ -221,39 +211,24 @@ namespace SimpleWeather.WeatherData
             return WeatherProvider.IsNight(weather);
         }
 
-#if WINDOWS_UWP
         public string GetWeatherIconURI(string icon)
         {
             return WeatherProvider.GetWeatherIconURI(icon);
         }
-#endif
 
         public string GetBackgroundURI(Weather weather)
         {
             return WeatherProvider.GetBackgroundURI(weather);
         }
 
-#if WINDOWS_UWP
         public Color GetWeatherBackgroundColor(Weather weather)
-#elif __ANDROID__
-        public Color GetWeatherBackgroundColor(Weather weather)
-#endif
         {
             return WeatherProvider.GetWeatherBackgroundColor(weather);
         }
 
-#if __ANDROID__
-        public int GetWeatherIconResource(string icon)
-        {
-            return WeatherProvider.GetWeatherIconResource(icon);
-        }
-#endif
-
-#if WINDOWS_UWP
         public void SetBackground(ImageBrush bg, Weather weather)
         {
             WeatherProvider.SetBackground(bg, weather);
         }
-#endif
     }
 }

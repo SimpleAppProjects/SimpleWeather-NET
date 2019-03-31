@@ -4,11 +4,7 @@ using System.Threading.Tasks;
 using SimpleWeather.Controls;
 using SimpleWeather.Utils;
 using System.Collections.Generic;
-#if WINDOWS_UWP
 using Windows.UI;
-#elif __ANDROID__
-using Android.Graphics;
-#endif
 
 namespace SimpleWeather.WeatherData
 {
@@ -75,11 +71,7 @@ namespace SimpleWeather.WeatherData
                 location.tz_long = qview.LocationTZ_Long;
 
                 // Update DB here or somewhere else
-#if !__ANDROID_WEAR__
                 await Settings.UpdateLocation(location);
-#else
-                Settings.SaveHomeData(location);
-#endif
             }
         }
         public abstract Task<String> UpdateLocationQuery(Weather weather);
@@ -129,11 +121,7 @@ namespace SimpleWeather.WeatherData
             return isNight;
         }
 
-#if WINDOWS_UWP
         public virtual Color GetWeatherBackgroundColor(Weather weather)
-#elif __ANDROID__
-        public virtual Color GetWeatherBackgroundColor(Weather weather)
-#endif
         {
             byte[] rgb = null;
             String icon = weather.condition.icon;
@@ -258,11 +246,7 @@ namespace SimpleWeather.WeatherData
                 }
             }
 
-#if WINDOWS_UWP
             return Color.FromArgb(255, rgb[0], rgb[1], rgb[2]);
-#elif __ANDROID__
-            return new Color(rgb[0], rgb[1], rgb[2]);
-#endif
         }
     }
 }

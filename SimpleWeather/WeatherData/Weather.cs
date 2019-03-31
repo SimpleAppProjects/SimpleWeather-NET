@@ -7,9 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-#if WINDOWS_UWP
 using SimpleWeather.UWP;
-#endif
 
 namespace SimpleWeather.WeatherData
 {
@@ -1250,67 +1248,25 @@ namespace SimpleWeather.WeatherData
 
             String fctxt = String.Format("{0} {1} {2}: {3}",
                 forecast.description.ToPascalCase(), forecast.beaufortDescription.ToPascalCase(),
-#if WINDOWS_UWP
                 UWP.App.ResLoader.GetString("Label_Humidity/Text"),
-#elif __ANDROID__
-                Android.App.Application.Context.GetString(Droid.Resource.String.label_humidity),
-#else
-                "Humidity",
-#endif
                 forecast.humidity + "%");
 
             fcttext = String.Format("{0} {1} {2}F. {3} {4}F. {5} {6} {7}mph",
                 fctxt,
-#if WINDOWS_UWP
                 UWP.App.ResLoader.GetString("Label_High"),
-#elif __ANDROID__
-                Android.App.Application.Context.GetString(Droid.Resource.String.label_high),
-#else
-                "High",
-#endif
                 Math.Round(double.Parse(forecast.highTemperature)),
-#if WINDOWS_UWP
                 UWP.App.ResLoader.GetString("Label_Low"),
-#elif __ANDROID__
-                Android.App.Application.Context.GetString(Droid.Resource.String.label_low),
-#else
-                "Low",
-#endif
                 Math.Round(double.Parse(forecast.lowTemperature)),
-#if WINDOWS_UWP
                 UWP.App.ResLoader.GetString("Label_Wind/Text"),
-#elif __ANDROID__
-                Android.App.Application.Context.GetString(Droid.Resource.String.label_wind),
-#else
-                "Wind",
-#endif
                 forecast.windDesc, Math.Round(double.Parse(forecast.windSpeed)));
 
             fcttext_metric = String.Format("{0} {1} {2}C. {3} {4}C. {5} {6} {7}kph",
                 fctxt,
-#if WINDOWS_UWP
                 UWP.App.ResLoader.GetString("Label_High"),
-#elif __ANDROID__
-                Android.App.Application.Context.GetString(Droid.Resource.String.label_high),
-#else
-                "High",
-#endif
                 ConversionMethods.FtoC(forecast.highTemperature),
-#if WINDOWS_UWP
                 UWP.App.ResLoader.GetString("Label_Low"),
-#elif __ANDROID__
-                Android.App.Application.Context.GetString(Droid.Resource.String.label_low),
-#else
-                "Low",
-#endif
                 ConversionMethods.FtoC(forecast.lowTemperature),
-#if WINDOWS_UWP
                 UWP.App.ResLoader.GetString("Label_Wind/Text"),
-#elif __ANDROID__
-                Android.App.Application.Context.GetString(Droid.Resource.String.label_wind),
-#else
-                "Wind",
-#endif
                 forecast.windDesc, Math.Round(double.Parse(ConversionMethods.MphToKph(forecast.windSpeed))));
 
             icon = WeatherManager.GetProvider(WeatherAPI.Here)
@@ -2419,81 +2375,55 @@ namespace SimpleWeather.WeatherData
             {
                 case 0:
                     scale = BeaufortScale.B0;
-#if WINDOWS_UWP
                     desc = App.ResLoader.GetString("Beaufort_0");
-#endif
                     break;
                 case 1:
                     scale = BeaufortScale.B1;
-#if WINDOWS_UWP
                     desc = App.ResLoader.GetString("Beaufort_1");
-#endif
                     break;
                 case 2:
                     scale = BeaufortScale.B2;
-#if WINDOWS_UWP
                     desc = App.ResLoader.GetString("Beaufort_2");
-#endif
                     break;
                 case 3:
                     scale = BeaufortScale.B3;
-#if WINDOWS_UWP
                     desc = App.ResLoader.GetString("Beaufort_3");
-#endif
                     break;
                 case 4:
                     scale = BeaufortScale.B4;
-#if WINDOWS_UWP
                     desc = App.ResLoader.GetString("Beaufort_4");
-#endif
                     break;
                 case 5:
                     scale = BeaufortScale.B5;
-#if WINDOWS_UWP
                     desc = App.ResLoader.GetString("Beaufort_5");
-#endif
                     break;
                 case 6:
                     scale = BeaufortScale.B6;
-#if WINDOWS_UWP
                     desc = App.ResLoader.GetString("Beaufort_6");
-#endif
                     break;
                 case 7:
                     scale = BeaufortScale.B7;
-#if WINDOWS_UWP
                     desc = App.ResLoader.GetString("Beaufort_7");
-#endif
                     break;
                 case 8:
                     scale = BeaufortScale.B8;
-#if WINDOWS_UWP
                     desc = App.ResLoader.GetString("Beaufort_8");
-#endif
                     break;
                 case 9:
                     scale = BeaufortScale.B9;
-#if WINDOWS_UWP
                     desc = App.ResLoader.GetString("Beaufort_9");
-#endif
                     break;
                 case 10:
                     scale = BeaufortScale.B10;
-#if WINDOWS_UWP
                     desc = App.ResLoader.GetString("Beaufort_10");
-#endif
                     break;
                 case 11:
                     scale = BeaufortScale.B11;
-#if WINDOWS_UWP
                     desc = App.ResLoader.GetString("Beaufort_11");
-#endif
                     break;
                 case 12:
                     scale = BeaufortScale.B12;
-#if WINDOWS_UWP
                     desc = App.ResLoader.GetString("Beaufort_12");
-#endif
                     break;
             }
         }
@@ -2606,44 +2536,28 @@ namespace SimpleWeather.WeatherData
             switch (moonPhaseType)
             {
                 case MoonPhaseType.NewMoon:
-#if WINDOWS_UWP
                     desc = App.ResLoader.GetString("MoonPhase_New");
-#endif
                     break;
                 case MoonPhaseType.WaxingCrescent:
-#if WINDOWS_UWP
                     desc = App.ResLoader.GetString("MoonPhase_WaxCrescent");
-#endif
                     break;
                 case MoonPhaseType.FirstQtr:
-#if WINDOWS_UWP
                     desc = App.ResLoader.GetString("MoonPhase_FirstQtr");
-#endif
                     break;
                 case MoonPhaseType.WaxingGibbous:
-#if WINDOWS_UWP
                     desc = App.ResLoader.GetString("MoonPhase_WaxGibbous");
-#endif
                     break;
                 case MoonPhaseType.FullMoon:
-#if WINDOWS_UWP
                     desc = App.ResLoader.GetString("MoonPhase_Full");
-#endif
                     break;
                 case MoonPhaseType.WaningGibbous:
-#if WINDOWS_UWP
                     desc = App.ResLoader.GetString("MoonPhase_WanGibbous");
-#endif
                     break;
                 case MoonPhaseType.LastQtr:
-#if WINDOWS_UWP
                     desc = App.ResLoader.GetString("MoonPhase_LastQtr");
-#endif
                     break;
                 case MoonPhaseType.WaningCrescent:
-#if WINDOWS_UWP
                     desc = App.ResLoader.GetString("MoonPhase_WanCrescent");
-#endif
                     break;
             }
         }
@@ -2743,33 +2657,23 @@ namespace SimpleWeather.WeatherData
 
             if (index >= 0 && index < 3)
             {
-#if WINDOWS_UWP
                 desc = App.ResLoader.GetString("UV_0");
-#endif
             }
             else if (index >= 3 && index < 6)
             {
-#if WINDOWS_UWP
                 desc = App.ResLoader.GetString("UV_3");
-#endif
             }
             else if (index >= 6 && index < 8)
             {
-#if WINDOWS_UWP
                 desc = App.ResLoader.GetString("UV_6");
-#endif
             }
             else if (index >= 8 && index < 11)
             {
-#if WINDOWS_UWP
                 desc = App.ResLoader.GetString("UV_8");
-#endif
             }
             else if (index >= 11)
             {
-#if WINDOWS_UWP
                 desc = App.ResLoader.GetString("UV_11");
-#endif
             }
         }
 

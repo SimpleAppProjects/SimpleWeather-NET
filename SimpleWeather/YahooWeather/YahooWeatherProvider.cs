@@ -10,7 +10,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using System.Globalization;
-#if WINDOWS_UWP
 using SimpleWeather.UWP.Controls;
 using Windows.Storage.Streams;
 using Windows.UI;
@@ -19,13 +18,6 @@ using Windows.UI.Popups;
 using Windows.Web;
 using Windows.Web.Http;
 using Windows.Web.Http.Headers;
-#elif __ANDROID__
-using Android.App;
-using Android.Graphics;
-using Android.Widget;
-using System.Net;
-using System.Net.Http;
-#endif
 
 namespace SimpleWeather.WeatherYahoo
 {
@@ -52,12 +44,7 @@ namespace SimpleWeather.WeatherYahoo
                 HttpClient webClient = new HttpClient();
                 HttpResponseMessage response = await webClient.GetAsync(queryURL);
                 response.EnsureSuccessStatusCode();
-                Stream contentStream = null;
-#if WINDOWS_UWP
-                contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-#elif __ANDROID__
-                contentStream = await response.Content.ReadAsStreamAsync();
-#endif
+                Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
                 // End Stream
                 webClient.Dispose();
 
@@ -113,12 +100,7 @@ namespace SimpleWeather.WeatherYahoo
                 HttpClient webClient = new HttpClient();
                 HttpResponseMessage response = await webClient.GetAsync(queryURL);
                 response.EnsureSuccessStatusCode();
-                Stream contentStream = null;
-#if WINDOWS_UWP
-                contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-#elif __ANDROID__
-                contentStream = await response.Content.ReadAsStreamAsync();
-#endif
+                Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
                 // End Stream
                 webClient.Dispose();
@@ -134,22 +116,11 @@ namespace SimpleWeather.WeatherYahoo
             catch (Exception ex)
             {
                 result = null;
-#if WINDOWS_UWP
-                if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                     await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
                 }
-#elif __ANDROID__
-                if (ex is System.Net.WebException || ex is HttpRequestException)
-                {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                    new Android.OS.Handler(Android.OS.Looper.MainLooper).Post(() =>
-                    {
-                        Toast.MakeText(Application.Context, wEx.Message, ToastLength.Short).Show();
-                    });
-                }
-#endif
                 Logger.WriteLine(LoggerLevel.Error, ex, "YahooWeatherProvider: error getting location");
             }
 
@@ -177,12 +148,7 @@ namespace SimpleWeather.WeatherYahoo
                 HttpClient webClient = new HttpClient();
                 HttpResponseMessage response = await webClient.GetAsync(queryURL);
                 response.EnsureSuccessStatusCode();
-                Stream contentStream = null;
-#if WINDOWS_UWP
-                contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-#elif __ANDROID__
-                contentStream = await response.Content.ReadAsStreamAsync();
-#endif
+                Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
                 // End Stream
                 webClient.Dispose();
@@ -198,22 +164,11 @@ namespace SimpleWeather.WeatherYahoo
             catch (Exception ex)
             {
                 result = null;
-#if WINDOWS_UWP
-                if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                     await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
                 }
-#elif __ANDROID__
-                if (ex is System.Net.WebException || ex is HttpRequestException)
-                {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                    new Android.OS.Handler(Android.OS.Looper.MainLooper).Post(() =>
-                    {
-                        Toast.MakeText(Application.Context, wEx.Message, ToastLength.Short).Show();
-                    });
-                }
-#endif
                 Logger.WriteLine(LoggerLevel.Error, ex, "YahooWeatherProvider: error getting location");
             }
 
@@ -258,12 +213,7 @@ namespace SimpleWeather.WeatherYahoo
 
                     HttpResponseMessage response = await webClient.SendRequestAsync(request, HttpCompletionOption.ResponseHeadersRead);
                     response.EnsureSuccessStatusCode();
-                    Stream contentStream = null;
-#if WINDOWS_UWP
-                    contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-#elif __ANDROID__
-                    contentStream = await response.Content.ReadAsStreamAsync();
-#endif
+                    Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
                     // Reset exception
                     wEx = null;
 
@@ -284,11 +234,7 @@ namespace SimpleWeather.WeatherYahoo
             catch (Exception ex)
             {
                 weather = null;
-#if WINDOWS_UWP
                 if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
-#elif __ANDROID__
-                if (ex is WebException || ex is HttpRequestException)
-#endif
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                 }
@@ -336,11 +282,7 @@ namespace SimpleWeather.WeatherYahoo
                 location.tz_long = qview.LocationTZ_Long;
 
                 // Update DB here or somewhere else
-#if !__ANDROID_WEAR__
                 await Settings.UpdateLocation(location);
-#else
-                Settings.SaveHomeData(location);
-#endif
             }
         }
 

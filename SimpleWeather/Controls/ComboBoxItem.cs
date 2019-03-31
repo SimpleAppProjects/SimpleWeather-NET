@@ -7,9 +7,6 @@ using System.Threading.Tasks;
 namespace SimpleWeather.Controls
 {
     public class ComboBoxItem
-#if __ANDROID__
-        : Java.Lang.Object
-#endif
     {
         public string Display { get; set; }
         public string Value { get; set; }
