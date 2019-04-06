@@ -6,23 +6,12 @@
     xmlns:local="using:SimpleWeather.UWP.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:win2d="using:Microsoft.Graphics.Canvas.UI.Xaml"
     mc:Ignorable="d"
     d:DesignHeight="200"
     d:DesignWidth="600">
 
-    <Canvas x:Name="Canvas" Background="Transparent">
-        <Polyline x:Name="ArcLine" Fill="Transparent" Stroke="Yellow" StrokeThickness="1" />
-        <Path x:Name="DotsPath" Fill="Yellow" Stroke="Yellow" StrokeThickness="1">
-            <Path.Data>
-                <GeometryGroup>
-                    <EllipseGeometry Center="20,195" RadiusX="4" RadiusY="4" />
-                    <EllipseGeometry Center="580,195" RadiusX="4" RadiusY="4" />
-                </GeometryGroup>
-            </Path.Data>
-        </Path>
-        <TextBlock x:Name="SunIcon" Style="{StaticResource WeatherIcon}" Text="&#xf00d;"
-                   Foreground="Yellow" />
-        <TextBlock x:Name="SunriseText" />
-        <TextBlock x:Name="SunsetText" FontSize="{x:Bind SunriseText.FontSize}" TextAlignment="{x:Bind SunriseText.TextAlignment}" Foreground="{x:Bind SunriseText.Foreground}" />
-    </Canvas>
+    <win2d:CanvasVirtualControl x:Name="Canvas" Background="Transparent" ClearColor="Transparent"
+                         RegionsInvalidated="Canvas_RegionsInvalidated" CreateResources="Canvas_CreateResources">
+    </win2d:CanvasVirtualControl>
 </UserControl>

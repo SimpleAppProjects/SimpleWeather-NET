@@ -24,6 +24,7 @@ using Windows.UI.StartScreen;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
@@ -35,17 +36,19 @@ namespace SimpleWeather.UWP
     /// </summary>
     public sealed partial class WeatherNow : Page, ICommandBarPage, IWeatherLoadedListener, IWeatherErrorListener
     {
-        WeatherManager wm;
-        WeatherDataLoader wLoader = null;
-        WeatherNowViewModel WeatherView { get; set; }
+        private WeatherManager wm;
+        private WeatherDataLoader wLoader = null;
+        private WeatherNowViewModel WeatherView { get; set; }
         public string CommandBarLabel { get; set; }
         public List<ICommandBarElement> PrimaryCommands { get; set; }
 
-        LocationData location = null;
-        double BGAlpha = 1.0;
+        private ToggleButton SelectedButton;
 
-        Geolocator geolocal = null;
-        Geoposition geoPos = null;
+        private LocationData location = null;
+        private double BGAlpha = 1.0;
+
+        private Geolocator geolocal = null;
+        private Geoposition geoPos = null;
 
         public void OnWeatherLoaded(LocationData location, Weather weather)
         {
@@ -122,6 +125,17 @@ namespace SimpleWeather.UWP
             else
                 HourlyForecastPanel.Visibility = Visibility.Collapsed;
 
+            if ((Settings.API.Equals(WeatherAPI.OpenWeatherMap) || Settings.API.Equals(WeatherAPI.MetNo)) &&
+                RainToggleButton.Visibility == Visibility.Visible)
+            {
+                RainToggleButton.Visibility = Visibility.Collapsed;
+                if ((bool)RainToggleButton.IsChecked)
+                {
+                    RainToggleButton.IsChecked = false;
+                    TempToggleButton.IsChecked = true;
+                }
+            }
+
             LoadingRing.IsActive = false;
         }
 
@@ -155,13 +169,14 @@ namespace SimpleWeather.UWP
             wm = WeatherManager.GetInstance();
             WeatherView = new WeatherNowViewModel();
             WeatherView.PropertyChanged += WeatherView_PropertyChanged;
+            WeatherView.Extras.PropertyChanged += WeatherView_PropertyChanged;
             StackControl.SizeChanged += StackControl_SizeChanged;
             MainViewer.SizeChanged += MainViewer_SizeChanged;
             MainViewer.ViewChanged += MainViewer_ViewChanged;
 
             // Additional Details (Extras)
-            HourlySwitch.Visibility = Visibility.Collapsed;
             HourlyForecastPanel.Visibility = Visibility.Collapsed;
+            HourlySwitch.IsOn = true;
 
             geolocal = new Geolocator() { DesiredAccuracyInMeters = 5000, ReportInterval = 900000, MovementThreshold = 1600 };
 
@@ -187,7 +202,7 @@ namespace SimpleWeather.UWP
             GetPinBtn().Click += PinButton_Click;
         }
 
-        private void WeatherView_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async void WeatherView_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -195,10 +210,18 @@ namespace SimpleWeather.UWP
                 case "Sunset":
                     if (!String.IsNullOrWhiteSpace(WeatherView.Sunrise) && !String.IsNullOrWhiteSpace(WeatherView.Sunset))
                     {
+                        while (!SunPhasePanel.ReadyToDraw)
+                        {
+                            await Task.Delay(1);
+                        }
+
                         SunPhasePanel.SetSunriseSetTimes(
                             DateTime.Parse(WeatherView.Sunrise).TimeOfDay, DateTime.Parse(WeatherView.Sunset).TimeOfDay,
                             location.tz_offset);
                     }
+                    break;
+                case "HourlyForecast":
+                    await UpdateLineView();
                     break;
             }
         }
@@ -625,9 +648,16 @@ namespace SimpleWeather.UWP
             var controlName = (sender as FrameworkElement)?.Name;
 
             if ((bool)controlName?.Contains("Hourly"))
-                ScrollLeft(HourlyForecastViewer);
+            {
+                if (HourlyForecastViewer.Visibility == Visibility.Visible)
+                    ScrollLeft(HourlyForecastViewer);
+                else
+                    ScrollLeft(HourlyLineView.ScrollViewer);
+            }
             else
+            {
                 ScrollLeft(ForecastViewer);
+            }
         }
 
         private void RightButton_Click(object sender, RoutedEventArgs e)
@@ -635,33 +665,41 @@ namespace SimpleWeather.UWP
             var controlName = (sender as FrameworkElement)?.Name;
 
             if ((bool)controlName?.Contains("Hourly"))
-                ScrollRight(HourlyForecastViewer);
+            {
+                if (HourlyForecastViewer.Visibility == Visibility.Visible)
+                    ScrollRight(HourlyForecastViewer);
+                else
+                    ScrollRight(HourlyLineView.ScrollViewer);
+            }
             else
+            {
                 ScrollRight(ForecastViewer);
+            }
         }
 
         private void ForecastViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
             ScrollViewer viewer = sender as ScrollViewer;
             var controlName = (sender as FrameworkElement).Name;
+            var controlParent = viewer?.Parent as FrameworkElement;
 
             if (viewer.HorizontalOffset == 0)
             {
-                if (controlName.Contains("Hourly"))
+                if (controlName.Contains("Hourly") || (bool)controlParent?.Name?.Contains("Hourly"))
                     HourlyLeftButton.IsEnabled = false;
                 else
                     LeftButton.IsEnabled = false;
             }
             else if (viewer.HorizontalOffset == viewer.ScrollableWidth)
             {
-                if (controlName.Contains("Hourly"))
+                if (controlName.Contains("Hourly") || (bool)controlParent?.Name?.Contains("Hourly"))
                     HourlyRightButton.IsEnabled = false;
                 else
                     RightButton.IsEnabled = false;
             }
             else
             {
-                if (controlName.Contains("Hourly"))
+                if (controlName.Contains("Hourly") || (bool)controlParent?.Name?.Contains("Hourly"))
                 {
                     if (!HourlyLeftButton.IsEnabled)
                         HourlyLeftButton.IsEnabled = true;
@@ -690,17 +728,14 @@ namespace SimpleWeather.UWP
 
         private void HourlySwitch_Toggled(object sender, RoutedEventArgs e)
         {
-            /*
-            ForecastGrid.Visibility = ForecastSwitch.IsOn ?
+            ToggleSwitch sw = sender as ToggleSwitch;
+
+            HourlyGraphPanel.Visibility = sw.IsOn ?
                 Visibility.Collapsed : Visibility.Visible;
-            TextForecastPanel.Visibility = ForecastSwitch.IsOn ? 
+            HourlyForecastViewer.Visibility = sw.IsOn ? 
                 Visibility.Visible : Visibility.Collapsed;
 
-            if (ForecastSwitch.IsOn)
-                TextForecastControl_SelectionChanged(TextForecastControl, null);
-            else
-                ForecastViewer_ViewChanged(ForecastViewer, null);
-            */
+            ForecastViewer_ViewChanged(sw.IsOn ? HourlyForecastViewer : HourlyLineView.ScrollViewer, null);
         }
 
         private void GotoAlertsPage()
@@ -799,6 +834,165 @@ namespace SimpleWeather.UWP
 
                 GetPinBtn().IsEnabled = true;
             }
+        }
+
+        private async void ToggleButton_Checked(object sender, RoutedEventArgs e)
+        {
+            var btn = sender as ToggleButton;
+            SelectedButton = btn;
+
+            if (btn.Parent is FrameworkElement parent && VisualTreeHelper.GetChildrenCount(parent) > 1)
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+                {
+                    if (VisualTreeHelper.GetChild(parent, i) is ToggleButton other && !other.Tag.Equals(btn.Tag))
+                    {
+                        other.IsChecked = false;
+                    }
+                }
+            }
+
+            // Update line view
+            await UpdateLineView();
+        }
+
+        private async Task UpdateLineView()
+        {
+            switch (SelectedButton?.Tag)
+            {
+                case "Temp":
+                default:
+                    if (WeatherView?.Extras?.HourlyForecast?.Count > 0)
+                    {
+                        HourlyLineView.DrawGridLines = false;
+                        HourlyLineView.DrawDotLine = false;
+                        HourlyLineView.DrawDataLabels = true;
+                        HourlyLineView.DrawIconsLabels = true;
+                        HourlyLineView.DrawGraphBackground = true;
+                        HourlyLineView.DrawDotPoints = false;
+
+                        List<KeyValuePair<String, String>> tempLabels = new List<KeyValuePair<String, String>>();
+                        List<List<float>> tempDataList = new List<List<float>>();
+                        List<KeyValuePair<String, int>> iconLabels = new List<KeyValuePair<String, int>>();
+                        List<float> tempData = new List<float>();
+
+                        foreach (HourlyForecastItemViewModel forecastItemViewModel in WeatherView.Extras.HourlyForecast)
+                        {
+                            try
+                            {
+                                float temp = float.Parse(forecastItemViewModel.HiTemp.RemoveNonDigitChars());
+
+                                tempLabels.Add(new KeyValuePair<String, String>(forecastItemViewModel.Date, forecastItemViewModel.HiTemp.Trim()));
+                                iconLabels.Add(new KeyValuePair<String, int>(forecastItemViewModel.WeatherIcon, 0));
+                                tempData.Add(temp);
+
+                            }
+                            catch (FormatException ex)
+                            {
+                                Logger.WriteLine(LoggerLevel.Debug, ex, "WeatherNow: error!!");
+                            }
+                        }
+
+                        tempDataList.Add(tempData);
+
+                        while (!HourlyLineView.ReadyToDraw)
+                        {
+                            await Task.Delay(1);
+                        }
+
+                        HourlyLineView.SetDataLabels(iconLabels, tempLabels);
+                        HourlyLineView.SetDataList(tempDataList);
+                    }
+                    break;
+                case "Wind":
+                    if (WeatherView?.Extras?.HourlyForecast?.Count > 0)
+                    {
+                        HourlyLineView.DrawGridLines = false;
+                        HourlyLineView.DrawDotLine = false;
+                        HourlyLineView.DrawDataLabels = true;
+                        HourlyLineView.DrawIconsLabels = false;
+                        HourlyLineView.DrawGraphBackground = true;
+                        HourlyLineView.DrawDotPoints = false;
+
+                        List<KeyValuePair<String, String>> windLabels = new List<KeyValuePair<String, String>>();
+                        List<List<float>> windDataList = new List<List<float>>();
+                        List<float> windData = new List<float>();
+                        List<KeyValuePair<String, int>> iconLabels = new List<KeyValuePair<String, int>>();
+
+                        foreach (HourlyForecastItemViewModel forecastItemViewModel in WeatherView.Extras.HourlyForecast)
+                        {
+                            try
+                            {
+                                float wind = float.Parse(forecastItemViewModel.WindSpeed.RemoveNonDigitChars());
+
+                                windLabels.Add(new KeyValuePair<String, String>(forecastItemViewModel.Date, forecastItemViewModel.WindSpeed));
+                                iconLabels.Add(new KeyValuePair<String, int>(WeatherIcons.WIND_DIRECTION, (int)forecastItemViewModel.WindDirection.Angle));
+                                windData.Add(wind);
+
+                            }
+                            catch (FormatException ex)
+                            {
+                                Logger.WriteLine(LoggerLevel.Debug, ex, "WeatherNow: error!!");
+                            }
+                        }
+
+                        windDataList.Add(windData);
+
+                        while (!HourlyLineView.ReadyToDraw)
+                        {
+                            await Task.Delay(1);
+                        }
+
+                        HourlyLineView.SetDataLabels(iconLabels, windLabels);
+                        HourlyLineView.SetDataList(windDataList);
+                    }
+                    break;
+                case "Rain":
+                    if (WeatherView?.Extras?.HourlyForecast?.Count > 0)
+                    {
+                        HourlyLineView.DrawGridLines = false;
+                        HourlyLineView.DrawDotLine = false;
+                        HourlyLineView.DrawDataLabels = true;
+                        HourlyLineView.DrawIconsLabels = false;
+                        HourlyLineView.DrawGraphBackground = true;
+                        HourlyLineView.DrawDotPoints = false;
+
+                        List<KeyValuePair<String, String>> popLabels = new List<KeyValuePair<String, String>>();
+                        List<List<float>> popDataList = new List<List<float>>();
+                        List<float> popData = new List<float>();
+                        List<KeyValuePair<String, int>> iconLabels = new List<KeyValuePair<String, int>>();
+
+                        foreach (HourlyForecastItemViewModel forecastItemViewModel in WeatherView.Extras.HourlyForecast)
+                        {
+                            try
+                            {
+                                float pop = float.Parse(forecastItemViewModel.PoP.RemoveNonDigitChars());
+
+                                popLabels.Add(new KeyValuePair<String, String>(forecastItemViewModel.Date, forecastItemViewModel.PoP.Trim()));
+                                popData.Add(pop);
+
+                            }
+                            catch (FormatException ex)
+                            {
+                                Logger.WriteLine(LoggerLevel.Debug, ex, "WeatherNow: error!!");
+                            }
+                        }
+
+                        iconLabels.Add(new KeyValuePair<string, int>(WeatherIcons.RAINDROP, 0));
+                        popDataList.Add(popData);
+
+                        while (!HourlyLineView.ReadyToDraw)
+                        {
+                            await Task.Delay(1);
+                        }
+
+                        HourlyLineView.SetDataLabels(iconLabels, popLabels);
+                        HourlyLineView.SetDataList(popDataList);
+                    }
+                    break;
+            }
+
+            HourlyLineView?.ScrollViewer?.ChangeView(0, null, null);
         }
     }
 }

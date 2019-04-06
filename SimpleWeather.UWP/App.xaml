@@ -43,6 +43,14 @@
                 <Setter Property="HorizontalAlignment" Value="Center"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
             </Style>
+            <Style x:Key="WeatherFontIcon" TargetType="FontIcon">
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="FontFamily" Value="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons" />
+                <Setter Property="FontStyle" Value="Normal" />
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
             <ControlTemplate x:Key="ToastPromptStyle" TargetType="coding4fun:ToastPrompt">
                 <Border CornerRadius="15" Background="{TemplateBinding Background}"
                     Height="{TemplateBinding Height}"

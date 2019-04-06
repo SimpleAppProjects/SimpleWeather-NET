@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 using SimpleWeather.UWP.Helpers;
 
 namespace SimpleWeather.Utils
@@ -28,6 +29,14 @@ namespace SimpleWeather.Utils
             }
 
             return sb.ToString().TrimEnd(' ');
+        }
+
+        public static String RemoveNonDigitChars(this String @string)
+        {
+            if (String.IsNullOrWhiteSpace(@string))
+                return "";
+            else
+                return Regex.Replace(@string, "[^\\d.-]", "").Trim();
         }
     }
 }

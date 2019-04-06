@@ -480,4 +480,7 @@
   <data name="Label_Delete" xml:space="preserve">
     <value>Delete</value>
   </data>
+  <data name="Label_Temperature.Text" xml:space="preserve">
+    <value>Temperature</value>
+  </data>
 </root>

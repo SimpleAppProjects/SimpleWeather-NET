@@ -302,6 +302,8 @@ namespace SimpleWeather.Controls
                            weather.astronomy.moonphase.desc));
                 }
 
+                OnPropertyChanged("WeatherDetails");
+
                 // Add UI elements
                 Forecasts.Clear();
                 foreach (Forecast forecast in weather.forecast)
@@ -309,6 +311,7 @@ namespace SimpleWeather.Controls
                     ForecastItemViewModel forecastView = new ForecastItemViewModel(forecast);
                     Forecasts.Add(forecastView);
                 }
+                OnPropertyChanged("Forecasts");
 
                 // Additional Details
                 WeatherSource = weather.source;
@@ -328,6 +331,7 @@ namespace SimpleWeather.Controls
                     WeatherCredit = string.Format("{0} HERE Weather", creditPrefix);
 
                 Extras.UpdateView(weather);
+                OnPropertyChanged("Extras");
 
                 // Language
                 WeatherLocale = weather.locale;

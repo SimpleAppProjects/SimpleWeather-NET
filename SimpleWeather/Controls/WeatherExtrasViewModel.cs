@@ -80,6 +80,7 @@ namespace SimpleWeather.Controls
                     HourlyForecastItemViewModel hrforecastView = new HourlyForecastItemViewModel(hr_forecast);
                     HourlyForecast.Add(hrforecastView);
                 }
+                OnPropertyChanged("HourlyForecast");
             }
 
             if (weather.txt_forecast != null && weather.txt_forecast.Length > 0)
@@ -89,6 +90,7 @@ namespace SimpleWeather.Controls
                     TextForecastItemViewModel txtforecastView = new TextForecastItemViewModel(txt_forecast);
                     TextForecast.Add(txtforecastView);
                 }
+                OnPropertyChanged("TextForecast");
             }
 
             if (weather.weather_alerts != null && weather.weather_alerts.Count > 0)
@@ -102,6 +104,7 @@ namespace SimpleWeather.Controls
                     WeatherAlertViewModel alertView = new WeatherAlertViewModel(alert);
                     Alerts.Add(alertView);
                 }
+                OnPropertyChanged("Alerts");
             }
         }
 
@@ -110,6 +113,10 @@ namespace SimpleWeather.Controls
             HourlyForecast.Clear();
             TextForecast.Clear();
             Alerts.Clear();
+
+            OnPropertyChanged("HourlyForecast");
+            OnPropertyChanged("TextForecast");
+            OnPropertyChanged("Alerts");
         }
     }
 }

@@ -18,7 +18,7 @@ namespace SimpleWeather.Controls
         public string Condition { get; set; }
         public string HiTemp { get; set; }
         public string PoP { get; set; }
-        public Transform WindDirection { get; set; }
+        public RotateTransform WindDirection { get; set; }
         public string WindSpeed { get; set; }
 
         public HourlyForecastItemViewModel()

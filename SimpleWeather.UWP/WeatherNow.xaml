@@ -550,12 +550,12 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Name="HourlyLabel" x:Uid="Label_Hourly" Text="Hourly"
-                               Margin="{x:Bind ForecastHeader.Padding, Mode=OneWay}"
-                               FontSize="{x:Bind ForecastLabel.FontSize, Mode=OneWay}"
-                               Style="{StaticResource SectionLabel}" />
+                                   Margin="{x:Bind ForecastHeader.Padding, Mode=OneWay}"
+                                   FontSize="{x:Bind ForecastLabel.FontSize, Mode=OneWay}"
+                                   Style="{StaticResource SectionLabel}" />
                         <ToggleSwitch Name="HourlySwitch" Grid.Column="1" OffContent="Summary" OnContent="Details"
-                                  RequestedTheme="Dark" IsOn="False"
-                                  MinWidth="0" Margin="0,0,50,0" Toggled="HourlySwitch_Toggled"/>
+                                      RequestedTheme="Dark"
+                                      MinWidth="0" Margin="0,0,50,0" Toggled="HourlySwitch_Toggled"/>
                     </Grid>
                     <Border Style="{StaticResource Divider}"/>
                     <Grid Margin="0,0,0,0">
@@ -590,6 +590,44 @@
                                 </ItemsControl.ItemsPanel>
                             </ItemsControl>
                         </ScrollViewer>
+                        <StackPanel x:Name="HourlyGraphPanel" Orientation="Vertical" Visibility="Visible" Grid.Column="1">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20" RequestedTheme="Dark">
+                                <ToggleButton x:Name="TempToggleButton" Margin="5,0" Padding="4" Checked="ToggleButton_Checked" Tag="Temp" IsChecked="True">
+                                    <ToggleButton.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <FontIcon Margin="4,0" Glyph="&#xf055;" FontSize="15" Style="{StaticResource WeatherFontIcon}" VerticalAlignment="Center"
+                                                      FontFamily="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons" />
+                                            <TextBlock x:Uid="Label_Temperature" Text="Temperature" FontSize="14" VerticalAlignment="Center" Margin="4,0,0,0"
+                                                       TextLineBounds="Tight" Visibility="{x:Bind RightButton.Visibility, Mode=OneWay}" />
+                                        </StackPanel>
+                                    </ToggleButton.Content>
+                                </ToggleButton>
+                                <ToggleButton x:Name="WindToggleButton" Margin="5,0" Padding="4" Checked="ToggleButton_Checked" Tag="Wind">
+                                    <ToggleButton.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <FontIcon Margin="4,0" Glyph="&#xf050;" FontSize="15" Style="{StaticResource WeatherFontIcon}"
+                                                      FontFamily="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons" />
+                                            <TextBlock x:Uid="Label_Wind" Text="Wind" FontSize="14" VerticalAlignment="Center" Margin="4,0,0,0"
+                                                       TextLineBounds="Tight" Visibility="{x:Bind RightButton.Visibility, Mode=OneWay}" />
+                                        </StackPanel>
+                                    </ToggleButton.Content>
+                                </ToggleButton>
+                                <ToggleButton x:Name="RainToggleButton" Margin="5,0" Padding="4" Checked="ToggleButton_Checked" Tag="Rain">
+                                    <ToggleButton.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <FontIcon Margin="4,0" Glyph="&#xf078;" FontSize="15" Style="{StaticResource WeatherFontIcon}"
+                                                      FontFamily="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons" />
+                                            <TextBlock x:Uid="Label_Precipitation" Text="Precipitation" FontSize="14" VerticalAlignment="Center" Margin="4,0,0,0"
+                                                       TextLineBounds="Tight" Visibility="{x:Bind RightButton.Visibility, Mode=OneWay}" />
+                                        </StackPanel>
+                                    </ToggleButton.Content>
+                                </ToggleButton>
+                            </StackPanel>
+                            <localcontrols:LineView x:Name="HourlyLineView" Height="250"
+                                                    ViewChanged="ForecastViewer_ViewChanged"
+                                                    DrawGridLines="True" DrawDotLine="True" DrawDataLabels="True"
+                                                    DrawIconsLabels="True" DrawGraphBackground="True" DrawDotPoints="True" />
+                        </StackPanel>
                     </Grid>
                 </StackPanel>
                 <Rectangle Height="25"/>
@@ -648,7 +686,7 @@
                         <Setter Target="LocationBox.Height" Value="45"/>
                         <Setter Target="WeatherBox.Height" Value="100"/>
                         <Setter Target="WeatherBox.Width" Value="100"/>
-                        <Setter Target="StackControl.Height" Value="160"/>
+                        <Setter Target="StackControl.Height" Value="200"/>
                         <Setter Target="ForecastLabel.FontSize" Value="16"/>
                     </VisualState.Setters>
                 </VisualState>
@@ -660,7 +698,7 @@
                         <Setter Target="LocationBox.Height" Value="50"/>
                         <Setter Target="WeatherBox.Height" Value="125"/>
                         <Setter Target="WeatherBox.Width" Value="125"/>
-                        <Setter Target="StackControl.Height" Value="200"/>
+                        <Setter Target="StackControl.Height" Value="240"/>
                         <Setter Target="ForecastLabel.FontSize" Value="18"/>
                     </VisualState.Setters>
                 </VisualState>
@@ -672,7 +710,7 @@
                         <Setter Target="LocationBox.Height" Value="50"/>
                         <Setter Target="WeatherBox.Height" Value="150"/>
                         <Setter Target="WeatherBox.Width" Value="150"/>
-                        <Setter Target="StackControl.Height" Value="200"/>
+                        <Setter Target="StackControl.Height" Value="240"/>
                         <Setter Target="ForecastLabel.FontSize" Value="18"/>
                     </VisualState.Setters>
                 </VisualState>

@@ -1,4 +1,10 @@
-﻿using SimpleWeather.Utils;
+﻿using Microsoft.Graphics.Canvas;
+using Microsoft.Graphics.Canvas.Geometry;
+using Microsoft.Graphics.Canvas.Text;
+using Microsoft.Graphics.Canvas.UI;
+using Microsoft.Graphics.Canvas.UI.Xaml;
+using SimpleWeather.Utils;
+using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -22,53 +28,48 @@ namespace SimpleWeather.UWP.Controls
 {
     public sealed partial class SunPhasePanel : UserControl
     {
-        private double ViewHeight;
-        private double ViewWidth;
-        private double bottomTextHeight = 0;
+        private float ViewHeight;
+        private float ViewWidth;
+        private float bottomTextHeight = 0;
 
         //private Paint bottomTextPaint;
-        private double bottomTextDescent;
+        private float bottomTextDescent;
 
         private TimeSpan sunrise = new TimeSpan(7, 0, 0);
         private TimeSpan sunset = new TimeSpan(19, 0, 0);
         private TimeSpan offset = TimeSpan.Zero;
 
-        private double sunriseX;
-        private double sunsetX;
+        private float sunriseX;
+        private float sunsetX;
 
-        private const double bottomTextTopMargin = 5;
-        private const double DOT_RADIUS = 4;
+        private const float bottomTextTopMargin = 5;
+        private const float DOT_RADIUS = 4;
 
-        private double sideLineLength = 45 / 3 * 2;
-        private double backgroundGridWidth = 45;
+        private float sideLineLength = 45 / 3 * 2;
+        private float backgroundGridWidth = 45;
 
         private Thickness ViewPadding = new Thickness(20, 20, 20, 20);
 
         private Color BottomTextColor = Colors.White;
-        private double BottomTextSize = 12;
-        private TextAlignment BottomTextAlignment = TextAlignment.Center;
+        private const float BottomTextSize = 12;
+        private CanvasTextFormat BottomTextFormat;
+
+        public bool ReadyToDraw => Canvas.ReadyToDraw;
 
         public SunPhasePanel()
         {
             this.InitializeComponent();
             this.SizeChanged += SunPhasePanel_SizeChanged;
-            this.LayoutUpdated += SunPhasePanel_LayoutUpdated;
 
-            // Properties are bound in XAML
-            SunriseText.Foreground = new SolidColorBrush(BottomTextColor);
-            SunriseText.FontSize = BottomTextSize;
-            SunriseText.TextAlignment = BottomTextAlignment;
-
-            ArcLine.Stroke = new SolidColorBrush(Colors.White);
-            ArcLine.StrokeDashArray = new DoubleCollection() { 4, 2, 4, 2 };
-            ArcLine.StrokeDashOffset = 1;
-            ArcLine.StrokeLineJoin = PenLineJoin.Round;
-            ArcLine.Fill = new SolidColorBrush(Color.FromArgb(0x50, 0xFF, 0xFF, 0x00));
-
-            SetSunriseSetTimes(sunrise, sunset);
+            BottomTextFormat = new CanvasTextFormat
+            {
+                FontSize = BottomTextSize,
+                HorizontalAlignment = CanvasHorizontalAlignment.Center,
+                WordWrapping = CanvasWordWrapping.NoWrap
+            };
         }
 
-        private double GraphHeight =>
+        private float GraphHeight =>
             ViewHeight - bottomTextTopMargin - bottomTextHeight - bottomTextDescent;
 
         private String SunriseLabel
@@ -104,45 +105,40 @@ namespace SimpleWeather.UWP.Controls
             this.sunset = sunset;
             this.offset = offset;
 
-            SunriseText.Text = SunriseLabel;
-            SunsetText.Text = SunsetLabel;
-
             double longestWidth = 0;
             String longestStr = "";
             bottomTextDescent = 0;
             foreach (String s in ImmutableList.Create<String>(SunriseLabel, SunsetLabel))
             {
-                var txtblk = new TextBlock() { Text = s, FontSize = BottomTextSize, TextAlignment = BottomTextAlignment };
-                txtblk.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
+                var textLayout = new CanvasTextLayout(Canvas, s, BottomTextFormat, 0, 0);
 
-                if (bottomTextHeight < txtblk.DesiredSize.Height)
+                if (bottomTextHeight < textLayout.DrawBounds.Height)
                 {
-                    bottomTextHeight = txtblk.DesiredSize.Height;
+                    bottomTextHeight = (float)textLayout.DrawBounds.Height;
                 }
-                if (longestWidth < txtblk.DesiredSize.Width)
+                if (longestWidth < textLayout.DrawBounds.Width)
                 {
-                    longestWidth = txtblk.DesiredSize.Width;
+                    longestWidth = textLayout.DrawBounds.Width;
                     longestStr = s;
                 }
-                if (bottomTextDescent < (Math.Abs(txtblk.DesiredSize.Height / 2)))
+                if (bottomTextDescent < (Math.Abs(textLayout.DrawBounds.Bottom)))
                 {
-                    bottomTextDescent = Math.Abs(txtblk.DesiredSize.Height / 2);
+                    bottomTextDescent = Math.Abs((float)textLayout.DrawBounds.Bottom);
                 }
             }
 
             if (backgroundGridWidth < longestWidth)
             {
-                var txtblk = new TextBlock() { Text = longestStr.Substring(0, 1), FontSize = BottomTextSize, TextAlignment = BottomTextAlignment };
-                txtblk.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
+                var textLayout = new CanvasTextLayout(Canvas, longestStr.Substring(0, 1), BottomTextFormat, 0, 0);
 
-                backgroundGridWidth = longestWidth + txtblk.DesiredSize.Width;
+                backgroundGridWidth = (float)longestWidth + (float)textLayout.DrawBounds.Width;
             }
             if (sideLineLength < longestWidth / 2)
             {
-                sideLineLength = longestWidth / 2f;
+                sideLineLength = (float)longestWidth / 2f;
             }
 
-            RefreshXCoordinateList();
+            Canvas.Invalidate();
         }
 
         private void RefreshXCoordinateList()
@@ -151,21 +147,64 @@ namespace SimpleWeather.UWP.Controls
             sunsetX = ViewWidth - sideLineLength;
         }
 
-        private void SunPhasePanel_LayoutUpdated(object sender, object e)
+        private void Canvas_CreateResources(CanvasVirtualControl sender, CanvasCreateResourcesEventArgs args)
         {
-            Draw();
+            SetSunriseSetTimes(sunrise, sunset);
         }
 
-        private void Draw()
+        private void Canvas_RegionsInvalidated(CanvasVirtualControl sender, CanvasRegionsInvalidatedEventArgs args)
         {
-            float radius = (float)(GraphHeight * 0.9f);
-            float trueRadius = (float)(sunsetX - sunriseX) * 0.5f;
+            // Draw the effect to whatever regions of the CanvasVirtualControl have been invalidated.
+            foreach (var region in args.InvalidatedRegions)
+            {
+                using (var drawingSession = sender.CreateDrawingSession(region))
+                {
+                    DrawLabels(region, drawingSession);
+                    DrawDots(region, drawingSession);
+                    DrawArc(region, drawingSession);
+                }
+            }
+        }
+
+        private void DrawDots(Rect region, CanvasDrawingSession drawingSession)
+        {
+            // Draw Dots
+            if (RectHelper.Contains(region, new Point(sunriseX + (float)ViewPadding.Left, GraphHeight)))
+                drawingSession.FillCircle(sunriseX + (float)ViewPadding.Left, GraphHeight, DOT_RADIUS, Colors.Yellow);
+            if (RectHelper.Contains(region, new Point(sunsetX + (float)ViewPadding.Right, GraphHeight)))
+                drawingSession.FillCircle(sunsetX + (float)ViewPadding.Right, GraphHeight, DOT_RADIUS, Colors.Yellow);
+        }
+
+        private void DrawArc(Rect region, CanvasDrawingSession drawingSession)
+        {
+            Color bgColor = Colors.Yellow;
+            bgColor.A = 0x50;
+
+            Color arcColor = Colors.White;
+            var arcStroke = new CanvasStrokeStyle()
+            {
+                CustomDashStyle = new float[] { 4, 2, 4, 2 },
+                DashOffset = 1,
+                LineJoin = CanvasLineJoin.Round
+            };
+
+            var iconTxtFormat = new CanvasTextFormat()
+            {
+                FontFamily = "ms-appx:///Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons",
+                FontSize = 14,
+                HorizontalAlignment = CanvasHorizontalAlignment.Left
+            };
+            Color iconColor = Colors.Yellow;
+
+            float radius = GraphHeight * 0.9f;
+            float trueRadius = (sunsetX - sunriseX) * 0.5f;
 
             float x, y;
-            float centerX = (float)(ViewWidth / 2f) + (float)ViewPadding.Left;
-            float centerY = (float)GraphHeight;
+            float centerX = ViewWidth / 2f + (float)ViewPadding.Left;
+            float centerY = GraphHeight;
 
-            SunIcon.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
+            var iconLayout = new CanvasTextLayout(drawingSession, WeatherIcons.DAY_SUNNY, iconTxtFormat, 0, 0);
+            var iconBounds = iconLayout.LayoutBounds;
 
             /*
                 Point on circle (width = height = r)
@@ -201,9 +240,10 @@ namespace SimpleWeather.UWP.Controls
                 }
             }
 
-            x = (float)(trueRadius * Math.Cos(ConversionMethods.toRadians(angle - 180))) + centerX;
-            y = (float)(radius * Math.Sin(ConversionMethods.toRadians(angle - 180))) + centerY;
+            x = (float)(trueRadius * Math.Cos(ConversionMethods.ToRadians(angle - 180))) + centerX;
+            y = (float)(radius * Math.Sin(ConversionMethods.ToRadians(angle - 180))) + centerY;
 
+            var mPathBackground = new CanvasPathBuilder(drawingSession);
             float firstX = -1;
             float firstY = -1;
             // needed to end the path for background
@@ -211,26 +251,29 @@ namespace SimpleWeather.UWP.Controls
             float lastUsedEndY = 0;
 
             // Draw Arc
-            ArcLine.Points.Clear();
             for (int i = 0; i < angle; i++)
             {
-                float startX = (float)(trueRadius * Math.Cos(ConversionMethods.toRadians(i - 180))) + centerX;
-                float startY = (float)(radius * Math.Sin(ConversionMethods.toRadians(i - 180))) + centerY;
-                float endX = (float)(trueRadius * Math.Cos(ConversionMethods.toRadians((i + 1) - 180))) + centerX;
-                float endY = (float)(radius * Math.Sin(ConversionMethods.toRadians((i + 1) - 180))) + centerY;
+                float startX = (float)(trueRadius * Math.Cos(ConversionMethods.ToRadians(i - 180))) + centerX;
+                float startY = (float)(radius * Math.Sin(ConversionMethods.ToRadians(i - 180))) + centerY;
+                float endX = (float)(trueRadius * Math.Cos(ConversionMethods.ToRadians((i + 1) - 180))) + centerX;
+                float endY = (float)(radius * Math.Sin(ConversionMethods.ToRadians((i + 1) - 180))) + centerY;
 
-                if (firstX == -1)
+                if (RectHelper.Contains(region, new Point(startX, startY)) ||
+                    RectHelper.Contains(region, new Point(endX, endY)))
                 {
-                    firstX = startX;
-                    firstY = startY;
-                    ArcLine.Points.Add(new Point(firstX, firstY));
+                    if (firstX == -1)
+                    {
+                        firstX = startX;
+                        firstY = startY;
+                        mPathBackground.BeginFigure(startX, startY);
+                    }
+
+                    mPathBackground.AddLine(startX, startY);
+                    mPathBackground.AddLine(endX, endY);
+
+                    lastUsedEndX = endX;
+                    lastUsedEndY = endY;
                 }
-
-                ArcLine.Points.Add(new Point(startX, startY));
-                ArcLine.Points.Add(new Point(endX, endY));
-
-                lastUsedEndX = endX;
-                lastUsedEndY = endY;
             }
 
             if (firstX != -1)
@@ -239,47 +282,40 @@ namespace SimpleWeather.UWP.Controls
                 if (lastUsedEndY != GraphHeight)
                 {
                     // dont draw line to same point, otherwise the path is completely broken
-                    ArcLine.Points.Add(new Point(lastUsedEndX, GraphHeight));
+                    mPathBackground.AddLine(lastUsedEndX, GraphHeight);
                 }
-                ArcLine.Points.Add(new Point(firstX, GraphHeight));
+                mPathBackground.AddLine(firstX, GraphHeight);
                 if (firstY != GraphHeight)
                 {
                     // dont draw line to same point, otherwise the path is completely broken
-                    ArcLine.Points.Add(new Point(firstX, firstY));
+                    mPathBackground.AddLine(firstX, firstY);
                 }
+                mPathBackground.EndFigure(CanvasFigureLoop.Closed);
+                var arc = CanvasGeometry.CreatePath(mPathBackground);
+                drawingSession.DrawGeometry(arc, arcColor, 1.0f, arcStroke);
+                drawingSession.FillGeometry(arc, bgColor);
             }
-
-            // Draw Dots
-            GeometryGroup dotGrp = new GeometryGroup()
-            {
-                Children =
-                {
-                    new EllipseGeometry()
-                    {
-                        Center = new Point(sunriseX + ViewPadding.Left, GraphHeight - DOT_RADIUS / 2),
-                        RadiusX = DOT_RADIUS,
-                        RadiusY = DOT_RADIUS
-                    },
-                    new EllipseGeometry()
-                    {
-                        Center = new Point(sunsetX + ViewPadding.Right, GraphHeight - DOT_RADIUS / 2),
-                        RadiusX = DOT_RADIUS,
-                        RadiusY = DOT_RADIUS
-                    }
-                }
-            };
-            DotsPath.Data = dotGrp;
 
             if (isDay)
             {
-                SunIcon.Visibility = Visibility.Visible;
-                Canvas.SetLeft(SunIcon, x - SunIcon.DesiredSize.Width / 2);
-                Canvas.SetTop(SunIcon, y - SunIcon.DesiredSize.Height / 2);
+                if (!RectHelper.Intersect(region, iconLayout.DrawBounds).IsEmpty)
+                {
+                    drawingSession.DrawTextLayout(iconLayout, (float)(x - iconBounds.Width / 2), (float)(y - iconBounds.Height / 2), iconColor);
+                }
             }
-            else
-            {
-                SunIcon.Visibility = Visibility.Collapsed;
-            }
+        }
+
+        private void DrawLabels(Rect region, CanvasDrawingSession drawingSession)
+        {
+            // Draw bottom text
+            float y = ViewHeight - bottomTextDescent;
+            var sunriseTxtLayout = new CanvasTextLayout(drawingSession, SunriseLabel, BottomTextFormat, 0, 0);
+            var sunsetTxtLayout = new CanvasTextLayout(drawingSession, SunsetLabel, BottomTextFormat, 0, 0);
+
+            if (!RectHelper.Intersect(region, sunriseTxtLayout.DrawBounds).IsEmpty)
+                drawingSession.DrawTextLayout(sunriseTxtLayout, sunriseX + (float)ViewPadding.Left, y, BottomTextColor);
+            if (!RectHelper.Intersect(region, sunsetTxtLayout.DrawBounds).IsEmpty)
+                drawingSession.DrawTextLayout(sunsetTxtLayout, sunsetX + (float)ViewPadding.Right, y, BottomTextColor);
         }
 
         private void SunPhasePanel_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -287,19 +323,15 @@ namespace SimpleWeather.UWP.Controls
             Canvas.Width = e.NewSize.Width;
             Canvas.Height = e.NewSize.Height;
 
-            ViewHeight = Canvas.Height;
-            ViewWidth = Canvas.Width - (ViewPadding.Left + ViewPadding.Right);
+            if (e.NewSize.Width <= 640)
+                ViewPadding = new Thickness(0, 20, 0, 20);
+            else
+                ViewPadding = new Thickness(20, 20, 20, 20);
+
+            ViewHeight = (float)Canvas.Height;
+            ViewWidth = (float)(Canvas.Width - (ViewPadding.Left + ViewPadding.Right));
 
             RefreshXCoordinateList();
-
-            // Draw Labels
-            SunriseText.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
-            SunsetText.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
-
-            Canvas.SetLeft(SunriseText, sunriseX);
-            Canvas.SetTop(SunriseText, GraphHeight);
-            Canvas.SetLeft(SunsetText, sunsetX);
-            Canvas.SetTop(SunsetText, GraphHeight);
         }
     }
 }

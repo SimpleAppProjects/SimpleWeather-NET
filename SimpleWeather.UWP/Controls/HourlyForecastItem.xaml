@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Name="Control"
-    d:DesignHeight="200"
+    d:DesignHeight="240"
     d:DesignWidth="135"
     Width="135">
 
@@ -46,6 +46,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <TextBlock Name="ForecastDate" Style="{StaticResource ForecastDate}" Text="{x:Bind HourlyForecasts.Date, FallbackValue='Sat 2 AM'}" Grid.Row="0"/>
         <StackPanel Name="WeatherBox" Orientation="Horizontal" Grid.Row="1" Height="75">
@@ -61,12 +62,15 @@
                    Text="{x:Bind HourlyForecasts.Condition, FallbackValue='Scattered Thunderstorms', Mode=OneWay}"
                    TextWrapping="WrapWholeWords"/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="3">
-            <TextBlock Name="PoPIcon"
+            <TextBlock Name="PoPIcon" Width="30"
                        Style="{StaticResource WeatherIcon}" Text="&#xf013;" Padding="5"
                        FontSize="18" TextLineBounds="Tight"/>
             <TextBlock Name="ForecastPoP" Text="{x:Bind HourlyForecasts.PoP, FallbackValue='100%', Mode=OneWay}" Padding="5"
                        VerticalAlignment="Center" Foreground="White" />
-            <TextBlock Name="WindDirection" Style="{StaticResource WeatherIcon}" Text="&#xf0b1;" Padding="5"
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="4">
+            <TextBlock Name="WindDirection" Style="{StaticResource WeatherIcon}" Text="&#xf0b1;"
+                       Padding="5" Width="30"
                        RenderTransformOrigin="0.5,0.5" RenderTransform="{x:Bind HourlyForecasts.WindDirection, Mode=OneWay}"
                        FontSize="18" TextLineBounds="Tight"/>
             <TextBlock Text="{x:Bind HourlyForecasts.WindSpeed, FallbackValue='100 mph', Mode=OneWay}" Padding="5"
