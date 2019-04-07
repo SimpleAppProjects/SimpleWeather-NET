@@ -8,6 +8,12 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+    <Page.Transitions>
+        <TransitionCollection>
+            <EdgeUIThemeTransition Edge="Left" />
+        </TransitionCollection>
+    </Page.Transitions>
+
     <Grid RequestedTheme="Dark" Background="{StaticResource SimpleBlue}">
         <RelativePanel VerticalAlignment="Center" HorizontalAlignment="Center">
             <Viewbox Name="AppLogo" Height="125" Margin="0,25,0,0"

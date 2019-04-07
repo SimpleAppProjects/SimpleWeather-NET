@@ -34,7 +34,6 @@ namespace SimpleWeather.UWP
             {
                 appbarColor = value;
                 (CommandBar.Background as SolidColorBrush).Color = value;
-                (NavBar.Background as SolidColorBrush).Color = value;
             }
         }
 
@@ -56,12 +55,12 @@ namespace SimpleWeather.UWP
                     {
                         Glyph = WeatherIcons.DAY_SUNNY,
                         FontFamily = new FontFamily("/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons"),
-                        Height = 60,
-                        Width = 72,
-                        FontSize = 60
+                        FontSize = 15
                     },
                     Label = App.ResLoader.GetString("Nav_WeatherNow/Label"),
-                    Tag = typeof(WeatherNow)
+                    Margin = new Thickness(5, 0, 5, 0),
+                    Tag = typeof(WeatherNow),
+                    Width = 100
                 },
                 new AppBarButton()
                 {
@@ -71,7 +70,9 @@ namespace SimpleWeather.UWP
                         FontFamily = new FontFamily("Segoe MDL2 Assets")
                     },
                     Label = App.ResLoader.GetString("Nav_Locations/Label"),
-                    Tag = typeof(LocationsPage)
+                    Margin = new Thickness(5, 0, 5, 0),
+                    Tag = typeof(LocationsPage),
+                    Width = 100
                 },
                 new AppBarButton()
                 {
@@ -80,15 +81,17 @@ namespace SimpleWeather.UWP
                         Symbol = Symbol.Setting
                     },
                     Label = App.ResLoader.GetString("Nav_Settings/Label"),
-                    Tag = typeof(SettingsPage)
+                    Margin = new Thickness(5, 0, 5, 0),
+                    Tag = typeof(SettingsPage),
+                    Width = 100
                 }
             };
             FindName("NavBar");
-            NavBar.PrimaryCommands.Clear();
+            NavBar.Children.Clear();
             NavBarItems.ForEach(btn => 
             {
                 btn.Click += NavBarItem_Click;
-                NavBar.PrimaryCommands.Add(btn);
+                NavBar.Children.Add(btn);
             });
             AppFrame.Navigated += AppFrame_Navigated;
         }
@@ -121,14 +124,14 @@ namespace SimpleWeather.UWP
             int idx = NavBarItems.FindIndex(item => item.Tag == e.SourcePageType);
             if (idx >=0)
             {
-                NavBar.PrimaryCommands.Clear();
+                NavBar.Children.Clear();
                 NavBarItems.ForEach(btn => 
                 {
                     if (NavBarItems.IndexOf(btn) == idx)
                         btn.Foreground = new SolidColorBrush(Colors.White);
                     else
                         btn.Foreground = new SolidColorBrush(Color.FromArgb(0x80, 0xff, 0xff, 0xff));
-                    NavBar.PrimaryCommands.Add(btn);
+                    NavBar.Children.Add(btn);
                 });
             }
 

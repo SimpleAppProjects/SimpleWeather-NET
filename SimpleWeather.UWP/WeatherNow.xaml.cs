@@ -217,7 +217,7 @@ namespace SimpleWeather.UWP
 
                         SunPhasePanel.SetSunriseSetTimes(
                             DateTime.Parse(WeatherView.Sunrise).TimeOfDay, DateTime.Parse(WeatherView.Sunset).TimeOfDay,
-                            location.tz_offset);
+                            location?.tz_offset);
                     }
                     break;
                 case "HourlyForecast":
@@ -299,6 +299,20 @@ namespace SimpleWeather.UWP
                     {
                         element.Width = Double.NaN;
                     }
+                }
+            }
+
+            if (DetailsPanel.ItemsPanelRoot is ItemsWrapGrid WrapsGrid)
+            {
+                if (StackWidth <= 640)
+                {
+                    double freeSpace = StackWidth - WrapsGrid.Margin.Left - WrapsGrid.Margin.Right;
+                    int columns = 3;
+                    WrapsGrid.ItemWidth =  freeSpace / columns;
+                }
+                else
+                {
+                    WrapsGrid.ItemWidth = Double.NaN;
                 }
             }
         }

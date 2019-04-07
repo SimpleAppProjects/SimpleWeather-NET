@@ -12,26 +12,56 @@
     Width="150"
     Height="150">
 
-    <Grid RequestedTheme="Dark" Background="#10FFFFFF" Margin="15" CornerRadius="2.5">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <TextBlock Name="DetailLabel" Text="{x:Bind Details.Label, FallbackValue='Label', Mode=OneWay}" Grid.Row="0"
+    <Border Background="#10FFFFFF" Margin="15" CornerRadius="2.5" BorderThickness="1">
+        <Grid RequestedTheme="Dark">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Name="DetailLabel" Text="{x:Bind Details.Label, FallbackValue='Label', Mode=OneWay}" Grid.Row="0"
                    Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
-        <Viewbox Name="WeatherBox" Grid.Row="1" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <TextBlock Style="{StaticResource WeatherIcon}" Text="{x:Bind Details.Icon, FallbackValue='&#xf00d;', Mode=OneWay}"
+            <Viewbox Name="WeatherBox" Grid.Row="1" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Style="{StaticResource WeatherIcon}" Text="{x:Bind Details.Icon, FallbackValue='&#xf00d;', Mode=OneWay}"
                        RenderTransformOrigin="0.5,0.5">
-                <TextBlock.RenderTransform>
-                    <RotateTransform Angle="{x:Bind Details.IconRotation}" CenterX="0" CenterY="0" />
-                </TextBlock.RenderTransform>
-            </TextBlock>
-        </Viewbox>
-        <TextBlock Name="DetailValue" Grid.Row="2" 
+                    <TextBlock.RenderTransform>
+                        <RotateTransform Angle="{x:Bind Details.IconRotation}" CenterX="0" CenterY="0" />
+                    </TextBlock.RenderTransform>
+                </TextBlock>
+            </Viewbox>
+            <TextBlock Name="DetailValue" Grid.Row="2" 
                    Text="{x:Bind Details.Value, FallbackValue=' 50.00 in', Mode=OneWay}"
                    Foreground="White" 
                    FontFamily="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons"
                    HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="WrapWholeWords"/>
-    </Grid>
+        </Grid>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="Mobile">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="DetailLabel.FontSize" Value="12"/>
+                        <Setter Target="WeatherBox.Height" Value="30"/>
+                        <Setter Target="DetailValue.FontSize" Value="12"/>
+                        <Setter Target="Control.Height" Value="125"/>
+                        <Setter Target="Control.Width" Value="125"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Desktop">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="641"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="DetailLabel.FontSize" Value="14"/>
+                        <Setter Target="WeatherBox.Height" Value="40"/>
+                        <Setter Target="DetailValue.FontSize" Value="14"/>
+                        <Setter Target="Control.Height" Value="150"/>
+                        <Setter Target="Control.Width" Value="150"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    </Border>
 </UserControl>

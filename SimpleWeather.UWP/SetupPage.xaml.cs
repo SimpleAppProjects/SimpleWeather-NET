@@ -65,7 +65,7 @@ namespace SimpleWeather.UWP
             if (PageIdx >= Pages.Count) PageIdx = 0;
             
             if (!(AppFrame.Content is IPageVerification page) || page.CanContinue())
-                AppFrame.Navigate(Pages[PageIdx], null, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
+                AppFrame.Navigate(Pages[PageIdx]);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)

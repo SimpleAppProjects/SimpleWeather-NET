@@ -99,11 +99,11 @@ namespace SimpleWeather.UWP.Controls
             SetSunriseSetTimes(sunrise, sunset, TimeSpan.Zero);
         }
 
-        public void SetSunriseSetTimes(TimeSpan sunrise, TimeSpan sunset, TimeSpan offset)
+        public void SetSunriseSetTimes(TimeSpan sunrise, TimeSpan sunset, TimeSpan? offset)
         {
             this.sunrise = sunrise;
             this.sunset = sunset;
-            this.offset = offset;
+            this.offset = offset ?? TimeSpan.Zero;
 
             double longestWidth = 0;
             String longestStr = "";
