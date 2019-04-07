@@ -99,7 +99,7 @@ namespace SimpleWeather.WeatherData
             condition = new Condition(root.current_observation);
             atmosphere = new Atmosphere(root.current_observation.atmosphere);
             astronomy = new Astronomy(root.current_observation.astronomy);
-            ttl = "60";
+            ttl = "120";
 
             // Set feelslike temp
             if (condition.temp_f > 80)
