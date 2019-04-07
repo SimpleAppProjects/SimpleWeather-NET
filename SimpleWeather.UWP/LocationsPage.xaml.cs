@@ -85,9 +85,11 @@ namespace SimpleWeather.UWP
                     // Only warn once
                     if (!ErrorCounter[(int)wEx.ErrorStatus])
                     {
-                        Snackbar snackBar = Snackbar.Make(Content as Grid, wEx.Message, SnackbarDuration.Long);
+                        Snackbar snackBar = Snackbar.Make(Content as Grid, wEx.Message, SnackbarDuration.Short);
                         snackBar.SetAction(App.ResLoader.GetString("Action_Retry"), async () =>
                         {
+                            // Reset counter to allow retry
+                            ErrorCounter[(int)wEx.ErrorStatus] = false;
                             await RefreshLocations();
                         });
                         snackBar.Show();
@@ -99,7 +101,7 @@ namespace SimpleWeather.UWP
                     // Only warn once
                     if (!ErrorCounter[(int)wEx.ErrorStatus])
                     {
-                        Snackbar.Make(Content as Grid, wEx.Message, SnackbarDuration.Long).Show();
+                        Snackbar.Make(Content as Grid, wEx.Message, SnackbarDuration.Short).Show();
                         ErrorCounter[(int)wEx.ErrorStatus] = true;
                     }
                     break;
