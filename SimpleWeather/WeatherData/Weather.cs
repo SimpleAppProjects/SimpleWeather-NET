@@ -1193,7 +1193,7 @@ namespace SimpleWeather.WeatherData
             extras = new ForecastExtras()
             {
                 feelslike_f = float.Parse(WeatherUtils.GetFeelsLikeTemp(high_f, wind_mph.ToString(CultureInfo.InvariantCulture), Math.Round(hr_forecast.location.humidity.value).ToString(CultureInfo.InvariantCulture))),
-                feelslike_c = float.Parse(ConversionMethods.FtoC(extras.feelslike_f.ToString(CultureInfo.InvariantCulture))),
+                feelslike_c = float.Parse(ConversionMethods.FtoC(WeatherUtils.GetFeelsLikeTemp(high_f, wind_mph.ToString(CultureInfo.InvariantCulture), Math.Round(hr_forecast.location.humidity.value).ToString(CultureInfo.InvariantCulture)))),
                 humidity = Math.Round(hr_forecast.location.humidity.value).ToString(CultureInfo.InvariantCulture),
                 dewpoint_f = ConversionMethods.CtoF(hr_forecast.location.dewpointTemperature.value.ToString(CultureInfo.InvariantCulture)),
                 dewpoint_c = hr_forecast.location.dewpointTemperature.value.ToString(CultureInfo.InvariantCulture),
@@ -2338,20 +2338,20 @@ namespace SimpleWeather.WeatherData
             {
                 if (time.sunrise != null)
                 {
-                    sunrise = time.sunrise.time;
+                    sunrise = time.sunrise.time.ToUniversalTime();
                 }
                 if (time.sunset != null)
                 {
-                    sunset = time.sunset.time;
+                    sunset = time.sunset.time.ToUniversalTime();
                 }
 
                 if (time.moonrise != null)
                 {
-                    moonrise = time.moonrise.time;
+                    moonrise = time.moonrise.time.ToUniversalTime();
                 }
                 if (time.moonset != null)
                 {
-                    moonset = time.moonset.time;
+                    moonset = time.moonset.time.ToUniversalTime();
                 }
 
                 if (time.moonphase != null)

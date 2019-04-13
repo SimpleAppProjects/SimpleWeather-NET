@@ -304,6 +304,12 @@ namespace SimpleWeather.Metno
             if (weather.astronomy.sunset > DateTime.MinValue &&
                 weather.astronomy.sunset.TimeOfDay < DateTimeUtils.MaxTimeOfDay())
                 weather.astronomy.sunset = weather.astronomy.sunset.Add(offset);
+            if (weather.astronomy.moonrise > DateTime.MinValue &&
+                weather.astronomy.moonrise.TimeOfDay < DateTimeUtils.MaxTimeOfDay())
+                weather.astronomy.moonrise = weather.astronomy.moonrise.Add(offset);
+            if (weather.astronomy.moonset > DateTime.MinValue &&
+                weather.astronomy.moonset.TimeOfDay < DateTimeUtils.MaxTimeOfDay())
+                weather.astronomy.moonset = weather.astronomy.moonset.Add(offset);
 
             // Set condition here
             var now = DateTimeOffset.UtcNow.ToOffset(offset).TimeOfDay;
