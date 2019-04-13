@@ -19,6 +19,13 @@ using Windows.UI.Xaml.Controls;
 
 namespace SimpleWeather.UWP.Controls
 {
+    /*
+     *  Single series line graph
+     *  Based on Android implementation of LineView: https://github.com/bryan2894-playgrnd/SimpleWeather-Android
+     *  Which is:
+     *  Based on LineView from http://www.androidtrainee.com/draw-android-line-chart-with-animation/
+     *  Graph background (under line) based on - https://github.com/jjoe64/GraphView (LineGraphSeries)
+     */
     public sealed partial class LineView : UserControl
     {
         //
@@ -190,27 +197,41 @@ namespace SimpleWeather.UWP.Controls
             foreach (KeyValuePair<String, String> p in dataLabels)
             {
                 String s = p.Key;
-                var textLayout = new CanvasTextLayout(Canvas, s, BottomTextFormat, 0, 0);
+                String s2 = p.Value;
+                var txtLayout = new CanvasTextLayout(Canvas, s, BottomTextFormat, 0, 0);
+                var txtLayout2 = new CanvasTextLayout(Canvas, s2, BottomTextFormat, 0, 0);
 
-                if (bottomTextHeight < textLayout.DrawBounds.Height)
+                if (bottomTextHeight < txtLayout.DrawBounds.Height)
                 {
-                    bottomTextHeight = (float)textLayout.DrawBounds.Height;
+                    bottomTextHeight = (float)txtLayout.DrawBounds.Height;
                 }
-                if (longestWidth < textLayout.DrawBounds.Width)
+                if (bottomTextHeight < txtLayout2.DrawBounds.Height)
                 {
-                    longestWidth = textLayout.DrawBounds.Width;
+                    bottomTextHeight = (float)txtLayout2.DrawBounds.Height;
+                }
+                if (longestWidth < txtLayout.DrawBounds.Width)
+                {
+                    longestWidth = txtLayout.DrawBounds.Width;
                     longestStr = s;
                 }
-                if (bottomTextDescent < (Math.Abs(textLayout.DrawBounds.Bottom)))
+                if (longestWidth < txtLayout2.DrawBounds.Width)
                 {
-                    bottomTextDescent = Math.Abs((float)textLayout.DrawBounds.Bottom);
+                    longestWidth = txtLayout2.DrawBounds.Width;
+                    longestStr = s2;
+                }
+                if (bottomTextDescent < (Math.Abs(txtLayout.DrawBounds.Bottom)))
+                {
+                    bottomTextDescent = Math.Abs((float)txtLayout.DrawBounds.Bottom);
+                }
+                if (bottomTextDescent < (Math.Abs(txtLayout2.DrawBounds.Bottom)))
+                {
+                    bottomTextDescent = Math.Abs((float)txtLayout2.DrawBounds.Bottom);
                 }
             }
 
             if (backgroundGridWidth < longestWidth)
             {
                 var textLayout = new CanvasTextLayout(Canvas, longestStr.Substring(0, 1), BottomTextFormat, 0, 0);
-
                 backgroundGridWidth = (float)longestWidth + (float)textLayout.DrawBounds.Width;
             }
             if (sideLineLength < longestWidth / 2)
@@ -321,11 +342,21 @@ namespace SimpleWeather.UWP.Controls
                         drawDotLists.Add(new List<Dot>());
                     }
                 }
+                float maxValue = 0;
+                float minValue = 0;
+                for (int k = 0; k < dataLists.Count; k++)
+                {
+                    float kMax = dataLists[k].Max();
+                    float kMin = dataLists[k].Min();
+
+                    if (maxValue < kMax)
+                        maxValue = kMax;
+                    if (minValue > kMin)
+                        minValue = kMin;
+                }
                 for (int k = 0; k < dataLists.Count; k++)
                 {
                     int drawDotSize = drawDotLists[k].Count;
-                    float maxValue = dataLists[k].Max();
-                    float minValue = dataLists[k].Min();
 
                     for (int i = 0; i < dataLists[k].Count; i++)
                     {
@@ -425,12 +456,6 @@ namespace SimpleWeather.UWP.Controls
 
         private void DrawLines(Rect region, CanvasDrawingSession drawingSession)
         {
-            float firstX = -1;
-            float firstY = -1;
-            // needed to end the path for background
-            float lastUsedEndX = 0;
-            float lastUsedEndY = 0;
-
             Color lineColor = Colors.White;
             float lineStrokeWidth = 2;
 
@@ -438,6 +463,12 @@ namespace SimpleWeather.UWP.Controls
 
             for (int k = 0; k < drawDotLists.Count; k++)
             {
+                float firstX = -1;
+                float firstY = -1;
+                // needed to end the path for background
+                float lastUsedEndX = 0;
+                float lastUsedEndY = 0;
+
                 Color bgColor = colorArray[k % 3];
                 bgColor.A = 0x50;
 
@@ -463,7 +494,7 @@ namespace SimpleWeather.UWP.Controls
                     LinePath.AddLine(endX, endY);
 
                     // Draw top label
-                    if (DrawDataLabels)
+                    if (k == 0 && DrawDataLabels)
                     {
                         float x = sideLineLength + backgroundGridWidth * i;
                         float y = dot.y - bottomTextHeight * 3;
@@ -480,7 +511,7 @@ namespace SimpleWeather.UWP.Controls
                     // Draw last items
                     if (i + 1 == drawDotLists[k].Count - 1)
                     {
-                        if (DrawDataLabels)
+                        if (k == 0 && DrawDataLabels)
                         {
                             float x = sideLineLength + backgroundGridWidth * (i + 1);
                             float y = nextDot.y - bottomTextHeight * 3;
@@ -503,7 +534,7 @@ namespace SimpleWeather.UWP.Controls
                     lastUsedEndY = endY;
                 }
 
-                if (DrawGraphBackground && firstX != -1)
+                if (k == 0 && DrawGraphBackground && firstX != -1)
                 {
                     // end / close path
                     if (lastUsedEndY != GraphHeight + topLineLength)
