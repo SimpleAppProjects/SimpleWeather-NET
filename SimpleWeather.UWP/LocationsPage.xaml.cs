@@ -32,14 +32,12 @@ namespace SimpleWeather.UWP
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class LocationsPage : Page, ICommandBarPage, IWeatherLoadedListener, IWeatherErrorListener, IDisposable
+    public sealed partial class LocationsPage : Page, ICommandBarPage, IWeatherLoadedListener, IWeatherErrorListener
     {
-        private CancellationTokenSource cts = new CancellationTokenSource();
         private WeatherManager wm;
 
         public ObservableCollection<LocationPanelViewModel> GPSPanelViewModel { get; set; }
         public ObservableCollection<LocationPanelViewModel> LocationPanels { get; set; }
-        public ObservableCollection<LocationQueryViewModel> LocationQuerys { get; set; }
         Geolocator geolocal = null;
 
         public bool EditMode { get; set; } = false;
@@ -121,8 +119,6 @@ namespace SimpleWeather.UWP
             LocationPanels = new ObservableCollection<LocationPanelViewModel>();
             LocationPanels.CollectionChanged += LocationPanels_CollectionChanged;
 
-            LocationQuerys = new ObservableCollection<LocationQueryViewModel>();
-
             int max = Enum.GetValues(typeof(WeatherUtils.ErrorStatus)).Cast<int>().Max();
             ErrorCounter = new bool[max];
 
@@ -143,11 +139,6 @@ namespace SimpleWeather.UWP
         private async void LocationsPage_Resuming(object sender, object e)
         {
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => await RefreshLocations());
-        }
-
-        public void Dispose()
-        {
-            cts.Dispose();
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -460,210 +451,9 @@ namespace SimpleWeather.UWP
             }
         }
 
-        private void Location_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
-        {
-            // Cancel pending searches
-            cts.Cancel();
-            cts = new CancellationTokenSource();
-
-            if (!String.IsNullOrWhiteSpace(sender.Text) && args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
-            {
-                String query = sender.Text;
-
-                Task.Run(async () =>
-                {
-                    var ctsToken = cts.Token;
-
-                    if (ctsToken.IsCancellationRequested) return;
-
-                    var results = await wm.GetLocations(query);
-
-                    if (ctsToken.IsCancellationRequested) return;
-
-                    // Refresh list
-                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        LocationQuerys = results;
-                        sender.ItemsSource = null;
-                        sender.ItemsSource = LocationQuerys;
-                        sender.IsSuggestionListOpen = true;
-                    });
-                });
-            }
-            else if (String.IsNullOrWhiteSpace(sender.Text))
-            {
-                // Cancel pending searches
-                cts.Cancel();
-                cts = new CancellationTokenSource();
-                // Hide flyout if query is empty or null
-                LocationQuerys.Clear();
-                sender.IsSuggestionListOpen = false;
-            }
-        }
-
-        private void Location_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
-        {
-            if (args.SelectedItem is LocationQueryViewModel theChosenOne)
-            {
-                if (String.IsNullOrEmpty(theChosenOne.LocationQuery))
-                    sender.Text = String.Empty;
-                else
-                    sender.Text = theChosenOne.LocationName;
-            }
-
-            sender.IsSuggestionListOpen = false;
-        }
-
-        private async void Location_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
-        {
-            LocationQueryViewModel query_vm = null;
-
-            if (args.ChosenSuggestion != null)
-            {
-                // User selected an item from the suggestion list, take an action on it here.
-                var theChosenOne = args.ChosenSuggestion as LocationQueryViewModel;
-
-                if (!String.IsNullOrEmpty(theChosenOne.LocationQuery))
-                    query_vm = theChosenOne;
-                else
-                    query_vm = new LocationQueryViewModel();
-            }
-            else if (!String.IsNullOrEmpty(args.QueryText))
-            {
-                // Use args.QueryText to determine what to do.
-                var result = (await wm.GetLocations(args.QueryText)).First();
-
-                if (result != null && !String.IsNullOrWhiteSpace(result.LocationQuery))
-                {
-                    sender.Text = result.LocationName;
-                    query_vm = result;
-                }
-                else
-                {
-                    query_vm = new LocationQueryViewModel();
-                }
-            }
-            else if (String.IsNullOrWhiteSpace(args.QueryText))
-            {
-                // Stop since there is no valid query
-                return;
-            }
-
-            if (String.IsNullOrWhiteSpace(query_vm.LocationQuery))
-            {
-                // Stop since there is no valid query
-                return;
-            }
-
-            // Cancel other tasks
-            cts.Cancel();
-            cts = new CancellationTokenSource();
-            var ctsToken = cts.Token;
-
-            LoadingRing.IsActive = true;
-
-            if (ctsToken.IsCancellationRequested)
-            {
-                LoadingRing.IsActive = false;
-                return;
-            }
-
-            // Check if location already exists
-            var locData = await Settings.GetLocationData();
-            if (locData.Exists(l => l.query == query_vm.LocationQuery))
-            {
-                LoadingRing.IsActive = false;
-                ShowAddLocationsPanel(false);
-                return;
-            }
-
-            if (ctsToken.IsCancellationRequested)
-            {
-                LoadingRing.IsActive = false;
-                return;
-            }
-
-            // Need to get FULL location data for HERE API
-            // Data provided is incomplete
-            if (WeatherAPI.Here.Equals(Settings.API)
-                    && query_vm.LocationLat == -1 && query_vm.LocationLong == -1
-                    && query_vm.LocationTZ_Long == null)
-            {
-                query_vm = await new HERE.HEREWeatherProvider().GetLocationFromLocID(query_vm.LocationQuery);
-            }
-
-            var location = new LocationData(query_vm);
-            if (!location.IsValid())
-            {
-                await Toast.ShowToastAsync(App.ResLoader.GetString("WError_NoWeather"), ToastDuration.Short);
-                LoadingRing.IsActive = false;
-                return;
-            }
-            var weather = await Settings.GetWeatherData(location.query);
-            if (weather == null)
-            {
-                try
-                {
-                    weather = await wm.GetWeather(location);
-                }
-                catch (WeatherException wEx)
-                {
-                    weather = null;
-                    await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
-                }
-            }
-
-            if (weather == null)
-            {
-                LoadingRing.IsActive = false;
-                return;
-            }
-
-            // We got our data so disable controls just in case
-            sender.IsSuggestionListOpen = false;
-
-            // Save data
-            await Settings.AddLocation(location);
-            if (wm.SupportsAlerts && weather.weather_alerts != null)
-                await Settings.SaveWeatherAlerts(location, weather.weather_alerts);
-            await Settings.SaveWeatherData(weather);
-
-            var panelView = new LocationPanelViewModel(weather)
-            {
-                LocationData = location
-            };
-
-            // Set properties if necessary
-            if (EditMode) panelView.EditMode = true;
-
-            // Add to collection
-            LocationPanels.Add(panelView);
-
-            // Hide add locations panel
-            LoadingRing.IsActive = false;
-            ShowAddLocationsPanel(false);
-        }
-
         private void AddLocationsButton_Click(object sender, RoutedEventArgs e)
         {
-            ShowAddLocationsPanel(true);
-        }
-
-        private void ShowAddLocationsPanel(bool show)
-        {
-            AddLocationsButton.Visibility = show ? Visibility.Collapsed : Visibility.Visible;
-            AddLocationPanel.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
-
-            if (!show)
-            {
-                Location.Text = string.Empty;
-                Location.IsSuggestionListOpen = false;
-            }
-        }
-
-        private void Cancel_Click(object sender, RoutedEventArgs e)
-        {
-            ShowAddLocationsPanel(false);
+            Frame.Navigate(typeof(LocationSearchPage));
         }
 
         private void AppBarButton_Click(object sender, RoutedEventArgs e)

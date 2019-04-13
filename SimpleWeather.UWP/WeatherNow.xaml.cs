@@ -25,6 +25,7 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
@@ -170,6 +171,7 @@ namespace SimpleWeather.UWP
             WeatherView = new WeatherNowViewModel();
             WeatherView.PropertyChanged += WeatherView_PropertyChanged;
             WeatherView.Extras.PropertyChanged += WeatherView_PropertyChanged;
+            ForecastViewer.SizeChanged += StackControl_SizeChanged;
             StackControl.SizeChanged += StackControl_SizeChanged;
             MainViewer.SizeChanged += MainViewer_SizeChanged;
             MainViewer.ViewChanged += MainViewer_ViewChanged;
@@ -254,8 +256,8 @@ namespace SimpleWeather.UWP
         {
             if (sender is ScrollViewer viewer && viewer.Background != null)
             {
-                // Default adj = 1
-                float adj = 2.5f;
+                // Default adj = 1.25f
+                float adj = 1.5f;
                 double alpha = 1 - (adj * viewer.VerticalOffset / viewer.ScrollableHeight);
                 MainViewer.Background.Opacity = (alpha >= 0) ? BGAlpha = alpha : BGAlpha = 0;
             }
@@ -356,6 +358,9 @@ namespace SimpleWeather.UWP
         {
             base.OnNavigatedTo(e);
 
+            MainViewer.ChangeView(null, 0, null);
+            BGAlpha = 1.0f;
+
             if (e.Parameter != null)
             {
                 string arg = e.Parameter.ToString();
@@ -435,8 +440,6 @@ namespace SimpleWeather.UWP
                     await Restore();
                 }
             }
-
-            MainViewer.ChangeView(null, 0, null);
         }
 
         private async Task Resume()
@@ -1007,6 +1010,53 @@ namespace SimpleWeather.UWP
             }
 
             HourlyLineView?.ScrollViewer?.ChangeView(0, null, null);
+        }
+
+        private void GotoDetailsPage(bool IsHourly)
+        {
+            GotoDetailsPage(IsHourly, 0);
+        }
+
+        private void GotoDetailsPage(bool IsHourly, int Position)
+        {
+            Frame.Navigate(typeof(WeatherDetailsPage),
+                new WeatherDetailsPage.DetailsPageArgs()
+                {
+                    WeatherNowView = WeatherView,
+                    IsHourly = IsHourly,
+                    ScrollToPosition = Position
+                });
+        }
+
+        private void ForecastItem_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            var item = sender as FrameworkElement;
+
+            if (item.DataContext is ForecastItemViewModel forecastItemVM)
+            {
+                if (WeatherAPI.Here.Equals(WeatherView.WeatherSource) ||
+                    WeatherAPI.WeatherUnderground.Equals(WeatherView.WeatherSource))
+                {
+                    GotoDetailsPage(false, WeatherView.Forecasts.IndexOf(forecastItemVM));
+                }
+            }
+            else if (item.DataContext is HourlyForecastItemViewModel hr_forecastItemVM)
+            {
+                if (!WeatherAPI.Yahoo.Equals(WeatherView.WeatherSource))
+                {
+                    GotoDetailsPage(true, WeatherView.Extras.HourlyForecast.IndexOf(hr_forecastItemVM));
+                }
+            }
+        }
+
+        private void LineView_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            var control = sender as FrameworkElement;
+
+            if (!WeatherAPI.Yahoo.Equals(WeatherView.WeatherSource))
+            {
+                GotoDetailsPage((bool)control?.Name.StartsWith("Hourly"));
+            }
         }
     }
 }

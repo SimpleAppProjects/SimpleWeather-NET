@@ -15,6 +15,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls"/>
             </ResourceDictionary.MergedDictionaries>
+            <helpers:BooleanToGridLengthConverter x:Key="bool2GridLengthConverter" />
+            <helpers:BooleanToGridLengthConverter x:Key="inverseBool2GridLengthConverter" IsInverse="True" />
             <helpers:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
             <helpers:BooleanToVisibilityConverter x:Key="inverseBooleanToVisibilityConverter" IsInverse="True" />
             <helpers:InverseBooleanConverter x:Key="inverseBooleanConverter" />

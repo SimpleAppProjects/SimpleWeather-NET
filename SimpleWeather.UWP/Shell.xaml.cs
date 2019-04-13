@@ -60,7 +60,8 @@ namespace SimpleWeather.UWP
                     Label = App.ResLoader.GetString("Nav_WeatherNow/Label"),
                     Margin = new Thickness(5, 0, 5, 0),
                     Tag = typeof(WeatherNow),
-                    Width = 100
+                    Width = 100,
+                    Style = this.Resources["AppBarButtonStyle"] as Style
                 },
                 new AppBarButton()
                 {
@@ -72,7 +73,8 @@ namespace SimpleWeather.UWP
                     Label = App.ResLoader.GetString("Nav_Locations/Label"),
                     Margin = new Thickness(5, 0, 5, 0),
                     Tag = typeof(LocationsPage),
-                    Width = 100
+                    Width = 100,
+                    Style = this.Resources["AppBarButtonStyle"] as Style
                 },
                 new AppBarButton()
                 {
@@ -83,7 +85,8 @@ namespace SimpleWeather.UWP
                     Label = App.ResLoader.GetString("Nav_Settings/Label"),
                     Margin = new Thickness(5, 0, 5, 0),
                     Tag = typeof(SettingsPage),
-                    Width = 100
+                    Width = 100,
+                    Style = this.Resources["AppBarButtonStyle"] as Style
                 }
             };
             FindName("NavBar");
@@ -94,6 +97,7 @@ namespace SimpleWeather.UWP
                 NavBar.Children.Add(btn);
             });
             AppFrame.Navigated += AppFrame_Navigated;
+            AppFrame.CacheSize = 1;
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)

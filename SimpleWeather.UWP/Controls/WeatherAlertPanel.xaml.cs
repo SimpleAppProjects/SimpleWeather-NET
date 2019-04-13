@@ -26,15 +26,18 @@ namespace SimpleWeather.UWP.Controls
             get { return (this.DataContext as WeatherAlertViewModel); }
         }
 
+        public Color AlertHeaderColor { get; set; }
+        public String AlertIconSrc { get; set; }
+
         public WeatherAlertPanel()
         {
             this.InitializeComponent();
             this.DataContextChanged += (sender, args) =>
             {
-                this.Bindings.Update();
+                AlertHeaderColor = GetColorFromAlertSeverity(WeatherAlert.AlertSeverity);
+                AlertIconSrc = GetAssetFromAlertType(WeatherAlert.AlertType);
 
-                AlertHeader.Background = new SolidColorBrush(GetColorFromAlertSeverity(WeatherAlert.AlertSeverity));
-                AlertIcon.Source = GetAssetFromAlertType(WeatherAlert.AlertType);
+                this.Bindings.Update();
             };
         }
 

@@ -168,7 +168,12 @@ namespace SimpleWeather.HERE
         public string windDirection { get; set; }
         public string windDesc { get; set; }
         public string windDescShort { get; set; }
+        public string beaufortScale { get; set; }
+        public string beaufortDescription { get; set; }
+        public string uvIndex { get; set; }
+        public string uvDesc { get; set; }
         public string visibility { get; set; }
+        public string barometerPressure { get; set; }
         public string icon { get; set; }
         public string iconName { get; set; }
         public string iconLink { get; set; }

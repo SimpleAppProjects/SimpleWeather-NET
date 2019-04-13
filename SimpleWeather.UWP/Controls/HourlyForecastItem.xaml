@@ -8,75 +8,74 @@
     mc:Ignorable="d"
     Name="Control"
     d:DesignHeight="200"
-    d:DesignWidth="135"
-    Width="135">
+    d:DesignWidth="150"
+    Width="150">
 
     <UserControl.Resources>
-        <Style x:Key="ForecastIcon" TargetType="Viewbox">
-            <Setter Property="Height" Value="75" />
-            <Setter Property="Width" Value="75" />
-            <Setter Property="HorizontalAlignment" Value="Left" />
-            <Setter Property="Margin" Value="10,0,0,0" />
-        </Style>
         <Style x:Key="ForecastDate" TargetType="TextBlock">
             <Setter Property="Foreground" Value="White" />
-            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontSize" Value="15" />
             <Setter Property="Text" Value="Date" />
-            <Setter Property="Padding" Value="10" />
+            <Setter Property="Padding" Value="8" />
         </Style>
         <Style x:Key="ForecastTemp" TargetType="TextBlock">
             <Setter Property="Foreground" Value="White" />
-            <Setter Property="FontSize" Value="24" />
-            <Setter Property="Padding" Value="5"/>
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="Text" Value="70º" />
+            <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
         <Style x:Key="ForecastCondition" TargetType="TextBlock">
             <Setter Property="Foreground" Value="White" />
-            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontSize" Value="15" />
             <Setter Property="Text" Value="Condition" />
             <Setter Property="TextAlignment" Value="Left" />
             <Setter Property="TextWrapping" Value="Wrap" />
-            <Setter Property="Padding" Value="10,5,5,5" />
+            <Setter Property="Padding" Value="4" />
         </Style>
     </UserControl.Resources>
 
     <Border Background="#10FFFFFF" CornerRadius="2.5" BorderThickness="1">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*" MinHeight="50"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <TextBlock Name="ForecastDate" Style="{StaticResource ForecastDate}" Text="{x:Bind HourlyForecasts.Date, FallbackValue='Sat 2 AM'}" Grid.Row="0"/>
-            <StackPanel Name="WeatherBox" Orientation="Horizontal" Grid.Row="1" Height="50">
-                <Viewbox Name="WeatherViewbox"
-                     Style="{StaticResource ForecastIcon}"
-                     Height="{x:Bind WeatherBox.Height, Mode=OneWay}"
-                     Width="{x:Bind WeatherViewbox.Height}">
-                    <TextBlock Style="{StaticResource WeatherIcon}" Text="{x:Bind HourlyForecasts.WeatherIcon, FallbackValue='&#xf00d;', Mode=OneWay}"/>
-                </Viewbox>
-                <TextBlock Name="ForecastTemp" Text="{x:Bind HourlyForecasts.HiTemp, FallbackValue=70º, Mode=OneWay}" Style="{StaticResource ForecastTemp}"/>
-            </StackPanel>
-            <TextBlock Name="ForecastCondition" Style="{StaticResource ForecastCondition}" Grid.Row="2" 
-                   Text="{x:Bind HourlyForecasts.Condition, FallbackValue='Scattered Thunderstorms', Mode=OneWay}"
-                   TextWrapping="WrapWholeWords"/>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="3">
+            <TextBlock Name="ForecastDate" Style="{StaticResource ForecastDate}" Text="{x:Bind HourlyForecasts.Date, FallbackValue='Sat 2 AM'}" Grid.Row="0"
+                       TextAlignment="Center"/>
+            <Viewbox Name="WeatherBox" Grid.Row="1" HorizontalAlignment="Center">
+                <TextBlock Style="{StaticResource WeatherIcon}" Text="{x:Bind HourlyForecasts.WeatherIcon, FallbackValue='&#xf00d;', Mode=OneWay}" />
+            </Viewbox>
+            <Viewbox Grid.Row="2">
+                <TextBlock Name="ForecastCondition" Style="{StaticResource ForecastCondition}" Width="{Binding ElementName=Control, Path=Width, Mode=OneWay}"
+                           Text="{x:Bind HourlyForecasts.Condition, FallbackValue='Scattered Thunderstorms', Mode=OneWay}"
+                           TextAlignment="Center" TextWrapping="WrapWholeWords" TextTrimming="CharacterEllipsis" MaxLines="2"/>
+            </Viewbox>
+            <Grid Grid.Row="3">
+                <TextBlock Name="ForecastTemp" Text="{x:Bind HourlyForecasts.HiTemp, FallbackValue='70º', Mode=OneWay}" Style="{StaticResource ForecastTemp}"/>
+            </Grid>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="4" Padding="4">
                 <TextBlock Name="PoPIcon" Width="30"
-                       Style="{StaticResource WeatherIcon}" Text="&#xf013;" Padding="5"
-                       FontSize="18" TextLineBounds="Tight"/>
+                           Style="{StaticResource WeatherIcon}" Text="&#xf013;" Padding="5"
+                           FontSize="18" TextLineBounds="Tight"/>
                 <TextBlock Name="ForecastPoP" Text="{x:Bind HourlyForecasts.PoP, FallbackValue='100%', Mode=OneWay}" Padding="5"
-                       VerticalAlignment="Center" Foreground="White" />
+                           VerticalAlignment="Center" Foreground="White" />
             </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="4">
-                <TextBlock Name="WindDirection" Style="{StaticResource WeatherIcon}" Text="&#xf0b1;"
-                       Padding="5" Width="30"
-                       RenderTransformOrigin="0.5,0.5" RenderTransform="{x:Bind HourlyForecasts.WindDirection, Mode=OneWay}"
-                       FontSize="18" TextLineBounds="Tight"/>
-                <TextBlock Text="{x:Bind HourlyForecasts.WindSpeed, FallbackValue='100 mph', Mode=OneWay}" Padding="5"
-                       VerticalAlignment="Center" Foreground="White"
-                       FontSize="{x:Bind ForecastPoP.FontSize, Mode=OneWay}" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="5" Padding="4">
+                <Viewbox Width="25" Margin="2.5,0">
+                    <Image Name="WindDirection"
+                           RenderTransformOrigin="0.5,0.5" RenderTransform="{x:Bind HourlyForecasts.WindDirection, Mode=OneWay}" Source="/Assets/WeatherIcons/png/wind_direction.png" />
+                </Viewbox>
+                <TextBlock Padding="5" VerticalAlignment="Center" Foreground="White" 
+                           FontSize="{Binding ElementName=ForecastPoP, Path=FontSize, Mode=OneWay}">
+                        <Run Text="{x:Bind HourlyForecasts.WindSpeed, FallbackValue='100 mph', Mode=OneWay}" /><Run Text=", " /><Run Text="{x:Bind HourlyForecasts.WindDir, FallbackValue='ENE', Mode=OneWay}" />
+                </TextBlock>
             </StackPanel>
         </Grid>
         <VisualStateManager.VisualStateGroups>
@@ -86,10 +85,8 @@
                         <AdaptiveTrigger MinWindowHeight="0"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="WeatherBox.Height" Value="25"/>
-                        <Setter Target="ForecastDate.FontSize" Value="12"/>
-                        <Setter Target="ForecastCondition.FontSize" Value="12"/>
-                        <Setter Target="ForecastCondition.Height" Value="35"/>
+                        <Setter Target="ForecastDate.FontSize" Value="14"/>
+                        <Setter Target="ForecastCondition.FontSize" Value="14"/>
                         <Setter Target="ForecastTemp.FontSize" Value="16"/>
                         <Setter Target="ForecastPoP.FontSize" Value="12"/>
                     </VisualState.Setters>
@@ -99,12 +96,10 @@
                         <AdaptiveTrigger MinWindowHeight="641"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="WeatherBox.Height" Value="50"/>
-                        <Setter Target="ForecastDate.FontSize" Value="16"/>
-                        <Setter Target="ForecastCondition.FontSize" Value="14"/>
-                        <Setter Target="ForecastCondition.Height" Value="47"/>
-                        <Setter Target="ForecastTemp.FontSize" Value="20"/>
-                        <Setter Target="ForecastPoP.FontSize" Value="15"/>
+                        <Setter Target="ForecastDate.FontSize" Value="15"/>
+                        <Setter Target="ForecastCondition.FontSize" Value="15"/>
+                        <Setter Target="ForecastTemp.FontSize" Value="17"/>
+                        <Setter Target="ForecastPoP.FontSize" Value="14"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="LargeHeight">
@@ -112,11 +107,9 @@
                         <AdaptiveTrigger MinWindowHeight="691"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="WeatherBox.Height" Value="50"/>
                         <Setter Target="ForecastDate.FontSize" Value="16"/>
-                        <Setter Target="ForecastCondition.FontSize" Value="14"/>
-                        <Setter Target="ForecastCondition.Height" Value="47"/>
-                        <Setter Target="ForecastTemp.FontSize" Value="20"/>
+                        <Setter Target="ForecastCondition.FontSize" Value="16"/>
+                        <Setter Target="ForecastTemp.FontSize" Value="18"/>
                         <Setter Target="ForecastPoP.FontSize" Value="15"/>
                     </VisualState.Setters>
                 </VisualState>

@@ -192,6 +192,9 @@ namespace SimpleWeather.Controls
                 var userlang = GlobalizationPreferences.Languages[0];
                 var culture = new CultureInfo(userlang);
 
+                Extras.UpdateView(weather);
+                OnPropertyChanged("Extras");
+
                 // Update backgrounds
                 wm.SetBackground(Background, weather);
                 PendingBackgroundColor = wm.GetWeatherBackgroundColor(weather);
@@ -272,7 +275,9 @@ namespace SimpleWeather.Controls
                             Math.Round(weather.condition.feelslike_f) + "º" : Math.Round(weather.condition.feelslike_c) + "º"));
                 WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.WindSpeed,
                        Settings.IsFahrenheit ?
-                            Math.Round(weather.condition.wind_mph) + " mph" : Math.Round(weather.condition.wind_kph) + " kph", GetWindIconRotation(weather.condition.wind_degrees)));
+                            String.Format("{0} mph, {1}", Math.Round(weather.condition.wind_mph), WeatherUtils.GetWindDirection(weather.condition.wind_degrees)) :
+                            String.Format("{0} kph, {1}", Math.Round(weather.condition.wind_kph), WeatherUtils.GetWindDirection(weather.condition.wind_degrees)),
+                       weather.condition.wind_degrees));
 
                 if (weather.condition.beaufort != null)
                 {
@@ -306,9 +311,23 @@ namespace SimpleWeather.Controls
 
                 // Add UI elements
                 Forecasts.Clear();
-                foreach (Forecast forecast in weather.forecast)
+                bool isDayAndNt = Extras.TextForecast.Count == weather.forecast.Length * 2;
+                bool addTextFct = isDayAndNt || Extras.TextForecast.Count == weather.forecast.Length;
+                for (int i = 0; i < weather.forecast.Length; i++)
                 {
-                    ForecastItemViewModel forecastView = new ForecastItemViewModel(forecast);
+                    Forecast forecast = weather.forecast[i];
+                    ForecastItemViewModel forecastView;
+                    
+                    if (addTextFct)
+                    {
+                        if (isDayAndNt)
+                            forecastView = new ForecastItemViewModel(forecast, Extras.TextForecast[i * 2], Extras.TextForecast[(i * 2) + 1]);
+                        else
+                            forecastView = new ForecastItemViewModel(forecast, Extras.TextForecast[i]);
+                    }
+                    else
+                        forecastView = new ForecastItemViewModel(forecast);
+
                     Forecasts.Add(forecastView);
                 }
                 OnPropertyChanged("Forecasts");
@@ -329,9 +348,6 @@ namespace SimpleWeather.Controls
                     WeatherCredit = string.Format("{0} MET Norway", creditPrefix);
                 else if (weather.source == WeatherAPI.Here)
                     WeatherCredit = string.Format("{0} HERE Weather", creditPrefix);
-
-                Extras.UpdateView(weather);
-                OnPropertyChanged("Extras");
 
                 // Language
                 WeatherLocale = weather.locale;
@@ -357,11 +373,6 @@ namespace SimpleWeather.Controls
                 case "Falling":
                     return "\uf044\uf044";
             }
-        }
-
-        private int GetWindIconRotation(int angle)
-        {
-            return angle - 180;
         }
     }
 }

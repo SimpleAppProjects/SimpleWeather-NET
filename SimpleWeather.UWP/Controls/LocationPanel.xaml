@@ -58,7 +58,7 @@
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="LocationName.FontSize" Value="24"/>
-                        <Setter Target="MainGrid.Height" Value="100"/>
+                        <Setter Target="MainGrid.Height" Value="85"/>
                         <Setter Target="IconBox.Margin" Value="5"/>
                         <Setter Target="IconBox.Width" Value="90"/>
                         <Setter Target="TempBox.Width" Value="90"/>

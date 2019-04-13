@@ -8,8 +8,8 @@
     mc:Ignorable="d"
     Name="Control"
     d:DesignHeight="150"
-    d:DesignWidth="150"
-    Width="150"
+    d:DesignWidth="175"
+    Width="175"
     Height="150">
 
     <Border Background="#10FFFFFF" Margin="15" CornerRadius="2.5" BorderThickness="1">
@@ -42,11 +42,11 @@
                         <AdaptiveTrigger MinWindowWidth="0"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="DetailLabel.FontSize" Value="12"/>
+                        <Setter Target="DetailLabel.FontSize" Value="13"/>
                         <Setter Target="WeatherBox.Height" Value="30"/>
-                        <Setter Target="DetailValue.FontSize" Value="12"/>
+                        <Setter Target="DetailValue.FontSize" Value="13"/>
                         <Setter Target="Control.Height" Value="125"/>
-                        <Setter Target="Control.Width" Value="125"/>
+                        <Setter Target="Control.Width" Value="140"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Desktop">
@@ -54,11 +54,11 @@
                         <AdaptiveTrigger MinWindowWidth="641"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="DetailLabel.FontSize" Value="14"/>
+                        <Setter Target="DetailLabel.FontSize" Value="15"/>
                         <Setter Target="WeatherBox.Height" Value="40"/>
-                        <Setter Target="DetailValue.FontSize" Value="14"/>
+                        <Setter Target="DetailValue.FontSize" Value="15"/>
                         <Setter Target="Control.Height" Value="150"/>
-                        <Setter Target="Control.Width" Value="150"/>
+                        <Setter Target="Control.Width" Value="175"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>

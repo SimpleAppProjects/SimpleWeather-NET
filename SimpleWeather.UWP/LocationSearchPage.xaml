@@ -1,0 +1,22 @@
+﻿<Page
+    x:Class="SimpleWeather.UWP.LocationSearchPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SimpleWeather.UWP"
+    xmlns:controls="using:SimpleWeather.Controls"
+    xmlns:localcontrols="using:SimpleWeather.UWP.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="LightGray">
+
+    <Page.Transitions>
+        <TransitionCollection>
+            <EdgeUIThemeTransition Edge="Bottom" />
+        </TransitionCollection>
+    </Page.Transitions>
+
+    <Grid VerticalAlignment="Top">
+        <localcontrols:ProgressAutoSuggestBox x:Name="Location" TextChanged="Location_TextChanged" SuggestionChosen="Location_SuggestionChosen" QuerySubmitted="Location_QuerySubmitted" />
+    </Grid>
+</Page>

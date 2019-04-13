@@ -29,6 +29,7 @@ namespace SimpleWeather.Controls
 
     public class DetailItemViewModel
     {
+        public WeatherDetailsType DetailsType { get; set; }
         public string Label { get; set; }
         public string Icon { get; set; }
         public string Value { get; set; }
@@ -41,6 +42,8 @@ namespace SimpleWeather.Controls
 
         public DetailItemViewModel(WeatherDetailsType detailsType, String value, int iconRotation)
         {
+            this.DetailsType = detailsType;
+
             switch (detailsType)
             {
                 case WeatherDetailsType.Sunrise:

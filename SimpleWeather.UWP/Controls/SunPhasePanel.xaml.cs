@@ -332,6 +332,8 @@ namespace SimpleWeather.UWP.Controls
             ViewWidth = (float)(Canvas.Width - (ViewPadding.Left + ViewPadding.Right));
 
             RefreshXCoordinateList();
+
+            Canvas.Invalidate();
         }
     }
 }

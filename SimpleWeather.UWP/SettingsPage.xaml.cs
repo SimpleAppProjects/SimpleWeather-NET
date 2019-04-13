@@ -41,6 +41,7 @@ namespace SimpleWeather.UWP
 
             wm = WeatherManager.GetInstance();
             RestoreSettings();
+            NavigationCacheMode = NavigationCacheMode.Required;
         }
 
         private void RestoreSettings()

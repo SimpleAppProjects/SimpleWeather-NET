@@ -826,6 +826,7 @@ namespace SimpleWeather.WeatherData
         public string low_c { get; set; }
         public string condition { get; set; }
         public string icon { get; set; }
+        public ForecastExtras extras { get; set; }
 
         [JsonConstructor]
         private Forecast()
@@ -847,7 +848,10 @@ namespace SimpleWeather.WeatherData
 
         public Forecast(WeatherUnderground.Forecastday1 forecast)
         {
-            date = ConversionMethods.ToEpochDateTime(forecast.date.epoch).ToLocalTime();
+            var nodaTz = NodaTime.DateTimeZoneProviders.Tzdb.GetZoneOrNull(forecast.date.tz_long);
+            var offset = nodaTz.GetUtcOffset(NodaTime.SystemClock.Instance.GetCurrentInstant()).ToTimeSpan();
+
+            date = ConversionMethods.ToEpochDateTime(forecast.date.epoch).Add(offset);
             high_f = forecast.high.fahrenheit;
             high_c = forecast.high.celsius;
             low_f = forecast.low.fahrenheit;
@@ -855,6 +859,22 @@ namespace SimpleWeather.WeatherData
             condition = forecast.conditions;
             icon = WeatherManager.GetProvider(WeatherAPI.WeatherUnderground)
                    .GetWeatherIcon(forecast.icon_url.Replace("http://icons.wxug.com/i/c/k/", "").Replace(".gif", ""));
+
+            // Extras
+            extras = new ForecastExtras()
+            {
+                feelslike_f = float.Parse(WeatherUtils.GetFeelsLikeTemp(high_f, forecast.avewind.mph.ToString(), forecast.avehumidity.ToString())),
+                feelslike_c = float.Parse(ConversionMethods.FtoC(extras.feelslike_f.ToString(CultureInfo.InvariantCulture))),
+                humidity = forecast.avehumidity.ToString(),
+                pop = forecast.pop.ToString(),
+                qpf_rain_in = forecast.qpf_allday._in.GetValueOrDefault(0.00f),
+                qpf_rain_mm = forecast.qpf_allday.mm.GetValueOrDefault(0),
+                qpf_snow_in = forecast.snow_allday._in.GetValueOrDefault(0.00f),
+                qpf_snow_cm = forecast.snow_allday.cm.GetValueOrDefault(0.00f),
+                wind_degrees = forecast.avewind.degrees,
+                wind_mph = forecast.avewind.mph,
+                wind_kph = forecast.avewind.kph
+            };
         }
 
         public Forecast(OpenWeather.List forecast)
@@ -885,6 +905,42 @@ namespace SimpleWeather.WeatherData
             condition = forecast.description.ToPascalCase();
             icon = WeatherManager.GetProvider(WeatherAPI.Here)
                    .GetWeatherIcon(string.Format("{0}_{1}", forecast.daylight, forecast.iconName));
+
+            // Extras
+            extras = new ForecastExtras();
+            if (float.TryParse(forecast.comfort, out float comfortTemp_f))
+            {
+                extras.feelslike_f = comfortTemp_f;
+                extras.feelslike_c = float.Parse(ConversionMethods.FtoC(comfortTemp_f.ToString(CultureInfo.InvariantCulture)));
+            }
+            extras.humidity = forecast.humidity;
+            try
+            {
+                extras.dewpoint_f = forecast.dewPoint;
+                extras.dewpoint_c = ConversionMethods.FtoC(forecast.dewPoint);
+            }
+            catch (FormatException)
+            { }
+            extras.pop = forecast.precipitationProbability;
+            if (float.TryParse(forecast.rainFall, out float rain_in))
+            {
+                extras.qpf_rain_in = rain_in;
+                extras.qpf_rain_mm = float.Parse(ConversionMethods.InToMM(rain_in.ToString(CultureInfo.InvariantCulture)));
+            }
+            if (float.TryParse(forecast.snowFall, out float snow_in))
+            {
+                extras.qpf_snow_in = snow_in;
+                extras.qpf_snow_cm = float.Parse(ConversionMethods.InToMM((snow_in / 10).ToString(CultureInfo.InvariantCulture)));
+            }
+            extras.pressure_in = forecast.barometerPressure;
+            extras.pressure_mb = ConversionMethods.InHgToMB(forecast.barometerPressure);
+            extras.wind_degrees = int.Parse(forecast.windDirection);
+            extras.wind_mph = float.Parse(forecast.windSpeed);
+            extras.wind_kph = float.Parse(ConversionMethods.MphToKph(forecast.windSpeed));
+            if (float.TryParse(forecast.uvIndex, out float uv_index))
+            {
+                extras.uv_index = uv_index;
+            }
         }
 
         public static Forecast FromJson(JsonReader extReader)
@@ -935,6 +991,9 @@ namespace SimpleWeather.WeatherData
                         case nameof(icon):
                             obj.icon = reader.Value?.ToString();
                             break;
+                        case nameof(extras):
+                            obj.extras = ForecastExtras.FromJson(reader);
+                            break;
                         default:
                             break;
                     }
@@ -984,6 +1043,13 @@ namespace SimpleWeather.WeatherData
                 writer.WritePropertyName(nameof(icon));
                 writer.WriteValue(icon);
 
+                // "extras" : ""
+                if (extras != null)
+                {
+                    writer.WritePropertyName(nameof(extras));
+                    writer.WriteValue(extras?.ToJson());
+                }
+
                 // }
                 writer.WriteEndObject();
 
@@ -1015,6 +1081,7 @@ namespace SimpleWeather.WeatherData
         public int wind_degrees { get; set; }
         public float wind_mph { get; set; }
         public float wind_kph { get; set; }
+        public ForecastExtras extras { get; set; }
 
         [JsonProperty(PropertyName = nameof(date))]
         private string _date { get; set; }
@@ -1040,6 +1107,27 @@ namespace SimpleWeather.WeatherData
             wind_degrees = int.Parse(hr_forecast.wdir.degrees);
             wind_mph = float.Parse(hr_forecast.wspd.english);
             wind_kph = float.Parse(hr_forecast.wspd.metric);
+
+            // Extras
+            extras = new ForecastExtras()
+            {
+                feelslike_f = float.Parse(hr_forecast.feelslike.english),
+                feelslike_c = float.Parse(hr_forecast.feelslike.metric),
+                humidity = hr_forecast.humidity,
+                dewpoint_f = hr_forecast.dewpoint.english,
+                dewpoint_c = hr_forecast.dewpoint.metric,
+                uv_index = float.Parse(hr_forecast.uvi),
+                pop = hr_forecast.pop,
+                qpf_rain_in = float.Parse(hr_forecast.qpf.english),
+                qpf_rain_mm = float.Parse(hr_forecast.qpf.metric),
+                qpf_snow_in = float.Parse(hr_forecast.snow.english),
+                qpf_snow_cm = float.Parse(hr_forecast.snow.metric),
+                pressure_in = hr_forecast.mslp.english,
+                pressure_mb = hr_forecast.mslp.metric,
+                wind_degrees = int.Parse(hr_forecast.wdir.degrees),
+                wind_mph = float.Parse(hr_forecast.wspd.english),
+                wind_kph = float.Parse(hr_forecast.wspd.metric)
+            };
         }
 
         public HourlyForecast(OpenWeather.List hr_forecast)
@@ -1064,6 +1152,28 @@ namespace SimpleWeather.WeatherData
             wind_degrees = (int)hr_forecast.wind.deg;
             wind_mph = (float)Math.Round(double.Parse(ConversionMethods.MSecToMph(hr_forecast.wind.speed.ToString())));
             wind_kph = (float)Math.Round(double.Parse(ConversionMethods.MSecToKph(hr_forecast.wind.speed.ToString())));
+
+            // Extras
+            extras = new ForecastExtras();
+            extras.feelslike_f = float.Parse(WeatherUtils.GetFeelsLikeTemp(high_f, wind_mph.ToString(CultureInfo.InvariantCulture), hr_forecast.main.humidity));
+            extras.feelslike_c = float.Parse(ConversionMethods.FtoC(extras.feelslike_f.ToString(CultureInfo.InvariantCulture)));
+            extras.humidity = hr_forecast.main.humidity;
+            extras.pop = pop;
+            if (hr_forecast.rain != null)
+            {
+                extras.qpf_rain_in = float.Parse(ConversionMethods.MMToIn(hr_forecast.rain._3h.ToString(CultureInfo.InvariantCulture)));
+                extras.qpf_rain_mm = hr_forecast.rain._3h;
+            }
+            if (hr_forecast.snow != null)
+            {
+                extras.qpf_snow_in = float.Parse(ConversionMethods.MMToIn(hr_forecast.snow._3h.ToString(CultureInfo.InvariantCulture)));
+                extras.qpf_snow_cm = hr_forecast.snow._3h / 10;
+            }
+            extras.pressure_in = ConversionMethods.MBToInHg(hr_forecast.main.pressure.ToString(CultureInfo.InvariantCulture));
+            extras.pressure_mb = hr_forecast.main.pressure.ToString(CultureInfo.InvariantCulture);
+            extras.wind_degrees = wind_degrees;
+            extras.wind_mph = wind_mph;
+            extras.wind_kph = wind_kph;
         }
 
         public HourlyForecast(Metno.weatherdataProductTime hr_forecast)
@@ -1078,6 +1188,22 @@ namespace SimpleWeather.WeatherData
             wind_degrees = (int)Math.Round(hr_forecast.location.windDirection.deg);
             wind_mph = (float)Math.Round(double.Parse(ConversionMethods.MSecToMph(hr_forecast.location.windSpeed.mps.ToString())));
             wind_kph = (float)Math.Round(double.Parse(ConversionMethods.MSecToKph(hr_forecast.location.windSpeed.mps.ToString())));
+
+            // Extras
+            extras = new ForecastExtras()
+            {
+                feelslike_f = float.Parse(WeatherUtils.GetFeelsLikeTemp(high_f, wind_mph.ToString(CultureInfo.InvariantCulture), Math.Round(hr_forecast.location.humidity.value).ToString(CultureInfo.InvariantCulture))),
+                feelslike_c = float.Parse(ConversionMethods.FtoC(extras.feelslike_f.ToString(CultureInfo.InvariantCulture))),
+                humidity = Math.Round(hr_forecast.location.humidity.value).ToString(CultureInfo.InvariantCulture),
+                dewpoint_f = ConversionMethods.CtoF(hr_forecast.location.dewpointTemperature.value.ToString(CultureInfo.InvariantCulture)),
+                dewpoint_c = hr_forecast.location.dewpointTemperature.value.ToString(CultureInfo.InvariantCulture),
+                pop = pop,
+                pressure_in = ConversionMethods.MBToInHg(hr_forecast.location.pressure.value.ToString(CultureInfo.InvariantCulture)),
+                pressure_mb = hr_forecast.location.pressure.value.ToString(CultureInfo.InvariantCulture),
+                wind_degrees = wind_degrees,
+                wind_mph = wind_mph,
+                wind_kph = wind_kph
+            };
         }
 
         public HourlyForecast(HERE.Forecast1 hr_forecast)
@@ -1094,6 +1220,38 @@ namespace SimpleWeather.WeatherData
             wind_degrees = int.Parse(hr_forecast.windDirection);
             wind_mph = float.Parse(hr_forecast.windSpeed);
             wind_kph = float.Parse(ConversionMethods.MphToKph(hr_forecast.windSpeed));
+
+            // Extras
+            extras = new ForecastExtras();
+            if (float.TryParse(hr_forecast.comfort, out float comfortTemp_f))
+            {
+                extras.feelslike_f = comfortTemp_f;
+                extras.feelslike_c = float.Parse(ConversionMethods.FtoC(comfortTemp_f.ToString(CultureInfo.InvariantCulture)));
+            }
+            extras.humidity = hr_forecast.humidity;
+            try
+            {
+                extras.dewpoint_f = hr_forecast.dewPoint;
+                extras.dewpoint_c = ConversionMethods.FtoC(hr_forecast.dewPoint);
+            }
+            catch (FormatException)
+            { }
+            extras.pop = hr_forecast.precipitationProbability;
+            if (float.TryParse(hr_forecast.rainFall, out float rain_in))
+            {
+                extras.qpf_rain_in = rain_in;
+                extras.qpf_rain_mm = float.Parse(ConversionMethods.InToMM(rain_in.ToString(CultureInfo.InvariantCulture)));
+            }
+            if (float.TryParse(hr_forecast.snowFall, out float snow_in))
+            {
+                extras.qpf_snow_in = snow_in;
+                extras.qpf_snow_cm = float.Parse(ConversionMethods.InToMM((snow_in / 10).ToString(CultureInfo.InvariantCulture)));
+            }
+            //extras.pressure_in = hr_forecast.barometerPressure;
+            //extras.pressure_mb = ConversionMethods.InHgToMB(hr_forecast.barometerPressure);
+            extras.wind_degrees = wind_degrees;
+            extras.wind_mph = wind_mph;
+            extras.wind_kph = wind_kph;
         }
 
         public static HourlyForecast FromJson(JsonReader extReader)
@@ -1149,6 +1307,9 @@ namespace SimpleWeather.WeatherData
                             break;
                         case nameof(wind_kph):
                             obj.wind_kph = float.Parse(reader.Value?.ToString());
+                            break;
+                        case nameof(extras):
+                            obj.extras = ForecastExtras.FromJson(reader);
                             break;
                         default:
                             break;
@@ -1206,6 +1367,13 @@ namespace SimpleWeather.WeatherData
                 // "wind_kph" : ""
                 writer.WritePropertyName(nameof(wind_kph));
                 writer.WriteValue(wind_kph);
+
+                // "extras" : ""
+                if (extras != null)
+                {
+                    writer.WritePropertyName(nameof(extras));
+                    writer.WriteValue(extras?.ToJson());
+                }
 
                 // }
                 writer.WriteEndObject();
@@ -1357,6 +1525,216 @@ namespace SimpleWeather.WeatherData
                 // "pop" : ""
                 writer.WritePropertyName(nameof(pop));
                 writer.WriteValue(pop);
+
+                // }
+                writer.WriteEndObject();
+
+                return sw.ToString();
+            }
+        }
+    }
+
+    [JsonConverter(typeof(CustomJsonConverter))]
+    public class ForecastExtras
+    {
+        public float feelslike_f { get; set; }
+        public float feelslike_c { get; set; }
+        public string humidity { get; set; }
+        public string dewpoint_f { get; set; }
+        public string dewpoint_c { get; set; }
+        public float uv_index { get; set; } = -1.0f;
+        public string pop { get; set; }
+        public float qpf_rain_in { get; set; } = -1.0f;
+        public float qpf_rain_mm { get; set; } = -1.0f;
+        public float qpf_snow_in { get; set; } = -1.0f;
+        public float qpf_snow_cm { get; set; } = -1.0f;
+        public string pressure_mb { get; set; }
+        public string pressure_in { get; set; }
+        public int wind_degrees { get; set; }
+        public float wind_mph { get; set; } = -1.0f;
+        public float wind_kph { get; set; } = -1.0f;
+        public string visibility_mi { get; set; }
+        public string visibility_km { get; set; }
+
+        [JsonConstructor]
+        internal ForecastExtras()
+        {
+            // Needed for deserialization
+        }
+
+        public static ForecastExtras FromJson(JsonReader extReader)
+        {
+            ForecastExtras obj = null;
+
+            try
+            {
+                obj = new ForecastExtras();
+                JsonReader reader;
+
+                if (extReader.Value == null)
+                    reader = extReader;
+                else
+                {
+                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString()));
+                    reader.Read(); // StartObject
+                }
+
+                while (reader.Read() && reader.TokenType != JsonToken.EndObject)
+                {
+                    if (reader.TokenType == JsonToken.StartObject)
+                        reader.Read(); // StartObject
+
+                    string property = reader.Value?.ToString();
+                    reader.Read(); // prop value
+
+                    switch (property)
+                    {
+                        case nameof(feelslike_f):
+                            obj.feelslike_f = float.Parse(reader.Value?.ToString());
+                            break;
+                        case nameof(feelslike_c):
+                            obj.feelslike_c = float.Parse(reader.Value?.ToString());
+                            break;
+                        case nameof(humidity):
+                            obj.humidity = reader.Value?.ToString();
+                            break;
+                        case nameof(dewpoint_f):
+                            obj.dewpoint_f = reader.Value?.ToString();
+                            break;
+                        case nameof(dewpoint_c):
+                            obj.dewpoint_c = reader.Value?.ToString();
+                            break;
+                        case nameof(uv_index):
+                            obj.uv_index = float.Parse(reader.Value?.ToString());
+                            break;
+                        case nameof(pop):
+                            obj.pop = reader.Value?.ToString();
+                            break;
+                        case nameof(qpf_rain_in):
+                            obj.qpf_rain_in = float.Parse(reader.Value?.ToString());
+                            break;
+                        case nameof(qpf_rain_mm):
+                            obj.qpf_rain_mm = float.Parse(reader.Value?.ToString());
+                            break;
+                        case nameof(qpf_snow_in):
+                            obj.qpf_snow_in = float.Parse(reader.Value?.ToString());
+                            break;
+                        case nameof(qpf_snow_cm):
+                            obj.qpf_snow_cm = float.Parse(reader.Value?.ToString());
+                            break;
+                        case nameof(pressure_mb):
+                            obj.pressure_mb = reader.Value?.ToString();
+                            break;
+                        case nameof(pressure_in):
+                            obj.pressure_in = reader.Value?.ToString();
+                            break;
+                        case nameof(wind_degrees):
+                            obj.wind_degrees = int.Parse(reader.Value?.ToString());
+                            break;
+                        case nameof(wind_mph):
+                            obj.wind_mph = float.Parse(reader.Value?.ToString());
+                            break;
+                        case nameof(wind_kph):
+                            obj.wind_kph = float.Parse(reader.Value?.ToString());
+                            break;
+                        case nameof(visibility_mi):
+                            obj.visibility_mi = reader.Value?.ToString();
+                            break;
+                        case nameof(visibility_km):
+                            obj.visibility_km = reader.Value?.ToString();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                obj = null;
+            }
+
+            return obj;
+        }
+
+        public string ToJson()
+        {
+            using (var sw = new System.IO.StringWriter())
+            using (var writer = new JsonTextWriter(sw))
+            {
+                // {
+                writer.WriteStartObject();
+
+                // "feelslike_f" : ""
+                writer.WritePropertyName(nameof(feelslike_f));
+                writer.WriteValue(feelslike_f);
+
+                // "feelslike_c" : ""
+                writer.WritePropertyName(nameof(feelslike_c));
+                writer.WriteValue(feelslike_c);
+
+                // "humidity" : ""
+                writer.WritePropertyName(nameof(humidity));
+                writer.WriteValue(humidity);
+
+                // "dewpoint_f" : ""
+                writer.WritePropertyName(nameof(dewpoint_f));
+                writer.WriteValue(dewpoint_f);
+
+                // "dewpoint_c" : ""
+                writer.WritePropertyName(nameof(dewpoint_c));
+                writer.WriteValue(dewpoint_c);
+
+                // "uv_index" : ""
+                writer.WritePropertyName(nameof(uv_index));
+                writer.WriteValue(uv_index);
+
+                // "pop" : ""
+                writer.WritePropertyName(nameof(pop));
+                writer.WriteValue(pop);
+
+                // "qpf_rain_in" : ""
+                writer.WritePropertyName(nameof(qpf_rain_in));
+                writer.WriteValue(qpf_rain_in);
+
+                // "qpf_rain_mm" : ""
+                writer.WritePropertyName(nameof(qpf_rain_mm));
+                writer.WriteValue(qpf_rain_mm);
+
+                // "qpf_snow_in" : ""
+                writer.WritePropertyName(nameof(qpf_snow_in));
+                writer.WriteValue(qpf_snow_in);
+
+                // "qpf_snow_cm" : ""
+                writer.WritePropertyName(nameof(qpf_snow_cm));
+                writer.WriteValue(qpf_snow_cm);
+
+                // "pressure_mb" : ""
+                writer.WritePropertyName(nameof(pressure_mb));
+                writer.WriteValue(pressure_mb);
+
+                // "pressure_in" : ""
+                writer.WritePropertyName(nameof(pressure_in));
+                writer.WriteValue(pressure_in);
+
+                // "wind_degrees" : ""
+                writer.WritePropertyName(nameof(wind_degrees));
+                writer.WriteValue(wind_degrees);
+
+                // "wind_mph" : ""
+                writer.WritePropertyName(nameof(wind_mph));
+                writer.WriteValue(wind_mph);
+
+                // "wind_kph" : ""
+                writer.WritePropertyName(nameof(wind_kph));
+                writer.WriteValue(wind_kph);
+
+                // "visibility_mi" : ""
+                writer.WritePropertyName(nameof(visibility_mi));
+                writer.WriteValue(visibility_mi);
+
+                // "visibility_km" : ""
+                writer.WritePropertyName(nameof(visibility_km));
+                writer.WriteValue(visibility_km);
 
                 // }
                 writer.WriteEndObject();

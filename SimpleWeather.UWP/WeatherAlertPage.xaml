@@ -23,8 +23,10 @@
             </Viewbox>
         </Border>
 
-        <ScrollViewer Grid.Row="1">
-            <ItemsControl x:Name="StackControl" ItemsSource="{x:Bind WeatherView.Extras.Alerts}" Margin="10">
+        <ScrollViewer HorizontalScrollMode="Disabled" HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto" VerticalScrollMode="Enabled"
+                      Margin="10" Grid.Row="1">
+            <ItemsControl x:Name="StackControl" ItemsSource="{x:Bind WeatherView.Extras.Alerts}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="controls:WeatherAlertViewModel">
                         <StackPanel>
@@ -35,7 +37,7 @@
                 </ItemsControl.ItemTemplate>
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <StackPanel Orientation="Vertical" />
+                        <ItemsStackPanel Orientation="Vertical" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
             </ItemsControl>

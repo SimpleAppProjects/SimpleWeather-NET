@@ -92,6 +92,7 @@ namespace SimpleWeather.OpenWeather
         public Clouds clouds { get; set; }
         public Wind wind { get; set; }
         public Rain rain { get; set; }
+        public Snow snow { get; set; }
         public ForecastSys sys { get; set; }
         public string dt_txt { get; set; }
     }

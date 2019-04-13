@@ -229,6 +229,7 @@
     <Content Include="Assets\WeatherIcons\png\tsunami.png" />
     <Content Include="Assets\WeatherIcons\png\volcano.png" />
     <Content Include="Assets\WeatherIcons\png\windy.png" />
+    <Content Include="Assets\WeatherIcons\png\wind_direction.png" />
     <Content Include="Assets\WeatherIcons\weathericons-regular-webfont.ttf" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -248,16 +249,26 @@
     <Compile Include="Controls\LineView.xaml.cs">
       <DependentUpon>LineView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ProgressAutoSuggestBox.xaml.cs">
+      <DependentUpon>ProgressAutoSuggestBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\SunPhasePanel.xaml.cs">
       <DependentUpon>SunPhasePanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\WeatherDetailPanel.xaml.cs">
+      <DependentUpon>WeatherDetailPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\WeatherAlertPanel.xaml.cs">
       <DependentUpon>WeatherAlertPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\BooleanToGridLengthConverter.cs" />
     <Compile Include="Helpers\ICommandBarPage.cs" />
     <Compile Include="Helpers\InverseVisibilityConverter.cs" />
     <Compile Include="Helpers\SecondaryTileUtils.cs" />
     <Compile Include="IPageVerification.cs" />
+    <Compile Include="LocationSearchPage.xaml.cs">
+      <DependentUpon>LocationSearchPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SetupLocationsPage.xaml.cs">
       <DependentUpon>SetupLocationsPage.xaml</DependentUpon>
     </Compile>
@@ -266,6 +277,9 @@
     </Compile>
     <Compile Include="SetupWelcomePage.xaml.cs">
       <DependentUpon>SetupWelcomePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WeatherDetailsPage.xaml.cs">
+      <DependentUpon>WeatherDetailsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="WeatherAlertPage.xaml.cs">
       <DependentUpon>WeatherAlertPage.xaml</DependentUpon>
@@ -391,6 +405,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Controls\ProgressAutoSuggestBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\SunPhasePanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -399,7 +417,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\WeatherDetailPanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\WeatherAlertPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LocationSearchPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -428,6 +454,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Shell.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="WeatherDetailsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
