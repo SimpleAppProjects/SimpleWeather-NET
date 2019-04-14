@@ -108,6 +108,11 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <Content Include="Assets\AppLogo.png" />
+    <Content Include="Assets\Backgrounds\RainyDay.jpg" />
+    <Content Include="Assets\Backgrounds\RainyNight.jpg" />
+    <Content Include="Assets\Backgrounds\Snow-Windy.jpg" />
+    <Content Include="Assets\Backgrounds\Thunderstorm-Day.jpg" />
+    <Content Include="Assets\Backgrounds\Thunderstorm-Night.jpg" />
     <Content Include="Assets\BadgeLogo.scale-125.png" />
     <Content Include="Assets\BadgeLogo.scale-150.png" />
     <Content Include="Assets\BadgeLogo.scale-200.png" />
@@ -348,7 +353,6 @@
     <Content Include="Assets\Backgrounds\NightSky.jpg" />
     <Content Include="Assets\Backgrounds\PartlyCloudy-Day.jpg" />
     <Content Include="Assets\Backgrounds\PartlyCloudy-Night.jpg" />
-    <Content Include="Assets\Backgrounds\RainySky.jpg" />
     <Content Include="Assets\Backgrounds\Snow.jpg" />
     <Content Include="Assets\Backgrounds\StormySky.jpg" />
     <Content Include="Assets\BadgeLogo.scale-100.png" />

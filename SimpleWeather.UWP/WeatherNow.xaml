@@ -452,14 +452,18 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Viewbox Name="LocationBox" Margin="25,10,25,0" Height="50" Grid.Row="0">
-                        <TextBlock Name="Location" Text="{x:Bind WeatherView.Location, FallbackValue='New York, NY', Mode=OneWay}"
+                        <toolkitControls:DropShadowPanel BlurRadius="8.0" ShadowOpacity="1.0">
+                            <TextBlock Name="Location" Text="{x:Bind WeatherView.Location, FallbackValue='New York, NY', Mode=OneWay}"
                                Foreground="White" FontWeight="SemiBold" TextAlignment="Center"
                                Padding="5" Transitions="{StaticResource TextTransitions}"/>
+                        </toolkitControls:DropShadowPanel>
                     </Viewbox>
                     <Viewbox Name="UpdateDateBox" Height="25" Grid.Row="1">
-                        <TextBlock Name="UpdateDate" Text="{x:Bind WeatherView.UpdateDate, FallbackValue='Updated on 11:12 PM', Mode=OneWay}"
+                        <toolkitControls:DropShadowPanel BlurRadius="8.0" ShadowOpacity="1.0">
+                            <TextBlock Name="UpdateDate" Text="{x:Bind WeatherView.UpdateDate, FallbackValue='Updated on 11:12 PM', Mode=OneWay}"
                                Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Bottom"
                                Padding="5" Transitions="{StaticResource TextTransitions}" FontSize="12"/>
+                        </toolkitControls:DropShadowPanel>
                     </Viewbox>
                     <Button x:Name="AlertButton" x:DeferLoadStrategy="Lazy"
                             Height="30" Padding="0" Background="OrangeRed"
@@ -491,15 +495,18 @@
                         </Button.Content>
                     </Button>
                     <Viewbox x:Name="WeatherBox" VerticalAlignment="Bottom" Grid.Row="3">
-                        <TextBlock x:Name="WeatherIcon" Style="{StaticResource WeatherIcon}" Text="{x:Bind WeatherView.WeatherIcon, FallbackValue='&#xf00d;', Mode=OneWay}" />
+                        <toolkitControls:DropShadowPanel BlurRadius="4.0" ShadowOpacity="0.70">
+                            <TextBlock x:Name="WeatherIcon" Style="{StaticResource WeatherIcon}" Text="{x:Bind WeatherView.WeatherIcon, FallbackValue='&#xf00d;', Mode=OneWay}" />
+                        </toolkitControls:DropShadowPanel>
                     </Viewbox>
-                    <TextBlock Name="CurCondition" Text="{x:Bind WeatherView.CurCondition, FallbackValue='Sunny', Mode=OneWay}"
-                               FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" Transitions="{StaticResource TextTransitions}"
-                               Grid.Row="4" />
-                    <TextBlock Name="CurTemp" Text="{x:Bind WeatherView.CurTemp, FallbackValue='70&#xF045;', Mode=OneWay}"
-                               FontSize="24" Foreground="White" Style="{StaticResource WeatherIcon}"
-                               HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5,0,0,0"
-                               Grid.Row="5" />
+                    <toolkitControls:DropShadowPanel BlurRadius="8.0" ShadowOpacity="1.0" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="4">
+                        <TextBlock Name="CurCondition" Text="{x:Bind WeatherView.CurCondition, FallbackValue='Sunny', Mode=OneWay}"
+                                   FontSize="24" Foreground="White" Transitions="{StaticResource TextTransitions}"/>
+                    </toolkitControls:DropShadowPanel>
+                    <toolkitControls:DropShadowPanel BlurRadius="8.0" ShadowOpacity="1.0" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5,0,0,0" Grid.Row="5">
+                        <TextBlock Name="CurTemp" Text="{x:Bind WeatherView.CurTemp, FallbackValue='70&#xF045;', Mode=OneWay}"
+                                   FontSize="24" Foreground="White" Style="{StaticResource WeatherIcon}" />
+                    </toolkitControls:DropShadowPanel>
                 </Grid>
                 <StackPanel>
                     <Grid Name="ForecastHeader" Padding="50,0,0,0">

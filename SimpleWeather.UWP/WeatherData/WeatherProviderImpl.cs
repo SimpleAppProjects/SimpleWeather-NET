@@ -18,22 +18,21 @@ namespace SimpleWeather.WeatherData
             // Apply background based on weather condition
             switch (icon)
             {
-                // Rain 
+                // Rain
                 case WeatherIcons.DAY_RAIN:
                 case WeatherIcons.DAY_RAIN_MIX:
                 case WeatherIcons.DAY_RAIN_WIND:
                 case WeatherIcons.DAY_SHOWERS:
                 case WeatherIcons.DAY_SLEET:
-                case WeatherIcons.DAY_SLEET_STORM:
                 case WeatherIcons.DAY_SPRINKLE:
-                case WeatherIcons.HAIL:
+                    imgURI = ("ms-appx:///Assets/Backgrounds/RainyDay.jpg");
+                    break;
                 case WeatherIcons.NIGHT_ALT_HAIL:
                 case WeatherIcons.NIGHT_ALT_RAIN:
                 case WeatherIcons.NIGHT_ALT_RAIN_MIX:
                 case WeatherIcons.NIGHT_ALT_RAIN_WIND:
                 case WeatherIcons.NIGHT_ALT_SHOWERS:
                 case WeatherIcons.NIGHT_ALT_SLEET:
-                case WeatherIcons.NIGHT_ALT_SLEET_STORM:
                 case WeatherIcons.NIGHT_ALT_SPRINKLE:
                 case WeatherIcons.RAIN:
                 case WeatherIcons.RAIN_MIX:
@@ -41,19 +40,26 @@ namespace SimpleWeather.WeatherData
                 case WeatherIcons.SHOWERS:
                 case WeatherIcons.SLEET:
                 case WeatherIcons.SPRINKLE:
-                    imgURI = ("ms-appx:///Assets/Backgrounds/RainySky.jpg");
+                    imgURI = ("ms-appx:///Assets/Backgrounds/RainyNight.jpg");
                     break;
                 // Tornado / Hurricane / Thunderstorm / Tropical Storm
                 case WeatherIcons.DAY_LIGHTNING:
-                case WeatherIcons.DAY_STORM_SHOWERS:
                 case WeatherIcons.DAY_THUNDERSTORM:
+                    imgURI = ("ms-appx:///Assets/Backgrounds/Thunderstorm-Day.jpg");
+                    break;
                 case WeatherIcons.NIGHT_ALT_LIGHTNING:
-                case WeatherIcons.NIGHT_ALT_STORM_SHOWERS:
                 case WeatherIcons.NIGHT_ALT_THUNDERSTORM:
-                case WeatherIcons.HURRICANE:
                 case WeatherIcons.LIGHTNING:
-                case WeatherIcons.STORM_SHOWERS:
                 case WeatherIcons.THUNDERSTORM:
+                    imgURI = ("ms-appx:///Assets/Backgrounds/Thunderstorm-Night.jpg");
+                    break;
+                case WeatherIcons.DAY_STORM_SHOWERS:
+                case WeatherIcons.DAY_SLEET_STORM:
+                case WeatherIcons.STORM_SHOWERS:
+                case WeatherIcons.NIGHT_ALT_STORM_SHOWERS:
+                case WeatherIcons.NIGHT_ALT_SLEET_STORM:
+                case WeatherIcons.HAIL:
+                case WeatherIcons.HURRICANE:
                 case WeatherIcons.TORNADO:
                     imgURI = ("ms-appx:///Assets/Backgrounds/StormySky.jpg");
                     break;
@@ -74,13 +80,15 @@ namespace SimpleWeather.WeatherData
                 // Snow / Snow Showers/Storm
                 case WeatherIcons.DAY_SNOW:
                 case WeatherIcons.DAY_SNOW_THUNDERSTORM:
-                case WeatherIcons.DAY_SNOW_WIND:
                 case WeatherIcons.NIGHT_ALT_SNOW:
                 case WeatherIcons.NIGHT_ALT_SNOW_THUNDERSTORM:
-                case WeatherIcons.NIGHT_ALT_SNOW_WIND:
                 case WeatherIcons.SNOW:
-                case WeatherIcons.SNOW_WIND:
                     imgURI = ("ms-appx:///Assets/Backgrounds/Snow.jpg");
+                    break;
+                case WeatherIcons.SNOW_WIND:
+                case WeatherIcons.DAY_SNOW_WIND:
+                case WeatherIcons.NIGHT_ALT_SNOW_WIND:
+                    imgURI = ("ms-appx:///Assets/Backgrounds/Snow-Windy.jpg");
                     break;
                 /* Ambigious weather conditions */
                 // (Mostly) Cloudy
