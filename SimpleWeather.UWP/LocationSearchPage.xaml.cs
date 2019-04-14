@@ -77,37 +77,19 @@ namespace SimpleWeather.UWP
             cts.Dispose();
         }
 
+        private DispatcherTimer timer;
+
         private void Location_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
             // Cancel pending searches
             cts.Cancel();
             cts = new CancellationTokenSource();
+            var ctsToken = cts.Token;
+            // user is typing: reset already started timer (if existing)
+            if (timer != null && timer.IsEnabled)
+                timer.Stop();
 
-            if (!String.IsNullOrWhiteSpace(sender.Text) && args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
-            {
-                String query = sender.Text;
-
-                Task.Run(async () =>
-                {
-                    var ctsToken = cts.Token;
-
-                    if (ctsToken.IsCancellationRequested) return;
-
-                    var results = await wm.GetLocations(query);
-
-                    if (ctsToken.IsCancellationRequested) return;
-
-                    // Refresh list
-                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        LocationQuerys = results;
-                        sender.ItemsSource = null;
-                        sender.ItemsSource = LocationQuerys;
-                        sender.IsSuggestionListOpen = true;
-                    });
-                });
-            }
-            else if (String.IsNullOrWhiteSpace(sender.Text))
+            if (String.IsNullOrWhiteSpace(sender.Text))
             {
                 // Cancel pending searches
                 cts.Cancel();
@@ -115,6 +97,50 @@ namespace SimpleWeather.UWP
                 // Hide flyout if query is empty or null
                 LocationQuerys.Clear();
                 sender.IsSuggestionListOpen = false;
+            }
+            else
+            {
+                timer = new DispatcherTimer()
+                {
+                    Interval = TimeSpan.FromMilliseconds(1000)
+                };
+                timer.Tick += (t, e) =>
+                {
+                    if (!String.IsNullOrWhiteSpace(sender.Text) && args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+                    {
+                        String query = sender.Text;
+
+                        Task.Run(async () =>
+                        {
+                            if (ctsToken.IsCancellationRequested) return;
+
+                            var results = await wm.GetLocations(query);
+
+                            if (ctsToken.IsCancellationRequested) return;
+
+                            // Refresh list
+                            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                            {
+                                LocationQuerys = results;
+                                sender.ItemsSource = null;
+                                sender.ItemsSource = LocationQuerys;
+                                sender.IsSuggestionListOpen = true;
+                            });
+                        });
+                    }
+                    else if (String.IsNullOrWhiteSpace(sender.Text))
+                    {
+                        // Cancel pending searches
+                        cts.Cancel();
+                        cts = new CancellationTokenSource();
+                        // Hide flyout if query is empty or null
+                        LocationQuerys.Clear();
+                        sender.IsSuggestionListOpen = false;
+                    }
+
+                    timer.Stop();
+                };
+                timer.Start();
             }
         }
 
