@@ -861,10 +861,8 @@ namespace SimpleWeather.WeatherData
                    .GetWeatherIcon(forecast.icon_url.Replace("http://icons.wxug.com/i/c/k/", "").Replace(".gif", ""));
 
             // Extras
-            extras = new ForecastExtras()
+            extras = new ForecastExtras
             {
-                feelslike_f = float.Parse(WeatherUtils.GetFeelsLikeTemp(high_f, forecast.avewind.mph.ToString(), forecast.avehumidity.ToString())),
-                feelslike_c = float.Parse(ConversionMethods.FtoC(extras.feelslike_f.ToString(CultureInfo.InvariantCulture))),
                 humidity = forecast.avehumidity.ToString(),
                 pop = forecast.pop.ToString(),
                 qpf_rain_in = forecast.qpf_allday._in.GetValueOrDefault(0.00f),
@@ -875,6 +873,11 @@ namespace SimpleWeather.WeatherData
                 wind_mph = forecast.avewind.mph,
                 wind_kph = forecast.avewind.kph
             };
+            if (float.TryParse(WeatherUtils.GetFeelsLikeTemp(high_f, forecast.avewind.mph.ToString(), forecast.avehumidity.ToString()), out float feelslike_f))
+            {
+                extras.feelslike_f = feelslike_f;
+                extras.feelslike_c = float.Parse(ConversionMethods.FtoC(feelslike_f.ToString(CultureInfo.InvariantCulture)));
+            }
         }
 
         public Forecast(OpenWeather.List forecast)
