@@ -6,12 +6,17 @@ using SimpleWeather.Utils;
 using System.Collections.Generic;
 using Windows.UI;
 using System.Globalization;
+using SimpleWeather.Location;
 
 namespace SimpleWeather.WeatherData
 {
     public abstract partial class WeatherProviderImpl : IWeatherProviderImpl
     {
+        protected LocationProviderImpl locProvider;
+
         // Variables
+        public LocationProviderImpl LocationProvider { get { return locProvider; } }
+        public abstract string WeatherAPI { get; }
         public abstract bool SupportsWeatherLocale { get; }
         public abstract bool KeyRequired { get; }
         public abstract bool SupportsAlerts { get; }
@@ -19,10 +24,19 @@ namespace SimpleWeather.WeatherData
 
         // Methods
         // AutoCompleteQuery
-        public abstract Task<ObservableCollection<LocationQueryViewModel>> GetLocations(String ac_query);
+        public async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(String ac_query)
+        {
+            return await locProvider.GetLocations(ac_query, WeatherAPI);
+        }
         // GeopositionQuery
-        public abstract Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coordinate);
-        public abstract Task<LocationQueryViewModel> GetLocation(string query);
+        public async Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coordinate)
+        {
+            return await locProvider.GetLocation(coordinate, WeatherAPI);
+        }
+        public async Task<LocationQueryViewModel> GetLocation(string query)
+        {
+            return await locProvider.GetLocation(query, WeatherAPI);
+        }
         // Weather
         public abstract Task<Weather> GetWeather(String location_query);
         public virtual async Task<Weather> GetWeather(LocationData location)
@@ -62,20 +76,9 @@ namespace SimpleWeather.WeatherData
         public abstract String GetAPIKey();
 
         // Utils Methods
-        public virtual async Task UpdateLocationData(LocationData location)
+        public async Task UpdateLocationData(LocationData location)
         {
-            var qview = await GetLocation(location.query);
-
-            if (qview != null && !String.IsNullOrWhiteSpace(qview.LocationQuery))
-            {
-                location.name = qview.LocationName;
-                location.latitude = qview.LocationLat;
-                location.longitude = qview.LocationLong;
-                location.tz_long = qview.LocationTZ_Long;
-
-                // Update DB here or somewhere else
-                await Settings.UpdateLocation(location);
-            }
+            await locProvider.UpdateLocationData(location, WeatherAPI);
         }
         public abstract Task<String> UpdateLocationQuery(Weather weather);
         public abstract Task<String> UpdateLocationQuery(LocationData location);

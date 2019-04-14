@@ -3,11 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SimpleWeather.OpenWeather
+namespace SimpleWeather.Keys
 {
-    public partial class OpenWeatherMapProvider : WeatherProviderImpl
+    public partial class APIKeys
     {
-        public override String GetAPIKey()
+        public static String GetOWMKey()
         {
             return null;
         }

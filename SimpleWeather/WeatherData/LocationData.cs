@@ -155,25 +155,25 @@ namespace SimpleWeather.WeatherData
                     switch (property)
                     {
                         case "query":
-                            obj.query = reader.Value.ToString();
+                            obj.query = reader.Value?.ToString();
                             break;
                         case "name":
-                            obj.name = reader.Value.ToString();
+                            obj.name = reader.Value?.ToString();
                             break;
                         case "latitude":
-                            obj.latitude = double.Parse(reader.Value.ToString());
+                            obj.latitude = double.Parse(reader.Value?.ToString());
                             break;
                         case "longitude":
-                            obj.longitude = double.Parse(reader.Value.ToString());
+                            obj.longitude = double.Parse(reader.Value?.ToString());
                             break;
                         case "tz_long":
-                            obj.tz_long = reader.Value.ToString();
+                            obj.tz_long = reader.Value?.ToString();
                             break;
                         case "locationType":
-                            obj.locationType = (LocationType)int.Parse(reader.Value.ToString());
+                            obj.locationType = (LocationType)int.Parse(reader.Value?.ToString());
                             break;
                         case "source":
-                            obj.source = reader.Value.ToString();
+                            obj.source = reader.Value?.ToString();
                             break;
                     }
                 }

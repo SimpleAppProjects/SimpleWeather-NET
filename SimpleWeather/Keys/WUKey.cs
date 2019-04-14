@@ -3,11 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SimpleWeather.WeatherUnderground
+namespace SimpleWeather.Keys
 {
-    public partial class WeatherUndergroundProvider : WeatherProviderImpl
+    public partial class APIKeys
     {
-        public override String GetAPIKey()
+        public static String GetWUndergroundKey()
         {
             return null;
         }

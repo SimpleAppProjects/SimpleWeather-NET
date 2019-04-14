@@ -335,7 +335,7 @@ namespace SimpleWeather.Utils
             }
         }
 
-        public static async Task UpdateLocation(LocationData location)
+        public static async Task UpdateLocation(WeatherData.LocationData location)
         {
             if (location != null && location.IsValid())
             {

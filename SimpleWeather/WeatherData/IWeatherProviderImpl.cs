@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using SimpleWeather.Controls;
+using SimpleWeather.Location;
 using SimpleWeather.Utils;
 
 namespace SimpleWeather.WeatherData
 {
     public partial interface IWeatherProviderImpl
     {
+        String WeatherAPI { get; }
+        LocationProviderImpl LocationProvider { get; }
         bool KeyRequired { get; }
         bool SupportsWeatherLocale { get; }
         bool SupportsAlerts { get; }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SimpleWeather.Controls;
 using SimpleWeather.HERE;
+using SimpleWeather.Location;
 using SimpleWeather.Metno;
 using SimpleWeather.OpenWeather;
 using SimpleWeather.Utils;
@@ -39,6 +40,7 @@ namespace SimpleWeather.WeatherData
         };
     }
 
+    // Wrapper class for supported Weather Providers
     public sealed class WeatherManager : IWeatherProviderImpl
     {
         private static WeatherManager Instance;
@@ -79,19 +81,19 @@ namespace SimpleWeather.WeatherData
 
             switch (API)
             {
-                case WeatherAPI.Yahoo:
+                case SimpleWeather.WeatherData.WeatherAPI.Yahoo:
                     providerImpl = new YahooWeatherProvider();
                     break;
-                case WeatherAPI.WeatherUnderground:
+                case SimpleWeather.WeatherData.WeatherAPI.WeatherUnderground:
                     providerImpl = new WeatherUndergroundProvider();
                     break;
-                case WeatherAPI.Here:
+                case SimpleWeather.WeatherData.WeatherAPI.Here:
                     providerImpl = new HEREWeatherProvider();
                     break;
-                case WeatherAPI.OpenWeatherMap:
+                case SimpleWeather.WeatherData.WeatherAPI.OpenWeatherMap:
                     providerImpl = new OpenWeatherMapProvider();
                     break;
-                case WeatherAPI.MetNo:
+                case SimpleWeather.WeatherData.WeatherAPI.MetNo:
                     providerImpl = new MetnoWeatherProvider();
                     break;
                 default:
@@ -123,6 +125,10 @@ namespace SimpleWeather.WeatherData
         }
 
         // Provider dependent methods
+        public string WeatherAPI => WeatherProvider.WeatherAPI;
+
+        public LocationProviderImpl LocationProvider => WeatherProvider.LocationProvider;
+
         public bool KeyRequired => WeatherProvider.KeyRequired;
 
         public bool SupportsWeatherLocale => WeatherProvider.SupportsWeatherLocale;

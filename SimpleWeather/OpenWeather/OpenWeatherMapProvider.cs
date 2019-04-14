@@ -23,212 +23,25 @@ namespace SimpleWeather.OpenWeather
 {
     public partial class OpenWeatherMapProvider : WeatherProviderImpl
     {
+        public OpenWeatherMapProvider() : base()
+        {
+            locProvider = new OWMWULocationProvider();
+        }
+
+        public override string WeatherAPI => WeatherData.WeatherAPI.OpenWeatherMap;
         public override bool SupportsWeatherLocale => true;
         public override bool KeyRequired => true;
         public override bool SupportsAlerts => true;
         public override bool NeedsExternalAlertData => true;
 
-        public override async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string query)
-        {
-            ObservableCollection<LocationQueryViewModel> locations = null;
-
-            string queryAPI = "https://autocomplete.wunderground.com/aq?query=";
-            string options = "&h=0&cities=1";
-            Uri queryURL = new Uri(queryAPI + query + options);
-            // Limit amount of results shown
-            int maxResults = 10;
-
-            try
-            {
-                // Connect to webstream
-                HttpClient webClient = new HttpClient();
-                HttpResponseMessage response = await webClient.GetAsync(queryURL);
-                response.EnsureSuccessStatusCode();
-                Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-                // End Stream
-                webClient.Dispose();
-
-                // Load data
-                locations = new ObservableCollection<LocationQueryViewModel>();
-
-                var root = JSONParser.Deserializer<AC_Rootobject>(contentStream);
-
-                foreach (AC_RESULT result in root.RESULTS)
-                {
-                    // Filter: only store city results
-                    if (result.type != "city")
-                        continue;
-
-                    locations.Add(new LocationQueryViewModel(result));
-
-                    // Limit amount of results
-                    maxResults--;
-                    if (maxResults <= 0)
-                        break;
-                }
-
-                // End Stream
-                contentStream.Dispose();
-            }
-            catch (Exception ex)
-            {
-                locations = new ObservableCollection<LocationQueryViewModel>();
-                Logger.WriteLine(LoggerLevel.Error, ex, "OpenWeatherMapProvider: error getting locations");
-            }
-
-            if (locations == null || locations.Count == 0)
-                locations = new ObservableCollection<LocationQueryViewModel>() { new LocationQueryViewModel() };
-
-            return locations;
-        }
-
-        public override async Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coord)
-        {
-            LocationQueryViewModel location = null;
-
-            string queryAPI = "https://api.wunderground.com/auto/wui/geo/GeoLookupXML/index.xml?query=";
-            string options = "";
-            string query = string.Format("{0},{1}", coord.Latitude, coord.Longitude);
-            Uri queryURL = new Uri(queryAPI + query + options);
-            location result;
-            WeatherException wEx = null;
-
-            try
-            {
-                // Connect to webstream
-                HttpClient webClient = new HttpClient();
-                HttpResponseMessage response = await webClient.GetAsync(queryURL);
-                response.EnsureSuccessStatusCode();
-                Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-
-                // End Stream
-                webClient.Dispose();
-
-                // Load data
-                XmlSerializer deserializer = new XmlSerializer(typeof(location));
-                result = (location)deserializer.Deserialize(contentStream);
-
-                // End Stream
-                contentStream.Dispose();
-            }
-            catch (Exception ex)
-            {
-                result = null;
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
-                {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                    await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
-                }
-                Logger.WriteLine(LoggerLevel.Error, ex, "OpenWeatherMapProvider: error getting location");
-            }
-
-            if (result != null && !String.IsNullOrWhiteSpace(result.query))
-                location = new LocationQueryViewModel(result);
-            else
-                location = new LocationQueryViewModel();
-
-            return location;
-        }
-
-        public override async Task<LocationQueryViewModel> GetLocation(string query)
-        {
-            LocationQueryViewModel location = null;
-
-            string queryAPI = "https://autocomplete.wunderground.com/aq?query=";
-            string options = "&h=0&cities=1";
-            Uri queryURL = new Uri(queryAPI + query + options);
-            AC_RESULT result;
-            WeatherException wEx = null;
-
-            try
-            {
-                // Connect to webstream
-                HttpClient webClient = new HttpClient();
-                HttpResponseMessage response = await webClient.GetAsync(queryURL);
-                response.EnsureSuccessStatusCode();
-                Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-
-                // End Stream
-                webClient.Dispose();
-
-                // Load data
-                var root = JSONParser.Deserializer<AC_Rootobject>(contentStream);
-                result = root.RESULTS.FirstOrDefault();
-
-                // End Stream
-                if (contentStream != null)
-                    contentStream.Dispose();
-            }
-            catch (Exception ex)
-            {
-                result = null;
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
-                {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                    await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
-                }
-                Logger.WriteLine(LoggerLevel.Error, ex, "OpenWeatherMapProvider: error getting location");
-            }
-
-            if (result != null && !String.IsNullOrWhiteSpace(result.l))
-                location = new LocationQueryViewModel(result);
-            else
-                location = new LocationQueryViewModel();
-
-            return location;
-        }
-
         public override async Task<bool> IsKeyValid(string key)
         {
-            string queryAPI = "https://api.openweathermap.org/data/2.5/";
-            string query = "forecast?appid=";
-            Uri queryURL = new Uri(queryAPI + query + key);
-            bool isValid = false;
-            WeatherException wEx = null;
+            return false;
+        }
 
-            try
-            {
-                if (String.IsNullOrWhiteSpace(key))
-                    throw (wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey));
-
-                // Connect to webstream
-                HttpClient webClient = new HttpClient();
-                HttpResponseMessage response = await webClient.GetAsync(queryURL);
-
-                // Check for errors
-                switch (response.StatusCode)
-                {
-                    // 400 (OK since this isn't a valid request)
-                    case HttpStatusCode.BadRequest:
-                        isValid = true;
-                        break;
-                    // 401 (Unauthorized - Key is invalid)
-                    case HttpStatusCode.Unauthorized:
-                        wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
-                        isValid = false;
-                        break;
-                }
-
-                // End Stream
-                response.Dispose();
-                webClient.Dispose();
-            }
-            catch (Exception ex)
-            {
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
-                {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                }
-
-                isValid = false;
-            }
-
-            if (wEx != null)
-            {
-                await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
-            }
-
-            return isValid;
+        public override string GetAPIKey()
+        {
+            return null;
         }
 
         public override async Task<WeatherData.Weather> GetWeather(string location_query)
@@ -349,23 +162,6 @@ namespace SimpleWeather.OpenWeather
             weather.astronomy.sunset = weather.astronomy.sunset.Add(offset);
 
             return weather;
-        }
-
-        // Use location name here instead of query since we use the AutoComplete API
-        public override async Task UpdateLocationData(LocationData location)
-        {
-            var qview = await GetLocation(location.name);
-
-            if (qview != null && !String.IsNullOrWhiteSpace(qview.LocationQuery))
-            {
-                location.name = qview.LocationName;
-                location.latitude = qview.LocationLat;
-                location.longitude = qview.LocationLong;
-                location.tz_long = qview.LocationTZ_Long;
-
-                // Update DB here or somewhere else
-                await Settings.UpdateLocation(location);
-            }
         }
 
         public override async Task<string> UpdateLocationQuery(WeatherData.Weather weather)

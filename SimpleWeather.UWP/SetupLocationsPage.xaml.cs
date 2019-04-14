@@ -226,7 +226,7 @@ namespace SimpleWeather.UWP
                     && query_vm.LocationLat == -1 && query_vm.LocationLong == -1
                     && query_vm.LocationTZ_Long == null)
             {
-                query_vm = await new HERE.HEREWeatherProvider().GetLocationFromLocID(query_vm.LocationQuery);
+                query_vm = await new HERE.HERELocationProvider().GetLocationFromLocID(query_vm.LocationQuery);
             }
 
             // Weather Data

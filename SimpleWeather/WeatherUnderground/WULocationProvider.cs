@@ -1,0 +1,190 @@
+﻿using SimpleWeather.Controls;
+using SimpleWeather.Keys;
+using SimpleWeather.Location;
+using SimpleWeather.Utils;
+using SimpleWeather.UWP.Controls;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml.Serialization;
+using Windows.Web;
+using Windows.Web.Http;
+
+namespace SimpleWeather.WeatherUnderground
+{
+    public class WULocationProvider : LocationProviderImpl
+    {
+        public override bool SupportsWeatherLocale => true;
+        public override bool KeyRequired => true;
+
+        public override async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string query, string weatherAPI)
+        {
+            ObservableCollection<LocationQueryViewModel> locations = null;
+
+            string queryAPI = "https://autocomplete.wunderground.com/aq?query=";
+            string options = "&h=0&cities=1";
+            Uri queryURL = new Uri(queryAPI + query + options);
+            // Limit amount of results shown
+            int maxResults = 10;
+
+            try
+            {
+                // Connect to webstream
+                HttpClient webClient = new HttpClient();
+                HttpResponseMessage response = await webClient.GetAsync(queryURL);
+                response.EnsureSuccessStatusCode();
+                Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                // End Stream
+                webClient.Dispose();
+
+                // Load data
+                locations = new ObservableCollection<LocationQueryViewModel>();
+
+                var root = JSONParser.Deserializer<AC_Rootobject>(contentStream);
+
+                foreach (AC_RESULT result in root.RESULTS)
+                {
+                    // Filter: only store city results
+                    if (result.type != "city")
+                        continue;
+
+                    locations.Add(new LocationQueryViewModel(result, weatherAPI));
+
+                    // Limit amount of results
+                    maxResults--;
+                    if (maxResults <= 0)
+                        break;
+                }
+
+                // End Stream
+                if (contentStream != null)
+                    contentStream.Dispose();
+            }
+            catch (Exception ex)
+            {
+                locations = new ObservableCollection<LocationQueryViewModel>();
+                Logger.WriteLine(LoggerLevel.Error, ex, "WeatherUndergroundProvider: error getting locations");
+            }
+
+            if (locations == null || locations.Count == 0)
+                locations = new ObservableCollection<LocationQueryViewModel>() { new LocationQueryViewModel() };
+
+            return locations;
+        }
+
+        public override async Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coord, string weatherAPI)
+        {
+            LocationQueryViewModel location = null;
+
+            string queryAPI = "https://api.wunderground.com/auto/wui/geo/GeoLookupXML/index.xml?query=";
+            string options = "";
+            string query = string.Format("{0},{1}", coord.Latitude, coord.Longitude);
+            Uri queryURL = new Uri(queryAPI + query + options);
+            location result;
+            WeatherException wEx = null;
+
+            try
+            {
+                // Connect to webstream
+                HttpClient webClient = new HttpClient();
+                HttpResponseMessage response = await webClient.GetAsync(queryURL);
+                response.EnsureSuccessStatusCode();
+                Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+
+                // End Stream
+                webClient.Dispose();
+
+                // Load data
+                XmlSerializer deserializer = new XmlSerializer(typeof(location));
+                result = (location)deserializer.Deserialize(contentStream);
+
+                // End Stream
+                if (contentStream != null)
+                    contentStream.Dispose();
+            }
+            catch (Exception ex)
+            {
+                result = null;
+
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
+                }
+
+                Logger.WriteLine(LoggerLevel.Error, ex, "WeatherUndergroundProvider: error getting location");
+            }
+
+            if (result != null && !String.IsNullOrWhiteSpace(result.query))
+                location = new LocationQueryViewModel(result, weatherAPI);
+            else
+                location = new LocationQueryViewModel();
+
+            return location;
+        }
+
+        public override async Task<LocationQueryViewModel> GetLocation(string query, string weatherAPI)
+        {
+            LocationQueryViewModel location = null;
+
+            string queryAPI = "https://autocomplete.wunderground.com/aq?query=";
+            string options = "&h=0&cities=1";
+            Uri queryURL = new Uri(queryAPI + query + options);
+            AC_RESULT result;
+            WeatherException wEx = null;
+
+            try
+            {
+                // Connect to webstream
+                HttpClient webClient = new HttpClient();
+                HttpResponseMessage response = await webClient.GetAsync(queryURL);
+                response.EnsureSuccessStatusCode();
+                Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+
+                // End Stream
+                webClient.Dispose();
+
+                // Load data
+                AC_Rootobject root = JSONParser.Deserializer<AC_Rootobject>(contentStream);
+                result = root.RESULTS.FirstOrDefault();
+
+                // End Stream
+                if (contentStream != null)
+                    contentStream.Dispose();
+            }
+            catch (Exception ex)
+            {
+                result = null;
+
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
+                }
+
+                Logger.WriteLine(LoggerLevel.Error, ex, "WeatherUndergroundProvider: error getting location");
+            }
+
+            if (result != null && !String.IsNullOrWhiteSpace(result.l))
+                location = new LocationQueryViewModel(result, weatherAPI);
+            else
+                location = new LocationQueryViewModel();
+
+            return location;
+        }
+
+        public override async Task<bool> IsKeyValid(string key)
+        {
+            return false;
+        }
+
+        public override String GetAPIKey()
+        {
+            return APIKeys.GetWUndergroundKey();
+        }
+    }
+}

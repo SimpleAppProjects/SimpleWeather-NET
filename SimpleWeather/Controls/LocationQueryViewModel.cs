@@ -4,6 +4,9 @@ using SimpleWeather.WeatherYahoo;
 using SimpleWeather.OpenWeather;
 using System.Collections.Generic;
 using SimpleWeather.UWP;
+using SimpleWeather.WeatherData;
+using SimpleWeather.HERE;
+using System.Globalization;
 
 namespace SimpleWeather.Controls
 {
@@ -26,16 +29,24 @@ namespace SimpleWeather.Controls
         }
 
         #region WeatherUnderground
-        public LocationQueryViewModel(WeatherUnderground.AC_RESULT location)
+        public LocationQueryViewModel(AC_RESULT location, String WeatherAPI)
         {
-            SetLocation(location);
+            SetLocation(location, WeatherAPI);
         }
 
-        public void SetLocation(WeatherUnderground.AC_RESULT location)
+        public void SetLocation(AC_RESULT location, String weatherAPI)
         {
             LocationName = location.name;
             LocationCountry = location.c;
-            LocationQuery = location.l;
+
+            if (WeatherAPI.WeatherUnderground.Equals(weatherAPI))
+            {
+                LocationQuery = location.l;
+            }
+            else
+            {
+                LocationQuery = String.Format("lat={0}&lon={1}", location.lat, location.lon);
+            }
 
             LocationLat = double.Parse(location.lat);
             LocationLong = double.Parse(location.lon);
@@ -43,16 +54,23 @@ namespace SimpleWeather.Controls
             LocationTZ_Long = location.tz;
         }
 
-        public LocationQueryViewModel(WeatherUnderground.location location)
+        public LocationQueryViewModel(location location, String weatherAPI)
         {
-            SetLocation(location);
+            SetLocation(location, weatherAPI);
         }
 
-        public void SetLocation(WeatherUnderground.location location)
+        public void SetLocation(location location, String weatherAPI)
         {
             LocationName = string.Format("{0}, {1}", location.city, location.state);
             LocationCountry = location.country;
-            LocationQuery = location.query;
+            if (WeatherAPI.WeatherUnderground.Equals(weatherAPI))
+            {
+                LocationQuery = location.query;
+            }
+            else
+            {
+                LocationQuery = String.Format("lat={0}&lon={1}", location.lat, location.lon);
+            }
 
             LocationLat = double.Parse(location.lat);
             LocationLong = double.Parse(location.lon);
@@ -61,84 +79,12 @@ namespace SimpleWeather.Controls
         }
         #endregion
 
-        #region Yahoo Weather
-        public LocationQueryViewModel(WeatherYahoo.AC_RESULT location)
+        public LocationQueryViewModel(Suggestion location)
         {
             SetLocation(location);
         }
 
-        public void SetLocation(WeatherYahoo.AC_RESULT location)
-        {
-            LocationName = location.name;
-            LocationCountry = location.c;
-            LocationQuery = string.Format("lat={0}&lon={1}", location.lat, location.lon);
-
-            LocationLat = double.Parse(location.lat);
-            LocationLong = double.Parse(location.lon);
-
-            LocationTZ_Long = location.tz;
-        }
-
-        public LocationQueryViewModel(WeatherYahoo.location location)
-        {
-            SetLocation(location);
-        }
-
-        public void SetLocation(WeatherYahoo.location location)
-        {
-            LocationName = string.Format("{0}, {1}", location.city, location.state);
-            LocationCountry = location.country;
-            LocationQuery = string.Format("lat={0}&lon={1}", location.lat, location.lon);
-
-            LocationLat = double.Parse(location.lat);
-            LocationLong = double.Parse(location.lon);
-
-            LocationTZ_Long = location.tz_unix;
-        }
-        #endregion
-
-        #region OpenWeatherMap|Met.No
-        public LocationQueryViewModel(OpenWeather.AC_RESULT location)
-        {
-            SetLocation(location);
-        }
-
-        public void SetLocation(OpenWeather.AC_RESULT location)
-        {
-            LocationName = location.name;
-            LocationCountry = location.c;
-            LocationQuery = string.Format("lat={0}&lon={1}", location.lat, location.lon);
-
-            LocationLat = double.Parse(location.lat);
-            LocationLong = double.Parse(location.lon);
-
-            LocationTZ_Long = location.tz;
-        }
-
-        public LocationQueryViewModel(OpenWeather.location location)
-        {
-            SetLocation(location);
-        }
-
-        public void SetLocation(OpenWeather.location location)
-        {
-            LocationName = string.Format("{0}, {1}", location.city, location.state);
-            LocationCountry = location.country;
-            LocationQuery = string.Format("lat={0}&lon={1}", location.lat, location.lon);
-
-            LocationLat = double.Parse(location.lat);
-            LocationLong = double.Parse(location.lon);
-
-            LocationTZ_Long = location.tz_unix;
-        }
-        #endregion
-
-        public LocationQueryViewModel(HERE.Suggestion location)
-        {
-            SetLocation(location);
-        }
-
-        public void SetLocation(HERE.Suggestion location)
+        public void SetLocation(Suggestion location)
         {
             string town, region;
 
@@ -169,18 +115,18 @@ namespace SimpleWeather.Controls
             LocationTZ_Long = null;
         }
 
-        public LocationQueryViewModel(HERE.Result location)
+        public LocationQueryViewModel(Result location)
         {
             SetLocation(location);
         }
 
-        public void SetLocation(HERE.Result location)
+        public void SetLocation(Result location)
         {
             string country = null, town = null, region = null;
 
             if (location.location.address.additionalData != null)
             {
-                foreach(HERE.Additionaldata item in location.location.address.additionalData)
+                foreach(Additionaldata item in location.location.address.additionalData)
                 {
                     if ("Country2".Equals(item.key))
                         country = item.value;
@@ -214,7 +160,7 @@ namespace SimpleWeather.Controls
                 LocationName = string.Format("{0}, {1}", town, region);
 
             LocationCountry = country;
-            LocationQuery = string.Format("latitude={0}&longitude={1}",
+            LocationQuery = string.Format(CultureInfo.InvariantCulture, "latitude={0}&longitude={1}",
                 location.location.displayPosition.latitude, location.location.displayPosition.longitude);
 
             LocationLat = location.location.displayPosition.latitude;

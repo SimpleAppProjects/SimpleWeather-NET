@@ -22,17 +22,19 @@
     <Compile Include="$(MSBuildThisFileDirectory)HERE\Alerts.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HERE\AutoCompleteQuery.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HERE\GeopositionQuery.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)HERE\HEREWeatherKey.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HERE\HERELocationProvider .cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Keys\HEREWeatherKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HERE\HEREWeatherProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HERE\Weather.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Location\ILocationProviderImpl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Location\LocationProviderImpl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Metno\Astrodata.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Metno\MetnoWeatherProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Metno\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NWS\Alert.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NWS\NWSAlertProvider.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\AutoCompleteQuery.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\GeopositionQuery.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\OWMKey.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Keys\OWMKey.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\OWMWULocationProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\OpenWeatherMapProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\ConversionMethods.cs" />
@@ -63,11 +65,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)WeatherUnderground\GeopositionQuery.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherUnderground\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherUnderground\WeatherUndergroundProvider.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)WeatherUnderground\WUKey.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)YahooWeather\AutoCompleteQuery.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)YahooWeather\GeopositionQuery.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Keys\WUKey.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WeatherUnderground\WULocationProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)YahooWeather\Weather.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)YahooWeather\YahooKey.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Keys\YahooKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)YahooWeather\YahooWeatherProvider.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Keys\" />
   </ItemGroup>
 </Project>

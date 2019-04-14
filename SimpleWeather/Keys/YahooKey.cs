@@ -5,24 +5,19 @@ using System.Text;
 
 namespace SimpleWeather.WeatherYahoo
 {
-    public partial class YahooWeatherProvider : WeatherProviderImpl
+    public partial class APIKeys
     {
-        public override String GetAPIKey()
+        public static String GetYahooAppID()
         {
             return null;
         }
 
-        private String GetAppID()
+        public static String GetYahooCliID()
         {
             return null;
         }
 
-        private String GetCliID()
-        {
-            return null;
-        }
-
-        private String GetCliSecr()
+        public static String GetYahooCliSecr()
         {
             return null;
         }
