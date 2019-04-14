@@ -358,8 +358,11 @@ namespace SimpleWeather.UWP
         {
             base.OnNavigatedTo(e);
 
-            MainViewer.ChangeView(null, 0, null);
-            BGAlpha = 1.0f;
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => 
+            {
+                MainViewer.ChangeView(null, 0, null, true);
+                BGAlpha = 1.0f;
+            });
 
             if (e.Parameter != null)
             {
@@ -382,7 +385,7 @@ namespace SimpleWeather.UWP
                 // Reset loader if new page instance created
                 location = null;
                 wLoader = null;
-                MainViewer.ChangeView(null, 0, null);
+                MainViewer.ChangeView(null, 0, null, true);
 
                 // New page instance created, so restore
                 if (LocParameter != null)
