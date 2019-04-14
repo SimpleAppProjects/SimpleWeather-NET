@@ -2256,15 +2256,33 @@ namespace SimpleWeather.WeatherData
 
         public Astronomy(WeatherUnderground.Sun_Phase sun_phase, WeatherUnderground.Moon_Phase moon_phase)
         {
-            sunset = DateTime.Parse(string.Format("{0}:{1}",
-                sun_phase.sunset.hour, sun_phase.sunset.minute));
-            sunrise = DateTime.Parse(string.Format("{0}:{1}",
-                sun_phase.sunrise.hour, sun_phase.sunrise.minute));
+            if (DateTime.TryParse(string.Format("{0}:{1}", sun_phase.sunset.hour, sun_phase.sunset.minute), out DateTime sunset))
+                this.sunset = sunset;
+            if (DateTime.TryParse(string.Format("{0}:{1}", sun_phase.sunrise.hour, sun_phase.sunrise.minute), out DateTime sunrise))
+                this.sunrise = sunrise;
 
-            moonset = DateTime.Parse(string.Format("{0}:{1}",
-                moon_phase.moonset.hour, moon_phase.moonset.minute));
-            moonrise = DateTime.Parse(string.Format("{0}:{1}",
-                moon_phase.moonrise.hour, moon_phase.moonrise.minute));
+            if (DateTime.TryParse(string.Format("{0}:{1}", moon_phase.moonset.hour, moon_phase.moonset.minute), out DateTime moonset))
+                this.moonset = moonset;
+            if (DateTime.TryParse(string.Format("{0}:{1}", moon_phase.moonrise.hour, moon_phase.moonrise.minute), out DateTime moonrise))
+                this.moonrise = moonrise;
+
+            // If the sun won't set/rise, set time to the future
+            if (sunrise == null)
+            {
+                sunrise = DateTime.Now.Date.AddYears(1).AddTicks(-1);
+            }
+            if (sunset == null)
+            {
+                sunset = DateTime.Now.Date.AddYears(1).AddTicks(-1);
+            }
+            if (moonrise == null)
+            {
+                moonrise = DateTime.MinValue;
+            }
+            if (moonset == null)
+            {
+                moonset = DateTime.MinValue;
+            }
 
             try
             {
@@ -2314,20 +2332,60 @@ namespace SimpleWeather.WeatherData
 
         public Astronomy(WeatherYahoo.Astronomy astronomy)
         {
-            sunrise = DateTime.Parse(astronomy.sunrise);
-            sunset = DateTime.Parse(astronomy.sunset);
+            if (DateTime.TryParse(astronomy.sunrise, out DateTime sunrise))
+                this.sunrise = sunrise;
+            if (DateTime.TryParse(astronomy.sunset, out DateTime sunset))
+                this.sunset = sunset;
 
-            moonrise = DateTime.MinValue;
-            moonset = DateTime.MinValue;
+            // If the sun won't set/rise, set time to the future
+            if (sunrise == null)
+            {
+                sunrise = DateTime.Now.Date.AddYears(1).AddTicks(-1);
+            }
+            if (sunset == null)
+            {
+                sunset = DateTime.Now.Date.AddYears(1).AddTicks(-1);
+            }
+            if (moonrise == null)
+            {
+                moonrise = DateTime.MinValue;
+            }
+            if (moonset == null)
+            {
+                moonset = DateTime.MinValue;
+            }
         }
 
         public Astronomy(OpenWeather.CurrentRootobject root)
         {
-            sunrise = DateTimeOffset.FromUnixTimeSeconds(root.sys.sunrise).DateTime;
-            sunset = DateTimeOffset.FromUnixTimeSeconds(root.sys.sunset).DateTime;
+            try
+            {
+                sunrise = DateTimeOffset.FromUnixTimeSeconds(root.sys.sunrise).UtcDateTime;
+            }
+            catch (Exception) { }
+            try
+            {
+                sunset = DateTimeOffset.FromUnixTimeSeconds(root.sys.sunset).UtcDateTime;
+            }
+            catch (Exception) { }
 
-            moonrise = DateTime.MinValue;
-            moonset = DateTime.MinValue;
+            // If the sun won't set/rise, set time to the future
+            if (sunrise == null)
+            {
+                sunrise = DateTime.Now.Date.AddYears(1).AddTicks(-1);
+            }
+            if (sunset == null)
+            {
+                sunset = DateTime.Now.Date.AddYears(1).AddTicks(-1);
+            }
+            if (moonrise == null)
+            {
+                moonrise = DateTime.MinValue;
+            }
+            if (moonset == null)
+            {
+                moonset = DateTime.MinValue;
+            }
         }
 
         public Astronomy(Metno.astrodata astroRoot)
@@ -2428,6 +2486,24 @@ namespace SimpleWeather.WeatherData
                 this.moonrise = moonrise;
             if (DateTime.TryParse(astroData.moonset, out DateTime moonset))
                 this.moonset = moonset;
+
+            // If the sun won't set/rise, set time to the future
+            if (sunrise == null)
+            {
+                sunrise = DateTime.Now.Date.AddYears(1).AddTicks(-1);
+            }
+            if (sunset == null)
+            {
+                sunset = DateTime.Now.Date.AddYears(1).AddTicks(-1);
+            }
+            if (moonrise == null)
+            {
+                moonrise = DateTime.MinValue;
+            }
+            if (moonset == null)
+            {
+                moonset = DateTime.MinValue;
+            }
 
             switch (astroData.iconName)
             {
