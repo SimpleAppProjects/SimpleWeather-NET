@@ -1,4 +1,5 @@
-﻿using Microsoft.Toolkit.Uwp.Notifications;
+﻿using Microsoft.Toolkit.Uwp.Helpers;
+using Microsoft.Toolkit.Uwp.Notifications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,8 +18,8 @@ namespace SimpleWeather.UWP.Controls
 {
     public enum ToastDuration
     {
-        Short = 3500,
-        Long = 5000
+        Short = 2000,
+        Long = 3500
     }
 
     public static class Toast
@@ -113,7 +114,16 @@ namespace SimpleWeather.UWP.Controls
 
         public static async Task ShowToastAsync(String Message, ToastDuration Length)
         {
-            if (!App.IsInBackground)
+            Panel Root = null;
+            if (await DispatcherHelper.ExecuteOnUIThreadAsync(() => 
+            {
+                if (App.RootFrame.Content is Shell)
+                    Root = Shell.Instance.Content as Panel;
+                else
+                    Root = (App.RootFrame.Content as UserControl)?.Content as Panel;
+
+                return !App.IsInBackground && Root != null;
+            }))
             {
                 CoreDispatcher Dispatcher;
 
@@ -124,22 +134,7 @@ namespace SimpleWeather.UWP.Controls
 
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
-                    /* TODO: Remove all together??? */
-                    new Coding4Fun.Toolkit.Controls.ToastPrompt()
-                    {
-                        Message = Message,
-                        MillisecondsUntilHidden = (int)Length,
-                        Background = new SolidColorBrush(Colors.SlateGray),
-                        Foreground = new SolidColorBrush(Colors.White),
-                        IsHitTestVisible = false,
-                        Margin = new Thickness(0, 0, 0, 50),
-                        HorizontalContentAlignment = HorizontalAlignment.Center,
-                        VerticalContentAlignment = VerticalAlignment.Center,
-                        Stretch = Stretch.Uniform,
-                        VerticalAlignment = VerticalAlignment.Bottom,
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        Template = App.Current.Resources["ToastPromptStyle"] as ControlTemplate
-                    }.Show();
+                    Snackbar.Make(Root, Message, (SnackbarDuration)Length, SnackBarStackMode.Replace).Show();
                 });
             }
             else

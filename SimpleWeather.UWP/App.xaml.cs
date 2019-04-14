@@ -100,7 +100,7 @@ namespace SimpleWeather.UWP
                                     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                                     {
                                         // If we're already on WeatherNow navigate to Alert page
-                                        if (Shell.Instance.AppFrame.Content != null && Shell.Instance.AppFrame.SourcePageType.IsTypeOf(typeof(WeatherNow)))
+                                        if (Shell.Instance.AppFrame.Content != null && Shell.Instance.AppFrame.SourcePageType.Equals(typeof(WeatherNow)))
                                         {
                                             Shell.Instance.AppFrame.Navigate(typeof(WeatherAlertPage), new WeatherNowViewModel(weather));
                                         }

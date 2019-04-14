@@ -483,9 +483,6 @@
     </SDKReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Coding4Fun.Toolkit.Controls">
-      <Version>2.1.8</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.8</Version>
     </PackageReference>

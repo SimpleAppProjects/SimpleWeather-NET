@@ -14,34 +14,44 @@ namespace SimpleWeather.UWP.Controls
 {
     public enum SnackbarDuration
     {
+        VeryShort = 2000,
         Short = 3500,
         Long = 5000
+    }
+
+    public enum SnackBarStackMode
+    {
+        InFront = StackMode.StackInFront,
+        Replace = StackMode.Replace
     }
 
     public class Snackbar
     {
         private String Message;
         private int Duration;
-        private Grid RootGrid;
+        private Panel RootPanel;
         private InAppNotification InAppNotification;
         private Action ButtonAction;
         private String ButtonLabel;
+        private SnackBarStackMode StackMode;
 
-        public static Snackbar Make(Grid Grid, String Message, SnackbarDuration Length)
+        public static Snackbar Make(Panel Panel, String Message, SnackbarDuration Length = SnackbarDuration.Short, SnackBarStackMode StackMode = SnackBarStackMode.InFront)
         {
             Snackbar snack = new Snackbar()
             {
                 InAppNotification = new InAppNotification()
                 {
-                    Style = Application.Current.Resources["MSEdgeNotificationStyle"] as Style
+                    Style = Application.Current.Resources["MSEdgeNotificationStyle"] as Style,
+                    StackMode = (StackMode) StackMode,
+                    AnimationDuration = TimeSpan.Zero
                 },
-                RootGrid = Grid,
+                RootPanel = Panel,
                 Message = Message,
                 Duration = (int)Length
             };
             snack.InAppNotification.Closed += (sender, e) =>
             {
-                snack.RootGrid.Children.Remove(snack.InAppNotification);
+                snack.RootPanel.Children.Remove(snack.InAppNotification);
             };
 
             return snack;
@@ -55,7 +65,7 @@ namespace SimpleWeather.UWP.Controls
 
         public void Show()
         {
-            RootGrid.Children.Add(InAppNotification);
+            RootPanel.Children.Add(InAppNotification);
             Grid.SetRow(InAppNotification, 1);
 
             /* Addition: set snackbar width based on screen width */
