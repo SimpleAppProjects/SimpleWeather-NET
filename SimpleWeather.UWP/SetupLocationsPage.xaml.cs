@@ -359,7 +359,7 @@ namespace SimpleWeather.UWP
                     case GeolocationAccessStatus.Allowed:
                         try
                         {
-                            geoPos = await geolocal.GetGeopositionAsync();
+                            geoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10));
                         }
                         catch (Exception ex)
                         {
