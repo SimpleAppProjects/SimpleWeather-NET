@@ -236,6 +236,7 @@ namespace SimpleWeather.UWP
         {
             bool dataMoved = (e.Action == NotifyCollectionChangedAction.Remove) || (e.Action == NotifyCollectionChangedAction.Move);
             bool onlyHomeIsLeft = (LocationPanels.Count == 1);
+            bool limitReached = (LocationPanels.Count >= Settings.MAX_LOCATIONS);
 
             // Flag that data has changed
             if (EditMode && dataMoved)
@@ -249,7 +250,7 @@ namespace SimpleWeather.UWP
                 ToggleEditMode();
 
             // Disable EditMode if only single location
-            EditButton.Visibility = onlyHomeIsLeft ? Visibility.Collapsed : Visibility.Visible;
+            EditButton.Visibility = onlyHomeIsLeft || limitReached ? Visibility.Collapsed : Visibility.Visible;
         }
 
         private async Task LoadLocations()
