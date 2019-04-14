@@ -192,6 +192,15 @@ namespace SimpleWeather.Utils
             return await weatherDB.FindWithChildrenAsync<Weather>(key);
         }
 
+        public static async Task<Weather> GetWeatherDataByCoordinate(LocationData location)
+        {
+            await LoadIfNeeded();
+            List<Weather> weatherData = await weatherDB.GetAllWithChildrenAsync<Weather>(weather => 
+                    location.latitude.Equals(weather.location.latitude) && location.longitude.Equals(weather.location.longitude));
+
+            return weatherData.FirstOrDefault();
+        }
+
         public static async Task<List<WeatherAlert>> GetWeatherAlertData(string key)
         {
             await LoadIfNeeded();

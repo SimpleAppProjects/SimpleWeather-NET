@@ -197,8 +197,17 @@ namespace SimpleWeather.WeatherData
                 {
                     weather = await Settings.GetWeatherData(location.query);
 
-                    if (wm.SupportsAlerts)
+                    if (weather != null && wm.SupportsAlerts)
                         weather.weather_alerts = await Settings.GetWeatherAlertData(location.query);
+
+                    if (weather == null)
+                    {
+                        // If weather is still unavailable try manually searching for it
+                        weather = await Settings.GetWeatherDataByCoordinate(location);
+
+                        if (weather != null && wm.SupportsAlerts)
+                            weather.weather_alerts = await Settings.GetWeatherAlertData(weather.query);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -227,7 +236,7 @@ namespace SimpleWeather.WeatherData
             {
                 weather = await Settings.GetWeatherData(location.query);
 
-                if (wm.SupportsAlerts)
+                if (weather != null && wm.SupportsAlerts)
                     weather.weather_alerts = await Settings.GetWeatherAlertData(location.query);
             }
             catch (Exception ex)

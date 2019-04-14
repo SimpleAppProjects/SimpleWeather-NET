@@ -692,8 +692,8 @@ namespace SimpleWeather.WeatherData
         {
             // Use location name from location provider
             name = null;
-            latitude = root.city.coord.lat.ToString();
-            longitude = root.city.coord.lon.ToString();
+            latitude = root.city.coord.lat.ToString(CultureInfo.InvariantCulture);
+            longitude = root.city.coord.lon.ToString(CultureInfo.InvariantCulture);
             tz_offset = TimeSpan.Zero;
             tz_short = "UTC";
         }
@@ -702,8 +702,8 @@ namespace SimpleWeather.WeatherData
         {
             // API doesn't provide location name (at all)
             name = null;
-            latitude = foreRoot.product.time.First().location.latitude.ToString();
-            longitude = foreRoot.product.time.First().location.longitude.ToString();
+            latitude = foreRoot.product.time.First().location.latitude.ToString(CultureInfo.InvariantCulture);
+            longitude = foreRoot.product.time.First().location.longitude.ToString(CultureInfo.InvariantCulture);
             tz_offset = TimeSpan.Zero;
             tz_short = "UTC";
         }
@@ -712,8 +712,8 @@ namespace SimpleWeather.WeatherData
         {
             // Use location name from location provider
             name = null;
-            latitude = location.latitude.ToString();
-            longitude = location.longitude.ToString();
+            latitude = location.latitude.ToString(CultureInfo.InvariantCulture);
+            longitude = location.longitude.ToString(CultureInfo.InvariantCulture);
             tz_offset = TimeSpan.Zero;
             tz_short = "UTC";
         }

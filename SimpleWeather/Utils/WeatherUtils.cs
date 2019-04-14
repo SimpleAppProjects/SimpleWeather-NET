@@ -204,7 +204,8 @@ namespace SimpleWeather.Utils
 
             public override string ToString()
             {
-                return string.Format(CultureInfo.InvariantCulture, "{0},{1}", lat, _long);
+                return string.Format(CultureInfo.InvariantCulture, "{0},{1}",
+                    lat.ToString(CultureInfo.InvariantCulture), _long.ToString(CultureInfo.InvariantCulture));
             }
         }
 

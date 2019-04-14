@@ -5,6 +5,7 @@ using SimpleWeather.Controls;
 using SimpleWeather.Utils;
 using System.Collections.Generic;
 using Windows.UI;
+using System.Globalization;
 
 namespace SimpleWeather.WeatherData
 {
@@ -37,6 +38,8 @@ namespace SimpleWeather.WeatherData
             if (String.IsNullOrWhiteSpace(weather.location.name))
                 weather.location.name = location.name;
 
+            weather.location.latitude = location.latitude.ToString(CultureInfo.InvariantCulture);
+            weather.location.longitude = location.longitude.ToString(CultureInfo.InvariantCulture);
             weather.location.tz_short = location.tz_short;
             weather.location.tz_offset = location.tz_offset;
 
@@ -63,7 +66,7 @@ namespace SimpleWeather.WeatherData
         {
             var qview = await GetLocation(location.query);
 
-            if (qview != null)
+            if (qview != null && !String.IsNullOrWhiteSpace(qview.LocationQuery))
             {
                 location.name = qview.LocationName;
                 location.latitude = qview.LocationLat;

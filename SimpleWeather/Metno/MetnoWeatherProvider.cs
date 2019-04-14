@@ -19,6 +19,7 @@ using Windows.Web;
 using Windows.Web.Http;
 using Windows.Web.Http.Filters;
 using Windows.Web.Http.Headers;
+using System.Globalization;
 
 namespace SimpleWeather.Metno
 {
@@ -422,7 +423,7 @@ namespace SimpleWeather.Metno
         {
             var qview = await GetLocation(location.name);
 
-            if (qview != null)
+            if (qview != null && !String.IsNullOrWhiteSpace(qview.LocationQuery))
             {
                 location.name = qview.LocationName;
                 location.latitude = qview.LocationLat;
@@ -436,30 +437,12 @@ namespace SimpleWeather.Metno
 
         public override async Task<string> UpdateLocationQuery(Weather weather)
         {
-            string query = string.Empty;
-            var coord = new WeatherUtils.Coordinate(double.Parse(weather.location.latitude), double.Parse(weather.location.longitude));
-            var qview = await GetLocation(coord);
-
-            if (String.IsNullOrEmpty(qview.LocationQuery))
-                query = string.Format("lat={0}&lon={1}", coord.Latitude, coord.Longitude);
-            else
-                query = qview.LocationQuery;
-
-            return query;
+            return string.Format("lat={0}&lon={1}", weather.location.latitude, weather.location.longitude);
         }
 
         public override async Task<string> UpdateLocationQuery(LocationData location)
         {
-            string query = string.Empty;
-            var coord = new WeatherUtils.Coordinate(location.latitude, location.longitude);
-            var qview = await GetLocation(coord);
-
-            if (String.IsNullOrEmpty(qview.LocationQuery))
-                query = string.Format("lat={0}&lon={1}", coord.Latitude, coord.Longitude);
-            else
-                query = qview.LocationQuery;
-
-            return query;
+            return string.Format("lat={0}&lon={1}", location.latitude.ToString(CultureInfo.InvariantCulture), location.longitude.ToString(CultureInfo.InvariantCulture));
         }
 
         public override string GetWeatherIcon(string icon)

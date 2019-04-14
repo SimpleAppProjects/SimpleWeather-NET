@@ -437,7 +437,7 @@ namespace SimpleWeather.WeatherUnderground
         {
             var qview = await GetLocation(location.name);
 
-            if (qview != null)
+            if (qview != null && !String.IsNullOrWhiteSpace(qview.LocationQuery))
             {
                 location.name = qview.LocationName;
                 location.latitude = qview.LocationLat;
@@ -456,7 +456,7 @@ namespace SimpleWeather.WeatherUnderground
             var qview = await GetLocation(new WeatherUtils.Coordinate(coord));
 
             if (String.IsNullOrEmpty(qview.LocationQuery))
-                query = string.Format("/q/{0}", coord);
+                query = string.Format(CultureInfo.InvariantCulture, "/q/{0}", coord);
             else
                 query = qview.LocationQuery;
 

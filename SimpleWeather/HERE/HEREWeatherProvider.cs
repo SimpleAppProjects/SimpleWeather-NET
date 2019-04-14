@@ -124,7 +124,7 @@ namespace SimpleWeather.HERE
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
             string queryAPI = "https://reverse.geocoder.cit.api.here.com/6.2/reversegeocode.json";
-            string location_query = string.Format("{0},{1}", coord.Latitude, coord.Longitude);
+            string location_query = string.Format("{0},{1}", coord.Latitude.ToString(CultureInfo.InvariantCulture), coord.Longitude.ToString(CultureInfo.InvariantCulture));
             string query = "?prox={0},150&mode=retrieveAddresses&maxresults=1&additionaldata=Country2,true&gen=9&jsonattributes=1" +
                 "&locationattributes=adminInfo,timeZone,-mapView,-mapReference&language={1}&app_id={2}&app_code={3}";
 
@@ -648,11 +648,11 @@ namespace SimpleWeather.HERE
         // Fix format of query to pass to Geocoder API
         public override async Task UpdateLocationData(LocationData location)
         {
-            string location_query = string.Format("{0},{1}", location.latitude, location.longitude);
+            string location_query = string.Format("{0},{1}", location.latitude.ToString(CultureInfo.InvariantCulture), location.longitude.ToString(CultureInfo.InvariantCulture));
 
             var qview = await GetLocation(location_query);
 
-            if (qview != null)
+            if (qview != null && !String.IsNullOrWhiteSpace(qview.LocationQuery))
             {
                 location.name = qview.LocationName;
                 location.latitude = qview.LocationLat;
@@ -666,30 +666,12 @@ namespace SimpleWeather.HERE
 
         public override async Task<string> UpdateLocationQuery(Weather weather)
         {
-            string query = string.Empty;
-            string coord = string.Format("{0},{1}", weather.location.latitude, weather.location.longitude);
-            var qview = await GetLocation(new WeatherUtils.Coordinate(coord));
-
-            if (String.IsNullOrEmpty(qview.LocationQuery))
-                query = string.Format("latitude={0}&longitude={1}", weather.location.latitude, weather.location.longitude);
-            else
-                query = qview.LocationQuery;
-
-            return query;
+            return string.Format("latitude={0}&longitude={1}", weather.location.latitude, weather.location.longitude);
         }
 
         public override async Task<string> UpdateLocationQuery(LocationData location)
         {
-            string query = string.Empty;
-            string coord = string.Format("{0},{1}", location.latitude, location.longitude);
-            var qview = await GetLocation(new WeatherUtils.Coordinate(coord));
-
-            if (String.IsNullOrEmpty(qview.LocationQuery))
-                query = string.Format("latitude={0}&longitude={1}", location.latitude, location.longitude);
-            else
-                query = qview.LocationQuery;
-
-            return query;
+            return string.Format("latitude={0}&longitude={1}", location.latitude.ToString(CultureInfo.InvariantCulture), location.longitude.ToString(CultureInfo.InvariantCulture));
         }
 
         public override String LocaleToLangCode(String iso, String name)
