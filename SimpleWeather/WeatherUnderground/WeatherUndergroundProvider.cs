@@ -587,21 +587,16 @@ namespace SimpleWeather.WeatherUnderground
         {
             string WeatherIcon = string.Empty;
 
-            if (icon.Contains("nt_mostlycloudy") || icon.Contains("nt_partlysunny") || icon.Contains("nt_cloudy"))
+            if (icon.Contains("mostlycloudy") || icon.Contains("partlysunny") || icon.Contains("nt_cloudy"))
                 if (isNight)
                     WeatherIcon = WeatherIcons.NIGHT_ALT_CLOUDY;
                 else
                     WeatherIcon = WeatherIcons.DAY_CLOUDY;
-            else if (icon.Contains("nt_partlycloudy") || icon.Contains("nt_mostlysunny"))
+            else if (icon.Contains("partlycloudy") || icon.Contains("mostlysunny"))
                 if (isNight)
                     WeatherIcon = WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY;
                 else
                     WeatherIcon = WeatherIcons.DAY_SUNNY_OVERCAST;
-            else if (icon.Contains("nt_clear") || icon.Contains("nt_sunny") || icon.Contains("nt_unknown"))
-                if (isNight)
-                    WeatherIcon = WeatherIcons.NIGHT_CLEAR;
-                else
-                    WeatherIcon = WeatherIcons.DAY_SUNNY;
             else if (icon.Contains("chancerain"))
                 WeatherIcon = WeatherIcons.RAIN;
             else if (icon.Contains("clear") || icon.Contains("sunny"))
