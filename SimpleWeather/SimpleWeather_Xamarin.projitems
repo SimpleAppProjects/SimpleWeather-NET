@@ -9,6 +9,8 @@
     <Import_RootNamespace>SimpleWeather</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Bing\AutoCompleteQuery.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bing\BingMapsLocationProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ComboBoxItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\DetailItemViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ProviderEntry.cs" />
@@ -22,7 +24,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)HERE\Alerts.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HERE\AutoCompleteQuery.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HERE\GeopositionQuery.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)HERE\HERELocationProvider .cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HERE\HERELocationProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Keys\BingMapsKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Keys\HEREWeatherKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HERE\HEREWeatherProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HERE\Weather.cs" />
@@ -70,8 +73,5 @@
     <Compile Include="$(MSBuildThisFileDirectory)YahooWeather\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Keys\YahooKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)YahooWeather\YahooWeatherProvider.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Keys\" />
   </ItemGroup>
 </Project>

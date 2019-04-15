@@ -233,6 +233,12 @@ namespace SimpleWeather.UWP
             {
                 query_vm = await new HERE.HERELocationProvider().GetLocationFromLocID(query_vm.LocationQuery);
             }
+            else if (WeatherAPI.MetNo.Equals(Settings.API)
+                    && query_vm.LocationLat == -1 && query_vm.LocationLong == -1
+                    && query_vm.LocationTZ_Long == null)
+            {
+                query_vm = await new Bing.BingMapsLocationProvider().GetLocationFromAddress(query_vm.LocationQuery);
+            }
 
             var location = new LocationData(query_vm);
             if (!location.IsValid())

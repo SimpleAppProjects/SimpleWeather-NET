@@ -7,6 +7,9 @@ using SimpleWeather.UWP;
 using SimpleWeather.WeatherData;
 using SimpleWeather.HERE;
 using System.Globalization;
+using SimpleWeather.Bing;
+using System.Text;
+using Windows.Services.Maps;
 
 namespace SimpleWeather.Controls
 {
@@ -167,6 +170,92 @@ namespace SimpleWeather.Controls
             LocationLong = location.location.displayPosition.longitude;
 
             LocationTZ_Long = location.location.adminInfo.timeZone.id;
+        }
+
+        public LocationQueryViewModel(Bing.Address address)
+        {
+            SetLocation(address);
+        }
+
+        public void SetLocation(Bing.Address address)
+        {
+            string town, region;
+
+            // Try to get district name or fallback to city name
+            if (!String.IsNullOrEmpty(address.name))
+                town = address.name;
+            else
+                town = address.locality;
+
+            // Try to get district name or fallback to city name
+            if (!String.IsNullOrEmpty(address.adminDistrict2))
+                region = address.adminDistrict2;
+            else
+                region = address.adminDistrict;
+
+            if (!String.IsNullOrEmpty(address.adminDistrict)
+                    && !(address.adminDistrict.Equals(region) || address.adminDistrict.Equals(town)))
+                LocationName = string.Format("{0}, {1}, {2}", town, region, address.adminDistrict);
+            else
+                LocationName = string.Format("{0}, {1}", town, region);
+
+            LocationCountry = address.countryRegionIso2;
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append(address.locality).Append(", ");
+            if (!String.IsNullOrWhiteSpace(address.adminDistrict2))
+                sb.Append(address.adminDistrict2).Append(", ");
+            sb.Append(address.adminDistrict).Append(", ");
+            sb.Append(address.countryRegion);
+
+            LocationQuery = sb.ToString();
+
+            LocationLat = -1;
+            LocationLong = -1;
+
+            LocationTZ_Long = null;
+        }
+
+        public LocationQueryViewModel(MapLocation result)
+        {
+            SetLocation(result);
+        }
+
+        private void SetLocation(MapLocation result)
+        {
+            string town, region;
+
+            // Try to get district name or fallback to city name
+            if (!String.IsNullOrEmpty(result.Address.Neighborhood))
+                town = result.Address.Neighborhood;
+            else
+                town = result.Address.Town;
+
+            // Try to get district name or fallback to city name
+            if (!String.IsNullOrEmpty(result.Address.District))
+                region = result.Address.District;
+            else
+                region = result.Address.Country;
+
+            if (!String.IsNullOrEmpty(region) && town.Equals(region))
+            {
+                region = result.Address.Country;
+            }
+
+            if (!String.IsNullOrEmpty(result.Address.Region) 
+                    && !(result.Address.Region.Equals(region) || result.Address.Region.Equals(town)))
+                LocationName = string.Format("{0}, {1}, {2}", town, result.Address.Region, region);
+            else
+                LocationName = string.Format("{0}, {1}", town, region);
+
+            LocationCountry = result.Address.CountryCode;
+
+            LocationQuery = String.Format("lat={0}&lon={1}", result.Point.Position.Latitude.ToString(CultureInfo.InvariantCulture), result.Point.Position.Longitude.ToString(CultureInfo.InvariantCulture));
+
+            LocationLat = result.Point.Position.Latitude;
+            LocationLong = result.Point.Position.Longitude;
+
+            LocationTZ_Long = null;
         }
 
         public override bool Equals(object obj)

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Windows.UI;
 using System.Globalization;
 using SimpleWeather.Location;
+using GeoTimeZone;
 
 namespace SimpleWeather.WeatherData
 {
@@ -49,6 +50,26 @@ namespace SimpleWeather.WeatherData
             if (SupportsAlerts && NeedsExternalAlertData)
                 weather.weather_alerts = await GetAlerts(location);
 
+            if (String.IsNullOrWhiteSpace(location.tz_long))
+            {
+                if (!String.IsNullOrWhiteSpace(weather.location.tz_long))
+                {
+                    location.tz_long = weather.location.tz_long;
+                }
+                else if (location.longitude != 0 && location.latitude != 0)
+                {
+                    String tzId = TimeZoneLookup.GetTimeZone(location.latitude, location.longitude).Result;
+                    if (!String.IsNullOrWhiteSpace(tzId))
+                        location.tz_long = tzId;
+                }
+
+                // Update DB here or somewhere else
+                await Settings.UpdateLocation(location);
+            }
+
+            if (String.IsNullOrWhiteSpace(weather.location.tz_long))
+                weather.location.tz_long = location.tz_long;
+
             if (String.IsNullOrWhiteSpace(weather.location.name))
                 weather.location.name = location.name;
 
@@ -56,9 +77,6 @@ namespace SimpleWeather.WeatherData
             weather.location.longitude = location.longitude.ToString(CultureInfo.InvariantCulture);
             weather.location.tz_short = location.tz_short;
             weather.location.tz_offset = location.tz_offset;
-
-            if (String.IsNullOrWhiteSpace(weather.location.tz_long))
-                weather.location.tz_long = location.tz_long;
 
             return weather;
         }
