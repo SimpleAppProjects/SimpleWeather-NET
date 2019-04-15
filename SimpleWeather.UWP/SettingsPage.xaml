@@ -152,6 +152,12 @@
                                     <Image Source="Assets/Providers/metno.png" Height="50" HorizontalAlignment="Left" />
                                 </HyperlinkButton>
                             </StackPanel>
+                            <StackPanel Padding="10">
+                                <TextBlock Text="Bing Maps" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                                <HyperlinkButton NavigateUri="https://www.bing.com/maps" Padding="0,10">
+                                    <Image Source="/Assets/Providers/bingmaps.png" Height="50" HorizontalAlignment="Left" />
+                                </HyperlinkButton>
+                            </StackPanel>
                         </StackPanel>
                     </Grid>
                 </ScrollViewer>

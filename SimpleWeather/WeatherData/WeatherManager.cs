@@ -24,6 +24,7 @@ namespace SimpleWeather.WeatherData
         public const string OpenWeatherMap = "OpenWeather";
         public const string MetNo = "Metno";
         public const string Here = "Here";
+        public const string BingMaps = "Bing";
 
         public static List<ProviderEntry> APIs = new List<ProviderEntry>()
         {
