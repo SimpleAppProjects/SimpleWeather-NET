@@ -153,6 +153,31 @@ namespace SimpleWeather.Utils
                 }
                 // v1.3.8+ - Added onboarding wizard
                 OnBoardComplete = true;
+                // v1.3.8+
+                // The current WeatherUnderground API is no longer in service
+                // Disable this provider and migrate to HERE
+                if (WeatherAPI.WeatherUnderground.Equals(API))
+                {
+                    // Set default API to HERE
+                    API = WeatherAPI.Here;
+                    var wm = WeatherManager.GetInstance();
+                    wm.UpdateAPI();
+
+                    if (String.IsNullOrWhiteSpace(wm.GetAPIKey()))
+                    {
+                        // If (internal) key doesn't exist, fallback to Yahoo
+                        API = WeatherAPI.Yahoo;
+                        wm.UpdateAPI();
+                        UsePersonalKey = true;
+                        KeyVerified = false;
+                    }
+                    else
+                    {
+                        // If key exists, go ahead
+                        UsePersonalKey = false;
+                        KeyVerified = true;
+                    }
+                }
             }
             SetVersionCode(CurrentVersionCode);
         }

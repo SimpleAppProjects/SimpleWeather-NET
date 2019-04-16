@@ -27,7 +27,7 @@ namespace SimpleWeather.Metno
     {
         public MetnoWeatherProvider() : base()
         {
-            locProvider = new OpenWeather.OWMWULocationProvider();
+            locProvider = new Bing.BingMapsLocationProvider();
         }
 
         public override string WeatherAPI => WeatherData.WeatherAPI.MetNo;

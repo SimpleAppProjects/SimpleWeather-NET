@@ -32,8 +32,6 @@ namespace SimpleWeather.WeatherData
                 "https://www.here.com/en", "https://developer.here.com/?create=Freemium-Basic&keepState=true&step=account"),
             new ProviderEntry("Yahoo Weather", Yahoo,
                 "https://www.yahoo.com/weather?ilc=401", "https://www.yahoo.com/weather?ilc=401"),
-            new ProviderEntry("WeatherUnderground", WeatherUnderground,
-                "https://www.wunderground.com", "https://www.wunderground.com/signup?mode=api_signup"),
             new ProviderEntry("OpenWeatherMap", OpenWeatherMap,
                 "http://www.openweathermap.org", "https://home.openweathermap.org/users/sign_up"),
             new ProviderEntry("MET Norway", MetNo,
@@ -44,8 +42,6 @@ namespace SimpleWeather.WeatherData
         {
                 new ProviderEntry("HERE Maps", Here,
                         "https://www.here.com/en", "https://developer.here.com/"),
-                new ProviderEntry("WeatherUnderground", WeatherUnderground,
-                        "https://www.wunderground.com", "https://www.wunderground.com"),
                 new ProviderEntry("Bing Maps", BingMaps,
                         "https://bing.com/maps", "https://bing.com/maps")
         };
@@ -94,9 +90,6 @@ namespace SimpleWeather.WeatherData
             {
                 case SimpleWeather.WeatherData.WeatherAPI.Yahoo:
                     providerImpl = new YahooWeatherProvider();
-                    break;
-                case SimpleWeather.WeatherData.WeatherAPI.WeatherUnderground:
-                    providerImpl = new WeatherUndergroundProvider();
                     break;
                 case SimpleWeather.WeatherData.WeatherAPI.Here:
                     providerImpl = new HEREWeatherProvider();

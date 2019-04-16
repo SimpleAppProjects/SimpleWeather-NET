@@ -25,7 +25,7 @@ namespace SimpleWeather.WeatherYahoo
     {
         public YahooWeatherProvider() : base()
         {
-            locProvider = new OpenWeather.OWMWULocationProvider();
+            locProvider = new Bing.BingMapsLocationProvider();
         }
 
         public override string WeatherAPI => WeatherData.WeatherAPI.Yahoo;
