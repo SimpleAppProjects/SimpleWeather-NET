@@ -151,6 +151,8 @@ namespace SimpleWeather.Utils
                     await DBUtils.SetLocationData(locationDB, WeatherAPI.Yahoo);
                     SaveLastGPSLocData(lastGPSLocData);
                 }
+                // v1.3.8+ - Added onboarding wizard
+                OnBoardComplete = true;
             }
             SetVersionCode(CurrentVersionCode);
         }
