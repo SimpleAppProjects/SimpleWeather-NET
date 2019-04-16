@@ -7,8 +7,7 @@
     xmlns:localcontrols="using:SimpleWeather.UWP.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="LightGray">
+    mc:Ignorable="d">
 
     <Page.Transitions>
         <TransitionCollection>
@@ -16,7 +15,8 @@
         </TransitionCollection>
     </Page.Transitions>
 
-    <Grid VerticalAlignment="Top">
-        <localcontrols:ProgressAutoSuggestBox x:Name="Location" TextChanged="Location_TextChanged" SuggestionChosen="Location_SuggestionChosen" QuerySubmitted="Location_QuerySubmitted" />
+    <Grid Background="LightGray">
+        <localcontrols:ProgressAutoSuggestBox x:Name="Location" TextChanged="Location_TextChanged" SuggestionChosen="Location_SuggestionChosen" QuerySubmitted="Location_QuerySubmitted"
+                                              VerticalAlignment="Top"/>
     </Grid>
 </Page>

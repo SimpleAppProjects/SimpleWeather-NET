@@ -10,6 +10,7 @@ namespace SimpleWeather.Location
 {
     public partial interface ILocationProviderImpl
     {
+        string LocationAPI { get; }
         bool KeyRequired { get; }
         bool SupportsWeatherLocale { get; }
 

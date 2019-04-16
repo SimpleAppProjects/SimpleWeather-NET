@@ -3,6 +3,7 @@ using SimpleWeather.Keys;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls;
+using SimpleWeather.WeatherData;
 using SimpleWeather.WeatherUnderground;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace SimpleWeather.OpenWeather
 {
     public class OWMWULocationProvider : LocationProviderImpl
     {
+        public override string LocationAPI => WeatherAPI.WeatherUnderground;
         public override bool SupportsWeatherLocale => false;
         public override bool KeyRequired => false;
 

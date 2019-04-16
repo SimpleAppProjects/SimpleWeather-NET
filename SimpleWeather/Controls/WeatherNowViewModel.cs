@@ -3,12 +3,15 @@ using SimpleWeather.WeatherData;
 using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Linq;
 using SimpleWeather.UWP;
 using System.ComponentModel;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Windows.System.UserProfile;
+using System.Collections.Generic;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace SimpleWeather.Controls
 {
@@ -47,6 +50,9 @@ namespace SimpleWeather.Controls
             typeof(WeatherNowViewModel), new PropertyMetadata(null));
         public static readonly DependencyProperty BackgroundProperty =
             DependencyProperty.Register("Background", typeof(ImageBrush),
+            typeof(WeatherNowViewModel), new PropertyMetadata(null));
+        public static readonly DependencyProperty ImageDataProperty =
+            DependencyProperty.Register("ImageDataProperty", typeof(ImageDataViewModel),
             typeof(WeatherNowViewModel), new PropertyMetadata(null));
         public static readonly DependencyProperty PendingBackgroundColorProperty =
             DependencyProperty.Register("PendingBackgroundColor", typeof(Color),
@@ -130,6 +136,11 @@ namespace SimpleWeather.Controls
             get { return (ImageBrush)GetValue(BackgroundProperty); }
             set { SetValue(BackgroundProperty, value); OnPropertyChanged("Background"); }
         }
+        public ImageDataViewModel ImageData
+        {
+            get { return (ImageDataViewModel)GetValue(ImageDataProperty); }
+            set { SetValue(ImageDataProperty, value); OnPropertyChanged("ImageData"); }
+        }
         public Color PendingBackgroundColor
         {
             get { return (Color)GetValue(PendingBackgroundColorProperty); }
@@ -198,6 +209,56 @@ namespace SimpleWeather.Controls
                 // Update backgrounds
                 wm.SetBackground(Background, weather);
                 PendingBackgroundColor = wm.GetWeatherBackgroundColor(weather);
+
+                if (Background.ImageSource is BitmapImage bmp)
+                {
+                    String src = bmp.UriSource.ToString();
+
+                    if (src.Contains("DaySky"))
+                    {
+                        ImageData = bgAttribution["DaySky"];
+                    }
+                    else if (src.Contains("FoggySky"))
+                    {
+                        ImageData = bgAttribution["FoggySky"];
+                    }
+                    else if (src.Contains("NightSky"))
+                    {
+                        ImageData = bgAttribution["NightSky"];
+                    }
+                    else if (src.Contains("PartlyCloudy-Day"))
+                    {
+                        ImageData = bgAttribution["PartlyCloudy-Day"];
+                    }
+                    else if (src.Contains("RainyDay"))
+                    {
+                        ImageData = bgAttribution["RainyDay"];
+                    }
+                    else if (src.Contains("RainyNight"))
+                    {
+                        ImageData = bgAttribution["RainyNight"];
+                    }
+                    else if (src.Contains("Snow-Windy"))
+                    {
+                        ImageData = bgAttribution["Snow-Windy"];
+                    }
+                    else if (src.Contains("Snow"))
+                    {
+                        ImageData = bgAttribution["Snow"];
+                    }
+                    else if (src.Contains("StormySky"))
+                    {
+                        ImageData = bgAttribution["StormySky"];
+                    }
+                    else if (src.Contains("Thunderstorm-Day"))
+                    {
+                        ImageData = bgAttribution["Thunderstorm-Day"];
+                    }
+                    else if (src.Contains("Thunderstorm-Night"))
+                    {
+                        ImageData = bgAttribution["Thunderstorm-Night"];
+                    }
+                }
 
                 // Location
                 Location = weather.location.name;
@@ -338,21 +399,125 @@ namespace SimpleWeather.Controls
 
                 creditPrefix = App.ResLoader.GetString("Credit_Prefix");
 
-                if (weather.source == WeatherAPI.WeatherUnderground)
-                    WeatherCredit = string.Format("{0} WeatherUnderground", creditPrefix);
-                else if (weather.source == WeatherAPI.Yahoo)
-                    WeatherCredit = string.Format("{0} Yahoo!", creditPrefix);
-                else if (weather.source == WeatherAPI.OpenWeatherMap)
-                    WeatherCredit = string.Format("{0} OpenWeatherMap", creditPrefix);
-                else if (weather.source == WeatherAPI.MetNo)
-                    WeatherCredit = string.Format("{0} MET Norway", creditPrefix);
-                else if (weather.source == WeatherAPI.Here)
-                    WeatherCredit = string.Format("{0} HERE Weather", creditPrefix);
+                WeatherCredit = String.Format("{0} {1}",
+                    creditPrefix, WeatherAPI.APIs.First(WApi => WeatherSource.Equals(WApi.Value)));
 
                 // Language
                 WeatherLocale = weather.locale;
             }
         }
+
+        public class ImageDataViewModel
+        {
+            public string ArtistName { get; set; }
+            public string ArtistLink { get; set; }
+            public string SiteName { get; set; }
+            public string SiteLink { get; set; }
+        }
+
+        private static readonly ReadOnlyDictionary<String, ImageDataViewModel> bgAttribution =
+            new ReadOnlyDictionary<string, ImageDataViewModel>(new Dictionary<String, ImageDataViewModel>()
+            {
+                {
+                    "DaySky", new ImageDataViewModel()
+                    {
+                        ArtistLink = "https://www.pexels.com/@amychandra?utm_content=attributionCopyText&amp;utm_medium=referral&amp;utm_source=pexels",
+                        ArtistName = "Amy Chandra",
+                        SiteLink = "https://www.pexels.com/photo/boat-on-ocean-789152/?utm_content=attributionCopyText&amp;utm_medium=referral&amp;utm_source=pexels",
+                        SiteName = "Pexels"
+                    }
+                },
+                {
+                    "FoggySky", new ImageDataViewModel()
+                    {
+                        ArtistLink = "https://unsplash.com/photos/fjY26eEE78s?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText",
+                        ArtistName = "Niklas Herrmann",
+                        SiteLink = "https://unsplash.com/photos/fjY26eEE78s/?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText",
+                        SiteName = "Unsplash"
+                    }
+                },
+                {
+                    "NightSky", new ImageDataViewModel()
+                    {
+                        ArtistLink = "https://www.pexels.com/@apasaric?utm_content=attributionCopyText&amp;utm_medium=referral&amp;utm_source=pexels",
+                        ArtistName = "Aleksandar Pasaric",
+                        SiteLink = "https://www.pexels.com/photo/dark-starry-sky-1694000/?utm_content=attributionCopyText&amp;utm_medium=referral&amp;utm_source=pexels",
+                        SiteName = "Pexels"
+                    }
+                },
+                {
+                    "PartlyCloudy-Day", new ImageDataViewModel()
+                    {
+                        ArtistLink = "https://www.pexels.com/@grizzlybear?utm_content=attributionCopyText&amp;utm_medium=referral&amp;utm_source=pexels",
+                        ArtistName = "Jonathan Petersson",
+                        SiteLink = "https://www.pexels.com/photo/air-atmosphere-blue-bright-436383/?utm_content=attributionCopyText&amp;utm_medium=referral&amp;utm_source=pexels",
+                        SiteName = "Pexels"
+                    }
+                },
+                {
+                    "RainyDay", new ImageDataViewModel()
+                    {
+                        ArtistLink = "https://pixabay.com/users/Olichel-529835/",
+                        ArtistName = "Olichel",
+                        SiteLink = "https://pixabay.com/images/id-2179933/",
+                        SiteName = "Pixabay"
+                    }
+                },
+                {
+                    "RainyNight", new ImageDataViewModel()
+                    {
+                        ArtistLink = "https://unsplash.com/@walterrandlehoff?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText",
+                        ArtistName = "Walter Randlehoff",
+                        SiteLink = "https://unsplash.com/photos/jg486JWaYLc/?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText",
+                        SiteName = "Unsplash"
+                    }
+                },
+                {
+                    "Snow", new ImageDataViewModel()
+                    {
+                        ArtistLink = "https://www.pexels.com/@deathless?utm_content=attributionCopyText&amp;utm_medium=referral&amp;utm_source=pexels",
+                        ArtistName = "Mircea Iancu",
+                        SiteLink = "https://www.pexels.com/photo/snow-flakes-948857/?utm_content=attributionCopyText&amp;utm_medium=referral&amp;utm_source=pexels",
+                        SiteName = "Pexels"
+                    }
+                },
+                {
+                    "Snow-Windy", new ImageDataViewModel()
+                    {
+                        ArtistLink = "https://unsplash.com/@ceo77?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText",
+                        ArtistName = "Christian SPULLER",
+                        SiteLink = "https://unsplash.com/photos/Oaec-W0b2ss/?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText",
+                        SiteName = "Unsplash"
+                    }
+                },
+                {
+                    "StormySky", new ImageDataViewModel()
+                    {
+                        ArtistLink = "https://unsplash.com/@anandu?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText",
+                        ArtistName = "Anandu Vinod",
+                        SiteLink = "https://unsplash.com/photos/pbxwxwfI0B4/?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText",
+                        SiteName = "Unsplash"
+                    }
+                },
+                {
+                    "Thunderstorm-Day", new ImageDataViewModel()
+                    {
+                        ArtistLink = "https://www.pexels.com/@eberhardgross?utm_content=attributionCopyText&amp;utm_medium=referral&amp;utm_source=pexels",
+                        ArtistName = "eberhard grossgasteiger",
+                        SiteLink = "https://www.pexels.com/photo/photography-of-dark-clouds-1074428/?utm_content=attributionCopyText&amp;utm_medium=referral&amp;utm_source=pexels",
+                        SiteName = "Pexels"
+                    }
+                },
+                {
+                    "Thunderstorm-Night", new ImageDataViewModel()
+                    {
+                        ArtistLink = "https://unsplash.com/@aliarifsoydas?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText",
+                        ArtistName = "Ali Arif Soydaş",
+                        SiteLink = "https://unsplash.com/photos/wwzLVOvzy6w/?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText",
+                        SiteName = "Unsplash"
+                    }
+                },
+            });
 
         private String GetPressureStateIcon(string state)
         {

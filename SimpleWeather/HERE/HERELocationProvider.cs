@@ -3,6 +3,7 @@ using SimpleWeather.Keys;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls;
+using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -19,6 +20,8 @@ namespace SimpleWeather.HERE
 {
     public class HERELocationProvider : LocationProviderImpl
     {
+        public override string LocationAPI => WeatherAPI.Here;
+
         public override bool KeyRequired => true;
 
         public override bool SupportsWeatherLocale => true;

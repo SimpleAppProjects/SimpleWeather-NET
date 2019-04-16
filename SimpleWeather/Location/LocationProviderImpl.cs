@@ -12,6 +12,7 @@ namespace SimpleWeather.Location
     public abstract partial class LocationProviderImpl : ILocationProviderImpl
     {
         // Variables
+        public abstract string LocationAPI { get; }
         public abstract bool KeyRequired { get; }
         public abstract bool SupportsWeatherLocale { get; }
 

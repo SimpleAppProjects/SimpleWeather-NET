@@ -39,6 +39,16 @@ namespace SimpleWeather.WeatherData
             new ProviderEntry("MET Norway", MetNo,
                 "https://www.met.no/en", "https://www.met.no/en"),
         };
+
+        public static List<ProviderEntry> LocationAPIs = new List<ProviderEntry>()
+        {
+                new ProviderEntry("HERE Maps", Here,
+                        "https://www.here.com/en", "https://developer.here.com/"),
+                new ProviderEntry("WeatherUnderground", WeatherUnderground,
+                        "https://www.wunderground.com", "https://www.wunderground.com"),
+                new ProviderEntry("Bing Maps", BingMaps,
+                        "https://bing.com/maps", "https://bing.com/maps")
+        };
     }
 
     // Wrapper class for supported Weather Providers

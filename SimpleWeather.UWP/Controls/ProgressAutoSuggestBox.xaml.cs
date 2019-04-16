@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimpleWeather.WeatherData;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -52,6 +53,13 @@ namespace SimpleWeather.UWP.Controls
         public ProgressAutoSuggestBox()
         {
             this.InitializeComponent();
+
+            var wm = WeatherManager.GetInstance();
+            var LocationAPI = wm.LocationProvider.LocationAPI;
+            var creditPrefix = App.ResLoader.GetString("Credit_Prefix");
+
+            SourceFooter.Text = String.Format("{0} {1}",
+                creditPrefix, WeatherAPI.LocationAPIs.First(LApi => LocationAPI.Equals(LApi.Value)));
         }
     }
 }

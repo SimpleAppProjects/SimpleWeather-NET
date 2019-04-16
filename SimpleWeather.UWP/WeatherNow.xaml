@@ -507,6 +507,12 @@
                         <TextBlock Name="CurTemp" Text="{x:Bind WeatherView.CurTemp, FallbackValue='70&#xF045;', Mode=OneWay}"
                                    FontSize="24" Foreground="White" Style="{StaticResource WeatherIcon}" />
                     </toolkitControls:DropShadowPanel>
+                    <toolkitControls:DropShadowPanel BlurRadius="2.0" ShadowOpacity="0.7" VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Row="5"
+                                                     Visibility="{x:Bind WeatherView.ImageData, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}">
+                        <TextBlock Padding="5">
+                            <Span xml:space="preserve"><Run Text="Photo by "/><Hyperlink NavigateUri="{x:Bind WeatherView.ImageData.ArtistLink, Mode=OneWay}"><Run Text="{x:Bind WeatherView.ImageData.ArtistName, Mode=OneWay}"/></Hyperlink><Run Text=" on "/><Hyperlink NavigateUri="{x:Bind WeatherView.ImageData.SiteLink, Mode=OneWay}"><Run Text="{x:Bind WeatherView.ImageData.SiteName, Mode=OneWay}"/></Hyperlink></Span>
+                        </TextBlock>
+                    </toolkitControls:DropShadowPanel>
                 </Grid>
                 <StackPanel>
                     <Grid Name="ForecastHeader" Padding="50,0,0,0">
