@@ -139,7 +139,7 @@
     <value>General</value>
   </data>
   <data name="KeyEntry.PlaceholderText" xml:space="preserve">
-    <value>API Key</value>
+    <value>Provider Key</value>
   </data>
   <data name="Label_AddLocation.Text" xml:space="preserve">
     <value>Add Location</value>
@@ -223,7 +223,7 @@
     <value>Add a location to start</value>
   </data>
   <data name="Message_EnterAPIKey.Text" xml:space="preserve">
-    <value>Please enter an API key</value>
+    <value>Please enter a Provider Key</value>
   </data>
   <data name="Msg_LocDeniedSettings" xml:space="preserve">
     <value>Access to location was denied. Please enable in Settings.</value>
@@ -250,7 +250,7 @@
     <value>Weather Providers</value>
   </data>
   <data name="WError_InvalidKey" xml:space="preserve">
-    <value>Invalid API Key</value>
+    <value>Invalid Provider Key</value>
   </data>
   <data name="WError_NetworkError" xml:space="preserve">
     <value>Network Connection Error!!</value>
@@ -268,10 +268,10 @@
     <value>No results found</value>
   </data>
   <data name="KeyEntry.Text" xml:space="preserve">
-    <value>API Key</value>
+    <value>Provider Key</value>
   </data>
   <data name="Msg_EnterAPIKey" xml:space="preserve">
-    <value>Please enter an API key</value>
+    <value>Please enter a Provider Key</value>
   </data>
   <data name="Action_Retry" xml:space="preserve">
     <value>Retry</value>
@@ -292,7 +292,7 @@
     <value>Update Frequency</value>
   </data>
   <data name="KeyBox.Text" xml:space="preserve">
-    <value>API Key</value>
+    <value>Provider Key</value>
   </data>
   <data name="Pref_Refresh3Hrs.Text" xml:space="preserve">
     <value>3 hours</value>
@@ -358,7 +358,7 @@
     <value>Unpin from Start</value>
   </data>
   <data name="RegisterKeyBox.Content" xml:space="preserve">
-    <value>Register for API Key here</value>
+    <value>Register for Provider Key here</value>
   </data>
   <data name="WError_Unknown" xml:space="preserve">
     <value>Unknown error occurred!!</value>
