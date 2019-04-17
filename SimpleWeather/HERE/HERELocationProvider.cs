@@ -35,7 +35,11 @@ namespace SimpleWeather.HERE
 
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
+#if DEBUG
             string queryAPI = "https://autocomplete.geocoder.cit.api.here.com/6.2/suggest.json";
+#else
+            string queryAPI = "https://autocomplete.geocoder.api.here.com/6.2/suggest.json";
+#endif
             string query = "?query={0}&app_id={1}&app_code={2}&language={3}&maxresults=10";
 
             string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
@@ -121,7 +125,11 @@ namespace SimpleWeather.HERE
 
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
+#if DEBUG
             string queryAPI = "https://reverse.geocoder.cit.api.here.com/6.2/reversegeocode.json";
+#else
+            string queryAPI = "https://reverse.geocoder.api.here.com/6.2/reversegeocode.json";
+#endif
             string location_query = string.Format("{0},{1}", coord.Latitude.ToString(CultureInfo.InvariantCulture), coord.Longitude.ToString(CultureInfo.InvariantCulture));
             string query = "?prox={0},150&mode=retrieveAddresses&maxresults=1&additionaldata=Country2,true&gen=9&jsonattributes=1" +
                 "&locationattributes=adminInfo,timeZone,-mapView,-mapReference&language={1}&app_id={2}&app_code={3}";
@@ -199,7 +207,11 @@ namespace SimpleWeather.HERE
 
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
+#if DEBUG
             string queryAPI = "https://reverse.geocoder.cit.api.here.com/6.2/reversegeocode.json";
+#else
+            string queryAPI = "https://reverse.geocoder.api.here.com/6.2/reversegeocode.json";
+#endif
             string query = "?prox={0},150&mode=retrieveAddresses&maxresults=1&additionaldata=Country2,true&gen=9&jsonattributes=1" +
                 "&locationattributes=adminInfo,timeZone,-mapView,-mapReference&language={1}&app_id={2}&app_code={3}";
 
@@ -275,7 +287,11 @@ namespace SimpleWeather.HERE
 
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
+#if DEBUG
             string queryAPI = "https://geocoder.cit.api.here.com/6.2/geocode.json";
+#else
+            string queryAPI = "https://geocoder.api.here.com/6.2/geocode.json";
+#endif
             string query = "?locationid={0}&mode=retrieveAddresses&maxresults=1&additionaldata=Country2,true&gen=9&jsonattributes=1" +
                 "&locationattributes=adminInfo,timeZone,-mapView,-mapReference&language={1}&app_id={2}&app_code={3}";
 

@@ -120,7 +120,11 @@ namespace SimpleWeather.HERE
             var culture = new CultureInfo(userlang);
 
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
+#if DEBUG
             queryAPI = "https://weather.cit.api.here.com/weather/1.0/report.json?product=alerts&product=forecast_7days_simple" +
+#else
+            queryAPI = "https://weather.api.here.com/weather/1.0/report.json?product=alerts&product=forecast_7days_simple" +
+#endif
                 "&product=forecast_hourly&product=forecast_astronomy&product=observation&oneobservation=true&{0}" +
                 "&language={1}&metric=false&app_id={2}&app_code={3}";
 
@@ -279,7 +283,11 @@ namespace SimpleWeather.HERE
 
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
+#if DEBUG
             queryAPI = "https://weather.cit.api.here.com/weather/1.0/report.json?product=alerts&{0}" +
+#else
+            queryAPI = "https://weather.api.here.com/weather/1.0/report.json?product=alerts&{0}" +
+#endif
                 "&language={1}&metric=false&app_id={2}&app_code={3}";
 
             string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
