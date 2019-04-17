@@ -9,6 +9,7 @@ using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using Windows.System.UserProfile;
 using System.Globalization;
+using SimpleWeather.Location;
 
 namespace SimpleWeather.UWP.Helpers
 {

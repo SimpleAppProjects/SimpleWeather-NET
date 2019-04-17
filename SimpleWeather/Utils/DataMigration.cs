@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SimpleWeather.Location;
 using SimpleWeather.WeatherData;
 using SQLite;
 using SQLiteNetExtensionsAsync.Extensions;
@@ -13,95 +14,90 @@ using Windows.Storage;
 
 namespace SimpleWeather.Utils
 {
-    public partial class DBUtils
+    internal partial class DataMigrations
     {
-        public static async Task MigrateDataJsonToDB(SQLiteAsyncConnection locationDB, SQLiteAsyncConnection weatherDB)
+        internal static async Task PerformDBMigrations(SQLiteAsyncConnection weatherDB, SQLiteAsyncConnection locationDB)
         {
-            var appDataFolder = ApplicationData.Current.LocalFolder;
-
-            var locFileInfo = new FileInfo(Path.Combine(appDataFolder.Path, "locations.json"));
-            var dataFileInfo = new FileInfo(Path.Combine(appDataFolder.Path, "data.json"));
-
-            if (!locFileInfo.Exists)
+            if (Settings.DBVersion < Settings.CurrentDBVersion)
             {
-                if (!dataFileInfo.Exists)
-                    return; // No data to migrate
-            }
-
-            var locDataFile = (await appDataFolder.TryGetItemAsync("locations.json")) as StorageFile;
-            var dataFile = (await appDataFolder.TryGetItemAsync("data.json")) as StorageFile;
-
-            List<LocationData> locationData = null;
-            if (locDataFile != null && locFileInfo.Exists && locFileInfo.Length > 0)
-            {
-                // Migrate to new structure
-                try
+                switch (Settings.DBVersion)
                 {
-                    locationData = await JSONParser.DeserializerAsync<List<LocationData>>(locDataFile);
-                }
-                catch (JsonSerializationException jsEx)
-                {
-                    Logger.WriteLine(LoggerLevel.Error, jsEx, "SimpleWeather: DataMigration: location json error");
-                    locationData = null;
+                    // Move data from json to db
+                    case 0:
+                        if (await locationDB.Table<LocationData>().CountAsync() == 0)
+                            await DBUtils.MigrateDataJsonToDB(locationDB, weatherDB);
+                        break;
+                    // Add and set tz_long column in db
+                    case 1:
+                    // LocationData updates: added new fields
+                    case 2:
+                    case 3:
+                        if (await locationDB.Table<LocationData>().CountAsync() > 0)
+                            await DBUtils.SetLocationData(locationDB, Settings.API);
+                        break;
+                    default:
+                        break;
                 }
 
-                await Settings.SaveLocationData(locationData);
-
-                await locDataFile.DeleteAsync();
-                locDataFile = null;
-            }
-
-            if (dataFile != null && dataFileInfo.Exists && dataFileInfo.Length > 0)
-            {
-                OrderedDictionary oldWeather = null;
-                try
-                {
-                    oldWeather = await JSONParser.DeserializerAsync<OrderedDictionary>(dataFile);
-                }
-                catch (JsonSerializationException jsEx)
-                {
-                    Logger.WriteLine(LoggerLevel.Error, jsEx, "SimpleWeather: DataMigration: weather json error");
-                    if (oldWeather == null)
-                        oldWeather = new OrderedDictionary();
-                }
-
-                // Setup location data if N/A
-                if (locationData == null || locationData.Count == 0)
-                {
-                    List<LocationData> data = new List<LocationData>();
-                    foreach (string query in oldWeather.Keys.Cast<string>().ToList())
-                    {
-                        var weather = oldWeather[query] as Weather;
-                        var prov = WeatherManager.GetProvider(weather.source);
-                        var qview = await prov.GetLocation(weather.query);
-
-                        LocationData loc = new LocationData(qview);
-                        data.Add(loc);
-                    }
-
-                    locationData = data;
-                    await Settings.SaveLocationData(locationData);
-                }
-
-                // Add data
-                var list = oldWeather.Values.Cast<Weather>();
-                await weatherDB.InsertOrReplaceAllWithChildrenAsync(list);
-
-                // Delete old files
-                await dataFile.DeleteAsync();
-                dataFile = null;
+                Settings.DBVersion = Settings.CurrentDBVersion;
             }
         }
 
-        public static async Task SetLocationData(SQLiteAsyncConnection locationDB, String API)
+        internal static async Task PerformVersionMigrations(SQLiteAsyncConnection weatherDB, SQLiteAsyncConnection locationDB)
         {
-            foreach (LocationData location in await locationDB.Table<LocationData>().ToListAsync()
-                    .ConfigureAwait(false))
+            var PackageVersion = Windows.ApplicationModel.Package.Current.Id.Version;
+            var version = string.Format("{0}{1}{2}{3}",
+                PackageVersion.Major, PackageVersion.Minor, PackageVersion.Build, PackageVersion.Revision);
+            var CurrentVersionCode = int.Parse(version);
+
+            if (Settings.WeatherLoaded && Settings.VersionCode < CurrentVersionCode)
             {
-                await WeatherManager.GetProvider(API)
-                    .UpdateLocationData(location)
-                    .ConfigureAwait(false);
+                // v1.3.7 - Yahoo (YQL) is no longer in service
+                // Update location data from HERE Geocoder service
+                if (WeatherAPI.Here.Equals(Settings.API) && Settings.VersionCode < 1370)
+                {
+                    await DBUtils.SetLocationData(locationDB, WeatherAPI.Here);
+                    Settings.SaveLastGPSLocData(new LocationData());
+                }
+                // v1.3.8+ - Yahoo API is back in service (but updated)
+                // Update location data from current geocoder service
+                if (WeatherAPI.Yahoo.Equals(Settings.API) && Settings.VersionCode < 1380)
+                {
+                    await DBUtils.SetLocationData(locationDB, WeatherAPI.Yahoo);
+                    Settings.SaveLastGPSLocData(new LocationData());
+                }
+                if (Settings.VersionCode < 1390)
+                {
+                    // v1.3.8+ - Added onboarding wizard
+                    Settings.OnBoardComplete = true;
+                    // v1.3.8+
+                    // The current WeatherUnderground API is no longer in service
+                    // Disable this provider and migrate to HERE
+                    if (WeatherAPI.WeatherUnderground.Equals(Settings.API))
+                    {
+                        // Set default API to HERE
+                        Settings.API = WeatherAPI.Here;
+                        var wm = WeatherManager.GetInstance();
+                        wm.UpdateAPI();
+
+                        if (String.IsNullOrWhiteSpace(wm.GetAPIKey()))
+                        {
+                            // If (internal) key doesn't exist, fallback to Yahoo
+                            Settings.API = WeatherAPI.Yahoo;
+                            wm.UpdateAPI();
+                            Settings.UsePersonalKey = true;
+                            Settings.KeyVerified = false;
+                        }
+                        else
+                        {
+                            // If key exists, go ahead
+                            Settings.UsePersonalKey = false;
+                            Settings.KeyVerified = true;
+                        }
+                    }
+                }
             }
+            Settings.VersionCode = CurrentVersionCode;
         }
     }
 }

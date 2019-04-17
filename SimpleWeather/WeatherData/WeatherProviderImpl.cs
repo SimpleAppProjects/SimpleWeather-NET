@@ -34,10 +34,6 @@ namespace SimpleWeather.WeatherData
         {
             return await locProvider.GetLocation(coordinate, WeatherAPI);
         }
-        public async Task<LocationQueryViewModel> GetLocation(string query)
-        {
-            return await locProvider.GetLocation(query, WeatherAPI);
-        }
         // Weather
         public abstract Task<Weather> GetWeather(String location_query);
         public virtual async Task<Weather> GetWeather(LocationData location)

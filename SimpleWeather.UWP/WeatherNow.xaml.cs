@@ -1,4 +1,5 @@
 ﻿using SimpleWeather.Controls;
+using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.UWP.Controls;
@@ -511,7 +512,7 @@ namespace SimpleWeather.UWP
                 else
                 {
                     // Reset locdata if source is different
-                    if (locData.source != Settings.API)
+                    if (locData.weatherSource != Settings.API)
                         Settings.SaveLastGPSLocData(new LocationData());
 
                     if (await UpdateLocation())

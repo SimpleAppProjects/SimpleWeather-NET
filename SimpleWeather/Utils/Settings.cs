@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using SimpleWeather.WeatherData;
 using SQLite;
 using SQLiteNetExtensionsAsync.Extensions;
+using SimpleWeather.Location;
 
 namespace SimpleWeather.Utils
 {
@@ -31,10 +32,10 @@ namespace SimpleWeather.Utils
         public static int VersionCode { get { return GetVersionCode(); } set { SetVersionCode(value); } }
 
         // Database
-        private static int DBVersion { get { return GetDBVersion(); } set { SetDBVersion(value); } }
+        internal static int DBVersion { get { return GetDBVersion(); } set { SetDBVersion(value); } }
 
         // Data
-        private const int CurrentDBVersion = 2;
+        internal const int CurrentDBVersion = 4;
         private static SQLiteAsyncConnection locationDB;
         private static SQLiteAsyncConnection weatherDB;
         private const int CACHE_LIMIT = 10;
@@ -90,26 +91,7 @@ namespace SimpleWeather.Utils
             await weatherDB.CreateTableAsync<WeatherAlerts>();
 
             // Migrate old data if available
-            if (GetDBVersion() < CurrentDBVersion)
-            {
-                switch (GetDBVersion())
-                {
-                    // Move data from json to db
-                    case 0:
-                        if (await locationDB.Table<LocationData>().CountAsync() == 0)
-                            await DBUtils.MigrateDataJsonToDB(locationDB, weatherDB);
-                        break;
-                    // Add and set tz_long column in db
-                    case 1:
-                        if (await locationDB.Table<LocationData>().CountAsync() > 0)
-                            await DBUtils.SetLocationData(locationDB, API);
-                        break;
-                    default:
-                        break;
-                }
-
-                SetDBVersion(CurrentDBVersion);
-            }
+            await DataMigrations.PerformDBMigrations(weatherDB, locationDB);
 
             if (!String.IsNullOrWhiteSpace(LastGPSLocation))
             {
@@ -131,55 +113,7 @@ namespace SimpleWeather.Utils
                 }
             }
 
-            var PackageVersion = Windows.ApplicationModel.Package.Current.Id.Version;
-            var version = string.Format("{0}{1}{2}{3}",
-                PackageVersion.Major, PackageVersion.Minor, PackageVersion.Build, PackageVersion.Revision);
-            var CurrentVersionCode = int.Parse(version);
-            if (WeatherLoaded && VersionCode < CurrentVersionCode)
-            {
-                // v1.3.7 - Yahoo (YQL) is no longer in service
-                // Update location data from HERE Geocoder service
-                if (WeatherAPI.Here.Equals(API) && VersionCode < 1370)
-                {
-                    await DBUtils.SetLocationData(locationDB, WeatherAPI.Here);
-                    SaveLastGPSLocData(lastGPSLocData);
-                }
-                // v1.3.8+ - Yahoo API is back in service (but updated)
-                // Update location data from current geocoder service
-                if (WeatherAPI.Yahoo.Equals(API) && VersionCode < 1380)
-                {
-                    await DBUtils.SetLocationData(locationDB, WeatherAPI.Yahoo);
-                    SaveLastGPSLocData(lastGPSLocData);
-                }
-                // v1.3.8+ - Added onboarding wizard
-                OnBoardComplete = true;
-                // v1.3.8+
-                // The current WeatherUnderground API is no longer in service
-                // Disable this provider and migrate to HERE
-                if (WeatherAPI.WeatherUnderground.Equals(API))
-                {
-                    // Set default API to HERE
-                    API = WeatherAPI.Here;
-                    var wm = WeatherManager.GetInstance();
-                    wm.UpdateAPI();
-
-                    if (String.IsNullOrWhiteSpace(wm.GetAPIKey()))
-                    {
-                        // If (internal) key doesn't exist, fallback to Yahoo
-                        API = WeatherAPI.Yahoo;
-                        wm.UpdateAPI();
-                        UsePersonalKey = true;
-                        KeyVerified = false;
-                    }
-                    else
-                    {
-                        // If key exists, go ahead
-                        UsePersonalKey = false;
-                        KeyVerified = true;
-                    }
-                }
-            }
-            SetVersionCode(CurrentVersionCode);
+            await DataMigrations.PerformVersionMigrations(weatherDB, locationDB);
         }
 
         public static async Task<List<LocationData>> GetFavorites()
@@ -197,7 +131,8 @@ namespace SimpleWeather.Utils
                             longitude = loc.longitude,
                             locationType = loc.locationType,
                             tz_long = loc.tz_long,
-                            source = loc.source
+                            weatherSource = loc.weatherSource,
+                            locationSource = loc.locationSource
                         };
             return query.ToList();
         }
@@ -363,7 +298,7 @@ namespace SimpleWeather.Utils
             }
         }
 
-        public static async Task UpdateLocation(WeatherData.LocationData location)
+        public static async Task UpdateLocation(LocationData location)
         {
             if (location != null && location.IsValid())
             {

@@ -16,10 +16,9 @@ namespace SimpleWeather.Location
 
         Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string ac_query, string weatherAPI);
         Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coordinate, string weatherAPI);
-        Task<LocationQueryViewModel> GetLocation(string query, string weatherAPI);
         Task<bool> IsKeyValid(string key);
         string GetAPIKey();
         string LocaleToLangCode(string iso, string name);
-        Task UpdateLocationData(WeatherData.LocationData location, string weatherAPI);
+        Task UpdateLocationData(LocationData location, string weatherAPI);
     }
 }

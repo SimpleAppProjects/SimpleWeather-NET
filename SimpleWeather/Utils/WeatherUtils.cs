@@ -1,4 +1,5 @@
-﻿using SimpleWeather.WeatherData;
+﻿using SimpleWeather.Location;
+using SimpleWeather.WeatherData;
 using System;
 using System.Globalization;
 using System.Runtime.Serialization;
@@ -193,6 +194,12 @@ namespace SimpleWeather.Utils
             {
                 lat = geoPos.Coordinate.Point.Position.Latitude;
                 _long = geoPos.Coordinate.Point.Position.Longitude;
+            }
+
+            public Coordinate(LocationData location)
+            {
+                lat = location.latitude;
+                _long = location.longitude;
             }
 
             public void SetCoordinate(string coordinatePair)

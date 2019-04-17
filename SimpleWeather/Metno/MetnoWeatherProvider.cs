@@ -20,6 +20,7 @@ using Windows.Web.Http;
 using Windows.Web.Http.Filters;
 using Windows.Web.Http.Headers;
 using System.Globalization;
+using SimpleWeather.Location;
 
 namespace SimpleWeather.Metno
 {

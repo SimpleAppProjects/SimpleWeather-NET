@@ -171,11 +171,6 @@ namespace SimpleWeather.WeatherData
             return await WeatherProvider.GetLocation(coord);
         }
 
-        public async Task<LocationQueryViewModel> GetLocation(String query)
-        {
-            return await WeatherProvider.GetLocation(query);
-        }
-
         public async Task<Weather> GetWeather(string query)
         {
             return await WeatherProvider.GetWeather(query);

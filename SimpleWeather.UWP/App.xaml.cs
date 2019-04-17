@@ -1,6 +1,7 @@
 ﻿using Microsoft.QueryStringDotNET;
 using Newtonsoft.Json;
 using SimpleWeather.Controls;
+using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.UWP.Helpers;

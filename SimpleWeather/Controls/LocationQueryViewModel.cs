@@ -24,6 +24,9 @@ namespace SimpleWeather.Controls
 
         public string LocationTZ_Long { get; set; }
 
+        public string LocationSource { get; set; }
+        public string WeatherSource { get; set; }
+
         public LocationQueryViewModel()
         {
             LocationName = App.ResLoader.GetString("Error_NoResults");
@@ -46,6 +49,10 @@ namespace SimpleWeather.Controls
             {
                 LocationQuery = location.l;
             }
+            else if (WeatherAPI.Here.Equals(weatherAPI))
+            {
+                LocationQuery = String.Format("latitude={0}&longitude={1}", location.lat, location.lon);
+            }
             else
             {
                 LocationQuery = String.Format("lat={0}&lon={1}", location.lat, location.lon);
@@ -55,6 +62,9 @@ namespace SimpleWeather.Controls
             LocationLong = double.Parse(location.lon);
 
             LocationTZ_Long = location.tz;
+
+            LocationSource = WeatherAPI.WeatherUnderground;
+            WeatherSource = weatherAPI;
         }
 
         public LocationQueryViewModel(location location, String weatherAPI)
@@ -70,6 +80,10 @@ namespace SimpleWeather.Controls
             {
                 LocationQuery = location.query;
             }
+            else if (WeatherAPI.Here.Equals(weatherAPI))
+            {
+                LocationQuery = String.Format("latitude={0}&longitude={1}", location.lat, location.lon);
+            }
             else
             {
                 LocationQuery = String.Format("lat={0}&lon={1}", location.lat, location.lon);
@@ -79,15 +93,18 @@ namespace SimpleWeather.Controls
             LocationLong = double.Parse(location.lon);
 
             LocationTZ_Long = location.tz_unix;
+
+            LocationSource = WeatherAPI.WeatherUnderground;
+            WeatherSource = weatherAPI;
         }
         #endregion
 
-        public LocationQueryViewModel(Suggestion location)
+        public LocationQueryViewModel(Suggestion location, String weatherAPI)
         {
-            SetLocation(location);
+            SetLocation(location, weatherAPI);
         }
 
-        public void SetLocation(Suggestion location)
+        public void SetLocation(Suggestion location, String weatherAPI)
         {
             string town, region;
 
@@ -116,14 +133,17 @@ namespace SimpleWeather.Controls
             LocationLong = -1;
 
             LocationTZ_Long = null;
+
+            LocationSource = WeatherAPI.Here;
+            WeatherSource = weatherAPI;
         }
 
-        public LocationQueryViewModel(Result location)
+        public LocationQueryViewModel(Result location, String weatherAPI)
         {
-            SetLocation(location);
+            SetLocation(location, weatherAPI);
         }
 
-        public void SetLocation(Result location)
+        public void SetLocation(Result location, String weatherAPI)
         {
             string country = null, town = null, region = null;
 
@@ -163,21 +183,24 @@ namespace SimpleWeather.Controls
                 LocationName = string.Format("{0}, {1}", town, region);
 
             LocationCountry = country;
-            LocationQuery = string.Format(CultureInfo.InvariantCulture, "latitude={0}&longitude={1}",
-                location.location.displayPosition.latitude, location.location.displayPosition.longitude);
 
             LocationLat = location.location.displayPosition.latitude;
             LocationLong = location.location.displayPosition.longitude;
 
             LocationTZ_Long = location.location.adminInfo.timeZone.id;
+
+            LocationSource = WeatherAPI.Here;
+            WeatherSource = weatherAPI;
+
+            UpdateLocationQuery();
         }
 
-        public LocationQueryViewModel(Bing.Address address)
+        public LocationQueryViewModel(Bing.Address address, String weatherAPI)
         {
-            SetLocation(address);
+            SetLocation(address, weatherAPI);
         }
 
-        public void SetLocation(Bing.Address address)
+        public void SetLocation(Bing.Address address, String weatherAPI)
         {
             string town, region;
 
@@ -214,14 +237,17 @@ namespace SimpleWeather.Controls
             LocationLong = -1;
 
             LocationTZ_Long = null;
+
+            LocationSource = WeatherAPI.BingMaps;
+            WeatherSource = weatherAPI;
         }
 
-        public LocationQueryViewModel(MapLocation result)
+        public LocationQueryViewModel(MapLocation result, String weatherAPI)
         {
-            SetLocation(result);
+            SetLocation(result, weatherAPI);
         }
 
-        private void SetLocation(MapLocation result)
+        private void SetLocation(MapLocation result, String weatherAPI)
         {
             string town, region;
 
@@ -250,12 +276,31 @@ namespace SimpleWeather.Controls
 
             LocationCountry = result.Address.CountryCode;
 
-            LocationQuery = String.Format("lat={0}&lon={1}", result.Point.Position.Latitude.ToString(CultureInfo.InvariantCulture), result.Point.Position.Longitude.ToString(CultureInfo.InvariantCulture));
-
             LocationLat = result.Point.Position.Latitude;
             LocationLong = result.Point.Position.Longitude;
 
             LocationTZ_Long = null;
+
+            LocationSource = WeatherAPI.BingMaps;
+            WeatherSource = weatherAPI;
+
+            UpdateLocationQuery();
+        }
+
+        private void UpdateLocationQuery()
+        {
+            if (WeatherAPI.WeatherUnderground.Equals(WeatherSource))
+            {
+                LocationQuery = String.Format("/q/{0},{1}", LocationLat.ToString(CultureInfo.InvariantCulture), LocationLong.ToString(CultureInfo.InvariantCulture));
+            }
+            else if (WeatherAPI.Here.Equals(WeatherSource))
+            {
+                LocationQuery = String.Format("latitude={0}&longitude={1}", LocationLat.ToString(CultureInfo.InvariantCulture), LocationLong.ToString(CultureInfo.InvariantCulture));
+            }
+            else
+            {
+                LocationQuery = String.Format("lat={0}&lon={1}", LocationLat.ToString(CultureInfo.InvariantCulture), LocationLong.ToString(CultureInfo.InvariantCulture));
+            }
         }
 
         public override bool Equals(object obj)

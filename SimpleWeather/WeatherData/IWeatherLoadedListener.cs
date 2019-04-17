@@ -1,4 +1,6 @@
-﻿namespace SimpleWeather.WeatherData
+﻿using SimpleWeather.Location;
+
+namespace SimpleWeather.WeatherData
 {
     public interface IWeatherLoadedListener
     {

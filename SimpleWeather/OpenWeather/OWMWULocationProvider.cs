@@ -126,54 +126,6 @@ namespace SimpleWeather.OpenWeather
             return location;
         }
 
-        public override async Task<LocationQueryViewModel> GetLocation(string query, string weatherAPI)
-        {
-            LocationQueryViewModel location = null;
-
-            string queryAPI = "https://autocomplete.wunderground.com/aq?query=";
-            string options = "&h=0&cities=1";
-            Uri queryURL = new Uri(queryAPI + query + options);
-            AC_RESULT result;
-            WeatherException wEx = null;
-
-            try
-            {
-                // Connect to webstream
-                HttpClient webClient = new HttpClient();
-                HttpResponseMessage response = await webClient.GetAsync(queryURL);
-                response.EnsureSuccessStatusCode();
-                Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-
-                // End Stream
-                webClient.Dispose();
-
-                // Load data
-                var root = JSONParser.Deserializer<AC_Rootobject>(contentStream);
-                result = root.RESULTS.FirstOrDefault();
-
-                // End Stream
-                if (contentStream != null)
-                    contentStream.Dispose();
-            }
-            catch (Exception ex)
-            {
-                result = null;
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
-                {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                    await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
-                }
-                Logger.WriteLine(LoggerLevel.Error, ex, "OpenWeatherMapProvider: error getting location");
-            }
-
-            if (result != null && !String.IsNullOrWhiteSpace(result.l))
-                location = new LocationQueryViewModel(result, weatherAPI);
-            else
-                location = new LocationQueryViewModel();
-
-            return location;
-        }
-
         public override async Task<bool> IsKeyValid(string key)
         {
             return false;

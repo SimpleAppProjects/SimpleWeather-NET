@@ -24,7 +24,7 @@ namespace SimpleWeather.Bing
     {
         public override string LocationAPI => WeatherAPI.BingMaps;
 
-        public override bool KeyRequired => true;
+        public override bool KeyRequired => false;
 
         public override bool SupportsWeatherLocale => true;
 
@@ -39,7 +39,8 @@ namespace SimpleWeather.Bing
             string queryAPI = "http://dev.virtualearth.net/REST/v1/Autosuggest";
             string query = "?query={0}&userLocation=0,0&includeEntityTypes=Place&key={1}&culture={2}&maxResults=10";
 
-            string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
+            // TODO: NOTE: Decide if we will allow users to provide their own keys for loc providers
+            string key = GetAPIKey();
 
             Uri queryURL = new Uri(String.Format(queryAPI + query, location_query, key, culture.Name));
             // Limit amount of results shown
@@ -68,7 +69,7 @@ namespace SimpleWeather.Bing
                     // Filter: only store city results
                     bool added = false;
                     if (!String.IsNullOrWhiteSpace(result.address.locality))
-                        added = locationSet.Add(new LocationQueryViewModel(result.address));
+                        added = locationSet.Add(new LocationQueryViewModel(result.address, weatherAPI));
                     else
                         continue;
 
@@ -106,7 +107,8 @@ namespace SimpleWeather.Bing
             var userlang = GlobalizationPreferences.Languages.First();
             var culture = new CultureInfo(userlang);
 
-            string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
+            // TODO: NOTE: Decide if we will allow users to provide their own keys for loc providers
+            string key = GetAPIKey();
 
             MapLocation result = null;
             WeatherException wEx = null;
@@ -158,89 +160,22 @@ namespace SimpleWeather.Bing
             }
 
             if (result != null && !String.IsNullOrWhiteSpace(result.DisplayName))
-                location = new LocationQueryViewModel(result);
+                location = new LocationQueryViewModel(result, weatherAPI);
             else
                 location = new LocationQueryViewModel();
 
             return location;
         }
 
-        public override async Task<LocationQueryViewModel> GetLocation(string location_query, string weatherAPI)
+        public async Task<LocationQueryViewModel> GetLocationFromAddress(string address, string weatherAPI)
         {
             LocationQueryViewModel location = null;
 
             var userlang = GlobalizationPreferences.Languages.First();
             var culture = new CultureInfo(userlang);
 
-            string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
-
-            MapLocation result = null;
-            WeatherException wEx = null;
-
-            try
-            {
-                var args = location_query.Split('&').ToDictionary(c => c.Split('=')[0], c => Uri.UnescapeDataString(c.Split('=')[1]));
-
-                MapService.ServiceToken = key;
-                // The nearby location to use as a query hint.
-                BasicGeoposition geoPoint = new BasicGeoposition
-                {
-                    Latitude = double.Parse(args["lat"]),
-                    Longitude = double.Parse(args["lon"])
-                };
-                Geopoint pointToReverseGeocode = new Geopoint(geoPoint);
-
-                // Geocode the specified address, using the specified reference point
-                // as a query hint. Return no more than a single result.
-                MapLocationFinderResult mapResult = await MapLocationFinder.FindLocationsAtAsync(pointToReverseGeocode, MapLocationDesiredAccuracy.High);
-
-                switch (mapResult.Status)
-                {
-                    case MapLocationFinderStatus.Success:
-                        result = mapResult.Locations[0];
-                        break;
-                    case MapLocationFinderStatus.UnknownError:
-                    case MapLocationFinderStatus.IndexFailure:
-                        wEx = new WeatherException(WeatherUtils.ErrorStatus.Unknown);
-                        await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
-                        break;
-                    case MapLocationFinderStatus.InvalidCredentials:
-                        wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
-                        await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
-                        break;
-                    case MapLocationFinderStatus.BadLocation:
-                    case MapLocationFinderStatus.NotSupported:
-                        wEx = new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
-                        await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
-                        break;
-                    case MapLocationFinderStatus.NetworkFailure:
-                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                        await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                result = null;
-                Logger.WriteLine(LoggerLevel.Error, ex, "BingMapsLocationProvider: error getting location");
-            }
-
-            if (result != null && !String.IsNullOrWhiteSpace(result.DisplayName))
-                location = new LocationQueryViewModel(result);
-            else
-                location = new LocationQueryViewModel();
-
-            return location;
-        }
-
-        public async Task<LocationQueryViewModel> GetLocationFromAddress(string address)
-        {
-            LocationQueryViewModel location = null;
-
-            var userlang = GlobalizationPreferences.Languages.First();
-            var culture = new CultureInfo(userlang);
-
-            string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
+            // TODO: NOTE: Decide if we will allow users to provide their own keys for loc providers
+            string key = GetAPIKey();
 
             MapLocation result = null;
             WeatherException wEx = null;
@@ -292,7 +227,7 @@ namespace SimpleWeather.Bing
             }
 
             if (result != null && !String.IsNullOrWhiteSpace(result.DisplayName))
-                location = new LocationQueryViewModel(result);
+                location = new LocationQueryViewModel(result, weatherAPI);
             else
                 location = new LocationQueryViewModel();
 

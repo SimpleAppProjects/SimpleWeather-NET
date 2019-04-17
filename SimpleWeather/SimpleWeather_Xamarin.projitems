@@ -55,7 +55,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IWeatherAlertProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IWeatherErrorListener.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IWeatherProviderImpl.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)WeatherData\LocationData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Location\LocationData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\WeatherAlert.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\WeatherDataLoader.cs" />

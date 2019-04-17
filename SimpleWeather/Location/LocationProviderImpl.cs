@@ -21,16 +21,15 @@ namespace SimpleWeather.Location
         public abstract Task<ObservableCollection<LocationQueryViewModel>> GetLocations(String ac_query, String weatherAPI);
         // GeopositionQuery
         public abstract Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coordinate, String weatherAPI);
-        public abstract Task<LocationQueryViewModel> GetLocation(string query, String weatherAPI);
 
         // KeyCheck
         public abstract Task<bool> IsKeyValid(String key);
         public abstract String GetAPIKey();
 
         // Utils Methods
-        public virtual async Task UpdateLocationData(WeatherData.LocationData location, String weatherAPI)
+        public virtual async Task UpdateLocationData(LocationData location, String weatherAPI)
         {
-            var qview = await GetLocation(location.query, weatherAPI);
+            var qview = await GetLocation(new WeatherUtils.Coordinate(location), weatherAPI);
 
             if (qview != null && !String.IsNullOrWhiteSpace(qview.LocationQuery))
             {

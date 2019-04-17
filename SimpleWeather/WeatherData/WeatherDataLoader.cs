@@ -6,6 +6,7 @@ using System.Globalization;
 using SimpleWeather.UWP;
 using SimpleWeather.UWP.Helpers;
 using Windows.System.UserProfile;
+using SimpleWeather.Location;
 
 namespace SimpleWeather.WeatherData
 {
@@ -154,7 +155,7 @@ namespace SimpleWeather.WeatherData
                 try
                 {
                     if ((weather != null && weather.source != Settings.API)
-                        || (weather == null && location != null && location.source != Settings.API))
+                        || (weather == null && location != null && location.weatherSource != Settings.API))
                     {
                         // Update location query and source for new API
                         string oldKey = location.query;
@@ -164,7 +165,7 @@ namespace SimpleWeather.WeatherData
                         else
                             location.query = await wm.UpdateLocationQuery(location);
 
-                        location.source = Settings.API;
+                        location.weatherSource = Settings.API;
 
                         // Update database as well
                         if (location.locationType == LocationType.GPS)

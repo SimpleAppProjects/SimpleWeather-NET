@@ -1,4 +1,5 @@
-﻿using SimpleWeather.Utils;
+﻿using SimpleWeather.Location;
+using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
@@ -91,7 +92,7 @@ namespace SimpleWeather.Controls
             {
                 if (LocationData != null)
                     return (int)LocationData.locationType;
-                return (int)WeatherData.LocationType.Search;
+                return (int)Location.LocationType.Search;
             }
         }
         #endregion
@@ -133,7 +134,7 @@ namespace SimpleWeather.Controls
                 LocationData.query = weather.query;
                 LocationData.latitude = double.Parse(weather.location.latitude);
                 LocationData.longitude = double.Parse(weather.location.longitude);
-                LocationData.source = weather.source;
+                LocationData.weatherSource = weather.source;
             }
 
             IsLoading = false;

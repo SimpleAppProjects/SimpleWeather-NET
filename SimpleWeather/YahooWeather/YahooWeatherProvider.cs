@@ -18,6 +18,7 @@ using Windows.UI.Popups;
 using Windows.Web;
 using Windows.Web.Http;
 using Windows.Web.Http.Headers;
+using SimpleWeather.Location;
 
 namespace SimpleWeather.WeatherYahoo
 {

@@ -1,4 +1,5 @@
 ﻿using SimpleWeather.Controls;
+using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls;
 using SimpleWeather.UWP.Helpers;
@@ -227,17 +228,17 @@ namespace SimpleWeather.UWP
 
             // Need to get FULL location data for HERE API
             // Data provided is incomplete
-            if (WeatherAPI.Here.Equals(Settings.API)
+            if (WeatherAPI.Here.Equals(query_vm.LocationSource)
                     && query_vm.LocationLat == -1 && query_vm.LocationLong == -1
                     && query_vm.LocationTZ_Long == null)
             {
-                query_vm = await new HERE.HERELocationProvider().GetLocationFromLocID(query_vm.LocationQuery);
+                query_vm = await new HERE.HERELocationProvider().GetLocationFromLocID(query_vm.LocationQuery, query_vm.WeatherSource);
             }
-            else if (WeatherAPI.MetNo.Equals(Settings.API)
+            else if (WeatherAPI.BingMaps.Equals(query_vm.LocationSource)
                     && query_vm.LocationLat == -1 && query_vm.LocationLong == -1
                     && query_vm.LocationTZ_Long == null)
             {
-                query_vm = await new Bing.BingMapsLocationProvider().GetLocationFromAddress(query_vm.LocationQuery);
+                query_vm = await new Bing.BingMapsLocationProvider().GetLocationFromAddress(query_vm.LocationQuery, query_vm.WeatherSource);
             }
 
             var location = new LocationData(query_vm);

@@ -19,6 +19,7 @@ using Windows.Web.Http;
 using Windows.System.UserProfile;
 using System.Globalization;
 using SimpleWeather.Keys;
+using SimpleWeather.Location;
 
 namespace SimpleWeather.WeatherUnderground
 {

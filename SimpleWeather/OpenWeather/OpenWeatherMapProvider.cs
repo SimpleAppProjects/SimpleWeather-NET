@@ -18,6 +18,7 @@ using Windows.Web;
 using Windows.Web.Http;
 using System.Globalization;
 using Windows.System.UserProfile;
+using SimpleWeather.Location;
 
 namespace SimpleWeather.OpenWeather
 {
@@ -169,7 +170,7 @@ namespace SimpleWeather.OpenWeather
             return string.Format("lat={0}&lon={1}", weather.location.latitude, weather.location.longitude);
         }
 
-        public override async Task<string> UpdateLocationQuery(WeatherData.LocationData location)
+        public override async Task<string> UpdateLocationQuery(LocationData location)
         {
             return string.Format("lat={0}&lon={1}", location.latitude.ToString(CultureInfo.InvariantCulture), location.longitude.ToString(CultureInfo.InvariantCulture));
         }

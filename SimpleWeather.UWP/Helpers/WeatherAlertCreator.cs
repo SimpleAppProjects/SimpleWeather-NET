@@ -11,6 +11,7 @@ using Windows.System.UserProfile;
 using System.Globalization;
 using SimpleWeather.Controls;
 using Microsoft.QueryStringDotNET;
+using SimpleWeather.Location;
 
 namespace SimpleWeather.UWP.Helpers
 {

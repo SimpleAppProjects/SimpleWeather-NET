@@ -6,7 +6,7 @@ using System.Text;
 using SQLite;
 using NodaTime;
 
-namespace SimpleWeather.WeatherData
+namespace SimpleWeather.Location
 {
     public enum LocationType
     {
@@ -77,11 +77,15 @@ namespace SimpleWeather.WeatherData
         [Newtonsoft.Json.JsonProperty]
         public LocationType locationType { get; set; } = LocationType.Search;
         [Newtonsoft.Json.JsonProperty]
-        public string source { get; set; }
+        [Column("source")]
+        public string weatherSource { get; set; }
+        [Newtonsoft.Json.JsonProperty]
+        [Column("locsource")]
+        public string locationSource { get; set; }
 
         public LocationData()
         {
-            source = Settings.API;
+            weatherSource = Settings.API;
         }
 
         public LocationData(Controls.LocationQueryViewModel query_vm)
@@ -91,7 +95,8 @@ namespace SimpleWeather.WeatherData
             latitude = query_vm.LocationLat;
             longitude = query_vm.LocationLong;
             tz_long = query_vm.LocationTZ_Long;
-            source = Settings.API;
+            weatherSource = query_vm.WeatherSource;
+            locationSource = query_vm.LocationSource;
         }
 
         public LocationData(Controls.LocationQueryViewModel query_vm, Windows.Devices.Geolocation.Geoposition geoPos)
@@ -107,7 +112,8 @@ namespace SimpleWeather.WeatherData
             longitude = geoPos.Coordinate.Point.Position.Longitude;
             tz_long = query_vm.LocationTZ_Long;
             locationType = LocationType.GPS;
-            source = Settings.API;
+            weatherSource = query_vm.WeatherSource;
+            locationSource = query_vm.LocationSource;
         }
 
         public override bool Equals(System.Object obj)
@@ -132,7 +138,8 @@ namespace SimpleWeather.WeatherData
             hashCode = hashCode * -1521134295 + longitude.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(tz_long);
             hashCode = hashCode * -1521134295 + locationType.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(source);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(weatherSource);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(locationSource);
             return hashCode;
         }
 
@@ -173,7 +180,10 @@ namespace SimpleWeather.WeatherData
                             obj.locationType = (LocationType)int.Parse(reader.Value?.ToString());
                             break;
                         case "source":
-                            obj.source = reader.Value?.ToString();
+                            obj.weatherSource = reader.Value?.ToString();
+                            break;
+                        case "locsource":
+                            obj.locationSource = reader.Value?.ToString();
                             break;
                     }
                 }
@@ -220,7 +230,11 @@ namespace SimpleWeather.WeatherData
 
             // "source" : ""
             writer.WritePropertyName("source");
-            writer.WriteValue(source);
+            writer.WriteValue(weatherSource);
+
+            // "locsource" : ""
+            writer.WritePropertyName("locsource");
+            writer.WriteValue(locationSource);
 
             // }
             writer.WriteEndObject();
@@ -230,7 +244,7 @@ namespace SimpleWeather.WeatherData
 
         public bool IsValid()
         {
-            if (String.IsNullOrWhiteSpace(query) || String.IsNullOrWhiteSpace(source))
+            if (String.IsNullOrWhiteSpace(query) || String.IsNullOrWhiteSpace(weatherSource) || String.IsNullOrWhiteSpace(locationSource))
                 return false;
             else
                 return true;

@@ -1,4 +1,5 @@
 ﻿using SimpleWeather.Controls;
+using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.UWP.Controls;
@@ -59,7 +60,9 @@ namespace SimpleWeather.UWP
                 }
                 else
                 {
-                    var panelView = LocationPanels.First(panelVM => panelVM.LocationData.query == location.query);
+                    var panelView = LocationPanels.First(panelVM =>
+                        (bool)!panelVM.LocationData?.locationType.Equals(LocationType.GPS)
+                            && (bool)panelVM.LocationData?.query?.Equals(location.query));
                     // Just in case
                     if (panelView == null)
                     {

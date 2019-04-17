@@ -22,7 +22,7 @@ namespace SimpleWeather.HERE
     {
         public override string LocationAPI => WeatherAPI.Here;
 
-        public override bool KeyRequired => true;
+        public override bool KeyRequired => false;
 
         public override bool SupportsWeatherLocale => true;
 
@@ -42,19 +42,8 @@ namespace SimpleWeather.HERE
 #endif
             string query = "?query={0}&app_id={1}&app_code={2}&language={3}&maxresults=10";
 
-            string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
-            string app_id = "";
-            string app_code = "";
-
-            if (!String.IsNullOrWhiteSpace(key))
-            {
-                string[] keyArr = key.Split(';');
-                if (keyArr.Length > 0)
-                {
-                    app_id = keyArr[0];
-                    app_code = keyArr[keyArr.Length > 1 ? keyArr.Length - 1 : 0];
-                }
-            }
+            string app_id = GetAppID();
+            string app_code = GetAppCode();
 
             Uri queryURL = new Uri(String.Format(queryAPI + query, location_query, app_id, app_code, locale));
             // Limit amount of results shown
@@ -85,7 +74,7 @@ namespace SimpleWeather.HERE
                     if ("city".Equals(result.matchLevel)
                             || "district".Equals(result.matchLevel)
                             || "postalCode".Equals(result.matchLevel))
-                        added = locationSet.Add(new LocationQueryViewModel(result));
+                        added = locationSet.Add(new LocationQueryViewModel(result, weatherAPI));
                     else
                         continue;
 
@@ -134,19 +123,8 @@ namespace SimpleWeather.HERE
             string query = "?prox={0},150&mode=retrieveAddresses&maxresults=1&additionaldata=Country2,true&gen=9&jsonattributes=1" +
                 "&locationattributes=adminInfo,timeZone,-mapView,-mapReference&language={1}&app_id={2}&app_code={3}";
 
-            string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
-            string app_id = "";
-            string app_code = "";
-
-            if (!String.IsNullOrWhiteSpace(key))
-            {
-                string[] keyArr = key.Split(';');
-                if (keyArr.Length > 0)
-                {
-                    app_id = keyArr[0];
-                    app_code = keyArr[keyArr.Length > 1 ? keyArr.Length - 1 : 0];
-                }
-            }
+            string app_id = GetAppID();
+            string app_code = GetAppCode();
 
             Uri queryURL = new Uri(String.Format(queryAPI + query, location_query, locale, app_id, app_code));
             Result result = null;
@@ -191,94 +169,14 @@ namespace SimpleWeather.HERE
             }
 
             if (result != null && !String.IsNullOrWhiteSpace(result.location.locationId))
-                location = new LocationQueryViewModel(result);
+                location = new LocationQueryViewModel(result, weatherAPI);
             else
                 location = new LocationQueryViewModel();
 
             return location;
         }
 
-        public override async Task<LocationQueryViewModel> GetLocation(string location_query, string weatherAPI)
-        {
-            LocationQueryViewModel location = null;
-
-            var userlang = GlobalizationPreferences.Languages.First();
-            var culture = new CultureInfo(userlang);
-
-            string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
-
-#if DEBUG
-            string queryAPI = "https://reverse.geocoder.cit.api.here.com/6.2/reversegeocode.json";
-#else
-            string queryAPI = "https://reverse.geocoder.api.here.com/6.2/reversegeocode.json";
-#endif
-            string query = "?prox={0},150&mode=retrieveAddresses&maxresults=1&additionaldata=Country2,true&gen=9&jsonattributes=1" +
-                "&locationattributes=adminInfo,timeZone,-mapView,-mapReference&language={1}&app_id={2}&app_code={3}";
-
-            string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
-            string app_id = "";
-            string app_code = "";
-
-            if (!String.IsNullOrWhiteSpace(key))
-            {
-                string[] keyArr = key.Split(';');
-                if (keyArr.Length > 0)
-                {
-                    app_id = keyArr[0];
-                    app_code = keyArr[keyArr.Length > 1 ? keyArr.Length - 1 : 0];
-                }
-            }
-
-            Uri queryURL = new Uri(String.Format(queryAPI + query, location_query, locale, app_id, app_code));
-            Result result = null;
-            WeatherException wEx = null;
-
-            try
-            {
-                // Connect to webstream
-                HttpClient webClient = new HttpClient();
-                HttpResponseMessage response = await webClient.GetAsync(queryURL);
-                response.EnsureSuccessStatusCode();
-                Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-
-                // End Stream
-                webClient.Dispose();
-
-                // Load data
-                Geo_Rootobject root = null;
-                await Task.Run(() =>
-                {
-                    root = JSONParser.Deserializer<Geo_Rootobject>(contentStream);
-                });
-
-                if (root.response.view.Length > 0 && root.response.view[0].result.Length > 0)
-                    result = root.response.view[0].result[0];
-
-                // End Stream
-                if (contentStream != null)
-                    contentStream.Dispose();
-            }
-            catch (Exception ex)
-            {
-                result = null;
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
-                {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                    await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
-                }
-
-                Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting location");
-            }
-
-            if (result != null && !String.IsNullOrWhiteSpace(result.location.locationId))
-                location = new LocationQueryViewModel(result);
-            else
-                location = new LocationQueryViewModel();
-
-            return location;
-        }
-
-        public async Task<LocationQueryViewModel> GetLocationFromLocID(string locationID)
+        public async Task<LocationQueryViewModel> GetLocationFromLocID(string locationID, string weatherAPI)
         {
             LocationQueryViewModel location = null;
 
@@ -295,19 +193,8 @@ namespace SimpleWeather.HERE
             string query = "?locationid={0}&mode=retrieveAddresses&maxresults=1&additionaldata=Country2,true&gen=9&jsonattributes=1" +
                 "&locationattributes=adminInfo,timeZone,-mapView,-mapReference&language={1}&app_id={2}&app_code={3}";
 
-            string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
-            string app_id = "";
-            string app_code = "";
-
-            if (!String.IsNullOrWhiteSpace(key))
-            {
-                string[] keyArr = key.Split(';');
-                if (keyArr.Length > 0)
-                {
-                    app_id = keyArr[0];
-                    app_code = keyArr[keyArr.Length > 1 ? keyArr.Length - 1 : 0];
-                }
-            }
+            string app_id = GetAppID();
+            string app_code = GetAppCode();
 
             Uri queryURL = new Uri(String.Format(queryAPI + query, locationID, locale, app_id, app_code));
             Result result = null;
@@ -352,7 +239,7 @@ namespace SimpleWeather.HERE
             }
 
             if (result != null && !String.IsNullOrWhiteSpace(result.location.locationId))
-                location = new LocationQueryViewModel(result);
+                location = new LocationQueryViewModel(result, weatherAPI);
             else
                 location = new LocationQueryViewModel();
 
