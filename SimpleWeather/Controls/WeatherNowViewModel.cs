@@ -258,6 +258,14 @@ namespace SimpleWeather.Controls
                     {
                         ImageData = bgAttribution["Thunderstorm-Night"];
                     }
+                    else
+                    {
+                        ImageData = null;
+                    }
+                }
+                else
+                {
+                    ImageData = null;
                 }
 
                 // Location
