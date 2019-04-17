@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Web;
@@ -20,13 +21,15 @@ namespace SimpleWeather.NWS
             List<WeatherAlert> alerts = null;
 
             string queryAPI = null;
-            Uri weatherURL = null;
+            Uri queryURL = null;
 
             queryAPI = "https://api.weather.gov/alerts/active?point={0},{1}";
-            weatherURL = new Uri(string.Format(queryAPI, location.latitude, location.longitude));
+            queryURL = new Uri(string.Format(queryAPI, location.latitude, location.longitude));
 
             try
             {
+                CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
+
                 // Connect to webstream
                 HttpClient webClient = new HttpClient();
 
@@ -36,7 +39,7 @@ namespace SimpleWeather.NWS
                 webClient.DefaultRequestHeaders.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
                 webClient.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
 
-                HttpResponseMessage response = await webClient.GetAsync(weatherURL);
+                HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
                 response.EnsureSuccessStatusCode();
                 Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
                 // End Stream

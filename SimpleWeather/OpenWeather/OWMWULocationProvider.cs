@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Windows.Web;
@@ -36,9 +37,11 @@ namespace SimpleWeather.OpenWeather
 
             try
             {
+                CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
+
                 // Connect to webstream
                 HttpClient webClient = new HttpClient();
-                HttpResponseMessage response = await webClient.GetAsync(queryURL);
+                HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
                 response.EnsureSuccessStatusCode();
                 Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
                 // End Stream
@@ -91,9 +94,11 @@ namespace SimpleWeather.OpenWeather
 
             try
             {
+                CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
+
                 // Connect to webstream
                 HttpClient webClient = new HttpClient();
-                HttpResponseMessage response = await webClient.GetAsync(queryURL);
+                HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
                 response.EnsureSuccessStatusCode();
                 Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 

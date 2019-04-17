@@ -21,6 +21,7 @@ using Windows.Web.Http.Filters;
 using Windows.Web.Http.Headers;
 using System.Globalization;
 using SimpleWeather.Location;
+using System.Threading;
 
 namespace SimpleWeather.Metno
 {
@@ -81,10 +82,12 @@ namespace SimpleWeather.Metno
 
             try
             {
+                CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
+
                 // Get response
-                HttpResponseMessage forecastResponse = await webClient.GetAsync(forecastURL);
+                HttpResponseMessage forecastResponse = await webClient.GetAsync(forecastURL).AsTask(cts.Token);
                 forecastResponse.EnsureSuccessStatusCode();
-                HttpResponseMessage sunrisesetResponse = await webClient.GetAsync(sunrisesetURL);
+                HttpResponseMessage sunrisesetResponse = await webClient.GetAsync(sunrisesetURL).AsTask(cts.Token);
                 sunrisesetResponse.EnsureSuccessStatusCode();
 
                 Stream forecastStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await forecastResponse.Content.ReadAsInputStreamAsync());

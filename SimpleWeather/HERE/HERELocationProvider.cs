@@ -11,6 +11,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.System.UserProfile;
 using Windows.Web;
@@ -51,9 +52,11 @@ namespace SimpleWeather.HERE
 
             try
             {
+                CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
+
                 // Connect to webstream
                 HttpClient webClient = new HttpClient();
-                HttpResponseMessage response = await webClient.GetAsync(queryURL);
+                HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
                 response.EnsureSuccessStatusCode();
                 Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
                 // End Stream
@@ -132,9 +135,11 @@ namespace SimpleWeather.HERE
 
             try
             {
+                CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
+
                 // Connect to webstream
                 HttpClient webClient = new HttpClient();
-                HttpResponseMessage response = await webClient.GetAsync(queryURL);
+                HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
                 response.EnsureSuccessStatusCode();
                 Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
@@ -202,9 +207,11 @@ namespace SimpleWeather.HERE
 
             try
             {
+                CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
+
                 // Connect to webstream
                 HttpClient webClient = new HttpClient();
-                HttpResponseMessage response = await webClient.GetAsync(queryURL);
+                HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
                 response.EnsureSuccessStatusCode();
                 Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
@@ -272,9 +279,11 @@ namespace SimpleWeather.HERE
                 if (String.IsNullOrWhiteSpace(app_id) || String.IsNullOrWhiteSpace(app_code))
                     throw (wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey));
 
+                CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
+
                 // Connect to webstream
                 HttpClient webClient = new HttpClient();
-                HttpResponseMessage response = await webClient.GetAsync(queryURL);
+                HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
 
                 // Check for errors
                 switch (response.StatusCode)

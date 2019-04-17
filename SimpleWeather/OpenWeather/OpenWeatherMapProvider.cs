@@ -19,6 +19,7 @@ using Windows.Web.Http;
 using System.Globalization;
 using Windows.System.UserProfile;
 using SimpleWeather.Location;
+using System.Threading;
 
 namespace SimpleWeather.OpenWeather
 {
@@ -81,10 +82,12 @@ namespace SimpleWeather.OpenWeather
 
             try
             {
+                CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
+
                 // Get response
-                HttpResponseMessage currentResponse = await webClient.GetAsync(currentURL);
+                HttpResponseMessage currentResponse = await webClient.GetAsync(currentURL).AsTask(cts.Token);
                 currentResponse.EnsureSuccessStatusCode();
-                HttpResponseMessage forecastResponse = await webClient.GetAsync(forecastURL);
+                HttpResponseMessage forecastResponse = await webClient.GetAsync(forecastURL).AsTask(cts.Token);
                 forecastResponse.EnsureSuccessStatusCode();
 
                 Stream currentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await currentResponse.Content.ReadAsInputStreamAsync());

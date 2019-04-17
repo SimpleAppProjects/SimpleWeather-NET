@@ -11,6 +11,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 using Windows.Services.Maps;
@@ -48,9 +49,11 @@ namespace SimpleWeather.Bing
 
             try
             {
+                CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
+
                 // Connect to webstream
                 HttpClient webClient = new HttpClient();
-                HttpResponseMessage response = await webClient.GetAsync(queryURL);
+                HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
                 response.EnsureSuccessStatusCode();
                 Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
                 // End Stream
@@ -126,7 +129,8 @@ namespace SimpleWeather.Bing
 
                 // Geocode the specified address, using the specified reference point
                 // as a query hint. Return no more than a single result.
-                MapLocationFinderResult mapResult = await MapLocationFinder.FindLocationsAtAsync(pointToReverseGeocode, MapLocationDesiredAccuracy.High);
+                CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
+                MapLocationFinderResult mapResult = await MapLocationFinder.FindLocationsAtAsync(pointToReverseGeocode, MapLocationDesiredAccuracy.High).AsTask(cts.Token);
 
                 switch (mapResult.Status)
                 {
@@ -193,7 +197,8 @@ namespace SimpleWeather.Bing
 
                 // Geocode the specified address, using the specified reference point
                 // as a query hint. Return no more than a single result.
-                MapLocationFinderResult mapResult = await MapLocationFinder.FindLocationsAsync(address, hintPoint, 1);
+                CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
+                MapLocationFinderResult mapResult = await MapLocationFinder.FindLocationsAsync(address, hintPoint, 1).AsTask(cts.Token);
 
                 switch (mapResult.Status)
                 {

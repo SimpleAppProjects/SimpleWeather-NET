@@ -19,6 +19,7 @@ using Windows.Web;
 using Windows.Web.Http;
 using Windows.Web.Http.Headers;
 using SimpleWeather.Location;
+using System.Threading;
 
 namespace SimpleWeather.WeatherYahoo
 {
@@ -71,7 +72,9 @@ namespace SimpleWeather.WeatherYahoo
                     request.Headers.Add("Yahoo-App-Id", APIKeys.GetYahooAppID());
                     request.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/json"));
 
-                    HttpResponseMessage response = await webClient.SendRequestAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                    CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
+
+                    HttpResponseMessage response = await webClient.SendRequestAsync(request, HttpCompletionOption.ResponseHeadersRead).AsTask(cts.Token);
                     response.EnsureSuccessStatusCode();
                     Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
                     // Reset exception
