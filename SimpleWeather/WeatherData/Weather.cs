@@ -1220,9 +1220,13 @@ namespace SimpleWeather.WeatherData
                    .GetWeatherIcon(string.Format("{0}_{1}", hr_forecast.daylight, hr_forecast.iconName));
 
             pop = hr_forecast.precipitationProbability;
-            wind_degrees = int.Parse(hr_forecast.windDirection);
-            wind_mph = float.Parse(hr_forecast.windSpeed);
-            wind_kph = float.Parse(ConversionMethods.MphToKph(hr_forecast.windSpeed));
+            if (int.TryParse(hr_forecast.windDirection, out int windDeg))
+                wind_degrees = windDeg;
+            if (float.TryParse(hr_forecast.windSpeed, out float windSpeed))
+            {
+                wind_mph = windSpeed;
+                wind_kph = float.Parse(ConversionMethods.MphToKph(windSpeed.ToString(CultureInfo.InvariantCulture)));
+            }
 
             // Extras
             extras = new ForecastExtras();
