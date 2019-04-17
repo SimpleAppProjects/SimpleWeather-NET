@@ -56,7 +56,6 @@ namespace SimpleWeather.UWP
         {
             if (weather?.IsValid() == true)
             {
-                wm.UpdateWeather(weather);
                 WeatherView.UpdateView(weather);
 
                 if (wm.SupportsAlerts)

@@ -52,7 +52,6 @@ namespace SimpleWeather.WeatherData
     {
         private static WeatherManager Instance;
         private static WeatherProviderImpl WeatherProvider;
-        private static Weather WeatherData;
 
         // Prevent instance from being created outside of this class
         private WeatherManager()
@@ -73,12 +72,6 @@ namespace SimpleWeather.WeatherData
             string API = Settings.API;
 
             WeatherProvider = GetProvider(API);
-        }
-
-        // Shouldn't be used in anything other than WeatherNow
-        public void UpdateWeather(Weather weather)
-        {
-            WeatherData = weather;
         }
 
         // Static Methods
