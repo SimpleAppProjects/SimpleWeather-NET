@@ -112,7 +112,12 @@ namespace SimpleWeather.UWP
         public LocationsPage()
         {
             this.InitializeComponent();
-            this.NavigationCacheMode = NavigationCacheMode.Required;
+
+            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+                NavigationCacheMode = NavigationCacheMode.Disabled;
+            else
+                NavigationCacheMode = NavigationCacheMode.Required;
+
             Application.Current.Resuming += LocationsPage_Resuming;
             LocationsPanel.SizeChanged += StackControl_SizeChanged;
 
@@ -186,7 +191,7 @@ namespace SimpleWeather.UWP
             bool reload = (!Settings.FollowGPS && LocationPanels.Count == 0)
                 || (Settings.FollowGPS && GPSPanelViewModel.First() == null);
 
-            if (reload || e.NavigationMode == NavigationMode.New)
+            if (reload)
             {
                 // New instance; Get locations and load up weather data
                 await LoadLocations();
@@ -253,7 +258,8 @@ namespace SimpleWeather.UWP
                 ToggleEditMode();
 
             // Disable EditMode if only single location
-            EditButton.Visibility = onlyHomeIsLeft || limitReached ? Visibility.Collapsed : Visibility.Visible;
+            EditButton.Visibility = onlyHomeIsLeft ? Visibility.Collapsed : Visibility.Visible;
+            AddLocationsButton.Visibility = limitReached ? Visibility.Collapsed : Visibility.Visible;
         }
 
         private async Task LoadLocations()
@@ -322,17 +328,18 @@ namespace SimpleWeather.UWP
             // Reload all panels if needed
             var locations = await Settings.GetLocationData();
             var homeData = await Settings.GetLastGPSLocData();
-            bool reload = (locations.Count != LocationPanels.Count || (Settings.FollowGPS && (GPSPanelViewModel.First() == null)));
+            bool reload = (locations.Count != LocationPanels.Count ||
+                (Settings.FollowGPS && (GPSPanelViewModel.First() == null) || (!Settings.FollowGPS && GPSPanelViewModel.First() != null)));
 
             // Reload if weather source differs
-            if ((GPSPanelViewModel.First() != null && GPSPanelViewModel.First().WeatherSource != Settings.API)
-                || (LocationPanels.Count >= 1 && LocationPanels[0].WeatherSource != Settings.API))
+            if ((GPSPanelViewModel.First() != null && !Settings.API.Equals(GPSPanelViewModel.First().WeatherSource)) ||
+                (LocationPanels.Count >= 1 && !Settings.API.Equals(LocationPanels[0].WeatherSource)))
             {
                 reload = true;
             }
 
             // Reload if panel queries dont match
-            if (!reload && (GPSPanelViewModel.First() != null && homeData.query != GPSPanelViewModel.First().LocationData.query))
+            if (!reload && (GPSPanelViewModel.First() != null && !homeData.query.Equals(GPSPanelViewModel.First().LocationData.query)))
                 reload = true;
 
             if (reload)

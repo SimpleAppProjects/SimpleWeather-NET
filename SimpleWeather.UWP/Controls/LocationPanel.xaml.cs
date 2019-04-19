@@ -28,9 +28,14 @@ namespace SimpleWeather.UWP.Controls
 
         private void LocationPanel_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            double FreeSpace = e.NewSize.Width - TempBox.ActualWidth - IconBox.ActualWidth;
+            double FreeSpace = e.NewSize.Width;
 
-            LocationName.MaxWidth = FreeSpace * 1.20;
+            foreach (ColumnDefinition def in TempIconGrid.ColumnDefinitions)
+            {
+                FreeSpace -= def.ActualWidth;
+            }
+
+            LocationName.MaxWidth = FreeSpace;
         }
     }
 }

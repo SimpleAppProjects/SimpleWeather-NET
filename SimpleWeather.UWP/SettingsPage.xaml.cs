@@ -42,6 +42,11 @@ namespace SimpleWeather.UWP
             wm = WeatherManager.GetInstance();
             RestoreSettings();
             NavigationCacheMode = NavigationCacheMode.Required;
+
+            SettingsPivot.Loaded += (sender, e) =>
+            {
+                SettingsPivot.SelectedIndex = 0;
+            };
         }
 
         private void RestoreSettings()

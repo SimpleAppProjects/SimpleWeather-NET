@@ -113,7 +113,7 @@
                                                         </VisualStateGroup>
                                                     </VisualStateManager.VisualStateGroups>
                                                     <Border x:Name="BorderElement" BorderBrush="{ThemeResource TextBoxButtonBorderThemeBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{ThemeResource TextBoxButtonBackgroundThemeBrush}">
-                                                        <ContentPresenter x:Name="ContentPresenter" AutomationProperties.AccessibilityView="Raw" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                                        <ContentPresenter x:Name="ContentPresenter" AutomationProperties.AccessibilityView="Raw" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="14,10" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                                                     </Border>
                                                 </Grid>
                                             </ControlTemplate>
@@ -214,7 +214,7 @@
                             <Button x:Name="DeleteButton" BorderThickness="{TemplateBinding BorderThickness}" Grid.Column="1" FontSize="{TemplateBinding FontSize}" IsTabStop="False" Margin="{ThemeResource HelperButtonThemePadding}" MinWidth="34" Grid.Row="1" Style="{StaticResource DeleteButtonStyle}" Visibility="Collapsed" VerticalAlignment="Stretch"/>
                             <Button x:Name="QueryButton" BorderThickness="{TemplateBinding BorderThickness}" Grid.Column="2" FontSize="{TemplateBinding FontSize}" IsTabStop="False" Margin="{ThemeResource HelperButtonThemePadding}" MinWidth="34" Grid.Row="1" Style="{StaticResource QueryButtonStyle}" VerticalAlignment="Stretch"/>
                             <!-- HAXX Workaround -->
-                            <ContentControl x:Name="ProgressRingContentPresenter" Grid.Column="3" Content="{TemplateBinding Tag}" Foreground="{StaticResource SimpleBlue}" MinHeight="34" MinWidth="0" Grid.Row="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="7.5,0" />
+                            <ContentControl x:Name="ProgressRingContentPresenter" Grid.Column="3" Content="{TemplateBinding Tag}" Foreground="{StaticResource SimpleBlue}" MinHeight="34" MinWidth="0" Grid.Row="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="0" />
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
@@ -273,7 +273,7 @@
                             RelativePanel.AlignVerticalCenterWithPanel="True" Margin="25">
             <!-- HAXX Workaround -->
             <AutoSuggestBox.Tag>
-                <ProgressRing x:Name="LoadingRing" Foreground="{StaticResource SimpleBlue}"
+                <ProgressRing x:Name="LoadingRing" Foreground="{StaticResource SimpleBlue}" Margin="7.5,0"
                               Visibility="{x:Bind LoadingRing.IsActive, Mode=OneWay, FallbackValue='Collapsed'}" IsActive="False" />
             </AutoSuggestBox.Tag>
             <!-- HAXX Workaround: Is actually the footer -->
@@ -281,8 +281,9 @@
                 <TextBlock x:Name="SourceFooter" Text="Footer" FontSize="12" FontWeight="SemiBold" Margin="8,6,8,0" />
             </AutoSuggestBox.Header>
             <AutoSuggestBox.ItemTemplate>
-                <DataTemplate>
-                    <localcontrols:LocationQuery MinWidth="300" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
+                <DataTemplate x:DataType="controls:LocationQueryViewModel">
+                    <localcontrols:LocationQuery MinWidth="300" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                                                 LocationName="{x:Bind LocationName}" LocationCountry="{x:Bind LocationCountry}" />
                 </DataTemplate>
             </AutoSuggestBox.ItemTemplate>
             <AutoSuggestBox.ItemsPanel>

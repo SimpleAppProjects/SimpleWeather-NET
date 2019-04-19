@@ -497,7 +497,7 @@ namespace SimpleWeather.UWP.Controls
                     if (k == 0 && DrawDataLabels)
                     {
                         float x = sideLineLength + backgroundGridWidth * i;
-                        float y = dot.y - bottomTextHeight * 3;
+                        float y = dot.y - bottomTextHeight * 2.5f;
 
                         var txtLayout = new CanvasTextLayout(drawingSession, dataLabels[i].Value, BottomTextFormat, 0, 0);
                         Rect txtRect = RectHelper.FromPoints(

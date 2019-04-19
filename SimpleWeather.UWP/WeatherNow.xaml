@@ -433,7 +433,7 @@
         </Style>
     </Page.Resources>
 
-    <Grid>
+    <Grid RequestedTheme="{x:Bind WeatherView.BackgroundTheme, FallbackValue='Light', Mode=OneWay}">
         <Grid.Background>
             <SolidColorBrush Color="{x:Bind WeatherView.PendingBackgroundColor, FallbackValue='#FF006FBF', Mode=OneWay}" />
         </Grid.Background>
@@ -509,7 +509,7 @@
                     </toolkitControls:DropShadowPanel>
                     <toolkitControls:DropShadowPanel BlurRadius="2.0" ShadowOpacity="0.7" VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Row="5"
                                                      Visibility="{x:Bind WeatherView.ImageData, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}">
-                        <TextBlock Padding="5">
+                        <TextBlock Padding="5" FontSize="11">
                             <Span xml:space="preserve"><Run Text="Photo by "/><Hyperlink NavigateUri="{x:Bind WeatherView.ImageData.ArtistLink, Mode=OneWay}"><Run Text="{x:Bind WeatherView.ImageData.ArtistName, Mode=OneWay}"/></Hyperlink><Run Text=" on "/><Hyperlink NavigateUri="{x:Bind WeatherView.ImageData.SiteLink, Mode=OneWay}"><Run Text="{x:Bind WeatherView.ImageData.SiteName, Mode=OneWay}"/></Hyperlink></Span>
                         </TextBlock>
                     </toolkitControls:DropShadowPanel>

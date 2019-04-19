@@ -273,8 +273,9 @@
                             RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True"
                             RelativePanel.AlignVerticalCenterWithPanel="True">
                 <AutoSuggestBox.ItemTemplate>
-                    <DataTemplate>
-                        <localcontrols:LocationQuery MinWidth="300" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
+                    <DataTemplate x:DataType="controls:LocationQueryViewModel">
+                        <localcontrols:LocationQuery MinWidth="300" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                                                     LocationName="{x:Bind LocationName}" LocationCountry="{x:Bind LocationCountry}" />
                     </DataTemplate>
                 </AutoSuggestBox.ItemTemplate>
                 <AutoSuggestBox.ItemsPanel>

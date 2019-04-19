@@ -43,7 +43,8 @@
                           ItemsSource="{x:Bind LocationPanels}" ItemClick="LocationsPanel_ItemClick"
                           IsSwipeEnabled="False" AllowDrop="True" CanReorderItems="True" CanDragItems="True"
                           DragItemsStarting="LocationsPanel_DragItemsStarting" DragItemsCompleted="LocationsPanel_DragItemsCompleted"
-                          HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Padding="0" Margin="0">
+                          HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Padding="0" Margin="0"
+                          ScrollViewer.VerticalScrollMode="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
                     <GridView.HeaderTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding}" Margin="16,8" FontWeight="SemiBold" />
@@ -66,7 +67,8 @@
                     </ItemsControl.ItemTemplate>
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <ItemsWrapGrid MaximumRowsOrColumns="2" Orientation="Horizontal" Margin="12,0" />
+                            <ItemsWrapGrid MaximumRowsOrColumns="2" Orientation="Horizontal" Margin="12,0"
+                                           ScrollViewer.VerticalScrollMode="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemContainerStyle>

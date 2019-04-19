@@ -4,7 +4,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:localcontrols="using:SimpleWeather.UWP.Controls"
     xmlns:helpers="using:SimpleWeather.UWP.Helpers"
-    xmlns:coding4fun="using:Coding4Fun.Toolkit.Controls"
     xmlns:toolkitConverters="using:Microsoft.Toolkit.Uwp.UI.Converters"
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:toolkitAnimations="using:Microsoft.Toolkit.Uwp.UI.Animations"
@@ -53,17 +52,6 @@
                 <Setter Property="HorizontalAlignment" Value="Center"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
             </Style>
-            <ControlTemplate x:Key="ToastPromptStyle" TargetType="coding4fun:ToastPrompt">
-                <Border CornerRadius="15" Background="{TemplateBinding Background}"
-                    Height="{TemplateBinding Height}"
-                    Width="{TemplateBinding Width}"
-                    VerticalAlignment="{TemplateBinding VerticalAlignment}"
-                    HorizontalAlignment="{TemplateBinding HorizontalAlignment}">
-                    <TextBlock Text="{TemplateBinding Message}" Foreground="{TemplateBinding Foreground}"
-                           FontFamily="14" Margin="10"
-                           TextWrapping="NoWrap" />
-                </Border>
-            </ControlTemplate>
             <Style x:Key="TextButtonStyle" TargetType="Button">
                 <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
                 <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}"/>

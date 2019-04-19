@@ -164,7 +164,7 @@ namespace SimpleWeather.UWP
         public WeatherNow()
         {
             this.InitializeComponent();
-            NavigationCacheMode = NavigationCacheMode.Enabled;
+            NavigationCacheMode = NavigationCacheMode.Required;
             Application.Current.Resuming += WeatherNow_Resuming;
 
             wm = WeatherManager.GetInstance();

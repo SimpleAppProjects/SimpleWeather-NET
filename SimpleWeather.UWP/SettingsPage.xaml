@@ -26,7 +26,7 @@
     </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Pivot RequestedTheme="Light" SelectionChanged="Pivot_SelectionChanged">
+        <Pivot x:Name="SettingsPivot" RequestedTheme="Light" SelectionChanged="Pivot_SelectionChanged">
             <Pivot.HeaderTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding}" HorizontalAlignment="Center" Foreground="White" FontSize="15"

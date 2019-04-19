@@ -40,6 +40,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\OWMWULocationProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\OpenWeatherMapProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\ColorUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\ConversionMethods.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\DataMigration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\DateTimeUtils.cs" />
