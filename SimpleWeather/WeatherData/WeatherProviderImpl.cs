@@ -43,9 +43,6 @@ namespace SimpleWeather.WeatherData
 
             var weather = await GetWeather(location.query);
 
-            if (SupportsAlerts && NeedsExternalAlertData)
-                weather.weather_alerts = await GetAlerts(location);
-
             if (String.IsNullOrWhiteSpace(location.tz_long))
             {
                 if (!String.IsNullOrWhiteSpace(weather.location.tz_long))
@@ -73,6 +70,9 @@ namespace SimpleWeather.WeatherData
             weather.location.longitude = location.longitude.ToString(CultureInfo.InvariantCulture);
             weather.location.tz_short = location.tz_short;
             weather.location.tz_offset = location.tz_offset;
+
+            if (SupportsAlerts && NeedsExternalAlertData)
+                weather.weather_alerts = await GetAlerts(location);
 
             return weather;
         }
