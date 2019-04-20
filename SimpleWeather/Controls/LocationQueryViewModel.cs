@@ -216,7 +216,7 @@ namespace SimpleWeather.Controls
             else
                 region = address.adminDistrict2;
 
-            if (!String.IsNullOrEmpty(region) && town.Equals(region))
+            if (String.IsNullOrEmpty(region) || town.Equals(region))
             {
                 region = address.countryRegion;
             }
@@ -276,7 +276,7 @@ namespace SimpleWeather.Controls
             else
                 region = result.Address.Country;
 
-            if (!String.IsNullOrEmpty(region) && town.Equals(region))
+            if (String.IsNullOrEmpty(region) || town.Equals(region))
             {
                 region = result.Address.Country;
             }
