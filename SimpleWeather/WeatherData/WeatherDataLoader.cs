@@ -95,6 +95,11 @@ namespace SimpleWeather.WeatherData
 
                     await Settings.UpdateLocation(location);
                 }
+                if (String.IsNullOrWhiteSpace(location.locationSource))
+                {
+                    location.locationSource = wm.LocationProvider.LocationAPI;
+                    await Settings.UpdateLocation(location);
+                }
 
                 await SaveWeatherData();
             }

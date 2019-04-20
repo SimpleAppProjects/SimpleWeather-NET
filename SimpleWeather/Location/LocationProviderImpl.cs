@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
+using GeoTimeZone;
 using SimpleWeather.Controls;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
@@ -37,6 +38,13 @@ namespace SimpleWeather.Location
                 location.latitude = qview.LocationLat;
                 location.longitude = qview.LocationLong;
                 location.tz_long = qview.LocationTZ_Long;
+                if (String.IsNullOrEmpty(qview.LocationTZ_Long) && location.longitude != 0 && location.latitude != 0)
+                {
+                    String tzId = TimeZoneLookup.GetTimeZone(location.latitude, location.longitude).Result;
+                    if (!String.IsNullOrWhiteSpace(tzId))
+                        location.tz_long = tzId;
+                }
+                location.locationSource = qview.LocationSource;
 
                 // Update DB here or somewhere else
                 await Settings.UpdateLocation(location);
