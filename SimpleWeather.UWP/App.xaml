@@ -16,11 +16,10 @@
             </ResourceDictionary.MergedDictionaries>
             <helpers:BooleanToGridLengthConverter x:Key="bool2GridLengthConverter" />
             <helpers:BooleanToGridLengthConverter x:Key="inverseBool2GridLengthConverter" IsInverse="True" />
-            <helpers:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
-            <helpers:BooleanToVisibilityConverter x:Key="inverseBooleanToVisibilityConverter" IsInverse="True" />
-            <helpers:InverseBooleanConverter x:Key="inverseBooleanConverter" />
-            <helpers:InverseVisibilityConverter x:Key="inverseVisibilityConverter" />
-            <helpers:StringVisibilityConverter x:Key="stringVisibilityConverter" />
+            <toolkitConverters:BoolToVisibilityConverter x:Key="booleanToVisibilityConverter" />
+            <toolkitConverters:StringVisibilityConverter x:Key="stringVisibilityConverter" />
+            <toolkitConverters:EmptyCollectionToObjectConverter x:Key="collectionBooleanConverter" EmptyValue="False" NotEmptyValue="True"/>
+            <toolkitConverters:EmptyStringToObjectConverter x:Key="stringBooleanConverter" EmptyValue="False" NotEmptyValue="True" />
             <SolidColorBrush x:Key="SimpleBlue" Color="#0070c0" />
             <SolidColorBrush x:Key="SimpleBlueDark" Color="#00468f" />
             <SolidColorBrush x:Key="SimpleBlueLight" Color="#599ef3" />

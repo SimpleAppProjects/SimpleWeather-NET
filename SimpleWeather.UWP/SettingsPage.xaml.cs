@@ -26,7 +26,7 @@ namespace SimpleWeather.UWP
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class SettingsPage : Page, ICommandBarPage
+    public sealed partial class SettingsPage : Page, ICommandBarPage, IBackRequestedPage
     {
         private WeatherManager wm;
 
@@ -38,10 +38,21 @@ namespace SimpleWeather.UWP
         public SettingsPage()
         {
             this.InitializeComponent();
+            NavigationCacheMode = NavigationCacheMode.Required;
 
             wm = WeatherManager.GetInstance();
             RestoreSettings();
-            NavigationCacheMode = NavigationCacheMode.Required;
+
+            // Event Listeners
+            Fahrenheit.Checked += Fahrenheit_Checked;
+            Celsius.Checked += Celsius_Checked;
+            FollowGPS.Toggled += FollowGPS_Toggled;
+            AlertSwitch.Toggled += AlertSwitch_Toggled;
+            APIComboBox.SelectionChanged += APIComboBox_SelectionChanged;
+            RefreshComboBox.SelectionChanged += RefreshComboBox_SelectionChanged;
+            PersonalKeySwitch.Toggled += PersonalKeySwitch_Toggled;
+            if (OSSLicenseWebview != null)
+                OSSLicenseWebview.NavigationStarting += OSSLicenseWebview_NavigationStarting;
 
             SettingsPivot.Loaded += (sender, e) =>
             {
@@ -145,18 +156,6 @@ namespace SimpleWeather.UWP
 
             Version.Text = string.Format("v{0}.{1}.{2}",
                 Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
-
-            // Event Listeners
-            SystemNavigationManager.GetForCurrentView().BackRequested += SettingsPage_BackRequested;
-            Fahrenheit.Checked += Fahrenheit_Checked;
-            Celsius.Checked += Celsius_Checked;
-            FollowGPS.Toggled += FollowGPS_Toggled;
-            AlertSwitch.Toggled += AlertSwitch_Toggled;
-            APIComboBox.SelectionChanged += APIComboBox_SelectionChanged;
-            RefreshComboBox.SelectionChanged += RefreshComboBox_SelectionChanged;
-            PersonalKeySwitch.Toggled += PersonalKeySwitch_Toggled;
-            if (OSSLicenseWebview != null)
-                OSSLicenseWebview.NavigationStarting += OSSLicenseWebview_NavigationStarting;
         }
 
         private void AlertSwitch_Toggled(object sender, RoutedEventArgs e)
@@ -165,13 +164,16 @@ namespace SimpleWeather.UWP
             Settings.ShowAlerts = sw.IsOn;
         }
 
-        private async void SettingsPage_BackRequested(object sender, BackRequestedEventArgs e)
+        public async Task<bool> OnBackRequested()
         {
             if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.API_KEY) && WeatherManager.IsKeyRequired(APIComboBox.SelectedValue.ToString()))
             {
                 KeyBorder.BorderBrush = new SolidColorBrush(Colors.Red);
                 await new MessageDialog(App.ResLoader.GetString("Msg_EnterAPIKey")).ShowAsync();
+                return true;
             }
+
+            return false;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -179,6 +181,7 @@ namespace SimpleWeather.UWP
             base.OnNavigatedTo(e);
             RequestAppTrigger = false;
             Application.Current.Suspending += OnSuspending;
+            RestoreSettings();
         }
 
         private void OnSuspending(object sender, SuspendingEventArgs e)
@@ -217,7 +220,6 @@ namespace SimpleWeather.UWP
             else
             {
                 // Unsubscribe from event
-                SystemNavigationManager.GetForCurrentView().BackRequested -= SettingsPage_BackRequested;
                 Application.Current.Suspending -= OnSuspending;
 
                 // Trigger background task if necessary

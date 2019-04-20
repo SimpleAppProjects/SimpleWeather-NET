@@ -31,7 +31,7 @@ namespace SimpleWeather.UWP
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class LocationSearchPage : Page, ICommandBarPage, IDisposable
+    public sealed partial class LocationSearchPage : Page, ICommandBarPage, IBackRequestedPage, IDisposable
     {
         private CancellationTokenSource cts = new CancellationTokenSource();
         private WeatherManager wm;
@@ -50,27 +50,19 @@ namespace SimpleWeather.UWP
             LocationQuerys = new ObservableCollection<LocationQueryViewModel>();
             LoadingRing = Location.ProgressRing;
 
-            // Event Listeners
-            SystemNavigationManager.GetForCurrentView().BackRequested += LocationSearchPage_BackRequested;
-
             // CommandBar
             CommandBarLabel = App.ResLoader.GetString("Nav_Locations/Label");
             PrimaryCommands = new List<ICommandBarElement>(0);
         }
 
-        private void LocationSearchPage_BackRequested(object sender, BackRequestedEventArgs e)
+        public Task<bool> OnBackRequested()
         {
-            e.Handled = true;
             if (Frame.CanGoBack) Frame.GoBack(); else Frame.Navigate(typeof(LocationsPage));
-        }
 
-        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
-        {
-            if (e.SourcePageType == typeof(WeatherNow)) e.Cancel = true;
-            // Unsubscribe from event
-            SystemNavigationManager.GetForCurrentView().BackRequested -= LocationSearchPage_BackRequested;
+            var tcs = new TaskCompletionSource<bool>();
+            tcs.SetResult(true);
 
-            base.OnNavigatingFrom(e);
+            return tcs.Task;
         }
 
         public void Dispose()

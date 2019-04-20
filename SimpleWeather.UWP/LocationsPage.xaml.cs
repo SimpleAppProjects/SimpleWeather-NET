@@ -156,7 +156,7 @@ namespace SimpleWeather.UWP
             if (e.NavigationMode == NavigationMode.Back || e.NavigationMode == NavigationMode.New)
             {
                 // Remove all from backstack except home
-                if (this.Frame.BackStackDepth > 1)
+                if (this.Frame.BackStackDepth >= 1)
                 {
                     var home = this.Frame.BackStack.ElementAt(0);
                     this.Frame.BackStack.Clear();
@@ -451,14 +451,17 @@ namespace SimpleWeather.UWP
         {
             if (e.ClickedItem is LocationPanelViewModel panel)
             {
-                this.Frame.Navigate(typeof(WeatherNow), panel.LocationData);
-
                 if (panel.LocationData.Equals(Settings.HomeData))
                 {
-                    // Clear backstack since we're going home
-                    Frame.BackStack.Clear();
+                    // Remove all from backstack except home
+                    var home = this.Frame.BackStack.ElementAt(0);
+                    this.Frame.BackStack.Clear();
+                    this.Frame.BackStack.Add(home);
+                    this.Frame.GoBack();
                     SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
                 }
+                else
+                    this.Frame.Navigate(typeof(WeatherNow), panel.LocationData);
             }
         }
 

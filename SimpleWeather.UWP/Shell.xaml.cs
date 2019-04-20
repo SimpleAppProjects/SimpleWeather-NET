@@ -170,25 +170,34 @@ namespace SimpleWeather.UWP
             }
         }
 
-        private void Shell_BackRequested(object sender, BackRequestedEventArgs e)
+        private async void Shell_BackRequested(object sender, BackRequestedEventArgs e)
         {
             if (AppFrame == null)
                 return;
 
             // Navigate back if possible, and if the event has not 
-            // already been handled .
-            if (e.Handled == false)
+            // already been handled.
+            bool PageRequestedToStay = e.Handled = AppFrame.Content is IBackRequestedPage backPage && await backPage.OnBackRequested();
+
+            if (!PageRequestedToStay)
             {
-                e.Handled = true;
-                AppFrame.Navigate(typeof(WeatherNow));
-                try
+                if (AppFrame.BackStackDepth > 0)
                 {
-                    AppFrame.BackStack.Clear();
-                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-                }
-                catch (Exception ex)
-                {
-                    Logger.WriteLine(LoggerLevel.Error, ex, "Exception!!");
+                    try
+                    {
+                        // Remove all from backstack except home
+                        var home = AppFrame.BackStack.ElementAt(0);
+                        AppFrame.BackStack.Clear();
+                        AppFrame.BackStack.Add(home);
+                        AppFrame.GoBack();
+                        SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.WriteLine(LoggerLevel.Error, ex, "Exception!!");
+                    }
+
+                    e.Handled = true;
                 }
             }
         }
@@ -197,19 +206,25 @@ namespace SimpleWeather.UWP
         {
             if (sender is AppBarButton btn && btn.Tag is Type pageType && pageType != AppFrame.SourcePageType)
             {
-                AppFrame.Navigate(pageType, null);
-
-                if (pageType == typeof(WeatherNow))
+                if (pageType == typeof(WeatherNow) && AppFrame.BackStackDepth >= 1)
                 {
                     try
                     {
+                        // Remove all from backstack except home
+                        var home = AppFrame.BackStack.ElementAt(0);
                         AppFrame.BackStack.Clear();
+                        AppFrame.BackStack.Add(home);
+                        AppFrame.GoBack();
                         SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
                     }
                     catch (Exception ex)
                     {
                         Logger.WriteLine(LoggerLevel.Error, ex, "Exception!!");
                     }
+                }
+                else
+                {
+                    AppFrame.Navigate(pageType, null);
                 }
             }
         }

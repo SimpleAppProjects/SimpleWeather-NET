@@ -2,6 +2,7 @@
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls;
+using SimpleWeather.UWP.Helpers;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.ObjectModel;

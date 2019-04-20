@@ -1,4 +1,5 @@
 ﻿using SimpleWeather.Utils;
+using SimpleWeather.UWP.Helpers;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;

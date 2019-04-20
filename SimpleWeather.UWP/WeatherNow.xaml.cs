@@ -171,14 +171,6 @@ namespace SimpleWeather.UWP
             WeatherView = new WeatherNowViewModel();
             WeatherView.PropertyChanged += WeatherView_PropertyChanged;
             WeatherView.Extras.PropertyChanged += WeatherView_PropertyChanged;
-            ForecastViewer.SizeChanged += StackControl_SizeChanged;
-            StackControl.SizeChanged += StackControl_SizeChanged;
-            MainViewer.SizeChanged += MainViewer_SizeChanged;
-            MainViewer.ViewChanged += MainViewer_ViewChanged;
-
-            // Additional Details (Extras)
-            HourlyForecastPanel.Visibility = Visibility.Collapsed;
-            HourlySwitch.IsOn = true;
 
             geolocal = new Geolocator() { DesiredAccuracyInMeters = 5000, ReportInterval = 900000, MovementThreshold = 1600 };
 
@@ -212,18 +204,19 @@ namespace SimpleWeather.UWP
                 case "Sunset":
                     if (!String.IsNullOrWhiteSpace(WeatherView.Sunrise) && !String.IsNullOrWhiteSpace(WeatherView.Sunset))
                     {
-                        while (!SunPhasePanel.ReadyToDraw)
+                        while (!(bool)SunPhasePanel?.ReadyToDraw)
                         {
                             await Task.Delay(1);
                         }
 
-                        SunPhasePanel.SetSunriseSetTimes(
+                        SunPhasePanel?.SetSunriseSetTimes(
                             DateTime.Parse(WeatherView.Sunrise).TimeOfDay, DateTime.Parse(WeatherView.Sunset).TimeOfDay,
                             location?.tz_offset);
                     }
                     break;
                 case "HourlyForecast":
-                    await UpdateLineView();
+                    if (HourlyLineView?.Visibility == Visibility.Visible)
+                        await UpdateLineView();
                     break;
             }
         }
@@ -345,22 +338,13 @@ namespace SimpleWeather.UWP
                 AlertButton.Width = w * (0.50);
         }
 
-        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
-        {
-            base.OnNavigatingFrom(e);
-
-            // Clear cache if nav'ing back
-            if (e.NavigationMode == NavigationMode.Back)
-                NavigationCacheMode = NavigationCacheMode.Disabled;
-        }
-
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
 
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => 
             {
-                MainViewer.ChangeView(null, 0, null, true);
+                MainViewer?.ChangeView(null, 0, null, true);
                 BGAlpha = 1.0f;
             });
 
@@ -385,7 +369,7 @@ namespace SimpleWeather.UWP
                 // Reset loader if new page instance created
                 location = null;
                 wLoader = null;
-                MainViewer.ChangeView(null, 0, null, true);
+                MainViewer?.ChangeView(null, 0, null, true);
 
                 // New page instance created, so restore
                 if (LocParameter != null)
@@ -700,26 +684,26 @@ namespace SimpleWeather.UWP
         private void ForecastViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
             ScrollViewer viewer = sender as ScrollViewer;
-            var controlName = (sender as FrameworkElement).Name;
+            var controlName = (sender as FrameworkElement)?.Name;
             var controlParent = viewer?.Parent as FrameworkElement;
 
-            if (viewer.HorizontalOffset == 0)
+            if (viewer?.HorizontalOffset == 0)
             {
-                if (controlName.Contains("Hourly") || (bool)controlParent?.Name?.Contains("Hourly"))
+                if ((controlName?.Contains("Hourly") ?? false) || (controlParent?.Name?.Contains("Hourly") ?? false))
                     HourlyLeftButton.IsEnabled = false;
                 else
                     LeftButton.IsEnabled = false;
             }
-            else if (viewer.HorizontalOffset == viewer.ScrollableWidth)
+            else if (viewer?.HorizontalOffset == viewer?.ScrollableWidth)
             {
-                if (controlName.Contains("Hourly") || (bool)controlParent?.Name?.Contains("Hourly"))
+                if ((controlName?.Contains("Hourly") ?? false) || (controlParent?.Name?.Contains("Hourly") ?? false))
                     HourlyRightButton.IsEnabled = false;
                 else
                     RightButton.IsEnabled = false;
             }
             else
             {
-                if (controlName.Contains("Hourly") || (bool)controlParent?.Name?.Contains("Hourly"))
+                if ((controlName?.Contains("Hourly") ?? false) || (controlParent?.Name?.Contains("Hourly") ?? false))
                 {
                     if (!HourlyLeftButton.IsEnabled)
                         HourlyLeftButton.IsEnabled = true;
@@ -750,10 +734,16 @@ namespace SimpleWeather.UWP
         {
             ToggleSwitch sw = sender as ToggleSwitch;
 
-            HourlyGraphPanel.Visibility = sw.IsOn ?
-                Visibility.Collapsed : Visibility.Visible;
-            HourlyForecastViewer.Visibility = sw.IsOn ? 
-                Visibility.Visible : Visibility.Collapsed;
+            if (HourlyGraphPanel != null)
+            {
+                HourlyGraphPanel.Visibility = sw.IsOn ?
+                    Visibility.Collapsed : Visibility.Visible;
+            }
+            if (HourlyForecastViewer != null)
+            {
+                HourlyForecastViewer.Visibility = sw.IsOn ?
+                    Visibility.Visible : Visibility.Collapsed;
+            }
 
             ForecastViewer_ViewChanged(sw.IsOn ? HourlyForecastViewer : HourlyLineView.ScrollViewer, null);
         }
@@ -873,7 +863,8 @@ namespace SimpleWeather.UWP
             }
 
             // Update line view
-            await UpdateLineView();
+            if (HourlyLineView != null)
+                await UpdateLineView();
         }
 
         private async Task UpdateLineView()
@@ -1060,6 +1051,11 @@ namespace SimpleWeather.UWP
             {
                 GotoDetailsPage((bool)control?.Name.StartsWith("Hourly"));
             }
+        }
+
+        private async void HourlyLineView_Loaded(object sender, RoutedEventArgs e)
+        {
+            await UpdateLineView();
         }
     }
 }

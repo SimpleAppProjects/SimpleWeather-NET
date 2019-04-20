@@ -37,7 +37,8 @@
         </Style>
     </UserControl.Resources>
 
-    <Border Background="#10FFFFFF" CornerRadius="2.5" BorderThickness="1">
+    <Border x:Name="HrForecastBorder" x:DefaultBindMode="OneWay" Background="#10FFFFFF" CornerRadius="2.5" BorderThickness="1"
+            x:Load="{x:Bind HourlyForecasts.Date, Converter={StaticResource stringBooleanConverter}, Mode=OneWay}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
@@ -47,8 +48,8 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <TextBlock Name="ForecastDate" Style="{StaticResource ForecastDate}" Text="{x:Bind HourlyForecasts.Date, FallbackValue='Sat 2 AM'}" Grid.Row="0"
-                       TextAlignment="Center"/>
+            <TextBlock Name="ForecastDate" Style="{StaticResource ForecastDate}" Text="{x:Bind HourlyForecasts.Date, FallbackValue='Sat 2 AM'}"
+                       Grid.Row="0" TextAlignment="Center" />
             <Viewbox Name="WeatherBox" Grid.Row="1" HorizontalAlignment="Center">
                 <TextBlock Style="{StaticResource WeatherIcon}" Text="{x:Bind HourlyForecasts.WeatherIcon, FallbackValue='&#xf00d;', Mode=OneWay}" />
             </Viewbox>

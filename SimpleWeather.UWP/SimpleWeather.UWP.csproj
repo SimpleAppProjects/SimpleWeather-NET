@@ -269,10 +269,11 @@
       <DependentUpon>WeatherAlertPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\BooleanToGridLengthConverter.cs" />
+    <Compile Include="Helpers\IBackRequestedPage.cs" />
     <Compile Include="Helpers\ICommandBarPage.cs" />
-    <Compile Include="Helpers\InverseVisibilityConverter.cs" />
     <Compile Include="Helpers\SecondaryTileUtils.cs" />
-    <Compile Include="IPageVerification.cs" />
+    <Compile Include="Helpers\StringBooleanConverter.cs" />
+    <Compile Include="Helpers\IPageVerification.cs" />
     <Compile Include="LocationSearchPage.xaml.cs">
       <DependentUpon>LocationSearchPage.xaml</DependentUpon>
     </Compile>
@@ -312,7 +313,6 @@
     </Compile>
     <Compile Include="Controls\Toast.cs" />
     <Compile Include="Helpers\BooleanToVisibilityConverter.cs" />
-    <Compile Include="Helpers\InverseBooleanConverter.cs" />
     <Compile Include="Helpers\StringExtensions.cs" />
     <Compile Include="Helpers\StringVisibilityConverter.cs" />
     <Compile Include="Helpers\WeatherAlertCreator.cs" />

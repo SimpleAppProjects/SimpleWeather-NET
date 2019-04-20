@@ -5,8 +5,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -22,7 +24,7 @@ namespace SimpleWeather.UWP
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class WeatherAlertPage : Page, ICommandBarPage
+    public sealed partial class WeatherAlertPage : Page, ICommandBarPage, IBackRequestedPage
     {
         public WeatherNowViewModel WeatherView = null;
 
@@ -32,9 +34,25 @@ namespace SimpleWeather.UWP
         public WeatherAlertPage()
         {
             this.InitializeComponent();
+            NavigationCacheMode = NavigationCacheMode.Disabled;
 
             // CommandBar
             CommandBarLabel = App.ResLoader.GetString("Label_WeatherAlerts/Text");
+        }
+
+        public Task<bool> OnBackRequested()
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            if (Frame.CanGoBack)
+            {
+                Frame.GoBack();
+                tcs.SetResult(true);
+                return tcs.Task;
+            }
+
+            tcs.SetResult(false);
+            return tcs.Task;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)

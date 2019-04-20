@@ -440,7 +440,8 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <ScrollViewer x:Name="MainViewer" VerticalScrollMode="Auto" Background="{x:Bind WeatherView.Background, FallbackValue='#FF006FBF', Mode=OneWay, TargetNullValue='#FF006FBF'}">
+        <ScrollViewer x:Name="MainViewer" VerticalScrollMode="Auto" Background="{x:Bind WeatherView.Background, FallbackValue='#FF006FBF', Mode=OneWay, TargetNullValue='#FF006FBF'}"
+                      SizeChanged="MainViewer_SizeChanged" ViewChanged="MainViewer_ViewChanged">
             <StackPanel>
                 <Grid x:Name="ConditionPanel" Height="Auto">
                     <Grid.RowDefinitions>
@@ -533,11 +534,14 @@
                         <ScrollViewer Name="ForecastViewer" HorizontalAlignment="Stretch" 
                                       HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden"
                                       VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Hidden"
-                                      ViewChanged="ForecastViewer_ViewChanged" Grid.Column="1">
-                            <ItemsControl x:Name="StackControl" ItemsSource="{x:Bind WeatherView.Forecasts, FallbackValue=111}" HorizontalAlignment="Left">
+                                      Grid.Column="1" ViewChanged="ForecastViewer_ViewChanged"
+                                      SizeChanged="StackControl_SizeChanged">
+                            <ItemsControl x:Name="StackControl" ItemsSource="{x:Bind WeatherView.Forecasts}" HorizontalAlignment="Left"
+                                          SizeChanged="StackControl_SizeChanged">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="controls:ForecastItemViewModel">
-                                        <StackPanel Orientation="Horizontal" Height="{Binding ElementName=StackControl, Path=Height}">
+                                        <StackPanel Orientation="Horizontal" Height="{Binding ElementName=StackControl, Path=Height, FallbackValue='200'}"
+                                                    MaxHeight="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}">
                                             <localcontrols:ForecastItem Tapped="ForecastItem_Tapped" />
                                             <Rectangle Width="2" Fill="Transparent" />
                                         </StackPanel>
@@ -545,7 +549,8 @@
                                 </ItemsControl.ItemTemplate>
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <ItemsStackPanel Height="{Binding ElementName=StackControl, Path=Height}" Orientation="Horizontal" Transitions="{StaticResource TextTransitions}"/>
+                                        <ItemsStackPanel Height="{Binding ElementName=StackControl, Path=Height, FallbackValue='200'}" Orientation="Horizontal"
+                                                         Transitions="{StaticResource TextTransitions}" MaxHeight="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"/>
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
                             </ItemsControl>
@@ -553,7 +558,7 @@
                     </Grid>
                 </StackPanel>
                 <Rectangle Height="25"/>
-                <StackPanel Name="HourlyForecastPanel">
+                <StackPanel Name="HourlyForecastPanel" Visibility="Collapsed">
                     <Grid Padding="{Binding ElementName=ForecastHeader, Path=Padding, Mode=OneWay}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -562,7 +567,7 @@
                         <TextBlock Name="HourlyLabel" x:Uid="Label_Hourly" Text="Hourly"
                                    FontSize="{Binding ElementName=ForecastLabel, Path=FontSize, Mode=OneWay}"
                                    Style="{StaticResource SectionLabel}" />
-                        <ToggleSwitch Name="HourlySwitch" Grid.Column="1" OffContent="Summary" OnContent="Details"
+                        <ToggleSwitch Name="HourlySwitch" Grid.Column="1" OffContent="Summary" OnContent="Details" IsOn="True"
                                       RequestedTheme="Dark" MinWidth="0" Margin="0,0,50,0" Toggled="HourlySwitch_Toggled" />
                     </Grid>
                     <Border Style="{StaticResource Divider}"/>
@@ -580,19 +585,22 @@
                                       HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden"
                                       VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Hidden"
                                       ViewChanged="ForecastViewer_ViewChanged" Grid.Column="1">
-                            <ItemsControl x:Name="HourlyStackControl" ItemsSource="{x:Bind WeatherView.Extras.HourlyForecast, FallbackValue=111}"
+                            <ItemsControl x:Name="HourlyStackControl" ItemsSource="{x:Bind WeatherView.Extras.HourlyForecast}"
                                           Margin="{Binding ElementName=StackControl, Path=Margin, Mode=OneWay}" HorizontalAlignment="Left">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="controls:HourlyForecastItemViewModel">
                                         <StackPanel Orientation="Horizontal">
-                                            <localcontrols:HourlyForecastItem Height="{Binding ElementName=StackControl, Path=Height}" Tapped="ForecastItem_Tapped" />
-                                            <Rectangle Height="{Binding ElementName=StackControl, Path=Height}" Width="2" Fill="Transparent" />
+                                            <localcontrols:HourlyForecastItem Height="{Binding ElementName=StackControl, Path=Height, FallbackValue='200'}"
+                                                                              Tapped="ForecastItem_Tapped" MaxHeight="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}" />
+                                            <Rectangle Height="{Binding ElementName=StackControl, Path=Height, FallbackValue='200'}" Width="2" Fill="Transparent"
+                                                       MaxHeight="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <ItemsStackPanel Height="{Binding ElementName=StackControl, Path=Height}" Orientation="Horizontal" Transitions="{StaticResource TextTransitions}"/>
+                                        <ItemsStackPanel Height="{Binding ElementName=StackControl, Path=Height, FallbackValue='200'}" Orientation="Horizontal"
+                                                         Transitions="{StaticResource TextTransitions}" MaxHeight="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}" />
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
                             </ItemsControl>
@@ -634,7 +642,9 @@
                                                     ViewChanged="ForecastViewer_ViewChanged"
                                                     Tapped="LineView_Tapped"
                                                     DrawGridLines="True" DrawDotLine="True" DrawDataLabels="True"
-                                                    DrawIconsLabels="True" DrawGraphBackground="True" DrawDotPoints="True" />
+                                                    DrawIconsLabels="True" DrawGraphBackground="True" DrawDotPoints="True"
+                                                    x:Load="{x:Bind WeatherView.Extras.HourlyForecast, Converter={StaticResource collectionBooleanConverter}, Mode=OneWay}"
+                                                    Loaded="HourlyLineView_Loaded" />
                         </StackPanel>
                     </Grid>
                 </StackPanel>
@@ -648,7 +658,7 @@
                     <Border Style="{StaticResource Divider}"/>
                     <ItemsControl x:Name="DetailsPanel" Margin="50,0,50,0"
                                   HorizontalAlignment="Center" HorizontalContentAlignment="Center"
-                                  ItemsSource="{x:Bind WeatherView.WeatherDetails, FallbackValue=1111}">
+                                  ItemsSource="{x:Bind WeatherView.WeatherDetails}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="controls:DetailItemViewModel">
                                 <Grid>
