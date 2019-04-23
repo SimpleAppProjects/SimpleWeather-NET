@@ -256,6 +256,8 @@ namespace SimpleWeather.Utils
 
         private static bool IsOnBoardingComplete()
         {
+            Task.Run(() => LoadIfNeeded()).GetAwaiter().GetResult();
+
             if (!localSettings.Values.ContainsKey(KEY_ONBOARDINGCOMPLETE) || localSettings.Values[KEY_ONBOARDINGCOMPLETE] == null)
             {
                 SetOnBoardingComplete(false);
