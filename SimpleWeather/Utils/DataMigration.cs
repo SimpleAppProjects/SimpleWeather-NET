@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AppCenter.Analytics;
+using Newtonsoft.Json;
 using SimpleWeather.Location;
 using SimpleWeather.WeatherData;
 using SQLite;
@@ -96,6 +97,11 @@ namespace SimpleWeather.Utils
                         }
                     }
                 }
+                Analytics.TrackEvent("App upgrading", new Dictionary<string, string>()
+                {
+                    { "API", Settings.API },
+                    { "API_IsInternalKey", (!Settings.UsePersonalKey).ToString() }
+                });
             }
             Settings.VersionCode = CurrentVersionCode;
         }

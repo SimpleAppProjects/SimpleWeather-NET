@@ -1,6 +1,10 @@
-﻿using Microsoft.QueryStringDotNET;
+﻿using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
+using Microsoft.QueryStringDotNET;
 using Newtonsoft.Json;
 using SimpleWeather.Controls;
+using SimpleWeather.Keys;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
@@ -46,6 +50,7 @@ namespace SimpleWeather.UWP
             this.EnteredBackground += OnEnteredBackground;
             this.LeavingBackground += OnLeavingBackground;
             this.UnhandledException += OnUnhandledException;
+            AppCenter.Start(APIKeys.GetAppCenterSecret(), typeof(Analytics), typeof(Crashes));
         }
 
         public static bool IsInBackground { get; private set; } = true;
