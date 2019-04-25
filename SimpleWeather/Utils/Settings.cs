@@ -74,11 +74,11 @@ namespace SimpleWeather.Utils
             Init();
         }
 
-        private static async Task LoadIfNeeded()
+        public static void LoadIfNeeded()
         {
             if (!loaded)
             {
-                await Load();
+                Task.Run(Load).GetAwaiter().GetResult();
                 loaded = true;
             }
         }
@@ -119,7 +119,7 @@ namespace SimpleWeather.Utils
 
         public static async Task<List<LocationData>> GetFavorites()
         {
-            await LoadIfNeeded();
+            LoadIfNeeded();
             var query = from loc in await locationDB.Table<LocationData>().ToListAsync()
                         join favs in await locationDB.Table<Favorites>().ToListAsync()
                         on loc.query equals favs.query
@@ -140,25 +140,25 @@ namespace SimpleWeather.Utils
 
         public static async Task<List<LocationData>> GetLocationData()
         {
-            await LoadIfNeeded();
+            LoadIfNeeded();
             return await locationDB.Table<LocationData>().ToListAsync();
         }
 
         public static async Task<LocationData> GetLocation(string key)
         {
-            await LoadIfNeeded();
+            LoadIfNeeded();
             return await locationDB.FindAsync<LocationData>(key);
         }
 
         public static async Task<Weather> GetWeatherData(string key)
         {
-            await LoadIfNeeded();
+            LoadIfNeeded();
             return await weatherDB.FindWithChildrenAsync<Weather>(key);
         }
 
         public static async Task<Weather> GetWeatherDataByCoordinate(LocationData location)
         {
-            await LoadIfNeeded();
+            LoadIfNeeded();
             List<Weather> weatherData = await weatherDB.GetAllWithChildrenAsync<Weather>(weather => 
                     location.latitude.Equals(weather.location.latitude) && location.longitude.Equals(weather.location.longitude));
 
@@ -167,7 +167,7 @@ namespace SimpleWeather.Utils
 
         public static async Task<List<WeatherAlert>> GetWeatherAlertData(string key)
         {
-            await LoadIfNeeded();
+            LoadIfNeeded();
 
             List<WeatherAlert> alerts = null;
 
@@ -193,7 +193,7 @@ namespace SimpleWeather.Utils
 
         public static async Task<LocationData> GetLastGPSLocData()
         {
-            await LoadIfNeeded();
+            LoadIfNeeded();
 
             if (lastGPSLocData != null && lastGPSLocData.locationType != LocationType.GPS)
                 lastGPSLocData.locationType = LocationType.GPS;

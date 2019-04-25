@@ -291,6 +291,9 @@ namespace SimpleWeather.UWP
             if (ResLoader == null)
                 ResLoader = new ResourceLoader();
 
+            // Load data if needed
+            Settings.LoadIfNeeded();
+
             // TitleBar
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
@@ -334,6 +337,9 @@ namespace SimpleWeather.UWP
 
             if (ResLoader == null)
                 ResLoader = new ResourceLoader();
+
+            // Load data if needed
+            Settings.LoadIfNeeded();
 
             Initialized = true;
 

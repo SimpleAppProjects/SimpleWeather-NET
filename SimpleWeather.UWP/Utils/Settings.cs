@@ -240,13 +240,13 @@ namespace SimpleWeather.Utils
 
         private static int GetVersionCode()
         {
-            if (!localSettings.Containers["version"].Values.ContainsKey(KEY_CURRENTVERSION) || localSettings.Values[KEY_CURRENTVERSION] == null)
+            if (localSettings.Containers.ContainsKey("version"))
             {
-                SetVersionCode(0);
-                return 0;
+                if (localSettings.Containers["version"].Values.TryGetValue(KEY_CURRENTVERSION, out object value))
+                    return (int)value;
             }
-            else
-                return (int)localSettings.Containers["version"].Values[KEY_CURRENTVERSION];
+
+            return 0;
         }
 
         private static void SetVersionCode(int value)
@@ -256,7 +256,7 @@ namespace SimpleWeather.Utils
 
         private static bool IsOnBoardingComplete()
         {
-            Task.Run(() => LoadIfNeeded()).GetAwaiter().GetResult();
+            LoadIfNeeded();
 
             if (!localSettings.Values.ContainsKey(KEY_ONBOARDINGCOMPLETE) || localSettings.Values[KEY_ONBOARDINGCOMPLETE] == null)
             {
