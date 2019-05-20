@@ -81,19 +81,18 @@ namespace SimpleWeather.WeatherData
 
             switch (API)
             {
-                case SimpleWeather.WeatherData.WeatherAPI.Yahoo:
+                case WeatherData.WeatherAPI.Yahoo:
                     providerImpl = new YahooWeatherProvider();
                     break;
-                case SimpleWeather.WeatherData.WeatherAPI.Here:
-                    providerImpl = new HEREWeatherProvider();
-                    break;
-                case SimpleWeather.WeatherData.WeatherAPI.OpenWeatherMap:
+                case WeatherData.WeatherAPI.OpenWeatherMap:
                     providerImpl = new OpenWeatherMapProvider();
                     break;
-                case SimpleWeather.WeatherData.WeatherAPI.MetNo:
+                case WeatherData.WeatherAPI.MetNo:
                     providerImpl = new MetnoWeatherProvider();
                     break;
+                case WeatherData.WeatherAPI.Here:
                 default:
+                    providerImpl = new HEREWeatherProvider();
                     break;
             }
 
