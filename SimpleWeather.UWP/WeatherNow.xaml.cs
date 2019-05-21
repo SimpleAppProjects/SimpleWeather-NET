@@ -209,8 +209,11 @@ namespace SimpleWeather.UWP
                             await Task.Delay(1);
                         }
 
+                        var userlang = GlobalizationPreferences.Languages[0];
+                        var culture = new CultureInfo(userlang);
+
                         SunPhasePanel?.SetSunriseSetTimes(
-                            DateTime.Parse(WeatherView.Sunrise).TimeOfDay, DateTime.Parse(WeatherView.Sunset).TimeOfDay,
+                            DateTime.Parse(WeatherView.Sunrise, culture).TimeOfDay, DateTime.Parse(WeatherView.Sunset, culture).TimeOfDay,
                             location?.tz_offset);
                     }
                     break;
@@ -656,7 +659,7 @@ namespace SimpleWeather.UWP
                 if (HourlyForecastViewer.Visibility == Visibility.Visible)
                     ScrollLeft(HourlyForecastViewer);
                 else
-                    ScrollLeft(HourlyLineView.ScrollViewer);
+                    ScrollLeft(HourlyLineView?.ScrollViewer);
             }
             else
             {
@@ -673,7 +676,7 @@ namespace SimpleWeather.UWP
                 if (HourlyForecastViewer.Visibility == Visibility.Visible)
                     ScrollRight(HourlyForecastViewer);
                 else
-                    ScrollRight(HourlyLineView.ScrollViewer);
+                    ScrollRight(HourlyLineView?.ScrollViewer);
             }
             else
             {
@@ -722,12 +725,12 @@ namespace SimpleWeather.UWP
 
         private static void ScrollLeft(ScrollViewer viewer)
         {
-            viewer.ChangeView(viewer.HorizontalOffset - viewer.ActualWidth, null, null);
+            viewer?.ChangeView(viewer?.HorizontalOffset - viewer?.ActualWidth, null, null);
         }
 
         private static void ScrollRight(ScrollViewer viewer)
         {
-            viewer.ChangeView(viewer.HorizontalOffset + viewer.ActualWidth, null, null);
+            viewer?.ChangeView(viewer?.HorizontalOffset + viewer?.ActualWidth, null, null);
         }
 
         private void HourlySwitch_Toggled(object sender, RoutedEventArgs e)
@@ -745,7 +748,7 @@ namespace SimpleWeather.UWP
                     Visibility.Visible : Visibility.Collapsed;
             }
 
-            ForecastViewer_ViewChanged(sw.IsOn ? HourlyForecastViewer : HourlyLineView.ScrollViewer, null);
+            ForecastViewer_ViewChanged(sw.IsOn ? HourlyForecastViewer : HourlyLineView?.ScrollViewer, null);
         }
 
         private void GotoAlertsPage()
@@ -873,7 +876,7 @@ namespace SimpleWeather.UWP
             {
                 case "Temp":
                 default:
-                    if (WeatherView?.Extras?.HourlyForecast?.Count > 0)
+                    if (WeatherView?.Extras?.HourlyForecast?.Count > 0 && HourlyLineView != null)
                     {
                         HourlyLineView.DrawGridLines = false;
                         HourlyLineView.DrawDotLine = false;
@@ -906,17 +909,17 @@ namespace SimpleWeather.UWP
 
                         tempDataList.Add(tempData);
 
-                        while (!HourlyLineView.ReadyToDraw)
+                        while ((bool)!HourlyLineView?.ReadyToDraw)
                         {
                             await Task.Delay(1);
                         }
 
-                        HourlyLineView.SetDataLabels(iconLabels, tempLabels);
-                        HourlyLineView.SetDataList(tempDataList);
+                        HourlyLineView?.SetDataLabels(iconLabels, tempLabels);
+                        HourlyLineView?.SetDataList(tempDataList);
                     }
                     break;
                 case "Wind":
-                    if (WeatherView?.Extras?.HourlyForecast?.Count > 0)
+                    if (WeatherView?.Extras?.HourlyForecast?.Count > 0 && HourlyLineView != null)
                     {
                         HourlyLineView.DrawGridLines = false;
                         HourlyLineView.DrawDotLine = false;
@@ -949,17 +952,17 @@ namespace SimpleWeather.UWP
 
                         windDataList.Add(windData);
 
-                        while (!HourlyLineView.ReadyToDraw)
+                        while ((bool)!HourlyLineView?.ReadyToDraw)
                         {
                             await Task.Delay(1);
                         }
 
-                        HourlyLineView.SetDataLabels(iconLabels, windLabels);
-                        HourlyLineView.SetDataList(windDataList);
+                        HourlyLineView?.SetDataLabels(iconLabels, windLabels);
+                        HourlyLineView?.SetDataList(windDataList);
                     }
                     break;
                 case "Rain":
-                    if (WeatherView?.Extras?.HourlyForecast?.Count > 0)
+                    if (WeatherView?.Extras?.HourlyForecast?.Count > 0 && HourlyLineView != null)
                     {
                         HourlyLineView.DrawGridLines = false;
                         HourlyLineView.DrawDotLine = false;
@@ -992,13 +995,13 @@ namespace SimpleWeather.UWP
                         iconLabels.Add(new KeyValuePair<string, int>(WeatherIcons.RAINDROP, 0));
                         popDataList.Add(popData);
 
-                        while (!HourlyLineView.ReadyToDraw)
+                        while ((bool)!HourlyLineView?.ReadyToDraw)
                         {
                             await Task.Delay(1);
                         }
 
-                        HourlyLineView.SetDataLabels(iconLabels, popLabels);
-                        HourlyLineView.SetDataList(popDataList);
+                        HourlyLineView?.SetDataLabels(iconLabels, popLabels);
+                        HourlyLineView?.SetDataList(popDataList);
                     }
                     break;
             }

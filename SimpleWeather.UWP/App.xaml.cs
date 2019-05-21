@@ -199,7 +199,7 @@ namespace SimpleWeather.UWP
                             {
                                 Settings.HomeData,
                             };
-                            var location = locations.FirstOrDefault(loc => loc.query.Equals(SecondaryTileUtils.GetQueryFromId(e.TileId)));
+                            var location = locations.FirstOrDefault(loc => loc.query != null && loc.query.Equals(SecondaryTileUtils.GetQueryFromId(e.TileId)));
                             if (location != null)
                             {
                                 var isHome = location.Equals(Settings.HomeData);

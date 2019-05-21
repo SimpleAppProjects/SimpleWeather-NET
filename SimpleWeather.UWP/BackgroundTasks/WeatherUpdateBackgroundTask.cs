@@ -66,9 +66,9 @@ namespace SimpleWeather.UWP.BackgroundTasks
 
                             var locations = await Settings.GetLocationData();
                             var location = locations.FirstOrDefault(
-                                loc => loc.query.Equals(SecondaryTileUtils.GetQueryFromId(tile.TileId)));
+                                loc => loc.query != null && loc.query.Equals(SecondaryTileUtils.GetQueryFromId(tile.TileId)));
 
-                            Logger.WriteLine(LoggerLevel.Debug, "Location = " + location?.name);
+                            Logger.WriteLine(LoggerLevel.Debug, "Location = " + location?.ToString());
                             Logger.WriteLine(LoggerLevel.Debug, "TileID = " + tile.TileId);
 
                             if (location != null)
@@ -116,7 +116,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                 Logger.WriteLine(LoggerLevel.Error, ex, "{0}: Error cancelling task...", taskName);
             }
 
-            Logger.WriteLine(LoggerLevel.Info, "Background " + sender?.Task?.Name + " Cancel Requested...");
+            Logger.WriteLine(LoggerLevel.Info, "{0}: Cancel Requested...", sender?.Task?.Name);
         }
 
         public static async Task RequestAppTrigger()
