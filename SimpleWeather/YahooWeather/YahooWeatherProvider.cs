@@ -69,7 +69,7 @@ namespace SimpleWeather.WeatherYahoo
                 {
                     // Add headers to request
                     request.Headers.Add("Authorization", authorization);
-                    request.Headers.Add("Yahoo-App-Id", APIKeys.GetYahooAppID());
+                    request.Headers.Add("X-Yahoo-App-Id", APIKeys.GetYahooAppID());
                     request.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/json"));
 
                     CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
