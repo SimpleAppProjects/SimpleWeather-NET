@@ -297,71 +297,98 @@ namespace SimpleWeather.WeatherData
             // Alert Type
             switch (alert.type)
             {
-                case "2": // Coastal Flood Warning, Watch, or Statement
-                case "3": // Flash Flood Watch
-                case "4": // Flash Flood Statement
-                case "6": // Flood Statement
-                    Type = WeatherAlertType.FloodWatch;
-                    Severity = WeatherAlertSeverity.Severe;
-                    break;
-                case "5": // Flash Flood Warning
-                case "7": // Flood Warning
-                case "8": // Urban and Small Stream Flood Advisory
-                    Type = WeatherAlertType.FloodWarning;
-                    Severity = WeatherAlertSeverity.Extreme;
-                    break;
-                case "9": // Hurricane Local Statement
-                    Type = WeatherAlertType.HurricaneLocalStatement;
+                case "1": // Strong Thunderstorms Anticipated
+                    Type = WeatherAlertType.SevereThunderstormWatch;
                     Severity = WeatherAlertSeverity.Moderate;
                     break;
-                case "13": // Public Severe Weather Alert
-                case "29": // Severe Weather Statement
-                    Type = WeatherAlertType.SevereWeather;
-                    Severity = WeatherAlertSeverity.Severe;
-                    break;
-                case "14": // Red Flag Warning
-                    Type = WeatherAlertType.SpecialWeatherAlert;
-                    Severity = WeatherAlertSeverity.Extreme;
-                    break;
-                case "15": // River Ice Statement
-                case "18": // Snow Avalanche Bulletin
-                case "37": // Winter Weather Advisory
-                    Type = WeatherAlertType.WinterWeather;
-                    Severity = WeatherAlertSeverity.Severe;
-                    break;
-                case "21": // Severe Local Storm Watch or Watch Cancellation
-                case "23": // Severe Local Storm Watch and Areal Outline
-                case "24": // Marine Subtropical Storm Advisory
-                    Type = WeatherAlertType.StormWarning;
-                    Severity = WeatherAlertSeverity.Severe;
-                    break;
-                case "27": // Special Weather Statement
-                    Type = WeatherAlertType.SpecialWeatherAlert;
-                    Severity = WeatherAlertSeverity.Severe;
-                    break;
-                case "28": // Severe Thunderstorm Warning
+                case "2": // Severe Thunderstorms Anticipated
                     Type = WeatherAlertType.SevereThunderstormWarning;
                     Severity = WeatherAlertSeverity.Extreme;
                     break;
-                case "30": // Tropical Cyclone Advisory
-                case "31": // Tropical Cyclone Advisory for Marine and Aviation Interests
-                case "32": // Public Tropical Cyclone Advisory
-                case "33": // Tropical Cyclone Update
-                    Type = WeatherAlertType.HurricaneWindWarning;
-                    Severity = WeatherAlertSeverity.Severe;
-                    break;
-                case "34": // Tornado Warning
+                case "3": // Tornadoes Possible
                     Type = WeatherAlertType.TornadoWarning;
                     Severity = WeatherAlertSeverity.Extreme;
                     break;
-                case "35": // Tsunami Watch or Warning
-                    Type = WeatherAlertType.TsunamiWarning;
+                case "4": // Heavy Rain Anticipated
+                    Type = WeatherAlertType.FloodWatch;
                     Severity = WeatherAlertSeverity.Severe;
                     break;
-                case "36": // Volcanic Activity Statement
-                    Type = WeatherAlertType.Volcano;
+                case "5": // Floods Anticipated
+                case "6": // Flash Floods Anticipated
+                    Type = WeatherAlertType.FloodWarning;
+                    Severity = WeatherAlertSeverity.Extreme;
+                    break;
+                case "7": // High Winds Anticipated
+                    Type = WeatherAlertType.HighWind;
+                    Severity = WeatherAlertSeverity.Moderate;
+                    break;
+                case "8": // Heavy Snow Anticipated
+                case "11": // Freezing Rain Anticipated
+                case "12": // Ice Storm Anticipated
+                    Type = WeatherAlertType.WinterWeather;
                     Severity = WeatherAlertSeverity.Severe;
                     break;
+                case "9": // Blizzard Conditions Anticipated
+                case "10": // Blowing Snow Anticipated
+                    Type = WeatherAlertType.WinterWeather;
+                    Severity = WeatherAlertSeverity.Extreme;
+                    break;
+                case "13": // Snow Advisory
+                case "14": // Winter Weather Advisory
+
+                case "17": // Wind Chill Alert
+                case "18": // Frost Advisory
+                case "19": // Freeze Advisory
+
+                    Type = WeatherAlertType.WinterWeather;
+                    Severity = WeatherAlertSeverity.Moderate;
+                    break;
+                case "15": // Heat Advisory
+                    Type = WeatherAlertType.Heat;
+                    Severity = WeatherAlertSeverity.Moderate;
+                    break;
+                case "16": // Excessive Heat Alert
+                    Type = WeatherAlertType.Heat;
+                    Severity = WeatherAlertSeverity.Extreme;
+                    break;
+                case "20": // Fog Anticipated
+                case "22": // Smog Anticipated
+                    Type = WeatherAlertType.DenseFog;
+                    Severity = WeatherAlertSeverity.Moderate;
+                    break;
+                case "21": // Dense Fog Anticipated
+                    Type = WeatherAlertType.DenseFog;
+                    Severity = WeatherAlertSeverity.Severe;
+                    break;
+                case "30": // Tropical Cyclone Conditions Anticipated
+                    Type = WeatherAlertType.HurricaneWindWarning;
+                    Severity = WeatherAlertSeverity.Severe;
+                    break;
+                case "31": // Hurricane Conditions Anticipated
+                    Type = WeatherAlertType.HurricaneWindWarning;
+                    Severity = WeatherAlertSeverity.Extreme;
+                    break;
+                case "32": // Small Craft Advisory Anticipated
+                    Type = WeatherAlertType.SmallCraft;
+                    Severity = WeatherAlertSeverity.Moderate;
+                    break;
+                case "33": // Gale Warning Anticipated
+                    Type = WeatherAlertType.GaleWarning;
+                    Severity = WeatherAlertSeverity.Severe;
+                    break;
+                case "34": // High Winds Anticipated (Winds greater than 35 || 50 mph anticipated)
+                    Type = WeatherAlertType.HighWind;
+                    Severity = WeatherAlertSeverity.Severe;
+                    break;
+                case "23": // Unknown
+                case "24": // Unknown
+                case "25": // Unknown
+                case "26": // Unknown
+                case "27": // Unknown
+                case "28": // Unknown
+                case "29": // Unknown
+                case "35": // Heavy Surf Advisory
+                case "36": // Beach Erosion Advisory
                 default:
                     Type = WeatherAlertType.SpecialWeatherAlert;
                     Severity = WeatherAlertSeverity.Severe;
