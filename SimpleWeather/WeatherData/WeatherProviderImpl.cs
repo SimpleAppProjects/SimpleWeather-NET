@@ -156,7 +156,7 @@ namespace SimpleWeather.WeatherData
                 case WeatherIcons.DAY_SHOWERS:
                 case WeatherIcons.DAY_SLEET:
                 case WeatherIcons.DAY_SPRINKLE:
-                    argb = new byte[4] { 0xff, 0x78, 0xb0, 0xc8 };
+                    argb = new byte[4] { 0xff, 0x10, 0x20, 0x30 };
                     break;
                 case WeatherIcons.NIGHT_ALT_HAIL:
                 case WeatherIcons.NIGHT_ALT_RAIN:
@@ -171,18 +171,18 @@ namespace SimpleWeather.WeatherData
                 case WeatherIcons.SHOWERS:
                 case WeatherIcons.SLEET:
                 case WeatherIcons.SPRINKLE:
-                    argb = new byte[4] { 0xff, 0x18, 0x18, 0x10 };
+                    argb = new byte[4] { 0xff, 0x18, 0x10, 0x10 };
                     break;
                 // Tornado / Hurricane / Thunderstorm / Tropical Storm
                 case WeatherIcons.DAY_LIGHTNING:
                 case WeatherIcons.DAY_THUNDERSTORM:
-                    argb = new byte[4] { 0xff, 0x68, 0x70, 0x80 };
+                    argb = new byte[4] { 0xff, 0x28, 0x38, 0x48 };
                     break;
                 case WeatherIcons.NIGHT_ALT_LIGHTNING:
                 case WeatherIcons.NIGHT_ALT_THUNDERSTORM:
                 case WeatherIcons.LIGHTNING:
                 case WeatherIcons.THUNDERSTORM:
-                    argb = new byte[4] { 0xff, 0x30, 0x38, 0x68 };
+                    argb = new byte[4] { 0xff, 0x18, 0x18, 0x30 };
                     break;
                 case WeatherIcons.DAY_STORM_SHOWERS:
                 case WeatherIcons.DAY_SLEET_STORM:
@@ -192,12 +192,12 @@ namespace SimpleWeather.WeatherData
                 case WeatherIcons.HAIL:
                 case WeatherIcons.HURRICANE:
                 case WeatherIcons.TORNADO:
-                    argb = new byte[4] { 0xff, 0x28, 0x38, 0x40 };
+                    argb = new byte[4] { 0xff, 0x18, 0x28, 0x30 };
                     break;
                 // Dust
                 case WeatherIcons.DUST:
                 case WeatherIcons.SANDSTORM:
-                    argb = new byte[4] { 0xff, 0xaf, 0x9f, 0x6d };
+                    argb = new byte[4] { 0xff, 0xb0, 0x68, 0x10 };
                     break;
                 // Foggy / Haze
                 case WeatherIcons.DAY_FOG:
@@ -206,7 +206,7 @@ namespace SimpleWeather.WeatherData
                 case WeatherIcons.NIGHT_FOG:
                 case WeatherIcons.SMOG:
                 case WeatherIcons.SMOKE:
-                    argb = new byte[4] { 0xff, 0x88, 0x88, 0x88 };
+                    argb = new byte[4] { 0xff, 0x20, 0x20, 0x20 };
                     break;
                 // Snow / Snow Showers/Storm
                 case WeatherIcons.DAY_SNOW:
@@ -214,12 +214,12 @@ namespace SimpleWeather.WeatherData
                 case WeatherIcons.NIGHT_ALT_SNOW:
                 case WeatherIcons.NIGHT_ALT_SNOW_THUNDERSTORM:
                 case WeatherIcons.SNOW:
-                    argb = new byte[4] { 0xff, 0x50, 0x88, 0xb0 };
+                    argb = new byte[4] { 0xff, 0xb8, 0xd0, 0xf0 };
                     break;
                 case WeatherIcons.SNOW_WIND:
                 case WeatherIcons.DAY_SNOW_WIND:
                 case WeatherIcons.NIGHT_ALT_SNOW_WIND:
-                    argb = new byte[4] { 0xff, 0x88, 0x88, 0x88 };
+                    argb = new byte[4] { 0xff, 0xe0, 0xe0, 0xe0 };
                     break;
                 /* Ambigious weather conditions */
                 // (Mostly) Cloudy
@@ -236,17 +236,17 @@ namespace SimpleWeather.WeatherData
                 case WeatherIcons.NIGHT_ALT_CLOUDY_HIGH:
                 case WeatherIcons.NIGHT_ALT_CLOUDY_WINDY:
                     if (IsNight(weather))
-                        argb = new byte[4] { 0xff, 0x18, 0x20, 0x30 };
+                        argb = new byte[4] { 0xff, 0x18, 0x20, 0x20 };
                     else
-                        argb = new byte[4] { 0xff, 0x48, 0x80, 0xa8 };
+                        argb = new byte[4] { 0xff, 0x50, 0x80, 0xa8 };
                     break;
                 // Partly Cloudy
                 case WeatherIcons.DAY_SUNNY_OVERCAST:
                 case WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY:
                     if (IsNight(weather))
-                        argb = new byte[4] { 0xff, 0x38, 0x40, 0x50 };
+                        argb = new byte[4] { 0xff, 0x18, 0x18, 0x20 };
                     else
-                        argb = new byte[4] { 0xff, 0x38, 0x68, 0xa8 };
+                        argb = new byte[4] { 0xff, 0x88, 0xb0, 0xc8 };
                     break;
                 case WeatherIcons.DAY_SUNNY:
                 case WeatherIcons.NA:
@@ -258,9 +258,9 @@ namespace SimpleWeather.WeatherData
                 default:
                     // Set background based using sunset/rise times
                     if (IsNight(weather))
-                        argb = new byte[4] { 0xff, 0x20, 0x20, 0x20 };
+                        argb = new byte[4] { 0xff, 0x18, 0x10, 0x18 };
                     else
-                        argb = new byte[4] { 0xff, 0x68, 0x90, 0xb8 };
+                        argb = new byte[4] { 0xff, 0x20, 0xa8, 0xd8 };
                     break;
             }
 
@@ -271,12 +271,12 @@ namespace SimpleWeather.WeatherData
                 if (IsNight(weather))
                 {
                     // Night background
-                    argb = new byte[4] { 0xff, 0x20, 0x20, 0x20 };
+                    argb = new byte[4] { 0xff, 0x18, 0x10, 0x18 };
                 }
                 else
                 {
                     // set day bg
-                    argb = new byte[4] { 0xff, 0x68, 0x90, 0xb8 };
+                    argb = new byte[4] { 0xff, 0x20, 0xa8, 0xd8 };
                 }
             }
 
