@@ -204,7 +204,7 @@ namespace SimpleWeather.UWP
                 case "Sunset":
                     if (!String.IsNullOrWhiteSpace(WeatherView.Sunrise) && !String.IsNullOrWhiteSpace(WeatherView.Sunset))
                     {
-                        while (!(bool)SunPhasePanel?.ReadyToDraw)
+                        while (SunPhasePanel == null || (bool)!SunPhasePanel?.ReadyToDraw)
                         {
                             await Task.Delay(1);
                         }
@@ -909,7 +909,7 @@ namespace SimpleWeather.UWP
 
                         tempDataList.Add(tempData);
 
-                        while ((bool)!HourlyLineView?.ReadyToDraw)
+                        while (HourlyLineView == null || (bool)!HourlyLineView?.ReadyToDraw)
                         {
                             await Task.Delay(1);
                         }
@@ -952,7 +952,7 @@ namespace SimpleWeather.UWP
 
                         windDataList.Add(windData);
 
-                        while ((bool)!HourlyLineView?.ReadyToDraw)
+                        while (HourlyLineView == null || (bool)!HourlyLineView?.ReadyToDraw)
                         {
                             await Task.Delay(1);
                         }
@@ -995,7 +995,7 @@ namespace SimpleWeather.UWP
                         iconLabels.Add(new KeyValuePair<string, int>(WeatherIcons.RAINDROP, 0));
                         popDataList.Add(popData);
 
-                        while ((bool)!HourlyLineView?.ReadyToDraw)
+                        while (HourlyLineView == null || (bool)!HourlyLineView?.ReadyToDraw)
                         {
                             await Task.Delay(1);
                         }
