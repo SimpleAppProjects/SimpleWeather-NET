@@ -48,6 +48,7 @@ namespace SimpleWeather.UWP
 
         private LocationData location = null;
         private double BGAlpha = 1.0;
+        private double GradAlpha = 1.0;
 
         private Geolocator geolocal = null;
         private Geoposition geoPos = null;
@@ -253,9 +254,13 @@ namespace SimpleWeather.UWP
             if (sender is ScrollViewer viewer && viewer.Background != null)
             {
                 // Default adj = 1.25f
-                float adj = 1.5f;
-                double alpha = 1 - (adj * viewer.VerticalOffset / viewer.ScrollableHeight);
-                MainViewer.Background.Opacity = (alpha >= 0) ? BGAlpha = alpha : BGAlpha = 0;
+                float adj = 1.25f;
+                double backAlpha = 1 - (1 * adj * viewer.VerticalOffset / viewer.ScrollableHeight);
+                double gradAlpha = 1 - (1 * adj * viewer.VerticalOffset / ConditionPanel.ActualHeight);
+                BGAlpha = Math.Max(backAlpha, 0.14453125); // 0x25
+                GradAlpha = Math.Max(gradAlpha, 0);
+                BackgroundOverlay.Background.Opacity = BGAlpha;
+                GradientOverlay.Background.Opacity = GradAlpha;
             }
         }
 
@@ -348,7 +353,7 @@ namespace SimpleWeather.UWP
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => 
             {
                 MainViewer?.ChangeView(null, 0, null, true);
-                BGAlpha = 1.0f;
+                BGAlpha = GradAlpha = 1.0f;
             });
 
             if (e.Parameter != null)

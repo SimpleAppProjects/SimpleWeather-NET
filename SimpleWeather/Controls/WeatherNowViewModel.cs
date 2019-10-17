@@ -51,9 +51,6 @@ namespace SimpleWeather.Controls
         public static readonly DependencyProperty BackgroundProperty =
             DependencyProperty.Register("Background", typeof(ImageBrush),
             typeof(WeatherNowViewModel), new PropertyMetadata(null));
-        public static readonly DependencyProperty BackgroundThemeProperty =
-            DependencyProperty.Register("BackgroundTheme", typeof(ElementTheme),
-            typeof(WeatherNowViewModel), new PropertyMetadata(ElementTheme.Default));
         public static readonly DependencyProperty ImageDataProperty =
             DependencyProperty.Register("ImageDataProperty", typeof(ImageDataViewModel),
             typeof(WeatherNowViewModel), new PropertyMetadata(null));
@@ -139,11 +136,6 @@ namespace SimpleWeather.Controls
             get { return (ImageBrush)GetValue(BackgroundProperty); }
             set { SetValue(BackgroundProperty, value); OnPropertyChanged("Background"); }
         }
-        public ElementTheme BackgroundTheme
-        {
-            get { return (ElementTheme)GetValue(BackgroundThemeProperty); }
-            set { SetValue(BackgroundThemeProperty, value); OnPropertyChanged("BackgroundTheme"); }
-        }
         public ImageDataViewModel ImageData
         {
             get { return (ImageDataViewModel)GetValue(ImageDataProperty); }
@@ -217,9 +209,6 @@ namespace SimpleWeather.Controls
                 // Update backgrounds
                 wm.SetBackground(Background, weather);
                 PendingBackgroundColor = wm.GetWeatherBackgroundColor(weather);
-
-                BackgroundTheme = ColorUtils.IsColorDark(PendingBackgroundColor) ?
-                    ElementTheme.Dark : ElementTheme.Light;
 
                 if (Background.ImageSource is BitmapImage bmp)
                 {

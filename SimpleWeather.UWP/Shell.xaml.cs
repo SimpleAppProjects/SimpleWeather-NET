@@ -53,7 +53,7 @@ namespace SimpleWeather.UWP
                 {
                     Icon = new FontIcon()
                     {
-                        Glyph = WeatherIcons.DAY_SUNNY,
+                        Glyph = WeatherIcons.DAY_CLOUDY,
                         FontFamily = new FontFamily("/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons"),
                         FontSize = 15
                     },
@@ -156,18 +156,7 @@ namespace SimpleWeather.UWP
                 }
             }
 
-            if (AppFrame.Content is ICommandBarPage cmdBarPage)
-            {
-                CommandBarTitle.Text = cmdBarPage.CommandBarLabel;
-                CommandBar.PrimaryCommands.Clear();
-                if (cmdBarPage.PrimaryCommands != null)
-                    cmdBarPage.PrimaryCommands.ForEach(cmd => CommandBar.PrimaryCommands.Add(cmd));
-            }
-            else
-            {
-                CommandBarTitle.Text = "SimpleWeather";
-                CommandBar.PrimaryCommands.Clear();
-            }
+            UpdateCommandBar();
         }
 
         private async void Shell_BackRequested(object sender, BackRequestedEventArgs e)

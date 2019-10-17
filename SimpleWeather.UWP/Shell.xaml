@@ -20,7 +20,7 @@
             <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}"/>
             <Setter Property="FontWeight" Value="Normal"/>
             <Setter Property="Width" Value="68"/>
-            <Setter Property="Height" Value="48"/>
+            <Setter Property="Height" Value="52"/>
             <Setter Property="UseSystemFocusVisuals" Value="True"/>
             <Setter Property="AllowFocusOnInteraction" Value="False"/>
             <Setter Property="Template">
@@ -223,13 +223,8 @@
         </Style>
     </Page.Resources>
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <CommandBar x:Name="CommandBar" RequestedTheme="Dark" Foreground="White" Grid.Row="0">
+    <Page.TopAppBar>
+        <CommandBar x:Name="CommandBar" RequestedTheme="Dark" Foreground="White">
             <CommandBar.Background>
                 <SolidColorBrush Color="{x:Bind AppBarColor, FallbackValue='#FF006FBF'}" />
             </CommandBar.Background>
@@ -238,12 +233,19 @@
                            Win1809NotPresent:Margin="16,12,0,0" Win1809Present:Margin="16,8,0,0" VerticalAlignment="Center" />
             </CommandBar.Content>
         </CommandBar>
-        <Frame x:Name="FrameContent" Grid.Row="1" />
-        <Grid RequestedTheme="Dark" Grid.Row="2" Background="{x:Bind CommandBar.Background}">
+    </Page.TopAppBar>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Frame x:Name="FrameContent" Grid.Row="0" />
+        <Grid RequestedTheme="Dark" Grid.Row="1" Background="{x:Bind CommandBar.Background}">
             <StackPanel x:Name="NavBar" Orientation="Horizontal" HorizontalAlignment="Center" x:Load="False" Background="{x:Bind CommandBar.Background}">
                 <AppBarButton x:Uid="Nav_WeatherNow" Label="Weather" Click="NavBarItem_Click" Width="125" Style="{StaticResource AppBarButtonStyle}">
                     <AppBarButton.Icon>
-                        <FontIcon Glyph="&#xf00d;" Style="{StaticResource WeatherFontIcon}" />
+                        <FontIcon Glyph="&#xf002;" Style="{StaticResource WeatherFontIcon}" />
                     </AppBarButton.Icon>
                 </AppBarButton>
                 <AppBarButton x:Uid="Nav_Locations" Label="Locations" Click="NavBarItem_Click" Width="125" Style="{StaticResource AppBarButtonStyle}">

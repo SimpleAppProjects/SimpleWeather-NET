@@ -6,10 +6,10 @@
     xmlns:localcontrols="using:SimpleWeather.UWP.Controls"
     xmlns:local="using:SimpleWeather.UWP"
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:toolkitMedia="using:Microsoft.Toolkit.Uwp.UI.Media"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    d:DesignHeight="1500"
     DataContext="{x:Bind WeatherView}">
 
     <Page.Resources>
@@ -433,15 +433,24 @@
         </Style>
     </Page.Resources>
 
-    <Grid RequestedTheme="{x:Bind WeatherView.BackgroundTheme, FallbackValue='Light', Mode=OneWay}">
+    <Grid>
         <Grid.Background>
             <SolidColorBrush Color="{x:Bind WeatherView.PendingBackgroundColor, FallbackValue='#FF006FBF', Mode=OneWay}" />
-        </Grid.Background>
+        </Grid.Background>        
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <ScrollViewer x:Name="MainViewer" VerticalScrollMode="Auto" Background="{x:Bind WeatherView.Background, FallbackValue='#FF006FBF', Mode=OneWay, TargetNullValue='#FF006FBF'}"
-                      SizeChanged="MainViewer_SizeChanged" ViewChanged="MainViewer_ViewChanged">
+        <Grid x:Name="BackgroundOverlay" Background="{x:Bind WeatherView.Background, FallbackValue='#FF006FBF', Mode=OneWay, TargetNullValue='#FF006FBF'}" />
+        <Grid x:Name="GradientOverlay" Grid.Row="0">
+            <Grid.Background>
+                <toolkitMedia:RadialGradientBrush AlphaMode="Premultiplied" Center="0.5,0.5" ColorInterpolationMode="SRgbLinearInterpolation"
+                                                  GradientOrigin="0.5,0.5" RadiusX="0.5" RadiusY="0.5" SpreadMethod="Pad">
+                    <GradientStop Color="#83121212" Offset="0" />
+                    <GradientStop Color="#30121212" Offset="1" />
+                </toolkitMedia:RadialGradientBrush>
+            </Grid.Background>
+        </Grid>
+        <ScrollViewer x:Name="MainViewer" VerticalScrollMode="Auto" SizeChanged="MainViewer_SizeChanged" ViewChanged="MainViewer_ViewChanged">
             <StackPanel>
                 <Grid x:Name="ConditionPanel" Height="Auto">
                     <Grid.RowDefinitions>
@@ -453,18 +462,14 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Viewbox Name="LocationBox" Margin="25,10,25,0" Height="50" Grid.Row="0">
-                        <toolkitControls:DropShadowPanel BlurRadius="8.0" ShadowOpacity="1.0">
-                            <TextBlock Name="Location" Text="{x:Bind WeatherView.Location, FallbackValue='New York, NY', Mode=OneWay}"
+                        <TextBlock Name="Location" Text="{x:Bind WeatherView.Location, FallbackValue='New York, NY', Mode=OneWay}"
                                Foreground="White" FontWeight="SemiBold" TextAlignment="Center"
                                Padding="5" Transitions="{StaticResource TextTransitions}"/>
-                        </toolkitControls:DropShadowPanel>
                     </Viewbox>
                     <Viewbox Name="UpdateDateBox" Height="25" Grid.Row="1">
-                        <toolkitControls:DropShadowPanel BlurRadius="8.0" ShadowOpacity="1.0">
-                            <TextBlock Name="UpdateDate" Text="{x:Bind WeatherView.UpdateDate, FallbackValue='Updated on 11:12 PM', Mode=OneWay}"
+                        <TextBlock Name="UpdateDate" Text="{x:Bind WeatherView.UpdateDate, FallbackValue='Updated on 11:12 PM', Mode=OneWay}"
                                Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Bottom"
                                Padding="5" Transitions="{StaticResource TextTransitions}" FontSize="12"/>
-                        </toolkitControls:DropShadowPanel>
                     </Viewbox>
                     <Button x:Name="AlertButton" x:DeferLoadStrategy="Lazy"
                             Height="30" Padding="0" Background="OrangeRed"
@@ -496,24 +501,20 @@
                         </Button.Content>
                     </Button>
                     <Viewbox x:Name="WeatherBox" VerticalAlignment="Bottom" Grid.Row="3">
-                        <toolkitControls:DropShadowPanel BlurRadius="4.0" ShadowOpacity="0.70">
-                            <TextBlock x:Name="WeatherIcon" Style="{StaticResource WeatherIcon}" Text="{x:Bind WeatherView.WeatherIcon, FallbackValue='&#xf00d;', Mode=OneWay}" />
-                        </toolkitControls:DropShadowPanel>
+                        <TextBlock x:Name="WeatherIcon" Style="{StaticResource WeatherIcon}" Text="{x:Bind WeatherView.WeatherIcon, FallbackValue='&#xf00d;', Mode=OneWay}" />
                     </Viewbox>
-                    <toolkitControls:DropShadowPanel BlurRadius="8.0" ShadowOpacity="1.0" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="4">
-                        <TextBlock Name="CurCondition" Text="{x:Bind WeatherView.CurCondition, FallbackValue='Sunny', Mode=OneWay}"
-                                   FontSize="24" Foreground="White" Transitions="{StaticResource TextTransitions}"/>
-                    </toolkitControls:DropShadowPanel>
-                    <toolkitControls:DropShadowPanel BlurRadius="8.0" ShadowOpacity="1.0" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5,0,0,0" Grid.Row="5">
-                        <TextBlock Name="CurTemp" Text="{x:Bind WeatherView.CurTemp, FallbackValue='70&#xF045;', Mode=OneWay}"
-                                   FontSize="24" Foreground="White" Style="{StaticResource WeatherIcon}" />
-                    </toolkitControls:DropShadowPanel>
-                    <toolkitControls:DropShadowPanel BlurRadius="2.0" ShadowOpacity="0.7" VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Row="5"
-                                                     Visibility="{x:Bind WeatherView.ImageData, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}">
-                        <TextBlock Padding="5" FontSize="11">
+                    <TextBlock Name="CurCondition" Text="{x:Bind WeatherView.CurCondition, FallbackValue='Sunny', Mode=OneWay}"
+                               FontSize="24" Foreground="White" Transitions="{StaticResource TextTransitions}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="4" />
+                    <TextBlock Name="CurTemp" Text="{x:Bind WeatherView.CurTemp, FallbackValue='70&#xF045;', Mode=OneWay}"
+                                   FontSize="24" Foreground="White" Style="{StaticResource WeatherIcon}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5,0,0,0" Grid.Row="5" />
+                    <TextBlock Padding="5" FontSize="11" Foreground="White"
+                               VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                               Visibility="{x:Bind WeatherView.ImageData, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}"
+                               Grid.Row="5" >
                             <Span xml:space="preserve"><Run Text="Photo by "/><Hyperlink NavigateUri="{x:Bind WeatherView.ImageData.ArtistLink, Mode=OneWay}"><Run Text="{x:Bind WeatherView.ImageData.ArtistName, Mode=OneWay}"/></Hyperlink><Run Text=" on "/><Hyperlink NavigateUri="{x:Bind WeatherView.ImageData.SiteLink, Mode=OneWay}"><Run Text="{x:Bind WeatherView.ImageData.SiteName, Mode=OneWay}"/></Hyperlink></Span>
-                        </TextBlock>
-                    </toolkitControls:DropShadowPanel>
+                    </TextBlock>
                 </Grid>
                 <StackPanel>
                     <Grid Name="ForecastHeader" Padding="50,0,0,0">
@@ -736,8 +737,8 @@
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="LocationBox.Height" Value="50"/>
-                        <Setter Target="WeatherBox.Height" Value="125"/>
-                        <Setter Target="WeatherBox.Width" Value="125"/>
+                        <Setter Target="WeatherBox.Height" Value="130"/>
+                        <Setter Target="WeatherBox.Width" Value="130"/>
                         <Setter Target="StackControl.Height" Value="240"/>
                         <Setter Target="SunPhasePanel.Height" Value="250"/>
                     </VisualState.Setters>
@@ -748,8 +749,8 @@
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="LocationBox.Height" Value="50"/>
-                        <Setter Target="WeatherBox.Height" Value="150"/>
-                        <Setter Target="WeatherBox.Width" Value="150"/>
+                        <Setter Target="WeatherBox.Height" Value="155"/>
+                        <Setter Target="WeatherBox.Width" Value="155"/>
                         <Setter Target="StackControl.Height" Value="240"/>
                         <Setter Target="ForecastLabel.FontSize" Value="18"/>
                         <Setter Target="SunPhasePanel.Height" Value="250"/>
@@ -769,8 +770,8 @@
                         <Setter Target="StackControl.Margin" Value="15,0,0,0"/>
                         <Setter Target="Location.FontSize" Value="32"/>
                         <Setter Target="DetailsPanel.Margin" Value="0,0,0,0"/>
-                        <Setter Target="CurTemp.FontSize" Value="20"/>
-                        <Setter Target="CurCondition.FontSize" Value="20"/>
+                        <Setter Target="CurTemp.FontSize" Value="24"/>
+                        <Setter Target="CurCondition.FontSize" Value="24"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Medium">
@@ -793,8 +794,8 @@
                         <Setter Target="StackControl.Margin" Value="0,0,0,0"/>
                         <Setter Target="Location.FontSize" Value="36"/>
                         <Setter Target="DetailsPanel.Margin" Value="50,0,50,0"/>
-                        <Setter Target="CurTemp.FontSize" Value="24"/>
-                        <Setter Target="CurCondition.FontSize" Value="24"/>
+                        <Setter Target="CurTemp.FontSize" Value="32"/>
+                        <Setter Target="CurCondition.FontSize" Value="32"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
