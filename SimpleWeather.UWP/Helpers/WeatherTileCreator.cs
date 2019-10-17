@@ -40,7 +40,8 @@ namespace SimpleWeather.UWP.Helpers
                 // Background URI
                 BackgroundImage = new TileBackgroundImage()
                 {
-                    Source = wm.GetBackgroundURI(weather)
+                    Source = wm.GetBackgroundURI(weather),
+                    HintOverlay = 50
                 }
             };
 
@@ -369,7 +370,8 @@ namespace SimpleWeather.UWP.Helpers
                 // Background URI
                 BackgroundImage = new TileBackgroundImage()
                 {
-                    Source = wm.GetBackgroundURI(weather)
+                    Source = wm.GetBackgroundURI(weather),
+                    HintOverlay = 50
                 }
             };
 
@@ -644,7 +646,8 @@ namespace SimpleWeather.UWP.Helpers
                 // Background URI
                 BackgroundImage = new TileBackgroundImage()
                 {
-                    Source = wm.GetBackgroundURI(weather)
+                    Source = wm.GetBackgroundURI(weather),
+                    HintOverlay = 50
                 }
             };
 
