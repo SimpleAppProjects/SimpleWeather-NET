@@ -152,7 +152,7 @@ namespace SimpleWeather.WeatherData
             atmosphere = new Atmosphere(root.current_observation);
             astronomy = new Astronomy(root.sun_phase, root.moon_phase);
             precipitation = new Precipitation(root.forecast.simpleforecast.forecastday[0]);
-            ttl = "60";
+            ttl = "120";
 
             source = WeatherAPI.WeatherUnderground;
         }
