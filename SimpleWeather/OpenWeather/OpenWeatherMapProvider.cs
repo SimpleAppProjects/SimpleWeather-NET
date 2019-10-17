@@ -27,7 +27,7 @@ namespace SimpleWeather.OpenWeather
     {
         public OpenWeatherMapProvider() : base()
         {
-            locProvider = new HERE.HERELocationProvider();
+            locProvider = new Bing.BingMapsLocationProvider();
         }
 
         public override string WeatherAPI => WeatherData.WeatherAPI.OpenWeatherMap;
