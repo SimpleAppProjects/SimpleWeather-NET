@@ -61,9 +61,6 @@ namespace SimpleWeather.UWP.Main
                     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     {
                         WeatherView.UpdateView(weather);
-
-                        // Shell
-                        Shell.Instance.AppBarColor = WeatherView.PendingBackgroundColor;
                         LoadingRing.IsActive = false;
                     });
 
@@ -151,14 +148,17 @@ namespace SimpleWeather.UWP.Main
 
             MainGrid.RegisterPropertyChangedCallback(Grid.BackgroundProperty, (s, property) => 
             {
-                if (property == Grid.BackgroundProperty && (Settings.UserTheme == UserThemeMode.Dark ||
-                    (Settings.UserTheme == UserThemeMode.System && App.IsSystemDarkTheme)))
+                if (property == Grid.BackgroundProperty && MainGrid.Background is SolidColorBrush colorBrush)
                 {
-                    if (MainGrid.Background is SolidColorBrush colorBrush && colorBrush.Color != App.AppColor)
+                    if ((Settings.UserTheme == UserThemeMode.Dark || (Settings.UserTheme == UserThemeMode.System && App.IsSystemDarkTheme)) && colorBrush.Color != App.AppColor)
                     {
                         var color = ColorUtils.BlendColor(colorBrush.Color, Colors.Black, 0.75f);
                         colorBrush.Color = color;
                         Shell.Instance.AppBarColor = color;
+                    }
+                    else
+                    {
+                        Shell.Instance.AppBarColor = colorBrush.Color;
                     }
                 }
             });
