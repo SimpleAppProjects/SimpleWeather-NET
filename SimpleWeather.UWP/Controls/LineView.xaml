@@ -13,6 +13,6 @@
     <ScrollViewer x:Name="InternalScrollViewer" VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Disabled"
                   HorizontalScrollBarVisibility="Hidden" HorizontalScrollMode="Enabled">
         <win2d:CanvasVirtualControl x:Name="Canvas" Background="Transparent" ClearColor="Transparent"
-                             RegionsInvalidated="Canvas_RegionsInvalidated" CreateResources="Canvas_CreateResources" />
+                                    RegionsInvalidated="Canvas_RegionsInvalidated" />
     </ScrollViewer>
 </UserControl>

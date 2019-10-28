@@ -1,0 +1,46 @@
+﻿<Page
+    x:Class="SimpleWeather.UWP.Main.WeatherAlertPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:SimpleWeather.Controls"
+    xmlns:local="using:SimpleWeather.UWP.Main"
+    xmlns:localcontrols="using:SimpleWeather.UWP.Controls"
+    xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource RegionBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Border Grid.Row="0" BorderBrush="{ThemeResource TextBoxDisabledBorderThemeBrush}" BorderThickness="0,0,0,0.5">
+            <Viewbox Height="48" HorizontalAlignment="Left">
+                <TextBlock Text="{x:Bind WeatherView.Location, FallbackValue='New York, NY'}"
+                           FontSize="16" Padding="16" />
+            </Viewbox>
+        </Border>
+
+        <ScrollViewer HorizontalScrollMode="Disabled" HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto" VerticalScrollMode="Enabled"
+                      Margin="10" Grid.Row="1">
+            <ItemsControl x:Name="StackControl" ItemsSource="{x:Bind WeatherView.Extras.Alerts}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="controls:WeatherAlertViewModel">
+                        <StackPanel>
+                            <Border BorderBrush="Transparent" BorderThickness="0,0,0,0.5">
+                                <localcontrols:WeatherAlertPanel x:Name="AlertItem" Foreground="Black" />
+                            </Border>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <ItemsStackPanel Orientation="Vertical" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</Page>

@@ -92,6 +92,7 @@
     <Prefer32Bit>true</Prefer32Bit>
     <CodeAnalysisRuleSet>SimpleWeather.UWP.ruleset</CodeAnalysisRuleSet>
     <UseDotNetNativeToolchain>false</UseDotNetNativeToolchain>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -120,11 +121,13 @@
     <Content Include="Assets\BadgeLogo.scale-400.png" />
     <Content Include="Assets\Credits\licenses.html" />
     <Content Include="Assets\Providers\bingmaps.png" />
+    <Content Include="Assets\Providers\bingmaps_dark.png" />
     <Content Include="Assets\Providers\here.png" />
+    <Content Include="Assets\Providers\here_dark.png" />
     <Content Include="Assets\Providers\metno.png" />
     <Content Include="Assets\Providers\openweathermap.png" />
-    <Content Include="Assets\Providers\wunderground.png" />
     <Content Include="Assets\Providers\yahoo.png" />
+    <Content Include="Assets\Providers\yahoo_dark.png" />
     <Content Include="Assets\SplashScreen.scale-100.png" />
     <Content Include="Assets\SplashScreen.scale-125.png" />
     <Content Include="Assets\SplashScreen.scale-150.png" />
@@ -135,6 +138,11 @@
     <Content Include="Assets\Square310x310Logo.scale-125.png" />
     <Content Include="Assets\Square310x310Logo.scale-150.png" />
     <Content Include="Assets\Square310x310Logo.scale-400.png" />
+    <Content Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-16.png" />
+    <Content Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-24.png" />
+    <Content Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-256.png" />
+    <Content Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-32.png" />
+    <Content Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-48.png" />
     <Content Include="Assets\Square44x44Logo.altform-unplated_targetsize-16.png" />
     <Content Include="Assets\Square44x44Logo.altform-unplated_targetsize-256.png" />
     <Content Include="Assets\Square44x44Logo.altform-unplated_targetsize-32.png" />
@@ -250,16 +258,23 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\BottomNavigationBarItem.cs" />
+    <Compile Include="Controls\BottomNavigationBar.cs" />
+    <Compile Include="Controls\DataTemplates.xaml.cs">
+      <DependentUpon>DataTemplates.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\DetailItem.xaml.cs">
       <DependentUpon>DetailItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ForecastGraphPanel.xaml.cs">
+      <DependentUpon>ForecastGraphPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\LineDataSeries.cs" />
     <Compile Include="Controls\LineView.xaml.cs">
       <DependentUpon>LineView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\LocationQuery.cs" />
-    <Compile Include="Controls\ProgressAutoSuggestBox.xaml.cs">
-      <DependentUpon>ProgressAutoSuggestBox.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Controls\ProgressAutoSuggestBox.cs" />
     <Compile Include="Controls\SunPhasePanel.xaml.cs">
       <DependentUpon>SunPhasePanel.xaml</DependentUpon>
     </Compile>
@@ -270,37 +285,34 @@
       <DependentUpon>WeatherAlertPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\BooleanToGridLengthConverter.cs" />
+    <Compile Include="Helpers\ColorToSolidColorBrushConverter.cs" />
     <Compile Include="Helpers\IBackRequestedPage.cs" />
     <Compile Include="Helpers\ICommandBarPage.cs" />
     <Compile Include="Helpers\SecondaryTileUtils.cs" />
     <Compile Include="Helpers\StringBooleanConverter.cs" />
     <Compile Include="Helpers\IPageVerification.cs" />
-    <Compile Include="LocationSearchPage.xaml.cs">
+    <Compile Include="Helpers\UserThemeMode.cs" />
+    <Compile Include="Helpers\VisualTreeHelperExtensions.cs" />
+    <Compile Include="Main\LocationSearchPage.xaml.cs">
       <DependentUpon>LocationSearchPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SetupLocationsPage.xaml.cs">
+    <Compile Include="Setup\SetupLocationsPage.xaml.cs">
       <DependentUpon>SetupLocationsPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SetupSettingsPage.xaml.cs">
+    <Compile Include="Setup\SetupSettingsPage.xaml.cs">
       <DependentUpon>SetupSettingsPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SetupWelcomePage.xaml.cs">
+    <Compile Include="Setup\SetupWelcomePage.xaml.cs">
       <DependentUpon>SetupWelcomePage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WeatherDetailsPage.xaml.cs">
+    <Compile Include="Main\WeatherDetailsPage.xaml.cs">
       <DependentUpon>WeatherDetailsPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WeatherAlertPage.xaml.cs">
+    <Compile Include="Main\WeatherAlertPage.xaml.cs">
       <DependentUpon>WeatherAlertPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="WeatherAlerts\WeatherAlertHandler.cs" />
     <Compile Include="BackgroundTasks\WeatherUpdateBackgroundTask.cs" />
-    <Compile Include="Controls\HourlyForecastItem.xaml.cs">
-      <DependentUpon>HourlyForecastItem.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ForecastItem.xaml.cs">
-      <DependentUpon>ForecastItem.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\KeyEntryDialog.xaml.cs">
       <DependentUpon>KeyEntryDialog.xaml</DependentUpon>
     </Compile>
@@ -318,24 +330,24 @@
     <Compile Include="Helpers\StringVisibilityConverter.cs" />
     <Compile Include="Helpers\WeatherAlertCreator.cs" />
     <Compile Include="Helpers\WeatherTileCreator.cs" />
-    <Compile Include="LocationsPage.xaml.cs">
+    <Compile Include="Main\LocationsPage.xaml.cs">
       <DependentUpon>LocationsPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SetupPage.xaml.cs">
+    <Compile Include="Setup\SetupPage.xaml.cs">
       <DependentUpon>SetupPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SettingsPage.xaml.cs">
+    <Compile Include="Settings\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Shell.xaml.cs">
+    <Compile Include="Main\Shell.xaml.cs">
       <DependentUpon>Shell.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="Utils\Settings.cs" />
     <Compile Include="WeatherData\IWeatherProviderImpl.cs" />
     <Compile Include="WeatherData\WeatherProviderImpl.cs" />
-    <Compile Include="WeatherNow.xaml.cs">
+    <Compile Include="Main\WeatherNow.xaml.cs">
       <DependentUpon>WeatherNow.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -381,17 +393,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Controls\DataTemplates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\DetailItem.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\HourlyForecastItem.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="Controls\ForecastGraphPanel.xaml">
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\ForecastItem.xaml">
       <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\KeyEntryDialog.xaml">
       <SubType>Designer</SubType>
@@ -404,10 +416,6 @@
     <Page Include="Controls\LineView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\ProgressAutoSuggestBox.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\SunPhasePanel.xaml">
       <SubType>Designer</SubType>
@@ -425,51 +433,51 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="LocationSearchPage.xaml">
+    <Page Include="Main\LocationSearchPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="LocationsPage.xaml">
+    <Page Include="Main\LocationsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="SetupLocationsPage.xaml">
+    <Page Include="Setup\SetupLocationsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SetupPage.xaml">
+    <Page Include="Setup\SetupPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="SettingsPage.xaml">
+    <Page Include="Settings\SettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="SetupSettingsPage.xaml">
+    <Page Include="Setup\SetupSettingsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SetupWelcomePage.xaml">
+    <Page Include="Setup\SetupWelcomePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Shell.xaml">
+    <Page Include="Main\Shell.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\Generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="WeatherDetailsPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="WeatherAlertPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WeatherNow.xaml">
+    <Page Include="Main\WeatherDetailsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Main\WeatherAlertPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\WeatherNow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -484,49 +492,49 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="GeoTimeZone">
-      <Version>3.2.0</Version>
+      <Version>4.0.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter">
-      <Version>2.0.0</Version>
+      <Version>2.1.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter.Analytics">
-      <Version>2.0.0</Version>
+      <Version>2.1.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter.Crashes">
-      <Version>2.0.0</Version>
+      <Version>2.1.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.2.8</Version>
+      <Version>6.2.9</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
       <Version>5.1.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI">
-      <Version>4.0.0</Version>
+      <Version>5.1.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls">
-      <Version>4.0.0</Version>
+      <Version>5.1.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.UI.Xaml">
-      <Version>2.1.190405004.2</Version>
+      <Version>2.2.190917002</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>12.0.2</Version>
     </PackageReference>
     <PackageReference Include="NLog">
-      <Version>4.6.3</Version>
+      <Version>4.6.7</Version>
     </PackageReference>
     <PackageReference Include="NLog.Schema">
-      <Version>4.6.3</Version>
+      <Version>4.6.7</Version>
     </PackageReference>
     <PackageReference Include="NodaTime">
-      <Version>2.4.5</Version>
+      <Version>2.4.7</Version>
     </PackageReference>
     <PackageReference Include="QueryString.NET">
       <Version>1.0.0</Version>
     </PackageReference>
     <PackageReference Include="sqlite-net-pcl">
-      <Version>1.5.231</Version>
+      <Version>1.6.292</Version>
     </PackageReference>
     <PackageReference Include="SQLiteNetExtensions">
       <Version>2.1.0</Version>
@@ -541,6 +549,7 @@
       <Version>1.23.0</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="..\SimpleWeather\SimpleWeather_Xamarin.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

@@ -64,6 +64,7 @@ namespace SimpleWeather.Utils
         private const string KEY_USEPERSONALKEY = "key_usepersonalkey";
         private const string KEY_CURRENTVERSION = "key_currentversion";
         private const string KEY_ONBOARDINGCOMPLETE = "key_onboardcomplete";
+        private const string KEY_USERTHEME = "key_usertheme";
 
         // Weather Data
         private static LocationData lastGPSLocData = new LocationData();

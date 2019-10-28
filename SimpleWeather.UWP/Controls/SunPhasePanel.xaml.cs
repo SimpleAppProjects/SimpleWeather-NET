@@ -294,6 +294,13 @@ namespace SimpleWeather.UWP.Controls
                 var arc = CanvasGeometry.CreatePath(mPathBackground);
                 drawingSession.DrawGeometry(arc, arcColor, 1.0f, arcStroke);
                 drawingSession.FillGeometry(arc, bgColor);
+
+                var FullArcPath = new CanvasPathBuilder(drawingSession);
+                FullArcPath.BeginFigure(sunriseX, GraphHeight);
+                FullArcPath.AddArc(new System.Numerics.Vector2(sunsetX, GraphHeight), trueRadius, radius, ConversionMethods.ToRadians(180), CanvasSweepDirection.Clockwise, CanvasArcSize.Large);
+                FullArcPath.EndFigure(CanvasFigureLoop.Closed);
+                var fullArc = CanvasGeometry.CreatePath(FullArcPath);
+                drawingSession.DrawGeometry(fullArc, arcColor, 1.0f, arcStroke);
             }
 
             if (isDay)

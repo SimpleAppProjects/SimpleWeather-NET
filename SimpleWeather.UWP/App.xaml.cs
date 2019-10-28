@@ -9,6 +9,8 @@ using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.UWP.Helpers;
+using SimpleWeather.UWP.Main;
+using SimpleWeather.UWP.Setup;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
@@ -26,6 +28,7 @@ using Windows.UI.StartScreen;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using UnhandledExceptionEventArgs = Windows.UI.Xaml.UnhandledExceptionEventArgs;
 
@@ -37,8 +40,46 @@ namespace SimpleWeather.UWP
     public sealed partial class App : Application
     {
         public const int HomeIdx = 0;
-        public static readonly Color AppColor = Color.FromArgb(255, 0, 111, 191);
+        public static Color AppColor
+        {
+            get 
+            {
+                if (Window.Current.Content is FrameworkElement window)
+                {
+                    if (window.RequestedTheme == ElementTheme.Light)
+                    {
+                        var brush = Application.Current.Resources["SimpleBlue"] as SolidColorBrush;
+                        return brush.Color;
+                    }
+                    else
+                    {
+                        var brush = Application.Current.Resources["SimpleBlueDark"] as SolidColorBrush;
+                        return brush.Color;
+                    }
+                }
+                else
+                {
+                    return Color.FromArgb(0xff, 0x00, 0x70, 0xc0);
+                }
+            }
+        }
         public static ResourceLoader ResLoader;
+        private UISettings UISettings;
+        public static ElementTheme CurrentTheme 
+        {
+            get 
+            {
+                if (Window.Current?.Content is FrameworkElement window)
+                {
+                    return window.RequestedTheme;
+                }
+                else
+                {
+                    return ElementTheme.Default;
+                }
+            }
+        }
+        public static bool IsSystemDarkTheme { get; private set; }
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -52,6 +93,49 @@ namespace SimpleWeather.UWP
             this.LeavingBackground += OnLeavingBackground;
             this.UnhandledException += OnUnhandledException;
             AppCenter.Start(APIKeys.GetAppCenterSecret(), typeof(Analytics), typeof(Crashes));
+            UISettings = new UISettings();
+            UISettings.ColorValuesChanged += DefaultTheme_ColorValuesChanged;
+            IsSystemDarkTheme = UISettings.GetColorValue(UIColorType.Background).ToString() == "#FF000000";
+        }
+
+        private async void DefaultTheme_ColorValuesChanged(UISettings sender, object args)
+        {
+            var Dispatcher = CoreApplication.MainView.CoreWindow.Dispatcher;
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                var uiTheme = sender.GetColorValue(UIColorType.Background).ToString();
+                IsSystemDarkTheme = uiTheme == "#FF000000";
+
+                if (Shell.Instance == null && Settings.UserTheme == UserThemeMode.System)
+                {
+                    UpdateAppTheme();
+                }
+            });
+        }
+
+        private void UpdateAppTheme()
+        {
+            if (Shell.Instance != null) return;
+
+            if (Window.Current?.Content is FrameworkElement window)
+            {
+                window.RequestedTheme = IsSystemDarkTheme ? ElementTheme.Dark : ElementTheme.Light;
+                if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+                {
+                    // Mobile
+                    var statusBar = StatusBar.GetForCurrentView();
+                    statusBar.BackgroundColor = App.AppColor;
+                    statusBar.ForegroundColor = Colors.White;
+                }
+                else
+                {
+                    // Desktop
+                    var titlebar = ApplicationView.GetForCurrentView().TitleBar;
+                    titlebar.BackgroundColor = App.AppColor;
+                    titlebar.ButtonBackgroundColor = titlebar.BackgroundColor;
+                    titlebar.ForegroundColor = Colors.White;
+                }
+            }
         }
 
         public static bool IsInBackground { get; private set; } = true;
@@ -68,7 +152,7 @@ namespace SimpleWeather.UWP
             if (e is ToastNotificationActivatedEventArgs)
             {
                 // Get the root frame
-                RootFrame = Window.Current.Content as Frame;
+                RootFrame = Window.Current?.Content as Frame;
 
                 var toastActivationArgs = e as ToastNotificationActivatedEventArgs;
 
@@ -134,6 +218,8 @@ namespace SimpleWeather.UWP
 
             // Ensure the current window is active
             Window.Current.Activate();
+
+            UpdateAppTheme();
         }
 
         /// <summary>
@@ -234,19 +320,22 @@ namespace SimpleWeather.UWP
 
                     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     {
-                         if (RootFrame.Content == null)
-                         {
+                        if (RootFrame.Content == null)
+                        {
                             // When the navigation stack isn't restored navigate to the first page,
                             // configuring the new page by passing required information as a navigation
                             // parameter
                             if (Settings.WeatherLoaded && Settings.OnBoardComplete)
-                                 RootFrame.Navigate(typeof(Shell), e.Arguments);
-                             else
-                                 RootFrame.Navigate(typeof(SetupPage), e.Arguments);
-                         }
+                                RootFrame.Navigate(typeof(Shell), e.Arguments);
+                            else
+                            {
+                                UpdateAppTheme();
+                                RootFrame.Navigate(typeof(SetupPage), e.Arguments);
+                            }
 
-                        // Ensure the current window is active
-                        Window.Current.Activate();
+                            // Ensure the current window is active
+                            Window.Current.Activate();
+                        }
                     });
                 }
             });
@@ -268,7 +357,7 @@ namespace SimpleWeather.UWP
 
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                RootFrame = Window.Current.Content as Frame;
+                RootFrame = Window.Current?.Content as Frame;
 
                 // Do not repeat app initialization when the Window already has content,
                 // just ensure that the window is active
@@ -300,11 +389,6 @@ namespace SimpleWeather.UWP
             {
                 if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
                 {
-                    // Mobile
-                    StatusBar.GetForCurrentView().BackgroundOpacity = 1;
-                    StatusBar.GetForCurrentView().BackgroundColor = App.AppColor;
-                    StatusBar.GetForCurrentView().ForegroundColor = Colors.White;
-
                     Window.Current.SizeChanged += async (sender, eventArgs) =>
                     {
                         if (ApplicationView.GetForCurrentView().Orientation == ApplicationViewOrientation.Landscape)
@@ -312,14 +396,6 @@ namespace SimpleWeather.UWP
                         else
                             await StatusBar.GetForCurrentView().ShowAsync();
                     };
-                }
-                else
-                {
-                    // Desktop
-                    var titlebar = ApplicationView.GetForCurrentView().TitleBar;
-                    titlebar.BackgroundColor = App.AppColor;
-                    titlebar.ButtonBackgroundColor = titlebar.BackgroundColor;
-                    titlebar.ForegroundColor = Colors.White;
                 }
             });
 

@@ -18,24 +18,10 @@ namespace SimpleWeather.UWP.Controls
         public LocationPanel()
         {
             this.InitializeComponent();
-            this.SizeChanged += LocationPanel_SizeChanged;
             this.DataContextChanged += (sender, args) =>
             {
                 this.Bindings.Update();
-                LocationName.Measure(new Windows.Foundation.Size(Double.PositiveInfinity, Double.PositiveInfinity));
             };
-        }
-
-        private void LocationPanel_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            double FreeSpace = e.NewSize.Width;
-
-            foreach (ColumnDefinition def in TempIconGrid.ColumnDefinitions)
-            {
-                FreeSpace -= def.ActualWidth;
-            }
-
-            LocationName.MaxWidth = FreeSpace;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using SimpleWeather.WeatherData;
+﻿using SimpleWeather.UWP.Helpers;
+using SimpleWeather.WeatherData;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -7,11 +8,14 @@ using System.IO;
 using System.Threading.Tasks;
 using Windows.Foundation.Collections;
 using Windows.Storage;
+using Windows.UI.Xaml;
 
 namespace SimpleWeather.Utils
 {
     public static partial class Settings
     {
+        public static UserThemeMode UserTheme { get { return GetUserTheme(); } set { SetUserTheme(value); } }
+
         // Shared Settings
         private static ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
@@ -270,6 +274,22 @@ namespace SimpleWeather.Utils
         private static void SetOnBoardingComplete(bool value)
         {
             localSettings.Values[KEY_ONBOARDINGCOMPLETE] = value;
+        }
+
+        private static UserThemeMode GetUserTheme()
+        {
+            if (!localSettings.Values.ContainsKey(KEY_USERTHEME) || localSettings.Values[KEY_USERTHEME] == null)
+            {
+                SetUserTheme(UserThemeMode.System);
+                return UserThemeMode.System;
+            }
+            else
+                return (UserThemeMode)localSettings.Values[KEY_USERTHEME];
+        }
+
+        private static void SetUserTheme(UserThemeMode value)
+        {
+            localSettings.Values[KEY_USERTHEME] = (int)value;
         }
     }
 }

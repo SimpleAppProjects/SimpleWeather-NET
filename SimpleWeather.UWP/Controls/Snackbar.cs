@@ -71,13 +71,6 @@ namespace SimpleWeather.UWP.Controls
             /* Addition: set snackbar width based on screen width */
             var ViewWidth = ApplicationView.GetForCurrentView().VisibleBounds.Width;
 
-            if (ViewWidth <= 640)
-                InAppNotification.MinWidth = ViewWidth;
-            else if (ViewWidth <= 1080)
-                InAppNotification.MinWidth = ViewWidth * (0.75);
-            else
-                InAppNotification.MinWidth = ViewWidth * (0.50);
-
             if (!String.IsNullOrWhiteSpace(ButtonLabel) || ButtonAction != null)
             {
                 var grid = new Grid();
@@ -91,7 +84,8 @@ namespace SimpleWeather.UWP.Controls
                     Text = Message,
                     VerticalAlignment = VerticalAlignment.Center,
                     Style = (Application.Current.Resources["CaptionTextBlockStyle"] as Style),
-                    TextWrapping = TextWrapping.WrapWholeWords
+                    TextWrapping = TextWrapping.WrapWholeWords,
+                    FontSize = 14
                 };
                 grid.Children.Add(textBlock);
 
@@ -107,10 +101,9 @@ namespace SimpleWeather.UWP.Controls
                 {
                     Content = ButtonLabel.ToUpper(),
                     FontWeight = Windows.UI.Text.FontWeights.SemiBold,
-                    Height = 30,
                     Background = new SolidColorBrush(Colors.Transparent),
-                    Foreground = InAppNotification.BorderBrush,
-                    Style = (Application.Current.Resources["TextButtonStyle"] as Style),
+                    Foreground = Application.Current.Resources["SimpleBlueLight"] as SolidColorBrush,
+                    Style = Application.Current.Resources["TextBlockButtonStyle"] as Style,
                 };
                 actionButton.Click += (s, e) => ButtonAction?.Invoke();
                 stackPanel.Children.Add(actionButton);

@@ -11,12 +11,13 @@
 
     <UserControl.Resources>
         <!-- Default style for Windows.UI.Xaml.Controls.Primitives.ToggleButton -->
-        <Style x:Key="ToggleButtonStyle1" TargetType="ToggleButton">
+        <Style x:Key="DetailPanelToggleButtonStyle" TargetType="ToggleButton">
             <Setter Property="Background" Value="White" />
             <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
             <Setter Property="BorderBrush" Value="{ThemeResource SystemControlForegroundTransparentBrush}" />
             <Setter Property="BorderThickness" Value="{ThemeResource ToggleButtonBorderThemeThickness}" />
             <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
@@ -58,6 +59,11 @@
                                             <DoubleAnimation BeginTime="0:0:0" Duration="0:0:0.1" To="0.0"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
                                                          Storyboard.TargetName="Arrow" />
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility"
+                                                                       Storyboard.TargetName="Arrow">
+                                                <DiscreteObjectKeyFrame KeyTime="0"
+                                                                    Value="Collapsed" />
+                                            </ObjectAnimationUsingKeyFrames>
                                         </Storyboard>
                                     </VisualState>
                                     <VisualState x:Name="Checked">
@@ -196,8 +202,8 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <ToggleButton x:Name="DetailHeader" Background="White" Style="{StaticResource ToggleButtonStyle1}" Grid.Row="0"
-                      Foreground="{StaticResource SimpleBlueDark}" IsChecked="False" IsEnabled="{x:Bind ViewModel.HasExtras, Mode=OneWay}">
+        <ToggleButton x:Name="DetailHeader" Background="{ThemeResource RegionBrush}" Style="{StaticResource DetailPanelToggleButtonStyle}" Grid.Row="0"
+                      Foreground="{ThemeResource ColorTextDarkForeground}" IsChecked="False" IsEnabled="{x:Bind ViewModel.HasExtras, Mode=OneWay}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -205,8 +211,7 @@
                 </Grid.ColumnDefinitions>
                 <Viewbox Name="IconBox" Height="50" Width="50" Margin="8,0" Grid.Column="0">
                     <TextBlock x:Name="WeatherIcon" Text="{x:Bind ViewModel.Icon, FallbackValue='&#xf00d;', Mode=OneWay}"
-                               Foreground="{StaticResource SimpleBlueDark}"
-                               Style="{StaticResource WeatherIcon}"/>
+                               Foreground="{ThemeResource ColorTextDarkForeground}" Style="{StaticResource WeatherIcon}"/>
                 </Viewbox>
                 <StackPanel Orientation="Vertical" Grid.Column="1">
                     <TextBlock x:Name="Date" Text="{x:Bind ViewModel.Date, FallbackValue='Someday XX', Mode=OneWay}" FontWeight="Bold" Padding="2" MaxLines="1"
@@ -217,13 +222,12 @@
                                VerticalAlignment="Center" />
                     <TextBlock x:Name="Extra" Text="{x:Bind ViewModel.Extra, FallbackValue='&#xf078; 100%&#x2003;&#xf050; 5 mph, WNW', Mode=OneWay}"
                                Padding="2" MaxLines="1" FontFamily="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons"
-                               FontSize="{x:Bind Date.FontSize, Mode=OneWay}" Foreground="{StaticResource SimpleBlueLight}" TextTrimming="CharacterEllipsis"
+                               FontSize="{x:Bind Date.FontSize, Mode=OneWay}" Foreground="{ThemeResource SimpleBlueLight}" TextTrimming="CharacterEllipsis"
                                VerticalAlignment="Center" Visibility="{x:Bind ViewModel.Extra, Converter={StaticResource stringVisibilityConverter}}" />
                 </StackPanel>
             </Grid>
         </ToggleButton>
-        <StackPanel Background="White" Grid.Row="1" Padding="5"
-                    Visibility="{x:Bind DetailHeader.IsChecked, Mode=OneWay}">
+        <StackPanel Grid.Row="1" Padding="5" Visibility="{x:Bind DetailHeader.IsChecked, Mode=OneWay}">
             <StackPanel Padding="10">
                 <TextBlock x:Name="ConditionDescription" FontSize="{x:Bind Date.FontSize, Mode=OneWay}" TextWrapping="WrapWholeWords" HorizontalAlignment="Stretch">
                     <Run x:Name="CondDescFirstRun" Text="{x:Bind ViewModel.ConditionLongDesc, TargetNullValue={Binding ViewModel.Condition, Mode=OneWay}, Mode=OneWay}" /><LineBreak/>
@@ -236,8 +240,8 @@
                                     <ColumnDefinition Width="150" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Foreground="Gray" Text="{x:Bind Label}" FontSize="{Binding ElementName=Date, Path=FontSize}" Grid.Column="0" />
-                                <TextBlock Foreground="Black" Text="{x:Bind Value}" FontSize="{Binding ElementName=Date, Path=FontSize}" Grid.Column="1" />
+                                <TextBlock Foreground="{ThemeResource SystemBaseMediumHighColor}" Text="{x:Bind Label}" FontSize="{Binding ElementName=Date, Path=FontSize}" Grid.Column="0" />
+                                <TextBlock Foreground="{ThemeResource SystemBaseHighColor}" Text="{x:Bind Value}" FontSize="{Binding ElementName=Date, Path=FontSize}" Grid.Column="1" />
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

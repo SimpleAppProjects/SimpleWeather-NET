@@ -10,9 +10,9 @@
     mc:Ignorable="d">
     <UserControl.Resources>
         <!-- Default style for Windows.UI.Xaml.Controls.Primitives.ToggleButton -->
-        <Style x:Key="ToggleButtonStyle1" TargetType="ToggleButton">
+        <Style x:Key="AlertPanelToggleButtonStyle" TargetType="ToggleButton">
             <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
-            <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+            <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundChromeWhiteBrush}"/>
             <Setter Property="BorderBrush" Value="{ThemeResource SystemControlForegroundTransparentBrush}" />
             <Setter Property="BorderThickness" Value="{ThemeResource ToggleButtonBorderThemeThickness}" />
             <Setter Property="Padding" Value="8,4,8,4" />
@@ -25,7 +25,8 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ToggleButton">
-                        <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" HorizontalAlignment="Stretch">
+                        <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" HorizontalAlignment="Stretch"
+                              BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                             <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroup x:Name="CommonStates">
                                     <VisualState x:Name="Normal">
@@ -41,7 +42,7 @@
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background"
                                                                        Storyboard.TargetName="RootGrid">
                                                 <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="{ThemeResource ToggleButtonBackgroundPointerOver}" />
+                                                                    Value="{ThemeResource SystemControlHighlightAltListAccentMediumBrush}" />
                                             </ObjectAnimationUsingKeyFrames>
 
                                             <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
@@ -55,7 +56,7 @@
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background"
                                                                        Storyboard.TargetName="RootGrid">
                                                 <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="{ThemeResource ToggleButtonBackgroundPressed}" />
+                                                                    Value="{ThemeResource SystemControlHighlightAltListAccentHighBrush}" />
                                             </ObjectAnimationUsingKeyFrames>
 
                                             <DoubleAnimation BeginTime="0:0:0" Duration="0:0:0.1" To="0.0"
@@ -96,7 +97,7 @@
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background"
                                                                        Storyboard.TargetName="RootGrid">
                                                 <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="{ThemeResource SystemControlHighlightAccentBrush}" />
+                                                                    Value="{ThemeResource SystemControlHighlightAltListAccentMediumBrush}" />
                                             </ObjectAnimationUsingKeyFrames>
 
                                             <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
@@ -110,7 +111,7 @@
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background"
                                                                        Storyboard.TargetName="RootGrid">
                                                 <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="{ThemeResource SystemControlHighlightBaseMediumLowBrush}" />
+                                                                    Value="{ThemeResource SystemControlHighlightAltListAccentHighBrush}" />
                                             </ObjectAnimationUsingKeyFrames>
 
                                             <DoubleAnimation BeginTime="0:0:0" Duration="0:0:0.1" To="{Binding ElementName=ArrowRotation, Path=Value}"
@@ -223,8 +224,6 @@
                             <Slider x:Name="ArrowRotation" Visibility="Collapsed" Value="180" Minimum="-180" Maximum="180" />
                             
                             <ContentPresenter x:Name="ContentPresenter" Grid.Column="0"
-                                                BorderBrush="{TemplateBinding BorderBrush}"
-                                                BorderThickness="{TemplateBinding BorderThickness}"
                                                 Content="{TemplateBinding Content}"
                                                 ContentTransitions="{TemplateBinding ContentTransitions}"
                                                 ContentTemplate="{TemplateBinding ContentTemplate}"
@@ -255,8 +254,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <ToggleButton x:Name="AlertHeader" Style="{StaticResource ToggleButtonStyle1}" Grid.Row="0"
-                      Height="40" Foreground="White" IsChecked="False">
+        <ToggleButton x:Name="AlertHeader" Style="{StaticResource AlertPanelToggleButtonStyle}" Grid.Row="0" Height="40" IsChecked="False">
             <ToggleButton.Background>
                 <SolidColorBrush Color="{x:Bind AlertHeaderColor, FallbackValue='#FF006FBF', Mode=OneWay}" />
             </ToggleButton.Background>

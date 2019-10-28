@@ -1,5 +1,6 @@
 ﻿using Microsoft.Toolkit.Uwp.Helpers;
 using Microsoft.Toolkit.Uwp.Notifications;
+using SimpleWeather.UWP.Main;
 using System;
 using System.Collections.Generic;
 using System.Linq;

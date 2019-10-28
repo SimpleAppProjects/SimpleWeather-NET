@@ -26,10 +26,10 @@ namespace SimpleWeather.Controls
             typeof(LocationPanelViewModel), new PropertyMetadata(false));
         public static readonly DependencyProperty BackgroundProperty =
             DependencyProperty.Register("Background", typeof(Brush),
-            typeof(LocationPanelViewModel), new PropertyMetadata(new SolidColorBrush(UWP.App.AppColor)));
+            typeof(LocationPanelViewModel), new PropertyMetadata(new SolidColorBrush()));
         public static readonly DependencyProperty BackgroundThemeProperty =
             DependencyProperty.Register("BackgroundTheme", typeof(ElementTheme),
-            typeof(LocationPanelViewModel), new PropertyMetadata(ElementTheme.Default));
+            typeof(LocationPanelViewModel), new PropertyMetadata(ElementTheme.Dark));
         public static readonly DependencyProperty IsLoadingProperty =
             DependencyProperty.Register("IsLoading", typeof(bool),
             typeof(LocationPanelViewModel), new PropertyMetadata(true));
@@ -105,7 +105,7 @@ namespace SimpleWeather.Controls
         }
         #endregion
 
-        private WeatherManager wm;
+        private readonly WeatherManager wm;
 
         public LocationPanelViewModel()
         {
@@ -132,8 +132,8 @@ namespace SimpleWeather.Controls
             wm.SetBackground(Background as ImageBrush, weather);
             var PendingBackgroundColor = wm.GetWeatherBackgroundColor(weather);
 
-            BackgroundTheme = ColorUtils.IsColorDark(PendingBackgroundColor) ?
-                ElementTheme.Dark : ElementTheme.Light;
+            BackgroundTheme = ColorUtils.IsSuperLight(PendingBackgroundColor) ?
+                ElementTheme.Light : ElementTheme.Dark;
 
             LocationName = weather.location.name;
             CurrTemp = (Settings.IsFahrenheit ?

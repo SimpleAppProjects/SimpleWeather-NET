@@ -6,45 +6,47 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:SimpleWeather.Controls"
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:toolkitMedia="using:Microsoft.Toolkit.Uwp.UI.Media"
     mc:Ignorable="d"
     d:DesignHeight="100"
-    d:DesignWidth="400"
+    d:DesignWidth="720"
     Tag="{x:Bind ViewModel.LocationData, Mode=OneWay}">
 
-    <Border Background="{x:Bind ViewModel.Background, FallbackValue='#FF006FBF', Mode=OneWay}"
-            RequestedTheme="{x:Bind ViewModel.BackgroundTheme, FallbackValue='Light', Mode=OneWay}"
-            CornerRadius="2.5" BorderThickness="1">
-        <Grid Height="100" BorderBrush="White" Name="MainGrid">
+    <Border Background="{ThemeResource SystemAccentColor}">
+        <Grid Name="MainGrid" RequestedTheme="{x:Bind ViewModel.BackgroundTheme, FallbackValue='Light', Mode=OneWay}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition x:Name="IconColumn" Width="70"/>
             </Grid.ColumnDefinitions>
-            <ProgressRing x:Name="LoadingRing" Grid.ColumnSpan="2" IsActive="{x:Bind ViewModel.IsLoading, Mode=OneWay}" Foreground="White"/>
-            <Viewbox Name="NameBox" Height="55" HorizontalAlignment="Left" Grid.Column="0" StretchDirection="DownOnly" Stretch="Uniform">
-                <toolkitControls:DropShadowPanel BlurRadius="4.0" ShadowOpacity="0.70" VerticalAlignment="Center">
-                    <TextBlock x:Name="LocationName" Text="{x:Bind ViewModel.LocationName, FallbackValue='New York, NY', Mode=OneWay}"
-                               Foreground="White" FontSize="24" Padding="10" TextWrapping="WrapWholeWords" MaxLines="2"
-                               TextTrimming="CharacterEllipsis"/>
+            <Grid x:Name="BackgroundOverlay" Grid.ColumnSpan="3"
+                  Background="{x:Bind ViewModel.Background, FallbackValue='#FF006FBF', Mode=OneWay}" />
+            <Grid x:Name="GradientOverlay" Grid.ColumnSpan="3" Visibility="Visible">
+                <Grid.Background>
+                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                        <LinearGradientBrush.GradientStops>
+                            <GradientStop Color="#33121212" Offset="0" />
+                            <GradientStop Color="#40121212" Offset="0.5" />
+                            <GradientStop Color="#33121212" Offset="1.0" />
+                        </LinearGradientBrush.GradientStops>
+                    </LinearGradientBrush>
+                </Grid.Background>
+            </Grid>
+            <ProgressRing x:Name="LoadingRing" Grid.ColumnSpan="3" IsActive="{x:Bind ViewModel.IsLoading, Mode=OneWay}" Foreground="White" />
+            <toolkitControls:DropShadowPanel BlurRadius="10.0" ShadowOpacity="0.75" Color="Black" VerticalAlignment="Center" Margin="10,0">
+                <TextBlock x:Name="LocationName" Text="{x:Bind ViewModel.LocationName, FallbackValue='San Fernando del Valle de Catamarca, Argentina', Mode=OneWay}"
+                           FontSize="24" FontWeight="SemiBold"
+                           TextWrapping="WrapWholeWords" TextTrimming="CharacterEllipsis"/>
+            </toolkitControls:DropShadowPanel>
+            <toolkitControls:DropShadowPanel BlurRadius="10.0" ShadowOpacity="1.0" Color="Black" VerticalAlignment="Center" Grid.Column="1">
+                <TextBlock x:Name="CurrentTemp" Text="{x:Bind ViewModel.CurrTemp, FallbackValue='70º', Mode=OneWay}" 
+                           FontSize="26" FontWeight="Bold" Padding="10,0" />
+            </toolkitControls:DropShadowPanel>
+            <Viewbox Name="IconBox" Height="48" Grid.Column="2">
+                <toolkitControls:DropShadowPanel BlurRadius="10.0" ShadowOpacity="1.0" Color="Black" VerticalAlignment="Center">
+                    <TextBlock x:Name="WeatherIcon" Text="{x:Bind ViewModel.WeatherIcon, FallbackValue='&#xf00d;', Mode=OneWay}"
+                               FontSize="48" FontWeight="SemiBold" Style="{StaticResource WeatherIcon}" />
                 </toolkitControls:DropShadowPanel>
-            </Viewbox>
-            <Viewbox Height="55" VerticalAlignment="Center" Grid.Column="1">
-                <Grid x:Name="TempIconGrid">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="55"/>
-                        <ColumnDefinition Width="70"/>
-                    </Grid.ColumnDefinitions>
-                    <Viewbox Name="TempBox" Height="55" Width="55" Grid.Column="0">
-                        <toolkitControls:DropShadowPanel BlurRadius="4.0" ShadowOpacity="1.0">
-                            <TextBlock x:Name="CurrentTemp" Text="{x:Bind ViewModel.CurrTemp, FallbackValue='70&#xF045;', Mode=OneWay}" 
-                                       Foreground="White" FontSize="24" Padding="10"/>
-                        </toolkitControls:DropShadowPanel>
-                    </Viewbox>
-                    <Viewbox Name="IconBox" Height="55" Width="55" Grid.Column="1" Margin="5">
-                        <toolkitControls:DropShadowPanel BlurRadius="2.0" ShadowOpacity="1.0">
-                            <TextBlock x:Name="WeatherIcon" Text="{x:Bind ViewModel.WeatherIcon, FallbackValue='&#xf00d;', Mode=OneWay}" Style="{StaticResource WeatherIcon}"/>
-                        </toolkitControls:DropShadowPanel>
-                    </Viewbox>
-                </Grid>
             </Viewbox>
         </Grid>
         <VisualStateManager.VisualStateGroups>
@@ -54,11 +56,11 @@
                         <AdaptiveTrigger MinWindowWidth="0"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="LocationName.FontSize" Value="12"/>
-                        <Setter Target="MainGrid.Height" Value="75"/>
-                        <Setter Target="IconBox.Margin" Value="10"/>
-                        <Setter Target="IconBox.Width" Value="55"/>
-                        <Setter Target="TempBox.Width" Value="55"/>
+                        <Setter Target="LocationName.FontSize" Value="16"/>
+                        <Setter Target="CurrentTemp.FontSize" Value="20"/>
+                        <Setter Target="MainGrid.Height" Value="70"/>
+                        <Setter Target="IconBox.Height" Value="36"/>
+                        <Setter Target="IconColumn.Width" Value="60" />
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Desktop">
@@ -66,11 +68,11 @@
                         <AdaptiveTrigger MinWindowWidth="641"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="LocationName.FontSize" Value="24"/>
-                        <Setter Target="MainGrid.Height" Value="85"/>
-                        <Setter Target="IconBox.Margin" Value="5"/>
-                        <Setter Target="IconBox.Width" Value="90"/>
-                        <Setter Target="TempBox.Width" Value="90"/>
+                        <Setter Target="LocationName.FontSize" Value="18"/>
+                        <Setter Target="CurrentTemp.FontSize" Value="22"/>
+                        <Setter Target="MainGrid.Height" Value="80"/>
+                        <Setter Target="IconBox.Height" Value="44"/>
+                        <Setter Target="IconColumn.Width" Value="70" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>

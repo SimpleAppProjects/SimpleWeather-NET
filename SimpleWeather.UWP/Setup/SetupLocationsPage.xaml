@@ -1,0 +1,100 @@
+﻿<Page
+    x:Class="SimpleWeather.UWP.Setup.SetupLocationsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SimpleWeather.UWP.Setup"
+    xmlns:controls="using:SimpleWeather.Controls"
+    xmlns:localControls="using:SimpleWeather.UWP.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <Style x:Key="AutoSuggestBoxStyle" TargetType="AutoSuggestBox">
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="TextBoxStyle" Value="{StaticResource AutoSuggestBoxTextBoxStyle}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="AutoSuggestBox">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="Orientation">
+                                    <VisualState x:Name="Landscape"/>
+                                    <VisualState x:Name="Portrait"/>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <TextBox x:Name="TextBox" ScrollViewer.BringIntoViewOnFocusChange="False" DesiredCandidateWindowAlignment="BottomEdge" Header="{TemplateBinding Header}" Margin="0" PlaceholderText="{TemplateBinding PlaceholderText}" Style="{TemplateBinding TextBoxStyle}" Tag="{TemplateBinding Tag}" Width="{TemplateBinding Width}" Canvas.ZIndex="0" Grid.Row="1"/>
+                            <Popup x:Name="SuggestionsPopup">
+                                <Border x:Name="SuggestionsContainer">
+                                    <Border.RenderTransform>
+                                        <TranslateTransform x:Name="UpwardTransform"/>
+                                    </Border.RenderTransform>
+                                    <ListView x:Name="SuggestionsList" BorderBrush="{ThemeResource SystemControlForegroundChromeHighBrush}" BorderThickness="{ThemeResource AutoSuggestListBorderThemeThickness}" Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}" DisplayMemberPath="{TemplateBinding DisplayMemberPath}" IsItemClickEnabled="True" ItemTemplate="{TemplateBinding ItemTemplate}" ItemTemplateSelector="{TemplateBinding ItemTemplateSelector}" MaxHeight="{ThemeResource AutoSuggestListMaxHeight}" Margin="{ThemeResource AutoSuggestListMargin}" Padding="0">
+                                        <ListView.ItemContainerTransitions>
+                                            <TransitionCollection/>
+                                        </ListView.ItemContainerTransitions>
+                                        <ListView.ItemContainerStyle>
+                                            <Style TargetType="ListViewItem" BasedOn="{StaticResource ListViewItemRevealStyle}" />
+                                        </ListView.ItemContainerStyle>
+                                        <!-- HAXX Workaround -->
+                                        <ListView.Footer>
+                                            <ContentPresenter x:Name="FooterContentPresenter" Grid.ColumnSpan="3" Content="{TemplateBinding Header}" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}" FontWeight="Normal" Margin="0,0,0,8" TextWrapping="Wrap" />
+                                        </ListView.Footer>
+                                    </ListView>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
+    <Page.Transitions>
+        <TransitionCollection>
+            <EdgeUIThemeTransition Edge="Left" />
+        </TransitionCollection>
+    </Page.Transitions>
+
+    <ScrollViewer Background="{ThemeResource SystemAccentColor}" ScrollViewer.VerticalScrollBarVisibility="Auto">
+        <RelativePanel x:Name="MainPanel" x:DeferLoadStrategy="Lazy" VerticalAlignment="Stretch"
+                       MinHeight="80" Padding="25,0">
+            <Viewbox Name="AppLogo" Height="125" Margin="0,25,0,0"
+                     RelativePanel.Above="Location"
+                     RelativePanel.AlignHorizontalCenterWithPanel="True">
+                <Image Source="/Assets/AppLogo.png" Stretch="None" />
+            </Viewbox>
+            <localControls:ProgressAutoSuggestBox x:Name="Location" TextChanged="Location_TextChanged"
+                                                  x:Uid="LocationSearchHint" PlaceholderText="Add a location to start"
+                                                  SuggestionChosen="Location_SuggestionChosen" QuerySubmitted="Location_QuerySubmitted"
+                                                  RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True"
+                                                  RelativePanel.AlignVerticalCenterWithPanel="True" />
+            <Button Name="GPSButton" Grid.Row="1" Click="GPS_Click"
+                    HorizontalAlignment="Center" Margin="10"
+                    RelativePanel.Below="Location"
+                    RelativePanel.AlignHorizontalCenterWithPanel="True"
+                    RequestedTheme="Dark"
+                    Style="{ThemeResource ButtonRevealStyle}">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Uid="Label_GPSFollow" Text="Current Location" VerticalAlignment="Center"
+                                   Padding="5,0" FontSize="12"/>
+                        <TextBlock Text="&#xE81D;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center"
+                                   Padding="5,0" FontSize="12"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+            <ProgressRing Name="LoadingRing" Grid.Row="2" Margin="10"
+                          Height="35" Width="35" Foreground="White"
+                          HorizontalAlignment="Center" 
+                          IsActive="False" Visibility="{x:Bind LoadingRing.IsActive, Mode=OneWay}"
+                          RelativePanel.Below="GPSButton"
+                          RelativePanel.AlignHorizontalCenterWithPanel="True" />
+        </RelativePanel>
+    </ScrollViewer>
+</Page>

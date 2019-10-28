@@ -9,24 +9,12 @@ using Windows.UI.Xaml.Media;
 
 namespace SimpleWeather.Controls
 {
-    public class ForecastItemViewModel
+    public class ForecastItemViewModel : BaseForecastItemViewModel
     {
-        private WeatherManager wm;
-
-        public string WeatherIcon { get; set; }
-        public string Date { get; set; }
-        public string Condition { get; set; }
-        public string HiTemp { get; set; }
         public string LoTemp { get; set; }
-        public string PoP { get; set; }
-        public RotateTransform WindDirection { get; set; }
-        public string WindDir { get; set; }
-        public string WindSpeed { get; set; }
 
         public string ConditionLong { get; set; }
         public bool ShowExtraDetail { get; set; }
-
-        public List<DetailItemViewModel> DetailExtras { get; set; }
 
         public ForecastItemViewModel()
         {

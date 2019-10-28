@@ -8,24 +8,122 @@
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:toolkitAnimations="using:Microsoft.Toolkit.Uwp.UI.Animations"
     xmlns:toolkitExtensions="using:Microsoft.Toolkit.Uwp.UI.Extensions"
-    RequestedTheme="Light">
+    xmlns:Win1809Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
+    xmlns:Win1809NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract, 7)"
+    RequestedTheme="Dark">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls"/>
+                <ResourceDictionary Source="ms-appx:///Microsoft.Toolkit.Uwp.UI.Controls/InAppNotification/Styles/MSEdgeNotificationStyle.xaml" />
+                <ResourceDictionary Source="ms-appx:///Microsoft.Toolkit.Uwp.UI.Controls/InAppNotification/Styles/VSCodeNotificationStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Dark">
+                    <ResourceDictionary.MergedDictionaries>
+                        <Win1809Present:ColorPaletteResources Accent="#FF00468F" AltHigh="#FF000000" AltLow="#FF000000" AltMedium="#FF000000" AltMediumHigh="#FF000000" AltMediumLow="#FF000000" BaseHigh="#FFFFFFFF" BaseLow="#FF121212" BaseMedium="#FF898989" BaseMediumHigh="#FFA7A7A7" BaseMediumLow="#FF4E4E4E" ChromeAltLow="#FFA7A7A7" ChromeBlackHigh="#FF000000" ChromeBlackLow="#FFA7A7A7" ChromeBlackMedium="#FF000000" ChromeBlackMediumLow="#FF000000" ChromeDisabledHigh="#FF121212" ChromeDisabledLow="#FF898989" ChromeGray="#FF6B6B6B" ChromeHigh="#FF6B6B6B" ChromeLow="#FF080808" ChromeMedium="#FF0A0A0A" ChromeMediumLow="#FF0F0F0F" ChromeWhite="#FFFFFFFF" ListLow="#FF0A0A0A" ListMedium="#FF121212" />
+                        <ResourceDictionary>
+                            <Color x:Key="SystemChromeAltMediumHighColor">#CC242424</Color>
+                            <Color x:Key="SystemChromeAltHighColor">#FF242424</Color>
+                            <Color x:Key="SystemRevealListLowColor">#FF0A0A0A</Color>
+                            <Color x:Key="SystemRevealListMediumColor">#FF121212</Color>
+                            <Color x:Key="RegionColor">#FF242424</Color>
+                            <SolidColorBrush x:Key="RegionBrush" Color="{StaticResource RegionColor}" />
+                            <SolidColorBrush x:Key="ColorTextDarkForeground" Color="#FFFFFFFF" />
+                        </ResourceDictionary>
+                        <Win1809NotPresent:ResourceDictionary>
+                            <!-- Compat -->
+                            <Color x:Key="SystemAltHighColor">#FF000000</Color>
+                            <Color x:Key="SystemAltLowColor">#FF000000</Color>
+                            <Color x:Key="SystemAltMediumColor">#FF000000</Color>
+                            <Color x:Key="SystemAltMediumHighColor">#FF000000</Color>
+                            <Color x:Key="SystemAltMediumLowColor">#FF000000</Color>
+                            <Color x:Key="SystemBaseHighColor">#FFFFFFFF</Color>
+                            <Color x:Key="SystemBaseLowColor">#FF121212</Color>
+                            <Color x:Key="SystemBaseMediumColor">#FF898989</Color>
+                            <Color x:Key="SystemBaseMediumHighColor">#FFA7A7A7</Color>
+                            <Color x:Key="SystemBaseMediumLowColor">#FF4E4E4E</Color>
+                            <Color x:Key="SystemChromeAltLowColor">#FFA7A7A7</Color>
+                            <Color x:Key="SystemChromeBlackHighColor">#FF000000</Color>
+                            <Color x:Key="SystemChromeBlackLowColor">#FFA7A7A7</Color>
+                            <Color x:Key="SystemChromeBlackMediumLowColor">#FF000000</Color>
+                            <Color x:Key="SystemChromeBlackMediumColor">#FF000000</Color>
+                            <Color x:Key="SystemChromeDisabledHighColor">#FF121212</Color>
+                            <Color x:Key="SystemChromeDisabledLowColor">#FF898989</Color>
+                            <Color x:Key="SystemChromeHighColor">#FF6B6B6B</Color>
+                            <Color x:Key="SystemChromeLowColor">#FF080808</Color>
+                            <Color x:Key="SystemChromeMediumColor">#FF0A0A0A</Color>
+                            <Color x:Key="SystemChromeMediumLowColor">#FF0F0F0F</Color>
+                            <Color x:Key="SystemChromeWhiteColor">#FFFFFFFF</Color>
+                            <Color x:Key="SystemChromeGrayColor">#FF6B6B6B</Color>
+                            <Color x:Key="SystemListLowColor">#FF0A0A0A</Color>
+                            <Color x:Key="SystemListMediumColor">#FF121212</Color>
+                            <Color x:Key="SystemAccentColor">#FF00468F</Color>
+                        </Win1809NotPresent:ResourceDictionary>
+                    </ResourceDictionary.MergedDictionaries>
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Light">
+                    <ResourceDictionary.MergedDictionaries>
+                        <Win1809Present:ColorPaletteResources Accent="#FF0070C0" AltHigh="#FFFFFFFF" AltLow="#FFFFFFFF" AltMedium="#FFFFFFFF" AltMediumHigh="#FFFFFFFF" AltMediumLow="#FFFFFFFF" BaseHigh="#FF000000" BaseLow="#FFCCCCCC" BaseMedium="#FF898989" BaseMediumHigh="#FF5D5D5D" BaseMediumLow="#FF737373" ChromeAltLow="#FF5D5D5D" ChromeBlackHigh="#FF000000" ChromeBlackLow="#FFCCCCCC" ChromeBlackMedium="#FF5D5D5D" ChromeBlackMediumLow="#FF898989" ChromeDisabledHigh="#FFCCCCCC" ChromeDisabledLow="#FF898989" ChromeGray="#FF737373" ChromeHigh="#FFCCCCCC" ChromeLow="#FFECECEC" ChromeMedium="#FFE6E6E6" ChromeMediumLow="#FFECECEC" ChromeWhite="#FFFFFFFF" ListLow="#FFE6E6E6" ListMedium="#FFCCCCCC" />
+                        <ResourceDictionary>
+                            <Color x:Key="SystemChromeAltMediumHighColor">#CCFFFFFF</Color>
+                            <Color x:Key="SystemChromeAltHighColor">#FFFFFFFF</Color>
+                            <Color x:Key="SystemRevealListLowColor">#FFE6E6E6</Color>
+                            <Color x:Key="SystemRevealListMediumColor">#FFCCCCCC</Color>
+                            <RevealBackgroundBrush x:Key="SystemControlHighlightListLowRevealBackgroundBrush" TargetTheme="Light" Color="{ThemeResource SystemRevealListMediumColor}" FallbackColor="{ StaticResource SystemListMediumColor}" />
+                            <Color x:Key="RegionColor">#FFFFFFFF</Color>
+                            <SolidColorBrush x:Key="RegionBrush" Color="{StaticResource RegionColor}" />
+                            <SolidColorBrush x:Key="ColorTextDarkForeground" Color="{ThemeResource SystemAccentColorDark2}" />
+                        </ResourceDictionary>
+                        <Win1809NotPresent:ResourceDictionary>
+                            <!-- Compat -->
+                            <Color x:Key="SystemAltHighColor">#FFFFFFFF</Color>
+                            <Color x:Key="SystemAltLowColor">#FFFFFFFF</Color>
+                            <Color x:Key="SystemAltMediumColor">#FFFFFFFF</Color>
+                            <Color x:Key="SystemAltMediumHighColor">#FFFFFFFF</Color>
+                            <Color x:Key="SystemAltMediumLowColor">#FFFFFFFF</Color>
+                            <Color x:Key="SystemBaseHighColor">#FF000000</Color>
+                            <Color x:Key="SystemBaseLowColor">#FFCCCCCC</Color>
+                            <Color x:Key="SystemBaseMediumColor">#FF898989</Color>
+                            <Color x:Key="SystemBaseMediumHighColor">#FF5D5D5D</Color>
+                            <Color x:Key="SystemBaseMediumLowColor">#FF737373</Color>
+                            <Color x:Key="SystemChromeAltLowColor">#FF5D5D5D</Color>
+                            <Color x:Key="SystemChromeBlackHighColor">#FF000000</Color>
+                            <Color x:Key="SystemChromeBlackLowColor">#FFCCCCCC</Color>
+                            <Color x:Key="SystemChromeBlackMediumLowColor">#FF898989</Color>
+                            <Color x:Key="SystemChromeBlackMediumColor">#FF5D5D5D</Color>
+                            <Color x:Key="SystemChromeDisabledHighColor">#FFCCCCCC</Color>
+                            <Color x:Key="SystemChromeDisabledLowColor">#FF898989</Color>
+                            <Color x:Key="SystemChromeHighColor">#FFCCCCCC</Color>
+                            <Color x:Key="SystemChromeLowColor">#FFECECEC</Color>
+                            <Color x:Key="SystemChromeMediumColor">#FFE6E6E6</Color>
+                            <Color x:Key="SystemChromeMediumLowColor">#FFECECEC</Color>
+                            <Color x:Key="SystemChromeWhiteColor">#FFFFFFFF</Color>
+                            <Color x:Key="SystemChromeGrayColor">#FF737373</Color>
+                            <Color x:Key="SystemListLowColor">#FFE6E6E6</Color>
+                            <Color x:Key="SystemListMediumColor">#FFCCCCCC</Color>
+                            <Color x:Key="SystemAccentColor">#FF0070C0</Color>
+                        </Win1809NotPresent:ResourceDictionary>
+                    </ResourceDictionary.MergedDictionaries>
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="HighContrast">
+                    <StaticResource x:Key="RegionColor" ResourceKey="SystemColorWindowColor" />
+                    <SolidColorBrush x:Key="RegionBrush" Color="{StaticResource RegionColor}" />
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+            <helpers:ColorToSolidColorBrushConverter x:Key="color2SolidColorConverter" />
+            <helpers:ColorToSolidColorBrushConverter x:Key="solidColorBrush2ColorConverter" IsInverse="True" />
             <helpers:BooleanToGridLengthConverter x:Key="bool2GridLengthConverter" />
             <helpers:BooleanToGridLengthConverter x:Key="inverseBool2GridLengthConverter" IsInverse="True" />
             <toolkitConverters:BoolToVisibilityConverter x:Key="booleanToVisibilityConverter" />
             <toolkitConverters:StringVisibilityConverter x:Key="stringVisibilityConverter" />
             <toolkitConverters:EmptyCollectionToObjectConverter x:Key="collectionBooleanConverter" EmptyValue="False" NotEmptyValue="True"/>
             <toolkitConverters:EmptyStringToObjectConverter x:Key="stringBooleanConverter" EmptyValue="False" NotEmptyValue="True" />
+            <toolkitConverters:CollectionVisibilityConverter x:Key="collectionVisibilityConverter" />
             <SolidColorBrush x:Key="SimpleBlue" Color="#0070c0" />
             <SolidColorBrush x:Key="SimpleBlueDark" Color="#00468f" />
             <SolidColorBrush x:Key="SimpleBlueLight" Color="#599ef3" />
             <SolidColorBrush x:Key="SimpleBlueMedium" Color="#007dd6" />
-            <SolidColorBrush x:Key="NightBGColor" Color="#FF1A244A" />
-            <SolidColorBrush x:Key="DayBGColor" Color="#FF4874BF" />
             <Style x:Key="CommandBarLabel" TargetType="TextBlock">
                 <Setter Property="Margin" Value="10,0,0,0"/>
                 <Setter Property="CharacterSpacing" Value="10"/>
@@ -35,7 +133,6 @@
                 <Setter Property="FontWeight" Value="Bold"/>
             </Style>
             <Style x:Key="WeatherIcon" TargetType="TextBlock">
-                <Setter Property="Foreground" Value="White" />
                 <Setter Property="FontSize" Value="12" />
                 <Setter Property="FontFamily" Value="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons" />
                 <Setter Property="FontStyle" Value="Normal" />
@@ -44,29 +141,29 @@
                 <Setter Property="VerticalAlignment" Value="Center"/>
             </Style>
             <Style x:Key="WeatherFontIcon" TargetType="FontIcon">
-                <Setter Property="Foreground" Value="White" />
                 <Setter Property="FontSize" Value="12" />
                 <Setter Property="FontFamily" Value="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons" />
                 <Setter Property="FontStyle" Value="Normal" />
                 <Setter Property="HorizontalAlignment" Value="Center"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
             </Style>
-            <Style x:Key="TextButtonStyle" TargetType="Button">
-                <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
-                <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
-                <Setter Property="BorderBrush" Value="{ThemeResource SystemControlForegroundTransparentBrush}" />
-                <Setter Property="BorderThickness" Value="{ThemeResource ButtonBorderThemeThickness}" />
-                <Setter Property="Padding" Value="8,4,8,4" />
+            <Style x:Key="AccentButtonRevealStyle" TargetType="Button" BasedOn="{StaticResource ButtonRevealStyle}">
+                <Setter Property="Background" Value="{ThemeResource SystemControlHighlightAccentRevealBackgroundBrush}" />
+                <Setter Property="Foreground" Value="{ThemeResource SystemControlBackgroundChromeWhiteBrush}" />
+                <Setter Property="BorderBrush" Value="{ThemeResource ButtonRevealBorderBrush}" />
+                <Setter Property="BorderThickness" Value="{ThemeResource ButtonRevealBorderThemeThickness}" />
+                <Setter Property="Padding" Value="{StaticResource ButtonPadding}" />
                 <Setter Property="HorizontalAlignment" Value="Left" />
                 <Setter Property="VerticalAlignment" Value="Center" />
                 <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
                 <Setter Property="FontWeight" Value="Normal" />
                 <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
-                <Setter Property="UseSystemFocusVisuals" Value="True" />
+                <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
+                <Setter Property="FocusVisualMargin" Value="-3" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
-                            <Grid x:Name="RootGrid" Background="{TemplateBinding Background}">
+                            <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" Win1809Present:CornerRadius="{TemplateBinding CornerRadius}">
                                 <VisualStateManager.VisualStateGroups>
                                     <VisualStateGroup x:Name="CommonStates">
                                         <VisualState x:Name="Normal">
@@ -75,217 +172,41 @@
                                             </Storyboard>
                                         </VisualState>
                                         <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="RootGrid.(RevealBrush.State)" Value="PointerOver" />
+                                                <Setter Target="RootGrid.Background" Value="{ThemeResource SystemControlHighlightAccent3RevealAccent2BackgroundBrush}" />
+                                                <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ButtonRevealBorderBrushPointerOver}" />
+                                                <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource SystemControlBackgroundChromeWhiteBrush}" />
+                                            </VisualState.Setters>
                                             <Storyboard>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="Transparent" />
-                                                </ObjectAnimationUsingKeyFrames>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseHighBrush}" />
-                                                </ObjectAnimationUsingKeyFrames>
                                                 <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
                                             </Storyboard>
                                         </VisualState>
                                         <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="RootGrid.(RevealBrush.State)" Value="Pressed" />
+                                                <Setter Target="RootGrid.Background" Value="{ThemeResource SystemControlHighlightAccent2RevealBackgroundBrush}" />
+                                                <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ButtonRevealBorderBrushPressed}" />
+                                                <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource SystemControlBackgroundChromeWhiteBrush}" />
+                                            </VisualState.Setters>
                                             <Storyboard>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlBackgroundBaseMediumLowBrush}" />
-                                                </ObjectAnimationUsingKeyFrames>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightTransparentBrush}" />
-                                                </ObjectAnimationUsingKeyFrames>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseHighBrush}" />
-                                                </ObjectAnimationUsingKeyFrames>
                                                 <PointerDownThemeAnimation Storyboard.TargetName="RootGrid" />
                                             </Storyboard>
                                         </VisualState>
                                         <VisualState x:Name="Disabled">
-                                            <Storyboard>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
-                                                </ObjectAnimationUsingKeyFrames>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseMediumLowBrush}" />
-                                                </ObjectAnimationUsingKeyFrames>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledTransparentBrush}" />
-                                                </ObjectAnimationUsingKeyFrames>
-                                            </Storyboard>
+                                            <VisualState.Setters>
+                                                <Setter Target="RootGrid.Background" Value="{ThemeResource SystemControlDisabledAccentBrush}" />
+                                                <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ButtonRevealBorderBrushDisabled}" />
+                                                <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource SystemControlDisabledBaseMediumLowBrush}" />
+                                            </VisualState.Setters>
                                         </VisualState>
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
-                                <ContentPresenter x:Name="ContentPresenter" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Padding="{TemplateBinding Padding}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw"/>
+                                <ContentPresenter x:Name="ContentPresenter" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Win1809Present:CornerRadius="{TemplateBinding CornerRadius}" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Padding="{TemplateBinding Padding}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw" />
                             </Grid>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
-            </Style>
-            <Style x:Key="DismissTextBlockButtonStyle" TargetType="ButtonBase">
-                <Setter Property="Background" Value="{ThemeResource HyperlinkButtonBackground}" />
-                <Setter Property="Foreground" Value="{ThemeResource ApplicationForegroundThemeBrush}" />
-                <Setter Property="MinWidth" Value="0" />
-                <Setter Property="MinHeight" Value="0" />
-                <Setter Property="UseSystemFocusVisuals" Value="True" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="ButtonBase">
-                            <Grid Margin="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
-                                <ContentPresenter x:Name="Text"
-                                          Content="{TemplateBinding Content}"
-                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup x:Name="CommonStates">
-                                        <VisualState x:Name="Normal" />
-                                        <VisualState x:Name="PointerOver">
-                                            <Storyboard>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="Foreground">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="Red" />
-                                                </ObjectAnimationUsingKeyFrames>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="Background">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonBackgroundPointerOver}" />
-                                                </ObjectAnimationUsingKeyFrames>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="BorderBrush">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonBorderBrushPointerOver}" />
-                                                </ObjectAnimationUsingKeyFrames>
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="Pressed">
-                                            <Storyboard>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="Foreground">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="DarkRed" />
-                                                </ObjectAnimationUsingKeyFrames>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="Background">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonBackgroundPressed}" />
-                                                </ObjectAnimationUsingKeyFrames>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="BorderBrush">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonBorderBrushPressed}" />
-                                                </ObjectAnimationUsingKeyFrames>
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="Disabled">
-                                            <Storyboard>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="Foreground">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonForegroundDisabled}" />
-                                                </ObjectAnimationUsingKeyFrames>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="Background">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonBackgroundDisabled}" />
-                                                </ObjectAnimationUsingKeyFrames>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Text" Storyboard.TargetProperty="BorderBrush">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HyperlinkButtonBorderBrushDisabled}" />
-                                                </ObjectAnimationUsingKeyFrames>
-                                            </Storyboard>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <ControlTemplate x:Key="MSEdgeNotificationTemplate" TargetType="toolkitControls:InAppNotification">
-                <Grid>
-                    <VisualStateManager.VisualStateGroups>
-                        <VisualStateGroup x:Name="State">
-                            <VisualState x:Name="Collapsed">
-                                <Storyboard>
-                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" 
-                                                               Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)">
-                                        <EasingDoubleKeyFrame KeyTime="0" Value="0" />
-                                        <EasingDoubleKeyFrame toolkitControls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}"
-                                                          Value="{Binding HorizontalOffset, RelativeSource={RelativeSource TemplatedParent}}" />
-                                    </DoubleAnimationUsingKeyFrames>
-
-                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" 
-                                                               Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
-                                        <EasingDoubleKeyFrame KeyTime="0" Value="0" />
-                                        <EasingDoubleKeyFrame toolkitControls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}" 
-                                                          Value="{Binding VerticalOffset, RelativeSource={RelativeSource TemplatedParent}}"/>
-                                    </DoubleAnimationUsingKeyFrames>
-
-                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
-                                                               Storyboard.TargetProperty="(UIElement.Visibility)">
-                                        <DiscreteObjectKeyFrame KeyTime="0">
-                                            <DiscreteObjectKeyFrame.Value>
-                                                <Visibility>Visible</Visibility>
-                                            </DiscreteObjectKeyFrame.Value>
-                                        </DiscreteObjectKeyFrame>
-                                        <DiscreteObjectKeyFrame toolkitControls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}">
-                                            <DiscreteObjectKeyFrame.Value>
-                                                <Visibility>Collapsed</Visibility>
-                                            </DiscreteObjectKeyFrame.Value>
-                                        </DiscreteObjectKeyFrame>
-                                    </ObjectAnimationUsingKeyFrames>
-                                </Storyboard>
-                            </VisualState>
-
-                            <VisualState x:Name="Visible">
-                                <Storyboard>
-                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" 
-                                                               Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)">
-                                        <EasingDoubleKeyFrame KeyTime="0" Value="{Binding HorizontalOffset, RelativeSource={RelativeSource TemplatedParent}}" />
-                                        <EasingDoubleKeyFrame toolkitControls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}" Value="0" />
-                                    </DoubleAnimationUsingKeyFrames>
-
-                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" 
-                                                               Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
-                                        <EasingDoubleKeyFrame KeyTime="0" Value="{Binding VerticalOffset, RelativeSource={RelativeSource TemplatedParent}}" />
-                                        <EasingDoubleKeyFrame toolkitControls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}" Value="0" />
-                                    </DoubleAnimationUsingKeyFrames>
-                                </Storyboard>
-                            </VisualState>
-                        </VisualStateGroup>
-                    </VisualStateManager.VisualStateGroups>
-
-                    <Grid x:Name="RootGrid" 
-                      RenderTransformOrigin="{TemplateBinding RenderTransformOrigin}"
-                      Margin="{TemplateBinding Margin}"
-                      Padding="{TemplateBinding Padding}"
-                      MaxWidth="{TemplateBinding MaxWidth}"
-                      Visibility="{TemplateBinding Visibility}"
-                      Background="{TemplateBinding Background}" 
-                      BorderBrush="{TemplateBinding BorderBrush}" 
-                      BorderThickness="{TemplateBinding BorderThickness}">
-                        <Grid.RenderTransform>
-                            <CompositeTransform />
-                        </Grid.RenderTransform>
-
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-
-                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-                                      HorizontalContentAlignment="Stretch"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                      VerticalContentAlignment="Center"
-                                      TextWrapping="WrapWholeWords" />
-
-                        <Button x:Name="PART_DismissButton"
-                            Grid.Column="1" 
-                            Margin="10 0 -10 0"
-                            FontSize="12"
-                            Style="{StaticResource DismissTextBlockButtonStyle}"
-                            Content="&#xE894;" FontFamily="Segoe MDL2 Assets" 
-                            AutomationProperties.Name="Dismiss" />
-                    </Grid>
-                </Grid>
-            </ControlTemplate>
-            <Style x:Key="MSEdgeNotificationStyle" TargetType="toolkitControls:InAppNotification">
-                <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundChromeMediumBrush}" />
-                <Setter Property="Foreground" Value="{ThemeResource ApplicationForegroundThemeBrush}" />
-                <Setter Property="BorderBrush" Value="{ThemeResource SystemControlBackgroundAccentBrush}" />
-                <Setter Property="BorderThickness" Value="2,2,2,0" />
-                <Setter Property="HorizontalAlignment" Value="Stretch" />
-                <Setter Property="VerticalAlignment" Value="Bottom" />
-                <Setter Property="MinHeight" Value="55" />
-                <Setter Property="FontSize" Value="15" />
-                <Setter Property="RenderTransformOrigin" Value="0.5,1" />
-                <Setter Property="Margin" Value="0" />
-                <Setter Property="Padding" Value="20 10" />
-                <Setter Property="MaxWidth" Value="1200" />
-                <Setter Property="Template" Value="{StaticResource MSEdgeNotificationTemplate}" />
-                <Setter Property="RequestedTheme" Value="Dark" />
             </Style>
         </ResourceDictionary>
     </Application.Resources>

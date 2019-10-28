@@ -483,4 +483,19 @@
   <data name="Label_Temperature.Text" xml:space="preserve">
     <value>Temperature</value>
   </data>
+  <data name="Pref_DarkMode.Content" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="Pref_LightMode.Content" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="Pref_SystemMode.Content" xml:space="preserve">
+    <value>System Theme</value>
+  </data>
+  <data name="Pref_UserTheme.Text" xml:space="preserve">
+    <value>Choose a theme</value>
+  </data>
+  <data name="Setup_PreferencesPrompt.Text" xml:space="preserve">
+    <value>Customize your settings below</value>
+  </data>
 </root>
