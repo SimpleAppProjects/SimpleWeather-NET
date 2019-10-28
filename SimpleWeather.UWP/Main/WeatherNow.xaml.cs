@@ -54,39 +54,44 @@ namespace SimpleWeather.UWP.Main
 
         public void OnWeatherLoaded(LocationData location, Weather weather)
         {
-            if (weather?.IsValid() == true)
+            Task.Run(async () => 
             {
-                WeatherView.UpdateView(weather);
-
-                if (wm.SupportsAlerts)
+                if (weather?.IsValid() == true)
                 {
-                    if (weather.weather_alerts != null && weather.weather_alerts.Count > 0)
+                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     {
-                        // Alerts are posted to the user here. Set them as notified.
-                        Task.Run(async () =>
+                        WeatherView.UpdateView(weather);
+
+                        // Shell
+                        Shell.Instance.AppBarColor = WeatherView.PendingBackgroundColor;
+                        LoadingRing.IsActive = false;
+                    });
+
+                    if (wm.SupportsAlerts)
+                    {
+                        if (weather.weather_alerts != null && weather.weather_alerts.Count > 0)
                         {
-                            await WeatherAlertHandler.SetasNotified(location, weather.weather_alerts);
-                        });
+                            // Alerts are posted to the user here. Set them as notified.
+                            Task.Run(async () =>
+                            {
+                                await WeatherAlertHandler.SetasNotified(location, weather.weather_alerts);
+                            });
+                        }
+                    }
+
+                    // Update home tile if it hasn't been already
+                    if (Settings.HomeData.Equals(location)
+                        && (TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval)
+                        || !WeatherTileCreator.TileUpdated)
+                    {
+                        Task.Run(WeatherUpdateBackgroundTask.RequestAppTrigger);
+                    }
+                    else if (SecondaryTileUtils.Exists(location.query))
+                    {
+                        WeatherTileCreator.TileUpdater(location, weather);
                     }
                 }
-
-                // Shell
-                Shell.Instance.AppBarColor = WeatherView.PendingBackgroundColor;
-
-                // Update home tile if it hasn't been already
-                if (Settings.HomeData.Equals(location)
-                    && (TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval)
-                    || !WeatherTileCreator.TileUpdated)
-                {
-                    Task.Run(async () => await WeatherUpdateBackgroundTask.RequestAppTrigger());
-                }
-                else if (SecondaryTileUtils.Exists(location.query))
-                {
-                    WeatherTileCreator.TileUpdater(location, weather);
-                }
-            }
-
-            LoadingRing.IsActive = false;
+            });
         }
 
         public void OnWeatherError(WeatherException wEx)
@@ -99,7 +104,7 @@ namespace SimpleWeather.UWP.Main
                     Snackbar snackBar = Snackbar.Make(Content as Grid, wEx.Message, SnackbarDuration.Long);
                     snackBar.SetAction(App.ResLoader.GetString("Action_Retry"), () =>
                     {
-                        Task.Run(async () => await RefreshWeather(false));
+                        Task.Run(() => RefreshWeather(false));
                     });
                     snackBar.Show();
                     break;
@@ -256,11 +261,8 @@ namespace SimpleWeather.UWP.Main
         {
             base.OnNavigatedTo(e);
 
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => 
-            {
-                MainViewer?.ChangeView(null, 0, null, true);
-                BGAlpha = GradAlpha = 1.0f;
-            });
+            MainViewer?.ChangeView(null, 0, null, true);
+            BGAlpha = GradAlpha = 1.0f;
 
             if (e.Parameter != null)
             {
@@ -357,7 +359,7 @@ namespace SimpleWeather.UWP.Main
                 {
                     // Setup loader from updated location
                     wLoader = new WeatherDataLoader(location, this, this);
-                    await RefreshWeather(false);
+                    RefreshWeather(false);
                 }
                 else
                 {
@@ -370,12 +372,15 @@ namespace SimpleWeather.UWP.Main
                     TimeSpan span = DateTimeOffset.Now - weather.update_time;
                     if (span.TotalMinutes > ttl)
                     {
-                        await RefreshWeather(false);
+                        RefreshWeather(false);
                     }
                     else
                     {
-                        WeatherView.UpdateView(wLoader.GetWeather());
-                        Shell.Instance.AppBarColor = WeatherView.PendingBackgroundColor;
+                        await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => 
+                        {
+                            WeatherView.UpdateView(wLoader.GetWeather());
+                            Shell.Instance.AppBarColor = WeatherView.PendingBackgroundColor;
+                        });
                     }
                 }
             }
@@ -429,7 +434,7 @@ namespace SimpleWeather.UWP.Main
             CheckTiles();
 
             // Load up weather data
-            await RefreshWeather(forceRefresh);
+            RefreshWeather(forceRefresh);
         }
 
         private async Task<bool> UpdateLocation()
@@ -543,13 +548,13 @@ namespace SimpleWeather.UWP.Main
                 // Setup loader from updated location
                 wLoader = new WeatherDataLoader(location, this, this);
 
-            await RefreshWeather(true);
+            RefreshWeather(true);
         }
 
-        private async Task RefreshWeather(bool forceRefresh)
+        private void RefreshWeather(bool forceRefresh)
         {
             LoadingRing.IsActive = true;
-            await wLoader.LoadWeatherData(forceRefresh);
+            Task.Run(() => wLoader.LoadWeatherData(forceRefresh));
         }
 
         private void LeftButton_Click(object sender, RoutedEventArgs e)

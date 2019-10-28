@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Core;
@@ -162,7 +163,7 @@ namespace SimpleWeather.UWP.Main
             }
         }
 
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             bool suppressNavigate = false;
 
@@ -177,7 +178,7 @@ namespace SimpleWeather.UWP.Main
 
             // Setup background task
             Windows.ApplicationModel.Background.BackgroundExecutionManager.RemoveAccess();
-            await WeatherUpdateBackgroundTask.RegisterBackgroundTask();
+            Task.Run(WeatherUpdateBackgroundTask.RegisterBackgroundTask);
         }
 
         private void AppFrame_Navigated(object sender, NavigationEventArgs e)

@@ -178,24 +178,29 @@ namespace SimpleWeather.UWP.Setup
                     return;
                 }
 
-                // Use args.QueryText to determine what to do.
-                var result = (await wm.GetLocations(args.QueryText)).First();
+                query_vm = await Task.Run(async () =>
+                {
+                    // Use args.QueryText to determine what to do.
+                    var results = await wm.GetLocations(args.QueryText);
 
-                if (cts.Token.IsCancellationRequested)
-                {
-                    EnableControls(true);
-                    return;
-                }
+                    var result = results.FirstOrDefault();
 
-                if (result != null && !String.IsNullOrWhiteSpace(result.LocationQuery))
-                {
-                    sender.Text = result.LocationName;
-                    query_vm = result;
-                }
-                else
-                {
-                    query_vm = new LocationQueryViewModel();
-                }
+                    if (cts.Token.IsCancellationRequested)
+                    {
+                        EnableControls(true);
+                        return new LocationQueryViewModel();
+                    }
+
+                    if (result != null && !String.IsNullOrWhiteSpace(result.LocationQuery))
+                    {
+                        sender.Text = result.LocationName;
+                        return result;
+                    }
+                    else
+                    {
+                        return new LocationQueryViewModel();
+                    }
+                }, cts.Token);
             }
             else if (String.IsNullOrWhiteSpace(args.QueryText))
             {
@@ -203,7 +208,7 @@ namespace SimpleWeather.UWP.Setup
                 return;
             }
 
-            if (String.IsNullOrWhiteSpace(query_vm.LocationQuery))
+            if (String.IsNullOrWhiteSpace(query_vm?.LocationQuery))
             {
                 // Stop since there is no valid query
                 return;

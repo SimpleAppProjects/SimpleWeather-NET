@@ -128,8 +128,8 @@ namespace SimpleWeather.UWP.BackgroundTasks
             var backgroundAccessStatus = await BackgroundExecutionManager.RequestAccessAsync();
 
             // If allowed
-            if (backgroundAccessStatus == BackgroundAccessStatus.AlwaysAllowed
-                || backgroundAccessStatus == BackgroundAccessStatus.AllowedSubjectToSystemPolicy)
+            if (backgroundAccessStatus == BackgroundAccessStatus.AlwaysAllowed ||
+                backgroundAccessStatus == BackgroundAccessStatus.AllowedSubjectToSystemPolicy)
             {
                 await AppTrigger.RequestAsync();
             }
@@ -151,8 +151,8 @@ namespace SimpleWeather.UWP.BackgroundTasks
             var backgroundAccessStatus = await BackgroundExecutionManager.RequestAccessAsync();
 
             // If allowed
-            if (backgroundAccessStatus == BackgroundAccessStatus.AlwaysAllowed
-                || backgroundAccessStatus == BackgroundAccessStatus.AllowedSubjectToSystemPolicy)
+            if (backgroundAccessStatus == BackgroundAccessStatus.AlwaysAllowed ||
+                backgroundAccessStatus == BackgroundAccessStatus.AllowedSubjectToSystemPolicy)
             {
                 // Register a task for each trigger
                 var tb1 = new BackgroundTaskBuilder() { Name = taskName };
