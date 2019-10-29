@@ -119,7 +119,6 @@
     <Content Include="Assets\BadgeLogo.scale-150.png" />
     <Content Include="Assets\BadgeLogo.scale-200.png" />
     <Content Include="Assets\BadgeLogo.scale-400.png" />
-    <Content Include="Assets\Credits\licenses.html" />
     <Content Include="Assets\Providers\bingmaps.png" />
     <Content Include="Assets\Providers\bingmaps_dark.png" />
     <Content Include="Assets\Providers\here.png" />
@@ -296,6 +295,18 @@
     <Compile Include="Main\LocationSearchPage.xaml.cs">
       <DependentUpon>LocationSearchPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Preferences\Settings_About.xaml.cs">
+      <DependentUpon>Settings_About.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Preferences\Settings_Credits.xaml.cs">
+      <DependentUpon>Settings_Credits.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Preferences\Settings_General.xaml.cs">
+      <DependentUpon>Settings_General.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Preferences\Settings_OSSLibs.xaml.cs">
+      <DependentUpon>Settings_OSSLibs.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Setup\SetupLocationsPage.xaml.cs">
       <DependentUpon>SetupLocationsPage.xaml</DependentUpon>
     </Compile>
@@ -337,7 +348,7 @@
       <DependentUpon>SetupPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Settings\SettingsPage.xaml.cs">
+    <Compile Include="Preferences\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Main\Shell.xaml.cs">
@@ -441,6 +452,22 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Preferences\Settings_About.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Preferences\Settings_Credits.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Preferences\Settings_General.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Preferences\Settings_OSSLibs.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Setup\SetupLocationsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -449,7 +476,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Settings\SettingsPage.xaml">
+    <Page Include="Preferences\SettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="About.Header" xml:space="preserve">
+  <data name="About.Content" xml:space="preserve">
     <value>About</value>
   </data>
   <data name="API_Box.PlaceholderText" xml:space="preserve">
@@ -129,13 +129,13 @@
   <data name="AppName" xml:space="preserve">
     <value>SimpleWeather</value>
   </data>
-  <data name="Credits.Header" xml:space="preserve">
+  <data name="Credits.Content" xml:space="preserve">
     <value>Credits</value>
   </data>
   <data name="Error_Location" xml:space="preserve">
     <value>Unable to retrieve location status</value>
   </data>
-  <data name="General.Header" xml:space="preserve">
+  <data name="General.Content" xml:space="preserve">
     <value>General</value>
   </data>
   <data name="KeyEntry.PlaceholderText" xml:space="preserve">
@@ -237,7 +237,7 @@
   <data name="Nav_WeatherNow.Label" xml:space="preserve">
     <value>Weather</value>
   </data>
-  <data name="OSSLibs.Header" xml:space="preserve">
+  <data name="OSSLibs.Content" xml:space="preserve">
     <value>Open Source Libraries</value>
   </data>
   <data name="Pref_SummaryFollowGPS.Text" xml:space="preserve">

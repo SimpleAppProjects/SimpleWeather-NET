@@ -1,0 +1,102 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using SimpleWeather.Utils;
+using Windows.ApplicationModel;
+using Windows.Devices.Geolocation;
+using Windows.UI.Popups;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.ApplicationModel.Core;
+using Windows.UI.Xaml.Navigation;
+using Windows.Storage;
+using Windows.UI.Xaml.Media;
+using Windows.UI;
+using Windows.UI.Core;
+using Windows.Foundation.Metadata;
+using Windows.UI.ViewManagement;
+using System.Threading.Tasks;
+using SimpleWeather.WeatherData;
+using SimpleWeather.UWP.BackgroundTasks;
+using SimpleWeather.UWP.Helpers;
+using SimpleWeather.UWP.Main;
+using NavigationView = Microsoft.UI.Xaml.Controls.NavigationView;
+using NavigationViewItem = Microsoft.UI.Xaml.Controls.NavigationViewItem;
+using NavigationViewItemInvokedEventArgs = Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs;
+using NavigationViewPaneDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode;
+
+// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
+namespace SimpleWeather.UWP.Preferences
+{
+    /// <summary>
+    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// </summary>
+    public sealed partial class SettingsPage : Page, ICommandBarPage, IBackRequestedPage
+    {
+        public string CommandBarLabel { get; set; }
+        public List<ICommandBarElement> PrimaryCommands { get; set; }
+
+        public SettingsPage()
+        {
+            this.InitializeComponent();
+
+            // CommandBar
+            CommandBarLabel = App.ResLoader.GetString("Nav_Settings/Label");
+        }
+
+        public async Task<bool> OnBackRequested()
+        {
+            if (SettingsFrame?.Content is IBackRequestedPage backRequestedPage)
+            {
+                return await backRequestedPage.OnBackRequested();
+            }
+
+            return false;
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+
+            SettingsNavView.SelectedItem = SettingsNavView.MenuItems.First();
+        }
+
+        private void NavigationView_SelectionChanged(NavigationView sender, Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs args)
+        {
+            FrameNavigationOptions navOptions = new FrameNavigationOptions
+            {
+                TransitionInfoOverride = args.RecommendedNavigationTransitionInfo
+            };
+            if (sender.PaneDisplayMode == NavigationViewPaneDisplayMode.Top)
+            {
+                navOptions.IsNavigationStackEnabled = false;
+            }
+            Type pageType;
+            switch ((args.SelectedItem as NavigationViewItem)?.Tag)
+            {
+                case "General":
+                default:
+                    pageType = typeof(Settings_General);
+                    break;
+                case "Credits":
+                    pageType = typeof(Settings_Credits);
+                    break;
+                case "OSSLibs":
+                    pageType = typeof(Settings_OSSLibs);
+                    break;
+                case "About":
+                    pageType = typeof(Settings_About);
+                    break;
+            }
+            SettingsFrame.NavigateToType(pageType, null, navOptions);
+        }
+
+        private void SettingsFrame_Navigated(object sender, NavigationEventArgs e)
+        {
+            if (e?.Content is Page page && page.Content is ScrollViewer scrollViewer)
+            {
+                scrollViewer.ScrollToVerticalOffset(0);
+            }
+        }
+    }
+}

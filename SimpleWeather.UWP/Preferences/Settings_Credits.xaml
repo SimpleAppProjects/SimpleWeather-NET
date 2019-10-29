@@ -1,0 +1,76 @@
+﻿<Page
+    x:Class="SimpleWeather.UWP.Preferences.Settings_Credits"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SimpleWeather.UWP.Preferences"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource RegionBrush}"
+    NavigationCacheMode="Enabled">
+
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Dark">
+                    <x:String x:Key="HereImageSrc">../Assets/Providers/here_dark.png</x:String>
+                    <x:String x:Key="YahooImageSrc">../Assets/Providers/yahoo_dark.png</x:String>
+                    <x:String x:Key="BingImageSrc">../Assets/Providers/bingmaps_dark.png</x:String>
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Light">
+                    <x:String x:Key="HereImageSrc">../Assets/Providers/here.png</x:String>
+                    <x:String x:Key="YahooImageSrc">../Assets/Providers/yahoo.png</x:String>
+                    <x:String x:Key="BingImageSrc">../Assets/Providers/bingmaps.png</x:String>
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
+
+    <ScrollViewer HorizontalScrollMode="Disabled" VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto" Padding="16,0">
+        <Grid>
+            <StackPanel>
+                <TextBlock x:Uid="Pref_TitleProviders" Text="Weather Providers" Style="{StaticResource SettingTitleStyle}"/>
+                <StackPanel Padding="10">
+                    <TextBlock Text="HERE Weather" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                    <RichTextBlock Padding="0,10">
+                        <Paragraph>
+                            The HERE Logo is a trademark or registered trademark of HERE Global B.V.
+                        </Paragraph>
+                    </RichTextBlock>
+                    <HyperlinkButton NavigateUri="https://here.com/en" Padding="0,10">
+                        <Image Source="{ThemeResource HereImageSrc}" Height="50" HorizontalAlignment="Left" />
+                    </HyperlinkButton>
+                </StackPanel>
+                <StackPanel Padding="10">
+                    <TextBlock Text="Yahoo Weather" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                    <RichTextBlock Padding="0,10">
+                        <Paragraph>
+                            YAHOO! is a registered trademark of Yahoo! Inc. both in the United States and internationally.
+                        </Paragraph>
+                    </RichTextBlock>
+                    <HyperlinkButton NavigateUri="https://www.yahoo.com/?ilc=401" Padding="0,10">
+                        <Image Source="{ThemeResource YahooImageSrc}" Height="50" HorizontalAlignment="Left" />
+                    </HyperlinkButton>
+                </StackPanel>
+                <StackPanel Padding="10">
+                    <TextBlock Text="OpenWeatherMap" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                    <HyperlinkButton NavigateUri="http://openweathermap.org/" Padding="0,20">
+                        <Image Source="../Assets/Providers/openweathermap.png" Height="25" HorizontalAlignment="Left" />
+                    </HyperlinkButton>
+                </StackPanel>
+                <StackPanel Padding="10">
+                    <TextBlock Text="MET Norway" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                    <HyperlinkButton NavigateUri="https://www.met.no/en" Padding="0,10">
+                        <Image Source="../Assets/Providers/metno.png" Height="50" HorizontalAlignment="Left" />
+                    </HyperlinkButton>
+                </StackPanel>
+                <StackPanel Padding="10">
+                    <TextBlock Text="Bing Maps" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                    <HyperlinkButton NavigateUri="https://www.bing.com/maps" Padding="0,10">
+                        <Image Source="{ThemeResource BingImageSrc}" Height="50" HorizontalAlignment="Left" />
+                    </HyperlinkButton>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</Page>

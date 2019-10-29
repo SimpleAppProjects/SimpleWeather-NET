@@ -21,25 +21,22 @@ using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.UWP.Helpers;
 using SimpleWeather.UWP.Main;
 
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
+// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
+
 namespace SimpleWeather.UWP.Preferences
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class SettingsPage : Page, ICommandBarPage, IBackRequestedPage
+    public sealed partial class Settings_General : Page, IBackRequestedPage
     {
         private WeatherManager wm;
 
-        public string CommandBarLabel { get; set; }
-        public List<ICommandBarElement> PrimaryCommands { get; set; }
-
         private bool RequestAppTrigger = false;
 
-        public SettingsPage()
+        public Settings_General()
         {
             this.InitializeComponent();
-            NavigationCacheMode = NavigationCacheMode.Required;
 
             wm = WeatherManager.GetInstance();
             RestoreSettings();
@@ -52,23 +49,13 @@ namespace SimpleWeather.UWP.Preferences
             APIComboBox.SelectionChanged += APIComboBox_SelectionChanged;
             RefreshComboBox.SelectionChanged += RefreshComboBox_SelectionChanged;
             PersonalKeySwitch.Toggled += PersonalKeySwitch_Toggled;
-            if (OSSLicenseWebview != null)
-                OSSLicenseWebview.NavigationStarting += OSSLicenseWebview_NavigationStarting;
             LightMode.Checked += LightMode_Checked;
             DarkMode.Checked += DarkMode_Checked;
             SystemMode.Checked += SystemMode_Checked;
-
-            SettingsPivot.Loaded += (sender, e) =>
-            {
-                SettingsPivot.SelectedIndex = 0;
-            };
         }
 
         private void RestoreSettings()
         {
-            // CommandBar
-            CommandBarLabel = App.ResLoader.GetString("Nav_Settings/Label");
-
             // Temperature
             Fahrenheit.IsChecked = Settings.IsFahrenheit;
             Celsius.IsChecked = !Settings.IsFahrenheit;
@@ -163,15 +150,6 @@ namespace SimpleWeather.UWP.Preferences
             SystemMode.IsChecked = userTheme == UserThemeMode.System;
             LightMode.IsChecked = userTheme == UserThemeMode.Light;
             DarkMode.IsChecked = userTheme == UserThemeMode.Dark;
-
-            Version.Text = string.Format("v{0}.{1}.{2}",
-                Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
-        }
-
-        private void AlertSwitch_Toggled(object sender, RoutedEventArgs e)
-        {
-            ToggleSwitch sw = sender as ToggleSwitch;
-            Settings.ShowAlerts = sw.IsOn;
         }
 
         public async Task<bool> OnBackRequested()
@@ -239,6 +217,12 @@ namespace SimpleWeather.UWP.Preferences
                     RequestAppTrigger = false;
                 }
             }
+        }
+
+        private void AlertSwitch_Toggled(object sender, RoutedEventArgs e)
+        {
+            ToggleSwitch sw = sender as ToggleSwitch;
+            Settings.ShowAlerts = sw.IsOn;
         }
 
         private async void KeyEntry_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
@@ -402,13 +386,6 @@ namespace SimpleWeather.UWP.Preferences
             Task.Run(WeatherUpdateBackgroundTask.RegisterBackgroundTask);
         }
 
-        private void OSSLicenseWebview_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
-        {
-            // Cancel navigation and open link in ext. browser
-            args.Cancel = true;
-            var b = Windows.System.Launcher.LaunchUriAsync(args.Uri);
-        }
-
         private void Fahrenheit_Checked(object sender, RoutedEventArgs e)
         {
             Settings.Unit = Settings.Fahrenheit;
@@ -496,25 +473,6 @@ namespace SimpleWeather.UWP.Preferences
 
             Settings.FollowGPS = sw.IsOn;
             RequestAppTrigger = true;
-        }
-
-        private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            Pivot pivot = sender as Pivot;
-
-            if (pivot.SelectedIndex == 2)
-            {
-                // Load webview
-                var webview = (FrameworkElement)FindName(nameof(OSSLicenseWebview));
-                webview.Visibility = Visibility.Visible;
-
-                if (OSSLicenseWebview.Source == null)
-                {
-                    OSSLicenseWebview.NavigationStarting -= OSSLicenseWebview_NavigationStarting;
-                    OSSLicenseWebview.Navigate(new Uri("ms-appx-web:///Assets/Credits/licenses.html"));
-                    OSSLicenseWebview.NavigationStarting += OSSLicenseWebview_NavigationStarting;
-                }
-            }
         }
 
         private void SystemMode_Checked(object sender, RoutedEventArgs e)

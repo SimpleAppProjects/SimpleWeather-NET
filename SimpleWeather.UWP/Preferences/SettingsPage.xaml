@@ -1,0 +1,47 @@
+﻿<Page
+    x:Class="SimpleWeather.UWP.Preferences.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SimpleWeather.UWP.Preferences"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="1300"
+    NavigationCacheMode="Enabled">
+
+    <Page.Resources>
+        <SolidColorBrush x:Key="NavigationViewTopPaneBackground" Color="{ThemeResource SystemAccentColor}" />
+        <SolidColorBrush x:Key="NavigationViewSelectionIndicatorForeground" Color="White" />
+
+        <RevealBorderBrush x:Key="NavigationViewItemBorderBrush" TargetTheme="Dark" Color="Transparent" FallbackColor="Transparent" />
+        <RevealBorderBrush x:Key="NavigationViewItemBorderBrushPointerOver" TargetTheme="Dark" Color="Transparent" FallbackColor="Transparent" />
+        <RevealBorderBrush x:Key="NavigationViewItemBorderBrushPressed" TargetTheme="Dark" Color="Transparent" FallbackColor="Transparent" />
+
+        <RevealBackgroundBrush x:Key="TopNavigationViewItemBackgroundPointerOver" TargetTheme="Dark" Color="#18FFFFFF" FallbackColor="#18FFFFFF" />
+        <RevealBackgroundBrush x:Key="TopNavigationViewItemBackgroundPressed" TargetTheme="Dark" Color="#30FFFFFF" FallbackColor="#30FFFFFF" />
+        <RevealBackgroundBrush x:Key="TopNavigationViewItemBackgroundSelected" TargetTheme="Dark" Color="Transparent" FallbackColor="Transparent" />
+
+        <SolidColorBrush x:Key="TopNavigationViewItemForeground" Color="White" Opacity="0.7" />
+        <SolidColorBrush x:Key="TopNavigationViewItemForegroundPointerOver" Color="White" />
+        <SolidColorBrush x:Key="TopNavigationViewItemForegroundPressed" Color="White" />
+        <SolidColorBrush x:Key="TopNavigationViewItemForegroundSelected" Color="White" />
+    </Page.Resources>
+
+    <Grid Background="{ThemeResource RegionBrush}">
+        <controls:NavigationView x:Name="SettingsNavView" PaneDisplayMode="Top" SelectionFollowsFocus="Enabled"
+                                 IsBackButtonVisible="Collapsed" IsBackEnabled="False"
+                                 IsSettingsVisible="False" SelectionChanged="NavigationView_SelectionChanged">
+            <controls:NavigationView.PaneHeader>
+                <Rectangle Width="4" />
+            </controls:NavigationView.PaneHeader>
+            <controls:NavigationView.MenuItems>
+                <controls:NavigationViewItem x:Uid="General" Content="General" Tag="General" />
+                <controls:NavigationViewItem x:Uid="Credits" Content="Credits" Tag="Credits" />
+                <controls:NavigationViewItem x:Uid="OSSLibs" Content="Open Source Libraries" Tag="OSSLibs" />
+                <controls:NavigationViewItem x:Uid="About" Content="About" Tag="About" />
+            </controls:NavigationView.MenuItems>
+            <Frame x:Name="SettingsFrame" Navigated="SettingsFrame_Navigated" />
+        </controls:NavigationView>
+    </Grid>
+</Page>

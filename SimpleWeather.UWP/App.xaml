@@ -30,6 +30,11 @@
                             <Color x:Key="RegionColor">#FF242424</Color>
                             <SolidColorBrush x:Key="RegionBrush" Color="{StaticResource RegionColor}" />
                             <SolidColorBrush x:Key="ColorTextDarkForeground" Color="#FFFFFFFF" />
+                            <Style x:Key="HyperlinkButtonStyle" TargetType="HyperlinkButton">
+                                <Setter Property="Foreground" Value="{ThemeResource SystemAccentColorLight1}" />
+                                <Setter Property="Padding" Value="0,8" />
+                                <Setter Property="Margin" Value="0" />
+                            </Style>
                         </ResourceDictionary>
                         <Win1809NotPresent:ResourceDictionary>
                             <!-- Compat -->
@@ -74,6 +79,11 @@
                             <Color x:Key="RegionColor">#FFFFFFFF</Color>
                             <SolidColorBrush x:Key="RegionBrush" Color="{StaticResource RegionColor}" />
                             <SolidColorBrush x:Key="ColorTextDarkForeground" Color="{ThemeResource SystemAccentColorDark2}" />
+                            <Style x:Key="HyperlinkButtonStyle" TargetType="HyperlinkButton">
+                                <Setter Property="Foreground" Value="{ThemeResource SystemAccentColorDark1}" />
+                                <Setter Property="Padding" Value="0,8" />
+                                <Setter Property="Margin" Value="0" />
+                            </Style>
                         </ResourceDictionary>
                         <Win1809NotPresent:ResourceDictionary>
                             <!-- Compat -->
@@ -146,6 +156,17 @@
                 <Setter Property="FontStyle" Value="Normal" />
                 <Setter Property="HorizontalAlignment" Value="Center"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+            <Style x:Key="SettingTitleStyle" BasedOn="{StaticResource CommandBarLabel}" TargetType="TextBlock">
+                <Setter Property="Padding" Value="0,10"/>
+                <Setter Property="Margin" Value="0,5"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="FontSize" Value="18"/>
+            </Style>
+            <Style x:Key="PrefTitleStyle" TargetType="TextBlock">
+                <Setter Property="Padding" Value="0,5"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
             </Style>
             <Style x:Key="AccentButtonRevealStyle" TargetType="Button" BasedOn="{StaticResource ButtonRevealStyle}">
                 <Setter Property="Background" Value="{ThemeResource SystemControlHighlightAccentRevealBackgroundBrush}" />
