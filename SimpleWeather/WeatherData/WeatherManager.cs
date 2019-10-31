@@ -114,6 +114,7 @@ namespace SimpleWeather.WeatherData
             return needsKey;
         }
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public static async Task<bool> IsKeyValid(string key, string API)
         {
             var provider = GetProvider(API);
@@ -148,26 +149,31 @@ namespace SimpleWeather.WeatherData
             return await WeatherProvider.UpdateLocationQuery(location);
         }
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string ac_query)
         {
             return await WeatherProvider.GetLocations(ac_query);
         }
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public async Task<LocationQueryViewModel> GetLocation(Windows.Devices.Geolocation.Geoposition geoPos)
         {
             return await GetLocation(new WeatherUtils.Coordinate(geoPos));
         }
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public async Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coord)
         {
             return await WeatherProvider.GetLocation(coord);
         }
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public async Task<Weather> GetWeather(string query)
         {
             return await WeatherProvider.GetWeather(query);
         }
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public async Task<Weather> GetWeather(LocationData location)
         {
             return await WeatherProvider.GetWeather(location);
@@ -193,6 +199,7 @@ namespace SimpleWeather.WeatherData
             return WeatherProvider.GetWeatherIcon(isNight, icon);
         }
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public async Task<bool> IsKeyValid(string key)
         {
             return await WeatherProvider.IsKeyValid(key);

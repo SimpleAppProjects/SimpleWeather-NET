@@ -20,6 +20,7 @@ using System.Globalization;
 using Windows.System.UserProfile;
 using SimpleWeather.Location;
 using System.Threading;
+using SimpleWeather.Keys;
 
 namespace SimpleWeather.OpenWeather
 {
@@ -36,16 +37,64 @@ namespace SimpleWeather.OpenWeather
         public override bool SupportsAlerts => true;
         public override bool NeedsExternalAlertData => true;
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<bool> IsKeyValid(string key)
         {
-            return false;
+            string queryAPI = "https://api.openweathermap.org/data/2.5/";
+            string query = "forecast?appid=";
+
+            Uri queryURL = new Uri(String.Format("{0}{1}{2}", queryAPI, query, key));
+            bool isValid = false;
+            WeatherException wEx = null;
+
+            try
+            {
+                if (String.IsNullOrWhiteSpace(key))
+                    throw (wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey));
+
+                CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
+
+                // Connect to webstream
+                HttpClient webClient = new HttpClient();
+                HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
+
+                // Check for errors
+                switch (response.StatusCode)
+                {
+                    // 400 (OK since this isn't a valid request)
+                    case HttpStatusCode.BadRequest:
+                        isValid = true;
+                        break;
+                    // 401 (Unauthorized - Key is invalid)
+                    case HttpStatusCode.Unauthorized:
+                        wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
+                        isValid = false;
+                        break;
+                }
+
+                // End Stream
+                response.Dispose();
+                webClient.Dispose();
+            }
+            catch (Exception)
+            {
+                isValid = false;
+            }
+
+            if (wEx != null)
+            {
+                throw wEx;
+            }
+
+            return isValid;
         }
 
         public override string GetAPIKey()
         {
-            return null;
+            return APIKeys.GetOWMKey();
         }
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<WeatherData.Weather> GetWeather(string location_query)
         {
             WeatherData.Weather weather = null;
@@ -147,6 +196,7 @@ namespace SimpleWeather.OpenWeather
             return weather;
         }
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<WeatherData.Weather> GetWeather(LocationData location)
         {
             var weather = await base.GetWeather(location);

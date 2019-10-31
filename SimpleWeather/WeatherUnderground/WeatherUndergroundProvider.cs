@@ -37,6 +37,7 @@ namespace SimpleWeather.WeatherUnderground
         public override bool SupportsAlerts => true;
         public override bool NeedsExternalAlertData => false;
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<bool> IsKeyValid(string key)
         {
             string queryAPI = "https://api.wunderground.com/api/";
@@ -91,7 +92,7 @@ namespace SimpleWeather.WeatherUnderground
 
             if (wEx != null)
             {
-                await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
+                throw wEx;
             }
 
             return isValid;
@@ -102,6 +103,7 @@ namespace SimpleWeather.WeatherUnderground
             return APIKeys.GetWUndergroundKey();
         }
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<Weather> GetWeather(string location_query)
         {
             Weather weather = null;
@@ -189,7 +191,7 @@ namespace SimpleWeather.WeatherUnderground
             // End Stream
             webClient.Dispose();
 
-            if (weather == null || !weather.IsValid())
+            if (wEx == null && (weather == null || !weather.IsValid()))
             {
                 wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
             }
@@ -207,6 +209,7 @@ namespace SimpleWeather.WeatherUnderground
             return weather;
         }
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<Weather> GetWeather(LocationData location)
         {
             var weather = await base.GetWeather(location);
@@ -300,7 +303,17 @@ namespace SimpleWeather.WeatherUnderground
         {
             string query = string.Empty;
             string coord = string.Format("{0},{1}", weather.location.latitude, weather.location.longitude);
-            var qview = await GetLocation(new WeatherUtils.Coordinate(coord));
+            LocationQueryViewModel qview = null;
+
+            try
+            {
+                qview = await GetLocation(new WeatherUtils.Coordinate(coord));
+            }
+            catch (WeatherException e)
+            {
+                qview = new LocationQueryViewModel();
+                Logger.WriteLine(LoggerLevel.Error, e, "WeatherUndergroundProvider: UpdateLocationQuery: exception!!");
+            }
 
             if (String.IsNullOrEmpty(qview.LocationQuery))
                 query = string.Format(CultureInfo.InvariantCulture, "/q/{0}", coord);
@@ -314,7 +327,17 @@ namespace SimpleWeather.WeatherUnderground
         {
             string query = string.Empty;
             string coord = string.Format("{0},{1}", location.latitude, location.longitude);
-            var qview = await GetLocation(new WeatherUtils.Coordinate(coord));
+            LocationQueryViewModel qview = null;
+
+            try
+            {
+                qview = await GetLocation(new WeatherUtils.Coordinate(coord));
+            }
+            catch (WeatherException e)
+            {
+                qview = new LocationQueryViewModel();
+                Logger.WriteLine(LoggerLevel.Error, e, "WeatherUndergroundProvider: UpdateLocationQuery: exception!!");
+            }
 
             if (String.IsNullOrEmpty(qview.LocationQuery))
                 query = string.Format("/q/{0}", coord);

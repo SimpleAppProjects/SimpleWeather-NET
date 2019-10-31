@@ -21,15 +21,12 @@ namespace SimpleWeather.UWP.Main
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class LocationSearchPage : Page, ICommandBarPage, IBackRequestedPage, IDisposable
+    public sealed partial class LocationSearchPage : CustomPage, IBackRequestedPage, IDisposable
     {
         private CancellationTokenSource cts = new CancellationTokenSource();
         private WeatherManager wm;
         public ObservableCollection<LocationQueryViewModel> LocationQuerys { get; set; }
         private ProgressRing LoadingRing { get { return Location?.ProgressRing; } }
-
-        public string CommandBarLabel { get; set; }
-        public List<ICommandBarElement> PrimaryCommands { get; set; }
 
         public LocationSearchPage()
         {
@@ -96,7 +93,20 @@ namespace SimpleWeather.UWP.Main
                         {
                             if (ctsToken.IsCancellationRequested) return;
 
-                            var results = await wm.GetLocations(query);
+                            ObservableCollection<LocationQueryViewModel> results;
+
+                            try
+                            {
+                                results = await wm.GetLocations(query);
+                            }
+                            catch (WeatherException ex)
+                            {
+                                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                                {
+                                    ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
+                                });
+                                results = new ObservableCollection<LocationQueryViewModel>() { new LocationQueryViewModel() };
+                            }
 
                             if (ctsToken.IsCancellationRequested) return;
 
@@ -158,7 +168,20 @@ namespace SimpleWeather.UWP.Main
                 // Use args.QueryText to determine what to do.
                 query_vm = await Task.Run(async () => 
                 {
-                    var results = await wm.GetLocations(args.QueryText);
+                    ObservableCollection<LocationQueryViewModel> results;
+
+                    try
+                    {
+                        results = await wm.GetLocations(args.QueryText);
+                    }
+                    catch (WeatherException ex)
+                    {
+                        await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        {
+                            ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
+                        });
+                        results = new ObservableCollection<LocationQueryViewModel>() { new LocationQueryViewModel() };
+                    }
 
                     var result = results.FirstOrDefault();
                     if (result != null && !String.IsNullOrWhiteSpace(result.LocationQuery))
@@ -197,6 +220,39 @@ namespace SimpleWeather.UWP.Main
                 return;
             }
 
+            // Need to get FULL location data for HERE API
+            // Data provided is incomplete
+            if (WeatherAPI.Here.Equals(query_vm.LocationSource)
+                    && query_vm.LocationLat == -1 && query_vm.LocationLong == -1
+                    && query_vm.LocationTZ_Long == null)
+            {
+                try
+                {
+                    query_vm = await new HERE.HERELocationProvider().GetLocationFromLocID(query_vm.LocationQuery, query_vm.WeatherSource);
+                }
+                catch (WeatherException ex)
+                {
+                    ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
+                    LoadingRing.IsActive = false;
+                    return;
+                }
+            }
+            else if (WeatherAPI.BingMaps.Equals(query_vm.LocationSource)
+                    && query_vm.LocationLat == -1 && query_vm.LocationLong == -1
+                    && query_vm.LocationTZ_Long == null)
+            {
+                try
+                {
+                    query_vm = await new Bing.BingMapsLocationProvider().GetLocationFromAddress(query_vm.LocationQuery, query_vm.WeatherSource);
+                }
+                catch (WeatherException ex)
+                {
+                    ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
+                    LoadingRing.IsActive = false;
+                    return;
+                }
+            }
+
             // Check if location already exists
             var locData = await Settings.GetLocationData();
             if (locData.Exists(l => l.query == query_vm.LocationQuery))
@@ -211,25 +267,10 @@ namespace SimpleWeather.UWP.Main
                 return;
             }
 
-            // Need to get FULL location data for HERE API
-            // Data provided is incomplete
-            if (WeatherAPI.Here.Equals(query_vm.LocationSource)
-                    && query_vm.LocationLat == -1 && query_vm.LocationLong == -1
-                    && query_vm.LocationTZ_Long == null)
-            {
-                query_vm = await new HERE.HERELocationProvider().GetLocationFromLocID(query_vm.LocationQuery, query_vm.WeatherSource);
-            }
-            else if (WeatherAPI.BingMaps.Equals(query_vm.LocationSource)
-                    && query_vm.LocationLat == -1 && query_vm.LocationLong == -1
-                    && query_vm.LocationTZ_Long == null)
-            {
-                query_vm = await new Bing.BingMapsLocationProvider().GetLocationFromAddress(query_vm.LocationQuery, query_vm.WeatherSource);
-            }
-
             var location = new LocationData(query_vm);
             if (!location.IsValid())
             {
-                await Toast.ShowToastAsync(App.ResLoader.GetString("WError_NoWeather"), ToastDuration.Short);
+                ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("WError_NoWeather"), SnackbarDuration.Short));
                 LoadingRing.IsActive = false;
                 return;
             }
@@ -243,7 +284,7 @@ namespace SimpleWeather.UWP.Main
                 catch (WeatherException wEx)
                 {
                     weather = null;
-                    await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
+                    ShowSnackbar(Snackbar.Make(wEx.Message, SnackbarDuration.Short));
                 }
             }
 

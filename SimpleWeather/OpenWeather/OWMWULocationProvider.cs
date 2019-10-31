@@ -25,6 +25,7 @@ namespace SimpleWeather.OpenWeather
         public override bool SupportsWeatherLocale => false;
         public override bool KeyRequired => false;
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string query, string weatherAPI)
         {
             ObservableCollection<LocationQueryViewModel> locations = null;
@@ -32,6 +33,7 @@ namespace SimpleWeather.OpenWeather
             string queryAPI = "https://autocomplete.wunderground.com/aq?query=";
             string options = "&h=0&cities=1";
             Uri queryURL = new Uri(queryAPI + query + options);
+            WeatherException wEx = null;
             // Limit amount of results shown
             int maxResults = 10;
 
@@ -71,9 +73,15 @@ namespace SimpleWeather.OpenWeather
             }
             catch (Exception ex)
             {
-                locations = new ObservableCollection<LocationQueryViewModel>();
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                }
                 Logger.WriteLine(LoggerLevel.Error, ex, "OpenWeatherMapProvider: error getting locations");
             }
+
+            if (wEx != null)
+                throw wEx;
 
             if (locations == null || locations.Count == 0)
                 locations = new ObservableCollection<LocationQueryViewModel>() { new LocationQueryViewModel() };
@@ -81,6 +89,7 @@ namespace SimpleWeather.OpenWeather
             return locations;
         }
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coord, string weatherAPI)
         {
             LocationQueryViewModel location = null;
@@ -118,10 +127,12 @@ namespace SimpleWeather.OpenWeather
                 if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                    await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
                 }
                 Logger.WriteLine(LoggerLevel.Error, ex, "OpenWeatherMapProvider: error getting location");
             }
+
+            if (wEx != null)
+                throw wEx;
 
             if (result != null && !String.IsNullOrWhiteSpace(result.query))
                 location = new LocationQueryViewModel(result, weatherAPI);

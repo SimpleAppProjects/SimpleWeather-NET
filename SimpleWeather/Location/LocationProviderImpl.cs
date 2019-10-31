@@ -19,18 +19,29 @@ namespace SimpleWeather.Location
 
         // Methods
         // AutoCompleteQuery
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public abstract Task<ObservableCollection<LocationQueryViewModel>> GetLocations(String ac_query, String weatherAPI);
         // GeopositionQuery
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public abstract Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coordinate, String weatherAPI);
 
         // KeyCheck
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public abstract Task<bool> IsKeyValid(String key);
         public abstract String GetAPIKey();
 
         // Utils Methods
         public virtual async Task UpdateLocationData(LocationData location, String weatherAPI)
         {
-            var qview = await GetLocation(new WeatherUtils.Coordinate(location), weatherAPI);
+            LocationQueryViewModel qview = null;
+            try
+            {
+                qview = await GetLocation(new WeatherUtils.Coordinate(location), weatherAPI);
+            }
+            catch (WeatherException wEx)
+            {
+                Logger.WriteLine(LoggerLevel.Error, wEx, "LocationProviderImpl: UpdateLocationData: WeatherException!");
+            }
 
             if (qview != null && !String.IsNullOrWhiteSpace(qview.LocationQuery))
             {

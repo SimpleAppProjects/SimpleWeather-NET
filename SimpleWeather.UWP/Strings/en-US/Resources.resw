@@ -253,10 +253,10 @@
     <value>Invalid Provider Key</value>
   </data>
   <data name="WError_NetworkError" xml:space="preserve">
-    <value>Network Connection Error!!</value>
+    <value>Network Connection Error</value>
   </data>
   <data name="WError_NoWeather" xml:space="preserve">
-    <value>Unable to load weather data!!</value>
+    <value>Unable to load weather data</value>
   </data>
   <data name="WError_QueryNotFound" xml:space="preserve">
     <value>No cities match your search query</value>
@@ -361,7 +361,7 @@
     <value>Register for Provider Key here</value>
   </data>
   <data name="WError_Unknown" xml:space="preserve">
-    <value>Unknown error occurred!!</value>
+    <value>Unknown error occurred</value>
   </data>
   <data name="ConfirmDialog.PrimaryButtonText" xml:space="preserve">
     <value>Ok</value>

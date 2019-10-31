@@ -23,7 +23,7 @@ using System.Threading;
 
 namespace SimpleWeather.WeatherYahoo
 {
-    public partial class YahooWeatherProvider : WeatherProviderImpl
+    public partial class YahooWeatherProvider : WeatherProviderImpl, IAstroDataProvider
     {
         public YahooWeatherProvider() : base()
         {
@@ -46,9 +46,10 @@ namespace SimpleWeather.WeatherYahoo
             return null;
         }
 
-        public override async Task<Weather> GetWeather(string location_query)
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
+        private async Task<Rootobject> GetRootobject(string location_query)
         {
-            Weather weather = null;
+            Rootobject root = null;
 
             string queryAPI = "https://weather-ydn-yql.media.yahoo.com/forecastrss";
             Uri weatherURL = null;
@@ -81,7 +82,6 @@ namespace SimpleWeather.WeatherYahoo
                     wEx = null;
 
                     // Load weather
-                    Rootobject root = null;
                     await Task.Run(() =>
                     {
                         root = JSONParser.Deserializer<Rootobject>(contentStream);
@@ -90,9 +90,40 @@ namespace SimpleWeather.WeatherYahoo
                     // End Stream
                     if (contentStream != null)
                         contentStream.Dispose();
-
-                    weather = new Weather(root);
                 }
+            }
+            catch (Exception ex)
+            {
+                root = null;
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                }
+
+                Logger.WriteLine(LoggerLevel.Error, ex, "YahooWeatherProvider: error getting weather data");
+            }
+
+            // End Stream
+            webClient.Dispose();
+
+            if (wEx != null)
+                throw wEx;
+
+            return root;
+        }
+
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
+        public override async Task<Weather> GetWeather(string location_query)
+        {
+            Weather weather = null;
+            WeatherException wEx = null;
+
+            try
+            {
+                // Load weather
+                Rootobject root = await GetRootobject(location_query);
+
+                weather = new Weather(root);
             }
             catch (Exception ex)
             {
@@ -105,10 +136,7 @@ namespace SimpleWeather.WeatherYahoo
                 Logger.WriteLine(LoggerLevel.Error, ex, "YahooWeatherProvider: error getting weather data");
             }
 
-            // End Stream
-            webClient.Dispose();
-
-            if (weather == null || !weather.IsValid())
+            if (wEx == null && (weather == null || !weather.IsValid()))
             {
                 wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
             }
@@ -123,6 +151,26 @@ namespace SimpleWeather.WeatherYahoo
             return weather;
         }
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
+        public async Task<WeatherData.Astronomy> GetAstronomyData(LocationData location)
+        {
+            try
+            {
+                String query = await UpdateLocationQuery(location);
+                Rootobject root = await GetRootobject(query);
+                return new WeatherData.Astronomy(root.current_observation.astronomy);
+            }
+            catch (WeatherException wEx)
+            {
+                throw wEx;
+            }
+            catch (Exception ex)
+            {
+                throw new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
+            }
+        }
+
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<Weather> GetWeather(LocationData location)
         {
             var weather = await base.GetWeather(location);

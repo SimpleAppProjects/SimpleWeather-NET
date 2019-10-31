@@ -25,17 +25,21 @@ namespace SimpleWeather.WeatherData
 
         // Methods
         // AutoCompleteQuery
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(String ac_query)
         {
             return await locProvider.GetLocations(ac_query, WeatherAPI);
         }
         // GeopositionQuery
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public async Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coordinate)
         {
             return await locProvider.GetLocation(coordinate, WeatherAPI);
         }
         // Weather
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public abstract Task<Weather> GetWeather(String location_query);
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public virtual async Task<Weather> GetWeather(LocationData location)
         {
             if (location == null || location.query == null)
@@ -86,6 +90,7 @@ namespace SimpleWeather.WeatherData
         }
 
         // KeyCheck
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public abstract Task<bool> IsKeyValid(String key);
         public abstract String GetAPIKey();
 

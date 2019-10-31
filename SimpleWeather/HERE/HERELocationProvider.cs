@@ -27,11 +27,12 @@ namespace SimpleWeather.HERE
 
         public override bool SupportsWeatherLocale => true;
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string location_query, string weatherAPI)
         {
             ObservableCollection<LocationQueryViewModel> locations = null;
 
-            var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages.First();
+            var userlang = GlobalizationPreferences.Languages.First();
             var culture = new CultureInfo(userlang);
 
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
@@ -47,6 +48,7 @@ namespace SimpleWeather.HERE
             string app_code = GetAppCode();
 
             Uri queryURL = new Uri(String.Format(queryAPI + query, location_query, app_id, app_code, locale));
+            WeatherException wEx = null;
             // Limit amount of results shown
             int maxResults = 10;
 
@@ -98,9 +100,15 @@ namespace SimpleWeather.HERE
             }
             catch (Exception ex)
             {
-                locations = new ObservableCollection<LocationQueryViewModel>();
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                }
                 Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting locations");
             }
+
+            if (wEx != null)
+                throw wEx;
 
             if (locations == null || locations.Count == 0)
                 locations = new ObservableCollection<LocationQueryViewModel>() { new LocationQueryViewModel() };
@@ -108,6 +116,7 @@ namespace SimpleWeather.HERE
             return locations;
         }
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coord, string weatherAPI)
         {
             LocationQueryViewModel location = null;
@@ -167,11 +176,13 @@ namespace SimpleWeather.HERE
                 if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                    await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
                 }
 
                 Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting location");
             }
+
+            if (wEx != null)
+                throw wEx;
 
             if (result != null && !String.IsNullOrWhiteSpace(result.location.locationId))
                 location = new LocationQueryViewModel(result, weatherAPI);
@@ -181,6 +192,7 @@ namespace SimpleWeather.HERE
             return location;
         }
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public async Task<LocationQueryViewModel> GetLocationFromLocID(string locationID, string weatherAPI)
         {
             LocationQueryViewModel location = null;
@@ -239,12 +251,14 @@ namespace SimpleWeather.HERE
                 if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                    await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
                 }
 
                 Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting location");
             }
 
+            if (wEx != null)
+                throw wEx;
+            
             if (result != null && !String.IsNullOrWhiteSpace(result.location.locationId))
                 location = new LocationQueryViewModel(result, weatherAPI);
             else
@@ -253,6 +267,7 @@ namespace SimpleWeather.HERE
             return location;
         }
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<bool> IsKeyValid(string key)
         {
             string queryAPI = "https://weather.cit.api.here.com/weather/1.0/report.json";
@@ -315,7 +330,7 @@ namespace SimpleWeather.HERE
 
             if (wEx != null)
             {
-                await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
+                throw wEx;
             }
 
             return isValid;

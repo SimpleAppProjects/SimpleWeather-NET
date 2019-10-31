@@ -17,13 +17,18 @@ namespace SimpleWeather.WeatherData
         bool SupportsAlerts { get; }
         bool NeedsExternalAlertData { get; }
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string ac_query);
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coordinate);
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         Task<Weather> GetWeather(string location_query);
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         Task<Weather> GetWeather(LocationData location);
         Task<List<WeatherAlert>> GetAlerts(LocationData location);
         string GetWeatherIcon(string icon);
         string GetWeatherIcon(bool isNight, string icon);
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         Task<bool> IsKeyValid(string key);
         string GetAPIKey();
         bool IsNight(Weather weather);

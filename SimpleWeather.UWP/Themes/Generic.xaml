@@ -3,7 +3,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:SimpleWeather.Controls"
     xmlns:local="using:SimpleWeather.UWP"
-    xmlns:localControls="using:SimpleWeather.UWP.Controls">
+    xmlns:localControls="using:SimpleWeather.UWP.Controls"
+    xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls">
 
     <Style TargetType="localControls:LocationQuery">
         <Setter Property="Background" Value="Transparent"/>

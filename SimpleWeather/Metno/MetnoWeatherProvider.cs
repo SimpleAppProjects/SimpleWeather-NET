@@ -48,6 +48,7 @@ namespace SimpleWeather.Metno
             return null;
         }
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<Weather> GetWeather(string location_query)
         {
             Weather weather = null;
@@ -122,7 +123,7 @@ namespace SimpleWeather.Metno
             // End Stream
             webClient.Dispose();
 
-            if (weather == null || !weather.IsValid())
+            if (wEx == null && (weather == null || !weather.IsValid()))
             {
                 wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
             }
@@ -143,6 +144,7 @@ namespace SimpleWeather.Metno
             return weather;
         }
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<Weather> GetWeather(LocationData location)
         {
             var weather = await base.GetWeather(location);

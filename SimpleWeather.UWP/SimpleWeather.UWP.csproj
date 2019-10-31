@@ -268,12 +268,18 @@
     <Compile Include="Controls\ForecastGraphPanel.xaml.cs">
       <DependentUpon>ForecastGraphPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Snackbar\ISnackbarManager.cs" />
     <Compile Include="Controls\LineDataSeries.cs" />
     <Compile Include="Controls\LineView.xaml.cs">
       <DependentUpon>LineView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\LocationQuery.cs" />
     <Compile Include="Controls\ProgressAutoSuggestBox.cs" />
+    <Compile Include="Controls\RelayCommand.cs" />
+    <Compile Include="Controls\Snackbar\Snackbar.cs" />
+    <Compile Include="Controls\Snackbar\SnackbarContent.xaml.cs">
+      <DependentUpon>SnackbarContent.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\SunPhasePanel.xaml.cs">
       <DependentUpon>SunPhasePanel.xaml</DependentUpon>
     </Compile>
@@ -285,6 +291,7 @@
     </Compile>
     <Compile Include="Helpers\BooleanToGridLengthConverter.cs" />
     <Compile Include="Helpers\ColorToSolidColorBrushConverter.cs" />
+    <Compile Include="Helpers\CustomPage.cs" />
     <Compile Include="Helpers\IBackRequestedPage.cs" />
     <Compile Include="Helpers\ICommandBarPage.cs" />
     <Compile Include="Helpers\SecondaryTileUtils.cs" />
@@ -331,7 +338,7 @@
       <DependentUpon>LocationPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\LocationPanelViewModel.cs" />
-    <Compile Include="Controls\Snackbar.cs" />
+    <Compile Include="Controls\Snackbar\SnackbarManager.cs" />
     <Compile Include="Controls\TextForecastItem.xaml.cs">
       <DependentUpon>TextForecastItem.xaml</DependentUpon>
     </Compile>
@@ -427,6 +434,10 @@
     <Page Include="Controls\LineView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Snackbar\SnackbarContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\SunPhasePanel.xaml">
       <SubType>Designer</SubType>

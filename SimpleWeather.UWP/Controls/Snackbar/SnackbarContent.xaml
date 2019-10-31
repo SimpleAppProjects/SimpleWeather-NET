@@ -1,0 +1,29 @@
+﻿<UserControl
+    x:Class="SimpleWeather.UWP.Controls.SnackbarContent"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SimpleWeather.UWP.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignWidth="400">
+
+    <!-- PART_DismissButton in the InAppNotification has a horizontal offset of 18 -->
+    <!-- Offset content to half of that to reduce blank space but keep some padding -->
+    <Grid x:Name="ContentRoot" Margin="0,0,-9,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Text="{x:Bind SnackbarModel.Message}" VerticalAlignment="Center" Style="{ThemeResource CaptionTextBlockStyle}"
+                       TextWrapping="WrapWholeWords" FontSize="14" Grid.Column="0" />
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Padding="4,0" Grid.Column="1">
+            <Button x:Name="ActionButton" Content="{x:Bind SnackbarModel.ButtonLabel}" FontWeight="SemiBold"
+                    Visibility="{x:Bind SnackbarModel.ButtonLabel, Converter={StaticResource stringVisibilityConverter}}"
+                        Background="Transparent" Foreground="{ThemeResource SnackbarForegroundBrush}"
+                        Style="{ThemeResource TextBlockButtonStyle}" />
+        </StackPanel>
+    </Grid>
+
+</UserControl>

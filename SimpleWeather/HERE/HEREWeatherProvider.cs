@@ -37,6 +37,7 @@ namespace SimpleWeather.HERE
         public override bool SupportsAlerts => true;
         public override bool NeedsExternalAlertData => false;
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<bool> IsKeyValid(string key)
         {
             string queryAPI = "https://weather.cit.api.here.com/weather/1.0/report.json";
@@ -99,7 +100,7 @@ namespace SimpleWeather.HERE
 
             if (wEx != null)
             {
-                await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
+                throw wEx;
             }
 
             return isValid;
@@ -113,6 +114,7 @@ namespace SimpleWeather.HERE
                 return String.Format("{0};{1}", APIKeys.GetHEREAppID(), APIKeys.GetHEREAppCode());
         }
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<Weather> GetWeather(string location_query)
         {
             Weather weather = null;
@@ -217,7 +219,7 @@ namespace SimpleWeather.HERE
             // End Stream
             webClient.Dispose();
 
-            if (weather == null || !weather.IsValid())
+            if (wEx == null && (weather == null || !weather.IsValid()))
             {
                 wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
             }
@@ -235,6 +237,7 @@ namespace SimpleWeather.HERE
             return weather;
         }
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<Weather> GetWeather(LocationData location)
         {
             var weather = await base.GetWeather(location);

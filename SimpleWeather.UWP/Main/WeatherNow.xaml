@@ -1,4 +1,5 @@
-﻿<Page
+﻿<helpers:CustomPage
+    xmlns:helpers="using:SimpleWeather.UWP.Helpers"
     x:Class="SimpleWeather.UWP.Main.WeatherNow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -384,4 +385,4 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
     </Grid>
-</Page>
+</helpers:CustomPage>

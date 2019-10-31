@@ -27,7 +27,7 @@ namespace SimpleWeather.UWP.Main
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class LocationsPage : Page, ICommandBarPage, IWeatherLoadedListener, IWeatherErrorListener
+    public sealed partial class LocationsPage : CustomPage, IWeatherLoadedListener, IWeatherErrorListener
     {
         private WeatherManager wm;
 
@@ -40,8 +40,8 @@ namespace SimpleWeather.UWP.Main
         private bool HomeChanged = false;
         private bool[] ErrorCounter;
 
-        public string CommandBarLabel { get; set; }
-        public List<ICommandBarElement> PrimaryCommands { get; set; }
+        private SnackbarManager SnackMgr;
+
         private AppBarButton EditButton;
 
         public async void OnWeatherLoaded(LocationData location, Weather weather)
@@ -86,14 +86,14 @@ namespace SimpleWeather.UWP.Main
                         // Only warn once
                         if (!ErrorCounter[(int)wEx.ErrorStatus])
                         {
-                            Snackbar snackBar = Snackbar.Make(Content as Grid, wEx.Message, SnackbarDuration.Short);
-                            snackBar.SetAction(App.ResLoader.GetString("Action_Retry"), () =>
+                            Snackbar snackbar = Snackbar.Make(wEx.Message, SnackbarDuration.Short);
+                            snackbar.SetAction(App.ResLoader.GetString("Action_Retry"), () =>
                             {
                                 // Reset counter to allow retry
                                 ErrorCounter[(int)wEx.ErrorStatus] = false;
                                 RefreshLocations();
                             });
-                            snackBar.Show();
+                            ShowSnackbar(snackbar);
                             ErrorCounter[(int)wEx.ErrorStatus] = true;
                         }
                         break;
@@ -102,7 +102,7 @@ namespace SimpleWeather.UWP.Main
                         // Only warn once
                         if (!ErrorCounter[(int)wEx.ErrorStatus])
                         {
-                            Snackbar.Make(Content as Grid, wEx.Message, SnackbarDuration.Short).Show();
+                            ShowSnackbar(Snackbar.Make(wEx.Message, SnackbarDuration.Short));
                             ErrorCounter[(int)wEx.ErrorStatus] = true;
                         }
                         break;
@@ -473,10 +473,19 @@ namespace SimpleWeather.UWP.Main
                 {
                     LocationQueryViewModel view = await Task.Run(async () =>
                     {
-                        var locView = await wm.GetLocation(newGeoPos);
+                        LocationQueryViewModel locView = null;
 
-                        if (String.IsNullOrEmpty(locView.LocationQuery))
+                        try
+                        {
+                            locView = await wm.GetLocation(newGeoPos);
+
+                            if (String.IsNullOrEmpty(locView.LocationQuery))
+                                locView = new LocationQueryViewModel();
+                        }
+                        catch (WeatherException)
+                        {
                             locView = new LocationQueryViewModel();
+                        }
 
                         return locView;
                     });

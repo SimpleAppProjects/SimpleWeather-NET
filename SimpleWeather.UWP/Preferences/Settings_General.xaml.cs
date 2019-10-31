@@ -20,6 +20,7 @@ using SimpleWeather.WeatherData;
 using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.UWP.Helpers;
 using SimpleWeather.UWP.Main;
+using SimpleWeather.UWP.Controls;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -28,11 +29,13 @@ namespace SimpleWeather.UWP.Preferences
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class Settings_General : Page, IBackRequestedPage
+    public sealed partial class Settings_General : Page, IBackRequestedPage, ISnackbarManager
     {
         private WeatherManager wm;
 
         private bool RequestAppTrigger = false;
+
+        private SnackbarManager SnackMgr;
 
         public Settings_General()
         {
@@ -52,6 +55,30 @@ namespace SimpleWeather.UWP.Preferences
             LightMode.Checked += LightMode_Checked;
             DarkMode.Checked += DarkMode_Checked;
             SystemMode.Checked += SystemMode_Checked;
+        }
+
+        public void InitSnackManager()
+        {
+            if (SnackMgr == null)
+            {
+                SnackMgr = new SnackbarManager(Content as Panel);
+            }
+        }
+
+        public void ShowSnackbar(Snackbar snackbar)
+        {
+            SnackMgr?.Show(snackbar);
+        }
+
+        public void DismissAllSnackbars()
+        {
+            SnackMgr?.DismissAll();
+        }
+
+        public void UnloadSnackManager()
+        {
+            DismissAllSnackbars();
+            SnackMgr = null;
         }
 
         private void RestoreSettings()
@@ -157,7 +184,7 @@ namespace SimpleWeather.UWP.Preferences
             if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.API_KEY) && WeatherManager.IsKeyRequired(APIComboBox.SelectedValue.ToString()))
             {
                 KeyBorder.BorderBrush = new SolidColorBrush(Colors.Red);
-                await new MessageDialog(App.ResLoader.GetString("Msg_EnterAPIKey")).ShowAsync();
+                ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Msg_EnterAPIKey"), SnackbarDuration.Long));
                 return true;
             }
 
@@ -167,9 +194,16 @@ namespace SimpleWeather.UWP.Preferences
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            InitSnackManager();
             RequestAppTrigger = false;
             Application.Current.Suspending += OnSuspending;
             RestoreSettings();
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+            UnloadSnackManager();
         }
 
         private void OnSuspending(object sender, SuspendingEventArgs e)
@@ -227,34 +261,42 @@ namespace SimpleWeather.UWP.Preferences
 
         private async void KeyEntry_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
-            var keydialog = new Controls.KeyEntryDialog(APIComboBox.SelectedValue.ToString());
+            var keydialog = new KeyEntryDialog(APIComboBox.SelectedValue.ToString());
 
             keydialog.PrimaryButtonClick += async (ContentDialog dialog, ContentDialogButtonClickEventArgs args) =>
             {
-                var diag = dialog as Controls.KeyEntryDialog;
+                var diag = dialog as KeyEntryDialog;
 
                 string key = diag.Key;
                 string API = APIComboBox.SelectedValue.ToString();
 
-                if (await WeatherManager.IsKeyValid(key, API))
+                try
                 {
-                    KeyEntry.Text = Settings.API_KEY = key;
-                    Settings.API = API;
-                    wm.UpdateAPI();
+                    if (await WeatherManager.IsKeyValid(key, API))
+                    {
+                        KeyEntry.Text = Settings.API_KEY = key;
+                        Settings.API = API;
+                        wm.UpdateAPI();
 
-                    RequestAppTrigger = true;
+                        RequestAppTrigger = true;
 
-                    Settings.KeyVerified = true;
-                    UpdateKeyBorder();
+                        Settings.KeyVerified = true;
+                        UpdateKeyBorder();
 
-                    AlertSwitch.IsEnabled = wm.SupportsAlerts;
+                        AlertSwitch.IsEnabled = wm.SupportsAlerts;
 
-                    diag.CanClose = true;
-                    diag.Hide();
+                        diag.CanClose = true;
+                        diag.Hide();
+                    }
+                    else
+                    {
+                        diag.CanClose = false;
+                    }
                 }
-                else
+                catch (WeatherException ex)
                 {
-                    diag.CanClose = false;
+                    Logger.WriteLine(LoggerLevel.Error, ex, "Settings: KeyEntry: invalid key");
+                    ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
                 }
             };
             await keydialog.ShowAsync();
@@ -416,9 +458,6 @@ namespace SimpleWeather.UWP.Preferences
                     Logger.WriteLine(LoggerLevel.Error, ex, "SettingsPage: error getting location permission");
                 }
 
-                // Setup error just in case
-                MessageDialog error = null;
-
                 switch (geoStatus)
                 {
                     case GeolocationAccessStatus.Allowed:
@@ -426,20 +465,16 @@ namespace SimpleWeather.UWP.Preferences
                         //Settings.SaveLastGPSLocData(new WeatherData.LocationData());
                         break;
                     case GeolocationAccessStatus.Denied:
-                        error = new MessageDialog(App.ResLoader.GetString("Msg_LocDeniedSettings"), App.ResLoader.GetString("Label_ErrLocationDenied"));
-                        error.Commands.Add(new UICommand(App.ResLoader.GetString("Label_Settings"), async (command) =>
+                        var snackbar = Snackbar.Make(App.ResLoader.GetString("Msg_LocDeniedSettings"), SnackbarDuration.Long);
+                        snackbar.SetAction(App.ResLoader.GetString("Label_Settings"), async () =>
                         {
                             await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:privacy-location"));
-                        }, 0));
-                        error.Commands.Add(new UICommand(App.ResLoader.GetString("Label_Cancel"), null, 1));
-                        error.DefaultCommandIndex = 0;
-                        error.CancelCommandIndex = 1;
-                        await error.ShowAsync();
+                        });
+                        ShowSnackbar(snackbar);
                         sw.IsOn = false;
                         break;
                     case GeolocationAccessStatus.Unspecified:
-                        error = new MessageDialog(App.ResLoader.GetString("Error_Location"), App.ResLoader.GetString("Label_ErrorLocation"));
-                        await error.ShowAsync();
+                        ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_Location"), SnackbarDuration.Short));
                         sw.IsOn = false;
                         break;
                     default:

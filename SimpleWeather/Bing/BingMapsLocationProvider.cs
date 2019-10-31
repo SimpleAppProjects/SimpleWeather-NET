@@ -29,6 +29,7 @@ namespace SimpleWeather.Bing
 
         public override bool SupportsWeatherLocale => true;
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string location_query, string weatherAPI)
         {
             ObservableCollection<LocationQueryViewModel> locations = null;
@@ -44,6 +45,7 @@ namespace SimpleWeather.Bing
             string key = GetAPIKey();
 
             Uri queryURL = new Uri(String.Format(queryAPI + query, location_query, key, culture.Name));
+            WeatherException wEx = null;
             // Limit amount of results shown
             int maxResults = 10;
 
@@ -93,16 +95,23 @@ namespace SimpleWeather.Bing
             }
             catch (Exception ex)
             {
-                locations = new ObservableCollection<LocationQueryViewModel>();
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                }
                 Logger.WriteLine(LoggerLevel.Error, ex, "BingMapsLocationProvider: error getting locations");
             }
 
+            if (wEx != null)
+                throw wEx;
+            
             if (locations == null || locations.Count == 0)
                 locations = new ObservableCollection<LocationQueryViewModel>() { new LocationQueryViewModel() };
 
             return locations;
         }
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coord, string weatherAPI)
         {
             LocationQueryViewModel location = null;
@@ -140,29 +149,31 @@ namespace SimpleWeather.Bing
                     case MapLocationFinderStatus.UnknownError:
                     case MapLocationFinderStatus.IndexFailure:
                         wEx = new WeatherException(WeatherUtils.ErrorStatus.Unknown);
-                        await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
                         break;
                     case MapLocationFinderStatus.InvalidCredentials:
                         wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
-                        await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
                         break;
                     case MapLocationFinderStatus.BadLocation:
                     case MapLocationFinderStatus.NotSupported:
                         wEx = new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
-                        await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
                         break;
                     case MapLocationFinderStatus.NetworkFailure:
                         wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                        await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
                         break;
                 }
             }
             catch (Exception ex)
             {
-                result = null;
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                }
                 Logger.WriteLine(LoggerLevel.Error, ex, "BingMapsLocationProvider: error getting location");
             }
 
+            if (wEx != null)
+                throw wEx;
+            
             if (result != null && !String.IsNullOrWhiteSpace(result.DisplayName))
                 location = new LocationQueryViewModel(result, weatherAPI);
             else
@@ -171,6 +182,7 @@ namespace SimpleWeather.Bing
             return location;
         }
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public async Task<LocationQueryViewModel> GetLocationFromAddress(string address, string weatherAPI)
         {
             LocationQueryViewModel location = null;
@@ -208,29 +220,32 @@ namespace SimpleWeather.Bing
                     case MapLocationFinderStatus.UnknownError:
                     case MapLocationFinderStatus.IndexFailure:
                         wEx = new WeatherException(WeatherUtils.ErrorStatus.Unknown);
-                        await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
                         break;
                     case MapLocationFinderStatus.InvalidCredentials:
                         wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
-                        await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
                         break;
                     case MapLocationFinderStatus.BadLocation:
                     case MapLocationFinderStatus.NotSupported:
                         wEx = new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
-                        await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
                         break;
                     case MapLocationFinderStatus.NetworkFailure:
                         wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                        await Toast.ShowToastAsync(wEx.Message, ToastDuration.Short);
                         break;
                 }
             }
             catch (Exception ex)
             {
                 result = null;
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                }
                 Logger.WriteLine(LoggerLevel.Error, ex, "BingMapsLocationProvider: error getting location");
             }
 
+            if (wEx != null)
+                throw wEx; 
+            
             if (result != null && !String.IsNullOrWhiteSpace(result.DisplayName))
                 location = new LocationQueryViewModel(result, weatherAPI);
             else
@@ -239,9 +254,11 @@ namespace SimpleWeather.Bing
             return location;
         }
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<bool> IsKeyValid(string key)
         {
             bool isValid = false;
+            WeatherException wEx = null;
 
             MapService.ServiceToken = key;
             // The nearby location to use as a query hint.
@@ -258,19 +275,28 @@ namespace SimpleWeather.Bing
 
             switch (mapResult.Status)
             {
-                case MapLocationFinderStatus.InvalidCredentials:
                 case MapLocationFinderStatus.UnknownError:
                 case MapLocationFinderStatus.IndexFailure:
-                case MapLocationFinderStatus.NetworkFailure:
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.Unknown);
                     isValid = false;
                     break;
-
+                case MapLocationFinderStatus.InvalidCredentials:
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
+                    isValid = false;
+                    break;
+                case MapLocationFinderStatus.NetworkFailure:
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    isValid = false;
+                    break;
                 case MapLocationFinderStatus.Success:
                 case MapLocationFinderStatus.NotSupported:
                 case MapLocationFinderStatus.BadLocation:
                     isValid = true;
                     break;
             }
+
+            if (wEx != null)
+                throw wEx;
 
             return isValid;
         }

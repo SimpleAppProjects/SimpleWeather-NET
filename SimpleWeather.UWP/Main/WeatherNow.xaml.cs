@@ -37,13 +37,11 @@ namespace SimpleWeather.UWP.Main
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class WeatherNow : Page, ICommandBarPage, IWeatherLoadedListener, IWeatherErrorListener
+    public sealed partial class WeatherNow : CustomPage, IWeatherLoadedListener, IWeatherErrorListener
     {
         private WeatherManager wm;
         private WeatherDataLoader wLoader = null;
         private WeatherNowViewModel WeatherView { get; set; }
-        public string CommandBarLabel { get; set; }
-        public List<ICommandBarElement> PrimaryCommands { get; set; }
 
         private LocationData location = null;
         private double BGAlpha = 1.0;
@@ -52,9 +50,9 @@ namespace SimpleWeather.UWP.Main
         private Geolocator geolocal = null;
         private Geoposition geoPos = null;
 
-        public void OnWeatherLoaded(LocationData location, Weather weather)
+        public async void OnWeatherLoaded(LocationData location, Weather weather)
         {
-            Task.Run(async () => 
+            await Task.Run(async () => 
             {
                 if (weather?.IsValid() == true)
                 {
@@ -91,25 +89,28 @@ namespace SimpleWeather.UWP.Main
             });
         }
 
-        public void OnWeatherError(WeatherException wEx)
+        public async void OnWeatherError(WeatherException wEx)
         {
-            switch (wEx.ErrorStatus)
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => 
             {
-                case WeatherUtils.ErrorStatus.NetworkError:
-                case WeatherUtils.ErrorStatus.NoWeather:
-                    // Show error message and prompt to refresh
-                    Snackbar snackBar = Snackbar.Make(Content as Grid, wEx.Message, SnackbarDuration.Long);
-                    snackBar.SetAction(App.ResLoader.GetString("Action_Retry"), () =>
-                    {
-                        Task.Run(() => RefreshWeather(false));
-                    });
-                    snackBar.Show();
-                    break;
-                default:
-                    // Show error message
-                    Snackbar.Make(Content as Grid, wEx.Message, SnackbarDuration.Long).Show();
-                    break;
-            }
+                switch (wEx.ErrorStatus)
+                {
+                    case WeatherUtils.ErrorStatus.NetworkError:
+                    case WeatherUtils.ErrorStatus.NoWeather:
+                        // Show error message and prompt to refresh
+                        Snackbar snackbar = Snackbar.Make(wEx.Message, SnackbarDuration.Long);
+                        snackbar.SetAction(App.ResLoader.GetString("Action_Retry"), () =>
+                        {
+                            Task.Run(() => RefreshWeather(false));
+                        });
+                        ShowSnackbar(snackbar);
+                        break;
+                    default:
+                        // Show error message
+                        ShowSnackbar(Snackbar.Make(wEx.Message, SnackbarDuration.Long));
+                        break;
+                }
+            });
         }
 
         public WeatherNow()
@@ -359,7 +360,7 @@ namespace SimpleWeather.UWP.Main
                 {
                     // Setup loader from updated location
                     wLoader = new WeatherDataLoader(location, this, this);
-                    RefreshWeather(false);
+                    await RefreshWeather(false);
                 }
                 else
                 {
@@ -372,7 +373,7 @@ namespace SimpleWeather.UWP.Main
                     TimeSpan span = DateTimeOffset.Now - weather.update_time;
                     if (span.TotalMinutes > ttl)
                     {
-                        RefreshWeather(false);
+                        await RefreshWeather(false);
                     }
                     else
                     {
@@ -434,7 +435,7 @@ namespace SimpleWeather.UWP.Main
             CheckTiles();
 
             // Load up weather data
-            RefreshWeather(forceRefresh);
+            await RefreshWeather(forceRefresh);
         }
 
         private async Task<bool> UpdateLocation()
@@ -508,10 +509,22 @@ namespace SimpleWeather.UWP.Main
 
                     await Task.Run(async () =>
                     {
-                        view = await wm.GetLocation(newGeoPos);
+                        try
+                        {
+                            view = await wm.GetLocation(newGeoPos);
 
-                        if (String.IsNullOrEmpty(view.LocationQuery))
+                            if (String.IsNullOrEmpty(view.LocationQuery))
+                                view = new LocationQueryViewModel();
+                        }
+                        catch (WeatherException ex)
+                        {
                             view = new LocationQueryViewModel();
+
+                            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => 
+                            {
+                                ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
+                            });
+                        }
                     });
 
                     if (String.IsNullOrWhiteSpace(view.LocationQuery))
@@ -548,12 +561,12 @@ namespace SimpleWeather.UWP.Main
                 // Setup loader from updated location
                 wLoader = new WeatherDataLoader(location, this, this);
 
-            RefreshWeather(true);
+            await RefreshWeather(true);
         }
 
-        private void RefreshWeather(bool forceRefresh)
+        private async Task RefreshWeather(bool forceRefresh)
         {
-            LoadingRing.IsActive = true;
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => LoadingRing.IsActive = true);
             Task.Run(() => wLoader.LoadWeatherData(forceRefresh));
         }
 

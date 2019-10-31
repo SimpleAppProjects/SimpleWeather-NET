@@ -112,36 +112,5 @@ namespace SimpleWeather.UWP.Controls
             ToastNotificationManager.History.Remove(toastNotif.Tag);
         }
         */
-
-        public static async Task ShowToastAsync(String Message, ToastDuration Length)
-        {
-            Panel Root = null;
-            if (await DispatcherHelper.ExecuteOnUIThreadAsync(() => 
-            {
-                if (App.RootFrame.Content is Shell)
-                    Root = Shell.Instance.Content as Panel;
-                else
-                    Root = (App.RootFrame.Content as UserControl)?.Content as Panel;
-
-                return !App.IsInBackground && Root != null;
-            }))
-            {
-                CoreDispatcher Dispatcher;
-
-                if (CoreWindow.GetForCurrentThread() == null)
-                    Dispatcher = CoreApplication.MainView.Dispatcher;
-                else
-                    Dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
-
-                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                {
-                    Snackbar.Make(Root, Message, (SnackbarDuration)Length, SnackBarStackMode.Replace).Show();
-                });
-            }
-            else
-            {
-                await ShowToastNotifcation(Message, Length);
-            }
-        }
     }
 }

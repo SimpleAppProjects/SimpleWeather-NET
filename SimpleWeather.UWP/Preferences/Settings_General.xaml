@@ -9,8 +9,8 @@
     Background="{ThemeResource RegionBrush}"
     NavigationCacheMode="Enabled">
 
-    <ScrollViewer HorizontalScrollMode="Disabled" VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto" Padding="16,0">
-        <Grid>
+    <Grid>
+        <ScrollViewer HorizontalScrollMode="Disabled" VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto" Padding="16,0">
             <StackPanel>
                 <TextBlock x:Name="GeneralHeader" x:Uid="Pref_GeneralHeader" Text="General Settings"
                                        Style="{StaticResource SettingTitleStyle}"/>
@@ -79,6 +79,6 @@
                                                  Padding="0,10" Visibility="{x:Bind KeyEntry.Visibility, Mode=OneWay}" />
                 </StackPanel>
             </StackPanel>
-        </Grid>
-    </ScrollViewer>
+        </ScrollViewer>
+    </Grid>
 </Page>

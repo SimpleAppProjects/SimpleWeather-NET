@@ -1,4 +1,5 @@
-﻿<Page
+﻿<helpers:CustomPage
+    xmlns:helpers="using:SimpleWeather.UWP.Helpers"
     x:Class="SimpleWeather.UWP.Main.LocationSearchPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -21,4 +22,4 @@
                                               QuerySubmitted="Location_QuerySubmitted" HeaderText="Add a location"
                                               x:Uid="LocationSearchHint" PlaceholderText="Enter Location" />
     </Grid>
-</Page>
+</helpers:CustomPage>
