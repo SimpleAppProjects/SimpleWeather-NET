@@ -586,23 +586,20 @@ namespace SimpleWeather.UWP.Main
             HomeChanged = false;
         }
 
-        private void SwipeItem_Invoked(Microsoft.UI.Xaml.Controls.SwipeItem sender, Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs args)
+        private async void SwipeItem_Invoked(Microsoft.UI.Xaml.Controls.SwipeItem sender, Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs args)
         {
             if (args.SwipeControl is FrameworkElement button && button.DataContext is LocationPanelViewModel view)
             {
-                DeleteItem(view);
+                await RemovePanel(view);
             }
         }
 
-        private void DeleteBtn_Click(object sender, RoutedEventArgs e)
+        private async void DeleteBtn_Click(object sender, RoutedEventArgs e)
         {
-            foreach (LocationPanelViewModel view in LocationsPanel.SelectedItems)
-            {
-                DeleteItem(view);
-            }
+            await BatchRemovePanels(LocationsPanel.SelectedItems.Cast<LocationPanelViewModel>());
         }
 
-        private void DeleteItem(LocationPanelViewModel view)
+        private void DeletePanel(LocationPanelViewModel view)
         {
             LocationData data = view.LocationData;
 
@@ -613,12 +610,6 @@ namespace SimpleWeather.UWP.Main
                     // Remove location from list
                     await Settings.DeleteLocation(data.query);
 
-                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        // Remove panel
-                        LocationPanels.Remove(view);
-                    });
-
                     // Remove secondary tile if it exists
                     if (SecondaryTileUtils.Exists(data.query))
                     {
@@ -626,6 +617,118 @@ namespace SimpleWeather.UWP.Main
                             SecondaryTileUtils.GetTileId(data.query)).RequestDeleteAsync();
                     }
                 }
+            });
+        }
+
+        private async Task RemovePanel(LocationPanelViewModel panel)
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                int dataPosition = LocationPanels.IndexOf(panel);
+
+                // Create actions
+                Action UndoAction = delegate
+                {
+                    if (!LocationPanels.Contains(panel))
+                    {
+                        if (dataPosition >= LocationPanels.Count)
+                        {
+                            LocationPanels.Add(panel);
+                        }
+                        else
+                        {
+                            LocationPanels.Insert(dataPosition, panel);
+                        }
+                    }
+                };
+
+                LocationPanels.Remove(panel);
+
+                if (LocationPanels.Count <= 0)
+                {
+                    UndoAction.Invoke();
+                    ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Message_NeedFavorite"), SnackbarDuration.Short));
+                    return;
+                }
+
+                // Show undo snackbar
+                Snackbar snackbar = Snackbar.Make(App.ResLoader.GetString("Message_LocationRemoved"), SnackbarDuration.Short);
+                snackbar.SetAction(App.ResLoader.GetString("Action_Undo"), () => 
+                {
+                    //panel = null;
+                    UndoAction.Invoke();
+                });
+                snackbar.Dismissed = (sender, @event) => 
+                {
+                    if (@event != SnackbarDismissEvent.Action)
+                    {
+                        DeletePanel(panel);
+                    }
+                };
+                ShowSnackbar(snackbar);
+            });
+        }
+
+        private async Task BatchRemovePanels(IEnumerable<LocationPanelViewModel> panelsToDelete)
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                var panelPairs = new List<KeyValuePair<int, LocationPanelViewModel>>();
+                foreach(LocationPanelViewModel panel in panelsToDelete)
+                {
+                    int dataPosition = LocationPanels.IndexOf(panel);
+                    panelPairs.Add(new KeyValuePair<int, LocationPanelViewModel>(dataPosition, panel));
+                }
+
+                // Create actions
+                Action UndoAction = delegate
+                {
+                    foreach(var panelPair in panelPairs)
+                    {
+                        if (!LocationPanels.Contains(panelPair.Value))
+                        {
+                            if (panelPair.Key >= LocationPanels.Count)
+                            {
+                                LocationPanels.Add(panelPair.Value);
+                            }
+                            else
+                            {
+                                LocationPanels.Insert(panelPair.Key, panelPair.Value);
+                            }
+                        }
+                    }
+                };
+
+                foreach (var panelPair in panelPairs)
+                {
+                    LocationPanels.Remove(panelPair.Value);
+                }
+
+                if (LocationPanels.Count <= 0)
+                {
+                    UndoAction.Invoke();
+                    ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Message_NeedFavorite"), SnackbarDuration.Short));
+                    return;
+                }
+
+                // Show undo snackbar
+                Snackbar snackbar = Snackbar.Make(App.ResLoader.GetString("Message_LocationRemoved"), SnackbarDuration.Short);
+                snackbar.SetAction(App.ResLoader.GetString("Action_Undo"), () =>
+                {
+                    //panel = null;
+                    UndoAction.Invoke();
+                });
+                snackbar.Dismissed = (sender, @event) =>
+                {
+                    if (@event != SnackbarDismissEvent.Action)
+                    {
+                        foreach (var panelPair in panelPairs)
+                        {
+                            DeletePanel(panelPair.Value);
+                        }
+                    }
+                };
+                ShowSnackbar(snackbar);
             });
         }
 

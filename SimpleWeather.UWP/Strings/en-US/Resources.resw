@@ -498,4 +498,13 @@
   <data name="Setup_PreferencesPrompt.Text" xml:space="preserve">
     <value>Customize your settings below</value>
   </data>
+  <data name="Action_Undo" xml:space="preserve">
+    <value>Undo</value>
+  </data>
+  <data name="Message_LocationRemoved" xml:space="preserve">
+    <value>Location removed</value>
+  </data>
+  <data name="Message_NeedFavorite" xml:space="preserve">
+    <value>Must have at least one favorite location</value>
+  </data>
 </root>
