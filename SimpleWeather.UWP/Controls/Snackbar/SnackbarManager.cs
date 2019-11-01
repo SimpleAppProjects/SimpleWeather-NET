@@ -131,7 +131,7 @@ namespace SimpleWeather.UWP.Controls
                         {
                             snackbar?.ButtonAction?.Invoke();
                             // Now dismiss the Snackbar
-                            snackbar?.Dismissed?.Invoke(snackbar, SnackbarDismissEvent.User);
+                            snackbar?.Dismissed?.Invoke(snackbar, SnackbarDismissEvent.Action);
                             if (Snacks.Count > 0) Snacks.Pop();
                             UpdateView();
                         });
@@ -152,7 +152,7 @@ namespace SimpleWeather.UWP.Controls
         private void InAppNotif_Opened(object sender, EventArgs e)
         {
             var snackbar = GetCurrentSnackbar();
-            if (snackbar != null) snackbar?.Shown?.Invoke(snackbar);
+            snackbar?.Shown?.Invoke(snackbar);
         }
 
         private void InAppNotif_Closed(object sender, InAppNotificationClosedEventArgs e)

@@ -42,9 +42,13 @@ namespace SimpleWeather.UWP.Controls
         //
         // Summary:
         //     When the system dismissed the notification after timeout.
-        Timeout = InAppNotificationDismissKind.Timeout
+        Timeout = InAppNotificationDismissKind.Timeout,
+        //
+        // Summary:
+        //     When the user dismissed the notification by clicking the action button.
+        Action = 3
     }
-    
+
     /**
      * Wrapper for the Snackbar/InAppNotification
      * Snackbar is managed by SnackbarManager
