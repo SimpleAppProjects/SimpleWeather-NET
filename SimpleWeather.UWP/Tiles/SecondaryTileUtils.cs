@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.UI.StartScreen;
 
-namespace SimpleWeather.UWP.Helpers
+namespace SimpleWeather.UWP.Tiles
 {
     public static class SecondaryTileUtils
     {
@@ -21,9 +21,9 @@ namespace SimpleWeather.UWP.Helpers
                 localSettings.CreateContainer("SecondaryTileIds", ApplicationDataCreateDisposition.Always);
         }
 
-        public static String GetTileId(String query)
+        public static string GetTileId(string query)
         {
-            if (String.IsNullOrWhiteSpace(query))
+            if (string.IsNullOrWhiteSpace(query))
             {
                 return null;
             }
@@ -37,10 +37,10 @@ namespace SimpleWeather.UWP.Helpers
             }
         }
 
-        public static String GetQueryFromId(String tileId)
+        public static string GetQueryFromId(string tileId)
         {
             var obj = tileIdContainer.Values.FirstOrDefault(q => tileId.Equals(q.Value));
-            if (!String.IsNullOrWhiteSpace(obj.Key))
+            if (!string.IsNullOrWhiteSpace(obj.Key))
             {
                 return obj.Key;
             }
@@ -50,15 +50,15 @@ namespace SimpleWeather.UWP.Helpers
             }
         }
 
-        public static async Task UpdateTileId(String oldQuery, String newQuery)
+        public static async Task UpdateTileId(string oldQuery, string newQuery)
         {
-            String oldId = tileIdContainer.Values[oldQuery]?.ToString();
+            string oldId = tileIdContainer.Values[oldQuery]?.ToString();
 
             if (oldId != null)
             {
                 tileIdContainer.Values.Remove(oldQuery);
 
-                if (!String.IsNullOrWhiteSpace(tileIdContainer.Values[newQuery]?.ToString()))
+                if (!string.IsNullOrWhiteSpace(tileIdContainer.Values[newQuery]?.ToString()))
                 {
                     if (SecondaryTile.Exists(tileIdContainer.Values[newQuery]?.ToString()))
                     {
@@ -70,12 +70,12 @@ namespace SimpleWeather.UWP.Helpers
             }
         }
 
-        public static void AddTileId(String query, String id)
+        public static void AddTileId(string query, string id)
         {
             tileIdContainer.Values[query] = id;
         }
 
-        public static void RemoveTileId(String query)
+        public static void RemoveTileId(string query)
         {
             if (tileIdContainer.Values.ContainsKey(query))
             {
@@ -83,7 +83,7 @@ namespace SimpleWeather.UWP.Helpers
             }
         }
 
-        public static bool Exists(String query)
+        public static bool Exists(string query)
         {
             var id = GetTileId(query);
 

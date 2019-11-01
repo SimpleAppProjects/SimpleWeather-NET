@@ -11,6 +11,7 @@ using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.UWP.Helpers;
 using SimpleWeather.UWP.Main;
 using SimpleWeather.UWP.Setup;
+using SimpleWeather.UWP.Tiles;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;

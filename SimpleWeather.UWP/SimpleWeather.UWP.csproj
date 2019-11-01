@@ -294,7 +294,7 @@
     <Compile Include="Helpers\CustomPage.cs" />
     <Compile Include="Helpers\IBackRequestedPage.cs" />
     <Compile Include="Helpers\ICommandBarPage.cs" />
-    <Compile Include="Helpers\SecondaryTileUtils.cs" />
+    <Compile Include="Tiles\SecondaryTileUtils.cs" />
     <Compile Include="Helpers\StringBooleanConverter.cs" />
     <Compile Include="Helpers\IPageVerification.cs" />
     <Compile Include="Helpers\UserThemeMode.cs" />
@@ -346,8 +346,8 @@
     <Compile Include="Helpers\BooleanToVisibilityConverter.cs" />
     <Compile Include="Helpers\StringExtensions.cs" />
     <Compile Include="Helpers\StringVisibilityConverter.cs" />
-    <Compile Include="Helpers\WeatherAlertCreator.cs" />
-    <Compile Include="Helpers\WeatherTileCreator.cs" />
+    <Compile Include="Notifications\WeatherAlertCreator.cs" />
+    <Compile Include="Tiles\WeatherTileCreator.cs" />
     <Compile Include="Main\LocationsPage.xaml.cs">
       <DependentUpon>LocationsPage.xaml</DependentUpon>
     </Compile>

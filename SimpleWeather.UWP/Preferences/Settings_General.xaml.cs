@@ -21,6 +21,7 @@ using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.UWP.Helpers;
 using SimpleWeather.UWP.Main;
 using SimpleWeather.UWP.Controls;
+using SimpleWeather.UWP.Tiles;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 

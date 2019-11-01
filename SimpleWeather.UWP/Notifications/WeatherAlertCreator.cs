@@ -13,7 +13,7 @@ using SimpleWeather.Controls;
 using Microsoft.QueryStringDotNET;
 using SimpleWeather.Location;
 
-namespace SimpleWeather.UWP.Helpers
+namespace SimpleWeather.UWP.Notifications
 {
     public static class WeatherAlertCreator
     {
@@ -63,7 +63,7 @@ namespace SimpleWeather.UWP.Helpers
                 };
 
                 // Set a unique ID for the notification
-                var notID = String.Format("{0}:{1}", location.query, ((int)alertVM.AlertType).ToString());
+                var notID = string.Format("{0}:{1}", location.query, ((int)alertVM.AlertType).ToString());
 
                 // Create the toast notification
                 var toastNotif = new ToastNotification(toastContent.GetXml())

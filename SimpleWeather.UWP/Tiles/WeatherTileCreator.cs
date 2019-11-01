@@ -11,7 +11,7 @@ using Windows.System.UserProfile;
 using System.Globalization;
 using SimpleWeather.Location;
 
-namespace SimpleWeather.UWP.Helpers
+namespace SimpleWeather.UWP.Tiles
 {
     public static class WeatherTileCreator
     {
@@ -107,7 +107,7 @@ namespace SimpleWeather.UWP.Helpers
                             },
                         }
                     };
-                    String forecastHi;
+                    string forecastHi;
                     try
                     {
                         forecastHi = (Settings.IsFahrenheit ?
@@ -183,7 +183,7 @@ namespace SimpleWeather.UWP.Helpers
                         }
                     };
 
-                    String forecastHi, forecastLo;
+                    string forecastHi, forecastLo;
                     try
                     {
                         forecastHi = (Settings.IsFahrenheit ?
@@ -265,7 +265,7 @@ namespace SimpleWeather.UWP.Helpers
                             {
                                 new AdaptiveText()
                                 {
-                                    Text = (String.IsNullOrWhiteSpace(weather.condition.weather)) ? "---" : weather.condition.weather,
+                                    Text = string.IsNullOrWhiteSpace(weather.condition.weather) ? "---" : weather.condition.weather,
                                     HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
@@ -299,7 +299,7 @@ namespace SimpleWeather.UWP.Helpers
                 {
                     var forecast = weather.forecast[i];
 
-                    String forecastHi, forecastLo;
+                    string forecastHi, forecastLo;
                     try
                     {
                         forecastHi = (Settings.IsFahrenheit ?
@@ -444,7 +444,7 @@ namespace SimpleWeather.UWP.Helpers
                             },
                         }
                     };
-                    String hrforecastHi;
+                    string hrforecastHi;
                     try
                     {
                         hrforecastHi = (Settings.IsFahrenheit ?
@@ -531,7 +531,7 @@ namespace SimpleWeather.UWP.Helpers
 
                 string timeformat = culture.DateTimeFormat.ShortTimePattern.Contains("H") ?
                     "HH" : "ht";
-                string poplabel = (weather.source.Equals(WeatherAPI.OpenWeatherMap) || weather.source.Equals(WeatherAPI.MetNo)) ?
+                string poplabel = weather.source.Equals(WeatherAPI.OpenWeatherMap) || weather.source.Equals(WeatherAPI.MetNo) ?
                     App.ResLoader.GetString("Cloudiness_Label") : App.ResLoader.GetString("Precipitation_Label"); // Cloudiness or Precipitation
 
                 int forecastLength = LARGE_FORECAST_LENGTH;
@@ -561,7 +561,7 @@ namespace SimpleWeather.UWP.Helpers
                             {
                                 new AdaptiveText()
                                 {
-                                    Text = (String.IsNullOrWhiteSpace(weather.condition.weather)) ? "---" : weather.condition.weather,
+                                    Text = string.IsNullOrWhiteSpace(weather.condition.weather) ? "---" : weather.condition.weather,
                                     HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
@@ -753,7 +753,7 @@ namespace SimpleWeather.UWP.Helpers
                     {
                         new AdaptiveText()
                         {
-                            Text = (String.IsNullOrWhiteSpace(weather.condition.weather)) ? "---" : weather.condition.weather,
+                            Text = string.IsNullOrWhiteSpace(weather.condition.weather) ? "---" : weather.condition.weather,
                             HintStyle = AdaptiveTextStyle.Caption
                         },
                         new AdaptiveText()
@@ -814,7 +814,7 @@ namespace SimpleWeather.UWP.Helpers
                             {
                                 new AdaptiveText()
                                 {
-                                    Text = (String.IsNullOrWhiteSpace(weather.condition.weather)) ? "---" : weather.condition.weather,
+                                    Text = string.IsNullOrWhiteSpace(weather.condition.weather) ? "---" : weather.condition.weather,
                                     HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
@@ -848,7 +848,7 @@ namespace SimpleWeather.UWP.Helpers
                 {
                     var forecast = weather.forecast[i];
 
-                    String forecastHi, forecastLo;
+                    string forecastHi, forecastLo;
                     try
                     {
                         forecastHi = (Settings.IsFahrenheit ?

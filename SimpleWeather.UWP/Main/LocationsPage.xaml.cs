@@ -4,6 +4,7 @@ using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.UWP.Controls;
 using SimpleWeather.UWP.Helpers;
+using SimpleWeather.UWP.Tiles;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;

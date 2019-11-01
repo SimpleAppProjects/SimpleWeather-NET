@@ -1,6 +1,7 @@
 ﻿using SimpleWeather.Controls;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
+using SimpleWeather.UWP.Notifications;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
@@ -31,7 +32,7 @@ namespace SimpleWeather.UWP.WeatherAlerts
                     var unotifiedAlerts = alerts.Where(alert => alert.Notified == false && alert.ExpiresDate > DateTimeOffset.Now);
 
                     // Post any un-notified alerts
-                    Helpers.WeatherAlertCreator.CreateAlerts(location, unotifiedAlerts.ToList());
+                    WeatherAlertCreator.CreateAlerts(location, unotifiedAlerts.ToList());
 
                     // Update all alerts
                     alerts.ForEach(alert => alert.Notified = true);

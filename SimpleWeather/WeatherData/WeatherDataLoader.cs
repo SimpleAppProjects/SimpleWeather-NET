@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using SimpleWeather.Utils;
 using System.Globalization;
 using SimpleWeather.UWP;
-using SimpleWeather.UWP.Helpers;
 using Windows.System.UserProfile;
 using SimpleWeather.Location;
+using SimpleWeather.UWP.Tiles;
 
 namespace SimpleWeather.WeatherData
 {
