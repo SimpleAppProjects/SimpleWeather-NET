@@ -15,60 +15,31 @@ using Windows.UI.Xaml.Media.Imaging;
 
 namespace SimpleWeather.Controls
 {
-    public class WeatherNowViewModel : DependencyObject, INotifyPropertyChanged
+    public class WeatherNowViewModel : INotifyPropertyChanged
     {
         #region DependencyProperties
-        public static readonly DependencyProperty LocationProperty =
-            DependencyProperty.Register("Location", typeof(String),
-            typeof(WeatherNowViewModel), new PropertyMetadata(""));
-        public static readonly DependencyProperty UpdateDateProperty =
-            DependencyProperty.Register("UpdateDate", typeof(String),
-            typeof(WeatherNowViewModel), new PropertyMetadata(""));
-        public static readonly DependencyProperty CurTempProperty =
-            DependencyProperty.Register("CurTemp", typeof(String),
-            typeof(WeatherNowViewModel), new PropertyMetadata(""));
-        public static readonly DependencyProperty CurConditionProperty =
-            DependencyProperty.Register("CurCondition", typeof(String),
-            typeof(WeatherNowViewModel), new PropertyMetadata(""));
-        public static readonly DependencyProperty WeatherIconProperty =
-            DependencyProperty.Register("WeatherIcon", typeof(String),
-            typeof(WeatherNowViewModel), new PropertyMetadata(""));
-        public static readonly DependencyProperty ForecastsProperty =
-            DependencyProperty.Register("Forecasts", typeof(ObservableCollection<ForecastItemViewModel>),
-            typeof(WeatherNowViewModel), new PropertyMetadata(null));
-        public static readonly DependencyProperty SunriseProperty =
-            DependencyProperty.Register("Sunrise", typeof(String),
-            typeof(WeatherNowViewModel), new PropertyMetadata(""));
-        public static readonly DependencyProperty SunsetProperty =
-            DependencyProperty.Register("Sunset", typeof(String),
-            typeof(WeatherNowViewModel), new PropertyMetadata(""));
-        public static readonly DependencyProperty WeatherDetailsProperty =
-            DependencyProperty.Register("WeatherDetails", typeof(ObservableCollection<DetailItemViewModel>),
-            typeof(WeatherNowViewModel), new PropertyMetadata(null));
-        public static readonly DependencyProperty ExtrasProperty =
-            DependencyProperty.Register("ExtrasProperty", typeof(WeatherExtrasViewModel),
-            typeof(WeatherNowViewModel), new PropertyMetadata(null));
-        public static readonly DependencyProperty BackgroundProperty =
-            DependencyProperty.Register("Background", typeof(ImageBrush),
-            typeof(WeatherNowViewModel), new PropertyMetadata(null));
-        public static readonly DependencyProperty ImageDataProperty =
-            DependencyProperty.Register("ImageDataProperty", typeof(ImageDataViewModel),
-            typeof(WeatherNowViewModel), new PropertyMetadata(null));
-        public static readonly DependencyProperty PendingBackgroundColorProperty =
-            DependencyProperty.Register("PendingBackgroundColor", typeof(Color),
-            typeof(WeatherNowViewModel), new PropertyMetadata(Color.FromArgb(255, 0, 111, 191)));
-        public static readonly DependencyProperty BackgroundThemeProperty =
-            DependencyProperty.Register("BackgroundTheme", typeof(ElementTheme),
-            typeof(LocationPanelViewModel), new PropertyMetadata(ElementTheme.Dark));
-        public static readonly DependencyProperty WeatherCreditProperty =
-            DependencyProperty.Register("WeatherCredit", typeof(String),
-            typeof(WeatherNowViewModel), new PropertyMetadata(""));
-        public static readonly DependencyProperty WeatherSourceProperty =
-            DependencyProperty.Register("WeatherSource", typeof(String),
-            typeof(WeatherNowViewModel), new PropertyMetadata(""));
-        public static readonly DependencyProperty WeatherLocaleProperty =
-            DependencyProperty.Register("WeatherLocale", typeof(String),
-            typeof(WeatherNowViewModel), new PropertyMetadata("EN"));
+        private string location;
+        private string updateDate;
+        // Current Condition
+        private string curTemp;
+        private string curCondition;
+        private string weatherIcon;
+        private string sunrise;
+        private string sunset;
+        // Forecast
+        private ObservableCollection<ForecastItemViewModel> forecasts;
+        // Weather Details
+        private ObservableCollection<DetailItemViewModel> weatherDetails;
+        // Additional Details
+        private WeatherExtrasViewModel extras;
+        // Background
+        private String backgroundURI;
+        private ImageDataViewModel imageData;
+        private Color pendingBackgroundColor = Color.FromArgb(255, 0, 111, 191);
+        private ElementTheme backgroundTheme = ElementTheme.Dark;
+        private String weatherCredit;
+        private String weatherSource;
+        private String weatherLocale = "EN";
 
         public event PropertyChangedEventHandler PropertyChanged;
         // Create the OnPropertyChanged method to raise the event
@@ -79,96 +50,23 @@ namespace SimpleWeather.Controls
         #endregion
 
         #region Properties
-        public string Location
-        {
-            get { return (string)GetValue(LocationProperty); }
-            set { SetValue(LocationProperty, value); OnPropertyChanged("Location"); }
-        }
-        public string UpdateDate
-        {
-            get { return (string)GetValue(UpdateDateProperty); }
-            set { SetValue(UpdateDateProperty, value); OnPropertyChanged("UpdateDate"); }
-        }
-        // Current Condition
-        public string CurTemp
-        {
-            get { return (string)GetValue(CurTempProperty); }
-            set { SetValue(CurTempProperty, value); OnPropertyChanged("CurTemp"); }
-        }
-        public string CurCondition
-        {
-            get { return (string)GetValue(CurConditionProperty); }
-            set { SetValue(CurConditionProperty, value); OnPropertyChanged("CurCondition"); }
-        }
-        public string WeatherIcon
-        {
-            get { return (string)GetValue(WeatherIconProperty); }
-            set { SetValue(WeatherIconProperty, value); OnPropertyChanged("WeatherIcon"); }
-        }
-        public string Sunrise
-        {
-            get { return (string)GetValue(SunriseProperty); }
-            set { SetValue(SunriseProperty, value); OnPropertyChanged("Sunrise"); }
-        }
-        public string Sunset
-        {
-            get { return (string)GetValue(SunsetProperty); }
-            set { SetValue(SunsetProperty, value); OnPropertyChanged("Sunset"); }
-        }
-        // Forecast
-        public ObservableCollection<ForecastItemViewModel> Forecasts
-        {
-            get { return (ObservableCollection<ForecastItemViewModel>)GetValue(ForecastsProperty); }
-            set { SetValue(ForecastsProperty, value); OnPropertyChanged("Forecasts"); }
-        }
-        // Weather Details
-        public ObservableCollection<DetailItemViewModel> WeatherDetails
-        {
-            get { return (ObservableCollection<DetailItemViewModel>)GetValue(WeatherDetailsProperty); }
-            set { SetValue(WeatherDetailsProperty, value); OnPropertyChanged("WeatherDetails"); }
-        }
-        // Additional Details
-        public WeatherExtrasViewModel Extras
-        {
-            get { return (WeatherExtrasViewModel)GetValue(ExtrasProperty); }
-            set { SetValue(ExtrasProperty, value); OnPropertyChanged("Extras"); }
-        }
-        // Background
-        public ImageBrush Background
-        {
-            get { return (ImageBrush)GetValue(BackgroundProperty); }
-            set { SetValue(BackgroundProperty, value); OnPropertyChanged("Background"); }
-        }
-        public ImageDataViewModel ImageData
-        {
-            get { return (ImageDataViewModel)GetValue(ImageDataProperty); }
-            set { SetValue(ImageDataProperty, value); OnPropertyChanged("ImageData"); }
-        }
-        public Color PendingBackgroundColor
-        {
-            get { return (Color)GetValue(PendingBackgroundColorProperty); }
-            set { SetValue(PendingBackgroundColorProperty, value); OnPropertyChanged("PendingBackgroundColor"); }
-        }
-        public ElementTheme BackgroundTheme
-        {
-            get { return (ElementTheme)GetValue(BackgroundThemeProperty); }
-            set { SetValue(BackgroundThemeProperty, value); OnPropertyChanged("BackgroundTheme"); }
-        }
-        public String WeatherCredit
-        {
-            get { return (String)GetValue(WeatherCreditProperty); }
-            set { SetValue(WeatherCreditProperty, value); OnPropertyChanged("WeatherCredit"); }
-        }
-        public String WeatherSource
-        {
-            get { return (String)GetValue(WeatherSourceProperty); }
-            set { SetValue(WeatherSourceProperty, value); OnPropertyChanged("WeatherSource"); }
-        }
-        public String WeatherLocale
-        {
-            get { return (String)GetValue(WeatherLocaleProperty); }
-            set { SetValue(WeatherLocaleProperty, value); OnPropertyChanged("WeatherLocale"); }
-        }
+        public string Location { get => location; set { location = value; OnPropertyChanged("Location"); } }
+        public string UpdateDate { get => updateDate; set { updateDate = value; OnPropertyChanged("UpdateDate"); } }
+        public string CurTemp { get => curTemp; set { curTemp = value; OnPropertyChanged("CurTemp"); } }
+        public string CurCondition { get => curCondition; set { curCondition = value; OnPropertyChanged("CurCondition"); } }
+        public string WeatherIcon { get => weatherIcon; set { weatherIcon = value; OnPropertyChanged("WeatherIcon"); } }
+        public string Sunrise { get => sunrise; set { sunrise = value; OnPropertyChanged("Sunrise"); } }
+        public string Sunset { get => sunset; set { sunset = value; OnPropertyChanged("Sunset"); } }
+        public ObservableCollection<ForecastItemViewModel> Forecasts { get => forecasts; set { forecasts = value; OnPropertyChanged("Forecasts"); } }
+        public ObservableCollection<DetailItemViewModel> WeatherDetails { get => weatherDetails; set { weatherDetails = value; OnPropertyChanged("WeatherDetails"); } }
+        public WeatherExtrasViewModel Extras { get => extras; set { extras = value; OnPropertyChanged("Extras"); } }
+        public string BackgroundURI { get => backgroundURI; set { backgroundURI = value; OnPropertyChanged("BackgroundURI"); } }
+        public ImageDataViewModel ImageData { get => imageData; set { imageData = value; OnPropertyChanged("ImageData"); } }
+        public Color PendingBackgroundColor { get => pendingBackgroundColor; set { pendingBackgroundColor = value; OnPropertyChanged("PendingBackgroundColor"); } }
+        public ElementTheme BackgroundTheme { get => backgroundTheme; set { backgroundTheme = value; OnPropertyChanged("BackgroundTheme"); } }
+        public string WeatherCredit { get => weatherCredit; set { weatherCredit = value; OnPropertyChanged("WeatherCredit"); } }
+        public string WeatherSource { get => weatherSource; set { weatherSource = value; OnPropertyChanged("WeatherSource"); } }
+        public string WeatherLocale { get => weatherLocale; set { weatherLocale = value; OnPropertyChanged("WeatherLocale"); } }
         #endregion
 
         private WeatherManager wm;
@@ -176,12 +74,6 @@ namespace SimpleWeather.Controls
         public WeatherNowViewModel()
         {
             wm = WeatherManager.GetInstance();
-
-            Background = new ImageBrush()
-            {
-                Stretch = Stretch.UniformToFill,
-                AlignmentX = AlignmentX.Center
-            };
 
             Forecasts = new ObservableCollection<ForecastItemViewModel>();
             WeatherDetails = new ObservableCollection<DetailItemViewModel>();
@@ -191,12 +83,6 @@ namespace SimpleWeather.Controls
         public WeatherNowViewModel(Weather weather)
         {
             wm = WeatherManager.GetInstance();
-
-            Background = new ImageBrush()
-            {
-                Stretch = Stretch.UniformToFill,
-                AlignmentX = AlignmentX.Center
-            };
 
             Forecasts = new ObservableCollection<ForecastItemViewModel>();
             WeatherDetails = new ObservableCollection<DetailItemViewModel>();
@@ -215,63 +101,54 @@ namespace SimpleWeather.Controls
                 OnPropertyChanged("Extras");
 
                 // Update backgrounds
-                wm.SetBackground(Background, weather);
+                BackgroundURI = wm.GetBackgroundURI(weather);
                 PendingBackgroundColor = wm.GetWeatherBackgroundColor(weather);
                 BackgroundTheme = ColorUtils.IsSuperLight(PendingBackgroundColor) ?
                     ElementTheme.Light : ElementTheme.Dark;
 
-                if (Background.ImageSource is BitmapImage bmp)
+                if (BackgroundURI.Contains("DaySky"))
                 {
-                    String src = bmp.UriSource.ToString();
-
-                    if (src.Contains("DaySky"))
-                    {
-                        ImageData = bgAttribution["DaySky"];
-                    }
-                    else if (src.Contains("FoggySky"))
-                    {
-                        ImageData = bgAttribution["FoggySky"];
-                    }
-                    else if (src.Contains("NightSky"))
-                    {
-                        ImageData = bgAttribution["NightSky"];
-                    }
-                    else if (src.Contains("PartlyCloudy-Day"))
-                    {
-                        ImageData = bgAttribution["PartlyCloudy-Day"];
-                    }
-                    else if (src.Contains("RainyDay"))
-                    {
-                        ImageData = bgAttribution["RainyDay"];
-                    }
-                    else if (src.Contains("RainyNight"))
-                    {
-                        ImageData = bgAttribution["RainyNight"];
-                    }
-                    else if (src.Contains("Snow-Windy"))
-                    {
-                        ImageData = bgAttribution["Snow-Windy"];
-                    }
-                    else if (src.Contains("Snow"))
-                    {
-                        ImageData = bgAttribution["Snow"];
-                    }
-                    else if (src.Contains("StormySky"))
-                    {
-                        ImageData = bgAttribution["StormySky"];
-                    }
-                    else if (src.Contains("Thunderstorm-Day"))
-                    {
-                        ImageData = bgAttribution["Thunderstorm-Day"];
-                    }
-                    else if (src.Contains("Thunderstorm-Night"))
-                    {
-                        ImageData = bgAttribution["Thunderstorm-Night"];
-                    }
-                    else
-                    {
-                        ImageData = null;
-                    }
+                    ImageData = bgAttribution["DaySky"];
+                }
+                else if (BackgroundURI.Contains("FoggySky"))
+                {
+                    ImageData = bgAttribution["FoggySky"];
+                }
+                else if (BackgroundURI.Contains("NightSky"))
+                {
+                    ImageData = bgAttribution["NightSky"];
+                }
+                else if (BackgroundURI.Contains("PartlyCloudy-Day"))
+                {
+                    ImageData = bgAttribution["PartlyCloudy-Day"];
+                }
+                else if (BackgroundURI.Contains("RainyDay"))
+                {
+                    ImageData = bgAttribution["RainyDay"];
+                }
+                else if (BackgroundURI.Contains("RainyNight"))
+                {
+                    ImageData = bgAttribution["RainyNight"];
+                }
+                else if (BackgroundURI.Contains("Snow-Windy"))
+                {
+                    ImageData = bgAttribution["Snow-Windy"];
+                }
+                else if (BackgroundURI.Contains("Snow"))
+                {
+                    ImageData = bgAttribution["Snow"];
+                }
+                else if (BackgroundURI.Contains("StormySky"))
+                {
+                    ImageData = bgAttribution["StormySky"];
+                }
+                else if (BackgroundURI.Contains("Thunderstorm-Day"))
+                {
+                    ImageData = bgAttribution["Thunderstorm-Day"];
+                }
+                else if (BackgroundURI.Contains("Thunderstorm-Night"))
+                {
+                    ImageData = bgAttribution["Thunderstorm-Night"];
                 }
                 else
                 {
@@ -286,7 +163,7 @@ namespace SimpleWeather.Controls
 
                 // Update Current Condition
                 CurTemp = Settings.IsFahrenheit ?
-                    Math.Round(weather.condition.temp_f) + "\uf045" : Math.Round(weather.condition.temp_c) + "\uf03c";
+                    Math.Round(weather.condition.temp_f) + WeatherIcons.FAHRENHEIT : Math.Round(weather.condition.temp_c) + WeatherIcons.CELSIUS;
                 CurCondition = (String.IsNullOrWhiteSpace(weather.condition.weather)) ? "---" : weather.condition.weather;
                 WeatherIcon = weather.condition.icon;
 

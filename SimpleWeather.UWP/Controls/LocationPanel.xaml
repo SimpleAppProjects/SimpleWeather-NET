@@ -19,9 +19,9 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition x:Name="IconColumn" Width="70"/>
             </Grid.ColumnDefinitions>
-            <Grid x:Name="BackgroundOverlay" Grid.ColumnSpan="3"
-                  Background="{x:Bind ViewModel.Background, FallbackValue='#FF006FBF', Mode=OneWay}" />
-            <Grid x:Name="GradientOverlay" Grid.ColumnSpan="3" Visibility="Visible">
+            <toolkitControls:ImageEx x:Name="BackgroundOverlay" CachingStrategy="Custom" IsCacheEnabled="True" DecodePixelWidth="1080" Source="{x:Bind ViewModel.BackgroundURI, Mode=OneWay}"
+                                 Stretch="UniformToFill" Grid.ColumnSpan="3" VerticalAlignment="Center" HorizontalAlignment="Center" />
+            <Grid x:Name="GradientOverlay" Grid.ColumnSpan="3">
                 <Grid.Background>
                     <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
                         <LinearGradientBrush.GradientStops>

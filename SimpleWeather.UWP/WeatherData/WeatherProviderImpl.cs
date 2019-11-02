@@ -379,24 +379,5 @@ namespace SimpleWeather.WeatherData
 
             return baseuri + fileIcon;
         }
-
-        public virtual void SetBackground(ImageBrush bg, Weather weather)
-        {
-            Uri imgURI = new Uri(GetBackgroundURI(weather));
-
-            if (bg != null && bg.ImageSource != null)
-            {
-                // Skip re-settting bg
-                if (bg.ImageSource is BitmapImage bmp && bmp.UriSource == imgURI)
-                    return;
-            }
-
-            BitmapImage img = new BitmapImage(imgURI)
-            {
-                CreateOptions = BitmapCreateOptions.None,
-                DecodePixelWidth = 960
-            };
-            bg.ImageSource = img;
-        }
     }
 }

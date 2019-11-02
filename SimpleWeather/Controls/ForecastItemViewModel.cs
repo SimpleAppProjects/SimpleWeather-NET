@@ -32,6 +32,7 @@ namespace SimpleWeather.Controls
 
             WeatherIcon = forecast.icon;
             Date = forecast.date.ToString("ddd dd", culture);
+            ShortDate = forecast.date.ToString("ddd", culture);
             Condition = forecast.condition;
             try
             {
@@ -123,11 +124,11 @@ namespace SimpleWeather.Controls
                     WindSpeed = Settings.IsFahrenheit ?
                                 Math.Round(forecast.extras.wind_mph) + " mph" :
                                 Math.Round(forecast.extras.wind_kph) + " kph";
-                    WindDirection = new RotateTransform() { Angle = forecast.extras.wind_degrees };
+                    WindDirection = forecast.extras.wind_degrees;
                     WindDir = WeatherUtils.GetWindDirection(forecast.extras.wind_degrees);
 
                     DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.WindSpeed,
-                           String.Format(CultureInfo.InvariantCulture, "{0}, {1}", WindSpeed, WindDir), (int)WindDirection.Angle));
+                           String.Format(CultureInfo.InvariantCulture, "{0}, {1}", WindSpeed, WindDir), WindDirection));
                 }
 
                 if (!String.IsNullOrWhiteSpace(forecast.extras.visibility_mi))

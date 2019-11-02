@@ -29,9 +29,15 @@ namespace SimpleWeather.Controls
             WeatherIcon = hr_forecast.icon;
 
             if (culture.DateTimeFormat.ShortTimePattern.Contains("H"))
+            {
                 Date = hr_forecast.date.ToString("ddd HH:00", culture);
+                ShortDate = hr_forecast.date.ToString("HH", culture);
+            }
             else
+            {
                 Date = hr_forecast.date.ToString("ddd h tt", culture);
+                ShortDate = hr_forecast.date.ToString("ht", culture);
+            }
 
             Condition = hr_forecast.condition;
             try
@@ -45,7 +51,7 @@ namespace SimpleWeather.Controls
                 Logger.WriteLine(LoggerLevel.Error, "Invalid number format", ex);
             }
             PoP = hr_forecast.pop + "%";
-            WindDirection = new RotateTransform() { Angle = hr_forecast.wind_degrees };
+            WindDirection = hr_forecast.wind_degrees;
             WindDir = WeatherUtils.GetWindDirection(hr_forecast.wind_degrees);
             WindSpeed = (Settings.IsFahrenheit ?
                    Math.Round(hr_forecast.wind_mph) + " mph" :
@@ -115,7 +121,7 @@ namespace SimpleWeather.Controls
                 }
 
                 DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.WindSpeed,
-                    String.Format(CultureInfo.InvariantCulture, "{0}, {1}", WindSpeed, WindDir), (int) WindDirection.Angle));
+                    String.Format(CultureInfo.InvariantCulture, "{0}, {1}", WindSpeed, WindDir), WindDirection));
 
                 if (!String.IsNullOrWhiteSpace(hr_forecast.extras.visibility_mi))
                 {

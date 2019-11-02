@@ -10,6 +10,7 @@ using SimpleWeather.WeatherData;
 using Windows.System.UserProfile;
 using System.Globalization;
 using SimpleWeather.Location;
+using SimpleWeather.Controls;
 
 namespace SimpleWeather.UWP.Tiles
 {
@@ -30,7 +31,7 @@ namespace SimpleWeather.UWP.Tiles
             Large
         }
 
-        private static TileBindingContentAdaptive GenerateForecast(Weather weather, ForecastTileType forecastTileType)
+        private static TileBindingContentAdaptive GenerateForecast(WeatherNowViewModel weather, ForecastTileType forecastTileType)
         {
             var userlang = GlobalizationPreferences.Languages[0];
             var culture = new CultureInfo(userlang);
@@ -40,7 +41,7 @@ namespace SimpleWeather.UWP.Tiles
                 // Background URI
                 BackgroundImage = new TileBackgroundImage()
                 {
-                    Source = wm.GetBackgroundURI(weather),
+                    Source = weather.BackgroundURI,
                     HintOverlay = 50
                 }
             };
@@ -57,14 +58,14 @@ namespace SimpleWeather.UWP.Tiles
                             {
                                 new AdaptiveText()
                                 {
-                                    Text = weather.update_time.ToString("ddd", culture),
-                                    HintStyle = AdaptiveTextStyle.Base,
+                                    Text = weather.CurTemp.RemoveNonDigitChars() + "º",
+                                    HintStyle = AdaptiveTextStyle.Body,
                                     HintAlign = AdaptiveTextAlign.Center
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = (Settings.IsFahrenheit ? Math.Round(weather.condition.temp_f) : Math.Round(weather.condition.temp_c)) + "º",
-                                    HintStyle = AdaptiveTextStyle.Body,
+                                    Text = weather.Location,
+                                    HintStyle = AdaptiveTextStyle.Base,
                                     HintAlign = AdaptiveTextAlign.Center
                                 }
                             }
@@ -81,7 +82,7 @@ namespace SimpleWeather.UWP.Tiles
                 // 3day forecast
                 for (int i = 0; i < MEDIUM_FORECAST_LENGTH; i++)
                 {
-                    var forecast = weather.forecast[i];
+                    var forecast = weather.Forecasts[i];
 
                     var dateSubgroup = new AdaptiveSubgroup()
                     {
@@ -90,7 +91,7 @@ namespace SimpleWeather.UWP.Tiles
                         {
                             new AdaptiveText()
                             {
-                                Text = forecast.date.ToString("ddd", culture),
+                                Text = forecast.ShortDate,
                                 HintAlign = AdaptiveTextAlign.Center
                             },
                         }
@@ -103,21 +104,10 @@ namespace SimpleWeather.UWP.Tiles
                             new AdaptiveImage()
                             {
                                 HintRemoveMargin = true,
-                                Source = wm.GetWeatherIconURI(forecast.icon)
+                                Source = wm.GetWeatherIconURI(forecast.WeatherIcon)
                             },
                         }
                     };
-                    string forecastHi;
-                    try
-                    {
-                        forecastHi = (Settings.IsFahrenheit ?
-                            Math.Round(double.Parse(forecast.high_f)).ToString() : Math.Round(double.Parse(forecast.high_c)).ToString()) + "º";
-                    }
-                    catch (FormatException ex)
-                    {
-                        forecastHi = "--º";
-                        Logger.WriteLine(LoggerLevel.Error, "Invalid number format", ex);
-                    }
                     var tempSubgroup = new AdaptiveSubgroup()
                     {
                         HintWeight = 1,
@@ -126,7 +116,7 @@ namespace SimpleWeather.UWP.Tiles
                         {
                             new AdaptiveText()
                             {
-                                Text = forecastHi,
+                                Text = forecast.HiTemp,
                                 HintStyle = AdaptiveTextStyle.Caption,
                                 HintAlign = AdaptiveTextAlign.Center
                             }
@@ -149,12 +139,12 @@ namespace SimpleWeather.UWP.Tiles
                 var forecastGroup = new AdaptiveGroup();
 
                 int forecastLength = WIDE_FORECAST_LENGTH;
-                if (weather.forecast.Length < forecastLength)
-                    forecastLength = weather.forecast.Length;
+                if (weather.Forecasts.Count < forecastLength)
+                    forecastLength = weather.Forecasts.Count;
 
                 for (int i = 0; i < forecastLength; i++)
                 {
-                    var forecast = weather.forecast[i];
+                    var forecast = weather.Forecasts[i];
 
                     var dateSubgroup = new AdaptiveSubgroup()
                     {
@@ -163,7 +153,7 @@ namespace SimpleWeather.UWP.Tiles
                         {
                             new AdaptiveText()
                             {
-                                Text = forecast.date.ToString("ddd", culture),
+                                Text = forecast.ShortDate,
                                 HintAlign = AdaptiveTextAlign.Left
                             },
                         }
@@ -178,32 +168,11 @@ namespace SimpleWeather.UWP.Tiles
                             new AdaptiveImage()
                             {
                                 HintRemoveMargin = true,
-                                Source = wm.GetWeatherIconURI(forecast.icon)
+                                Source = wm.GetWeatherIconURI(forecast.WeatherIcon)
                             }
                         }
                     };
 
-                    string forecastHi, forecastLo;
-                    try
-                    {
-                        forecastHi = (Settings.IsFahrenheit ?
-                            Math.Round(double.Parse(forecast.high_f)).ToString() : Math.Round(double.Parse(forecast.high_c)).ToString()) + "º";
-                    }
-                    catch (FormatException ex)
-                    {
-                        forecastHi = "--º";
-                        Logger.WriteLine(LoggerLevel.Error, "Invalid number format", ex);
-                    }
-                    try
-                    {
-                        forecastLo = (Settings.IsFahrenheit ?
-                            Math.Round(double.Parse(forecast.low_f)).ToString() : Math.Round(double.Parse(forecast.low_c)).ToString()) + "º";
-                    }
-                    catch (FormatException ex)
-                    {
-                        forecastLo = "--º";
-                        Logger.WriteLine(LoggerLevel.Error, "Invalid number format", ex);
-                    }
                     var tempSubgroup = new AdaptiveSubgroup()
                     {
                         HintWeight = 1,
@@ -211,13 +180,13 @@ namespace SimpleWeather.UWP.Tiles
                         {
                             new AdaptiveText()
                             {
-                                Text = forecastHi,
+                                Text = forecast.HiTemp,
                                 HintStyle = AdaptiveTextStyle.Caption,
                                 HintAlign = AdaptiveTextAlign.Center
                             },
                             new AdaptiveText()
                             {
-                                Text = forecastLo,
+                                Text = forecast.LoTemp,
                                 HintStyle = AdaptiveTextStyle.CaptionSubtle,
                                 HintAlign = AdaptiveTextAlign.Center
                             }
@@ -236,11 +205,10 @@ namespace SimpleWeather.UWP.Tiles
             {
                 // Condition + 5-day forecast
                 var forecastGroup = new AdaptiveGroup();
-                var condition = weather.condition;
 
                 int forecastLength = LARGE_FORECAST_LENGTH;
-                if (weather.forecast.Length < forecastLength)
-                    forecastLength = weather.forecast.Length;
+                if (weather.Forecasts.Count < forecastLength)
+                    forecastLength = weather.Forecasts.Count;
 
                 var conditionGroup = new AdaptiveGroup()
                 {
@@ -254,7 +222,7 @@ namespace SimpleWeather.UWP.Tiles
                             {
                                 new AdaptiveImage()
                                 {
-                                    Source = wm.GetWeatherIconURI(condition.icon)
+                                    Source = wm.GetWeatherIconURI(weather.WeatherIcon)
                                 }
                             }
                         },
@@ -265,25 +233,22 @@ namespace SimpleWeather.UWP.Tiles
                             {
                                 new AdaptiveText()
                                 {
-                                    Text = string.IsNullOrWhiteSpace(weather.condition.weather) ? "---" : weather.condition.weather,
+                                    Text = weather.CurCondition,
                                     HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("Temp_Label"),
-                                        (Settings.IsFahrenheit ? Math.Round(weather.condition.temp_f) : Math.Round(weather.condition.temp_c)) + "º"),
+                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("Temp_Label"), weather.CurTemp.RemoveNonDigitChars() + "º"),
                                     HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("FeelsLike_Label"),
-                                        (Settings.IsFahrenheit ? Math.Round(weather.condition.feelslike_f) : Math.Round(weather.condition.feelslike_c)) + "º"),
+                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("FeelsLike_Label"), weather.WeatherDetails.FirstOrDefault(detail => detail.DetailsType == WeatherDetailsType.FeelsLike)?.Value),
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("Wind_Label"),
-                                        Settings.IsFahrenheit ? Math.Round(weather.condition.wind_mph) + " mph" : Math.Round(weather.condition.wind_kph) + " kph"),
+                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("Wind_Label"), weather.WeatherDetails.FirstOrDefault(detail => detail.DetailsType == WeatherDetailsType.WindSpeed)?.Value),
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle
                                 }
                             }
@@ -297,29 +262,8 @@ namespace SimpleWeather.UWP.Tiles
 
                 for (int i = 0; i < forecastLength; i++)
                 {
-                    var forecast = weather.forecast[i];
+                    var forecast = weather.Forecasts[i];
 
-                    string forecastHi, forecastLo;
-                    try
-                    {
-                        forecastHi = (Settings.IsFahrenheit ?
-                            Math.Round(double.Parse(forecast.high_f)).ToString() : Math.Round(double.Parse(forecast.high_c)).ToString()) + "º";
-                    }
-                    catch (FormatException ex)
-                    {
-                        forecastHi = "--º";
-                        Logger.WriteLine(LoggerLevel.Error, "Invalid number format", ex);
-                    }
-                    try
-                    {
-                        forecastLo = (Settings.IsFahrenheit ?
-                            Math.Round(double.Parse(forecast.low_f)).ToString() : Math.Round(double.Parse(forecast.low_c)).ToString()) + "º";
-                    }
-                    catch (FormatException ex)
-                    {
-                        forecastLo = "--º";
-                        Logger.WriteLine(LoggerLevel.Error, "Invalid number format", ex);
-                    }
                     var subgroup = new AdaptiveSubgroup()
                     {
                         HintWeight = 1,
@@ -327,22 +271,22 @@ namespace SimpleWeather.UWP.Tiles
                         {
                             new AdaptiveText()
                             {
-                                Text = forecast.date.ToString("ddd", culture),
+                                Text = forecast.ShortDate,
                                 HintAlign = AdaptiveTextAlign.Center
                             },
                             new AdaptiveImage()
                             {
                                 HintRemoveMargin = true,
-                                Source = wm.GetWeatherIconURI(forecast.icon)
+                                Source = wm.GetWeatherIconURI(forecast.WeatherIcon)
                             },
                             new AdaptiveText()
                             {
-                                Text = forecastHi,
+                                Text = forecast.HiTemp,
                                 HintAlign = AdaptiveTextAlign.Center
                             },
                             new AdaptiveText()
                             {
-                                Text = forecastLo,
+                                Text = forecast.LoTemp,
                                 HintStyle = AdaptiveTextStyle.CaptionSubtle,
                                 HintAlign = AdaptiveTextAlign.Center
                             }
@@ -360,7 +304,7 @@ namespace SimpleWeather.UWP.Tiles
             return content;
         }
 
-        private static TileBindingContentAdaptive GenerateHrForecast(Weather weather, ForecastTileType forecastTileType)
+        private static TileBindingContentAdaptive GenerateHrForecast(WeatherNowViewModel weather, ForecastTileType forecastTileType)
         {
             var userlang = GlobalizationPreferences.Languages[0];
             var culture = new CultureInfo(userlang);
@@ -370,7 +314,7 @@ namespace SimpleWeather.UWP.Tiles
                 // Background URI
                 BackgroundImage = new TileBackgroundImage()
                 {
-                    Source = wm.GetBackgroundURI(weather),
+                    Source = weather.BackgroundURI,
                     HintOverlay = 50
                 }
             };
@@ -387,14 +331,14 @@ namespace SimpleWeather.UWP.Tiles
                             {
                                 new AdaptiveText()
                                 {
-                                    Text = weather.update_time.ToString("ddd", culture),
-                                    HintStyle = AdaptiveTextStyle.Base,
+                                    Text = weather.CurTemp.RemoveNonDigitChars() + "º",
+                                    HintStyle = AdaptiveTextStyle.Body,
                                     HintAlign = AdaptiveTextAlign.Center
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = (Settings.IsFahrenheit ? Math.Round(weather.condition.temp_f) : Math.Round(weather.condition.temp_c)) + "º",
-                                    HintStyle = AdaptiveTextStyle.Body,
+                                    Text = weather.Location,
+                                    HintStyle = AdaptiveTextStyle.Base,
                                     HintAlign = AdaptiveTextAlign.Center
                                 }
                             }
@@ -408,17 +352,14 @@ namespace SimpleWeather.UWP.Tiles
                 var forecastGroup = new AdaptiveGroup();
                 var tempGroup = new AdaptiveGroup();
 
-                string timeformat = culture.DateTimeFormat.ShortTimePattern.Contains("H") ?
-                    "HH" : "ht";
-
                 int forecastLength = MEDIUM_FORECAST_LENGTH;
-                if (weather.hr_forecast.Length < forecastLength)
-                    forecastLength = weather.hr_forecast.Length;
+                if (weather.Extras.HourlyForecast.Count < forecastLength)
+                    forecastLength = weather.Extras.HourlyForecast.Count;
 
                 // 3hr forecast
                 for (int i = 0; i < forecastLength; i++)
                 {
-                    var hrforecast = weather.hr_forecast[i];
+                    var hrforecast = weather.Extras.HourlyForecast[i];
 
                     var dateSubgroup = new AdaptiveSubgroup()
                     {
@@ -427,7 +368,7 @@ namespace SimpleWeather.UWP.Tiles
                         {
                             new AdaptiveText()
                             {
-                                Text = hrforecast.date.ToString(timeformat, culture).ToLower(),
+                                Text = hrforecast.ShortDate.ToLower(),
                                 HintAlign = AdaptiveTextAlign.Center
                             },
                         }
@@ -440,21 +381,10 @@ namespace SimpleWeather.UWP.Tiles
                             new AdaptiveImage()
                             {
                                 HintRemoveMargin = true,
-                                Source = wm.GetWeatherIconURI(hrforecast.icon)
+                                Source = wm.GetWeatherIconURI(hrforecast.WeatherIcon)
                             },
                         }
                     };
-                    string hrforecastHi;
-                    try
-                    {
-                        hrforecastHi = (Settings.IsFahrenheit ?
-                            Math.Round(double.Parse(hrforecast.high_f)).ToString() : Math.Round(double.Parse(hrforecast.high_c)).ToString()) + "º";
-                    }
-                    catch (FormatException ex)
-                    {
-                        hrforecastHi = "--º";
-                        Logger.WriteLine(LoggerLevel.Error, "Invalid number format", ex);
-                    }
                     var tempSubgroup = new AdaptiveSubgroup()
                     {
                         HintWeight = 1,
@@ -463,7 +393,7 @@ namespace SimpleWeather.UWP.Tiles
                         {
                             new AdaptiveText()
                             {
-                                Text = hrforecastHi,
+                                Text = hrforecast.HiTemp,
                                 HintStyle = AdaptiveTextStyle.Caption,
                                 HintAlign = AdaptiveTextAlign.Center
                             }
@@ -488,12 +418,12 @@ namespace SimpleWeather.UWP.Tiles
                     "HH" : "ht";
 
                 int forecastLength = LARGE_FORECAST_LENGTH;
-                if (weather.hr_forecast.Length < forecastLength)
-                    forecastLength = weather.hr_forecast.Length;
+                if (weather.Extras.HourlyForecast.Count < forecastLength)
+                    forecastLength = weather.Extras.HourlyForecast.Count;
 
                 for (int i = 0; i < forecastLength; i++)
                 {
-                    var hrforecast = weather.hr_forecast[i];
+                    var hrforecast = weather.Extras.HourlyForecast[i];
 
                     var subgroup = new AdaptiveSubgroup()
                     {
@@ -502,18 +432,17 @@ namespace SimpleWeather.UWP.Tiles
                         {
                             new AdaptiveText()
                             {
-                                Text = hrforecast.date.ToString(timeformat, culture).ToLower(),
+                                Text = hrforecast.ShortDate.ToLower(),
                                 HintAlign = AdaptiveTextAlign.Center
                             },
                             new AdaptiveImage()
                             {
                                 HintRemoveMargin = true,
-                                Source = wm.GetWeatherIconURI(hrforecast.icon)
+                                Source = wm.GetWeatherIconURI(hrforecast.WeatherIcon)
                             },
                             new AdaptiveText()
                             {
-                                Text = (Settings.IsFahrenheit ?
-                                    Math.Round(double.Parse(hrforecast.high_f)).ToString() : Math.Round(double.Parse(hrforecast.high_c)).ToString()) + "º",
+                                Text = hrforecast.HiTemp,
                                 HintAlign = AdaptiveTextAlign.Center
                             },
                         }
@@ -529,14 +458,13 @@ namespace SimpleWeather.UWP.Tiles
                 // Condition + 5-hr forecast
                 var forecastGroup = new AdaptiveGroup();
 
-                string timeformat = culture.DateTimeFormat.ShortTimePattern.Contains("H") ?
-                    "HH" : "ht";
-                string poplabel = weather.source.Equals(WeatherAPI.OpenWeatherMap) || weather.source.Equals(WeatherAPI.MetNo) ?
+                string poplabel = weather.WeatherSource.Equals(WeatherAPI.OpenWeatherMap) || weather.WeatherSource.Equals(WeatherAPI.MetNo) ?
                     App.ResLoader.GetString("Cloudiness_Label") : App.ResLoader.GetString("Precipitation_Label"); // Cloudiness or Precipitation
+                var popDetail = weather.WeatherDetails.FirstOrDefault(detail => detail.DetailsType == WeatherDetailsType.PoPCloudiness || detail.DetailsType == WeatherDetailsType.PoPChance);
 
                 int forecastLength = LARGE_FORECAST_LENGTH;
-                if (weather.hr_forecast.Length < forecastLength)
-                    forecastLength = weather.hr_forecast.Length;
+                if (weather.Extras.HourlyForecast.Count < forecastLength)
+                    forecastLength = weather.Extras.HourlyForecast.Count;
 
                 var conditionGroup = new AdaptiveGroup()
                 {
@@ -550,7 +478,7 @@ namespace SimpleWeather.UWP.Tiles
                             {
                                 new AdaptiveImage()
                                 {
-                                    Source = wm.GetWeatherIconURI(weather.condition.icon)
+                                    Source = wm.GetWeatherIconURI(weather.WeatherIcon)
                                 }
                             }
                         },
@@ -561,31 +489,27 @@ namespace SimpleWeather.UWP.Tiles
                             {
                                 new AdaptiveText()
                                 {
-                                    Text = string.IsNullOrWhiteSpace(weather.condition.weather) ? "---" : weather.condition.weather,
+                                    Text = weather.CurCondition,
                                     HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("Temp_Label"),
-                                        (Settings.IsFahrenheit ? Math.Round(weather.condition.temp_f) : Math.Round(weather.condition.temp_c)) + "º"),
+                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("Temp_Label"), weather.CurTemp.RemoveNonDigitChars() + "º"),
                                     HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("FeelsLike_Label"),
-                                        (Settings.IsFahrenheit ? Math.Round(weather.condition.feelslike_f) : Math.Round(weather.condition.feelslike_c)) + "º"),
+                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("FeelsLike_Label"), weather.WeatherDetails.FirstOrDefault(detail => detail.DetailsType == WeatherDetailsType.FeelsLike)?.Value),
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("Wind_Label"),
-                                        Settings.IsFahrenheit ? Math.Round(weather.condition.wind_mph) + " mph" : Math.Round(weather.condition.wind_kph) + " kph"),
+                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("Wind_Label"), weather.WeatherDetails.FirstOrDefault(detail => detail.DetailsType == WeatherDetailsType.WindSpeed)?.Value),
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = weather.precipitation != null ?
-                                        string.Format("{0}: {1}", poplabel, weather.precipitation.pop + "%") : "",
+                                    Text = popDetail != null ? string.Format("{0}: {1}", popDetail.Label, popDetail.Value) : "",
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle
                                 }
                             }
@@ -599,7 +523,7 @@ namespace SimpleWeather.UWP.Tiles
 
                 for (int i = 0; i < forecastLength; i++)
                 {
-                    var hrforecast = weather.hr_forecast[i];
+                    var hrforecast = weather.Extras.HourlyForecast[i];
 
                     var subgroup = new AdaptiveSubgroup()
                     {
@@ -608,18 +532,17 @@ namespace SimpleWeather.UWP.Tiles
                         {
                             new AdaptiveText()
                             {
-                                Text = hrforecast.date.ToString(timeformat, culture).ToLower(),
+                                Text = hrforecast.ShortDate.ToLower(),
                                 HintAlign = AdaptiveTextAlign.Center
                             },
                             new AdaptiveImage()
                             {
                                 HintRemoveMargin = true,
-                                Source = wm.GetWeatherIconURI(hrforecast.icon)
+                                Source = wm.GetWeatherIconURI(hrforecast.WeatherIcon)
                             },
                             new AdaptiveText()
                             {
-                                Text = (Settings.IsFahrenheit ?
-                                    Math.Round(double.Parse(hrforecast.high_f)).ToString() : Math.Round(double.Parse(hrforecast.high_c)).ToString()) + "º",
+                                Text = hrforecast.HiTemp,
                                 HintAlign = AdaptiveTextAlign.Center
                             },
                         }
@@ -636,7 +559,7 @@ namespace SimpleWeather.UWP.Tiles
             return content;
         }
 
-        private static TileBindingContentAdaptive GenerateCondition(Weather weather, ForecastTileType forecastTileType)
+        private static TileBindingContentAdaptive GenerateCondition(WeatherNowViewModel weather, ForecastTileType forecastTileType)
         {
             var userlang = GlobalizationPreferences.Languages[0];
             var culture = new CultureInfo(userlang);
@@ -646,7 +569,7 @@ namespace SimpleWeather.UWP.Tiles
                 // Background URI
                 BackgroundImage = new TileBackgroundImage()
                 {
-                    Source = wm.GetBackgroundURI(weather),
+                    Source = weather.BackgroundURI,
                     HintOverlay = 50
                 }
             };
@@ -663,14 +586,14 @@ namespace SimpleWeather.UWP.Tiles
                             {
                                 new AdaptiveText()
                                 {
-                                    Text = weather.update_time.ToString("ddd", culture),
-                                    HintStyle = AdaptiveTextStyle.Base,
+                                    Text = weather.CurTemp.RemoveNonDigitChars() + "º",
+                                    HintStyle = AdaptiveTextStyle.Body,
                                     HintAlign = AdaptiveTextAlign.Center
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = (Settings.IsFahrenheit ? Math.Round(weather.condition.temp_f) : Math.Round(weather.condition.temp_c)) + "º",
-                                    HintStyle = AdaptiveTextStyle.Body,
+                                    Text = weather.Location,
+                                    HintStyle = AdaptiveTextStyle.Base,
                                     HintAlign = AdaptiveTextAlign.Center
                                 }
                             }
@@ -704,11 +627,11 @@ namespace SimpleWeather.UWP.Tiles
                                 new AdaptiveImage()
                                 {
                                     HintRemoveMargin = true,
-                                    Source = wm.GetWeatherIconURI(weather.condition.icon)
+                                    Source = wm.GetWeatherIconURI(weather.WeatherIcon)
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = (Settings.IsFahrenheit ? Math.Round(weather.condition.temp_f) : Math.Round(weather.condition.temp_c)) + "º",
+                                    Text = weather.CurTemp.RemoveNonDigitChars() + "º",
                                     HintStyle = AdaptiveTextStyle.Body,
                                     HintAlign = AdaptiveTextAlign.Center,
                                 }
@@ -741,7 +664,7 @@ namespace SimpleWeather.UWP.Tiles
                         new AdaptiveImage()
                         {
                             HintRemoveMargin = true,
-                            Source = wm.GetWeatherIconURI(weather.condition.icon)
+                            Source = wm.GetWeatherIconURI(weather.WeatherIcon)
                         }
                     },
                     HintTextStacking = AdaptiveSubgroupTextStacking.Center
@@ -753,25 +676,22 @@ namespace SimpleWeather.UWP.Tiles
                     {
                         new AdaptiveText()
                         {
-                            Text = string.IsNullOrWhiteSpace(weather.condition.weather) ? "---" : weather.condition.weather,
+                            Text = weather.CurCondition,
                             HintStyle = AdaptiveTextStyle.Caption
                         },
                         new AdaptiveText()
                         {
-                            Text = string.Format("{0}: {1}", App.ResLoader.GetString("Temp_Label"),
-                                (Settings.IsFahrenheit ? Math.Round(weather.condition.temp_f) : Math.Round(weather.condition.temp_c)) + "º"),
+                            Text = string.Format("{0}: {1}", App.ResLoader.GetString("Temp_Label"), weather.CurTemp.RemoveNonDigitChars() + "º"),
                             HintStyle = AdaptiveTextStyle.Caption
                         },
                         new AdaptiveText()
                         {
-                            Text = string.Format("{0}: {1}", App.ResLoader.GetString("FeelsLike_Label"),
-                                (Settings.IsFahrenheit ? Math.Round(weather.condition.feelslike_f) : Math.Round(weather.condition.feelslike_c)) + "º"),
+                            Text = string.Format("{0}: {1}", App.ResLoader.GetString("FeelsLike_Label"), weather.WeatherDetails.FirstOrDefault(detail => detail.DetailsType == WeatherDetailsType.FeelsLike)?.Value),
                             HintStyle = AdaptiveTextStyle.CaptionSubtle
                         },
                         new AdaptiveText()
                         {
-                            Text = string.Format("{0}: {1}", App.ResLoader.GetString("Wind_Label"),
-                                Settings.IsFahrenheit ? Math.Round(weather.condition.wind_mph) + " mph" : Math.Round(weather.condition.wind_kph) + " kph"),
+                            Text = string.Format("{0}: {1}", App.ResLoader.GetString("Wind_Label"), weather.WeatherDetails.FirstOrDefault(detail => detail.DetailsType == WeatherDetailsType.WindSpeed)?.Value),
                             HintStyle = AdaptiveTextStyle.CaptionSubtle
                         }
                     }
@@ -785,11 +705,10 @@ namespace SimpleWeather.UWP.Tiles
             {
                 // Condition + 5-day forecast
                 var forecastGroup = new AdaptiveGroup();
-                var condition = weather.condition;
 
                 int forecastLength = LARGE_FORECAST_LENGTH;
-                if (weather.forecast.Length < forecastLength)
-                    forecastLength = weather.forecast.Length;
+                if (weather.Forecasts.Count < forecastLength)
+                    forecastLength = weather.Forecasts.Count;
 
                 var conditionGroup = new AdaptiveGroup()
                 {
@@ -803,7 +722,7 @@ namespace SimpleWeather.UWP.Tiles
                             {
                                 new AdaptiveImage()
                                 {
-                                    Source = wm.GetWeatherIconURI(weather.condition.icon)
+                                    Source = wm.GetWeatherIconURI(weather.WeatherIcon)
                                 }
                             }
                         },
@@ -814,25 +733,22 @@ namespace SimpleWeather.UWP.Tiles
                             {
                                 new AdaptiveText()
                                 {
-                                    Text = string.IsNullOrWhiteSpace(weather.condition.weather) ? "---" : weather.condition.weather,
+                                    Text = weather.CurCondition,
                                     HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("Temp_Label"),
-                                        (Settings.IsFahrenheit ? Math.Round(weather.condition.temp_f) : Math.Round(weather.condition.temp_c)) + "º"),
+                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("Temp_Label"), weather.CurTemp.RemoveNonDigitChars() + "º"),
                                     HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("FeelsLike_Label"),
-                                        (Settings.IsFahrenheit ? Math.Round(weather.condition.feelslike_f) : Math.Round(weather.condition.feelslike_c)) + "º"),
+                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("FeelsLike_Label"), weather.WeatherDetails.FirstOrDefault(detail => detail.DetailsType == WeatherDetailsType.FeelsLike)?.Value),
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("Wind_Label"),
-                                        Settings.IsFahrenheit ? Math.Round(weather.condition.wind_mph) + " mph" : Math.Round(weather.condition.wind_kph) + " kph"),
+                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("Wind_Label"), weather.WeatherDetails.FirstOrDefault(detail => detail.DetailsType == WeatherDetailsType.WindSpeed)?.Value),
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle
                                 }
                             }
@@ -846,29 +762,8 @@ namespace SimpleWeather.UWP.Tiles
 
                 for (int i = 0; i < forecastLength; i++)
                 {
-                    var forecast = weather.forecast[i];
+                    var forecast = weather.Forecasts[i];
 
-                    string forecastHi, forecastLo;
-                    try
-                    {
-                        forecastHi = (Settings.IsFahrenheit ?
-                            Math.Round(double.Parse(forecast.high_f)).ToString() : Math.Round(double.Parse(forecast.high_c)).ToString()) + "º";
-                    }
-                    catch (FormatException ex)
-                    {
-                        forecastHi = "--º";
-                        Logger.WriteLine(LoggerLevel.Error, "Invalid number format", ex);
-                    }
-                    try
-                    {
-                        forecastLo = (Settings.IsFahrenheit ?
-                            Math.Round(double.Parse(forecast.low_f)).ToString() : Math.Round(double.Parse(forecast.low_c)).ToString()) + "º";
-                    }
-                    catch (FormatException ex)
-                    {
-                        forecastLo = "--º";
-                        Logger.WriteLine(LoggerLevel.Error, "Invalid number format", ex);
-                    }
                     var subgroup = new AdaptiveSubgroup()
                     {
                         HintWeight = 1,
@@ -876,22 +771,22 @@ namespace SimpleWeather.UWP.Tiles
                         {
                             new AdaptiveText()
                             {
-                                Text = forecast.date.ToString("ddd", culture),
+                                Text = forecast.ShortDate,
                                 HintAlign = AdaptiveTextAlign.Center
                             },
                             new AdaptiveImage()
                             {
                                 HintRemoveMargin = true,
-                                Source = wm.GetWeatherIconURI(forecast.icon)
+                                Source = wm.GetWeatherIconURI(forecast.WeatherIcon)
                             },
                             new AdaptiveText()
                             {
-                                Text = forecastHi,
+                                Text = forecast.HiTemp,
                                 HintAlign = AdaptiveTextAlign.Center
                             },
                             new AdaptiveText()
                             {
-                                Text = forecastLo,
+                                Text = forecast.LoTemp,
                                 HintStyle = AdaptiveTextStyle.CaptionSubtle,
                                 HintAlign = AdaptiveTextAlign.Center
                             }
@@ -909,9 +804,9 @@ namespace SimpleWeather.UWP.Tiles
             return content;
         }
 
-        private static void UpdateContent(TileUpdater tileUpdater, Weather weather)
+        private static void UpdateContent(TileUpdater tileUpdater, WeatherNowViewModel weather)
         {
-            bool hasHourly = weather.hr_forecast != null && weather.hr_forecast.Length > 0;
+            bool hasHourly = weather.Extras.HourlyForecast.Count > 0;
             TileContent forecastTileContent = null;
             TileContent currentTileContent = null;
             TileContent hrforecastTileContent = null;
@@ -922,7 +817,7 @@ namespace SimpleWeather.UWP.Tiles
                 {
                     Visual = new TileVisual()
                     {
-                        DisplayName = weather.location.name,
+                        DisplayName = weather.Location,
                         TileSmall = new TileBinding()
                         {
                             Branding = TileBranding.None,
@@ -953,7 +848,7 @@ namespace SimpleWeather.UWP.Tiles
             {
                 Visual = new TileVisual()
                 {
-                    DisplayName = weather.location.name,
+                    DisplayName = weather.Location,
                     TileSmall = new TileBinding()
                     {
                         Branding = TileBranding.None,
@@ -986,7 +881,7 @@ namespace SimpleWeather.UWP.Tiles
             {
                 Visual = new TileVisual()
                 {
-                    DisplayName = weather.location.name,
+                    DisplayName = weather.Location,
                     TileSmall = new TileBinding()
                     {
                         Branding = TileBranding.None,
@@ -1034,11 +929,11 @@ namespace SimpleWeather.UWP.Tiles
 
             if (wloader.GetWeather() != null)
             {
-                TileUpdater(location, wloader.GetWeather());
+                TileUpdater(location, new WeatherNowViewModel(wloader.GetWeather()));
             }
         }
 
-        public static void TileUpdater(LocationData location, Weather weather)
+        public static void TileUpdater(LocationData location, WeatherNowViewModel weather)
         {
             // And send the notification to the tile
             if (location.Equals(Settings.HomeData))

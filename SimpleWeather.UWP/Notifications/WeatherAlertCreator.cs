@@ -47,7 +47,7 @@ namespace SimpleWeather.UWP.Notifications
                             },
                             AppLogoOverride = new ToastGenericAppLogo()
                             {
-                                Source = GetAssetFromAlertType(alert.Type)
+                                Source = GetAssetFromAlertType(alertVM.AlertType)
                             },
                             Attribution = new ToastGenericAttributionText()
                             {

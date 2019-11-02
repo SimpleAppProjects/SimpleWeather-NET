@@ -54,7 +54,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                         Logger.WriteLine(LoggerLevel.Debug, "WeatherUpdateBackgroundTask: Weather is NULL = " + (weather == null).ToString());
                         Logger.WriteLine(LoggerLevel.Debug, "WeatherUpdateBackgroundTask: Updating primary tile...");
                         if (weather != null)
-                            WeatherTileCreator.TileUpdater(Settings.HomeData, weather);
+                            WeatherTileCreator.TileUpdater(Settings.HomeData, new WeatherNowViewModel(weather));
 
                         if (cts.IsCancellationRequested) return;
 
@@ -279,10 +279,17 @@ namespace SimpleWeather.UWP.BackgroundTasks
 
                     await Task.Run(async () =>
                     {
-                        view = await wm.GetLocation(newGeoPos);
+                        try
+                        {
+                            view = await wm.GetLocation(newGeoPos);
 
-                        if (String.IsNullOrEmpty(view.LocationQuery))
+                            if (String.IsNullOrEmpty(view.LocationQuery))
+                                view = new LocationQueryViewModel();
+                        }
+                        catch (WeatherException ex)
+                        {
                             view = new LocationQueryViewModel();
+                        }
                     }, cts.Token);
 
                     if (String.IsNullOrWhiteSpace(view.LocationQuery))

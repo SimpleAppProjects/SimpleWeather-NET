@@ -127,6 +127,9 @@ namespace SimpleWeather.WeatherData
         public const String MOON_ALT_THIRD_QUARTER = "\uf0e4";
         public const String MOON_ALT_WANING_CRESCENT_3 = "\uf0e7";
 
+        public const String FAHRENHEIT = "\uf045";
+        public const String CELSIUS = "\uf03c";
+
         // N/A
         public const String NA = "\uf07b";
     }

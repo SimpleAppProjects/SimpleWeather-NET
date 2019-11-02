@@ -11,18 +11,12 @@ using Windows.UI.Xaml.Media;
 
 namespace SimpleWeather.Controls
 {
-    public class WeatherExtrasViewModel : DependencyObject, INotifyPropertyChanged
+    public class WeatherExtrasViewModel : INotifyPropertyChanged
     {
         #region DependencyProperties
-        public static readonly DependencyProperty HourlyForecastProperty =
-            DependencyProperty.Register("HourlyForecast", typeof(ObservableCollection<HourlyForecastItemViewModel>),
-            typeof(WeatherNowViewModel), new PropertyMetadata(null));
-        public static readonly DependencyProperty TextForecastProperty =
-            DependencyProperty.Register("TextForecast", typeof(ObservableCollection<TextForecastItemViewModel>),
-            typeof(WeatherNowViewModel), new PropertyMetadata(null));
-        public static readonly DependencyProperty AlertsProperty =
-            DependencyProperty.Register("Alerts", typeof(ObservableCollection<WeatherAlertViewModel>),
-            typeof(WeatherNowViewModel), new PropertyMetadata(null));
+        private ObservableCollection<HourlyForecastItemViewModel> hourlyForecast;
+        private ObservableCollection<TextForecastItemViewModel> textForecast;
+        private ObservableCollection<WeatherAlertViewModel> alerts;
 
         public event PropertyChangedEventHandler PropertyChanged;
         // Create the OnPropertyChanged method to raise the event
@@ -33,21 +27,9 @@ namespace SimpleWeather.Controls
         #endregion
 
         #region Properties
-        public ObservableCollection<HourlyForecastItemViewModel> HourlyForecast
-        {
-            get { return (ObservableCollection<HourlyForecastItemViewModel>)GetValue(HourlyForecastProperty); }
-            set { SetValue(HourlyForecastProperty, value); OnPropertyChanged("HourlyForecast"); }
-        }
-        public ObservableCollection<TextForecastItemViewModel> TextForecast
-        {
-            get { return (ObservableCollection<TextForecastItemViewModel>)GetValue(TextForecastProperty); }
-            set { SetValue(TextForecastProperty, value); OnPropertyChanged("TextForecast"); }
-        }
-        public ObservableCollection<WeatherAlertViewModel> Alerts
-        {
-            get { return (ObservableCollection<WeatherAlertViewModel>)GetValue(AlertsProperty); }
-            set { SetValue(AlertsProperty, value); OnPropertyChanged("Alerts"); }
-        }
+        public ObservableCollection<HourlyForecastItemViewModel> HourlyForecast { get => hourlyForecast; set { hourlyForecast = value; OnPropertyChanged("HourlyForecast"); } }
+        public ObservableCollection<TextForecastItemViewModel> TextForecast { get => textForecast; set { textForecast = value; OnPropertyChanged("TextForecast"); } }
+        public ObservableCollection<WeatherAlertViewModel> Alerts { get => alerts; set { alerts = value; OnPropertyChanged("Alerts"); } }
         #endregion
 
         public WeatherExtrasViewModel()

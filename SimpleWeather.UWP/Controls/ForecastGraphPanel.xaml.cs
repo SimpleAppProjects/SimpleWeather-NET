@@ -200,7 +200,7 @@ namespace SimpleWeather.UWP.Controls
                                     YEntryData windData = new YEntryData(wind, forecastItemViewModel.WindSpeed.Trim());
 
                                     windDataSeries.Add(windData);
-                                    XLabelData xLabelData = new XLabelData(forecastItemViewModel.Date, WeatherIcons.WIND_DIRECTION, (int) forecastItemViewModel.WindDirection.Angle);
+                                    XLabelData xLabelData = new XLabelData(forecastItemViewModel.Date, WeatherIcons.WIND_DIRECTION, forecastItemViewModel.WindDirection);
                                     labelData.Add(xLabelData);
                                 }
                                 catch (FormatException ex)

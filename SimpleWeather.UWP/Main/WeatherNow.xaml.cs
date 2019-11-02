@@ -84,7 +84,7 @@ namespace SimpleWeather.UWP.Main
                     }
                     else if (SecondaryTileUtils.Exists(location.query))
                     {
-                        WeatherTileCreator.TileUpdater(location, weather);
+                        WeatherTileCreator.TileUpdater(location, WeatherView);
                     }
                 }
             });
@@ -227,8 +227,8 @@ namespace SimpleWeather.UWP.Main
                 double gradAlpha = 1 - (1 * adj * viewer.VerticalOffset / ConditionPanel.ActualHeight);
                 BGAlpha = Math.Max(backAlpha, (float)0x25 / 0xFF); // 0x25
                 GradAlpha = Math.Max(gradAlpha, 0);
-                BackgroundOverlay.Background.Opacity = BGAlpha;
-                GradientOverlay.Background.Opacity = GradAlpha;
+                BackgroundOverlay.Opacity = BGAlpha;
+                GradientOverlay.Opacity = GradAlpha;
             }
         }
 

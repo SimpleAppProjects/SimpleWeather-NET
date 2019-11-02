@@ -41,8 +41,6 @@ namespace SimpleWeather.UWP.Main
         private bool HomeChanged = false;
         private bool[] ErrorCounter;
 
-        private SnackbarManager SnackMgr;
-
         private AppBarButton EditButton;
 
         public async void OnWeatherLoaded(LocationData location, Weather weather)

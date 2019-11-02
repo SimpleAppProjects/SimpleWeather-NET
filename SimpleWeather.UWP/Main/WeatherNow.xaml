@@ -94,11 +94,13 @@
         </Style>
     </Page.Resources>
 
-    <Grid x:Name="MainGrid" Background="{x:Bind WeatherView.PendingBackgroundColor, Converter={StaticResource color2SolidColorConverter}, Mode=OneWay}">
+    <Grid x:Name="MainGrid" Background="{x:Bind WeatherView.PendingBackgroundColor, FallbackValue='#FF006FBF', Converter={StaticResource color2SolidColorConverter}, Mode=OneWay}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid x:Name="BackgroundOverlay" Background="{x:Bind WeatherView.Background, FallbackValue='#FF006FBF', Mode=OneWay, TargetNullValue='#FF006FBF'}" />
+        <toolkitControls:ImageEx x:Name="BackgroundOverlay" CachingStrategy="Custom" IsCacheEnabled="True" DecodePixelWidth="960"
+                                 Source="{x:Bind WeatherView.BackgroundURI, Mode=OneWay}"
+                                 Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center" />
         <Grid x:Name="GradientOverlay" Grid.Row="0">
             <Grid.Background>
                 <toolkitMedia:RadialGradientBrush AlphaMode="Premultiplied" Center="0.5,0.5" ColorInterpolationMode="SRgbLinearInterpolation"

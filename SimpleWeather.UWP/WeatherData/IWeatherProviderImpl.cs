@@ -8,6 +8,5 @@ namespace SimpleWeather.WeatherData
     {
         string GetBackgroundURI(Weather weather);
         Color GetWeatherBackgroundColor(Weather weather);
-        void SetBackground(ImageBrush bg, Weather weather);
     }
 }
