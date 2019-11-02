@@ -45,19 +45,6 @@ namespace SimpleWeather.Controls
             LocationName = location.name;
             LocationCountry = location.c;
 
-            if (WeatherAPI.WeatherUnderground.Equals(weatherAPI))
-            {
-                LocationQuery = location.l;
-            }
-            else if (WeatherAPI.Here.Equals(weatherAPI))
-            {
-                LocationQuery = String.Format("latitude={0}&longitude={1}", location.lat, location.lon);
-            }
-            else
-            {
-                LocationQuery = String.Format("lat={0}&lon={1}", location.lat, location.lon);
-            }
-
             LocationLat = double.Parse(location.lat);
             LocationLong = double.Parse(location.lon);
 
@@ -65,6 +52,8 @@ namespace SimpleWeather.Controls
 
             LocationSource = WeatherAPI.WeatherUnderground;
             WeatherSource = weatherAPI;
+
+            UpdateLocationQuery();
         }
 
         public LocationQueryViewModel(location location, String weatherAPI)
@@ -76,18 +65,6 @@ namespace SimpleWeather.Controls
         {
             LocationName = string.Format("{0}, {1}", location.city, location.state);
             LocationCountry = location.country;
-            if (WeatherAPI.WeatherUnderground.Equals(weatherAPI))
-            {
-                LocationQuery = location.query;
-            }
-            else if (WeatherAPI.Here.Equals(weatherAPI))
-            {
-                LocationQuery = String.Format("latitude={0}&longitude={1}", location.lat, location.lon);
-            }
-            else
-            {
-                LocationQuery = String.Format("lat={0}&lon={1}", location.lat, location.lon);
-            }
 
             LocationLat = double.Parse(location.lat);
             LocationLong = double.Parse(location.lon);
@@ -96,6 +73,8 @@ namespace SimpleWeather.Controls
 
             LocationSource = WeatherAPI.WeatherUnderground;
             WeatherSource = weatherAPI;
+
+            UpdateLocationQuery();
         }
         #endregion
 
@@ -317,6 +296,10 @@ namespace SimpleWeather.Controls
             else if (WeatherAPI.Here.Equals(WeatherSource))
             {
                 LocationQuery = String.Format("latitude={0}&longitude={1}", LocationLat.ToString(CultureInfo.InvariantCulture), LocationLong.ToString(CultureInfo.InvariantCulture));
+            }
+            else if (WeatherAPI.NWS.Equals(WeatherSource))
+            {
+                LocationQuery = String.Format("{0},{1}", LocationLat.ToString(CultureInfo.InvariantCulture), LocationLong.ToString(CultureInfo.InvariantCulture));
             }
             else
             {

@@ -58,10 +58,13 @@ namespace SimpleWeather.Controls
             // Extras
             if (forecast.extras != null)
             {
-                DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.FeelsLike,
-                       Settings.IsFahrenheit ?
-                            Math.Round(forecast.extras.feelslike_f) + "º" :
-                            Math.Round(forecast.extras.feelslike_c) + "º"));
+                if (forecast.extras.feelslike_f != 0)
+                {
+                    DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.FeelsLike,
+                           Settings.IsFahrenheit ?
+                                Math.Round(forecast.extras.feelslike_f) + "º" :
+                                Math.Round(forecast.extras.feelslike_c) + "º"));
+                }
 
                 string Chance = PoP = forecast.extras.pop + "%";
                 string Qpf_Rain = Settings.IsFahrenheit ?
@@ -75,11 +78,13 @@ namespace SimpleWeather.Controls
                         DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPRain, Qpf_Rain));
                     if (forecast.extras.qpf_snow_in >= 0)
                         DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPSnow, Qpf_Snow));
-                    DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPCloudiness, Chance));
+                    if (!String.IsNullOrWhiteSpace(forecast.extras.pop))
+                        DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPCloudiness, Chance));
                 }
                 else
                 {
-                    DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPChance, Chance));
+                    if (!String.IsNullOrWhiteSpace(forecast.extras.pop))
+                        DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPChance, Chance));
                     if (forecast.extras.qpf_rain_in >= 0)
                         DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPRain, Qpf_Rain));
                     if (forecast.extras.qpf_snow_in >= 0)
@@ -140,31 +145,31 @@ namespace SimpleWeather.Controls
                         DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.Visibility,
                                string.Format("{0} {1}", visibility.ToString(culture), visibilityUnit)));
                 }
+            }
 
-                if (txt_forecasts?.Length > 0)
+            if (txt_forecasts?.Length > 0)
+            {
+                try
                 {
-                    try
+                    bool dayAndNt = txt_forecasts.Length == 2;
+                    StringBuilder sb = new StringBuilder();
+
+                    TextForecastItemViewModel fctDay = txt_forecasts[0];
+                    sb.AppendFormat(CultureInfo.InvariantCulture, "{0} - {1}", fctDay.Title, fctDay.FctText);
+
+                    if (dayAndNt)
                     {
-                        bool dayAndNt = txt_forecasts.Length == 2;
-                        StringBuilder sb = new StringBuilder();
+                        sb.Append(Environment.NewLine).Append(Environment.NewLine);
 
-                        TextForecastItemViewModel fctDay = txt_forecasts[0];
-                        sb.AppendFormat(CultureInfo.InvariantCulture, "{0} - {1}", fctDay.Title, fctDay.FctText);
-
-                        if (dayAndNt)
-                        {
-                            sb.Append(Environment.NewLine).Append(Environment.NewLine);
-
-                            TextForecastItemViewModel fctNt = txt_forecasts[1];
-                            sb.AppendFormat(CultureInfo.InvariantCulture, "{0} - {1}", fctNt.Title, fctNt.FctText);
-                        }
-
-                        ConditionLong = sb.ToString();
+                        TextForecastItemViewModel fctNt = txt_forecasts[1];
+                        sb.AppendFormat(CultureInfo.InvariantCulture, "{0} - {1}", fctNt.Title, fctNt.FctText);
                     }
-                    catch (Exception ex)
-                    {
-                        Logger.WriteLine(LoggerLevel.Debug, ex, "error!");
-                    }
+
+                    ConditionLong = sb.ToString();
+                }
+                catch (Exception ex)
+                {
+                    Logger.WriteLine(LoggerLevel.Debug, ex, "error!");
                 }
             }
 

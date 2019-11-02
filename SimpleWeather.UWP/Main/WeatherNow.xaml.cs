@@ -106,6 +106,12 @@ namespace SimpleWeather.UWP.Main
                         });
                         ShowSnackbar(snackbar);
                         break;
+                    case WeatherUtils.ErrorStatus.QueryNotFound:
+                        if (WeatherAPI.NWS.Equals(Settings.API))
+                        {
+                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_WeatherUSOnly"), SnackbarDuration.Long));
+                        }
+                        break;
                     default:
                         // Show error message
                         ShowSnackbar(Snackbar.Make(wEx.Message, SnackbarDuration.Long));

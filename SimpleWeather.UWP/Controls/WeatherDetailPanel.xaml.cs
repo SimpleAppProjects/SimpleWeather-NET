@@ -70,9 +70,9 @@ namespace SimpleWeather.UWP.Controls
             public string Icon { get; set; }
             public string Condition { get; set; }
             public string ConditionLongDesc { get; set; }
-            public string Extra { get; set; }
+            public string ForecastExtra { get; set; }
             public ObservableCollection<DetailItemViewModel> Extras { get; set; }
-            public bool HasExtras { get { return Extras?.Count > 0; } }
+            public bool HasExtras { get { return Extras?.Count > 0 || !String.IsNullOrWhiteSpace(ConditionLongDesc); } }
 
             internal WeatherDetailViewModel()
             {
@@ -85,10 +85,10 @@ namespace SimpleWeather.UWP.Controls
                 Condition = String.Format("{0}/ {1}- {2}",
                     forecastViewModel.HiTemp, forecastViewModel.LoTemp, forecastViewModel.Condition);
                 ConditionLongDesc = forecastViewModel.ConditionLong;
-                Extras = new ObservableCollection<DetailItemViewModel>(forecastViewModel.DetailExtras);
+                Extras = new ObservableCollection<DetailItemViewModel>();
 
                 StringBuilder sb = new StringBuilder();
-                foreach (DetailItemViewModel detailItem in Extras)
+                foreach (DetailItemViewModel detailItem in forecastViewModel.DetailExtras)
                 {
                     if (detailItem.DetailsType == WeatherDetailsType.PoPChance ||
                         detailItem.DetailsType == WeatherDetailsType.PoPCloudiness ||
@@ -101,9 +101,12 @@ namespace SimpleWeather.UWP.Controls
                             sb.AppendFormat(CultureInfo.InvariantCulture, "{0} {1}", WeatherIcons.STRONG_WIND, detailItem.Value);
                         else
                             sb.AppendFormat(CultureInfo.InvariantCulture, "{0} {1}", detailItem.Icon, detailItem.Value);
+                        continue;
                     }
+
+                    Extras.Add(detailItem);
                 }
-                Extra = sb.Length > 0 ? sb.ToString() : null;
+                ForecastExtra = sb.Length > 0 ? sb.ToString() : null;
             }
 
             public void SetForecast(HourlyForecastItemViewModel hrforecastViewModel)
@@ -112,10 +115,10 @@ namespace SimpleWeather.UWP.Controls
                 Icon = hrforecastViewModel.WeatherIcon;
                 Condition = String.Format("{0}- {1}",
                     hrforecastViewModel.HiTemp, hrforecastViewModel.Condition);
-                Extras = new ObservableCollection<DetailItemViewModel>(hrforecastViewModel.DetailExtras);
+                Extras = new ObservableCollection<DetailItemViewModel>();
 
                 StringBuilder sb = new StringBuilder();
-                foreach (DetailItemViewModel detailItem in Extras)
+                foreach (DetailItemViewModel detailItem in hrforecastViewModel.DetailExtras)
                 {
                     if (detailItem.DetailsType == WeatherDetailsType.PoPChance ||
                         detailItem.DetailsType == WeatherDetailsType.PoPCloudiness ||
@@ -128,9 +131,12 @@ namespace SimpleWeather.UWP.Controls
                             sb.AppendFormat(CultureInfo.InvariantCulture, "{0} {1}", WeatherIcons.STRONG_WIND, detailItem.Value);
                         else
                             sb.AppendFormat(CultureInfo.InvariantCulture, "{0} {1}", detailItem.Icon, detailItem.Value);
+                        continue;
                     }
+
+                    Extras.Add(detailItem);
                 }
-                Extra = sb.Length > 0 ? sb.ToString() : null;
+                ForecastExtra = sb.Length > 0 ? sb.ToString() : null;
             }
         }
     }

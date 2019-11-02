@@ -50,7 +50,7 @@ namespace SimpleWeather.NWS
 
                 var root = JSONParser.Deserializer<AlertRootobject>(contentStream);
 
-                foreach (Graph result in root.graph)
+                foreach (AlertGraph result in root.graph)
                 {
                     alerts.Add(new WeatherAlert(result));
                 }

@@ -7,6 +7,7 @@ using SimpleWeather.Controls;
 using SimpleWeather.HERE;
 using SimpleWeather.Location;
 using SimpleWeather.Metno;
+using SimpleWeather.NWS;
 using SimpleWeather.OpenWeather;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherUnderground;
@@ -25,6 +26,7 @@ namespace SimpleWeather.WeatherData
         public const string MetNo = "Metno";
         public const string Here = "Here";
         public const string BingMaps = "Bing";
+        public const string NWS = "NWS";
 
         public static List<ProviderEntry> APIs = new List<ProviderEntry>()
         {
@@ -32,10 +34,12 @@ namespace SimpleWeather.WeatherData
                 "https://www.here.com/en", "https://developer.here.com/?create=Freemium-Basic&keepState=true&step=account"),
             new ProviderEntry("Yahoo Weather", Yahoo,
                 "https://www.yahoo.com/weather?ilc=401", "https://www.yahoo.com/weather?ilc=401"),
-            new ProviderEntry("OpenWeatherMap", OpenWeatherMap,
-                "http://www.openweathermap.org", "https://home.openweathermap.org/users/sign_up"),
             new ProviderEntry("MET Norway", MetNo,
                 "https://www.met.no/en", "https://www.met.no/en"),
+            new ProviderEntry("U.S. National Weather Service (NOAA)", NWS,
+                "https://www.weather.gov", "https://www.weather.gov"),
+            new ProviderEntry("OpenWeatherMap", OpenWeatherMap,
+                "http://www.openweathermap.org", "https://home.openweathermap.org/users/sign_up"),
         };
 
         public static List<ProviderEntry> LocationAPIs = new List<ProviderEntry>()
@@ -84,15 +88,19 @@ namespace SimpleWeather.WeatherData
                 case WeatherData.WeatherAPI.Yahoo:
                     providerImpl = new YahooWeatherProvider();
                     break;
+                case WeatherData.WeatherAPI.Here:
+                    providerImpl = new HEREWeatherProvider();
+                    break;
                 case WeatherData.WeatherAPI.OpenWeatherMap:
                     providerImpl = new OpenWeatherMapProvider();
                     break;
                 case WeatherData.WeatherAPI.MetNo:
                     providerImpl = new MetnoWeatherProvider();
                     break;
-                case WeatherData.WeatherAPI.Here:
+                case WeatherData.WeatherAPI.NWS:
+                    providerImpl = new NWSWeatherProvider();
+                    break;
                 default:
-                    providerImpl = new HEREWeatherProvider();
                     break;
             }
 
@@ -228,11 +236,6 @@ namespace SimpleWeather.WeatherData
         public Color GetWeatherBackgroundColor(Weather weather)
         {
             return WeatherProvider.GetWeatherBackgroundColor(weather);
-        }
-
-        public void SetBackground(ImageBrush bg, Weather weather)
-        {
-            WeatherProvider.SetBackground(bg, weather);
         }
     }
 }

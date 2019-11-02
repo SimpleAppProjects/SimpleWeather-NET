@@ -220,6 +220,17 @@ namespace SimpleWeather.UWP.Main
                 return;
             }
 
+            String country_code = query_vm?.LocationCountry;
+            if (!String.IsNullOrWhiteSpace(country_code))
+                country_code = country_code.ToLower();
+
+            if (WeatherAPI.NWS.Equals(Settings.API) && !("usa".Equals(country_code) || "us".Equals(country_code)))
+            {
+                ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_WeatherUSOnly"), SnackbarDuration.Short));
+                LoadingRing.IsActive = false;
+                return;
+            }
+
             // Need to get FULL location data for HERE API
             // Data provided is incomplete
             if (WeatherAPI.Here.Equals(query_vm.LocationSource)

@@ -96,6 +96,13 @@ namespace SimpleWeather.UWP.Main
                             ErrorCounter[(int)wEx.ErrorStatus] = true;
                         }
                         break;
+                    case WeatherUtils.ErrorStatus.QueryNotFound:
+                        if (!ErrorCounter[(int)wEx.ErrorStatus] && WeatherAPI.NWS.Equals(Settings.API))
+                        {
+                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_WeatherUSOnly"), SnackbarDuration.Short));
+                            ErrorCounter[(int)wEx.ErrorStatus] = true;
+                        }
+                        break;
                     default:
                         // Show error message
                         // Only warn once
@@ -127,8 +134,7 @@ namespace SimpleWeather.UWP.Main
             LocationPanels = new ObservableCollection<LocationPanelViewModel>();
             LocationPanels.CollectionChanged += LocationPanels_CollectionChanged;
 
-            int max = Enum.GetValues(typeof(WeatherUtils.ErrorStatus)).Cast<int>().Max();
-            ErrorCounter = new bool[max];
+            ErrorCounter = new bool[Enum.GetValues(typeof(WeatherUtils.ErrorStatus)).Length];
 
             // CommandBar
             CommandBarLabel = App.ResLoader.GetString("Nav_Locations/Label");

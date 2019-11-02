@@ -444,8 +444,18 @@ namespace SimpleWeather.Metno
             if (!isNight)
             {
                 // Fallback to sunset/rise time just in case
-                var sunrise = NodaTime.LocalTime.FromTicksSinceMidnight(weather.astronomy.sunrise.TimeOfDay.Ticks);
-                var sunset = NodaTime.LocalTime.FromTicksSinceMidnight(weather.astronomy.sunset.TimeOfDay.Ticks);
+                NodaTime.LocalTime sunrise;
+                NodaTime.LocalTime sunset;
+                if (weather.astronomy != null)
+                {
+                    sunrise = NodaTime.LocalTime.FromTicksSinceMidnight(weather.astronomy.sunrise.TimeOfDay.Ticks);
+                    sunset = NodaTime.LocalTime.FromTicksSinceMidnight(weather.astronomy.sunset.TimeOfDay.Ticks);
+                }
+                else
+                {
+                    sunrise = NodaTime.LocalTime.FromHourMinuteSecondTick(6, 0, 0, 0);
+                    sunset = NodaTime.LocalTime.FromHourMinuteSecondTick(18, 0, 0, 0);
+                }
 
                 var tz = NodaTime.DateTimeZoneProviders.Tzdb.GetZoneOrNull(weather.location.tz_long);
                 if (tz == null)

@@ -124,6 +124,7 @@
     <Content Include="Assets\Providers\here.png" />
     <Content Include="Assets\Providers\here_dark.png" />
     <Content Include="Assets\Providers\metno.png" />
+    <Content Include="Assets\Providers\nws.png" />
     <Content Include="Assets\Providers\openweathermap.png" />
     <Content Include="Assets\Providers\yahoo.png" />
     <Content Include="Assets\Providers\yahoo_dark.png" />

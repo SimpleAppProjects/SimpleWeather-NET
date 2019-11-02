@@ -286,6 +286,17 @@ namespace SimpleWeather.UWP.Setup
                 return;
             }
 
+            String country_code = query_vm?.LocationCountry;
+            if (!String.IsNullOrWhiteSpace(country_code))
+                country_code = country_code.ToLower();
+
+            if (WeatherAPI.NWS.Equals(Settings.API) && !("usa".Equals(country_code) || "us".Equals(country_code)))
+            {
+                ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_WeatherUSOnly"), SnackbarDuration.Short));
+                EnableControls(true);
+                return;
+            }
+
             // Need to get FULL location data for HERE API
             // Data provided is incomplete
             if (WeatherAPI.Here.Equals(query_vm.LocationSource)
@@ -507,6 +518,17 @@ namespace SimpleWeather.UWP.Setup
                     }
 
                     ctsToken.ThrowIfCancellationRequested();
+
+                    String country_code = view?.LocationCountry;
+                    if (!String.IsNullOrWhiteSpace(country_code))
+                        country_code = country_code.ToLower();
+
+                    if (WeatherAPI.NWS.Equals(Settings.API) && !("usa".Equals(country_code) || "us".Equals(country_code)))
+                    {
+                        ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_WeatherUSOnly"), SnackbarDuration.Short));
+                        EnableControls(true);
+                        return;
+                    }
 
                     // Weather Data
                     var location = new LocationData(view, geoPos);

@@ -13,6 +13,8 @@ namespace SimpleWeather.Utils
         private const double MSEC_TO_KPH = 3.6;
         private const double MM_TO_IN = 1 / 25.4;
         private const double IN_TO_MM = 25.4;
+        private const double PA_TO_INHG = 0.0002952998751;
+        private const double PA_TO_MB = 0.01;
 
         public static string MBToInHg(String input)
         {
@@ -23,6 +25,18 @@ namespace SimpleWeather.Utils
         public static string InHgToMB(String input)
         {
             double result = INHG_TO_MB * double.Parse(input);
+            return Math.Round(result, 2).ToString();
+        }
+
+        public static string PaToInHg(String input)
+        {
+            double result = PA_TO_INHG * double.Parse(input);
+            return Math.Round(result, 2).ToString();
+        }
+
+        public static string PaToMB(String input)
+        {
+            double result = PA_TO_MB * double.Parse(input);
             return Math.Round(result, 2).ToString();
         }
 

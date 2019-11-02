@@ -282,7 +282,8 @@ namespace SimpleWeather.UWP.Controls
 
             if (first is HourlyForecastItemViewModel)
             {
-                if ((Settings.API.Equals(WeatherAPI.OpenWeatherMap) || Settings.API.Equals(WeatherAPI.MetNo)))
+                if (Settings.API.Equals(WeatherAPI.OpenWeatherMap) || Settings.API.Equals(WeatherAPI.MetNo) ||
+                    Settings.API.Equals(WeatherAPI.NWS))
                 {
                     count = 2;
                 }

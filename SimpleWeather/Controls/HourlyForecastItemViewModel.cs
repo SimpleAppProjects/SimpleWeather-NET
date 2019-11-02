@@ -60,10 +60,13 @@ namespace SimpleWeather.Controls
             // Extras
             if (hr_forecast.extras != null)
             {
-                DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.FeelsLike,
-                       Settings.IsFahrenheit ?
-                            Math.Round(hr_forecast.extras.feelslike_f) + "º" :
-                            Math.Round(hr_forecast.extras.feelslike_c) + "º"));
+                if (hr_forecast.extras.feelslike_f != 0)
+                {
+                    DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.FeelsLike,
+                           Settings.IsFahrenheit ?
+                                Math.Round(hr_forecast.extras.feelslike_f) + "º" :
+                                Math.Round(hr_forecast.extras.feelslike_c) + "º"));
+                }
 
                 string Qpf_Rain = Settings.IsFahrenheit ?
                     hr_forecast.extras.qpf_rain_in.ToString("0.00", culture) + " in" : hr_forecast.extras.qpf_rain_mm.ToString(culture) + " mm";
@@ -76,11 +79,13 @@ namespace SimpleWeather.Controls
                         DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPRain, Qpf_Rain));
                     if (hr_forecast.extras.qpf_snow_in >= 0)
                         DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPSnow, Qpf_Snow));
-                    DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPCloudiness, PoP));
+                    if (!String.IsNullOrWhiteSpace(hr_forecast.pop))
+                        DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPCloudiness, PoP));
                 }
                 else
                 {
-                    DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPChance, PoP));
+                    if (!String.IsNullOrWhiteSpace(hr_forecast.pop))
+                        DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPChance, PoP));
                     if (hr_forecast.extras.qpf_rain_in >= 0)
                         DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPRain, Qpf_Rain));
                     if (hr_forecast.extras.qpf_snow_in >= 0)
@@ -120,8 +125,11 @@ namespace SimpleWeather.Controls
                             string.Format("{0} {1}", pressure.ToString(culture), pressureUnit)));
                 }
 
-                DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.WindSpeed,
-                    String.Format(CultureInfo.InvariantCulture, "{0}, {1}", WindSpeed, WindDir), WindDirection));
+                if (!String.IsNullOrWhiteSpace(WindSpeed))
+                {
+                    DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.WindSpeed,
+                        String.Format(CultureInfo.InvariantCulture, "{0}, {1}", WindSpeed, WindDir), WindDirection));
+                }
 
                 if (!String.IsNullOrWhiteSpace(hr_forecast.extras.visibility_mi))
                 {

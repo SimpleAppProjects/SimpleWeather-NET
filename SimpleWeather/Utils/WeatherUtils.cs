@@ -167,6 +167,74 @@ namespace SimpleWeather.Utils
             }
         }
 
+        public static int GetWindDirection(String direction)
+        {
+            if ("N".Equals(direction))
+            {
+                return 0;
+            }
+            else if ("NNE".Equals(direction))
+            {
+                return 22;
+            }
+            else if ("NE".Equals(direction))
+            {
+                return 45;
+            }
+            else if ("ENE".Equals(direction))
+            {
+                return 67;
+            }
+            else if ("E".Equals(direction))
+            {
+                return 90;
+            }
+            else if ("ESE".Equals(direction))
+            {
+                return 112;
+            }
+            else if ("SE".Equals(direction))
+            {
+                return 135;
+            }
+            else if ("SSE".Equals(direction))
+            {
+                return 157;
+            }
+            else if ("S".Equals(direction))
+            {
+                return 180;
+            }
+            else if ("SSW".Equals(direction))
+            {
+                return 202;
+            }
+            else if ("SW".Equals(direction))
+            {
+                return 225;
+            }
+            else if ("WSW".Equals(direction))
+            {
+                return 247;
+            }
+            else if ("W".Equals(direction))
+            {
+                return 270;
+            }
+            else if ("WNW".Equals(direction))
+            {
+                return 292;
+            }
+            else if ("NW".Equals(direction))
+            {
+                return 315;
+            }
+            else
+            {
+                return 337;
+            }
+        }
+
         public class Coordinate
         {
             public double Latitude { get => lat; set { SetLat(value); } }

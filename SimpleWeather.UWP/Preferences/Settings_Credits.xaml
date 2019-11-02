@@ -53,15 +53,21 @@
                     </HyperlinkButton>
                 </StackPanel>
                 <StackPanel Padding="10">
-                    <TextBlock Text="OpenWeatherMap" Style="{StaticResource SubtitleTextBlockStyle}"/>
-                    <HyperlinkButton NavigateUri="http://openweathermap.org/" Padding="0,20">
-                        <Image Source="../Assets/Providers/openweathermap.png" Height="25" HorizontalAlignment="Left" />
-                    </HyperlinkButton>
-                </StackPanel>
-                <StackPanel Padding="10">
                     <TextBlock Text="MET Norway" Style="{StaticResource SubtitleTextBlockStyle}"/>
                     <HyperlinkButton NavigateUri="https://www.met.no/en" Padding="0,10">
                         <Image Source="../Assets/Providers/metno.png" Height="50" HorizontalAlignment="Left" />
+                    </HyperlinkButton>
+                </StackPanel>
+                <StackPanel Padding="10">
+                    <TextBlock Text="U.S. National Weather Service" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                    <HyperlinkButton NavigateUri="http://www.weather.gov" Padding="0,10">
+                        <Image Source="../Assets/Providers/nws.png" Height="50" HorizontalAlignment="Left" />
+                    </HyperlinkButton>
+                </StackPanel>
+                <StackPanel Padding="10">
+                    <TextBlock Text="OpenWeatherMap" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                    <HyperlinkButton NavigateUri="http://openweathermap.org/" Padding="0,20">
+                        <Image Source="../Assets/Providers/openweathermap.png" Height="25" HorizontalAlignment="Left" />
                     </HyperlinkButton>
                 </StackPanel>
                 <StackPanel Padding="10">

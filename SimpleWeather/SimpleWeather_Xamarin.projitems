@@ -11,6 +11,7 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Bing\AutoCompleteQuery.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bing\BingMapsLocationProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\BaseForecastItemViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ComboBoxItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\DetailItemViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ProviderEntry.cs" />
@@ -36,8 +37,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Metno\MetnoWeatherProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Metno\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NWS\Alert.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NWS\NWSWeatherProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NWS\NWSAlertProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Keys\OWMKey.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NWS\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\OWMWULocationProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\OpenWeatherMapProvider.cs" />
@@ -54,6 +57,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\StringUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IAstroDataProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IWeatherAlertProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IWeatherErrorListener.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IWeatherProviderImpl.cs" />

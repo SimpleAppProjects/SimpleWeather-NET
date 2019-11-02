@@ -18,7 +18,7 @@
         <RelativePanel VerticalAlignment="Center" HorizontalAlignment="Center">
             <Viewbox Name="AppLogo" Height="125" Margin="0,25,0,0"
                  RelativePanel.Above="Spacer" RelativePanel.AlignHorizontalCenterWithPanel="True">
-                <Image Source="Assets/AppLogo.png" Stretch="None" />
+                <Image Source="../Assets/AppLogo.png" Stretch="None" />
             </Viewbox>
             <Rectangle x:Name="Spacer" Height="0" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" />
             <TextBlock x:Name="WelcomeText" Text="Welcome to SimpleWeather" Padding="4"

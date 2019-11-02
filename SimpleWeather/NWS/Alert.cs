@@ -10,18 +10,18 @@ namespace SimpleWeather.NWS
         [JsonProperty("@context")]
         public Context context { get; set; }
         [JsonProperty("@graph")]
-        public Graph[] graph { get; set; }
+        public AlertGraph[] graph { get; set; }
         public string title { get; set; }
     }
 
-    public class Context
+    public partial class Context
     {
         public string wx { get; set; }
         [JsonProperty("@vocab")]
         public string vocab { get; set; }
     }
 
-    public class Graph
+    public class AlertGraph
     {
         [JsonProperty("@id")]
         public string atId { get; set; }

@@ -162,8 +162,18 @@ namespace SimpleWeather.Controls
                 UpdateDate = WeatherUtils.GetLastBuildDate(weather);
 
                 // Update Current Condition
-                CurTemp = Settings.IsFahrenheit ?
-                    Math.Round(weather.condition.temp_f) + WeatherIcons.FAHRENHEIT : Math.Round(weather.condition.temp_c) + WeatherIcons.CELSIUS;
+                String tmpCurTemp;
+                if (weather.condition.temp_f != weather.condition.temp_c)
+                {
+                    var temp = (int)(Settings.IsFahrenheit ? Math.Round(weather.condition.temp_f) : Math.Round(weather.condition.temp_c));
+                    tmpCurTemp = temp.ToString();
+                }
+                else
+                {
+                    tmpCurTemp = "---";
+                }
+                var unitTemp = Settings.IsFahrenheit ? WeatherIcons.FAHRENHEIT : WeatherIcons.CELSIUS;
+                CurTemp = tmpCurTemp + unitTemp;
                 CurCondition = (String.IsNullOrWhiteSpace(weather.condition.weather)) ? "---" : weather.condition.weather;
                 WeatherIcon = weather.condition.icon;
 
@@ -193,16 +203,22 @@ namespace SimpleWeather.Controls
                 }
 
                 // Atmosphere
-                var pressureVal = Settings.IsFahrenheit ? weather.atmosphere.pressure_in : weather.atmosphere.pressure_mb;
-                var pressureUnit = Settings.IsFahrenheit ? "in" : "mb";
+                if (!String.IsNullOrWhiteSpace(weather.atmosphere.pressure_mb))
+                {
+                    var pressureVal = Settings.IsFahrenheit ? weather.atmosphere.pressure_in : weather.atmosphere.pressure_mb;
+                    var pressureUnit = Settings.IsFahrenheit ? "in" : "mb";
 
-                if (float.TryParse(pressureVal, NumberStyles.Float, CultureInfo.InvariantCulture, out float pressure))
-                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Pressure,
-                        string.Format("{0} {1} {2}", GetPressureStateIcon(weather.atmosphere.pressure_trend), pressure.ToString(culture), pressureUnit)));
+                    if (float.TryParse(pressureVal, NumberStyles.Float, CultureInfo.InvariantCulture, out float pressure))
+                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Pressure,
+                            string.Format("{0} {1} {2}", GetPressureStateIcon(weather.atmosphere.pressure_trend), pressure.ToString(culture), pressureUnit)));
+                }
 
-                WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Humidity,
+                if (!String.IsNullOrWhiteSpace(weather.atmosphere.humidity))
+                {
+                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Humidity,
                     weather.atmosphere.humidity.EndsWith("%", StringComparison.Ordinal) ?
                             weather.atmosphere.humidity : weather.atmosphere.humidity + "%"));
+                }
 
                 if (!String.IsNullOrWhiteSpace(weather.atmosphere.dewpoint_f))
                 {
@@ -212,12 +228,15 @@ namespace SimpleWeather.Controls
                                 Math.Round(float.Parse(weather.atmosphere.dewpoint_c)) + "º"));
                 }
 
-                var visibilityVal = Settings.IsFahrenheit ? weather.atmosphere.visibility_mi : weather.atmosphere.visibility_km;
-                var visibilityUnit = Settings.IsFahrenheit ? "mi" : "km";
+                if (!String.IsNullOrWhiteSpace(weather.atmosphere.visibility_mi))
+                {
+                    var visibilityVal = Settings.IsFahrenheit ? weather.atmosphere.visibility_mi : weather.atmosphere.visibility_km;
+                    var visibilityUnit = Settings.IsFahrenheit ? "mi" : "km";
 
-                if (float.TryParse(visibilityVal, NumberStyles.Float, CultureInfo.InvariantCulture, out float visibility))
-                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Visibility,
-                           string.Format("{0} {1}", visibility.ToString(culture), visibilityUnit)));
+                    if (float.TryParse(visibilityVal, NumberStyles.Float, CultureInfo.InvariantCulture, out float visibility))
+                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Visibility,
+                               string.Format("{0} {1}", visibility.ToString(culture), visibilityUnit)));
+                }
 
                 if (weather.condition.uv != null)
                 {
@@ -225,15 +244,22 @@ namespace SimpleWeather.Controls
                            string.Format("{0}, {1}", weather.condition.uv.index, weather.condition.uv.desc)));
                 }
 
+                if (weather.condition.feelslike_f != weather.condition.feelslike_c)
+                {
+                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.FeelsLike,
+                           Settings.IsFahrenheit ?
+                                Math.Round(weather.condition.feelslike_f) + "º" : Math.Round(weather.condition.feelslike_c) + "º"));
+
+                }
                 // Wind
-                WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.FeelsLike,
-                       Settings.IsFahrenheit ?
-                            Math.Round(weather.condition.feelslike_f) + "º" : Math.Round(weather.condition.feelslike_c) + "º"));
-                WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.WindSpeed,
+                if (weather.condition.wind_mph >= 0 && weather.condition.wind_kph >= 0)
+                {
+                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.WindSpeed,
                        Settings.IsFahrenheit ?
                             String.Format("{0} mph, {1}", Math.Round(weather.condition.wind_mph), WeatherUtils.GetWindDirection(weather.condition.wind_degrees)) :
                             String.Format("{0} kph, {1}", Math.Round(weather.condition.wind_kph), WeatherUtils.GetWindDirection(weather.condition.wind_degrees)),
                        weather.condition.wind_degrees));
+                }
 
                 if (weather.condition.beaufort != null)
                 {
@@ -242,25 +268,33 @@ namespace SimpleWeather.Controls
                 }
 
                 // Astronomy
-                Sunrise = weather.astronomy.sunrise.ToString("t", culture);
-                Sunset = weather.astronomy.sunset.ToString("t", culture);
-                WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Sunrise, Sunrise));
-                WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Sunset, Sunset));
-
-                if (weather.astronomy.moonrise != null && weather.astronomy.moonset != null
-                        && weather.astronomy.moonrise.CompareTo(DateTime.MinValue) > 0
-                        && weather.astronomy.moonset.CompareTo(DateTime.MinValue) > 0)
+                if (weather.astronomy != null)
                 {
-                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Moonrise,
-                           weather.astronomy.moonrise.ToString("t", culture)));
-                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Moonset,
-                           weather.astronomy.moonset.ToString("t", culture)));
+                    Sunrise = weather.astronomy.sunrise.ToString("t", culture);
+                    Sunset = weather.astronomy.sunset.ToString("t", culture);
+                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Sunrise, Sunrise));
+                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Sunset, Sunset));
+
+                    if (weather.astronomy.moonrise != null && weather.astronomy.moonset != null
+                            && weather.astronomy.moonrise.CompareTo(DateTime.MinValue) > 0
+                            && weather.astronomy.moonset.CompareTo(DateTime.MinValue) > 0)
+                    {
+                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Moonrise,
+                               weather.astronomy.moonrise.ToString("t", culture)));
+                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Moonset,
+                               weather.astronomy.moonset.ToString("t", culture)));
+                    }
+
+                    if (weather.astronomy.moonphase != null)
+                    {
+                        WeatherDetails.Add(new DetailItemViewModel(weather.astronomy.moonphase.phase,
+                               weather.astronomy.moonphase.desc));
+                    }
                 }
-
-                if (weather.astronomy.moonphase != null)
+                else
                 {
-                    WeatherDetails.Add(new DetailItemViewModel(weather.astronomy.moonphase.phase,
-                           weather.astronomy.moonphase.desc));
+                    Sunrise = null;
+                    Sunset = null;
                 }
 
                 OnPropertyChanged("WeatherDetails");

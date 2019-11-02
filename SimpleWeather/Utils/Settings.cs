@@ -38,7 +38,7 @@ namespace SimpleWeather.Utils
         internal const int CurrentDBVersion = 4;
         private static SQLiteAsyncConnection locationDB;
         private static SQLiteAsyncConnection weatherDB;
-        private const int CACHE_LIMIT = 10;
+        private const int CACHE_LIMIT = 25;
         public const int MAX_LOCATIONS = 10;
 
         // Units
@@ -160,10 +160,11 @@ namespace SimpleWeather.Utils
         public static async Task<Weather> GetWeatherDataByCoordinate(LocationData location)
         {
             LoadIfNeeded();
-            List<Weather> weatherData = await weatherDB.GetAllWithChildrenAsync<Weather>(weather => 
-                    location.latitude.Equals(weather.location.latitude) && location.longitude.Equals(weather.location.longitude));
+            List<Weather> weatherData = await weatherDB.GetAllWithChildrenAsync<Weather>();
+            var filteredData = weatherData.FirstOrDefault(weather =>
+                    String.Equals(location.latitude.ToString(), weather.location.latitude) && String.Equals(location.longitude.ToString(), weather.location.longitude));
 
-            return weatherData.FirstOrDefault();
+            return filteredData;
         }
 
         public static async Task<List<WeatherAlert>> GetWeatherAlertData(string key)

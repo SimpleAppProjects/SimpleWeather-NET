@@ -170,7 +170,7 @@ namespace SimpleWeather.WeatherData
             }
         }
 
-        public WeatherAlert(NWS.Graph alert)
+        public WeatherAlert(NWS.AlertGraph alert)
         {
             // Alert Type
             switch (alert._event)

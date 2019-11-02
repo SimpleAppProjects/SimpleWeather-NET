@@ -60,7 +60,25 @@ namespace SimpleWeather.WeatherData
 
             try
             {
-                weather = await wm.GetWeather(location);
+                if (WeatherAPI.NWS.Equals(Settings.API) && !"US".Equals(location.country_code))
+                {
+                    // If location data hasn't been updated, try loading weather from the previous provider
+                    if (!String.IsNullOrWhiteSpace(location.weatherSource) &&
+                        !WeatherAPI.NWS.Equals(location.weatherSource))
+                    {
+                        weather = await WeatherManager.GetProvider(location.weatherSource)
+                                        .GetWeather(location);
+                    }
+                    else
+                    {
+                        throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
+                    }
+                }
+                else
+                {
+                    // Load weather from provider
+                    weather = await wm.GetWeather(location);
+                }
             }
             catch (WeatherException weatherEx)
             {
@@ -162,26 +180,29 @@ namespace SimpleWeather.WeatherData
                     if ((weather != null && weather.source != Settings.API)
                         || (weather == null && location != null && location.weatherSource != Settings.API))
                     {
-                        // Update location query and source for new API
-                        string oldKey = location.query;
-
-                        if (weather != null)
-                            location.query = await wm.UpdateLocationQuery(weather);
-                        else
-                            location.query = await wm.UpdateLocationQuery(location);
-
-                        location.weatherSource = Settings.API;
-
-                        // Update database as well
-                        if (location.locationType == LocationType.GPS)
-                            Settings.SaveLastGPSLocData(location);
-                        else
-                            await Settings.UpdateLocationWithKey(location, oldKey);
-
-                        // Update tile id for location
-                        if (SecondaryTileUtils.Exists(oldKey))
+                        if (!WeatherAPI.NWS.Equals(location.weatherSource) || "US".Equals(location.country_code))
                         {
-                            await SecondaryTileUtils.UpdateTileId(oldKey, location.query);
+                            // Update location query and source for new API
+                            string oldKey = location.query;
+
+                            if (weather != null)
+                                location.query = await wm.UpdateLocationQuery(weather);
+                            else
+                                location.query = await wm.UpdateLocationQuery(location);
+
+                            location.weatherSource = Settings.API;
+
+                            // Update database as well
+                            if (location.locationType == LocationType.GPS)
+                                Settings.SaveLastGPSLocData(location);
+                            else
+                                await Settings.UpdateLocationWithKey(location, oldKey);
+
+                            // Update tile id for location
+                            if (SecondaryTileUtils.Exists(oldKey))
+                            {
+                                await SecondaryTileUtils.UpdateTileId(oldKey, location.query);
+                            }
                         }
                     }
 
@@ -225,7 +246,13 @@ namespace SimpleWeather.WeatherData
                 var culture = new CultureInfo(userlang);
                 var locale = wm.LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
-                bool isInvalid = weather == null || !weather.IsValid() || weather.source != Settings.API;
+                String API = Settings.API;
+                bool isInvalid = weather == null || !weather.IsValid();
+                if (!isInvalid && weather.source != API)
+                {
+                    if (!WeatherAPI.NWS.Equals(API) || "US".Equals(location.country_code))
+                        isInvalid = true;
+                }
                 if (wm.SupportsWeatherLocale && !isInvalid)
                     isInvalid = weather.locale != locale;
 
@@ -255,11 +282,17 @@ namespace SimpleWeather.WeatherData
             var culture = new CultureInfo(userlang);
             var locale = wm.LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
-            bool isValid = weather == null || !weather.IsValid() || weather.source != Settings.API;
-            if (wm.SupportsWeatherLocale && !isValid)
-                isValid = weather.locale != locale;
+            String API = Settings.API;
+            bool isInvalid = weather == null || !weather.IsValid();
+            if (!isInvalid && weather.source != API)
+            {
+                if (!WeatherAPI.NWS.Equals(API) || "US".Equals(location.country_code))
+                    isInvalid = true;
+            }
+            if (wm.SupportsWeatherLocale && !isInvalid)
+                isInvalid = weather.locale != locale;
 
-            if (isValid) return false;
+            if (isInvalid) return false;
 
             // Weather data expiration
             if (!int.TryParse(weather.ttl, out int ttl))

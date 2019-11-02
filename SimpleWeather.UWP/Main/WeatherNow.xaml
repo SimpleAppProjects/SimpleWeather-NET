@@ -276,7 +276,7 @@
                         </ItemsControl.ItemsPanel>
                     </ItemsControl>
                 </StackPanel>
-                <StackPanel Margin="0,0,0,25">
+                <StackPanel Margin="0,0,0,25" Visibility="{x:Bind WeatherView.Sunrise, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}">
                     <Border Style="{ThemeResource Divider}"/>
                     <Grid Padding="{Binding ElementName=ForecastHeader, Path=Padding, Mode=OneWay}">
                         <TextBlock Name="SunriseSetLabel" x:Uid="Label_Sunriseset" Text="Sunrise / Sunset"
