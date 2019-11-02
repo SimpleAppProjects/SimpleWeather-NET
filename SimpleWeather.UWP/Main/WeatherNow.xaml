@@ -94,7 +94,7 @@
         </Style>
     </Page.Resources>
 
-    <Grid x:Name="MainGrid" Background="{x:Bind WeatherView.PendingBackgroundColor, FallbackValue='#FF006FBF', Converter={StaticResource color2SolidColorConverter}, Mode=OneWay}">
+    <Grid x:Name="MainGrid" Background="{ThemeResource SystemAccentColor}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>

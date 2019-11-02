@@ -148,22 +148,26 @@ namespace SimpleWeather.UWP.Main
             GetRefreshBtn().Click += RefreshButton_Click;
             GetPinBtn().Click += PinButton_Click;
 
-            MainGrid.RegisterPropertyChangedCallback(Grid.BackgroundProperty, (s, property) => 
+            MainGrid.Loaded += (s, e) =>
             {
-                if (property == Grid.BackgroundProperty && MainGrid.Background is SolidColorBrush colorBrush)
-                {
-                    if ((Settings.UserTheme == UserThemeMode.Dark || (Settings.UserTheme == UserThemeMode.System && App.IsSystemDarkTheme)) && colorBrush.Color != App.AppColor)
-                    {
-                        var color = ColorUtils.BlendColor(colorBrush.Color, Colors.Black, 0.75f);
-                        colorBrush.Color = color;
-                        Shell.Instance.AppBarColor = color;
-                    }
-                    else
-                    {
-                        Shell.Instance.AppBarColor = colorBrush.Color;
-                    }
-                }
-            });
+                UpdateWindowColors();
+            };
+        }
+
+        private void UpdateWindowColors()
+        {
+            if ((Settings.UserTheme == UserThemeMode.Dark || (Settings.UserTheme == UserThemeMode.System && App.IsSystemDarkTheme)) && WeatherView?.PendingBackgroundColor != App.AppColor)
+            {
+                var color = ColorUtils.BlendColor(WeatherView.PendingBackgroundColor, Colors.Black, 0.75f);
+                MainGrid.Background = new SolidColorBrush(color);
+                Shell.Instance.AppBarColor = color;
+            }
+            else
+            {
+                var color = WeatherView.PendingBackgroundColor;
+                MainGrid.Background = new SolidColorBrush(color);
+                Shell.Instance.AppBarColor = color;
+            }
         }
 
         private async void WeatherView_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -189,6 +193,9 @@ namespace SimpleWeather.UWP.Main
                     break;
                 case "Alerts":
                     ResizeAlertPanel();
+                    break;
+                case "PendingBackgroundColor":
+                    UpdateWindowColors();
                     break;
             }
         }
@@ -381,7 +388,7 @@ namespace SimpleWeather.UWP.Main
                         await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => 
                         {
                             WeatherView.UpdateView(wLoader.GetWeather());
-                            Shell.Instance.AppBarColor = WeatherView.PendingBackgroundColor;
+                            UpdateWindowColors();
                         });
                     }
                 }
