@@ -354,12 +354,12 @@ namespace SimpleWeather.HERE
             return alerts;
         }
 
-        public override async Task<string> UpdateLocationQuery(Weather weather)
+        public override string UpdateLocationQuery(Weather weather)
         {
             return string.Format("latitude={0}&longitude={1}", weather.location.latitude, weather.location.longitude);
         }
 
-        public override async Task<string> UpdateLocationQuery(LocationData location)
+        public override string UpdateLocationQuery(LocationData location)
         {
             return string.Format("latitude={0}&longitude={1}", location.latitude.ToString(CultureInfo.InvariantCulture), location.longitude.ToString(CultureInfo.InvariantCulture));
         }

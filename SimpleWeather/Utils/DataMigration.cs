@@ -34,7 +34,7 @@ namespace SimpleWeather.Utils
                     case 2:
                     case 3:
                         if (await locationDB.Table<LocationData>().CountAsync() > 0)
-                            await DBUtils.SetLocationData(locationDB, Settings.API);
+                            DBUtils.SetLocationData(locationDB, Settings.API);
                         break;
                     default:
                         break;
@@ -44,7 +44,7 @@ namespace SimpleWeather.Utils
             }
         }
 
-        internal static async Task PerformVersionMigrations(SQLiteAsyncConnection weatherDB, SQLiteAsyncConnection locationDB)
+        internal static void PerformVersionMigrations(SQLiteAsyncConnection weatherDB, SQLiteAsyncConnection locationDB)
         {
             var PackageVersion = Windows.ApplicationModel.Package.Current.Id.Version;
             var version = string.Format("{0}{1}{2}{3}",
@@ -57,14 +57,14 @@ namespace SimpleWeather.Utils
                 // Update location data from HERE Geocoder service
                 if (WeatherAPI.Here.Equals(Settings.API) && Settings.VersionCode < 1370)
                 {
-                    await DBUtils.SetLocationData(locationDB, WeatherAPI.Here);
+                    DBUtils.SetLocationData(locationDB, WeatherAPI.Here);
                     Settings.SaveLastGPSLocData(new LocationData());
                 }
                 // v1.3.8+ - Yahoo API is back in service (but updated)
                 // Update location data from current geocoder service
                 if (WeatherAPI.Yahoo.Equals(Settings.API) && Settings.VersionCode < 1380)
                 {
-                    await DBUtils.SetLocationData(locationDB, WeatherAPI.Yahoo);
+                    DBUtils.SetLocationData(locationDB, WeatherAPI.Yahoo);
                     Settings.SaveLastGPSLocData(new LocationData());
                 }
                 if (Settings.VersionCode < 1390)

@@ -99,7 +99,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <toolkitControls:ImageEx x:Name="BackgroundOverlay" CachingStrategy="Custom" IsCacheEnabled="True" DecodePixelWidth="960"
-                                 Source="{x:Bind WeatherView.BackgroundURI, Mode=OneWay}"
+                                 Source="{x:Bind WeatherView.BackgroundURI, Mode=OneWay}" Style="{ThemeResource ImageExProgressStyle}"
                                  Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center" />
         <Grid x:Name="GradientOverlay" Grid.Row="0">
             <Grid.Background>
@@ -291,7 +291,7 @@
             </StackPanel>
         </ScrollViewer>
         <ProgressRing x:Name="LoadingRing" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" 
-                      Height="50" Width="50" IsActive="True" Foreground="White" />
+                      IsActive="True" Foreground="White" />
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="HeightStates">
                 <VisualState x:Name="LandscapeMobileHeight">

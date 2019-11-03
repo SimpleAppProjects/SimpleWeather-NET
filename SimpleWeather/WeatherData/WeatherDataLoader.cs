@@ -7,6 +7,7 @@ using SimpleWeather.UWP;
 using Windows.System.UserProfile;
 using SimpleWeather.Location;
 using SimpleWeather.UWP.Tiles;
+using System.Runtime.CompilerServices;
 
 namespace SimpleWeather.WeatherData
 {
@@ -53,88 +54,91 @@ namespace SimpleWeather.WeatherData
             errorCallback = listener;
         }
 
-        private async Task GetWeatherData()
+        private ConfiguredTaskAwaitable GetWeatherData()
         {
-            WeatherException wEx = null;
-            bool loadedSavedData = false;
-
-            try
+            return AsyncTask.RunAsync(async () => 
             {
-                if (WeatherAPI.NWS.Equals(Settings.API) && !"US".Equals(location.country_code))
+                WeatherException wEx = null;
+                bool loadedSavedData = false;
+
+                try
                 {
-                    // If location data hasn't been updated, try loading weather from the previous provider
-                    if (!String.IsNullOrWhiteSpace(location.weatherSource) &&
-                        !WeatherAPI.NWS.Equals(location.weatherSource))
+                    if (WeatherAPI.NWS.Equals(Settings.API) && !"US".Equals(location.country_code))
                     {
-                        weather = await WeatherManager.GetProvider(location.weatherSource)
-                                        .GetWeather(location);
+                        // If location data hasn't been updated, try loading weather from the previous provider
+                        if (!String.IsNullOrWhiteSpace(location.weatherSource) &&
+                            !WeatherAPI.NWS.Equals(location.weatherSource))
+                        {
+                            weather = await WeatherManager.GetProvider(location.weatherSource)
+                                            .GetWeather(location);
+                        }
+                        else
+                        {
+                            throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
+                        }
                     }
                     else
                     {
-                        throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
+                        // Load weather from provider
+                        weather = await wm.GetWeather(location);
                     }
                 }
-                else
+                catch (WeatherException weatherEx)
                 {
-                    // Load weather from provider
-                    weather = await wm.GetWeather(location);
+                    wEx = weatherEx;
+                    weather = null;
                 }
-            }
-            catch (WeatherException weatherEx)
-            {
-                wEx = weatherEx;
-                weather = null;
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteLine(LoggerLevel.Error, ex, "WeatherDataLoader: error getting weather data");
-                weather = null;
-            }
-
-            // Load old data if available and we can't get new data
-            if (weather == null)
-            {
-                loadedSavedData = await LoadSavedWeatherData(true);
-            }
-            else if (weather != null)
-            {
-                // Handle upgrades
-                if (String.IsNullOrEmpty(location.name) || String.IsNullOrEmpty(location.tz_long))
+                catch (Exception ex)
                 {
-                    location.name = weather.location.name;
-                    location.tz_long = weather.location.tz_long;
-
-                    await Settings.UpdateLocation(location);
-                }
-                if (location.latitude == 0 && location.longitude == 0)
-                {
-                    location.latitude = double.Parse(weather.location.latitude);
-                    location.longitude = double.Parse(weather.location.longitude);
-
-                    await Settings.UpdateLocation(location);
-                }
-                if (String.IsNullOrWhiteSpace(location.locationSource))
-                {
-                    location.locationSource = wm.LocationProvider.LocationAPI;
-                    await Settings.UpdateLocation(location);
+                    Logger.WriteLine(LoggerLevel.Error, ex, "WeatherDataLoader: error getting weather data");
+                    weather = null;
                 }
 
-                await SaveWeatherData();
-            }
+                // Load old data if available and we can't get new data
+                if (weather == null)
+                {
+                    loadedSavedData = await LoadSavedWeatherData(true);
+                }
+                else if (weather != null)
+                {
+                    // Handle upgrades
+                    if (String.IsNullOrEmpty(location.name) || String.IsNullOrEmpty(location.tz_long))
+                    {
+                        location.name = weather.location.name;
+                        location.tz_long = weather.location.tz_long;
 
-            // Throw exception if we're unable to get any weather data
-            if (weather == null && wEx != null)
-            {
-                throw wEx;
-            }
-            else if (weather == null && wEx == null)
-            {
-                throw new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
-            }
-            else if (weather != null && wEx != null && loadedSavedData)
-            {
-                throw wEx;
-            }
+                        await Settings.UpdateLocation(location);
+                    }
+                    if (location.latitude == 0 && location.longitude == 0)
+                    {
+                        location.latitude = double.Parse(weather.location.latitude);
+                        location.longitude = double.Parse(weather.location.longitude);
+
+                        await Settings.UpdateLocation(location);
+                    }
+                    if (String.IsNullOrWhiteSpace(location.locationSource))
+                    {
+                        location.locationSource = wm.LocationProvider.LocationAPI;
+                        await Settings.UpdateLocation(location);
+                    }
+
+                    await SaveWeatherData();
+                }
+
+                // Throw exception if we're unable to get any weather data
+                if (weather == null && wEx != null)
+                {
+                    throw wEx;
+                }
+                else if (weather == null && wEx == null)
+                {
+                    throw new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
+                }
+                else if (weather != null && wEx != null && loadedSavedData)
+                {
+                    throw wEx;
+                }
+            });
         }
 
         public async Task LoadWeatherData(bool forceRefresh)
@@ -186,9 +190,9 @@ namespace SimpleWeather.WeatherData
                             string oldKey = location.query;
 
                             if (weather != null)
-                                location.query = await wm.UpdateLocationQuery(weather);
+                                location.query = wm.UpdateLocationQuery(weather);
                             else
-                                location.query = await wm.UpdateLocationQuery(location);
+                                location.query = wm.UpdateLocationQuery(location);
 
                             location.weatherSource = Settings.API;
 
@@ -319,31 +323,34 @@ namespace SimpleWeather.WeatherData
             await Settings.SaveWeatherData(weather);
         }
 
-        private async Task SaveWeatherAlerts()
+        private ConfiguredTaskAwaitable SaveWeatherAlerts()
         {
-            if (weather.weather_alerts != null)
+            return AsyncTask.RunAsync(async () => 
             {
-                // Check for previously saved alerts
-                var previousAlerts = await Settings.GetWeatherAlertData(location.query);
-
-                if (previousAlerts != null && previousAlerts.Count > 0)
+                if (weather.weather_alerts != null)
                 {
-                    // If any previous alerts were flagged before as notified
-                    // make sure to set them here as such
-                    // bc notified flag gets reset when retrieving weatherdata
-                    foreach(WeatherAlert alert in weather.weather_alerts)
+                    // Check for previously saved alerts
+                    var previousAlerts = await Settings.GetWeatherAlertData(location.query);
+
+                    if (previousAlerts != null && previousAlerts.Count > 0)
                     {
-                        if (previousAlerts.Find(walert => walert.Equals(alert)) is WeatherAlert prevAlert)
+                        // If any previous alerts were flagged before as notified
+                        // make sure to set them here as such
+                        // bc notified flag gets reset when retrieving weatherdata
+                        foreach (WeatherAlert alert in weather.weather_alerts)
                         {
-                            if (prevAlert.Notified)
-                                alert.Notified = prevAlert.Notified;
+                            if (previousAlerts.Find(walert => walert.Equals(alert)) is WeatherAlert prevAlert)
+                            {
+                                if (prevAlert.Notified)
+                                    alert.Notified = prevAlert.Notified;
+                            }
                         }
                     }
+
+
+                    await Settings.SaveWeatherAlerts(location, weather.weather_alerts);
                 }
-
-
-                await Settings.SaveWeatherAlerts(location, weather.weather_alerts);
-            }
+            });
         }
 
         public async Task ForceLoadSavedWeatherData()

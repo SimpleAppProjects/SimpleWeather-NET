@@ -59,7 +59,7 @@ namespace SimpleWeather.Controls
             {
                 foreach (HourlyForecast hr_forecast in weather.hr_forecast)
                 {
-                    HourlyForecastItemViewModel hrforecastView = new HourlyForecastItemViewModel(hr_forecast);
+                    var hrforecastView = new HourlyForecastItemViewModel(hr_forecast);
                     HourlyForecast.Add(hrforecastView);
                 }
                 OnPropertyChanged("HourlyForecast");
@@ -69,7 +69,7 @@ namespace SimpleWeather.Controls
             {
                 foreach (TextForecast txt_forecast in weather.txt_forecast)
                 {
-                    TextForecastItemViewModel txtforecastView = new TextForecastItemViewModel(txt_forecast);
+                    var txtforecastView = new TextForecastItemViewModel(txt_forecast);
                     TextForecast.Add(txtforecastView);
                 }
                 OnPropertyChanged("TextForecast");

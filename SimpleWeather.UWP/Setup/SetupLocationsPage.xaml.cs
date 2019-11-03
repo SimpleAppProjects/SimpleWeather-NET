@@ -136,13 +136,13 @@ namespace SimpleWeather.UWP.Setup
                 {
                     Interval = TimeSpan.FromMilliseconds(1000)
                 };
-                timer.Tick += (t, e) =>
+                timer.Tick += async (t, e) =>
                 {
                     if (!String.IsNullOrWhiteSpace(sender.Text) && args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
                     {
                         String query = sender.Text;
 
-                        Task.Run(async () =>
+                        await Task.Run(async () =>
                         {
                             if (ctsToken.IsCancellationRequested) return;
 
@@ -154,7 +154,7 @@ namespace SimpleWeather.UWP.Setup
                             }
                             catch (WeatherException ex)
                             {
-                                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                                await AsyncTask.RunOnUIThread(() =>
                                 {
                                     ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
                                 });
@@ -164,7 +164,7 @@ namespace SimpleWeather.UWP.Setup
                             if (ctsToken.IsCancellationRequested) return;
 
                             // Refresh list
-                            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                            await AsyncTask.RunOnUIThread(() =>
                             {
                                 LocationQuerys = results;
                                 sender.ItemsSource = null;
@@ -179,8 +179,11 @@ namespace SimpleWeather.UWP.Setup
                         cts.Cancel();
                         cts = new CancellationTokenSource();
                         // Hide flyout if query is empty or null
-                        LocationQuerys.Clear();
-                        sender.IsSuggestionListOpen = false;
+                        await AsyncTask.RunOnUIThread(() =>
+                        {
+                            LocationQuerys.Clear();
+                            sender.IsSuggestionListOpen = false;
+                        });
                     }
 
                     timer.Stop();
@@ -246,13 +249,19 @@ namespace SimpleWeather.UWP.Setup
 
                     if (cts.Token.IsCancellationRequested)
                     {
-                        EnableControls(true);
+                        await AsyncTask.RunOnUIThread(() =>
+                        {
+                            EnableControls(true);
+                        });
                         return new LocationQueryViewModel();
                     }
 
                     if (result != null && !String.IsNullOrWhiteSpace(result.LocationQuery))
                     {
-                        sender.Text = result.LocationName;
+                        await AsyncTask.RunOnUIThread(() =>
+                        {
+                            sender.Text = result.LocationName;
+                        });
                         return result;
                     }
                     else
@@ -278,11 +287,17 @@ namespace SimpleWeather.UWP.Setup
             cts = new CancellationTokenSource();
             var ctsToken = cts.Token;
 
-            LoadingRing.IsActive = true;
+            await AsyncTask.RunOnUIThread(() =>
+            {
+                LoadingRing.IsActive = true;
+            });
 
             if (ctsToken.IsCancellationRequested)
             {
-                EnableControls(true);
+                await AsyncTask.RunOnUIThread(() =>
+                {
+                    EnableControls(true);
+                });
                 return;
             }
 
@@ -292,8 +307,11 @@ namespace SimpleWeather.UWP.Setup
 
             if (WeatherAPI.NWS.Equals(Settings.API) && !("usa".Equals(country_code) || "us".Equals(country_code)))
             {
-                ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_WeatherUSOnly"), SnackbarDuration.Short));
-                EnableControls(true);
+                await AsyncTask.RunOnUIThread(() =>
+                {
+                    ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_WeatherUSOnly"), SnackbarDuration.Short));
+                    EnableControls(true);
+                });
                 return;
             }
 
@@ -309,8 +327,11 @@ namespace SimpleWeather.UWP.Setup
                 }
                 catch (WeatherException ex)
                 {
-                    ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
-                    EnableControls(true);
+                    await AsyncTask.RunOnUIThread(() =>
+                    {
+                        ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
+                        EnableControls(true);
+                    });
                     return;
                 }
             }
@@ -324,8 +345,11 @@ namespace SimpleWeather.UWP.Setup
                 }
                 catch (WeatherException ex)
                 {
-                    ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
-                    EnableControls(true);
+                    await AsyncTask.RunOnUIThread(() =>
+                    {
+                        ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
+                        EnableControls(true);
+                    });
                     return;
                 }
             }
@@ -334,8 +358,11 @@ namespace SimpleWeather.UWP.Setup
             var location = new LocationData(query_vm);
             if (!location.IsValid())
             {
-                ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("WError_NoWeather"), SnackbarDuration.Short));
-                EnableControls(true);
+                await AsyncTask.RunOnUIThread(() =>
+                {
+                    ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("WError_NoWeather"), SnackbarDuration.Short));
+                    EnableControls(true);
+                });
                 return;
             }
             Weather weather = await Settings.GetWeatherData(location.query);
@@ -348,18 +375,24 @@ namespace SimpleWeather.UWP.Setup
                 catch (WeatherException wEx)
                 {
                     weather = null;
-                    ShowSnackbar(Snackbar.Make(wEx.Message, SnackbarDuration.Short));
+                    await AsyncTask.RunOnUIThread(() =>
+                    {
+                        ShowSnackbar(Snackbar.Make(wEx.Message, SnackbarDuration.Short));
+                    });
                 }
             }
 
             if (weather == null)
             {
-                EnableControls(true);
+                await AsyncTask.RunOnUIThread(() =>
+                {
+                    EnableControls(true);
+                });
                 return;
             }
 
             // We got our data so disable controls just in case
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            await AsyncTask.RunOnUIThread(() =>
             {
                 EnableControls(false);
                 sender.IsSuggestionListOpen = false;
@@ -377,7 +410,7 @@ namespace SimpleWeather.UWP.Setup
             Settings.FollowGPS = false;
             Settings.WeatherLoaded = true;
 
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            await AsyncTask.RunOnUIThread(() =>
             {
                 SetupPage.Instance.Location = location;
                 SetupPage.Instance.Next();
@@ -463,23 +496,32 @@ namespace SimpleWeather.UWP.Setup
                         {
                             Logger.WriteLine(LoggerLevel.Error, ex, "SetupPage: error getting geolocation");
 
-                            if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
-                                ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("WError_NetworkError"), SnackbarDuration.Short));
-                            else
-                                ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_Location"), SnackbarDuration.Short));
+                            await AsyncTask.RunOnUIThread(() =>
+                            {
+                                if (Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
+                                    ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("WError_NetworkError"), SnackbarDuration.Short));
+                                else
+                                    ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_Location"), SnackbarDuration.Short));
+                            });
                         }
                         break;
                     case GeolocationAccessStatus.Denied:
-                        var snackbar = Snackbar.Make(App.ResLoader.GetString("Msg_LocDeniedSettings"), SnackbarDuration.Long);
-                        snackbar.SetAction(App.ResLoader.GetString("Label_Settings"), async () => 
+                        await AsyncTask.RunOnUIThread(() =>
                         {
-                            await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:privacy-location"));
+                            var snackbar = Snackbar.Make(App.ResLoader.GetString("Msg_LocDeniedSettings"), SnackbarDuration.Long);
+                            snackbar.SetAction(App.ResLoader.GetString("Label_Settings"), async () =>
+                            {
+                                await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:privacy-location"));
+                            });
+                            ShowSnackbar(snackbar);
                         });
-                        ShowSnackbar(snackbar);
                         break;
                     case GeolocationAccessStatus.Unspecified:
                     default:
-                        ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_Location"), SnackbarDuration.Short));
+                        await AsyncTask.RunOnUIThread(() =>
+                        {
+                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_Location"), SnackbarDuration.Short));
+                        });
                         break;
                 }
 
@@ -490,7 +532,10 @@ namespace SimpleWeather.UWP.Setup
 
                     ctsToken.ThrowIfCancellationRequested();
 
-                    button.IsEnabled = false;
+                    await AsyncTask.RunOnUIThread(() =>
+                    {
+                        button.IsEnabled = false;
+                    });
 
                     await Task.Run(async () =>
                     {
@@ -506,14 +551,20 @@ namespace SimpleWeather.UWP.Setup
                         catch (WeatherException wEx)
                         {
                             view = new LocationQueryViewModel();
-                            ShowSnackbar(Snackbar.Make(wEx.Message, SnackbarDuration.Short));
+                            await AsyncTask.RunOnUIThread(() =>
+                            {
+                                ShowSnackbar(Snackbar.Make(wEx.Message, SnackbarDuration.Short));
+                            });
                         }
                     });
 
                     if (String.IsNullOrWhiteSpace(view.LocationQuery))
                     {
                         // Stop since there is no valid query
-                        EnableControls(true);
+                        await AsyncTask.RunOnUIThread(() =>
+                        {
+                            EnableControls(true);
+                        });
                         return;
                     }
 
@@ -525,8 +576,11 @@ namespace SimpleWeather.UWP.Setup
 
                     if (WeatherAPI.NWS.Equals(Settings.API) && !("usa".Equals(country_code) || "us".Equals(country_code)))
                     {
-                        ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_WeatherUSOnly"), SnackbarDuration.Short));
-                        EnableControls(true);
+                        await AsyncTask.RunOnUIThread(() =>
+                        {
+                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_WeatherUSOnly"), SnackbarDuration.Short));
+                            EnableControls(true);
+                        });
                         return;
                     }
 
@@ -534,8 +588,11 @@ namespace SimpleWeather.UWP.Setup
                     var location = new LocationData(view, geoPos);
                     if (!location.IsValid())
                     {
-                        ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("WError_NoWeather"), SnackbarDuration.Short));
-                        EnableControls(true);
+                        await AsyncTask.RunOnUIThread(() =>
+                        {
+                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("WError_NoWeather"), SnackbarDuration.Short));
+                            EnableControls(true);
+                        });
                         return;
                     }
 
@@ -553,20 +610,29 @@ namespace SimpleWeather.UWP.Setup
                         catch (WeatherException wEx)
                         {
                             weather = null;
-                            ShowSnackbar(Snackbar.Make(wEx.Message, SnackbarDuration.Short));
+                            await AsyncTask.RunOnUIThread(() =>
+                            {
+                                ShowSnackbar(Snackbar.Make(wEx.Message, SnackbarDuration.Short));
+                            });
                         }
                     }
 
                     if (weather == null)
                     {
-                        EnableControls(true);
+                        await AsyncTask.RunOnUIThread(() =>
+                        {
+                            EnableControls(true);
+                        });
                         return;
                     }
 
                     ctsToken.ThrowIfCancellationRequested();
 
                     // We got our data so disable controls just in case
-                    EnableControls(false);
+                    await AsyncTask.RunOnUIThread(() =>
+                    {
+                        EnableControls(false);
+                    });
 
                     // Save weather data
                     Settings.SaveLastGPSLocData(location);
@@ -579,18 +645,27 @@ namespace SimpleWeather.UWP.Setup
                     Settings.FollowGPS = true;
                     Settings.WeatherLoaded = true;
 
-                    SetupPage.Instance.Location = location;
-                    SetupPage.Instance.Next();
+                    await AsyncTask.RunOnUIThread(() =>
+                    {
+                        SetupPage.Instance.Location = location;
+                        SetupPage.Instance.Next();
+                    });
                 }
                 else
                 {
-                    EnableControls(true);
+                    await AsyncTask.RunOnUIThread(() =>
+                    {
+                        EnableControls(true);
+                    });
                 }
             }
             catch (OperationCanceledException)
             {
                 // Restore controls
-                EnableControls(true);
+                await AsyncTask.RunOnUIThread(() =>
+                {
+                    EnableControls(true);
+                });
                 Settings.FollowGPS = false;
                 Settings.WeatherLoaded = false;
             }

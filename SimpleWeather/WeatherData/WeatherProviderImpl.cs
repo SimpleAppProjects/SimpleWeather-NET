@@ -99,8 +99,8 @@ namespace SimpleWeather.WeatherData
         {
             await locProvider.UpdateLocationData(location, WeatherAPI);
         }
-        public abstract Task<String> UpdateLocationQuery(Weather weather);
-        public abstract Task<String> UpdateLocationQuery(LocationData location);
+        public abstract String UpdateLocationQuery(Weather weather);
+        public abstract String UpdateLocationQuery(LocationData location);
         public virtual String LocaleToLangCode(String iso, String name) { return "EN"; }
         public abstract String GetWeatherIcon(String icon);
         // Used in some providers for hourly forecast

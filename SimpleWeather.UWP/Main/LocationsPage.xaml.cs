@@ -45,7 +45,7 @@ namespace SimpleWeather.UWP.Main
 
         public async void OnWeatherLoaded(LocationData location, Weather weather)
         {
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            await AsyncTask.RunOnUIThread(() =>
             {
                 if (weather?.IsValid() == true)
                 {
@@ -75,7 +75,7 @@ namespace SimpleWeather.UWP.Main
 
         public async void OnWeatherError(WeatherException wEx)
         {
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => 
+            await AsyncTask.RunOnUIThread(() =>
             {
                 switch (wEx.ErrorStatus)
                 {
@@ -248,24 +248,24 @@ namespace SimpleWeather.UWP.Main
 
         private async void LocationPanels_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            bool dataMoved = (e.Action == NotifyCollectionChangedAction.Remove) || (e.Action == NotifyCollectionChangedAction.Move);
+            bool onlyHomeIsLeft = await AsyncTask.RunOnUIThread(() => (LocationPanels.Count == 1));
+            bool limitReached = await AsyncTask.RunOnUIThread(() => (LocationPanels.Count >= Settings.MAX_LOCATIONS));
+
+            // Flag that data has changed
+            if (EditMode && dataMoved)
+                DataChanged = true;
+
+            if (EditMode && e.NewStartingIndex == App.HomeIdx)
+                HomeChanged = true;
+
+            // Cancel edit Mode
+            if (EditMode && onlyHomeIsLeft)
+                ToggleEditMode();
+
+            // Disable EditMode if only single location
+            await AsyncTask.RunOnUIThread(() =>
             {
-                bool dataMoved = (e.Action == NotifyCollectionChangedAction.Remove) || (e.Action == NotifyCollectionChangedAction.Move);
-                bool onlyHomeIsLeft = (LocationPanels.Count == 1);
-                bool limitReached = (LocationPanels.Count >= Settings.MAX_LOCATIONS);
-
-                // Flag that data has changed
-                if (EditMode && dataMoved)
-                    DataChanged = true;
-
-                if (EditMode && e.NewStartingIndex == App.HomeIdx)
-                    HomeChanged = true;
-
-                // Cancel edit Mode
-                if (EditMode && onlyHomeIsLeft)
-                    ToggleEditMode();
-
-                // Disable EditMode if only single location
                 EditButton.Visibility = onlyHomeIsLeft ? Visibility.Collapsed : Visibility.Visible;
                 AddLocationsButton.Visibility = limitReached ? Visibility.Collapsed : Visibility.Visible;
             });
@@ -273,47 +273,43 @@ namespace SimpleWeather.UWP.Main
 
         private void LoadLocations()
         {
-            Task.Run(async () => 
+            AsyncTask.Run(async () => 
             {
-                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => 
+                AsyncTask.RunOnUIThread(() => 
                 {
                     // Disable EditMode button
                     EditButton.IsEnabled = false;
                 });
 
                 // Lets load it up...
-                var locations = await Settings.GetFavorites();
-                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                var locations = await AsyncTask.RunAsync(async () => await Settings.GetFavorites());
+                await AsyncTask.RunOnUIThread(() =>
                 {
                     LocationPanels.Clear();
                 });
 
                 // Setup saved favorite locations
-                await LoadGPSPanel();
+                AsyncTask.Run(async () => await LoadGPSPanel());
                 foreach (LocationData location in locations)
                 {
-                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    var panel = new LocationPanelViewModel()
                     {
-                        var panel = new LocationPanelViewModel()
-                        {
-                            // Save index to tag (to easily retreive)
-                            LocationData = location
-                        };
-
-                        LocationPanels.Add(panel);
-                    });
+                        // Save index to tag (to easily retreive)
+                        LocationData = location
+                    };
+                    AsyncTask.RunOnUIThread(() => LocationPanels.Add(panel));
                 }
 
                 foreach (LocationData location in locations)
                 {
-                    Task.Run(() => 
+                    AsyncTask.Run(() => 
                     {
                         var wLoader = new WeatherDataLoader(location, this, this);
                         wLoader.LoadWeatherData(false);
                     });
                 }
 
-                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                AsyncTask.RunOnUIThread(() =>
                 {
                     // Enable EditMode button
                     EditButton.IsEnabled = true;
@@ -323,11 +319,11 @@ namespace SimpleWeather.UWP.Main
 
         private async Task LoadGPSPanel()
         {
-            await Task.Run(async () =>
+            await AsyncTask.RunAsync(async () =>
             {
                 if (Settings.FollowGPS)
                 {
-                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    AsyncTask.RunOnUIThread(() =>
                     {
                         GPSLocationsPanel.Visibility = Visibility.Visible;
                     });
@@ -340,15 +336,15 @@ namespace SimpleWeather.UWP.Main
 
                     if (locData != null && locData.query != null)
                     {
-                        await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        var panel = new LocationPanelViewModel()
                         {
-                            var panel = new LocationPanelViewModel()
-                            {
-                                LocationData = locData
-                            };
+                            LocationData = locData
+                        };
+                        AsyncTask.RunOnUIThread(() =>
+                        {
                             GPSPanelViewModel[0] = panel;
 
-                            Task.Run(() =>
+                            AsyncTask.Run(() =>
                             {
                                 var wLoader = new WeatherDataLoader(locData, this, this);
                                 wLoader.LoadWeatherData(false);
@@ -361,9 +357,9 @@ namespace SimpleWeather.UWP.Main
 
         private void RefreshLocations()
         {
-            Task.Run(async () => 
+            AsyncTask.Run(async () => 
             {
-                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                AsyncTask.RunOnUIThread(() =>
                 {
                     // Disable EditMode button
                     EditButton.IsEnabled = false;
@@ -376,42 +372,45 @@ namespace SimpleWeather.UWP.Main
                 bool reload = (locations.Count != LocationPanels.Count ||
                     (Settings.FollowGPS && (gpsPanelViewModel == null) || (!Settings.FollowGPS && gpsPanelViewModel != null)));
 
-                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                // Reload if weather source differs
+                if ((gpsPanelViewModel != null && !Settings.API.Equals(gpsPanelViewModel?.WeatherSource)) ||
+                    (LocationPanels.Count >= 1 && !Settings.API.Equals(LocationPanels[0].WeatherSource)))
                 {
-                    // Reload if weather source differs
-                    if ((gpsPanelViewModel != null && !Settings.API.Equals(gpsPanelViewModel?.WeatherSource)) ||
-                        (LocationPanels.Count >= 1 && !Settings.API.Equals(LocationPanels[0].WeatherSource)))
-                    {
-                        reload = true;
-                    }
+                    reload = true;
+                }
 
-                    // Reload if panel queries dont match
-                    if (!reload && (gpsPanelViewModel != null && !homeData.query.Equals(gpsPanelViewModel?.LocationData.query)))
-                        reload = true;
+                // Reload if panel queries dont match
+                if (!reload && (gpsPanelViewModel != null && !homeData.query.Equals(gpsPanelViewModel?.LocationData.query)))
+                    reload = true;
 
-                    if (reload)
+                if (reload)
+                {
+                    await AsyncTask.RunOnUIThread(() =>
                     {
                         LocationPanels.Clear();
-                        LoadLocations();
-                    }
-                    else
+                    });
+                    LoadLocations();
+                }
+                else
+                {
+                    var dataset = LocationPanels.ToList();
+                    if (gpsPanelViewModel != null)
+                        dataset.Add(gpsPanelViewModel);
+
+                    foreach (var view in dataset)
                     {
-                        var dataset = LocationPanels.ToList();
-                        if (gpsPanelViewModel != null)
-                            dataset.Add(gpsPanelViewModel);
+                        var locData = view.LocationData;
 
-                        foreach (var view in dataset)
+                        AsyncTask.Run(() =>
                         {
-                            var locData = view.LocationData;
-
-                            Task.Run(() =>
-                            {
-                                var wLoader = new WeatherDataLoader(locData, this, this);
-                                wLoader.LoadWeatherData(false);
-                            });
-                        }
+                            var wLoader = new WeatherDataLoader(locData, this, this);
+                            wLoader.LoadWeatherData(false);
+                        });
                     }
+                }
 
+                AsyncTask.RunOnUIThread(() =>
+                {
                     // Enable EditMode button
                     EditButton.IsEnabled = true;
                 });
@@ -627,7 +626,7 @@ namespace SimpleWeather.UWP.Main
 
         private async Task RemovePanel(LocationPanelViewModel panel)
         {
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            await AsyncTask.RunOnUIThread(() =>
             {
                 int dataPosition = LocationPanels.IndexOf(panel);
 
@@ -658,12 +657,12 @@ namespace SimpleWeather.UWP.Main
 
                 // Show undo snackbar
                 Snackbar snackbar = Snackbar.Make(App.ResLoader.GetString("Message_LocationRemoved"), SnackbarDuration.Short);
-                snackbar.SetAction(App.ResLoader.GetString("Action_Undo"), () => 
+                snackbar.SetAction(App.ResLoader.GetString("Action_Undo"), () =>
                 {
                     //panel = null;
                     UndoAction.Invoke();
                 });
-                snackbar.Dismissed = (sender, @event) => 
+                snackbar.Dismissed = (sender, @event) =>
                 {
                     if (@event != SnackbarDismissEvent.Action)
                     {
@@ -676,10 +675,10 @@ namespace SimpleWeather.UWP.Main
 
         private async Task BatchRemovePanels(IEnumerable<LocationPanelViewModel> panelsToDelete)
         {
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            await AsyncTask.RunOnUIThread(() =>
             {
                 var panelPairs = new List<KeyValuePair<int, LocationPanelViewModel>>();
-                foreach(LocationPanelViewModel panel in panelsToDelete)
+                foreach (LocationPanelViewModel panel in panelsToDelete)
                 {
                     int dataPosition = LocationPanels.IndexOf(panel);
                     panelPairs.Add(new KeyValuePair<int, LocationPanelViewModel>(dataPosition, panel));
@@ -688,7 +687,7 @@ namespace SimpleWeather.UWP.Main
                 // Create actions
                 Action UndoAction = delegate
                 {
-                    foreach(var panelPair in panelPairs)
+                    foreach (var panelPair in panelPairs)
                     {
                         if (!LocationPanels.Contains(panelPair.Value))
                         {

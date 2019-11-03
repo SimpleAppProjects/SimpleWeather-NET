@@ -67,7 +67,7 @@ namespace SimpleWeather.Bing
                 await Task.Run(() =>
                 {
                     root = JSONParser.Deserializer<AC_Rootobject>(contentStream);
-                });
+                }).ConfigureAwait(false);
 
                 foreach (Value result in root.resourceSets[0].resources[0].value)
                 {

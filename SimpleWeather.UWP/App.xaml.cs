@@ -282,7 +282,7 @@ namespace SimpleWeather.UWP
                         // Navigate to WeatherNow page for location
                         if (Shell.Instance != null)
                         {
-                            var locData = Task.Run(Settings.GetLocationData).Result;
+                            var locData = AsyncTask.RunAsync(async () => await Settings.GetLocationData()).GetAwaiter().GetResult();
                             var locations = new List<LocationData>(locData)
                             {
                                 Settings.HomeData,

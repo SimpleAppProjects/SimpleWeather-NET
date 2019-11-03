@@ -38,9 +38,11 @@ namespace SimpleWeather.NWS
         public override bool SupportsAlerts => true;
         public override bool NeedsExternalAlertData => true;
 
-        public override async Task<bool> IsKeyValid(string key)
+        public override Task<bool> IsKeyValid(string key)
         {
-            return false;
+            var tcs = new TaskCompletionSource<bool>();
+            tcs.SetResult(false);
+            return tcs.Task;
         }
 
         public override String GetAPIKey()
@@ -352,12 +354,12 @@ namespace SimpleWeather.NWS
             return weather;
         }
 
-        public override async Task<string> UpdateLocationQuery(Weather weather)
+        public override string UpdateLocationQuery(Weather weather)
         {
             return string.Format("{0},{1}", weather.location.latitude, weather.location.longitude);
         }
 
-        public override async Task<string> UpdateLocationQuery(LocationData location)
+        public override string UpdateLocationQuery(LocationData location)
         {
             return string.Format("{0},{1}", location.latitude.ToString(CultureInfo.InvariantCulture), location.longitude.ToString(CultureInfo.InvariantCulture));
         }

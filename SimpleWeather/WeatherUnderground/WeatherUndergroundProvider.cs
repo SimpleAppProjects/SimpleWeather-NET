@@ -65,7 +65,7 @@ namespace SimpleWeather.WeatherUnderground
                 webClient.Dispose();
 
                 // Load data
-                Rootobject root = await JSONParser.DeserializerAsync<Rootobject>(contentStream);
+                Rootobject root = await JSONParser.DeserializerAsync<Rootobject>(contentStream).ConfigureAwait(false);
 
                 // Check for errors
                 if (root.response.error != null)
@@ -299,52 +299,14 @@ namespace SimpleWeather.WeatherUnderground
             return alerts;
         }
 
-        public override async Task<string> UpdateLocationQuery(Weather weather)
+        public override string UpdateLocationQuery(Weather weather)
         {
-            string query = string.Empty;
-            string coord = string.Format("{0},{1}", weather.location.latitude, weather.location.longitude);
-            LocationQueryViewModel qview = null;
-
-            try
-            {
-                qview = await GetLocation(new WeatherUtils.Coordinate(coord));
-            }
-            catch (WeatherException e)
-            {
-                qview = new LocationQueryViewModel();
-                Logger.WriteLine(LoggerLevel.Error, e, "WeatherUndergroundProvider: UpdateLocationQuery: exception!!");
-            }
-
-            if (String.IsNullOrEmpty(qview.LocationQuery))
-                query = string.Format(CultureInfo.InvariantCulture, "/q/{0}", coord);
-            else
-                query = qview.LocationQuery;
-
-            return query;
+            return string.Format("/q/{0},{1}", weather.location.latitude, weather.location.longitude);
         }
 
-        public override async Task<string> UpdateLocationQuery(LocationData location)
+        public override string UpdateLocationQuery(LocationData location)
         {
-            string query = string.Empty;
-            string coord = string.Format("{0},{1}", location.latitude, location.longitude);
-            LocationQueryViewModel qview = null;
-
-            try
-            {
-                qview = await GetLocation(new WeatherUtils.Coordinate(coord));
-            }
-            catch (WeatherException e)
-            {
-                qview = new LocationQueryViewModel();
-                Logger.WriteLine(LoggerLevel.Error, e, "WeatherUndergroundProvider: UpdateLocationQuery: exception!!");
-            }
-
-            if (String.IsNullOrEmpty(qview.LocationQuery))
-                query = string.Format("/q/{0}", coord);
-            else
-                query = qview.LocationQuery;
-
-            return query;
+            return String.Format("/q/{0},{1}", location.latitude.ToString(CultureInfo.InvariantCulture), location.longitude.ToString(CultureInfo.InvariantCulture));
         }
 
         public override String LocaleToLangCode(String iso, String name)

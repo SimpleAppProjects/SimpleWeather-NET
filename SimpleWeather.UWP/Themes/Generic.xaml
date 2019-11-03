@@ -519,7 +519,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-
+    
     <ResourceDictionary.MergedDictionaries>
         <localControls:DataTemplates />
     </ResourceDictionary.MergedDictionaries>

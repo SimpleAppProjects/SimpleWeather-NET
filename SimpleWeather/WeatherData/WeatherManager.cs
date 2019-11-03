@@ -147,14 +147,14 @@ namespace SimpleWeather.WeatherData
             await WeatherProvider.UpdateLocationData(location);
         }
 
-        public async Task<string> UpdateLocationQuery(Weather weather)
+        public string UpdateLocationQuery(Weather weather)
         {
-            return await WeatherProvider.UpdateLocationQuery(weather);
+            return WeatherProvider.UpdateLocationQuery(weather);
         }
 
-        public async Task<string> UpdateLocationQuery(LocationData location)
+        public string UpdateLocationQuery(LocationData location)
         {
-            return await WeatherProvider.UpdateLocationQuery(location);
+            return WeatherProvider.UpdateLocationQuery(location);
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>

@@ -51,13 +51,13 @@ namespace SimpleWeather.UWP.Main
         private Geolocator geolocal = null;
         private Geoposition geoPos = null;
 
-        public async void OnWeatherLoaded(LocationData location, Weather weather)
+        public void OnWeatherLoaded(LocationData location, Weather weather)
         {
-            await Task.Run(async () => 
+            Task.Run(() => 
             {
                 if (weather?.IsValid() == true)
                 {
-                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    AsyncTask.RunOnUIThread(() =>
                     {
                         WeatherView.UpdateView(weather);
                         LoadingRing.IsActive = false;
@@ -68,7 +68,7 @@ namespace SimpleWeather.UWP.Main
                         if (weather.weather_alerts != null && weather.weather_alerts.Count > 0)
                         {
                             // Alerts are posted to the user here. Set them as notified.
-                            Task.Run(async () =>
+                            AsyncTask.Run(async () =>
                             {
                                 await WeatherAlertHandler.SetasNotified(location, weather.weather_alerts);
                             });
@@ -80,19 +80,22 @@ namespace SimpleWeather.UWP.Main
                         && (TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval)
                         || !WeatherTileCreator.TileUpdated)
                     {
-                        Task.Run(WeatherUpdateBackgroundTask.RequestAppTrigger);
+                        AsyncTask.Run(async () => await WeatherUpdateBackgroundTask.RequestAppTrigger());
                     }
                     else if (SecondaryTileUtils.Exists(location.query))
                     {
-                        WeatherTileCreator.TileUpdater(location, WeatherView);
+                        AsyncTask.Run(() =>
+                        {
+                            WeatherTileCreator.TileUpdater(location, WeatherView);
+                        });
                     }
                 }
             });
         }
 
-        public async void OnWeatherError(WeatherException wEx)
+        public void OnWeatherError(WeatherException wEx)
         {
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => 
+            AsyncTask.RunOnUIThread(() => 
             {
                 switch (wEx.ErrorStatus)
                 {
@@ -102,7 +105,7 @@ namespace SimpleWeather.UWP.Main
                         Snackbar snackbar = Snackbar.Make(wEx.Message, SnackbarDuration.Long);
                         snackbar.SetAction(App.ResLoader.GetString("Action_Retry"), () =>
                         {
-                            Task.Run(() => RefreshWeather(false));
+                            AsyncTask.Run(() => RefreshWeather(false));
                         });
                         ShowSnackbar(snackbar);
                         break;
@@ -216,14 +219,14 @@ namespace SimpleWeather.UWP.Main
             return PrimaryCommands.First() as AppBarButton;
         }
 
-        private async void WeatherNow_Resuming(object sender, object e)
+        private void WeatherNow_Resuming(object sender, object e)
         {
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => 
+            AsyncTask.RunOnUIThread(async () => 
             {
                 if (Shell.Instance.AppFrame.SourcePageType == this.GetType())
                 {
                     // Check pin tile status
-                    CheckTiles();
+                    await CheckTiles();
 
                     await Resume();
                 }
@@ -363,7 +366,7 @@ namespace SimpleWeather.UWP.Main
         private async Task Resume()
         {
             // Check pin tile status
-            CheckTiles();
+            await CheckTiles();
 
             if (wLoader.GetWeather()?.IsValid() == true)
             {
@@ -374,7 +377,7 @@ namespace SimpleWeather.UWP.Main
                 {
                     // Setup loader from updated location
                     wLoader = new WeatherDataLoader(location, this, this);
-                    await RefreshWeather(false);
+                    RefreshWeather(false);
                 }
                 else
                 {
@@ -387,11 +390,11 @@ namespace SimpleWeather.UWP.Main
                     TimeSpan span = DateTimeOffset.Now - weather.update_time;
                     if (span.TotalMinutes > ttl)
                     {
-                        await RefreshWeather(false);
+                        RefreshWeather(false);
                     }
                     else
                     {
-                        await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => 
+                        AsyncTask.RunOnUIThread(() => 
                         {
                             WeatherView.UpdateView(wLoader.GetWeather());
                             UpdateWindowColors();
@@ -446,10 +449,10 @@ namespace SimpleWeather.UWP.Main
             }
 
             // Check pin tile status
-            CheckTiles();
+            await CheckTiles();
 
             // Load up weather data
-            await RefreshWeather(forceRefresh);
+            RefreshWeather(forceRefresh);
         }
 
         private async Task<bool> UpdateLocation()
@@ -534,7 +537,7 @@ namespace SimpleWeather.UWP.Main
                         {
                             view = new LocationQueryViewModel();
 
-                            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => 
+                            await AsyncTask.RunOnUIThread(() => 
                             {
                                 ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
                             });
@@ -575,13 +578,13 @@ namespace SimpleWeather.UWP.Main
                 // Setup loader from updated location
                 wLoader = new WeatherDataLoader(location, this, this);
 
-            await RefreshWeather(true);
+            RefreshWeather(true);
         }
 
-        private async Task RefreshWeather(bool forceRefresh)
+        private void RefreshWeather(bool forceRefresh)
         {
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => LoadingRing.IsActive = true);
-            Task.Run(() => wLoader.LoadWeatherData(forceRefresh));
+            AsyncTask.RunOnUIThread(() => LoadingRing.IsActive = true);
+            AsyncTask.Run(() => wLoader.LoadWeatherData(forceRefresh));
         }
 
         private void LeftButton_Click(object sender, RoutedEventArgs e)
@@ -679,33 +682,42 @@ namespace SimpleWeather.UWP.Main
             GotoAlertsPage();
         }
 
-        private void CheckTiles()
+        private async Task CheckTiles()
         {
             var pinBtn = GetPinBtn();
-            pinBtn.IsEnabled = false;
+            await AsyncTask.RunOnUIThread(() => 
+            {
+                pinBtn.IsEnabled = false;
+            });
 
             // Check if your app is currently pinned
             bool isPinned = SecondaryTileUtils.Exists(location.query);
 
-            SetPinButton(isPinned);
-            pinBtn.Visibility = Visibility.Visible;
-            pinBtn.IsEnabled = true;
+            await AsyncTask.RunOnUIThread(async () =>
+            {
+                await SetPinButton(isPinned);
+                pinBtn.Visibility = Visibility.Visible;
+                pinBtn.IsEnabled = true;
+            });
         }
 
-        private void SetPinButton(bool isPinned)
+        private async Task SetPinButton(bool isPinned)
         {
-            var pinBtn = GetPinBtn();
+            await AsyncTask.RunOnUIThread(() =>
+            {
+                var pinBtn = GetPinBtn();
 
-            if (isPinned)
-            {
-                pinBtn.Icon = new SymbolIcon(Symbol.UnPin);
-                pinBtn.Label = App.ResLoader.GetString("Label_Unpin/Text");
-            }
-            else
-            {
-                pinBtn.Icon = new SymbolIcon(Symbol.Pin);
-                pinBtn.Label = App.ResLoader.GetString("Label_Pin/Text");
-            }
+                if (isPinned)
+                {
+                    pinBtn.Icon = new SymbolIcon(Symbol.UnPin);
+                    pinBtn.Label = App.ResLoader.GetString("Label_Unpin/Text");
+                }
+                else
+                {
+                    pinBtn.Icon = new SymbolIcon(Symbol.Pin);
+                    pinBtn.Label = App.ResLoader.GetString("Label_Pin/Text");
+                }
+            });
         }
 
         private async void PinButton_Click(object sender, RoutedEventArgs e)
@@ -722,7 +734,7 @@ namespace SimpleWeather.UWP.Main
                     SecondaryTileUtils.RemoveTileId(location.query);
                 }
 
-                SetPinButton(!deleted);
+                await SetPinButton(!deleted);
 
                 GetPinBtn().IsEnabled = true;
             }
@@ -761,7 +773,7 @@ namespace SimpleWeather.UWP.Main
                     await tile.UpdateAsync();
                 }
 
-                SetPinButton(isPinned);
+                await SetPinButton(isPinned);
 
                 GetPinBtn().IsEnabled = true;
             }

@@ -20,7 +20,7 @@
                 <ColumnDefinition x:Name="IconColumn" Width="70"/>
             </Grid.ColumnDefinitions>
             <toolkitControls:ImageEx x:Name="BackgroundOverlay" CachingStrategy="Custom" IsCacheEnabled="True" DecodePixelWidth="1080" Source="{x:Bind ViewModel.BackgroundURI, Mode=OneWay}"
-                                 Stretch="UniformToFill" Grid.ColumnSpan="3" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                 Stretch="UniformToFill" Grid.ColumnSpan="3" VerticalAlignment="Center" HorizontalAlignment="Center" Style="{ThemeResource ImageExProgressStyle}" />
             <Grid x:Name="GradientOverlay" Grid.ColumnSpan="3">
                 <Grid.Background>
                     <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">

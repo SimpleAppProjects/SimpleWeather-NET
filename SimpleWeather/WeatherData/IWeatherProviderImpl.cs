@@ -34,7 +34,7 @@ namespace SimpleWeather.WeatherData
         bool IsNight(Weather weather);
         string LocaleToLangCode(string iso, string name);
         Task UpdateLocationData(LocationData location);
-        Task<string> UpdateLocationQuery(Weather weather);
-        Task<string> UpdateLocationQuery(LocationData location);
+        string UpdateLocationQuery(Weather weather);
+        string UpdateLocationQuery(LocationData location);
     }
 }

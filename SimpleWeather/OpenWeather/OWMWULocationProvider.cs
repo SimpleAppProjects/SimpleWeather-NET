@@ -142,9 +142,11 @@ namespace SimpleWeather.OpenWeather
             return location;
         }
 
-        public override async Task<bool> IsKeyValid(string key)
+        public override Task<bool> IsKeyValid(string key)
         {
-            return false;
+            var tcs = new TaskCompletionSource<bool>();
+            tcs.SetResult(false);
+            return tcs.Task;
         }
 
         public override string GetAPIKey()

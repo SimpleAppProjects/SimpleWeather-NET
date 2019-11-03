@@ -218,12 +218,12 @@ namespace SimpleWeather.OpenWeather
             return weather;
         }
 
-        public override async Task<string> UpdateLocationQuery(WeatherData.Weather weather)
+        public override string UpdateLocationQuery(WeatherData.Weather weather)
         {
             return string.Format("lat={0}&lon={1}", weather.location.latitude, weather.location.longitude);
         }
 
-        public override async Task<string> UpdateLocationQuery(LocationData location)
+        public override string UpdateLocationQuery(LocationData location)
         {
             return string.Format("lat={0}&lon={1}", location.latitude.ToString(CultureInfo.InvariantCulture), location.longitude.ToString(CultureInfo.InvariantCulture));
         }
