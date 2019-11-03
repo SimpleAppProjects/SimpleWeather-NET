@@ -113,10 +113,6 @@ namespace SimpleWeather.UWP.Setup
 
         private void Location_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
-            // Cancel pending searches
-            cts.Cancel();
-            cts = new CancellationTokenSource();
-            var ctsToken = cts.Token;
             // user is typing: reset already started timer (if existing)
             if (timer != null && timer.IsEnabled)
                 timer.Stop();
@@ -141,6 +137,11 @@ namespace SimpleWeather.UWP.Setup
                     if (!String.IsNullOrWhiteSpace(sender.Text) && args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
                     {
                         String query = sender.Text;
+
+                        // Cancel pending searches
+                        cts.Cancel();
+                        cts = new CancellationTokenSource();
+                        var ctsToken = cts.Token;
 
                         await Task.Run(async () =>
                         {
