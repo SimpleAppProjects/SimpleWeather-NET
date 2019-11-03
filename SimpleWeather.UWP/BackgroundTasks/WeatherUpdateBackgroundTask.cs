@@ -257,7 +257,15 @@ namespace SimpleWeather.UWP.BackgroundTasks
                                 Logger.WriteLine(LoggerLevel.Error, ex, "{0}: GetWeather error", taskName);
                             }
                         }
+                        else if (geoStatus == GeolocationAccessStatus.Denied)
+                        {
+                            // Disable gps feature
+                            Settings.FollowGPS = false;
+                        }
                     }
+
+                    if (!Settings.FollowGPS)
+                        return false;
                 }
 
                 // Access to location granted

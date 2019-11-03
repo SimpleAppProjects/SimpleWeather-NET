@@ -417,7 +417,6 @@ namespace SimpleWeather.UWP.Main
                 {
                     // Update location if not setup
                     await UpdateLocation();
-                    wLoader = new WeatherDataLoader(location, this, this);
                     forceRefresh = true;
                 }
                 else
@@ -429,14 +428,12 @@ namespace SimpleWeather.UWP.Main
                     if (await UpdateLocation())
                     {
                         // Setup loader from updated location
-                        wLoader = new WeatherDataLoader(location, this, this);
                         forceRefresh = true;
                     }
                     else
                     {
                         // Setup loader saved location data
                         location = locData;
-                        wLoader = new WeatherDataLoader(location, this, this);
                     }
                 }
             }
@@ -445,11 +442,13 @@ namespace SimpleWeather.UWP.Main
             {
                 // Weather was loaded before. Lets load it up...
                 location = Settings.HomeData;
-                wLoader = new WeatherDataLoader(location, this, this);
             }
 
             // Check pin tile status
             await CheckTiles();
+
+            if (location != null)
+                wLoader = new WeatherDataLoader(location, this, this);
 
             // Load up weather data
             RefreshWeather(forceRefresh);

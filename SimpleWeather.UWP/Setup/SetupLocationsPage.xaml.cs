@@ -515,6 +515,7 @@ namespace SimpleWeather.UWP.Setup
                                 await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:privacy-location"));
                             });
                             ShowSnackbar(snackbar);
+                            Settings.FollowGPS = false;
                         });
                         break;
                     case GeolocationAccessStatus.Unspecified:
@@ -522,6 +523,7 @@ namespace SimpleWeather.UWP.Setup
                         await AsyncTask.RunOnUIThread(() =>
                         {
                             ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_Location"), SnackbarDuration.Short));
+                            Settings.FollowGPS = false;
                         });
                         break;
                 }
