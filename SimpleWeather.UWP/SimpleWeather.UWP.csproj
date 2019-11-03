@@ -295,6 +295,7 @@
     <Compile Include="Helpers\CustomPage.cs" />
     <Compile Include="Helpers\IBackRequestedPage.cs" />
     <Compile Include="Helpers\ICommandBarPage.cs" />
+    <Compile Include="Helpers\IFramePage.cs" />
     <Compile Include="Tiles\SecondaryTileUtils.cs" />
     <Compile Include="Helpers\StringBooleanConverter.cs" />
     <Compile Include="Helpers\IPageVerification.cs" />

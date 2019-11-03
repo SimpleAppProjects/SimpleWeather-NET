@@ -97,6 +97,30 @@ namespace SimpleWeather.UWP.Preferences
             {
                 scrollViewer.ScrollToVerticalOffset(0);
             }
+            if (e?.Content is IFrameContentPage contentPage)
+            {
+                contentPage.OnNavigatedToPage(e);
+            }
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+
+            if (SettingsFrame?.Content is IFrameContentPage contentPage)
+            {
+                contentPage.OnNavigatedFromPage(e);
+            }
+        }
+
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            base.OnNavigatingFrom(e);
+
+            if (SettingsFrame?.Content is IFrameContentPage contentPage)
+            {
+                contentPage.OnNavigatingFromPage(e);
+            }
         }
     }
 }

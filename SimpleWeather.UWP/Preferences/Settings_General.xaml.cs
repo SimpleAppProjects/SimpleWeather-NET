@@ -30,7 +30,7 @@ namespace SimpleWeather.UWP.Preferences
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class Settings_General : Page, IBackRequestedPage, ISnackbarManager
+    public sealed partial class Settings_General : Page, IBackRequestedPage, ISnackbarManager, IFrameContentPage
     {
         private WeatherManager wm;
 
@@ -196,7 +196,7 @@ namespace SimpleWeather.UWP.Preferences
             return tcs.Task;
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        public void OnNavigatedToPage(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             InitSnackManager();
@@ -205,10 +205,30 @@ namespace SimpleWeather.UWP.Preferences
             RestoreSettings();
         }
 
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        public void OnNavigatedFromPage(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
             UnloadSnackManager();
+        }
+
+        public void OnNavigatingFromPage(NavigatingCancelEventArgs e)
+        {
+            if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.API_KEY) && WeatherManager.IsKeyRequired(APIComboBox.SelectedValue.ToString()))
+            {
+                e.Cancel = true;
+            }
+            else
+            {
+                // Unsubscribe from event
+                Application.Current.Suspending -= OnSuspending;
+
+                // Trigger background task if necessary
+                if (RequestAppTrigger)
+                {
+                    Task.Run(async () => await WeatherUpdateBackgroundTask.RequestAppTrigger());
+                    RequestAppTrigger = false;
+                }
+            }
         }
 
         private void OnSuspending(object sender, SuspendingEventArgs e)
@@ -234,26 +254,6 @@ namespace SimpleWeather.UWP.Preferences
                     // If key exists, go ahead
                     Settings.UsePersonalKey = false;
                     Settings.KeyVerified = true;
-                }
-            }
-        }
-
-        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
-        {
-            if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.API_KEY) && WeatherManager.IsKeyRequired(APIComboBox.SelectedValue.ToString()))
-            {
-                e.Cancel = true;
-            }
-            else
-            {
-                // Unsubscribe from event
-                Application.Current.Suspending -= OnSuspending;
-
-                // Trigger background task if necessary
-                if (RequestAppTrigger)
-                {
-                    Task.Run(async () => await WeatherUpdateBackgroundTask.RequestAppTrigger());
-                    RequestAppTrigger = false;
                 }
             }
         }
@@ -313,7 +313,10 @@ namespace SimpleWeather.UWP.Preferences
                     });
                 }
             };
-            await keydialog.ShowAsync();
+            await AsyncTask.RunOnUIThread(async () =>
+            {
+                await keydialog.ShowAsync();
+            });
         }
 
         private void UpdateKeyBorder()
