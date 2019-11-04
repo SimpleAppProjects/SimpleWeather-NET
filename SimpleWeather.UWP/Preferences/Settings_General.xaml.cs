@@ -22,6 +22,7 @@ using SimpleWeather.UWP.Helpers;
 using SimpleWeather.UWP.Main;
 using SimpleWeather.UWP.Controls;
 using SimpleWeather.UWP.Tiles;
+using Microsoft.AppCenter.Analytics;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -369,6 +370,13 @@ namespace SimpleWeather.UWP.Preferences
                 {
                     Settings.API = API;
                     RequestAppTrigger = true;
+#if !DEBUG
+                    Analytics.TrackEvent("Update API", new Dictionary<string, string>()
+                    {
+                        { "API", Settings.API },
+                        { "API_IsInternalKey", (!Settings.UsePersonalKey).ToString() }
+                    });
+#endif
                 }
             }
             else
@@ -381,6 +389,14 @@ namespace SimpleWeather.UWP.Preferences
 
                 if (KeyPanel != null)
                     KeyPanel.Visibility = Visibility.Collapsed;
+
+#if !DEBUG
+                Analytics.TrackEvent("Update API", new Dictionary<string, string>()
+                {
+                    { "API", Settings.API },
+                    { "API_IsInternalKey", (!Settings.UsePersonalKey).ToString() }
+                });
+#endif
             }
 
             wm.UpdateAPI();

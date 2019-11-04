@@ -97,11 +97,13 @@ namespace SimpleWeather.Utils
                         }
                     }
                 }
+#if !DEBUG
                 Analytics.TrackEvent("App upgrading", new Dictionary<string, string>()
                 {
                     { "API", Settings.API },
                     { "API_IsInternalKey", (!Settings.UsePersonalKey).ToString() }
                 });
+#endif
             }
             Settings.VersionCode = CurrentVersionCode;
         }
