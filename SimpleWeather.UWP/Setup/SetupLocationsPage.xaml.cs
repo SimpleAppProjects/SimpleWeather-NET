@@ -222,6 +222,7 @@ namespace SimpleWeather.UWP.Setup
             }
             else if (!String.IsNullOrEmpty(args.QueryText))
             {
+                var queryText = args.QueryText;
                 if (cts.Token.IsCancellationRequested)
                 {
                     EnableControls(true);
@@ -235,11 +236,11 @@ namespace SimpleWeather.UWP.Setup
 
                     try
                     {
-                        results = await wm.GetLocations(args.QueryText);
+                        results = await wm.GetLocations(queryText);
                     }
                     catch (WeatherException ex)
                     {
-                        await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await AsyncTask.RunOnUIThread(() =>
                         {
                             ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
                         });

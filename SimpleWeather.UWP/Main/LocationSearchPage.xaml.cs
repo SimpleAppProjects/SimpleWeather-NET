@@ -170,17 +170,18 @@ namespace SimpleWeather.UWP.Main
             else if (!String.IsNullOrEmpty(args.QueryText))
             {
                 // Use args.QueryText to determine what to do.
+                var queryText = args.QueryText;
                 query_vm = await Task.Run(async () => 
                 {
                     ObservableCollection<LocationQueryViewModel> results;
 
                     try
                     {
-                        results = await wm.GetLocations(args.QueryText);
+                        results = await wm.GetLocations(queryText);
                     }
                     catch (WeatherException ex)
                     {
-                        await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        await AsyncTask.RunOnUIThread(() =>
                         {
                             ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
                         });

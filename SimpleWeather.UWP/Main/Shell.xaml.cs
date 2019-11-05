@@ -98,17 +98,21 @@ namespace SimpleWeather.UWP.Main
             RegisterPropertyChangedCallback(AppBarColorProperty, Shell_PropertyChanged);
         }
 
-        private void UISettings_ColorValuesChanged(UISettings sender, object args)
+        private async void UISettings_ColorValuesChanged(UISettings sender, object args)
         {
-            if (AppFrame == null)
-                return;
-
-            if (Settings.UserTheme == UserThemeMode.System)
+            // NOTE: Run on UI Thread since this may be called off the main thread
+            await AsyncTask.RunOnUIThread(() =>
             {
-                var uiTheme = sender.GetColorValue(UIColorType.Background).ToString();
-                bool isDarkTheme = uiTheme == "#FF000000";
-                AppFrame.RequestedTheme = isDarkTheme ? ElementTheme.Dark : ElementTheme.Light;
-            }
+                if (AppFrame == null)
+                    return;
+
+                if (Settings.UserTheme == UserThemeMode.System)
+                {
+                    var uiTheme = sender.GetColorValue(UIColorType.Background).ToString();
+                    bool isDarkTheme = uiTheme == "#FF000000";
+                    AppFrame.RequestedTheme = isDarkTheme ? ElementTheme.Dark : ElementTheme.Light;
+                }
+            });
         }
 
         public void UpdateAppTheme()

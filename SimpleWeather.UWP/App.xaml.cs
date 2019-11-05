@@ -101,8 +101,8 @@ namespace SimpleWeather.UWP
 
         private async void DefaultTheme_ColorValuesChanged(UISettings sender, object args)
         {
-            var Dispatcher = CoreApplication.MainView.CoreWindow.Dispatcher;
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            // NOTE: Run on UI Thread since this may be called off the main thread
+            await AsyncTask.RunOnUIThread(() =>
             {
                 var uiTheme = sender.GetColorValue(UIColorType.Background).ToString();
                 IsSystemDarkTheme = uiTheme == "#FF000000";
