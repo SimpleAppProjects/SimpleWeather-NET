@@ -131,7 +131,14 @@ namespace SimpleWeather.UWP.BackgroundTasks
             if (backgroundAccessStatus == BackgroundAccessStatus.AlwaysAllowed ||
                 backgroundAccessStatus == BackgroundAccessStatus.AllowedSubjectToSystemPolicy)
             {
-                await AppTrigger.RequestAsync();
+                try
+                {
+                    await AppTrigger.RequestAsync();
+                }
+                catch (Exception ex)
+                {
+                    Logger.WriteLine(LoggerLevel.Error, ex, "{0}: Error requesting ApplicationTrigger", taskName);
+                }
             }
             else
             {
