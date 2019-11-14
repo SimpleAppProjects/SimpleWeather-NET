@@ -89,6 +89,9 @@ namespace SimpleWeather.WeatherData
                     providerImpl = new YahooWeatherProvider();
                     break;
                 case WeatherData.WeatherAPI.Here:
+#if !DEBUG
+                default:
+#endif
                     providerImpl = new HEREWeatherProvider();
                     break;
                 case WeatherData.WeatherAPI.OpenWeatherMap:
@@ -99,8 +102,6 @@ namespace SimpleWeather.WeatherData
                     break;
                 case WeatherData.WeatherAPI.NWS:
                     providerImpl = new NWSWeatherProvider();
-                    break;
-                default:
                     break;
             }
 
