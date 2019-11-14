@@ -802,7 +802,7 @@ namespace SimpleWeather.UWP.Main
             catch (Exception) { }
 
             GotoDetailsPage((bool)controlParent?.Name.StartsWith("Hourly"),
-                control.GetItemPositionFromPoint((float)e.GetPosition(null).X));
+                control.GetItemPositionFromPoint((float)(e.GetPosition(control).X + control?.ScrollViewer?.HorizontalOffset)));
         }
     }
 }

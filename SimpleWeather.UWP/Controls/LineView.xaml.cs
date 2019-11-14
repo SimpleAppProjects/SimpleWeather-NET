@@ -814,15 +814,16 @@ namespace SimpleWeather.UWP.Controls
             while (l <= r)
             {
                 int midPt = (int)Math.Floor((l + r) / 2f);
-                if (targetXPoint > (xCoordinateList[midPt] - backgroundGridWidth / 2f) && targetXPoint < (xCoordinateList[midPt] + backgroundGridWidth / 2f))
+                if (targetXPoint == xCoordinateList[midPt] - backgroundGridWidth / 2f ||
+                    (targetXPoint > xCoordinateList[midPt] - backgroundGridWidth / 2f && targetXPoint < xCoordinateList[midPt] + backgroundGridWidth / 2f))
                 {
                     return midPt;
                 }
-                else if (targetXPoint <= xCoordinateList[midPt] - backgroundGridWidth / 2f)
+                else if (targetXPoint < xCoordinateList[midPt] - backgroundGridWidth / 2f)
                 {
                     r = midPt - 1;
                 }
-                else if (targetXPoint >= xCoordinateList[midPt] + backgroundGridWidth / 2f)
+                else if (targetXPoint > xCoordinateList[midPt] + backgroundGridWidth / 2f)
                 {
                     l = midPt + 1;
                 }

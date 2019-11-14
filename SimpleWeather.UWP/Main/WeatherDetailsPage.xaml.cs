@@ -70,12 +70,15 @@ namespace SimpleWeather.UWP.Main
                 else
                     ListControl.ItemsSource = WeatherView.Forecasts;
 
-                ListControl.Loaded += (sender, ev) =>
+                this.Loaded += async (sender, ev) =>
                 {
                     if (args.ScrollToPosition <= ListControl.Items.Count)
                     {
                         var item = ListControl.Items[args.ScrollToPosition];
-                        ListControl.ScrollIntoView(item, ScrollIntoViewAlignment.Leading);
+                        await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        {
+                            ListControl.ScrollIntoView(item, ScrollIntoViewAlignment.Leading);
+                        });
                     }
                 };
             }
