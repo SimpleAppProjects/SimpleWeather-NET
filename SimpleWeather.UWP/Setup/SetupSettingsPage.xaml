@@ -15,7 +15,7 @@
     </Page.Transitions>
 
     <ScrollViewer Background="{ThemeResource SystemAccentColor}">
-        <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Vertical" RequestedTheme="Dark">
             <Viewbox Height="50" Margin="0,32,0,0" HorizontalAlignment="Center">
                 <SymbolIcon Symbol="Setting" />
             </Viewbox>

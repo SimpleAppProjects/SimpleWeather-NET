@@ -105,8 +105,9 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <AppBarButton x:Name="BackBtn" Icon="Back" Label="Back" Grid.Column="0" Margin="-2,-2,0,0"
-                              HorizontalAlignment="Left" Style="{ThemeResource AppBarButtonRevealStyle}" />
+                <AppBarButton x:Name="BackBtn" Icon="Back" Label="Back" Grid.Column="0"
+                              Margin="-2,-2,0,0" HorizontalAlignment="Left"
+                              Style="{ThemeResource AppBarButtonRevealStyle}" />
                 <ListBox Style="{ThemeResource ListBoxIndicatorStyle}" x:Name="IndicatorBox" Background="Transparent" Height="50" Grid.Column="1">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
@@ -114,8 +115,9 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                <AppBarButton x:Name="NextBtn" Icon="Forward" Label="Next" Grid.Column="2" Margin="0,-2,-2,0"
-                              HorizontalAlignment="Right" Style="{ThemeResource AppBarButtonRevealStyle}" />
+                <AppBarButton x:Name="NextBtn" Icon="Forward" Label="Next" Grid.Column="2"
+                              Margin="0,-2,-2,0" HorizontalAlignment="Right"
+                              Style="{ThemeResource AppBarButtonRevealStyle}" />
             </Grid>
         </Border>
     </Grid>
