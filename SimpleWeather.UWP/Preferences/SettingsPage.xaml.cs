@@ -63,14 +63,6 @@ namespace SimpleWeather.UWP.Preferences
 
         private void NavigationView_SelectionChanged(NavigationView sender, Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs args)
         {
-            FrameNavigationOptions navOptions = new FrameNavigationOptions
-            {
-                TransitionInfoOverride = args.RecommendedNavigationTransitionInfo
-            };
-            if (sender.PaneDisplayMode == NavigationViewPaneDisplayMode.Top)
-            {
-                navOptions.IsNavigationStackEnabled = false;
-            }
             Type pageType;
             switch ((args.SelectedItem as NavigationViewItem)?.Tag)
             {
@@ -88,7 +80,7 @@ namespace SimpleWeather.UWP.Preferences
                     pageType = typeof(Settings_About);
                     break;
             }
-            SettingsFrame.NavigateToType(pageType, null, navOptions);
+            SettingsFrame.Navigate(pageType, null, args.RecommendedNavigationTransitionInfo);
         }
 
         private void SettingsFrame_Navigated(object sender, NavigationEventArgs e)
