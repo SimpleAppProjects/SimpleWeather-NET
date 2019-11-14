@@ -58,7 +58,16 @@ namespace SimpleWeather.UWP.Preferences
         {
             base.OnNavigatedTo(e);
 
-            SettingsNavView.SelectedItem = SettingsNavView.MenuItems.First();
+            var firstItem = SettingsNavView.MenuItems.First();
+
+            if (SettingsNavView.SelectedItem == firstItem)
+            {
+                SettingsFrame_Navigated(SettingsFrame, e);
+            }
+            else
+            {
+                SettingsNavView.SelectedItem = firstItem;
+            }
         }
 
         private void NavigationView_SelectionChanged(NavigationView sender, Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs args)
@@ -85,12 +94,12 @@ namespace SimpleWeather.UWP.Preferences
 
         private void SettingsFrame_Navigated(object sender, NavigationEventArgs e)
         {
-            if (e?.Content is Page page && VisualTreeHelperExtensions.FindChild<ScrollViewer>(page.Content as FrameworkElement, null, true) is ScrollViewer scrollViewer)
+            if (SettingsFrame?.Content is Page page && VisualTreeHelperExtensions.FindChild<ScrollViewer>(page.Content as FrameworkElement, null, true) is ScrollViewer scrollViewer)
             {
                 // NOTE: ChangeView does not work here for some reason
                 scrollViewer.ScrollToVerticalOffset(0);
             }
-            if (e?.Content is IFrameContentPage contentPage)
+            if (SettingsFrame?.Content is IFrameContentPage contentPage)
             {
                 contentPage.OnNavigatedToPage(e);
             }
