@@ -85,8 +85,9 @@ namespace SimpleWeather.UWP.Preferences
 
         private void SettingsFrame_Navigated(object sender, NavigationEventArgs e)
         {
-            if (e?.Content is Page page && page.Content is ScrollViewer scrollViewer)
+            if (e?.Content is Page page && VisualTreeHelperExtensions.FindChild<ScrollViewer>(page.Content as FrameworkElement, null, true) is ScrollViewer scrollViewer)
             {
+                // NOTE: ChangeView does not work here for some reason
                 scrollViewer.ScrollToVerticalOffset(0);
             }
             if (e?.Content is IFrameContentPage contentPage)

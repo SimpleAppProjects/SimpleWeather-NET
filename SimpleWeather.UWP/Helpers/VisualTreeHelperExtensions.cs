@@ -7,8 +7,13 @@ namespace SimpleWeather.UWP.Helpers
 {
     public static class VisualTreeHelperExtensions
     {
-        public static T FindChild<T>(FrameworkElement depObj, String Name = null) where T : FrameworkElement
+        public static T FindChild<T>(FrameworkElement depObj, String Name = null, bool includeParent = false) where T : FrameworkElement
         {
+            if (includeParent && depObj != null && depObj is T && (String.IsNullOrWhiteSpace(Name) || String.Equals(Name, depObj.Name)))
+            {
+                return (T)depObj;
+            }
+
             if (depObj != null)
             {
                 for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
