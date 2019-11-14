@@ -153,16 +153,22 @@ namespace SimpleWeather.UWP.Main
                 {
                     // Mobile
                     var statusBar = StatusBar.GetForCurrentView();
-                    statusBar.BackgroundColor = color;
-                    statusBar.ForegroundColor = isLightBackground ? Colors.Black : Colors.White;
+                    if (statusBar != null)
+                    {
+                        statusBar.BackgroundColor = color;
+                        statusBar.ForegroundColor = isLightBackground ? Colors.Black : Colors.White;
+                    }
                 }
                 else
                 {
                     // Desktop
-                    var titlebar = ApplicationView.GetForCurrentView().TitleBar;
-                    titlebar.BackgroundColor = color;
-                    titlebar.ButtonBackgroundColor = titlebar.BackgroundColor;
-                    titlebar.ForegroundColor = isLightBackground ? Colors.Black : Colors.White;
+                    var titlebar = ApplicationView.GetForCurrentView()?.TitleBar;
+                    if (titlebar != null)
+                    {
+                        titlebar.BackgroundColor = color;
+                        titlebar.ButtonBackgroundColor = titlebar.BackgroundColor;
+                        titlebar.ForegroundColor = isLightBackground ? Colors.Black : Colors.White;
+                    }
                 }
             }
         }

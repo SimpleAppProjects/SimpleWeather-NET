@@ -45,7 +45,7 @@ namespace SimpleWeather.UWP
         {
             get 
             {
-                if (Window.Current.Content is FrameworkElement window)
+                if (Window.Current?.Content is FrameworkElement window)
                 {
                     if (window.RequestedTheme == ElementTheme.Light)
                     {
@@ -95,23 +95,34 @@ namespace SimpleWeather.UWP
             this.UnhandledException += OnUnhandledException;
             AppCenter.Start(APIKeys.GetAppCenterSecret(), typeof(Analytics), typeof(Crashes));
             UISettings = new UISettings();
-            UISettings.ColorValuesChanged += DefaultTheme_ColorValuesChanged;
             IsSystemDarkTheme = UISettings.GetColorValue(UIColorType.Background).ToString() == "#FF000000";
         }
 
-        private async void DefaultTheme_ColorValuesChanged(UISettings sender, object args)
+        private void DefaultTheme_ColorValuesChanged(UISettings sender, object args)
         {
-            // NOTE: Run on UI Thread since this may be called off the main thread
-            await AsyncTask.RunOnUIThread(() =>
-            {
-                var uiTheme = sender.GetColorValue(UIColorType.Background).ToString();
-                IsSystemDarkTheme = uiTheme == "#FF000000";
+            UpdateColorValues();
+        }
 
-                if (Shell.Instance == null && Settings.UserTheme == UserThemeMode.System)
+        private async void UpdateColorValues()
+        {
+            try
+            {
+                // NOTE: Run on UI Thread since this may be called off the main thread
+                await AsyncTask.RunOnUIThread(() =>
                 {
-                    UpdateAppTheme();
-                }
-            });
+                    var uiTheme = UISettings.GetColorValue(UIColorType.Background).ToString();
+                    IsSystemDarkTheme = uiTheme == "#FF000000";
+
+                    if (Shell.Instance == null && Settings.UserTheme == UserThemeMode.System)
+                    {
+                        UpdateAppTheme();
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLine(LoggerLevel.Error, ex, "App: UpdateColorValues: error updating color values");
+            }
         }
 
         private void UpdateAppTheme()
@@ -125,16 +136,22 @@ namespace SimpleWeather.UWP
                 {
                     // Mobile
                     var statusBar = StatusBar.GetForCurrentView();
-                    statusBar.BackgroundColor = App.AppColor;
-                    statusBar.ForegroundColor = Colors.White;
+                    if (statusBar != null)
+                    {
+                        statusBar.BackgroundColor = App.AppColor;
+                        statusBar.ForegroundColor = Colors.White;
+                    }
                 }
                 else
                 {
                     // Desktop
-                    var titlebar = ApplicationView.GetForCurrentView().TitleBar;
-                    titlebar.BackgroundColor = App.AppColor;
-                    titlebar.ButtonBackgroundColor = titlebar.BackgroundColor;
-                    titlebar.ForegroundColor = Colors.White;
+                    var titlebar = ApplicationView.GetForCurrentView()?.TitleBar;
+                    if (titlebar != null)
+                    {
+                        titlebar.BackgroundColor = App.AppColor;
+                        titlebar.ButtonBackgroundColor = titlebar.BackgroundColor;
+                        titlebar.ForegroundColor = Colors.White;
+                    }
                 }
             }
         }
@@ -257,7 +274,7 @@ namespace SimpleWeather.UWP
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
             {
-                //this.DebugSettings.EnableFrameRateCounter = true;
+                this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
             Logger.WriteLine(LoggerLevel.Info, "Started logger...");
@@ -342,14 +359,17 @@ namespace SimpleWeather.UWP
             });
         }
 
-        private void OnEnteredBackground(object sender, EnteredBackgroundEventArgs e)
-        {
-            IsInBackground = true;
-        }
-
         private void OnLeavingBackground(object sender, LeavingBackgroundEventArgs e)
         {
             IsInBackground = false;
+            UpdateColorValues();
+            UISettings.ColorValuesChanged += DefaultTheme_ColorValuesChanged;
+        }
+
+        private void OnEnteredBackground(object sender, EnteredBackgroundEventArgs e)
+        {
+            IsInBackground = true;
+            UISettings.ColorValuesChanged -= DefaultTheme_ColorValuesChanged;
         }
 
         private async Task Initialize(IActivatedEventArgs e)
@@ -392,10 +412,10 @@ namespace SimpleWeather.UWP
                 {
                     Window.Current.SizeChanged += async (sender, eventArgs) =>
                     {
-                        if (ApplicationView.GetForCurrentView().Orientation == ApplicationViewOrientation.Landscape)
-                            await StatusBar.GetForCurrentView().HideAsync();
+                        if (ApplicationView.GetForCurrentView()?.Orientation == ApplicationViewOrientation.Landscape)
+                            await StatusBar.GetForCurrentView()?.HideAsync();
                         else
-                            await StatusBar.GetForCurrentView().ShowAsync();
+                            await StatusBar.GetForCurrentView()?.ShowAsync();
                     };
                 }
             });
