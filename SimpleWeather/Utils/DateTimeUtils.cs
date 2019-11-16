@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SimpleWeather.Utils
 {
-    public class DateTimeUtils
+    public static class DateTimeUtils
     {
         public static TimeSpan MaxTimeOfDay()
         {

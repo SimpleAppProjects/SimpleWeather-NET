@@ -112,10 +112,9 @@ namespace SimpleWeather.Utils
             return Math.Round(result).ToString();
         }
 
-        public static DateTime ToEpochDateTime(string epoch_time)
+        public static DateTime ToEpochDateTime(string epochTime)
         {
-            return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)
-                .AddSeconds(long.Parse(epoch_time));
+            return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(long.Parse(epochTime));
         }
 
         public static double ToRadians(double angle)
@@ -145,6 +144,16 @@ namespace SimpleWeather.Utils
 
         public static double CalculateGeopositionDistance(Windows.Devices.Geolocation.Geoposition position1, Windows.Devices.Geolocation.Geoposition position2)
         {
+            if (position1 is null)
+            {
+                throw new ArgumentNullException(nameof(position1));
+            }
+
+            if (position2 is null)
+            {
+                throw new ArgumentNullException(nameof(position2));
+            }
+
             double lat1 = position1.Coordinate.Point.Position.Latitude;
             double lon1 = position1.Coordinate.Point.Position.Longitude;
             double lat2 = position2.Coordinate.Point.Position.Latitude;

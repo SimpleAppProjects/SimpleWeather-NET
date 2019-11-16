@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SimpleWeather.HERE
+﻿namespace SimpleWeather.HERE
 {
     public class AC_Rootobject
     {

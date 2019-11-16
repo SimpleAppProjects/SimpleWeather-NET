@@ -1,27 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using SimpleWeather.Controls;
+﻿using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
-using System.Xml.Serialization;
-using SimpleWeather.UWP.Controls;
+using System;
+using System.Globalization;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
-using Windows.Storage;
-using Windows.Storage.Streams;
-using Windows.UI;
-using Windows.UI.Core;
-using Windows.UI.Popups;
 using Windows.Web;
 using Windows.Web.Http;
 using Windows.Web.Http.Filters;
 using Windows.Web.Http.Headers;
-using System.Globalization;
-using SimpleWeather.Location;
-using System.Threading;
 
 namespace SimpleWeather.NWS
 {
@@ -29,7 +18,7 @@ namespace SimpleWeather.NWS
     {
         public NWSWeatherProvider() : base()
         {
-            locProvider = new HERE.HERELocationProvider();
+            LocationProvider = new HERE.HERELocationProvider();
         }
 
         public override string WeatherAPI => WeatherData.WeatherAPI.NWS;
@@ -100,6 +89,7 @@ namespace SimpleWeather.NWS
                 // End Stream
                 if (stream != null)
                     stream.Dispose();
+                cts.Dispose();
 
                 string forecastURL = pointsRootobject.forecast;
                 string forecastHourlyUrl = pointsRootobject.forecastHourly;
@@ -128,6 +118,7 @@ namespace SimpleWeather.NWS
 
             // End Stream
             webClient.Dispose();
+            handler.Dispose();
 
             if (wEx == null && (weather == null || !weather.IsValid()))
             {
@@ -188,6 +179,7 @@ namespace SimpleWeather.NWS
                 // End Stream
                 if (stream != null)
                     stream.Dispose();
+                cts.Dispose();
             }
             catch (WeatherException)
             {
@@ -203,6 +195,7 @@ namespace SimpleWeather.NWS
             {
                 // End Stream
                 webClient.Dispose();
+                handler.Dispose();
             }
 
             return root;
@@ -215,56 +208,55 @@ namespace SimpleWeather.NWS
 
             Uri weatherURL = null;
 
-            var handler = new HttpBaseProtocolFilter()
+            using (var handler = new HttpBaseProtocolFilter()
             {
                 AllowAutoRedirect = true,
                 AutomaticDecompression = true
-            };
-
-            HttpClient webClient = new HttpClient(handler);
-
-            try
+            })
+            using (HttpClient webClient = new HttpClient(handler))
+            using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
             {
-                weatherURL = new Uri(url);
-
-                var version = string.Format("v{0}.{1}.{2}",
-                    Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
-
-                webClient.DefaultRequestHeaders.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
-                webClient.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
-
-                CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
-
-                // Get response
-                HttpResponseMessage response = await webClient.GetAsync(weatherURL).AsTask(cts.Token);
-                // Check for errors
-                CheckForErrors(response.StatusCode);
-                response.EnsureSuccessStatusCode();
-
-                Stream stream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-
-                // Load point json data
-                await Task.Run(() =>
+                try
                 {
-                    root = JSONParser.Deserializer<ObservationsStationsRootobject>(stream);
-                });
+                    weatherURL = new Uri(url);
 
-                // End Stream
-                if (stream != null)
-                    stream.Dispose();
-            }
-            catch (Exception ex)
-            {
-                root = null;
-                throw ex;
-            }
-            finally
-            {
-                // End Stream
-                webClient.Dispose();
-            }
+                    var version = string.Format("v{0}.{1}.{2}",
+                        Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
 
-            return root;
+                    webClient.DefaultRequestHeaders.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
+                    webClient.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
+
+                    // Get response
+                    HttpResponseMessage response = await webClient.GetAsync(weatherURL).AsTask(cts.Token);
+                    // Check for errors
+                    CheckForErrors(response.StatusCode);
+                    response.EnsureSuccessStatusCode();
+
+                    Stream stream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+
+                    // Load point json data
+                    await Task.Run(() =>
+                    {
+                        root = JSONParser.Deserializer<ObservationsStationsRootobject>(stream);
+                    });
+
+                    // End Stream
+                    if (stream != null)
+                        stream.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    root = null;
+                    throw ex;
+                }
+                finally
+                {
+                    // End Stream
+                    webClient.Dispose();
+                }
+
+                return root;
+            }
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
@@ -274,56 +266,54 @@ namespace SimpleWeather.NWS
 
             Uri weatherURL = null;
 
-            var handler = new HttpBaseProtocolFilter()
+            using (var handler = new HttpBaseProtocolFilter()
             {
                 AllowAutoRedirect = true,
                 AutomaticDecompression = true
-            };
-
-            HttpClient webClient = new HttpClient(handler);
-
-            try
+            })
+            using (HttpClient webClient = new HttpClient(handler))
+            using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
             {
-                weatherURL = new Uri(url + "/observations/latest");
-
-                var version = string.Format("v{0}.{1}.{2}",
-                    Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
-
-                webClient.DefaultRequestHeaders.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
-                webClient.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
-
-                CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
-
-                // Get response
-                HttpResponseMessage response = await webClient.GetAsync(weatherURL).AsTask(cts.Token);
-                // Check for errors
-                CheckForErrors(response.StatusCode);
-                response.EnsureSuccessStatusCode();
-
-                Stream stream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-
-                // Load point json data
-                await Task.Run(() =>
+                try
                 {
-                    root = JSONParser.Deserializer<ObservationsCurrentRootobject>(stream);
-                });
+                    weatherURL = new Uri(url + "/observations/latest");
 
-                // End Stream
-                if (stream != null)
-                    stream.Dispose();
-            }
-            catch (Exception ex)
-            {
-                root = null;
-                throw ex;
-            }
-            finally
-            {
-                // End Stream
-                webClient.Dispose();
-            }
+                    var version = string.Format("v{0}.{1}.{2}",
+                        Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
 
-            return root;
+                    webClient.DefaultRequestHeaders.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
+                    webClient.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
+
+                    // Get response
+                    HttpResponseMessage response = await webClient.GetAsync(weatherURL).AsTask(cts.Token);
+                    // Check for errors
+                    CheckForErrors(response.StatusCode);
+                    response.EnsureSuccessStatusCode();
+
+                    Stream stream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+
+                    // Load point json data
+                    await Task.Run(() =>
+                    {
+                        root = JSONParser.Deserializer<ObservationsCurrentRootobject>(stream);
+                    });
+
+                    // End Stream
+                    stream?.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    root = null;
+                    throw ex;
+                }
+                finally
+                {
+                    // End Stream
+                    webClient.Dispose();
+                }
+
+                return root;
+            }
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>

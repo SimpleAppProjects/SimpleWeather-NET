@@ -1,26 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using SimpleWeather.Controls;
+﻿using SimpleWeather.Keys;
+using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
-using System.Xml.Serialization;
-using SimpleWeather.UWP.Controls;
-using Windows.Storage;
-using Windows.Storage.Streams;
-using Windows.UI;
-using Windows.UI.Core;
-using Windows.UI.Popups;
+using System;
+using System.Globalization;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using Windows.System.UserProfile;
 using Windows.Web;
 using Windows.Web.Http;
-using System.Globalization;
-using Windows.System.UserProfile;
-using SimpleWeather.Location;
-using System.Threading;
-using SimpleWeather.Keys;
 
 namespace SimpleWeather.OpenWeather
 {
@@ -28,7 +17,7 @@ namespace SimpleWeather.OpenWeather
     {
         public OpenWeatherMapProvider() : base()
         {
-            locProvider = new Bing.BingMapsLocationProvider();
+            LocationProvider = new Bing.BingMapsLocationProvider();
         }
 
         public override string WeatherAPI => WeatherData.WeatherAPI.OpenWeatherMap;
@@ -75,6 +64,7 @@ namespace SimpleWeather.OpenWeather
                 // End Stream
                 response.Dispose();
                 webClient.Dispose();
+                cts.Dispose();
             }
             catch (Exception)
             {
@@ -105,7 +95,7 @@ namespace SimpleWeather.OpenWeather
             Uri forecastURL = null;
             string query = null;
 
-            var userlang = GlobalizationPreferences.Languages.First();
+            var userlang = GlobalizationPreferences.Languages[0];
             var culture = new CultureInfo(userlang);
 
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
@@ -126,74 +116,75 @@ namespace SimpleWeather.OpenWeather
             forecastAPI = "https://api.openweathermap.org/data/2.5/forecast?{0}&appid={1}&lang=" + locale;
             forecastURL = new Uri(string.Format(forecastAPI, query, key));
 
-            HttpClient webClient = new HttpClient();
-            WeatherException wEx = null;
-
-            try
+            using (HttpClient webClient = new HttpClient())
+            using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
             {
-                CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
+                WeatherException wEx = null;
 
-                // Get response
-                HttpResponseMessage currentResponse = await webClient.GetAsync(currentURL).AsTask(cts.Token);
-                currentResponse.EnsureSuccessStatusCode();
-                HttpResponseMessage forecastResponse = await webClient.GetAsync(forecastURL).AsTask(cts.Token);
-                forecastResponse.EnsureSuccessStatusCode();
-
-                Stream currentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await currentResponse.Content.ReadAsInputStreamAsync());
-                Stream forecastStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await forecastResponse.Content.ReadAsInputStreamAsync());
-
-                // Reset exception
-                wEx = null;
-
-                // Load weather
-                CurrentRootobject currRoot = null;
-                ForecastRootobject foreRoot = null;
-                await Task.Run(() =>
+                try
                 {
-                    currRoot = JSONParser.Deserializer<CurrentRootobject>(currentStream);
-                });
-                await Task.Run(() =>
+                    // Get response
+                    HttpResponseMessage currentResponse = await webClient.GetAsync(currentURL).AsTask(cts.Token);
+                    currentResponse.EnsureSuccessStatusCode();
+                    HttpResponseMessage forecastResponse = await webClient.GetAsync(forecastURL).AsTask(cts.Token);
+                    forecastResponse.EnsureSuccessStatusCode();
+
+                    Stream currentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await currentResponse.Content.ReadAsInputStreamAsync());
+                    Stream forecastStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await forecastResponse.Content.ReadAsInputStreamAsync());
+
+                    // Reset exception
+                    wEx = null;
+
+                    // Load weather
+                    CurrentRootobject currRoot = null;
+                    ForecastRootobject foreRoot = null;
+                    await Task.Run(() =>
+                    {
+                        currRoot = JSONParser.Deserializer<CurrentRootobject>(currentStream);
+                    });
+                    await Task.Run(() =>
+                    {
+                        foreRoot = JSONParser.Deserializer<ForecastRootobject>(forecastStream);
+                    });
+
+                    // End Streams
+                    currentStream.Dispose();
+                    forecastStream.Dispose();
+
+                    weather = new WeatherData.Weather(currRoot, foreRoot);
+                }
+                catch (Exception ex)
                 {
-                    foreRoot = JSONParser.Deserializer<ForecastRootobject>(forecastStream);
-                });
+                    weather = null;
 
-                // End Streams
-                currentStream.Dispose();
-                forecastStream.Dispose();
+                    if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                    {
+                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    }
 
-                weather = new WeatherData.Weather(currRoot, foreRoot);
-            }
-            catch (Exception ex)
-            {
-                weather = null;
-
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
-                {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    Logger.WriteLine(LoggerLevel.Error, ex, "OpenWeatherMapProvider: error getting weather data");
                 }
 
-                Logger.WriteLine(LoggerLevel.Error, ex, "OpenWeatherMapProvider: error getting weather data");
+                // End Stream
+                webClient.Dispose();
+
+                if (weather == null || !weather.IsValid())
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
+                }
+                else if (weather != null)
+                {
+                    if (SupportsWeatherLocale)
+                        weather.locale = locale;
+
+                    weather.query = location_query;
+                }
+
+                if (wEx != null)
+                    throw wEx;
+
+                return weather;
             }
-
-            // End Stream
-            webClient.Dispose();
-
-            if (weather == null || !weather.IsValid())
-            {
-                wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
-            }
-            else if (weather != null)
-            {
-                if (SupportsWeatherLocale)
-                    weather.locale = locale;
-
-                weather.query = location_query;
-            }
-
-            if (wEx != null)
-                throw wEx;
-
-            return weather;
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
@@ -204,13 +195,13 @@ namespace SimpleWeather.OpenWeather
             // OWM reports datetime in UTC; add location tz_offset
             var offset = location.tz_offset;
             weather.update_time = weather.update_time.ToOffset(offset);
-            foreach(HourlyForecast hr_forecast in weather.hr_forecast)
+            foreach (HourlyForecast hr_forecast in weather.hr_forecast)
             {
-                hr_forecast.date =  hr_forecast.date.ToOffset(offset);
+                hr_forecast.date = hr_forecast.date.ToOffset(offset);
             }
             foreach (Forecast forecast in weather.forecast)
             {
-                forecast.date =  forecast.date.Add(offset);
+                forecast.date = forecast.date.Add(offset);
             }
             weather.astronomy.sunrise = weather.astronomy.sunrise.Add(offset);
             weather.astronomy.sunset = weather.astronomy.sunset.Add(offset);
@@ -323,6 +314,7 @@ namespace SimpleWeather.OpenWeather
                 case "uk":
                     code = "ua";
                     break;
+
                 default:
                     // Default is English
                     code = "en";
@@ -346,7 +338,7 @@ namespace SimpleWeather.OpenWeather
         {
             string WeatherIcon = string.Empty;
 
-            switch (icon.Substring(0,3))
+            switch (icon.Substring(0, 3))
             {
                 case "200": // thunderstorm w/ light rain
                 case "201": // thunderstorm w/ rain

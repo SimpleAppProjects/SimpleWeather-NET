@@ -1,18 +1,14 @@
 ﻿using Microsoft.Graphics.Canvas;
-using Microsoft.Graphics.Canvas.Brushes;
 using Microsoft.Graphics.Canvas.Geometry;
 using Microsoft.Graphics.Canvas.Text;
-using Microsoft.Graphics.Canvas.UI;
 using Microsoft.Graphics.Canvas.UI.Xaml;
 using SimpleWeather.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -27,7 +23,8 @@ namespace SimpleWeather.UWP.Controls
      *  Based on LineView from http://www.androidtrainee.com/draw-android-line-chart-with-animation/
      *  Graph background (under line) based on - https://github.com/jjoe64/GraphView (LineGraphSeries)
      */
-    public sealed partial class LineView : UserControl
+
+    public sealed partial class LineView : UserControl, IDisposable
     {
         //
         // Summary:
@@ -44,6 +41,7 @@ namespace SimpleWeather.UWP.Controls
                 ScrollViewer.ViewChanged -= value;
             }
         }
+
         //
         // Summary:
         //     Occurs when manipulations such as scrolling and zooming cause the view to change.
@@ -170,6 +168,15 @@ namespace SimpleWeather.UWP.Controls
 
         public void SetData(List<XLabelData> dataLabels, List<LineDataSeries> dataLists)
         {
+            if (dataLabels is null)
+            {
+                throw new ArgumentNullException(nameof(dataLabels));
+            }
+            if (dataLists is null)
+            {
+                throw new ArgumentNullException(nameof(dataLists));
+            }
+
             SetDataLabels(dataLabels);
             SetDataList(dataLists);
         }
@@ -868,6 +875,12 @@ namespace SimpleWeather.UWP.Controls
                 this.X = x;
                 this.Y = y;
             }
+        }
+
+        public void Dispose()
+        {
+            BottomTextFormat?.Dispose();
+            IconFormat?.Dispose();
         }
     }
 }

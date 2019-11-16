@@ -1,16 +1,8 @@
 ﻿using Microsoft.Toolkit.Uwp.UI.Controls;
-using SimpleWeather.UWP.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.UI;
-using Windows.UI.Text;
-using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
 
 namespace SimpleWeather.UWP.Controls
 {
@@ -159,7 +151,7 @@ namespace SimpleWeather.UWP.Controls
         {
             if (e.DismissKind != InAppNotificationDismissKind.Timeout)
             {
-                RemoveSnack((SnackbarDismissEvent) e.DismissKind);
+                RemoveSnack((SnackbarDismissEvent)e.DismissKind);
             }
         }
 

@@ -1,29 +1,13 @@
-﻿using System;
+﻿using SimpleWeather.UWP.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using SimpleWeather.Utils;
-using Windows.ApplicationModel;
-using Windows.Devices.Geolocation;
-using Windows.UI.Popups;
+using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.ApplicationModel.Core;
 using Windows.UI.Xaml.Navigation;
-using Windows.Storage;
-using Windows.UI.Xaml.Media;
-using Windows.UI;
-using Windows.UI.Core;
-using Windows.Foundation.Metadata;
-using Windows.UI.ViewManagement;
-using System.Threading.Tasks;
-using SimpleWeather.WeatherData;
-using SimpleWeather.UWP.BackgroundTasks;
-using SimpleWeather.UWP.Helpers;
-using SimpleWeather.UWP.Main;
 using NavigationView = Microsoft.UI.Xaml.Controls.NavigationView;
 using NavigationViewItem = Microsoft.UI.Xaml.Controls.NavigationViewItem;
-using NavigationViewItemInvokedEventArgs = Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs;
-using NavigationViewPaneDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 namespace SimpleWeather.UWP.Preferences

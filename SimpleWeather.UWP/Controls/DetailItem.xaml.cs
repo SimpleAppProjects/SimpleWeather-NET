@@ -21,7 +21,7 @@ namespace SimpleWeather.UWP.Controls
             typeof(DetailItem), new PropertyMetadata(Color.FromArgb(0xB3, 0xff, 0xff, 0xff)));
         public Color ItemColor
         {
-            get 
+            get
             {
                 Color color = (Color)GetValue(ItemColorProperty);
                 color.A = 0xB3;

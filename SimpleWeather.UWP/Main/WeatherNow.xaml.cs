@@ -9,25 +9,17 @@ using SimpleWeather.UWP.WeatherAlerts;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using Windows.ApplicationModel;
-using Windows.ApplicationModel.Core;
 using Windows.Devices.Geolocation;
-using Windows.Foundation.Metadata;
 using Windows.System.UserProfile;
 using Windows.UI;
 using Windows.UI.Core;
-using Windows.UI.Popups;
 using Windows.UI.StartScreen;
-using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
@@ -53,7 +45,7 @@ namespace SimpleWeather.UWP.Main
 
         public void OnWeatherLoaded(LocationData location, Weather weather)
         {
-            Task.Run(() => 
+            Task.Run(() =>
             {
                 if (weather?.IsValid() == true)
                 {
@@ -95,7 +87,7 @@ namespace SimpleWeather.UWP.Main
 
         public void OnWeatherError(WeatherException wEx)
         {
-            AsyncTask.RunOnUIThread(() => 
+            AsyncTask.RunOnUIThread(() =>
             {
                 switch (wEx.ErrorStatus)
                 {
@@ -109,12 +101,14 @@ namespace SimpleWeather.UWP.Main
                         });
                         ShowSnackbar(snackbar);
                         break;
+
                     case WeatherUtils.ErrorStatus.QueryNotFound:
                         if (WeatherAPI.NWS.Equals(Settings.API))
                         {
                             ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_WeatherUSOnly"), SnackbarDuration.Long));
                         }
                         break;
+
                     default:
                         // Show error message
                         ShowSnackbar(Snackbar.Make(wEx.Message, SnackbarDuration.Long));
@@ -200,9 +194,11 @@ namespace SimpleWeather.UWP.Main
                             location?.tz_offset);
                     }
                     break;
+
                 case "Alerts":
                     ResizeAlertPanel();
                     break;
+
                 case "PendingBackgroundColor":
                     UpdateWindowColors();
                     break;
@@ -221,7 +217,7 @@ namespace SimpleWeather.UWP.Main
 
         private void WeatherNow_Resuming(object sender, object e)
         {
-            AsyncTask.RunOnUIThread(async () => 
+            AsyncTask.RunOnUIThread(async () =>
             {
                 if (Shell.Instance.AppFrame.SourcePageType == this.GetType())
                 {
@@ -282,7 +278,7 @@ namespace SimpleWeather.UWP.Main
             MainViewer?.ChangeView(null, 0, null, true);
             BGAlpha = GradAlpha = 1.0f;
 
-            if (e.Parameter != null)
+            if (e?.Parameter != null)
             {
                 string arg = e.Parameter.ToString();
 
@@ -291,6 +287,7 @@ namespace SimpleWeather.UWP.Main
                     case "view-alerts":
                         GotoAlertsPage();
                         break;
+
                     default:
                         break;
                 }
@@ -331,7 +328,7 @@ namespace SimpleWeather.UWP.Main
 
                 if (wLoader != null)
                 {
-                    var userlang = GlobalizationPreferences.Languages.First();
+                    var userlang = GlobalizationPreferences.Languages[0];
                     var culture = new CultureInfo(userlang);
                     var locale = wm.LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
@@ -394,7 +391,7 @@ namespace SimpleWeather.UWP.Main
                     }
                     else
                     {
-                        AsyncTask.RunOnUIThread(() => 
+                        await AsyncTask.RunOnUIThread(() =>
                         {
                             WeatherView.UpdateView(wLoader.GetWeather());
                             UpdateWindowColors();
@@ -536,7 +533,7 @@ namespace SimpleWeather.UWP.Main
                         {
                             view = new LocationQueryViewModel();
 
-                            await AsyncTask.RunOnUIThread(() => 
+                            await AsyncTask.RunOnUIThread(() =>
                             {
                                 ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
                             });
@@ -625,7 +622,8 @@ namespace SimpleWeather.UWP.Main
                 {
                     controlParent = VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(
                         VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(viewer?.Parent)))) as FrameworkElement;
-                } catch (Exception) { }
+                }
+                catch (Exception) { }
             }
 
             if (viewer?.HorizontalOffset == 0)
@@ -684,7 +682,7 @@ namespace SimpleWeather.UWP.Main
         private async Task CheckTiles()
         {
             var pinBtn = GetPinBtn();
-            await AsyncTask.RunOnUIThread(() => 
+            await AsyncTask.RunOnUIThread(() =>
             {
                 pinBtn.IsEnabled = false;
             });
@@ -781,7 +779,7 @@ namespace SimpleWeather.UWP.Main
         private void GotoDetailsPage(bool IsHourly, int Position)
         {
             Frame.Navigate(typeof(WeatherDetailsPage),
-                new WeatherDetailsPage.DetailsPageArgs()
+                new DetailsPageArgs()
                 {
                     WeatherNowView = WeatherView,
                     IsHourly = IsHourly,

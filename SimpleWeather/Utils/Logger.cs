@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using NLog;
+﻿using NLog;
+using System;
 using Windows.Storage;
 
 namespace SimpleWeather.Utils
@@ -17,11 +15,10 @@ namespace SimpleWeather.Utils
 
     public static class Logger
     {
-        private static readonly NLog.Logger logger;
+        private static readonly NLog.Logger logger = LogManager.GetCurrentClassLogger();
 
         static Logger()
         {
-            logger = LogManager.GetCurrentClassLogger();
             Init();
         }
 
@@ -36,50 +33,55 @@ namespace SimpleWeather.Utils
             LogManager.Shutdown();
         }
 
-        public static void WriteLine(LoggerLevel loggerLevel, string message, params object[] args)
+        public static void WriteLine(LoggerLevel loggerLevel, string value, params object[] args)
         {
-            WriteLine(loggerLevel, null, message, args);
+            WriteLine(loggerLevel, null, value, args);
         }
 
-        public static void WriteLine(LoggerLevel loggerLevel, Exception ex, string message)
+        public static void WriteLine(LoggerLevel loggerLevel, Exception ex, string value)
         {
-            WriteLine(loggerLevel, ex, message, null);
+            WriteLine(loggerLevel, ex, value, null);
         }
 
-        public static void WriteLine(LoggerLevel loggerLevel, Exception ex, string message, params object[] args)
+        public static void WriteLine(LoggerLevel loggerLevel, Exception ex, string format, params object[] args)
         {
             switch (loggerLevel)
             {
                 case LoggerLevel.Debug:
                     if (ex == null)
-                        logger.Log(LogLevel.Debug, message, args);
+                        logger.Log(LogLevel.Debug, format, args);
                     else
-                        logger.Log(LogLevel.Debug, ex, message, args);
+                        logger.Log(LogLevel.Debug, ex, format, args);
                     break;
+
                 case LoggerLevel.Info:
                     if (ex == null)
-                        logger.Log(LogLevel.Info, message, args);
+                        logger.Log(LogLevel.Info, format, args);
                     else
-                        logger.Log(LogLevel.Info, ex, message, args);
+                        logger.Log(LogLevel.Info, ex, format, args);
                     break;
+
                 case LoggerLevel.Warn:
                     if (ex == null)
-                        logger.Log(LogLevel.Warn, message, args);
+                        logger.Log(LogLevel.Warn, format, args);
                     else
-                        logger.Log(LogLevel.Warn, ex, message, args);
+                        logger.Log(LogLevel.Warn, ex, format, args);
                     break;
+
                 case LoggerLevel.Error:
                     if (ex == null)
-                        logger.Log(LogLevel.Error, message, args);
+                        logger.Log(LogLevel.Error, format, args);
                     else
-                        logger.Log(LogLevel.Error, ex, message, args);
+                        logger.Log(LogLevel.Error, ex, format, args);
                     break;
+
                 case LoggerLevel.Fatal:
                     if (ex == null)
-                        logger.Log(LogLevel.Fatal, message, args);
+                        logger.Log(LogLevel.Fatal, format, args);
                     else
-                        logger.Log(LogLevel.Fatal, ex, message, args);
+                        logger.Log(LogLevel.Fatal, ex, format, args);
                     break;
+
                 default:
                     break;
             }

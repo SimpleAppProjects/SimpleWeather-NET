@@ -1,22 +1,20 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
+﻿using GeoTimeZone;
 using SimpleWeather.Controls;
-using SimpleWeather.Utils;
-using System.Collections.Generic;
-using Windows.UI;
-using System.Globalization;
 using SimpleWeather.Location;
-using GeoTimeZone;
+using SimpleWeather.Utils;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Threading.Tasks;
+using Windows.UI;
 
 namespace SimpleWeather.WeatherData
 {
     public abstract partial class WeatherProviderImpl : IWeatherProviderImpl
     {
-        protected LocationProviderImpl locProvider;
-
         // Variables
-        public LocationProviderImpl LocationProvider { get { return locProvider; } }
+        public LocationProviderImpl LocationProvider { get; protected set; }
         public abstract string WeatherAPI { get; }
         public abstract bool SupportsWeatherLocale { get; }
         public abstract bool KeyRequired { get; }
@@ -28,13 +26,13 @@ namespace SimpleWeather.WeatherData
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(String ac_query)
         {
-            return await locProvider.GetLocations(ac_query, WeatherAPI);
+            return await LocationProvider.GetLocations(ac_query, WeatherAPI);
         }
         // GeopositionQuery
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public async Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coordinate)
         {
-            return await locProvider.GetLocation(coordinate, WeatherAPI);
+            return await LocationProvider.GetLocation(coordinate, WeatherAPI);
         }
         // Weather
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
@@ -97,7 +95,7 @@ namespace SimpleWeather.WeatherData
         // Utils Methods
         public async Task UpdateLocationData(LocationData location)
         {
-            await locProvider.UpdateLocationData(location, WeatherAPI);
+            await LocationProvider.UpdateLocationData(location, WeatherAPI);
         }
         public abstract String UpdateLocationQuery(Weather weather);
         public abstract String UpdateLocationQuery(LocationData location);
@@ -163,6 +161,7 @@ namespace SimpleWeather.WeatherData
                 case WeatherIcons.DAY_SPRINKLE:
                     argb = new byte[4] { 0xff, 0x10, 0x20, 0x30 };
                     break;
+
                 case WeatherIcons.NIGHT_ALT_HAIL:
                 case WeatherIcons.NIGHT_ALT_RAIN:
                 case WeatherIcons.NIGHT_ALT_RAIN_MIX:
@@ -183,12 +182,14 @@ namespace SimpleWeather.WeatherData
                 case WeatherIcons.DAY_THUNDERSTORM:
                     argb = new byte[4] { 0xff, 0x28, 0x38, 0x48 };
                     break;
+
                 case WeatherIcons.NIGHT_ALT_LIGHTNING:
                 case WeatherIcons.NIGHT_ALT_THUNDERSTORM:
                 case WeatherIcons.LIGHTNING:
                 case WeatherIcons.THUNDERSTORM:
                     argb = new byte[4] { 0xff, 0x18, 0x18, 0x30 };
                     break;
+
                 case WeatherIcons.DAY_STORM_SHOWERS:
                 case WeatherIcons.DAY_SLEET_STORM:
                 case WeatherIcons.STORM_SHOWERS:
@@ -221,6 +222,7 @@ namespace SimpleWeather.WeatherData
                 case WeatherIcons.SNOW:
                     argb = new byte[4] { 0xff, 0xb8, 0xd0, 0xf0 };
                     break;
+
                 case WeatherIcons.SNOW_WIND:
                 case WeatherIcons.DAY_SNOW_WIND:
                 case WeatherIcons.NIGHT_ALT_SNOW_WIND:
@@ -253,6 +255,7 @@ namespace SimpleWeather.WeatherData
                     else
                         argb = new byte[4] { 0xff, 0x88, 0xb0, 0xc8 };
                     break;
+
                 case WeatherIcons.DAY_SUNNY:
                 case WeatherIcons.NA:
                 case WeatherIcons.NIGHT_CLEAR:

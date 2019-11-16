@@ -1,13 +1,12 @@
 ﻿using Newtonsoft.Json;
 using SimpleWeather.Utils;
+using SimpleWeather.UWP;
 using SQLite;
-using SQLiteNetExtensions;
 using SQLiteNetExtensions.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using SimpleWeather.UWP;
 
 namespace SimpleWeather.WeatherData
 {
@@ -512,6 +511,7 @@ namespace SimpleWeather.WeatherData
                         case nameof(location):
                             obj.location = Location.FromJson(reader);
                             break;
+
                         case nameof(update_time):
                             bool parsed = DateTimeOffset.TryParseExact(reader.Value?.ToString(), "dd.MM.yyyy HH:mm:ss zzzz", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset result);
                             if (!parsed) // If we can't parse as DateTimeOffset try DateTime (data could be old)
@@ -525,15 +525,17 @@ namespace SimpleWeather.WeatherData
                             }
                             obj.update_time = result;
                             break;
+
                         case nameof(forecast):
                             var forecasts = new List<Forecast>();
-                            while(reader.Read() && reader.TokenType != JsonToken.EndArray)
+                            while (reader.Read() && reader.TokenType != JsonToken.EndArray)
                             {
                                 if (reader.TokenType == JsonToken.String)
                                     forecasts.Add(Forecast.FromJson(reader));
                             }
                             obj.forecast = forecasts.ToArray();
                             break;
+
                         case nameof(hr_forecast):
                             var hr_forecasts = new List<HourlyForecast>();
                             while (reader.Read() && reader.TokenType != JsonToken.EndArray)
@@ -543,6 +545,7 @@ namespace SimpleWeather.WeatherData
                             }
                             obj.hr_forecast = hr_forecasts.ToArray();
                             break;
+
                         case nameof(txt_forecast):
                             var txt_forecasts = new List<TextForecast>();
                             while (reader.Read() && reader.TokenType != JsonToken.EndArray)
@@ -552,30 +555,39 @@ namespace SimpleWeather.WeatherData
                             }
                             obj.txt_forecast = txt_forecasts.ToArray();
                             break;
+
                         case nameof(condition):
                             obj.condition = Condition.FromJson(reader);
                             break;
+
                         case nameof(atmosphere):
                             obj.atmosphere = Atmosphere.FromJson(reader);
                             break;
+
                         case nameof(astronomy):
                             obj.astronomy = Astronomy.FromJson(reader);
                             break;
+
                         case nameof(precipitation):
                             obj.precipitation = Precipitation.FromJson(reader);
                             break;
+
                         case nameof(ttl):
                             obj.ttl = reader.Value?.ToString();
                             break;
+
                         case nameof(source):
                             obj.source = reader.Value?.ToString();
                             break;
+
                         case nameof(query):
                             obj.query = reader.Value?.ToString();
                             break;
+
                         case nameof(locale):
                             obj.locale = reader.Value?.ToString();
                             break;
+
                         default:
                             break;
                     }
@@ -785,17 +797,21 @@ namespace SimpleWeather.WeatherData
         public static Location FromJson(JsonReader extReader)
         {
             Location obj = null;
+            bool disposeReader = false;
+            JsonReader reader = null;
 
             try
             {
                 obj = new Location();
-                JsonReader reader;
 
                 if (extReader.Value == null)
                     reader = extReader;
                 else
                 {
-                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString()));
+                    disposeReader = true;
+#pragma warning disable CA2000 // Dispose objects before losing scope
+                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString())) { CloseInput = true };
+#pragma warning restore CA2000 // Dispose objects before losing scope
                     reader.Read(); // StartObject
                 }
 
@@ -812,21 +828,27 @@ namespace SimpleWeather.WeatherData
                         case nameof(name):
                             obj.name = reader.Value?.ToString();
                             break;
+
                         case nameof(latitude):
                             obj.latitude = reader.Value?.ToString();
                             break;
+
                         case nameof(longitude):
                             obj.longitude = reader.Value?.ToString();
                             break;
+
                         case nameof(tz_offset):
                             obj.tz_offset = TimeSpan.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(tz_short):
                             obj.tz_short = reader.Value?.ToString();
                             break;
+
                         case nameof(tz_long):
                             obj.tz_long = reader.Value?.ToString();
                             break;
+
                         default:
                             break;
                     }
@@ -835,6 +857,11 @@ namespace SimpleWeather.WeatherData
             catch (Exception)
             {
                 obj = null;
+            }
+            finally
+            {
+                if (disposeReader)
+                    reader?.Close();
             }
 
             return obj;
@@ -1025,17 +1052,21 @@ namespace SimpleWeather.WeatherData
         public static Forecast FromJson(JsonReader extReader)
         {
             Forecast obj = null;
+            bool disposeReader = false;
+            JsonReader reader = null;
 
             try
             {
                 obj = new Forecast();
-                JsonReader reader;
 
                 if (extReader.Value == null)
                     reader = extReader;
                 else
                 {
-                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString()));
+                    disposeReader = true;
+#pragma warning disable CA2000 // Dispose objects before losing scope
+                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString())) { CloseInput = true };
+#pragma warning restore CA2000 // Dispose objects before losing scope
                     reader.Read(); // StartObject
                 }
 
@@ -1052,27 +1083,35 @@ namespace SimpleWeather.WeatherData
                         case nameof(date):
                             obj.date = DateTime.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(high_f):
                             obj.high_f = reader.Value?.ToString();
                             break;
+
                         case nameof(high_c):
                             obj.high_c = reader.Value?.ToString();
                             break;
+
                         case nameof(low_f):
                             obj.low_f = reader.Value?.ToString();
                             break;
+
                         case nameof(low_c):
                             obj.low_c = reader.Value?.ToString();
                             break;
+
                         case nameof(condition):
                             obj.condition = reader.Value?.ToString();
                             break;
+
                         case nameof(icon):
                             obj.icon = reader.Value?.ToString();
                             break;
+
                         case nameof(extras):
                             obj.extras = ForecastExtras.FromJson(reader);
                             break;
+
                         default:
                             break;
                     }
@@ -1081,6 +1120,11 @@ namespace SimpleWeather.WeatherData
             catch (Exception)
             {
                 obj = null;
+            }
+            finally
+            {
+                if (disposeReader)
+                    reader?.Close();
             }
 
             return obj;
@@ -1363,17 +1407,21 @@ namespace SimpleWeather.WeatherData
         public static HourlyForecast FromJson(JsonReader extReader)
         {
             HourlyForecast obj = null;
+            bool disposeReader = false;
+            JsonReader reader = null;
 
             try
             {
                 obj = new HourlyForecast();
-                JsonReader reader;
 
                 if (extReader.Value == null)
                     reader = extReader;
                 else
                 {
-                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString()));
+                    disposeReader = true;
+#pragma warning disable CA2000 // Dispose objects before losing scope
+                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString())) { CloseInput = true };
+#pragma warning restore CA2000 // Dispose objects before losing scope
                     reader.Read(); // StartObject
                 }
 
@@ -1390,33 +1438,43 @@ namespace SimpleWeather.WeatherData
                         case nameof(date):
                             obj._date = reader.Value?.ToString();
                             break;
+
                         case nameof(high_f):
                             obj.high_f = reader.Value?.ToString();
                             break;
+
                         case nameof(high_c):
                             obj.high_c = reader.Value?.ToString();
                             break;
+
                         case nameof(condition):
                             obj.condition = reader.Value?.ToString();
                             break;
+
                         case nameof(icon):
                             obj.icon = reader.Value?.ToString();
                             break;
+
                         case nameof(pop):
                             obj.pop = reader.Value?.ToString();
                             break;
+
                         case nameof(wind_degrees):
                             obj.wind_degrees = int.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(wind_mph):
                             obj.wind_mph = float.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(wind_kph):
                             obj.wind_kph = float.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(extras):
                             obj.extras = ForecastExtras.FromJson(reader);
                             break;
+
                         default:
                             break;
                     }
@@ -1425,6 +1483,11 @@ namespace SimpleWeather.WeatherData
             catch (Exception)
             {
                 obj = null;
+            }
+            finally
+            {
+                if (disposeReader)
+                    reader?.Close();
             }
 
             return obj;
@@ -1562,17 +1625,21 @@ namespace SimpleWeather.WeatherData
         public static TextForecast FromJson(JsonReader extReader)
         {
             TextForecast obj = null;
+            bool disposeReader = false;
+            JsonReader reader = null;
 
             try
             {
                 obj = new TextForecast();
-                JsonReader reader;
 
                 if (extReader.Value == null)
                     reader = extReader;
                 else
                 {
-                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString()));
+                    disposeReader = true;
+#pragma warning disable CA2000 // Dispose objects before losing scope
+                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString())) { CloseInput = true };
+#pragma warning restore CA2000 // Dispose objects before losing scope
                     reader.Read(); // StartObject
                 }
 
@@ -1589,18 +1656,23 @@ namespace SimpleWeather.WeatherData
                         case nameof(title):
                             obj.title = reader.Value?.ToString();
                             break;
+
                         case nameof(fcttext):
                             obj.fcttext = reader.Value?.ToString();
                             break;
+
                         case nameof(fcttext_metric):
                             obj.fcttext_metric = reader.Value?.ToString();
                             break;
+
                         case nameof(icon):
                             obj.icon = reader.Value?.ToString();
                             break;
+
                         case nameof(pop):
                             obj.pop = reader.Value?.ToString();
                             break;
+
                         default:
                             break;
                     }
@@ -1609,6 +1681,11 @@ namespace SimpleWeather.WeatherData
             catch (Exception)
             {
                 obj = null;
+            }
+            finally
+            {
+                if (disposeReader)
+                    reader?.Close();
             }
 
             return obj;
@@ -1681,17 +1758,21 @@ namespace SimpleWeather.WeatherData
         public static ForecastExtras FromJson(JsonReader extReader)
         {
             ForecastExtras obj = null;
+            bool disposeReader = false;
+            JsonReader reader = null;
 
             try
             {
                 obj = new ForecastExtras();
-                JsonReader reader;
 
                 if (extReader.Value == null)
                     reader = extReader;
                 else
                 {
-                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString()));
+                    disposeReader = true;
+#pragma warning disable CA2000 // Dispose objects before losing scope
+                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString())) { CloseInput = true };
+#pragma warning restore CA2000 // Dispose objects before losing scope
                     reader.Read(); // StartObject
                 }
 
@@ -1708,57 +1789,75 @@ namespace SimpleWeather.WeatherData
                         case nameof(feelslike_f):
                             obj.feelslike_f = float.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(feelslike_c):
                             obj.feelslike_c = float.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(humidity):
                             obj.humidity = reader.Value?.ToString();
                             break;
+
                         case nameof(dewpoint_f):
                             obj.dewpoint_f = reader.Value?.ToString();
                             break;
+
                         case nameof(dewpoint_c):
                             obj.dewpoint_c = reader.Value?.ToString();
                             break;
+
                         case nameof(uv_index):
                             obj.uv_index = float.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(pop):
                             obj.pop = reader.Value?.ToString();
                             break;
+
                         case nameof(qpf_rain_in):
                             obj.qpf_rain_in = float.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(qpf_rain_mm):
                             obj.qpf_rain_mm = float.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(qpf_snow_in):
                             obj.qpf_snow_in = float.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(qpf_snow_cm):
                             obj.qpf_snow_cm = float.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(pressure_mb):
                             obj.pressure_mb = reader.Value?.ToString();
                             break;
+
                         case nameof(pressure_in):
                             obj.pressure_in = reader.Value?.ToString();
                             break;
+
                         case nameof(wind_degrees):
                             obj.wind_degrees = int.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(wind_mph):
                             obj.wind_mph = float.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(wind_kph):
                             obj.wind_kph = float.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(visibility_mi):
                             obj.visibility_mi = reader.Value?.ToString();
                             break;
+
                         case nameof(visibility_km):
                             obj.visibility_km = reader.Value?.ToString();
                             break;
+
                         default:
                             break;
                     }
@@ -1767,6 +1866,11 @@ namespace SimpleWeather.WeatherData
             catch (Exception)
             {
                 obj = null;
+            }
+            finally
+            {
+                if (disposeReader)
+                    reader?.Close();
             }
 
             return obj;
@@ -2011,7 +2115,7 @@ namespace SimpleWeather.WeatherData
                 temp_c = 0.00f;
                 temp_f = 0.00f;
             }
-            wind_degrees = (int) obsCurrentRootObject.windDirection.value.GetValueOrDefault(0);
+            wind_degrees = (int)obsCurrentRootObject.windDirection.value.GetValueOrDefault(0);
 
             if (obsCurrentRootObject.windSpeed.value.HasValue)
             {
@@ -2043,17 +2147,21 @@ namespace SimpleWeather.WeatherData
         public static Condition FromJson(JsonReader extReader)
         {
             Condition obj = null;
+            bool disposeReader = false;
+            JsonReader reader = null;
 
             try
             {
                 obj = new Condition();
-                JsonReader reader;
 
                 if (extReader.Value == null)
                     reader = extReader;
                 else
                 {
-                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString()));
+                    disposeReader = true;
+#pragma warning disable CA2000 // Dispose objects before losing scope
+                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString())) { CloseInput = true };
+#pragma warning restore CA2000 // Dispose objects before losing scope
                     reader.Read(); // StartObject
                 }
 
@@ -2070,36 +2178,47 @@ namespace SimpleWeather.WeatherData
                         case nameof(weather):
                             obj.weather = reader.Value?.ToString();
                             break;
+
                         case nameof(temp_f):
                             obj.temp_f = float.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(temp_c):
                             obj.temp_c = float.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(wind_degrees):
                             obj.wind_degrees = int.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(wind_mph):
                             obj.wind_mph = float.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(wind_kph):
                             obj.wind_kph = float.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(feelslike_f):
                             obj.feelslike_f = float.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(feelslike_c):
                             obj.feelslike_c = float.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(icon):
                             obj.icon = reader.Value?.ToString();
                             break;
+
                         case nameof(beaufort):
                             obj.beaufort = Beaufort.FromJson(reader);
                             break;
+
                         case nameof(uv):
                             obj.uv = UV.FromJson(reader);
                             break;
+
                         default:
                             break;
                     }
@@ -2108,6 +2227,11 @@ namespace SimpleWeather.WeatherData
             catch (Exception)
             {
                 obj = null;
+            }
+            finally
+            {
+                if (disposeReader)
+                    reader?.Close();
             }
 
             return obj;
@@ -2289,7 +2413,7 @@ namespace SimpleWeather.WeatherData
         {
             if (obsCurrentRootObject.relativeHumidity.value.HasValue)
             {
-                humidity = ((int) Math.Round(obsCurrentRootObject.relativeHumidity.value.GetValueOrDefault(0.00f))).ToString();
+                humidity = ((int)Math.Round(obsCurrentRootObject.relativeHumidity.value.GetValueOrDefault(0.00f))).ToString();
             }
 
             if (obsCurrentRootObject.barometricPressure.value.HasValue)
@@ -2316,17 +2440,21 @@ namespace SimpleWeather.WeatherData
         public static Atmosphere FromJson(JsonReader extReader)
         {
             Atmosphere obj = null;
+            bool disposeReader = false;
+            JsonReader reader = null;
 
             try
             {
                 obj = new Atmosphere();
-                JsonReader reader;
 
                 if (extReader.Value == null)
                     reader = extReader;
                 else
                 {
-                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString()));
+                    disposeReader = true;
+#pragma warning disable CA2000 // Dispose objects before losing scope
+                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString())) { CloseInput = true };
+#pragma warning restore CA2000 // Dispose objects before losing scope
                     reader.Read(); // StartObject
                 }
 
@@ -2343,27 +2471,35 @@ namespace SimpleWeather.WeatherData
                         case nameof(humidity):
                             obj.humidity = reader.Value?.ToString();
                             break;
+
                         case nameof(pressure_mb):
                             obj.pressure_mb = reader.Value?.ToString();
                             break;
+
                         case nameof(pressure_in):
                             obj.pressure_in = reader.Value?.ToString();
                             break;
+
                         case nameof(pressure_trend):
                             obj.pressure_trend = reader.Value?.ToString();
                             break;
+
                         case nameof(visibility_mi):
                             obj.visibility_mi = reader.Value?.ToString();
                             break;
+
                         case nameof(visibility_km):
                             obj.visibility_km = reader.Value?.ToString();
                             break;
+
                         case nameof(dewpoint_f):
                             obj.dewpoint_f = reader.Value?.ToString();
                             break;
+
                         case nameof(dewpoint_c):
                             obj.dewpoint_c = reader.Value?.ToString();
                             break;
+
                         default:
                             break;
                     }
@@ -2372,6 +2508,11 @@ namespace SimpleWeather.WeatherData
             catch (Exception)
             {
                 obj = null;
+            }
+            finally
+            {
+                if (disposeReader)
+                    reader?.Close();
             }
 
             return obj;
@@ -2698,30 +2839,37 @@ namespace SimpleWeather.WeatherData
                     this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.NewMoon,
                             astroData.moonPhaseDesc);
                     break;
+
                 case "cw_waxing_crescent":
                     this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.WaxingCrescent,
                             astroData.moonPhaseDesc);
                     break;
+
                 case "cw_first_qtr":
                     this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.FirstQtr,
                             astroData.moonPhaseDesc);
                     break;
+
                 case "cw_waxing_gibbous":
                     this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.WaxingGibbous,
                             astroData.moonPhaseDesc);
                     break;
+
                 case "cw_full_moon":
                     this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.FullMoon,
                             astroData.moonPhaseDesc);
                     break;
+
                 case "cw_waning_gibbous":
                     this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.WaningGibbous,
                             astroData.moonPhaseDesc);
                     break;
+
                 case "cw_last_quarter":
                     this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.LastQtr,
                             astroData.moonPhaseDesc);
                     break;
+
                 case "cw_waning_crescent":
                     this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.WaningCrescent,
                             astroData.moonPhaseDesc);
@@ -2732,17 +2880,21 @@ namespace SimpleWeather.WeatherData
         public static Astronomy FromJson(JsonReader extReader)
         {
             Astronomy obj = null;
+            bool disposeReader = false;
+            JsonReader reader = null;
 
             try
             {
                 obj = new Astronomy();
-                JsonReader reader;
 
                 if (extReader.Value == null)
                     reader = extReader;
                 else
                 {
-                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString()));
+                    disposeReader = true;
+#pragma warning disable CA2000 // Dispose objects before losing scope
+                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString())) { CloseInput = true };
+#pragma warning restore CA2000 // Dispose objects before losing scope
                     reader.Read(); // StartObject
                 }
 
@@ -2759,18 +2911,23 @@ namespace SimpleWeather.WeatherData
                         case nameof(sunrise):
                             obj.sunrise = DateTime.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(sunset):
                             obj.sunset = DateTime.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(moonrise):
                             obj.moonrise = DateTime.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(moonset):
                             obj.moonset = DateTime.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(moonphase):
                             obj.moonphase = MoonPhase.FromJson(reader);
                             break;
+
                         default:
                             break;
                     }
@@ -2779,6 +2936,11 @@ namespace SimpleWeather.WeatherData
             catch (Exception)
             {
                 obj = null;
+            }
+            finally
+            {
+                if (disposeReader)
+                    reader?.Close();
             }
 
             return obj;
@@ -2892,17 +3054,21 @@ namespace SimpleWeather.WeatherData
         public static Precipitation FromJson(JsonReader extReader)
         {
             Precipitation obj = null;
+            bool disposeReader = false;
+            JsonReader reader = null;
 
             try
             {
                 obj = new Precipitation();
-                JsonReader reader;
 
                 if (extReader.Value == null)
                     reader = extReader;
                 else
                 {
-                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString()));
+                    disposeReader = true;
+#pragma warning disable CA2000 // Dispose objects before losing scope
+                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString())) { CloseInput = true };
+#pragma warning restore CA2000 // Dispose objects before losing scope
                     reader.Read(); // StartObject
                 }
 
@@ -2919,18 +3085,23 @@ namespace SimpleWeather.WeatherData
                         case nameof(pop):
                             obj.pop = reader.Value?.ToString();
                             break;
+
                         case nameof(qpf_rain_in):
                             obj.qpf_rain_in = float.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(qpf_rain_mm):
                             obj.qpf_rain_mm = float.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(qpf_snow_in):
                             obj.qpf_snow_in = float.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(qpf_snow_cm):
                             obj.qpf_snow_cm = float.Parse(reader.Value?.ToString());
                             break;
+
                         default:
                             break;
                     }
@@ -2939,6 +3110,11 @@ namespace SimpleWeather.WeatherData
             catch (Exception)
             {
                 obj = null;
+            }
+            finally
+            {
+                if (disposeReader)
+                    reader?.Close();
             }
 
             return obj;
@@ -3000,7 +3176,7 @@ namespace SimpleWeather.WeatherData
             B12 = 12
         }
 
-        public BeaufortScale scale;
+        public BeaufortScale scale { get; set; }
         public string desc { get; set; }
 
         [JsonConstructor]
@@ -3017,50 +3193,62 @@ namespace SimpleWeather.WeatherData
                     scale = BeaufortScale.B0;
                     desc = App.ResLoader.GetString("Beaufort_0");
                     break;
+
                 case 1:
                     scale = BeaufortScale.B1;
                     desc = App.ResLoader.GetString("Beaufort_1");
                     break;
+
                 case 2:
                     scale = BeaufortScale.B2;
                     desc = App.ResLoader.GetString("Beaufort_2");
                     break;
+
                 case 3:
                     scale = BeaufortScale.B3;
                     desc = App.ResLoader.GetString("Beaufort_3");
                     break;
+
                 case 4:
                     scale = BeaufortScale.B4;
                     desc = App.ResLoader.GetString("Beaufort_4");
                     break;
+
                 case 5:
                     scale = BeaufortScale.B5;
                     desc = App.ResLoader.GetString("Beaufort_5");
                     break;
+
                 case 6:
                     scale = BeaufortScale.B6;
                     desc = App.ResLoader.GetString("Beaufort_6");
                     break;
+
                 case 7:
                     scale = BeaufortScale.B7;
                     desc = App.ResLoader.GetString("Beaufort_7");
                     break;
+
                 case 8:
                     scale = BeaufortScale.B8;
                     desc = App.ResLoader.GetString("Beaufort_8");
                     break;
+
                 case 9:
                     scale = BeaufortScale.B9;
                     desc = App.ResLoader.GetString("Beaufort_9");
                     break;
+
                 case 10:
                     scale = BeaufortScale.B10;
                     desc = App.ResLoader.GetString("Beaufort_10");
                     break;
+
                 case 11:
                     scale = BeaufortScale.B11;
                     desc = App.ResLoader.GetString("Beaufort_11");
                     break;
+
                 case 12:
                     scale = BeaufortScale.B12;
                     desc = App.ResLoader.GetString("Beaufort_12");
@@ -3078,17 +3266,21 @@ namespace SimpleWeather.WeatherData
         public static Beaufort FromJson(JsonReader extReader)
         {
             Beaufort obj = null;
+            bool disposeReader = false;
+            JsonReader reader = null;
 
             try
             {
                 obj = new Beaufort();
-                JsonReader reader;
 
                 if (extReader.Value == null)
                     reader = extReader;
                 else
                 {
-                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString()));
+                    disposeReader = true;
+#pragma warning disable CA2000 // Dispose objects before losing scope
+                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString())) { CloseInput = true };
+#pragma warning restore CA2000 // Dispose objects before losing scope
                     reader.Read(); // StartObject
                 }
 
@@ -3105,9 +3297,11 @@ namespace SimpleWeather.WeatherData
                         case nameof(scale):
                             obj.scale = (BeaufortScale)int.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(desc):
                             obj.desc = reader.Value?.ToString();
                             break;
+
                         default:
                             break;
                     }
@@ -3116,6 +3310,11 @@ namespace SimpleWeather.WeatherData
             catch (Exception)
             {
                 obj = null;
+            }
+            finally
+            {
+                if (disposeReader)
+                    reader?.Close();
             }
 
             return obj;
@@ -3160,7 +3359,7 @@ namespace SimpleWeather.WeatherData
             WaningCrescent
         }
 
-        public MoonPhaseType phase;
+        public MoonPhaseType phase { get; set; }
         public string desc { get; set; }
 
         [JsonConstructor]
@@ -3178,24 +3377,31 @@ namespace SimpleWeather.WeatherData
                 case MoonPhaseType.NewMoon:
                     desc = App.ResLoader.GetString("MoonPhase_New");
                     break;
+
                 case MoonPhaseType.WaxingCrescent:
                     desc = App.ResLoader.GetString("MoonPhase_WaxCrescent");
                     break;
+
                 case MoonPhaseType.FirstQtr:
                     desc = App.ResLoader.GetString("MoonPhase_FirstQtr");
                     break;
+
                 case MoonPhaseType.WaxingGibbous:
                     desc = App.ResLoader.GetString("MoonPhase_WaxGibbous");
                     break;
+
                 case MoonPhaseType.FullMoon:
                     desc = App.ResLoader.GetString("MoonPhase_Full");
                     break;
+
                 case MoonPhaseType.WaningGibbous:
                     desc = App.ResLoader.GetString("MoonPhase_WanGibbous");
                     break;
+
                 case MoonPhaseType.LastQtr:
                     desc = App.ResLoader.GetString("MoonPhase_LastQtr");
                     break;
+
                 case MoonPhaseType.WaningCrescent:
                     desc = App.ResLoader.GetString("MoonPhase_WanCrescent");
                     break;
@@ -3212,17 +3418,21 @@ namespace SimpleWeather.WeatherData
         public static MoonPhase FromJson(JsonReader extReader)
         {
             MoonPhase obj = null;
+            bool disposeReader = false;
+            JsonReader reader = null;
 
             try
             {
                 obj = new MoonPhase();
-                JsonReader reader;
 
                 if (extReader.Value == null)
                     reader = extReader;
                 else
                 {
-                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString()));
+                    disposeReader = true;
+#pragma warning disable CA2000 // Dispose objects before losing scope
+                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString())) { CloseInput = true };
+#pragma warning restore CA2000 // Dispose objects before losing scope
                     reader.Read(); // StartObject
                 }
 
@@ -3239,9 +3449,11 @@ namespace SimpleWeather.WeatherData
                         case nameof(phase):
                             obj.phase = (MoonPhaseType)int.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(desc):
                             obj.desc = reader.Value?.ToString();
                             break;
+
                         default:
                             break;
                     }
@@ -3250,6 +3462,11 @@ namespace SimpleWeather.WeatherData
             catch (Exception)
             {
                 obj = null;
+            }
+            finally
+            {
+                if (disposeReader)
+                    reader?.Close();
             }
 
             return obj;
@@ -3327,17 +3544,21 @@ namespace SimpleWeather.WeatherData
         public static UV FromJson(JsonReader extReader)
         {
             UV obj = null;
+            bool disposeReader = false;
+            JsonReader reader = null;
 
             try
             {
                 obj = new UV();
-                JsonReader reader;
 
                 if (extReader.Value == null)
                     reader = extReader;
                 else
                 {
-                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString()));
+                    disposeReader = true;
+#pragma warning disable CA2000 // Dispose objects before losing scope
+                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString())) { CloseInput = true };
+#pragma warning restore CA2000 // Dispose objects before losing scope
                     reader.Read(); // StartObject
                 }
 
@@ -3354,9 +3575,11 @@ namespace SimpleWeather.WeatherData
                         case nameof(index):
                             obj.index = float.Parse(reader.Value?.ToString());
                             break;
+
                         case nameof(desc):
                             obj.desc = reader.Value?.ToString();
                             break;
+
                         default:
                             break;
                     }
@@ -3365,6 +3588,11 @@ namespace SimpleWeather.WeatherData
             catch (Exception)
             {
                 obj = null;
+            }
+            finally
+            {
+                if (disposeReader)
+                    reader?.Close();
             }
 
             return obj;

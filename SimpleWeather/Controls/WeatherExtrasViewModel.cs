@@ -1,19 +1,16 @@
-﻿using SimpleWeather.Utils;
-using SimpleWeather.WeatherData;
+﻿using SimpleWeather.WeatherData;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using Windows.System.UserProfile;
-using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
 
 namespace SimpleWeather.Controls
 {
     public class WeatherExtrasViewModel : INotifyPropertyChanged
     {
         #region DependencyProperties
+
         private ObservableCollection<HourlyForecastItemViewModel> hourlyForecast;
         private ObservableCollection<TextForecastItemViewModel> textForecast;
         private ObservableCollection<WeatherAlertViewModel> alerts;
@@ -24,13 +21,16 @@ namespace SimpleWeather.Controls
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
-        #endregion
+
+        #endregion DependencyProperties
 
         #region Properties
-        public ObservableCollection<HourlyForecastItemViewModel> HourlyForecast { get => hourlyForecast; set { hourlyForecast = value; OnPropertyChanged("HourlyForecast"); } }
-        public ObservableCollection<TextForecastItemViewModel> TextForecast { get => textForecast; set { textForecast = value; OnPropertyChanged("TextForecast"); } }
-        public ObservableCollection<WeatherAlertViewModel> Alerts { get => alerts; set { alerts = value; OnPropertyChanged("Alerts"); } }
-        #endregion
+
+        public ObservableCollection<HourlyForecastItemViewModel> HourlyForecast { get => hourlyForecast; private set { hourlyForecast = value; OnPropertyChanged("HourlyForecast"); } }
+        public ObservableCollection<TextForecastItemViewModel> TextForecast { get => textForecast; private set { textForecast = value; OnPropertyChanged("TextForecast"); } }
+        public ObservableCollection<WeatherAlertViewModel> Alerts { get => alerts; private set { alerts = value; OnPropertyChanged("Alerts"); } }
+
+        #endregion Properties
 
         public WeatherExtrasViewModel()
         {
@@ -77,7 +77,7 @@ namespace SimpleWeather.Controls
 
             if (weather.weather_alerts != null && weather.weather_alerts.Count > 0)
             {
-                foreach(WeatherAlert alert in weather.weather_alerts)
+                foreach (WeatherAlert alert in weather.weather_alerts)
                 {
                     // Skip if alert has expired
                     if (alert.ExpiresDate <= DateTimeOffset.Now)

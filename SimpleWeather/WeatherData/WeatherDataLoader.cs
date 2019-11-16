@@ -1,13 +1,11 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using SimpleWeather.Location;
 using SimpleWeather.Utils;
-using System.Globalization;
-using SimpleWeather.UWP;
-using Windows.System.UserProfile;
-using SimpleWeather.Location;
 using SimpleWeather.UWP.Tiles;
+using System;
+using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using Windows.System.UserProfile;
 
 namespace SimpleWeather.WeatherData
 {
@@ -56,7 +54,7 @@ namespace SimpleWeather.WeatherData
 
         private ConfiguredTaskAwaitable GetWeatherData()
         {
-            return AsyncTask.RunAsync(async () => 
+            return AsyncTask.RunAsync(async () =>
             {
                 WeatherException wEx = null;
                 bool loadedSavedData = false;
@@ -246,7 +244,7 @@ namespace SimpleWeather.WeatherData
                     Logger.WriteLine(LoggerLevel.Error, ex, "WeatherDataLoader: error loading saved weather data");
                 }
 
-                var userlang = GlobalizationPreferences.Languages.First();
+                var userlang = GlobalizationPreferences.Languages[0];
                 var culture = new CultureInfo(userlang);
                 var locale = wm.LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
@@ -282,7 +280,7 @@ namespace SimpleWeather.WeatherData
                 Logger.WriteLine(LoggerLevel.Error, ex, "WeatherDataLoader: error loading saved weather data");
             }
 
-            var userlang = GlobalizationPreferences.Languages.First();
+            var userlang = GlobalizationPreferences.Languages[0];
             var culture = new CultureInfo(userlang);
             var locale = wm.LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
@@ -325,7 +323,7 @@ namespace SimpleWeather.WeatherData
 
         private ConfiguredTaskAwaitable SaveWeatherAlerts()
         {
-            return AsyncTask.RunAsync(async () => 
+            return AsyncTask.RunAsync(async () =>
             {
                 if (weather.weather_alerts != null)
                 {
@@ -346,7 +344,6 @@ namespace SimpleWeather.WeatherData
                             }
                         }
                     }
-
 
                     await Settings.SaveWeatherAlerts(location, weather.weather_alerts);
                 }

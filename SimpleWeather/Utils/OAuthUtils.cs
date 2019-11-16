@@ -98,7 +98,9 @@ namespace SimpleWeather.Utils
              "GET&", Uri.EscapeDataString(url.AbsoluteWithoutQuery()), "&", Uri.EscapeDataString(lSign)
             );
 
+#pragma warning disable CA5350 // Do Not Use Weak Cryptographic Algorithms
             using (var lHasher = new HMACSHA1(Encoding.ASCII.GetBytes(lCKey)))
+#pragma warning restore CA5350 // Do Not Use Weak Cryptographic Algorithms
             {
                 lSign = Convert.ToBase64String(lHasher.ComputeHash(Encoding.ASCII.GetBytes(lSign)));
             }

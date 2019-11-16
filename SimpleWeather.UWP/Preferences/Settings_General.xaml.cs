@@ -1,28 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using SimpleWeather.Utils;
-using Windows.ApplicationModel;
-using Windows.Devices.Geolocation;
-using Windows.UI.Popups;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.ApplicationModel.Core;
-using Windows.UI.Xaml.Navigation;
-using Windows.Storage;
-using Windows.UI.Xaml.Media;
-using Windows.UI;
-using Windows.UI.Core;
-using Windows.Foundation.Metadata;
-using Windows.UI.ViewManagement;
-using System.Threading.Tasks;
-using SimpleWeather.WeatherData;
+﻿using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
+using SimpleWeather.UWP.Controls;
 using SimpleWeather.UWP.Helpers;
 using SimpleWeather.UWP.Main;
-using SimpleWeather.UWP.Controls;
 using SimpleWeather.UWP.Tiles;
-using Microsoft.AppCenter.Analytics;
+using SimpleWeather.WeatherData;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Windows.ApplicationModel;
+using Windows.Devices.Geolocation;
+using Windows.UI;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -152,15 +144,19 @@ namespace SimpleWeather.UWP.Preferences
                 default:
                     RefreshComboBox.SelectedIndex = 0;
                     break;
+
                 case 120:
                     RefreshComboBox.SelectedIndex = 1;
                     break;
+
                 case 180:
                     RefreshComboBox.SelectedIndex = 2;
                     break;
+
                 case 360:
                     RefreshComboBox.SelectedIndex = 3;
                     break;
+
                 case 720:
                     RefreshComboBox.SelectedIndex = 4;
                     break;
@@ -280,7 +276,7 @@ namespace SimpleWeather.UWP.Preferences
                 {
                     if (await WeatherManager.IsKeyValid(key, API))
                     {
-                        await AsyncTask.RunOnUIThread(() => 
+                        await AsyncTask.RunOnUIThread(() =>
                         {
                             KeyEntry.Text = Settings.API_KEY = key;
                             Settings.API = API;
@@ -497,8 +493,9 @@ namespace SimpleWeather.UWP.Preferences
                         // Reset home location data
                         //Settings.SaveLastGPSLocData(new WeatherData.LocationData());
                         break;
+
                     case GeolocationAccessStatus.Denied:
-                        await AsyncTask.RunOnUIThread(() => 
+                        await AsyncTask.RunOnUIThread(() =>
                         {
                             var snackbar = Snackbar.Make(App.ResLoader.GetString("Msg_LocDeniedSettings"), SnackbarDuration.Long);
                             snackbar.SetAction(App.ResLoader.GetString("Label_Settings"), async () =>
@@ -509,6 +506,7 @@ namespace SimpleWeather.UWP.Preferences
                             sw.IsOn = false;
                         });
                         break;
+
                     case GeolocationAccessStatus.Unspecified:
                         await AsyncTask.RunOnUIThread(() =>
                         {
@@ -516,6 +514,7 @@ namespace SimpleWeather.UWP.Preferences
                             sw.IsOn = false;
                         });
                         break;
+
                     default:
                         break;
                 }

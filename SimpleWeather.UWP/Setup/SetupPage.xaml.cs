@@ -1,27 +1,14 @@
-﻿using SimpleWeather.Controls;
-using SimpleWeather.Location;
+﻿using SimpleWeather.Location;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Controls;
 using SimpleWeather.UWP.Helpers;
 using SimpleWeather.UWP.Main;
-using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
-using Windows.Devices.Geolocation;
-using Windows.UI;
-using Windows.UI.Core;
-using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
-using Windows.UI.Xaml.Shapes;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 namespace SimpleWeather.UWP.Setup
@@ -52,7 +39,7 @@ namespace SimpleWeather.UWP.Setup
             AppFrame.Navigated += AppFrame_Navigated;
             BackBtn.Click += BackBtn_Click;
             NextBtn.Click += NextBtn_Click;
-            
+
             // Setup Pages & Indicator
             if (Settings.WeatherLoaded)
             {
@@ -66,7 +53,7 @@ namespace SimpleWeather.UWP.Setup
         {
             PageIdx++;
             if (PageIdx >= Pages.Count) PageIdx = 0;
-            
+
             if (!(AppFrame.Content is IPageVerification page) || page.CanContinue())
                 AppFrame.Navigate(Pages[PageIdx]);
         }

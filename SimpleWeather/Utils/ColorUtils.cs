@@ -1,17 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using Windows.UI;
 using Windows.UI.ViewManagement;
 
 namespace SimpleWeather.Utils
 {
-    public class ColorUtils
+    public static class ColorUtils
     {
         private const float MIN_CONTRAST_RATIO = 2f;
         private static ThreadLocal<double[]> TEMP_ARRAY = new ThreadLocal<double[]>();
-        
+
         public static Color GetAccentColor()
         {
             var uiSettings = new UISettings();

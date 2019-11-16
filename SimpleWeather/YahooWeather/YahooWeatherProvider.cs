@@ -1,25 +1,14 @@
-﻿using SimpleWeather.Controls;
+﻿using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
 using System.Globalization;
-using SimpleWeather.UWP.Controls;
-using Windows.Storage.Streams;
-using Windows.UI;
-using Windows.UI.Core;
-using Windows.UI.Popups;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.Web;
 using Windows.Web.Http;
 using Windows.Web.Http.Headers;
-using SimpleWeather.Location;
-using System.Threading;
 
 namespace SimpleWeather.WeatherYahoo
 {
@@ -27,7 +16,7 @@ namespace SimpleWeather.WeatherYahoo
     {
         public YahooWeatherProvider() : base()
         {
-            locProvider = new Bing.BingMapsLocationProvider();
+            LocationProvider = new Bing.BingMapsLocationProvider();
         }
 
         public override string WeatherAPI => WeatherData.WeatherAPI.Yahoo;
@@ -58,7 +47,6 @@ namespace SimpleWeather.WeatherYahoo
 
             OAuthRequest authRequest = new OAuthRequest(APIKeys.GetYahooCliID(), APIKeys.GetYahooCliSecr());
 
-            HttpClient webClient = new HttpClient();
             WeatherException wEx = null;
 
             try
@@ -68,14 +56,14 @@ namespace SimpleWeather.WeatherYahoo
                 string authorization = authRequest.GetAuthorizationHeader(weatherURL);
 
                 // Get response
+                using (HttpClient webClient = new HttpClient())
                 using (var request = new HttpRequestMessage(HttpMethod.Get, weatherURL))
+                using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                 {
                     // Add headers to request
                     request.Headers.Add("Authorization", authorization);
                     request.Headers.Add("X-Yahoo-App-Id", APIKeys.GetYahooAppID());
                     request.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/json"));
-
-                    CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
 
                     HttpResponseMessage response = await webClient.SendRequestAsync(request, HttpCompletionOption.ResponseHeadersRead).AsTask(cts.Token);
                     response.EnsureSuccessStatusCode();
@@ -90,8 +78,7 @@ namespace SimpleWeather.WeatherYahoo
                     });
 
                     // End Stream
-                    if (contentStream != null)
-                        contentStream.Dispose();
+                    contentStream?.Dispose();
                 }
             }
             catch (Exception ex)
@@ -104,9 +91,6 @@ namespace SimpleWeather.WeatherYahoo
 
                 Logger.WriteLine(LoggerLevel.Error, ex, "YahooWeatherProvider: error getting weather data");
             }
-
-            // End Stream
-            webClient.Dispose();
 
             if (wEx != null)
                 throw wEx;
@@ -206,6 +190,7 @@ namespace SimpleWeather.WeatherYahoo
                     case 33: // Fair (Night)
                         isNight = true;
                         break;
+
                     default:
                         break;
                 }
@@ -225,6 +210,7 @@ namespace SimpleWeather.WeatherYahoo
                     case 0: // Tornado
                         WeatherIcon = WeatherIcons.TORNADO;
                         break;
+
                     case 1: // Tropical Storm
                     case 37:
                     case 38: // Scattered Thunderstorms/showers
@@ -236,13 +222,16 @@ namespace SimpleWeather.WeatherYahoo
                         else
                             WeatherIcon = WeatherIcons.DAY_STORM_SHOWERS;
                         break;
+
                     case 2: // Hurricane
                         WeatherIcon = WeatherIcons.HURRICANE;
                         break;
+
                     case 3:
                     case 4: // Scattered Thunderstorms
                         WeatherIcon = WeatherIcons.THUNDERSTORM;
                         break;
+
                     case 5: // Mixed Rain/Snow
                     case 6: // Mixed Rain/Sleet
                     case 7: // Mixed Snow/Sleet
@@ -250,17 +239,20 @@ namespace SimpleWeather.WeatherYahoo
                     case 35: // Mixed Rain/Hail
                         WeatherIcon = WeatherIcons.RAIN_MIX;
                         break;
+
                     case 8: // Freezing Drizzle
                     case 10: // Freezing Rain
                     case 17: // Hail
                         WeatherIcon = WeatherIcons.HAIL;
                         break;
+
                     case 9: // Drizzle
                     case 11: // Showers
                     case 12:
                     case 40: // Scattered Showers
                         WeatherIcon = WeatherIcons.SHOWERS;
                         break;
+
                     case 13: // Snow Flurries
                     case 14: // Light Snow Showers
                     case 16: // Snow
@@ -268,36 +260,45 @@ namespace SimpleWeather.WeatherYahoo
                     case 46: // Snow Showers
                         WeatherIcon = WeatherIcons.SNOW;
                         break;
+
                     case 15: // Blowing Snow
                     case 41: // Heavy Snow
                     case 43:
                         WeatherIcon = WeatherIcons.SNOW_WIND;
                         break;
+
                     case 19: // Dust
                         WeatherIcon = WeatherIcons.DUST;
                         break;
+
                     case 20: // Foggy
                         WeatherIcon = WeatherIcons.FOG;
                         break;
+
                     case 21: // Haze
                         if (isNight)
                             WeatherIcon = WeatherIcons.WINDY;
                         else
                             WeatherIcon = WeatherIcons.DAY_HAZE;
                         break;
+
                     case 22: // Smoky
                         WeatherIcon = WeatherIcons.SMOKE;
                         break;
+
                     case 23: // Blustery
                     case 24: // Windy
                         WeatherIcon = WeatherIcons.STRONG_WIND;
                         break;
+
                     case 25: // Cold
                         WeatherIcon = WeatherIcons.SNOWFLAKE_COLD;
                         break;
+
                     case 26: // Cloudy
                         WeatherIcon = WeatherIcons.CLOUDY;
                         break;
+
                     case 27: // Mostly Cloudy (Night)
                     case 28: // Mostly Cloudy (Day)
                     case 29: // Partly Cloudy (Night)
@@ -307,6 +308,7 @@ namespace SimpleWeather.WeatherYahoo
                         else
                             WeatherIcon = WeatherIcons.DAY_CLOUDY;
                         break;
+
                     case 31: // Clear (Night)
                     case 32: // Sunny
                         if (isNight)
@@ -314,6 +316,7 @@ namespace SimpleWeather.WeatherYahoo
                         else
                             WeatherIcon = WeatherIcons.DAY_SUNNY;
                         break;
+
                     case 33: // Fair (Night)
                     case 34: // Fair (Day)
                     case 44: // Partly Cloudy
@@ -322,12 +325,14 @@ namespace SimpleWeather.WeatherYahoo
                         else
                             WeatherIcon = WeatherIcons.DAY_SUNNY_OVERCAST;
                         break;
+
                     case 36: // HOT
                         if (isNight)
                             WeatherIcon = WeatherIcons.NIGHT_CLEAR;
                         else
                             WeatherIcon = WeatherIcons.DAY_HOT;
                         break;
+
                     case 3200: // Not Available
                     default:
                         WeatherIcon = WeatherIcons.NA;
@@ -384,6 +389,7 @@ namespace SimpleWeather.WeatherYahoo
                             isNight = true;
                     }
                     break;
+
                 default:
                     break;
             }

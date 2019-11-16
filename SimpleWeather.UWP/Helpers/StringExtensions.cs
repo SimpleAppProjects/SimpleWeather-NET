@@ -2,15 +2,15 @@
 //
 //     Copyright (CPOL) 1.02 Design IT Right
 //
-//     THE WORK (AS DEFINED BELOW) IS PROVIDED UNDER THE TERMS OF THIS CODE 
-//     PROJECT OPEN LICENSE ("LICENSE"). THE WORK IS PROTECTED BY COPYRIGHT 
-//     AND/OR OTHER APPLICABLE LAW. ANY USE OF THE WORK OTHER THAN AS 
+//     THE WORK (AS DEFINED BELOW) IS PROVIDED UNDER THE TERMS OF THIS CODE
+//     PROJECT OPEN LICENSE ("LICENSE"). THE WORK IS PROTECTED BY COPYRIGHT
+//     AND/OR OTHER APPLICABLE LAW. ANY USE OF THE WORK OTHER THAN AS
 //     AUTHORIZED UNDER THIS LICENSE OR COPYRIGHT LAW IS PROHIBITED.
 //
-//     BY EXERCISING ANY RIGHTS TO THE WORK PROVIDED HEREIN, YOU ACCEPT 
-//     AND AGREE TO BE BOUND BY THE TERMS OF THIS LICENSE. THE AUTHOR GRANTS 
-//     YOU THE RIGHTS CONTAINED HEREIN IN CONSIDERATION OF YOUR ACCEPTANCE OF 
-//     SUCH TERMS AND CONDITIONS. IF YOU DO NOT AGREE TO ACCEPT AND BE BOUND 
+//     BY EXERCISING ANY RIGHTS TO THE WORK PROVIDED HEREIN, YOU ACCEPT
+//     AND AGREE TO BE BOUND BY THE TERMS OF THIS LICENSE. THE AUTHOR GRANTS
+//     YOU THE RIGHTS CONTAINED HEREIN IN CONSIDERATION OF YOUR ACCEPTANCE OF
+//     SUCH TERMS AND CONDITIONS. IF YOU DO NOT AGREE TO ACCEPT AND BE BOUND
 //     BY THE TERMS OF THIS LICENSE, YOU CANNOT MAKE ANY USE OF THE WORK.
 //
 //     Author: juwikuang
@@ -19,11 +19,7 @@
 //--------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SimpleWeather.UWP.Helpers
 {
@@ -31,6 +27,11 @@ namespace SimpleWeather.UWP.Helpers
     {
         public static string ToTitleCase(this string s)
         {
+            if (string.IsNullOrWhiteSpace(s))
+            {
+                return s;
+            }
+
             var upperCase = s.ToUpper();
             var words = upperCase.Split(' ');
 
@@ -71,11 +72,15 @@ namespace SimpleWeather.UWP.Helpers
             }
 
             return string.Join(" ", words);
-
         }
 
         public static string ToPascalCase(this string s)
         {
+            if (string.IsNullOrWhiteSpace(s))
+            {
+                return s;
+            }
+
             return s.Substring(0, 1).ToUpper() + s.Substring(1).ToLower();
         }
     }

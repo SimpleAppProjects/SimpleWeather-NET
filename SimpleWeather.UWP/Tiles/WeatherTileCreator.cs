@@ -1,27 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Toolkit.Uwp.Notifications;
-using Windows.UI.Notifications;
+﻿using Microsoft.Toolkit.Uwp.Notifications;
+using SimpleWeather.Controls;
+using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
-using Windows.System.UserProfile;
 using System.Globalization;
-using SimpleWeather.Location;
-using SimpleWeather.Controls;
+using System.Linq;
+using System.Threading.Tasks;
+using Windows.System.UserProfile;
+using Windows.UI.Notifications;
 
 namespace SimpleWeather.UWP.Tiles
 {
     public static class WeatherTileCreator
     {
-        const int MEDIUM_FORECAST_LENGTH = 3;
-        const int WIDE_FORECAST_LENGTH = 3;
-        const int LARGE_FORECAST_LENGTH = 5;
+        private const int MEDIUM_FORECAST_LENGTH = 3;
+        private const int WIDE_FORECAST_LENGTH = 3;
+        private const int LARGE_FORECAST_LENGTH = 5;
 
         private static WeatherManager wm = WeatherManager.GetInstance();
-        public static bool TileUpdated = false;
+        public static bool TileUpdated { get; private set; }
 
         public enum ForecastTileType
         {

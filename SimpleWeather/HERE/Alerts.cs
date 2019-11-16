@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SimpleWeather.HERE
+﻿namespace SimpleWeather.HERE
 {
     public partial class Alerts
     {

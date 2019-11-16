@@ -2,7 +2,6 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using System.Reflection;
 using Windows.Storage;
 
 namespace SimpleWeather.Utils

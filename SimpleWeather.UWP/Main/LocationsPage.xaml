@@ -14,7 +14,7 @@
         <ScrollViewer HorizontalScrollMode="Disabled" VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto" Padding="16,8,16,0">
             <StackPanel>
                 <GridView x:Name="GPSLocationsPanel" SelectionMode="None" IsItemClickEnabled="True"
-                          Header="Current Location" Visibility="Visible" ItemsSource="{x:Bind GPSPanelViewModel}" ItemClick="LocationsPanel_ItemClick"
+                          Header="Current Location" Visibility="Visible" ItemsSource="{x:Bind GPSPanelViewModel, Mode=OneWay}" ItemClick="LocationsPanel_ItemClick"
                           IsSwipeEnabled="False" AllowDrop="False" CanReorderItems="False" CanDragItems="False"
                           HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" ScrollViewer.VerticalScrollMode="Disabled">
                     <GridView.HeaderTemplate>
@@ -24,7 +24,7 @@
                     </GridView.HeaderTemplate>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="controls:LocationPanelViewModel">
-                            <localcontrols:LocationPanel IsEnabled="False"/>
+                            <localcontrols:LocationPanel IsEnabled="False" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                     <ItemsControl.ItemsPanel>
@@ -40,7 +40,7 @@
                     </ItemsControl.ItemContainerStyle>
                 </GridView>
                 <GridView x:Name="LocationsPanel" SelectionMode="None" IsItemClickEnabled="True" Header="Favorite Locations"
-                          ItemsSource="{x:Bind LocationPanels}" ItemClick="LocationsPanel_ItemClick"
+                          ItemsSource="{x:Bind LocationPanels, Mode=OneWay}" ItemClick="LocationsPanel_ItemClick"
                           IsSwipeEnabled="False" AllowDrop="True" CanReorderItems="True" CanDragItems="True"
                           DragItemsStarting="LocationsPanel_DragItemsStarting" DragItemsCompleted="LocationsPanel_DragItemsCompleted"
                           HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
@@ -52,7 +52,7 @@
                     </GridView.HeaderTemplate>
                     <ItemsControl.Resources>
                         <SolidColorBrush x:Key="GridViewItemCheckBrush" Color="White" />
-                        <ui:FontIconSource x:Key="DeleteIcon" Glyph="&#xE107;"/>
+                        <ui:FontIconSource x:Key="DeleteIcon" Glyph="&#xE107;" />
                         <ui:SwipeItems x:Key="right" Mode="Execute">
                             <ui:SwipeItem Text="Delete" IconSource="{StaticResource DeleteIcon}" Background="#FFDB4437" Invoked="SwipeItem_Invoked" />
                         </ui:SwipeItems>
@@ -60,7 +60,7 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="controls:LocationPanelViewModel">
                             <ui:SwipeControl RightItems="{StaticResource right}" IsEnabled="{x:Bind EditMode, Mode=OneWay}">
-                                <localcontrols:LocationPanel IsEnabled="False" Holding="LocationPanel_Holding"/>
+                                <localcontrols:LocationPanel IsEnabled="False" Holding="LocationPanel_Holding" />
                             </ui:SwipeControl>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
@@ -80,11 +80,11 @@
                         HorizontalContentAlignment="Stretch" Margin="0,2.5,4,16" Style="{ThemeResource AccentButtonRevealStyle}">
                     <Grid Width="Auto" HorizontalAlignment="Center">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Viewbox Grid.Column="0">
-                            <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" Padding="2.5"/>
+                            <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" Padding="2.5" />
                         </Viewbox>
                         <TextBlock x:Uid="Label_AddLocation" Text="Add Location" VerticalAlignment="Center" Padding="5" Grid.Column="1" />
                     </Grid>

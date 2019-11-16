@@ -1,9 +1,7 @@
-﻿using SimpleWeather.WeatherData;
+﻿using SimpleWeather.UWP;
+using SimpleWeather.WeatherData;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
-using SimpleWeather.UWP;
 using Windows.System.UserProfile;
 
 namespace SimpleWeather.Controls

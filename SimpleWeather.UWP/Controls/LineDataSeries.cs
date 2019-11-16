@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SimpleWeather.UWP.Controls
 {
     public class LineDataSeries
     {
         public String SeriesLabel { get; set; }
-        public List<YEntryData> SeriesData { get; set; }
+        public List<YEntryData> SeriesData { get; private set; }
 
         public LineDataSeries(List<YEntryData> seriesData)
         {
@@ -56,6 +54,7 @@ namespace SimpleWeather.UWP.Controls
         }
     }
 
+    [SuppressMessage("Design", "CA1036:Override methods on comparable types", Justification = "<Pending>")]
     public class YEntryData : IComparable<YEntryData>
     {
         public float Y { get; set; }

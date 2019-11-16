@@ -1,6 +1,5 @@
 ﻿using SimpleWeather.Controls;
 using System;
-using System.ComponentModel;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 

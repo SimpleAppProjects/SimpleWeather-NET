@@ -1,17 +1,8 @@
-﻿using Microsoft.AppCenter.Analytics;
-using Newtonsoft.Json;
-using SimpleWeather.Location;
+﻿using SimpleWeather.Location;
 using SimpleWeather.WeatherData;
 using SQLite;
-using SQLiteNetExtensionsAsync.Extensions;
 using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Windows.Storage;
 
 namespace SimpleWeather.Utils
 {

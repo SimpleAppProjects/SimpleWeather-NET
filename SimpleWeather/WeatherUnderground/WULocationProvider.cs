@@ -1,15 +1,10 @@
 ﻿using SimpleWeather.Controls;
-using SimpleWeather.Keys;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Controls;
 using SimpleWeather.WeatherData;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
@@ -36,57 +31,57 @@ namespace SimpleWeather.WeatherUnderground
             // Limit amount of results shown
             int maxResults = 10;
 
-            try
+            using (HttpClient webClient = new HttpClient())
+            using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
             {
-                CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
-
-                // Connect to webstream
-                HttpClient webClient = new HttpClient();
-                HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
-                response.EnsureSuccessStatusCode();
-                Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-                // End Stream
-                webClient.Dispose();
-
-                // Load data
-                locations = new ObservableCollection<LocationQueryViewModel>();
-
-                var root = JSONParser.Deserializer<AC_Rootobject>(contentStream);
-
-                foreach (AC_RESULT result in root.RESULTS)
+                try
                 {
-                    // Filter: only store city results
-                    if (result.type != "city")
-                        continue;
+                    // Connect to webstream
+                    HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
+                    response.EnsureSuccessStatusCode();
+                    Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                    // End Stream
+                    webClient.Dispose();
 
-                    locations.Add(new LocationQueryViewModel(result, weatherAPI));
+                    // Load data
+                    locations = new ObservableCollection<LocationQueryViewModel>();
 
-                    // Limit amount of results
-                    maxResults--;
-                    if (maxResults <= 0)
-                        break;
+                    var root = JSONParser.Deserializer<AC_Rootobject>(contentStream);
+
+                    foreach (AC_RESULT result in root.RESULTS)
+                    {
+                        // Filter: only store city results
+                        if (result.type != "city")
+                            continue;
+
+                        locations.Add(new LocationQueryViewModel(result, weatherAPI));
+
+                        // Limit amount of results
+                        maxResults--;
+                        if (maxResults <= 0)
+                            break;
+                    }
+
+                    // End Stream
+                    contentStream?.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                    {
+                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    }
+                    Logger.WriteLine(LoggerLevel.Error, ex, "WeatherUndergroundProvider: error getting locations");
                 }
 
-                // End Stream
-                if (contentStream != null)
-                    contentStream.Dispose();
+                if (wEx != null)
+                    throw wEx;
+
+                if (locations == null || locations.Count == 0)
+                    locations = new ObservableCollection<LocationQueryViewModel>() { new LocationQueryViewModel() };
+
+                return locations;
             }
-            catch (Exception ex)
-            {
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
-                {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                }
-                Logger.WriteLine(LoggerLevel.Error, ex, "WeatherUndergroundProvider: error getting locations");
-            }
-
-            if (wEx != null)
-                throw wEx;
-
-            if (locations == null || locations.Count == 0)
-                locations = new ObservableCollection<LocationQueryViewModel>() { new LocationQueryViewModel() };
-
-            return locations;
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
@@ -101,48 +96,48 @@ namespace SimpleWeather.WeatherUnderground
             location result;
             WeatherException wEx = null;
 
-            try
+            using (HttpClient webClient = new HttpClient())
+            using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
             {
-                CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
-
-                // Connect to webstream
-                HttpClient webClient = new HttpClient();
-                HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
-                response.EnsureSuccessStatusCode();
-                Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-
-                // End Stream
-                webClient.Dispose();
-
-                // Load data
-                XmlSerializer deserializer = new XmlSerializer(typeof(location));
-                result = (location)deserializer.Deserialize(contentStream);
-
-                // End Stream
-                if (contentStream != null)
-                    contentStream.Dispose();
-            }
-            catch (Exception ex)
-            {
-                result = null;
-
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                try
                 {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    // Connect to webstream
+                    HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
+                    response.EnsureSuccessStatusCode();
+                    Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+
+                    // End Stream
+                    webClient.Dispose();
+
+                    // Load data
+                    XmlSerializer deserializer = new XmlSerializer(typeof(location));
+                    result = (location)deserializer.Deserialize(contentStream);
+
+                    // End Stream
+                    contentStream?.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    result = null;
+
+                    if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                    {
+                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    }
+
+                    Logger.WriteLine(LoggerLevel.Error, ex, "WeatherUndergroundProvider: error getting location");
                 }
 
-                Logger.WriteLine(LoggerLevel.Error, ex, "WeatherUndergroundProvider: error getting location");
+                if (wEx != null)
+                    throw wEx;
+
+                if (result != null && !String.IsNullOrWhiteSpace(result.query))
+                    location = new LocationQueryViewModel(result, weatherAPI);
+                else
+                    location = new LocationQueryViewModel();
+
+                return location;
             }
-
-            if (wEx != null)
-                throw wEx;
-
-            if (result != null && !String.IsNullOrWhiteSpace(result.query))
-                location = new LocationQueryViewModel(result, weatherAPI);
-            else
-                location = new LocationQueryViewModel();
-
-            return location;
         }
 
         public override Task<bool> IsKeyValid(string key)

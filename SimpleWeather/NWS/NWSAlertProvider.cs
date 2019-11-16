@@ -4,11 +4,9 @@ using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
-using Windows.Web;
 using Windows.Web.Http;
 using Windows.Web.Http.Headers;
 
@@ -44,6 +42,7 @@ namespace SimpleWeather.NWS
                 Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
                 // End Stream
                 webClient.Dispose();
+                cts.Dispose();
 
                 // Load data
                 alerts = new List<WeatherAlert>();

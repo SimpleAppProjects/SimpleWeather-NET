@@ -1,27 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using SimpleWeather.Controls;
+﻿using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
+using System;
+using System.Globalization;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Xml.Serialization;
-using SimpleWeather.UWP.Controls;
 using Windows.ApplicationModel;
-using Windows.Storage;
-using Windows.Storage.Streams;
-using Windows.UI;
-using Windows.UI.Core;
-using Windows.UI.Popups;
 using Windows.Web;
 using Windows.Web.Http;
 using Windows.Web.Http.Filters;
 using Windows.Web.Http.Headers;
-using System.Globalization;
-using SimpleWeather.Location;
-using System.Threading;
 
 namespace SimpleWeather.Metno
 {
@@ -29,7 +19,7 @@ namespace SimpleWeather.Metno
     {
         public MetnoWeatherProvider() : base()
         {
-            locProvider = new Bing.BingMapsLocationProvider();
+            LocationProvider = new Bing.BingMapsLocationProvider();
         }
 
         public override string WeatherAPI => WeatherData.WeatherAPI.MetNo;
@@ -66,84 +56,86 @@ namespace SimpleWeather.Metno
             string date = DateTime.Now.ToString("yyyy-MM-dd");
             sunrisesetURL = new Uri(string.Format(sunrisesetAPI, location_query, date));
 
-            var handler = new HttpBaseProtocolFilter()
+            using (var handler = new HttpBaseProtocolFilter()
             {
                 AllowAutoRedirect = true,
                 AutomaticDecompression = true
-            };
-
-            HttpClient webClient = new HttpClient(handler);
-
-            // Use GZIP compression
-            var version = string.Format("v{0}.{1}.{2}",
-                Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
-
-            webClient.DefaultRequestHeaders.AcceptEncoding.Add(new HttpContentCodingWithQualityHeaderValue("gzip"));
-            webClient.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
-
-            WeatherException wEx = null;
-
-            try
+            })
+            using (HttpClient webClient = new HttpClient(handler))
+            using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
             {
-                CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
+                // Use GZIP compression
+                var version = string.Format("v{0}.{1}.{2}",
+                    Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
 
-                // Get response
-                HttpResponseMessage forecastResponse = await webClient.GetAsync(forecastURL).AsTask(cts.Token);
-                forecastResponse.EnsureSuccessStatusCode();
-                HttpResponseMessage sunrisesetResponse = await webClient.GetAsync(sunrisesetURL).AsTask(cts.Token);
-                sunrisesetResponse.EnsureSuccessStatusCode();
+                webClient.DefaultRequestHeaders.AcceptEncoding.Add(new HttpContentCodingWithQualityHeaderValue("gzip"));
+                webClient.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
 
-                Stream forecastStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await forecastResponse.Content.ReadAsInputStreamAsync());
-                Stream sunrisesetStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await sunrisesetResponse.Content.ReadAsInputStreamAsync());
+                WeatherException wEx = null;
 
-                // Reset exception
-                wEx = null;
-
-                // Load weather
-                weatherdata foreRoot = null;
-                astrodata astroRoot = null;
-
-                XmlSerializer foreDeserializer = new XmlSerializer(typeof(weatherdata));
-                foreRoot = (weatherdata)foreDeserializer.Deserialize(forecastStream);
-                XmlSerializer astroDeserializer = new XmlSerializer(typeof(astrodata));
-                astroRoot = (astrodata)astroDeserializer.Deserialize(sunrisesetStream);
-
-                weather = new Weather(foreRoot, astroRoot);
-            }
-            catch (Exception ex)
-            {
-                weather = null;
-
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                try
                 {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    // Get response
+                    HttpResponseMessage forecastResponse = await webClient.GetAsync(forecastURL).AsTask(cts.Token);
+                    forecastResponse.EnsureSuccessStatusCode();
+                    HttpResponseMessage sunrisesetResponse = await webClient.GetAsync(sunrisesetURL).AsTask(cts.Token);
+                    sunrisesetResponse.EnsureSuccessStatusCode();
+
+                    Stream forecastStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await forecastResponse.Content.ReadAsInputStreamAsync());
+                    Stream sunrisesetStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await sunrisesetResponse.Content.ReadAsInputStreamAsync());
+
+                    // Reset exception
+                    wEx = null;
+
+                    // Load weather
+                    weatherdata foreRoot = null;
+                    astrodata astroRoot = null;
+
+                    XmlSerializer foreDeserializer = new XmlSerializer(typeof(weatherdata));
+                    foreRoot = (weatherdata)foreDeserializer.Deserialize(forecastStream);
+                    XmlSerializer astroDeserializer = new XmlSerializer(typeof(astrodata));
+                    astroRoot = (astrodata)astroDeserializer.Deserialize(sunrisesetStream);
+
+                    weather = new Weather(foreRoot, astroRoot);
+                    // Release resources
+                    cts.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    weather = null;
+
+                    if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                    {
+                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    }
+
+                    Logger.WriteLine(LoggerLevel.Error, ex, "MetnoWeatherProvider: error getting weather data");
                 }
 
-                Logger.WriteLine(LoggerLevel.Error, ex, "MetnoWeatherProvider: error getting weather data");
-            }
+                // End Stream
+                webClient.Dispose();
+                handler.Dispose();
 
-            // End Stream
-            webClient.Dispose();
-
-            if (wEx == null && (weather == null || !weather.IsValid()))
-            {
-                wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
-            }
-            else if (weather != null)
-            {
-                weather.query = location_query;
-
-                foreach (Forecast forecast in weather.forecast)
+                if (wEx == null && (weather == null || !weather.IsValid()))
                 {
-                    forecast.condition = GetWeatherCondition(forecast.icon);
-                    forecast.icon = GetWeatherIcon(forecast.icon);
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
                 }
+                else if (weather != null)
+                {
+                    weather.query = location_query;
+
+                    foreach (Forecast forecast in weather.forecast)
+                    {
+                        forecast.condition = GetWeatherCondition(forecast.icon);
+                        forecast.icon = GetWeatherIcon(forecast.icon);
+                    }
+                }
+
+                if (wEx != null)
+                    throw wEx;
+
+                return weather;
             }
-
-            if (wEx != null)
-                throw wEx;
-
-            return weather;
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
@@ -209,19 +201,23 @@ namespace SimpleWeather.Metno
                 case "1": // Sun
                     condition = "Clear";
                     break;
+
                 case "2": // LightCloud
                 case "3": // PartlyCloud
                     condition = "Partly Cloudy";
                     break;
+
                 case "4": // Cloud
                     condition = "Mostly Cloudy";
                     break;
+
                 case "5": // LightRainSun
                 case "6": // LightRainThunderSun
                 case "9": // LightRain
                 case "22": // LightRainThunder
                     condition = "Light Rain";
                     break;
+
                 case "7": // SleetSun
                 case "12": // Sleet
                 case "20": // SleetSunThunder
@@ -236,39 +232,46 @@ namespace SimpleWeather.Metno
                 case "48": // HeavySleet
                     condition = "Sleet";
                     break;
+
                 case "8": // SnowSun
                 case "13": // Snow
                 case "14": // SnowThunder
                 case "21": // SnowSunThunder
                     condition = "Snow";
                     break;
+
                 case "10": // Rain
                 case "11": // RainThunder
                 case "25": // RainThunderSun
                 case "41": // RainSun
                     condition = "Rain";
                     break;
+
                 case "15": // Fog
                     condition = "Fog";
                     break;
+
                 case "24": // DrizzleThunderSun
                 case "30": // DrizzleThunder
                 case "40": // DrizzleSun
                 case "46": // Drizzle
                     condition = "Drizzle";
                     break;
+
                 case "28": // LightSnowThunderSun
                 case "33": // LightSnowThunder
                 case "44": // LightSnowSun
                 case "49": // LightSnow
                     condition = "Light Snow";
                     break;
+
                 case "29": // HeavySnowThunderSun
                 case "34": // HeavySnowThunder
                 case "45": // HeavySnowSun
                 case "50": // HeavySnow
                     condition = "Heavy Snow";
                     break;
+
                 default:
                     condition = Weather.NA;
                     break;

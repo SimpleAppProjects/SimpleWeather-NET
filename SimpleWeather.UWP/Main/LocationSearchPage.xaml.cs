@@ -10,7 +10,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -25,7 +24,7 @@ namespace SimpleWeather.UWP.Main
     {
         private CancellationTokenSource cts = new CancellationTokenSource();
         private WeatherManager wm;
-        public ObservableCollection<LocationQueryViewModel> LocationQuerys { get; set; }
+        public ObservableCollection<LocationQueryViewModel> LocationQuerys { get; private set; }
         private ProgressRing LoadingRing { get { return Location?.ProgressRing; } }
 
         public LocationSearchPage()
@@ -57,6 +56,12 @@ namespace SimpleWeather.UWP.Main
         }
 
         private DispatcherTimer timer;
+
+        private void EnableControls(bool enable)
+        {
+            if (LoadingRing != null)
+                LoadingRing.IsActive = !enable;
+        }
 
         private void Location_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
@@ -171,7 +176,7 @@ namespace SimpleWeather.UWP.Main
             {
                 // Use args.QueryText to determine what to do.
                 var queryText = args.QueryText;
-                query_vm = await Task.Run(async () => 
+                query_vm = await Task.Run(async () =>
                 {
                     ObservableCollection<LocationQueryViewModel> results;
 
@@ -222,14 +227,14 @@ namespace SimpleWeather.UWP.Main
 
             await AsyncTask.RunOnUIThread(() =>
             {
-                LoadingRing.IsActive = true;
+                EnableControls(false);
             });
 
             if (ctsToken.IsCancellationRequested)
             {
                 await AsyncTask.RunOnUIThread(() =>
                 {
-                    LoadingRing.IsActive = false;
+                    EnableControls(true);
                 });
                 return;
             }
@@ -243,7 +248,7 @@ namespace SimpleWeather.UWP.Main
                 await AsyncTask.RunOnUIThread(() =>
                 {
                     ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_WeatherUSOnly"), SnackbarDuration.Short));
-                    LoadingRing.IsActive = false;
+                    EnableControls(true);
                 });
                 return;
             }
@@ -252,7 +257,7 @@ namespace SimpleWeather.UWP.Main
             // Data provided is incomplete
             if (WeatherAPI.Here.Equals(query_vm.LocationSource)
                     && query_vm.LocationLat == -1 && query_vm.LocationLong == -1
-                    && query_vm.LocationTZ_Long == null)
+                    && query_vm.LocationTZLong == null)
             {
                 try
                 {
@@ -263,14 +268,14 @@ namespace SimpleWeather.UWP.Main
                     await AsyncTask.RunOnUIThread(() =>
                     {
                         ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
-                        LoadingRing.IsActive = false;
+                        EnableControls(true);
                     });
                     return;
                 }
             }
             else if (WeatherAPI.BingMaps.Equals(query_vm.LocationSource)
                     && query_vm.LocationLat == -1 && query_vm.LocationLong == -1
-                    && query_vm.LocationTZ_Long == null)
+                    && query_vm.LocationTZLong == null)
             {
                 try
                 {
@@ -281,7 +286,7 @@ namespace SimpleWeather.UWP.Main
                     await AsyncTask.RunOnUIThread(() =>
                     {
                         ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
-                        LoadingRing.IsActive = false;
+                        EnableControls(true);
                     });
                     return;
                 }
@@ -302,7 +307,7 @@ namespace SimpleWeather.UWP.Main
             {
                 await AsyncTask.RunOnUIThread(() =>
                 {
-                    LoadingRing.IsActive = false;
+                    EnableControls(true);
                 });
                 return;
             }
@@ -313,7 +318,7 @@ namespace SimpleWeather.UWP.Main
                 await AsyncTask.RunOnUIThread(() =>
                 {
                     ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("WError_NoWeather"), SnackbarDuration.Short));
-                    LoadingRing.IsActive = false;
+                    EnableControls(true);
                 });
                 return;
             }
@@ -338,7 +343,7 @@ namespace SimpleWeather.UWP.Main
             {
                 await AsyncTask.RunOnUIThread(() =>
                 {
-                    LoadingRing.IsActive = false;
+                    EnableControls(true);
                 });
                 return;
             }
@@ -363,7 +368,7 @@ namespace SimpleWeather.UWP.Main
             // Hide add locations panel
             await AsyncTask.RunOnUIThread(() =>
             {
-                LoadingRing.IsActive = false;
+                EnableControls(true);
                 if (Frame.CanGoBack) Frame.GoBack(); else Frame.Navigate(typeof(LocationsPage));
             });
         }

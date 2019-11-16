@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
-using System.Threading.Tasks;
-using SimpleWeather.Controls;
+﻿using SimpleWeather.Controls;
 using SimpleWeather.HERE;
 using SimpleWeather.Location;
 using SimpleWeather.Metno;
 using SimpleWeather.NWS;
 using SimpleWeather.OpenWeather;
 using SimpleWeather.Utils;
-using SimpleWeather.WeatherUnderground;
 using SimpleWeather.WeatherYahoo;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using Windows.UI;
-using Windows.UI.Xaml.Media;
 
 namespace SimpleWeather.WeatherData
 {
@@ -28,7 +25,7 @@ namespace SimpleWeather.WeatherData
         public const string BingMaps = "Bing";
         public const string NWS = "NWS";
 
-        public static List<ProviderEntry> APIs = new List<ProviderEntry>()
+        public static readonly IReadOnlyList<ProviderEntry> APIs = new List<ProviderEntry>()
         {
             new ProviderEntry("HERE Weather", Here,
                 "https://www.here.com/en", "https://developer.here.com/?create=Freemium-Basic&keepState=true&step=account"),
@@ -42,7 +39,7 @@ namespace SimpleWeather.WeatherData
                 "http://www.openweathermap.org", "https://home.openweathermap.org/users/sign_up"),
         };
 
-        public static List<ProviderEntry> LocationAPIs = new List<ProviderEntry>()
+        public static readonly IReadOnlyList<ProviderEntry> LocationAPIs = new List<ProviderEntry>()
         {
                 new ProviderEntry("HERE Maps", Here,
                         "https://www.here.com/en", "https://developer.here.com/"),
@@ -88,18 +85,22 @@ namespace SimpleWeather.WeatherData
                 case WeatherData.WeatherAPI.Yahoo:
                     providerImpl = new YahooWeatherProvider();
                     break;
+
                 case WeatherData.WeatherAPI.Here:
 #if !DEBUG
                 default:
 #endif
                     providerImpl = new HEREWeatherProvider();
                     break;
+
                 case WeatherData.WeatherAPI.OpenWeatherMap:
                     providerImpl = new OpenWeatherMapProvider();
                     break;
+
                 case WeatherData.WeatherAPI.MetNo:
                     providerImpl = new MetnoWeatherProvider();
                     break;
+
                 case WeatherData.WeatherAPI.NWS:
                     providerImpl = new NWSWeatherProvider();
                     break;

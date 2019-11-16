@@ -11,6 +11,11 @@ namespace SimpleWeather.Utils
     {
         public async static Task<String> ReadFile(StorageFile file)
         {
+            if (file is null)
+            {
+                return null;
+            }
+
             // Wait for file to be free
             while (IsFileLocked(file))
             {

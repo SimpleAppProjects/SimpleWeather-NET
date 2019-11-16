@@ -1,20 +1,8 @@
 ﻿using SimpleWeather.Controls;
 using SimpleWeather.UWP.Helpers;
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Core;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -26,7 +14,7 @@ namespace SimpleWeather.UWP.Main
     /// </summary>
     public sealed partial class WeatherAlertPage : Page, ICommandBarPage, IBackRequestedPage
     {
-        public WeatherNowViewModel WeatherView = null;
+        public WeatherNowViewModel WeatherView { get; set; }
 
         public string CommandBarLabel { get; set; }
         public List<ICommandBarElement> PrimaryCommands { get; set; }
@@ -59,10 +47,7 @@ namespace SimpleWeather.UWP.Main
         {
             base.OnNavigatedTo(e);
 
-            if (e.Parameter != null)
-            {
-                WeatherView = e.Parameter as WeatherNowViewModel;
-            }
+            WeatherView = e?.Parameter as WeatherNowViewModel;
         }
     }
 }

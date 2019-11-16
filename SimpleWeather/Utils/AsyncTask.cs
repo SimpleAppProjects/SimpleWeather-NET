@@ -1,8 +1,6 @@
 ﻿using Microsoft.Toolkit.Uwp.Helpers;
 using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -37,7 +35,7 @@ namespace SimpleWeather.Utils
 
         public static void Run(Action action, int millisDelay)
         {
-            Task.Run(() => 
+            Task.Run(() =>
             {
                 Task.Delay(millisDelay);
 

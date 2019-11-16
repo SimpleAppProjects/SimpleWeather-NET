@@ -1,8 +1,4 @@
-﻿using SimpleWeather.Utils;
-using System;
-using System.Runtime.Serialization;
-
-namespace SimpleWeather.WeatherYahoo
+﻿namespace SimpleWeather.WeatherYahoo
 {
     public class Rootobject
     {

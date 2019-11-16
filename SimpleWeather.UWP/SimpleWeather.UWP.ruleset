@@ -69,9 +69,18 @@
     <Rule Id="CA2242" Action="Warning" />
   </Rules>
   <Rules AnalyzerId="Microsoft.CodeQuality.Analyzers" RuleNamespace="Microsoft.CodeQuality.Analyzers">
-    <Rule Id="CA1062" Action="None" />
+    <Rule Id="CA1055" Action="Info" />
+    <Rule Id="CA1707" Action="Info" />
   </Rules>
-  <Rules AnalyzerId="Microsoft.NetFramework.Analyzers" RuleNamespace="Microsoft.NetFramework.Analyzers">
-    <Rule Id="CA3075" Action="None" />
+  <Rules AnalyzerId="Microsoft.NetCore.Analyzers" RuleNamespace="Microsoft.NetCore.Analyzers">
+    <Rule Id="CA1303" Action="Info" />
+    <Rule Id="CA1304" Action="Info" />
+    <Rule Id="CA1305" Action="Info" />
+    <Rule Id="CA1307" Action="Info" />
+    <Rule Id="CA2008" Action="None" />
+  </Rules>
+  <Rules AnalyzerId="Microsoft.Toolkit.Uwp.PlatformSpecificAnalyzer" RuleNamespace="Microsoft.Toolkit.Uwp.PlatformSpecificAnalyzer">
+    <Rule Id="UWP001" Action="Error" />
+    <Rule Id="UWP002" Action="Error" />
   </Rules>
 </RuleSet>

@@ -1,8 +1,6 @@
-﻿using SimpleWeather.Location;
-using SimpleWeather.WeatherData;
+﻿using SimpleWeather.WeatherData;
 using System;
 using System.Globalization;
-using System.Runtime.Serialization;
 using Windows.System.UserProfile;
 
 namespace SimpleWeather.Utils
@@ -11,6 +9,11 @@ namespace SimpleWeather.Utils
     {
         public static String GetLastBuildDate(Weather weather)
         {
+            if (weather is null)
+            {
+                return String.Empty;
+            }
+
             var userlang = GlobalizationPreferences.Languages[0];
             var culture = new CultureInfo(userlang);
 
@@ -36,67 +39,88 @@ namespace SimpleWeather.Utils
             return date;
         }
 
-        public static String GetFeelsLikeTemp(String temp_f, String wind_mph, String humidity_percent)
+        public static String GetPressureStateIcon(string state)
         {
-            String feelslikeTemp = temp_f;
-
-            if (float.TryParse(temp_f, out float temp))
+            switch (state)
             {
-                if (temp < 50 && float.TryParse(wind_mph, out float windmph))
+                // Steady
+                case "0":
+                default:
+                    return string.Empty;
+                // Rising
+                case "1":
+                case "+":
+                case "Rising":
+                    return "\uf058\uf058";
+                // Falling
+                case "2":
+                case "-":
+                case "Falling":
+                    return "\uf044\uf044";
+            }
+        }
+
+        public static String GetFeelsLikeTemp(String tempF, String windMph, String humidityPercent)
+        {
+            String feelslikeTemp = tempF;
+
+            if (float.TryParse(tempF, out float temp))
+            {
+                if (temp < 50 && float.TryParse(windMph, out float windmph))
                 {
                     feelslikeTemp = CalculateWindChill(temp, windmph).ToString();
                 }
-                else if (temp > 80 && int.TryParse(humidity_percent, out int humidity))
+                else if (temp > 80 && int.TryParse(humidityPercent, out int humidity))
                 {
                     feelslikeTemp = CalculateHeatIndex(temp, humidity).ToString();
                 }
                 else
-                    feelslikeTemp = temp_f;
+                    feelslikeTemp = tempF;
             }
 
             return feelslikeTemp;
         }
 
-        public static float CalculateWindChill(float temp_f, float wind_mph)
+        public static float CalculateWindChill(float tempF, float windMph)
         {
-            if (temp_f < 50)
-                return (float)(35.74f + (0.6215f * temp_f) - (35.75f * Math.Pow(wind_mph, 0.16f)) + (0.4275f * temp_f * Math.Pow(wind_mph, 0.16f)));
+            if (tempF < 50)
+                return (float)(35.74f + (0.6215f * tempF) - (35.75f * Math.Pow(windMph, 0.16f)) + (0.4275f * tempF * Math.Pow(windMph, 0.16f)));
             else
-                return temp_f;
+                return tempF;
         }
 
-        public static double CalculateHeatIndex(float temp_f, int humidity)
+        public static double CalculateHeatIndex(float tempF, int humidity)
         {
-            if (temp_f > 80)
+            if (tempF > 80)
             {
                 double HI = -42.379
-                            + (2.04901523 * temp_f)
+                            + (2.04901523 * tempF)
                             + (10.14333127 * humidity)
-                            - (0.22475541 * temp_f * humidity)
-                            - (0.00683783 * Math.Pow(temp_f, 2))
+                            - (0.22475541 * tempF * humidity)
+                            - (0.00683783 * Math.Pow(tempF, 2))
                             - (0.05481717 * Math.Pow(humidity, 2))
-                            + (0.00122874 * Math.Pow(temp_f, 2) * humidity)
-                            + (0.00085282 * temp_f * Math.Pow(humidity, 2))
-                            - (0.00000199 * Math.Pow(temp_f, 2) * Math.Pow(humidity, 2));
+                            + (0.00122874 * Math.Pow(tempF, 2) * humidity)
+                            + (0.00085282 * tempF * Math.Pow(humidity, 2))
+                            - (0.00000199 * Math.Pow(tempF, 2) * Math.Pow(humidity, 2));
 
-                if (humidity < 13 && (temp_f > 80 && temp_f < 112))
+                if (humidity < 13 && (tempF > 80 && tempF < 112))
                 {
-                    double adj = ((13 - humidity) / 4f) * Math.Sqrt((17 - Math.Abs(temp_f - 95)) / 17);
+                    double adj = ((13 - humidity) / 4f) * Math.Sqrt((17 - Math.Abs(tempF - 95)) / 17);
                     HI -= adj;
                 }
-                else if (humidity > 85 && (temp_f > 80 && temp_f < 87))
+                else if (humidity > 85 && (tempF > 80 && tempF < 87))
                 {
-                    double adj = ((humidity - 85) / 10f) * ((87 - temp_f) / 5);
+                    double adj = ((humidity - 85) / 10f) * ((87 - tempF) / 5);
                     HI += adj;
                 }
 
-                if (HI > 80 && HI > temp_f)
+                if (HI > 80 && HI > tempF)
                     return HI;
                 else
-                    return temp_f;
+                    return tempF;
             }
             else
-                return temp_f;
+                return tempF;
         }
 
         public static String GetWindDirection(float angle)
@@ -232,55 +256,6 @@ namespace SimpleWeather.Utils
             else
             {
                 return 337;
-            }
-        }
-
-        public class Coordinate
-        {
-            public double Latitude { get => lat; set { SetLat(value); } }
-            public double Longitude { get => _long; set { SetLong(value); } }
-
-            private double lat = 0;
-            private double _long = 0;
-
-            private void SetLat(double value) { lat = value; }
-
-            private void SetLong(double value) { _long = value; }
-
-            public Coordinate(string coordinatePair)
-            {
-                SetCoordinate(coordinatePair);
-            }
-
-            public Coordinate(double latitude, double longitude)
-            {
-                lat = latitude;
-                _long = longitude;
-            }
-
-            public Coordinate(Windows.Devices.Geolocation.Geoposition geoPos)
-            {
-                lat = geoPos.Coordinate.Point.Position.Latitude;
-                _long = geoPos.Coordinate.Point.Position.Longitude;
-            }
-
-            public Coordinate(LocationData location)
-            {
-                lat = location.latitude;
-                _long = location.longitude;
-            }
-
-            public void SetCoordinate(string coordinatePair)
-            {
-                string[] coord = coordinatePair.Split(',');
-                lat = double.Parse(coord[0]);
-                _long = double.Parse(coord[1]);
-            }
-
-            public override string ToString()
-            {
-                return string.Format(CultureInfo.InvariantCulture, "{0},{1}",
-                    lat.ToString(CultureInfo.InvariantCulture), _long.ToString(CultureInfo.InvariantCulture));
             }
         }
 

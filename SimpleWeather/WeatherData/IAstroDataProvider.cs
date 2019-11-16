@@ -1,8 +1,5 @@
 ﻿using SimpleWeather.Location;
 using SimpleWeather.Utils;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SimpleWeather.WeatherData

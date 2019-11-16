@@ -4,9 +4,7 @@ using SimpleWeather.UWP.Tiles;
 using SimpleWeather.UWP.WeatherAlerts;
 using SimpleWeather.WeatherData;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
@@ -15,7 +13,7 @@ using Windows.UI.StartScreen;
 
 namespace SimpleWeather.UWP.BackgroundTasks
 {
-    public sealed class WeatherUpdateBackgroundTask : IBackgroundTask
+    public sealed class WeatherUpdateBackgroundTask : IBackgroundTask, IDisposable
     {
         private const string taskName = nameof(WeatherUpdateBackgroundTask);
         private CancellationTokenSource cts;
@@ -32,7 +30,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
         {
             // Get a deferral, to prevent the task from closing prematurely
             // while asynchronous code is still running.
-            var deferral = taskInstance.GetDeferral();
+            var deferral = taskInstance?.GetDeferral();
 
             taskInstance.Canceled += OnCanceled;
 
@@ -333,6 +331,11 @@ namespace SimpleWeather.UWP.BackgroundTasks
             }
 
             return locationChanged;
+        }
+
+        public void Dispose()
+        {
+            cts?.Dispose();
         }
     }
 }

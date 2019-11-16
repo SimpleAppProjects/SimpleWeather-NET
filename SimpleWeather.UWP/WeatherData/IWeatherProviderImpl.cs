@@ -1,6 +1,4 @@
-﻿using System;
-using Windows.UI;
-using Windows.UI.Xaml.Media;
+﻿using Windows.UI;
 
 namespace SimpleWeather.WeatherData
 {

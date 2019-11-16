@@ -1,18 +1,11 @@
-﻿using SimpleWeather.Utils;
-using SimpleWeather.WeatherData;
-using System;
-using System.Globalization;
-using System.ComponentModel;
-using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
+﻿using SimpleWeather.WeatherData;
 using System.Collections.Generic;
 
 namespace SimpleWeather.Controls
 {
     public class BaseForecastItemViewModel
     {
-        protected WeatherManager wm;
+        protected WeatherManager wm { get; private set; }
 
         public string WeatherIcon { get; set; }
         public string Date { get; set; }
@@ -24,7 +17,7 @@ namespace SimpleWeather.Controls
         public int WindDirection { get; set; }
         public string WindSpeed { get; set; }
 
-        public List<DetailItemViewModel> DetailExtras { get; set; }
+        public List<DetailItemViewModel> DetailExtras { get; private set; }
 
         public BaseForecastItemViewModel()
         {

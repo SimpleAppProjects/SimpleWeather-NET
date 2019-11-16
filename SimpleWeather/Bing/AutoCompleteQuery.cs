@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SimpleWeather.Bing
+﻿namespace SimpleWeather.Bing
 {
     public class AC_Rootobject
     {

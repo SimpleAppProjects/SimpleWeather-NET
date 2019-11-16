@@ -1,11 +1,9 @@
 ﻿using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using Windows.System.UserProfile;
-using Windows.UI.Xaml.Media;
 
 namespace SimpleWeather.Controls
 {
@@ -16,16 +14,13 @@ namespace SimpleWeather.Controls
         public string ConditionLong { get; set; }
         public bool ShowExtraDetail { get; set; }
 
-        public ForecastItemViewModel()
+        public ForecastItemViewModel(Forecast forecast, params TextForecastItemViewModel[] txtForecasts)
+            : base()
         {
-            wm = WeatherManager.GetInstance();
-            DetailExtras = new List<DetailItemViewModel>();
-        }
-
-        public ForecastItemViewModel(Forecast forecast, params TextForecastItemViewModel[] txt_forecasts)
-        {
-            wm = WeatherManager.GetInstance();
-            DetailExtras = new List<DetailItemViewModel>();
+            if (forecast is null)
+            {
+                throw new ArgumentNullException(nameof(forecast));
+            }
 
             var userlang = GlobalizationPreferences.Languages[0];
             var culture = new CultureInfo(userlang);
@@ -147,21 +142,21 @@ namespace SimpleWeather.Controls
                 }
             }
 
-            if (txt_forecasts?.Length > 0)
+            if (txtForecasts?.Length > 0)
             {
                 try
                 {
-                    bool dayAndNt = txt_forecasts.Length == 2;
+                    bool dayAndNt = txtForecasts.Length == 2;
                     StringBuilder sb = new StringBuilder();
 
-                    TextForecastItemViewModel fctDay = txt_forecasts[0];
+                    TextForecastItemViewModel fctDay = txtForecasts[0];
                     sb.AppendFormat(CultureInfo.InvariantCulture, "{0} - {1}", fctDay.Title, fctDay.FctText);
 
                     if (dayAndNt)
                     {
                         sb.Append(Environment.NewLine).Append(Environment.NewLine);
 
-                        TextForecastItemViewModel fctNt = txt_forecasts[1];
+                        TextForecastItemViewModel fctNt = txtForecasts[1];
                         sb.AppendFormat(CultureInfo.InvariantCulture, "{0} - {1}", fctNt.Title, fctNt.FctText);
                     }
 

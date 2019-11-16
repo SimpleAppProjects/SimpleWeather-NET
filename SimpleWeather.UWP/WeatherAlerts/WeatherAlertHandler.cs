@@ -1,17 +1,11 @@
-﻿using SimpleWeather.Controls;
-using SimpleWeather.Location;
+﻿using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Notifications;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Background;
-using Windows.Devices.Geolocation;
 
 namespace SimpleWeather.UWP.WeatherAlerts
 {

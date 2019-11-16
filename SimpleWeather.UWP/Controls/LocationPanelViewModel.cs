@@ -2,10 +2,8 @@
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
 
 namespace SimpleWeather.Controls
 {

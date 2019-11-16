@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.QueryStringDotNET;
 using Microsoft.Toolkit.Uwp.Notifications;
-using Windows.UI.Notifications;
-using SimpleWeather.Utils;
-using SimpleWeather.WeatherData;
-using Windows.System.UserProfile;
-using System.Globalization;
 using SimpleWeather.Controls;
-using Microsoft.QueryStringDotNET;
 using SimpleWeather.Location;
+using SimpleWeather.WeatherData;
+using System.Collections.Generic;
+using Windows.UI.Notifications;
 
 namespace SimpleWeather.UWP.Notifications
 {

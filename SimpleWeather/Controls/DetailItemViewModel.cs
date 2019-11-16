@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SimpleWeather.UWP;
+﻿using SimpleWeather.UWP;
 using SimpleWeather.WeatherData;
+using System;
 
 namespace SimpleWeather.Controls
 {

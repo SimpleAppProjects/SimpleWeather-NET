@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.UI.StartScreen;
@@ -12,14 +10,8 @@ namespace SimpleWeather.UWP.Tiles
     {
         // Shared Settings
         private static ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-        private static ApplicationDataContainer tileIdContainer = null;
 
-        static SecondaryTileUtils()
-        {
-            // Container for secondary tile ids
-            tileIdContainer =
-                localSettings.CreateContainer("SecondaryTileIds", ApplicationDataCreateDisposition.Always);
-        }
+        private static ApplicationDataContainer tileIdContainer = localSettings.CreateContainer("SecondaryTileIds", ApplicationDataCreateDisposition.Always);
 
         public static string GetTileId(string query)
         {

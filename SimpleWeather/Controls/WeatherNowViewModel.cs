@@ -1,23 +1,22 @@
 ﻿using SimpleWeather.Utils;
+using SimpleWeather.UWP;
 using SimpleWeather.WeatherData;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using SimpleWeather.UWP;
-using System.ComponentModel;
+using Windows.System.UserProfile;
 using Windows.UI;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
-using Windows.System.UserProfile;
-using System.Collections.Generic;
-using Windows.UI.Xaml.Media.Imaging;
 
 namespace SimpleWeather.Controls
 {
     public class WeatherNowViewModel : INotifyPropertyChanged
     {
         #region DependencyProperties
+
         private string location;
         private string updateDate;
         // Current Condition
@@ -47,9 +46,11 @@ namespace SimpleWeather.Controls
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
-        #endregion
+
+        #endregion DependencyProperties
 
         #region Properties
+
         public string Location { get => location; set { location = value; OnPropertyChanged("Location"); } }
         public string UpdateDate { get => updateDate; set { updateDate = value; OnPropertyChanged("UpdateDate"); } }
         public string CurTemp { get => curTemp; set { curTemp = value; OnPropertyChanged("CurTemp"); } }
@@ -57,9 +58,9 @@ namespace SimpleWeather.Controls
         public string WeatherIcon { get => weatherIcon; set { weatherIcon = value; OnPropertyChanged("WeatherIcon"); } }
         public string Sunrise { get => sunrise; set { sunrise = value; OnPropertyChanged("Sunrise"); } }
         public string Sunset { get => sunset; set { sunset = value; OnPropertyChanged("Sunset"); } }
-        public ObservableCollection<ForecastItemViewModel> Forecasts { get => forecasts; set { forecasts = value; OnPropertyChanged("Forecasts"); } }
-        public ObservableCollection<DetailItemViewModel> WeatherDetails { get => weatherDetails; set { weatherDetails = value; OnPropertyChanged("WeatherDetails"); } }
-        public WeatherExtrasViewModel Extras { get => extras; set { extras = value; OnPropertyChanged("Extras"); } }
+        public ObservableCollection<ForecastItemViewModel> Forecasts { get => forecasts; private set { forecasts = value; OnPropertyChanged("Forecasts"); } }
+        public ObservableCollection<DetailItemViewModel> WeatherDetails { get => weatherDetails; private set { weatherDetails = value; OnPropertyChanged("WeatherDetails"); } }
+        public WeatherExtrasViewModel Extras { get => extras; private set { extras = value; OnPropertyChanged("Extras"); } }
         public string BackgroundURI { get => backgroundURI; set { backgroundURI = value; OnPropertyChanged("BackgroundURI"); } }
         public ImageDataViewModel ImageData { get => imageData; set { imageData = value; OnPropertyChanged("ImageData"); } }
         public Color PendingBackgroundColor { get => pendingBackgroundColor; set { pendingBackgroundColor = value; OnPropertyChanged("PendingBackgroundColor"); } }
@@ -67,7 +68,8 @@ namespace SimpleWeather.Controls
         public string WeatherCredit { get => weatherCredit; set { weatherCredit = value; OnPropertyChanged("WeatherCredit"); } }
         public string WeatherSource { get => weatherSource; set { weatherSource = value; OnPropertyChanged("WeatherSource"); } }
         public string WeatherLocale { get => weatherLocale; set { weatherLocale = value; OnPropertyChanged("WeatherLocale"); } }
-        #endregion
+
+        #endregion Properties
 
         private WeatherManager wm;
 
@@ -92,7 +94,7 @@ namespace SimpleWeather.Controls
 
         public void UpdateView(Weather weather)
         {
-            if (weather.IsValid())
+            if ((bool)weather?.IsValid())
             {
                 var userlang = GlobalizationPreferences.Languages[0];
                 var culture = new CultureInfo(userlang);
@@ -156,7 +158,7 @@ namespace SimpleWeather.Controls
                 }
 
                 // Location
-                Location = weather.location.name;
+                Location = weather?.location?.name;
 
                 // Date Updated
                 UpdateDate = WeatherUtils.GetLastBuildDate(weather);
@@ -210,7 +212,7 @@ namespace SimpleWeather.Controls
 
                     if (float.TryParse(pressureVal, NumberStyles.Float, CultureInfo.InvariantCulture, out float pressure))
                         WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Pressure,
-                            string.Format("{0} {1} {2}", GetPressureStateIcon(weather.atmosphere.pressure_trend), pressure.ToString(culture), pressureUnit)));
+                            string.Format("{0} {1} {2}", WeatherUtils.GetPressureStateIcon(weather.atmosphere.pressure_trend), pressure.ToString(culture), pressureUnit)));
                 }
 
                 if (!String.IsNullOrWhiteSpace(weather.atmosphere.humidity))
@@ -249,7 +251,6 @@ namespace SimpleWeather.Controls
                     WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.FeelsLike,
                            Settings.IsFahrenheit ?
                                 Math.Round(weather.condition.feelslike_f) + "º" : Math.Round(weather.condition.feelslike_c) + "º"));
-
                 }
                 // Wind
                 if (weather.condition.wind_mph >= 0 && weather.condition.wind_kph >= 0)
@@ -301,13 +302,13 @@ namespace SimpleWeather.Controls
 
                 // Add UI elements
                 Forecasts.Clear();
-                bool isDayAndNt = Extras.TextForecast.Count == weather.forecast.Length * 2;
+                bool isDayAndNt = Extras.TextForecast.Count == weather?.forecast?.Length * 2;
                 bool addTextFct = isDayAndNt || Extras.TextForecast.Count == weather.forecast.Length;
                 for (int i = 0; i < weather.forecast.Length; i++)
                 {
                     Forecast forecast = weather.forecast[i];
                     ForecastItemViewModel forecastView;
-                    
+
                     if (addTextFct)
                     {
                         if (isDayAndNt)
@@ -323,7 +324,7 @@ namespace SimpleWeather.Controls
                 OnPropertyChanged("Forecasts");
 
                 // Additional Details
-                WeatherSource = weather.source;
+                WeatherSource = weather?.source;
                 string creditPrefix = "Data from";
 
                 creditPrefix = App.ResLoader.GetString("Credit_Prefix");
@@ -334,14 +335,6 @@ namespace SimpleWeather.Controls
                 // Language
                 WeatherLocale = weather.locale;
             }
-        }
-
-        public class ImageDataViewModel
-        {
-            public string ArtistName { get; set; }
-            public string ArtistLink { get; set; }
-            public string SiteName { get; set; }
-            public string SiteLink { get; set; }
         }
 
         private static readonly ReadOnlyDictionary<String, ImageDataViewModel> bgAttribution =
@@ -447,26 +440,5 @@ namespace SimpleWeather.Controls
                     }
                 },
             });
-
-        private String GetPressureStateIcon(string state)
-        {
-            switch (state)
-            {
-                // Steady
-                case "0":
-                default:
-                    return string.Empty;
-                // Rising
-                case "1":
-                case "+":
-                case "Rising":
-                    return "\uf058\uf058";
-                // Falling
-                case "2":
-                case "-":
-                case "Falling":
-                    return "\uf044\uf044";
-            }
-        }
     }
 }

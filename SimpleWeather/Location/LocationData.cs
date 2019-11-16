@@ -1,10 +1,9 @@
-﻿using SimpleWeather.Utils;
+﻿using NodaTime;
+using SimpleWeather.Utils;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using SQLite;
-using NodaTime;
 
 namespace SimpleWeather.Location
 {
@@ -94,7 +93,7 @@ namespace SimpleWeather.Location
             name = query_vm.LocationName;
             latitude = query_vm.LocationLat;
             longitude = query_vm.LocationLong;
-            tz_long = query_vm.LocationTZ_Long;
+            tz_long = query_vm.LocationTZLong;
             weatherSource = query_vm.WeatherSource;
             locationSource = query_vm.LocationSource;
         }
@@ -110,7 +109,7 @@ namespace SimpleWeather.Location
             name = query_vm.LocationName;
             latitude = geoPos.Coordinate.Point.Position.Latitude;
             longitude = geoPos.Coordinate.Point.Position.Longitude;
-            tz_long = query_vm.LocationTZ_Long;
+            tz_long = query_vm.LocationTZLong;
             locationType = LocationType.GPS;
             weatherSource = query_vm.WeatherSource;
             locationSource = query_vm.LocationSource;
@@ -164,24 +163,31 @@ namespace SimpleWeather.Location
                         case "query":
                             obj.query = reader.Value?.ToString();
                             break;
+
                         case "name":
                             obj.name = reader.Value?.ToString();
                             break;
+
                         case "latitude":
                             obj.latitude = double.Parse(reader.Value?.ToString());
                             break;
+
                         case "longitude":
                             obj.longitude = double.Parse(reader.Value?.ToString());
                             break;
+
                         case "tz_long":
                             obj.tz_long = reader.Value?.ToString();
                             break;
+
                         case "locationType":
                             obj.locationType = (LocationType)int.Parse(reader.Value?.ToString());
                             break;
+
                         case "source":
                             obj.weatherSource = reader.Value?.ToString();
                             break;
+
                         case "locsource":
                             obj.locationSource = reader.Value?.ToString();
                             break;
@@ -198,48 +204,49 @@ namespace SimpleWeather.Location
 
         public string ToJson()
         {
-            System.IO.StringWriter sw = new System.IO.StringWriter();
-            Newtonsoft.Json.JsonTextWriter writer = new Newtonsoft.Json.JsonTextWriter(sw);
+            using (var sw = new System.IO.StringWriter())
+            using (var writer = new Newtonsoft.Json.JsonTextWriter(sw))
+            {
+                // {
+                writer.WriteStartObject();
 
-            // {
-            writer.WriteStartObject();
+                // "query" : ""
+                writer.WritePropertyName("query");
+                writer.WriteValue(query);
 
-            // "query" : ""
-            writer.WritePropertyName("query");
-            writer.WriteValue(query);
+                // "name" : ""
+                writer.WritePropertyName("name");
+                writer.WriteValue(name);
 
-            // "name" : ""
-            writer.WritePropertyName("name");
-            writer.WriteValue(name);
+                // "latitude" : ""
+                writer.WritePropertyName("latitude");
+                writer.WriteValue(latitude);
 
-            // "latitude" : ""
-            writer.WritePropertyName("latitude");
-            writer.WriteValue(latitude);
+                // "longitude" : ""
+                writer.WritePropertyName("longitude");
+                writer.WriteValue(longitude);
 
-            // "longitude" : ""
-            writer.WritePropertyName("longitude");
-            writer.WriteValue(longitude);
+                // "tz_long" : ""
+                writer.WritePropertyName("tz_long");
+                writer.WriteValue(tz_long);
 
-            // "tz_long" : ""
-            writer.WritePropertyName("tz_long");
-            writer.WriteValue(tz_long);
+                // "locationType" : ""
+                writer.WritePropertyName("locationType");
+                writer.WriteValue((int)locationType);
 
-            // "locationType" : ""
-            writer.WritePropertyName("locationType");
-            writer.WriteValue((int)locationType);
+                // "source" : ""
+                writer.WritePropertyName("source");
+                writer.WriteValue(weatherSource);
 
-            // "source" : ""
-            writer.WritePropertyName("source");
-            writer.WriteValue(weatherSource);
+                // "locsource" : ""
+                writer.WritePropertyName("locsource");
+                writer.WriteValue(locationSource);
 
-            // "locsource" : ""
-            writer.WritePropertyName("locsource");
-            writer.WriteValue(locationSource);
+                // }
+                writer.WriteEndObject();
 
-            // }
-            writer.WriteEndObject();
-
-            return sw.ToString();
+                return sw.ToString();
+            }
         }
 
         public bool IsValid()

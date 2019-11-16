@@ -9,7 +9,6 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
 
@@ -19,7 +18,7 @@ namespace SimpleWeather.Utils
     {
         public static ConfiguredTaskAwaitable MigrateDataJsonToDB(SQLiteAsyncConnection locationDB, SQLiteAsyncConnection weatherDB)
         {
-            return AsyncTask.RunAsync(async () => 
+            return AsyncTask.RunAsync(async () =>
             {
                 var appDataFolder = ApplicationData.Current.LocalFolder;
 
@@ -117,7 +116,7 @@ namespace SimpleWeather.Utils
         {
             try
             {
-                int count = await dbConn.Table<Weather>().CountAsync();
+                int count = await dbConn?.Table<Weather>()?.CountAsync();
                 if (count > 0)
                     return true;
                 else
@@ -133,8 +132,8 @@ namespace SimpleWeather.Utils
         {
             try
             {
-                await dbConn.Table<Favorites>().CountAsync();
-                int count = await dbConn.Table<LocationData>().CountAsync();
+                await dbConn?.Table<Favorites>()?.CountAsync();
+                int count = await dbConn?.Table<LocationData>()?.CountAsync();
                 if (count > 0)
                     return true;
                 else

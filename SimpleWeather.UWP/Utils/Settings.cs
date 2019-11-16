@@ -2,13 +2,9 @@
 using SimpleWeather.WeatherData;
 using SQLite;
 using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.IO;
 using System.Threading.Tasks;
-using Windows.Foundation.Collections;
 using Windows.Storage;
-using Windows.UI.Xaml;
 
 namespace SimpleWeather.Utils
 {

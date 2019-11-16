@@ -1,13 +1,10 @@
-﻿using System;
-using SimpleWeather.WeatherUnderground;
-using SimpleWeather.WeatherYahoo;
-using SimpleWeather.OpenWeather;
-using System.Collections.Generic;
+﻿using SimpleWeather.HERE;
 using SimpleWeather.UWP;
 using SimpleWeather.WeatherData;
-using SimpleWeather.HERE;
+using SimpleWeather.WeatherUnderground;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
-using SimpleWeather.Bing;
 using System.Text;
 using Windows.Services.Maps;
 
@@ -22,7 +19,7 @@ namespace SimpleWeather.Controls
         public double LocationLat { get; set; }
         public double LocationLong { get; set; }
 
-        public string LocationTZ_Long { get; set; }
+        public string LocationTZLong { get; set; }
 
         public string LocationSource { get; set; }
         public string WeatherSource { get; set; }
@@ -35,6 +32,7 @@ namespace SimpleWeather.Controls
         }
 
         #region WeatherUnderground
+
         public LocationQueryViewModel(AC_RESULT location, String WeatherAPI)
         {
             SetLocation(location, WeatherAPI);
@@ -48,7 +46,7 @@ namespace SimpleWeather.Controls
             LocationLat = double.Parse(location.lat);
             LocationLong = double.Parse(location.lon);
 
-            LocationTZ_Long = location.tz;
+            LocationTZLong = location.tz;
 
             LocationSource = WeatherAPI.WeatherUnderground;
             WeatherSource = weatherAPI;
@@ -69,14 +67,15 @@ namespace SimpleWeather.Controls
             LocationLat = double.Parse(location.lat);
             LocationLong = double.Parse(location.lon);
 
-            LocationTZ_Long = location.tz_unix;
+            LocationTZLong = location.tz_unix;
 
             LocationSource = WeatherAPI.WeatherUnderground;
             WeatherSource = weatherAPI;
 
             UpdateLocationQuery();
         }
-        #endregion
+
+        #endregion WeatherUnderground
 
         public LocationQueryViewModel(Suggestion location, String weatherAPI)
         {
@@ -111,7 +110,7 @@ namespace SimpleWeather.Controls
             LocationLat = -1;
             LocationLong = -1;
 
-            LocationTZ_Long = null;
+            LocationTZLong = null;
 
             LocationSource = WeatherAPI.Here;
             WeatherSource = weatherAPI;
@@ -128,7 +127,7 @@ namespace SimpleWeather.Controls
 
             if (location.location.address.additionalData != null)
             {
-                foreach(Additionaldata item in location.location.address.additionalData)
+                foreach (Additionaldata item in location.location.address.additionalData)
                 {
                     if ("Country2".Equals(item.key))
                         country = item.value;
@@ -166,7 +165,7 @@ namespace SimpleWeather.Controls
             LocationLat = location.location.displayPosition.latitude;
             LocationLong = location.location.displayPosition.longitude;
 
-            LocationTZ_Long = location.location.adminInfo.timeZone.id;
+            LocationTZLong = location.location.adminInfo.timeZone.id;
 
             LocationSource = WeatherAPI.Here;
             WeatherSource = weatherAPI;
@@ -228,7 +227,7 @@ namespace SimpleWeather.Controls
             LocationLat = -1;
             LocationLong = -1;
 
-            LocationTZ_Long = null;
+            LocationTZLong = null;
 
             LocationSource = WeatherAPI.BingMaps;
             WeatherSource = weatherAPI;
@@ -279,7 +278,7 @@ namespace SimpleWeather.Controls
             LocationLat = result.Point.Position.Latitude;
             LocationLong = result.Point.Position.Longitude;
 
-            LocationTZ_Long = null;
+            LocationTZLong = null;
 
             LocationSource = WeatherAPI.BingMaps;
             WeatherSource = weatherAPI;

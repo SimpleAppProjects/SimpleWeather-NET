@@ -1,5 +1,4 @@
 ﻿using System;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 
 namespace SimpleWeather.UWP.Helpers
@@ -27,9 +26,7 @@ namespace SimpleWeather.UWP.Helpers
 
             if (parameter != null)
             {
-                bool invertResult;
-                bool.TryParse(parameter.ToString(), out invertResult);
-                if (invertResult == true)
+                if (bool.TryParse(parameter.ToString(), out bool invertResult) && invertResult == true)
                 {
                     retVal = !retVal;
                 }

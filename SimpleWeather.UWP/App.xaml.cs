@@ -2,7 +2,6 @@
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using Microsoft.QueryStringDotNET;
-using Newtonsoft.Json;
 using SimpleWeather.Controls;
 using SimpleWeather.Keys;
 using SimpleWeather.Location;
@@ -12,10 +11,8 @@ using SimpleWeather.UWP.Helpers;
 using SimpleWeather.UWP.Main;
 using SimpleWeather.UWP.Setup;
 using SimpleWeather.UWP.Tiles;
-using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
@@ -25,7 +22,6 @@ using Windows.ApplicationModel.Resources;
 using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Core;
-using Windows.UI.StartScreen;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -41,9 +37,10 @@ namespace SimpleWeather.UWP
     public sealed partial class App : Application
     {
         public const int HomeIdx = 0;
+
         public static Color AppColor
         {
-            get 
+            get
             {
                 if (Window.Current?.Content is FrameworkElement window)
                 {
@@ -64,11 +61,13 @@ namespace SimpleWeather.UWP
                 }
             }
         }
-        public static ResourceLoader ResLoader;
+
+        public static ResourceLoader ResLoader { get; private set; }
         private UISettings UISettings;
-        public static ElementTheme CurrentTheme 
+
+        public static ElementTheme CurrentTheme
         {
-            get 
+            get
             {
                 if (Window.Current?.Content is FrameworkElement window)
                 {
@@ -80,6 +79,7 @@ namespace SimpleWeather.UWP
                 }
             }
         }
+
         public static bool IsSystemDarkTheme { get; private set; }
 
         /// <summary>
@@ -125,7 +125,7 @@ namespace SimpleWeather.UWP
             }
         }
 
-        private void UpdateAppTheme()
+        private static void UpdateAppTheme()
         {
             if (Shell.Instance != null) return;
 
@@ -180,7 +180,7 @@ namespace SimpleWeather.UWP
                 if (!args.Contains("action"))
                     return;
 
-                // See what action is being requested 
+                // See what action is being requested
                 switch (args["action"])
                 {
                     case "view-alerts":
@@ -227,6 +227,7 @@ namespace SimpleWeather.UWP
                             });
                         }
                         break;
+
                     default:
                         break;
                 }
@@ -252,12 +253,13 @@ namespace SimpleWeather.UWP
 
             Initialize(args);
 
-            switch (args.TaskInstance.Task.Name)
+            switch (args?.TaskInstance?.Task?.Name)
             {
                 case nameof(WeatherUpdateBackgroundTask):
                     Logger.WriteLine(LoggerLevel.Debug, "App: Starting WeatherUpdateBackgroundTask");
                     new WeatherUpdateBackgroundTask().Run(args.TaskInstance);
                     break;
+
                 default:
                     Logger.WriteLine(LoggerLevel.Debug, "App: Unknown task: {0}", args.TaskInstance.Task.Name);
                     break;
@@ -290,10 +292,10 @@ namespace SimpleWeather.UWP
                     {
                         await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                         {
-                             if (RootFrame.Content == null)
-                             {
-                                 RootFrame.Navigate(typeof(Shell), "suppressNavigate");
-                             }
+                            if (RootFrame.Content == null)
+                            {
+                                RootFrame.Navigate(typeof(Shell), "suppressNavigate");
+                            }
                         });
 
                         // Navigate to WeatherNow page for location
@@ -423,7 +425,7 @@ namespace SimpleWeather.UWP
             Initialized = true;
         }
 
-        private void Initialize(IBackgroundActivatedEventArgs e)
+        private void Initialize(IBackgroundActivatedEventArgs _)
         {
             Logger.WriteLine(LoggerLevel.Debug, "App: Initializing...");
 

@@ -22,6 +22,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\WeatherAlertViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\WeatherNowViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\WeatherExtrasViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\ImageDataViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HERE\Alerts.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HERE\AutoCompleteQuery.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HERE\GeopositionQuery.cs" />
@@ -57,6 +58,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Settings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\StringUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.Coordinate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IAstroDataProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IWeatherAlertProvider.cs" />

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SimpleWeather.WeatherUnderground
+﻿namespace SimpleWeather.WeatherUnderground
 {
     public class AC_Rootobject
     {

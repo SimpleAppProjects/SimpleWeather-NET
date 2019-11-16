@@ -1,14 +1,12 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.IO;
-using System.Linq;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Threading.Tasks;
+using SimpleWeather.Location;
 using SimpleWeather.WeatherData;
 using SQLite;
 using SQLiteNetExtensionsAsync.Extensions;
-using SimpleWeather.Location;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace SimpleWeather.Utils
@@ -87,7 +85,7 @@ namespace SimpleWeather.Utils
 
         private static ConfiguredTaskAwaitable Load()
         {
-            return AsyncTask.RunAsync(async () => 
+            return AsyncTask.RunAsync(async () =>
             {
                 // Create DB tables
                 await locationDB.CreateTableAsync<LocationData>();

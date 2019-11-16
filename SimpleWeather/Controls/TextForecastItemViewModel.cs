@@ -14,12 +14,12 @@ namespace SimpleWeather.Controls
         {
         }
 
-        public TextForecastItemViewModel(TextForecast txt_forecast)
+        public TextForecastItemViewModel(TextForecast txtForecast)
         {
-            Title = txt_forecast.title;
-            WeatherIcon = txt_forecast.icon;
-            FctText = Settings.IsFahrenheit ? txt_forecast.fcttext : txt_forecast.fcttext_metric;
-            PoP = txt_forecast.pop + "%";
+            Title = txtForecast.title;
+            WeatherIcon = txtForecast.icon;
+            FctText = Settings.IsFahrenheit ? txtForecast.fcttext : txtForecast.fcttext_metric;
+            PoP = txtForecast.pop + "%";
         }
     }
 }

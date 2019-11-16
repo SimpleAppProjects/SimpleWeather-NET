@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
-using System.Threading.Tasks;
-using GeoTimeZone;
+﻿using GeoTimeZone;
 using SimpleWeather.Controls;
 using SimpleWeather.Utils;
-using SimpleWeather.WeatherData;
+using System;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace SimpleWeather.Location
 {
@@ -48,8 +45,8 @@ namespace SimpleWeather.Location
                 location.name = qview.LocationName;
                 location.latitude = qview.LocationLat;
                 location.longitude = qview.LocationLong;
-                location.tz_long = qview.LocationTZ_Long;
-                if (String.IsNullOrEmpty(qview.LocationTZ_Long) && location.longitude != 0 && location.latitude != 0)
+                location.tz_long = qview.LocationTZLong;
+                if (String.IsNullOrEmpty(qview.LocationTZLong) && location.longitude != 0 && location.latitude != 0)
                 {
                     String tzId = TimeZoneLookup.GetTimeZone(location.latitude, location.longitude).Result;
                     if (!String.IsNullOrWhiteSpace(tzId))

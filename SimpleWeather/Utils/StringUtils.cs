@@ -1,8 +1,7 @@
-﻿using System;
-using System.Globalization;
+﻿using SimpleWeather.UWP.Helpers;
+using System;
 using System.Text;
 using System.Text.RegularExpressions;
-using SimpleWeather.UWP.Helpers;
 
 namespace SimpleWeather.Utils
 {
@@ -18,7 +17,7 @@ namespace SimpleWeather.Utils
             String[] strArray = @string.Split('.');
             StringBuilder sb = new StringBuilder();
 
-            foreach(String str in strArray)
+            foreach (String str in strArray)
             {
                 if (str.Length == 0)
                     continue;

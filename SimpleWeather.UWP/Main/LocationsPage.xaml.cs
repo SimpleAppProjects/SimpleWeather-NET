@@ -34,7 +34,7 @@ namespace SimpleWeather.UWP.Main
 
         public ObservableCollection<LocationPanelViewModel> GPSPanelViewModel { get; set; }
         public ObservableCollection<LocationPanelViewModel> LocationPanels { get; set; }
-        Geolocator geolocal = null;
+        private Geolocator geolocal = null;
 
         public bool EditMode { get; set; } = false;
         private bool DataChanged = false;
@@ -96,6 +96,7 @@ namespace SimpleWeather.UWP.Main
                             ErrorCounter[(int)wEx.ErrorStatus] = true;
                         }
                         break;
+
                     case WeatherUtils.ErrorStatus.QueryNotFound:
                         if (!ErrorCounter[(int)wEx.ErrorStatus] && WeatherAPI.NWS.Equals(Settings.API))
                         {
@@ -103,6 +104,7 @@ namespace SimpleWeather.UWP.Main
                             ErrorCounter[(int)wEx.ErrorStatus] = true;
                         }
                         break;
+
                     default:
                         // Show error message
                         // Only warn once
@@ -179,6 +181,7 @@ namespace SimpleWeather.UWP.Main
                     case "toast-refresh":
                         RefreshLocations();
                         return;
+
                     default:
                         break;
                 }
@@ -273,9 +276,9 @@ namespace SimpleWeather.UWP.Main
 
         private void LoadLocations()
         {
-            AsyncTask.Run(async () => 
+            AsyncTask.Run(async () =>
             {
-                AsyncTask.RunOnUIThread(() => 
+                AsyncTask.RunOnUIThread(() =>
                 {
                     // Disable EditMode button
                     EditButton.IsEnabled = false;
@@ -302,7 +305,7 @@ namespace SimpleWeather.UWP.Main
 
                 foreach (LocationData location in locations)
                 {
-                    AsyncTask.Run(() => 
+                    AsyncTask.Run(() =>
                     {
                         var wLoader = new WeatherDataLoader(location, this, this);
                         wLoader.LoadWeatherData(false);
@@ -357,7 +360,7 @@ namespace SimpleWeather.UWP.Main
 
         private void RefreshLocations()
         {
-            AsyncTask.Run(async () => 
+            AsyncTask.Run(async () =>
             {
                 AsyncTask.RunOnUIThread(() =>
                 {
@@ -607,7 +610,7 @@ namespace SimpleWeather.UWP.Main
         {
             LocationData data = view.LocationData;
 
-            Task.Run(async () => 
+            Task.Run(async () =>
             {
                 if (view != null)
                 {
@@ -750,7 +753,7 @@ namespace SimpleWeather.UWP.Main
 
         private async void LocationsPanel_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
         {
-            if (!(args.Items.First() is LocationPanelViewModel panel))
+            if (!(args.Items[0] is LocationPanelViewModel panel))
                 return;
 
             var data = await Settings.GetFavorites();

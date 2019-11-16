@@ -1,26 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SimpleWeather.Controls;
+﻿using SimpleWeather.Keys;
+using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
-using System.Xml.Serialization;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
-using SimpleWeather.UWP.Controls;
-using Windows.Storage.Streams;
-using Windows.UI;
-using Windows.UI.Core;
-using Windows.UI.Popups;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using Windows.System.UserProfile;
 using Windows.Web;
 using Windows.Web.Http;
-using Windows.System.UserProfile;
-using SimpleWeather.Keys;
-using SimpleWeather.Location;
-using System.Threading;
 
 namespace SimpleWeather.HERE
 {
@@ -28,7 +18,7 @@ namespace SimpleWeather.HERE
     {
         public HEREWeatherProvider() : base()
         {
-            locProvider = new HERELocationProvider();
+            LocationProvider = new HERELocationProvider();
         }
 
         public override string WeatherAPI => WeatherData.WeatherAPI.Here;
@@ -87,6 +77,7 @@ namespace SimpleWeather.HERE
                 // End Stream
                 response.Dispose();
                 webClient.Dispose();
+                cts.Dispose();
             }
             catch (Exception ex)
             {
@@ -122,7 +113,7 @@ namespace SimpleWeather.HERE
             string queryAPI = null;
             Uri queryURL = null;
 
-            var userlang = GlobalizationPreferences.Languages.First();
+            var userlang = GlobalizationPreferences.Languages[0];
             var culture = new CultureInfo(userlang);
 
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
@@ -150,91 +141,93 @@ namespace SimpleWeather.HERE
 
             queryURL = new Uri(String.Format(queryAPI, location_query, locale, app_id, app_code));
 
-            HttpClient webClient = new HttpClient();
-            WeatherException wEx = null;
-
-            try
+            using (HttpClient webClient = new HttpClient())
+            using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
             {
-                CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
+                WeatherException wEx = null;
 
-                // Connect to webstream
-                HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
-                response.EnsureSuccessStatusCode();
-                Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-                // Reset exception
-                wEx = null;
-
-                // Load weather
-                Rootobject root = null;
-                await Task.Run(() =>
+                try
                 {
-                    root = JSONParser.Deserializer<Rootobject>(contentStream);
-                });
+                    // Connect to webstream
+                    HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
+                    response.EnsureSuccessStatusCode();
+                    Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                    // Reset exception
+                    wEx = null;
 
-                // Check for errors
-                if (root.Type != null)
-                {
-                    switch (root.Type)
+                    // Load weather
+                    Rootobject root = null;
+                    await Task.Run(() =>
                     {
-                        case "Invalid Request":
-                            wEx = new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
-                            break;
-                        case "Unauthorized":
-                            wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
-                            break;
-                        default:
-                            break;
+                        root = JSONParser.Deserializer<Rootobject>(contentStream);
+                    });
+
+                    // Check for errors
+                    if (root.Type != null)
+                    {
+                        switch (root.Type)
+                        {
+                            case "Invalid Request":
+                                wEx = new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
+                                break;
+
+                            case "Unauthorized":
+                                wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
+                                break;
+
+                            default:
+                                break;
+                        }
                     }
+
+                    // End Stream
+                    contentStream?.Dispose();
+
+                    weather = new Weather(root);
+
+                    // Add weather alerts if available
+                    if (root.alerts?.alerts != null && root.alerts.alerts.Length > 0)
+                    {
+                        if (weather.weather_alerts == null)
+                            weather.weather_alerts = new List<WeatherAlert>();
+
+                        foreach (Alert result in root.alerts.alerts)
+                        {
+                            weather.weather_alerts.Add(new WeatherAlert(result));
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    weather = null;
+                    if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                    {
+                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    }
+
+                    Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting weather data");
                 }
 
                 // End Stream
-                if (contentStream != null)
-                    contentStream.Dispose();
+                webClient.Dispose();
 
-                weather = new Weather(root);
-
-                // Add weather alerts if available
-                if (root.alerts?.alerts != null && root.alerts.alerts.Length > 0)
+                if (wEx == null && (weather == null || !weather.IsValid()))
                 {
-                    if (weather.weather_alerts == null)
-                        weather.weather_alerts = new List<WeatherAlert>();
-
-                    foreach (Alert result in root.alerts.alerts)
-                    {
-                        weather.weather_alerts.Add(new WeatherAlert(result));
-                    }
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
                 }
-            }
-            catch (Exception ex)
-            {
-                weather = null;
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                else if (weather != null)
                 {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    if (SupportsWeatherLocale)
+                        weather.locale = locale;
+
+                    weather.query = location_query;
                 }
 
-                Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting weather data");
+                if (wEx != null)
+                    throw wEx;
+
+                return weather;
             }
-
-            // End Stream
-            webClient.Dispose();
-
-            if (wEx == null && (weather == null || !weather.IsValid()))
-            {
-                wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
-            }
-            else if (weather != null)
-            {
-                if (SupportsWeatherLocale)
-                    weather.locale = locale;
-
-                weather.query = location_query;
-            }
-
-            if (wEx != null)
-                throw wEx;
-
-            return weather;
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
@@ -287,7 +280,7 @@ namespace SimpleWeather.HERE
             string queryAPI = null;
             Uri queryURL = null;
 
-            var userlang = GlobalizationPreferences.Languages.First();
+            var userlang = GlobalizationPreferences.Languages[0];
             var culture = new CultureInfo(userlang);
 
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
@@ -316,42 +309,42 @@ namespace SimpleWeather.HERE
 
             queryURL = new Uri(String.Format(queryAPI, location.query, locale, app_id, app_code));
 
-            try
+            using (HttpClient webClient = new HttpClient())
+            using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
             {
-                CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
-
-                // Connect to webstream
-                HttpClient webClient = new HttpClient();
-                HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
-                response.EnsureSuccessStatusCode();
-                Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-                // End Stream
-                webClient.Dispose();
-
-                // Load data
-                alerts = new List<WeatherAlert>();
-
-                Rootobject root = JSONParser.Deserializer<Rootobject>(contentStream);
-
-                foreach (Alert result in root.alerts.alerts)
+                try
                 {
-                    alerts.Add(new WeatherAlert(result));
+                    // Connect to webstream
+                    HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
+                    response.EnsureSuccessStatusCode();
+                    Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                    // End Stream
+                    webClient.Dispose();
+
+                    // Load data
+                    alerts = new List<WeatherAlert>();
+
+                    Rootobject root = JSONParser.Deserializer<Rootobject>(contentStream);
+
+                    foreach (Alert result in root.alerts.alerts)
+                    {
+                        alerts.Add(new WeatherAlert(result));
+                    }
+
+                    // End Stream
+                    contentStream?.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    alerts = new List<WeatherAlert>();
+                    Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting weather alert data");
                 }
 
-                // End Stream
-                if (contentStream != null)
-                    contentStream.Dispose();
-            }
-            catch (Exception ex)
-            {
-                alerts = new List<WeatherAlert>();
-                Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting weather alert data");
-            }
+                if (alerts == null)
+                    alerts = new List<WeatherAlert>();
 
-            if (alerts == null)
-                alerts = new List<WeatherAlert>();
-
-            return alerts;
+                return alerts;
+            }
         }
 
         public override string UpdateLocationQuery(Weather weather)
