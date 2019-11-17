@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 using Windows.System.UserProfile;
@@ -30,7 +31,7 @@ namespace SimpleWeather.UWP.Main
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class WeatherNow : CustomPage, IWeatherLoadedListener, IWeatherErrorListener
+    public sealed partial class WeatherNow : CustomPage, IDisposable, IWeatherLoadedListener, IWeatherErrorListener
     {
         private WeatherManager wm;
         private WeatherDataLoader wLoader = null;
@@ -39,21 +40,30 @@ namespace SimpleWeather.UWP.Main
         private LocationData location = null;
         private double BGAlpha = 1.0;
         private double GradAlpha = 1.0;
+        private CancellationTokenSource cts;
 
         private Geolocator geolocal = null;
         private Geoposition geoPos = null;
 
+        public void Dispose()
+        {
+            cts?.Dispose();
+        }
+
         public void OnWeatherLoaded(LocationData location, Weather weather)
         {
-            Task.Run(() =>
+            AsyncTask.Run(async () =>
             {
+                if (cts?.IsCancellationRequested == true)
+                    return;
+
                 if (weather?.IsValid() == true)
                 {
-                    AsyncTask.RunOnUIThread(() =>
+                    await AsyncTask.RunOnUIThread(() =>
                     {
                         WeatherView.UpdateView(weather);
                         LoadingRing.IsActive = false;
-                    });
+                    }).ConfigureAwait(false);
 
                     if (wm.SupportsAlerts)
                     {
@@ -62,7 +72,8 @@ namespace SimpleWeather.UWP.Main
                             // Alerts are posted to the user here. Set them as notified.
                             AsyncTask.Run(async () =>
                             {
-                                await WeatherAlertHandler.SetasNotified(location, weather.weather_alerts);
+                                await WeatherAlertHandler.SetasNotified(location, weather.weather_alerts)
+                                .ConfigureAwait(false);
                             });
                         }
                     }
@@ -72,7 +83,8 @@ namespace SimpleWeather.UWP.Main
                         && (TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval)
                         || !WeatherTileCreator.TileUpdated)
                     {
-                        AsyncTask.Run(async () => await WeatherUpdateBackgroundTask.RequestAppTrigger());
+                        AsyncTask.Run(async () => await WeatherUpdateBackgroundTask.RequestAppTrigger()
+                        .ConfigureAwait(false));
                     }
                     else if (SecondaryTileUtils.Exists(location.query))
                     {
@@ -89,6 +101,9 @@ namespace SimpleWeather.UWP.Main
         {
             AsyncTask.RunOnUIThread(() =>
             {
+                if (cts?.IsCancellationRequested == true)
+                    return;
+
                 switch (wEx.ErrorStatus)
                 {
                     case WeatherUtils.ErrorStatus.NetworkError:
@@ -122,6 +137,7 @@ namespace SimpleWeather.UWP.Main
             this.InitializeComponent();
             NavigationCacheMode = NavigationCacheMode.Required;
             Application.Current.Resuming += WeatherNow_Resuming;
+            cts = new CancellationTokenSource();
 
             wm = WeatherManager.GetInstance();
             WeatherView = new WeatherNowViewModel();
@@ -159,6 +175,9 @@ namespace SimpleWeather.UWP.Main
 
         private void UpdateWindowColors()
         {
+            if (cts?.IsCancellationRequested == true)
+                return;
+
             if ((Settings.UserTheme == UserThemeMode.Dark || (Settings.UserTheme == UserThemeMode.System && App.IsSystemDarkTheme)) && WeatherView?.PendingBackgroundColor != App.AppColor)
             {
                 var color = ColorUtils.BlendColor(WeatherView.PendingBackgroundColor, Colors.Black, 0.75f);
@@ -183,7 +202,7 @@ namespace SimpleWeather.UWP.Main
                     {
                         while (SunPhasePanel == null || (bool)!SunPhasePanel?.ReadyToDraw)
                         {
-                            await Task.Delay(1);
+                            await Task.Delay(1).ConfigureAwait(true);
                         }
 
                         var userlang = GlobalizationPreferences.Languages[0];
@@ -222,9 +241,9 @@ namespace SimpleWeather.UWP.Main
                 if (Shell.Instance.AppFrame.SourcePageType == this.GetType())
                 {
                     // Check pin tile status
-                    await CheckTiles();
+                    await AsyncTask.RunAsync(CheckTiles);
 
-                    await Resume();
+                    await AsyncTask.RunAsync(Resume);
                 }
             });
         }
@@ -271,9 +290,17 @@ namespace SimpleWeather.UWP.Main
                 AlertButton.Width = w * (0.50);
         }
 
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            base.OnNavigatingFrom(e);
+            cts?.Cancel();
+        }
+
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
+            cts = new CancellationTokenSource();
 
             MainViewer?.ChangeView(null, 0, null, true);
             BGAlpha = GradAlpha = 1.0f;
@@ -309,7 +336,7 @@ namespace SimpleWeather.UWP.Main
                     wLoader = new WeatherDataLoader(location, this, this);
                 }
 
-                await Restore();
+                await AsyncTask.RunAsync(Restore);
             }
             else
             {
@@ -344,18 +371,21 @@ namespace SimpleWeather.UWP.Main
                 // ex. If temperature unit changed
                 if ((wLoader != null) && !homeChanged)
                 {
-                    await Resume();
+                    await AsyncTask.RunAsync(Resume);
 
                     if (location.query == homeData.query)
                     {
                         // Clear backstack since we're home
-                        Frame.BackStack.Clear();
-                        SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                        await AsyncTask.RunOnUIThread(() =>
+                        {
+                            Frame.BackStack.Clear();
+                            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                        }).ConfigureAwait(false);
                     }
                 }
                 else
                 {
-                    await Restore();
+                    await AsyncTask.RunAsync(Restore);
                 }
             }
         }
@@ -363,14 +393,14 @@ namespace SimpleWeather.UWP.Main
         private async Task Resume()
         {
             // Check pin tile status
-            await CheckTiles();
+            await AsyncTask.RunAsync(CheckTiles);
 
             if (wLoader.GetWeather()?.IsValid() == true)
             {
                 Weather weather = wLoader.GetWeather();
 
                 // Update weather if needed on resume
-                if (Settings.FollowGPS && await UpdateLocation())
+                if (Settings.FollowGPS && await AsyncTask.RunAsync(UpdateLocation))
                 {
                     // Setup loader from updated location
                     wLoader = new WeatherDataLoader(location, this, this);
@@ -393,9 +423,12 @@ namespace SimpleWeather.UWP.Main
                     {
                         await AsyncTask.RunOnUIThread(() =>
                         {
+                            if (cts?.IsCancellationRequested == true)
+                                return;
+
                             WeatherView.UpdateView(wLoader.GetWeather());
                             UpdateWindowColors();
-                        });
+                        }).ConfigureAwait(false);
                     }
                 }
             }
@@ -413,7 +446,7 @@ namespace SimpleWeather.UWP.Main
                 if (locData == null)
                 {
                     // Update location if not setup
-                    await UpdateLocation();
+                    await AsyncTask.RunAsync(UpdateLocation);
                     forceRefresh = true;
                 }
                 else
@@ -422,7 +455,7 @@ namespace SimpleWeather.UWP.Main
                     if (locData.weatherSource != Settings.API)
                         Settings.SaveLastGPSLocData(new LocationData());
 
-                    if (await UpdateLocation())
+                    if (await AsyncTask.RunAsync(UpdateLocation))
                     {
                         // Setup loader from updated location
                         forceRefresh = true;
@@ -441,8 +474,11 @@ namespace SimpleWeather.UWP.Main
                 location = Settings.HomeData;
             }
 
+            if (cts?.IsCancellationRequested == true)
+                return;
+
             // Check pin tile status
-            await CheckTiles();
+            await AsyncTask.RunAsync(CheckTiles);
 
             if (location != null)
                 wLoader = new WeatherDataLoader(location, this, this);
@@ -499,6 +535,9 @@ namespace SimpleWeather.UWP.Main
                         return false;
                 }
 
+                if (cts?.IsCancellationRequested == true)
+                    return false;
+
                 // Access to location granted
                 if (newGeoPos != null)
                 {
@@ -520,11 +559,14 @@ namespace SimpleWeather.UWP.Main
 
                     LocationQueryViewModel view = null;
 
-                    await Task.Run(async () =>
+                    if (cts?.IsCancellationRequested == true)
+                        return false;
+
+                    await AsyncTask.RunAsync(async () =>
                     {
                         try
                         {
-                            view = await wm.GetLocation(newGeoPos);
+                            view = await AsyncTask.RunAsync(wm.GetLocation(newGeoPos));
 
                             if (String.IsNullOrEmpty(view.LocationQuery))
                                 view = new LocationQueryViewModel();
@@ -536,7 +578,7 @@ namespace SimpleWeather.UWP.Main
                             await AsyncTask.RunOnUIThread(() =>
                             {
                                 ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
-                            });
+                            }).ConfigureAwait(false);
                         }
                     });
 
@@ -545,6 +587,9 @@ namespace SimpleWeather.UWP.Main
                         // Stop since there is no valid query
                         return false;
                     }
+
+                    if (cts?.IsCancellationRequested == true)
+                        return false;
 
                     // Save oldkey
                     string oldkey = lastGPSLocData.query;
@@ -556,7 +601,7 @@ namespace SimpleWeather.UWP.Main
                     // Update tile id for location
                     if (oldkey != null && SecondaryTileUtils.Exists(oldkey))
                     {
-                        await SecondaryTileUtils.UpdateTileId(oldkey, lastGPSLocData.query);
+                        await AsyncTask.RunAsync(SecondaryTileUtils.UpdateTileId(oldkey, lastGPSLocData.query));
                     }
 
                     location = lastGPSLocData;
@@ -570,7 +615,7 @@ namespace SimpleWeather.UWP.Main
 
         private async void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            if (Settings.FollowGPS && await UpdateLocation())
+            if (Settings.FollowGPS && await AsyncTask.RunAsync(UpdateLocation))
                 // Setup loader from updated location
                 wLoader = new WeatherDataLoader(location, this, this);
 
@@ -580,7 +625,11 @@ namespace SimpleWeather.UWP.Main
         private void RefreshWeather(bool forceRefresh)
         {
             AsyncTask.RunOnUIThread(() => LoadingRing.IsActive = true);
-            AsyncTask.Run(() => wLoader.LoadWeatherData(forceRefresh));
+            AsyncTask.Run(() =>
+            {
+                if (cts?.IsCancellationRequested == false)
+                    wLoader?.LoadWeatherData(forceRefresh);
+            });
         }
 
         private void LeftButton_Click(object sender, RoutedEventArgs e)
@@ -685,17 +734,17 @@ namespace SimpleWeather.UWP.Main
             await AsyncTask.RunOnUIThread(() =>
             {
                 pinBtn.IsEnabled = false;
-            });
+            }).ConfigureAwait(false);
 
             // Check if your app is currently pinned
             bool isPinned = SecondaryTileUtils.Exists(location.query);
 
             await AsyncTask.RunOnUIThread(async () =>
             {
-                await SetPinButton(isPinned);
+                await SetPinButton(isPinned).ConfigureAwait(true);
                 pinBtn.Visibility = Visibility.Visible;
                 pinBtn.IsEnabled = true;
-            });
+            }).ConfigureAwait(false);
         }
 
         private async Task SetPinButton(bool isPinned)
@@ -714,7 +763,7 @@ namespace SimpleWeather.UWP.Main
                     pinBtn.Icon = new SymbolIcon(Symbol.Pin);
                     pinBtn.Label = App.ResLoader.GetString("Label_Pin/Text");
                 }
-            });
+            }).ConfigureAwait(false);
         }
 
         private async void PinButton_Click(object sender, RoutedEventArgs e)
@@ -731,7 +780,7 @@ namespace SimpleWeather.UWP.Main
                     SecondaryTileUtils.RemoveTileId(location.query);
                 }
 
-                await SetPinButton(!deleted);
+                await SetPinButton(!deleted).ConfigureAwait(true);
 
                 GetPinBtn().IsEnabled = true;
             }
@@ -766,11 +815,11 @@ namespace SimpleWeather.UWP.Main
                 {
                     // Update tile with notifications
                     SecondaryTileUtils.AddTileId(location.query, tileID);
-                    await WeatherTileCreator.TileUpdater(location);
+                    await WeatherTileCreator.TileUpdater(location).ConfigureAwait(true);
                     await tile.UpdateAsync();
                 }
 
-                await SetPinButton(isPinned);
+                await SetPinButton(isPinned).ConfigureAwait(true);
 
                 GetPinBtn().IsEnabled = true;
             }

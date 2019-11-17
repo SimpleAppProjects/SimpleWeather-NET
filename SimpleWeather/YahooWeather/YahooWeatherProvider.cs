@@ -65,16 +65,16 @@ namespace SimpleWeather.WeatherYahoo
                     request.Headers.Add("X-Yahoo-App-Id", APIKeys.GetYahooAppID());
                     request.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/json"));
 
-                    HttpResponseMessage response = await webClient.SendRequestAsync(request, HttpCompletionOption.ResponseHeadersRead).AsTask(cts.Token);
+                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.SendRequestAsync(request, HttpCompletionOption.ResponseHeadersRead).AsTask(cts.Token));
                     response.EnsureSuccessStatusCode();
                     Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
                     // Reset exception
                     wEx = null;
 
                     // Load weather
-                    await Task.Run(() =>
+                    root = await AsyncTask.RunAsync(() =>
                     {
-                        root = JSONParser.Deserializer<Rootobject>(contentStream);
+                        return JSONParser.Deserializer<Rootobject>(contentStream);
                     });
 
                     // End Stream
@@ -107,7 +107,7 @@ namespace SimpleWeather.WeatherYahoo
             try
             {
                 // Load weather
-                Rootobject root = await GetRootobject(location_query);
+                Rootobject root = await AsyncTask.RunAsync(GetRootobject(location_query));
 
                 weather = new Weather(root);
             }
@@ -143,7 +143,7 @@ namespace SimpleWeather.WeatherYahoo
             try
             {
                 String query = UpdateLocationQuery(location);
-                Rootobject root = await GetRootobject(query);
+                Rootobject root = await AsyncTask.RunAsync(GetRootobject(query));
                 return new WeatherData.Astronomy(root.current_observation.astronomy);
             }
             catch (WeatherException wEx)
@@ -159,7 +159,7 @@ namespace SimpleWeather.WeatherYahoo
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<Weather> GetWeather(LocationData location)
         {
-            var weather = await base.GetWeather(location);
+            var weather = await AsyncTask.RunAsync(base.GetWeather(location));
 
             weather.update_time = weather.update_time.ToOffset(location.tz_offset);
 

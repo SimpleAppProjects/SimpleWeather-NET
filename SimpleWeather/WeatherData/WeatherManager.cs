@@ -128,7 +128,7 @@ namespace SimpleWeather.WeatherData
         public static async Task<bool> IsKeyValid(string key, string API)
         {
             var provider = GetProvider(API);
-            return await provider.IsKeyValid(key);
+            return await AsyncTask.RunAsync(provider.IsKeyValid(key));
         }
 
         // Provider dependent methods
@@ -146,7 +146,7 @@ namespace SimpleWeather.WeatherData
 
         public async Task UpdateLocationData(LocationData location)
         {
-            await WeatherProvider.UpdateLocationData(location);
+            await AsyncTask.RunAsync(WeatherProvider.UpdateLocationData(location));
         }
 
         public string UpdateLocationQuery(Weather weather)
@@ -162,36 +162,36 @@ namespace SimpleWeather.WeatherData
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string ac_query)
         {
-            return await WeatherProvider.GetLocations(ac_query);
+            return await AsyncTask.RunAsync(WeatherProvider.GetLocations(ac_query));
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public async Task<LocationQueryViewModel> GetLocation(Windows.Devices.Geolocation.Geoposition geoPos)
         {
-            return await GetLocation(new WeatherUtils.Coordinate(geoPos));
+            return await AsyncTask.RunAsync(GetLocation(new WeatherUtils.Coordinate(geoPos)));
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public async Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coord)
         {
-            return await WeatherProvider.GetLocation(coord);
+            return await AsyncTask.RunAsync(WeatherProvider.GetLocation(coord));
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public async Task<Weather> GetWeather(string query)
         {
-            return await WeatherProvider.GetWeather(query);
+            return await AsyncTask.RunAsync(WeatherProvider.GetWeather(query));
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public async Task<Weather> GetWeather(LocationData location)
         {
-            return await WeatherProvider.GetWeather(location);
+            return await AsyncTask.RunAsync(WeatherProvider.GetWeather(location));
         }
 
         public async Task<List<WeatherAlert>> GetAlerts(LocationData location)
         {
-            return await WeatherProvider.GetAlerts(location);
+            return await AsyncTask.RunAsync(WeatherProvider.GetAlerts(location));
         }
 
         public String LocaleToLangCode(String iso, String name)
@@ -212,7 +212,7 @@ namespace SimpleWeather.WeatherData
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public async Task<bool> IsKeyValid(string key)
         {
-            return await WeatherProvider.IsKeyValid(key);
+            return await AsyncTask.RunAsync(WeatherProvider.IsKeyValid(key));
         }
 
         public string GetAPIKey()

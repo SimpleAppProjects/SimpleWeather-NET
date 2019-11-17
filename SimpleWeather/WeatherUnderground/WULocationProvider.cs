@@ -37,7 +37,7 @@ namespace SimpleWeather.WeatherUnderground
                 try
                 {
                     // Connect to webstream
-                    HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
+                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.GetAsync(queryURL).AsTask(cts.Token));
                     response.EnsureSuccessStatusCode();
                     Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
                     // End Stream
@@ -102,7 +102,7 @@ namespace SimpleWeather.WeatherUnderground
                 try
                 {
                     // Connect to webstream
-                    HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
+                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.GetAsync(queryURL).AsTask(cts.Token));
                     response.EnsureSuccessStatusCode();
                     Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 

@@ -33,7 +33,7 @@ namespace SimpleWeather.Location
             LocationQueryViewModel qview = null;
             try
             {
-                qview = await GetLocation(new WeatherUtils.Coordinate(location), weatherAPI);
+                qview = await AsyncTask.RunAsync(GetLocation(new WeatherUtils.Coordinate(location), weatherAPI));
             }
             catch (WeatherException wEx)
             {

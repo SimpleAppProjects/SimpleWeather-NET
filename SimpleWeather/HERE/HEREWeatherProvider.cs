@@ -49,52 +49,53 @@ namespace SimpleWeather.HERE
             bool isValid = false;
             WeatherException wEx = null;
 
-            try
+            using (HttpClient webClient = new HttpClient())
+            using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
             {
-                if (String.IsNullOrWhiteSpace(app_id) || String.IsNullOrWhiteSpace(app_code))
-                    throw (wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey));
-
-                CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
-
-                // Connect to webstream
-                HttpClient webClient = new HttpClient();
-                HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
-
-                // Check for errors
-                switch (response.StatusCode)
+                try
                 {
-                    // 400 (OK since this isn't a valid request)
-                    case HttpStatusCode.BadRequest:
-                        isValid = true;
-                        break;
-                    // 401 (Unauthorized - Key is invalid)
-                    case HttpStatusCode.Unauthorized:
-                        wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
-                        isValid = false;
-                        break;
+                    if (String.IsNullOrWhiteSpace(app_id) || String.IsNullOrWhiteSpace(app_code))
+                        throw (wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey));
+
+                    // Connect to webstream
+                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.GetAsync(queryURL).AsTask(cts.Token));
+
+                    // Check for errors
+                    switch (response.StatusCode)
+                    {
+                        // 400 (OK since this isn't a valid request)
+                        case HttpStatusCode.BadRequest:
+                            isValid = true;
+                            break;
+                        // 401 (Unauthorized - Key is invalid)
+                        case HttpStatusCode.Unauthorized:
+                            wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
+                            isValid = false;
+                            break;
+                    }
+
+                    // End Stream
+                    response.Dispose();
+                    webClient.Dispose();
+                    cts.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                    {
+                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    }
+
+                    isValid = false;
                 }
 
-                // End Stream
-                response.Dispose();
-                webClient.Dispose();
-                cts.Dispose();
-            }
-            catch (Exception ex)
-            {
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                if (wEx != null)
                 {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    throw wEx;
                 }
 
-                isValid = false;
+                return isValid;
             }
-
-            if (wEx != null)
-            {
-                throw wEx;
-            }
-
-            return isValid;
         }
 
         public override String GetAPIKey()
@@ -149,17 +150,16 @@ namespace SimpleWeather.HERE
                 try
                 {
                     // Connect to webstream
-                    HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
+                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.GetAsync(queryURL).AsTask(cts.Token));
                     response.EnsureSuccessStatusCode();
                     Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
                     // Reset exception
                     wEx = null;
 
                     // Load weather
-                    Rootobject root = null;
-                    await Task.Run(() =>
+                    Rootobject root = await AsyncTask.RunAsync(() =>
                     {
-                        root = JSONParser.Deserializer<Rootobject>(contentStream);
+                        return JSONParser.Deserializer<Rootobject>(contentStream);
                     });
 
                     // Check for errors
@@ -233,7 +233,7 @@ namespace SimpleWeather.HERE
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<Weather> GetWeather(LocationData location)
         {
-            var weather = await base.GetWeather(location);
+            var weather = await AsyncTask.RunAsync(base.GetWeather(location));
 
             var offset = location.tz_offset;
 
@@ -254,7 +254,7 @@ namespace SimpleWeather.HERE
             }
             else if ("US".Equals(location.country_code))
             {
-                List<WeatherAlert> alerts = await new NWS.NWSAlertProvider().GetAlerts(location);
+                List<WeatherAlert> alerts = await AsyncTask.RunAsync(new NWS.NWSAlertProvider().GetAlerts(location));
 
                 if (weather.weather_alerts != null)
                     alerts.AddRange(weather.weather_alerts);
@@ -315,7 +315,7 @@ namespace SimpleWeather.HERE
                 try
                 {
                     // Connect to webstream
-                    HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
+                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.GetAsync(queryURL).AsTask(cts.Token));
                     response.EnsureSuccessStatusCode();
                     Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
                     // End Stream

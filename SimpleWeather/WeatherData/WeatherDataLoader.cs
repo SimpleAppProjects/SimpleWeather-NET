@@ -67,8 +67,7 @@ namespace SimpleWeather.WeatherData
                         if (!String.IsNullOrWhiteSpace(location.weatherSource) &&
                             !WeatherAPI.NWS.Equals(location.weatherSource))
                         {
-                            weather = await WeatherManager.GetProvider(location.weatherSource)
-                                            .GetWeather(location);
+                            weather = await AsyncTask.RunAsync(WeatherManager.GetProvider(location.weatherSource).GetWeather(location));
                         }
                         else
                         {
@@ -78,7 +77,7 @@ namespace SimpleWeather.WeatherData
                     else
                     {
                         // Load weather from provider
-                        weather = await wm.GetWeather(location);
+                        weather = await AsyncTask.RunAsync(wm.GetWeather(location));
                     }
                 }
                 catch (WeatherException weatherEx)
@@ -95,7 +94,7 @@ namespace SimpleWeather.WeatherData
                 // Load old data if available and we can't get new data
                 if (weather == null)
                 {
-                    loadedSavedData = await LoadSavedWeatherData(true);
+                    loadedSavedData = await AsyncTask.RunAsync(LoadSavedWeatherData(true));
                 }
                 else if (weather != null)
                 {
@@ -120,7 +119,7 @@ namespace SimpleWeather.WeatherData
                         await Settings.UpdateLocation(location);
                     }
 
-                    await SaveWeatherData();
+                    await AsyncTask.RunAsync(SaveWeatherData);
                 }
 
                 // Throw exception if we're unable to get any weather data
@@ -153,7 +152,7 @@ namespace SimpleWeather.WeatherData
                 }
             }
             else
-                await LoadWeatherData();
+                await AsyncTask.RunAsync(LoadWeatherData);
 
             Logger.WriteLine(LoggerLevel.Debug, "{0}: Sending weather data to callback", TAG);
             Logger.WriteLine(LoggerLevel.Debug, "{0}: Weather data for {1} is valid = {2}", TAG, location?.ToString(), weather?.IsValid());
@@ -170,7 +169,7 @@ namespace SimpleWeather.WeatherData
 
             Logger.WriteLine(LoggerLevel.Debug, "{0}: Loading weather data for {1}", TAG, location?.ToString());
 
-            bool gotData = await LoadSavedWeatherData();
+            bool gotData = await AsyncTask.RunAsync(LoadSavedWeatherData);
 
             if (!gotData)
             {
@@ -203,7 +202,7 @@ namespace SimpleWeather.WeatherData
                             // Update tile id for location
                             if (SecondaryTileUtils.Exists(oldKey))
                             {
-                                await SecondaryTileUtils.UpdateTileId(oldKey, location.query);
+                                await AsyncTask.RunAsync(SecondaryTileUtils.UpdateTileId(oldKey, location.query));
                             }
                         }
                     }
@@ -261,7 +260,7 @@ namespace SimpleWeather.WeatherData
                 return !isInvalid;
             }
             else
-                return await LoadSavedWeatherData();
+                return await AsyncTask.RunAsync(LoadSavedWeatherData);
         }
 
         private async Task<bool> LoadSavedWeatherData()
@@ -352,7 +351,7 @@ namespace SimpleWeather.WeatherData
 
         public async Task ForceLoadSavedWeatherData()
         {
-            await LoadSavedWeatherData(true);
+            await AsyncTask.RunAsync(LoadSavedWeatherData(true));
 
             Logger.WriteLine(LoggerLevel.Debug, "{0}: Sending weather data to callback", TAG);
             Logger.WriteLine(LoggerLevel.Debug, "{0}: Weather data for {1} is valid = {2}", TAG, location?.ToString(), weather?.IsValid());

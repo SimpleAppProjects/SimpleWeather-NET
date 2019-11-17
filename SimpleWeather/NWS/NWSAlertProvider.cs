@@ -37,7 +37,7 @@ namespace SimpleWeather.NWS
                 webClient.DefaultRequestHeaders.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
                 webClient.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
 
-                HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
+                HttpResponseMessage response = await AsyncTask.RunAsync(webClient.GetAsync(queryURL).AsTask(cts.Token));
                 response.EnsureSuccessStatusCode();
                 Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
                 // End Stream

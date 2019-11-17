@@ -19,20 +19,20 @@ namespace SimpleWeather.Utils
             // Wait for file to be free
             while (IsFileLocked(file))
             {
-                await Task.Delay(100);
+                await AsyncTask.RunAsync(Task.Delay(100));
             }
 
             String data;
 
             using (StreamReader reader = new StreamReader((await file.OpenAsync(FileAccessMode.Read)).AsStreamForRead()))
             {
-                String line = await reader.ReadLineAsync();
+                String line = await AsyncTask.RunAsync(reader.ReadLineAsync);
                 StringBuilder sBuilder = new StringBuilder();
 
                 while (line != null)
                 {
                     sBuilder.Append(line).Append("\n");
-                    line = await reader.ReadLineAsync();
+                    line = await AsyncTask.RunAsync(reader.ReadLineAsync);
                 }
 
                 reader.Dispose();
@@ -47,7 +47,7 @@ namespace SimpleWeather.Utils
             // Wait for file to be free
             while (IsFileLocked(file))
             {
-                await Task.Delay(100);
+                await AsyncTask.RunAsync(Task.Delay(100));
             }
 
             using (StorageStreamTransaction transaction = await file.OpenTransactedWriteAsync())
@@ -65,7 +65,7 @@ namespace SimpleWeather.Utils
             // Wait for file to be free
             while (IsFileLocked(file))
             {
-                await Task.Delay(100);
+                await AsyncTask.RunAsync(Task.Delay(100));
             }
 
             using (StorageStreamTransaction transaction = await file.OpenTransactedWriteAsync())
@@ -80,7 +80,7 @@ namespace SimpleWeather.Utils
 
         public static bool IsFileLocked(StorageFile file)
         {
-            if (!File.Exists(file.Path))
+            if (!File.Exists(file?.Path))
                 return false;
 
             IRandomAccessStream stream = null;

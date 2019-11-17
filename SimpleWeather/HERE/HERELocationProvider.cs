@@ -55,7 +55,7 @@ namespace SimpleWeather.HERE
                 try
                 {
                     // Connect to webstream
-                    HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
+                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.GetAsync(queryURL).AsTask(cts.Token));
                     response.EnsureSuccessStatusCode();
                     Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
                     // End Stream
@@ -63,10 +63,9 @@ namespace SimpleWeather.HERE
 
                     // Load data
                     var locationSet = new HashSet<LocationQueryViewModel>();
-                    AC_Rootobject root = null;
-                    await Task.Run(() =>
+                    AC_Rootobject root = await AsyncTask.RunAsync(() =>
                     {
-                        root = JSONParser.Deserializer<AC_Rootobject>(contentStream);
+                        return JSONParser.Deserializer<AC_Rootobject>(contentStream);
                     });
 
                     foreach (Suggestion result in root.suggestions)
@@ -145,7 +144,7 @@ namespace SimpleWeather.HERE
                 try
                 {
                     // Connect to webstream
-                    HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
+                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.GetAsync(queryURL).AsTask(cts.Token));
                     response.EnsureSuccessStatusCode();
                     Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
@@ -153,10 +152,9 @@ namespace SimpleWeather.HERE
                     webClient.Dispose();
 
                     // Load data
-                    Geo_Rootobject root = null;
-                    await Task.Run(() =>
+                    Geo_Rootobject root = await AsyncTask.RunAsync(() =>
                     {
-                        root = JSONParser.Deserializer<Geo_Rootobject>(contentStream);
+                        return JSONParser.Deserializer<Geo_Rootobject>(contentStream);
                     });
 
                     if (root.response.view.Length > 0 && root.response.view[0].result.Length > 0)
@@ -220,7 +218,7 @@ namespace SimpleWeather.HERE
                 try
                 {
                     // Connect to webstream
-                    HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
+                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.GetAsync(queryURL).AsTask(cts.Token));
                     response.EnsureSuccessStatusCode();
                     Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
@@ -228,10 +226,9 @@ namespace SimpleWeather.HERE
                     webClient.Dispose();
 
                     // Load data
-                    Geo_Rootobject root = null;
-                    await Task.Run(() =>
+                    Geo_Rootobject root = await AsyncTask.RunAsync(() =>
                     {
-                        root = JSONParser.Deserializer<Geo_Rootobject>(contentStream);
+                        return JSONParser.Deserializer<Geo_Rootobject>(contentStream);
                     });
 
                     if (root.response.view.Length > 0 && root.response.view[0].result.Length > 0)
@@ -286,44 +283,44 @@ namespace SimpleWeather.HERE
             bool isValid = false;
             WeatherException wEx = null;
 
-            try
+            using (HttpClient webClient = new HttpClient())
+            using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
             {
-                if (String.IsNullOrWhiteSpace(app_id) || String.IsNullOrWhiteSpace(app_code))
-                    throw (wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey));
-
-                CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
-
-                // Connect to webstream
-                HttpClient webClient = new HttpClient();
-                HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
-
-                // Check for errors
-                switch (response.StatusCode)
+                try
                 {
-                    // 400 (OK since this isn't a valid request)
-                    case HttpStatusCode.BadRequest:
-                        isValid = true;
-                        break;
-                    // 401 (Unauthorized - Key is invalid)
-                    case HttpStatusCode.Unauthorized:
-                        wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
-                        isValid = false;
-                        break;
-                }
+                    if (String.IsNullOrWhiteSpace(app_id) || String.IsNullOrWhiteSpace(app_code))
+                        throw (wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey));
 
-                // End Stream
-                response.Dispose();
-                webClient.Dispose();
-                cts.Dispose();
-            }
-            catch (Exception ex)
-            {
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                    // Connect to webstream
+                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.GetAsync(queryURL).AsTask(cts.Token));
+
+                    // Check for errors
+                    switch (response.StatusCode)
+                    {
+                        // 400 (OK since this isn't a valid request)
+                        case HttpStatusCode.BadRequest:
+                            isValid = true;
+                            break;
+                        // 401 (Unauthorized - Key is invalid)
+                        case HttpStatusCode.Unauthorized:
+                            wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
+                            isValid = false;
+                            break;
+                    }
+
+                    // End Stream
+                    response.Dispose();
+                    webClient.Dispose();
+                }
+                catch (Exception ex)
                 {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                }
+                    if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                    {
+                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    }
 
-                isValid = false;
+                    isValid = false;
+                }
             }
 
             if (wEx != null)

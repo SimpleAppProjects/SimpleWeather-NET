@@ -32,6 +32,7 @@ namespace SimpleWeather.UWP.Main
         public static readonly DependencyProperty AppBarColorProperty =
             DependencyProperty.Register("AppBarColor", typeof(Color),
             typeof(Shell), new PropertyMetadata(Color.FromArgb(0xff, 0x0, 0x70, 0xc0)));
+
         public Color AppBarColor
         {
             get { return (Color)GetValue(AppBarColorProperty); }
@@ -111,7 +112,7 @@ namespace SimpleWeather.UWP.Main
                     bool isDarkTheme = uiTheme == "#FF000000";
                     AppFrame.RequestedTheme = isDarkTheme ? ElementTheme.Dark : ElementTheme.Light;
                 }
-            });
+            }).ConfigureAwait(false);
         }
 
         public void UpdateAppTheme()
@@ -127,9 +128,11 @@ namespace SimpleWeather.UWP.Main
                     var uiTheme = UISettings.GetColorValue(UIColorType.Background).ToString();
                     isDarkTheme = uiTheme == "#FF000000";
                     break;
+
                 case UserThemeMode.Light:
                     isDarkTheme = false;
                     break;
+
                 case UserThemeMode.Dark:
                     isDarkTheme = true;
                     break;
@@ -211,9 +214,10 @@ namespace SimpleWeather.UWP.Main
             if (AppFrame == null)
                 return;
 
-            // Navigate back if possible, and if the event has not 
+            // Navigate back if possible, and if the event has not
             // already been handled.
-            bool PageRequestedToStay = e.Handled = AppFrame.Content is IBackRequestedPage backPage && await backPage.OnBackRequested();
+            bool PageRequestedToStay = e.Handled = AppFrame.Content is IBackRequestedPage backPage &&
+                await backPage.OnBackRequested().ConfigureAwait(true);
 
             if (!PageRequestedToStay && AppFrame.BackStackDepth > 0)
             {

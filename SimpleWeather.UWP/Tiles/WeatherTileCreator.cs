@@ -922,7 +922,7 @@ namespace SimpleWeather.UWP.Tiles
         public static async Task TileUpdater(LocationData location)
         {
             var wloader = new WeatherDataLoader(location);
-            await wloader.LoadWeatherData(false);
+            await AsyncTask.RunAsync(wloader.LoadWeatherData(false));
 
             if (wloader.GetWeather() != null)
             {

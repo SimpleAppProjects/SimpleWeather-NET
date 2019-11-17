@@ -44,7 +44,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                     {
                         Logger.WriteLine(LoggerLevel.Debug, "WeatherUpdateBackgroundTask: Getting weather data...");
                         // Retrieve weather data.
-                        var weather = await GetWeather();
+                        var weather = await AsyncTask.RunAsync(GetWeather);
 
                         if (cts.IsCancellationRequested) return;
 
@@ -70,7 +70,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                             Logger.WriteLine(LoggerLevel.Debug, "TileID = " + tile.TileId);
 
                             if (location != null)
-                                await WeatherTileCreator.TileUpdater(location);
+                                await AsyncTask.RunAsync(WeatherTileCreator.TileUpdater(location));
 
                             if (cts.IsCancellationRequested) return;
                         }
@@ -78,7 +78,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                         // Post alerts if setting is on
                         Logger.WriteLine(LoggerLevel.Debug, "WeatherUpdateBackgroundTask: Posting alerts...");
                         if (Settings.ShowAlerts && wm.SupportsAlerts && weather != null)
-                            await WeatherAlertHandler.PostAlerts(Settings.HomeData, weather.weather_alerts);
+                            await AsyncTask.RunAsync(WeatherAlertHandler.PostAlerts(Settings.HomeData, weather.weather_alerts));
 
                         if (cts.IsCancellationRequested) return;
 
@@ -191,12 +191,12 @@ namespace SimpleWeather.UWP.BackgroundTasks
             try
             {
                 if (Settings.FollowGPS)
-                    await UpdateLocation();
+                    await AsyncTask.RunAsync(UpdateLocation);
 
                 cts.Token.ThrowIfCancellationRequested();
 
                 var wloader = new WeatherDataLoader(Settings.HomeData);
-                await wloader.LoadWeatherData(false);
+                await AsyncTask.RunAsync(wloader.LoadWeatherData(false));
 
                 weather = wloader.GetWeather();
             }
@@ -226,7 +226,8 @@ namespace SimpleWeather.UWP.BackgroundTasks
                 try
                 {
                     cts.Token.ThrowIfCancellationRequested();
-                    newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10)).AsTask(cts.Token);
+                    newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10))
+                        .AsTask(cts.Token).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException)
                 {
@@ -239,7 +240,8 @@ namespace SimpleWeather.UWP.BackgroundTasks
                     try
                     {
                         cts.Token.ThrowIfCancellationRequested();
-                        geoStatus = await Geolocator.RequestAccessAsync().AsTask(cts.Token);
+                        geoStatus = await Geolocator.RequestAccessAsync()
+                            .AsTask(cts.Token).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
@@ -255,7 +257,8 @@ namespace SimpleWeather.UWP.BackgroundTasks
                         {
                             try
                             {
-                                newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10)).AsTask(cts.Token);
+                                newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10))
+                                    .AsTask(cts.Token).ConfigureAwait(false);
                             }
                             catch (Exception ex)
                             {
@@ -294,7 +297,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                     {
                         try
                         {
-                            view = await wm.GetLocation(newGeoPos);
+                            view = await AsyncTask.RunAsync(wm.GetLocation(newGeoPos));
 
                             if (String.IsNullOrEmpty(view.LocationQuery))
                                 view = new LocationQueryViewModel();
@@ -303,7 +306,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                         {
                             view = new LocationQueryViewModel();
                         }
-                    }, cts.Token);
+                    }, cts.Token).ConfigureAwait(false);
 
                     if (String.IsNullOrWhiteSpace(view.LocationQuery))
                     {
@@ -323,7 +326,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                     // Update tile id for location
                     if (oldkey != null && SecondaryTileUtils.Exists(oldkey))
                     {
-                        await SecondaryTileUtils.UpdateTileId(oldkey, lastGPSLocData.query);
+                        await AsyncTask.RunAsync(SecondaryTileUtils.UpdateTileId(oldkey, lastGPSLocData.query));
                     }
 
                     locationChanged = true;

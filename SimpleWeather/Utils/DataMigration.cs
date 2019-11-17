@@ -16,7 +16,7 @@ namespace SimpleWeather.Utils
                 {
                     // Move data from json to db
                     case 0:
-                        if (await locationDB.Table<LocationData>().CountAsync() == 0)
+                        if (await AsyncTask.RunAsync(locationDB.Table<LocationData>().CountAsync()) == 0)
                             await DBUtils.MigrateDataJsonToDB(locationDB, weatherDB);
                         break;
                     // Add and set tz_long column in db
@@ -24,9 +24,10 @@ namespace SimpleWeather.Utils
                     // LocationData updates: added new fields
                     case 2:
                     case 3:
-                        if (await locationDB.Table<LocationData>().CountAsync() > 0)
+                        if (await AsyncTask.RunAsync(locationDB.Table<LocationData>().CountAsync()) > 0)
                             DBUtils.SetLocationData(locationDB, Settings.API);
                         break;
+
                     default:
                         break;
                 }

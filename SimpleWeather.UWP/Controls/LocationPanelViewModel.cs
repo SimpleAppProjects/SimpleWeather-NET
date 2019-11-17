@@ -16,7 +16,7 @@ namespace SimpleWeather.Controls
         private bool editMode;
         private string backgroundURI;
         private ElementTheme backgroundTheme = ElementTheme.Dark;
-        private bool isLoading;
+        private bool isLoading = true;
         private LocationData locationData;
         private string weatherSource;
 

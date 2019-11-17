@@ -45,7 +45,7 @@ namespace SimpleWeather.OpenWeather
 
                 // Connect to webstream
                 HttpClient webClient = new HttpClient();
-                HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
+                HttpResponseMessage response = await AsyncTask.RunAsync(webClient.GetAsync(queryURL).AsTask(cts.Token));
 
                 // Check for errors
                 switch (response.StatusCode)
@@ -124,9 +124,9 @@ namespace SimpleWeather.OpenWeather
                 try
                 {
                     // Get response
-                    HttpResponseMessage currentResponse = await webClient.GetAsync(currentURL).AsTask(cts.Token);
+                    HttpResponseMessage currentResponse = await AsyncTask.RunAsync(webClient.GetAsync(currentURL).AsTask(cts.Token));
                     currentResponse.EnsureSuccessStatusCode();
-                    HttpResponseMessage forecastResponse = await webClient.GetAsync(forecastURL).AsTask(cts.Token);
+                    HttpResponseMessage forecastResponse = await AsyncTask.RunAsync(webClient.GetAsync(forecastURL).AsTask(cts.Token));
                     forecastResponse.EnsureSuccessStatusCode();
 
                     Stream currentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await currentResponse.Content.ReadAsInputStreamAsync());
@@ -136,15 +136,13 @@ namespace SimpleWeather.OpenWeather
                     wEx = null;
 
                     // Load weather
-                    CurrentRootobject currRoot = null;
-                    ForecastRootobject foreRoot = null;
-                    await Task.Run(() =>
+                    CurrentRootobject currRoot = await AsyncTask.RunAsync(() =>
                     {
-                        currRoot = JSONParser.Deserializer<CurrentRootobject>(currentStream);
+                        return JSONParser.Deserializer<CurrentRootobject>(currentStream);
                     });
-                    await Task.Run(() =>
+                    ForecastRootobject foreRoot = await AsyncTask.RunAsync(() =>
                     {
-                        foreRoot = JSONParser.Deserializer<ForecastRootobject>(forecastStream);
+                        return JSONParser.Deserializer<ForecastRootobject>(forecastStream);
                     });
 
                     // End Streams
@@ -190,7 +188,7 @@ namespace SimpleWeather.OpenWeather
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<WeatherData.Weather> GetWeather(LocationData location)
         {
-            var weather = await base.GetWeather(location);
+            var weather = await AsyncTask.RunAsync(base.GetWeather(location));
 
             // OWM reports datetime in UTC; add location tz_offset
             var offset = location.tz_offset;

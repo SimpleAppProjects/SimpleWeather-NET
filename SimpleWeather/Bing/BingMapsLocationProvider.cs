@@ -52,7 +52,7 @@ namespace SimpleWeather.Bing
                 try
                 {
                     // Connect to webstream
-                    HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
+                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.GetAsync(queryURL).AsTask(cts.Token));
                     response.EnsureSuccessStatusCode();
                     Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
                     // End Stream
@@ -60,11 +60,10 @@ namespace SimpleWeather.Bing
 
                     // Load data
                     var locationSet = new HashSet<LocationQueryViewModel>();
-                    AC_Rootobject root = null;
-                    await Task.Run(() =>
+                    AC_Rootobject root = await AsyncTask.RunAsync(() =>
                     {
-                        root = JSONParser.Deserializer<AC_Rootobject>(contentStream);
-                    }).ConfigureAwait(false);
+                        return JSONParser.Deserializer<AC_Rootobject>(contentStream);
+                    });
 
                     foreach (Value result in root.resourceSets[0].resources[0].value)
                     {
@@ -136,7 +135,7 @@ namespace SimpleWeather.Bing
 
                 // Geocode the specified address, using the specified reference point
                 // as a query hint. Return no more than a single result.
-                MapLocationFinderResult mapResult = await MapLocationFinder.FindLocationsAtAsync(pointToReverseGeocode, MapLocationDesiredAccuracy.High).AsTask(cts.Token);
+                MapLocationFinderResult mapResult = await AsyncTask.RunAsync(MapLocationFinder.FindLocationsAtAsync(pointToReverseGeocode, MapLocationDesiredAccuracy.High).AsTask(cts.Token));
 
                 switch (mapResult.Status)
                 {
@@ -215,7 +214,7 @@ namespace SimpleWeather.Bing
 
                 // Geocode the specified address, using the specified reference point
                 // as a query hint. Return no more than a single result.
-                MapLocationFinderResult mapResult = await MapLocationFinder.FindLocationsAsync(address, hintPoint, 1).AsTask(cts.Token);
+                MapLocationFinderResult mapResult = await AsyncTask.RunAsync(MapLocationFinder.FindLocationsAsync(address, hintPoint, 1).AsTask(cts.Token));
 
                 switch (mapResult.Status)
                 {

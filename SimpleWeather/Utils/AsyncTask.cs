@@ -23,6 +23,18 @@ namespace SimpleWeather.Utils
             return Task.Run<T>(function).ConfigureAwait(false);
         }
 
+        public static ConfiguredTaskAwaitable RunAsync(Task task)
+        {
+            if (task is null) throw new ArgumentNullException(nameof(task));
+            return task.ConfigureAwait(false);
+        }
+
+        public static ConfiguredTaskAwaitable<T> RunAsync<T>(Task<T> task)
+        {
+            if (task is null) throw new ArgumentNullException(nameof(task));
+            return task.ConfigureAwait(false);
+        }
+
         public static void Run(Action action)
         {
             Task.Run(action);
@@ -65,10 +77,5 @@ namespace SimpleWeather.Utils
         {
             return DispatcherHelper.ExecuteOnUIThreadAsync(function);
         }
-    }
-
-    public interface IErrorHandler
-    {
-        void HandleError(Exception ex);
     }
 }

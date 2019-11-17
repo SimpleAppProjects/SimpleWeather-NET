@@ -76,8 +76,8 @@ namespace SimpleWeather.Utils
                         {
                             var weather = oldWeather[query] as Weather;
                             var prov = WeatherManager.GetProvider(weather.source);
-                            var qview = await prov.GetLocation(
-                                new WeatherUtils.Coordinate(String.Format("{0},{1}", weather.location.latitude, weather.location.longitude)));
+                            var qview = await AsyncTask.RunAsync(prov.GetLocation(
+                                new WeatherUtils.Coordinate(String.Format("{0},{1}", weather.location.latitude, weather.location.longitude))));
 
                             LocationData loc = new LocationData(qview);
                             data.Add(loc);
@@ -89,7 +89,7 @@ namespace SimpleWeather.Utils
 
                     // Add data
                     var list = oldWeather.Values.Cast<Weather>();
-                    await weatherDB.InsertOrReplaceAllWithChildrenAsync(list);
+                    await AsyncTask.RunAsync(weatherDB.InsertOrReplaceAllWithChildrenAsync(list));
 
                     // Delete old files
                     await dataFile.DeleteAsync();
@@ -116,7 +116,7 @@ namespace SimpleWeather.Utils
         {
             try
             {
-                int count = await dbConn?.Table<Weather>()?.CountAsync();
+                int count = await AsyncTask.RunAsync(dbConn?.Table<Weather>()?.CountAsync());
                 if (count > 0)
                     return true;
                 else
@@ -132,8 +132,8 @@ namespace SimpleWeather.Utils
         {
             try
             {
-                await dbConn?.Table<Favorites>()?.CountAsync();
-                int count = await dbConn?.Table<LocationData>()?.CountAsync();
+                await AsyncTask.RunAsync(dbConn?.Table<Favorites>()?.CountAsync());
+                int count = await AsyncTask.RunAsync(dbConn?.Table<LocationData>()?.CountAsync());
                 if (count > 0)
                     return true;
                 else

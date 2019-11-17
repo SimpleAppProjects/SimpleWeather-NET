@@ -26,13 +26,13 @@ namespace SimpleWeather.WeatherData
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(String ac_query)
         {
-            return await LocationProvider.GetLocations(ac_query, WeatherAPI);
+            return await AsyncTask.RunAsync(LocationProvider.GetLocations(ac_query, WeatherAPI));
         }
         // GeopositionQuery
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public async Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coordinate)
         {
-            return await LocationProvider.GetLocation(coordinate, WeatherAPI);
+            return await AsyncTask.RunAsync(LocationProvider.GetLocation(coordinate, WeatherAPI));
         }
         // Weather
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
@@ -43,7 +43,7 @@ namespace SimpleWeather.WeatherData
             if (location == null || location.query == null)
                 throw new WeatherException(WeatherUtils.ErrorStatus.Unknown);
 
-            var weather = await GetWeather(location.query);
+            var weather = await AsyncTask.RunAsync(GetWeather(location.query));
 
             if (String.IsNullOrWhiteSpace(location.tz_long))
             {
@@ -74,7 +74,7 @@ namespace SimpleWeather.WeatherData
             weather.location.tz_offset = location.tz_offset;
 
             if (SupportsAlerts && NeedsExternalAlertData)
-                weather.weather_alerts = await GetAlerts(location);
+                weather.weather_alerts = await AsyncTask.RunAsync(GetAlerts(location));
 
             return weather;
         }
@@ -82,7 +82,7 @@ namespace SimpleWeather.WeatherData
         public virtual async Task<List<WeatherAlert>> GetAlerts(LocationData location)
         {
             if ("US".Equals(location.country_code))
-                return await new NWS.NWSAlertProvider().GetAlerts(location);
+                return await AsyncTask.RunAsync(new NWS.NWSAlertProvider().GetAlerts(location));
             else
                 return null;
         }
@@ -95,7 +95,7 @@ namespace SimpleWeather.WeatherData
         // Utils Methods
         public async Task UpdateLocationData(LocationData location)
         {
-            await LocationProvider.UpdateLocationData(location, WeatherAPI);
+            await AsyncTask.RunAsync(LocationProvider.UpdateLocationData(location, WeatherAPI));
         }
         public abstract String UpdateLocationQuery(Weather weather);
         public abstract String UpdateLocationQuery(LocationData location);

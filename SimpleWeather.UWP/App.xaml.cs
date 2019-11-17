@@ -88,11 +88,11 @@ namespace SimpleWeather.UWP
         /// </summary>
         public App()
         {
+            this.UnhandledException += OnUnhandledException;
             this.InitializeComponent();
             this.Suspending += OnSuspending;
             this.EnteredBackground += OnEnteredBackground;
             this.LeavingBackground += OnLeavingBackground;
-            this.UnhandledException += OnUnhandledException;
             AppCenter.Start(APIKeys.GetAppCenterSecret(), typeof(Analytics), typeof(Crashes));
             UISettings = new UISettings();
             IsSystemDarkTheme = UISettings.GetColorValue(UIColorType.Background).ToString() == "#FF000000";
@@ -117,7 +117,7 @@ namespace SimpleWeather.UWP
                     {
                         UpdateAppTheme();
                     }
-                });
+                }).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -191,7 +191,7 @@ namespace SimpleWeather.UWP
                                 var key = args["query"];
 
                                 // App loaded for first time
-                                await Initialize(e);
+                                await AsyncTask.RunAsync(Initialize(e));
 
                                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                                 {

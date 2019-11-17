@@ -45,7 +45,7 @@ namespace SimpleWeather.WeatherUnderground
 
                 // Connect to webstream
                 HttpClient webClient = new HttpClient();
-                HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
+                HttpResponseMessage response = await AsyncTask.RunAsync(webClient.GetAsync(queryURL).AsTask(cts.Token));
                 response.EnsureSuccessStatusCode();
                 Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
                 // Reset exception
@@ -121,17 +121,16 @@ namespace SimpleWeather.WeatherUnderground
                 try
                 {
                     // Connect to webstream
-                    HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
+                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.GetAsync(queryURL).AsTask(cts.Token));
                     response.EnsureSuccessStatusCode();
                     Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
                     // Reset exception
                     wEx = null;
 
                     // Load weather
-                    Rootobject root = null;
-                    await Task.Run(() =>
+                    Rootobject root = await AsyncTask.RunAsync(() =>
                     {
-                        root = JSONParser.Deserializer<Rootobject>(contentStream);
+                        return JSONParser.Deserializer<Rootobject>(contentStream);
                     });
 
                     // Check for errors
@@ -205,7 +204,7 @@ namespace SimpleWeather.WeatherUnderground
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<Weather> GetWeather(LocationData location)
         {
-            var weather = await base.GetWeather(location);
+            var weather = await AsyncTask.RunAsync(base.GetWeather(location));
 
             // Just update hourly forecast dates to timezone
             var offset = location.tz_offset;
@@ -260,7 +259,7 @@ namespace SimpleWeather.WeatherUnderground
                 try
                 {
                     // Connect to webstream
-                    HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
+                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.GetAsync(queryURL).AsTask(cts.Token));
                     response.EnsureSuccessStatusCode();
                     Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
                     // End Stream

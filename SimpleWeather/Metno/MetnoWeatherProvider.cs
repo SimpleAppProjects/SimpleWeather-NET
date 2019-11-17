@@ -76,9 +76,9 @@ namespace SimpleWeather.Metno
                 try
                 {
                     // Get response
-                    HttpResponseMessage forecastResponse = await webClient.GetAsync(forecastURL).AsTask(cts.Token);
+                    HttpResponseMessage forecastResponse = await AsyncTask.RunAsync(webClient.GetAsync(forecastURL).AsTask(cts.Token));
                     forecastResponse.EnsureSuccessStatusCode();
-                    HttpResponseMessage sunrisesetResponse = await webClient.GetAsync(sunrisesetURL).AsTask(cts.Token);
+                    HttpResponseMessage sunrisesetResponse = await AsyncTask.RunAsync(webClient.GetAsync(sunrisesetURL).AsTask(cts.Token));
                     sunrisesetResponse.EnsureSuccessStatusCode();
 
                     Stream forecastStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await forecastResponse.Content.ReadAsInputStreamAsync());
@@ -141,7 +141,7 @@ namespace SimpleWeather.Metno
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<Weather> GetWeather(LocationData location)
         {
-            var weather = await base.GetWeather(location);
+            var weather = await AsyncTask.RunAsync(base.GetWeather(location));
 
             // OWM reports datetime in UTC; add location tz_offset
             var offset = location.tz_offset;

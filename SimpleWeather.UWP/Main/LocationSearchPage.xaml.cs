@@ -52,7 +52,7 @@ namespace SimpleWeather.UWP.Main
 
         public void Dispose()
         {
-            cts.Dispose();
+            cts?.Dispose();
         }
 
         private DispatcherTimer timer;
@@ -72,7 +72,7 @@ namespace SimpleWeather.UWP.Main
             if (String.IsNullOrWhiteSpace(sender.Text))
             {
                 // Cancel pending searches
-                cts.Cancel();
+                cts?.Cancel();
                 cts = new CancellationTokenSource();
                 // Hide flyout if query is empty or null
                 LocationQuerys.Clear();
@@ -91,7 +91,7 @@ namespace SimpleWeather.UWP.Main
                         String query = sender.Text;
 
                         // Cancel pending searches
-                        cts.Cancel();
+                        cts?.Cancel();
                         cts = new CancellationTokenSource();
                         var ctsToken = cts.Token;
 
@@ -103,14 +103,14 @@ namespace SimpleWeather.UWP.Main
 
                             try
                             {
-                                results = await wm.GetLocations(query);
+                                results = await AsyncTask.RunAsync(wm.GetLocations(query));
                             }
                             catch (WeatherException ex)
                             {
                                 await AsyncTask.RunOnUIThread(() =>
                                 {
                                     ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
-                                });
+                                }).ConfigureAwait(false);
                                 results = new ObservableCollection<LocationQueryViewModel>() { new LocationQueryViewModel() };
                             }
 
@@ -123,20 +123,20 @@ namespace SimpleWeather.UWP.Main
                                 sender.ItemsSource = null;
                                 sender.ItemsSource = LocationQuerys;
                                 sender.IsSuggestionListOpen = true;
-                            });
-                        });
+                            }).ConfigureAwait(false);
+                        }).ConfigureAwait(true);
                     }
                     else if (String.IsNullOrWhiteSpace(sender.Text))
                     {
                         // Cancel pending searches
-                        cts.Cancel();
+                        cts?.Cancel();
                         cts = new CancellationTokenSource();
                         // Hide flyout if query is empty or null
                         await AsyncTask.RunOnUIThread(() =>
                         {
                             LocationQuerys.Clear();
                             sender.IsSuggestionListOpen = false;
-                        });
+                        }).ConfigureAwait(true);
                     }
 
                     timer.Stop();
@@ -182,14 +182,14 @@ namespace SimpleWeather.UWP.Main
 
                     try
                     {
-                        results = await wm.GetLocations(queryText);
+                        results = await AsyncTask.RunAsync(wm.GetLocations(queryText));
                     }
                     catch (WeatherException ex)
                     {
                         await AsyncTask.RunOnUIThread(() =>
                         {
                             ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
-                        });
+                        }).ConfigureAwait(false);
                         results = new ObservableCollection<LocationQueryViewModel>() { new LocationQueryViewModel() };
                     }
 
@@ -199,14 +199,14 @@ namespace SimpleWeather.UWP.Main
                         await AsyncTask.RunOnUIThread(() =>
                         {
                             sender.Text = result.LocationName;
-                        });
+                        }).ConfigureAwait(false);
                         return result;
                     }
                     else
                     {
                         return new LocationQueryViewModel();
                     }
-                });
+                }).ConfigureAwait(true);
             }
             else if (String.IsNullOrWhiteSpace(args.QueryText))
             {
@@ -221,21 +221,21 @@ namespace SimpleWeather.UWP.Main
             }
 
             // Cancel other tasks
-            cts.Cancel();
+            cts?.Cancel();
             cts = new CancellationTokenSource();
             var ctsToken = cts.Token;
 
             await AsyncTask.RunOnUIThread(() =>
             {
                 EnableControls(false);
-            });
+            }).ConfigureAwait(false);
 
             if (ctsToken.IsCancellationRequested)
             {
                 await AsyncTask.RunOnUIThread(() =>
                 {
                     EnableControls(true);
-                });
+                }).ConfigureAwait(false);
                 return;
             }
 
@@ -249,7 +249,7 @@ namespace SimpleWeather.UWP.Main
                 {
                     ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_WeatherUSOnly"), SnackbarDuration.Short));
                     EnableControls(true);
-                });
+                }).ConfigureAwait(false);
                 return;
             }
 
@@ -261,7 +261,8 @@ namespace SimpleWeather.UWP.Main
             {
                 try
                 {
-                    query_vm = await new HERE.HERELocationProvider().GetLocationFromLocID(query_vm.LocationQuery, query_vm.WeatherSource);
+                    query_vm = await AsyncTask.RunAsync(
+                        new HERE.HERELocationProvider().GetLocationFromLocID(query_vm.LocationQuery, query_vm.WeatherSource));
                 }
                 catch (WeatherException ex)
                 {
@@ -269,7 +270,7 @@ namespace SimpleWeather.UWP.Main
                     {
                         ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
                         EnableControls(true);
-                    });
+                    }).ConfigureAwait(false);
                     return;
                 }
             }
@@ -279,7 +280,8 @@ namespace SimpleWeather.UWP.Main
             {
                 try
                 {
-                    query_vm = await new Bing.BingMapsLocationProvider().GetLocationFromAddress(query_vm.LocationQuery, query_vm.WeatherSource);
+                    query_vm = await AsyncTask.RunAsync(
+                        new Bing.BingMapsLocationProvider().GetLocationFromAddress(query_vm.LocationQuery, query_vm.WeatherSource));
                 }
                 catch (WeatherException ex)
                 {
@@ -287,7 +289,7 @@ namespace SimpleWeather.UWP.Main
                     {
                         ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
                         EnableControls(true);
-                    });
+                    }).ConfigureAwait(false);
                     return;
                 }
             }
@@ -299,7 +301,7 @@ namespace SimpleWeather.UWP.Main
                 await AsyncTask.RunOnUIThread(() =>
                 {
                     Frame.Navigate(typeof(LocationsPage));
-                });
+                }).ConfigureAwait(false);
                 return;
             }
 
@@ -308,7 +310,7 @@ namespace SimpleWeather.UWP.Main
                 await AsyncTask.RunOnUIThread(() =>
                 {
                     EnableControls(true);
-                });
+                }).ConfigureAwait(false);
                 return;
             }
 
@@ -319,7 +321,7 @@ namespace SimpleWeather.UWP.Main
                 {
                     ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("WError_NoWeather"), SnackbarDuration.Short));
                     EnableControls(true);
-                });
+                }).ConfigureAwait(false);
                 return;
             }
             var weather = await Settings.GetWeatherData(location.query);
@@ -327,7 +329,7 @@ namespace SimpleWeather.UWP.Main
             {
                 try
                 {
-                    weather = await wm.GetWeather(location);
+                    weather = await AsyncTask.RunAsync(wm.GetWeather(location));
                 }
                 catch (WeatherException wEx)
                 {
@@ -335,7 +337,7 @@ namespace SimpleWeather.UWP.Main
                     await AsyncTask.RunOnUIThread(() =>
                     {
                         ShowSnackbar(Snackbar.Make(wEx.Message, SnackbarDuration.Short));
-                    });
+                    }).ConfigureAwait(false);
                 }
             }
 
@@ -344,7 +346,7 @@ namespace SimpleWeather.UWP.Main
                 await AsyncTask.RunOnUIThread(() =>
                 {
                     EnableControls(true);
-                });
+                }).ConfigureAwait(false);
                 return;
             }
 
@@ -352,7 +354,7 @@ namespace SimpleWeather.UWP.Main
             await AsyncTask.RunOnUIThread(() =>
             {
                 sender.IsSuggestionListOpen = false;
-            });
+            }).ConfigureAwait(false);
 
             // Save data
             await Settings.AddLocation(location);
@@ -370,7 +372,7 @@ namespace SimpleWeather.UWP.Main
             {
                 EnableControls(true);
                 if (Frame.CanGoBack) Frame.GoBack(); else Frame.Navigate(typeof(LocationsPage));
-            });
+            }).ConfigureAwait(false);
         }
     }
 }
