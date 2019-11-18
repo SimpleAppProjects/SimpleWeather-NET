@@ -96,6 +96,20 @@ namespace SimpleWeather.UWP
             AppCenter.Start(APIKeys.GetAppCenterSecret(), typeof(Analytics), typeof(Crashes));
             UISettings = new UISettings();
             IsSystemDarkTheme = UISettings.GetColorValue(UIColorType.Background).ToString() == "#FF000000";
+            switch (Settings.UserTheme)
+            {
+                case UserThemeMode.System:
+                    RequestedTheme = IsSystemDarkTheme ? ApplicationTheme.Dark : ApplicationTheme.Light;
+                    break;
+
+                case UserThemeMode.Light:
+                    RequestedTheme = ApplicationTheme.Light;
+                    break;
+
+                case UserThemeMode.Dark:
+                    RequestedTheme = ApplicationTheme.Dark;
+                    break;
+            }
         }
 
         private void DefaultTheme_ColorValuesChanged(UISettings sender, object args)

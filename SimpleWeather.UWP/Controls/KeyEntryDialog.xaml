@@ -9,15 +9,18 @@
     x:Uid="ConfirmDialog"
     PrimaryButtonText="Ok"
     SecondaryButtonText="Cancel"
-    SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick"
+    PrimaryButtonStyle="{ThemeResource ButtonRevealStyle}"
+    SecondaryButtonStyle="{ThemeResource ButtonRevealStyle}">
 
     <ContentDialog.Title>
-        <TextBlock x:Uid="Message_EnterAPIKey" Text="Please enter an API Key"/>
+        <TextBlock x:Uid="Message_EnterAPIKey" Text="Please enter an API Key" />
     </ContentDialog.Title>
 
     <StackPanel Orientation="Vertical">
-        <TextBox x:Name="KeyEntry" FontSize="12" x:Uid="KeyEntry" PlaceholderText="API Key" Padding="10,7" VerticalAlignment="Center"/>
-        <TextBox x:Name="KeyEntry_2" FontSize="12" x:Uid="KeyEntry" PlaceholderText="API Key" Padding="10,7" VerticalAlignment="Center"
-                 Visibility="Collapsed"/>
+        <TextBox x:Name="KeyEntry" FontSize="12" x:Uid="KeyEntry" PlaceholderText="API Key" Padding="10" VerticalAlignment="Center"
+                 Margin="0,4" />
+        <TextBox x:Name="KeyEntry_2" FontSize="12" x:Uid="KeyEntry" PlaceholderText="API Key" Padding="10" VerticalAlignment="Center"
+                 Visibility="Collapsed" Margin="0,4" />
     </StackPanel>
 </ContentDialog>

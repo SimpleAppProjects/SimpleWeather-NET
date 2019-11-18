@@ -263,7 +263,10 @@ namespace SimpleWeather.UWP.Preferences
 
         private async void KeyEntry_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
-            var keydialog = new KeyEntryDialog(APIComboBox.SelectedValue.ToString());
+            var keydialog = new KeyEntryDialog(APIComboBox.SelectedValue.ToString())
+            {
+                RequestedTheme = Shell.Instance.AppFrame.RequestedTheme
+            };
 
             keydialog.PrimaryButtonClick += async (ContentDialog dialog, ContentDialogButtonClickEventArgs args) =>
             {

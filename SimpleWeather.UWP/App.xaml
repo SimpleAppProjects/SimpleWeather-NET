@@ -8,6 +8,7 @@
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:toolkitAnimations="using:Microsoft.Toolkit.Uwp.UI.Animations"
     xmlns:toolkitExtensions="using:Microsoft.Toolkit.Uwp.UI.Extensions"
+    xmlns:ui="using:Microsoft.UI.Xaml.Media"
     xmlns:Win1809Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
     xmlns:Win1809NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract, 7)"
     RequestedTheme="Dark">
@@ -21,12 +22,12 @@
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
                     <ResourceDictionary.MergedDictionaries>
-                        <Win1809Present:ColorPaletteResources Accent="#FF00468F" AltHigh="#FF000000" AltLow="#FF000000" AltMedium="#FF000000" AltMediumHigh="#FF000000" AltMediumLow="#FF000000" BaseHigh="#FFFFFFFF" BaseLow="#FF121212" BaseMedium="#FF898989" BaseMediumHigh="#FFA7A7A7" BaseMediumLow="#FF4E4E4E" ChromeAltLow="#FFA7A7A7" ChromeBlackHigh="#FF000000" ChromeBlackLow="#FFA7A7A7" ChromeBlackMedium="#FF000000" ChromeBlackMediumLow="#FF000000" ChromeDisabledHigh="#FF121212" ChromeDisabledLow="#FF898989" ChromeGray="#FF6B6B6B" ChromeHigh="#FF6B6B6B" ChromeLow="#FF080808" ChromeMedium="#FF0A0A0A" ChromeMediumLow="#FF0F0F0F" ChromeWhite="#FFFFFFFF" ListLow="#FF0A0A0A" ListMedium="#FF121212" />
+                        <Win1809Present:ColorPaletteResources Accent="#FF00468F" AltHigh="#FF000000" AltLow="#33000000" AltMedium="#99000000" AltMediumHigh="#CC000000" AltMediumLow="#66000000" BaseHigh="#FFFFFFFF" BaseLow="#33121212" BaseMedium="#99898989" BaseMediumHigh="#CCA7A7A7" BaseMediumLow="#664E4E4E" ChromeAltLow="#FFA7A7A7" ChromeBlackHigh="#FF000000" ChromeBlackLow="#33A7A7A7" ChromeBlackMedium="#CC000000" ChromeBlackMediumLow="#66000000" ChromeDisabledHigh="#FF121212" ChromeDisabledLow="#FF898989" ChromeGray="#FF6B6B6B" ChromeHigh="#FF6B6B6B" ChromeLow="#FF080808" ChromeMedium="#FF0A0A0A" ChromeMediumLow="#FF0F0F0F" ChromeWhite="#FFFFFFFF" ListLow="#190A0A0A" ListMedium="#33121212" />
                         <ResourceDictionary>
                             <Color x:Key="SystemChromeAltMediumHighColor">#CC242424</Color>
                             <Color x:Key="SystemChromeAltHighColor">#FF242424</Color>
-                            <Color x:Key="SystemRevealListLowColor">#FF0A0A0A</Color>
-                            <Color x:Key="SystemRevealListMediumColor">#FF121212</Color>
+                            <Color x:Key="SystemRevealListLowColor">#180A0A0A</Color>
+                            <Color x:Key="SystemRevealListMediumColor">#30121212</Color>
                             <Color x:Key="RegionColor">#FF242424</Color>
                             <SolidColorBrush x:Key="RegionBrush" Color="{StaticResource RegionColor}" />
                             <SolidColorBrush x:Key="ColorTextDarkForeground" Color="#FFFFFFFF" />
@@ -35,25 +36,25 @@
                                 <Setter Property="Padding" Value="0,8" />
                                 <Setter Property="Margin" Value="0" />
                             </Style>
-                            <SolidColorBrush x:Key="SnackbarForegroundBrush" Color="{ThemeResource SystemAccentColorLight1}"/>
+                            <SolidColorBrush x:Key="SnackbarForegroundBrush" Color="{ThemeResource SystemAccentColorLight1}" />
                         </ResourceDictionary>
                         <Win1809NotPresent:ResourceDictionary>
                             <!-- Compat -->
                             <Color x:Key="SystemAltHighColor">#FF000000</Color>
-                            <Color x:Key="SystemAltLowColor">#FF000000</Color>
-                            <Color x:Key="SystemAltMediumColor">#FF000000</Color>
-                            <Color x:Key="SystemAltMediumHighColor">#FF000000</Color>
-                            <Color x:Key="SystemAltMediumLowColor">#FF000000</Color>
+                            <Color x:Key="SystemAltLowColor">#33000000</Color>
+                            <Color x:Key="SystemAltMediumColor">#99000000</Color>
+                            <Color x:Key="SystemAltMediumHighColor">#CC000000</Color>
+                            <Color x:Key="SystemAltMediumLowColor">#66000000</Color>
                             <Color x:Key="SystemBaseHighColor">#FFFFFFFF</Color>
-                            <Color x:Key="SystemBaseLowColor">#FF121212</Color>
-                            <Color x:Key="SystemBaseMediumColor">#FF898989</Color>
-                            <Color x:Key="SystemBaseMediumHighColor">#FFA7A7A7</Color>
-                            <Color x:Key="SystemBaseMediumLowColor">#FF4E4E4E</Color>
+                            <Color x:Key="SystemBaseLowColor">#33121212</Color>
+                            <Color x:Key="SystemBaseMediumColor">#99898989</Color>
+                            <Color x:Key="SystemBaseMediumHighColor">#CCA7A7A7</Color>
+                            <Color x:Key="SystemBaseMediumLowColor">#664E4E4E</Color>
                             <Color x:Key="SystemChromeAltLowColor">#FFA7A7A7</Color>
                             <Color x:Key="SystemChromeBlackHighColor">#FF000000</Color>
-                            <Color x:Key="SystemChromeBlackLowColor">#FFA7A7A7</Color>
-                            <Color x:Key="SystemChromeBlackMediumLowColor">#FF000000</Color>
-                            <Color x:Key="SystemChromeBlackMediumColor">#FF000000</Color>
+                            <Color x:Key="SystemChromeBlackLowColor">#33A7A7A7</Color>
+                            <Color x:Key="SystemChromeBlackMediumLowColor">#66000000</Color>
+                            <Color x:Key="SystemChromeBlackMediumColor">#CC000000</Color>
                             <Color x:Key="SystemChromeDisabledHighColor">#FF121212</Color>
                             <Color x:Key="SystemChromeDisabledLowColor">#FF898989</Color>
                             <Color x:Key="SystemChromeHighColor">#FF6B6B6B</Color>
@@ -62,20 +63,20 @@
                             <Color x:Key="SystemChromeMediumLowColor">#FF0F0F0F</Color>
                             <Color x:Key="SystemChromeWhiteColor">#FFFFFFFF</Color>
                             <Color x:Key="SystemChromeGrayColor">#FF6B6B6B</Color>
-                            <Color x:Key="SystemListLowColor">#FF0A0A0A</Color>
-                            <Color x:Key="SystemListMediumColor">#FF121212</Color>
+                            <Color x:Key="SystemListLowColor">#190A0A0A</Color>
+                            <Color x:Key="SystemListMediumColor">#33121212</Color>
                             <Color x:Key="SystemAccentColor">#FF00468F</Color>
                         </Win1809NotPresent:ResourceDictionary>
                     </ResourceDictionary.MergedDictionaries>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
                     <ResourceDictionary.MergedDictionaries>
-                        <Win1809Present:ColorPaletteResources Accent="#FF0070C0" AltHigh="#FFFFFFFF" AltLow="#FFFFFFFF" AltMedium="#FFFFFFFF" AltMediumHigh="#FFFFFFFF" AltMediumLow="#FFFFFFFF" BaseHigh="#FF000000" BaseLow="#FFCCCCCC" BaseMedium="#FF898989" BaseMediumHigh="#FF5D5D5D" BaseMediumLow="#FF737373" ChromeAltLow="#FF5D5D5D" ChromeBlackHigh="#FF000000" ChromeBlackLow="#FFCCCCCC" ChromeBlackMedium="#FF5D5D5D" ChromeBlackMediumLow="#FF898989" ChromeDisabledHigh="#FFCCCCCC" ChromeDisabledLow="#FF898989" ChromeGray="#FF737373" ChromeHigh="#FFCCCCCC" ChromeLow="#FFECECEC" ChromeMedium="#FFE6E6E6" ChromeMediumLow="#FFECECEC" ChromeWhite="#FFFFFFFF" ListLow="#FFE6E6E6" ListMedium="#FFCCCCCC" />
+                        <Win1809Present:ColorPaletteResources Accent="#FF0070C0" AltHigh="#FFFFFFFF" AltLow="#33FFFFFF" AltMedium="#99FFFFFF" AltMediumHigh="#CCFFFFFF" AltMediumLow="#66FFFFFF" BaseHigh="#FF000000" BaseLow="#33CCCCCC" BaseMedium="#99898989" BaseMediumHigh="#CC5D5D5D" BaseMediumLow="#66737373" ChromeAltLow="#FF5D5D5D" ChromeBlackHigh="#FF000000" ChromeBlackLow="#33CCCCCC" ChromeBlackMedium="#CC5D5D5D" ChromeBlackMediumLow="#66898989" ChromeDisabledHigh="#FFCCCCCC" ChromeDisabledLow="#FF898989" ChromeGray="#FF737373" ChromeHigh="#FFCCCCCC" ChromeLow="#FFECECEC" ChromeMedium="#FFE6E6E6" ChromeMediumLow="#FFECECEC" ChromeWhite="#FFFFFFFF" ListLow="#19E6E6E6" ListMedium="#33CCCCCC" />
                         <ResourceDictionary>
                             <Color x:Key="SystemChromeAltMediumHighColor">#CCFFFFFF</Color>
                             <Color x:Key="SystemChromeAltHighColor">#FFFFFFFF</Color>
-                            <Color x:Key="SystemRevealListLowColor">#FFE6E6E6</Color>
-                            <Color x:Key="SystemRevealListMediumColor">#FFCCCCCC</Color>
+                            <Color x:Key="SystemRevealListLowColor">#18E6E6E6</Color>
+                            <Color x:Key="SystemRevealListMediumColor">#30CCCCCC</Color>
                             <RevealBackgroundBrush x:Key="SystemControlHighlightListLowRevealBackgroundBrush" TargetTheme="Light" Color="{ThemeResource SystemRevealListMediumColor}" FallbackColor="{ StaticResource SystemListMediumColor}" />
                             <Color x:Key="RegionColor">#FFFFFFFF</Color>
                             <SolidColorBrush x:Key="RegionBrush" Color="{StaticResource RegionColor}" />
@@ -85,25 +86,25 @@
                                 <Setter Property="Padding" Value="0,8" />
                                 <Setter Property="Margin" Value="0" />
                             </Style>
-                            <SolidColorBrush x:Key="SnackbarForegroundBrush" Color="{ThemeResource SystemAccentColorDark1}"/>
+                            <SolidColorBrush x:Key="SnackbarForegroundBrush" Color="{ThemeResource SystemAccentColorDark1}" />
                         </ResourceDictionary>
                         <Win1809NotPresent:ResourceDictionary>
                             <!-- Compat -->
                             <Color x:Key="SystemAltHighColor">#FFFFFFFF</Color>
-                            <Color x:Key="SystemAltLowColor">#FFFFFFFF</Color>
-                            <Color x:Key="SystemAltMediumColor">#FFFFFFFF</Color>
-                            <Color x:Key="SystemAltMediumHighColor">#FFFFFFFF</Color>
-                            <Color x:Key="SystemAltMediumLowColor">#FFFFFFFF</Color>
+                            <Color x:Key="SystemAltLowColor">#33FFFFFF</Color>
+                            <Color x:Key="SystemAltMediumColor">#99FFFFFF</Color>
+                            <Color x:Key="SystemAltMediumHighColor">#CCFFFFFF</Color>
+                            <Color x:Key="SystemAltMediumLowColor">#66FFFFFF</Color>
                             <Color x:Key="SystemBaseHighColor">#FF000000</Color>
-                            <Color x:Key="SystemBaseLowColor">#FFCCCCCC</Color>
-                            <Color x:Key="SystemBaseMediumColor">#FF898989</Color>
-                            <Color x:Key="SystemBaseMediumHighColor">#FF5D5D5D</Color>
-                            <Color x:Key="SystemBaseMediumLowColor">#FF737373</Color>
+                            <Color x:Key="SystemBaseLowColor">#33CCCCCC</Color>
+                            <Color x:Key="SystemBaseMediumColor">#99898989</Color>
+                            <Color x:Key="SystemBaseMediumHighColor">#CC5D5D5D</Color>
+                            <Color x:Key="SystemBaseMediumLowColor">#66737373</Color>
                             <Color x:Key="SystemChromeAltLowColor">#FF5D5D5D</Color>
                             <Color x:Key="SystemChromeBlackHighColor">#FF000000</Color>
-                            <Color x:Key="SystemChromeBlackLowColor">#FFCCCCCC</Color>
-                            <Color x:Key="SystemChromeBlackMediumLowColor">#FF898989</Color>
-                            <Color x:Key="SystemChromeBlackMediumColor">#FF5D5D5D</Color>
+                            <Color x:Key="SystemChromeBlackLowColor">#33CCCCCC</Color>
+                            <Color x:Key="SystemChromeBlackMediumLowColor">#66898989</Color>
+                            <Color x:Key="SystemChromeBlackMediumColor">#CC5D5D5D</Color>
                             <Color x:Key="SystemChromeDisabledHighColor">#FFCCCCCC</Color>
                             <Color x:Key="SystemChromeDisabledLowColor">#FF898989</Color>
                             <Color x:Key="SystemChromeHighColor">#FFCCCCCC</Color>
@@ -112,8 +113,8 @@
                             <Color x:Key="SystemChromeMediumLowColor">#FFECECEC</Color>
                             <Color x:Key="SystemChromeWhiteColor">#FFFFFFFF</Color>
                             <Color x:Key="SystemChromeGrayColor">#FF737373</Color>
-                            <Color x:Key="SystemListLowColor">#FFE6E6E6</Color>
-                            <Color x:Key="SystemListMediumColor">#FFCCCCCC</Color>
+                            <Color x:Key="SystemListLowColor">#19E6E6E6</Color>
+                            <Color x:Key="SystemListMediumColor">#33CCCCCC</Color>
                             <Color x:Key="SystemAccentColor">#FF0070C0</Color>
                         </Win1809NotPresent:ResourceDictionary>
                     </ResourceDictionary.MergedDictionaries>
@@ -129,7 +130,7 @@
             <helpers:BooleanToGridLengthConverter x:Key="inverseBool2GridLengthConverter" IsInverse="True" />
             <toolkitConverters:BoolToVisibilityConverter x:Key="booleanToVisibilityConverter" />
             <toolkitConverters:StringVisibilityConverter x:Key="stringVisibilityConverter" />
-            <toolkitConverters:EmptyCollectionToObjectConverter x:Key="collectionBooleanConverter" EmptyValue="False" NotEmptyValue="True"/>
+            <toolkitConverters:EmptyCollectionToObjectConverter x:Key="collectionBooleanConverter" EmptyValue="False" NotEmptyValue="True" />
             <toolkitConverters:EmptyStringToObjectConverter x:Key="stringBooleanConverter" EmptyValue="False" NotEmptyValue="True" />
             <toolkitConverters:CollectionVisibilityConverter x:Key="collectionVisibilityConverter" />
             <SolidColorBrush x:Key="SimpleBlue" Color="#0070c0" />
@@ -137,38 +138,38 @@
             <SolidColorBrush x:Key="SimpleBlueLight" Color="#599ef3" />
             <SolidColorBrush x:Key="SimpleBlueMedium" Color="#007dd6" />
             <Style x:Key="CommandBarLabel" TargetType="TextBlock">
-                <Setter Property="Margin" Value="10,0,0,0"/>
-                <Setter Property="CharacterSpacing" Value="10"/>
-                <Setter Property="VerticalAlignment" Value="Center"/>
-                <Setter Property="HorizontalAlignment" Value="Center"/>
-                <Setter Property="FontSize" Value="16"/>
-                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="Margin" Value="10,0,0,0" />
+                <Setter Property="CharacterSpacing" Value="10" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="FontWeight" Value="Bold" />
             </Style>
             <Style x:Key="WeatherIcon" TargetType="TextBlock">
                 <Setter Property="FontSize" Value="12" />
                 <Setter Property="FontFamily" Value="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons" />
                 <Setter Property="FontStyle" Value="Normal" />
                 <Setter Property="TextAlignment" Value="Center" />
-                <Setter Property="HorizontalAlignment" Value="Center"/>
-                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
             <Style x:Key="WeatherFontIcon" TargetType="FontIcon">
                 <Setter Property="FontSize" Value="12" />
                 <Setter Property="FontFamily" Value="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons" />
                 <Setter Property="FontStyle" Value="Normal" />
-                <Setter Property="HorizontalAlignment" Value="Center"/>
-                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
             <Style x:Key="SettingTitleStyle" BasedOn="{StaticResource CommandBarLabel}" TargetType="TextBlock">
-                <Setter Property="Padding" Value="0,10"/>
-                <Setter Property="Margin" Value="0,5"/>
-                <Setter Property="HorizontalAlignment" Value="Left"/>
-                <Setter Property="FontWeight" Value="SemiBold"/>
-                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="Padding" Value="0,10" />
+                <Setter Property="Margin" Value="0,5" />
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="FontSize" Value="18" />
             </Style>
             <Style x:Key="PrefTitleStyle" TargetType="TextBlock">
-                <Setter Property="Padding" Value="0,5"/>
-                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="Padding" Value="0,5" />
+                <Setter Property="FontWeight" Value="SemiBold" />
             </Style>
             <Style x:Key="AccentButtonRevealStyle" TargetType="Button" BasedOn="{StaticResource ButtonRevealStyle}">
                 <Setter Property="Background" Value="{ThemeResource SystemControlHighlightAccentRevealBackgroundBrush}" />
@@ -296,13 +297,13 @@
                                 <Storyboard>
                                     <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)">
                                         <EasingDoubleKeyFrame KeyTime="0" Value="0" />
-                                        <EasingDoubleKeyFrame toolkitControls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}" 
+                                        <EasingDoubleKeyFrame toolkitControls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}"
                                                               Value="{Binding HorizontalOffset, RelativeSource={RelativeSource TemplatedParent}}" />
                                     </DoubleAnimationUsingKeyFrames>
                                     <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
                                         <EasingDoubleKeyFrame KeyTime="0" Value="0" />
-                                        <EasingDoubleKeyFrame toolkitControls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}" 
-                                                              Value="{Binding VerticalOffset, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                        <EasingDoubleKeyFrame toolkitControls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}"
+                                                              Value="{Binding VerticalOffset, RelativeSource={RelativeSource TemplatedParent}}" />
                                     </DoubleAnimationUsingKeyFrames>
                                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="(UIElement.Visibility)">
                                         <DiscreteObjectKeyFrame KeyTime="0">

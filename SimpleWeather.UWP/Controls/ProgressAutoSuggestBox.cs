@@ -32,10 +32,12 @@ namespace SimpleWeather.UWP.Controls
         // Summary:
         //     Raised before the text content of the editable control component is updated.
         public event TypedEventHandler<AutoSuggestBox, AutoSuggestBoxSuggestionChosenEventArgs> SuggestionChosen;
+
         //
         // Summary:
         //     Raised after the text content of the editable control component is updated.
         public event TypedEventHandler<AutoSuggestBox, AutoSuggestBoxTextChangedEventArgs> TextChanged;
+
         //
         // Summary:
         //     Occurs when the user submits a search query.
@@ -58,6 +60,15 @@ namespace SimpleWeather.UWP.Controls
 
         public static readonly DependencyProperty HeaderTextProperty =
             DependencyProperty.Register(nameof(HeaderText), typeof(string), typeof(ProgressAutoSuggestBox), new PropertyMetadata(""));
+
+        public Style TextBoxStyle
+        {
+            get { return (Style)GetValue(TextBoxStyleProperty); }
+            set { SetValue(TextBoxStyleProperty, value); }
+        }
+
+        public static readonly DependencyProperty TextBoxStyleProperty =
+            DependencyProperty.Register(nameof(TextBoxStyle), typeof(Style), typeof(ProgressAutoSuggestBox), new PropertyMetadata(null));
 
         protected override void OnApplyTemplate()
         {
@@ -93,6 +104,16 @@ namespace SimpleWeather.UWP.Controls
                 Source = PlaceholderText
             };
             SuggestBox?.SetBinding(AutoSuggestBox.PlaceholderTextProperty, placeholderTxtBinding);
+
+            Binding txtBoxStyleBinding = new Binding()
+            {
+                Mode = BindingMode.TwoWay,
+                Source = TextBoxStyle,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+                FallbackValue = SuggestBox?.TextBoxStyle,
+                TargetNullValue = SuggestBox?.TextBoxStyle
+            };
+            SuggestBox?.SetBinding(AutoSuggestBox.TextBoxStyleProperty, txtBoxStyleBinding);
         }
 
         private void SuggestBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
