@@ -365,9 +365,28 @@ namespace SimpleWeather.UWP.Setup
                 }).ConfigureAwait(false);
                 return;
             }
+
+            if (ctsToken.IsCancellationRequested)
+            {
+                await AsyncTask.RunOnUIThread(() =>
+                {
+                    EnableControls(true);
+                }).ConfigureAwait(false);
+                return;
+            }
+
             Weather weather = await Settings.GetWeatherData(location.query);
             if (weather == null)
             {
+                if (ctsToken.IsCancellationRequested)
+                {
+                    await AsyncTask.RunOnUIThread(() =>
+                    {
+                        EnableControls(true);
+                    }).ConfigureAwait(false);
+                    return;
+                }
+
                 try
                 {
                     weather = await AsyncTask.RunAsync(wm.GetWeather(location));
@@ -383,6 +402,15 @@ namespace SimpleWeather.UWP.Setup
             }
 
             if (weather == null)
+            {
+                await AsyncTask.RunOnUIThread(() =>
+                {
+                    EnableControls(true);
+                }).ConfigureAwait(false);
+                return;
+            }
+
+            if (ctsToken.IsCancellationRequested)
             {
                 await AsyncTask.RunOnUIThread(() =>
                 {
