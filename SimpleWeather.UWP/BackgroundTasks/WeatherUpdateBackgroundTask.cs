@@ -169,7 +169,17 @@ namespace SimpleWeather.UWP.BackgroundTasks
 
                 tb1.Register();
                 tb2.Register();
-                tb3.Register();
+                try
+                {
+                    tb3.Register();
+                }
+                catch (Exception ex)
+                {
+                    if (ex.HResult == -2147942583)
+                    {
+                        Logger.WriteLine(LoggerLevel.Error, ex, "{0}: background task already registered", taskName);
+                    }
+                }
             }
         }
 
