@@ -3,6 +3,10 @@ using SimpleWeather.WeatherData;
 using SQLite;
 using System;
 using System.Threading.Tasks;
+#if !DEBUG
+using Microsoft.AppCenter.Analytics;
+using System.Collections.Generic;
+#endif
 
 namespace SimpleWeather.Utils
 {
