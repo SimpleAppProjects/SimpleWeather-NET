@@ -327,7 +327,7 @@ namespace SimpleWeather.Controls
                 WeatherSource = weather?.source;
                 string creditPrefix = "Data from";
 
-                creditPrefix = App.ResLoader.GetString("Credit_Prefix");
+                creditPrefix = SimpleLibrary.ResLoader.GetString("Credit_Prefix");
 
                 WeatherCredit = String.Format("{0} {1}",
                     creditPrefix, WeatherAPI.APIs.First(WApi => WeatherSource.Equals(WApi.Value)));

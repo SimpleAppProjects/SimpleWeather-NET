@@ -413,10 +413,10 @@ namespace SimpleWeather.UWP
                     // Place the frame in the current Window
                     Window.Current.Content = RootFrame;
                 }
-            });
 
-            if (ResLoader == null)
-                ResLoader = new ResourceLoader();
+                if (ResLoader == null)
+                    ResLoader = ResourceLoader.GetForCurrentView();
+            });
 
             // Load data if needed
             Settings.LoadIfNeeded();
@@ -450,7 +450,7 @@ namespace SimpleWeather.UWP
             }
 
             if (ResLoader == null)
-                ResLoader = new ResourceLoader();
+                ResLoader = ResourceLoader.GetForViewIndependentUse();
 
             // Load data if needed
             Settings.LoadIfNeeded();

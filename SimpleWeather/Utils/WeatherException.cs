@@ -1,5 +1,4 @@
-﻿using SimpleWeather.UWP;
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace SimpleWeather.Utils
@@ -25,24 +24,24 @@ namespace SimpleWeather.Utils
                 switch (ErrorStatus)
                 {
                     case WeatherUtils.ErrorStatus.NoWeather:
-                        errorMsg = App.ResLoader.GetString("WError_NoWeather");
+                        errorMsg = SimpleLibrary.ResLoader.GetString("WError_NoWeather");
                         break;
 
                     case WeatherUtils.ErrorStatus.NetworkError:
-                        errorMsg = App.ResLoader.GetString("WError_NetworkError");
+                        errorMsg = SimpleLibrary.ResLoader.GetString("WError_NetworkError");
                         break;
 
                     case WeatherUtils.ErrorStatus.InvalidAPIKey:
-                        errorMsg = App.ResLoader.GetString("WError_InvalidKey");
+                        errorMsg = SimpleLibrary.ResLoader.GetString("WError_InvalidKey");
                         break;
 
                     case WeatherUtils.ErrorStatus.QueryNotFound:
-                        errorMsg = App.ResLoader.GetString("WError_QueryNotFound");
+                        errorMsg = SimpleLibrary.ResLoader.GetString("WError_QueryNotFound");
                         break;
 
                     case WeatherUtils.ErrorStatus.Unknown:
                     default:
-                        errorMsg = App.ResLoader.GetString("WError_Unknown");
+                        errorMsg = SimpleLibrary.ResLoader.GetString("WError_Unknown");
                         break;
                 }
 

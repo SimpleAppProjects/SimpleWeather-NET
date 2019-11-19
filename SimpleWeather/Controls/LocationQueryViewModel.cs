@@ -1,5 +1,4 @@
 ﻿using SimpleWeather.HERE;
-using SimpleWeather.UWP;
 using SimpleWeather.WeatherData;
 using SimpleWeather.WeatherUnderground;
 using System;
@@ -26,7 +25,7 @@ namespace SimpleWeather.Controls
 
         public LocationQueryViewModel()
         {
-            LocationName = App.ResLoader.GetString("Error_NoResults");
+            LocationName = SimpleLibrary.ResLoader.GetString("Error_NoResults");
             LocationCountry = string.Empty;
             LocationQuery = string.Empty;
         }

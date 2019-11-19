@@ -58,8 +58,10 @@ namespace SimpleWeather.WeatherData
                         location.tz_long = tzId;
                 }
 
+#if !UNIT_TEST
                 // Update DB here or somewhere else
                 await Settings.UpdateLocation(location);
+#endif
             }
 
             if (String.IsNullOrWhiteSpace(weather.location.tz_long))

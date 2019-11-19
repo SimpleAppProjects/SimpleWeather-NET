@@ -1585,25 +1585,25 @@ namespace SimpleWeather.WeatherData
 
             String fctxt = String.Format("{0} {1} {2}: {3}",
                 forecast.description.ToPascalCase(), forecast.beaufortDescription.ToPascalCase(),
-                UWP.App.ResLoader.GetString("Label_Humidity/Text"),
+                SimpleLibrary.ResLoader.GetString("Label_Humidity/Text"),
                 forecast.humidity + "%");
 
             fcttext = String.Format("{0} {1} {2}F. {3} {4}F. {5} {6} {7}mph",
                 fctxt,
-                UWP.App.ResLoader.GetString("Label_High"),
+                SimpleLibrary.ResLoader.GetString("Label_High"),
                 Math.Round(double.Parse(forecast.highTemperature)),
-                UWP.App.ResLoader.GetString("Label_Low"),
+                SimpleLibrary.ResLoader.GetString("Label_Low"),
                 Math.Round(double.Parse(forecast.lowTemperature)),
-                UWP.App.ResLoader.GetString("Label_Wind/Text"),
+                SimpleLibrary.ResLoader.GetString("Label_Wind/Text"),
                 forecast.windDesc, Math.Round(double.Parse(forecast.windSpeed)));
 
             fcttext_metric = String.Format("{0} {1} {2}C. {3} {4}C. {5} {6} {7}kph",
                 fctxt,
-                UWP.App.ResLoader.GetString("Label_High"),
+                SimpleLibrary.ResLoader.GetString("Label_High"),
                 ConversionMethods.FtoC(forecast.highTemperature),
-                UWP.App.ResLoader.GetString("Label_Low"),
+                SimpleLibrary.ResLoader.GetString("Label_Low"),
                 ConversionMethods.FtoC(forecast.lowTemperature),
-                UWP.App.ResLoader.GetString("Label_Wind/Text"),
+                SimpleLibrary.ResLoader.GetString("Label_Wind/Text"),
                 forecast.windDesc, Math.Round(double.Parse(ConversionMethods.MphToKph(forecast.windSpeed))));
 
             icon = WeatherManager.GetProvider(WeatherAPI.Here)
@@ -3191,67 +3191,67 @@ namespace SimpleWeather.WeatherData
             {
                 case 0:
                     scale = BeaufortScale.B0;
-                    desc = App.ResLoader.GetString("Beaufort_0");
+                    desc = SimpleLibrary.ResLoader.GetString("Beaufort_0");
                     break;
 
                 case 1:
                     scale = BeaufortScale.B1;
-                    desc = App.ResLoader.GetString("Beaufort_1");
+                    desc = SimpleLibrary.ResLoader.GetString("Beaufort_1");
                     break;
 
                 case 2:
                     scale = BeaufortScale.B2;
-                    desc = App.ResLoader.GetString("Beaufort_2");
+                    desc = SimpleLibrary.ResLoader.GetString("Beaufort_2");
                     break;
 
                 case 3:
                     scale = BeaufortScale.B3;
-                    desc = App.ResLoader.GetString("Beaufort_3");
+                    desc = SimpleLibrary.ResLoader.GetString("Beaufort_3");
                     break;
 
                 case 4:
                     scale = BeaufortScale.B4;
-                    desc = App.ResLoader.GetString("Beaufort_4");
+                    desc = SimpleLibrary.ResLoader.GetString("Beaufort_4");
                     break;
 
                 case 5:
                     scale = BeaufortScale.B5;
-                    desc = App.ResLoader.GetString("Beaufort_5");
+                    desc = SimpleLibrary.ResLoader.GetString("Beaufort_5");
                     break;
 
                 case 6:
                     scale = BeaufortScale.B6;
-                    desc = App.ResLoader.GetString("Beaufort_6");
+                    desc = SimpleLibrary.ResLoader.GetString("Beaufort_6");
                     break;
 
                 case 7:
                     scale = BeaufortScale.B7;
-                    desc = App.ResLoader.GetString("Beaufort_7");
+                    desc = SimpleLibrary.ResLoader.GetString("Beaufort_7");
                     break;
 
                 case 8:
                     scale = BeaufortScale.B8;
-                    desc = App.ResLoader.GetString("Beaufort_8");
+                    desc = SimpleLibrary.ResLoader.GetString("Beaufort_8");
                     break;
 
                 case 9:
                     scale = BeaufortScale.B9;
-                    desc = App.ResLoader.GetString("Beaufort_9");
+                    desc = SimpleLibrary.ResLoader.GetString("Beaufort_9");
                     break;
 
                 case 10:
                     scale = BeaufortScale.B10;
-                    desc = App.ResLoader.GetString("Beaufort_10");
+                    desc = SimpleLibrary.ResLoader.GetString("Beaufort_10");
                     break;
 
                 case 11:
                     scale = BeaufortScale.B11;
-                    desc = App.ResLoader.GetString("Beaufort_11");
+                    desc = SimpleLibrary.ResLoader.GetString("Beaufort_11");
                     break;
 
                 case 12:
                     scale = BeaufortScale.B12;
-                    desc = App.ResLoader.GetString("Beaufort_12");
+                    desc = SimpleLibrary.ResLoader.GetString("Beaufort_12");
                     break;
             }
         }
@@ -3375,35 +3375,35 @@ namespace SimpleWeather.WeatherData
             switch (moonPhaseType)
             {
                 case MoonPhaseType.NewMoon:
-                    desc = App.ResLoader.GetString("MoonPhase_New");
+                    desc = SimpleLibrary.ResLoader.GetString("MoonPhase_New");
                     break;
 
                 case MoonPhaseType.WaxingCrescent:
-                    desc = App.ResLoader.GetString("MoonPhase_WaxCrescent");
+                    desc = SimpleLibrary.ResLoader.GetString("MoonPhase_WaxCrescent");
                     break;
 
                 case MoonPhaseType.FirstQtr:
-                    desc = App.ResLoader.GetString("MoonPhase_FirstQtr");
+                    desc = SimpleLibrary.ResLoader.GetString("MoonPhase_FirstQtr");
                     break;
 
                 case MoonPhaseType.WaxingGibbous:
-                    desc = App.ResLoader.GetString("MoonPhase_WaxGibbous");
+                    desc = SimpleLibrary.ResLoader.GetString("MoonPhase_WaxGibbous");
                     break;
 
                 case MoonPhaseType.FullMoon:
-                    desc = App.ResLoader.GetString("MoonPhase_Full");
+                    desc = SimpleLibrary.ResLoader.GetString("MoonPhase_Full");
                     break;
 
                 case MoonPhaseType.WaningGibbous:
-                    desc = App.ResLoader.GetString("MoonPhase_WanGibbous");
+                    desc = SimpleLibrary.ResLoader.GetString("MoonPhase_WanGibbous");
                     break;
 
                 case MoonPhaseType.LastQtr:
-                    desc = App.ResLoader.GetString("MoonPhase_LastQtr");
+                    desc = SimpleLibrary.ResLoader.GetString("MoonPhase_LastQtr");
                     break;
 
                 case MoonPhaseType.WaningCrescent:
-                    desc = App.ResLoader.GetString("MoonPhase_WanCrescent");
+                    desc = SimpleLibrary.ResLoader.GetString("MoonPhase_WanCrescent");
                     break;
             }
         }
@@ -3514,23 +3514,23 @@ namespace SimpleWeather.WeatherData
 
             if (index >= 0 && index < 3)
             {
-                desc = App.ResLoader.GetString("UV_0");
+                desc = SimpleLibrary.ResLoader.GetString("UV_0");
             }
             else if (index >= 3 && index < 6)
             {
-                desc = App.ResLoader.GetString("UV_3");
+                desc = SimpleLibrary.ResLoader.GetString("UV_3");
             }
             else if (index >= 6 && index < 8)
             {
-                desc = App.ResLoader.GetString("UV_6");
+                desc = SimpleLibrary.ResLoader.GetString("UV_6");
             }
             else if (index >= 8 && index < 11)
             {
-                desc = App.ResLoader.GetString("UV_8");
+                desc = SimpleLibrary.ResLoader.GetString("UV_8");
             }
             else if (index >= 11)
             {
-                desc = App.ResLoader.GetString("UV_11");
+                desc = SimpleLibrary.ResLoader.GetString("UV_11");
             }
         }
 

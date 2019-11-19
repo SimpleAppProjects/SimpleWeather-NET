@@ -26,12 +26,12 @@ namespace SimpleWeather.Utils
 
             if (update_time.DayOfWeek == DateTime.Now.DayOfWeek)
             {
-                prefix = UWP.App.ResLoader.GetString("Update_PrefixDay");
+                prefix = SimpleLibrary.ResLoader.GetString("Update_PrefixDay");
                 date = string.Format("{0} {1}", prefix, timeformat);
             }
             else
             {
-                prefix = UWP.App.ResLoader.GetString("Update_Prefix");
+                prefix = SimpleLibrary.ResLoader.GetString("Update_Prefix");
                 date = string.Format("{0} {1} {2}",
                     prefix, update_time.ToString("ddd", culture), timeformat);
             }
