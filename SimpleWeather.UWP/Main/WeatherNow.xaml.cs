@@ -86,7 +86,7 @@ namespace SimpleWeather.UWP.Main
                         AsyncTask.Run(async () => await WeatherUpdateBackgroundTask.RequestAppTrigger()
                         .ConfigureAwait(false));
                     }
-                    else if (SecondaryTileUtils.Exists(location.query))
+                    else if (SecondaryTileUtils.Exists(location?.query))
                     {
                         AsyncTask.Run(() =>
                         {
@@ -731,20 +731,24 @@ namespace SimpleWeather.UWP.Main
         private async Task CheckTiles()
         {
             var pinBtn = GetPinBtn();
-            await AsyncTask.RunOnUIThread(() =>
-            {
-                pinBtn.IsEnabled = false;
-            }).ConfigureAwait(false);
 
-            // Check if your app is currently pinned
-            bool isPinned = SecondaryTileUtils.Exists(location.query);
-
-            await AsyncTask.RunOnUIThread(async () =>
+            if (pinBtn != null)
             {
-                await SetPinButton(isPinned).ConfigureAwait(true);
-                pinBtn.Visibility = Visibility.Visible;
-                pinBtn.IsEnabled = true;
-            }).ConfigureAwait(false);
+                await AsyncTask.RunOnUIThread(() =>
+                {
+                    pinBtn.IsEnabled = false;
+                }).ConfigureAwait(false);
+
+                // Check if your app is currently pinned
+                bool isPinned = SecondaryTileUtils.Exists(location?.query);
+
+                await AsyncTask.RunOnUIThread(async () =>
+                {
+                    await SetPinButton(isPinned).ConfigureAwait(true);
+                    pinBtn.Visibility = Visibility.Visible;
+                    pinBtn.IsEnabled = true;
+                }).ConfigureAwait(false);
+            }
         }
 
         private async Task SetPinButton(bool isPinned)
@@ -753,15 +757,18 @@ namespace SimpleWeather.UWP.Main
             {
                 var pinBtn = GetPinBtn();
 
-                if (isPinned)
+                if (pinBtn != null)
                 {
-                    pinBtn.Icon = new SymbolIcon(Symbol.UnPin);
-                    pinBtn.Label = App.ResLoader.GetString("Label_Unpin/Text");
-                }
-                else
-                {
-                    pinBtn.Icon = new SymbolIcon(Symbol.Pin);
-                    pinBtn.Label = App.ResLoader.GetString("Label_Pin/Text");
+                    if (isPinned)
+                    {
+                        pinBtn.Icon = new SymbolIcon(Symbol.UnPin);
+                        pinBtn.Label = App.ResLoader.GetString("Label_Unpin/Text");
+                    }
+                    else
+                    {
+                        pinBtn.Icon = new SymbolIcon(Symbol.Pin);
+                        pinBtn.Label = App.ResLoader.GetString("Label_Pin/Text");
+                    }
                 }
             }).ConfigureAwait(false);
         }
@@ -771,7 +778,7 @@ namespace SimpleWeather.UWP.Main
             var pinBtn = sender as AppBarButton;
             pinBtn.IsEnabled = false;
 
-            if (SecondaryTileUtils.Exists(location.query))
+            if (SecondaryTileUtils.Exists(location?.query))
             {
                 bool deleted = await new SecondaryTile(
                     SecondaryTileUtils.GetTileId(location.query)).RequestDeleteAsync();
@@ -782,7 +789,7 @@ namespace SimpleWeather.UWP.Main
 
                 await SetPinButton(!deleted).ConfigureAwait(true);
 
-                GetPinBtn().IsEnabled = true;
+                pinBtn.IsEnabled = true;
             }
             else
             {
@@ -821,7 +828,7 @@ namespace SimpleWeather.UWP.Main
 
                 await SetPinButton(isPinned).ConfigureAwait(true);
 
-                GetPinBtn().IsEnabled = true;
+                pinBtn.IsEnabled = true;
             }
         }
 
