@@ -39,6 +39,9 @@ namespace SimpleWeather.Controls
 
         public void SetLocation(AC_RESULT location, String weatherAPI)
         {
+            if (location == null)
+                return;
+
             LocationName = location.name;
             LocationCountry = location.c;
 
@@ -60,6 +63,9 @@ namespace SimpleWeather.Controls
 
         public void SetLocation(location location, String weatherAPI)
         {
+            if (location == null)
+                return;
+
             LocationName = string.Format("{0}, {1}", location.city, location.state);
             LocationCountry = location.country;
 
@@ -83,6 +89,9 @@ namespace SimpleWeather.Controls
 
         public void SetLocation(Suggestion location, String weatherAPI)
         {
+            if (location?.address == null)
+                return;
+
             string town, region;
 
             // Try to get district name or fallback to city name
@@ -122,6 +131,9 @@ namespace SimpleWeather.Controls
 
         public void SetLocation(Result location, String weatherAPI)
         {
+            if (location?.location?.address == null)
+                return;
+
             string country = null, town = null, region = null;
 
             if (location.location.address.additionalData != null)
@@ -179,6 +191,9 @@ namespace SimpleWeather.Controls
 
         public void SetLocation(Bing.Address address, String weatherAPI)
         {
+            if (address == null)
+                return;
+
             string town, region;
 
             // Try to get district name or fallback to city name
@@ -239,6 +254,9 @@ namespace SimpleWeather.Controls
 
         private void SetLocation(MapLocation result, String weatherAPI)
         {
+            if (result?.Address == null)
+                return;
+
             string town, region;
 
             // Try to get district name or fallback to city name
