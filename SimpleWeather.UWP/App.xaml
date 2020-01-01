@@ -122,6 +122,24 @@
                 <ResourceDictionary x:Key="HighContrast">
                     <StaticResource x:Key="RegionColor" ResourceKey="SystemColorWindowColor" />
                     <SolidColorBrush x:Key="RegionBrush" Color="{StaticResource RegionColor}" />
+                    <SolidColorBrush x:Key="ColorTextDarkForeground" Color="#FFFFFFFF" />
+                    <Style x:Key="HyperlinkButtonStyle" TargetType="HyperlinkButton">
+                        <Setter Property="Foreground" Value="{ThemeResource SystemAccentColorLight1}" />
+                        <Setter Property="Padding" Value="0,8" />
+                        <Setter Property="Margin" Value="0" />
+                    </Style>
+                    <SolidColorBrush x:Key="SnackbarForegroundBrush" Color="{ThemeResource SystemAccentColorLight1}" />
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="HighContrastWhite">
+                    <StaticResource x:Key="RegionColor" ResourceKey="SystemColorWindowColor" />
+                    <SolidColorBrush x:Key="RegionBrush" Color="{StaticResource RegionColor}" />
+                    <SolidColorBrush x:Key="ColorTextDarkForeground" Color="{ThemeResource SystemAccentColorDark2}" />
+                    <Style x:Key="HyperlinkButtonStyle" TargetType="HyperlinkButton">
+                        <Setter Property="Foreground" Value="{ThemeResource SystemAccentColorDark1}" />
+                        <Setter Property="Padding" Value="0,8" />
+                        <Setter Property="Margin" Value="0" />
+                    </Style>
+                    <SolidColorBrush x:Key="SnackbarForegroundBrush" Color="{ThemeResource SystemAccentColorDark1}" />
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
             <helpers:ColorToSolidColorBrushConverter x:Key="color2SolidColorConverter" />
