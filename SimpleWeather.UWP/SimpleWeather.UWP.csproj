@@ -293,18 +293,20 @@
     <Compile Include="Controls\WeatherAlertPanel.xaml.cs">
       <DependentUpon>WeatherAlertPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\LocationTypeConverter.cs" />
     <Compile Include="Helpers\BooleanToGridLengthConverter.cs" />
     <Compile Include="Helpers\ColorToSolidColorBrushConverter.cs" />
     <Compile Include="Helpers\CustomPage.cs" />
     <Compile Include="Helpers\IBackRequestedPage.cs" />
     <Compile Include="Helpers\ICommandBarPage.cs" />
     <Compile Include="Helpers\IFramePage.cs" />
+    <Compile Include="Helpers\VisualTreeHelperExtensions.cs" />
     <Compile Include="Main\DetailsPageArgs.cs" />
+    <Compile Include="Main\LocationPanelAdapter.cs" />
     <Compile Include="Tiles\SecondaryTileUtils.cs" />
     <Compile Include="Helpers\StringBooleanConverter.cs" />
     <Compile Include="Helpers\IPageVerification.cs" />
     <Compile Include="Helpers\UserThemeMode.cs" />
-    <Compile Include="Helpers\VisualTreeHelperExtensions.cs" />
     <Compile Include="Main\LocationSearchPage.xaml.cs">
       <DependentUpon>LocationSearchPage.xaml</DependentUpon>
     </Compile>

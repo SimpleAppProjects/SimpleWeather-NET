@@ -510,4 +510,10 @@
   <data name="Error_WeatherUSOnly" xml:space="preserve">
     <value>This weather provider only supports locations in the U.S.</value>
   </data>
+  <data name="Header_FavLocations" xml:space="preserve">
+    <value>Favorite Locations</value>
+  </data>
+  <data name="Header_GPSLocation" xml:space="preserve">
+    <value>Current Location</value>
+  </data>
 </root>

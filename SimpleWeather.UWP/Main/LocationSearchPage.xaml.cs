@@ -300,7 +300,7 @@ namespace SimpleWeather.UWP.Main
             {
                 await AsyncTask.RunOnUIThread(() =>
                 {
-                    Frame.Navigate(typeof(LocationsPage));
+                    if (Frame.CanGoBack) Frame.GoBack(); else Frame.Navigate(typeof(LocationsPage));
                 }).ConfigureAwait(false);
                 return;
             }

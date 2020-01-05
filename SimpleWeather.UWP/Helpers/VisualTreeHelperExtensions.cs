@@ -32,5 +32,23 @@ namespace SimpleWeather.UWP.Helpers
 
             return null;
         }
+
+        public static T GetParent<T>(FrameworkElement depObj) where T : FrameworkElement
+        {
+            if (depObj != null)
+            {
+                var parent = depObj?.Parent;
+
+                while (parent is FrameworkElement element && !(parent is T))
+                {
+                    parent = element.Parent;
+                }
+
+                if (parent is T)
+                    return (T)parent;
+            }
+
+            return null;
+        }
     }
 }
