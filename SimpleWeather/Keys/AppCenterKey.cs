@@ -1,11 +1,8 @@
-﻿using SimpleWeather.WeatherData;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 
 namespace SimpleWeather.Keys
 {
-    public partial class APIKeys
+    public static partial class APIKeys
     {
         public static String GetAppCenterSecret()
         {

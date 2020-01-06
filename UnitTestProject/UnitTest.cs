@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SimpleWeather.HERE;
+using SimpleWeather.Keys;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
@@ -67,6 +69,13 @@ namespace UnitTestProject
             var provider = WeatherManager.GetProvider(WeatherAPI.OpenWeatherMap);
             var weather = GetWeather(provider).ConfigureAwait(false).GetAwaiter().GetResult();
             Assert.IsTrue(weather?.IsValid() == true);
+        }
+
+        [TestMethod]
+        public void GetHEREOAuthToken()
+        {
+            var token = HEREOAuthUtils.GetBearerToken(true).ConfigureAwait(false).GetAwaiter().GetResult();
+            Assert.IsTrue(!String.IsNullOrWhiteSpace(token));
         }
     }
 }

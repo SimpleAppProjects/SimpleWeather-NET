@@ -35,27 +35,30 @@ namespace SimpleWeather.HERE
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
 #if DEBUG
-            string queryAPI = "https://autocomplete.geocoder.cit.api.here.com/6.2/suggest.json";
+            string queryAPI = "https://autocomplete.geocoder.ls.hereapi.com/6.2/suggest.json";
 #else
-            string queryAPI = "https://autocomplete.geocoder.api.here.com/6.2/suggest.json";
+            string queryAPI = "https://autocomplete.geocoder.ls.hereapi.com/6.2/suggest.json";
 #endif
-            string query = "?query={0}&app_id={1}&app_code={2}&language={3}&maxresults=10";
+            string query = "?query={0}&language={1}&maxresults=10";
 
-            string app_id = GetAppID();
-            string app_code = GetAppCode();
+            OAuthRequest authRequest = new OAuthRequest(APIKeys.GetHERECliID(), APIKeys.GetHERECliSecr());
 
-            Uri queryURL = new Uri(String.Format(queryAPI + query, location_query, app_id, app_code, locale));
+            Uri queryURL = new Uri(String.Format(queryAPI + query, location_query, locale));
             WeatherException wEx = null;
             // Limit amount of results shown
             int maxResults = 10;
 
             using (HttpClient webClient = new HttpClient())
             using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+            using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
             {
                 try
                 {
+                    // Add headers to request
+                    request.Headers.Add("Authorization", await AsyncTask.RunAsync(HEREOAuthUtils.GetBearerToken()));
+
                     // Connect to webstream
-                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.GetAsync(queryURL).AsTask(cts.Token));
+                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.SendRequestAsync(request).AsTask(cts.Token));
                     response.EnsureSuccessStatusCode();
                     Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
                     // End Stream
@@ -123,28 +126,29 @@ namespace SimpleWeather.HERE
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
 #if DEBUG
-            string queryAPI = "https://reverse.geocoder.cit.api.here.com/6.2/reversegeocode.json";
+            string queryAPI = "https://reverse.geocoder.ls.hereapi.com/6.2/reversegeocode.json";
 #else
-            string queryAPI = "https://reverse.geocoder.api.here.com/6.2/reversegeocode.json";
+            string queryAPI = "https://reverse.geocoder.ls.hereapi.com/6.2/reversegeocode.json";
 #endif
             string location_query = string.Format("{0},{1}", coord.Latitude.ToString(CultureInfo.InvariantCulture), coord.Longitude.ToString(CultureInfo.InvariantCulture));
             string query = "?prox={0},150&mode=retrieveAddresses&maxresults=1&additionaldata=Country2,true&gen=9&jsonattributes=1" +
-                "&locationattributes=adminInfo,timeZone,-mapView,-mapReference&language={1}&app_id={2}&app_code={3}";
+                "&locationattributes=adminInfo,timeZone,-mapView,-mapReference&language={1}";
 
-            string app_id = GetAppID();
-            string app_code = GetAppCode();
-
-            Uri queryURL = new Uri(String.Format(queryAPI + query, location_query, locale, app_id, app_code));
+            Uri queryURL = new Uri(String.Format(queryAPI + query, location_query, locale));
             Result result = null;
             WeatherException wEx = null;
 
             using (HttpClient webClient = new HttpClient())
             using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+            using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
             {
                 try
                 {
+                    // Add headers to request
+                    request.Headers.Add("Authorization", await AsyncTask.RunAsync(HEREOAuthUtils.GetBearerToken()));
+
                     // Connect to webstream
-                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.GetAsync(queryURL).AsTask(cts.Token));
+                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.SendRequestAsync(request).AsTask(cts.Token));
                     response.EnsureSuccessStatusCode();
                     Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
@@ -198,27 +202,28 @@ namespace SimpleWeather.HERE
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
 #if DEBUG
-            string queryAPI = "https://geocoder.cit.api.here.com/6.2/geocode.json";
+            string queryAPI = "https://geocoder.ls.hereapi.com/6.2/geocode.json";
 #else
-            string queryAPI = "https://geocoder.api.here.com/6.2/geocode.json";
+            string queryAPI = "https://geocoder.ls.hereapi.com/6.2/geocode.json";
 #endif
             string query = "?locationid={0}&mode=retrieveAddresses&maxresults=1&additionaldata=Country2,true&gen=9&jsonattributes=1" +
-                "&locationattributes=adminInfo,timeZone,-mapView,-mapReference&language={1}&app_id={2}&app_code={3}";
+                "&locationattributes=adminInfo,timeZone,-mapView,-mapReference&language={1}";
 
-            string app_id = GetAppID();
-            string app_code = GetAppCode();
-
-            Uri queryURL = new Uri(String.Format(queryAPI + query, locationID, locale, app_id, app_code));
+            Uri queryURL = new Uri(String.Format(queryAPI + query, locationID, locale));
             Result result = null;
             WeatherException wEx = null;
 
             using (HttpClient webClient = new HttpClient())
             using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+            using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
             {
                 try
                 {
+                    // Add headers to request
+                    request.Headers.Add("Authorization", await AsyncTask.RunAsync(HEREOAuthUtils.GetBearerToken()));
+
                     // Connect to webstream
-                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.GetAsync(queryURL).AsTask(cts.Token));
+                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.SendRequestAsync(request).AsTask(cts.Token));
                     response.EnsureSuccessStatusCode();
                     Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
@@ -262,91 +267,16 @@ namespace SimpleWeather.HERE
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override async Task<bool> IsKeyValid(string key)
+        public override Task<bool> IsKeyValid(string key)
         {
-            string queryAPI = "https://weather.cit.api.here.com/weather/1.0/report.json";
-
-            string app_id = "";
-            string app_code = "";
-
-            if (!String.IsNullOrWhiteSpace(key))
-            {
-                string[] keyArr = key.Split(';');
-                if (keyArr.Length > 0)
-                {
-                    app_id = keyArr[0];
-                    app_code = keyArr[keyArr.Length > 1 ? keyArr.Length - 1 : 0];
-                }
-            }
-
-            Uri queryURL = new Uri(String.Format("{0}?app_id={1}&app_code={2}", queryAPI, app_id, app_code));
-            bool isValid = false;
-            WeatherException wEx = null;
-
-            using (HttpClient webClient = new HttpClient())
-            using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-            {
-                try
-                {
-                    if (String.IsNullOrWhiteSpace(app_id) || String.IsNullOrWhiteSpace(app_code))
-                        throw (wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey));
-
-                    // Connect to webstream
-                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.GetAsync(queryURL).AsTask(cts.Token));
-
-                    // Check for errors
-                    switch (response.StatusCode)
-                    {
-                        // 400 (OK since this isn't a valid request)
-                        case HttpStatusCode.BadRequest:
-                            isValid = true;
-                            break;
-                        // 401 (Unauthorized - Key is invalid)
-                        case HttpStatusCode.Unauthorized:
-                            wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
-                            isValid = false;
-                            break;
-                    }
-
-                    // End Stream
-                    response.Dispose();
-                    webClient.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
-                    {
-                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                    }
-
-                    isValid = false;
-                }
-            }
-
-            if (wEx != null)
-            {
-                throw wEx;
-            }
-
-            return isValid;
-        }
-
-        private String GetAppID()
-        {
-            return APIKeys.GetHEREAppID();
-        }
-
-        private String GetAppCode()
-        {
-            return APIKeys.GetHEREAppCode();
+            var tcs = new TaskCompletionSource<bool>();
+            tcs.SetResult(false);
+            return tcs.Task;
         }
 
         public override String GetAPIKey()
         {
-            if (String.IsNullOrWhiteSpace(GetAppID()) && String.IsNullOrWhiteSpace(GetAppCode()))
-                return String.Empty;
-            else
-                return String.Format("{0};{1}", GetAppID(), GetAppCode());
+            return null;
         }
     }
 }

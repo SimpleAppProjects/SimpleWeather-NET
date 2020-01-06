@@ -23,87 +23,21 @@ namespace SimpleWeather.HERE
 
         public override string WeatherAPI => WeatherData.WeatherAPI.Here;
         public override bool SupportsWeatherLocale => true;
-        public override bool KeyRequired => true;
+        public override bool KeyRequired => false;
         public override bool SupportsAlerts => true;
         public override bool NeedsExternalAlertData => false;
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override async Task<bool> IsKeyValid(string key)
+        public override Task<bool> IsKeyValid(string key)
         {
-            string queryAPI = "https://weather.cit.api.here.com/weather/1.0/report.json";
-
-            string app_id = "";
-            string app_code = "";
-
-            if (!String.IsNullOrWhiteSpace(key))
-            {
-                string[] keyArr = key.Split(';');
-                if (keyArr.Length > 0)
-                {
-                    app_id = keyArr[0];
-                    app_code = keyArr[keyArr.Length > 1 ? keyArr.Length - 1 : 0];
-                }
-            }
-
-            Uri queryURL = new Uri(String.Format("{0}?app_id={1}&app_code={2}", queryAPI, app_id, app_code));
-            bool isValid = false;
-            WeatherException wEx = null;
-
-            using (HttpClient webClient = new HttpClient())
-            using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-            {
-                try
-                {
-                    if (String.IsNullOrWhiteSpace(app_id) || String.IsNullOrWhiteSpace(app_code))
-                        throw (wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey));
-
-                    // Connect to webstream
-                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.GetAsync(queryURL).AsTask(cts.Token));
-
-                    // Check for errors
-                    switch (response.StatusCode)
-                    {
-                        // 400 (OK since this isn't a valid request)
-                        case HttpStatusCode.BadRequest:
-                            isValid = true;
-                            break;
-                        // 401 (Unauthorized - Key is invalid)
-                        case HttpStatusCode.Unauthorized:
-                            wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
-                            isValid = false;
-                            break;
-                    }
-
-                    // End Stream
-                    response.Dispose();
-                    webClient.Dispose();
-                    cts.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
-                    {
-                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                    }
-
-                    isValid = false;
-                }
-
-                if (wEx != null)
-                {
-                    throw wEx;
-                }
-
-                return isValid;
-            }
+            var tcs = new TaskCompletionSource<bool>();
+            tcs.SetResult(false);
+            return tcs.Task;
         }
 
         public override String GetAPIKey()
         {
-            if (String.IsNullOrWhiteSpace(APIKeys.GetHEREAppID()) && String.IsNullOrWhiteSpace(APIKeys.GetHEREAppCode()))
-                return String.Empty;
-            else
-                return String.Format("{0};{1}", APIKeys.GetHEREAppID(), APIKeys.GetHEREAppCode());
+            return null;
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
@@ -119,38 +53,30 @@ namespace SimpleWeather.HERE
 
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 #if DEBUG
-            queryAPI = "https://weather.cit.api.here.com/weather/1.0/report.json?product=alerts&product=forecast_7days_simple" +
+            queryAPI = "https://weather.ls.hereapi.com/weather/1.0/report.json?product=alerts&product=forecast_7days_simple" +
 #else
-            queryAPI = "https://weather.api.here.com/weather/1.0/report.json?product=alerts&product=forecast_7days_simple" +
+            queryAPI = "https://weather.ls.hereapi.com/weather/1.0/report.json?product=alerts&product=forecast_7days_simple" +
 #endif
                 "&product=forecast_hourly&product=forecast_astronomy&product=observation&oneobservation=true&{0}" +
-                "&language={1}&metric=false&app_id={2}&app_code={3}";
+                "&language={1}&metric=false";
 
-            string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
-            string app_id = "";
-            string app_code = "";
+            OAuthRequest authRequest = new OAuthRequest(APIKeys.GetHERECliID(), APIKeys.GetHERECliSecr());
 
-            if (!String.IsNullOrWhiteSpace(key))
-            {
-                string[] keyArr = key.Split(';');
-                if (keyArr.Length > 0)
-                {
-                    app_id = keyArr[0];
-                    app_code = keyArr[keyArr.Length > 1 ? keyArr.Length - 1 : 0];
-                }
-            }
-
-            queryURL = new Uri(String.Format(queryAPI, location_query, locale, app_id, app_code));
+            queryURL = new Uri(String.Format(queryAPI, location_query, locale));
 
             using (HttpClient webClient = new HttpClient())
             using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+            using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
             {
                 WeatherException wEx = null;
 
                 try
                 {
+                    // Add headers to request
+                    request.Headers.Add("Authorization", await AsyncTask.RunAsync(HEREOAuthUtils.GetBearerToken()));
+
                     // Connect to webstream
-                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.GetAsync(queryURL).AsTask(cts.Token));
+                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.SendRequestAsync(request).AsTask(cts.Token));
                     response.EnsureSuccessStatusCode();
                     Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
                     // Reset exception
@@ -286,36 +212,27 @@ namespace SimpleWeather.HERE
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
 #if DEBUG
-            queryAPI = "https://weather.cit.api.here.com/weather/1.0/report.json?product=alerts&{0}" +
+            queryAPI = "https://weather.ls.hereapi.com/weather/1.0/report.json?product=alerts&{0}" +
 #else
-            queryAPI = "https://weather.api.here.com/weather/1.0/report.json?product=alerts&{0}" +
+            queryAPI = "https://weather.ls.hereapi.com/weather/1.0/report.json?product=alerts&{0}" +
 #endif
-                "&language={1}&metric=false&app_id={2}&app_code={3}";
+                "&language={1}&metric=false";
 
-            string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
+            OAuthRequest authRequest = new OAuthRequest(APIKeys.GetHERECliID(), APIKeys.GetHERECliSecr());
 
-            string app_id = "";
-            string app_code = "";
-
-            if (!String.IsNullOrWhiteSpace(key))
-            {
-                string[] keyArr = key.Split(';');
-                if (keyArr.Length > 0)
-                {
-                    app_id = keyArr[0];
-                    app_code = keyArr[keyArr.Length > 1 ? keyArr.Length - 1 : 0];
-                }
-            }
-
-            queryURL = new Uri(String.Format(queryAPI, location.query, locale, app_id, app_code));
+            queryURL = new Uri(String.Format(queryAPI, location.query, locale));
 
             using (HttpClient webClient = new HttpClient())
             using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+            using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
             {
                 try
                 {
+                    // Add headers to request
+                    request.Headers.Add("Authorization", await AsyncTask.RunAsync(HEREOAuthUtils.GetBearerToken()));
+
                     // Connect to webstream
-                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.GetAsync(queryURL).AsTask(cts.Token));
+                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.SendRequestAsync(request).AsTask(cts.Token));
                     response.EnsureSuccessStatusCode();
                     Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
                     // End Stream

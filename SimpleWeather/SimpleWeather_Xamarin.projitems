@@ -27,6 +27,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)HERE\AutoCompleteQuery.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HERE\GeopositionQuery.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HERE\HERELocationProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HERE\HEREOAuthUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Keys\AppCenterKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Keys\BingMapsKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Keys\HEREWeatherKey.cs" />
