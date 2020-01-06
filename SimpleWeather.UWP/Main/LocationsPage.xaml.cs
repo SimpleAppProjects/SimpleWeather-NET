@@ -65,7 +65,7 @@ namespace SimpleWeather.UWP.Main
                 {
                     // Update panel weather
                     LocationPanelViewModel panelView = null;
-                    
+
                     if (location.locationType == LocationType.GPS)
                     {
                         panelView = dataSet.FirstOrDefault(panelVM => panelVM?.LocationData?.locationType == LocationType.GPS);
@@ -276,25 +276,24 @@ namespace SimpleWeather.UWP.Main
 
         private async void LocationPanels_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            bool dataMoved = (e.Action == NotifyCollectionChangedAction.Remove) || (e.Action == NotifyCollectionChangedAction.Move);
-            bool onlyHomeIsLeft = PanelAdapter.FavoritesCount == 1;
-            bool limitReached = PanelAdapter.ItemCount >= Settings.MAX_LOCATIONS;
-
-            // Flag that data has changed
-            if (EditMode && dataMoved)
-                DataChanged = true;
-
-            if (EditMode && e.NewStartingIndex == App.HomeIdx)
-                HomeChanged = true;
-
-            // Cancel edit Mode
-            if (EditMode && onlyHomeIsLeft)
-                await AsyncTask.RunOnUIThread(() => ToggleEditMode())
-                    .ConfigureAwait(true);
-
-            // Disable EditMode if only single location
             await AsyncTask.RunOnUIThread(() =>
             {
+                bool dataMoved = (e.Action == NotifyCollectionChangedAction.Remove) || (e.Action == NotifyCollectionChangedAction.Move);
+                bool onlyHomeIsLeft = PanelAdapter.FavoritesCount == 1;
+                bool limitReached = PanelAdapter.ItemCount >= Settings.MAX_LOCATIONS;
+
+                // Flag that data has changed
+                if (EditMode && dataMoved)
+                    DataChanged = true;
+
+                if (EditMode && e.NewStartingIndex == App.HomeIdx)
+                    HomeChanged = true;
+
+                // Cancel edit Mode
+                if (EditMode && onlyHomeIsLeft)
+                    ToggleEditMode();
+
+                // Disable EditMode if only single location
                 EditButton.Visibility = onlyHomeIsLeft ? Visibility.Collapsed : Visibility.Visible;
                 AddLocationsButton.Visibility = limitReached ? Visibility.Collapsed : Visibility.Visible;
             }).ConfigureAwait(true);
