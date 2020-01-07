@@ -247,8 +247,8 @@ namespace SimpleWeather.WeatherData
             bool conditionSet = false;
             int fcastCount = 0;
 
-            DateTime startDate = foreRoot.meta.First().from;
-            DateTime endDate = foreRoot.meta.Last().to.Subtract(new TimeSpan(6, 0, 0));
+            DateTime startDate = foreRoot.meta.model.from;
+            DateTime endDate = foreRoot.meta.model.to;
             Forecast fcast = null;
 
             // Metno data is troublesome to parse thru
@@ -395,6 +395,12 @@ namespace SimpleWeather.WeatherData
 
                     conditionSet = true;
                 }
+            }
+
+            fcast = forecastL.Last();
+            if (fcast?.condition == null && fcast?.icon == null)
+            {
+                forecastL.Remove(fcast);
             }
 
             forecast = forecastL.ToArray();

@@ -8,16 +8,14 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class weatherdata
     {
-
-        private weatherdataModel[] metaField;
+        private weatherdataMeta metaField;
 
         private weatherdataProduct productField;
 
         private System.DateTime createdField;
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlArrayItemAttribute("model", IsNullable = false)]
-        public weatherdataModel[] meta
+        public weatherdataMeta meta
         {
             get
             {
@@ -61,9 +59,30 @@
     [System.SerializableAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-    public partial class weatherdataModel
+    public partial class weatherdataMeta
     {
+        private weatherdataMetaModel modelField;
 
+        /// <remarks/>
+        public weatherdataMetaModel model
+        {
+            get
+            {
+                return this.modelField;
+            }
+            set
+            {
+                this.modelField = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.SerializableAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    public partial class weatherdataMetaModel
+    {
         private string nameField;
 
         private System.DateTime terminField;
@@ -167,7 +186,6 @@
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class weatherdataProduct
     {
-
         private weatherdataProductTime[] timeField;
 
         private string classField;
@@ -207,7 +225,6 @@
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class weatherdataProductTime
     {
-
         private weatherdataProductTimeLocation locationField;
 
         private string datatypeField;
@@ -278,7 +295,6 @@
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class weatherdataProductTimeLocation
     {
-
         private weatherdataProductTimeLocationPrecipitation precipitationField;
 
         private weatherdataProductTimeLocationMinTemperature minTemperatureField;
@@ -296,8 +312,6 @@
         private weatherdataProductTimeLocationWindSpeed windSpeedField;
 
         private weatherdataProductTimeLocationWindGust windGustField;
-
-        private weatherdataProductTimeLocationAreaMaxWindSpeed areaMaxWindSpeedField;
 
         private weatherdataProductTimeLocationHumidity humidityField;
 
@@ -439,19 +453,6 @@
             set
             {
                 this.windGustField = value;
-            }
-        }
-
-        /// <remarks/>
-        public weatherdataProductTimeLocationAreaMaxWindSpeed areaMaxWindSpeed
-        {
-            get
-            {
-                return this.areaMaxWindSpeedField;
-            }
-            set
-            {
-                this.areaMaxWindSpeedField = value;
             }
         }
 
@@ -634,18 +635,13 @@
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class weatherdataProductTimeLocationPrecipitation
     {
-
         private string unitField;
 
         private decimal valueField;
 
         private decimal minvalueField;
 
-        private bool minvalueFieldSpecified;
-
         private decimal maxvalueField;
-
-        private bool maxvalueFieldSpecified;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
@@ -690,20 +686,6 @@
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool minvalueSpecified
-        {
-            get
-            {
-                return this.minvalueFieldSpecified;
-            }
-            set
-            {
-                this.minvalueFieldSpecified = value;
-            }
-        }
-
-        /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public decimal maxvalue
         {
@@ -716,20 +698,6 @@
                 this.maxvalueField = value;
             }
         }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool maxvalueSpecified
-        {
-            get
-            {
-                return this.maxvalueFieldSpecified;
-            }
-            set
-            {
-                this.maxvalueFieldSpecified = value;
-            }
-        }
     }
 
     /// <remarks/>
@@ -738,7 +706,6 @@
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class weatherdataProductTimeLocationMinTemperature
     {
-
         private string idField;
 
         private string unitField;
@@ -794,7 +761,6 @@
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class weatherdataProductTimeLocationMaxTemperature
     {
-
         private string idField;
 
         private string unitField;
@@ -850,7 +816,6 @@
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class weatherdataProductTimeLocationSymbol
     {
-
         private string idField;
 
         private byte numberField;
@@ -890,7 +855,6 @@
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class weatherdataProductTimeLocationSymbolProbability
     {
-
         private string unitField;
 
         private byte valueField;
@@ -930,7 +894,6 @@
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class weatherdataProductTimeLocationTemperature
     {
-
         private string idField;
 
         private string unitField;
@@ -986,7 +949,6 @@
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class weatherdataProductTimeLocationWindDirection
     {
-
         private string idField;
 
         private decimal degField;
@@ -1042,7 +1004,6 @@
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class weatherdataProductTimeLocationWindSpeed
     {
-
         private string idField;
 
         private decimal mpsField;
@@ -1114,7 +1075,6 @@
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class weatherdataProductTimeLocationWindGust
     {
-
         private string idField;
 
         private decimal mpsField;
@@ -1152,50 +1112,11 @@
     [System.SerializableAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-    public partial class weatherdataProductTimeLocationAreaMaxWindSpeed
-    {
-
-        private decimal mpsField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public decimal mps
-        {
-            get
-            {
-                return this.mpsField;
-            }
-            set
-            {
-                this.mpsField = value;
-            }
-        }
-    }
-
-    /// <remarks/>
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class weatherdataProductTimeLocationHumidity
     {
-
-        private decimal valueField;
-
         private string unitField;
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public decimal value
-        {
-            get
-            {
-                return this.valueField;
-            }
-            set
-            {
-                this.valueField = value;
-            }
-        }
+        private decimal valueField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
@@ -1210,6 +1131,20 @@
                 this.unitField = value;
             }
         }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public decimal value
+        {
+            get
+            {
+                return this.valueField;
+            }
+            set
+            {
+                this.valueField = value;
+            }
+        }
     }
 
     /// <remarks/>
@@ -1218,7 +1153,6 @@
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class weatherdataProductTimeLocationPressure
     {
-
         private string idField;
 
         private string unitField;
@@ -1274,7 +1208,6 @@
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class weatherdataProductTimeLocationCloudiness
     {
-
         private string idField;
 
         private decimal percentField;
@@ -1314,7 +1247,6 @@
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class weatherdataProductTimeLocationFog
     {
-
         private string idField;
 
         private decimal percentField;
@@ -1354,7 +1286,6 @@
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class weatherdataProductTimeLocationLowClouds
     {
-
         private string idField;
 
         private decimal percentField;
@@ -1394,7 +1325,6 @@
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class weatherdataProductTimeLocationMediumClouds
     {
-
         private string idField;
 
         private decimal percentField;
@@ -1434,7 +1364,6 @@
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class weatherdataProductTimeLocationHighClouds
     {
-
         private string idField;
 
         private decimal percentField;
@@ -1474,7 +1403,6 @@
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class weatherdataProductTimeLocationTemperatureProbability
     {
-
         private string unitField;
 
         private byte valueField;
@@ -1514,7 +1442,6 @@
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class weatherdataProductTimeLocationWindProbability
     {
-
         private string unitField;
 
         private byte valueField;
@@ -1554,7 +1481,6 @@
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     public partial class weatherdataProductTimeLocationDewpointTemperature
     {
-
         private string idField;
 
         private string unitField;

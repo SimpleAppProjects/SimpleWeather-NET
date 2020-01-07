@@ -50,7 +50,7 @@ namespace SimpleWeather.Metno
             string sunrisesetAPI = null;
             Uri sunrisesetURL = null;
 
-            forecastAPI = "https://api.met.no/weatherapi/locationforecastlts/1.3/?{0}";
+            forecastAPI = "https://api.met.no/weatherapi/locationforecast/1.9/?{0}";
             forecastURL = new Uri(string.Format(forecastAPI, location_query));
             sunrisesetAPI = "https://api.met.no/weatherapi/sunrise/2.0/?{0}&date={1}&offset=+00:00";
             string date = DateTime.Now.ToString("yyyy-MM-dd");
