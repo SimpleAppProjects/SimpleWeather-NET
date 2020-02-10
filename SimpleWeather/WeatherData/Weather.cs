@@ -1020,7 +1020,10 @@ namespace SimpleWeather.WeatherData
                 extras.dewpoint_c = ConversionMethods.FtoC(forecast.dewPoint);
             }
             catch (FormatException)
-            { }
+            {
+                extras.dewpoint_f = null;
+                extras.dewpoint_c = null;
+            }
             extras.pop = forecast.precipitationProbability;
             if (float.TryParse(forecast.rainFall, out float rain_in))
             {
@@ -1368,7 +1371,10 @@ namespace SimpleWeather.WeatherData
                 extras.dewpoint_c = ConversionMethods.FtoC(hr_forecast.dewPoint);
             }
             catch (FormatException)
-            { }
+            {
+                extras.dewpoint_f = null;
+                extras.dewpoint_c = null;
+            }
             extras.pop = hr_forecast.precipitationProbability;
             if (float.TryParse(hr_forecast.rainFall, out float rain_in))
             {

@@ -52,7 +52,7 @@ namespace SimpleWeather.Controls
             // Extras
             if (hrForecast.extras != null)
             {
-                if (hrForecast.extras.feelslike_f != 0)
+                if (hrForecast.extras.feelslike_f != 0 && (hrForecast.extras.feelslike_f != hrForecast.extras.feelslike_c))
                 {
                     DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.FeelsLike,
                            Settings.IsFahrenheit ?

@@ -53,7 +53,7 @@ namespace SimpleWeather.Controls
             // Extras
             if (forecast.extras != null)
             {
-                if (forecast.extras.feelslike_f != 0)
+                if (forecast.extras.feelslike_f != 0 && (forecast.extras.feelslike_f != forecast.extras.feelslike_c))
                 {
                     DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.FeelsLike,
                            Settings.IsFahrenheit ?
@@ -93,7 +93,7 @@ namespace SimpleWeather.Controls
                                 forecast.extras.humidity : forecast.extras.humidity + "%"));
                 }
 
-                if (!String.IsNullOrWhiteSpace(forecast.extras.dewpoint_f))
+                if (!String.IsNullOrWhiteSpace(forecast.extras.dewpoint_f) && (forecast.extras.dewpoint_f != forecast.extras.dewpoint_c))
                 {
                     DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.Dewpoint,
                            Settings.IsFahrenheit ?
