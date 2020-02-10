@@ -530,8 +530,8 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <SDKReference Include="SQLite.UWP.2015, Version=3.30.1">
-      <Name>SQLite for Universal Windows Platform %28SQLite.UWP.2015, Version=3.30.1%29</Name>
+    <SDKReference Include="SQLite.UWP.2015, Version=3.31.1">
+      <Name>SQLite for Universal Windows Platform %28SQLite.UWP.2015, Version=3.31.1%29</Name>
     </SDKReference>
     <SDKReference Include="WindowsMobile, Version=10.0.18362.0">
       <Name>Windows Mobile Extensions for the UWP</Name>
