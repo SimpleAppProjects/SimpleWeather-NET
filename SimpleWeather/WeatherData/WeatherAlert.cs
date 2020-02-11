@@ -682,7 +682,7 @@ namespace SimpleWeather.WeatherData
         [PrimaryKey]
         public string query { get; set; }
         [TextBlob("alertsblob")]
-        public List<WeatherAlert> alerts { get; set; }
+        public ICollection<WeatherAlert> alerts { get; set; }
         [JsonIgnore]
         [Column("weather_alerts")]
         public string alertsblob { get; set; }
@@ -691,7 +691,7 @@ namespace SimpleWeather.WeatherData
         {
         }
 
-        public WeatherAlerts(string query, List<WeatherAlert> alerts)
+        public WeatherAlerts(string query, ICollection<WeatherAlert> alerts)
         {
             this.query = query;
             this.alerts = alerts;

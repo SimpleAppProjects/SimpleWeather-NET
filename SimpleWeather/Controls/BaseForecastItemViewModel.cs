@@ -17,12 +17,13 @@ namespace SimpleWeather.Controls
         public int WindDirection { get; set; }
         public string WindSpeed { get; set; }
 
-        public List<DetailItemViewModel> DetailExtras { get; private set; }
+        public IList<DetailItemViewModel> DetailExtras { get; private set; }
 
         public BaseForecastItemViewModel()
         {
             wm = WeatherManager.GetInstance();
-            DetailExtras = new List<DetailItemViewModel>();
+            int capacity = System.Enum.GetNames(typeof(WeatherDetailsType)).Length;
+            DetailExtras = new List<DetailItemViewModel>(capacity);
         }
     }
 }

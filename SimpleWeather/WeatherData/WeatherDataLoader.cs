@@ -3,6 +3,7 @@ using SimpleWeather.Utils;
 using SimpleWeather.UWP.Tiles;
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.System.UserProfile;
@@ -336,7 +337,7 @@ namespace SimpleWeather.WeatherData
                         // bc notified flag gets reset when retrieving weatherdata
                         foreach (WeatherAlert alert in weather.weather_alerts)
                         {
-                            if (previousAlerts.Find(walert => walert.Equals(alert)) is WeatherAlert prevAlert)
+                            if (previousAlerts.FirstOrDefault(walert => walert.Equals(alert)) is WeatherAlert prevAlert)
                             {
                                 if (prevAlert.Notified)
                                     alert.Notified = prevAlert.Notified;

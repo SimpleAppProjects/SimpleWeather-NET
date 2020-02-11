@@ -157,10 +157,10 @@ namespace SimpleWeather.WeatherUnderground
                     weather = new Weather(root);
 
                     // Add weather alerts if available
-                    if (root.alerts != null && root.alerts.Length > 0)
+                    if (root.alerts?.Length > 0)
                     {
                         if (weather.weather_alerts == null)
-                            weather.weather_alerts = new List<WeatherAlert>();
+                            weather.weather_alerts = new List<WeatherAlert>(root.alerts.Length);
 
                         foreach (Alert result in root.alerts)
                         {
@@ -266,9 +266,9 @@ namespace SimpleWeather.WeatherUnderground
                     webClient.Dispose();
 
                     // Load data
-                    alerts = new List<WeatherAlert>();
-
                     AlertRootobject root = JSONParser.Deserializer<AlertRootobject>(contentStream);
+
+                    alerts = new List<WeatherAlert>(root.alerts.Length);
 
                     foreach (Alert result in root.alerts)
                     {

@@ -45,9 +45,9 @@ namespace SimpleWeather.NWS
                 cts.Dispose();
 
                 // Load data
-                alerts = new List<WeatherAlert>();
-
                 var root = JSONParser.Deserializer<AlertRootobject>(contentStream);
+
+                alerts = new List<WeatherAlert>(root.graph.Length);
 
                 foreach (AlertGraph result in root.graph)
                 {

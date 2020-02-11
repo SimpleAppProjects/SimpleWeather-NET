@@ -36,11 +36,11 @@ namespace SimpleWeather.WeatherData
             set { updatetimeblob = value.ToString("dd.MM.yyyy HH:mm:ss zzzz"); }
         }
         [TextBlob(nameof(forecastblob))]
-        public Forecast[] forecast { get; set; }
+        public IList<Forecast> forecast { get; set; }
         [TextBlob(nameof(hrforecastblob))]
-        public HourlyForecast[] hr_forecast { get; set; }
+        public IList<HourlyForecast> hr_forecast { get; set; }
         [TextBlob(nameof(txtforecastblob))]
-        public TextForecast[] txt_forecast { get; set; }
+        public IList<TextForecast> txt_forecast { get; set; }
         [TextBlob(nameof(conditionblob))]
         public Condition condition { get; set; }
         [TextBlob(nameof(atmosphereblob))]
@@ -52,7 +52,7 @@ namespace SimpleWeather.WeatherData
         [JsonIgnore]
         [Ignore]
         // Just for passing along to where its needed
-        public List<WeatherAlert> weather_alerts { get; set; }
+        public ICollection<WeatherAlert> weather_alerts { get; set; }
         public string ttl { get; set; }
         public string source { get; set; }
         [PrimaryKey]
@@ -90,10 +90,10 @@ namespace SimpleWeather.WeatherData
         {
             location = new Location(root.location);
             update_time = ConversionMethods.ToEpochDateTime(root.current_observation.pubDate);
-            forecast = new Forecast[root.forecasts.Length];
-            for (int i = 0; i < forecast.Length; i++)
+            forecast = new List<Forecast>(root.forecasts.Length);
+            for (int i = 0; i < root.forecasts.Length; i++)
             {
-                forecast[i] = new Forecast(root.forecasts[i]);
+                forecast.Add(new Forecast(root.forecasts[i]));
             }
             condition = new Condition(root.current_observation);
             atmosphere = new Atmosphere(root.current_observation.atmosphere);
@@ -114,10 +114,10 @@ namespace SimpleWeather.WeatherData
         {
             location = new Location(root.current_observation);
             update_time = DateTimeOffset.Parse(root.current_observation.local_time_rfc822);
-            forecast = new Forecast[root.forecast.simpleforecast.forecastday.Length];
-            for (int i = 0; i < forecast.Length; i++)
+            forecast = new List<Forecast>(root.forecast.simpleforecast.forecastday.Length);
+            for (int i = 0; i < root.forecast.simpleforecast.forecastday.Length; i++)
             {
-                forecast[i] = new Forecast(root.forecast.simpleforecast.forecastday[i]);
+                forecast.Add(new Forecast(root.forecast.simpleforecast.forecastday[i]));
 
                 if (i == 0)
                 {
@@ -129,15 +129,15 @@ namespace SimpleWeather.WeatherData
                         throw new WeatherException(WeatherUtils.ErrorStatus.Unknown);
                 }
             }
-            hr_forecast = new HourlyForecast[root.hourly_forecast.Length];
-            for (int i = 0; i < hr_forecast.Length; i++)
+            hr_forecast = new List<HourlyForecast>(root.hourly_forecast.Length);
+            for (int i = 0; i < root.hourly_forecast.Length; i++)
             {
-                hr_forecast[i] = new HourlyForecast(root.hourly_forecast[i]);
+                hr_forecast.Add(new HourlyForecast(root.hourly_forecast[i]));
             }
-            txt_forecast = new TextForecast[root.forecast.txt_forecast.forecastday.Length];
-            for (int i = 0; i < txt_forecast.Length; i++)
+            txt_forecast = new List<TextForecast>(root.forecast.txt_forecast.forecastday.Length);
+            for (int i = 0; i < root.forecast.txt_forecast.forecastday.Length; i++)
             {
-                txt_forecast[i] = new TextForecast(root.forecast.txt_forecast.forecastday[i]);
+                txt_forecast.Add(new TextForecast(root.forecast.txt_forecast.forecastday[i]));
 
                 // Note: WUnderground API bug
                 // If array is not null and we're expecting data
@@ -163,8 +163,8 @@ namespace SimpleWeather.WeatherData
 
             // 5-day forecast / 3-hr forecast
             // 24hr / 3hr = 8items for each day
-            forecast = new Forecast[5];
-            hr_forecast = new HourlyForecast[foreRoot.list.Length];
+            forecast = new List<Forecast>(5);
+            hr_forecast = new List<HourlyForecast>(foreRoot.list.Length);
 
             // Store potential min/max values
             float dayMax = float.NaN;
@@ -173,7 +173,7 @@ namespace SimpleWeather.WeatherData
 
             for (int i = 0; i < foreRoot.list.Length; i++)
             {
-                hr_forecast[i] = new HourlyForecast(foreRoot.list[i]);
+                hr_forecast.Add(new HourlyForecast(foreRoot.list[i]));
 
                 float max = foreRoot.list[i].main.temp_max;
                 if (!float.IsNaN(max) && (float.IsNaN(dayMax) || max > dayMax))
@@ -192,7 +192,7 @@ namespace SimpleWeather.WeatherData
                 {
                     lastDay = i / 8;
 
-                    forecast[i / 8] = new Forecast(foreRoot.list[i]);
+                    forecast.Insert(i / 8, new Forecast(foreRoot.list[i]));
                 }
 
                 // This is possibly the last forecast for the day (3-hrly forecast)
@@ -235,8 +235,8 @@ namespace SimpleWeather.WeatherData
             update_time = foreRoot.created;
 
             // 9-day forecast / hrly -> 6hrly forecast
-            var forecastL = new List<Forecast>();
-            var hr_forecastL = new List<HourlyForecast>();
+            forecast = new List<Forecast>(10);
+            hr_forecast = new List<HourlyForecast>(90);
 
             // Store potential min/max values
             float dayMax = float.NaN;
@@ -280,7 +280,7 @@ namespace SimpleWeather.WeatherData
                     }
 
                     // Add a new hour
-                    hr_forecastL.Add(new HourlyForecast(time));
+                    hr_forecast.Add(new HourlyForecast(time));
 
                     // Create new forecast
                     if (date.Hour == 0 || date.Equals(startDate))
@@ -288,7 +288,7 @@ namespace SimpleWeather.WeatherData
                         fcastCount++;
 
                         // Oops, we missed one
-                        if (fcast != null && fcastCount != forecastL.Count)
+                        if (fcast != null && fcastCount != forecast.Count)
                         {
                             // Set forecast properties here:
                             // condition (set in provider GetWeather method)
@@ -301,7 +301,7 @@ namespace SimpleWeather.WeatherData
                             fcast.low_f = ConversionMethods.CtoF(dayMin.ToString(CultureInfo.InvariantCulture));
                             fcast.low_c = Math.Round(dayMin).ToString();
                             // icon
-                            forecastL.Add(fcast);
+                            forecast.Add(fcast);
 
                             // Reset
                             dayMax = float.NaN;
@@ -323,7 +323,7 @@ namespace SimpleWeather.WeatherData
                         fcast.low_f = ConversionMethods.CtoF(dayMin.ToString(CultureInfo.InvariantCulture));
                         fcast.low_c = Math.Round(dayMin).ToString();
                         // icon
-                        forecastL.Add(fcast);
+                        forecast.Add(fcast);
 
                         if (date.Equals(endDate))
                             end = true;
@@ -336,11 +336,11 @@ namespace SimpleWeather.WeatherData
                 }
 
                 // Get conditions for hour if available
-                if (hr_forecastL.Count > 1 &&
-                    hr_forecastL[hr_forecastL.Count - 2].date.Equals(time.from))
+                if (hr_forecast.Count > 1 &&
+                    hr_forecast[hr_forecast.Count - 2].date.Equals(time.from))
                 {
                     // Set condition from id
-                    var hr = hr_forecastL[hr_forecastL.Count - 2];
+                    var hr = hr_forecast[hr_forecast.Count - 2];
                     if (String.IsNullOrEmpty(hr.icon))
                     {
                         if (time.location.symbol != null)
@@ -350,10 +350,10 @@ namespace SimpleWeather.WeatherData
                         }
                     }
                 }
-                else if (end && hr_forecastL.Last().date.Equals(time.from))
+                else if (end && hr_forecast.Last().date.Equals(time.from))
                 {
                     // Set condition from id
-                    var hr = hr_forecastL.Last();
+                    var hr = hr_forecast.Last();
                     if (String.IsNullOrEmpty(hr.icon))
                     {
                         if (time.location.symbol != null)
@@ -372,14 +372,14 @@ namespace SimpleWeather.WeatherData
                         fcast.icon = time.location.symbol.number.ToString();
                     }
                 }
-                else if (forecastL.Count > 0 && forecastL.Last().date.Equals(time.from) && time.to.Subtract(time.from).TotalHours >= 1)
+                else if (forecast.Count > 0 && forecast.Last().date.Equals(time.from) && time.to.Subtract(time.from).TotalHours >= 1)
                 {
-                    if (String.IsNullOrEmpty(forecastL.Last().icon))
+                    if (String.IsNullOrEmpty(forecast.Last().icon))
                     {
                         if (time.location.symbol != null)
                         {
-                            forecastL.Last().condition = time.location.symbol.id;
-                            forecastL.Last().icon = time.location.symbol.number.ToString();
+                            forecast.Last().condition = time.location.symbol.id;
+                            forecast.Last().icon = time.location.symbol.number.ToString();
                         }
                     }
                 }
@@ -397,14 +397,12 @@ namespace SimpleWeather.WeatherData
                 }
             }
 
-            fcast = forecastL.Last();
+            fcast = forecast.Last();
             if (fcast?.condition == null && fcast?.icon == null)
             {
-                forecastL.Remove(fcast);
+                forecast.RemoveAt(forecast.Count - 1);
             }
 
-            forecast = forecastL.ToArray();
-            hr_forecast = hr_forecastL.ToArray();
             astronomy = new Astronomy(astroRoot);
             ttl = "120";
 
@@ -423,24 +421,23 @@ namespace SimpleWeather.WeatherData
 
             location = new Location(root.observations.location[0]);
             update_time = root.feedCreation;
-            forecast = new Forecast[root.dailyForecasts.forecastLocation.forecast.Length];
-            for (int i = 0; i < forecast.Length; i++)
+            forecast = new List<Forecast>(root.dailyForecasts.forecastLocation.forecast.Length);
+            for (int i = 0; i < forecast.Count; i++)
             {
-                forecast[i] = new Forecast(root.dailyForecasts.forecastLocation.forecast[i]);
+                forecast.Add(new Forecast(root.dailyForecasts.forecastLocation.forecast[i]));
             }
-            var tmp_hr_forecast = new List<HourlyForecast>(root.hourlyForecasts.forecastLocation.forecast.Length);
+            hr_forecast = new List<HourlyForecast>(root.hourlyForecasts.forecastLocation.forecast.Length);
             foreach (HERE.Forecast1 forecast1 in root.hourlyForecasts.forecastLocation.forecast)
             {
                 if (forecast1.utcTime.UtcDateTime < now.UtcDateTime)
                     continue;
 
-                tmp_hr_forecast.Add(new HourlyForecast(forecast1));
+                hr_forecast.Add(new HourlyForecast(forecast1));
             }
-            hr_forecast = tmp_hr_forecast.ToArray();
-            txt_forecast = new TextForecast[root.dailyForecasts.forecastLocation.forecast.Length];
-            for (int i = 0; i < txt_forecast.Length; i++)
+            txt_forecast = new List<TextForecast>(root.dailyForecasts.forecastLocation.forecast.Length);
+            for (int i = 0; i < txt_forecast.Count; i++)
             {
-                txt_forecast[i] = new TextForecast(root.dailyForecasts.forecastLocation.forecast[i]);
+                txt_forecast.Add(new TextForecast(root.dailyForecasts.forecastLocation.forecast[i]));
             }
             condition = new Condition(root.observations.location[0].observation[0], root.dailyForecasts.forecastLocation.forecast[0]);
             atmosphere = new Atmosphere(root.observations.location[0].observation[0]);
@@ -456,35 +453,34 @@ namespace SimpleWeather.WeatherData
             location = new Location(pointsRootobject);
             update_time = DateTimeOffset.UtcNow;
 
-            var tmp_forecasts = new List<Forecast>();
-            var tmp_txtForecasts = new List<TextForecast>();
+            // ~8-day forecast
+            forecast = new List<Forecast>(8);
+            txt_forecast = new List<TextForecast>(16);
 
             for (int i = 0; i < forecastRootobject.periods.Length; i++)
             {
                 NWS.Period forecastItem = forecastRootobject.periods[i];
 
-                if (tmp_forecasts.Count == 0 && !forecastItem.isDaytime)
+                if (forecast.Count == 0 && !forecastItem.isDaytime)
                     continue;
 
                 if (forecastItem.isDaytime && (i + 1) < forecastRootobject.periods.Length)
                 {
                     NWS.Period ntForecastItem = forecastRootobject.periods[i + 1];
-                    tmp_forecasts.Add(new Forecast(forecastItem, ntForecastItem));
+                    forecast.Add(new Forecast(forecastItem, ntForecastItem));
 
-                    tmp_txtForecasts.Add(new TextForecast(forecastItem));
-                    tmp_txtForecasts.Add(new TextForecast(ntForecastItem));
+                    txt_forecast.Add(new TextForecast(forecastItem));
+                    txt_forecast.Add(new TextForecast(ntForecastItem));
 
                     i++;
                 }
             }
-            forecast = tmp_forecasts.ToArray();
-            txt_forecast = tmp_txtForecasts.ToArray();
             if (hourlyForecastRootobject != null)
             {
-                hr_forecast = new HourlyForecast[hourlyForecastRootobject.periods.Length];
-                for (int i = 0; i < hr_forecast.Length; i++)
+                hr_forecast = new List<HourlyForecast>(hourlyForecastRootobject.periods.Length);
+                for (int i = 0; i < hr_forecast.Count; i++)
                 {
-                    hr_forecast[i] = new HourlyForecast(hourlyForecastRootobject.periods[i]);
+                    hr_forecast.Add(new HourlyForecast(hourlyForecastRootobject.periods[i]));
                 }
             }
             condition = new Condition(obsCurrentRootObject);
@@ -533,33 +529,40 @@ namespace SimpleWeather.WeatherData
                             break;
 
                         case nameof(forecast):
-                            var forecasts = new List<Forecast>();
+                            // Set initial cap to 10
+                            // Most provider forecasts are <= 10
+                            var forecasts = new List<Forecast>(10);
                             while (reader.Read() && reader.TokenType != JsonToken.EndArray)
                             {
                                 if (reader.TokenType == JsonToken.String)
                                     forecasts.Add(Forecast.FromJson(reader));
                             }
-                            obj.forecast = forecasts.ToArray();
+                            obj.forecast = forecasts;
                             break;
 
                         case nameof(hr_forecast):
-                            var hr_forecasts = new List<HourlyForecast>();
+                            // Set initial cap to 90
+                            // MetNo contains ~90 items, but HERE contains ~165
+                            // If 90+ is needed, let the List impl allocate more
+                            var hr_forecasts = new List<HourlyForecast>(90);
                             while (reader.Read() && reader.TokenType != JsonToken.EndArray)
                             {
                                 if (reader.TokenType == JsonToken.String)
                                     hr_forecasts.Add(HourlyForecast.FromJson(reader));
                             }
-                            obj.hr_forecast = hr_forecasts.ToArray();
+                            obj.hr_forecast = hr_forecasts;
                             break;
 
                         case nameof(txt_forecast):
-                            var txt_forecasts = new List<TextForecast>();
+                            // Set initial cap to 20
+                            // Most provider forecasts are <= 10 (x2 for day & nt)
+                            var txt_forecasts = new List<TextForecast>(20);
                             while (reader.Read() && reader.TokenType != JsonToken.EndArray)
                             {
                                 if (reader.TokenType == JsonToken.String)
                                     txt_forecasts.Add(TextForecast.FromJson(reader));
                             }
-                            obj.txt_forecast = txt_forecasts.ToArray();
+                            obj.txt_forecast = txt_forecasts;
                             break;
 
                         case nameof(condition):
@@ -703,7 +706,7 @@ namespace SimpleWeather.WeatherData
 
         public bool IsValid()
         {
-            if (location == null || (forecast == null || forecast.Length == 0) ||
+            if (location == null || (forecast == null || forecast.Count == 0) ||
                 condition == null || atmosphere == null)
                 return false;
             else

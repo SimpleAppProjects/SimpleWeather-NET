@@ -13,7 +13,7 @@ namespace SimpleWeather.UWP.Notifications
         private static WeatherManager wm = WeatherManager.GetInstance();
         private const string Tag = "WeatherAlerts";
 
-        public static void CreateAlerts(LocationData location, List<WeatherAlert> alerts)
+        public static void CreateAlerts(LocationData location, IEnumerable<WeatherAlert> alerts)
         {
             var toastNotifier = ToastNotificationManager.CreateToastNotifier();
 
@@ -81,37 +81,47 @@ namespace SimpleWeather.UWP.Notifications
                 case WeatherAlertType.DenseFog:
                     fileIcon = "fog.png";
                     break;
+
                 case WeatherAlertType.Fire:
                     fileIcon = "fire.png";
                     break;
+
                 case WeatherAlertType.FloodWarning:
                 case WeatherAlertType.FloodWatch:
                     fileIcon = "flood.png";
                     break;
+
                 case WeatherAlertType.Heat:
                     fileIcon = "hot.png";
                     break;
+
                 case WeatherAlertType.HighWind:
                     fileIcon = "strong_wind.png";
                     break;
+
                 case WeatherAlertType.HurricaneLocalStatement:
                 case WeatherAlertType.HurricaneWindWarning:
                     fileIcon = "hurricane.png";
                     break;
+
                 case WeatherAlertType.SevereThunderstormWarning:
                 case WeatherAlertType.SevereThunderstormWatch:
                     fileIcon = "thunderstorm.png";
                     break;
+
                 case WeatherAlertType.TornadoWarning:
                 case WeatherAlertType.TornadoWatch:
                     fileIcon = "tornado.png";
                     break;
+
                 case WeatherAlertType.Volcano:
                     fileIcon = "volcano.png";
                     break;
+
                 case WeatherAlertType.WinterWeather:
                     fileIcon = "snowflake_cold.png";
                     break;
+
                 case WeatherAlertType.SevereWeather:
                 case WeatherAlertType.SpecialWeatherAlert:
                 default:

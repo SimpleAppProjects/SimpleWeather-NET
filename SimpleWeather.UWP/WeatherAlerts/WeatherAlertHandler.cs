@@ -11,7 +11,7 @@ namespace SimpleWeather.UWP.WeatherAlerts
 {
     public static class WeatherAlertHandler
     {
-        public static async Task PostAlerts(LocationData location, List<WeatherAlert> alerts)
+        public static async Task PostAlerts(LocationData location, ICollection<WeatherAlert> alerts)
         {
             var wm = WeatherManager.GetInstance();
 
@@ -26,10 +26,13 @@ namespace SimpleWeather.UWP.WeatherAlerts
                     var unotifiedAlerts = alerts.Where(alert => alert.Notified == false && alert.ExpiresDate > DateTimeOffset.Now);
 
                     // Post any un-notified alerts
-                    WeatherAlertCreator.CreateAlerts(location, unotifiedAlerts.ToList());
+                    WeatherAlertCreator.CreateAlerts(location, unotifiedAlerts);
 
                     // Update all alerts
-                    alerts.ForEach(alert => alert.Notified = true);
+                    foreach (var alert in alerts)
+                    {
+                        alert.Notified = true;
+                    }
 
                     // Save alert data
                     await Settings.SaveWeatherAlerts(location, alerts);
@@ -37,12 +40,15 @@ namespace SimpleWeather.UWP.WeatherAlerts
             }
         }
 
-        public static async Task SetasNotified(LocationData location, List<WeatherAlert> alerts)
+        public static async Task SetasNotified(LocationData location, ICollection<WeatherAlert> alerts)
         {
             if (alerts != null)
             {
                 // Update all alerts
-                alerts.ForEach(alert => alert.Notified = true);
+                foreach (var alert in alerts)
+                {
+                    alert.Notified = true;
+                }
 
                 // Save alert data
                 await Settings.SaveWeatherAlerts(location, alerts);

@@ -302,9 +302,9 @@ namespace SimpleWeather.Controls
 
                 // Add UI elements
                 Forecasts.Clear();
-                bool isDayAndNt = Extras.TextForecast.Count == weather?.forecast?.Length * 2;
-                bool addTextFct = isDayAndNt || Extras.TextForecast.Count == weather.forecast.Length;
-                for (int i = 0; i < weather.forecast.Length; i++)
+                bool isDayAndNt = Extras.TextForecast.Count == weather?.forecast?.Count * 2;
+                bool addTextFct = isDayAndNt || Extras.TextForecast.Count == weather.forecast.Count;
+                for (int i = 0; i < weather.forecast.Count; i++)
                 {
                     Forecast forecast = weather.forecast[i];
                     ForecastItemViewModel forecastView;

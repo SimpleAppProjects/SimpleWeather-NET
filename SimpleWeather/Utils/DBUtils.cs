@@ -71,8 +71,8 @@ namespace SimpleWeather.Utils
                     // Setup location data if N/A
                     if (locationData == null || locationData.Count == 0)
                     {
-                        List<LocationData> data = new List<LocationData>();
-                        foreach (string query in oldWeather.Keys.Cast<string>().ToList())
+                        List<LocationData> data = new List<LocationData>(oldWeather.Count);
+                        foreach (string query in oldWeather.Keys.Cast<string>())
                         {
                             var weather = oldWeather[query] as Weather;
                             var prov = WeatherManager.GetProvider(weather.source);

@@ -55,7 +55,7 @@ namespace SimpleWeather.Controls
             // Clear all data
             Clear();
 
-            if (weather.hr_forecast != null && weather.hr_forecast.Length > 0)
+            if (weather.hr_forecast != null && weather.hr_forecast.Count > 0)
             {
                 foreach (HourlyForecast hr_forecast in weather.hr_forecast)
                 {
@@ -65,7 +65,7 @@ namespace SimpleWeather.Controls
                 OnPropertyChanged("HourlyForecast");
             }
 
-            if (weather.txt_forecast != null && weather.txt_forecast.Length > 0)
+            if (weather.txt_forecast != null && weather.txt_forecast.Count > 0)
             {
                 foreach (TextForecast txt_forecast in weather.txt_forecast)
                 {

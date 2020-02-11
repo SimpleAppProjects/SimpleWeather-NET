@@ -112,10 +112,10 @@ namespace SimpleWeather.HERE
                     weather = new Weather(root);
 
                     // Add weather alerts if available
-                    if (root.alerts?.alerts != null && root.alerts.alerts.Length > 0)
+                    if (root.alerts?.alerts?.Length > 0)
                     {
                         if (weather.weather_alerts == null)
-                            weather.weather_alerts = new List<WeatherAlert>();
+                            weather.weather_alerts = new List<WeatherAlert>(root.alerts.alerts.Length);
 
                         foreach (Alert result in root.alerts.alerts)
                         {
@@ -239,9 +239,9 @@ namespace SimpleWeather.HERE
                     webClient.Dispose();
 
                     // Load data
-                    alerts = new List<WeatherAlert>();
-
                     Rootobject root = JSONParser.Deserializer<Rootobject>(contentStream);
+
+                    alerts = new List<WeatherAlert>(root.alerts.alerts.Length);
 
                     foreach (Alert result in root.alerts.alerts)
                     {

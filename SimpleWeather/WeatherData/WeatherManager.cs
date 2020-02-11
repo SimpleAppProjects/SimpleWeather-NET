@@ -25,7 +25,7 @@ namespace SimpleWeather.WeatherData
         public const string BingMaps = "Bing";
         public const string NWS = "NWS";
 
-        public static readonly IReadOnlyList<ProviderEntry> APIs = new List<ProviderEntry>()
+        public static readonly IReadOnlyList<ProviderEntry> APIs = new List<ProviderEntry>(5)
         {
             new ProviderEntry("HERE Weather", Here,
                 "https://www.here.com/en", "https://developer.here.com/?create=Freemium-Basic&keepState=true&step=account"),
@@ -39,7 +39,7 @@ namespace SimpleWeather.WeatherData
                 "http://www.openweathermap.org", "https://home.openweathermap.org/users/sign_up"),
         };
 
-        public static readonly IReadOnlyList<ProviderEntry> LocationAPIs = new List<ProviderEntry>()
+        public static readonly IReadOnlyList<ProviderEntry> LocationAPIs = new List<ProviderEntry>(2)
         {
                 new ProviderEntry("HERE Maps", Here,
                         "https://www.here.com/en", "https://developer.here.com/"),

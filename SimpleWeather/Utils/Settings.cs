@@ -120,7 +120,7 @@ namespace SimpleWeather.Utils
             });
         }
 
-        public static ConfiguredTaskAwaitable<List<LocationData>> GetFavorites()
+        public static ConfiguredTaskAwaitable<IEnumerable<LocationData>> GetFavorites()
         {
             return AsyncTask.RunAsync(async () =>
             {
@@ -140,7 +140,7 @@ namespace SimpleWeather.Utils
                                 weatherSource = loc.weatherSource,
                                 locationSource = loc.locationSource
                             };
-                return query.ToList();
+                return query;
             });
         }
 
@@ -184,13 +184,13 @@ namespace SimpleWeather.Utils
             });
         }
 
-        public static ConfiguredTaskAwaitable<List<WeatherAlert>> GetWeatherAlertData(string key)
+        public static ConfiguredTaskAwaitable<ICollection<WeatherAlert>> GetWeatherAlertData(string key)
         {
             return AsyncTask.RunAsync(async () =>
             {
                 LoadIfNeeded();
 
-                List<WeatherAlert> alerts = null;
+                ICollection<WeatherAlert> alerts = null;
 
                 try
                 {
@@ -241,7 +241,7 @@ namespace SimpleWeather.Utils
             });
         }
 
-        public static ConfiguredTaskAwaitable SaveWeatherAlerts(LocationData location, List<WeatherAlert> alerts)
+        public static ConfiguredTaskAwaitable SaveWeatherAlerts(LocationData location, ICollection<WeatherAlert> alerts)
         {
             return AsyncTask.RunAsync(async () =>
             {
@@ -296,12 +296,14 @@ namespace SimpleWeather.Utils
                 if (locationData != null)
                 {
                     var favs = new List<Favorites>(locationData.Count);
-                    foreach (LocationData loc in locationData)
+                    for (int i = 0; i < locationData.Count; i++)
                     {
+                        var loc = locationData[i];
+
                         if (loc != null && loc.IsValid())
                         {
                             await AsyncTask.RunAsync(locationDB.InsertOrReplaceAsync(loc));
-                            var fav = new Favorites() { query = loc.query, position = locationData.IndexOf(loc) };
+                            var fav = new Favorites() { query = loc.query, position = i };
                             favs.Add(fav);
                             await AsyncTask.RunAsync(locationDB.InsertOrReplaceAsync(fav));
                         }
