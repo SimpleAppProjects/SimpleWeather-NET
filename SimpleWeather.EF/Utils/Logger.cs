@@ -1,6 +1,8 @@
 ﻿using NLog;
 using System;
+#if WINDOWS_UWP
 using Windows.Storage;
+#endif
 
 namespace SimpleWeather.Utils
 {
@@ -24,8 +26,10 @@ namespace SimpleWeather.Utils
 
         private static void Init()
         {
+#if WINDOWS_UWP
             var storageFolder = ApplicationData.Current.LocalFolder;
             LogManager.Configuration.Variables["LogPath"] = storageFolder.Path;
+#endif
         }
 
         public static void ForceShutdown()

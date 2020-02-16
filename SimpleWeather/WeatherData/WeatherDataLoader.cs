@@ -53,7 +53,7 @@ namespace SimpleWeather.WeatherData
             errorCallback = listener;
         }
 
-        private ConfiguredTaskAwaitable GetWeatherData()
+        private ConfiguredTaskAwaitable GetWeatherData(WeatherRequest request)
         {
             return AsyncTask.RunAsync(async () =>
             {
@@ -95,7 +95,7 @@ namespace SimpleWeather.WeatherData
                 // Load old data if available and we can't get new data
                 if (weather == null)
                 {
-                    loadedSavedData = await AsyncTask.RunAsync(LoadSavedWeatherData(true));
+                    loadedSavedData = await AsyncTask.RunAsync(LoadSavedWeatherData(request, true));
                 }
                 else if (weather != null)
                 {
@@ -139,29 +139,36 @@ namespace SimpleWeather.WeatherData
             });
         }
 
-        public async Task LoadWeatherData(bool forceRefresh)
+        public async Task LoadWeatherData(WeatherRequest request)
         {
-            if (forceRefresh)
+            if (request.ForceLoadSavedData)
             {
-                try
-                {
-                    await GetWeatherData();
-                }
-                catch (WeatherException wEx)
-                {
-                    errorCallback?.OnWeatherError(wEx);
-                }
+                await ForceLoadSavedWeatherData(request);
             }
             else
-                await AsyncTask.RunAsync(LoadWeatherData);
+            {
+                if (request.ForceRefresh)
+                {
+                    try
+                    {
+                        await GetWeatherData(request);
+                    }
+                    catch (WeatherException wEx)
+                    {
+                        errorCallback?.OnWeatherError(wEx);
+                    }
+                }
+                else
+                    await AsyncTask.RunAsync(_LoadWeatherData(request));
 
-            Logger.WriteLine(LoggerLevel.Debug, "{0}: Sending weather data to callback", TAG);
-            Logger.WriteLine(LoggerLevel.Debug, "{0}: Weather data for {1} is valid = {2}", TAG, location?.ToString(), weather?.IsValid());
+                Logger.WriteLine(LoggerLevel.Debug, "{0}: Sending weather data to callback", TAG);
+                Logger.WriteLine(LoggerLevel.Debug, "{0}: Weather data for {1} is valid = {2}", TAG, location?.ToString(), weather?.IsValid());
 
-            callback?.OnWeatherLoaded(location, weather);
+                callback?.OnWeatherLoaded(location, weather);
+            }
         }
 
-        private async Task LoadWeatherData()
+        private async Task _LoadWeatherData(WeatherRequest request)
         {
             /*
              * If unable to retrieve saved data, data is old, or units don't match
@@ -170,7 +177,7 @@ namespace SimpleWeather.WeatherData
 
             Logger.WriteLine(LoggerLevel.Debug, "{0}: Loading weather data for {1}", TAG, location?.ToString());
 
-            bool gotData = await AsyncTask.RunAsync(LoadSavedWeatherData);
+            bool gotData = await AsyncTask.RunAsync(LoadSavedWeatherData(request));
 
             if (!gotData)
             {
@@ -208,7 +215,7 @@ namespace SimpleWeather.WeatherData
                         }
                     }
 
-                    await GetWeatherData();
+                    await GetWeatherData(request);
                 }
                 catch (WeatherException wEx)
                 {
@@ -217,62 +224,47 @@ namespace SimpleWeather.WeatherData
             }
         }
 
-        private async Task<bool> LoadSavedWeatherData(bool _override)
+        private async Task<bool> LoadSavedWeatherData(WeatherRequest request)
         {
-            if (_override)
-            {
-                // Load weather data
-                try
-                {
-                    weather = await Settings.GetWeatherData(location.query);
-
-                    if (weather != null && wm.SupportsAlerts)
-                        weather.weather_alerts = await Settings.GetWeatherAlertData(location.query);
-
-                    if (weather == null)
-                    {
-                        // If weather is still unavailable try manually searching for it
-                        weather = await Settings.GetWeatherDataByCoordinate(location);
-
-                        if (weather != null && wm.SupportsAlerts)
-                            weather.weather_alerts = await Settings.GetWeatherAlertData(weather.query);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    weather = null;
-                    Logger.WriteLine(LoggerLevel.Error, ex, "WeatherDataLoader: error loading saved weather data");
-                }
-
-                var userlang = GlobalizationPreferences.Languages[0];
-                var culture = new CultureInfo(userlang);
-                var locale = wm.LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
-
-                String API = Settings.API;
-                bool isInvalid = weather == null || !weather.IsValid();
-                if (!isInvalid && weather.source != API)
-                {
-                    if (!WeatherAPI.NWS.Equals(API) || "US".Equals(location.country_code))
-                        isInvalid = true;
-                }
-                if (wm.SupportsWeatherLocale && !isInvalid)
-                    isInvalid = weather.locale != locale;
-
-                return !isInvalid;
-            }
-            else
-                return await AsyncTask.RunAsync(LoadSavedWeatherData);
+            return await LoadSavedWeatherData(request, false);
         }
 
-        private async Task<bool> LoadSavedWeatherData()
+        private async Task<bool> LoadSavedWeatherData(WeatherRequest request, bool _override)
         {
             // Load weather data
             try
             {
                 weather = await Settings.GetWeatherData(location.query);
 
-                if (weather != null && wm.SupportsAlerts)
+                if (request.LoadAlerts && weather != null && wm.SupportsAlerts)
                     weather.weather_alerts = await Settings.GetWeatherAlertData(location.query);
+
+                if (request.LoadForecasts && weather != null)
+                {
+                    var forecasts = await Settings.GetWeatherForecastData(location.query);
+                    var hrForecasts = await Settings.GetHourlyWeatherForecastData(location.query);
+                    weather.forecast = forecasts.forecast;
+                    weather.hr_forecast = hrForecasts;
+                    weather.txt_forecast = forecasts.txt_forecast;
+                }
+
+                if (_override && weather == null)
+                {
+                    // If weather is still unavailable try manually searching for it
+                    weather = await Settings.GetWeatherDataByCoordinate(location);
+
+                    if (request.LoadAlerts && weather != null && wm.SupportsAlerts)
+                        weather.weather_alerts = await Settings.GetWeatherAlertData(weather.query);
+
+                    if (request.LoadForecasts && weather != null)
+                    {
+                        var forecasts = await Settings.GetWeatherForecastData(location.query);
+                        var hrForecasts = await Settings.GetHourlyWeatherForecastData(location.query);
+                        weather.forecast = forecasts.forecast;
+                        weather.hr_forecast = hrForecasts;
+                        weather.txt_forecast = forecasts.txt_forecast;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -294,7 +286,7 @@ namespace SimpleWeather.WeatherData
             if (wm.SupportsWeatherLocale && !isInvalid)
                 isInvalid = weather.locale != locale;
 
-            if (isInvalid) return false;
+            if (_override || isInvalid) return !isInvalid;
 
             // Weather data expiration
             if (!int.TryParse(weather.ttl, out int ttl))
@@ -318,6 +310,8 @@ namespace SimpleWeather.WeatherData
             // Save weather alerts
             await SaveWeatherAlerts();
 
+            await SaveWeatherForecasts();
+
             await Settings.SaveWeatherData(weather);
         }
 
@@ -330,7 +324,7 @@ namespace SimpleWeather.WeatherData
                     // Check for previously saved alerts
                     var previousAlerts = await Settings.GetWeatherAlertData(location.query);
 
-                    if (previousAlerts != null && previousAlerts.Count > 0)
+                    if (previousAlerts != null && previousAlerts.Any())
                     {
                         // If any previous alerts were flagged before as notified
                         // make sure to set them here as such
@@ -350,9 +344,20 @@ namespace SimpleWeather.WeatherData
             });
         }
 
-        public async Task ForceLoadSavedWeatherData()
+        private async Task SaveWeatherForecasts()
         {
-            await AsyncTask.RunAsync(LoadSavedWeatherData(true));
+            await Settings.SaveWeatherForecasts(new Forecasts()
+            {
+                query = weather.query,
+                forecast = weather.forecast,
+                txt_forecast = weather.txt_forecast
+            });
+            await Settings.SaveWeatherForecasts(location, weather.hr_forecast?.Select(f => new HourlyForecasts(weather.query, f)));
+        }
+
+        private async Task ForceLoadSavedWeatherData(WeatherRequest request)
+        {
+            await AsyncTask.RunAsync(LoadSavedWeatherData(request, true));
 
             Logger.WriteLine(LoggerLevel.Debug, "{0}: Sending weather data to callback", TAG);
             Logger.WriteLine(LoggerLevel.Debug, "{0}: Weather data for {1} is valid = {2}", TAG, location?.ToString(), weather?.IsValid());

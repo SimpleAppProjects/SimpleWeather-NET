@@ -2,7 +2,9 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+#if WINDOWS_UWP
 using Windows.Storage;
+#endif
 
 namespace SimpleWeather.Utils
 {
@@ -153,6 +155,7 @@ namespace SimpleWeather.Utils
             });
         }
 
+#if WINDOWS_UWP
         public static Task<T> DeserializerAsync<T>(StorageFile file)
         {
             return Task.Run(async () =>
@@ -214,6 +217,7 @@ namespace SimpleWeather.Utils
                 }
             }).ConfigureAwait(false);
         }
+#endif
 
         public static string Serializer(Object obj, Type type)
         {

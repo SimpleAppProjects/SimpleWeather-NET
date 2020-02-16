@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>cf5e4a00-d354-4243-972f-eb956baa42ca</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>SimpleWeather.EF</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Data\DBContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\EFExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Location\LocationData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\Migrations\LocationDB\20200213090025_InitialCreate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\Migrations\LocationDB\20200213090025_InitialCreate.Designer.cs">
+      <DependentUpon>20200213090025_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Data\Migrations\LocationDB\LocationDBContextModelSnapshot.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\Migrations\WeatherDB\20200213085528_InitialCreate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\Migrations\WeatherDB\20200213085528_InitialCreate.Designer.cs">
+      <DependentUpon>20200213085528_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Data\Migrations\WeatherDB\20200213091139_EFInitial.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\Migrations\WeatherDB\20200213091139_EFInitial.Designer.cs">
+      <DependentUpon>20200213091139_EFInitial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Data\Migrations\WeatherDB\WeatherDBContextModelSnapshot.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\JSONParser.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\Logger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WeatherData\Weather.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WeatherData\WeatherAlert.cs" />
+  </ItemGroup>
+</Project>

@@ -358,7 +358,9 @@ namespace SimpleWeather.UWP.Main
                     AsyncTask.Run(() =>
                     {
                         var wLoader = new WeatherDataLoader(location, this, this);
-                        wLoader.LoadWeatherData(false);
+                        wLoader.LoadWeatherData(new WeatherRequest.Builder()
+                                    .ForceRefresh(false)
+                                    .Build());
                     });
                 }
 
@@ -452,7 +454,9 @@ namespace SimpleWeather.UWP.Main
                         AsyncTask.Run(() =>
                         {
                             var wLoader = new WeatherDataLoader(view.LocationData, this, this);
-                            wLoader.LoadWeatherData(false);
+                            wLoader.LoadWeatherData(new WeatherRequest.Builder()
+                                        .ForceRefresh(false)
+                                        .Build());
                         });
                     }
                 }
@@ -494,7 +498,9 @@ namespace SimpleWeather.UWP.Main
                 if (gpsData != null)
                 {
                     var wLoader = new WeatherDataLoader(gpsData, this, this);
-                    wLoader.LoadWeatherData(false);
+                    wLoader.LoadWeatherData(new WeatherRequest.Builder()
+                                .ForceRefresh(false)
+                                .Build());
                 }
             });
         }

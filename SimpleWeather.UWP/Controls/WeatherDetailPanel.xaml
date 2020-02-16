@@ -13,7 +13,7 @@
         <!-- Default style for Windows.UI.Xaml.Controls.Primitives.ToggleButton -->
         <Style x:Key="DetailPanelToggleButtonStyle" TargetType="ToggleButton">
             <Setter Property="Background" Value="White" />
-            <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+            <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
             <Setter Property="BorderBrush" Value="{ThemeResource SystemControlForegroundTransparentBrush}" />
             <Setter Property="BorderThickness" Value="{ThemeResource ToggleButtonBorderThemeThickness}" />
             <Setter Property="Padding" Value="0" />
@@ -168,7 +168,7 @@
                             </Grid.ColumnDefinitions>
 
                             <Slider x:Name="ArrowRotation" Visibility="Collapsed" Value="180" Minimum="-180" Maximum="180" />
-                            
+
                             <ContentPresenter x:Name="ContentPresenter" Grid.Column="0"
                                                 BorderBrush="{TemplateBinding BorderBrush}"
                                                 BorderThickness="{TemplateBinding BorderThickness}"
@@ -178,7 +178,7 @@
                                                 HorizontalAlignment="Stretch"
                                                 HorizontalContentAlignment="Stretch"
                                                 VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                AutomationProperties.AccessibilityView="Raw"/>
+                                                AutomationProperties.AccessibilityView="Raw" />
                             <FontIcon x:Name="Arrow" Width="40"
                                       Grid.Column="1"
                                       Foreground="{TemplateBinding Foreground}"
@@ -211,11 +211,11 @@
                 </Grid.ColumnDefinitions>
                 <Viewbox Name="IconBox" Height="50" Width="50" Margin="8,0" VerticalAlignment="Center" Grid.Column="0">
                     <TextBlock x:Name="WeatherIcon" Text="{x:Bind ViewModel.Icon, FallbackValue='&#xf00d;', Mode=OneWay}"
-                               Foreground="{ThemeResource ColorTextDarkForeground}" Style="{StaticResource WeatherIcon}"/>
+                               Foreground="{ThemeResource ColorTextDarkForeground}" Style="{StaticResource WeatherIcon}" />
                 </Viewbox>
                 <StackPanel Orientation="Vertical" Grid.Column="1" VerticalAlignment="Center">
                     <TextBlock x:Name="Date" Text="{x:Bind ViewModel.Date, FallbackValue='Someday XX', Mode=OneWay}" FontWeight="Bold" Padding="2" MaxLines="1"
-                               TextTrimming="CharacterEllipsis"/>
+                               TextTrimming="CharacterEllipsis" />
                     <TextBlock x:Name="Condition" Text="{x:Bind ViewModel.Condition, FallbackValue='50º / 44º - Sprinkles early. Mostly cloudy. Mild', Mode=OneWay}"
                                Padding="2" MaxLines="1"
                                FontSize="{x:Bind Date.FontSize, Mode=OneWay}" TextTrimming="CharacterEllipsis"
@@ -230,7 +230,7 @@
         <StackPanel Grid.Row="1" Padding="5" Visibility="{x:Bind DetailHeader.IsChecked, Mode=OneWay}">
             <StackPanel Padding="10">
                 <TextBlock x:Name="ConditionDescription" FontSize="{x:Bind Date.FontSize, Mode=OneWay}" TextWrapping="WrapWholeWords" HorizontalAlignment="Stretch">
-                    <Run x:Name="CondDescFirstRun" Text="{x:Bind ViewModel.ConditionLongDesc, TargetNullValue={Binding ViewModel.Condition, Mode=OneWay}, Mode=OneWay}" /><LineBreak/>
+                    <Run x:Name="CondDescFirstRun" Text="{x:Bind ViewModel.ConditionLongDesc, TargetNullValue={Binding ViewModel.Condition, Mode=OneWay}, Mode=OneWay}" /><LineBreak />
                 </TextBlock>
                 <ItemsControl ItemsSource="{x:Bind ViewModel.Extras}">
                     <ItemsControl.ItemTemplate>
@@ -252,26 +252,26 @@
             <VisualStateGroup x:Name="WidthStates">
                 <VisualState x:Name="Mobile">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="0"/>
+                        <AdaptiveTrigger MinWindowWidth="0" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="Date.FontSize" Value="12"/>
+                        <Setter Target="Date.FontSize" Value="12" />
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Medium">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="641"/>
+                        <AdaptiveTrigger MinWindowWidth="641" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="Date.FontSize" Value="12"/>
+                        <Setter Target="Date.FontSize" Value="12" />
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Large">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="1007"/>
+                        <AdaptiveTrigger MinWindowWidth="1007" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="Date.FontSize" Value="15"/>
+                        <Setter Target="Date.FontSize" Value="15" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>

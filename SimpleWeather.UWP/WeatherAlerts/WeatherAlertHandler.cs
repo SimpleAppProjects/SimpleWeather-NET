@@ -11,12 +11,12 @@ namespace SimpleWeather.UWP.WeatherAlerts
 {
     public static class WeatherAlertHandler
     {
-        public static async Task PostAlerts(LocationData location, ICollection<WeatherAlert> alerts)
+        public static async Task PostAlerts(LocationData location, IEnumerable<WeatherAlert> alerts)
         {
             var wm = WeatherManager.GetInstance();
 
             // Post weather alert notifications
-            if (wm.SupportsAlerts && alerts != null && alerts.Count > 0)
+            if (wm.SupportsAlerts && alerts != null && alerts.Any())
             {
                 // Only alert if we're in the background
                 if (App.IsInBackground)
@@ -40,7 +40,7 @@ namespace SimpleWeather.UWP.WeatherAlerts
             }
         }
 
-        public static async Task SetasNotified(LocationData location, ICollection<WeatherAlert> alerts)
+        public static async Task SetasNotified(LocationData location, IEnumerable<WeatherAlert> alerts)
         {
             if (alerts != null)
             {

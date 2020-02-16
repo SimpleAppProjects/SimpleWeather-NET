@@ -57,6 +57,8 @@ namespace SimpleWeather.UWP.Controls
             }
         }
 
+        internal event EventHandler<ItemSizeChangedEventArgs> ItemWidthChanged;
+
         public ScrollViewer ScrollViewer { get { return this.InternalScrollViewer; } }
 
         private float ViewHeight;
@@ -166,6 +168,9 @@ namespace SimpleWeather.UWP.Controls
             }
         }
 
+        private float ItemWidth { get { return longestTextWidth; } }
+        public float DrawingWidth { get { return HorizontalGridNum * ItemWidth; } }
+
         public void SetData(List<XLabelData> dataLabels, List<LineDataSeries> dataLists)
         {
             if (dataLabels is null)
@@ -267,7 +272,6 @@ namespace SimpleWeather.UWP.Controls
 
             RefreshAfterDataChanged();
             InvalidateMeasure();
-            Canvas.Invalidate();
         }
 
         private void RefreshGridWidth()
@@ -841,7 +845,7 @@ namespace SimpleWeather.UWP.Controls
 
         private int GetPreferredWidth()
         {
-            return (int)(backgroundGridWidth * HorizontalGridNum + sideLineLength * 2);
+            return (int)((backgroundGridWidth * HorizontalGridNum) + (sideLineLength * 2));
         }
 
         protected override Size MeasureOverride(Size availableSize)
@@ -861,6 +865,15 @@ namespace SimpleWeather.UWP.Controls
             // Redraw View
             RefreshAfterDataChanged();
             Canvas.Invalidate();
+
+            // Post the event to the dispatcher to allow the method to complete first
+            Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                ItemWidthChanged?.Invoke(this, new ItemSizeChangedEventArgs()
+                {
+                    NewSize = new System.Drawing.Size((int)ItemWidth, (int)availableSize.Height)
+                });
+            });
 
             return size;
         }
@@ -882,5 +895,10 @@ namespace SimpleWeather.UWP.Controls
             BottomTextFormat?.Dispose();
             IconFormat?.Dispose();
         }
+    }
+
+    internal class ItemSizeChangedEventArgs : RoutedEventArgs
+    {
+        public System.Drawing.Size NewSize { get; set; }
     }
 }

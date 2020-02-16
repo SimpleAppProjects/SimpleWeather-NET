@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.System.UserProfile;
@@ -164,7 +165,7 @@ namespace SimpleWeather.WeatherUnderground
 
                         foreach (Alert result in root.alerts)
                         {
-                            weather.weather_alerts.Add(new WeatherAlert(result));
+                            (weather.weather_alerts as ICollection<WeatherAlert>).Add(new WeatherAlert(result));
                         }
                     }
                 }
@@ -216,7 +217,7 @@ namespace SimpleWeather.WeatherUnderground
             }
 
             // Update tz for weather alerts
-            if (weather.weather_alerts != null && weather.weather_alerts.Count > 0)
+            if (weather.weather_alerts != null && weather.weather_alerts.Any())
             {
                 foreach (WeatherAlert alert in weather.weather_alerts)
                 {

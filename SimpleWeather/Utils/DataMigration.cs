@@ -1,7 +1,7 @@
 ﻿using SimpleWeather.Location;
 using SimpleWeather.WeatherData;
-using SQLite;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 #if !DEBUG
 using Microsoft.AppCenter.Analytics;
@@ -12,7 +12,7 @@ namespace SimpleWeather.Utils
 {
     internal partial class DataMigrations
     {
-        internal static async Task PerformDBMigrations(SQLiteAsyncConnection weatherDB, SQLiteAsyncConnection locationDB)
+        internal static void PerformDBMigrations(WeatherDBContext weatherDB, LocationDBContext locationDB)
         {
             if (Settings.DBVersion < Settings.CurrentDBVersion)
             {
@@ -20,16 +20,22 @@ namespace SimpleWeather.Utils
                 {
                     // Move data from json to db
                     case 0:
-                        if (await AsyncTask.RunAsync(locationDB.Table<LocationData>().CountAsync()) == 0)
-                            await DBUtils.MigrateDataJsonToDB(locationDB, weatherDB);
+                        if (locationDB.Locations.Count() == 0)
+                            DBMigrations.MigrateDataJsonToDB(locationDB, weatherDB)
+                                .GetAwaiter().GetResult();
                         break;
                     // Add and set tz_long column in db
                     case 1:
                     // LocationData updates: added new fields
                     case 2:
                     case 3:
-                        if (await AsyncTask.RunAsync(locationDB.Table<LocationData>().CountAsync()) > 0)
-                            DBUtils.SetLocationData(locationDB, Settings.API);
+                        if (locationDB.Locations.Count() > 0)
+                            DBMigrations.SetLocationData(locationDB, Settings.API);
+                        break;
+
+                    case 4:
+                        if (weatherDB.WeatherData.Count() > 0)
+                            DBMigrations.Migrate4_5(weatherDB);
                         break;
 
                     default:
@@ -40,7 +46,7 @@ namespace SimpleWeather.Utils
             }
         }
 
-        internal static void PerformVersionMigrations(SQLiteAsyncConnection weatherDB, SQLiteAsyncConnection locationDB)
+        internal static void PerformVersionMigrations(WeatherDBContext weatherDB, LocationDBContext locationDB)
         {
             var PackageVersion = Windows.ApplicationModel.Package.Current.Id.Version;
             var version = string.Format("{0}{1}{2}{3}",
@@ -53,14 +59,14 @@ namespace SimpleWeather.Utils
                 // Update location data from HERE Geocoder service
                 if (WeatherAPI.Here.Equals(Settings.API) && Settings.VersionCode < 1370)
                 {
-                    DBUtils.SetLocationData(locationDB, WeatherAPI.Here);
+                    DBMigrations.SetLocationData(locationDB, WeatherAPI.Here);
                     Settings.SaveLastGPSLocData(new LocationData());
                 }
                 // v1.3.8+ - Yahoo API is back in service (but updated)
                 // Update location data from current geocoder service
                 if (WeatherAPI.Yahoo.Equals(Settings.API) && Settings.VersionCode < 1380)
                 {
-                    DBUtils.SetLocationData(locationDB, WeatherAPI.Yahoo);
+                    DBMigrations.SetLocationData(locationDB, WeatherAPI.Yahoo);
                     Settings.SaveLastGPSLocData(new LocationData());
                 }
                 if (Settings.VersionCode < 1390)

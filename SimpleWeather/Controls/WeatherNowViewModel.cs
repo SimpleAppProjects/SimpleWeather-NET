@@ -26,7 +26,7 @@ namespace SimpleWeather.Controls
         private string sunrise;
         private string sunset;
         // Forecast
-        private ObservableCollection<ForecastItemViewModel> forecasts;
+        private ObservableForecastLoadingCollection<ForecastItemViewModel> forecasts;
         // Weather Details
         private ObservableCollection<DetailItemViewModel> weatherDetails;
         // Additional Details
@@ -51,23 +51,23 @@ namespace SimpleWeather.Controls
 
         #region Properties
 
-        public string Location { get => location; set { location = value; OnPropertyChanged("Location"); } }
-        public string UpdateDate { get => updateDate; set { updateDate = value; OnPropertyChanged("UpdateDate"); } }
-        public string CurTemp { get => curTemp; set { curTemp = value; OnPropertyChanged("CurTemp"); } }
-        public string CurCondition { get => curCondition; set { curCondition = value; OnPropertyChanged("CurCondition"); } }
-        public string WeatherIcon { get => weatherIcon; set { weatherIcon = value; OnPropertyChanged("WeatherIcon"); } }
-        public string Sunrise { get => sunrise; set { sunrise = value; OnPropertyChanged("Sunrise"); } }
-        public string Sunset { get => sunset; set { sunset = value; OnPropertyChanged("Sunset"); } }
-        public ObservableCollection<ForecastItemViewModel> Forecasts { get => forecasts; private set { forecasts = value; OnPropertyChanged("Forecasts"); } }
-        public ObservableCollection<DetailItemViewModel> WeatherDetails { get => weatherDetails; private set { weatherDetails = value; OnPropertyChanged("WeatherDetails"); } }
-        public WeatherExtrasViewModel Extras { get => extras; private set { extras = value; OnPropertyChanged("Extras"); } }
-        public string BackgroundURI { get => backgroundURI; set { backgroundURI = value; OnPropertyChanged("BackgroundURI"); } }
-        public ImageDataViewModel ImageData { get => imageData; set { imageData = value; OnPropertyChanged("ImageData"); } }
-        public Color PendingBackgroundColor { get => pendingBackgroundColor; set { pendingBackgroundColor = value; OnPropertyChanged("PendingBackgroundColor"); } }
-        public ElementTheme BackgroundTheme { get => backgroundTheme; set { backgroundTheme = value; OnPropertyChanged("BackgroundTheme"); } }
-        public string WeatherCredit { get => weatherCredit; set { weatherCredit = value; OnPropertyChanged("WeatherCredit"); } }
-        public string WeatherSource { get => weatherSource; set { weatherSource = value; OnPropertyChanged("WeatherSource"); } }
-        public string WeatherLocale { get => weatherLocale; set { weatherLocale = value; OnPropertyChanged("WeatherLocale"); } }
+        public string Location { get => location; set { location = value; OnPropertyChanged(nameof(Location)); } }
+        public string UpdateDate { get => updateDate; set { updateDate = value; OnPropertyChanged(nameof(UpdateDate)); } }
+        public string CurTemp { get => curTemp; set { curTemp = value; OnPropertyChanged(nameof(CurTemp)); } }
+        public string CurCondition { get => curCondition; set { curCondition = value; OnPropertyChanged(nameof(CurCondition)); } }
+        public string WeatherIcon { get => weatherIcon; set { weatherIcon = value; OnPropertyChanged(nameof(WeatherIcon)); } }
+        public string Sunrise { get => sunrise; set { sunrise = value; OnPropertyChanged(nameof(Sunrise)); } }
+        public string Sunset { get => sunset; set { sunset = value; OnPropertyChanged(nameof(Sunset)); } }
+        public ObservableForecastLoadingCollection<ForecastItemViewModel> Forecasts { get => forecasts; set { forecasts = value; OnPropertyChanged(nameof(Forecasts)); } }
+        public ObservableCollection<DetailItemViewModel> WeatherDetails { get => weatherDetails; private set { weatherDetails = value; OnPropertyChanged(nameof(WeatherDetails)); } }
+        public WeatherExtrasViewModel Extras { get => extras; private set { extras = value; OnPropertyChanged(nameof(Extras)); } }
+        public string BackgroundURI { get => backgroundURI; set { backgroundURI = value; OnPropertyChanged(nameof(BackgroundURI)); } }
+        public ImageDataViewModel ImageData { get => imageData; set { imageData = value; OnPropertyChanged(nameof(ImageData)); } }
+        public Color PendingBackgroundColor { get => pendingBackgroundColor; set { pendingBackgroundColor = value; OnPropertyChanged(nameof(PendingBackgroundColor)); } }
+        public ElementTheme BackgroundTheme { get => backgroundTheme; set { backgroundTheme = value; OnPropertyChanged(nameof(BackgroundTheme)); } }
+        public string WeatherCredit { get => weatherCredit; set { weatherCredit = value; OnPropertyChanged(nameof(WeatherCredit)); } }
+        public string WeatherSource { get => weatherSource; set { weatherSource = value; OnPropertyChanged(nameof(WeatherSource)); } }
+        public string WeatherLocale { get => weatherLocale; set { weatherLocale = value; OnPropertyChanged(nameof(WeatherLocale)); } }
 
         #endregion Properties
 
@@ -77,19 +77,29 @@ namespace SimpleWeather.Controls
         {
             wm = WeatherManager.GetInstance();
 
-            Forecasts = new ObservableCollection<ForecastItemViewModel>();
+            Forecasts = new ObservableForecastLoadingCollection<ForecastItemViewModel>();
             WeatherDetails = new ObservableCollection<DetailItemViewModel>();
             Extras = new WeatherExtrasViewModel();
+
+            Forecasts.CollectionChanged += Forecasts_CollectionChanged;
         }
 
         public WeatherNowViewModel(Weather weather)
         {
             wm = WeatherManager.GetInstance();
 
-            Forecasts = new ObservableCollection<ForecastItemViewModel>();
+            Forecasts = new ObservableForecastLoadingCollection<ForecastItemViewModel>(weather);
             WeatherDetails = new ObservableCollection<DetailItemViewModel>();
             Extras = new WeatherExtrasViewModel();
+
+            Forecasts.CollectionChanged += Forecasts_CollectionChanged;
+
             UpdateView(weather);
+        }
+
+        private void Forecasts_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged(nameof(Forecasts));
         }
 
         public void UpdateView(Weather weather)
@@ -100,7 +110,7 @@ namespace SimpleWeather.Controls
                 var culture = new CultureInfo(userlang);
 
                 Extras.UpdateView(weather);
-                OnPropertyChanged("Extras");
+                OnPropertyChanged(nameof(Extras));
 
                 // Update backgrounds
                 BackgroundURI = wm.GetBackgroundURI(weather);
@@ -298,30 +308,38 @@ namespace SimpleWeather.Controls
                     Sunset = null;
                 }
 
-                OnPropertyChanged("WeatherDetails");
+                OnPropertyChanged(nameof(WeatherDetails));
 
                 // Add UI elements
-                Forecasts.Clear();
-                bool isDayAndNt = Extras.TextForecast.Count == weather?.forecast?.Count * 2;
-                bool addTextFct = isDayAndNt || Extras.TextForecast.Count == weather.forecast.Count;
-                for (int i = 0; i < weather.forecast.Count; i++)
+                if (weather?.forecast?.Count > 0)
                 {
-                    Forecast forecast = weather.forecast[i];
-                    ForecastItemViewModel forecastView;
-
-                    if (addTextFct)
+                    Forecasts.Clear();
+                    bool isDayAndNt = Extras.TextForecast.Count == weather?.forecast?.Count * 2;
+                    bool addTextFct = isDayAndNt || Extras.TextForecast.Count == weather?.forecast?.Count;
+                    for (int i = 0; i < weather?.forecast?.Count; i++)
                     {
-                        if (isDayAndNt)
-                            forecastView = new ForecastItemViewModel(forecast, Extras.TextForecast[i * 2], Extras.TextForecast[(i * 2) + 1]);
-                        else
-                            forecastView = new ForecastItemViewModel(forecast, Extras.TextForecast[i]);
-                    }
-                    else
-                        forecastView = new ForecastItemViewModel(forecast);
+                        Forecast forecast = weather.forecast[i];
+                        ForecastItemViewModel forecastView;
 
-                    Forecasts.Add(forecastView);
+                        if (addTextFct)
+                        {
+                            if (isDayAndNt)
+                                forecastView = new ForecastItemViewModel(forecast, Extras.TextForecast[i * 2], Extras.TextForecast[(i * 2) + 1]);
+                            else
+                                forecastView = new ForecastItemViewModel(forecast, Extras.TextForecast[i]);
+                        }
+                        else
+                            forecastView = new ForecastItemViewModel(forecast);
+
+                        Forecasts.Add(forecastView);
+                    }
                 }
-                OnPropertyChanged("Forecasts");
+                else
+                {
+                    // Let collection handle changes (clearing, etc.)
+                    Forecasts.SetWeather(weather);
+                }
+                OnPropertyChanged(nameof(Forecasts));
 
                 // Additional Details
                 WeatherSource = weather?.source;

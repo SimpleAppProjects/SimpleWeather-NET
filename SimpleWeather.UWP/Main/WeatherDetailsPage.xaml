@@ -34,7 +34,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListViewItem">
-                        <ListViewItemPresenter 
+                        <ListViewItemPresenter
                             ContentTransitions="{TemplateBinding ContentTransitions}"
                             Control.IsTemplateFocusTarget="True"
                             FocusVisualMargin="{TemplateBinding FocusVisualMargin}"
@@ -72,8 +72,8 @@
 
     <Grid Background="{ThemeResource RegionBrush}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Border Grid.Row="0" BorderBrush="{ThemeResource TextBoxDisabledBorderThemeBrush}" BorderThickness="0,0,0,0.5">
             <Viewbox Height="48" HorizontalAlignment="Left">
@@ -84,7 +84,8 @@
 
         <ListView x:Name="ListControl" SelectionMode="None" IsItemClickEnabled="False" Grid.Row="1"
                   IsSwipeEnabled="False" AllowDrop="False" CanReorderItems="False" CanDragItems="False"
-                  HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                  HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                  IncrementalLoadingTrigger="Edge" ShowsScrollingPlaceholders="False">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Vertical">

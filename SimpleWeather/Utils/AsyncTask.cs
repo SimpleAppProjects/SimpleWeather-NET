@@ -35,6 +35,16 @@ namespace SimpleWeather.Utils
             return task.ConfigureAwait(false);
         }
 
+        public static ConfiguredValueTaskAwaitable RunAsync(ValueTask task)
+        {
+            return task.ConfigureAwait(false);
+        }
+
+        public static ConfiguredValueTaskAwaitable<T> RunAsync<T>(ValueTask<T> task)
+        {
+            return task.ConfigureAwait(false);
+        }
+
         public static void Run(Action action)
         {
             Task.Run(action);

@@ -67,7 +67,7 @@ namespace SimpleWeather.UWP.Main
 
                     if (wm.SupportsAlerts)
                     {
-                        if (weather.weather_alerts != null && weather.weather_alerts.Count > 0)
+                        if (weather.weather_alerts != null && weather.weather_alerts.Any())
                         {
                             // Alerts are posted to the user here. Set them as notified.
                             AsyncTask.Run(async () =>
@@ -90,7 +90,7 @@ namespace SimpleWeather.UWP.Main
                     {
                         AsyncTask.Run(() =>
                         {
-                            WeatherTileCreator.TileUpdater(location, WeatherView);
+                            WeatherTileCreator.TileUpdater(location);
                         });
                     }
                 }
@@ -628,7 +628,10 @@ namespace SimpleWeather.UWP.Main
             AsyncTask.Run(() =>
             {
                 if (cts?.IsCancellationRequested == false)
-                    wLoader?.LoadWeatherData(forceRefresh);
+                    wLoader?.LoadWeatherData(new WeatherRequest.Builder()
+                                .ForceRefresh(forceRefresh)
+                                .LoadAlerts()
+                                .Build());
             });
         }
 

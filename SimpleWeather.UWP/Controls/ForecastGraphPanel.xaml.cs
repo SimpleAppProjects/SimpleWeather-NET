@@ -3,11 +3,15 @@ using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
+using Windows.Foundation;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 
@@ -48,33 +52,95 @@ namespace SimpleWeather.UWP.Controls
             }
         }
 
-        private IEnumerable<BaseForecastItemViewModel> _forecasts;
+        public static readonly DependencyProperty ForecastsProperty =
+            DependencyProperty.Register("Forecasts", typeof(object),
+            typeof(ForecastGraphPanel), new PropertyMetadata(null));
+
         public object Forecasts
         {
-            get
-            {
-                return _forecasts;
-            }
-
+            get { return GetValue(ForecastsProperty); }
             set
             {
-                if (value is IEnumerable<BaseForecastItemViewModel> collection)
+                SetValue(ForecastsProperty, value);
+
+                // Remove handler
+                if (_forecasts is INotifyCollectionChanged && _forecasts is IObservableLoadingCollection)
                 {
-                    _forecasts = collection;
-                    UpdateLineView();
+                    (_forecasts as INotifyCollectionChanged).CollectionChanged -= NotifyCollection_CollectionChanged;
+                }
+
+                _forecasts = value as IEnumerable<BaseForecastItemViewModel>;
+
+                // Add new handler
+                if (_forecasts is INotifyCollectionChanged && _forecasts is IObservableLoadingCollection)
+                {
+                    (_forecasts as INotifyCollectionChanged).CollectionChanged += NotifyCollection_CollectionChanged;
                 }
             }
         }
+
+        private async void NotifyCollection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (_forecasts is IObservableLoadingCollection)
+                await UpdateLineView(false);
+        }
+
+        private IEnumerable<BaseForecastItemViewModel> _forecasts;
+
         public ScrollViewer ScrollViewer { get { return GraphView?.ScrollViewer; } }
 
         private ToggleButton SelectedButton { get; set; }
 
+        private const int MAX_FETCH_SIZE = 20;
+        private uint DataFetchSize = MAX_FETCH_SIZE;
+
         public ForecastGraphPanel()
         {
             this.InitializeComponent();
+            ViewChanged += ForecastGraphPanel_ViewChanged;
+            GraphView.ItemWidthChanged += ForecastGraphPanel_SizeChanged;
         }
 
-        private void ToggleButton_Checked(object sender, RoutedEventArgs e)
+        private async void ForecastGraphPanel_SizeChanged(object sender, ItemSizeChangedEventArgs e)
+        {
+            if (ScrollViewer.ViewportWidth > 0 && e.NewSize.Width > 0)
+            {
+                var desiredFetchSize = (uint)Math.Round(ScrollViewer.ViewportWidth / e.NewSize.Width);
+                if (desiredFetchSize > MAX_FETCH_SIZE)
+                    DataFetchSize = MAX_FETCH_SIZE;
+                else
+                    DataFetchSize = desiredFetchSize;
+
+                await TryLoadMoreItems();
+            }
+        }
+
+        private async void ForecastGraphPanel_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        {
+            await TryLoadMoreItems();
+        }
+
+        protected override Size ArrangeOverride(Size finalSize)
+        {
+            TryLoadMoreItems();
+            return base.ArrangeOverride(finalSize);
+        }
+
+        private async Task TryLoadMoreItems()
+        {
+            var distanceToEnd = ScrollViewer.ExtentWidth - (ScrollViewer.HorizontalOffset + ScrollViewer.ViewportWidth);
+
+            // trigger if (LineView) drawing does not fit viewport
+            // or
+            // if scrolling within 2 viewports of the end
+            if ((ScrollViewer.HorizontalOffset == 0 && GraphView.DrawingWidth <= ScrollViewer.ViewportWidth || distanceToEnd <= 2.0 * ScrollViewer.ViewportWidth)
+                    && _forecasts is IObservableLoadingCollection _collection && _collection.HasMoreItems && !_collection.IsLoading)
+            {
+                await _collection.LoadMoreItemsAsync(DataFetchSize);
+            }
+        }
+
+        private async void ToggleButton_Checked(object sender, RoutedEventArgs e)
         {
             var btn = sender as ToggleButton;
             SelectedButton = btn;
@@ -93,15 +159,15 @@ namespace SimpleWeather.UWP.Controls
             }
 
             // Update line view
-            UpdateLineView();
+            await UpdateLineView(true);
         }
 
-        private void GraphLineView_Loaded(object sender, RoutedEventArgs e)
+        private async void GraphLineView_Loaded(object sender, RoutedEventArgs e)
         {
-            UpdateLineView();
+            await UpdateLineView(_forecasts as IObservableLoadingCollection == null);
         }
 
-        private async void UpdateLineView()
+        private async Task UpdateLineView(bool resetOffset)
         {
             if (_forecasts?.Count() > 0)
             {
@@ -170,6 +236,7 @@ namespace SimpleWeather.UWP.Controls
                             GraphView.SetData(labelData, tempDataSeries);
                         }
                         break;
+
                     case "Wind":
                         if (_forecasts?.Count() > 0 && GraphView != null)
                         {
@@ -212,6 +279,7 @@ namespace SimpleWeather.UWP.Controls
                             GraphView.SetData(labelData, windDataList);
                         }
                         break;
+
                     case "Rain":
                         if (_forecasts?.Count() > 0 && GraphView != null)
                         {
@@ -256,7 +324,7 @@ namespace SimpleWeather.UWP.Controls
                         break;
                 }
 
-                ScrollViewer?.ChangeView(0, null, null);
+                if (resetOffset) ScrollViewer?.ChangeView(0, null, null);
             }
         }
 
@@ -301,6 +369,7 @@ namespace SimpleWeather.UWP.Controls
                     WindToggleButton.IsChecked = false;
                     WindToggleButton.IsEnabled = true;
                     break;
+
                 case 2:
                     if (RainToggleButton.Visibility == Visibility.Visible)
                     {
@@ -314,6 +383,7 @@ namespace SimpleWeather.UWP.Controls
                         }
                     }
                     break;
+
                 case 3:
                     TempToggleButton.Visibility = Visibility.Visible;
                     RainToggleButton.Visibility = Visibility.Visible;

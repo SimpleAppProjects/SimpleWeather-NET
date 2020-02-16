@@ -20,13 +20,11 @@ namespace SimpleWeather.Utils
 
         private static void Init()
         {
-            if (locationDB == null)
-                locationDB = new SQLiteAsyncConnection(
-                    Path.Combine(appDataFolder.Path, "locations.db"));
+            if (locDBConnStr == null)
+                locDBConnStr = Path.Combine(appDataFolder.Path, "locations.db");
 
-            if (weatherDB == null)
-                weatherDB = new SQLiteAsyncConnection(
-                    Path.Combine(appDataFolder.Path, "weatherdata.db"));
+            if (wtrDBConnStr == null)
+                wtrDBConnStr = Path.Combine(appDataFolder.Path, "weatherdata.db");
 
             localSettings.CreateContainer(WeatherAPI.WeatherUnderground, ApplicationDataCreateDisposition.Always);
             localSettings.CreateContainer("version", ApplicationDataCreateDisposition.Always);
@@ -54,12 +52,16 @@ namespace SimpleWeather.Utils
 
         private static bool IsWeatherLoaded()
         {
-            if (!Task.Run(() => DBUtils.LocationDataExists(locationDB)).Result)
+            using (var weatherDB = new WeatherDBContext())
+            using (var locationDB = new LocationDBContext())
             {
-                if (!Task.Run(() => DBUtils.WeatherDataExists(weatherDB)).Result)
+                if (!Task.Run(() => DBUtils.LocationDataExists(locationDB)).Result)
                 {
-                    SetWeatherLoaded(false);
-                    return false;
+                    if (!Task.Run(() => DBUtils.WeatherDataExists(weatherDB)).Result)
+                    {
+                        SetWeatherLoaded(false);
+                        return false;
+                    }
                 }
             }
 

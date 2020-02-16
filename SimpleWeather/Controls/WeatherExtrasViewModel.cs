@@ -1,8 +1,10 @@
-﻿using SimpleWeather.WeatherData;
+﻿using SimpleWeather.Utils;
+using SimpleWeather.WeatherData;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
 using Windows.System.UserProfile;
 
 namespace SimpleWeather.Controls
@@ -11,8 +13,8 @@ namespace SimpleWeather.Controls
     {
         #region DependencyProperties
 
-        private ObservableCollection<HourlyForecastItemViewModel> hourlyForecast;
-        private ObservableCollection<TextForecastItemViewModel> textForecast;
+        private ObservableForecastLoadingCollection<HourlyForecastItemViewModel> hourlyForecast;
+        private ObservableForecastLoadingCollection<TextForecastItemViewModel> textForecast;
         private ObservableCollection<WeatherAlertViewModel> alerts;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -26,56 +28,80 @@ namespace SimpleWeather.Controls
 
         #region Properties
 
-        public ObservableCollection<HourlyForecastItemViewModel> HourlyForecast { get => hourlyForecast; private set { hourlyForecast = value; OnPropertyChanged("HourlyForecast"); } }
-        public ObservableCollection<TextForecastItemViewModel> TextForecast { get => textForecast; private set { textForecast = value; OnPropertyChanged("TextForecast"); } }
-        public ObservableCollection<WeatherAlertViewModel> Alerts { get => alerts; private set { alerts = value; OnPropertyChanged("Alerts"); } }
+        public ObservableForecastLoadingCollection<HourlyForecastItemViewModel> HourlyForecast { get => hourlyForecast; set { hourlyForecast = value; OnPropertyChanged(nameof(HourlyForecast)); } }
+        public ObservableForecastLoadingCollection<TextForecastItemViewModel> TextForecast { get => textForecast; set { textForecast = value; OnPropertyChanged(nameof(TextForecast)); } }
+        public ObservableCollection<WeatherAlertViewModel> Alerts { get => alerts; private set { alerts = value; OnPropertyChanged(nameof(Alerts)); } }
 
         #endregion Properties
 
         public WeatherExtrasViewModel()
         {
-            HourlyForecast = new ObservableCollection<HourlyForecastItemViewModel>();
-            TextForecast = new ObservableCollection<TextForecastItemViewModel>();
+            HourlyForecast = new ObservableForecastLoadingCollection<HourlyForecastItemViewModel>();
+            TextForecast = new ObservableForecastLoadingCollection<TextForecastItemViewModel>();
             Alerts = new ObservableCollection<WeatherAlertViewModel>();
+
+            HourlyForecast.CollectionChanged += HourlyForecasts_CollectionChanged;
+            TextForecast.CollectionChanged += TextForecasts_CollectionChanged;
         }
 
         public WeatherExtrasViewModel(Weather weather)
         {
-            HourlyForecast = new ObservableCollection<HourlyForecastItemViewModel>();
-            TextForecast = new ObservableCollection<TextForecastItemViewModel>();
+            HourlyForecast = new ObservableForecastLoadingCollection<HourlyForecastItemViewModel>(weather);
+            TextForecast = new ObservableForecastLoadingCollection<TextForecastItemViewModel>(weather);
             Alerts = new ObservableCollection<WeatherAlertViewModel>();
+
+            HourlyForecast.CollectionChanged += HourlyForecasts_CollectionChanged;
+            TextForecast.CollectionChanged += TextForecasts_CollectionChanged;
+
             UpdateView(weather);
+        }
+
+        private void HourlyForecasts_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged(nameof(HourlyForecast));
+        }
+
+        private void TextForecasts_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged(nameof(TextForecast));
         }
 
         public void UpdateView(Weather weather)
         {
-            var userlang = GlobalizationPreferences.Languages[0];
-            var culture = new CultureInfo(userlang);
-
-            // Clear all data
-            Clear();
-
-            if (weather.hr_forecast != null && weather.hr_forecast.Count > 0)
+            if (weather?.hr_forecast?.Count > 0)
             {
+                HourlyForecast.Clear();
                 foreach (HourlyForecast hr_forecast in weather.hr_forecast)
                 {
                     var hrforecastView = new HourlyForecastItemViewModel(hr_forecast);
                     HourlyForecast.Add(hrforecastView);
                 }
-                OnPropertyChanged("HourlyForecast");
             }
-
-            if (weather.txt_forecast != null && weather.txt_forecast.Count > 0)
+            else
             {
+                // Let collection handle changes (clearing, etc.)
+                HourlyForecast.SetWeather(weather);
+            }
+            OnPropertyChanged(nameof(HourlyForecast));
+
+            if (weather?.txt_forecast?.Count > 0)
+            {
+                TextForecast.Clear();
                 foreach (TextForecast txt_forecast in weather.txt_forecast)
                 {
                     var txtforecastView = new TextForecastItemViewModel(txt_forecast);
                     TextForecast.Add(txtforecastView);
                 }
-                OnPropertyChanged("TextForecast");
             }
+            else
+            {
+                // Let collection handle changes (clearing, etc.)
+                TextForecast.SetWeather(weather);
+            }
+            OnPropertyChanged(nameof(TextForecast));
 
-            if (weather.weather_alerts != null && weather.weather_alerts.Count > 0)
+            Alerts.Clear();
+            if (weather?.weather_alerts?.Any() == true)
             {
                 foreach (WeatherAlert alert in weather.weather_alerts)
                 {
@@ -86,19 +112,8 @@ namespace SimpleWeather.Controls
                     WeatherAlertViewModel alertView = new WeatherAlertViewModel(alert);
                     Alerts.Add(alertView);
                 }
-                OnPropertyChanged("Alerts");
             }
-        }
-
-        public void Clear()
-        {
-            HourlyForecast.Clear();
-            TextForecast.Clear();
-            Alerts.Clear();
-
-            OnPropertyChanged("HourlyForecast");
-            OnPropertyChanged("TextForecast");
-            OnPropertyChanged("Alerts");
+            OnPropertyChanged(nameof(Alerts));
         }
     }
 }
