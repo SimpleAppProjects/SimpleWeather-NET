@@ -1,11 +1,11 @@
 ﻿<helpers:CustomPage
-    xmlns:helpers="using:SimpleWeather.UWP.Helpers"
     x:Class="SimpleWeather.UWP.Main.WeatherNow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:SimpleWeather.Controls"
     xmlns:localcontrols="using:SimpleWeather.UWP.Controls"
     xmlns:local="using:SimpleWeather.UWP.Main"
+    xmlns:helpers="using:SimpleWeather.UWP.Helpers"
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:toolkitMedia="using:Microsoft.Toolkit.Uwp.UI.Media"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -189,7 +189,8 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Button x:Name="LeftButton" Click="LeftButton_Click" Grid.Column="0"
-                                IsEnabled="False" Style="{ThemeResource ArrowButton}"
+                                IsEnabled="{x:Bind helpers:ScrollViewerHelper.CanScrollToStart(ForecastGraphPanel.ScrollViewer.HorizontalOffset), Mode=OneWay}"
+                                Style="{ThemeResource ArrowButton}"
                                 Width="30" Height="{Binding RelativeSource={RelativeSource Mode=Self},Path=Width}">
                             <Button.Content>
                                 <Viewbox x:Name="LeftButtonVBox" Margin="5">
@@ -198,7 +199,8 @@
                             </Button.Content>
                         </Button>
                         <Button x:Name="RightButton" Click="RightButton_Click" Grid.Column="2"
-                                IsEnabled="True" Style="{ThemeResource ArrowButton}"
+                                IsEnabled="{x:Bind helpers:ScrollViewerHelper.CanScrollToEnd(ForecastGraphPanel.ScrollViewer.HorizontalOffset, ForecastGraphPanel.ScrollViewer.ViewportWidth, ForecastGraphPanel.ScrollViewer.ExtentWidth), Mode=OneWay}"
+                                Style="{ThemeResource ArrowButton}"
                                 Width="30" Height="{Binding RelativeSource={RelativeSource Mode=Self},Path=Width}">
                             <Button.Content>
                                 <Viewbox x:Name="RightButtonVBox" Margin="5">
@@ -207,7 +209,7 @@
                             </Button.Content>
                         </Button>
                         <localcontrols:ForecastGraphPanel x:Name="ForecastGraphPanel" Grid.Column="1"
-                                                          GraphViewTapped="LineView_Tapped" ViewChanged="ForecastViewer_ViewChanged"
+                                                          GraphViewTapped="LineView_Tapped"
                                                           Forecasts="{x:Bind WeatherView.Forecasts, Mode=OneWay}" />
                     </Grid>
                 </StackPanel>
@@ -226,7 +228,8 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Button x:Name="HourlyLeftButton" Click="LeftButton_Click"
-                                IsEnabled="False" Style="{ThemeResource ArrowButton}"
+                                IsEnabled="{x:Bind helpers:ScrollViewerHelper.CanScrollToStart(HourlyGraphPanel.ScrollViewer.HorizontalOffset), Mode=OneWay}"
+                                Style="{ThemeResource ArrowButton}"
                                 Width="{Binding ElementName=LeftButton, Path=Width, Mode=OneWay}"
                                 Height="{Binding ElementName=LeftButton, Path=Height, Mode=OneWay}"
                                 Grid.Column="0">
@@ -237,7 +240,8 @@
                             </Button.Content>
                         </Button>
                         <Button x:Name="HourlyRightButton" Click="RightButton_Click"
-                                IsEnabled="True" Style="{ThemeResource ArrowButton}"
+                                IsEnabled="{x:Bind helpers:ScrollViewerHelper.CanScrollToEnd(HourlyGraphPanel.ScrollViewer.HorizontalOffset, HourlyGraphPanel.ScrollViewer.ViewportWidth, HourlyGraphPanel.ScrollViewer.ExtentWidth), Mode=OneWay}"
+                                Style="{ThemeResource ArrowButton}"
                                 Width="{Binding ElementName=RightButton, Path=Width, Mode=OneWay}"
                                 Height="{Binding ElementName=RightButton, Path=Height, Mode=OneWay}"
                                 Grid.Column="2">
@@ -248,7 +252,7 @@
                             </Button.Content>
                         </Button>
                         <localcontrols:ForecastGraphPanel x:Name="HourlyGraphPanel" Grid.Column="1"
-                                                          GraphViewTapped="LineView_Tapped" ViewChanged="ForecastViewer_ViewChanged"
+                                                          GraphViewTapped="LineView_Tapped"
                                                           Forecasts="{x:Bind WeatherView.Extras.HourlyForecast, Mode=OneWay}" />
                     </Grid>
                 </StackPanel>

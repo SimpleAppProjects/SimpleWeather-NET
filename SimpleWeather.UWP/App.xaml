@@ -142,6 +142,7 @@
                     <SolidColorBrush x:Key="SnackbarForegroundBrush" Color="{ThemeResource SystemAccentColorDark1}" />
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
+            <toolkitConverters:BoolNegationConverter x:Key="inverseBoolConverter" />
             <helpers:ColorToSolidColorBrushConverter x:Key="color2SolidColorConverter" />
             <helpers:ColorToSolidColorBrushConverter x:Key="solidColorBrush2ColorConverter" IsInverse="True" />
             <helpers:BooleanToGridLengthConverter x:Key="bool2GridLengthConverter" />

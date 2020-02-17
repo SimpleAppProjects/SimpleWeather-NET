@@ -301,6 +301,7 @@
     <Compile Include="Helpers\IBackRequestedPage.cs" />
     <Compile Include="Helpers\ICommandBarPage.cs" />
     <Compile Include="Helpers\IFramePage.cs" />
+    <Compile Include="Helpers\ScrollViewerHelper.cs" />
     <Compile Include="Helpers\VisualTreeHelperExtensions.cs" />
     <Compile Include="Main\DetailsPageArgs.cs" />
     <Compile Include="Main\LocationPanelAdapter.cs" />

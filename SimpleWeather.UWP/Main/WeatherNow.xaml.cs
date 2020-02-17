@@ -641,11 +641,11 @@ namespace SimpleWeather.UWP.Main
 
             if ((bool)controlName?.Contains("Hourly"))
             {
-                ScrollLeft(HourlyGraphPanel?.ScrollViewer);
+                ScrollViewerHelper.ScrollLeft(HourlyGraphPanel?.ScrollViewer);
             }
             else
             {
-                ScrollLeft(ForecastGraphPanel?.ScrollViewer);
+                ScrollViewerHelper.ScrollLeft(ForecastGraphPanel?.ScrollViewer);
             }
         }
 
@@ -655,70 +655,12 @@ namespace SimpleWeather.UWP.Main
 
             if ((bool)controlName?.Contains("Hourly"))
             {
-                ScrollRight(HourlyGraphPanel?.ScrollViewer);
+                ScrollViewerHelper.ScrollRight(HourlyGraphPanel?.ScrollViewer);
             }
             else
             {
-                ScrollRight(ForecastGraphPanel?.ScrollViewer);
+                ScrollViewerHelper.ScrollRight(ForecastGraphPanel?.ScrollViewer);
             }
-        }
-
-        private void ForecastViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
-        {
-            ScrollViewer viewer = sender as ScrollViewer;
-            FrameworkElement controlParent = null;
-
-            if ("InternalScrollViewer".Equals(viewer?.Name))
-            {
-                try
-                {
-                    controlParent = VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(
-                        VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(viewer?.Parent)))) as FrameworkElement;
-                }
-                catch (Exception) { }
-            }
-
-            if (viewer?.HorizontalOffset == 0)
-            {
-                if (controlParent?.Name?.Contains("Hourly") ?? false)
-                    HourlyLeftButton.IsEnabled = false;
-                else
-                    LeftButton.IsEnabled = false;
-            }
-            else if (viewer?.HorizontalOffset == viewer?.ScrollableWidth)
-            {
-                if (controlParent?.Name?.Contains("Hourly") ?? false)
-                    HourlyRightButton.IsEnabled = false;
-                else
-                    RightButton.IsEnabled = false;
-            }
-            else
-            {
-                if (controlParent?.Name?.Contains("Hourly") ?? false)
-                {
-                    if (!HourlyLeftButton.IsEnabled)
-                        HourlyLeftButton.IsEnabled = true;
-                    if (!HourlyRightButton.IsEnabled)
-                        HourlyRightButton.IsEnabled = true;
-                }
-                else
-                {
-                    if (!LeftButton.IsEnabled)
-                        LeftButton.IsEnabled = true;
-                    if (!RightButton.IsEnabled)
-                        RightButton.IsEnabled = true;
-                }
-            }
-        }
-
-        private static void ScrollLeft(ScrollViewer viewer)
-        {
-            viewer?.ChangeView(viewer?.HorizontalOffset - viewer?.ActualWidth, null, null);
-        }
-
-        private static void ScrollRight(ScrollViewer viewer)
-        {
-            viewer?.ChangeView(viewer?.HorizontalOffset + viewer?.ActualWidth, null, null);
         }
 
         private void GotoAlertsPage()
