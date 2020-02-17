@@ -34,6 +34,8 @@ namespace SimpleWeather.Controls
 
         #endregion Properties
 
+        private Weather weather;
+
         public WeatherExtrasViewModel()
         {
             HourlyForecast = new ObservableForecastLoadingCollection<HourlyForecastItemViewModel>();
@@ -68,52 +70,56 @@ namespace SimpleWeather.Controls
 
         public void UpdateView(Weather weather)
         {
-            if (weather?.hr_forecast?.Count > 0)
+            if ((bool)weather?.IsValid() && !Object.Equals(this.weather, weather))
             {
-                HourlyForecast.Clear();
-                foreach (HourlyForecast hr_forecast in weather.hr_forecast)
+                this.weather = weather;
+                if (weather?.hr_forecast?.Count > 0)
                 {
-                    var hrforecastView = new HourlyForecastItemViewModel(hr_forecast);
-                    HourlyForecast.Add(hrforecastView);
+                    HourlyForecast.Clear();
+                    foreach (HourlyForecast hr_forecast in weather.hr_forecast)
+                    {
+                        var hrforecastView = new HourlyForecastItemViewModel(hr_forecast);
+                        HourlyForecast.Add(hrforecastView);
+                    }
                 }
-            }
-            else
-            {
-                // Let collection handle changes (clearing, etc.)
-                HourlyForecast.SetWeather(weather);
-            }
-            OnPropertyChanged(nameof(HourlyForecast));
-
-            if (weather?.txt_forecast?.Count > 0)
-            {
-                TextForecast.Clear();
-                foreach (TextForecast txt_forecast in weather.txt_forecast)
+                else
                 {
-                    var txtforecastView = new TextForecastItemViewModel(txt_forecast);
-                    TextForecast.Add(txtforecastView);
+                    // Let collection handle changes (clearing, etc.)
+                    HourlyForecast.SetWeather(weather);
                 }
-            }
-            else
-            {
-                // Let collection handle changes (clearing, etc.)
-                TextForecast.SetWeather(weather);
-            }
-            OnPropertyChanged(nameof(TextForecast));
+                OnPropertyChanged(nameof(HourlyForecast));
 
-            Alerts.Clear();
-            if (weather?.weather_alerts?.Any() == true)
-            {
-                foreach (WeatherAlert alert in weather.weather_alerts)
+                if (weather?.txt_forecast?.Count > 0)
                 {
-                    // Skip if alert has expired
-                    if (alert.ExpiresDate <= DateTimeOffset.Now)
-                        continue;
-
-                    WeatherAlertViewModel alertView = new WeatherAlertViewModel(alert);
-                    Alerts.Add(alertView);
+                    TextForecast.Clear();
+                    foreach (TextForecast txt_forecast in weather.txt_forecast)
+                    {
+                        var txtforecastView = new TextForecastItemViewModel(txt_forecast);
+                        TextForecast.Add(txtforecastView);
+                    }
                 }
+                else
+                {
+                    // Let collection handle changes (clearing, etc.)
+                    TextForecast.SetWeather(weather);
+                }
+                OnPropertyChanged(nameof(TextForecast));
+
+                Alerts.Clear();
+                if (weather?.weather_alerts?.Any() == true)
+                {
+                    foreach (WeatherAlert alert in weather.weather_alerts)
+                    {
+                        // Skip if alert has expired
+                        if (alert.ExpiresDate <= DateTimeOffset.Now)
+                            continue;
+
+                        WeatherAlertViewModel alertView = new WeatherAlertViewModel(alert);
+                        Alerts.Add(alertView);
+                    }
+                }
+                OnPropertyChanged(nameof(Alerts));
             }
-            OnPropertyChanged(nameof(Alerts));
         }
     }
 }

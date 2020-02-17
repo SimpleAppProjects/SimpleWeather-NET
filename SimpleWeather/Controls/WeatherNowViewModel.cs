@@ -72,6 +72,7 @@ namespace SimpleWeather.Controls
         #endregion Properties
 
         private WeatherManager wm;
+        private Weather weather;
 
         public WeatherNowViewModel()
         {
@@ -104,8 +105,10 @@ namespace SimpleWeather.Controls
 
         public void UpdateView(Weather weather)
         {
-            if ((bool)weather?.IsValid())
+            if ((bool)weather?.IsValid() && !Object.Equals(this.weather, weather))
             {
+                this.weather = weather;
+
                 var userlang = GlobalizationPreferences.Languages[0];
                 var culture = new CultureInfo(userlang);
 
