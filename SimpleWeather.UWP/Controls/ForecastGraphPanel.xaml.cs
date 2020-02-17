@@ -92,7 +92,7 @@ namespace SimpleWeather.UWP.Controls
         private ToggleButton SelectedButton { get; set; }
 
         private const int MAX_FETCH_SIZE = 20;
-        private uint DataFetchSize = MAX_FETCH_SIZE;
+        private uint DataFetchSize = 1;
 
         public ForecastGraphPanel()
         {
@@ -111,30 +111,36 @@ namespace SimpleWeather.UWP.Controls
                 else
                     DataFetchSize = desiredFetchSize;
 
-                await TryLoadMoreItems();
+                // trigger if (LineView) drawing does not fit viewport
+                if (GraphView.DrawingWidth * 2.0 <= ScrollViewer.ViewportWidth &&
+                    _forecasts is IObservableLoadingCollection _collection && _collection.HasMoreItems && !_collection.IsLoading)
+                {
+                    await _collection.LoadMoreItemsAsync(DataFetchSize);
+                }
             }
-        }
-
-        private async void ForecastGraphPanel_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
-        {
-            await TryLoadMoreItems();
         }
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-            TryLoadMoreItems();
-            return base.ArrangeOverride(finalSize);
+            var size = base.ArrangeOverride(finalSize);
+
+            if (!_forecasts.Any() && _forecasts is IObservableLoadingCollection _collection && _collection.HasMoreItems)
+            {
+                _collection.LoadMoreItemsAsync(1);
+            }
+
+            return size;
         }
 
-        private async Task TryLoadMoreItems()
+        private async void ForecastGraphPanel_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
             var distanceToEnd = ScrollViewer.ExtentWidth - (ScrollViewer.HorizontalOffset + ScrollViewer.ViewportWidth);
 
             // trigger if (LineView) drawing does not fit viewport
             // or
             // if scrolling within 2 viewports of the end
-            if ((ScrollViewer.HorizontalOffset == 0 && GraphView.DrawingWidth <= ScrollViewer.ViewportWidth || distanceToEnd <= 2.0 * ScrollViewer.ViewportWidth)
-                    && _forecasts is IObservableLoadingCollection _collection && _collection.HasMoreItems && !_collection.IsLoading)
+            if (distanceToEnd <= 2.0 * ScrollViewer.ViewportWidth &&
+                _forecasts is IObservableLoadingCollection _collection && _collection.HasMoreItems && !_collection.IsLoading)
             {
                 await _collection.LoadMoreItemsAsync(DataFetchSize);
             }
@@ -164,7 +170,8 @@ namespace SimpleWeather.UWP.Controls
 
         private async void GraphLineView_Loaded(object sender, RoutedEventArgs e)
         {
-            await UpdateLineView(_forecasts as IObservableLoadingCollection == null);
+            if (_forecasts as IObservableLoadingCollection == null)
+                await UpdateLineView(true);
         }
 
         private async Task UpdateLineView(bool resetOffset)

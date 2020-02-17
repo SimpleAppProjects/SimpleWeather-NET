@@ -1,5 +1,5 @@
 ﻿<ResourceDictionary
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="SimpleWeather.UWP.Controls.DataTemplates"
     xmlns:controls="using:SimpleWeather.Controls"
@@ -7,10 +7,9 @@
     xmlns:localControls="using:SimpleWeather.UWP.Controls">
 
     <DataTemplate x:Key="LocationQueryDataTemplate" x:DataType="controls:LocationQueryViewModel">
-        <localControls:LocationQuery MinWidth="300" HorizontalAlignment="Stretch" 
+        <localControls:LocationQuery MinWidth="300" HorizontalAlignment="Stretch"
                                                                  VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch"
                                                                  LocationName="{x:Bind LocationName, Mode=OneWay}"
                                                                  LocationCountry="{x:Bind LocationCountry, Mode=OneWay}" />
     </DataTemplate>
-
 </ResourceDictionary>
