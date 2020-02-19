@@ -182,9 +182,11 @@ namespace SimpleWeather.Utils
                 LoadIfNeeded();
                 using (var weatherDB = new WeatherDBContext())
                 {
-                    var weatherData = weatherDB.WeatherData;
-                    var filteredData = await weatherData.FirstOrDefaultAsync(weather =>
-                            String.Equals(location.latitude.ToString(), weather.location.latitude) && String.Equals(location.longitude.ToString(), weather.location.longitude));
+                    var culture = System.Globalization.CultureInfo.InvariantCulture;
+                    var query = String.Format(culture, "\\\"latitude\\\":\\\"{0}\\\",\\\"longitude\\\":\\\"{1}\\\"",
+                            location.latitude.ToString(culture), location.longitude.ToString(culture));
+                    var filteredData = await weatherDB.WeatherData.FromSqlRaw("SELECT * FROM weatherdata WHERE `locationblob` LIKE {0} LIMIT 1", "%" + query + "%")
+                                                                  .FirstOrDefaultAsync();
 
                     return filteredData;
                 }
