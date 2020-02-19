@@ -376,14 +376,20 @@ namespace SimpleWeather.WeatherData
             try
             {
                 obj = new Location();
+                string jsonValue;
 
-                if (extReader.Value == null)
+                if (extReader.TokenType == JsonToken.String || extReader.Read() && extReader.TokenType == JsonToken.String)
+                    jsonValue = extReader.Value?.ToString();
+                else
+                    jsonValue = null;
+
+                if (jsonValue == null)
                     reader = extReader;
                 else
                 {
                     disposeReader = true;
 #pragma warning disable CA2000 // Dispose objects before losing scope
-                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString())) { CloseInput = true };
+                    reader = new JsonTextReader(new System.IO.StringReader(jsonValue)) { CloseInput = true };
 #pragma warning restore CA2000 // Dispose objects before losing scope
                     reader.Read(); // StartObject
                 }
@@ -507,14 +513,20 @@ namespace SimpleWeather.WeatherData
             try
             {
                 obj = new Forecast();
+                string jsonValue;
 
-                if (extReader.Value == null)
+                if (extReader.TokenType == JsonToken.String || extReader.Read() && extReader.TokenType == JsonToken.String)
+                    jsonValue = extReader.Value?.ToString();
+                else
+                    jsonValue = null;
+
+                if (jsonValue == null)
                     reader = extReader;
                 else
                 {
                     disposeReader = true;
 #pragma warning disable CA2000 // Dispose objects before losing scope
-                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString())) { CloseInput = true };
+                    reader = new JsonTextReader(new System.IO.StringReader(jsonValue)) { CloseInput = true };
 #pragma warning restore CA2000 // Dispose objects before losing scope
                     reader.Read(); // StartObject
                 }
@@ -674,14 +686,20 @@ namespace SimpleWeather.WeatherData
             try
             {
                 obj = new HourlyForecast();
+                string jsonValue;
 
-                if (extReader.Value == null)
+                if (extReader.TokenType == JsonToken.String || extReader.Read() && extReader.TokenType == JsonToken.String)
+                    jsonValue = extReader.Value?.ToString();
+                else
+                    jsonValue = null;
+
+                if (jsonValue == null)
                     reader = extReader;
                 else
                 {
                     disposeReader = true;
 #pragma warning disable CA2000 // Dispose objects before losing scope
-                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString())) { CloseInput = true };
+                    reader = new JsonTextReader(new System.IO.StringReader(jsonValue)) { CloseInput = true };
 #pragma warning restore CA2000 // Dispose objects before losing scope
                     reader.Read(); // StartObject
                 }
@@ -837,14 +855,20 @@ namespace SimpleWeather.WeatherData
             try
             {
                 obj = new TextForecast();
+                string jsonValue;
 
-                if (extReader.Value == null)
+                if (extReader.TokenType == JsonToken.String || extReader.Read() && extReader.TokenType == JsonToken.String)
+                    jsonValue = extReader.Value?.ToString();
+                else
+                    jsonValue = null;
+
+                if (jsonValue == null)
                     reader = extReader;
                 else
                 {
                     disposeReader = true;
 #pragma warning disable CA2000 // Dispose objects before losing scope
-                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString())) { CloseInput = true };
+                    reader = new JsonTextReader(new System.IO.StringReader(jsonValue)) { CloseInput = true };
 #pragma warning restore CA2000 // Dispose objects before losing scope
                     reader.Read(); // StartObject
                 }
@@ -970,14 +994,20 @@ namespace SimpleWeather.WeatherData
             try
             {
                 obj = new ForecastExtras();
+                string jsonValue;
 
-                if (extReader.Value == null)
+                if (extReader.TokenType == JsonToken.String || extReader.Read() && extReader.TokenType == JsonToken.String)
+                    jsonValue = extReader.Value?.ToString();
+                else
+                    jsonValue = null;
+
+                if (jsonValue == null)
                     reader = extReader;
                 else
                 {
                     disposeReader = true;
 #pragma warning disable CA2000 // Dispose objects before losing scope
-                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString())) { CloseInput = true };
+                    reader = new JsonTextReader(new System.IO.StringReader(jsonValue)) { CloseInput = true };
 #pragma warning restore CA2000 // Dispose objects before losing scope
                     reader.Read(); // StartObject
                 }
@@ -1200,14 +1230,20 @@ namespace SimpleWeather.WeatherData
             try
             {
                 obj = new Condition();
+                string jsonValue;
 
-                if (extReader.Value == null)
+                if (extReader.TokenType == JsonToken.String || extReader.Read() && extReader.TokenType == JsonToken.String)
+                    jsonValue = extReader.Value?.ToString();
+                else
+                    jsonValue = null;
+
+                if (jsonValue == null)
                     reader = extReader;
                 else
                 {
                     disposeReader = true;
 #pragma warning disable CA2000 // Dispose objects before losing scope
-                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString())) { CloseInput = true };
+                    reader = new JsonTextReader(new System.IO.StringReader(jsonValue)) { CloseInput = true };
 #pragma warning restore CA2000 // Dispose objects before losing scope
                     reader.Read(); // StartObject
                 }
@@ -1377,14 +1413,20 @@ namespace SimpleWeather.WeatherData
             try
             {
                 obj = new Atmosphere();
+                string jsonValue;
 
-                if (extReader.Value == null)
+                if (extReader.TokenType == JsonToken.String || extReader.Read() && extReader.TokenType == JsonToken.String)
+                    jsonValue = extReader.Value?.ToString();
+                else
+                    jsonValue = null;
+
+                if (jsonValue == null)
                     reader = extReader;
                 else
                 {
                     disposeReader = true;
 #pragma warning disable CA2000 // Dispose objects before losing scope
-                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString())) { CloseInput = true };
+                    reader = new JsonTextReader(new System.IO.StringReader(jsonValue)) { CloseInput = true };
 #pragma warning restore CA2000 // Dispose objects before losing scope
                     reader.Read(); // StartObject
                 }
@@ -1521,14 +1563,20 @@ namespace SimpleWeather.WeatherData
             try
             {
                 obj = new Astronomy();
+                string jsonValue;
 
-                if (extReader.Value == null)
+                if (extReader.TokenType == JsonToken.String || extReader.Read() && extReader.TokenType == JsonToken.String)
+                    jsonValue = extReader.Value?.ToString();
+                else
+                    jsonValue = null;
+
+                if (jsonValue == null)
                     reader = extReader;
                 else
                 {
                     disposeReader = true;
 #pragma warning disable CA2000 // Dispose objects before losing scope
-                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString())) { CloseInput = true };
+                    reader = new JsonTextReader(new System.IO.StringReader(jsonValue)) { CloseInput = true };
 #pragma warning restore CA2000 // Dispose objects before losing scope
                     reader.Read(); // StartObject
                 }
@@ -1644,14 +1692,20 @@ namespace SimpleWeather.WeatherData
             try
             {
                 obj = new Precipitation();
+                string jsonValue;
 
-                if (extReader.Value == null)
+                if (extReader.TokenType == JsonToken.String || extReader.Read() && extReader.TokenType == JsonToken.String)
+                    jsonValue = extReader.Value?.ToString();
+                else
+                    jsonValue = null;
+
+                if (jsonValue == null)
                     reader = extReader;
                 else
                 {
                     disposeReader = true;
 #pragma warning disable CA2000 // Dispose objects before losing scope
-                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString())) { CloseInput = true };
+                    reader = new JsonTextReader(new System.IO.StringReader(jsonValue)) { CloseInput = true };
 #pragma warning restore CA2000 // Dispose objects before losing scope
                     reader.Read(); // StartObject
                 }
@@ -1778,14 +1832,20 @@ namespace SimpleWeather.WeatherData
             try
             {
                 obj = new Beaufort();
+                string jsonValue;
 
-                if (extReader.Value == null)
+                if (extReader.TokenType == JsonToken.String || extReader.Read() && extReader.TokenType == JsonToken.String)
+                    jsonValue = extReader.Value?.ToString();
+                else
+                    jsonValue = null;
+
+                if (jsonValue == null)
                     reader = extReader;
                 else
                 {
                     disposeReader = true;
 #pragma warning disable CA2000 // Dispose objects before losing scope
-                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString())) { CloseInput = true };
+                    reader = new JsonTextReader(new System.IO.StringReader(jsonValue)) { CloseInput = true };
 #pragma warning restore CA2000 // Dispose objects before losing scope
                     reader.Read(); // StartObject
                 }
@@ -1883,14 +1943,20 @@ namespace SimpleWeather.WeatherData
             try
             {
                 obj = new MoonPhase();
+                string jsonValue;
 
-                if (extReader.Value == null)
+                if (extReader.TokenType == JsonToken.String || extReader.Read() && extReader.TokenType == JsonToken.String)
+                    jsonValue = extReader.Value?.ToString();
+                else
+                    jsonValue = null;
+
+                if (jsonValue == null)
                     reader = extReader;
                 else
                 {
                     disposeReader = true;
 #pragma warning disable CA2000 // Dispose objects before losing scope
-                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString())) { CloseInput = true };
+                    reader = new JsonTextReader(new System.IO.StringReader(jsonValue)) { CloseInput = true };
 #pragma warning restore CA2000 // Dispose objects before losing scope
                     reader.Read(); // StartObject
                 }
@@ -1976,14 +2042,20 @@ namespace SimpleWeather.WeatherData
             try
             {
                 obj = new UV();
+                string jsonValue;
 
-                if (extReader.Value == null)
+                if (extReader.TokenType == JsonToken.String || extReader.Read() && extReader.TokenType == JsonToken.String)
+                    jsonValue = extReader.Value?.ToString();
+                else
+                    jsonValue = null;
+
+                if (jsonValue == null)
                     reader = extReader;
                 else
                 {
                     disposeReader = true;
 #pragma warning disable CA2000 // Dispose objects before losing scope
-                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString())) { CloseInput = true };
+                    reader = new JsonTextReader(new System.IO.StringReader(jsonValue)) { CloseInput = true };
 #pragma warning restore CA2000 // Dispose objects before losing scope
                     reader.Read(); // StartObject
                 }

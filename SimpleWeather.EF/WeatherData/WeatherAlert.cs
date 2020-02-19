@@ -73,14 +73,20 @@ namespace SimpleWeather.WeatherData
             try
             {
                 obj = new WeatherAlert();
+                string jsonValue;
 
-                if (extReader.Value == null)
+                if (extReader.TokenType == JsonToken.String || extReader.Read() && extReader.TokenType == JsonToken.String)
+                    jsonValue = extReader.Value?.ToString();
+                else
+                    jsonValue = null;
+
+                if (jsonValue == null)
                     reader = extReader;
                 else
                 {
                     disposeReader = true;
 #pragma warning disable CA2000 // Dispose objects before losing scope
-                    reader = new JsonTextReader(new System.IO.StringReader(extReader.Value.ToString())) { CloseInput = true };
+                    reader = new JsonTextReader(new System.IO.StringReader(jsonValue)) { CloseInput = true };
 #pragma warning restore CA2000 // Dispose objects before losing scope
                     reader.Read(); // StartObject
                 }
