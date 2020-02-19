@@ -250,10 +250,6 @@
     <Content Include="Assets\WeatherIcons\png\windy.png" />
     <Content Include="Assets\WeatherIcons\png\wind_direction.png" />
     <Content Include="Assets\WeatherIcons\weathericons-regular-webfont.ttf" />
-    <Content Include="NLog.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
     <PRIResource Include="Strings\en-US\Resources.resw" />
     <None Include="SimpleWeather.UWP.ruleset" />
     <None Include="SimpleWeather.UWP_StoreKey.pfx" />
@@ -593,12 +589,6 @@
     <PackageReference Include="Newtonsoft.Json">
       <Version>12.0.3</Version>
     </PackageReference>
-    <PackageReference Include="NLog">
-      <Version>4.6.8</Version>
-    </PackageReference>
-    <PackageReference Include="NLog.Schema">
-      <Version>4.6.8</Version>
-    </PackageReference>
     <PackageReference Include="NodaTime">
       <Version>2.4.7</Version>
     </PackageReference>
@@ -617,6 +607,12 @@
     <PackageReference Include="Win2D.uwp">
       <Version>1.24.0</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Timber\Timber.csproj">
+      <Project>{479286ce-e244-4d81-a8f4-a5982af86af9}</Project>
+      <Name>Timber</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="..\SimpleWeather\SimpleWeather_Xamarin.projitems" Label="Shared" />
   <Import Project="..\SimpleWeather.EF\SimpleWeather.EF.projitems" Label="Shared" />

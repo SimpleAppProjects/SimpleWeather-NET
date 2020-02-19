@@ -48,6 +48,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\OpenWeatherMapProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SimpleLibrary.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\AppCenterLoggingTree.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\AsyncTask.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\ColorUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\ConversionMethods.cs" />
@@ -57,6 +58,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\DBMigrations\Migration.3_4.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\DBMigrations\Migration.4_5.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\DBUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\FileLoggingTree.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\FileUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\OAuthUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\ObservableForecastLoadingCollection.cs" />

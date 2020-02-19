@@ -112,5 +112,11 @@ namespace SimpleWeather.Utils
             //file is not locked
             return false;
         }
+
+        public static async Task DeleteDirectory(String path)
+        {
+            var directory = await StorageFolder.GetFolderFromPathAsync(path);
+            await directory.DeleteAsync(StorageDeleteOption.PermanentDelete);
+        }
     }
 }

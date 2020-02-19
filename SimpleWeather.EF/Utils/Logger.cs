@@ -1,5 +1,7 @@
-﻿using NLog;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using Timber = TimberLog.Timber;
+using TimberLog;
 #if WINDOWS_UWP
 using Windows.Storage;
 #endif
@@ -8,38 +10,44 @@ namespace SimpleWeather.Utils
 {
     public enum LoggerLevel
     {
-        Debug,
-        Info,
-        Warn,
-        Error,
-        Fatal
+        Debug = TimberLog.LoggerLevel.Debug,
+        Info = TimberLog.LoggerLevel.Info,
+        Warn = TimberLog.LoggerLevel.Warn,
+        Error = TimberLog.LoggerLevel.Error,
+        Fatal = TimberLog.LoggerLevel.Fatal
     }
 
     public static class Logger
     {
-        private static readonly NLog.Logger logger = LogManager.GetCurrentClassLogger();
-
         static Logger()
         {
             Init();
         }
 
-        private static void Init()
+        public static void Init()
         {
-#if WINDOWS_UWP
-            var storageFolder = ApplicationData.Current.LocalFolder;
-            LogManager.Configuration.Variables["LogPath"] = storageFolder.Path;
+#if DEBUG
+            Timber.Plant(new Timber.DebugTree());
+            Timber.Plant(new FileLoggingTree());
+#else
+            CleanupLogs();
+            Timber.Plant(new AppCenterLoggingTree());
 #endif
         }
 
-        public static void ForceShutdown()
+        public static void Shutdown()
         {
-            LogManager.Shutdown();
+            Timber.UprootAll();
         }
 
         public static void WriteLine(LoggerLevel loggerLevel, string value, params object[] args)
         {
             WriteLine(loggerLevel, null, value, args);
+        }
+
+        public static void WriteLine(LoggerLevel loggerLevel, Exception ex)
+        {
+            WriteLine(loggerLevel, ex, null, null);
         }
 
         public static void WriteLine(LoggerLevel loggerLevel, Exception ex, string value)
@@ -49,46 +57,18 @@ namespace SimpleWeather.Utils
 
         public static void WriteLine(LoggerLevel loggerLevel, Exception ex, string format, params object[] args)
         {
-            switch (loggerLevel)
+            // ${longdate}|${level:uppercase=true}|${message}${when:when=length('${exception}')>0:Inner=${newline}}${exception:format=tostring}
+            Timber.Log((TimberLog.LoggerLevel)loggerLevel, ex, format, args);
+        }
+
+        private static void CleanupLogs()
+        {
+#if WINDOWS_UWP
+            AsyncTask.Run(async () =>
             {
-                case LoggerLevel.Debug:
-                    if (ex == null)
-                        logger.Log(LogLevel.Debug, format, args);
-                    else
-                        logger.Log(LogLevel.Debug, ex, format, args);
-                    break;
-
-                case LoggerLevel.Info:
-                    if (ex == null)
-                        logger.Log(LogLevel.Info, format, args);
-                    else
-                        logger.Log(LogLevel.Info, ex, format, args);
-                    break;
-
-                case LoggerLevel.Warn:
-                    if (ex == null)
-                        logger.Log(LogLevel.Warn, format, args);
-                    else
-                        logger.Log(LogLevel.Warn, ex, format, args);
-                    break;
-
-                case LoggerLevel.Error:
-                    if (ex == null)
-                        logger.Log(LogLevel.Error, format, args);
-                    else
-                        logger.Log(LogLevel.Error, ex, format, args);
-                    break;
-
-                case LoggerLevel.Fatal:
-                    if (ex == null)
-                        logger.Log(LogLevel.Fatal, format, args);
-                    else
-                        logger.Log(LogLevel.Fatal, ex, format, args);
-                    break;
-
-                default:
-                    break;
-            }
+                await FileUtils.DeleteDirectory(System.IO.Path.Combine(ApplicationData.Current.LocalFolder.Path, "logs"));
+            });
+#endif
         }
     }
 }

@@ -18,6 +18,10 @@
     <PackageReference Include="NodaTime" Version="2.4.7" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Timber\Timber.csproj" />
+  </ItemGroup>
+
   <Import Project="..\SimpleWeather.EF\SimpleWeather.EF.projitems" Label="Shared" />
 
 </Project>
