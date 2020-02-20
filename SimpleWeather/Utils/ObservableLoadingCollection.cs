@@ -48,6 +48,7 @@ namespace SimpleWeather.Utils
             if (IsLoading)
             {
                 _refreshOnLoad = true;
+                return Task.CompletedTask;
             }
             else
             {
@@ -56,8 +57,6 @@ namespace SimpleWeather.Utils
 
                 return LoadMoreItemsAsync(1).AsTask();
             }
-
-            return Task.CompletedTask;
         }
 
         public abstract IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count);

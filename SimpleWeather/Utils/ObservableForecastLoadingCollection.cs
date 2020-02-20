@@ -56,6 +56,7 @@ namespace SimpleWeather.Utils
                 {
                     var currentCount = Count;
                     IsLoading = true;
+                    HasMoreItems = true;
 
                     using (var dBContext = new WeatherDBContext())
                     {
@@ -89,7 +90,7 @@ namespace SimpleWeather.Utils
                                         f = new ForecastItemViewModel(dataItem);
                                     }
 
-                                    Add((T)f);
+                                    await AsyncTask.RunOnUIThread(() => Add((T)f));
                                     resultCount++;
                                 }
                             }
@@ -123,10 +124,10 @@ namespace SimpleWeather.Utils
                                                 .Select(hrf => hrf.hr_forecast);
                                 }
 
-                                await data.ForEachAsync(dataItem =>
+                                await data.ForEachAsync(async dataItem =>
                                 {
                                     object fcast = new HourlyForecastItemViewModel(dataItem);
-                                    Add((T)fcast);
+                                    await AsyncTask.RunOnUIThread(() => Add((T)fcast));
                                     resultCount++;
                                 });
                             }
@@ -150,7 +151,7 @@ namespace SimpleWeather.Utils
                                 foreach (var dataItem in loadedData)
                                 {
                                     object f = new TextForecastItemViewModel(dataItem);
-                                    Add((T)f);
+                                    await AsyncTask.RunOnUIThread(() => Add((T)f));
                                     resultCount++;
                                 }
                             }
