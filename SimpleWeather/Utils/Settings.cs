@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
-using Newtonsoft.Json;
 using SimpleWeather.EF.Extensions;
 using SimpleWeather.Location;
 using SimpleWeather.WeatherData;
@@ -101,10 +100,9 @@ namespace SimpleWeather.Utils
                 {
                     try
                     {
-                        using (var jsonTextReader = new JsonTextReader(new StringReader(LastGPSLocation)))
-                        {
-                            lastGPSLocData = LocationData.FromJson(jsonTextReader);
-                        }
+                        var jsonTextReader = new System.Text.Json.Utf8JsonReader(System.Text.Encoding.UTF8.GetBytes(LastGPSLocation));
+                        lastGPSLocData = new LocationData();
+                        lastGPSLocData.FromJson(jsonTextReader);
                     }
                     catch (Exception ex)
                     {

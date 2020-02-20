@@ -1,13 +1,13 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
+using System.Text.Json.Serialization;
 
 namespace SimpleWeather.NWS
 {
     public class AlertRootobject
     {
-        [JsonProperty("@context")]
+        [JsonPropertyName("@context")]
         public Context context { get; set; }
-        [JsonProperty("@graph")]
+        [JsonPropertyName("@graph")]
         public AlertGraph[] graph { get; set; }
         public string title { get; set; }
     }
@@ -15,15 +15,15 @@ namespace SimpleWeather.NWS
     public partial class Context
     {
         public string wx { get; set; }
-        [JsonProperty("@vocab")]
+        [JsonPropertyName("@vocab")]
         public string vocab { get; set; }
     }
 
     public class AlertGraph
     {
-        [JsonProperty("@id")]
+        [JsonPropertyName("@id")]
         public string atId { get; set; }
-        [JsonProperty("@type")]
+        [JsonPropertyName("@type")]
         public string type { get; set; }
         public string id { get; set; }
         public string areaDesc { get; set; }
@@ -41,7 +41,7 @@ namespace SimpleWeather.NWS
         public string severity { get; set; }
         public string certainty { get; set; }
         public string urgency { get; set; }
-        [JsonProperty("event")]
+        [JsonPropertyName("event")]
         public string _event { get; set; }
         public string sender { get; set; }
         public string headline { get; set; }

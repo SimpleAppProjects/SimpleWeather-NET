@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using SimpleWeather.Utils;
+﻿using SimpleWeather.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

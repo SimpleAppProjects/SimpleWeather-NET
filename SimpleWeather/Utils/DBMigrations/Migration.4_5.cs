@@ -1,6 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using SimpleWeather.Location;
 using SimpleWeather.WeatherData;
 using System;
@@ -10,6 +8,8 @@ using System.Data.Common;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Windows.Storage;
 
@@ -48,27 +48,30 @@ namespace SimpleWeather.Utils
 
                             if (blobs != null)
                             {
-                                var jsonArr = JArray.Parse(blobs);
-
-                                foreach (var fcastBlob in jsonArr)
+                                try
                                 {
-                                    try
+                                    using (var jsonArr = JsonDocument.Parse(blobs))
                                     {
-                                        var json = fcastBlob?.ToString();
-                                        var child = JObject.Parse(json);
-                                        var date = child?.GetValue("date").Value<string>();
-
-                                        if (json != null && date != null)
+                                        foreach (var fcastBlob in jsonArr.RootElement.EnumerateArray())
                                         {
-                                            weatherDB.Database.ExecuteSqlRaw(
-                                                "INSERT INTO hr_forecasts (`query`, `dateblob`, `hr_forecast`) VALUES ({0}, {1}, {2})",
-                                                weather.query, date, json);
+                                            var json = fcastBlob.GetString();
+                                            using (var child = JsonDocument.Parse(json))
+                                            {
+                                                var date = child.RootElement.GetProperty("date").GetString();
+
+                                                if (json != null && date != null)
+                                                {
+                                                    weatherDB.Database.ExecuteSqlRaw(
+                                                        "INSERT INTO hr_forecasts (`query`, `dateblob`, `hr_forecast`) VALUES ({0}, {1}, {2})",
+                                                        weather.query, date, json);
+                                                }
+                                            }
                                         }
                                     }
-                                    catch (JsonReaderException e)
-                                    {
-                                        Logger.WriteLine(LoggerLevel.Error, e, "Error parsing json!");
-                                    }
+                                }
+                                catch (JsonException e)
+                                {
+                                    Logger.WriteLine(LoggerLevel.Error, e, "Error parsing json!");
                                 }
                             }
                         }

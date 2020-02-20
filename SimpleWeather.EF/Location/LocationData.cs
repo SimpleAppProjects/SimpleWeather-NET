@@ -1,11 +1,13 @@
-﻿using Newtonsoft.Json;
-using NodaTime;
+﻿using NodaTime;
 using SimpleWeather.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace SimpleWeather.Location
 {
@@ -15,24 +17,20 @@ namespace SimpleWeather.Location
         Search
     }
 
-    [JsonConverter(typeof(CustomJsonConverter))]
+    [JsonConverter(typeof(CustomJsonConverter<LocationData>))]
     [Table("locations")]
-    public partial class LocationData
+    public partial class LocationData : CustomJsonObject
     {
-        [JsonProperty]
         [Key]
         [Column(TypeName = "varchar")]
         public string query { get; set; }
 
-        [JsonProperty]
         [Column(TypeName = "varchar")]
         public string name { get; set; }
 
-        [JsonProperty]
         [Column(TypeName = "float")]
         public double latitude { get; set; }
 
-        [JsonProperty]
         [Column(TypeName = "float")]
         public double longitude { get; set; }
 
@@ -68,7 +66,6 @@ namespace SimpleWeather.Location
             }
         }
 
-        [JsonProperty]
         [Column(TypeName = "varchar")]
         public string tz_long { get; set; }
 
@@ -88,22 +85,19 @@ namespace SimpleWeather.Location
             }
         }
 
-        [JsonProperty]
         [EnumDataType(typeof(LocationType))]
         [Column(TypeName = "integer")]
         public LocationType locationType { get; set; } = LocationType.Search;
 
-        [JsonProperty]
         [Column("source", TypeName = "varchar")]
         public string weatherSource { get; set; }
 
-        [JsonProperty]
         [Column("locsource", TypeName = "varchar")]
         public string locationSource { get; set; }
 
         public override bool Equals(System.Object obj)
         {
-            if ((obj == null) || !this.GetType().Equals(obj.GetType()))
+            if ((obj == null) || !this.GetType().Equals(this.GetType()))
             {
                 return false;
             }
@@ -128,110 +122,98 @@ namespace SimpleWeather.Location
             return hashCode;
         }
 
-        public static LocationData FromJson(Newtonsoft.Json.JsonReader reader)
+        public override void FromJson(Utf8JsonReader reader)
         {
-            LocationData obj = null;
-
-            try
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
             {
-                obj = new LocationData();
+                if (reader.TokenType == JsonTokenType.StartObject)
+                    reader.Read(); // StartObject
 
-                while (reader.Read() && reader.TokenType != Newtonsoft.Json.JsonToken.EndObject)
+                string property = reader.GetString();
+                reader.Read(); // prop value
+
+                switch (property)
                 {
-                    if (reader.TokenType == Newtonsoft.Json.JsonToken.StartObject)
-                        reader.Read(); // StartObject
+                    case "query":
+                        this.query = reader.GetString();
+                        break;
 
-                    string property = reader.Value.ToString();
-                    reader.Read(); // prop value
+                    case "name":
+                        this.name = reader.GetString();
+                        break;
 
-                    switch (property)
-                    {
-                        case "query":
-                            obj.query = reader.Value?.ToString();
-                            break;
+                    case "latitude":
+                        this.latitude = reader.GetDouble();
+                        break;
 
-                        case "name":
-                            obj.name = reader.Value?.ToString();
-                            break;
+                    case "longitude":
+                        this.longitude = reader.GetDouble();
+                        break;
 
-                        case "latitude":
-                            obj.latitude = double.Parse(reader.Value?.ToString());
-                            break;
+                    case "tz_long":
+                        this.tz_long = reader.GetString();
+                        break;
 
-                        case "longitude":
-                            obj.longitude = double.Parse(reader.Value?.ToString());
-                            break;
+                    case "locationType":
+                        this.locationType = (LocationType)reader.GetInt32();
+                        break;
 
-                        case "tz_long":
-                            obj.tz_long = reader.Value?.ToString();
-                            break;
+                    case "source":
+                        this.weatherSource = reader.GetString();
+                        break;
 
-                        case "locationType":
-                            obj.locationType = (LocationType)int.Parse(reader.Value?.ToString());
-                            break;
-
-                        case "source":
-                            obj.weatherSource = reader.Value?.ToString();
-                            break;
-
-                        case "locsource":
-                            obj.locationSource = reader.Value?.ToString();
-                            break;
-                    }
+                    case "locsource":
+                        this.locationSource = reader.GetString();
+                        break;
                 }
             }
-            catch (Exception)
-            {
-                obj = null;
-            }
-
-            return obj;
         }
 
-        public string ToJson()
+        public override string ToJson()
         {
-            using (var sw = new System.IO.StringWriter())
-            using (var writer = new Newtonsoft.Json.JsonTextWriter(sw))
+            using (var stream = new System.IO.MemoryStream())
+            using (var writer = new Utf8JsonWriter(stream))
             {
                 // {
                 writer.WriteStartObject();
 
                 // "query" : ""
                 writer.WritePropertyName("query");
-                writer.WriteValue(query);
+                writer.WriteStringValue(query);
 
                 // "name" : ""
                 writer.WritePropertyName("name");
-                writer.WriteValue(name);
+                writer.WriteStringValue(name);
 
                 // "latitude" : ""
                 writer.WritePropertyName("latitude");
-                writer.WriteValue(latitude);
+                writer.WriteNumberValue(latitude);
 
                 // "longitude" : ""
                 writer.WritePropertyName("longitude");
-                writer.WriteValue(longitude);
+                writer.WriteNumberValue(longitude);
 
                 // "tz_long" : ""
                 writer.WritePropertyName("tz_long");
-                writer.WriteValue(tz_long);
+                writer.WriteStringValue(tz_long);
 
                 // "locationType" : ""
                 writer.WritePropertyName("locationType");
-                writer.WriteValue((int)locationType);
+                writer.WriteNumberValue((int)locationType);
 
                 // "source" : ""
                 writer.WritePropertyName("source");
-                writer.WriteValue(weatherSource);
+                writer.WriteStringValue(weatherSource);
 
                 // "locsource" : ""
                 writer.WritePropertyName("locsource");
-                writer.WriteValue(locationSource);
+                writer.WriteStringValue(locationSource);
 
                 // }
                 writer.WriteEndObject();
 
-                return sw.ToString();
+                writer.Flush();
+                return Encoding.UTF8.GetString(stream.ToArray());
             }
         }
 

@@ -1,11 +1,13 @@
-﻿using Newtonsoft.Json;
-using SimpleWeather.Utils;
+﻿using SimpleWeather.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Linq;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace SimpleWeather.WeatherData
 {
@@ -46,8 +48,8 @@ namespace SimpleWeather.WeatherData
         TsunamiWarning,
     }
 
-    [JsonConverter(typeof(CustomJsonConverter))]
-    public partial class WeatherAlert
+    [JsonConverter(typeof(CustomJsonConverter<WeatherAlert>))]
+    public partial class WeatherAlert : CustomJsonObject
     {
         public WeatherAlertType Type { get; set; } = WeatherAlertType.SpecialWeatherAlert;
         public WeatherAlertSeverity Severity { get; set; } = WeatherAlertSeverity.Unknown;
@@ -58,141 +60,123 @@ namespace SimpleWeather.WeatherData
         public DateTimeOffset ExpiresDate { get; set; }
         public bool Notified { get; set; } = false;
 
-        [JsonConstructor]
         private WeatherAlert()
         {
             // Needed for deserialization
         }
 
-        public static WeatherAlert FromJson(JsonReader extReader)
+        public override void FromJson(Utf8JsonReader extReader)
         {
-            WeatherAlert obj = null;
-            bool disposeReader = false;
-            JsonReader reader = null;
+            Utf8JsonReader reader;
 
-            try
+            string jsonValue;
+
+            if (extReader.TokenType == JsonTokenType.String || extReader.Read() && extReader.TokenType == JsonTokenType.String)
+                jsonValue = extReader.GetString();
+            else
+                jsonValue = null;
+
+            if (jsonValue == null)
+                reader = extReader;
+            else
             {
-                obj = new WeatherAlert();
-                string jsonValue;
-
-                if (extReader.TokenType == JsonToken.String || extReader.Read() && extReader.TokenType == JsonToken.String)
-                    jsonValue = extReader.Value?.ToString();
-                else
-                    jsonValue = null;
-
-                if (jsonValue == null)
-                    reader = extReader;
-                else
-                {
-                    disposeReader = true;
 #pragma warning disable CA2000 // Dispose objects before losing scope
-                    reader = new JsonTextReader(new System.IO.StringReader(jsonValue)) { CloseInput = true };
+                reader = new Utf8JsonReader(Encoding.UTF8.GetBytes(jsonValue));
 #pragma warning restore CA2000 // Dispose objects before losing scope
+                reader.Read(); // StartObject
+            }
+
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
+            {
+                if (reader.TokenType == JsonTokenType.StartObject)
                     reader.Read(); // StartObject
-                }
 
-                while (reader.Read() && reader.TokenType != JsonToken.EndObject)
+                string property = reader.GetString();
+                reader.Read(); // prop value
+
+                switch (property)
                 {
-                    if (reader.TokenType == JsonToken.StartObject)
-                        reader.Read(); // StartObject
+                    case nameof(Type):
+                        this.Type = (WeatherAlertType)reader.GetInt32();
+                        break;
 
-                    string property = reader.Value?.ToString();
-                    reader.Read(); // prop value
+                    case nameof(Title):
+                        this.Title = reader.GetString();
+                        break;
 
-                    switch (property)
-                    {
-                        case nameof(Type):
-                            obj.Type = (WeatherAlertType)int.Parse(reader.Value?.ToString());
-                            break;
+                    case nameof(Message):
+                        this.Message = reader.GetString();
+                        break;
 
-                        case nameof(Title):
-                            obj.Title = reader.Value?.ToString();
-                            break;
+                    case nameof(Attribution):
+                        this.Attribution = extReader.GetString();
+                        break;
 
-                        case nameof(Message):
-                            obj.Message = reader.Value?.ToString();
-                            break;
+                    case nameof(Date):
+                        bool parsed = DateTimeOffset.TryParseExact(reader.GetString(), "dd.MM.yyyy HH:mm:ss zzzz", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset result);
+                        if (!parsed) // If we can't parse try without format
+                            result = DateTimeOffset.Parse(reader.GetString());
+                        this.Date = result;
+                        break;
 
-                        case nameof(Attribution):
-                            obj.Attribution = reader.Value?.ToString();
-                            break;
+                    case nameof(ExpiresDate):
+                        parsed = DateTimeOffset.TryParseExact(reader.GetString(), "dd.MM.yyyy HH:mm:ss zzzz", CultureInfo.InvariantCulture, DateTimeStyles.None, out result);
+                        if (!parsed) // If we can't parse try without format
+                            result = DateTimeOffset.Parse(reader.GetString());
+                        this.ExpiresDate = result;
+                        break;
 
-                        case nameof(Date):
-                            bool parsed = DateTimeOffset.TryParseExact(reader.Value?.ToString(), "dd.MM.yyyy HH:mm:ss zzzz", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset result);
-                            if (!parsed) // If we can't parse try without format
-                                result = DateTimeOffset.Parse(reader.Value?.ToString());
-                            obj.Date = result;
-                            break;
+                    case nameof(Notified):
+                        this.Notified = reader.GetBoolean();
+                        break;
 
-                        case nameof(ExpiresDate):
-                            parsed = DateTimeOffset.TryParseExact(reader.Value?.ToString(), "dd.MM.yyyy HH:mm:ss zzzz", CultureInfo.InvariantCulture, DateTimeStyles.None, out result);
-                            if (!parsed) // If we can't parse try without format
-                                result = DateTimeOffset.Parse(reader.Value?.ToString());
-                            obj.ExpiresDate = result;
-                            break;
-
-                        case nameof(Notified):
-                            obj.Notified = (bool)reader.Value;
-                            break;
-
-                        default:
-                            break;
-                    }
+                    default:
+                        break;
                 }
             }
-            catch (Exception)
-            {
-                obj = null;
-            }
-            finally
-            {
-                if (disposeReader)
-                    reader?.Close();
-            }
-
-            return obj;
         }
 
-        public string ToJson()
+        public override string ToJson()
         {
-            using (var sw = new System.IO.StringWriter())
-            using (var writer = new JsonTextWriter(sw))
+            using (var stream = new System.IO.MemoryStream())
+            using (var writer = new Utf8JsonWriter(stream))
             {
                 // {
                 writer.WriteStartObject();
 
                 // "Type" : ""
                 writer.WritePropertyName(nameof(Type));
-                writer.WriteValue((int)Type);
+                writer.WriteNumberValue((int)Type);
 
                 // "Title" : ""
                 writer.WritePropertyName(nameof(Title));
-                writer.WriteValue(Title);
+                writer.WriteStringValue(Title);
 
                 // "Message" : ""
                 writer.WritePropertyName(nameof(Message));
-                writer.WriteValue(Message);
+                writer.WriteStringValue(Message);
 
                 // "Attribution" : ""
                 writer.WritePropertyName(nameof(Attribution));
-                writer.WriteValue(Attribution);
+                writer.WriteStringValue(Attribution);
 
                 // "Date" : ""
                 writer.WritePropertyName(nameof(Date));
-                writer.WriteValue(Date.ToString("dd.MM.yyyy HH:mm:ss zzzz"));
+                writer.WriteStringValue(Date.ToString("dd.MM.yyyy HH:mm:ss zzzz"));
 
                 // "ExpiresDate" : ""
                 writer.WritePropertyName(nameof(ExpiresDate));
-                writer.WriteValue(ExpiresDate.ToString("dd.MM.yyyy HH:mm:ss zzzz"));
+                writer.WriteStringValue(ExpiresDate.ToString("dd.MM.yyyy HH:mm:ss zzzz"));
 
                 // "Notified" : ""
                 writer.WritePropertyName(nameof(Notified));
-                writer.WriteValue(Notified);
+                writer.WriteBooleanValue(Notified);
 
                 // }
                 writer.WriteEndObject();
 
-                return sw.ToString();
+                writer.Flush();
+                return Encoding.UTF8.GetString(stream.ToArray());
             }
         }
 

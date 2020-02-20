@@ -1,11 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using SimpleWeather.Location;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace SimpleWeather.Utils
@@ -41,31 +42,31 @@ namespace SimpleWeather.Utils
                 .Property(w => w.location)
                 .HasConversion(
                     value => value.ToJson(),
-                    value => SimpleWeather.WeatherData.Location.FromJson(new JsonTextReader(new StringReader(value)) { CloseInput = true }));
+                    value => JSONParser.CustomDeserializer<WeatherData.Location>(value));
 
             modelBuilder.Entity<Weather>()
                 .Property(w => w.condition)
                 .HasConversion(
                     value => value.ToJson(),
-                    value => Condition.FromJson(new JsonTextReader(new StringReader(value)) { CloseInput = true }));
+                    value => JSONParser.CustomDeserializer<Condition>(value));
 
             modelBuilder.Entity<Weather>()
                 .Property(w => w.atmosphere)
                 .HasConversion(
                     value => value.ToJson(),
-                    value => Atmosphere.FromJson(new JsonTextReader(new StringReader(value)) { CloseInput = true }));
+                    value => JSONParser.CustomDeserializer<Atmosphere>(value));
 
             modelBuilder.Entity<Weather>()
                 .Property(w => w.astronomy)
                 .HasConversion(
                     value => value.ToJson(),
-                    value => Astronomy.FromJson(new JsonTextReader(new StringReader(value)) { CloseInput = true }));
+                    value => JSONParser.CustomDeserializer<Astronomy>(value));
 
             modelBuilder.Entity<Weather>()
                 .Property(w => w.precipitation)
                 .HasConversion(
                     value => value.ToJson(),
-                    value => Precipitation.FromJson(new JsonTextReader(new StringReader(value)) { CloseInput = true }));
+                    value => JSONParser.CustomDeserializer<Precipitation>(value));
 
             modelBuilder.Entity<Forecasts>()
                 .Property(f => f.forecast)
@@ -86,7 +87,7 @@ namespace SimpleWeather.Utils
                 .Property(f => f.hr_forecast)
                 .HasConversion(
                     value => value.ToJson(),
-                    value => HourlyForecast.FromJson(new JsonTextReader(new StringReader(value)) { CloseInput = true }));
+                    value => JSONParser.CustomDeserializer<HourlyForecast>(value));
 
             modelBuilder.Entity<WeatherAlerts>()
                 .Property(a => a.alerts)

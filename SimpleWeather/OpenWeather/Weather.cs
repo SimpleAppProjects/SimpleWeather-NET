@@ -1,4 +1,6 @@
-﻿namespace SimpleWeather.OpenWeather
+﻿using System.Text.Json.Serialization;
+
+namespace SimpleWeather.OpenWeather
 {
     public class CurrentRootobject
     {
@@ -101,9 +103,9 @@
         public float pressure { get; set; }
         public float sea_level { get; set; }
         public float grnd_level { get; set; }
-        [Newtonsoft.Json.JsonProperty(PropertyName = "humidity")]
+        [JsonPropertyName("humidity")]
         private string _humidity { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public string humidity { get { return _humidity + "%"; } set { _humidity = value; } }
         public float temp_kf { get; set; }
     }

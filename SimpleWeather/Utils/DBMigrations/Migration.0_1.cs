@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using SimpleWeather.Location;
+﻿using SimpleWeather.Location;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
@@ -7,6 +6,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Windows.Storage;
 
@@ -40,7 +40,7 @@ namespace SimpleWeather.Utils
                     {
                         locationData = await JSONParser.DeserializerAsync<List<LocationData>>(locDataFile).ConfigureAwait(false);
                     }
-                    catch (JsonSerializationException jsEx)
+                    catch (JsonException jsEx)
                     {
                         Logger.WriteLine(LoggerLevel.Error, jsEx, "SimpleWeather: DataMigration: location json error");
                         locationData = null;
@@ -59,7 +59,7 @@ namespace SimpleWeather.Utils
                     {
                         oldWeather = await JSONParser.DeserializerAsync<OrderedDictionary>(dataFile).ConfigureAwait(false);
                     }
-                    catch (JsonSerializationException jsEx)
+                    catch (JsonException jsEx)
                     {
                         Logger.WriteLine(LoggerLevel.Error, jsEx, "SimpleWeather: DataMigration: weather json error");
                         if (oldWeather == null)

@@ -1,15 +1,15 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
+using System.Text.Json.Serialization;
 
 namespace SimpleWeather.NWS
 {
     public class PointsRootobject
     {
-        [JsonProperty("@context")]
+        [JsonPropertyName("@context")]
         public Context context { get; set; }
-        [JsonProperty("@id")]
+        [JsonPropertyName("@id")]
         public string id { get; set; }
-        [JsonProperty("@type")]
+        [JsonPropertyName("@type")]
         public string type { get; set; }
         public string geometry { get; set; }
         public string cwa { get; set; }
@@ -48,61 +48,61 @@ namespace SimpleWeather.NWS
 
     public class Geometry
     {
-        [JsonProperty("@id")]
+        [JsonPropertyName("@id")]
         public string id { get; set; }
-        [JsonProperty("@type")]
+        [JsonPropertyName("@type")]
         public string type { get; set; }
     }
 
     public class Distance
     {
-        [JsonProperty("@id")]
+        [JsonPropertyName("@id")]
         public string id { get; set; }
-        [JsonProperty("@type")]
+        [JsonPropertyName("@type")]
         public string type { get; set; }
     }
 
     public class Bearing
     {
-        [JsonProperty("@type")]
+        [JsonPropertyName("@type")]
         public string type { get; set; }
     }
 
     public class Value
     {
-        [JsonProperty("@id")]
+        [JsonPropertyName("@id")]
         public string id { get; set; }
     }
 
     public class Unitcode
     {
-        [JsonProperty("@id")]
+        [JsonPropertyName("@id")]
         public string id { get; set; }
-        [JsonProperty("@type")]
+        [JsonPropertyName("@type")]
         public string type { get; set; }
     }
 
     public class Forecastoffice
     {
-        [JsonProperty("@type")]
+        [JsonPropertyName("@type")]
         public string type { get; set; }
     }
 
     public class Forecastgriddata
     {
-        [JsonProperty("@type")]
+        [JsonPropertyName("@type")]
         public string type { get; set; }
     }
 
     public class Publiczone
     {
-        [JsonProperty("@type")]
+        [JsonPropertyName("@type")]
         public string type { get; set; }
     }
 
     public class County
     {
-        [JsonProperty("@type")]
+        [JsonPropertyName("@type")]
         public string type { get; set; }
     }
 
@@ -188,9 +188,9 @@ namespace SimpleWeather.NWS
     public class ObservationsCurrentRootobject
     {
         public Context context { get; set; }
-        [JsonProperty("@id")]
+        [JsonPropertyName("@id")]
         public string id { get; set; }
-        [JsonProperty("@type")]
+        [JsonPropertyName("@type")]
         public string type { get; set; }
         public string geometry { get; set; }
         public Elevation elevation { get; set; }

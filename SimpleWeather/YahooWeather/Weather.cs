@@ -14,7 +14,7 @@
         public string region { get; set; }
         public string country { get; set; }
         public string lat { get; set; }
-        [Newtonsoft.Json.JsonProperty(PropertyName = "long")]
+        [System.Text.Json.Serialization.JsonPropertyName("long")]
         public string _long { get; set; }
         public string timezone_id { get; set; }
     }
@@ -37,13 +37,13 @@
 
     public class Atmosphere
     {
-        [Newtonsoft.Json.JsonProperty(PropertyName = "humidity")]
+        [System.Text.Json.Serialization.JsonPropertyName("humidity")]
         private string _humidity { get; set; }
         public string pressure { get; set; }
         public string rising { get; set; }
         public string visibility { get; set; }
 
-        [Newtonsoft.Json.JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
         public string humidity { get { return _humidity + "%"; } set { _humidity = value; } }
     }
 

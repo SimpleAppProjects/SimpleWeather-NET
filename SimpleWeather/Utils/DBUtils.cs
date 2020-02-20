@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using SimpleWeather.Location;
 using SimpleWeather.WeatherData;
 using System;

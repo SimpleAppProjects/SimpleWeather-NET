@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using NodaTime;
+﻿using NodaTime;
 using SimpleWeather.Utils;
 using System;
 using System.Collections.Generic;
