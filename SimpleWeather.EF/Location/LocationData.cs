@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Utf8Json;
 
 namespace SimpleWeather.Location
 {
@@ -17,7 +17,7 @@ namespace SimpleWeather.Location
         Search
     }
 
-    [JsonConverter(typeof(CustomJsonConverter<LocationData>))]
+    [JsonFormatter(typeof(CustomJsonConverter<LocationData>))]
     [Table("locations")]
     public partial class LocationData : CustomJsonObject
     {
@@ -34,7 +34,7 @@ namespace SimpleWeather.Location
         [Column(TypeName = "float")]
         public double longitude { get; set; }
 
-        [JsonIgnore]
+        [IgnoreDataMember]
         [NotMapped]
         public TimeSpan tz_offset
         {
@@ -50,7 +50,7 @@ namespace SimpleWeather.Location
             }
         }
 
-        [JsonIgnore]
+        [IgnoreDataMember]
         [NotMapped]
         public string tz_short
         {
@@ -69,7 +69,7 @@ namespace SimpleWeather.Location
         [Column(TypeName = "varchar")]
         public string tz_long { get; set; }
 
-        [JsonIgnore]
+        [IgnoreDataMember]
         [NotMapped]
         public string country_code
         {
@@ -122,48 +122,48 @@ namespace SimpleWeather.Location
             return hashCode;
         }
 
-        public override void FromJson(Utf8JsonReader reader)
+        public override void FromJson(ref JsonReader reader)
         {
-            while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
+            var count = 0; // managing array-count state in outer(this is count, not index(index is always count - 1)
+            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref count))
             {
-                if (reader.TokenType == JsonTokenType.StartObject)
-                    reader.Read(); // StartObject
+                reader.ReadIsBeginObject(); // StartObject
 
-                string property = reader.GetString();
-                reader.Read(); // prop value
+                string property = reader.ReadPropertyName();
+                //reader.ReadNext(); // prop value
 
                 switch (property)
                 {
                     case "query":
-                        this.query = reader.GetString();
+                        this.query = reader.ReadString();
                         break;
 
                     case "name":
-                        this.name = reader.GetString();
+                        this.name = reader.ReadString();
                         break;
 
                     case "latitude":
-                        this.latitude = reader.GetDouble();
+                        this.latitude = reader.ReadDouble();
                         break;
 
                     case "longitude":
-                        this.longitude = reader.GetDouble();
+                        this.longitude = reader.ReadDouble();
                         break;
 
                     case "tz_long":
-                        this.tz_long = reader.GetString();
+                        this.tz_long = reader.ReadString();
                         break;
 
                     case "locationType":
-                        this.locationType = (LocationType)reader.GetInt32();
+                        this.locationType = (LocationType)reader.ReadInt32();
                         break;
 
                     case "source":
-                        this.weatherSource = reader.GetString();
+                        this.weatherSource = reader.ReadString();
                         break;
 
                     case "locsource":
-                        this.locationSource = reader.GetString();
+                        this.locationSource = reader.ReadString();
                         break;
                 }
             }
@@ -171,50 +171,61 @@ namespace SimpleWeather.Location
 
         public override string ToJson()
         {
-            using (var stream = new System.IO.MemoryStream())
-            using (var writer = new Utf8JsonWriter(stream))
-            {
-                // {
-                writer.WriteStartObject();
+            var writer = new JsonWriter();
 
-                // "query" : ""
-                writer.WritePropertyName("query");
-                writer.WriteStringValue(query);
+            // {
+            writer.WriteBeginObject();
 
-                // "name" : ""
-                writer.WritePropertyName("name");
-                writer.WriteStringValue(name);
+            // "query" : ""
+            writer.WritePropertyName("query");
+            writer.WriteString(query);
 
-                // "latitude" : ""
-                writer.WritePropertyName("latitude");
-                writer.WriteNumberValue(latitude);
+            writer.WriteValueSeparator();
 
-                // "longitude" : ""
-                writer.WritePropertyName("longitude");
-                writer.WriteNumberValue(longitude);
+            // "name" : ""
+            writer.WritePropertyName("name");
+            writer.WriteString(name);
 
-                // "tz_long" : ""
-                writer.WritePropertyName("tz_long");
-                writer.WriteStringValue(tz_long);
+            writer.WriteValueSeparator();
 
-                // "locationType" : ""
-                writer.WritePropertyName("locationType");
-                writer.WriteNumberValue((int)locationType);
+            // "latitude" : ""
+            writer.WritePropertyName("latitude");
+            writer.WriteDouble(latitude);
 
-                // "source" : ""
-                writer.WritePropertyName("source");
-                writer.WriteStringValue(weatherSource);
+            writer.WriteValueSeparator();
 
-                // "locsource" : ""
-                writer.WritePropertyName("locsource");
-                writer.WriteStringValue(locationSource);
+            // "longitude" : ""
+            writer.WritePropertyName("longitude");
+            writer.WriteDouble(longitude);
 
-                // }
-                writer.WriteEndObject();
+            writer.WriteValueSeparator();
 
-                writer.Flush();
-                return Encoding.UTF8.GetString(stream.ToArray());
-            }
+            // "tz_long" : ""
+            writer.WritePropertyName("tz_long");
+            writer.WriteString(tz_long);
+
+            writer.WriteValueSeparator();
+
+            // "locationType" : ""
+            writer.WritePropertyName("locationType");
+            writer.WriteInt32((int)locationType);
+
+            writer.WriteValueSeparator();
+
+            // "source" : ""
+            writer.WritePropertyName("source");
+            writer.WriteString(weatherSource);
+
+            writer.WriteValueSeparator();
+
+            // "locsource" : ""
+            writer.WritePropertyName("locsource");
+            writer.WriteString(locationSource);
+
+            // }
+            writer.WriteEndObject();
+
+            return writer.ToString();
         }
 
         public bool IsValid()

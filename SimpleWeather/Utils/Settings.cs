@@ -100,9 +100,9 @@ namespace SimpleWeather.Utils
                 {
                     try
                     {
-                        var jsonTextReader = new System.Text.Json.Utf8JsonReader(System.Text.Encoding.UTF8.GetBytes(LastGPSLocation));
+                        var jsonTextReader = new Utf8Json.JsonReader(System.Text.Encoding.UTF8.GetBytes(LastGPSLocation));
                         lastGPSLocData = new LocationData();
-                        lastGPSLocData.FromJson(jsonTextReader);
+                        lastGPSLocData.FromJson(ref jsonTextReader);
                     }
                     catch (Exception ex)
                     {

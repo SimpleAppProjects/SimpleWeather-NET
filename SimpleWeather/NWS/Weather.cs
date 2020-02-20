@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Text.Json.Serialization;
+using System.Runtime.Serialization;
 
 namespace SimpleWeather.NWS
 {
     public class PointsRootobject
     {
-        [JsonPropertyName("@context")]
+        [DataMember(Name = "@context")]
         public Context context { get; set; }
-        [JsonPropertyName("@id")]
+        [DataMember(Name = "@id")]
         public string id { get; set; }
-        [JsonPropertyName("@type")]
+        [DataMember(Name = "@type")]
         public string type { get; set; }
         public string geometry { get; set; }
         public string cwa { get; set; }
@@ -48,61 +48,61 @@ namespace SimpleWeather.NWS
 
     public class Geometry
     {
-        [JsonPropertyName("@id")]
+        [DataMember(Name = "@id")]
         public string id { get; set; }
-        [JsonPropertyName("@type")]
+        [DataMember(Name = "@type")]
         public string type { get; set; }
     }
 
     public class Distance
     {
-        [JsonPropertyName("@id")]
+        [DataMember(Name = "@id")]
         public string id { get; set; }
-        [JsonPropertyName("@type")]
+        [DataMember(Name = "@type")]
         public string type { get; set; }
     }
 
     public class Bearing
     {
-        [JsonPropertyName("@type")]
+        [DataMember(Name = "@type")]
         public string type { get; set; }
     }
 
     public class Value
     {
-        [JsonPropertyName("@id")]
+        [DataMember(Name = "@id")]
         public string id { get; set; }
     }
 
     public class Unitcode
     {
-        [JsonPropertyName("@id")]
+        [DataMember(Name = "@id")]
         public string id { get; set; }
-        [JsonPropertyName("@type")]
+        [DataMember(Name = "@type")]
         public string type { get; set; }
     }
 
     public class Forecastoffice
     {
-        [JsonPropertyName("@type")]
+        [DataMember(Name = "@type")]
         public string type { get; set; }
     }
 
     public class Forecastgriddata
     {
-        [JsonPropertyName("@type")]
+        [DataMember(Name = "@type")]
         public string type { get; set; }
     }
 
     public class Publiczone
     {
-        [JsonPropertyName("@type")]
+        [DataMember(Name = "@type")]
         public string type { get; set; }
     }
 
     public class County
     {
-        [JsonPropertyName("@type")]
+        [DataMember(Name = "@type")]
         public string type { get; set; }
     }
 
@@ -188,9 +188,9 @@ namespace SimpleWeather.NWS
     public class ObservationsCurrentRootobject
     {
         public Context context { get; set; }
-        [JsonPropertyName("@id")]
+        [DataMember(Name = "@id")]
         public string id { get; set; }
-        [JsonPropertyName("@type")]
+        [DataMember(Name = "@type")]
         public string type { get; set; }
         public string geometry { get; set; }
         public Elevation elevation { get; set; }

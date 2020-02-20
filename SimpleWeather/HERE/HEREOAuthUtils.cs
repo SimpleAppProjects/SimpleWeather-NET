@@ -127,7 +127,7 @@ namespace SimpleWeather.HERE
 
             AsyncTask.Run(() =>
             {
-                HERESettingsContainer.Values[KEY_TOKEN] = JSONParser.Serializer(token, typeof(Token));
+                HERESettingsContainer.Values[KEY_TOKEN] = JSONParser.Serializer(token);
             });
         }
     }

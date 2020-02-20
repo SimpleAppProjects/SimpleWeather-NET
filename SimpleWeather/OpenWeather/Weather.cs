@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace SimpleWeather.OpenWeather
 {
@@ -103,9 +103,9 @@ namespace SimpleWeather.OpenWeather
         public float pressure { get; set; }
         public float sea_level { get; set; }
         public float grnd_level { get; set; }
-        [JsonPropertyName("humidity")]
+        [DataMember(Name = "humidity")]
         private string _humidity { get; set; }
-        [JsonIgnore]
+        [IgnoreDataMember]
         public string humidity { get { return _humidity + "%"; } set { _humidity = value; } }
         public float temp_kf { get; set; }
     }

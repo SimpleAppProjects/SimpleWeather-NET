@@ -1,9 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Utf8Json;
 
 #if WINDOWS_UWP
 using Windows.Storage;
@@ -13,43 +12,9 @@ namespace SimpleWeather.Utils
 {
     public static class JSONParser
     {
-        private static readonly JsonSerializerOptions DefaultSettings = default;
-
-        public static Object Deserializer(String response, Type type)
-        {
-            Object obj = null;
-
-            try
-            {
-                obj = JsonSerializer.Deserialize(response, type, DefaultSettings);
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteLine(LoggerLevel.Error, ex, "SimpleWeather: JSONParser: error deserializing");
-            }
-
-            return obj;
-        }
-
-        public static Object Deserializer(Stream stream, Type type)
-        {
-            Object obj = null;
-
-            try
-            {
-                return JsonSerializer.DeserializeAsync(stream, type, DefaultSettings).Result;
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteLine(LoggerLevel.Error, ex, "SimpleWeather: JSONParser: error deserializing");
-            }
-
-            return obj;
-        }
-
         public static T Deserializer<T>(String response)
         {
-            return JsonSerializer.Deserialize<T>(response, DefaultSettings);
+            return JsonSerializer.Deserialize<T>(response);
         }
 
         public static T Deserializer<T>(Stream stream)
@@ -58,7 +23,7 @@ namespace SimpleWeather.Utils
 
             try
             {
-                return JsonSerializer.DeserializeAsync<T>(stream, DefaultSettings).Result;
+                return JsonSerializer.Deserialize<T>(stream);
             }
             catch (Exception ex)
             {
@@ -68,52 +33,14 @@ namespace SimpleWeather.Utils
             return obj;
         }
 
-        public static Task<Object> DeserializerAsync(String response, Type type)
-        {
-            return Task.Run(() => JsonSerializer.Deserialize(response, type, DefaultSettings));
-        }
-
-        public static Task<Object> DeserializerAsync(Stream stream, Type type)
-        {
-            Object obj = null;
-
-            return Task.Run(async () =>
-            {
-                try
-                {
-                    return await JsonSerializer.DeserializeAsync(stream, type, DefaultSettings);
-                }
-                catch (Exception ex)
-                {
-                    Logger.WriteLine(LoggerLevel.Error, ex, "SimpleWeather: JSONParser: error deserializing");
-                }
-
-                return obj;
-            });
-        }
-
         public static Task<T> DeserializerAsync<T>(String response)
         {
-            return Task.Run(() => JsonSerializer.Deserialize<T>(response, DefaultSettings));
+            return Task.Run(() => Deserializer<T>(response));
         }
 
         public static Task<T> DeserializerAsync<T>(Stream stream)
         {
-            var obj = default(T);
-
-            return Task.Run(async () =>
-            {
-                try
-                {
-                    return await JsonSerializer.DeserializeAsync<T>(stream, DefaultSettings);
-                }
-                catch (Exception ex)
-                {
-                    Logger.WriteLine(LoggerLevel.Error, ex, "SimpleWeather: JSONParser: error deserializing");
-                }
-
-                return obj;
-            });
+            return Task.Run(() => Deserializer<T>(stream));
         }
 
 #if WINDOWS_UWP
@@ -133,7 +60,7 @@ namespace SimpleWeather.Utils
                 {
                     using (var fStream = new FileStream(file.Path, FileMode.Open, FileAccess.Read))
                     {
-                        return await JsonSerializer.DeserializeAsync<T>(fStream, DefaultSettings);
+                        return await JsonSerializer.DeserializeAsync<T>(fStream);
                     }
                 }
                 catch (Exception ex)
@@ -162,67 +89,63 @@ namespace SimpleWeather.Utils
                     // Clear file before writing
                     fStream.SetLength(0);
 
-                    await JsonSerializer.SerializeAsync(fStream, obj, DefaultSettings);
+                    await JsonSerializer.SerializeAsync(fStream, obj);
                     await transaction.CommitAsync();
                 }
             }).ConfigureAwait(false);
         }
 #endif
 
-        public static string Serializer(Object obj, Type type)
-        {
-            return JsonSerializer.Serialize(obj, type, DefaultSettings);
-        }
-
         public static string Serializer<T>(T obj)
         {
-            return JsonSerializer.Serialize<T>(obj, DefaultSettings);
+            return JsonSerializer.ToJsonString(obj);
         }
 
-        public static Task<string> SerializerAsync(Object obj, Type type)
+        public static Task<string> SerializerAsync<T>(T obj)
         {
-            return Task.Run(() => JsonSerializer.Serialize(obj, type, DefaultSettings));
+            return Task.Run(() => Serializer(obj));
         }
 
         public static string CustomSerializer<T>(T obj) where T : CustomJsonObject
         {
-            using (var writer = new Utf8JsonWriter(new MemoryStream()))
-            {
-                CustomSerializer(writer, obj);
-                var str = writer.ToString();
-                return str;
-            }
+            var writer = new JsonWriter();
+            CustomSerializer(ref writer, obj);
+            var str = writer.ToString();
+            return str;
         }
 
         public static T CustomDeserializer<T>(string json) where T : CustomJsonObject
         {
-            var reader = new Utf8JsonReader(Encoding.UTF8.GetBytes(json));
-            return CustomDeserializer<T>(reader);
+            var reader = new JsonReader(Encoding.UTF8.GetBytes(json));
+            return CustomDeserializer<T>(ref reader);
         }
 
         public static string CustomEnumerableSerializer<T>(System.Collections.Generic.IEnumerable<T> obj) where T : CustomJsonObject
         {
-            using (var writer = new Utf8JsonWriter(new MemoryStream()))
+            var writer = new JsonWriter();
+            writer.WriteBeginArray();
+            var itemCount = 0;
+            foreach (var item in obj)
             {
-                writer.WriteStartArray();
-                foreach (var item in obj)
-                {
-                    CustomSerializer(writer, item);
-                }
-                writer.WriteEndArray();
-                var str = writer.ToString();
-                return str;
-            };
+                if (itemCount > 0)
+                    writer.WriteValueSeparator();
+                CustomSerializer(ref writer, item);
+                itemCount++;
+            }
+            writer.WriteEndArray();
+            var str = writer.ToString();
+            return str;
         }
 
         public static System.Collections.Generic.List<T> CustomEnumerableDeserializer<T>(string json) where T : CustomJsonObject
         {
             var list = new System.Collections.Generic.List<T>();
-            var reader = new Utf8JsonReader(Encoding.UTF8.GetBytes(json));
-            while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
+            var reader = new JsonReader(Encoding.UTF8.GetBytes(json));
+            var count = 0; // managing array-count state in outer(this is count, not index(index is always count - 1)
+            while ((reader.ReadIsInArray(ref count)))
             {
-                if (reader.TokenType == JsonTokenType.String)
-                    list.Add(CustomDeserializer<T>(reader));
+                if (reader.GetCurrentJsonToken() == JsonToken.String)
+                    list.Add(CustomDeserializer<T>(ref reader));
             }
             return list;
         }
@@ -232,13 +155,13 @@ namespace SimpleWeather.Utils
             return objectType.BaseType == typeof(CustomJsonObject);
         }
 
-        internal static T CustomDeserializer<T>(Utf8JsonReader reader) where T : CustomJsonObject
+        internal static T CustomDeserializer<T>(ref JsonReader reader) where T : CustomJsonObject
         {
             T obj = null;
             try
             {
                 obj = Activator.CreateInstance(typeof(T), true) as T;
-                obj.FromJson(reader);
+                obj.FromJson(ref reader);
             }
             catch (Exception ex)
             {
@@ -248,27 +171,22 @@ namespace SimpleWeather.Utils
             return obj;
         }
 
-        internal static void CustomSerializer<T>(Utf8JsonWriter writer, T value) where T : CustomJsonObject
+        internal static void CustomSerializer<T>(ref JsonWriter writer, T value) where T : CustomJsonObject
         {
-            writer.WriteStringValue(value.ToJson());
+            writer.WriteString(value.ToJson());
         }
     }
 
-    public class CustomJsonConverter<T> : JsonConverter<T> where T : CustomJsonObject
+    public class CustomJsonConverter<T> : IJsonFormatter<T> where T : CustomJsonObject
     {
-        public override bool CanConvert(Type objectType)
+        public T Deserialize(ref JsonReader reader, IJsonFormatterResolver formatterResolver)
         {
-            return JSONParser.CanCustomConvert(objectType);
+            return JSONParser.CustomDeserializer<T>(ref reader);
         }
 
-        public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public void Serialize(ref JsonWriter writer, T value, IJsonFormatterResolver formatterResolver)
         {
-            return JSONParser.CustomDeserializer<T>(reader);
-        }
-
-        public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
-        {
-            JSONParser.CustomSerializer(writer, value);
+            JSONParser.CustomSerializer(ref writer, value);
         }
     }
 
@@ -280,6 +198,6 @@ namespace SimpleWeather.Utils
         /// </summary>
         /// <param name="reader"></param>
         /// <exception cref="JsonException"></exception>
-        public abstract void FromJson(Utf8JsonReader reader);
+        public abstract void FromJson(ref JsonReader reader);
     }
 }

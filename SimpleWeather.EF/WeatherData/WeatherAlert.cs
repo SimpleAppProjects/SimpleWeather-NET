@@ -6,8 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Utf8Json;
 
 namespace SimpleWeather.WeatherData
 {
@@ -48,7 +47,7 @@ namespace SimpleWeather.WeatherData
         TsunamiWarning,
     }
 
-    [JsonConverter(typeof(CustomJsonConverter<WeatherAlert>))]
+    [JsonFormatter(typeof(CustomJsonConverter<WeatherAlert>))]
     public partial class WeatherAlert : CustomJsonObject
     {
         public WeatherAlertType Type { get; set; } = WeatherAlertType.SpecialWeatherAlert;
@@ -65,14 +64,15 @@ namespace SimpleWeather.WeatherData
             // Needed for deserialization
         }
 
-        public override void FromJson(Utf8JsonReader extReader)
+        public override void FromJson(ref JsonReader extReader)
         {
-            Utf8JsonReader reader;
+            JsonReader reader;
 
             string jsonValue;
 
-            if (extReader.TokenType == JsonTokenType.String || extReader.Read() && extReader.TokenType == JsonTokenType.String)
-                jsonValue = extReader.GetString();
+            var token = extReader.GetCurrentJsonToken();
+            if (token == JsonToken.String)
+                jsonValue = extReader.ReadString();
             else
                 jsonValue = null;
 
@@ -81,53 +81,53 @@ namespace SimpleWeather.WeatherData
             else
             {
 #pragma warning disable CA2000 // Dispose objects before losing scope
-                reader = new Utf8JsonReader(Encoding.UTF8.GetBytes(jsonValue));
+                reader = new JsonReader(Encoding.UTF8.GetBytes(jsonValue));
 #pragma warning restore CA2000 // Dispose objects before losing scope
-                reader.Read(); // StartObject
+                reader.ReadNext(); // StartObject
             }
 
-            while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
+            var count = 0;
+            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref count))
             {
-                if (reader.TokenType == JsonTokenType.StartObject)
-                    reader.Read(); // StartObject
+                reader.ReadIsBeginObject(); // StartObject
 
-                string property = reader.GetString();
-                reader.Read(); // prop value
+                string property = reader.ReadPropertyName();
+                //reader.Read(); // prop value
 
                 switch (property)
                 {
                     case nameof(Type):
-                        this.Type = (WeatherAlertType)reader.GetInt32();
+                        this.Type = (WeatherAlertType)reader.ReadInt32();
                         break;
 
                     case nameof(Title):
-                        this.Title = reader.GetString();
+                        this.Title = reader.ReadString();
                         break;
 
                     case nameof(Message):
-                        this.Message = reader.GetString();
+                        this.Message = reader.ReadString();
                         break;
 
                     case nameof(Attribution):
-                        this.Attribution = extReader.GetString();
+                        this.Attribution = reader.ReadString();
                         break;
 
                     case nameof(Date):
-                        bool parsed = DateTimeOffset.TryParseExact(reader.GetString(), "dd.MM.yyyy HH:mm:ss zzzz", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset result);
+                        bool parsed = DateTimeOffset.TryParseExact(reader.ReadString(), DateTimeUtils.DATETIMEOFFSET_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset result);
                         if (!parsed) // If we can't parse try without format
-                            result = DateTimeOffset.Parse(reader.GetString());
+                            result = DateTimeOffset.Parse(reader.ReadString());
                         this.Date = result;
                         break;
 
                     case nameof(ExpiresDate):
-                        parsed = DateTimeOffset.TryParseExact(reader.GetString(), "dd.MM.yyyy HH:mm:ss zzzz", CultureInfo.InvariantCulture, DateTimeStyles.None, out result);
+                        parsed = DateTimeOffset.TryParseExact(reader.ReadString(), DateTimeUtils.DATETIMEOFFSET_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.None, out result);
                         if (!parsed) // If we can't parse try without format
-                            result = DateTimeOffset.Parse(reader.GetString());
+                            result = DateTimeOffset.Parse(reader.ReadString());
                         this.ExpiresDate = result;
                         break;
 
                     case nameof(Notified):
-                        this.Notified = reader.GetBoolean();
+                        this.Notified = reader.ReadBoolean();
                         break;
 
                     default:
@@ -138,46 +138,55 @@ namespace SimpleWeather.WeatherData
 
         public override string ToJson()
         {
-            using (var stream = new System.IO.MemoryStream())
-            using (var writer = new Utf8JsonWriter(stream))
-            {
-                // {
-                writer.WriteStartObject();
+            var writer = new JsonWriter();
 
-                // "Type" : ""
-                writer.WritePropertyName(nameof(Type));
-                writer.WriteNumberValue((int)Type);
+            // {
+            writer.WriteBeginObject();
 
-                // "Title" : ""
-                writer.WritePropertyName(nameof(Title));
-                writer.WriteStringValue(Title);
+            // "Type" : ""
+            writer.WritePropertyName(nameof(Type));
+            writer.WriteInt32((int)Type);
 
-                // "Message" : ""
-                writer.WritePropertyName(nameof(Message));
-                writer.WriteStringValue(Message);
+            writer.WriteValueSeparator();
 
-                // "Attribution" : ""
-                writer.WritePropertyName(nameof(Attribution));
-                writer.WriteStringValue(Attribution);
+            // "Title" : ""
+            writer.WritePropertyName(nameof(Title));
+            writer.WriteString(Title);
 
-                // "Date" : ""
-                writer.WritePropertyName(nameof(Date));
-                writer.WriteStringValue(Date.ToString("dd.MM.yyyy HH:mm:ss zzzz"));
+            writer.WriteValueSeparator();
 
-                // "ExpiresDate" : ""
-                writer.WritePropertyName(nameof(ExpiresDate));
-                writer.WriteStringValue(ExpiresDate.ToString("dd.MM.yyyy HH:mm:ss zzzz"));
+            // "Message" : ""
+            writer.WritePropertyName(nameof(Message));
+            writer.WriteString(Message);
 
-                // "Notified" : ""
-                writer.WritePropertyName(nameof(Notified));
-                writer.WriteBooleanValue(Notified);
+            writer.WriteValueSeparator();
 
-                // }
-                writer.WriteEndObject();
+            // "Attribution" : ""
+            writer.WritePropertyName(nameof(Attribution));
+            writer.WriteString(Attribution);
 
-                writer.Flush();
-                return Encoding.UTF8.GetString(stream.ToArray());
-            }
+            writer.WriteValueSeparator();
+
+            // "Date" : ""
+            writer.WritePropertyName(nameof(Date));
+            writer.WriteString(Date.ToDateTimeOffsetFormat());
+
+            writer.WriteValueSeparator();
+
+            // "ExpiresDate" : ""
+            writer.WritePropertyName(nameof(ExpiresDate));
+            writer.WriteString(ExpiresDate.ToDateTimeOffsetFormat());
+
+            writer.WriteValueSeparator();
+
+            // "Notified" : ""
+            writer.WritePropertyName(nameof(Notified));
+            writer.WriteBoolean(Notified);
+
+            // }
+            writer.WriteEndObject();
+
+            return writer.ToString();
         }
 
         public override bool Equals(object obj)
