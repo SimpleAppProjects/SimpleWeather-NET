@@ -2069,12 +2069,12 @@ namespace SimpleWeather.WeatherData
         {
             get
             {
-                if (DateTimeOffset.TryParseExact(dateblob, DateTimeUtils.DATETIMEOFFSET_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out DateTimeOffset result))
+                if (DateTimeOffset.TryParseExact(dateblob, "yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out DateTimeOffset result))
                     return result;
                 else
                     return DateTimeOffset.Parse(dateblob);
             }
-            set { dateblob = value.ToDateTimeOffsetFormat(); }
+            set { dateblob = value.ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture); }
         }
 
         [Column(TypeName = "varchar")]
