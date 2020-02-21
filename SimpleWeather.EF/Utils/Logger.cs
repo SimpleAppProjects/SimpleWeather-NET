@@ -29,7 +29,7 @@ namespace SimpleWeather.Utils
 #if DEBUG
             Timber.Plant(new Timber.DebugTree());
             Timber.Plant(new FileLoggingTree());
-#else
+#elif !UNIT_TEST
             CleanupLogs();
             Timber.Plant(new AppCenterLoggingTree());
 #endif
@@ -63,7 +63,7 @@ namespace SimpleWeather.Utils
 
         private static void CleanupLogs()
         {
-#if WINDOWS_UWP
+#if WINDOWS_UWP && !UNIT_TEST
             AsyncTask.Run(async () =>
             {
                 await FileUtils.DeleteDirectory(System.IO.Path.Combine(ApplicationData.Current.LocalFolder.Path, "logs"));

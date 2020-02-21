@@ -1,4 +1,5 @@
-﻿using Microsoft.AppCenter.Crashes;
+﻿#if WINDOWS_UWP && !UNIT_TEST
+using Microsoft.AppCenter.Crashes;
 using System;
 using System.Collections.Generic;
 
@@ -39,3 +40,4 @@ namespace SimpleWeather.Utils
         }
     }
 }
+#endif

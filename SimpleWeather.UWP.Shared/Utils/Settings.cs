@@ -1,6 +1,5 @@
 ﻿using SimpleWeather.UWP.Helpers;
 using SimpleWeather.WeatherData;
-using SQLite;
 using System;
 using System.IO;
 using System.Threading.Tasks;

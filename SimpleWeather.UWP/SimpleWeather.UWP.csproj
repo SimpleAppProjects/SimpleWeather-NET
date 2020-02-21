@@ -304,7 +304,6 @@
     <Compile Include="Tiles\SecondaryTileUtils.cs" />
     <Compile Include="Helpers\StringBooleanConverter.cs" />
     <Compile Include="Helpers\IPageVerification.cs" />
-    <Compile Include="Helpers\UserThemeMode.cs" />
     <Compile Include="Main\LocationSearchPage.xaml.cs">
       <DependentUpon>LocationSearchPage.xaml</DependentUpon>
     </Compile>
@@ -350,7 +349,6 @@
     </Compile>
     <Compile Include="Controls\Toast.cs" />
     <Compile Include="Helpers\BooleanToVisibilityConverter.cs" />
-    <Compile Include="Helpers\StringExtensions.cs" />
     <Compile Include="Helpers\StringVisibilityConverter.cs" />
     <Compile Include="Notifications\WeatherAlertCreator.cs" />
     <Compile Include="Tiles\WeatherTileCreator.cs" />
@@ -367,10 +365,6 @@
     <Compile Include="Main\Shell.xaml.cs">
       <DependentUpon>Shell.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Utils\FileUtils.cs" />
-    <Compile Include="Utils\Settings.cs" />
-    <Compile Include="WeatherData\IWeatherProviderImpl.cs" />
-    <Compile Include="WeatherData\WeatherProviderImpl.cs" />
     <Compile Include="Main\WeatherNow.xaml.cs">
       <DependentUpon>WeatherNow.xaml</DependentUpon>
     </Compile>
@@ -617,6 +611,7 @@
       <Name>Timber</Name>
     </ProjectReference>
   </ItemGroup>
+  <Import Project="..\SimpleWeather.UWP.Shared\SimpleWeather.UWP.Shared.projitems" Label="Shared" />
   <Import Project="..\SimpleWeather\SimpleWeather_Xamarin.projitems" Label="Shared" />
   <Import Project="..\SimpleWeather.EF\SimpleWeather.EF.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

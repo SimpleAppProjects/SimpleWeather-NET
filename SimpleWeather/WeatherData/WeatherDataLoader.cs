@@ -1,6 +1,8 @@
 ﻿using SimpleWeather.Location;
 using SimpleWeather.Utils;
+#if WINDOWS_UWP && !UNIT_TEST
 using SimpleWeather.UWP.Tiles;
+#endif
 using System;
 using System.Globalization;
 using System.Linq;
@@ -207,11 +209,13 @@ namespace SimpleWeather.WeatherData
                             else
                                 await Settings.UpdateLocationWithKey(location, oldKey);
 
+#if WINDOWS_UWP && !UNIT_TEST
                             // Update tile id for location
                             if (SecondaryTileUtils.Exists(oldKey))
                             {
                                 await AsyncTask.RunAsync(SecondaryTileUtils.UpdateTileId(oldKey, location.query));
                             }
+#endif
                         }
                     }
 

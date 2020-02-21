@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 namespace SimpleWeather.Utils
 {
 #pragma warning disable CA1063 // Implement IDisposable Correctly
+
     public class FileLoggingTree : TimberLog.Timber.Tree, IDisposable
 #pragma warning restore CA1063 // Implement IDisposable Correctly
     {
@@ -75,7 +76,7 @@ namespace SimpleWeather.Utils
 
                 if (!ranCleanup)
                 {
-                    AsyncTask.Run(() =>
+                    Task.Run(() =>
                     {
                         try
                         {

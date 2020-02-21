@@ -27,6 +27,7 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Data\Migrations\WeatherDB\WeatherDBContextModelSnapshot.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\DateTimeUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\FileLoggingTree.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\JSONParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Logger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\Weather.cs" />

@@ -15,13 +15,20 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EFProject", "EFProject\EFPr
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SimpleWeather.EF", "SimpleWeather.EF\SimpleWeather.EF.shproj", "{CF5E4A00-D354-4243-972F-EB956BAA42CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timber", "Timber\Timber.csproj", "{479286CE-E244-4D81-A8F4-A5982AF86AF9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Timber", "Timber\Timber.csproj", "{479286CE-E244-4D81-A8F4-A5982AF86AF9}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SimpleWeather.UWP.Shared", "SimpleWeather.UWP.Shared\SimpleWeather.UWP.Shared.shproj", "{71735C8A-0B72-4CC7-8118-E53723D416C1}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		SimpleWeather.EF\SimpleWeather.EF.projitems*{0cc8f69f-eebc-40b4-9e7c-c2974a00764d}*SharedItemsImports = 4
+		SimpleWeather.UWP.Shared\SimpleWeather.UWP.Shared.projitems*{0cc8f69f-eebc-40b4-9e7c-c2974a00764d}*SharedItemsImports = 4
+		SimpleWeather\SimpleWeather_Xamarin.projitems*{0cc8f69f-eebc-40b4-9e7c-c2974a00764d}*SharedItemsImports = 4
 		SimpleWeather\SimpleWeather_Xamarin.projitems*{3633f453-ecbb-41d1-a87d-2cc3bdd74221}*SharedItemsImports = 13
 		SimpleWeather.EF\SimpleWeather.EF.projitems*{552847dd-608d-4da9-9ced-0c8416049742}*SharedItemsImports = 4
+		SimpleWeather.UWP.Shared\SimpleWeather.UWP.Shared.projitems*{552847dd-608d-4da9-9ced-0c8416049742}*SharedItemsImports = 4
 		SimpleWeather\SimpleWeather_Xamarin.projitems*{552847dd-608d-4da9-9ced-0c8416049742}*SharedItemsImports = 4
+		SimpleWeather.UWP.Shared\SimpleWeather.UWP.Shared.projitems*{71735c8a-0b72-4cc7-8118-e53723d416c1}*SharedItemsImports = 13
 		SimpleWeather.EF\SimpleWeather.EF.projitems*{cf5e4a00-d354-4243-972f-eb956baa42ca}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
