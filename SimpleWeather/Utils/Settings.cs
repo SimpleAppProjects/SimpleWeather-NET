@@ -499,7 +499,7 @@ namespace SimpleWeather.Utils
                     using (var locationDB = new LocationDBContext())
                     {
                         // Update
-                        await AsyncTask.RunAsync(() => locationDB.UpdateOrReplace(location));
+                        await AsyncTask.RunAsync(locationDB.AddOrUpdateAsync(location, location.query));
                         await locationDB.SaveChangesAsync();
                     }
                 }
@@ -597,7 +597,7 @@ namespace SimpleWeather.Utils
                     {
                         // UpdateAsync
                         fav.position = favs.IndexOf(fav);
-                        await AsyncTask.RunAsync(() => locationDB.UpdateOrReplace(fav));
+                        await AsyncTask.RunAsync(locationDB.AddOrUpdateAsync(fav, fav.query));
                     }
 
                     await locationDB.SaveChangesAsync();

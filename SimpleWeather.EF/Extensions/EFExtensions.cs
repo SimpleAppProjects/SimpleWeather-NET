@@ -45,21 +45,5 @@ namespace SimpleWeather.EF.Extensions
                 return entry;
             }
         }
-
-        public static EntityEntry<T> UpdateOrReplace<T>(this DbContext context, T entity) where T : class
-        {
-            var entry = context.Entry(entity);
-
-            if (entry.State == EntityState.Detached)
-            {
-                return context.Update(entity);
-            }
-            else
-            {
-                entry.CurrentValues.SetValues(entity);
-                entry.State = EntityState.Modified;
-                return entry;
-            }
-        }
     }
 }
