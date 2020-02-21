@@ -15,7 +15,7 @@ namespace SimpleWeather.HERE
 
     public class Metainfo
     {
-        public DateTime timestamp { get; set; }
+        public string timestamp { get; set; }
         public string nextPageInformation { get; set; }
     }
 
@@ -87,7 +87,7 @@ namespace SimpleWeather.HERE
 
     public class Admininfo
     {
-        public DateTime localTime { get; set; }
+        public string localTime { get; set; }
         public string currency { get; set; }
         public string drivingSide { get; set; }
         public string systemOfMeasure { get; set; }

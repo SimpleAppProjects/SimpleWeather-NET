@@ -14,7 +14,7 @@ namespace SimpleWeather.WeatherData
         public Weather(WeatherYahoo.Rootobject root)
         {
             location = new Location(root.location);
-            update_time = ConversionMethods.ToEpochDateTime(root.current_observation.pubDate);
+            update_time = ConversionMethods.ToEpochDateTime(root.current_observation.pubDate.ToString(CultureInfo.InvariantCulture));
             forecast = new List<Forecast>(root.forecasts.Length);
             for (int i = 0; i < root.forecasts.Length; i++)
             {
@@ -437,8 +437,8 @@ namespace SimpleWeather.WeatherData
         {
             // Use location name from location provider
             name = null;
-            latitude = location.lat;
-            longitude = location._long;
+            latitude = location.lat.ToString(CultureInfo.InvariantCulture);
+            longitude = location._long.ToString(CultureInfo.InvariantCulture);
             tz_offset = TimeSpan.Zero;
             tz_short = "UTC";
             tz_long = location.timezone_id;
@@ -498,14 +498,14 @@ namespace SimpleWeather.WeatherData
     {
         public Forecast(WeatherYahoo.Forecast forecast)
         {
-            date = ConversionMethods.ToEpochDateTime(forecast.date);
-            high_f = forecast.high;
+            date = ConversionMethods.ToEpochDateTime(forecast.date.ToString(CultureInfo.InvariantCulture));
+            high_f = forecast.high.ToString(CultureInfo.InvariantCulture);
             high_c = ConversionMethods.FtoC(high_f);
-            low_f = forecast.low;
+            low_f = forecast.low.ToString(CultureInfo.InvariantCulture);
             low_c = ConversionMethods.FtoC(low_f);
             condition = forecast.text;
             icon = WeatherManager.GetProvider(WeatherAPI.Yahoo)
-                   .GetWeatherIcon(forecast.code);
+                   .GetWeatherIcon(forecast.code.ToString(CultureInfo.InvariantCulture));
         }
 
         public Forecast(WeatherUnderground.Forecastday1 forecast)
@@ -898,15 +898,15 @@ namespace SimpleWeather.WeatherData
         public Condition(WeatherYahoo.Current_Observation observation)
         {
             weather = observation.condition.text;
-            temp_f = float.Parse(observation.condition.temperature);
-            temp_c = float.Parse(ConversionMethods.FtoC(observation.condition.temperature));
-            wind_degrees = int.Parse(observation.wind.direction);
-            wind_kph = float.Parse(observation.wind.speed);
-            wind_mph = float.Parse(ConversionMethods.KphToMph(observation.wind.speed));
-            feelslike_f = float.Parse(observation.wind.chill);
-            feelslike_c = float.Parse(ConversionMethods.FtoC(observation.wind.chill));
+            temp_f = observation.condition.temperature;
+            temp_c = float.Parse(ConversionMethods.FtoC(observation.condition.temperature.ToString(CultureInfo.InvariantCulture)));
+            wind_degrees = observation.wind.direction;
+            wind_kph = observation.wind.speed;
+            wind_mph = float.Parse(ConversionMethods.KphToMph(observation.wind.speed.ToString(CultureInfo.InvariantCulture)));
+            feelslike_f = observation.wind.chill;
+            feelslike_c = float.Parse(ConversionMethods.FtoC(observation.wind.chill.ToString(CultureInfo.InvariantCulture)));
             icon = WeatherManager.GetProvider(WeatherAPI.Yahoo)
-                   .GetWeatherIcon(observation.condition.code);
+                   .GetWeatherIcon(observation.condition.code.ToString(CultureInfo.InvariantCulture));
         }
 
         public Condition(OpenWeather.CurrentRootobject root)
@@ -1056,10 +1056,10 @@ namespace SimpleWeather.WeatherData
         public Atmosphere(WeatherYahoo.Atmosphere atmosphere)
         {
             humidity = atmosphere.humidity;
-            pressure_mb = atmosphere.pressure;
+            pressure_mb = atmosphere.pressure.ToString(CultureInfo.InvariantCulture);
             pressure_in = ConversionMethods.MBToInHg(pressure_mb);
-            pressure_trend = atmosphere.rising;
-            visibility_km = atmosphere.visibility;
+            pressure_trend = atmosphere.rising.ToString(CultureInfo.InvariantCulture);
+            visibility_km = atmosphere.visibility.ToString(CultureInfo.InvariantCulture);
             visibility_mi = ConversionMethods.KmToMi(visibility_km);
         }
 

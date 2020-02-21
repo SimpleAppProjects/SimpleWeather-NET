@@ -12,6 +12,11 @@ namespace SimpleWeather.Utils
 {
     public static class JSONParser
     {
+        static JSONParser()
+        {
+            JsonSerializer.SetDefaultResolver(Utf8Json.Resolvers.StandardResolver.AllowPrivate);
+        }
+
         public static T Deserializer<T>(String response)
         {
             return JsonSerializer.Deserialize<T>(response);
