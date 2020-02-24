@@ -59,6 +59,9 @@ namespace SimpleWeather.Utils
 
                 var path = Path.Combine(directory, fileName);
 
+                if (!Directory.Exists(directory))
+                    Directory.CreateDirectory(directory);
+
                 if (fileStream == null || fileStream.Name != path)
                 {
                     fileStream?.Flush();
