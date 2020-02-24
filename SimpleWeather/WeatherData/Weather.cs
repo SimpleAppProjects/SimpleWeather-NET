@@ -347,7 +347,7 @@ namespace SimpleWeather.WeatherData
             location = new Location(root.observations.location[0]);
             update_time = root.feedCreation;
             forecast = new List<Forecast>(root.dailyForecasts.forecastLocation.forecast.Length);
-            for (int i = 0; i < forecast.Count; i++)
+            for (int i = 0; i < root.dailyForecasts.forecastLocation.forecast.Length; i++)
             {
                 forecast.Add(new Forecast(root.dailyForecasts.forecastLocation.forecast[i]));
             }
@@ -360,7 +360,7 @@ namespace SimpleWeather.WeatherData
                 hr_forecast.Add(new HourlyForecast(forecast1));
             }
             txt_forecast = new List<TextForecast>(root.dailyForecasts.forecastLocation.forecast.Length);
-            for (int i = 0; i < txt_forecast.Count; i++)
+            for (int i = 0; i < root.dailyForecasts.forecastLocation.forecast.Length; i++)
             {
                 txt_forecast.Add(new TextForecast(root.dailyForecasts.forecastLocation.forecast[i]));
             }
@@ -403,7 +403,7 @@ namespace SimpleWeather.WeatherData
             if (hourlyForecastRootobject != null)
             {
                 hr_forecast = new List<HourlyForecast>(hourlyForecastRootobject.periods.Length);
-                for (int i = 0; i < hr_forecast.Count; i++)
+                for (int i = 0; i < hourlyForecastRootobject.periods.Length; i++)
                 {
                     hr_forecast.Add(new HourlyForecast(hourlyForecastRootobject.periods[i]));
                 }
@@ -901,8 +901,8 @@ namespace SimpleWeather.WeatherData
             temp_f = observation.condition.temperature;
             temp_c = float.Parse(ConversionMethods.FtoC(observation.condition.temperature.ToString(CultureInfo.InvariantCulture)));
             wind_degrees = observation.wind.direction;
-            wind_kph = observation.wind.speed;
-            wind_mph = float.Parse(ConversionMethods.KphToMph(observation.wind.speed.ToString(CultureInfo.InvariantCulture)));
+            wind_mph = observation.wind.speed;
+            wind_kph = float.Parse(ConversionMethods.MphToKph(observation.wind.speed.ToString(CultureInfo.InvariantCulture)));
             feelslike_f = observation.wind.chill;
             feelslike_c = float.Parse(ConversionMethods.FtoC(observation.wind.chill.ToString(CultureInfo.InvariantCulture)));
             icon = WeatherManager.GetProvider(WeatherAPI.Yahoo)
@@ -1056,11 +1056,11 @@ namespace SimpleWeather.WeatherData
         public Atmosphere(WeatherYahoo.Atmosphere atmosphere)
         {
             humidity = atmosphere.humidity;
-            pressure_mb = atmosphere.pressure.ToString(CultureInfo.InvariantCulture);
-            pressure_in = ConversionMethods.MBToInHg(pressure_mb);
+            pressure_in = atmosphere.pressure.ToString(CultureInfo.InvariantCulture);
+            pressure_mb = ConversionMethods.InHgToMB(pressure_in);
             pressure_trend = atmosphere.rising.ToString(CultureInfo.InvariantCulture);
-            visibility_km = atmosphere.visibility.ToString(CultureInfo.InvariantCulture);
-            visibility_mi = ConversionMethods.KmToMi(visibility_km);
+            visibility_mi = atmosphere.visibility.ToString(CultureInfo.InvariantCulture);
+            visibility_km = ConversionMethods.MiToKm(visibility_mi);
         }
 
         public Atmosphere(OpenWeather.CurrentRootobject root)
