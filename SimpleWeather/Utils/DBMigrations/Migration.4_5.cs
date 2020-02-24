@@ -17,17 +17,17 @@ namespace SimpleWeather.Utils
 {
     public static partial class DBMigrations
     {
-        public static void Migrate4_5(WeatherDBContext weatherDB)
+        public static async Task Migrate4_5(WeatherDBContext weatherDB)
         {
             // Create the new table
-            weatherDB.Database.ExecuteSqlRaw(
+            await weatherDB.Database.ExecuteSqlRawAsync(
                 "CREATE TABLE `weatherdata_new` (`ttl` varchar, `source` varchar, `query` varchar NOT NULL, `locale` varchar, `locationblob` varchar, `update_time` varchar, `conditionblob` varchar, `atmosphereblob` varchar, `astronomyblob` varchar, `precipitationblob` varchar, PRIMARY KEY(`query`))");
             //weatherDB.CreateTable<Forecasts>();
             //weatherDB.CreateTable<HourlyForecasts>();
             // Copy the data
-            weatherDB.Database.ExecuteSqlRaw(
+            await weatherDB.Database.ExecuteSqlRawAsync(
                 "INSERT INTO weatherdata_new (`ttl`, `source`, `query`, `locale`, `locationblob`, `update_time`, `conditionblob`, `atmosphereblob`, `astronomyblob`, `precipitationblob`) SELECT `ttl`, `source`, `query`, `locale`, `locationblob`, `update_time`, `conditionblob`, `atmosphereblob`, `astronomyblob`, `precipitationblob` from weatherdata");
-            weatherDB.Database.ExecuteSqlRaw(
+            await weatherDB.Database.ExecuteSqlRawAsync(
                 "INSERT INTO forecasts (`query`, `forecast`, `txt_forecast`) SELECT `query`, `forecastblob`, `txtforecastblob` from weatherdata");
             using (var dbConn = weatherDB.Database.GetDbConnection())
             {
@@ -40,9 +40,9 @@ namespace SimpleWeather.Utils
                     param.Value = weather.query;
                     command.Parameters.Add(param);
 
-                    using (var result = command.ExecuteReader())
+                    using (var result = await command.ExecuteReaderAsync())
                     {
-                        if (result.Read())
+                        if (await result.ReadAsync())
                         {
                             var blobs = result["hrforecastblob"]?.ToString();
 
@@ -61,7 +61,7 @@ namespace SimpleWeather.Utils
 
                                                 if (json != null && date != null)
                                                 {
-                                                    weatherDB.Database.ExecuteSqlRaw(
+                                                    await weatherDB.Database.ExecuteSqlRawAsync(
                                                         "INSERT INTO hr_forecasts (`query`, `dateblob`, `hr_forecast`) VALUES ({0}, {1}, {2})",
                                                         weather.query, date, json);
                                                 }
@@ -79,12 +79,12 @@ namespace SimpleWeather.Utils
                 }
             }
             // Remove the old table
-            weatherDB.Database.ExecuteSqlRaw("DROP TABLE weatherdata");
+            await weatherDB.Database.ExecuteSqlRawAsync("DROP TABLE weatherdata");
             // Change the table name to the correct one
-            weatherDB.Database.ExecuteSqlRaw(
+            await weatherDB.Database.ExecuteSqlRawAsync(
                 "ALTER TABLE weatherdata_new RENAME TO weatherdata");
             // Save changes
-            weatherDB.SaveChanges();
+            await weatherDB.SaveChangesAsync();
         }
     }
 }

@@ -165,7 +165,7 @@ namespace SimpleWeather.WeatherUnderground
 
                         foreach (Alert result in root.alerts)
                         {
-                            (weather.weather_alerts as ICollection<WeatherAlert>).Add(new WeatherAlert(result));
+                            weather.weather_alerts.Add(new WeatherAlert(result));
                         }
                     }
                 }

@@ -22,6 +22,8 @@ namespace SimpleWeather.Utils
             : base()
         {
             ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+            ChangeTracker.AutoDetectChangesEnabled = false;
+            ChangeTracker.LazyLoadingEnabled = false;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
@@ -29,11 +31,12 @@ namespace SimpleWeather.Utils
 #if WINDOWS_UWP
             options.UseSqlite($"Data Source={Settings.wtrDBConnStr}");
 #else
-            options.UseSqlite("Data Source=C:\\Users\\bryan\\Downloads\\DB\\weatherdata.db");
+            options.UseSqlite("Data Source=weatherdata.db");
 #endif
 #if DEBUG
             options.EnableSensitiveDataLogging();
 #endif
+            options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -106,6 +109,8 @@ namespace SimpleWeather.Utils
             : base()
         {
             ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+            ChangeTracker.AutoDetectChangesEnabled = false;
+            ChangeTracker.LazyLoadingEnabled = false;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
@@ -113,11 +118,12 @@ namespace SimpleWeather.Utils
 #if WINDOWS_UWP
             options.UseSqlite($"Data Source={Settings.locDBConnStr}");
 #else
-            options.UseSqlite("Data Source=C:\\Users\\bryan\\Downloads\\DB\\locations.db");
+            options.UseSqlite("Data Source=locations.db");
 #endif
 #if DEBUG
             options.EnableSensitiveDataLogging();
 #endif
+            options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

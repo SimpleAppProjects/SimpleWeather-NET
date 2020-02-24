@@ -11,7 +11,7 @@ namespace SimpleWeather.UWP.WeatherAlerts
 {
     public static class WeatherAlertHandler
     {
-        public static async Task PostAlerts(LocationData location, IEnumerable<WeatherAlert> alerts)
+        public static async Task PostAlerts(LocationData location, ICollection<WeatherAlert> alerts)
         {
             var wm = WeatherManager.GetInstance();
 
@@ -40,7 +40,7 @@ namespace SimpleWeather.UWP.WeatherAlerts
             }
         }
 
-        public static async Task SetasNotified(LocationData location, IEnumerable<WeatherAlert> alerts)
+        public static async Task SetasNotified(LocationData location, ICollection<WeatherAlert> alerts)
         {
             if (alerts != null)
             {

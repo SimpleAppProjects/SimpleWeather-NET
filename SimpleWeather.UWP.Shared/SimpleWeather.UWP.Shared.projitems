@@ -16,4 +16,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IWeatherProviderImpl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\WeatherProviderImpl.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en-US\Resources.resw" />
+  </ItemGroup>
 </Project>

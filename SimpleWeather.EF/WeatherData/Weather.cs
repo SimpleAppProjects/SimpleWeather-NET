@@ -16,12 +16,14 @@ namespace SimpleWeather.WeatherData
     public partial class Weather : CustomJsonObject
     {
         [NotMapped]
+        [IgnoreDataMember]
         public const string NA = "N/A";
 
         [Column("locationblob", TypeName = "varchar")]
         public Location location { get; set; }
 
         [NotMapped]
+        [IgnoreDataMember]
         // Doesn't store this in db
         // For DateTimeOffset, offset isn't stored when saving to db
         // Store as string (blob) instead
@@ -38,15 +40,12 @@ namespace SimpleWeather.WeatherData
             set { updatetimeblob = value.ToDateTimeOffsetFormat(); }
         }
 
-        [IgnoreDataMember]
         [NotMapped]
         public IList<Forecast> forecast { get; set; }
 
-        [IgnoreDataMember]
         [NotMapped]
         public IList<HourlyForecast> hr_forecast { get; set; }
 
-        [IgnoreDataMember]
         [NotMapped]
         public IList<TextForecast> txt_forecast { get; set; }
 
@@ -62,10 +61,9 @@ namespace SimpleWeather.WeatherData
         [Column("precipitationblob", TypeName = "varchar")]
         public Precipitation precipitation { get; set; }
 
-        [IgnoreDataMember]
         [NotMapped]
         // Just for passing along to where its needed
-        public IEnumerable<WeatherAlert> weather_alerts { get; set; }
+        public ICollection<WeatherAlert> weather_alerts { get; set; }
 
         [Column(TypeName = "varchar")]
         public string ttl { get; set; }
@@ -79,8 +77,8 @@ namespace SimpleWeather.WeatherData
         [Column(TypeName = "varchar")]
         public string locale { get; set; }
 
-        [IgnoreDataMember]
         [Column("update_time", TypeName = "varchar")]
+        [DataMember(Name = "update_time")]
         // Keep DateTimeOffset column name to get data as string
         public string updatetimeblob { get; set; }
 
@@ -190,6 +188,22 @@ namespace SimpleWeather.WeatherData
                     case nameof(precipitation):
                         this.precipitation = new Precipitation();
                         this.precipitation.FromJson(ref reader);
+                        break;
+
+                    case nameof(weather_alerts):
+                        // Set initial cap to 5
+                        var alerts = new List<WeatherAlert>(5);
+                        count = 0;
+                        while (reader.ReadIsInArray(ref count))
+                        {
+                            if (reader.GetCurrentJsonToken() == JsonToken.String)
+                            {
+                                var alert = new WeatherAlert();
+                                alert.FromJson(ref reader);
+                                alerts.Add(alert);
+                            }
+                        }
+                        this.weather_alerts = alerts;
                         break;
 
                     case nameof(ttl):
@@ -314,6 +328,24 @@ namespace SimpleWeather.WeatherData
                 writer.WriteValueSeparator();
             }
 
+            // "weather_alerts" : ""
+            if (weather_alerts != null)
+            {
+                writer.WritePropertyName(nameof(weather_alerts));
+                writer.WriteBeginArray();
+                var itemCount = 0;
+                foreach (WeatherAlert alert in weather_alerts)
+                {
+                    if (itemCount > 0)
+                        writer.WriteValueSeparator();
+                    writer.WriteString(alert?.ToJson());
+                    itemCount++;
+                }
+                writer.WriteEndArray();
+
+                writer.WriteValueSeparator();
+            }
+
             // "ttl" : ""
             writer.WritePropertyName(nameof(ttl));
             writer.WriteString(ttl);
@@ -353,16 +385,16 @@ namespace SimpleWeather.WeatherData
         public override bool Equals(object obj)
         {
             return obj is Weather weather &&
-                   EqualityComparer<Location>.Default.Equals(location, weather.location) &&
-                   update_time.Equals(weather.update_time) &&
-                   EqualityComparer<IList<Forecast>>.Default.Equals(forecast, weather.forecast) &&
-                   EqualityComparer<IList<HourlyForecast>>.Default.Equals(hr_forecast, weather.hr_forecast) &&
-                   EqualityComparer<IList<TextForecast>>.Default.Equals(txt_forecast, weather.txt_forecast) &&
-                   EqualityComparer<Condition>.Default.Equals(condition, weather.condition) &&
-                   EqualityComparer<Atmosphere>.Default.Equals(atmosphere, weather.atmosphere) &&
-                   EqualityComparer<Astronomy>.Default.Equals(astronomy, weather.astronomy) &&
-                   EqualityComparer<Precipitation>.Default.Equals(precipitation, weather.precipitation) &&
-                   EqualityComparer<IEnumerable<WeatherAlert>>.Default.Equals(weather_alerts, weather.weather_alerts) &&
+                   Object.Equals(location, weather.location) &&
+                   //update_time.Equals(weather.update_time) &&
+                   ((forecast == null && weather.forecast == null) || weather.forecast != null && forecast?.SequenceEqual(weather.forecast) == true) &&
+                   ((hr_forecast == null && weather.hr_forecast == null) || weather.hr_forecast != null && hr_forecast?.SequenceEqual(weather.hr_forecast) == true) &&
+                   ((txt_forecast == null && weather.txt_forecast == null) || weather.txt_forecast != null && txt_forecast?.SequenceEqual(weather.txt_forecast) == true) &&
+                   Object.Equals(condition, weather.condition) &&
+                   Object.Equals(atmosphere, weather.atmosphere) &&
+                   Object.Equals(astronomy, weather.astronomy) &&
+                   Object.Equals(precipitation, weather.precipitation) &&
+                   ((weather_alerts == null && weather.weather_alerts == null) || weather.weather_alerts != null && weather_alerts?.SequenceEqual(weather.weather_alerts) == true) &&
                    ttl == weather.ttl &&
                    source == weather.source &&
                    query == weather.query &&
@@ -374,7 +406,7 @@ namespace SimpleWeather.WeatherData
         {
             var hash = new HashCode();
             hash.Add(location);
-            hash.Add(update_time);
+            //hash.Add(update_time);
             hash.Add(forecast);
             hash.Add(hr_forecast);
             hash.Add(txt_forecast);
@@ -405,6 +437,22 @@ namespace SimpleWeather.WeatherData
         internal Location()
         {
             // Needed for deserialization
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Location location &&
+                   name == location.name &&
+                   latitude == location.latitude &&
+                   longitude == location.longitude &&
+                   tz_offset.Equals(location.tz_offset) &&
+                   tz_short == location.tz_short &&
+                   tz_long == location.tz_long;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(name, latitude, longitude, tz_offset, tz_short, tz_long);
         }
 
         public override void FromJson(ref JsonReader extReader)
@@ -529,6 +577,24 @@ namespace SimpleWeather.WeatherData
         internal Forecast()
         {
             // Needed for deserialization
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Forecast forecast &&
+                   date == forecast.date &&
+                   high_f == forecast.high_f &&
+                   high_c == forecast.high_c &&
+                   low_f == forecast.low_f &&
+                   low_c == forecast.low_c &&
+                   condition == forecast.condition &&
+                   icon == forecast.icon &&
+                   Object.Equals(extras, forecast.extras);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(date, high_f, high_c, low_f, low_c, condition, icon, extras);
         }
 
         public override void FromJson(ref JsonReader extReader)
@@ -665,19 +731,9 @@ namespace SimpleWeather.WeatherData
     [JsonFormatter(typeof(CustomJsonConverter<HourlyForecast>))]
     public partial class HourlyForecast : CustomJsonObject
     {
-        [IgnoreDataMember]
-        public DateTimeOffset date
-        {
-            get
-            {
-                if (DateTimeOffset.TryParseExact(_date, DateTimeUtils.DATETIMEOFFSET_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out DateTimeOffset result))
-                    return result;
-                else
-                    return DateTimeOffset.Parse(_date);
-            }
-            set { _date = value.ToDateTimeOffsetFormat(); }
-        }
-
+        [DataMember(Name = "date")]
+        [JsonFormatter(typeof(Utf8Json.Formatters.DateTimeOffsetFormatter), DateTimeUtils.DATETIMEOFFSET_FORMAT)]
+        public DateTimeOffset date { get; set; }
         public string high_f { get; set; }
         public string high_c { get; set; }
         public string condition { get; set; }
@@ -688,12 +744,40 @@ namespace SimpleWeather.WeatherData
         public float wind_kph { get; set; }
         public ForecastExtras extras { get; set; }
 
-        [DataMember(Name = nameof(date))]
-        private string _date { get; set; }
-
         internal HourlyForecast()
         {
             // Needed for deserialization
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is HourlyForecast forecast &&
+                   date == forecast.date &&
+                   high_f == forecast.high_f &&
+                   high_c == forecast.high_c &&
+                   condition == forecast.condition &&
+                   icon == forecast.icon &&
+                   pop == forecast.pop &&
+                   wind_degrees == forecast.wind_degrees &&
+                   wind_mph == forecast.wind_mph &&
+                   wind_kph == forecast.wind_kph &&
+                   Object.Equals(extras, forecast.extras);
+        }
+
+        public override int GetHashCode()
+        {
+            var hash = new HashCode();
+            hash.Add(date);
+            hash.Add(high_f);
+            hash.Add(high_c);
+            hash.Add(condition);
+            hash.Add(icon);
+            hash.Add(pop);
+            hash.Add(wind_degrees);
+            hash.Add(wind_mph);
+            hash.Add(wind_kph);
+            hash.Add(extras);
+            return hash.ToHashCode();
         }
 
         public override void FromJson(ref JsonReader extReader)
@@ -726,7 +810,7 @@ namespace SimpleWeather.WeatherData
                 switch (property)
                 {
                     case nameof(date):
-                        this._date = reader.ReadString();
+                        this.date = DateTimeOffset.ParseExact(reader.ReadString(), DateTimeUtils.DATETIMEOFFSET_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
                         break;
 
                     case nameof(high_f):
@@ -781,7 +865,7 @@ namespace SimpleWeather.WeatherData
 
             // "date" : ""
             writer.WritePropertyName(nameof(date));
-            writer.WriteString(_date);
+            writer.WriteString(date.ToDateTimeOffsetFormat());
 
             writer.WriteValueSeparator();
 
@@ -859,6 +943,21 @@ namespace SimpleWeather.WeatherData
         internal TextForecast()
         {
             // Needed for deserialization
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is TextForecast forecast &&
+                   title == forecast.title &&
+                   fcttext == forecast.fcttext &&
+                   fcttext_metric == forecast.fcttext_metric &&
+                   icon == forecast.icon &&
+                   pop == forecast.pop;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(title, fcttext, fcttext_metric, icon, pop);
         }
 
         public override void FromJson(ref JsonReader extReader)
@@ -983,6 +1082,53 @@ namespace SimpleWeather.WeatherData
         internal ForecastExtras()
         {
             // Needed for deserialization
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is ForecastExtras extras &&
+                   feelslike_f == extras.feelslike_f &&
+                   feelslike_c == extras.feelslike_c &&
+                   humidity == extras.humidity &&
+                   dewpoint_f == extras.dewpoint_f &&
+                   dewpoint_c == extras.dewpoint_c &&
+                   uv_index == extras.uv_index &&
+                   pop == extras.pop &&
+                   qpf_rain_in == extras.qpf_rain_in &&
+                   qpf_rain_mm == extras.qpf_rain_mm &&
+                   qpf_snow_in == extras.qpf_snow_in &&
+                   qpf_snow_cm == extras.qpf_snow_cm &&
+                   pressure_mb == extras.pressure_mb &&
+                   pressure_in == extras.pressure_in &&
+                   wind_degrees == extras.wind_degrees &&
+                   wind_mph == extras.wind_mph &&
+                   wind_kph == extras.wind_kph &&
+                   visibility_mi == extras.visibility_mi &&
+                   visibility_km == extras.visibility_km;
+        }
+
+        public override int GetHashCode()
+        {
+            var hash = new HashCode();
+            hash.Add(feelslike_f);
+            hash.Add(feelslike_c);
+            hash.Add(humidity);
+            hash.Add(dewpoint_f);
+            hash.Add(dewpoint_c);
+            hash.Add(uv_index);
+            hash.Add(pop);
+            hash.Add(qpf_rain_in);
+            hash.Add(qpf_rain_mm);
+            hash.Add(qpf_snow_in);
+            hash.Add(qpf_snow_cm);
+            hash.Add(pressure_mb);
+            hash.Add(pressure_in);
+            hash.Add(wind_degrees);
+            hash.Add(wind_mph);
+            hash.Add(wind_kph);
+            hash.Add(visibility_mi);
+            hash.Add(visibility_km);
+            return hash.ToHashCode();
         }
 
         public override void FromJson(ref JsonReader extReader)
@@ -1231,6 +1377,39 @@ namespace SimpleWeather.WeatherData
             // Needed for deserialization
         }
 
+        public override bool Equals(object obj)
+        {
+            return obj is Condition condition &&
+                   weather == condition.weather &&
+                   temp_f == condition.temp_f &&
+                   temp_c == condition.temp_c &&
+                   wind_degrees == condition.wind_degrees &&
+                   wind_mph == condition.wind_mph &&
+                   wind_kph == condition.wind_kph &&
+                   feelslike_f == condition.feelslike_f &&
+                   feelslike_c == condition.feelslike_c &&
+                   icon == condition.icon &&
+                   Object.Equals(beaufort, condition.beaufort) &&
+                   Object.Equals(uv, condition.uv);
+        }
+
+        public override int GetHashCode()
+        {
+            var hash = new HashCode();
+            hash.Add(weather);
+            hash.Add(temp_f);
+            hash.Add(temp_c);
+            hash.Add(wind_degrees);
+            hash.Add(wind_mph);
+            hash.Add(wind_kph);
+            hash.Add(feelslike_f);
+            hash.Add(feelslike_c);
+            hash.Add(icon);
+            hash.Add(beaufort);
+            hash.Add(uv);
+            return hash.ToHashCode();
+        }
+
         public override void FromJson(ref JsonReader extReader)
         {
             JsonReader reader;
@@ -1413,6 +1592,24 @@ namespace SimpleWeather.WeatherData
             // Needed for deserialization
         }
 
+        public override bool Equals(object obj)
+        {
+            return obj is Atmosphere atmosphere &&
+                   humidity == atmosphere.humidity &&
+                   pressure_mb == atmosphere.pressure_mb &&
+                   pressure_in == atmosphere.pressure_in &&
+                   pressure_trend == atmosphere.pressure_trend &&
+                   visibility_mi == atmosphere.visibility_mi &&
+                   visibility_km == atmosphere.visibility_km &&
+                   dewpoint_f == atmosphere.dewpoint_f &&
+                   dewpoint_c == atmosphere.dewpoint_c;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(humidity, pressure_mb, pressure_in, pressure_trend, visibility_mi, visibility_km, dewpoint_f, dewpoint_c);
+        }
+
         public override void FromJson(ref JsonReader extReader)
         {
             JsonReader reader;
@@ -1554,6 +1751,21 @@ namespace SimpleWeather.WeatherData
             // Needed for deserialization
         }
 
+        public override bool Equals(object obj)
+        {
+            return obj is Astronomy astronomy &&
+                   sunrise == astronomy.sunrise &&
+                   sunset == astronomy.sunset &&
+                   moonrise == astronomy.moonrise &&
+                   moonset == astronomy.moonset &&
+                   Object.Equals(moonphase, astronomy.moonphase);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(sunrise, sunset, moonrise, moonset, moonphase);
+        }
+
         public override void FromJson(ref JsonReader extReader)
         {
             JsonReader reader;
@@ -1667,6 +1879,21 @@ namespace SimpleWeather.WeatherData
         internal Precipitation()
         {
             // Needed for deserialization
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Precipitation precipitation &&
+                   pop == precipitation.pop &&
+                   qpf_rain_in == precipitation.qpf_rain_in &&
+                   qpf_rain_mm == precipitation.qpf_rain_mm &&
+                   qpf_snow_in == precipitation.qpf_snow_in &&
+                   qpf_snow_cm == precipitation.qpf_snow_cm;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(pop, qpf_rain_in, qpf_rain_mm, qpf_snow_in, qpf_snow_cm);
         }
 
         public override void FromJson(ref JsonReader extReader)
@@ -1794,6 +2021,18 @@ namespace SimpleWeather.WeatherData
             // Needed for deserialization
         }
 
+        public override bool Equals(object obj)
+        {
+            return obj is Beaufort beaufort &&
+                   scale == beaufort.scale &&
+                   desc == beaufort.desc;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(scale, desc);
+        }
+
         public override void FromJson(ref JsonReader extReader)
         {
             JsonReader reader;
@@ -1884,6 +2123,18 @@ namespace SimpleWeather.WeatherData
             // Needed for deserialization
         }
 
+        public override bool Equals(object obj)
+        {
+            return obj is MoonPhase phase &&
+                   this.phase == phase.phase &&
+                   desc == phase.desc;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(phase, desc);
+        }
+
         public override void FromJson(ref JsonReader extReader)
         {
             JsonReader reader;
@@ -1960,6 +2211,18 @@ namespace SimpleWeather.WeatherData
         internal UV()
         {
             // Needed for deserialization
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is UV uV &&
+                   index == uV.index &&
+                   desc == uV.desc;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(index, desc);
         }
 
         public override void FromJson(ref JsonReader extReader)

@@ -250,7 +250,6 @@
     <Content Include="Assets\WeatherIcons\png\windy.png" />
     <Content Include="Assets\WeatherIcons\png\wind_direction.png" />
     <Content Include="Assets\WeatherIcons\weathericons-regular-webfont.ttf" />
-    <PRIResource Include="Strings\en-US\Resources.resw" />
     <None Include="SimpleWeather.UWP.ruleset" />
     <None Include="SimpleWeather.UWP_StoreKey.pfx" />
   </ItemGroup>

@@ -120,7 +120,7 @@ namespace SimpleWeather.HERE
 
                         foreach (Alert result in root.alerts.alerts)
                         {
-                            (weather.weather_alerts as ICollection<WeatherAlert>).Add(new WeatherAlert(result));
+                            weather.weather_alerts.Add(new WeatherAlert(result));
                         }
                     }
                 }

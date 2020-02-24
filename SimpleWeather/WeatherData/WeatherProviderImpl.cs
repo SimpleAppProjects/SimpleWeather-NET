@@ -53,9 +53,10 @@ namespace SimpleWeather.WeatherData
                 }
                 else if (location.longitude != 0 && location.latitude != 0)
                 {
-                    String tzId = TimeZoneLookup.GetTimeZone(location.latitude, location.longitude).Result;
+                    String tzId = await AsyncTask.RunAsync(() => TimeZoneLookup.GetTimeZone(location.latitude, location.longitude).Result);
                     if (!String.IsNullOrWhiteSpace(tzId))
                         location.tz_long = tzId;
+                    GC.Collect(0);
                 }
 
 #if !UNIT_TEST

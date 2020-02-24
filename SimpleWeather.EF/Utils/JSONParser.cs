@@ -14,7 +14,20 @@ namespace SimpleWeather.Utils
     {
         static JSONParser()
         {
-            JsonSerializer.SetDefaultResolver(Utf8Json.Resolvers.StandardResolver.AllowPrivate);
+            // CompositeResolver is singleton helper for use custom resolver.
+            // Ofcourse you can also make custom resolver.
+            Utf8Json.Resolvers.CompositeResolver.RegisterAndSetAsDefault(
+                // use generated resolver first, and combine many other generated/custom resolvers
+                SimpleWeather.EF.Utf8JsonGen.Resolvers.GeneratedResolver.Instance,
+#if !EF_PROJECT
+                SimpleWeather.Utf8JsonGen.Resolvers.GeneratedResolver.Instance,
+#endif
+
+                // set StandardResolver or your use resolver chain
+                Utf8Json.Resolvers.AttributeFormatterResolver.Instance,
+                Utf8Json.Resolvers.BuiltinResolver.Instance,
+                Utf8Json.Resolvers.EnumResolver.Default
+            );
         }
 
         public static T Deserializer<T>(String response)
@@ -198,6 +211,7 @@ namespace SimpleWeather.Utils
     public abstract class CustomJsonObject
     {
         public abstract String ToJson();
+
         /// <summary>
         /// FromJson
         /// </summary>

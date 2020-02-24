@@ -14,15 +14,11 @@ namespace SimpleWeather.Utils
 {
     public static partial class DBUtils
     {
-        public static async Task<bool> WeatherDataExists(WeatherDBContext dbConn)
+        public static bool WeatherDataExists(WeatherDBContext dbConn)
         {
             try
             {
-                var count = await AsyncTask.RunAsync(dbConn?.WeatherData?.CountAsync());
-                if (count > 0)
-                    return true;
-                else
-                    return false;
+                return dbConn?.WeatherData?.Count() > 0;
             }
             catch (Exception)
             {
@@ -30,15 +26,11 @@ namespace SimpleWeather.Utils
             }
         }
 
-        public static async Task<bool> LocationDataExists(LocationDBContext dbConn)
+        public static bool LocationDataExists(LocationDBContext dbConn)
         {
             try
             {
-                var count = await AsyncTask.RunAsync(dbConn?.Locations?.CountAsync());
-                if (count > 0)
-                    return true;
-                else
-                    return false;
+                return dbConn?.Locations?.Count() > 0;
             }
             catch (Exception)
             {

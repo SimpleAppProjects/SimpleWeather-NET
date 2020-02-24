@@ -1,4 +1,5 @@
-﻿using SimpleWeather.Location;
+﻿using Microsoft.EntityFrameworkCore;
+using SimpleWeather.Location;
 using SimpleWeather.WeatherData;
 using System;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace SimpleWeather.Utils
 {
     internal partial class DataMigrations
     {
-        internal static void PerformDBMigrations(WeatherDBContext weatherDB, LocationDBContext locationDB)
+        internal static async Task PerformDBMigrations(WeatherDBContext weatherDB, LocationDBContext locationDB)
         {
             if (Settings.DBVersion < Settings.CurrentDBVersion)
             {
@@ -20,22 +21,21 @@ namespace SimpleWeather.Utils
                 {
                     // Move data from json to db
                     case 0:
-                        if (locationDB.Locations.Count() == 0)
-                            DBMigrations.MigrateDataJsonToDB(locationDB, weatherDB)
-                                .GetAwaiter().GetResult();
+                        if (await locationDB.Locations.CountAsync() == 0)
+                            await DBMigrations.MigrateDataJsonToDB(locationDB, weatherDB);
                         break;
                     // Add and set tz_long column in db
                     case 1:
                     // LocationData updates: added new fields
                     case 2:
                     case 3:
-                        if (locationDB.Locations.Count() > 0)
+                        if (await locationDB.Locations.CountAsync() == 0)
                             DBMigrations.SetLocationData(locationDB, Settings.API);
                         break;
 
                     case 4:
-                        if (weatherDB.WeatherData.Count() > 0)
-                            DBMigrations.Migrate4_5(weatherDB);
+                        if (await weatherDB.WeatherData.CountAsync() > 0)
+                            await DBMigrations.Migrate4_5(weatherDB);
                         break;
 
                     default:

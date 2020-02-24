@@ -156,7 +156,7 @@ namespace SimpleWeather.NWS
         public bool isDaytime { get; set; }
         public int temperature { get; set; }
         public string temperatureUnit { get; set; }
-        public object temperatureTrend { get; set; }
+        public string temperatureTrend { get; set; }
         public string windSpeed { get; set; }
         public string windDirection { get; set; }
         public string icon { get; set; }
@@ -199,7 +199,7 @@ namespace SimpleWeather.NWS
         public string rawMessage { get; set; }
         public string textDescription { get; set; }
         public string icon { get; set; }
-        public object[] presentWeather { get; set; }
+        //public object[] presentWeather { get; set; }
         public Temperature temperature { get; set; }
         public Dewpoint dewpoint { get; set; }
         public Winddirection windDirection { get; set; }
@@ -263,7 +263,7 @@ namespace SimpleWeather.NWS
 
     public class Sealevelpressure
     {
-        public object value { get; set; }
+        public float? value { get; set; }
         public string unitCode { get; set; }
         public string qualityControl { get; set; }
     }
@@ -279,14 +279,14 @@ namespace SimpleWeather.NWS
     {
         public float? value { get; set; }
         public string unitCode { get; set; }
-        public object qualityControl { get; set; }
+        public string qualityControl { get; set; }
     }
 
     public class Mintemperaturelast24hours
     {
         public float? value { get; set; }
         public string unitCode { get; set; }
-        public object qualityControl { get; set; }
+        public string qualityControl { get; set; }
     }
 
     public class Precipitationlasthour

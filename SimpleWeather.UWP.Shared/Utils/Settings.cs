@@ -2,7 +2,7 @@
 using SimpleWeather.WeatherData;
 using System;
 using System.IO;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 using Windows.Storage;
 
 namespace SimpleWeather.Utils
@@ -17,6 +17,7 @@ namespace SimpleWeather.Utils
         // App data files
         private static StorageFolder appDataFolder = ApplicationData.Current.LocalFolder;
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         private static void Init()
         {
             if (locDBConnStr == null)
@@ -54,9 +55,9 @@ namespace SimpleWeather.Utils
             using (var weatherDB = new WeatherDBContext())
             using (var locationDB = new LocationDBContext())
             {
-                if (!Task.Run(() => DBUtils.LocationDataExists(locationDB)).Result)
+                if (!DBUtils.LocationDataExists(locationDB))
                 {
-                    if (!Task.Run(() => DBUtils.WeatherDataExists(weatherDB)).Result)
+                    if (!DBUtils.WeatherDataExists(weatherDB))
                     {
                         SetWeatherLoaded(false);
                         return false;

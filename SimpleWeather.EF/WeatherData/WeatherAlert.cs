@@ -59,7 +59,7 @@ namespace SimpleWeather.WeatherData
         public DateTimeOffset ExpiresDate { get; set; }
         public bool Notified { get; set; } = false;
 
-        private WeatherAlert()
+        internal WeatherAlert()
         {
             // Needed for deserialization
         }
@@ -223,13 +223,13 @@ namespace SimpleWeather.WeatherData
         [Column(TypeName = "varchar")]
         public string query { get; set; }
         [Column("weather_alerts", TypeName = "varchar")]
-        public IEnumerable<WeatherAlert> alerts { get; set; }
+        public ICollection<WeatherAlert> alerts { get; set; }
 
         public WeatherAlerts()
         {
         }
 
-        public WeatherAlerts(string query, IEnumerable<WeatherAlert> alerts)
+        public WeatherAlerts(string query, ICollection<WeatherAlert> alerts)
         {
             this.query = query;
             this.alerts = alerts;

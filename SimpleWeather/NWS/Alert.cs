@@ -27,7 +27,7 @@ namespace SimpleWeather.NWS
         public string type { get; set; }
         public string id { get; set; }
         public string areaDesc { get; set; }
-        public object geometry { get; set; }
+        //public object geometry { get; set; }
         public Geocode geocode { get; set; }
         //public object[] references { get; set; }
         public DateTimeOffset sent { get; set; }

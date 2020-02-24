@@ -1,12 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Storage;
 using SimpleWeather.EF.Extensions;
 using SimpleWeather.Location;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -76,25 +73,27 @@ namespace SimpleWeather.Utils
             Init();
         }
 
-        public static void LoadIfNeeded()
+        public static async Task LoadIfNeeded()
         {
             if (!loaded)
             {
-                Load();
+                await Load();
                 loaded = true;
             }
         }
 
-        private static void Load()
+        private static async Task Load()
         {
             using (var weatherDB = new WeatherDBContext())
             using (var locationDB = new LocationDBContext())
             {
-                weatherDB.Database.Migrate();
-                locationDB.Database.Migrate();
+                if ((await weatherDB.Database.GetPendingMigrationsAsync()).Any())
+                    await weatherDB.Database.MigrateAsync();
+                if ((await locationDB.Database.GetPendingMigrationsAsync()).Any())
+                    await locationDB.Database.MigrateAsync();
 
                 // Migrate old data if available
-                DataMigrations.PerformDBMigrations(weatherDB, locationDB);
+                await DataMigrations.PerformDBMigrations(weatherDB, locationDB);
 
                 if (!String.IsNullOrWhiteSpace(LastGPSLocation))
                 {
@@ -123,7 +122,7 @@ namespace SimpleWeather.Utils
         {
             return AsyncTask.RunAsync<IEnumerable<LocationData>>(async () =>
             {
-                LoadIfNeeded();
+                await LoadIfNeeded();
 
                 using (var locationDB = new LocationDBContext())
                 {
@@ -141,7 +140,7 @@ namespace SimpleWeather.Utils
         {
             return AsyncTask.RunAsync<IEnumerable<LocationData>>(async () =>
             {
-                LoadIfNeeded();
+                await LoadIfNeeded();
                 using (var locationDB = new LocationDBContext())
                 {
                     return await AsyncTask.RunAsync(locationDB.Locations.ToListAsync());
@@ -153,7 +152,7 @@ namespace SimpleWeather.Utils
         {
             return AsyncTask.RunAsync(async () =>
             {
-                LoadIfNeeded();
+                await LoadIfNeeded();
                 using (var locationDB = new LocationDBContext())
                 {
                     return await AsyncTask.RunAsync(locationDB.Locations.FindAsync(key));
@@ -165,7 +164,7 @@ namespace SimpleWeather.Utils
         {
             return AsyncTask.RunAsync(async () =>
             {
-                LoadIfNeeded();
+                await LoadIfNeeded();
                 using (var weatherDB = new WeatherDBContext())
                 {
                     return await AsyncTask.RunAsync(weatherDB.WeatherData.FindAsync(key));
@@ -177,7 +176,7 @@ namespace SimpleWeather.Utils
         {
             return AsyncTask.RunAsync(async () =>
             {
-                LoadIfNeeded();
+                await LoadIfNeeded();
                 using (var weatherDB = new WeatherDBContext())
                 {
                     var culture = System.Globalization.CultureInfo.InvariantCulture;
@@ -191,15 +190,15 @@ namespace SimpleWeather.Utils
             });
         }
 
-        public static ConfiguredTaskAwaitable<IEnumerable<WeatherAlert>> GetWeatherAlertData(string key)
+        public static ConfiguredTaskAwaitable<ICollection<WeatherAlert>> GetWeatherAlertData(string key)
         {
             return AsyncTask.RunAsync(async () =>
             {
-                LoadIfNeeded();
+                await LoadIfNeeded();
 
                 using (var weatherDB = new WeatherDBContext())
                 {
-                    IEnumerable<WeatherAlert> alerts = null;
+                    ICollection<WeatherAlert> alerts = null;
 
                     try
                     {
@@ -227,7 +226,7 @@ namespace SimpleWeather.Utils
         {
             return AsyncTask.RunAsync(async () =>
             {
-                LoadIfNeeded();
+                await LoadIfNeeded();
                 using (var weatherDB = new WeatherDBContext())
                 {
                     return await AsyncTask.RunAsync(weatherDB.Forecasts.FindAsync(key));
@@ -239,7 +238,7 @@ namespace SimpleWeather.Utils
         {
             return AsyncTask.RunAsync<IList<HourlyForecast>>(async () =>
             {
-                LoadIfNeeded();
+                await LoadIfNeeded();
                 using (var weatherDB = new WeatherDBContext())
                 {
                     return await AsyncTask.RunAsync(weatherDB.HourlyForecasts
@@ -253,9 +252,9 @@ namespace SimpleWeather.Utils
 
         public static ConfiguredTaskAwaitable<LocationData> GetLastGPSLocData()
         {
-            return AsyncTask.RunAsync(() =>
+            return AsyncTask.RunAsync(async () =>
             {
-                LoadIfNeeded();
+                await LoadIfNeeded();
 
                 if (lastGPSLocData != null && lastGPSLocData.locationType != LocationType.GPS)
                     lastGPSLocData.locationType = LocationType.GPS;
@@ -283,7 +282,7 @@ namespace SimpleWeather.Utils
             });
         }
 
-        public static ConfiguredTaskAwaitable SaveWeatherAlerts(LocationData location, IEnumerable<WeatherAlert> alerts)
+        public static ConfiguredTaskAwaitable SaveWeatherAlerts(LocationData location, ICollection<WeatherAlert> alerts)
         {
             return AsyncTask.RunAsync(async () =>
             {
