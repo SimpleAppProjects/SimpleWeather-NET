@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SimpleWeather.Location;
+﻿using SimpleWeather.Location;
 using SimpleWeather.WeatherData;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -14,11 +14,12 @@ namespace SimpleWeather.Utils
 {
     public static partial class DBUtils
     {
-        public static bool WeatherDataExists(WeatherDBContext dbConn)
+        public static bool WeatherDataExists(SQLiteAsyncConnection dbConn)
         {
             try
             {
-                return dbConn?.WeatherData?.Count() > 0;
+                return AsyncTask.RunAsync(dbConn?.Table<Weather>()?.CountAsync())
+                        .GetAwaiter().GetResult() > 0;
             }
             catch (Exception)
             {
@@ -26,11 +27,12 @@ namespace SimpleWeather.Utils
             }
         }
 
-        public static bool LocationDataExists(LocationDBContext dbConn)
+        public static bool LocationDataExists(SQLiteAsyncConnection dbConn)
         {
             try
             {
-                return dbConn?.Locations?.Count() > 0;
+                return AsyncTask.RunAsync(dbConn?.Table<LocationData>()?.CountAsync())
+                        .GetAwaiter().GetResult() > 0;
             }
             catch (Exception)
             {

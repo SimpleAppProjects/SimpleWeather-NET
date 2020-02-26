@@ -1,12 +1,13 @@
 ﻿using SimpleWeather.Utils;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using SQLite;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using Utf8Json;
+using SQLiteNetExtensions.Attributes;
+using System.Runtime.Serialization;
 
 namespace SimpleWeather.WeatherData
 {
@@ -219,11 +220,13 @@ namespace SimpleWeather.WeatherData
     [Table("weatheralerts")]
     public class WeatherAlerts
     {
-        [Key]
-        [Column(TypeName = "varchar")]
+        [PrimaryKey]
         public string query { get; set; }
-        [Column("weather_alerts", TypeName = "varchar")]
+        [TextBlob("alertsblob")]
         public ICollection<WeatherAlert> alerts { get; set; }
+        [Column("weather_alerts")]
+        [IgnoreDataMember]
+        public string alertsblob { get; set; }
 
         public WeatherAlerts()
         {

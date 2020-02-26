@@ -1,5 +1,6 @@
 ﻿using SimpleWeather.UWP.Helpers;
 using SimpleWeather.WeatherData;
+using SQLite;
 using System;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -20,11 +21,13 @@ namespace SimpleWeather.Utils
         [MethodImpl(MethodImplOptions.Synchronized)]
         private static void Init()
         {
-            if (locDBConnStr == null)
-                locDBConnStr = Path.Combine(appDataFolder.Path, "locations.db");
+            if (locationDB == null)
+                locationDB = new SQLiteAsyncConnection(
+                    Path.Combine(appDataFolder.Path, "locations.db"));
 
-            if (wtrDBConnStr == null)
-                wtrDBConnStr = Path.Combine(appDataFolder.Path, "weatherdata.db");
+            if (weatherDB == null)
+                weatherDB = new SQLiteAsyncConnection(
+                    Path.Combine(appDataFolder.Path, "weatherdata.db"));
 
             localSettings.CreateContainer(WeatherAPI.WeatherUnderground, ApplicationDataCreateDisposition.Always);
             localSettings.CreateContainer("version", ApplicationDataCreateDisposition.Always);
@@ -52,16 +55,12 @@ namespace SimpleWeather.Utils
 
         private static bool IsWeatherLoaded()
         {
-            using (var weatherDB = new WeatherDBContext())
-            using (var locationDB = new LocationDBContext())
+            if (!DBUtils.LocationDataExists(locationDB))
             {
-                if (!DBUtils.LocationDataExists(locationDB))
+                if (!DBUtils.WeatherDataExists(weatherDB))
                 {
-                    if (!DBUtils.WeatherDataExists(weatherDB))
-                    {
-                        SetWeatherLoaded(false);
-                        return false;
-                    }
+                    SetWeatherLoaded(false);
+                    return false;
                 }
             }
 

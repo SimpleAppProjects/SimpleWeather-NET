@@ -1,8 +1,8 @@
 ﻿using SimpleWeather.Utils;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using SQLite;
+using SQLiteNetExtensions.Attributes;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -15,14 +15,13 @@ namespace SimpleWeather.WeatherData
     [Table("weatherdata")]
     public partial class Weather : CustomJsonObject
     {
-        [NotMapped]
         [IgnoreDataMember]
         public const string NA = "N/A";
 
-        [Column("locationblob", TypeName = "varchar")]
+        [TextBlob(nameof(locationblob))]
         public Location location { get; set; }
 
-        [NotMapped]
+        [Ignore]
         [IgnoreDataMember]
         // Doesn't store this in db
         // For DateTimeOffset, offset isn't stored when saving to db
@@ -40,47 +39,53 @@ namespace SimpleWeather.WeatherData
             set { updatetimeblob = value.ToDateTimeOffsetFormat(); }
         }
 
-        [NotMapped]
+        [Ignore]
         public IList<Forecast> forecast { get; set; }
 
-        [NotMapped]
+        [Ignore]
         public IList<HourlyForecast> hr_forecast { get; set; }
 
-        [NotMapped]
+        [Ignore]
         public IList<TextForecast> txt_forecast { get; set; }
 
-        [Column("conditionblob", TypeName = "varchar")]
+        [TextBlob(nameof(conditionblob))]
         public Condition condition { get; set; }
 
-        [Column("atmosphereblob", TypeName = "varchar")]
+        [TextBlob(nameof(atmosphereblob))]
         public Atmosphere atmosphere { get; set; }
 
-        [Column("astronomyblob", TypeName = "varchar")]
+        [TextBlob(nameof(astronomyblob))]
         public Astronomy astronomy { get; set; }
 
-        [Column("precipitationblob", TypeName = "varchar")]
+        [TextBlob(nameof(precipitationblob))]
         public Precipitation precipitation { get; set; }
 
-        [NotMapped]
+        [Ignore]
         // Just for passing along to where its needed
         public ICollection<WeatherAlert> weather_alerts { get; set; }
 
-        [Column(TypeName = "varchar")]
         public string ttl { get; set; }
-        [Column(TypeName = "varchar")]
         public string source { get; set; }
 
-        [Key]
-        [Column(TypeName = "varchar")]
+        [PrimaryKey]
         public string query { get; set; }
 
-        [Column(TypeName = "varchar")]
         public string locale { get; set; }
 
-        [Column("update_time", TypeName = "varchar")]
+        [IgnoreDataMember]
+        public string locationblob { get; set; }
+        [Column("update_time")]
         [DataMember(Name = "update_time")]
         // Keep DateTimeOffset column name to get data as string
         public string updatetimeblob { get; set; }
+        [IgnoreDataMember]
+        public string conditionblob { get; set; }
+        [IgnoreDataMember]
+        public string atmosphereblob { get; set; }
+        [IgnoreDataMember]
+        public string astronomyblob { get; set; }
+        [IgnoreDataMember]
+        public string precipitationblob { get; set; }
 
         public Weather()
         {
@@ -123,7 +128,8 @@ namespace SimpleWeather.WeatherData
                         // Most provider forecasts are <= 10
                         var forecasts = new List<Forecast>(10);
                         count = 0;
-                        while (reader.ReadIsInArray(ref count))
+                        reader.ReadIsBeginArrayWithVerify();
+                        while (!reader.ReadIsEndArrayWithSkipValueSeparator(ref count))
                         {
                             if (reader.GetCurrentJsonToken() == JsonToken.String)
                             {
@@ -132,6 +138,7 @@ namespace SimpleWeather.WeatherData
                                 forecasts.Add(forecast);
                             }
                         }
+                        if (count == 0) reader.ReadIsValueSeparator();
                         this.forecast = forecasts;
                         break;
 
@@ -141,7 +148,8 @@ namespace SimpleWeather.WeatherData
                         // If 90+ is needed, let the List impl allocate more
                         var hr_forecasts = new List<HourlyForecast>(90);
                         count = 0;
-                        while (reader.ReadIsInArray(ref count))
+                        reader.ReadIsBeginArrayWithVerify();
+                        while (!reader.ReadIsEndArrayWithSkipValueSeparator(ref count))
                         {
                             if (reader.GetCurrentJsonToken() == JsonToken.String)
                             {
@@ -150,6 +158,7 @@ namespace SimpleWeather.WeatherData
                                 hr_forecasts.Add(hrf);
                             }
                         }
+                        if (count == 0) reader.ReadIsValueSeparator();
                         this.hr_forecast = hr_forecasts;
                         break;
 
@@ -158,7 +167,8 @@ namespace SimpleWeather.WeatherData
                         // Most provider forecasts are <= 10 (x2 for day & nt)
                         var txt_forecasts = new List<TextForecast>(20);
                         count = 0;
-                        while (reader.ReadIsInArray(ref count))
+                        reader.ReadIsBeginArrayWithVerify();
+                        while (!reader.ReadIsEndArrayWithSkipValueSeparator(ref count))
                         {
                             if (reader.GetCurrentJsonToken() == JsonToken.String)
                             {
@@ -167,6 +177,7 @@ namespace SimpleWeather.WeatherData
                                 txt_forecasts.Add(txtf);
                             }
                         }
+                        if (count == 0) reader.ReadIsValueSeparator();
                         this.txt_forecast = txt_forecasts;
                         break;
 
@@ -194,7 +205,8 @@ namespace SimpleWeather.WeatherData
                         // Set initial cap to 5
                         var alerts = new List<WeatherAlert>(5);
                         count = 0;
-                        while (reader.ReadIsInArray(ref count))
+                        reader.ReadIsBeginArrayWithVerify();
+                        while (!reader.ReadIsEndArrayWithSkipValueSeparator(ref count))
                         {
                             if (reader.GetCurrentJsonToken() == JsonToken.String)
                             {
@@ -203,6 +215,7 @@ namespace SimpleWeather.WeatherData
                                 alerts.Add(alert);
                             }
                         }
+                        if (count == 0) reader.ReadIsValueSeparator();
                         this.weather_alerts = alerts;
                         break;
 
@@ -2295,35 +2308,40 @@ namespace SimpleWeather.WeatherData
     [Table("forecasts")]
     public class Forecasts
     {
-        [Key]
-        [Column(TypeName = "varchar")]
+        [PrimaryKey]
         public string query { get; set; }
 
-        [Column(TypeName = "varchar")]
+        [TextBlob(nameof(forecastblob))]
         public IList<Forecast> forecast { get; set; }
-        [Column(TypeName = "varchar")]
+        [TextBlob(nameof(txtforecastblob))]
         public IList<TextForecast> txt_forecast { get; set; }
+        [IgnoreDataMember]
+        public string forecastblob { get; set; }
+        [IgnoreDataMember]
+        public string txtforecastblob { get; set; }
 
         public Forecasts()
         {
         }
 
-        public Forecasts(string query, IList<Forecast> forecast)
+        public Forecasts(string query, IList<Forecast> forecast, IList<TextForecast> txt_forecast)
         {
             this.query = query;
             this.forecast = forecast;
+            this.txt_forecast = txt_forecast;
         }
     }
 
     [Table("hr_forecasts")]
     public class HourlyForecasts
     {
-        [Key]
-        [Column(TypeName = "varchar")]
+        [PrimaryKey]
+        public string id { get; set; }
+        [Indexed(Name = "queryIdx", Order = 1)]
         public string query { get; set; }
 
         [IgnoreDataMember]
-        [NotMapped]
+        [Ignore]
         // Doesn't store this in db
         // For DateTimeOffset, offset isn't stored when saving to db
         // Store as string (blob) instead
@@ -2340,14 +2358,15 @@ namespace SimpleWeather.WeatherData
             set { dateblob = value.ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture); }
         }
 
-        [Column(TypeName = "varchar")]
+        [TextBlob(nameof(hrforecastblob))]
         public HourlyForecast hr_forecast { get; set; }
 
-        [Key]
+        [Indexed(Name = "dateIdx", Order = 2)]
         [DataMember(Name = "date")]
-        [Column(TypeName = "varchar")]
         // Keep DateTimeOffset column name to get data as string
         public string dateblob { get; set; }
+        [IgnoreDataMember]
+        public string hrforecastblob { get; set; }
 
         public HourlyForecasts()
         {
@@ -2358,6 +2377,7 @@ namespace SimpleWeather.WeatherData
             this.query = query;
             this.hr_forecast = forecast;
             this.date = forecast.date;
+            this.id = query + '|' + dateblob;
         }
     }
 }

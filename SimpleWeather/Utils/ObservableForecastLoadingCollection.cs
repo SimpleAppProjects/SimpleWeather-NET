@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SimpleWeather.Controls;
+﻿using SimpleWeather.Controls;
 using SimpleWeather.WeatherData;
+using SQLiteNetExtensionsAsync.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,107 +58,107 @@ namespace SimpleWeather.Utils
                     IsLoading = true;
                     HasMoreItems = true;
 
-                    using (var dBContext = new WeatherDBContext())
+                    if (typeof(T) == typeof(ForecastItemViewModel))
                     {
-                        if (typeof(T) == typeof(ForecastItemViewModel))
+                        var db = Settings.GetWeatherDBConnection();
+                        var fcast = await db.FindWithChildrenAsync<Forecasts>(weather.query);
+                        var dataCount = fcast?.forecast?.Count;
+
+                        if (dataCount > 0 && dataCount != currentCount)
                         {
-                            var dbSet = dBContext.Forecasts;
-                            var fcast = await dbSet.FindAsync(weather.query);
-                            var dataCount = fcast?.forecast?.Count;
+                            var loadedData = fcast.forecast
+                                                  .Skip(currentCount)
+                                                  .Take((int)count);
 
-                            if (dataCount > 0 && dataCount != currentCount)
+                            bool isDayAndNt = fcast.txt_forecast?.Count == fcast.forecast?.Count * 2;
+                            bool addTextFct = isDayAndNt || fcast.txt_forecast?.Count == fcast.forecast?.Count;
+
+                            foreach (var dataItem in loadedData)
                             {
-                                var loadedData = fcast.forecast
-                                                      .Skip(currentCount)
-                                                      .Take((int)count);
-
-                                bool isDayAndNt = fcast.txt_forecast?.Count == fcast.forecast?.Count * 2;
-                                bool addTextFct = isDayAndNt || fcast.txt_forecast?.Count == fcast.forecast?.Count;
-
-                                foreach (var dataItem in loadedData)
+                                object f;
+                                await db.GetChildrenAsync(dataItem);
+                                if (addTextFct)
                                 {
-                                    object f;
-                                    if (addTextFct)
-                                    {
-                                        if (isDayAndNt)
-                                            f = new ForecastItemViewModel(dataItem, new TextForecastItemViewModel(fcast.txt_forecast[(int)resultCount * 2]), new TextForecastItemViewModel(fcast.txt_forecast[((int)resultCount * 2) + 1]));
-                                        else
-                                            f = new ForecastItemViewModel(dataItem, new TextForecastItemViewModel(fcast.txt_forecast[(int)resultCount]));
-                                    }
+                                    if (isDayAndNt)
+                                        f = new ForecastItemViewModel(dataItem, new TextForecastItemViewModel(fcast.txt_forecast[(int)resultCount * 2]), new TextForecastItemViewModel(fcast.txt_forecast[((int)resultCount * 2) + 1]));
                                     else
-                                    {
-                                        f = new ForecastItemViewModel(dataItem);
-                                    }
-
-                                    await AsyncTask.RunOnUIThread(() => Add((T)f));
-                                    resultCount++;
-                                }
-                            }
-                            else
-                            {
-                                HasMoreItems = false;
-                            }
-                        }
-                        else if (typeof(T) == typeof(HourlyForecastItemViewModel))
-                        {
-                            var dbSet = dBContext.HourlyForecasts;
-                            var dataCount = await dbSet.CountAsync(hrf => hrf.query == weather.query);
-
-                            if (dataCount > 0 && dataCount != currentCount)
-                            {
-                                var lastItem = this.LastOrDefault();
-                                IQueryable<HourlyForecast> data = null;
-
-                                if (lastItem is HourlyForecast f)
-                                {
-                                    data = dbSet.Where(hrf => hrf.query == weather.query && hrf.date > f.date)
-                                                .OrderBy(hrf => hrf.date)
-                                                .Take((int)count)
-                                                .Select(hrf => hrf.hr_forecast);
+                                        f = new ForecastItemViewModel(dataItem, new TextForecastItemViewModel(fcast.txt_forecast[(int)resultCount]));
                                 }
                                 else
                                 {
-                                    data = dbSet.Where(hrf => hrf.query == weather.query)
-                                                .Skip(currentCount)
-                                                .Take((int)count)
-                                                .Select(hrf => hrf.hr_forecast);
+                                    f = new ForecastItemViewModel(dataItem);
                                 }
 
-                                await data.ForEachAsync(async dataItem =>
-                                {
-                                    object fcast = new HourlyForecastItemViewModel(dataItem);
-                                    await AsyncTask.RunOnUIThread(() => Add((T)fcast));
-                                    resultCount++;
-                                });
-                            }
-                            else
-                            {
-                                HasMoreItems = false;
+                                await AsyncTask.RunOnUIThread(() => Add((T)f));
+                                resultCount++;
                             }
                         }
-                        else if (typeof(T) == typeof(TextForecastItemViewModel))
+                        else
                         {
-                            var dbSet = dBContext.Forecasts;
-                            var fcast = await dbSet.FindAsync(weather.query);
-                            var dataCount = fcast?.txt_forecast?.Count;
+                            HasMoreItems = false;
+                        }
+                    }
+                    else if (typeof(T) == typeof(HourlyForecastItemViewModel))
+                    {
+                        var db = Settings.GetWeatherDBConnection();
+                        var dbSet = db.Table<HourlyForecasts>();
+                        var dataCount = await dbSet.CountAsync(hrf => hrf.query == weather.query);
 
-                            if (dataCount > 0 && dataCount != currentCount)
+                        if (dataCount > 0 && dataCount != currentCount)
+                        {
+                            var lastItem = this.LastOrDefault();
+                            IEnumerable<HourlyForecasts> data = null;
+
+                            if (lastItem is HourlyForecastItemViewModel hrfcast)
                             {
-                                var loadedData = fcast.txt_forecast
-                                                      .Skip(currentCount)
-                                                      .Take((int)count);
-
-                                foreach (var dataItem in loadedData)
-                                {
-                                    object f = new TextForecastItemViewModel(dataItem);
-                                    await AsyncTask.RunOnUIThread(() => Add((T)f));
-                                    resultCount++;
-                                }
+                                data = await db.QueryAsync<HourlyForecasts>(
+                                    "select * from hr_forecasts where query = ? AND dateblob > ? ORDER BY dateblob LIMIT ?",
+                                    weather.query, hrfcast.Forecast.date.ToString("yyyy-MM-dd HH:mm:ss zzzz"), (int)count);
                             }
                             else
                             {
-                                HasMoreItems = false;
+                                data = (await dbSet.Where(hrf => hrf.query == weather.query)
+                                            .Skip(currentCount)
+                                            .Take((int)count)
+                                            .ToListAsync());
                             }
+
+                            foreach (var dataItem in data)
+                            {
+                                await db.GetChildrenAsync(dataItem);
+                                object fcast = new HourlyForecastItemViewModel(dataItem.hr_forecast);
+                                await AsyncTask.RunOnUIThread(() => Add((T)fcast));
+                                resultCount++;
+                            }
+                        }
+                        else
+                        {
+                            HasMoreItems = false;
+                        }
+                    }
+                    else if (typeof(T) == typeof(TextForecastItemViewModel))
+                    {
+                        var db = Settings.GetWeatherDBConnection();
+                        var fcast = await db.FindWithChildrenAsync<Forecasts>(weather.query);
+                        var dataCount = fcast?.txt_forecast?.Count;
+
+                        if (dataCount > 0 && dataCount != currentCount)
+                        {
+                            var loadedData = fcast.txt_forecast
+                                                  .Skip(currentCount)
+                                                  .Take((int)count);
+
+                            foreach (var dataItem in loadedData)
+                            {
+                                await db.GetChildrenAsync(dataItem);
+                                object f = new TextForecastItemViewModel(dataItem);
+                                await AsyncTask.RunOnUIThread(() => Add((T)f));
+                                resultCount++;
+                            }
+                        }
+                        else
+                        {
+                            HasMoreItems = false;
                         }
                     }
                 }

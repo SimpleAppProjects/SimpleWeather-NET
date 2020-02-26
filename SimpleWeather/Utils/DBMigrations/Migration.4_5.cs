@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SimpleWeather.Location;
+﻿using SimpleWeather.Location;
 using SimpleWeather.WeatherData;
+using SQLite;
+using SQLiteNetExtensionsAsync;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -17,74 +18,59 @@ namespace SimpleWeather.Utils
 {
     public static partial class DBMigrations
     {
-        public static async Task Migrate4_5(WeatherDBContext weatherDB)
+        public static async Task Migrate4_5(SQLiteAsyncConnection weatherDB)
         {
             // Create the new table
-            await weatherDB.Database.ExecuteSqlRawAsync(
+            await weatherDB.ExecuteAsync(
                 "CREATE TABLE `weatherdata_new` (`ttl` varchar, `source` varchar, `query` varchar NOT NULL, `locale` varchar, `locationblob` varchar, `update_time` varchar, `conditionblob` varchar, `atmosphereblob` varchar, `astronomyblob` varchar, `precipitationblob` varchar, PRIMARY KEY(`query`))");
-            //weatherDB.CreateTable<Forecasts>();
-            //weatherDB.CreateTable<HourlyForecasts>();
+            await weatherDB.CreateTableAsync<Forecasts>();
+            await weatherDB.CreateTableAsync<HourlyForecasts>();
             // Copy the data
-            await weatherDB.Database.ExecuteSqlRawAsync(
+            await weatherDB.ExecuteAsync(
                 "INSERT INTO weatherdata_new (`ttl`, `source`, `query`, `locale`, `locationblob`, `update_time`, `conditionblob`, `atmosphereblob`, `astronomyblob`, `precipitationblob`) SELECT `ttl`, `source`, `query`, `locale`, `locationblob`, `update_time`, `conditionblob`, `atmosphereblob`, `astronomyblob`, `precipitationblob` from weatherdata");
-            await weatherDB.Database.ExecuteSqlRawAsync(
-                "INSERT INTO forecasts (`query`, `forecast`, `txt_forecast`) SELECT `query`, `forecastblob`, `txtforecastblob` from weatherdata");
-            using (var dbConn = weatherDB.Database.GetDbConnection())
+            await weatherDB.ExecuteAsync(
+                "INSERT INTO forecasts (`query`, `forecastblob`, `txtforecastblob`) SELECT `query`, `forecastblob`, `txtforecastblob` from weatherdata");
+            foreach (var weather in await weatherDB.Table<Weather>().ToListAsync())
             {
-                foreach (var weather in weatherDB.WeatherData)
+                var result = await weatherDB.ExecuteScalarAsync<string>("SELECT hrforecastblob from weatherdata WHERE query = ?", weather.query);
+
+                if (result != null)
                 {
-                    var command = dbConn.CreateCommand();
-                    command.CommandText = "SELECT hrforecastblob from weatherdata WHERE query = @query";
-                    var param = command.CreateParameter();
-                    param.ParameterName = "@query";
-                    param.Value = weather.query;
-                    command.Parameters.Add(param);
-
-                    using (var result = await command.ExecuteReaderAsync())
+                    try
                     {
-                        if (await result.ReadAsync())
+                        using (var jsonArr = JsonDocument.Parse(result))
                         {
-                            var blobs = result["hrforecastblob"]?.ToString();
-
-                            if (blobs != null)
+                            foreach (var fcastBlob in jsonArr.RootElement.EnumerateArray())
                             {
-                                try
+                                var json = fcastBlob.GetString();
+                                using (var child = JsonDocument.Parse(json))
                                 {
-                                    using (var jsonArr = JsonDocument.Parse(blobs))
-                                    {
-                                        foreach (var fcastBlob in jsonArr.RootElement.EnumerateArray())
-                                        {
-                                            var json = fcastBlob.GetString();
-                                            using (var child = JsonDocument.Parse(json))
-                                            {
-                                                var date = child.RootElement.GetProperty("date").GetString();
+                                    var date = child.RootElement.GetProperty("date").GetString();
 
-                                                if (json != null && date != null)
-                                                {
-                                                    await weatherDB.Database.ExecuteSqlRawAsync(
-                                                        "INSERT INTO hr_forecasts (`query`, `dateblob`, `hr_forecast`) VALUES ({0}, {1}, {2})",
-                                                        weather.query, date, json);
-                                                }
-                                            }
-                                        }
+                                    if (json != null && date != null)
+                                    {
+                                        var dto = DateTimeOffset.ParseExact(date, "dd.MM.yyyy HH:mm:ss zzzz", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.RoundtripKind);
+                                        var dtoStr = dto.ToString("yyyy-MM-dd HH:mm:ss zzzz", System.Globalization.CultureInfo.InvariantCulture);
+
+                                        await weatherDB.ExecuteAsync(
+                                            "INSERT INTO hr_forecasts (`id`, `query`, `dateblob`, `hrforecastblob`) VALUES (?, ?, ?, ?)",
+                                            weather.query + '|' + dtoStr, weather.query, dtoStr, json);
                                     }
-                                }
-                                catch (JsonException e)
-                                {
-                                    Logger.WriteLine(LoggerLevel.Error, e, "Error parsing json!");
                                 }
                             }
                         }
                     }
+                    catch (JsonException e)
+                    {
+                        Logger.WriteLine(LoggerLevel.Error, e, "Error parsing json!");
+                    }
                 }
             }
             // Remove the old table
-            await weatherDB.Database.ExecuteSqlRawAsync("DROP TABLE weatherdata");
+            await weatherDB.ExecuteAsync("DROP TABLE weatherdata");
             // Change the table name to the correct one
-            await weatherDB.Database.ExecuteSqlRawAsync(
+            await weatherDB.ExecuteAsync(
                 "ALTER TABLE weatherdata_new RENAME TO weatherdata");
-            // Save changes
-            await weatherDB.SaveChangesAsync();
         }
     }
 }

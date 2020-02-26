@@ -1,5 +1,7 @@
 ﻿using SimpleWeather.Location;
 using SimpleWeather.WeatherData;
+using SQLite;
+using SQLiteNetExtensionsAsync.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -13,7 +15,7 @@ namespace SimpleWeather.Utils
 {
     public static partial class DBMigrations
     {
-        public static ConfiguredTaskAwaitable MigrateDataJsonToDB(LocationDBContext locationDB, WeatherDBContext weatherDB)
+        public static ConfiguredTaskAwaitable MigrateDataJsonToDB(SQLiteAsyncConnection locationDB, SQLiteAsyncConnection weatherDB)
         {
             return AsyncTask.RunAsync(async () =>
             {
@@ -86,8 +88,7 @@ namespace SimpleWeather.Utils
 
                     // Add data
                     var list = oldWeather.Values.Cast<Weather>();
-                    weatherDB.WeatherData.UpdateRange(list);
-                    await weatherDB.SaveChangesAsync();
+                    await AsyncTask.RunAsync(weatherDB.InsertOrReplaceAllWithChildrenAsync(list));
 
                     // Delete old files
                     await dataFile.DeleteAsync();

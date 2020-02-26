@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SimpleWeather.Location;
+﻿using SimpleWeather.Location;
 using SimpleWeather.WeatherData;
+using SQLite;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,7 +13,7 @@ namespace SimpleWeather.Utils
 {
     internal partial class DataMigrations
     {
-        internal static async Task PerformDBMigrations(WeatherDBContext weatherDB, LocationDBContext locationDB)
+        internal static async Task PerformDBMigrations(SQLiteAsyncConnection weatherDB, SQLiteAsyncConnection locationDB)
         {
             if (Settings.DBVersion < Settings.CurrentDBVersion)
             {
@@ -21,7 +21,7 @@ namespace SimpleWeather.Utils
                 {
                     // Move data from json to db
                     case 0:
-                        if (await locationDB.Locations.CountAsync() == 0)
+                        if (await AsyncTask.RunAsync(locationDB.Table<LocationData>().CountAsync()) == 0)
                             await DBMigrations.MigrateDataJsonToDB(locationDB, weatherDB);
                         break;
                     // Add and set tz_long column in db
@@ -29,12 +29,12 @@ namespace SimpleWeather.Utils
                     // LocationData updates: added new fields
                     case 2:
                     case 3:
-                        if (await locationDB.Locations.CountAsync() == 0)
+                        if (await AsyncTask.RunAsync(locationDB.Table<LocationData>().CountAsync()) > 0)
                             DBMigrations.SetLocationData(locationDB, Settings.API);
                         break;
 
                     case 4:
-                        if (await weatherDB.WeatherData.CountAsync() > 0)
+                        if (await AsyncTask.RunAsync(weatherDB.Table<Weather>().CountAsync()) > 0)
                             await DBMigrations.Migrate4_5(weatherDB);
                         break;
 
@@ -46,7 +46,7 @@ namespace SimpleWeather.Utils
             }
         }
 
-        internal static void PerformVersionMigrations(WeatherDBContext weatherDB, LocationDBContext locationDB)
+        internal static void PerformVersionMigrations(SQLiteAsyncConnection weatherDB, SQLiteAsyncConnection locationDB)
         {
             var PackageVersion = Windows.ApplicationModel.Package.Current.Id.Version;
             var version = string.Format("{0}{1}{2}{3}",

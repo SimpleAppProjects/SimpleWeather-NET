@@ -9,24 +9,13 @@
     <Import_RootNamespace>SimpleWeather.EF</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Data\DBContext.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Extensions\EFExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Location\LocationData.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Data\Migrations\LocationDB\20200213090025_InitialCreate.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Data\Migrations\LocationDB\20200213090025_InitialCreate.Designer.cs">
-      <DependentUpon>20200213090025_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Data\Migrations\LocationDB\LocationDBContextModelSnapshot.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Data\Migrations\WeatherDB\20200213085528_InitialCreate.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Data\Migrations\WeatherDB\20200213085528_InitialCreate.Designer.cs">
-      <DependentUpon>20200213085528_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Data\Migrations\WeatherDB\20200213091139_EFInitial.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Data\Migrations\WeatherDB\20200213091139_EFInitial.Designer.cs">
-      <DependentUpon>20200213091139_EFInitial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Data\Migrations\WeatherDB\WeatherDBContextModelSnapshot.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utf8Json\Utf8JsonGenerated.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utf8JsonGen\CustomJsonObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utf8JsonGen\EnumerableFormatter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utf8JsonGen\EnumFormatter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utf8JsonGen\EnumResolver.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utf8JsonGen\Utf8JsonGenerated.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utf8JsonGen\Utf8JsonResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\DateTimeUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\FileLoggingTree.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\JSONParser.cs" />

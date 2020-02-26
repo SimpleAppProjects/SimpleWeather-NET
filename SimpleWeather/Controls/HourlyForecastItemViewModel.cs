@@ -7,6 +7,8 @@ namespace SimpleWeather.Controls
 {
     public class HourlyForecastItemViewModel : BaseForecastItemViewModel
     {
+        internal HourlyForecast Forecast { get; private set; }
+
         public HourlyForecastItemViewModel(HourlyForecast hrForecast)
             : base()
         {
@@ -14,6 +16,7 @@ namespace SimpleWeather.Controls
             {
                 throw new ArgumentNullException(nameof(hrForecast));
             }
+            this.Forecast = hrForecast;
 
             var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages[0];
             var culture = new CultureInfo(userlang);

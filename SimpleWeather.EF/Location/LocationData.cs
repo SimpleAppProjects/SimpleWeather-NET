@@ -2,8 +2,7 @@
 using SimpleWeather.Utils;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using SQLite;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -21,21 +20,17 @@ namespace SimpleWeather.Location
     [Table("locations")]
     public partial class LocationData : CustomJsonObject
     {
-        [Key]
-        [Column(TypeName = "varchar")]
+        [PrimaryKey]
         public string query { get; set; }
 
-        [Column(TypeName = "varchar")]
         public string name { get; set; }
 
-        [Column(TypeName = "float")]
         public double latitude { get; set; }
 
-        [Column(TypeName = "float")]
         public double longitude { get; set; }
 
         [IgnoreDataMember]
-        [NotMapped]
+        [Ignore]
         public TimeSpan tz_offset
         {
             get
@@ -51,7 +46,7 @@ namespace SimpleWeather.Location
         }
 
         [IgnoreDataMember]
-        [NotMapped]
+        [Ignore]
         public string tz_short
         {
             get
@@ -66,11 +61,10 @@ namespace SimpleWeather.Location
             }
         }
 
-        [Column(TypeName = "varchar")]
         public string tz_long { get; set; }
 
         [IgnoreDataMember]
-        [NotMapped]
+        [Ignore]
         public string country_code
         {
             get
@@ -85,14 +79,12 @@ namespace SimpleWeather.Location
             }
         }
 
-        [EnumDataType(typeof(LocationType))]
-        [Column(TypeName = "integer")]
         public LocationType locationType { get; set; } = LocationType.Search;
 
-        [Column("source", TypeName = "varchar")]
+        [Column("source")]
         public string weatherSource { get; set; }
 
-        [Column("locsource", TypeName = "varchar")]
+        [Column("locsource")]
         public string locationSource { get; set; }
 
         public override bool Equals(System.Object obj)
@@ -245,11 +237,9 @@ namespace SimpleWeather.Location
     [Table("favorites")]
     public class Favorites
     {
-        [Key]
-        [Column(TypeName = "varchar")]
+        [PrimaryKey]
         public string query { get; set; }
 
-        [Column(TypeName = "integer")]
         public int position { get; set; }
 
         public Favorites()

@@ -1,5 +1,6 @@
 ﻿using SimpleWeather.Location;
 using SimpleWeather.WeatherData;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -13,18 +14,17 @@ namespace SimpleWeather.Utils
 {
     public static partial class DBMigrations
     {
-        public static void SetLocationData(LocationDBContext locationDB, String API)
+        public static void SetLocationData(SQLiteAsyncConnection locationDB, String API)
         {
             AsyncTask.Run(async () =>
             {
-                foreach (LocationData location in locationDB.Locations)
+                foreach (LocationData location in await locationDB.Table<LocationData>().ToListAsync()
+                        .ConfigureAwait(false))
                 {
                     await WeatherManager.GetProvider(API)
                         .UpdateLocationData(location)
                         .ConfigureAwait(false);
                 }
-
-                await locationDB.SaveChangesAsync();
             });
         }
     }
