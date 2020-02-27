@@ -29,6 +29,9 @@ namespace SimpleWeather.Utils
                 weatherDB = new SQLiteAsyncConnection(
                     Path.Combine(appDataFolder.Path, "weatherdata.db"));
 
+            if (tzDBConnStr == null)
+                tzDBConnStr = Path.Combine(appDataFolder.Path, "tzdb.db");
+
             localSettings.CreateContainer(WeatherAPI.WeatherUnderground, ApplicationDataCreateDisposition.Always);
             localSettings.CreateContainer("version", ApplicationDataCreateDisposition.Always);
         }

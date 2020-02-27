@@ -1,5 +1,4 @@
-﻿using GeoTimeZone;
-using SimpleWeather.Controls;
+﻿using SimpleWeather.Controls;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using System;
@@ -53,10 +52,9 @@ namespace SimpleWeather.WeatherData
                 }
                 else if (location.longitude != 0 && location.latitude != 0)
                 {
-                    String tzId = await AsyncTask.RunAsync(() => TimeZoneLookup.GetTimeZone(location.latitude, location.longitude).Result);
+                    String tzId = await AsyncTask.RunAsync(TZDB.TZDBCache.GetTimeZone(location.latitude, location.longitude));
                     if (!String.IsNullOrWhiteSpace(tzId))
                         location.tz_long = tzId;
-                    GC.Collect(0);
                 }
 
 #if !UNIT_TEST

@@ -37,6 +37,7 @@ namespace SimpleWeather.Utils
         internal const int CurrentDBVersion = 5;
         private static SQLiteAsyncConnection locationDB;
         private static SQLiteAsyncConnection weatherDB;
+        private static string tzDBConnStr;
         private const int CACHE_LIMIT = 25;
         public const int MAX_LOCATIONS = 10;
 
@@ -76,6 +77,7 @@ namespace SimpleWeather.Utils
 
         internal static SQLiteAsyncConnection GetWeatherDBConnection() => weatherDB;
         internal static SQLiteAsyncConnection GetLocationDBConnection() => locationDB;
+        internal static String GetTZDBConnectionString() => tzDBConnStr;
 
         internal class DBTextBlobSerializer : ITextBlobSerializer
         {
@@ -181,7 +183,7 @@ namespace SimpleWeather.Utils
                 var query = await AsyncTask.RunAsync(locationDB.QueryAsync<LocationData>(
                     "select locations.* from locations INNER JOIN favorites on locations.query = favorites.query ORDER by favorites.position"));
                 return query;
-            });;
+            });
         }
 
         public static ConfiguredTaskAwaitable<IEnumerable<LocationData>> GetLocationData()

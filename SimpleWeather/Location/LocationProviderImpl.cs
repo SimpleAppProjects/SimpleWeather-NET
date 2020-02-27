@@ -48,10 +48,9 @@ namespace SimpleWeather.Location
                 location.tz_long = qview.LocationTZLong;
                 if (String.IsNullOrEmpty(qview.LocationTZLong) && location.longitude != 0 && location.latitude != 0)
                 {
-                    String tzId = await AsyncTask.RunAsync(() => TimeZoneLookup.GetTimeZone(location.latitude, location.longitude).Result);
+                    String tzId = await AsyncTask.RunAsync(TZDB.TZDBCache.GetTimeZone(location.latitude, location.longitude));
                     if (!String.IsNullOrWhiteSpace(tzId))
                         location.tz_long = tzId;
-                    GC.Collect(0);
                 }
                 location.locationSource = qview.LocationSource;
 
