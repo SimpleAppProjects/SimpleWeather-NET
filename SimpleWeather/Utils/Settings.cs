@@ -477,7 +477,9 @@ namespace SimpleWeather.Utils
             {
                 // We only store searched locations in the db
                 // GPS location is stored in [the] local settings [container]
-                if (location?.locationType == LocationType.Search && location?.IsValid() == true)
+                if (location.locationType == LocationType.GPS && location?.IsValid() == true)
+                    Settings.SaveLastGPSLocData(location);
+                else if (location?.locationType == LocationType.Search && location?.IsValid() == true)
                 {
                     await AsyncTask.RunAsync(locationDB.UpdateAsync(location));
                 }
