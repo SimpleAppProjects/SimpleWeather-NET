@@ -28,6 +28,18 @@ namespace SimpleWeather.UWP.Controls
             SeriesData = seriesData;
             SeriesLabel = seriesLabel;
         }
+
+        public override bool Equals(object obj)
+        {
+            return obj is LineDataSeries series &&
+                   SeriesLabel == series.SeriesLabel &&
+                   EqualityComparer<List<YEntryData>>.Default.Equals(SeriesData, series.SeriesData);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(SeriesLabel, SeriesData);
+        }
     }
 
     public class XLabelData
@@ -52,10 +64,23 @@ namespace SimpleWeather.UWP.Controls
         {
             XIconRotation = iconRotation;
         }
+
+        public override bool Equals(object obj)
+        {
+            return obj is XLabelData data &&
+                   XLabel == data.XLabel &&
+                   XIcon == data.XIcon &&
+                   XIconRotation == data.XIconRotation;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(XLabel, XIcon, XIconRotation);
+        }
     }
 
     [SuppressMessage("Design", "CA1036:Override methods on comparable types", Justification = "<Pending>")]
-    public class YEntryData : IComparable<YEntryData>
+    public class YEntryData : IComparable<YEntryData>, IEquatable<YEntryData>
     {
         public float Y { get; set; }
         public String YLabel { get; set; }
@@ -76,6 +101,23 @@ namespace SimpleWeather.UWP.Controls
             {
                 return Y.CompareTo(other.Y);
             }
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as YEntryData);
+        }
+
+        public bool Equals(YEntryData other)
+        {
+            return other != null &&
+                   Y == other.Y &&
+                   YLabel == other.YLabel;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Y, YLabel);
         }
     }
 }

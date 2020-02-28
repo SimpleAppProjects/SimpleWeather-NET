@@ -304,8 +304,9 @@
                             <Button x:Name="RightButton" Click="RightButton_Click" Grid.Column="2"
                                 IsEnabled="{x:Bind helpers:ScrollViewerHelper.CanScrollToEnd(ForecastGraphPanel.ScrollViewer.HorizontalOffset, ForecastGraphPanel.ScrollViewer.ViewportWidth, ForecastGraphPanel.ScrollViewer.ExtentWidth), Mode=OneWay}"
                                 Style="{ThemeResource RightArrowButton}" />
-                            <localcontrols:ForecastGraphPanel x:Name="ForecastGraphPanel" Grid.Column="1" GraphViewTapped="LineView_Tapped"
-                                                          Forecasts="{x:Bind WeatherView.Forecasts, Mode=OneWay}" />
+                            <localcontrols:ForecastGraphPanel x:Name="ForecastGraphPanel" Grid.Column="1"
+                                                              GraphViewTapped="LineView_Tapped"
+                                                              Forecasts="{x:Bind WeatherView.Forecasts, Mode=OneWay}" />
                         </Grid>
                     </toolkitControls:HeaderedContentControl>
                 </StackPanel>

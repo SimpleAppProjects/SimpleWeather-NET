@@ -34,8 +34,6 @@ namespace SimpleWeather.Controls
 
         #endregion Properties
 
-        private Weather weather;
-
         public WeatherExtrasViewModel()
         {
             HourlyForecast = new ObservableForecastLoadingCollection<HourlyForecastItemViewModel>();
@@ -70,10 +68,9 @@ namespace SimpleWeather.Controls
 
         public void UpdateView(Weather weather)
         {
-            if ((bool)weather?.IsValid() && !Object.Equals(this.weather, weather))
+            if ((bool)weather?.IsValid())
             {
-                this.weather = weather;
-                if (weather?.hr_forecast?.Count > 0)
+                if (weather?.hr_forecast?.Any() == true)
                 {
                     HourlyForecast.Clear();
                     foreach (HourlyForecast hr_forecast in weather.hr_forecast)
@@ -89,7 +86,7 @@ namespace SimpleWeather.Controls
                 }
                 OnPropertyChanged(nameof(HourlyForecast));
 
-                if (weather?.txt_forecast?.Count > 0)
+                if (weather?.txt_forecast?.Any() == true)
                 {
                     TextForecast.Clear();
                     foreach (TextForecast txt_forecast in weather.txt_forecast)

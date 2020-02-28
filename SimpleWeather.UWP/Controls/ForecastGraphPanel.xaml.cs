@@ -76,6 +76,8 @@ namespace SimpleWeather.UWP.Controls
                 {
                     (_forecasts as INotifyCollectionChanged).CollectionChanged += NotifyCollection_CollectionChanged;
                 }
+
+                UpdateLineView(false);
             }
         }
 
@@ -170,8 +172,7 @@ namespace SimpleWeather.UWP.Controls
 
         private async void GraphLineView_Loaded(object sender, RoutedEventArgs e)
         {
-            if (_forecasts as IObservableLoadingCollection == null)
-                await UpdateLineView(true);
+            await UpdateLineView(true);
         }
 
         private async Task UpdateLineView(bool resetOffset)

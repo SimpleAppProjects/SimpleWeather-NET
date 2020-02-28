@@ -179,8 +179,12 @@ namespace SimpleWeather.UWP.Controls
                 throw new ArgumentNullException(nameof(dataLists));
             }
 
-            SetDataLabels(dataLabels);
-            SetDataList(dataLists);
+            if (!Enumerable.SequenceEqual(this.dataLabels, dataLabels) &&
+                !Enumerable.SequenceEqual(this.dataLists, dataLists))
+            {
+                SetDataLabels(dataLabels);
+                SetDataList(dataLists);
+            }
         }
 
         private void SetDataLabels(List<XLabelData> dataLabels)
