@@ -271,7 +271,7 @@ namespace SimpleWeather.Controls
                        Settings.IsFahrenheit ?
                             String.Format("{0} mph, {1}", Math.Round(weather.condition.wind_mph), WeatherUtils.GetWindDirection(weather.condition.wind_degrees)) :
                             String.Format("{0} kph, {1}", Math.Round(weather.condition.wind_kph), WeatherUtils.GetWindDirection(weather.condition.wind_degrees)),
-                       weather.condition.wind_degrees));
+                       weather.condition.wind_degrees + 180));
                 }
 
                 if (weather.condition.beaufort != null)

@@ -29,7 +29,7 @@ namespace SimpleWeather.UWP.Main
             NavigationCacheMode = NavigationCacheMode.Disabled;
 
             // CommandBar
-            CommandBarLabel = App.ResLoader.GetString("Label_Forecast/Text");
+            CommandBarLabel = App.ResLoader.GetString("Label_Forecast/Header");
         }
 
         public Task<bool> OnBackRequested()

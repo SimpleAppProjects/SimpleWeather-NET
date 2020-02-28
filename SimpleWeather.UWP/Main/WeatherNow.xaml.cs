@@ -263,16 +263,14 @@ namespace SimpleWeather.UWP.Main
             }
         }
 
-        private void MainViewer_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void MainGrid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            var scroller = sender as ScrollViewer;
-            ResizeAlertPanel();
+            AdjustViewLayout();
+        }
 
-            double w = scroller.ActualWidth - scroller.Padding.Left - scroller.Padding.Right;
-            double h = scroller.ActualHeight - scroller.Padding.Top - scroller.Padding.Bottom;
-
-            ConditionPanel.Height = h;
-            ConditionPanel.Width = w;
+        private void DeferedControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            AdjustViewLayout();
         }
 
         private void ResizeAlertPanel()
@@ -288,6 +286,70 @@ namespace SimpleWeather.UWP.Main
                 AlertButton.Width = w * (0.75);
             else
                 AlertButton.Width = w * (0.50);
+        }
+
+        private void AdjustViewLayout()
+        {
+            if (Window.Current == null) return;
+            var Bounds = Window.Current.Bounds;
+
+            if (MainViewer == null) return;
+
+            ResizeAlertPanel();
+
+            double w = MainViewer.ActualWidth - MainViewer.Padding.Left - MainViewer.Padding.Right;
+            double h = MainViewer.ActualHeight - MainViewer.Padding.Top - MainViewer.Padding.Bottom;
+
+            if (ConditionPanel != null)
+            {
+                ConditionPanel.Height = h;
+                ConditionPanel.Width = w;
+            }
+
+            if (Bounds.Height >= 691)
+            {
+                if (WeatherBox != null) WeatherBox.Height = WeatherBox.Width = 155;
+                if (SunPhasePanel != null) SunPhasePanel.Height = 250;
+            }
+            else if (Bounds.Height >= 641)
+            {
+                if (WeatherBox != null) WeatherBox.Height = WeatherBox.Width = 130;
+                if (SunPhasePanel != null) SunPhasePanel.Height = 250;
+            }
+            else if (Bounds.Height >= 481)
+            {
+                if (WeatherBox != null) WeatherBox.Height = WeatherBox.Width = 100;
+                if (SunPhasePanel != null) SunPhasePanel.Height = 180;
+            }
+            else if (Bounds.Height >= 361)
+            {
+                if (WeatherBox != null) WeatherBox.Height = WeatherBox.Width = 75;
+                if (SunPhasePanel != null) SunPhasePanel.Height = 180;
+            }
+            else
+            {
+                if (WeatherBox != null) WeatherBox.Height = WeatherBox.Width = 50;
+                if (SunPhasePanel != null) SunPhasePanel.Height = 180;
+            }
+
+            if (Bounds.Width >= 1007)
+            {
+                if (Location != null) Location.FontSize = 32;
+                if (CurTemp != null) CurTemp.FontSize = 32;
+                if (CurCondition != null) CurCondition.FontSize = 32;
+            }
+            else if (Bounds.Width >= 641)
+            {
+                if (Location != null) Location.FontSize = 28;
+                if (CurTemp != null) CurTemp.FontSize = 28;
+                if (CurCondition != null) CurCondition.FontSize = 28;
+            }
+            else
+            {
+                if (Location != null) Location.FontSize = 24;
+                if (CurTemp != null) CurTemp.FontSize = 24;
+                if (CurCondition != null) CurCondition.FontSize = 24;
+            }
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
@@ -795,8 +857,7 @@ namespace SimpleWeather.UWP.Main
 
             try
             {
-                controlParent = VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(
-                    VisualTreeHelper.GetParent(control?.Parent))) as FrameworkElement;
+                controlParent = VisualTreeHelperExtensions.GetParent<ForecastGraphPanel>(control);
             }
             catch (Exception) { }
 

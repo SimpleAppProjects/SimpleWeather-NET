@@ -112,7 +112,7 @@ namespace SimpleWeather.UWP.Controls
                     DataFetchSize = desiredFetchSize;
 
                 // trigger if (LineView) drawing does not fit viewport
-                if (GraphView.DrawingWidth * 2.0 <= ScrollViewer.ViewportWidth &&
+                if (e.NewSize.Width <= ScrollViewer.ViewportWidth &&
                     _forecasts is IObservableLoadingCollection _collection && _collection.HasMoreItems && !_collection.IsLoading)
                 {
                     await _collection.LoadMoreItemsAsync(DataFetchSize);

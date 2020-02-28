@@ -168,9 +168,6 @@ namespace SimpleWeather.UWP.Controls
             }
         }
 
-        private float ItemWidth { get { return longestTextWidth; } }
-        public float DrawingWidth { get { return HorizontalGridNum * ItemWidth; } }
-
         public void SetData(List<XLabelData> dataLabels, List<LineDataSeries> dataLists)
         {
             if (dataLabels is null)
@@ -871,7 +868,7 @@ namespace SimpleWeather.UWP.Controls
             {
                 ItemWidthChanged?.Invoke(this, new ItemSizeChangedEventArgs()
                 {
-                    NewSize = new System.Drawing.Size((int)ItemWidth, (int)availableSize.Height)
+                    NewSize = new System.Drawing.Size((int)Canvas.Width, (int)Canvas.Height)
                 });
             });
 
