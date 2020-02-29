@@ -98,6 +98,7 @@
     <UseDotNetNativeToolchain>false</UseDotNetNativeToolchain>
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <Optimize>false</Optimize>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
