@@ -115,8 +115,11 @@ namespace SimpleWeather.Utils
 
         public static async Task DeleteDirectory(String path)
         {
-            var directory = await StorageFolder.GetFolderFromPathAsync(path);
-            await directory.DeleteAsync(StorageDeleteOption.PermanentDelete);
+            if (Directory.Exists(path))
+            {
+                var directory = await StorageFolder.GetFolderFromPathAsync(path);
+                await directory.DeleteAsync(StorageDeleteOption.PermanentDelete);
+            }
         }
     }
 }

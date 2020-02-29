@@ -115,8 +115,11 @@ namespace SimpleWeather.Utils
 #if !WINDOWS_UWP
         public static Task DeleteDirectory(String path)
         {
-            var directory = new DirectoryInfo(path);
-            directory.Delete(true);
+            if (Directory.Exists(path))
+            {
+                var directory = new DirectoryInfo(path);
+                directory.Delete(true);
+            }
         }
 #endif
     }
