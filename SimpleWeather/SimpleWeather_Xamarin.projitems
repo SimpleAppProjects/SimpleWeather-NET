@@ -50,7 +50,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)SimpleLibrary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SQLiteNet\SQLiteNetPCLExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TZDB\TZDB.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utf8Json\Utf8JsonGenerated.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utf8JsonGen\Utf8JsonGenerated.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\AppCenterLoggingTree.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\AsyncTask.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\ColorUtils.cs" />

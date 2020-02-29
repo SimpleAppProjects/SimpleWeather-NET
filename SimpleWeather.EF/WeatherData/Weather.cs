@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using Utf8Json;
+using Utf8Json.Formatters;
 
 namespace SimpleWeather.WeatherData
 {
@@ -578,6 +579,7 @@ namespace SimpleWeather.WeatherData
     [JsonFormatter(typeof(CustomJsonConverter<Forecast>))]
     public partial class Forecast : CustomJsonObject
     {
+        [JsonFormatter(typeof(DateTimeFormatter), DateTimeUtils.ISO8601_DATETIME_FORMAT)]
         public DateTime date { get; set; }
         public string high_f { get; set; }
         public string high_c { get; set; }
@@ -745,7 +747,7 @@ namespace SimpleWeather.WeatherData
     public partial class HourlyForecast : CustomJsonObject
     {
         [DataMember(Name = "date")]
-        [JsonFormatter(typeof(Utf8Json.Formatters.DateTimeOffsetFormatter), DateTimeUtils.DATETIMEOFFSET_FORMAT)]
+        [JsonFormatter(typeof(DateTimeOffsetFormatter), DateTimeUtils.DATETIMEOFFSET_FORMAT)]
         public DateTimeOffset date { get; set; }
         public string high_f { get; set; }
         public string high_c { get; set; }
@@ -1753,9 +1755,13 @@ namespace SimpleWeather.WeatherData
     [JsonFormatter(typeof(CustomJsonConverter<Astronomy>))]
     public partial class Astronomy : CustomJsonObject
     {
+        [JsonFormatter(typeof(DateTimeFormatter), DateTimeUtils.ISO8601_DATETIME_FORMAT)]
         public DateTime sunrise { get; set; }
+        [JsonFormatter(typeof(DateTimeFormatter), DateTimeUtils.ISO8601_DATETIME_FORMAT)]
         public DateTime sunset { get; set; }
+        [JsonFormatter(typeof(DateTimeFormatter), DateTimeUtils.ISO8601_DATETIME_FORMAT)]
         public DateTime moonrise { get; set; }
+        [JsonFormatter(typeof(DateTimeFormatter), DateTimeUtils.ISO8601_DATETIME_FORMAT)]
         public DateTime moonset { get; set; }
         public MoonPhase moonphase { get; set; }
 
@@ -1809,19 +1815,19 @@ namespace SimpleWeather.WeatherData
                 switch (property)
                 {
                     case nameof(sunrise):
-                        this.sunrise = DateTime.ParseExact(reader.ReadString(), DateTimeUtils.ISO8601_DATETIME_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                        this.sunrise = DateTime.Parse(reader.ReadString(), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
                         break;
 
                     case nameof(sunset):
-                        this.sunset = DateTime.ParseExact(reader.ReadString(), DateTimeUtils.ISO8601_DATETIME_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                        this.sunset = DateTime.Parse(reader.ReadString(), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
                         break;
 
                     case nameof(moonrise):
-                        this.moonrise = DateTime.ParseExact(reader.ReadString(), DateTimeUtils.ISO8601_DATETIME_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                        this.moonrise = DateTime.Parse(reader.ReadString(), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
                         break;
 
                     case nameof(moonset):
-                        this.moonset = DateTime.ParseExact(reader.ReadString(), DateTimeUtils.ISO8601_DATETIME_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                        this.moonset = DateTime.Parse(reader.ReadString(), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
                         break;
 
                     case nameof(moonphase):
