@@ -48,6 +48,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\OpenWeatherMapProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SimpleLibrary.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SQLiteNet\SQLiteNetPCLExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TZDB\TZDB.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utf8Json\Utf8JsonGenerated.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\AppCenterLoggingTree.cs" />
@@ -90,5 +91,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)YahooWeather\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Keys\YahooKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)YahooWeather\YahooWeatherProvider.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)SQLiteNet\" />
   </ItemGroup>
 </Project>

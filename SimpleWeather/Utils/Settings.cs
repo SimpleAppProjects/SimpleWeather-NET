@@ -1,4 +1,5 @@
 ﻿using SimpleWeather.Location;
+using SimpleWeather.SQLiteNet;
 using SimpleWeather.WeatherData;
 using SQLite;
 using SQLiteNetExtensions.Extensions.TextBlob;
@@ -372,13 +373,9 @@ namespace SimpleWeather.Utils
             {
                 var locs = await AsyncTask.RunAsync(locationDB.Table<LocationData>().ToListAsync());
                 if (FollowGPS) locs.Add(lastGPSLocData);
-                var data = await AsyncTask.RunAsync(weatherDB.Table<Weather>().ToListAsync());
-                var weatherToDelete = data.Where(w => locs.All(l => l.query != w.query));
+                var locQueries = locs.Select(l => l.query);
 
-                foreach (var w in weatherToDelete)
-                {
-                    await AsyncTask.RunAsync(() => weatherDB.DeleteAsync<Weather>(w.query));
-                }
+                await AsyncTask.RunAsync(weatherDB.DeleteAllIdsNotInAsync<Weather>(locQueries));
             });
         }
 
@@ -388,21 +385,10 @@ namespace SimpleWeather.Utils
             {
                 var locs = await AsyncTask.RunAsync(locationDB.Table<LocationData>().ToListAsync());
                 if (FollowGPS) locs.Add(lastGPSLocData);
-                var forecastsToDelete = await weatherDB.Table<Forecasts>().Where(f => locs.All(l => l.query != f.query)).ToListAsync();
-                var hrForecastsToDelete = (await weatherDB.Table<HourlyForecasts>().Where(hrf => locs.All(l => l.query != hrf.query))
-                                                                   .ToListAsync())
-                                                                   .GroupBy(hrf => hrf.query)
-                                                                   .Select(hrf => hrf.Key);
+                var locQueries = locs.Select(l => l.query);
 
-                foreach (var f in forecastsToDelete)
-                {
-                    await AsyncTask.RunAsync(() => weatherDB.DeleteAsync<Forecasts>(f.query));
-                }
-
-                foreach (var q in hrForecastsToDelete)
-                {
-                    await AsyncTask.RunAsync(weatherDB.ExecuteAsync("delete from hr_forecasts where query = ?", q));
-                }
+                await AsyncTask.RunAsync(weatherDB.DeleteAllIdsNotInAsync<Forecasts>(locQueries));
+                await AsyncTask.RunAsync(weatherDB.DeleteAllIdsNotInAsync<HourlyForecasts>("query", locQueries));
             });
         }
 
@@ -412,13 +398,9 @@ namespace SimpleWeather.Utils
             {
                 var locs = await AsyncTask.RunAsync(locationDB.Table<LocationData>().ToListAsync());
                 if (FollowGPS) locs.Add(lastGPSLocData);
-                var data = await AsyncTask.RunAsync(weatherDB.Table<WeatherAlerts>().ToListAsync());
-                var weatherToDelete = data.Where(w => locs.All(l => l.query != w.query));
+                var locQueries = locs.Select(l => l.query);
 
-                foreach (var a in weatherToDelete)
-                {
-                    await AsyncTask.RunAsync(weatherDB.DeleteAsync<WeatherAlerts>(a.query));
-                }
+                await AsyncTask.RunAsync(weatherDB.DeleteAllIdsNotInAsync<WeatherAlerts>(locQueries));
             });
         }
 
