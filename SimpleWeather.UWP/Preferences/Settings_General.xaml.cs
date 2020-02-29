@@ -244,7 +244,7 @@ namespace SimpleWeather.UWP.Preferences
                 Settings.API = WeatherAPI.Here;
                 wm.UpdateAPI();
 
-                if (String.IsNullOrWhiteSpace(wm.GetAPIKey()))
+                if (wm.KeyRequired && String.IsNullOrWhiteSpace(wm.GetAPIKey()))
                 {
                     // If (internal) key doesn't exist, fallback to Yahoo
                     APIComboBox.SelectedValue = WeatherAPI.Yahoo;
@@ -424,7 +424,7 @@ namespace SimpleWeather.UWP.Preferences
                 string API = APIComboBox.SelectedValue.ToString();
                 var selectedWProv = WeatherManager.GetProvider(API);
 
-                if (!String.IsNullOrWhiteSpace(selectedWProv.GetAPIKey()))
+                if (!selectedWProv.KeyRequired || !String.IsNullOrWhiteSpace(selectedWProv.GetAPIKey()))
                 {
                     // We're using our own (verified) keys
                     Settings.KeyVerified = true;

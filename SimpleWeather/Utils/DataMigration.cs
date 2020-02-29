@@ -83,7 +83,7 @@ namespace SimpleWeather.Utils
                         var wm = WeatherManager.GetInstance();
                         wm.UpdateAPI();
 
-                        if (String.IsNullOrWhiteSpace(wm.GetAPIKey()))
+                        if (wm.KeyRequired && String.IsNullOrWhiteSpace(wm.GetAPIKey()))
                         {
                             // If (internal) key doesn't exist, fallback to Yahoo
                             Settings.API = WeatherAPI.Yahoo;

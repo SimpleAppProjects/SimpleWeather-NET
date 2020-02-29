@@ -467,7 +467,7 @@ namespace SimpleWeather.UWP.Setup
             Settings.API = WeatherAPI.Here;
             wm.UpdateAPI();
 
-            if (String.IsNullOrWhiteSpace(wm.GetAPIKey()))
+            if (wm.KeyRequired && String.IsNullOrWhiteSpace(wm.GetAPIKey()))
             {
                 // If (internal) key doesn't exist, fallback to Yahoo
                 Settings.API = WeatherAPI.Yahoo;
