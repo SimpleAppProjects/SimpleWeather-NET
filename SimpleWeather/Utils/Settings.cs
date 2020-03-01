@@ -139,16 +139,31 @@ namespace SimpleWeather.Utils
             }
         }
 
+        private static async Task CreateDatabase()
+        {
+            await locationDB.CreateTableAsync<LocationData>();
+            await locationDB.CreateTableAsync<Favorites>();
+            await weatherDB.CreateTableAsync<Weather>();
+            await weatherDB.CreateTableAsync<WeatherAlerts>();
+            await weatherDB.CreateTableAsync<Forecasts>();
+            await weatherDB.CreateTableAsync<HourlyForecasts>();
+        }
+
+        private static async Task DestroyDatabase()
+        {
+            await locationDB.DropTableAsync<Favorites>();
+            await locationDB.DropTableAsync<LocationData>();
+            await weatherDB.DropTableAsync<WeatherAlerts>();
+            await weatherDB.DropTableAsync<Forecasts>();
+            await weatherDB.DropTableAsync<HourlyForecasts>();
+            await weatherDB.DropTableAsync<Weather>();
+        }
+
         private static async Task Load()
         {
             // Create DB tables
             TextBlobOperations.SetTextSerializer(new DBTextBlobSerializer());
-            await AsyncTask.RunAsync(locationDB.CreateTableAsync<LocationData>());
-            await AsyncTask.RunAsync(locationDB.CreateTableAsync<Favorites>());
-            await AsyncTask.RunAsync(weatherDB.CreateTableAsync<Weather>());
-            await AsyncTask.RunAsync(weatherDB.CreateTableAsync<WeatherAlerts>());
-            await AsyncTask.RunAsync(weatherDB.CreateTableAsync<Forecasts>());
-            await AsyncTask.RunAsync(weatherDB.CreateTableAsync<HourlyForecasts>());
+            await AsyncTask.RunAsync(CreateDatabase);
 
             // Migrate old data if available
             await DataMigrations.PerformDBMigrations(weatherDB, locationDB);

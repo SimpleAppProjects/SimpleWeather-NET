@@ -17,32 +17,58 @@ namespace SimpleWeather.Utils
         {
             if (Settings.DBVersion < Settings.CurrentDBVersion)
             {
-                switch (Settings.DBVersion)
+                Task migrationTask = Task.Run(async () =>
                 {
-                    // Move data from json to db
-                    case 0:
-                        if (await AsyncTask.RunAsync(locationDB.Table<LocationData>().CountAsync()) == 0)
-                            await DBMigrations.MigrateDataJsonToDB(locationDB, weatherDB);
-                        break;
-                    // Add and set tz_long column in db
-                    case 1:
-                    // LocationData updates: added new fields
-                    case 2:
-                    case 3:
-                        if (await AsyncTask.RunAsync(locationDB.Table<LocationData>().CountAsync()) > 0)
-                            DBMigrations.SetLocationData(locationDB, Settings.API);
-                        break;
+                    switch (Settings.DBVersion)
+                    {
+                        // Move data from json to db
+                        case 0:
+                            if (await AsyncTask.RunAsync(locationDB.Table<LocationData>().CountAsync()) == 0)
+                                await DBMigrations.MigrateDataJsonToDB(locationDB, weatherDB);
+                            goto case 1;
+                        // Add and set tz_long column in db
+                        case 1:
+                        // LocationData updates: added new fields
+                        case 2:
+                        case 3:
+                            if (await AsyncTask.RunAsync(locationDB.Table<LocationData>().CountAsync()) > 0)
+                                DBMigrations.SetLocationData(locationDB, Settings.API);
+                            goto case 4;
+                        case 4:
+                            if (await AsyncTask.RunAsync(weatherDB.Table<Weather>().CountAsync()) > 0)
+                            {
+                                try
+                                {
+                                    await DBMigrations.Migrate4_5(weatherDB);
+                                }
+                                catch (Exception e)
+                                {
+                                    // Allow recovery if this migration fails since weatherdata is expendable
+                                    Logger.WriteLine(LoggerLevel.Error, e, "Migrate4_5 failed; Purging weather database!!");
 
-                    case 4:
-                        if (await AsyncTask.RunAsync(weatherDB.Table<Weather>().CountAsync()) > 0)
-                            await DBMigrations.Migrate4_5(weatherDB);
-                        break;
+                                    // Purge and recreate database
+                                    await weatherDB.DropTableAsync<Weather>();
+                                    await weatherDB.DropTableAsync<WeatherAlerts>();
+                                    await weatherDB.DropTableAsync<Forecasts>();
+                                    await weatherDB.DropTableAsync<HourlyForecasts>();
 
-                    default:
-                        break;
-                }
+                                    await weatherDB.CreateTablesAsync<Weather, WeatherAlerts, Forecasts, HourlyForecasts>();
+                                }
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }).ContinueWith((t) => 
+                {
+                    if (t.IsFaulted && t.Exception != null)
+                        throw t.Exception;
 
-                Settings.DBVersion = Settings.CurrentDBVersion;
+                    if (t.IsCompletedSuccessfully)
+                        Settings.DBVersion = Settings.CurrentDBVersion;
+                });
+
+                await migrationTask;
             }
         }
 
