@@ -16,11 +16,13 @@
     {
         public string value { get; set; }
         public string segment { get; set; }
-        public Otherattributes otherAttributes { get; set; }
+        //public Otherattributes otherAttributes { get; set; }
         public string day_of_week { get; set; }
     }
 
+    /*
     public class Otherattributes
     {
     }
+    */
 }

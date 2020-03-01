@@ -5,29 +5,30 @@ namespace SimpleWeather.NWS
 {
     public class PointsRootobject
     {
-        [DataMember(Name = "@context")]
-        public Context context { get; set; }
-        [DataMember(Name = "@id")]
-        public string id { get; set; }
-        [DataMember(Name = "@type")]
-        public string type { get; set; }
-        public string geometry { get; set; }
-        public string cwa { get; set; }
-        public string forecastOffice { get; set; }
-        public int gridX { get; set; }
-        public int gridY { get; set; }
+        //[DataMember(Name = "@context")]
+        //public Context context { get; set; }
+        //[DataMember(Name = "@id")]
+        //public string id { get; set; }
+        //[DataMember(Name = "@type")]
+        //public string type { get; set; }
+        //public string geometry { get; set; }
+        //public string cwa { get; set; }
+        //public string forecastOffice { get; set; }
+        //public int gridX { get; set; }
+        //public int gridY { get; set; }
         public string forecast { get; set; }
         public string forecastHourly { get; set; }
         public string forecastGridData { get; set; }
         public string observationStations { get; set; }
-        public Relativelocation relativeLocation { get; set; }
-        public string forecastZone { get; set; }
-        public string county { get; set; }
-        public string fireWeatherZone { get; set; }
+        //public Relativelocation relativeLocation { get; set; }
+        //public string forecastZone { get; set; }
+        //public string county { get; set; }
+        //public string fireWeatherZone { get; set; }
         public string timeZone { get; set; }
-        public string radarStation { get; set; }
+        //public string radarStation { get; set; }
     }
 
+    /*
     public partial class Context
     {
         public string s { get; set; }
@@ -45,7 +46,9 @@ namespace SimpleWeather.NWS
         public Publiczone publicZone { get; set; }
         public County county { get; set; }
     }
+    */
 
+    /*
     public class Geometry
     {
         [DataMember(Name = "@id")]
@@ -126,26 +129,29 @@ namespace SimpleWeather.NWS
         public int value { get; set; }
         public string unitCode { get; set; }
     }
+    */
 
     public class ForecastRootobject
     {
-        public Context context { get; set; }
-        public string geometry { get; set; }
+        //public Context context { get; set; }
+        //public string geometry { get; set; }
         public DateTimeOffset updated { get; set; }
         public string units { get; set; }
-        public string forecastGenerator { get; set; }
+        //public string forecastGenerator { get; set; }
         public DateTimeOffset generatedAt { get; set; }
         public DateTimeOffset updateTime { get; set; }
         public string validTimes { get; set; }
-        public Elevation elevation { get; set; }
+        //public Elevation elevation { get; set; }
         public Period[] periods { get; set; }
     }
 
+    /*
     public class Elevation
     {
         public float value { get; set; }
         public string unitCode { get; set; }
     }
+    */
 
     public class Period
     {
@@ -166,11 +172,12 @@ namespace SimpleWeather.NWS
 
     public class ObservationsStationsRootobject
     {
-        public Context context { get; set; }
-        public ObsGraph[] graph { get; set; }
+        //public Context context { get; set; }
+        //public ObsGraph[] graph { get; set; }
         public string[] observationStations { get; set; }
     }
 
+    /*
     public class Observationstations
     {
         public string container { get; set; }
@@ -184,19 +191,20 @@ namespace SimpleWeather.NWS
         public string name { get; set; }
         public string timeZone { get; set; }
     }
+    */
 
     public class ObservationsCurrentRootobject
     {
-        public Context context { get; set; }
-        [DataMember(Name = "@id")]
-        public string id { get; set; }
-        [DataMember(Name = "@type")]
-        public string type { get; set; }
-        public string geometry { get; set; }
-        public Elevation elevation { get; set; }
-        public string station { get; set; }
+        //public Context context { get; set; }
+        //[DataMember(Name = "@id")]
+        //public string id { get; set; }
+        //[DataMember(Name = "@type")]
+        //public string type { get; set; }
+        //public string geometry { get; set; }
+        //public Elevation elevation { get; set; }
+        //public string station { get; set; }
         public DateTimeOffset timestamp { get; set; }
-        public string rawMessage { get; set; }
+        //public string rawMessage { get; set; }
         public string textDescription { get; set; }
         public string icon { get; set; }
         //public object[] presentWeather { get; set; }
@@ -204,19 +212,19 @@ namespace SimpleWeather.NWS
         public Dewpoint dewpoint { get; set; }
         public Winddirection windDirection { get; set; }
         public Windspeed windSpeed { get; set; }
-        public Windgust windGust { get; set; }
+        //public Windgust windGust { get; set; }
         public Barometricpressure barometricPressure { get; set; }
-        public Sealevelpressure seaLevelPressure { get; set; }
+        //public Sealevelpressure seaLevelPressure { get; set; }
         public Visibility visibility { get; set; }
-        public Maxtemperaturelast24hours maxTemperatureLast24Hours { get; set; }
-        public Mintemperaturelast24hours minTemperatureLast24Hours { get; set; }
-        public Precipitationlasthour precipitationLastHour { get; set; }
-        public Precipitationlast3hours precipitationLast3Hours { get; set; }
-        public Precipitationlast6hours precipitationLast6Hours { get; set; }
+        //public Maxtemperaturelast24hours maxTemperatureLast24Hours { get; set; }
+        //public Mintemperaturelast24hours minTemperatureLast24Hours { get; set; }
+        //public Precipitationlasthour precipitationLastHour { get; set; }
+        //public Precipitationlast3hours precipitationLast3Hours { get; set; }
+        //public Precipitationlast6hours precipitationLast6Hours { get; set; }
         public Relativehumidity relativeHumidity { get; set; }
-        public Windchill windChill { get; set; }
-        public Heatindex heatIndex { get; set; }
-        public Cloudlayer[] cloudLayers { get; set; }
+        //public Windchill windChill { get; set; }
+        //public Heatindex heatIndex { get; set; }
+        //public Cloudlayer[] cloudLayers { get; set; }
     }
 
     public class Temperature
@@ -247,12 +255,14 @@ namespace SimpleWeather.NWS
         public string qualityControl { get; set; }
     }
 
+    /*
     public class Windgust
     {
         public float? value { get; set; }
         public string unitCode { get; set; }
         public string qualityControl { get; set; }
     }
+    */
 
     public class Barometricpressure
     {
@@ -261,12 +271,14 @@ namespace SimpleWeather.NWS
         public string qualityControl { get; set; }
     }
 
+    /*
     public class Sealevelpressure
     {
         public float? value { get; set; }
         public string unitCode { get; set; }
         public string qualityControl { get; set; }
     }
+    */
 
     public class Visibility
     {
@@ -275,6 +287,7 @@ namespace SimpleWeather.NWS
         public string qualityControl { get; set; }
     }
 
+    /*
     public class Maxtemperaturelast24hours
     {
         public float? value { get; set; }
@@ -309,6 +322,7 @@ namespace SimpleWeather.NWS
         public string unitCode { get; set; }
         public string qualityControl { get; set; }
     }
+    */
 
     public class Relativehumidity
     {
@@ -317,6 +331,7 @@ namespace SimpleWeather.NWS
         public string qualityControl { get; set; }
     }
 
+    /*
     public class Windchill
     {
         public float? value { get; set; }
@@ -342,4 +357,5 @@ namespace SimpleWeather.NWS
         public int value { get; set; }
         public string unitCode { get; set; }
     }
+    */
 }
