@@ -610,7 +610,19 @@
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>"$(SolutionDir)EditManifest.exe" "$(ProjectDir)Package.appxmanifest" $(ConfigurationName)</PreBuildEvent>
+    <PreBuildEvent>"$(SolutionDir)KeyCheck.exe" "$(SolutionDir)SimpleWeather\Keys\AppCenterKey.cs" "$(SolutionDir)SimpleWeather\Keys\BingMapsKey.cs" "$(SolutionDir)SimpleWeather\Keys\HEREWeatherKey.cs" "$(SolutionDir)SimpleWeather\Keys\YahooKey.cs"
+
+if errorlevel 1 goto Error
+
+"$(SolutionDir)EditManifest.exe" "$(ProjectDir)Package.appxmanifest" $(ConfigurationName)
+
+goto Success
+
+:Error
+exit /b 1
+
+:Success
+exit /b 0</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -4,7 +4,7 @@ using SQLite;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-#if !DEBUG
+#if !DEBUG && !UNIT_TEST
 using Microsoft.AppCenter.Analytics;
 using System.Collections.Generic;
 #endif
@@ -99,7 +99,7 @@ namespace SimpleWeather.Utils
                         }
                     }
                 }
-#if !DEBUG
+#if !DEBUG && !UNIT_TEST
                 Analytics.TrackEvent("App upgrading", new Dictionary<string, string>()
                 {
                     { "API", Settings.API },
