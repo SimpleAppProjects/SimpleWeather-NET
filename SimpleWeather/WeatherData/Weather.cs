@@ -563,10 +563,26 @@ namespace SimpleWeather.WeatherData
         public Forecast(HERE.Forecast forecast)
         {
             date = forecast.utcTime.UtcDateTime;
-            high_f = forecast.highTemperature;
-            high_c = ConversionMethods.FtoC(forecast.highTemperature);
-            low_f = forecast.lowTemperature;
-            low_c = ConversionMethods.FtoC(forecast.lowTemperature);
+            try
+            {
+                high_f = forecast.highTemperature;
+                high_c = ConversionMethods.FtoC(forecast.highTemperature);
+            }
+            catch (FormatException)
+            {
+                high_f = null;
+                high_c = null;
+            }
+            try
+            {
+                low_f = forecast.lowTemperature;
+                low_c = ConversionMethods.FtoC(forecast.lowTemperature);
+            }
+            catch (FormatException)
+            {
+                low_f = null;
+                low_c = null;
+            }
             condition = forecast.description.ToPascalCase();
             icon = WeatherManager.GetProvider(WeatherAPI.Here)
                    .GetWeatherIcon(string.Format("{0}_{1}", forecast.daylight, forecast.iconName));
@@ -600,11 +616,22 @@ namespace SimpleWeather.WeatherData
                 extras.qpf_snow_in = snow_in;
                 extras.qpf_snow_cm = float.Parse(ConversionMethods.InToMM((snow_in / 10).ToString(CultureInfo.InvariantCulture)));
             }
-            extras.pressure_in = forecast.barometerPressure;
-            extras.pressure_mb = ConversionMethods.InHgToMB(forecast.barometerPressure);
+            try
+            {
+                extras.pressure_in = forecast.barometerPressure;
+                extras.pressure_mb = ConversionMethods.InHgToMB(forecast.barometerPressure);
+            }
+            catch (FormatException)
+            {
+                extras.pressure_in = null;
+                extras.pressure_mb = null;
+            }
             extras.wind_degrees = int.Parse(forecast.windDirection);
-            extras.wind_mph = float.Parse(forecast.windSpeed);
-            extras.wind_kph = float.Parse(ConversionMethods.MphToKph(forecast.windSpeed));
+            if (float.TryParse(forecast.windSpeed, out float windSpeed))
+            {
+                extras.wind_mph = windSpeed;
+                extras.wind_kph = float.Parse(ConversionMethods.MphToKph(windSpeed.ToString(CultureInfo.InvariantCulture)));
+            }
             if (float.TryParse(forecast.uvIndex, out float uv_index))
             {
                 extras.uv_index = uv_index;
@@ -743,8 +770,16 @@ namespace SimpleWeather.WeatherData
         public HourlyForecast(HERE.Forecast1 hr_forecast)
         {
             date = hr_forecast.utcTime;
-            high_f = hr_forecast.temperature;
-            high_c = ConversionMethods.FtoC(hr_forecast.temperature);
+            try
+            {
+                high_f = hr_forecast.temperature;
+                high_c = ConversionMethods.FtoC(hr_forecast.temperature);
+            }
+            catch (FormatException)
+            {
+                high_f = null;
+                high_c = null;
+            }
             condition = hr_forecast.description.ToPascalCase();
 
             icon = WeatherManager.GetProvider(WeatherAPI.Here)
@@ -1107,15 +1142,28 @@ namespace SimpleWeather.WeatherData
         public Atmosphere(HERE.Observation observation)
         {
             humidity = observation.humidity;
-            pressure_mb = ConversionMethods.InHgToMB(observation.barometerPressure);
-            pressure_in = observation.barometerPressure;
+            try
+            {
+                pressure_mb = ConversionMethods.InHgToMB(observation.barometerPressure);
+                pressure_in = observation.barometerPressure;
+            }
+            catch (FormatException)
+            {
+                pressure_mb = null;
+                pressure_in = null;
+            }
             pressure_trend = observation.barometerTrend;
-            visibility_mi = observation.visibility;
 
-            if (float.TryParse(observation.visibility, NumberStyles.Float, CultureInfo.InvariantCulture, out float visible_mi))
-                visibility_km = ConversionMethods.MiToKm(visible_mi.ToString(CultureInfo.InvariantCulture));
-            else
-                visibility_km = observation.visibility;
+            try
+            {
+                visibility_mi = observation.visibility;
+                visibility_km = ConversionMethods.MiToKm(observation.visibility);
+            }
+            catch (FormatException)
+            {
+                visibility_mi = null;
+                visibility_km = null;
+            }
 
             try
             {

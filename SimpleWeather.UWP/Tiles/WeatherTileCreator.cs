@@ -804,6 +804,7 @@ namespace SimpleWeather.UWP.Tiles
         private static void UpdateContent(TileUpdater tileUpdater, WeatherNowViewModel weather)
         {
             bool hasHourly = weather.Extras.HourlyForecast.Count > 0;
+            bool hasForecast = weather.Forecasts.Count > 0;
             TileContent forecastTileContent = null;
             TileContent currentTileContent = null;
             TileContent hrforecastTileContent = null;
@@ -841,38 +842,41 @@ namespace SimpleWeather.UWP.Tiles
                 };
             }
 
-            forecastTileContent = new TileContent()
+            if (hasForecast)
             {
-                Visual = new TileVisual()
+                forecastTileContent = new TileContent()
                 {
-                    DisplayName = weather.Location,
-                    TileSmall = new TileBinding()
+                    Visual = new TileVisual()
                     {
-                        Branding = TileBranding.None,
-                        Content = GenerateForecast(weather, ForecastTileType.Small),
-                    },
-                    TileMedium = new TileBinding()
-                    {
-                        // Mini forecast (2-day)
-                        Branding = TileBranding.Name,
-                        Content = GenerateForecast(weather, ForecastTileType.Medium),
-                    },
-                    TileWide = new TileBinding()
-                    {
-                        // 5-day forecast
-                        Branding = TileBranding.Name,
-                        Content = GenerateForecast(weather, ForecastTileType.Wide),
-                    },
-                    /*
-                     * All ready shown in current tile
-                    TileLarge = new TileBinding()
-                    {
-                        Branding = TileBranding.Name,
-                        Content = GenerateForecast(weather, ForecastTileType.Large),
+                        DisplayName = weather.Location,
+                        TileSmall = new TileBinding()
+                        {
+                            Branding = TileBranding.None,
+                            Content = GenerateForecast(weather, ForecastTileType.Small),
+                        },
+                        TileMedium = new TileBinding()
+                        {
+                            // Mini forecast (2-day)
+                            Branding = TileBranding.Name,
+                            Content = GenerateForecast(weather, ForecastTileType.Medium),
+                        },
+                        TileWide = new TileBinding()
+                        {
+                            // 5-day forecast
+                            Branding = TileBranding.Name,
+                            Content = GenerateForecast(weather, ForecastTileType.Wide),
+                        },
+                        /*
+                         * All ready shown in current tile
+                        TileLarge = new TileBinding()
+                        {
+                            Branding = TileBranding.Name,
+                            Content = GenerateForecast(weather, ForecastTileType.Large),
+                        }
+                        */
                     }
-                    */
-                }
-            };
+                };
+            }
 
             currentTileContent = new TileContent()
             {
@@ -905,13 +909,17 @@ namespace SimpleWeather.UWP.Tiles
             };
 
             // Create the tile notification
-            var forecastTileNotif = new TileNotification(forecastTileContent.GetXml()) { Tag = "Forecast" };
-            var currentTileNotif = new TileNotification(currentTileContent.GetXml()) { Tag = "Conditions" };
-
             tileUpdater.EnableNotificationQueue(true);
             tileUpdater.Clear();
+
+            var currentTileNotif = new TileNotification(currentTileContent.GetXml()) { Tag = "Conditions" };
             tileUpdater.Update(currentTileNotif);
-            tileUpdater.Update(forecastTileNotif);
+
+            if (hasForecast)
+            {
+                var forecastTileNotif = new TileNotification(forecastTileContent.GetXml()) { Tag = "Forecast" };
+                tileUpdater.Update(forecastTileNotif);
+            }
             if (hasHourly)
             {
                 var hrforecastTileNotif = new TileNotification(hrforecastTileContent.GetXml()) { Tag = "Hourly Forecast" };
