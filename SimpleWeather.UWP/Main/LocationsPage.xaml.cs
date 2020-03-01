@@ -52,11 +52,11 @@ namespace SimpleWeather.UWP.Main
             cts?.Dispose();
         }
 
-        public async void OnWeatherLoaded(LocationData location, Weather weather)
+        public void OnWeatherLoaded(LocationData location, Weather weather)
         {
             var dataSet = PanelAdapter.GetDataset();
 
-            await AsyncTask.RunOnUIThread(() =>
+            AsyncTask.RunOnUIThread(() =>
             {
                 if (cts?.IsCancellationRequested == true)
                     return;
