@@ -66,23 +66,20 @@ namespace SimpleWeather.Utils
 
                         if (dataCount > 0 && dataCount != currentCount)
                         {
-                            var loadedData = fcast.forecast
-                                                  .Skip(currentCount)
-                                                  .Take((int)count);
-
                             bool isDayAndNt = fcast.txt_forecast?.Count == fcast.forecast?.Count * 2;
                             bool addTextFct = isDayAndNt || fcast.txt_forecast?.Count == fcast.forecast?.Count;
 
-                            foreach (var dataItem in loadedData)
+                            for (int i = currentCount; i < fcast.forecast.Count; i++)
                             {
                                 object f;
+                                var dataItem = fcast.forecast[i];
                                 await db.GetChildrenAsync(dataItem);
                                 if (addTextFct)
                                 {
                                     if (isDayAndNt)
-                                        f = new ForecastItemViewModel(dataItem, new TextForecastItemViewModel(fcast.txt_forecast[(int)resultCount * 2]), new TextForecastItemViewModel(fcast.txt_forecast[((int)resultCount * 2) + 1]));
+                                        f = new ForecastItemViewModel(dataItem, new TextForecastItemViewModel(fcast.txt_forecast[i * 2]), new TextForecastItemViewModel(fcast.txt_forecast[(i * 2) + 1]));
                                     else
-                                        f = new ForecastItemViewModel(dataItem, new TextForecastItemViewModel(fcast.txt_forecast[(int)resultCount]));
+                                        f = new ForecastItemViewModel(dataItem, new TextForecastItemViewModel(fcast.txt_forecast[i]));
                                 }
                                 else
                                 {
