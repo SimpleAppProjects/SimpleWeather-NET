@@ -256,7 +256,7 @@ namespace SimpleWeather.UWP
                         {
                             Task.Run(async () =>
                             {
-                                var key = args["query"];
+                                var data = args["data"];
 
                                 // App loaded for first time
                                 await AsyncTask.RunAsync(Initialize(e));
@@ -271,23 +271,28 @@ namespace SimpleWeather.UWP
 
                                 if (Shell.Instance != null)
                                 {
-                                    var weather = await Settings.GetWeatherData(key);
-                                    weather.weather_alerts = await Settings.GetWeatherAlertData(key);
+                                    var locData = JSONParser.Deserializer<LocationData>(data);
 
                                     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                                     {
                                         // If we're already on WeatherNow navigate to Alert page
                                         if (Shell.Instance.AppFrame.Content != null && Shell.Instance.AppFrame.SourcePageType.Equals(typeof(WeatherNow)))
                                         {
-                                            Shell.Instance.AppFrame.Navigate(typeof(WeatherAlertPage), new WeatherNowViewModel(weather));
+                                            Shell.Instance.AppFrame.Navigate(typeof(WeatherAlertPage), new WeatherPageArgs()
+                                            {
+                                                Location = locData
+                                            });
                                         }
                                         // If not clear backstack and navigate to Alert page
                                         // Add a WeatherNow page in backstack to go back to
                                         else
                                         {
-                                            Shell.Instance.AppFrame.Navigate(typeof(WeatherAlertPage), new WeatherNowViewModel(weather));
+                                            Shell.Instance.AppFrame.Navigate(typeof(WeatherAlertPage), new WeatherPageArgs() 
+                                            {
+                                                Location = locData
+                                            });
                                             Shell.Instance.AppFrame.BackStack.Clear();
-                                            Shell.Instance.AppFrame.BackStack.Add(new PageStackEntry(typeof(WeatherNow), null, null));
+                                            Shell.Instance.AppFrame.BackStack.Add(new PageStackEntry(typeof(WeatherNow), locData, null));
                                             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
                                         }
                                     });

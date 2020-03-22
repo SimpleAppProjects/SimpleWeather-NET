@@ -730,7 +730,11 @@ namespace SimpleWeather.UWP.Main
 
         private void GotoAlertsPage()
         {
-            Frame.Navigate(typeof(WeatherAlertPage), WeatherView);
+            Frame.Navigate(typeof(WeatherAlertPage), new WeatherPageArgs() 
+            {
+                Location = location,
+                WeatherNowView = WeatherView
+            });
         }
 
         private void AlertButton_Click(object sender, RoutedEventArgs e)
@@ -847,6 +851,7 @@ namespace SimpleWeather.UWP.Main
             Frame.Navigate(typeof(WeatherDetailsPage),
                 new DetailsPageArgs()
                 {
+                    Location = location,
                     WeatherNowView = WeatherView,
                     IsHourly = IsHourly,
                     ScrollToPosition = Position

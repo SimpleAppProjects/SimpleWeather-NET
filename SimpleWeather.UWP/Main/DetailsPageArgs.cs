@@ -4,9 +4,8 @@
 
 namespace SimpleWeather.UWP.Main
 {
-    internal class DetailsPageArgs
+    internal class DetailsPageArgs : WeatherPageArgs
     {
-        public WeatherNowViewModel WeatherNowView { get; set; }
         public bool IsHourly { get; set; }
         public int ScrollToPosition { get; set; }
     }

@@ -2,6 +2,7 @@
 using Microsoft.Toolkit.Uwp.Notifications;
 using SimpleWeather.Controls;
 using SimpleWeather.Location;
+using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System.Collections.Generic;
 using Windows.UI.Notifications;
@@ -51,7 +52,7 @@ namespace SimpleWeather.UWP.Notifications
                     Launch = new QueryString()
                     {
                         { "action", "view-alerts" },
-                        { "query", location.query },
+                        { "data", JSONParser.Serializer(location) },
                     }.ToString()
                 };
 
