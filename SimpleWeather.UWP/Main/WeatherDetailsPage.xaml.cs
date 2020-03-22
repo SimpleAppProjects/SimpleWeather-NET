@@ -57,7 +57,7 @@ namespace SimpleWeather.UWP.Main
                 IsHourly = args.IsHourly;
 
                 if (IsHourly)
-                    ListControl.ItemsSource = WeatherView.Extras.HourlyForecast;
+                    ListControl.ItemsSource = WeatherView.HourlyForecasts;
                 else
                     ListControl.ItemsSource = WeatherView.Forecasts;
 

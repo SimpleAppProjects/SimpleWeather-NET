@@ -346,9 +346,6 @@
     </Compile>
     <Compile Include="Controls\LocationPanelViewModel.cs" />
     <Compile Include="Controls\Snackbar\SnackbarManager.cs" />
-    <Compile Include="Controls\TextForecastItem.xaml.cs">
-      <DependentUpon>TextForecastItem.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\Toast.cs" />
     <Compile Include="Helpers\BooleanToVisibilityConverter.cs" />
     <Compile Include="Helpers\StringVisibilityConverter.cs" />
@@ -442,10 +439,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\SunPhasePanel.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\TextForecastItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

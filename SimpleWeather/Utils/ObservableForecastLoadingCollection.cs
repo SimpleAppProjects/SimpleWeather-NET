@@ -19,8 +19,7 @@ namespace SimpleWeather.Utils
             : base()
         {
             if (typeof(T) != typeof(ForecastItemViewModel) &&
-                typeof(T) != typeof(HourlyForecastItemViewModel) &&
-                typeof(T) != typeof(TextForecastItemViewModel))
+                typeof(T) != typeof(HourlyForecastItemViewModel))
             {
                 throw new NotSupportedException("Collection type not supported");
             }
@@ -77,9 +76,9 @@ namespace SimpleWeather.Utils
                                 if (addTextFct)
                                 {
                                     if (isDayAndNt)
-                                        f = new ForecastItemViewModel(dataItem, new TextForecastItemViewModel(fcast.txt_forecast[i * 2]), new TextForecastItemViewModel(fcast.txt_forecast[(i * 2) + 1]));
+                                        f = new ForecastItemViewModel(dataItem, fcast.txt_forecast[i * 2], fcast.txt_forecast[(i * 2) + 1]);
                                     else
-                                        f = new ForecastItemViewModel(dataItem, new TextForecastItemViewModel(fcast.txt_forecast[i]));
+                                        f = new ForecastItemViewModel(dataItem, fcast.txt_forecast[i]);
                                 }
                                 else
                                 {
@@ -125,31 +124,6 @@ namespace SimpleWeather.Utils
                                 await db.GetChildrenAsync(dataItem);
                                 object fcast = new HourlyForecastItemViewModel(dataItem.hr_forecast);
                                 await AsyncTask.RunOnUIThread(() => Add((T)fcast));
-                                resultCount++;
-                            }
-                        }
-                        else
-                        {
-                            HasMoreItems = false;
-                        }
-                    }
-                    else if (typeof(T) == typeof(TextForecastItemViewModel))
-                    {
-                        var db = Settings.GetWeatherDBConnection();
-                        var fcast = await db.FindWithChildrenAsync<Forecasts>(weather.query);
-                        var dataCount = fcast?.txt_forecast?.Count;
-
-                        if (dataCount > 0 && dataCount != currentCount)
-                        {
-                            var loadedData = fcast.txt_forecast
-                                                  .Skip(currentCount)
-                                                  .Take((int)count);
-
-                            foreach (var dataItem in loadedData)
-                            {
-                                await db.GetChildrenAsync(dataItem);
-                                object f = new TextForecastItemViewModel(dataItem);
-                                await AsyncTask.RunOnUIThread(() => Add((T)f));
                                 resultCount++;
                             }
                         }

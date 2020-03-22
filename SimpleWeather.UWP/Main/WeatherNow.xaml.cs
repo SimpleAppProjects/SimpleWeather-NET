@@ -142,7 +142,6 @@ namespace SimpleWeather.UWP.Main
             wm = WeatherManager.GetInstance();
             WeatherView = new WeatherNowViewModel();
             WeatherView.PropertyChanged += WeatherView_PropertyChanged;
-            WeatherView.Extras.PropertyChanged += WeatherView_PropertyChanged;
 
             geolocal = new Geolocator() { DesiredAccuracyInMeters = 5000, ReportInterval = 900000, MovementThreshold = 1600 };
 

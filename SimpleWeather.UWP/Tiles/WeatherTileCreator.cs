@@ -350,13 +350,13 @@ namespace SimpleWeather.UWP.Tiles
                 var tempGroup = new AdaptiveGroup();
 
                 int forecastLength = MEDIUM_FORECAST_LENGTH;
-                if (weather.Extras.HourlyForecast.Count < forecastLength)
-                    forecastLength = weather.Extras.HourlyForecast.Count;
+                if (weather.HourlyForecasts.Count < forecastLength)
+                    forecastLength = weather.HourlyForecasts.Count;
 
                 // 3hr forecast
                 for (int i = 0; i < forecastLength; i++)
                 {
-                    var hrforecast = weather.Extras.HourlyForecast[i];
+                    var hrforecast = weather.HourlyForecasts[i];
 
                     var dateSubgroup = new AdaptiveSubgroup()
                     {
@@ -415,12 +415,12 @@ namespace SimpleWeather.UWP.Tiles
                     "HH" : "ht";
 
                 int forecastLength = LARGE_FORECAST_LENGTH;
-                if (weather.Extras.HourlyForecast.Count < forecastLength)
-                    forecastLength = weather.Extras.HourlyForecast.Count;
+                if (weather.HourlyForecasts.Count < forecastLength)
+                    forecastLength = weather.HourlyForecasts.Count;
 
                 for (int i = 0; i < forecastLength; i++)
                 {
-                    var hrforecast = weather.Extras.HourlyForecast[i];
+                    var hrforecast = weather.HourlyForecasts[i];
 
                     var subgroup = new AdaptiveSubgroup()
                     {
@@ -460,8 +460,8 @@ namespace SimpleWeather.UWP.Tiles
                 var popDetail = weather.WeatherDetails.FirstOrDefault(detail => detail.DetailsType == WeatherDetailsType.PoPCloudiness || detail.DetailsType == WeatherDetailsType.PoPChance);
 
                 int forecastLength = LARGE_FORECAST_LENGTH;
-                if (weather.Extras.HourlyForecast.Count < forecastLength)
-                    forecastLength = weather.Extras.HourlyForecast.Count;
+                if (weather.HourlyForecasts.Count < forecastLength)
+                    forecastLength = weather.HourlyForecasts.Count;
 
                 var conditionGroup = new AdaptiveGroup()
                 {
@@ -520,7 +520,7 @@ namespace SimpleWeather.UWP.Tiles
 
                 for (int i = 0; i < forecastLength; i++)
                 {
-                    var hrforecast = weather.Extras.HourlyForecast[i];
+                    var hrforecast = weather.HourlyForecasts[i];
 
                     var subgroup = new AdaptiveSubgroup()
                     {
@@ -803,7 +803,7 @@ namespace SimpleWeather.UWP.Tiles
 
         private static void UpdateContent(TileUpdater tileUpdater, WeatherNowViewModel weather)
         {
-            bool hasHourly = weather.Extras.HourlyForecast.Count > 0;
+            bool hasHourly = weather.HourlyForecasts.Count > 0;
             bool hasForecast = weather.Forecasts.Count > 0;
             TileContent forecastTileContent = null;
             TileContent currentTileContent = null;

@@ -14,7 +14,7 @@ namespace SimpleWeather.Controls
         public string ConditionLong { get; set; }
         public bool ShowExtraDetail { get; set; }
 
-        public ForecastItemViewModel(Forecast forecast, params TextForecastItemViewModel[] txtForecasts)
+        public ForecastItemViewModel(Forecast forecast, params TextForecast[] txtForecasts)
             : base()
         {
             if (forecast is null)
@@ -149,15 +149,17 @@ namespace SimpleWeather.Controls
                     bool dayAndNt = txtForecasts.Length == 2;
                     StringBuilder sb = new StringBuilder();
 
-                    TextForecastItemViewModel fctDay = txtForecasts[0];
-                    sb.AppendFormat(CultureInfo.InvariantCulture, "{0} - {1}", fctDay.Title, fctDay.FctText);
+                    TextForecast fctDay = txtForecasts[0];
+                    sb.AppendFormat(CultureInfo.InvariantCulture, "{0} - {1}", fctDay.title,
+                        Settings.IsFahrenheit ? fctDay.fcttext : fctDay.fcttext_metric);
 
                     if (dayAndNt)
                     {
                         sb.Append(Environment.NewLine).Append(Environment.NewLine);
 
-                        TextForecastItemViewModel fctNt = txtForecasts[1];
-                        sb.AppendFormat(CultureInfo.InvariantCulture, "{0} - {1}", fctNt.Title, fctNt.FctText);
+                        TextForecast fctNt = txtForecasts[1];
+                        sb.AppendFormat(CultureInfo.InvariantCulture, "{0} - {1}", fctNt.title,
+                            Settings.IsFahrenheit ? fctNt.fcttext : fctNt.fcttext_metric);
                     }
 
                     ConditionLong = sb.ToString();
