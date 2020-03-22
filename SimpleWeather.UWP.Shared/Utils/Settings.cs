@@ -23,11 +23,11 @@ namespace SimpleWeather.Utils
         {
             if (locationDB == null)
                 locationDB = new SQLiteAsyncConnection(
-                    Path.Combine(appDataFolder.Path, "locations.db"));
+                    Path.Combine(appDataFolder.Path, "locations.db"), SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.FullMutex);
 
             if (weatherDB == null)
                 weatherDB = new SQLiteAsyncConnection(
-                    Path.Combine(appDataFolder.Path, "weatherdata.db"));
+                    Path.Combine(appDataFolder.Path, "weatherdata.db"), SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.FullMutex);
 
             if (tzDBConnStr == null)
                 tzDBConnStr = Path.Combine(appDataFolder.Path, "tzdb.db");

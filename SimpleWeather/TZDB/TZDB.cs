@@ -29,7 +29,7 @@ namespace SimpleWeather.TZDB
                 // Initialize db if it hasn't been already
                 if (tzDB == null)
                 {
-                    tzDB = new SQLiteAsyncConnection(Settings.GetTZDBConnectionString());
+                    tzDB = new SQLiteAsyncConnection(Settings.GetTZDBConnectionString(), SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.FullMutex);
                     await tzDB.CreateTableAsync<TZDB>();
                 }
 
