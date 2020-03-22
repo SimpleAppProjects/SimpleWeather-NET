@@ -13,4 +13,15 @@ namespace SimpleWeather.UWP.Main
         public LocationData Location { get; set; }
         public WeatherNowViewModel WeatherNowView { get; set; }
     }
+
+    internal class DetailsPageArgs : WeatherPageArgs
+    {
+        public bool IsHourly { get; set; }
+        public int ScrollToPosition { get; set; }
+    }
+
+    internal class WeatherNowArgs : WeatherPageArgs
+    {
+        public bool IsHome { get; set; }
+    }
 }

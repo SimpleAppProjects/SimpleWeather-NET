@@ -292,7 +292,11 @@ namespace SimpleWeather.UWP
                                                 Location = locData
                                             });
                                             Shell.Instance.AppFrame.BackStack.Clear();
-                                            Shell.Instance.AppFrame.BackStack.Add(new PageStackEntry(typeof(WeatherNow), locData, null));
+                                            Shell.Instance.AppFrame.BackStack.Add(new PageStackEntry(typeof(WeatherNow), new WeatherNowArgs() 
+                                            {
+                                                Location = locData,
+                                                IsHome = Object.Equals(locData, Settings.HomeData)
+                                            }, null));
                                             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
                                         }
                                     });
@@ -378,14 +382,18 @@ namespace SimpleWeather.UWP
                             var locData = await AsyncTask.RunAsync(async () => await Settings.GetLocationData());
                             var locations = new List<LocationData>(locData)
                             {
-                                Settings.HomeData,
+                                Settings.HomeData
                             };
                             var location = locations.FirstOrDefault(loc => loc.query != null && loc.query.Equals(SecondaryTileUtils.GetQueryFromId(e.TileId)));
                             if (location != null)
                             {
                                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                                 {
-                                    Shell.Instance.AppFrame.Navigate(typeof(WeatherNow), location);
+                                    Shell.Instance.AppFrame.Navigate(typeof(WeatherNow), new WeatherNowArgs()
+                                    {
+                                        IsHome = Object.Equals(location, locations.FirstOrDefault()),
+                                        Location = location
+                                    });
                                     Shell.Instance.AppFrame.BackStack.Clear();
                                 });
                             }
@@ -395,7 +403,10 @@ namespace SimpleWeather.UWP
                             {
                                 if (Shell.Instance.AppFrame.CurrentSourcePageType == null)
                                 {
-                                    Shell.Instance.AppFrame.Navigate(typeof(WeatherNow), null);
+                                    Shell.Instance.AppFrame.Navigate(typeof(WeatherNow), new WeatherNowArgs()
+                                    {
+                                        IsHome = true
+                                    });
                                 }
                             });
                         }

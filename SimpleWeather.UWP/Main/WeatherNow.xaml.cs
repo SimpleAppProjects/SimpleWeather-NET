@@ -35,9 +35,11 @@ namespace SimpleWeather.UWP.Main
     {
         private WeatherManager wm;
         private WeatherDataLoader wLoader = null;
-        private WeatherNowViewModel WeatherView { get; set; }
 
         private LocationData location = null;
+        private bool loaded = false;
+        private WeatherNowViewModel WeatherView { get; set; }
+
         private double BGAlpha = 1.0;
         private double GradAlpha = 1.0;
         private CancellationTokenSource cts;
@@ -174,6 +176,8 @@ namespace SimpleWeather.UWP.Main
             {
                 UpdateWindowColors();
             };
+
+            loaded = true;
         }
 
         private void UpdateWindowColors()
@@ -359,6 +363,7 @@ namespace SimpleWeather.UWP.Main
         {
             base.OnNavigatingFrom(e);
             cts?.Cancel();
+            loaded = false;
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -370,89 +375,55 @@ namespace SimpleWeather.UWP.Main
             MainViewer?.ChangeView(null, 0, null, true);
             BGAlpha = GradAlpha = 1.0f;
 
-            if (e?.Parameter != null)
+            WeatherNowArgs args = e.Parameter as WeatherNowArgs;
+
+            bool locationChanged = false;
+            if (!loaded)
             {
-                string arg = e.Parameter.ToString();
-
-                switch (arg)
+                // Load new favorite location if argument data is present
+                if (args?.Location != null && !Object.Equals(location, args?.Location))
                 {
-                    case "view-alerts":
-                        GotoAlertsPage();
-                        break;
-
-                    default:
-                        break;
+                    location = args?.Location;
+                    locationChanged = true;
+                }
+                else if (args?.IsHome == true)
+                {
+                    // Check if home location changed
+                    // For ex. due to GPS setting change
+                    LocationData homeData = Settings.HomeData;
+                    if (!location.Equals(homeData))
+                    {
+                        location = homeData;
+                        locationChanged = true;
+                    }
                 }
             }
 
-            LocationData LocParameter = e.Parameter as LocationData;
-
-            if (e.NavigationMode == NavigationMode.New)
+            // New page instance -> loaded = true
+            // Navigating back to existing page instance => loaded = false
+            // Weather location changed (ex. due to GPS setting) -> locationChanged = true
+            if (loaded || locationChanged || wLoader == null)
             {
-                // Reset loader if new page instance created
-                location = null;
-                wLoader = null;
-                MainViewer?.ChangeView(null, 0, null, true);
-
-                // New page instance created, so restore
-                if (LocParameter != null)
-                {
-                    location = LocParameter;
-                    wLoader = new WeatherDataLoader(location, this, this);
-                }
-
                 await AsyncTask.RunAsync(Restore);
             }
             else
             {
-                LocationData homeData = Settings.HomeData;
+                var userlang = GlobalizationPreferences.Languages[0];
+                var culture = new CultureInfo(userlang);
+                var locale = wm.LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
-                // Did home change?
-                bool homeChanged = false;
-                if (location != null && Frame.BackStack.Count == 0)
-                {
-                    if (!location.Equals(homeData))
-                    {
-                        location = homeData;
-                        homeChanged = true;
-                    }
-                }
-
-                if (wLoader != null)
-                {
-                    var userlang = GlobalizationPreferences.Languages[0];
-                    var culture = new CultureInfo(userlang);
-                    var locale = wm.LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
-
-                    // Reset loader if source, query or locale is different
-                    bool resetLoader = WeatherView.WeatherSource != Settings.API || homeChanged;
-                    if (wm.SupportsWeatherLocale && !resetLoader)
-                        resetLoader = WeatherView.WeatherLocale != locale;
-
-                    if (resetLoader) wLoader = null;
-                }
-
-                // Update view on resume
-                // ex. If temperature unit changed
-                if ((wLoader != null) && !homeChanged)
-                {
-                    await AsyncTask.RunAsync(Resume);
-
-                    if (location.query == homeData.query)
-                    {
-                        // Clear backstack since we're home
-                        await AsyncTask.RunOnUIThread(() =>
-                        {
-                            Frame.BackStack.Clear();
-                            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-                        }).ConfigureAwait(false);
-                    }
-                }
-                else
+                if (!String.Equals(WeatherView.WeatherSource, Settings.API) ||
+                    wm.SupportsWeatherLocale && !String.Equals(WeatherView.WeatherLocale, locale))
                 {
                     await AsyncTask.RunAsync(Restore);
                 }
+                else
+                {
+                    await AsyncTask.RunAsync(Resume);
+                }
             }
+
+            loaded = true;
         }
 
         private async Task Resume()

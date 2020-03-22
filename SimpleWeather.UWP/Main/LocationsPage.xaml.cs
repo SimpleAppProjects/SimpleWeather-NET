@@ -615,7 +615,11 @@ namespace SimpleWeather.UWP.Main
         {
             if (e.ClickedItem is LocationPanelViewModel panel)
             {
-                this.Frame.Navigate(typeof(WeatherNow), panel.LocationData);
+                this.Frame.Navigate(typeof(WeatherNow), new WeatherNowArgs()
+                {
+                    IsHome = Object.Equals(panel.LocationData, Settings.HomeData),
+                    Location = panel.LocationData
+                });
                 try
                 {
                     // Remove all from backstack except home

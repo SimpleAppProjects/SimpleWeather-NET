@@ -301,9 +301,8 @@
     <Compile Include="Helpers\IFramePage.cs" />
     <Compile Include="Helpers\ScrollViewerHelper.cs" />
     <Compile Include="Helpers\VisualTreeHelperExtensions.cs" />
-    <Compile Include="Main\DetailsPageArgs.cs" />
     <Compile Include="Main\LocationPanelAdapter.cs" />
-    <Compile Include="Main\WeatherPageArgs.cs" />
+    <Compile Include="Main\Args.cs" />
     <Compile Include="Tiles\SecondaryTileUtils.cs" />
     <Compile Include="Helpers\StringBooleanConverter.cs" />
     <Compile Include="Helpers\IPageVerification.cs" />
