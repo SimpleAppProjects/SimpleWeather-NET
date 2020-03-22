@@ -269,10 +269,10 @@
                                          HorizontalAlignment="Left" VerticalAlignment="Center">
                 </toolkitControls:ImageEx>
                 <Viewbox Name="TitleBox" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center">
-                    <TextBlock x:Name="Title" Text="{x:Bind WeatherAlert.Title, FallbackValue='Flood Warning, Areal Flood Advisory'}"
+                    <TextBlock x:Name="Title" Text="{x:Bind WeatherAlert.Title, Mode=OneWay, FallbackValue='Flood Warning, Areal Flood Advisory'}"
                                Padding="5" FontSize="12" />
                 </Viewbox>
-                <TextBlock x:Name="Date" Text="{x:Bind WeatherAlert.PostDate, FallbackValue='1hr ago'}" Padding="5" Grid.Column="2"
+                <TextBlock x:Name="Date" Text="{x:Bind WeatherAlert.PostDate, Mode=OneWay, FallbackValue='1hr ago'}" Padding="5" Grid.Column="2"
                            FontSize="{Binding ElementName=Title, Path=FontSize, Mode=OneWay}"
                            VerticalAlignment="Center" />
             </Grid>
@@ -280,11 +280,11 @@
         <StackPanel Background="LightGray" Grid.Row="1" 
                     Padding="5" Visibility="{x:Bind AlertHeader.IsChecked, Mode=OneWay}">
             <StackPanel Padding="10">
-                <TextBlock Text="{x:Bind WeatherAlert.ExpireDate}" IsTextSelectionEnabled="False"
+                <TextBlock Text="{x:Bind WeatherAlert.ExpireDate, Mode=OneWay}" IsTextSelectionEnabled="False"
                            TextWrapping="WrapWholeWords" FontSize="{Binding ElementName=Title, Path=FontSize, Mode=OneWay}" />
-                <TextBlock Text="{x:Bind WeatherAlert.Message}" IsTextSelectionEnabled="False"
+                <TextBlock Text="{x:Bind WeatherAlert.Message, Mode=OneWay}" IsTextSelectionEnabled="False"
                            TextWrapping="WrapWholeWords" FontSize="{Binding ElementName=Title, Path=FontSize, Mode=OneWay}" />
-                <TextBlock Text="{x:Bind WeatherAlert.Attribution}" IsTextSelectionEnabled="False"
+                <TextBlock Text="{x:Bind WeatherAlert.Attribution, Mode=OneWay}" IsTextSelectionEnabled="False"
                            TextWrapping="WrapWholeWords" FontSize="{Binding ElementName=Title, Path=FontSize, Mode=OneWay}" />
             </StackPanel>
         </StackPanel>

@@ -223,7 +223,7 @@
                     <TextBlock x:Name="Extra" Text="{x:Bind ViewModel.ForecastExtra, FallbackValue='&#xf078; 100%&#x2003;&#xf050; 5 mph, WNW', Mode=OneWay}"
                                Padding="2" MaxLines="1" FontFamily="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons"
                                FontSize="{x:Bind Date.FontSize, Mode=OneWay}" Foreground="{ThemeResource SimpleBlueLight}" TextTrimming="CharacterEllipsis"
-                               VerticalAlignment="Center" Visibility="{x:Bind ViewModel.ForecastExtra, Converter={StaticResource stringVisibilityConverter}}" />
+                               VerticalAlignment="Center" Visibility="{x:Bind ViewModel.ForecastExtra, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
                 </StackPanel>
             </Grid>
         </ToggleButton>
@@ -232,7 +232,7 @@
                 <TextBlock x:Name="ConditionDescription" FontSize="{x:Bind Date.FontSize, Mode=OneWay}" TextWrapping="WrapWholeWords" HorizontalAlignment="Stretch">
                     <Run x:Name="CondDescFirstRun" Text="{x:Bind ViewModel.ConditionLongDesc, TargetNullValue={Binding ViewModel.Condition, Mode=OneWay}, Mode=OneWay}" /><LineBreak />
                 </TextBlock>
-                <ItemsControl ItemsSource="{x:Bind ViewModel.Extras}">
+                <ItemsControl ItemsSource="{x:Bind ViewModel.Extras, Mode=OneWay}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="controls:DetailItemViewModel">
                             <Grid>
