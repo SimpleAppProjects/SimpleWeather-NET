@@ -929,16 +929,24 @@ namespace SimpleWeather.UWP.Tiles
 
         public static async Task TileUpdater(LocationData location)
         {
-            var wloader = new WeatherDataLoader(location);
-            await AsyncTask.RunAsync(wloader.LoadWeatherData(
-                new WeatherRequest.Builder()
-                    .ForceRefresh(false)
-                    .LoadForecasts()
-                    .Build()));
-
-            if (wloader.GetWeather() != null)
+            try
             {
-                TileUpdater(location, new WeatherNowViewModel(wloader.GetWeather()));
+                var wloader = new WeatherDataLoader(location);
+                var weather = await AsyncTask.RunAsync(wloader.LoadWeatherData(
+                            new WeatherRequest.Builder()
+                                .ForceRefresh(false)
+                                .LoadForecasts()
+                                .Build()));
+
+
+                if (weather != null)
+                {
+                    TileUpdater(location, new WeatherNowViewModel(weather));
+                }
+            }
+            catch (WeatherException wEx)
+            {
+                Logger.WriteLine(LoggerLevel.Error, wEx);
             }
         }
 

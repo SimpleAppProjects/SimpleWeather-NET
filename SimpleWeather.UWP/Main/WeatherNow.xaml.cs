@@ -31,7 +31,7 @@ namespace SimpleWeather.UWP.Main
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class WeatherNow : CustomPage, IDisposable, IWeatherLoadedListener, IWeatherErrorListener
+    public sealed partial class WeatherNow : CustomPage, IDisposable, IWeatherErrorListener
     {
         private WeatherManager wm;
         private WeatherDataLoader wLoader = null;
@@ -398,6 +398,11 @@ namespace SimpleWeather.UWP.Main
                     }
                 }
             }
+            else
+            {
+                if (location == null)
+                    location = args?.Location;
+            }
 
             // New page instance -> loaded = true
             // Navigating back to existing page instance => loaded = false
@@ -431,43 +436,19 @@ namespace SimpleWeather.UWP.Main
             // Check pin tile status
             await AsyncTask.RunAsync(CheckTiles);
 
-            if (wLoader.GetWeather()?.IsValid() == true)
+            // Update weather if needed on resume
+            if (Settings.FollowGPS && await AsyncTask.RunAsync(UpdateLocation))
             {
-                Weather weather = wLoader.GetWeather();
-
-                // Update weather if needed on resume
-                if (Settings.FollowGPS && await AsyncTask.RunAsync(UpdateLocation))
-                {
-                    // Setup loader from updated location
-                    wLoader = new WeatherDataLoader(location, this, this);
-                    RefreshWeather(false);
-                }
-                else
-                {
-                    // Check weather data expiration
-                    if (!int.TryParse(weather.ttl, out int ttl))
-                    {
-                        ttl = Settings.DefaultInterval;
-                    }
-                    ttl = Math.Max(ttl, Settings.RefreshInterval);
-                    TimeSpan span = DateTimeOffset.Now - weather.update_time;
-                    if (span.TotalMinutes > ttl)
-                    {
-                        RefreshWeather(false);
-                    }
-                    else
-                    {
-                        await AsyncTask.RunOnUIThread(() =>
-                        {
-                            if (cts?.IsCancellationRequested == true)
-                                return;
-
-                            WeatherView.UpdateView(wLoader.GetWeather());
-                            UpdateWindowColors();
-                        }).ConfigureAwait(false);
-                    }
-                }
+                // Setup loader from updated location
+                wLoader = new WeatherDataLoader(location);
             }
+
+            if (cts?.IsCancellationRequested == true)
+                return;
+
+            RefreshWeather(false);
+
+            loaded = true;
         }
 
         private async Task Restore()
@@ -504,7 +485,7 @@ namespace SimpleWeather.UWP.Main
                 }
             }
             // Regular mode
-            else if (wLoader == null)
+            else if (location == null && wLoader == null)
             {
                 // Weather was loaded before. Lets load it up...
                 location = Settings.HomeData;
@@ -517,7 +498,7 @@ namespace SimpleWeather.UWP.Main
             await AsyncTask.RunAsync(CheckTiles);
 
             if (location != null)
-                wLoader = new WeatherDataLoader(location, this, this);
+                wLoader = new WeatherDataLoader(location);
 
             // Load up weather data
             RefreshWeather(forceRefresh);
@@ -653,7 +634,7 @@ namespace SimpleWeather.UWP.Main
         {
             if (Settings.FollowGPS && await AsyncTask.RunAsync(UpdateLocation))
                 // Setup loader from updated location
-                wLoader = new WeatherDataLoader(location, this, this);
+                wLoader = new WeatherDataLoader(location);
 
             RefreshWeather(true);
         }
@@ -665,9 +646,15 @@ namespace SimpleWeather.UWP.Main
             {
                 if (cts?.IsCancellationRequested == false)
                     wLoader?.LoadWeatherData(new WeatherRequest.Builder()
-                                .ForceRefresh(forceRefresh)
-                                .LoadAlerts()
-                                .Build());
+                            .ForceRefresh(forceRefresh)
+                            .LoadAlerts()
+                            .SetErrorListener(this)
+                            .Build())
+                            .ContinueWith((t) => 
+                            {
+                                if (t.IsCompletedSuccessfully)
+                                    OnWeatherLoaded(location, t.Result);
+                            });
             });
         }
 

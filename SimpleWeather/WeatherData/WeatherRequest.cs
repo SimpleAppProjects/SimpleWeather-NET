@@ -15,6 +15,8 @@ namespace SimpleWeather.WeatherData
         internal bool LoadForecasts { get; set; }
         internal bool ForceLoadSavedData { get; set; }
 
+        internal IWeatherErrorListener ErrorListener { get; set; }
+
         public sealed class Builder
         {
             private WeatherRequest request;
@@ -46,6 +48,12 @@ namespace SimpleWeather.WeatherData
             {
                 request.ForceLoadSavedData = true;
                 request.ForceRefresh = false;
+                return this;
+            }
+
+            public Builder SetErrorListener(IWeatherErrorListener listener)
+            {
+                request.ErrorListener = listener;
                 return this;
             }
 

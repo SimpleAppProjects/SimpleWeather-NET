@@ -32,7 +32,7 @@ namespace SimpleWeather.UWP.Main
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class LocationsPage : CustomPage, IDisposable, IWeatherLoadedListener, IWeatherErrorListener
+    public sealed partial class LocationsPage : CustomPage, IDisposable, IWeatherErrorListener
     {
         private WeatherManager wm;
 
@@ -357,10 +357,16 @@ namespace SimpleWeather.UWP.Main
                 {
                     AsyncTask.Run(() =>
                     {
-                        var wLoader = new WeatherDataLoader(location, this, this);
+                        var wLoader = new WeatherDataLoader(location);
                         wLoader.LoadWeatherData(new WeatherRequest.Builder()
                                     .ForceRefresh(false)
-                                    .Build());
+                                    .SetErrorListener(this)
+                                    .Build())
+                                    .ContinueWith((t) => 
+                                    {
+                                        if (t.IsCompletedSuccessfully)
+                                            OnWeatherLoaded(location, t.Result);
+                                    });
                     });
                 }
 
@@ -453,10 +459,16 @@ namespace SimpleWeather.UWP.Main
                     {
                         AsyncTask.Run(() =>
                         {
-                            var wLoader = new WeatherDataLoader(view.LocationData, this, this);
+                            var wLoader = new WeatherDataLoader(view.LocationData);
                             wLoader.LoadWeatherData(new WeatherRequest.Builder()
                                         .ForceRefresh(false)
-                                        .Build());
+                                        .SetErrorListener(this)
+                                        .Build())
+                                        .ContinueWith((t) =>
+                                        {
+                                            if (t.IsCompletedSuccessfully)
+                                                OnWeatherLoaded(view.LocationData, t.Result);
+                                        });
                         });
                     }
                 }
@@ -497,10 +509,16 @@ namespace SimpleWeather.UWP.Main
 
                 if (gpsData != null)
                 {
-                    var wLoader = new WeatherDataLoader(gpsData, this, this);
+                    var wLoader = new WeatherDataLoader(gpsData);
                     wLoader.LoadWeatherData(new WeatherRequest.Builder()
-                                .ForceRefresh(false)
-                                .Build());
+                            .ForceRefresh(false)
+                            .SetErrorListener(this)
+                            .Build())
+                            .ContinueWith((t) =>
+                            {
+                                if (t.IsCompletedSuccessfully)
+                                    OnWeatherLoaded(gpsData, t.Result);
+                            });
                 }
             });
         }

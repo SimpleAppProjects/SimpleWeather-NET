@@ -18,7 +18,7 @@ namespace SimpleWeather.UWP.Main
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class WeatherDetailsPage : CustomPage, IBackRequestedPage, IWeatherLoadedListener, IWeatherErrorListener
+    public sealed partial class WeatherDetailsPage : CustomPage, IBackRequestedPage, IWeatherErrorListener
     {
         private LocationData location { get; set; }
         public WeatherNowViewModel WeatherView { get; set; }
@@ -31,14 +31,6 @@ namespace SimpleWeather.UWP.Main
 
             // CommandBar
             CommandBarLabel = App.ResLoader.GetString("Label_Forecast/Header");
-        }
-
-        public void OnWeatherLoaded(LocationData location, Weather weather)
-        {
-            AsyncTask.RunOnUIThread(() =>
-            {
-                WeatherView.UpdateView(weather);
-            });
         }
 
         public void OnWeatherError(WeatherException wEx)
@@ -105,11 +97,19 @@ namespace SimpleWeather.UWP.Main
 
                 if (WeatherView?.IsValid == false)
                 {
-                    await new WeatherDataLoader(location, this, this)
+                    new WeatherDataLoader(location)
                         .LoadWeatherData(new WeatherRequest.Builder()
                             .LoadAlerts()
                             .ForceLoadSavedData()
-                            .Build());
+                            .SetErrorListener(this)
+                            .Build())
+                            .ContinueWith((t) =>
+                            {
+                                AsyncTask.RunOnUIThread(() =>
+                                {
+                                    WeatherView.UpdateView(t.Result);
+                                });
+                            });
                 }
 
                 this.Loaded += async (sender, ev) =>
