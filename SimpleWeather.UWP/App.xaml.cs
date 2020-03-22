@@ -383,21 +383,10 @@ namespace SimpleWeather.UWP
                             var location = locations.FirstOrDefault(loc => loc.query != null && loc.query.Equals(SecondaryTileUtils.GetQueryFromId(e.TileId)));
                             if (location != null)
                             {
-                                var isHome = location.Equals(Settings.HomeData);
-
                                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                                 {
                                     Shell.Instance.AppFrame.Navigate(typeof(WeatherNow), location);
                                     Shell.Instance.AppFrame.BackStack.Clear();
-                                    if (!isHome)
-                                    {
-                                        Shell.Instance.AppFrame.BackStack.Add(new PageStackEntry(typeof(WeatherNow), null, null));
-                                        SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
-                                    }
-                                    else
-                                    {
-                                        SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-                                    }
                                 });
                             }
 
