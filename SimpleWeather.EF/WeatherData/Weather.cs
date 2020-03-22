@@ -642,7 +642,7 @@ namespace SimpleWeather.WeatherData
                 switch (property)
                 {
                     case nameof(date):
-                        this.date = DateTime.Parse(reader.ReadString());
+                        this.date = DateTime.Parse(reader.ReadString(), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
                         break;
 
                     case nameof(high_f):
