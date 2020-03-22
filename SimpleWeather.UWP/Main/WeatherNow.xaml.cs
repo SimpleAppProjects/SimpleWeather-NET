@@ -72,6 +72,10 @@ namespace SimpleWeather.UWP.Main
                             // Alerts are posted to the user here. Set them as notified.
                             AsyncTask.Run(async () =>
                             {
+#if DEBUG
+                                await WeatherAlertHandler.PostAlerts(location, weather.weather_alerts)
+                                .ConfigureAwait(false);
+#endif
                                 await WeatherAlertHandler.SetasNotified(location, weather.weather_alerts)
                                 .ConfigureAwait(false);
                             });

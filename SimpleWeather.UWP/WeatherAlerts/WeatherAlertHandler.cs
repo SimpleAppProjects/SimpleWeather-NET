@@ -19,23 +19,25 @@ namespace SimpleWeather.UWP.WeatherAlerts
             if (wm.SupportsAlerts && alerts != null && alerts.Any())
             {
                 // Only alert if we're in the background
+#if DEBUG
+                if (true)
+#else
                 if (App.IsInBackground)
+#endif
                 {
                     // Check if any of these alerts have been posted before
                     // or are past the expiration date
+#if DEBUG
+                    var unotifiedAlerts = alerts;
+#else
                     var unotifiedAlerts = alerts.Where(alert => alert.Notified == false && alert.ExpiresDate > DateTimeOffset.Now);
+#endif
 
                     // Post any un-notified alerts
                     WeatherAlertCreator.CreateAlerts(location, unotifiedAlerts);
 
                     // Update all alerts
-                    foreach (var alert in alerts)
-                    {
-                        alert.Notified = true;
-                    }
-
-                    // Save alert data
-                    await Settings.SaveWeatherAlerts(location, alerts);
+                    await SetasNotified(location, alerts);
                 }
             }
         }
