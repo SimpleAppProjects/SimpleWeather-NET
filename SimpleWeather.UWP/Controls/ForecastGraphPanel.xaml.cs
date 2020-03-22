@@ -93,7 +93,7 @@ namespace SimpleWeather.UWP.Controls
 
         private ToggleButton SelectedButton { get; set; }
 
-        private const int MAX_FETCH_SIZE = 20;
+        private const int MAX_FETCH_SIZE = 24;
         private uint DataFetchSize = 1;
 
         public ForecastGraphPanel()
@@ -108,7 +108,7 @@ namespace SimpleWeather.UWP.Controls
             if (ScrollViewer.ViewportWidth > 0 && e.NewSize.Width > 0)
             {
                 var desiredFetchSize = (uint)Math.Round(ScrollViewer.ViewportWidth / e.NewSize.Width);
-                if (desiredFetchSize > MAX_FETCH_SIZE)
+                if (desiredFetchSize > MAX_FETCH_SIZE || desiredFetchSize <= 1)
                     DataFetchSize = MAX_FETCH_SIZE;
                 else
                     DataFetchSize = desiredFetchSize;
@@ -126,9 +126,12 @@ namespace SimpleWeather.UWP.Controls
         {
             var size = base.ArrangeOverride(finalSize);
 
-            if (!_forecasts.Any() && _forecasts is IObservableLoadingCollection _collection && _collection.HasMoreItems)
+            var distanceToEnd = ScrollViewer.ExtentWidth - (ScrollViewer.HorizontalOffset + ScrollViewer.ViewportWidth);
+
+            if (distanceToEnd <= ScrollViewer.ViewportWidth &&
+                _forecasts is IObservableLoadingCollection _collection && _collection.HasMoreItems && !_collection.IsLoading)
             {
-                _collection.LoadMoreItemsAsync(1);
+                _collection.LoadMoreItemsAsync(DataFetchSize);
             }
 
             return size;

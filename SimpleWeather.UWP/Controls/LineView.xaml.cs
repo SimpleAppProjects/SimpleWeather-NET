@@ -872,7 +872,7 @@ namespace SimpleWeather.UWP.Controls
             {
                 ItemWidthChanged?.Invoke(this, new ItemSizeChangedEventArgs()
                 {
-                    NewSize = new System.Drawing.Size((int)Canvas.Width, (int)Canvas.Height)
+                    NewSize = new System.Drawing.Size(xCoordinateList.Count > 0 ? (int) xCoordinateList.Last() : 0, (int)Canvas.Height)
                 });
             });
 
