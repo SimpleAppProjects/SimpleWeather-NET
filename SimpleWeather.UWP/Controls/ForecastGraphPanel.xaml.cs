@@ -93,8 +93,7 @@ namespace SimpleWeather.UWP.Controls
 
         private ToggleButton SelectedButton { get; set; }
 
-        private const int MAX_FETCH_SIZE = 24;
-        private uint DataFetchSize = 1;
+        private const int MAX_FETCH_SIZE = 24; // 24hrs
 
         public ForecastGraphPanel()
         {
@@ -107,17 +106,15 @@ namespace SimpleWeather.UWP.Controls
         {
             if (ScrollViewer.ViewportWidth > 0 && e.NewSize.Width > 0)
             {
-                var desiredFetchSize = (uint)Math.Round(ScrollViewer.ViewportWidth / e.NewSize.Width);
-                if (desiredFetchSize > MAX_FETCH_SIZE || desiredFetchSize <= 1)
-                    DataFetchSize = MAX_FETCH_SIZE;
-                else
-                    DataFetchSize = desiredFetchSize;
-
                 // trigger if (LineView) drawing does not fit viewport
                 if (e.NewSize.Width <= ScrollViewer.ViewportWidth &&
-                    _forecasts is IObservableLoadingCollection _collection && _collection.HasMoreItems && !_collection.IsLoading)
+                    _forecasts is IObservableLoadingCollection _collection)
                 {
-                    await _collection.LoadMoreItemsAsync(DataFetchSize);
+                    int desiredFetchSize = MAX_FETCH_SIZE - _forecasts.Count();
+                    if (desiredFetchSize > 0 && _collection.HasMoreItems && !_collection.IsLoading)
+                    {
+                        await _collection.LoadMoreItemsAsync((uint)desiredFetchSize);
+                    }
                 }
             }
         }
@@ -129,9 +126,13 @@ namespace SimpleWeather.UWP.Controls
             var distanceToEnd = ScrollViewer.ExtentWidth - (ScrollViewer.HorizontalOffset + ScrollViewer.ViewportWidth);
 
             if (distanceToEnd <= ScrollViewer.ViewportWidth &&
-                _forecasts is IObservableLoadingCollection _collection && _collection.HasMoreItems && !_collection.IsLoading)
+                _forecasts is IObservableLoadingCollection _collection)
             {
-                _collection.LoadMoreItemsAsync(DataFetchSize);
+                int desiredFetchSize = MAX_FETCH_SIZE - _forecasts.Count();
+                if (desiredFetchSize > 0 && _collection.HasMoreItems && !_collection.IsLoading)
+                {
+                    _collection.LoadMoreItemsAsync((uint)desiredFetchSize);
+                }
             }
 
             return size;
@@ -145,9 +146,13 @@ namespace SimpleWeather.UWP.Controls
             // or
             // if scrolling within 2 viewports of the end
             if (distanceToEnd <= 2.0 * ScrollViewer.ViewportWidth &&
-                _forecasts is IObservableLoadingCollection _collection && _collection.HasMoreItems && !_collection.IsLoading)
+                _forecasts is IObservableLoadingCollection _collection)
             {
-                await _collection.LoadMoreItemsAsync(DataFetchSize);
+                int desiredFetchSize = MAX_FETCH_SIZE - _forecasts.Count();
+                if (desiredFetchSize > 0 && _collection.HasMoreItems && !_collection.IsLoading)
+                {
+                    await _collection.LoadMoreItemsAsync((uint)desiredFetchSize);
+                }
             }
         }
 
