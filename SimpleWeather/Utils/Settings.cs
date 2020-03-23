@@ -235,9 +235,13 @@ namespace SimpleWeather.Utils
             {
                 await LoadIfNeeded();
                 var culture = System.Globalization.CultureInfo.InvariantCulture;
-                var query = String.Format(culture, "\\\"latitude\\\":\\\"{0}\\\",\\\"longitude\\\":\\\"{1}\\\"",
+                var escapedQuery = String.Format(culture, "\\\"latitude\\\":\\\"{0}\\\",\\\"longitude\\\":\\\"{1}\\\"",
                         location.latitude.ToString(culture), location.longitude.ToString(culture));
-                var filteredData = (await weatherDB.QueryAsync<Weather>("SELECT * FROM weatherdata WHERE `locationblob` LIKE {0} LIMIT 1", "%" + query + "%")).FirstOrDefault();
+                var query = String.Format(culture, "\"latitude\":\"{0}\",\"longitude\":\"{1}\"",
+                        location.latitude.ToString(culture), location.longitude.ToString(culture));
+                var filteredData = (await weatherDB.QueryAsync<Weather>(
+                    "SELECT * FROM weatherdata WHERE `locationblob` LIKE {0} OR `locationblob` LIKE {1} LIMIT 1",
+                        "%" + escapedQuery + "%", "%" + query + "%")).FirstOrDefault();
                 if (filteredData != null)
                     await weatherDB.GetChildrenAsync(filteredData);
                 return filteredData;
