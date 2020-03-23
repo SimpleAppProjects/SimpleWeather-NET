@@ -252,7 +252,7 @@ namespace SimpleWeather.UWP
                 switch (args["action"])
                 {
                     case "view-alerts":
-                        if (Settings.WeatherLoaded && Settings.OnBoardComplete)
+                        if (Settings.WeatherLoaded && Settings.OnBoardComplete && args.Contains("data"))
                         {
                             Task.Run(async () =>
                             {
