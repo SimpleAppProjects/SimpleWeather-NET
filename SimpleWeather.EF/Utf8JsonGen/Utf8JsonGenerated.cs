@@ -1454,6 +1454,10 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("icon"), 8},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("beaufort"), 9},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("uv"), 10},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("high_f"), 11},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("high_c"), 12},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("low_f"), 13},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("low_c"), 14},
             };
 
             this.____stringByteKeys = new byte[][]
@@ -1469,6 +1473,10 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("icon"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("beaufort"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("uv"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("high_f"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("high_c"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("low_f"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("low_c"),
                 
             };
         }
@@ -1504,6 +1512,14 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherData.Beaufort>().Serialize(ref writer, value.beaufort, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[10]);
             formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherData.UV>().Serialize(ref writer, value.uv, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[11]);
+            writer.WriteSingle(value.high_f);
+            writer.WriteRaw(this.____stringByteKeys[12]);
+            writer.WriteSingle(value.high_c);
+            writer.WriteRaw(this.____stringByteKeys[13]);
+            writer.WriteSingle(value.low_f);
+            writer.WriteRaw(this.____stringByteKeys[14]);
+            writer.WriteSingle(value.low_c);
             
             writer.WriteEndObject();
         }
@@ -1538,6 +1554,14 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             var __beaufort__b__ = false;
             var __uv__ = default(global::SimpleWeather.WeatherData.UV);
             var __uv__b__ = false;
+            var __high_f__ = default(float);
+            var __high_f__b__ = false;
+            var __high_c__ = default(float);
+            var __high_c__b__ = false;
+            var __low_f__ = default(float);
+            var __low_f__b__ = false;
+            var __low_c__ = default(float);
+            var __low_c__b__ = false;
 
             var ____count = 0;
             reader.ReadIsBeginObjectWithVerify();
@@ -1597,6 +1621,22 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
                         __uv__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherData.UV>().Deserialize(ref reader, formatterResolver);
                         __uv__b__ = true;
                         break;
+                    case 11:
+                        __high_f__ = reader.ReadSingle();
+                        __high_f__b__ = true;
+                        break;
+                    case 12:
+                        __high_c__ = reader.ReadSingle();
+                        __high_c__b__ = true;
+                        break;
+                    case 13:
+                        __low_f__ = reader.ReadSingle();
+                        __low_f__b__ = true;
+                        break;
+                    case 14:
+                        __low_c__ = reader.ReadSingle();
+                        __low_c__b__ = true;
+                        break;
                     default:
                         reader.ReadNextBlock();
                         break;
@@ -1618,6 +1658,10 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             if(__icon__b__) ____result.icon = __icon__;
             if(__beaufort__b__) ____result.beaufort = __beaufort__;
             if(__uv__b__) ____result.uv = __uv__;
+            if(__high_f__b__) ____result.high_f = __high_f__;
+            if(__high_c__b__) ____result.high_c = __high_c__;
+            if(__low_f__b__) ____result.low_f = __low_f__;
+            if(__low_c__b__) ____result.low_c = __low_c__;
 
             return ____result;
         }

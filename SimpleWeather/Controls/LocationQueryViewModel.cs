@@ -1,6 +1,5 @@
 ﻿using SimpleWeather.HERE;
 using SimpleWeather.WeatherData;
-using SimpleWeather.WeatherUnderground;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -29,58 +28,6 @@ namespace SimpleWeather.Controls
             LocationCountry = string.Empty;
             LocationQuery = string.Empty;
         }
-
-        #region WeatherUnderground
-
-        public LocationQueryViewModel(AC_RESULT location, String WeatherAPI)
-        {
-            SetLocation(location, WeatherAPI);
-        }
-
-        public void SetLocation(AC_RESULT location, String weatherAPI)
-        {
-            if (location == null)
-                return;
-
-            LocationName = location.name;
-            LocationCountry = location.c;
-
-            LocationLat = double.Parse(location.lat);
-            LocationLong = double.Parse(location.lon);
-
-            LocationTZLong = location.tz;
-
-            LocationSource = WeatherAPI.WeatherUnderground;
-            WeatherSource = weatherAPI;
-
-            UpdateLocationQuery();
-        }
-
-        public LocationQueryViewModel(location location, String weatherAPI)
-        {
-            SetLocation(location, weatherAPI);
-        }
-
-        public void SetLocation(location location, String weatherAPI)
-        {
-            if (location == null)
-                return;
-
-            LocationName = string.Format("{0}, {1}", location.city, location.state);
-            LocationCountry = location.country;
-
-            LocationLat = double.Parse(location.lat);
-            LocationLong = double.Parse(location.lon);
-
-            LocationTZLong = location.tz_unix;
-
-            LocationSource = WeatherAPI.WeatherUnderground;
-            WeatherSource = weatherAPI;
-
-            UpdateLocationQuery();
-        }
-
-        #endregion WeatherUnderground
 
         public LocationQueryViewModel(Suggestion location, String weatherAPI)
         {
@@ -305,11 +252,7 @@ namespace SimpleWeather.Controls
 
         private void UpdateLocationQuery()
         {
-            if (WeatherAPI.WeatherUnderground.Equals(WeatherSource))
-            {
-                LocationQuery = String.Format("/q/{0},{1}", LocationLat.ToString(CultureInfo.InvariantCulture), LocationLong.ToString(CultureInfo.InvariantCulture));
-            }
-            else if (WeatherAPI.Here.Equals(WeatherSource))
+            if (WeatherAPI.Here.Equals(WeatherSource))
             {
                 LocationQuery = String.Format("latitude={0}&longitude={1}", LocationLat.ToString(CultureInfo.InvariantCulture), LocationLong.ToString(CultureInfo.InvariantCulture));
             }

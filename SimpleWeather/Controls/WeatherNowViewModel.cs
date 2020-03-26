@@ -207,6 +207,17 @@ namespace SimpleWeather.Controls
                 CurCondition = (String.IsNullOrWhiteSpace(weather.condition.weather)) ? "---" : weather.condition.weather;
                 WeatherIcon = weather.condition.icon;
 
+                if (weather.condition.high_f != weather.condition.high_c && weather.condition.low_f != weather.condition.low_c)
+                {
+                    HiTemp = (int)(Settings.IsFahrenheit ? Math.Round(weather.condition.high_f) : Math.Round(weather.condition.high_c)) + "°";
+                    LoTemp = (int)(Settings.IsFahrenheit ? Math.Round(weather.condition.low_f) : Math.Round(weather.condition.low_c)) + "°";
+                }
+                else
+                {
+                    HiTemp = null;
+                    LoTemp = null;
+                }
+
                 // WeatherDetails
                 WeatherDetails.Clear();
 
@@ -345,22 +356,7 @@ namespace SimpleWeather.Controls
                 {
                     // Let collection handle changes (clearing, etc.)
                     Forecasts.SetWeather(weather);
-                    if (Forecasts.Count == 0)
-                    {
-                        Forecasts.LoadMoreItemsAsync(1)
-                                 .AsTask()
-                                 .ContinueWith((t) =>
-                                 {
-                                     AsyncTask.RunOnUIThread(() =>
-                                     {
-                                         HiTemp = Forecasts?.FirstOrDefault()?.HiTemp?.Trim();
-                                         LoTemp = Forecasts?.FirstOrDefault()?.LoTemp?.Trim();
-                                     });
-                                 });
-                    }
                 }
-                HiTemp = Forecasts?.FirstOrDefault()?.HiTemp?.Trim();
-                LoTemp = Forecasts?.FirstOrDefault()?.LoTemp?.Trim();
                 OnPropertyChanged(nameof(Forecasts));
 
                 if (weather?.hr_forecast?.Any() == true)

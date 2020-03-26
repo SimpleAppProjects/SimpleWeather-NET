@@ -45,7 +45,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)NWS\NWSAlertProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Keys\OWMKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NWS\Weather.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\OWMWULocationProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\OpenWeatherMapProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SimpleLibrary.cs" />
@@ -81,13 +80,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\WeatherManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\WeatherProviderImpl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\WeatherRequest.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)WeatherUnderground\Alerts.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)WeatherUnderground\AutoCompleteQuery.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)WeatherUnderground\GeopositionQuery.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)WeatherUnderground\Weather.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)WeatherUnderground\WeatherUndergroundProvider.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Keys\WUKey.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)WeatherUnderground\WULocationProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)YahooWeather\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Keys\YahooKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)YahooWeather\YahooWeatherProvider.cs" />

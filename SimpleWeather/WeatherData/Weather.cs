@@ -32,53 +32,15 @@ namespace SimpleWeather.WeatherData
                 condition.feelslike_c = float.Parse(ConversionMethods.FtoC(condition.feelslike_f.ToString()));
             }
 
+            if (condition.high_f == condition.high_c && forecast.Count > 0)
+            {
+                condition.high_f = float.Parse(forecast[0].high_f);
+                condition.high_c = float.Parse(forecast[0].high_c);
+                condition.low_f = float.Parse(forecast[0].low_f);
+                condition.low_c = float.Parse(forecast[0].low_c);
+            }
+
             source = WeatherAPI.Yahoo;
-        }
-
-        public Weather(WeatherUnderground.Rootobject root)
-        {
-            location = new Location(root.current_observation);
-            update_time = DateTimeOffset.Parse(root.current_observation.local_time_rfc822);
-            forecast = new List<Forecast>(root.forecast.simpleforecast.forecastday.Length);
-            for (int i = 0; i < root.forecast.simpleforecast.forecastday.Length; i++)
-            {
-                forecast.Add(new Forecast(root.forecast.simpleforecast.forecastday[i]));
-
-                if (i == 0)
-                {
-                    // Note: WUnderground API bug
-                    // Data sometimes returns forecast from some date in the past
-                    // If we come across this invalidate the data
-                    var diffSpan = DateTime.UtcNow - forecast[i].date.ToUniversalTime();
-                    if (forecast[i].date.ToUniversalTime() < DateTime.UtcNow && diffSpan.TotalDays > 2)
-                        throw new WeatherException(WeatherUtils.ErrorStatus.Unknown);
-                }
-            }
-            hr_forecast = new List<HourlyForecast>(root.hourly_forecast.Length);
-            for (int i = 0; i < root.hourly_forecast.Length; i++)
-            {
-                hr_forecast.Add(new HourlyForecast(root.hourly_forecast[i]));
-            }
-            txt_forecast = new List<TextForecast>(root.forecast.txt_forecast.forecastday.Length);
-            for (int i = 0; i < root.forecast.txt_forecast.forecastday.Length; i++)
-            {
-                txt_forecast.Add(new TextForecast(root.forecast.txt_forecast.forecastday[i]));
-
-                // Note: WUnderground API bug
-                // If array is not null and we're expecting data
-                // and that data is invalid, invalidate weather data
-                if (String.IsNullOrWhiteSpace(txt_forecast[i].title) &&
-                    String.IsNullOrWhiteSpace(txt_forecast[i].fcttext) &&
-                    String.IsNullOrWhiteSpace(txt_forecast[i].fcttext_metric))
-                    throw new WeatherException(WeatherUtils.ErrorStatus.Unknown);
-            }
-            condition = new Condition(root.current_observation);
-            atmosphere = new Atmosphere(root.current_observation);
-            astronomy = new Astronomy(root.sun_phase, root.moon_phase);
-            precipitation = new Precipitation(root.forecast.simpleforecast.forecastday[0]);
-            ttl = "120";
-
-            source = WeatherAPI.WeatherUnderground;
         }
 
         public Weather(OpenWeather.CurrentRootobject currRoot, OpenWeather.ForecastRootobject foreRoot)
@@ -150,6 +112,14 @@ namespace SimpleWeather.WeatherData
             // Set feelslike temp
             condition.feelslike_f = float.Parse(WeatherUtils.GetFeelsLikeTemp(condition.temp_f.ToString(), condition.wind_mph.ToString(), atmosphere.humidity));
             condition.feelslike_c = float.Parse(ConversionMethods.FtoC(condition.feelslike_f.ToString()));
+
+            if (condition.high_f == condition.high_c && forecast.Count > 0)
+            {
+                condition.high_f = float.Parse(forecast[0].high_f);
+                condition.high_c = float.Parse(forecast[0].high_c);
+                condition.low_f = float.Parse(forecast[0].low_f);
+                condition.low_c = float.Parse(forecast[0].low_c);
+            }
 
             source = WeatherAPI.OpenWeatherMap;
         }
@@ -316,6 +286,13 @@ namespace SimpleWeather.WeatherData
                     {
                         condition.icon = time.location.symbol.number.ToString();
                         condition.weather = time.location.symbol.id;
+                        if (time.location.maxTemperature?.value != null && time.location.minTemperature?.value != null)
+                        {
+                            condition.high_f = float.Parse(ConversionMethods.CtoF(time.location.maxTemperature.value.ToString(CultureInfo.InvariantCulture)));
+                            condition.high_c = (float) Math.Round(time.location.maxTemperature.value);
+                            condition.low_f = float.Parse(ConversionMethods.CtoF(time.location.minTemperature.value.ToString(CultureInfo.InvariantCulture)));
+                            condition.low_c = (float) Math.Round(time.location.minTemperature.value);
+                        }
                     }
 
                     conditionSet = true;
@@ -336,6 +313,14 @@ namespace SimpleWeather.WeatherData
             // Set feelslike temp
             condition.feelslike_f = float.Parse(WeatherUtils.GetFeelsLikeTemp(condition.temp_f.ToString(), condition.wind_mph.ToString(), atmosphere.humidity));
             condition.feelslike_c = float.Parse(ConversionMethods.FtoC(condition.feelslike_f.ToString()));
+
+            if (condition.high_f == condition.high_c && forecast.Count > 0)
+            {
+                condition.high_f = float.Parse(forecast[0].high_f);
+                condition.high_c = float.Parse(forecast[0].high_c);
+                condition.low_f = float.Parse(forecast[0].low_f);
+                condition.low_c = float.Parse(forecast[0].low_c);
+            }
 
             source = WeatherAPI.MetNo;
         }
@@ -373,7 +358,8 @@ namespace SimpleWeather.WeatherData
             source = WeatherAPI.Here;
         }
 
-        public Weather(NWS.PointsRootobject pointsRootobject, NWS.ForecastRootobject forecastRootobject, NWS.ForecastRootobject hourlyForecastRootobject, NWS.ObservationsCurrentRootobject obsCurrentRootObject)
+        public Weather(NWS.PointsRootobject pointsRootobject, NWS.ForecastRootobject forecastRootobject,
+            NWS.ForecastRootobject hourlyForecastRootobject, NWS.ObservationsCurrentRootobject obsCurrentRootObject)
         {
             location = new Location(pointsRootobject);
             update_time = DateTimeOffset.UtcNow;
@@ -414,25 +400,20 @@ namespace SimpleWeather.WeatherData
             //precipitation = new Precipitation(obsCurrentRootObject);
             ttl = "180";
 
+            if (condition.high_f == condition.high_c && forecast.Count > 0)
+            {
+                condition.high_f = float.Parse(forecast[0].high_f);
+                condition.high_c = float.Parse(forecast[0].high_c);
+                condition.low_f = float.Parse(forecast[0].low_f);
+                condition.low_c = float.Parse(forecast[0].low_c);
+            }
+
             source = WeatherAPI.NWS;
         }
     }
 
     public partial class Location
     {
-        public Location(WeatherUnderground.Current_Observation condition)
-        {
-            name = condition.display_location.full;
-            latitude = condition.display_location.latitude;
-            longitude = condition.display_location.longitude;
-            if (condition.local_tz_offset.StartsWith("-"))
-                tz_offset = -TimeSpan.ParseExact(condition.local_tz_offset, "\\-hhmm", null);
-            else
-                tz_offset = TimeSpan.ParseExact(condition.local_tz_offset, "\\+hhmm", null);
-            tz_short = condition.local_tz_short;
-            tz_long = condition.local_tz_long;
-        }
-
         public Location(WeatherYahoo.Location location)
         {
             // Use location name from location provider
@@ -506,40 +487,6 @@ namespace SimpleWeather.WeatherData
             condition = forecast.text;
             icon = WeatherManager.GetProvider(WeatherAPI.Yahoo)
                    .GetWeatherIcon(forecast.code.ToString(CultureInfo.InvariantCulture));
-        }
-
-        public Forecast(WeatherUnderground.Forecastday1 forecast)
-        {
-            var nodaTz = NodaTime.DateTimeZoneProviders.Tzdb.GetZoneOrNull(forecast.date.tz_long);
-            var offset = nodaTz.GetUtcOffset(NodaTime.SystemClock.Instance.GetCurrentInstant()).ToTimeSpan();
-
-            date = ConversionMethods.ToEpochDateTime(forecast.date.epoch).Add(offset);
-            high_f = forecast.high.fahrenheit;
-            high_c = forecast.high.celsius;
-            low_f = forecast.low.fahrenheit;
-            low_c = forecast.low.celsius;
-            condition = forecast.conditions;
-            icon = WeatherManager.GetProvider(WeatherAPI.WeatherUnderground)
-                   .GetWeatherIcon(forecast.icon_url.Replace("http://icons.wxug.com/i/c/k/", "").Replace(".gif", ""));
-
-            // Extras
-            extras = new ForecastExtras
-            {
-                humidity = forecast.avehumidity.ToString(),
-                pop = forecast.pop.ToString(),
-                qpf_rain_in = forecast.qpf_allday._in.GetValueOrDefault(0.00f),
-                qpf_rain_mm = forecast.qpf_allday.mm.GetValueOrDefault(0),
-                qpf_snow_in = forecast.snow_allday._in.GetValueOrDefault(0.00f),
-                qpf_snow_cm = forecast.snow_allday.cm.GetValueOrDefault(0.00f),
-                wind_degrees = forecast.avewind.degrees,
-                wind_mph = forecast.avewind.mph,
-                wind_kph = forecast.avewind.kph
-            };
-            if (float.TryParse(WeatherUtils.GetFeelsLikeTemp(high_f, forecast.avewind.mph.ToString(), forecast.avehumidity.ToString()), out float feelslike_f))
-            {
-                extras.feelslike_f = feelslike_f;
-                extras.feelslike_c = float.Parse(ConversionMethods.FtoC(feelslike_f.ToString(CultureInfo.InvariantCulture)));
-            }
         }
 
         public Forecast(OpenWeather.List forecast)
@@ -653,44 +600,6 @@ namespace SimpleWeather.WeatherData
 
     public partial class HourlyForecast
     {
-        public HourlyForecast(WeatherUnderground.Hourly_Forecast hr_forecast)
-        {
-            var dateformat = string.Format("{0}/{1}/{2} {3}", hr_forecast.FCTTIME.mon, hr_forecast.FCTTIME.mday, hr_forecast.FCTTIME.year, hr_forecast.FCTTIME.civil);
-            date = DateTimeOffset.Parse(dateformat, CultureInfo.InvariantCulture);
-            high_f = hr_forecast.temp.english;
-            high_c = hr_forecast.temp.metric;
-            condition = hr_forecast.condition;
-
-            icon = WeatherManager.GetProvider(WeatherAPI.WeatherUnderground)
-                   .GetWeatherIcon(hr_forecast.icon_url.Replace("http://icons.wxug.com/i/c/k/", "").Replace(".gif", ""));
-
-            pop = hr_forecast.pop;
-            wind_degrees = int.Parse(hr_forecast.wdir.degrees);
-            wind_mph = float.Parse(hr_forecast.wspd.english);
-            wind_kph = float.Parse(hr_forecast.wspd.metric);
-
-            // Extras
-            extras = new ForecastExtras()
-            {
-                feelslike_f = float.Parse(hr_forecast.feelslike.english),
-                feelslike_c = float.Parse(hr_forecast.feelslike.metric),
-                humidity = hr_forecast.humidity,
-                dewpoint_f = hr_forecast.dewpoint.english,
-                dewpoint_c = hr_forecast.dewpoint.metric,
-                uv_index = float.Parse(hr_forecast.uvi),
-                pop = hr_forecast.pop,
-                qpf_rain_in = float.Parse(hr_forecast.qpf.english),
-                qpf_rain_mm = float.Parse(hr_forecast.qpf.metric),
-                qpf_snow_in = float.Parse(hr_forecast.snow.english),
-                qpf_snow_cm = float.Parse(hr_forecast.snow.metric),
-                pressure_in = hr_forecast.mslp.english,
-                pressure_mb = hr_forecast.mslp.metric,
-                wind_degrees = int.Parse(hr_forecast.wdir.degrees),
-                wind_mph = float.Parse(hr_forecast.wspd.english),
-                wind_kph = float.Parse(hr_forecast.wspd.metric)
-            };
-        }
-
         public HourlyForecast(OpenWeather.List hr_forecast)
         {
             date = DateTimeOffset.FromUnixTimeSeconds(hr_forecast.dt);
@@ -856,18 +765,6 @@ namespace SimpleWeather.WeatherData
 
     public partial class TextForecast
     {
-        public TextForecast(WeatherUnderground.Forecastday txt_forecast)
-        {
-            title = txt_forecast.title;
-            fcttext = txt_forecast.fcttext;
-            fcttext_metric = txt_forecast.fcttext_metric;
-
-            icon = WeatherManager.GetProvider(WeatherAPI.WeatherUnderground)
-                   .GetWeatherIcon(txt_forecast.icon_url.Replace("http://icons.wxug.com/i/c/k/", "").Replace(".gif", ""));
-
-            pop = txt_forecast.pop;
-        }
-
         public TextForecast(HERE.Forecast forecast)
         {
             title = forecast.weekday;
@@ -914,22 +811,6 @@ namespace SimpleWeather.WeatherData
 
     public partial class Condition
     {
-        public Condition(WeatherUnderground.Current_Observation condition)
-        {
-            weather = condition.weather;
-            temp_f = condition.temp_f;
-            temp_c = condition.temp_c;
-            wind_degrees = condition.wind_degrees;
-            wind_mph = condition.wind_mph;
-            wind_kph = condition.wind_kph;
-            feelslike_f = condition.feelslike_f;
-            feelslike_c = condition.feelslike_c;
-            icon = WeatherManager.GetProvider(WeatherAPI.WeatherUnderground)
-                   .GetWeatherIcon(condition.icon_url.Replace("http://icons.wxug.com/i/c/k/", "").Replace(".gif", ""));
-            if (float.TryParse(condition.UV, out float uv))
-                this.uv = new UV(uv);
-        }
-
         public Condition(WeatherYahoo.Current_Observation observation)
         {
             weather = observation.condition.text;
@@ -949,6 +830,10 @@ namespace SimpleWeather.WeatherData
             weather = root.weather[0].description.ToUpperCase();
             temp_f = float.Parse(ConversionMethods.KtoF(root.main.temp.ToString(CultureInfo.InvariantCulture)));
             temp_c = float.Parse(ConversionMethods.KtoC(root.main.temp.ToString(CultureInfo.InvariantCulture)));
+            high_f = float.Parse(ConversionMethods.KtoF(root.main.temp_max.ToString(CultureInfo.InvariantCulture)));
+            high_c = float.Parse(ConversionMethods.KtoC(root.main.temp_max.ToString(CultureInfo.InvariantCulture)));
+            low_f = float.Parse(ConversionMethods.KtoF(root.main.temp_min.ToString(CultureInfo.InvariantCulture)));
+            low_c = float.Parse(ConversionMethods.KtoC(root.main.temp_min.ToString(CultureInfo.InvariantCulture)));
             wind_degrees = (int)root.wind.deg;
             wind_mph = float.Parse(ConversionMethods.MSecToMph(root.wind.speed.ToString(CultureInfo.InvariantCulture)));
             wind_kph = float.Parse(ConversionMethods.MSecToKph(root.wind.speed.ToString(CultureInfo.InvariantCulture)));
@@ -993,6 +878,30 @@ namespace SimpleWeather.WeatherData
             {
                 temp_f = 0.00f;
                 temp_c = 0.00f;
+            }
+
+            if (float.TryParse(observation.highTemperature, out float hiTempF) &&
+                float.TryParse(observation.lowTemperature, out float loTempF))
+            {
+                high_f = hiTempF;
+                high_c = float.Parse(ConversionMethods.FtoC(hiTempF.ToString()));
+                low_f = loTempF;
+                low_c = float.Parse(ConversionMethods.FtoC(loTempF.ToString()));
+            }
+            else if (float.TryParse(forecastItem.highTemperature, out hiTempF) &&
+                float.TryParse(forecastItem.lowTemperature, out loTempF))
+            {
+                high_f = hiTempF;
+                high_c = float.Parse(ConversionMethods.FtoC(hiTempF.ToString()));
+                low_f = loTempF;
+                low_c = float.Parse(ConversionMethods.FtoC(loTempF.ToString()));
+            }
+            else
+            { 
+                high_f = 0.00f;
+                high_c = 0.00f;
+                low_f = 0.00f;
+                low_c = 0.00f;
             }
 
             if (int.TryParse(observation.windDirection, out int windDegrees))
@@ -1076,18 +985,6 @@ namespace SimpleWeather.WeatherData
 
     public partial class Atmosphere
     {
-        public Atmosphere(WeatherUnderground.Current_Observation condition)
-        {
-            humidity = condition.relative_humidity;
-            pressure_mb = condition.pressure_mb;
-            pressure_in = condition.pressure_in;
-            pressure_trend = condition.pressure_trend;
-            visibility_mi = condition.visibility_mi;
-            visibility_km = condition.visibility_km;
-            dewpoint_f = condition.dewpoint_f;
-            dewpoint_c = condition.dewpoint_c;
-        }
-
         public Atmosphere(WeatherYahoo.Atmosphere atmosphere)
         {
             humidity = atmosphere.humidity;
@@ -1208,82 +1105,6 @@ namespace SimpleWeather.WeatherData
 
     public partial class Astronomy
     {
-        public Astronomy(WeatherUnderground.Sun_Phase sun_phase, WeatherUnderground.Moon_Phase moon_phase)
-        {
-            if (DateTime.TryParse(string.Format("{0}:{1}", sun_phase.sunset.hour, sun_phase.sunset.minute), out DateTime sunset))
-                this.sunset = sunset;
-            if (DateTime.TryParse(string.Format("{0}:{1}", sun_phase.sunrise.hour, sun_phase.sunrise.minute), out DateTime sunrise))
-                this.sunrise = sunrise;
-
-            if (DateTime.TryParse(string.Format("{0}:{1}", moon_phase.moonset.hour, moon_phase.moonset.minute), out DateTime moonset))
-                this.moonset = moonset;
-            if (DateTime.TryParse(string.Format("{0}:{1}", moon_phase.moonrise.hour, moon_phase.moonrise.minute), out DateTime moonrise))
-                this.moonrise = moonrise;
-
-            // If the sun won't set/rise, set time to the future
-            if (sunrise == null)
-            {
-                sunrise = DateTime.Now.Date.AddYears(1).AddTicks(-1);
-            }
-            if (sunset == null)
-            {
-                sunset = DateTime.Now.Date.AddYears(1).AddTicks(-1);
-            }
-            if (moonrise == null)
-            {
-                moonrise = DateTime.MinValue;
-            }
-            if (moonset == null)
-            {
-                moonset = DateTime.MinValue;
-            }
-
-            try
-            {
-                MoonPhase.MoonPhaseType moonPhaseType;
-
-                int ageOfMoon = int.Parse(moon_phase.ageOfMoon);
-                if (ageOfMoon >= 2 && ageOfMoon < 8)
-                {
-                    moonPhaseType = MoonPhase.MoonPhaseType.WaxingCrescent;
-                }
-                else if (ageOfMoon == 8)
-                {
-                    moonPhaseType = MoonPhase.MoonPhaseType.FirstQtr;
-                }
-                else if (ageOfMoon >= 9 && ageOfMoon < 16)
-                {
-                    moonPhaseType = MoonPhase.MoonPhaseType.WaxingGibbous;
-                }
-                else if (ageOfMoon == 16)
-                {
-                    moonPhaseType = MoonPhase.MoonPhaseType.FullMoon;
-                }
-                else if (ageOfMoon >= 17 && ageOfMoon < 23)
-                {
-                    moonPhaseType = MoonPhase.MoonPhaseType.WaningGibbous;
-                }
-                else if (ageOfMoon == 23)
-                {
-                    moonPhaseType = MoonPhase.MoonPhaseType.LastQtr;
-                }
-                else if (ageOfMoon >= 24 && ageOfMoon < 29)
-                {
-                    moonPhaseType = MoonPhase.MoonPhaseType.WaningCrescent;
-                }
-                else
-                {
-                    moonPhaseType = MoonPhase.MoonPhaseType.NewMoon;
-                }
-
-                this.moonphase = new MoonPhase(moonPhaseType, moon_phase.phaseofMoon);
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteLine(LoggerLevel.Error, ex, "Exception!!");
-            }
-        }
-
         public Astronomy(WeatherYahoo.Astronomy astronomy)
         {
             if (DateTime.TryParse(astronomy.sunrise, out DateTime sunrise))
@@ -1507,15 +1328,6 @@ namespace SimpleWeather.WeatherData
 
     public partial class Precipitation
     {
-        public Precipitation(WeatherUnderground.Forecastday1 forecast)
-        {
-            pop = forecast.pop.ToString();
-            qpf_rain_in = forecast.qpf_allday._in.GetValueOrDefault(0.00f);
-            qpf_rain_mm = forecast.qpf_allday.mm.GetValueOrDefault();
-            qpf_snow_in = forecast.snow_allday._in.GetValueOrDefault(0.00f);
-            qpf_snow_cm = forecast.snow_allday.cm.GetValueOrDefault();
-        }
-
         public Precipitation(OpenWeather.CurrentRootobject root)
         {
             // Use cloudiness value here

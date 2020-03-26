@@ -1386,6 +1386,10 @@ namespace SimpleWeather.WeatherData
         public string icon { get; set; }
         public Beaufort beaufort { get; set; }
         public UV uv { get; set; }
+        public float high_f { get; set; }
+        public float high_c { get; set; }
+        public float low_f { get; set; }
+        public float low_c { get; set; }
 
         internal Condition()
         {
@@ -1405,7 +1409,11 @@ namespace SimpleWeather.WeatherData
                    feelslike_c == condition.feelslike_c &&
                    icon == condition.icon &&
                    Object.Equals(beaufort, condition.beaufort) &&
-                   Object.Equals(uv, condition.uv);
+                   Object.Equals(uv, condition.uv) &&
+                   high_f == condition.high_f &&
+                   high_c == condition.high_c &&
+                   low_f == condition.low_f &&
+                   low_c == condition.low_c;
         }
 
         public override int GetHashCode()
@@ -1422,6 +1430,10 @@ namespace SimpleWeather.WeatherData
             hash.Add(icon);
             hash.Add(beaufort);
             hash.Add(uv);
+            hash.Add(high_f);
+            hash.Add(high_c);
+            hash.Add(low_f);
+            hash.Add(low_c);
             return hash.ToHashCode();
         }
 
@@ -1498,6 +1510,22 @@ namespace SimpleWeather.WeatherData
                     case nameof(uv):
                         this.uv = new UV();
                         this.uv.FromJson(ref reader);
+                        break;
+
+                    case nameof(high_f):
+                        this.high_f = reader.ReadSingle();
+                        break;
+
+                    case nameof(high_c):
+                        this.high_c = reader.ReadSingle();
+                        break;
+
+                    case nameof(low_f):
+                        this.low_f = reader.ReadSingle();
+                        break;
+
+                    case nameof(low_c):
+                        this.low_c = reader.ReadSingle();
                         break;
 
                     default:
@@ -1582,6 +1610,30 @@ namespace SimpleWeather.WeatherData
                 writer.WritePropertyName(nameof(uv));
                 writer.WriteString(uv?.ToJson());
             }
+
+            writer.WriteValueSeparator();
+
+            // "high_f" : ""
+            writer.WritePropertyName(nameof(high_f));
+            writer.WriteSingle(high_f);
+
+            writer.WriteValueSeparator();
+
+            // "high_c" : ""
+            writer.WritePropertyName(nameof(high_c));
+            writer.WriteSingle(high_c);
+
+            writer.WriteValueSeparator();
+
+            // "low_f" : ""
+            writer.WritePropertyName(nameof(low_f));
+            writer.WriteSingle(low_f);
+
+            writer.WriteValueSeparator();
+
+            // "low_c" : ""
+            writer.WritePropertyName(nameof(low_c));
+            writer.WriteSingle(low_c);
 
             // }
             writer.WriteEndObject();
