@@ -116,6 +116,15 @@ namespace SimpleWeather.WeatherData
         public const String WIND_BEAUFORT_12 = "\uf0c3";
 
         // Moon Phase
+        public const String MOON_NEW = "\uf095";
+        public const String MOON_WAXING_CRESCENT_3 = "\uf098";
+        public const String MOON_FIRST_QUARTER = "\uf09c";
+        public const String MOON_WAXING_GIBBOUS_3 = "\uf09f";
+        public const String MOON_FULL = "\uf0a3";
+        public const String MOON_WANING_GIBBOUS_3 = "\uf0a6";
+        public const String MOON_THIRD_QUARTER = "\uf0aa";
+        public const String MOON_WANING_CRESCENT_3 = "\uf0ad";
+
         public const String MOON_ALT_NEW = "\uf0eb";
         public const String MOON_ALT_WAXING_CRESCENT_3 = "\uf0d2";
         public const String MOON_ALT_FIRST_QUARTER = "\uf0d6";

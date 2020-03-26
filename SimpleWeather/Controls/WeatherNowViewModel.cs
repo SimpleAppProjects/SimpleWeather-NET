@@ -23,11 +23,16 @@ namespace SimpleWeather.Controls
         private string curTemp;
         private string curCondition;
         private string weatherIcon;
+        private string hiTemp;
+        private string loTemp;
 
         // Weather Details
         private string sunrise;
         private string sunset;
         private ObservableCollection<DetailItemViewModel> weatherDetails;
+        private UVIndexViewModel uvIndex;
+        private BeaufortViewModel beaufort;
+        private MoonPhaseViewModel moonPhase;
 
         // Forecast
         private ObservableForecastLoadingCollection<ForecastItemViewModel> forecasts;
@@ -63,12 +68,17 @@ namespace SimpleWeather.Controls
         public string CurTemp { get => curTemp; set { curTemp = value; OnPropertyChanged(nameof(CurTemp)); } }
         public string CurCondition { get => curCondition; set { curCondition = value; OnPropertyChanged(nameof(CurCondition)); } }
         public string WeatherIcon { get => weatherIcon; set { weatherIcon = value; OnPropertyChanged(nameof(WeatherIcon)); } }
+        public string HiTemp { get => hiTemp; set { hiTemp = value; OnPropertyChanged(nameof(HiTemp)); } }
+        public string LoTemp { get => loTemp; set { loTemp = value; OnPropertyChanged(nameof(LoTemp)); } }
         public string Sunrise { get => sunrise; set { sunrise = value; OnPropertyChanged(nameof(Sunrise)); } }
         public string Sunset { get => sunset; set { sunset = value; OnPropertyChanged(nameof(Sunset)); } }
         public ObservableForecastLoadingCollection<ForecastItemViewModel> Forecasts { get => forecasts; set { forecasts = value; OnPropertyChanged(nameof(Forecasts)); } }
         public ObservableForecastLoadingCollection<HourlyForecastItemViewModel> HourlyForecasts { get => hourlyForecasts; set { hourlyForecasts = value; OnPropertyChanged(nameof(HourlyForecasts)); } }
         public ObservableCollection<WeatherAlertViewModel> Alerts { get => alerts; private set { alerts = value; OnPropertyChanged(nameof(Alerts)); } }
         public ObservableCollection<DetailItemViewModel> WeatherDetails { get => weatherDetails; private set { weatherDetails = value; OnPropertyChanged(nameof(WeatherDetails)); } }
+        public UVIndexViewModel UVIndex { get => uvIndex; private set { uvIndex = value; OnPropertyChanged(nameof(UVIndex)); } }
+        public BeaufortViewModel Beaufort { get => beaufort; private set { beaufort = value; OnPropertyChanged(nameof(Beaufort)); } }
+        public MoonPhaseViewModel MoonPhase { get => moonPhase; private set { moonPhase = value; OnPropertyChanged(nameof(MoonPhase)); } }
         public string BackgroundURI { get => backgroundURI; set { backgroundURI = value; OnPropertyChanged(nameof(BackgroundURI)); } }
         public ImageDataViewModel ImageData { get => imageData; set { imageData = value; OnPropertyChanged(nameof(ImageData)); } }
         public Color PendingBackgroundColor { get => pendingBackgroundColor; set { pendingBackgroundColor = value; OnPropertyChanged(nameof(PendingBackgroundColor)); } }
@@ -199,6 +209,7 @@ namespace SimpleWeather.Controls
 
                 // WeatherDetails
                 WeatherDetails.Clear();
+
                 // Precipitation
                 if (weather.precipitation != null)
                 {
@@ -258,11 +269,7 @@ namespace SimpleWeather.Controls
                                string.Format("{0} {1}", visibility.ToString(culture), visibilityUnit)));
                 }
 
-                if (weather.condition.uv != null)
-                {
-                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.UV,
-                           string.Format("{0}, {1}", weather.condition.uv.index, weather.condition.uv.desc)));
-                }
+                UVIndex = weather.condition.uv != null ? new UVIndexViewModel(weather.condition.uv) : null;
 
                 if (weather.condition.feelslike_f != weather.condition.feelslike_c)
                 {
@@ -280,19 +287,13 @@ namespace SimpleWeather.Controls
                        weather.condition.wind_degrees + 180));
                 }
 
-                if (weather.condition.beaufort != null)
-                {
-                    WeatherDetails.Add(new DetailItemViewModel(weather.condition.beaufort.scale,
-                            weather.condition.beaufort.desc));
-                }
+                Beaufort = weather.condition.beaufort != null ? new BeaufortViewModel(weather.condition.beaufort) : null;
 
                 // Astronomy
                 if (weather.astronomy != null)
                 {
                     Sunrise = weather.astronomy.sunrise.ToString("t", culture);
                     Sunset = weather.astronomy.sunset.ToString("t", culture);
-                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Sunrise, Sunrise));
-                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Sunset, Sunset));
 
                     if (weather.astronomy.moonrise != null && weather.astronomy.moonset != null
                             && weather.astronomy.moonrise.CompareTo(DateTime.MinValue) > 0
@@ -304,18 +305,14 @@ namespace SimpleWeather.Controls
                                weather.astronomy.moonset.ToString("t", culture)));
                     }
 
-                    if (weather.astronomy.moonphase != null)
-                    {
-                        WeatherDetails.Add(new DetailItemViewModel(weather.astronomy.moonphase.phase,
-                               weather.astronomy.moonphase.desc));
-                    }
+                    MoonPhase = new MoonPhaseViewModel(weather.astronomy.moonphase);
                 }
                 else
                 {
                     Sunrise = null;
                     Sunset = null;
+                    MoonPhase = null;
                 }
-
                 OnPropertyChanged(nameof(WeatherDetails));
 
                 // Add UI elements
@@ -348,7 +345,22 @@ namespace SimpleWeather.Controls
                 {
                     // Let collection handle changes (clearing, etc.)
                     Forecasts.SetWeather(weather);
+                    if (Forecasts.Count == 0)
+                    {
+                        Forecasts.LoadMoreItemsAsync(1)
+                                 .AsTask()
+                                 .ContinueWith((t) =>
+                                 {
+                                     AsyncTask.RunOnUIThread(() =>
+                                     {
+                                         HiTemp = Forecasts?.FirstOrDefault()?.HiTemp?.Trim();
+                                         LoTemp = Forecasts?.FirstOrDefault()?.LoTemp?.Trim();
+                                     });
+                                 });
+                    }
                 }
+                HiTemp = Forecasts?.FirstOrDefault()?.HiTemp?.Trim();
+                LoTemp = Forecasts?.FirstOrDefault()?.LoTemp?.Trim();
                 OnPropertyChanged(nameof(Forecasts));
 
                 if (weather?.hr_forecast?.Any() == true)

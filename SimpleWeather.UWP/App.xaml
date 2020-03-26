@@ -477,6 +477,83 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+            <Style x:Key="SectionLabelStyle" TargetType="toolkitControls:HeaderedContentControl">
+                <Setter Property="HorizontalContentAlignment" Value="Left" />
+                <Setter Property="VerticalContentAlignment" Value="Top" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="toolkitControls:HeaderedContentControl">
+                            <Grid>
+                                <Grid.Resources>
+                                    <Style x:Key="SectionLabel" TargetType="ContentPresenter">
+                                        <Setter Property="Padding" Value="15,10" />
+                                        <Setter Property="FontSize" Value="18" />
+                                        <Setter Property="FontWeight" Value="SemiBold" />
+                                        <Setter Property="Foreground" Value="White" />
+                                        <Setter Property="HorizontalAlignment" Value="Left" />
+                                        <Setter Property="VerticalAlignment" Value="Top" />
+                                    </Style>
+                                </Grid.Resources>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <ContentPresenter x:Name="HeaderPresenter"
+                                          x:DeferLoadStrategy="Lazy"
+                                          Content="{TemplateBinding Header}"
+                                          ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                          Grid.ColumnSpan="2"
+                                          Style="{ThemeResource SectionLabel}" />
+                                <ContentPresenter x:Name="ContentPresenter"
+                                          Grid.ColumnSpan="2"
+                                          Grid.Row="1"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="OrientationStates">
+                                        <VisualState x:Name="Vertical" />
+                                        <VisualState x:Name="Horizontal">
+                                            <VisualState.Setters>
+                                                <Setter Target="HeaderPresenter.(Grid.ColumnSpan)" Value="1" />
+                                                <Setter Target="ContentPresenter.(Grid.ColumnSpan)" Value="1" />
+                                                <Setter Target="ContentPresenter.(Grid.Column)" Value="1" />
+                                                <Setter Target="HeaderPresenter.(Grid.Row)" Value="1" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                    <VisualStateGroup>
+                                        <VisualState>
+                                            <VisualState.StateTriggers>
+                                                <AdaptiveTrigger MinWindowHeight="691" />
+                                            </VisualState.StateTriggers>
+                                            <VisualState.Setters>
+                                                <Setter Target="HeaderPresenter.FontSize" Value="18" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState>
+                                            <VisualState.StateTriggers>
+                                                <AdaptiveTrigger MinWindowHeight="0" />
+                                            </VisualState.StateTriggers>
+                                            <VisualState.Setters>
+                                                <Setter Target="HeaderPresenter.FontSize" Value="16" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="Divider" TargetType="Border">
+                <Setter Property="BorderThickness" Value="0.5" />
+                <Setter Property="Opacity" Value="0.2" />
+                <Setter Property="BorderBrush" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

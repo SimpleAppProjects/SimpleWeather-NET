@@ -1,0 +1,35 @@
+﻿<UserControl
+    x:Class="SimpleWeather.UWP.Controls.BeaufortControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SimpleWeather.UWP.Controls"
+    xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <StackPanel>
+        <toolkitControls:HeaderedContentControl HorizontalContentAlignment="Stretch" 
+                                                Style="{StaticResource SectionLabelStyle}">
+            <toolkitControls:HeaderedContentControl.Header>
+                <TextBlock Text="{x:Bind ViewModel.Beaufort.Label, Mode=OneWay, FallbackValue='Beaufort'}"
+                           FontSize="15" />
+            </toolkitControls:HeaderedContentControl.Header>
+            <StackPanel Padding="15,0">
+                <StackPanel Orientation="Horizontal" Padding="15,0">
+                    <TextBlock Text="{x:Bind ViewModel.Beaufort.Icon, Mode=OneWay}" Style="{StaticResource WeatherIcon}"
+                               FontSize="32" Padding="5" Width="50">
+                    </TextBlock>
+                    <TextBlock Text="{x:Bind ViewModel.Beaufort.Value, Mode=OneWay}"
+                               FontSize="18" Padding="5" VerticalAlignment="Center" />
+                </StackPanel>
+                <ProgressBar Height="5" Value="{x:Bind ViewModel.BeaufortScaleProgress, Mode=OneWay}" Maximum="100" Background="DimGray"
+                             Margin="15,0">
+                    <ProgressBar.Foreground>
+                        <SolidColorBrush Color="{x:Bind ViewModel.BeaufortScaleProgressColor, Mode=OneWay}" />
+                    </ProgressBar.Foreground>
+                </ProgressBar>
+            </StackPanel>
+        </toolkitControls:HeaderedContentControl>
+    </StackPanel>
+</UserControl>

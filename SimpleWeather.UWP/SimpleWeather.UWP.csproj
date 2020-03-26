@@ -270,6 +270,9 @@
     <Compile Include="Controls\ForecastGraphPanel.xaml.cs">
       <DependentUpon>ForecastGraphPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\MoonPhaseControl.xaml.cs">
+      <DependentUpon>MoonPhaseControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Snackbar\ISnackbarManager.cs" />
     <Compile Include="Controls\LineDataSeries.cs" />
     <Compile Include="Controls\LineView.xaml.cs">
@@ -285,11 +288,17 @@
     <Compile Include="Controls\SunPhasePanel.xaml.cs">
       <DependentUpon>SunPhasePanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\UVControl.xaml.cs">
+      <DependentUpon>UVControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\WeatherDetailPanel.xaml.cs">
       <DependentUpon>WeatherDetailPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\WeatherAlertPanel.xaml.cs">
       <DependentUpon>WeatherAlertPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\BeaufortControl.xaml.cs">
+      <DependentUpon>BeaufortControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\ControlSizeTrigger.cs" />
     <Compile Include="Helpers\LocationTypeConverter.cs" />
@@ -434,6 +443,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Controls\MoonPhaseControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\Snackbar\SnackbarContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -442,11 +455,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\UVControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\WeatherDetailPanel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\WeatherAlertPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\BeaufortControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

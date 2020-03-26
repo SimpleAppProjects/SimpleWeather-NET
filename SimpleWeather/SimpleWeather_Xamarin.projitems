@@ -14,13 +14,16 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\BaseForecastItemViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ComboBoxItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\DetailItemViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\MoonPhaseViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ProviderEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\HourlyForecastItemViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ForecastItemViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\LocationQueryViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UVIndexViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\WeatherAlertViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\WeatherNowViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ImageDataViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\BeaufortViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HERE\Alerts.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HERE\AutoCompleteQuery.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HERE\GeopositionQuery.cs" />

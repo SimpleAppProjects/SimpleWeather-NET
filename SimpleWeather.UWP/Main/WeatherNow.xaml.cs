@@ -261,7 +261,7 @@ namespace SimpleWeather.UWP.Main
             {
                 // Default adj = 1.25f
                 float adj = 1.25f;
-                double backAlpha = 1 - (1 * adj * viewer.VerticalOffset / viewer.ScrollableHeight);
+                double backAlpha = 1 - (1 * adj * viewer.VerticalOffset / ConditionPanel.ActualHeight);
                 double gradAlpha = 1 - (1 * adj * viewer.VerticalOffset / ConditionPanel.ActualHeight);
                 BGAlpha = Math.Max(backAlpha, (float)0x25 / 0xFF); // 0x25
                 GradAlpha = Math.Max(gradAlpha, 0);
@@ -302,16 +302,21 @@ namespace SimpleWeather.UWP.Main
 
             if (MainViewer == null) return;
 
-            ResizeAlertPanel();
-
             double w = MainViewer.ActualWidth - MainViewer.Padding.Left - MainViewer.Padding.Right;
             double h = MainViewer.ActualHeight - MainViewer.Padding.Top - MainViewer.Padding.Bottom;
+
+            ResizeAlertPanel();
 
             if (ConditionPanel != null)
             {
                 ConditionPanel.Height = h;
-                ConditionPanel.Width = w;
+                if (w >= 1280)
+                    ConditionPanel.Width = 1280;
+                else
+                    ConditionPanel.Width = w;
             }
+
+            ResizeDetailsGrid();
 
             if (Bounds.Height >= 691)
             {
@@ -356,6 +361,26 @@ namespace SimpleWeather.UWP.Main
                 if (Location != null) Location.FontSize = 24;
                 if (CurTemp != null) CurTemp.FontSize = 24;
                 if (CurCondition != null) CurCondition.FontSize = 24;
+            }
+        }
+
+        private void ResizeDetailsGrid()
+        {
+            // Minimum width for ea. card
+            int minItemWidth = 340;
+            int minItemHeight = 140;
+            // Available columns based on min card width
+            int availColumns = (DetailsGrid.ActualWidth / minItemWidth) < 1 ? 1 : (int)(DetailsGrid.ActualWidth / minItemWidth);
+
+            if (availColumns <= 1)
+            {
+                DetailsGrid.Columns = 1;
+                DetailsGrid.Rows = DetailsGrid.Children.Count;
+            }
+            else
+            {
+                DetailsGrid.Columns = 0;
+                DetailsGrid.Rows = 0;
             }
         }
 
