@@ -55,5 +55,9 @@
                 </ProgressBar>
             </RelativePanel>
         </toolkitControls:HeaderedContentControl>
+        <TextBlock x:Name="Attribution" Padding="5" Foreground="White" FontSize="12"
+                   HorizontalAlignment="Center">
+            <Span><Run x:Uid="Credit_Prefix" Text="Data from"/><Run Text=" World Air Quality Index Project"/></Span>
+        </TextBlock>
     </StackPanel>
 </UserControl>

@@ -76,6 +76,12 @@
                         <Image Source="{ThemeResource BingImageSrc}" Height="50" HorizontalAlignment="Left" />
                     </HyperlinkButton>
                 </StackPanel>
+                <StackPanel Padding="10">
+                    <TextBlock Text="World Air Quality Index Project" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                    <HyperlinkButton NavigateUri="https://aqicn.org/" Padding="0,10">
+                        <Image Source="../Assets/Providers/waqi.png" Height="50" HorizontalAlignment="Left" />
+                    </HyperlinkButton>
+                </StackPanel>
             </StackPanel>
         </Grid>
     </ScrollViewer>

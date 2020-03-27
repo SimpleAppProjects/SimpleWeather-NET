@@ -86,7 +86,7 @@ namespace SimpleWeather.UWP.Controls
 
             var wm = WeatherManager.GetInstance();
             var LocationAPI = wm.LocationProvider.LocationAPI;
-            var creditPrefix = App.ResLoader.GetString("Credit_Prefix");
+            var creditPrefix = App.ResLoader.GetString("Credit_Prefix/Text");
 
             SourceFooter.Text = String.Format("{0} {1}",
                 creditPrefix, WeatherAPI.LocationAPIs.First(LApi => LocationAPI.Equals(LApi.Value)));

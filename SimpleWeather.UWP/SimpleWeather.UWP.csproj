@@ -132,6 +132,7 @@
     <Content Include="Assets\Providers\metno.png" />
     <Content Include="Assets\Providers\nws.png" />
     <Content Include="Assets\Providers\openweathermap.png" />
+    <Content Include="Assets\Providers\waqi.png" />
     <Content Include="Assets\Providers\yahoo.png" />
     <Content Include="Assets\Providers\yahoo_dark.png" />
     <Content Include="Assets\SplashScreen.scale-100.png" />

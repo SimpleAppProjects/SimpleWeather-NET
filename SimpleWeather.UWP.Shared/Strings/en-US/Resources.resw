@@ -306,7 +306,7 @@
   <data name="Update_PrefixDay" xml:space="preserve">
     <value>Updated at</value>
   </data>
-  <data name="Credit_Prefix" xml:space="preserve">
+  <data name="Credit_Prefix.Text" xml:space="preserve">
     <value>Data from</value>
   </data>
   <data name="Label_Cloudiness.Text" xml:space="preserve">
