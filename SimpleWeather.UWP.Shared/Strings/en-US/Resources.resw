@@ -519,4 +519,43 @@
   <data name="Moon_Label" xml:space="preserve">
     <value>Moon</value>
   </data>
+  <data name="AQI_Desc_0_50" xml:space="preserve">
+    <value>Air quality is considered satisfactory, and air pollution poses little or no risk</value>
+  </data>
+  <data name="AQI_Desc_101_150" xml:space="preserve">
+    <value>Members of sensitive groups may experience health effects. The general public is not likely to be affected.</value>
+  </data>
+  <data name="AQI_Desc_151_200" xml:space="preserve">
+    <value>Everyone may begin to experience health effects; members of sensitive groups may experience more serious health effects</value>
+  </data>
+  <data name="AQI_Desc_201_300" xml:space="preserve">
+    <value>Health warnings of emergency conditions. The entire population is more likely to be affected.</value>
+  </data>
+  <data name="AQI_Desc_300" xml:space="preserve">
+    <value>Health alert: everyone may experience more serious health effects</value>
+  </data>
+  <data name="AQI_Desc_51_100" xml:space="preserve">
+    <value>Air quality is acceptable</value>
+  </data>
+  <data name="AQI_Level_0_50" xml:space="preserve">
+    <value>Good</value>
+  </data>
+  <data name="AQI_Level_101_150" xml:space="preserve">
+    <value>Unhealthy for Sensitive Groups</value>
+  </data>
+  <data name="AQI_Level_151_200" xml:space="preserve">
+    <value>Unhealthy</value>
+  </data>
+  <data name="AQI_Level_201_300" xml:space="preserve">
+    <value>Very Unhealthy</value>
+  </data>
+  <data name="AQI_Level_300" xml:space="preserve">
+    <value>Hazardous</value>
+  </data>
+  <data name="AQI_Level_51_100" xml:space="preserve">
+    <value>Moderate</value>
+  </data>
+  <data name="AQI_Label" xml:space="preserve">
+    <value>Air Quality Index</value>
+  </data>
 </root>

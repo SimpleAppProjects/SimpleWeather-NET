@@ -33,6 +33,7 @@ namespace SimpleWeather.Controls
         private UVIndexViewModel uvIndex;
         private BeaufortViewModel beaufort;
         private MoonPhaseViewModel moonPhase;
+        private AirQualityViewModel airQuality;
 
         // Forecast
         private ObservableForecastLoadingCollection<ForecastItemViewModel> forecasts;
@@ -79,6 +80,7 @@ namespace SimpleWeather.Controls
         public UVIndexViewModel UVIndex { get => uvIndex; private set { uvIndex = value; OnPropertyChanged(nameof(UVIndex)); } }
         public BeaufortViewModel Beaufort { get => beaufort; private set { beaufort = value; OnPropertyChanged(nameof(Beaufort)); } }
         public MoonPhaseViewModel MoonPhase { get => moonPhase; private set { moonPhase = value; OnPropertyChanged(nameof(MoonPhase)); } }
+        public AirQualityViewModel AirQuality { get => airQuality; private set { airQuality = value; OnPropertyChanged(nameof(AirQuality)); } }
         public string BackgroundURI { get => backgroundURI; set { backgroundURI = value; OnPropertyChanged(nameof(BackgroundURI)); } }
         public ImageDataViewModel ImageData { get => imageData; set { imageData = value; OnPropertyChanged(nameof(ImageData)); } }
         public Color PendingBackgroundColor { get => pendingBackgroundColor; set { pendingBackgroundColor = value; OnPropertyChanged(nameof(PendingBackgroundColor)); } }
@@ -390,6 +392,9 @@ namespace SimpleWeather.Controls
                     }
                 }
                 OnPropertyChanged(nameof(Alerts));
+
+                // Additional Details
+                AirQuality = weather.condition.airQuality != null ? new AirQualityViewModel(weather.condition.airQuality) : null;
 
                 // Additional Details
                 WeatherSource = weather?.source;

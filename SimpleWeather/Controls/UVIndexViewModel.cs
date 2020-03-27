@@ -38,7 +38,7 @@ namespace SimpleWeather.Controls
             }
             else if (uvIdx.index < 11)
             {
-                ProgressColor = Colors.Red;
+                ProgressColor = Colors.Maroon;
             }
             else if (uvIdx.index >= 11)
             {

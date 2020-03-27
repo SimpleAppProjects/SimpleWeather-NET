@@ -78,7 +78,7 @@ namespace SimpleWeather.Controls
                         break;
                     case WeatherData.Beaufort.BeaufortScale.B12:
                         BeaufortScaleProgress = 100;
-                        BeaufortScaleProgressColor = Colors.Red;
+                        BeaufortScaleProgressColor = Colors.Maroon;
                         break;
                 }
             }

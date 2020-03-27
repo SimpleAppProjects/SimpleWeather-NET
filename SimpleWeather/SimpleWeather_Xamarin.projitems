@@ -9,8 +9,11 @@
     <Import_RootNamespace>SimpleWeather</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AQICN\AQICNProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AQICN\Rootobject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bing\AutoCompleteQuery.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bing\BingMapsLocationProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\AirQualityViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\BaseForecastItemViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ComboBoxItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\DetailItemViewModel.cs" />
@@ -30,6 +33,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)HERE\HERELocationProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HERE\HEREOAuthUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Keys\AppCenterKey.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Keys\AQICNKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Keys\BingMapsKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Keys\HEREWeatherKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HERE\HEREWeatherProvider.cs" />
@@ -69,6 +73,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.Coordinate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IAirQualityProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IAstroDataProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IWeatherAlertProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IWeatherErrorListener.cs" />

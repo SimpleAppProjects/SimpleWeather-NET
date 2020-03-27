@@ -316,8 +316,6 @@ namespace SimpleWeather.UWP.Main
                     ConditionPanel.Width = w;
             }
 
-            ResizeDetailsGrid();
-
             if (Bounds.Height >= 691)
             {
                 if (WeatherBox != null) WeatherBox.Height = WeatherBox.Width = 155;
@@ -361,26 +359,6 @@ namespace SimpleWeather.UWP.Main
                 if (Location != null) Location.FontSize = 24;
                 if (CurTemp != null) CurTemp.FontSize = 24;
                 if (CurCondition != null) CurCondition.FontSize = 24;
-            }
-        }
-
-        private void ResizeDetailsGrid()
-        {
-            // Minimum width for ea. card
-            int minItemWidth = 340;
-            int minItemHeight = 140;
-            // Available columns based on min card width
-            int availColumns = (DetailsGrid.ActualWidth / minItemWidth) < 1 ? 1 : (int)(DetailsGrid.ActualWidth / minItemWidth);
-
-            if (availColumns <= 1)
-            {
-                DetailsGrid.Columns = 1;
-                DetailsGrid.Rows = DetailsGrid.Children.Count;
-            }
-            else
-            {
-                DetailsGrid.Columns = 0;
-                DetailsGrid.Rows = 0;
             }
         }
 

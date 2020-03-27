@@ -1,0 +1,59 @@
+﻿<UserControl
+    x:Class="SimpleWeather.UWP.Controls.AQIControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SimpleWeather.UWP.Controls"
+    xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <StackPanel>
+        <toolkitControls:HeaderedContentControl HorizontalContentAlignment="Stretch" 
+                                                Style="{StaticResource SectionLabelStyle}">
+            <toolkitControls:HeaderedContentControl.Header>
+                <TextBlock Text="{x:Bind ViewModel.Title, Mode=OneWay, FallbackValue='Air Quality Index'}"
+                           FontSize="15" />
+            </toolkitControls:HeaderedContentControl.Header>
+            <RelativePanel Height="90">
+                <TextBlock x:Name="AQIndex" Width="75"
+                           TextAlignment="Center" VerticalAlignment="Top"
+                           FontSize="32" FontWeight="Medium"
+                           Padding="15,5,5,5"
+                           Text="{x:Bind ViewModel.Index, Mode=OneWay, FallbackValue='101'}"
+                           RelativePanel.AlignTopWithPanel="True"
+                           RelativePanel.AlignLeftWithPanel="True"
+                           RelativePanel.Above="AQIProgresBar">
+                    <TextBlock.Foreground>
+                        <SolidColorBrush Color="{x:Bind ViewModel.ProgressColor, Mode=OneWay, FallbackValue='Red'}" />
+                    </TextBlock.Foreground>
+                </TextBlock>
+                <TextBlock x:Name="AQILevel" Foreground="White" FontSize="18" FontWeight="Medium"
+                           Padding="5,2"
+                           Text="{x:Bind ViewModel.Level, Mode=OneWay, FallbackValue='Unhealthy'}"
+                           RelativePanel.RightOf="AQIndex"
+                           RelativePanel.AlignTopWithPanel="True"
+                           RelativePanel.AlignRightWithPanel="True"
+                           RelativePanel.AlignRightWith="AQIndex" />
+                <TextBlock x:Name="AQIBlock" Foreground="White" FontSize="14"
+                           Padding="5,2" VerticalAlignment="Top"
+                           TextWrapping="Wrap" TextTrimming="WordEllipsis"
+                           Text="{x:Bind ViewModel.Description, Mode=OneWay, FallbackValue='Everyone may begin to experience health effects; members of sensitive groups may experience more serious health effects'}"
+                           RelativePanel.RightOf="AQIndex"
+                           RelativePanel.Below="AQILevel"
+                           RelativePanel.Above="AQIProgresBar"
+                           RelativePanel.AlignRightWithPanel="True"
+                           RelativePanel.AlignRightWith="AQIndex" />
+                <ProgressBar x:Name="AQIProgresBar" Height="5" Value="{x:Bind ViewModel.Progress, Mode=OneWay, FallbackValue='50'}" Maximum="100" Background="DimGray"
+                             Margin="15,5"
+                             RelativePanel.AlignBottomWithPanel="True"
+                             RelativePanel.AlignLeftWithPanel="True"
+                             RelativePanel.AlignRightWithPanel="True">
+                    <ProgressBar.Foreground>
+                        <SolidColorBrush Color="{x:Bind ViewModel.ProgressColor, Mode=OneWay, FallbackValue='Red'}" />
+                    </ProgressBar.Foreground>
+                </ProgressBar>
+            </RelativePanel>
+        </toolkitControls:HeaderedContentControl>
+    </StackPanel>
+</UserControl>

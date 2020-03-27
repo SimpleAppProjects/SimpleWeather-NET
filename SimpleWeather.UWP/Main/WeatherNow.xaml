@@ -268,42 +268,45 @@
                     <toolkitControls:HeaderedContentControl Style="{ThemeResource SectionLabelStyle}"
                                                             HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
                                                             x:Uid="Label_Details" Header="Details">
-                        <ItemsControl x:Name="DetailsPanel" HorizontalAlignment="Center" HorizontalContentAlignment="Center"
+                        <StackPanel>
+                            <ItemsControl x:Name="DetailsPanel" HorizontalAlignment="Center" HorizontalContentAlignment="Center"
                                       ItemsSource="{x:Bind WeatherView.WeatherDetails, Mode=OneWay}"
                                       x:Load="{x:Bind WeatherView.WeatherDetails, Mode=OneWay, Converter={StaticResource collectionBooleanConverter}}"
                                       Loaded="DeferedControl_Loaded">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate x:DataType="controls:DetailItemViewModel">
-                                    <Grid>
-                                        <localcontrols:DetailItem HorizontalAlignment="Center"
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="controls:DetailItemViewModel">
+                                        <Grid>
+                                            <localcontrols:DetailItem HorizontalAlignment="Center"
                                                               ItemColor="{Binding ElementName=MainGrid, Path=Background, Mode=OneWay, Converter={StaticResource solidColorBrush2ColorConverter}}" />
-                                    </Grid>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <ItemsWrapGrid Orientation="Horizontal" Transitions="{StaticResource TextTransitions}" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                        </ItemsControl>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <ItemsWrapGrid Orientation="Horizontal" Transitions="{StaticResource TextTransitions}" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
+                            <VariableSizedWrapGrid x:Name="DetailsGrid" Orientation="Horizontal">
+                                <localcontrols:UVControl x:Name="UVContrl"
+                                                         x:Load="{x:Bind WeatherView.UVIndex, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
+                                                         Visibility="{x:Bind WeatherView.UVIndex, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
+                                                         DataContext="{x:Bind WeatherView.UVIndex, Mode=OneWay}" Margin="10,5" />
+                                <localcontrols:BeaufortControl x:Name="BeaufControl"
+                                                               x:Load="{x:Bind WeatherView.Beaufort, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
+                                                               Visibility="{x:Bind WeatherView.Beaufort, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
+                                                               DataContext="{x:Bind WeatherView.Beaufort, Mode=OneWay}" Margin="10,5" />
+                                <localcontrols:AQIControl x:Name="AQIndexControl"
+                                                          x:Load="{x:Bind WeatherView.AirQuality, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
+                                                          Visibility="{x:Bind WeatherView.AirQuality, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
+                                                          DataContext="{x:Bind WeatherView.AirQuality, Mode=OneWay}" Margin="10,5" />
+                                <localcontrols:MoonPhaseControl x:Name="MoonControl"
+                                                                x:Load="{x:Bind WeatherView.MoonPhase, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
+                                                                Visibility="{x:Bind WeatherView.MoonPhase, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
+                                                                DataContext="{x:Bind WeatherView.MoonPhase, Mode=OneWay}" Margin="10,5" />
+                            </VariableSizedWrapGrid>
+                        </StackPanel>
                     </toolkitControls:HeaderedContentControl>
-                    <toolkitControls:UniformGrid x:Name="DetailsGrid" Orientation="Horizontal">
-                        <localcontrols:UVControl x:Name="UVContrl"
-                                                 x:Load="{x:Bind WeatherView.UVIndex, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
-                                                 Visibility="{x:Bind WeatherView.UVIndex, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
-                                                 DataContext="{x:Bind WeatherView.UVIndex, Mode=OneWay}" Margin="10,5"
-                                                 MinWidth="340" Grid.ColumnSpan="1" />
-                        <localcontrols:BeaufortControl x:Name="BeaufControl"
-                                                       x:Load="{x:Bind WeatherView.Beaufort, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
-                                                       Visibility="{x:Bind WeatherView.Beaufort, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
-                                                       DataContext="{x:Bind WeatherView.Beaufort, Mode=OneWay}" Margin="10,5"
-                                                       MinWidth="340" Grid.ColumnSpan="1" />
-                        <localcontrols:MoonPhaseControl x:Name="MoonControl"
-                                                        x:Load="{x:Bind WeatherView.MoonPhase, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
-                                                        Visibility="{x:Bind WeatherView.MoonPhase, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
-                                                        DataContext="{x:Bind WeatherView.MoonPhase, Mode=OneWay}" Margin="10,5"
-                                                        MinWidth="450" Grid.ColumnSpan="2" />
-                    </toolkitControls:UniformGrid>
                 </StackPanel>
                 <StackPanel x:Name="SunPhaseContainer" Margin="0,0,0,25"
                             x:Load="{x:Bind WeatherView.Sunrise, Converter={StaticResource stringBooleanConverter}, Mode=OneWay}"

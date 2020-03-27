@@ -1390,6 +1390,7 @@ namespace SimpleWeather.WeatherData
         public float high_c { get; set; }
         public float low_f { get; set; }
         public float low_c { get; set; }
+        public AirQuality airQuality { get; set; }
 
         internal Condition()
         {
@@ -1413,7 +1414,8 @@ namespace SimpleWeather.WeatherData
                    high_f == condition.high_f &&
                    high_c == condition.high_c &&
                    low_f == condition.low_f &&
-                   low_c == condition.low_c;
+                   low_c == condition.low_c &&
+                   Object.Equals(airQuality, condition.airQuality);
         }
 
         public override int GetHashCode()
@@ -1434,6 +1436,7 @@ namespace SimpleWeather.WeatherData
             hash.Add(high_c);
             hash.Add(low_f);
             hash.Add(low_c);
+            hash.Add(airQuality);
             return hash.ToHashCode();
         }
 
@@ -1526,6 +1529,11 @@ namespace SimpleWeather.WeatherData
 
                     case nameof(low_c):
                         this.low_c = reader.ReadSingle();
+                        break;
+
+                    case nameof(airQuality):
+                        this.airQuality = new AirQuality();
+                        this.airQuality.FromJson(ref reader);
                         break;
 
                     default:
@@ -1634,6 +1642,15 @@ namespace SimpleWeather.WeatherData
             // "low_c" : ""
             writer.WritePropertyName(nameof(low_c));
             writer.WriteSingle(low_c);
+
+            // "airQuality" : ""
+            if (airQuality != null)
+            {
+                writer.WriteValueSeparator();
+
+                writer.WritePropertyName(nameof(airQuality));
+                writer.WriteString(airQuality?.ToJson());
+            }
 
             // }
             writer.WriteEndObject();
@@ -2355,6 +2372,84 @@ namespace SimpleWeather.WeatherData
             // "desc" : ""
             writer.WritePropertyName(nameof(desc));
             writer.WriteString(desc);
+
+            // }
+            writer.WriteEndObject();
+
+            return writer.ToString();
+        }
+    }
+
+    [JsonFormatter(typeof(CustomJsonConverter<AirQuality>))]
+    public partial class AirQuality : CustomJsonObject
+    {
+        public int index { get; set; }
+
+        internal AirQuality()
+        {
+            // Needed for deserialization
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is AirQuality aqi &&
+                   index == aqi.index;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(index);
+        }
+
+        public override void FromJson(ref JsonReader extReader)
+        {
+            JsonReader reader;
+            string jsonValue;
+
+            if (extReader.GetCurrentJsonToken() == JsonToken.String)
+                jsonValue = extReader.ReadString();
+            else
+                jsonValue = null;
+
+            if (jsonValue == null)
+                reader = extReader;
+            else
+            {
+#pragma warning disable CA2000 // Dispose objects before losing scope
+                reader = new JsonReader(Encoding.UTF8.GetBytes(jsonValue));
+#pragma warning restore CA2000 // Dispose objects before losing scope
+            }
+
+            var count = 0;
+            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref count))
+            {
+                reader.ReadIsBeginObject(); // StartObject
+
+                string property = reader.ReadPropertyName();
+                //reader.ReadNext(); // prop value
+
+                switch (property)
+                {
+                    case nameof(index):
+                        this.index = reader.ReadInt32();
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        }
+
+        public override string ToJson()
+        {
+            var writer = new JsonWriter();
+
+            // {
+            writer.WriteBeginObject();
+
+            // "index" : ""
+            writer.WritePropertyName(nameof(index));
+            writer.WriteSingle(index);
 
             // }
             writer.WriteEndObject();

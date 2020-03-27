@@ -43,7 +43,7 @@ namespace SimpleWeather.EF.Utf8JsonGen.Resolvers
 
         static GeneratedResolverGetFormatterHelper()
         {
-            lookup = new global::System.Collections.Generic.Dictionary<Type, int>(23)
+            lookup = new global::System.Collections.Generic.Dictionary<Type, int>(24)
             {
                 {typeof(global::System.Collections.Generic.IList<global::SimpleWeather.WeatherData.Forecast>), 0 },
                 {typeof(global::System.Collections.Generic.IList<global::SimpleWeather.WeatherData.HourlyForecast>), 1 },
@@ -58,16 +58,17 @@ namespace SimpleWeather.EF.Utf8JsonGen.Resolvers
                 {typeof(global::SimpleWeather.WeatherData.TextForecast), 10 },
                 {typeof(global::SimpleWeather.WeatherData.Beaufort), 11 },
                 {typeof(global::SimpleWeather.WeatherData.UV), 12 },
-                {typeof(global::SimpleWeather.WeatherData.Condition), 13 },
-                {typeof(global::SimpleWeather.WeatherData.Atmosphere), 14 },
-                {typeof(global::SimpleWeather.WeatherData.MoonPhase), 15 },
-                {typeof(global::SimpleWeather.WeatherData.Astronomy), 16 },
-                {typeof(global::SimpleWeather.WeatherData.Precipitation), 17 },
-                {typeof(global::SimpleWeather.WeatherData.WeatherAlert), 18 },
-                {typeof(global::SimpleWeather.WeatherData.Weather), 19 },
-                {typeof(global::SimpleWeather.WeatherData.Forecasts), 20 },
-                {typeof(global::SimpleWeather.WeatherData.HourlyForecasts), 21 },
-                {typeof(global::SimpleWeather.WeatherData.WeatherAlerts), 22 },
+                {typeof(global::SimpleWeather.WeatherData.AirQuality), 13 },
+                {typeof(global::SimpleWeather.WeatherData.Condition), 14 },
+                {typeof(global::SimpleWeather.WeatherData.Atmosphere), 15 },
+                {typeof(global::SimpleWeather.WeatherData.MoonPhase), 16 },
+                {typeof(global::SimpleWeather.WeatherData.Astronomy), 17 },
+                {typeof(global::SimpleWeather.WeatherData.Precipitation), 18 },
+                {typeof(global::SimpleWeather.WeatherData.WeatherAlert), 19 },
+                {typeof(global::SimpleWeather.WeatherData.Weather), 20 },
+                {typeof(global::SimpleWeather.WeatherData.Forecasts), 21 },
+                {typeof(global::SimpleWeather.WeatherData.HourlyForecasts), 22 },
+                {typeof(global::SimpleWeather.WeatherData.WeatherAlerts), 23 },
             };
         }
 
@@ -91,16 +92,17 @@ namespace SimpleWeather.EF.Utf8JsonGen.Resolvers
                 case 10: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.TextForecastFormatter();
                 case 11: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.BeaufortFormatter();
                 case 12: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.UVFormatter();
-                case 13: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.ConditionFormatter();
-                case 14: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.AtmosphereFormatter();
-                case 15: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.MoonPhaseFormatter();
-                case 16: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.AstronomyFormatter();
-                case 17: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.PrecipitationFormatter();
-                case 18: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.WeatherAlertFormatter();
-                case 19: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.WeatherFormatter();
-                case 20: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.ForecastsFormatter();
-                case 21: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.HourlyForecastsFormatter();
-                case 22: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.WeatherAlertsFormatter();
+                case 13: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.AirQualityFormatter();
+                case 14: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.ConditionFormatter();
+                case 15: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.AtmosphereFormatter();
+                case 16: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.MoonPhaseFormatter();
+                case 17: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.AstronomyFormatter();
+                case 18: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.PrecipitationFormatter();
+                case 19: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.WeatherAlertFormatter();
+                case 20: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.WeatherFormatter();
+                case 21: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.ForecastsFormatter();
+                case 22: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.HourlyForecastsFormatter();
+                case 23: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.WeatherAlertsFormatter();
                 default: return null;
             }
         }
@@ -177,7 +179,7 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.Location
             writer.WriteRaw(this.____stringByteKeys[4]);
             writer.WriteString(value.tz_long);
             writer.WriteRaw(this.____stringByteKeys[5]);
-            writer.WriteInt32((int)value.locationType);
+            formatterResolver.GetFormatterWithVerify<global::SimpleWeather.Location.LocationType>().Serialize(ref writer, value.locationType, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[6]);
             writer.WriteString(value.weatherSource);
             writer.WriteRaw(this.____stringByteKeys[7]);
@@ -246,7 +248,7 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.Location
                         __tz_long__b__ = true;
                         break;
                     case 5:
-                        __locationType__ = (global::SimpleWeather.Location.LocationType)reader.ReadInt32();
+                        __locationType__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.Location.LocationType>().Deserialize(ref reader, formatterResolver);
                         __locationType__b__ = true;
                         break;
                     case 6:
@@ -1283,7 +1285,7 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             
 
             writer.WriteRaw(this.____stringByteKeys[0]);
-            writer.WriteInt32((int)value.scale);
+            formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherData.Beaufort.BeaufortScale>().Serialize(ref writer, value.scale, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[1]);
             writer.WriteString(value.desc);
             
@@ -1318,7 +1320,7 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
                 switch (key)
                 {
                     case 0:
-                        __scale__ = (global::SimpleWeather.WeatherData.Beaufort.BeaufortScale)reader.ReadInt32();
+                        __scale__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherData.Beaufort.BeaufortScale>().Deserialize(ref reader, formatterResolver);
                         __scale__b__ = true;
                         break;
                     case 1:
@@ -1434,6 +1436,86 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
     }
 
 
+    public sealed class AirQualityFormatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.WeatherData.AirQuality>
+    {
+        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
+        readonly byte[][] ____stringByteKeys;
+
+        public AirQualityFormatter()
+        {
+            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
+            {
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("index"), 0},
+            };
+
+            this.____stringByteKeys = new byte[][]
+            {
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("index"),
+                
+            };
+        }
+
+        public void Serialize(ref JsonWriter writer, global::SimpleWeather.WeatherData.AirQuality value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
+            
+
+            writer.WriteRaw(this.____stringByteKeys[0]);
+            writer.WriteInt32(value.index);
+            
+            writer.WriteEndObject();
+        }
+
+        public global::SimpleWeather.WeatherData.AirQuality Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (reader.ReadIsNull())
+            {
+                return null;
+            }
+            
+
+            var __index__ = default(int);
+            var __index__b__ = false;
+
+            var ____count = 0;
+            reader.ReadIsBeginObjectWithVerify();
+            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
+            {
+                var stringKey = reader.ReadPropertyNameSegmentRaw();
+                int key;
+                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
+                {
+                    reader.ReadNextBlock();
+                    goto NEXT_LOOP;
+                }
+
+                switch (key)
+                {
+                    case 0:
+                        __index__ = reader.ReadInt32();
+                        __index__b__ = true;
+                        break;
+                    default:
+                        reader.ReadNextBlock();
+                        break;
+                }
+
+                NEXT_LOOP:
+                continue;
+            }
+
+            var ____result = new global::SimpleWeather.WeatherData.AirQuality();
+            if(__index__b__) ____result.index = __index__;
+
+            return ____result;
+        }
+    }
+
+
     public sealed class ConditionFormatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.WeatherData.Condition>
     {
         readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
@@ -1458,6 +1540,7 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("high_c"), 12},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("low_f"), 13},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("low_c"), 14},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("airQuality"), 15},
             };
 
             this.____stringByteKeys = new byte[][]
@@ -1477,6 +1560,7 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("high_c"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("low_f"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("low_c"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("airQuality"),
                 
             };
         }
@@ -1520,6 +1604,8 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             writer.WriteSingle(value.low_f);
             writer.WriteRaw(this.____stringByteKeys[14]);
             writer.WriteSingle(value.low_c);
+            writer.WriteRaw(this.____stringByteKeys[15]);
+            formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherData.AirQuality>().Serialize(ref writer, value.airQuality, formatterResolver);
             
             writer.WriteEndObject();
         }
@@ -1562,6 +1648,8 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             var __low_f__b__ = false;
             var __low_c__ = default(float);
             var __low_c__b__ = false;
+            var __airQuality__ = default(global::SimpleWeather.WeatherData.AirQuality);
+            var __airQuality__b__ = false;
 
             var ____count = 0;
             reader.ReadIsBeginObjectWithVerify();
@@ -1637,6 +1725,10 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
                         __low_c__ = reader.ReadSingle();
                         __low_c__b__ = true;
                         break;
+                    case 15:
+                        __airQuality__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherData.AirQuality>().Deserialize(ref reader, formatterResolver);
+                        __airQuality__b__ = true;
+                        break;
                     default:
                         reader.ReadNextBlock();
                         break;
@@ -1662,6 +1754,7 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             if(__high_c__b__) ____result.high_c = __high_c__;
             if(__low_f__b__) ____result.low_f = __low_f__;
             if(__low_c__b__) ____result.low_c = __low_c__;
+            if(__airQuality__b__) ____result.airQuality = __airQuality__;
 
             return ____result;
         }
@@ -1856,7 +1949,7 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             
 
             writer.WriteRaw(this.____stringByteKeys[0]);
-            writer.WriteInt32((int)value.phase);
+            formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherData.MoonPhase.MoonPhaseType>().Serialize(ref writer, value.phase, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[1]);
             writer.WriteString(value.desc);
             
@@ -1891,7 +1984,7 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
                 switch (key)
                 {
                     case 0:
-                        __phase__ = (global::SimpleWeather.WeatherData.MoonPhase.MoonPhaseType)reader.ReadInt32();
+                        __phase__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherData.MoonPhase.MoonPhaseType>().Deserialize(ref reader, formatterResolver);
                         __phase__b__ = true;
                         break;
                     case 1:
@@ -2207,9 +2300,9 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             
 
             writer.WriteRaw(this.____stringByteKeys[0]);
-            writer.WriteInt32((int)value.Type);
+            formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherData.WeatherAlertType>().Serialize(ref writer, value.Type, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[1]);
-            writer.WriteInt32((int)value.Severity);
+            formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherData.WeatherAlertSeverity>().Serialize(ref writer, value.Severity, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[2]);
             writer.WriteString(value.Title);
             writer.WriteRaw(this.____stringByteKeys[3]);
@@ -2266,11 +2359,11 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
                 switch (key)
                 {
                     case 0:
-                        __Type__ = (global::SimpleWeather.WeatherData.WeatherAlertType)reader.ReadInt32();
+                        __Type__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherData.WeatherAlertType>().Deserialize(ref reader, formatterResolver);
                         __Type__b__ = true;
                         break;
                     case 1:
-                        __Severity__ = (global::SimpleWeather.WeatherData.WeatherAlertSeverity)reader.ReadInt32();
+                        __Severity__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherData.WeatherAlertSeverity>().Deserialize(ref reader, formatterResolver);
                         __Severity__b__ = true;
                         break;
                     case 2:

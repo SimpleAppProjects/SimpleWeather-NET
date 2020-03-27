@@ -18,30 +18,19 @@ using Windows.UI.Xaml.Navigation;
 
 namespace SimpleWeather.UWP.Controls
 {
-    public sealed partial class ForecastItem : UserControl
+    public sealed partial class AQIControl : UserControl
     {
-        public ForecastItemViewModel Forecasts
+        public AirQualityViewModel ViewModel
         {
-            get { return (this.DataContext as ForecastItemViewModel); }
+            get { return (this.DataContext as AirQualityViewModel); }
         }
 
-        public ForecastItem()
+        public AQIControl()
         {
             this.InitializeComponent();
             this.DataContextChanged += (sender, args) =>
             {
                 this.Bindings.Update();
-
-                if (Utils.Settings.API.Equals(WeatherData.WeatherAPI.OpenWeatherMap) ||
-                    Utils.Settings.API.Equals(WeatherData.WeatherAPI.MetNo))
-                {
-                    // Use cloudiness
-                    PoPIcon.Text = "\uf013";
-                }
-                else
-                {
-                    PoPIcon.Text = "\uf078";
-                }
             };
         }
     }

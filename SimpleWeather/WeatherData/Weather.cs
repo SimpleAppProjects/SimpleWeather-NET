@@ -1537,4 +1537,12 @@ namespace SimpleWeather.WeatherData
                 this.desc = description;
         }
     }
+
+    public partial class AirQuality
+    {
+        public AirQuality(AQICN.Rootobject root)
+        {
+            this.index = root.data.aqi;
+        }
+    }
 }
