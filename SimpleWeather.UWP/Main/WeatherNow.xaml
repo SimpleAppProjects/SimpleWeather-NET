@@ -287,7 +287,7 @@
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
                             </ItemsControl>
-                            <VariableSizedWrapGrid x:Name="DetailsGrid" Orientation="Horizontal">
+                            <localcontrols:ExtendingWrapPanel x:Name="DetailsGrid" Orientation="Horizontal" MinItemWidth="340">
                                 <localcontrols:UVControl x:Name="UVContrl"
                                                          x:Load="{x:Bind WeatherView.UVIndex, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
                                                          Visibility="{x:Bind WeatherView.UVIndex, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
@@ -304,7 +304,7 @@
                                                                 x:Load="{x:Bind WeatherView.MoonPhase, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
                                                                 Visibility="{x:Bind WeatherView.MoonPhase, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
                                                                 DataContext="{x:Bind WeatherView.MoonPhase, Mode=OneWay}" Margin="10,5" />
-                            </VariableSizedWrapGrid>
+                            </localcontrols:ExtendingWrapPanel>
                         </StackPanel>
                     </toolkitControls:HeaderedContentControl>
                 </StackPanel>

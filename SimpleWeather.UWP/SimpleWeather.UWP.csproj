@@ -267,6 +267,7 @@
     <Compile Include="Controls\DetailItem.xaml.cs">
       <DependentUpon>DetailItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ExtendingWrapPanel.cs" />
     <Compile Include="Controls\ForecastGraphPanel.xaml.cs">
       <DependentUpon>ForecastGraphPanel.xaml</DependentUpon>
     </Compile>
