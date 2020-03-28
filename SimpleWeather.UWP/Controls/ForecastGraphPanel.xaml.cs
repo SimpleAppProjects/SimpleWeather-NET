@@ -214,6 +214,7 @@ namespace SimpleWeather.UWP.Controls
                                 GraphView.DrawSeriesLabels = true;
                             }
 
+                            int itemCount = 0;
                             foreach (BaseForecastItemViewModel forecastItemViewModel in _forecasts)
                             {
                                 try
@@ -236,6 +237,9 @@ namespace SimpleWeather.UWP.Controls
                                 {
                                     Logger.WriteLine(LoggerLevel.Debug, ex, "WeatherNow: error!!");
                                 }
+
+                                itemCount++;
+                                if (itemCount >= MAX_FETCH_SIZE) break;
                             }
 
                             tempDataSeries.Add(new LineDataSeries("High", hiTempSeries));
@@ -268,6 +272,7 @@ namespace SimpleWeather.UWP.Controls
                             List<LineDataSeries> windDataList = new List<LineDataSeries>();
                             List<YEntryData> windDataSeries = new List<YEntryData>();
 
+                            int itemCount = 0;
                             foreach (BaseForecastItemViewModel forecastItemViewModel in _forecasts)
                             {
                                 try
@@ -283,6 +288,9 @@ namespace SimpleWeather.UWP.Controls
                                 {
                                     Logger.WriteLine(LoggerLevel.Debug, ex, "WeatherNow: error!!");
                                 }
+
+                                itemCount++;
+                                if (itemCount >= MAX_FETCH_SIZE) break;
                             }
 
                             windDataList.Add(new LineDataSeries(windDataSeries));
@@ -311,6 +319,7 @@ namespace SimpleWeather.UWP.Controls
                             List<LineDataSeries> popDataList = new List<LineDataSeries>();
                             List<YEntryData> popDataSeries = new List<YEntryData>();
 
+                            int itemCount = 0;
                             foreach (BaseForecastItemViewModel forecastItemViewModel in _forecasts)
                             {
                                 try
@@ -326,6 +335,9 @@ namespace SimpleWeather.UWP.Controls
                                 {
                                     Logger.WriteLine(LoggerLevel.Debug, ex, "WeatherNow: error!!");
                                 }
+
+                                itemCount++;
+                                if (itemCount >= MAX_FETCH_SIZE) break;
                             }
 
                             popDataList.Add(new LineDataSeries(popDataSeries));
