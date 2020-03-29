@@ -150,6 +150,34 @@
     </UserControl.Resources>
 
     <StackPanel Orientation="Vertical">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="WidthStates">
+                <VisualState x:Name="Large">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="1007"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="Label.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Medium">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="641"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="Label.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Mobile">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="Label.Visibility" Value="Collapsed"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20">
             <ToggleButton x:Name="TempToggleButton" Margin="5,0" Padding="4" Checked="ToggleButton_Checked" Tag="Temp" IsChecked="True"
                           Style="{ThemeResource ToggleButtonNoDisableRevealStyle}">
@@ -170,7 +198,7 @@
                                   FontFamily="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons"
                                   Foreground="White" />
                         <TextBlock x:Uid="Label_Wind" Text="Wind" FontSize="14" VerticalAlignment="Center" Margin="4,0,0,0"
-                                   TextLineBounds="Tight" Visibility="{Binding Label.Visibility, Mode=OneWay}"
+                                   TextLineBounds="Tight" Visibility="{Binding ElementName=Label, Path=Visibility, Mode=OneWay}"
                                    Foreground="White" />
                     </StackPanel>
                 </ToggleButton.Content>
@@ -183,7 +211,7 @@
                                   FontFamily="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons"
                                   Foreground="White" />
                         <TextBlock x:Uid="Label_Precipitation" Text="Precipitation" FontSize="14" VerticalAlignment="Center" Margin="4,0,0,0"
-                                   TextLineBounds="Tight" Visibility="{Binding Label.Visibility, Mode=OneWay}"
+                                   TextLineBounds="Tight" Visibility="{Binding ElementName=Label, Path=Visibility, Mode=OneWay}"
                                    Foreground="White" />
                     </StackPanel>
                 </ToggleButton.Content>
@@ -194,24 +222,4 @@
                         DrawIconLabels="True" DrawGraphBackground="True" DrawDotPoints="True"
                         Loaded="GraphLineView_Loaded" />
     </StackPanel>
-    <VisualStateManager.VisualStateGroups>
-        <VisualStateGroup x:Name="WidthStates">
-            <VisualState x:Name="Mobile">
-                <VisualState.StateTriggers>
-                    <AdaptiveTrigger MinWindowWidth="0"/>
-                </VisualState.StateTriggers>
-                <VisualState.Setters>
-                    <Setter Target="Label.Visibility" Value="Collapsed"/>
-                </VisualState.Setters>
-            </VisualState>
-            <VisualState x:Name="Large">
-                <VisualState.StateTriggers>
-                    <AdaptiveTrigger MinWindowWidth="1007"/>
-                </VisualState.StateTriggers>
-                <VisualState.Setters>
-                    <Setter Target="Label.Visibility" Value="Visible"/>
-                </VisualState.Setters>
-            </VisualState>
-        </VisualStateGroup>
-    </VisualStateManager.VisualStateGroups>
 </UserControl>
