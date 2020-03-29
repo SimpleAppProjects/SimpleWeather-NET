@@ -558,4 +558,7 @@
   <data name="AQI_Label" xml:space="preserve">
     <value>Air Quality Index</value>
   </data>
+  <data name="Label_Radar.Header" xml:space="preserve">
+    <value>Radar</value>
+  </data>
 </root>

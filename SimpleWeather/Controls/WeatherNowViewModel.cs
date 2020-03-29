@@ -48,6 +48,9 @@ namespace SimpleWeather.Controls
         private Color pendingBackgroundColor = Color.FromArgb(255, 0, 111, 191);
         private ElementTheme backgroundTheme = ElementTheme.Dark;
 
+        // Radar
+        private Uri radarURL;
+
         private String weatherCredit;
         private String weatherSource;
 
@@ -85,6 +88,7 @@ namespace SimpleWeather.Controls
         public ImageDataViewModel ImageData { get => imageData; set { imageData = value; OnPropertyChanged(nameof(ImageData)); } }
         public Color PendingBackgroundColor { get => pendingBackgroundColor; set { pendingBackgroundColor = value; OnPropertyChanged(nameof(PendingBackgroundColor)); } }
         public ElementTheme BackgroundTheme { get => backgroundTheme; set { backgroundTheme = value; OnPropertyChanged(nameof(BackgroundTheme)); } }
+        public Uri RadarURL { get => radarURL; set { radarURL = value; OnPropertyChanged(nameof(RadarURL)); } }
         public string WeatherCredit { get => weatherCredit; set { weatherCredit = value; OnPropertyChanged(nameof(WeatherCredit)); } }
         public string WeatherSource { get => weatherSource; set { weatherSource = value; OnPropertyChanged(nameof(WeatherSource)); } }
         public string WeatherLocale { get => weatherLocale; set { weatherLocale = value; OnPropertyChanged(nameof(WeatherLocale)); } }
@@ -395,6 +399,12 @@ namespace SimpleWeather.Controls
 
                 // Additional Details
                 AirQuality = weather.condition.airQuality != null ? new AirQualityViewModel(weather.condition.airQuality) : null;
+
+                var url = "https://earth.nullschool.net/#current/wind/surface/level/overlay=precip_3hr/orthographic={1},{0},3000";
+                if (!String.IsNullOrWhiteSpace(weather.location.latitude) && !String.IsNullOrWhiteSpace(weather.location.longitude))
+                    RadarURL = new Uri(String.Format(url, weather.location.latitude, weather.location.longitude));
+                else
+                    RadarURL = null;
 
                 // Additional Details
                 WeatherSource = weather?.source;

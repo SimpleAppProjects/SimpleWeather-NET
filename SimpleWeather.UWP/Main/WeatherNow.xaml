@@ -318,6 +318,23 @@
                         <localcontrols:SunPhasePanel x:Name="SunPhasePanel" Height="250" MaxWidth="640" Margin="0,0,0,0" />
                     </toolkitControls:HeaderedContentControl>
                 </StackPanel>
+                <StackPanel x:Name="RadarContainer" Margin="0,0,0,25"
+                            x:Load="{x:Bind WeatherView.RadarURL, Converter={StaticResource stringBooleanConverter}, Mode=OneWay}">
+                    <Border Style="{ThemeResource Divider}" />
+                    <toolkitControls:HeaderedContentControl Style="{ThemeResource SectionLabelStyle}"
+                                                            x:Uid="Label_Radar" Header="Radar"
+                                                            HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                        <Grid>
+                            <Rectangle Height="{Binding ElementName=RadarWebViewContainer, Path=Height}"
+                                       MaxWidth="{Binding ElementName=RadarWebViewContainer, Path=MaxWidth}"
+                                       Fill="Transparent" Tapped="RadarWebView_Tapped" Canvas.ZIndex="1" />
+                            <Border x:Name="RadarWebViewContainer" Loaded="RadarWebView_Loaded" MaxWidth="640" Height="360" />
+                        </Grid>
+                    </toolkitControls:HeaderedContentControl>
+                    <TextBlock Padding="5" Foreground="White" FontSize="12" HorizontalAlignment="Center"><Span>
+                        <Run x:Uid="Credit_Prefix" Text="Data from"/><Run Text=" EarthWindMap Project"/></Span>
+                    </TextBlock>
+                </StackPanel>
                 <Border Style="{ThemeResource Divider}" />
                 <TextBlock Text="{x:Bind WeatherView.WeatherCredit, FallbackValue='Data from Weather Provider', Mode=OneWay}"
                            Padding="10" FontSize="14" HorizontalAlignment="Center" />

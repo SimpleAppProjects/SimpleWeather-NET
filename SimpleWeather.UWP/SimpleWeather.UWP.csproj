@@ -317,6 +317,9 @@
     <Compile Include="Helpers\VisualTreeHelperExtensions.cs" />
     <Compile Include="Main\LocationPanelAdapter.cs" />
     <Compile Include="Main\Args.cs" />
+    <Compile Include="Main\WeatherRadarPage.xaml.cs">
+      <DependentUpon>WeatherRadarPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tiles\SecondaryTileUtils.cs" />
     <Compile Include="Helpers\StringBooleanConverter.cs" />
     <Compile Include="Helpers\IPageVerification.cs" />
@@ -485,6 +488,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Main\LocationsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Main\WeatherRadarPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
