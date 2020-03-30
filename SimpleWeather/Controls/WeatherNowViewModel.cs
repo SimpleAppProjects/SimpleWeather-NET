@@ -67,31 +67,31 @@ namespace SimpleWeather.Controls
 
         #region Properties
 
-        public string Location { get => location; set { location = value; OnPropertyChanged(nameof(Location)); } }
-        public string UpdateDate { get => updateDate; set { updateDate = value; OnPropertyChanged(nameof(UpdateDate)); } }
-        public string CurTemp { get => curTemp; set { curTemp = value; OnPropertyChanged(nameof(CurTemp)); } }
-        public string CurCondition { get => curCondition; set { curCondition = value; OnPropertyChanged(nameof(CurCondition)); } }
-        public string WeatherIcon { get => weatherIcon; set { weatherIcon = value; OnPropertyChanged(nameof(WeatherIcon)); } }
-        public string HiTemp { get => hiTemp; set { hiTemp = value; OnPropertyChanged(nameof(HiTemp)); } }
-        public string LoTemp { get => loTemp; set { loTemp = value; OnPropertyChanged(nameof(LoTemp)); } }
-        public string Sunrise { get => sunrise; set { sunrise = value; OnPropertyChanged(nameof(Sunrise)); } }
-        public string Sunset { get => sunset; set { sunset = value; OnPropertyChanged(nameof(Sunset)); } }
-        public ObservableForecastLoadingCollection<ForecastItemViewModel> Forecasts { get => forecasts; set { forecasts = value; OnPropertyChanged(nameof(Forecasts)); } }
-        public ObservableForecastLoadingCollection<HourlyForecastItemViewModel> HourlyForecasts { get => hourlyForecasts; set { hourlyForecasts = value; OnPropertyChanged(nameof(HourlyForecasts)); } }
+        public string Location { get => location; private set { if (!Equals(location, value)) { location = value; OnPropertyChanged(nameof(Location)); } } }
+        public string UpdateDate { get => updateDate; private set { if (!Equals(updateDate, value)) { updateDate = value; OnPropertyChanged(nameof(UpdateDate)); } } }
+        public string CurTemp { get => curTemp; private set { if (!Equals(curTemp, value)) { curTemp = value; OnPropertyChanged(nameof(CurTemp)); } } }
+        public string CurCondition { get => curCondition; private set { if (!Equals(curCondition, value)) { curCondition = value; OnPropertyChanged(nameof(CurCondition)); } } }
+        public string WeatherIcon { get => weatherIcon; private set { if (!Equals(weatherIcon, value)) { weatherIcon = value; OnPropertyChanged(nameof(WeatherIcon)); } } }
+        public string HiTemp { get => hiTemp; private set { if (!Equals(hiTemp, value)) { hiTemp = value; OnPropertyChanged(nameof(HiTemp)); } } }
+        public string LoTemp { get => loTemp; private set { if (!Equals(loTemp, value)) { loTemp = value; OnPropertyChanged(nameof(LoTemp)); } } }
+        public string Sunrise { get => sunrise; private set { if (!Equals(sunrise, value)) { sunrise = value; OnPropertyChanged(nameof(Sunrise)); } } }
+        public string Sunset { get => sunset; private set { if (!Equals(sunset, value)) { sunset = value; OnPropertyChanged(nameof(Sunset)); } } }
+        public ObservableForecastLoadingCollection<ForecastItemViewModel> Forecasts { get => forecasts; private set { forecasts = value; OnPropertyChanged(nameof(Forecasts)); } }
+        public ObservableForecastLoadingCollection<HourlyForecastItemViewModel> HourlyForecasts { get => hourlyForecasts; private set { hourlyForecasts = value; OnPropertyChanged(nameof(HourlyForecasts)); } }
         public ObservableCollection<WeatherAlertViewModel> Alerts { get => alerts; private set { alerts = value; OnPropertyChanged(nameof(Alerts)); } }
         public ObservableCollection<DetailItemViewModel> WeatherDetails { get => weatherDetails; private set { weatherDetails = value; OnPropertyChanged(nameof(WeatherDetails)); } }
-        public UVIndexViewModel UVIndex { get => uvIndex; private set { uvIndex = value; OnPropertyChanged(nameof(UVIndex)); } }
-        public BeaufortViewModel Beaufort { get => beaufort; private set { beaufort = value; OnPropertyChanged(nameof(Beaufort)); } }
-        public MoonPhaseViewModel MoonPhase { get => moonPhase; private set { moonPhase = value; OnPropertyChanged(nameof(MoonPhase)); } }
-        public AirQualityViewModel AirQuality { get => airQuality; private set { airQuality = value; OnPropertyChanged(nameof(AirQuality)); } }
-        public string BackgroundURI { get => backgroundURI; set { backgroundURI = value; OnPropertyChanged(nameof(BackgroundURI)); } }
-        public ImageDataViewModel ImageData { get => imageData; set { imageData = value; OnPropertyChanged(nameof(ImageData)); } }
-        public Color PendingBackgroundColor { get => pendingBackgroundColor; set { pendingBackgroundColor = value; OnPropertyChanged(nameof(PendingBackgroundColor)); } }
-        public ElementTheme BackgroundTheme { get => backgroundTheme; set { backgroundTheme = value; OnPropertyChanged(nameof(BackgroundTheme)); } }
-        public Uri RadarURL { get => radarURL; set { radarURL = value; OnPropertyChanged(nameof(RadarURL)); } }
-        public string WeatherCredit { get => weatherCredit; set { weatherCredit = value; OnPropertyChanged(nameof(WeatherCredit)); } }
-        public string WeatherSource { get => weatherSource; set { weatherSource = value; OnPropertyChanged(nameof(WeatherSource)); } }
-        public string WeatherLocale { get => weatherLocale; set { weatherLocale = value; OnPropertyChanged(nameof(WeatherLocale)); } }
+        public UVIndexViewModel UVIndex { get => uvIndex; private set { if (!Equals(uvIndex, value)) { uvIndex = value; OnPropertyChanged(nameof(UVIndex)); } } }
+        public BeaufortViewModel Beaufort { get => beaufort; private set { if (!Equals(beaufort, value)) { beaufort = value; OnPropertyChanged(nameof(Beaufort)); } } }
+        public MoonPhaseViewModel MoonPhase { get => moonPhase; private set { if (!Equals(moonPhase, value)) { moonPhase = value; OnPropertyChanged(nameof(MoonPhase)); } } }
+        public AirQualityViewModel AirQuality { get => airQuality; private set { if (!Equals(airQuality, value)) { airQuality = value; OnPropertyChanged(nameof(AirQuality)); } } }
+        public string BackgroundURI { get => backgroundURI; private set { if (!Equals(backgroundURI, value)) { backgroundURI = value; OnPropertyChanged(nameof(BackgroundURI)); } } }
+        public ImageDataViewModel ImageData { get => imageData; private set { if (!Equals(imageData, value)) { imageData = value; OnPropertyChanged(nameof(ImageData)); } } }
+        public Color PendingBackgroundColor { get => pendingBackgroundColor; private set { if (!Equals(pendingBackgroundColor, value)) { pendingBackgroundColor = value; OnPropertyChanged(nameof(PendingBackgroundColor)); } } }
+        public ElementTheme BackgroundTheme { get => backgroundTheme; private set { if (!Equals(backgroundTheme, value)) { backgroundTheme = value; OnPropertyChanged(nameof(BackgroundTheme)); } } }
+        public Uri RadarURL { get => radarURL; private set { if (!Equals(radarURL, value)) { radarURL = value; OnPropertyChanged(nameof(RadarURL)); } } }
+        public string WeatherCredit { get => weatherCredit; private set { if (!Equals(weatherCredit, value)) { weatherCredit = value; OnPropertyChanged(nameof(WeatherCredit)); } } }
+        public string WeatherSource { get => weatherSource; private set { if (!Equals(weatherSource, value)) { weatherSource = value; OnPropertyChanged(nameof(WeatherSource)); } } }
+        public string WeatherLocale { get => weatherLocale; private set { if (!Equals(weatherLocale, value)) { weatherLocale = value; OnPropertyChanged(nameof(WeatherLocale)); } } }
 
         #endregion Properties
 
