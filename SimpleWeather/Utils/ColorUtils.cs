@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Threading;
 using Windows.UI;
 using Windows.UI.ViewManagement;
@@ -9,6 +10,36 @@ namespace SimpleWeather.Utils
     {
         private const float MIN_CONTRAST_RATIO = 2f;
         private static ThreadLocal<double[]> TEMP_ARRAY = new ThreadLocal<double[]>();
+
+        public static Color ParseColor(String colorString)
+        {
+            if (colorString[0] == '#')
+            {
+                // Use a long to avoid rollovers on #ffXXXXXX
+                long color = long.Parse(colorString.Substring(1), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+                if (colorString.Length == 7)
+                {
+                    // Set the alpha value
+                    color |= 0x00000000ff000000;
+                }
+                else if (colorString.Length != 9)
+                {
+                    throw new ArgumentException("Unknown color");
+                }
+                return ValueOf(color);
+            }
+            throw new ArgumentException("Unknown color");
+        }
+
+        public static Color ValueOf(long color)
+        {
+            byte r = (byte)(((color >> 16) & 0xff) / 0xff);
+            byte g = (byte)(((color >>  8) & 0xff) / 0xff);
+            byte b = (byte)(((color      ) & 0xff) / 0xff);
+            byte a = (byte)(((color >> 24) & 0xff) / 0xff);
+
+            return Color.FromArgb(a, r, g, b);
+        }
 
         public static Color GetAccentColor()
         {
