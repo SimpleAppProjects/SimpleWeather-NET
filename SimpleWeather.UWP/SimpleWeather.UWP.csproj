@@ -640,7 +640,7 @@
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>"$(SolutionDir)KeyCheck.exe" "$(SolutionDir)SimpleWeather\Keys\AppCenterKey.cs" "$(SolutionDir)SimpleWeather\Keys\BingMapsKey.cs" "$(SolutionDir)SimpleWeather\Keys\HEREWeatherKey.cs" "$(SolutionDir)SimpleWeather\Keys\YahooKey.cs"
+    <PreBuildEvent>"$(SolutionDir)KeyCheck.exe" "$(SolutionDir)SimpleWeather\Keys\AppCenterKey.cs" "$(SolutionDir)SimpleWeather\Keys\BingMapsKey.cs" "$(SolutionDir)SimpleWeather\Keys\HEREWeatherKey.cs" "$(SolutionDir)SimpleWeather\Keys\YahooKey.cs" "$(SolutionDir)SimpleWeather\Keys\AQICNKey.cs" "$(SolutionDir)SimpleWeather\Keys\FirebaseConfig.cs"
 
 if errorlevel 1 goto Error
 
