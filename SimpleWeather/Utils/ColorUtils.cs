@@ -6,6 +6,7 @@ using Windows.UI.ViewManagement;
 
 namespace SimpleWeather.Utils
 {
+    /* Collection of color related methods ported from Android */
     public static class ColorUtils
     {
         private const float MIN_CONTRAST_RATIO = 2f;
@@ -33,10 +34,10 @@ namespace SimpleWeather.Utils
 
         public static Color ValueOf(long color)
         {
-            byte r = (byte)(((color >> 16) & 0xff) / 0xff);
-            byte g = (byte)(((color >>  8) & 0xff) / 0xff);
-            byte b = (byte)(((color      ) & 0xff) / 0xff);
-            byte a = (byte)(((color >> 24) & 0xff) / 0xff);
+            byte r = (byte)((color >> 16) & 0xff);
+            byte g = (byte)((color >>  8) & 0xff);
+            byte b = (byte)((color      ) & 0xff);
+            byte a = (byte)((color >> 24) & 0xff);
 
             return Color.FromArgb(a, r, g, b);
         }
