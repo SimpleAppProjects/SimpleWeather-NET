@@ -1,14 +1,20 @@
-﻿using System;
+﻿using SimpleWeather.Controls;
+using SimpleWeather.WeatherData;
+using SimpleWeather.WeatherData.Images;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace SimpleWeather.WeatherData
+namespace SimpleWeather.Utils
 {
-    public abstract partial class WeatherProviderImpl : IWeatherProviderImpl
+    public static partial class WeatherUtils
     {
-        // Utils Methods
-        public virtual string GetBackgroundURI(Weather weather)
+        public async static Task<ImageDataViewModel> GetImageData(Weather weather)
         {
             String icon = weather.condition.icon;
-            String imgURI = null;
+            String backgroundCode = null;
+            var wm = WeatherManager.GetInstance();
 
             // Apply background based on weather condition
             switch (icon)
@@ -20,7 +26,7 @@ namespace SimpleWeather.WeatherData
                 case WeatherIcons.DAY_SHOWERS:
                 case WeatherIcons.DAY_SLEET:
                 case WeatherIcons.DAY_SPRINKLE:
-                    imgURI = ("ms-appx:///Assets/Backgrounds/RainyDay.jpg");
+                    backgroundCode = WeatherBackground.RAIN;
                     break;
 
                 case WeatherIcons.NIGHT_ALT_HAIL:
@@ -36,19 +42,19 @@ namespace SimpleWeather.WeatherData
                 case WeatherIcons.SHOWERS:
                 case WeatherIcons.SLEET:
                 case WeatherIcons.SPRINKLE:
-                    imgURI = ("ms-appx:///Assets/Backgrounds/RainyNight.jpg");
+                    backgroundCode = WeatherBackground.RAIN_NIGHT;
                     break;
                 // Tornado / Hurricane / Thunderstorm / Tropical Storm
                 case WeatherIcons.DAY_LIGHTNING:
                 case WeatherIcons.DAY_THUNDERSTORM:
-                    imgURI = ("ms-appx:///Assets/Backgrounds/Thunderstorm-Day.jpg");
+                    backgroundCode = WeatherBackground.TSTORMS_DAY;
                     break;
 
                 case WeatherIcons.NIGHT_ALT_LIGHTNING:
                 case WeatherIcons.NIGHT_ALT_THUNDERSTORM:
                 case WeatherIcons.LIGHTNING:
                 case WeatherIcons.THUNDERSTORM:
-                    imgURI = ("ms-appx:///Assets/Backgrounds/Thunderstorm-Night.jpg");
+                    backgroundCode = WeatherBackground.TSTORMS_NIGHT;
                     break;
 
                 case WeatherIcons.DAY_STORM_SHOWERS:
@@ -59,12 +65,12 @@ namespace SimpleWeather.WeatherData
                 case WeatherIcons.HAIL:
                 case WeatherIcons.HURRICANE:
                 case WeatherIcons.TORNADO:
-                    imgURI = ("ms-appx:///Assets/Backgrounds/StormySky.jpg");
+                    backgroundCode = WeatherBackground.STORMS;
                     break;
                 // Dust
                 case WeatherIcons.DUST:
                 case WeatherIcons.SANDSTORM:
-                    imgURI = ("ms-appx:///Assets/Backgrounds/Dust.jpg");
+                    backgroundCode = WeatherBackground.DUST;
                     break;
                 // Foggy / Haze
                 case WeatherIcons.DAY_FOG:
@@ -73,7 +79,7 @@ namespace SimpleWeather.WeatherData
                 case WeatherIcons.NIGHT_FOG:
                 case WeatherIcons.SMOG:
                 case WeatherIcons.SMOKE:
-                    imgURI = ("ms-appx:///Assets/Backgrounds/FoggySky.jpg");
+                    backgroundCode = WeatherBackground.FOG;
                     break;
                 // Snow / Snow Showers/Storm
                 case WeatherIcons.DAY_SNOW:
@@ -81,13 +87,13 @@ namespace SimpleWeather.WeatherData
                 case WeatherIcons.NIGHT_ALT_SNOW:
                 case WeatherIcons.NIGHT_ALT_SNOW_THUNDERSTORM:
                 case WeatherIcons.SNOW:
-                    imgURI = ("ms-appx:///Assets/Backgrounds/Snow.jpg");
+                    backgroundCode = WeatherBackground.SNOW;
                     break;
 
                 case WeatherIcons.SNOW_WIND:
                 case WeatherIcons.DAY_SNOW_WIND:
                 case WeatherIcons.NIGHT_ALT_SNOW_WIND:
-                    imgURI = ("ms-appx:///Assets/Backgrounds/Snow-Windy.jpg");
+                    backgroundCode = WeatherBackground.SNOW_WINDY;
                     break;
                 /* Ambigious weather conditions */
                 // (Mostly) Cloudy
@@ -103,18 +109,18 @@ namespace SimpleWeather.WeatherData
                 case WeatherIcons.NIGHT_ALT_CLOUDY_GUSTS:
                 case WeatherIcons.NIGHT_ALT_CLOUDY_HIGH:
                 case WeatherIcons.NIGHT_ALT_CLOUDY_WINDY:
-                    if (IsNight(weather))
-                        imgURI = ("ms-appx:///Assets/Backgrounds/MostlyCloudy-Night.jpg");
+                    if (wm.IsNight(weather))
+                        backgroundCode = WeatherBackground.MOSTLYCLOUDY_NIGHT;
                     else
-                        imgURI = ("ms-appx:///Assets/Backgrounds/MostlyCloudy-Day.jpg");
+                        backgroundCode = WeatherBackground.MOSTLYCLOUDY_DAY;
                     break;
                 // Partly Cloudy
                 case WeatherIcons.DAY_SUNNY_OVERCAST:
                 case WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY:
-                    if (IsNight(weather))
-                        imgURI = ("ms-appx:///Assets/Backgrounds/PartlyCloudy-Night.jpg");
+                    if (wm.IsNight(weather))
+                        backgroundCode = WeatherBackground.PARTLYCLOUDY_NIGHT;
                     else
-                        imgURI = ("ms-appx:///Assets/Backgrounds/PartlyCloudy-Day.jpg");
+                        backgroundCode = WeatherBackground.PARTLYCLOUDY_DAY;
                     break;
 
                 case WeatherIcons.DAY_SUNNY:
@@ -126,24 +132,33 @@ namespace SimpleWeather.WeatherData
                 case WeatherIcons.STRONG_WIND:
                 default:
                     // Set background based using sunset/rise times
-                    if (IsNight(weather))
-                        imgURI = ("ms-appx:///Assets/Backgrounds/NightSky.jpg");
+                    if (wm.IsNight(weather))
+                        backgroundCode = WeatherBackground.NIGHT;
                     else
-                        imgURI = ("ms-appx:///Assets/Backgrounds/DaySky.jpg");
+                        backgroundCode = WeatherBackground.DAY;
                     break;
             }
 
-            // Just in case
-            if (String.IsNullOrWhiteSpace(imgURI))
+            // Check cache for image data
+            var imageHelper = ImageDataHelper.ImageDataHelperImpl;
+            var imageData = await imageHelper.GetCachedImageData(backgroundCode);
+            // Check if cache is available and valid
+            if (imageData?.IsValid() == true)
+                return new ImageDataViewModel(imageData);
+            else
             {
-                // Set background based using sunset/rise times
-                if (IsNight(weather))
-                    imgURI = ("ms-appx:///Assets/Backgrounds/NightSky.jpg");
+                imageData = await imageHelper.GetRemoteImageData(backgroundCode);
+                if (imageData?.IsValid() == true)
+                    return new ImageDataViewModel(imageData);
                 else
-                    imgURI = ("ms-appx:///Assets/Backgrounds/DaySky.jpg");
+                {
+                    imageData = imageHelper.GetDefaultImageData(backgroundCode, weather);
+                    if (imageData?.IsValid() == true)
+                        return new ImageDataViewModel(imageData);
+                }
             }
 
-            return imgURI;
+            return null;
         }
     }
 }

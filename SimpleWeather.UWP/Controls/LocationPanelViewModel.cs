@@ -3,6 +3,7 @@ using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using Windows.UI.Xaml;
 
 namespace SimpleWeather.Controls
@@ -14,7 +15,7 @@ namespace SimpleWeather.Controls
         private string currTemp;
         private string weatherIcon;
         private bool editMode;
-        private string backgroundURI;
+        private ImageDataViewModel imageData;
         private ElementTheme backgroundTheme = ElementTheme.Dark;
         private bool isLoading = true;
         private LocationData locationData;
@@ -29,15 +30,15 @@ namespace SimpleWeather.Controls
         #endregion
 
         #region Properties
-        public string LocationName { get => locationName; set { locationName = value; OnPropertyChanged("LocationName"); } }
-        public string CurrTemp { get => currTemp; set { currTemp = value; OnPropertyChanged("CurrTemp"); } }
-        public string WeatherIcon { get => weatherIcon; set { weatherIcon = value; OnPropertyChanged("WeatherIcon"); } }
-        public bool EditMode { get => editMode; set { editMode = value; OnPropertyChanged("EditMode"); } }
-        public string BackgroundURI { get => backgroundURI; set { backgroundURI = value; OnPropertyChanged("BackgroundURI"); } }
-        public ElementTheme BackgroundTheme { get => backgroundTheme; set { backgroundTheme = value; OnPropertyChanged("BackgroundTheme"); } }
-        public bool IsLoading { get => isLoading; set { isLoading = value; OnPropertyChanged("IsLoading"); } }
-        public LocationData LocationData { get => locationData; set { locationData = value; OnPropertyChanged("LocationData"); } }
-        public string WeatherSource { get => weatherSource; set { weatherSource = value; OnPropertyChanged("WeatherSource"); } }
+        public string LocationName { get => locationName; set { if (!Equals(locationName, value)) { locationName = value; OnPropertyChanged("LocationName"); } } }
+        public string CurrTemp { get => currTemp; set { if (!Equals(locationName, value)) { currTemp = value; OnPropertyChanged("CurrTemp"); } } }
+        public string WeatherIcon { get => weatherIcon; set { if (!Equals(locationName, value)) { weatherIcon = value; OnPropertyChanged("WeatherIcon"); } } }
+        public bool EditMode { get => editMode; set { if (!Equals(locationName, value)) { editMode = value; OnPropertyChanged("EditMode"); } } }
+        public ImageDataViewModel ImageData { get => imageData; set { if (!Equals(imageData, value)) { imageData = value; OnPropertyChanged(nameof(ImageData)); } } }
+        public ElementTheme BackgroundTheme { get => backgroundTheme; set { if (!Equals(locationName, value)) { backgroundTheme = value; OnPropertyChanged("BackgroundTheme"); } } }
+        public bool IsLoading { get => isLoading; set { if (!Equals(locationName, value)) { isLoading = value; OnPropertyChanged("IsLoading"); } } }
+        public LocationData LocationData { get => locationData; set { if (!Equals(locationName, value)) { locationData = value; OnPropertyChanged("LocationData"); } } }
+        public string WeatherSource { get => weatherSource; set { if (!Equals(locationName, value)) { weatherSource = value; OnPropertyChanged("WeatherSource"); } } }
         public int LocationType
         {
             get
@@ -50,6 +51,7 @@ namespace SimpleWeather.Controls
         #endregion
 
         private readonly WeatherManager wm;
+        private Weather weather;
 
         public LocationPanelViewModel()
         {
@@ -66,28 +68,46 @@ namespace SimpleWeather.Controls
 
         public void SetWeather(Weather weather)
         {
-            // Update background
-            BackgroundURI = wm.GetBackgroundURI(weather);
-            var PendingBackgroundColor = wm.GetWeatherBackgroundColor(weather);
-
-            BackgroundTheme = ColorUtils.IsSuperLight(PendingBackgroundColor) ?
-                ElementTheme.Light : ElementTheme.Dark;
-
-            LocationName = weather.location.name;
-            CurrTemp = (Settings.IsFahrenheit ?
-                Math.Round(weather.condition.temp_f) : Math.Round(weather.condition.temp_c)) + "º";
-            WeatherIcon = weather.condition.icon;
-            WeatherSource = weather.source;
-
-            if (LocationData.query == null)
+            if ((bool)weather?.IsValid() && !Equals(this.weather, weather))
             {
-                LocationData.query = weather.query;
-                LocationData.latitude = double.Parse(weather.location.latitude);
-                LocationData.longitude = double.Parse(weather.location.longitude);
-                LocationData.weatherSource = weather.source;
-            }
+                this.weather = weather;
 
-            IsLoading = false;
+                ImageData = null;
+                BackgroundTheme = ElementTheme.Dark;
+
+                LocationName = weather.location.name;
+                CurrTemp = (Settings.IsFahrenheit ?
+                    Math.Round(weather.condition.temp_f) : Math.Round(weather.condition.temp_c)) + "º";
+                WeatherIcon = weather.condition.icon;
+                WeatherSource = weather.source;
+
+                if (LocationData.query == null)
+                {
+                    LocationData.query = weather.query;
+                    LocationData.latitude = double.Parse(weather.location.latitude);
+                    LocationData.longitude = double.Parse(weather.location.longitude);
+                    LocationData.weatherSource = weather.source;
+                }
+
+                IsLoading = false;
+            }
+        }
+
+        public async Task UpdateBackground()
+        {
+            var imageData = await WeatherUtils.GetImageData(weather);
+
+            if (imageData != null)
+            {
+                ImageData = imageData;
+                BackgroundTheme = ColorUtils.IsSuperLight(imageData.Color) ?
+                    ElementTheme.Light : ElementTheme.Dark;
+            }
+            else
+            {
+                ImageData = null;
+                BackgroundTheme = ElementTheme.Dark;
+            }
         }
     }
 }

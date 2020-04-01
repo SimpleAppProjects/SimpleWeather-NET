@@ -16,7 +16,7 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition x:Name="IconColumn" Width="70" />
         </Grid.ColumnDefinitions>
-        <toolkitControls:ImageEx CachingStrategy="Custom" IsCacheEnabled="True" DecodePixelWidth="1080" Source="{x:Bind ViewModel.BackgroundURI, Mode=OneWay}" Foreground="White" 
+        <toolkitControls:ImageEx CachingStrategy="Custom" IsCacheEnabled="True" DecodePixelWidth="1080" Source="{x:Bind ViewModel.ImageData.ImageUri, Mode=OneWay}" Foreground="White" 
                                  Stretch="UniformToFill" Grid.ColumnSpan="3" VerticalAlignment="Center" HorizontalAlignment="Center" Style="{ThemeResource ImageExProgressStyle}" />
         <Grid Grid.ColumnSpan="3">
             <Grid.Background>

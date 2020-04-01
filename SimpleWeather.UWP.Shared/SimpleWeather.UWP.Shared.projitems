@@ -13,7 +13,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\UserThemeMode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\FileUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Settings.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IWeatherProviderImpl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.IconResources.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WeatherData\Images\ImageDataDatabase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WeatherData\Images\ImageDataHelperImpl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\WeatherProviderImpl.cs" />
   </ItemGroup>
   <ItemGroup>

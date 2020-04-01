@@ -56,7 +56,7 @@ namespace SimpleWeather.UWP.Main
         {
             var dataSet = PanelAdapter.GetDataset();
 
-            AsyncTask.RunOnUIThread(() =>
+            AsyncTask.Run(async () =>
             {
                 if (cts?.IsCancellationRequested == true)
                     return;
@@ -85,9 +85,11 @@ namespace SimpleWeather.UWP.Main
                                                         panelVM.LocationData.longitude.Equals(location.longitude) &&
                                                         panelVM.LocationData.tz_long.Equals(location.tz_long));
                     }
+
                     panelView?.SetWeather(weather);
+                    await panelView?.UpdateBackground();
                 }
-            }).ConfigureAwait(false);
+            });
         }
 
         public async void OnWeatherError(WeatherException wEx)

@@ -17,7 +17,6 @@ namespace SimpleWeather.UWP.Tiles
         private const int WIDE_FORECAST_LENGTH = 3;
         private const int LARGE_FORECAST_LENGTH = 5;
 
-        private static WeatherManager wm = WeatherManager.GetInstance();
         public static bool TileUpdated { get; private set; }
 
         public enum ForecastTileType
@@ -28,20 +27,26 @@ namespace SimpleWeather.UWP.Tiles
             Large
         }
 
+        private static void SetContentBackground(TileBindingContentAdaptive content, WeatherNowViewModel weather)
+        {
+            // Background URI
+            if (weather.ImageData?.ImageUri != null)
+            {
+                content.BackgroundImage = new TileBackgroundImage()
+                {
+                    Source = weather.ImageData?.ImageUri?.ToString(),
+                    HintOverlay = 50
+                };
+            }
+        }
+
         private static TileBindingContentAdaptive GenerateForecast(WeatherNowViewModel weather, ForecastTileType forecastTileType)
         {
             var userlang = GlobalizationPreferences.Languages[0];
             var culture = new CultureInfo(userlang);
 
-            var content = new TileBindingContentAdaptive
-            {
-                // Background URI
-                BackgroundImage = new TileBackgroundImage()
-                {
-                    Source = weather.BackgroundURI,
-                    HintOverlay = 50
-                }
-            };
+            var content = new TileBindingContentAdaptive();
+            SetContentBackground(content, weather);
 
             if (forecastTileType == ForecastTileType.Small)
             {
@@ -101,7 +106,7 @@ namespace SimpleWeather.UWP.Tiles
                             new AdaptiveImage()
                             {
                                 HintRemoveMargin = true,
-                                Source = wm.GetWeatherIconURI(forecast.WeatherIcon)
+                                Source = WeatherUtils.GetWeatherIconURI(forecast.WeatherIcon)
                             },
                         }
                     };
@@ -165,7 +170,7 @@ namespace SimpleWeather.UWP.Tiles
                             new AdaptiveImage()
                             {
                                 HintRemoveMargin = true,
-                                Source = wm.GetWeatherIconURI(forecast.WeatherIcon)
+                                Source = WeatherUtils.GetWeatherIconURI(forecast.WeatherIcon)
                             }
                         }
                     };
@@ -219,7 +224,7 @@ namespace SimpleWeather.UWP.Tiles
                             {
                                 new AdaptiveImage()
                                 {
-                                    Source = wm.GetWeatherIconURI(weather.WeatherIcon)
+                                    Source = WeatherUtils.GetWeatherIconURI(weather.WeatherIcon)
                                 }
                             }
                         },
@@ -274,7 +279,7 @@ namespace SimpleWeather.UWP.Tiles
                             new AdaptiveImage()
                             {
                                 HintRemoveMargin = true,
-                                Source = wm.GetWeatherIconURI(forecast.WeatherIcon)
+                                Source = WeatherUtils.GetWeatherIconURI(forecast.WeatherIcon)
                             },
                             new AdaptiveText()
                             {
@@ -306,15 +311,8 @@ namespace SimpleWeather.UWP.Tiles
             var userlang = GlobalizationPreferences.Languages[0];
             var culture = new CultureInfo(userlang);
 
-            var content = new TileBindingContentAdaptive
-            {
-                // Background URI
-                BackgroundImage = new TileBackgroundImage()
-                {
-                    Source = weather.BackgroundURI,
-                    HintOverlay = 50
-                }
-            };
+            var content = new TileBindingContentAdaptive();
+            SetContentBackground(content, weather);
 
             if (forecastTileType == ForecastTileType.Small)
             {
@@ -378,7 +376,7 @@ namespace SimpleWeather.UWP.Tiles
                             new AdaptiveImage()
                             {
                                 HintRemoveMargin = true,
-                                Source = wm.GetWeatherIconURI(hrforecast.WeatherIcon)
+                                Source = WeatherUtils.GetWeatherIconURI(hrforecast.WeatherIcon)
                             },
                         }
                     };
@@ -435,7 +433,7 @@ namespace SimpleWeather.UWP.Tiles
                             new AdaptiveImage()
                             {
                                 HintRemoveMargin = true,
-                                Source = wm.GetWeatherIconURI(hrforecast.WeatherIcon)
+                                Source = WeatherUtils.GetWeatherIconURI(hrforecast.WeatherIcon)
                             },
                             new AdaptiveText()
                             {
@@ -475,7 +473,7 @@ namespace SimpleWeather.UWP.Tiles
                             {
                                 new AdaptiveImage()
                                 {
-                                    Source = wm.GetWeatherIconURI(weather.WeatherIcon)
+                                    Source = WeatherUtils.GetWeatherIconURI(weather.WeatherIcon)
                                 }
                             }
                         },
@@ -535,7 +533,7 @@ namespace SimpleWeather.UWP.Tiles
                             new AdaptiveImage()
                             {
                                 HintRemoveMargin = true,
-                                Source = wm.GetWeatherIconURI(hrforecast.WeatherIcon)
+                                Source = WeatherUtils.GetWeatherIconURI(hrforecast.WeatherIcon)
                             },
                             new AdaptiveText()
                             {
@@ -561,15 +559,8 @@ namespace SimpleWeather.UWP.Tiles
             var userlang = GlobalizationPreferences.Languages[0];
             var culture = new CultureInfo(userlang);
 
-            var content = new TileBindingContentAdaptive
-            {
-                // Background URI
-                BackgroundImage = new TileBackgroundImage()
-                {
-                    Source = weather.BackgroundURI,
-                    HintOverlay = 50
-                }
-            };
+            var content = new TileBindingContentAdaptive();
+            SetContentBackground(content, weather);
 
             if (forecastTileType == ForecastTileType.Small)
             {
@@ -624,7 +615,7 @@ namespace SimpleWeather.UWP.Tiles
                                 new AdaptiveImage()
                                 {
                                     HintRemoveMargin = true,
-                                    Source = wm.GetWeatherIconURI(weather.WeatherIcon)
+                                    Source = WeatherUtils.GetWeatherIconURI(weather.WeatherIcon)
                                 },
                                 new AdaptiveText()
                                 {
@@ -661,7 +652,7 @@ namespace SimpleWeather.UWP.Tiles
                         new AdaptiveImage()
                         {
                             HintRemoveMargin = true,
-                            Source = wm.GetWeatherIconURI(weather.WeatherIcon)
+                            Source = WeatherUtils.GetWeatherIconURI(weather.WeatherIcon)
                         }
                     },
                     HintTextStacking = AdaptiveSubgroupTextStacking.Center
@@ -719,7 +710,7 @@ namespace SimpleWeather.UWP.Tiles
                             {
                                 new AdaptiveImage()
                                 {
-                                    Source = wm.GetWeatherIconURI(weather.WeatherIcon)
+                                    Source = WeatherUtils.GetWeatherIconURI(weather.WeatherIcon)
                                 }
                             }
                         },
@@ -774,7 +765,7 @@ namespace SimpleWeather.UWP.Tiles
                             new AdaptiveImage()
                             {
                                 HintRemoveMargin = true,
-                                Source = wm.GetWeatherIconURI(forecast.WeatherIcon)
+                                Source = WeatherUtils.GetWeatherIconURI(forecast.WeatherIcon)
                             },
                             new AdaptiveText()
                             {
@@ -941,7 +932,9 @@ namespace SimpleWeather.UWP.Tiles
 
                 if (weather != null)
                 {
-                    TileUpdater(location, new WeatherNowViewModel(weather));
+                    var weatherView = new WeatherNowViewModel(weather);
+                    await weatherView.UpdateBackground();
+                    TileUpdater(location, weatherView);
                 }
             }
             catch (WeatherException wEx)
@@ -950,8 +943,11 @@ namespace SimpleWeather.UWP.Tiles
             }
         }
 
-        public static void TileUpdater(LocationData location, WeatherNowViewModel weather)
+        public static async Task TileUpdater(LocationData location, WeatherNowViewModel weather)
         {
+            if (weather.ImageData == null)
+                await weather.UpdateBackground();
+
             // And send the notification to the tile
             if (location.Equals(Settings.HomeData))
             {

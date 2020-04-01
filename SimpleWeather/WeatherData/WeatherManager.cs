@@ -224,20 +224,5 @@ namespace SimpleWeather.WeatherData
         {
             return WeatherProvider.IsNight(weather);
         }
-
-        public string GetWeatherIconURI(string icon)
-        {
-            return WeatherProvider.GetWeatherIconURI(icon);
-        }
-
-        public string GetBackgroundURI(Weather weather)
-        {
-            return WeatherProvider.GetBackgroundURI(weather);
-        }
-
-        public Color GetWeatherBackgroundColor(Weather weather)
-        {
-            return WeatherProvider.GetWeatherBackgroundColor(weather);
-        }
     }
 }

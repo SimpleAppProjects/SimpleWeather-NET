@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using Windows.System.UserProfile;
 using Windows.UI;
 using Windows.UI.Xaml;
@@ -43,8 +44,8 @@ namespace SimpleWeather.Controls
         private ObservableCollection<WeatherAlertViewModel> alerts;
 
         // Background
-        private String backgroundURI;
         private ImageDataViewModel imageData;
+        private Color defaultColor = Color.FromArgb(255, 0, 111, 191); // SimpleBlue;
         private Color pendingBackgroundColor = Color.FromArgb(255, 0, 111, 191);
         private ElementTheme backgroundTheme = ElementTheme.Dark;
 
@@ -84,7 +85,6 @@ namespace SimpleWeather.Controls
         public BeaufortViewModel Beaufort { get => beaufort; private set { if (!Equals(beaufort, value)) { beaufort = value; OnPropertyChanged(nameof(Beaufort)); } } }
         public MoonPhaseViewModel MoonPhase { get => moonPhase; private set { if (!Equals(moonPhase, value)) { moonPhase = value; OnPropertyChanged(nameof(MoonPhase)); } } }
         public AirQualityViewModel AirQuality { get => airQuality; private set { if (!Equals(airQuality, value)) { airQuality = value; OnPropertyChanged(nameof(AirQuality)); } } }
-        public string BackgroundURI { get => backgroundURI; private set { if (!Equals(backgroundURI, value)) { backgroundURI = value; OnPropertyChanged(nameof(BackgroundURI)); } } }
         public ImageDataViewModel ImageData { get => imageData; private set { if (!Equals(imageData, value)) { imageData = value; OnPropertyChanged(nameof(ImageData)); } } }
         public Color PendingBackgroundColor { get => pendingBackgroundColor; private set { if (!Equals(pendingBackgroundColor, value)) { pendingBackgroundColor = value; OnPropertyChanged(nameof(PendingBackgroundColor)); } } }
         public ElementTheme BackgroundTheme { get => backgroundTheme; private set { if (!Equals(backgroundTheme, value)) { backgroundTheme = value; OnPropertyChanged(nameof(BackgroundTheme)); } } }
@@ -129,7 +129,7 @@ namespace SimpleWeather.Controls
 
         public void UpdateView(Weather weather)
         {
-            if ((bool)weather?.IsValid() && !Object.Equals(this.weather, weather))
+            if ((bool)weather?.IsValid() && !Equals(this.weather, weather))
             {
                 this.weather = weather;
 
@@ -137,59 +137,9 @@ namespace SimpleWeather.Controls
                 var culture = new CultureInfo(userlang);
 
                 // Update backgrounds
-                BackgroundURI = wm.GetBackgroundURI(weather);
-                PendingBackgroundColor = wm.GetWeatherBackgroundColor(weather);
-                BackgroundTheme = ColorUtils.IsSuperLight(PendingBackgroundColor) ?
-                    ElementTheme.Light : ElementTheme.Dark;
-
-                if (BackgroundURI.Contains("DaySky"))
-                {
-                    ImageData = bgAttribution["DaySky"];
-                }
-                else if (BackgroundURI.Contains("FoggySky"))
-                {
-                    ImageData = bgAttribution["FoggySky"];
-                }
-                else if (BackgroundURI.Contains("NightSky"))
-                {
-                    ImageData = bgAttribution["NightSky"];
-                }
-                else if (BackgroundURI.Contains("PartlyCloudy-Day"))
-                {
-                    ImageData = bgAttribution["PartlyCloudy-Day"];
-                }
-                else if (BackgroundURI.Contains("RainyDay"))
-                {
-                    ImageData = bgAttribution["RainyDay"];
-                }
-                else if (BackgroundURI.Contains("RainyNight"))
-                {
-                    ImageData = bgAttribution["RainyNight"];
-                }
-                else if (BackgroundURI.Contains("Snow-Windy"))
-                {
-                    ImageData = bgAttribution["Snow-Windy"];
-                }
-                else if (BackgroundURI.Contains("Snow"))
-                {
-                    ImageData = bgAttribution["Snow"];
-                }
-                else if (BackgroundURI.Contains("StormySky"))
-                {
-                    ImageData = bgAttribution["StormySky"];
-                }
-                else if (BackgroundURI.Contains("Thunderstorm-Day"))
-                {
-                    ImageData = bgAttribution["Thunderstorm-Day"];
-                }
-                else if (BackgroundURI.Contains("Thunderstorm-Night"))
-                {
-                    ImageData = bgAttribution["Thunderstorm-Night"];
-                }
-                else
-                {
-                    ImageData = null;
-                }
+                ImageData = null;
+                PendingBackgroundColor = defaultColor;
+                BackgroundTheme = ElementTheme.Dark;
 
                 // Location
                 Location = weather?.location?.name;
@@ -380,7 +330,7 @@ namespace SimpleWeather.Controls
                     // Let collection handle changes (clearing, etc.)
                     HourlyForecasts.SetWeather(weather);
                 }
-                OnPropertyChanged(nameof(HourlyForecast));
+                OnPropertyChanged(nameof(HourlyForecasts));
 
                 Alerts.Clear();
                 if (weather?.weather_alerts?.Any() == true)
@@ -420,110 +370,25 @@ namespace SimpleWeather.Controls
             }
         }
 
-        public bool IsValid => weather != null && weather.IsValid();
+        public async Task UpdateBackground()
+        {
+            var imageData = await WeatherUtils.GetImageData(weather);
 
-        private static readonly ReadOnlyDictionary<String, ImageDataViewModel> bgAttribution =
-            new ReadOnlyDictionary<string, ImageDataViewModel>(new Dictionary<String, ImageDataViewModel>()
+            if (imageData != null)
             {
-                {
-                    "DaySky", new ImageDataViewModel()
-                    {
-                        ArtistLink = "https://www.pexels.com/@amychandra?utm_content=attributionCopyText&amp;utm_medium=referral&amp;utm_source=pexels",
-                        ArtistName = "Amy Chandra",
-                        SiteLink = "https://www.pexels.com/photo/boat-on-ocean-789152/?utm_content=attributionCopyText&amp;utm_medium=referral&amp;utm_source=pexels",
-                        SiteName = "Pexels"
-                    }
-                },
-                {
-                    "FoggySky", new ImageDataViewModel()
-                    {
-                        ArtistLink = "https://unsplash.com/photos/fjY26eEE78s?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText",
-                        ArtistName = "Niklas Herrmann",
-                        SiteLink = "https://unsplash.com/photos/fjY26eEE78s/?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText",
-                        SiteName = "Unsplash"
-                    }
-                },
-                {
-                    "NightSky", new ImageDataViewModel()
-                    {
-                        ArtistLink = "https://www.pexels.com/@apasaric?utm_content=attributionCopyText&amp;utm_medium=referral&amp;utm_source=pexels",
-                        ArtistName = "Aleksandar Pasaric",
-                        SiteLink = "https://www.pexels.com/photo/dark-starry-sky-1694000/?utm_content=attributionCopyText&amp;utm_medium=referral&amp;utm_source=pexels",
-                        SiteName = "Pexels"
-                    }
-                },
-                {
-                    "PartlyCloudy-Day", new ImageDataViewModel()
-                    {
-                        ArtistLink = "https://www.pexels.com/@grizzlybear?utm_content=attributionCopyText&amp;utm_medium=referral&amp;utm_source=pexels",
-                        ArtistName = "Jonathan Petersson",
-                        SiteLink = "https://www.pexels.com/photo/air-atmosphere-blue-bright-436383/?utm_content=attributionCopyText&amp;utm_medium=referral&amp;utm_source=pexels",
-                        SiteName = "Pexels"
-                    }
-                },
-                {
-                    "RainyDay", new ImageDataViewModel()
-                    {
-                        ArtistLink = "https://pixabay.com/users/Olichel-529835/",
-                        ArtistName = "Olichel",
-                        SiteLink = "https://pixabay.com/images/id-2179933/",
-                        SiteName = "Pixabay"
-                    }
-                },
-                {
-                    "RainyNight", new ImageDataViewModel()
-                    {
-                        ArtistLink = "https://unsplash.com/@walterrandlehoff?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText",
-                        ArtistName = "Walter Randlehoff",
-                        SiteLink = "https://unsplash.com/photos/jg486JWaYLc/?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText",
-                        SiteName = "Unsplash"
-                    }
-                },
-                {
-                    "Snow", new ImageDataViewModel()
-                    {
-                        ArtistLink = "https://www.pexels.com/@deathless?utm_content=attributionCopyText&amp;utm_medium=referral&amp;utm_source=pexels",
-                        ArtistName = "Mircea Iancu",
-                        SiteLink = "https://www.pexels.com/photo/snow-flakes-948857/?utm_content=attributionCopyText&amp;utm_medium=referral&amp;utm_source=pexels",
-                        SiteName = "Pexels"
-                    }
-                },
-                {
-                    "Snow-Windy", new ImageDataViewModel()
-                    {
-                        ArtistLink = "https://unsplash.com/@ceo77?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText",
-                        ArtistName = "Christian SPULLER",
-                        SiteLink = "https://unsplash.com/photos/Oaec-W0b2ss/?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText",
-                        SiteName = "Unsplash"
-                    }
-                },
-                {
-                    "StormySky", new ImageDataViewModel()
-                    {
-                        ArtistLink = "https://unsplash.com/@anandu?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText",
-                        ArtistName = "Anandu Vinod",
-                        SiteLink = "https://unsplash.com/photos/pbxwxwfI0B4/?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText",
-                        SiteName = "Unsplash"
-                    }
-                },
-                {
-                    "Thunderstorm-Day", new ImageDataViewModel()
-                    {
-                        ArtistLink = "https://www.pexels.com/@eberhardgross?utm_content=attributionCopyText&amp;utm_medium=referral&amp;utm_source=pexels",
-                        ArtistName = "eberhard grossgasteiger",
-                        SiteLink = "https://www.pexels.com/photo/photography-of-dark-clouds-1074428/?utm_content=attributionCopyText&amp;utm_medium=referral&amp;utm_source=pexels",
-                        SiteName = "Pexels"
-                    }
-                },
-                {
-                    "Thunderstorm-Night", new ImageDataViewModel()
-                    {
-                        ArtistLink = "https://unsplash.com/@aliarifsoydas?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText",
-                        ArtistName = "Ali Arif Soydaş",
-                        SiteLink = "https://unsplash.com/photos/wwzLVOvzy6w/?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText",
-                        SiteName = "Unsplash"
-                    }
-                },
-            });
+                ImageData = imageData;
+                PendingBackgroundColor = imageData.Color;
+                BackgroundTheme = ColorUtils.IsSuperLight(PendingBackgroundColor) ?
+                    ElementTheme.Light : ElementTheme.Dark;
+            }
+            else
+            {
+                ImageData = null;
+                PendingBackgroundColor = defaultColor;
+                BackgroundTheme = ElementTheme.Dark;
+            }
+        }
+
+        public bool IsValid => weather != null && weather.IsValid();
     }
 }

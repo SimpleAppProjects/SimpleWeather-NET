@@ -61,9 +61,10 @@ namespace SimpleWeather.UWP.Main
 
                 if (weather?.IsValid() == true)
                 {
+                    WeatherView.UpdateView(weather);
+                    await WeatherView.UpdateBackground();
                     await AsyncTask.RunOnUIThread(() =>
                     {
-                        WeatherView.UpdateView(weather);
                         LoadingRing.IsActive = false;
                     }).ConfigureAwait(false);
 
@@ -261,12 +262,14 @@ namespace SimpleWeather.UWP.Main
 
         private void MainViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
-            if (sender is ScrollViewer viewer)
+            if (sender is ScrollViewer viewer && BackgroundOverlay != null && GradientOverlay != null)
             {
                 // Default adj = 1.25f
                 float adj = 1.25f;
-                double backAlpha = 1 - (1 * adj * viewer.VerticalOffset / ConditionPanel.ActualHeight);
-                double gradAlpha = 1 - (1 * adj * viewer.VerticalOffset / ConditionPanel.ActualHeight);
+                double backAlpha = ConditionPanel.ActualHeight > 0 ? 
+                    1 - (1 * adj * viewer.VerticalOffset / ConditionPanel.ActualHeight) : 1;
+                double gradAlpha = ConditionPanel.ActualHeight > 0 ? 
+                    1 - (1 * adj * viewer.VerticalOffset / ConditionPanel.ActualHeight) : 1;
                 BGAlpha = Math.Max(backAlpha, (float)0x25 / 0xFF); // 0x25
                 GradAlpha = Math.Max(gradAlpha, 0);
                 BackgroundOverlay.Opacity = BGAlpha;
@@ -308,6 +311,8 @@ namespace SimpleWeather.UWP.Main
 
             double w = MainViewer.ActualWidth - MainViewer.Padding.Left - MainViewer.Padding.Right;
             double h = MainViewer.ActualHeight - MainViewer.Padding.Top - MainViewer.Padding.Bottom;
+
+            if (w <= 0 || h <= 0) return;
 
             ResizeAlertPanel();
 
@@ -379,7 +384,8 @@ namespace SimpleWeather.UWP.Main
 
             cts = new CancellationTokenSource();
 
-            MainViewer?.ChangeView(null, 0, null, true);
+            // NOTE: ChangeView does not work here for some reason
+            MainViewer?.ScrollToVerticalOffset(0);
             BGAlpha = GradAlpha = 1.0f;
 
             WeatherNowArgs args = e.Parameter as WeatherNowArgs;
@@ -858,10 +864,21 @@ namespace SimpleWeather.UWP.Main
 
         private WebView CreateWebView()
         {
-            WebView webview;
+            WebView webview = null;
             if (Windows.Foundation.Metadata.ApiInformation.IsEnumNamedValuePresent("Windows.UI.Xaml.Controls.WebViewExecutionMode", "SeparateProcess"))
-                webview = new WebView(WebViewExecutionMode.SeparateProcess);
-            else
+            {
+                try
+                {
+                    // NOTE: Potential managed code exception; don't know why
+                    webview = new WebView(WebViewExecutionMode.SeparateProcess);
+                }
+                catch (Exception e)
+                {
+                    Logger.WriteLine(LoggerLevel.Error, e);
+                }
+            }
+
+            if (webview == null)
                 webview = new WebView(WebViewExecutionMode.SeparateThread);
 
             webview.NavigationCompleted += async (s, args) =>
