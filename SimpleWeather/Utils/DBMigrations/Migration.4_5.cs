@@ -18,9 +18,9 @@ namespace SimpleWeather.Utils
 {
     public static partial class DBMigrations
     {
-        public static async Task Migrate4_5(SQLiteAsyncConnection weatherDB)
+        public static ConfiguredTaskAwaitable Migrate4_5(SQLiteAsyncConnection weatherDB)
         {
-            await weatherDB.RunInTransactionAsync((transaction) => 
+            return weatherDB.RunInTransactionAsync((transaction) => 
             {
                 // Remove the old table
                 transaction.Execute("DROP TABLE IF EXISTS weatherdata_new");

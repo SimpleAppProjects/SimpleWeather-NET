@@ -27,9 +27,7 @@ namespace SimpleWeather.WeatherYahoo
 
         public override Task<bool> IsKeyValid(string key)
         {
-            var tcs = new TaskCompletionSource<bool>();
-            tcs.SetResult(false);
-            return tcs.Task;
+            return Task.FromResult(false);
         }
 
         public override string GetAPIKey()
@@ -38,122 +36,128 @@ namespace SimpleWeather.WeatherYahoo
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        private async Task<Rootobject> GetRootobject(string location_query)
+        private Task<Rootobject> GetRootobject(string location_query)
         {
-            Rootobject root = null;
-
-            string queryAPI = "https://weather-ydn-yql.media.yahoo.com/forecastrss";
-            Uri weatherURL = null;
-
-            OAuthRequest authRequest = new OAuthRequest(APIKeys.GetYahooCliID(), APIKeys.GetYahooCliSecr());
-
-            WeatherException wEx = null;
-
-            try
+            return Task.Run(async () => 
             {
-                string query = "?" + location_query + "&format=json&u=f";
-                weatherURL = new Uri(queryAPI + query);
-                string authorization = authRequest.GetAuthorizationHeader(weatherURL);
+                Rootobject root = null;
 
-                // Get response
-                using (HttpClient webClient = new HttpClient())
-                using (var request = new HttpRequestMessage(HttpMethod.Get, weatherURL))
-                using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                string queryAPI = "https://weather-ydn-yql.media.yahoo.com/forecastrss";
+                Uri weatherURL = null;
+
+                OAuthRequest authRequest = new OAuthRequest(APIKeys.GetYahooCliID(), APIKeys.GetYahooCliSecr());
+
+                WeatherException wEx = null;
+
+                try
                 {
-                    // Add headers to request
-                    request.Headers.Add("Authorization", authorization);
-                    request.Headers.Add("X-Yahoo-App-Id", APIKeys.GetYahooAppID());
-                    request.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/json"));
+                    string query = "?" + location_query + "&format=json&u=f";
+                    weatherURL = new Uri(queryAPI + query);
+                    string authorization = authRequest.GetAuthorizationHeader(weatherURL);
 
-                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.SendRequestAsync(request, HttpCompletionOption.ResponseHeadersRead).AsTask(cts.Token));
-                    response.EnsureSuccessStatusCode();
-                    Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-                    // Reset exception
-                    wEx = null;
-
-                    // Load weather
-                    root = await AsyncTask.RunAsync(() =>
+                    // Get response
+                    using (HttpClient webClient = new HttpClient())
+                    using (var request = new HttpRequestMessage(HttpMethod.Get, weatherURL))
+                    using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     {
-                        return JSONParser.Deserializer<Rootobject>(contentStream);
-                    });
+                        // Add headers to request
+                        request.Headers.Add("Authorization", authorization);
+                        request.Headers.Add("X-Yahoo-App-Id", APIKeys.GetYahooAppID());
+                        request.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/json"));
 
-                    // End Stream
-                    contentStream?.Dispose();
+                        HttpResponseMessage response = await webClient.SendRequestAsync(request, HttpCompletionOption.ResponseHeadersRead).AsTask(cts.Token);
+                        response.EnsureSuccessStatusCode();
+                        Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                        // Reset exception
+                        wEx = null;
+
+                        // Load weather
+                        root = JSONParser.Deserializer<Rootobject>(contentStream);
+
+                        // End Stream
+                        contentStream?.Dispose();
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                root = null;
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                catch (Exception ex)
                 {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    root = null;
+                    if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                    {
+                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    }
+
+                    Logger.WriteLine(LoggerLevel.Error, ex, "YahooWeatherProvider: error getting weather data");
                 }
 
-                Logger.WriteLine(LoggerLevel.Error, ex, "YahooWeatherProvider: error getting weather data");
-            }
+                if (wEx != null)
+                    throw wEx;
 
-            if (wEx != null)
-                throw wEx;
-
-            return root;
+                return root;
+            });
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override async Task<Weather> GetWeather(string location_query)
+        public override Task<Weather> GetWeather(string location_query)
         {
-            Weather weather = null;
-            WeatherException wEx = null;
-
-            try
+            return Task.Run(async () =>
             {
-                // Load weather
-                Rootobject root = await AsyncTask.RunAsync(GetRootobject(location_query));
+                Weather weather = null;
+                WeatherException wEx = null;
 
-                weather = new Weather(root);
-            }
-            catch (Exception ex)
-            {
-                weather = null;
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                try
                 {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    // Load weather
+                    Rootobject root = await GetRootobject(location_query);
+
+                    weather = new Weather(root);
+                }
+                catch (Exception ex)
+                {
+                    weather = null;
+                    if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                    {
+                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    }
+
+                    Logger.WriteLine(LoggerLevel.Error, ex, "YahooWeatherProvider: error getting weather data");
                 }
 
-                Logger.WriteLine(LoggerLevel.Error, ex, "YahooWeatherProvider: error getting weather data");
-            }
+                if (wEx == null && (weather == null || !weather.IsValid()))
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
+                }
+                else if (weather != null)
+                {
+                    weather.query = location_query;
+                }
 
-            if (wEx == null && (weather == null || !weather.IsValid()))
-            {
-                wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
-            }
-            else if (weather != null)
-            {
-                weather.query = location_query;
-            }
+                if (wEx != null)
+                    throw wEx;
 
-            if (wEx != null)
-                throw wEx;
-
-            return weather;
+                return weather;
+            });
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public async Task<WeatherData.Astronomy> GetAstronomyData(LocationData location)
+        public Task<WeatherData.Astronomy> GetAstronomyData(LocationData location)
         {
-            try
+            return Task.Run(async () =>
             {
-                String query = UpdateLocationQuery(location);
-                Rootobject root = await AsyncTask.RunAsync(GetRootobject(query));
-                return new WeatherData.Astronomy(root.current_observation.astronomy);
-            }
-            catch (WeatherException wEx)
-            {
-                throw wEx;
-            }
-            catch (Exception ex)
-            {
-                throw new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
-            }
+                try
+                {
+                    String query = UpdateLocationQuery(location);
+                    Rootobject root = await AsyncTask.RunAsync(GetRootobject(query));
+                    return new WeatherData.Astronomy(root.current_observation.astronomy);
+                }
+                catch (WeatherException wEx)
+                {
+                    throw wEx;
+                }
+                catch (Exception ex)
+                {
+                    throw new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
+                }
+            });
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>

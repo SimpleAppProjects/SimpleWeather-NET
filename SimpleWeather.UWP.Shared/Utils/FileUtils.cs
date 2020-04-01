@@ -9,73 +9,83 @@ namespace SimpleWeather.Utils
 {
     public static partial class FileUtils
     {
-        public async static Task<String> ReadFile(StorageFile file)
+        public static Task<String> ReadFile(StorageFile file)
         {
-            if (file is null)
+            return Task.Run(async () =>
             {
-                return null;
-            }
-
-            // Wait for file to be free
-            while (IsFileLocked(file))
-            {
-                await AsyncTask.RunAsync(Task.Delay(100));
-            }
-
-            String data;
-
-            using (StreamReader reader = new StreamReader((await file.OpenAsync(FileAccessMode.Read)).AsStreamForRead()))
-            {
-                String line = await AsyncTask.RunAsync(reader.ReadLineAsync);
-                StringBuilder sBuilder = new StringBuilder();
-
-                while (line != null)
+                if (file is null)
                 {
-                    sBuilder.Append(line).Append("\n");
-                    line = await AsyncTask.RunAsync(reader.ReadLineAsync);
+                    return null;
                 }
 
-                reader.Dispose();
-                data = sBuilder.ToString();
-            }
+                // Wait for file to be free
+                while (IsFileLocked(file))
+                {
+                    await Task.Delay(100);
+                }
 
-            return data;
+                String data;
+
+                using (var fStream = (await file.OpenAsync(FileAccessMode.Read)).AsStreamForRead())
+                using (StreamReader reader = new StreamReader(fStream))
+                {
+                    String line = await reader.ReadLineAsync();
+                    StringBuilder sBuilder = new StringBuilder();
+
+                    while (line != null)
+                    {
+                        sBuilder.Append(line).Append("\n");
+                        line = await reader.ReadLineAsync();
+                    }
+
+                    reader.Dispose();
+                    data = sBuilder.ToString();
+                }
+
+                return data;
+            });
         }
 
-        public static async Task WriteFile(String data, StorageFile file)
+        public static Task WriteFile(String data, StorageFile file)
         {
-            // Wait for file to be free
-            while (IsFileLocked(file))
+            return Task.Run(async () =>
             {
-                await AsyncTask.RunAsync(Task.Delay(100));
-            }
+                // Wait for file to be free
+                while (IsFileLocked(file))
+                {
+                    await Task.Delay(100);
+                }
 
-            using (StorageStreamTransaction transaction = await file.OpenTransactedWriteAsync())
-            using (DataWriter writer = new DataWriter(transaction.Stream))
-            {
-                writer.WriteString(data);
-                // reset stream size to override the file
-                transaction.Stream.Size = await writer.StoreAsync();
-                await transaction.CommitAsync();
-            }
+                using (StorageStreamTransaction transaction = await file.OpenTransactedWriteAsync())
+                using (DataWriter writer = new DataWriter(transaction.Stream))
+                {
+                    writer.WriteString(data);
+                    // reset stream size to override the file
+                    transaction.Stream.Size = await writer.StoreAsync();
+                    await transaction.CommitAsync();
+                }
+            });
         }
 
-        public static async Task WriteFile(Byte[] data, StorageFile file)
+        public static Task WriteFile(Byte[] data, StorageFile file)
         {
-            // Wait for file to be free
-            while (IsFileLocked(file))
+            return Task.Run(async () =>
             {
-                await AsyncTask.RunAsync(Task.Delay(100));
-            }
+                // Wait for file to be free
+                while (IsFileLocked(file))
+                {
+                    await Task.Delay(100);
+                }
 
-            using (StorageStreamTransaction transaction = await file.OpenTransactedWriteAsync())
-            using (DataWriter writer = new DataWriter(transaction.Stream))
-            {
-                writer.WriteString(Encoding.UTF8.GetString(data));
-                // reset stream size to override the file
-                transaction.Stream.Size = await writer.StoreAsync();
-                await transaction.CommitAsync();
-            }
+                using (StorageStreamTransaction transaction = await file.OpenTransactedWriteAsync())
+                using (DataWriter writer = new DataWriter(transaction.Stream))
+                {
+                    writer.WriteString(Encoding.UTF8.GetString(data));
+                    // reset stream size to override the file
+                    transaction.Stream.Size = await writer.StoreAsync();
+                    await transaction.CommitAsync();
+                }
+            });
         }
 
         public static bool IsFileLocked(StorageFile file)
@@ -113,13 +123,18 @@ namespace SimpleWeather.Utils
             return false;
         }
 
-        public static async Task DeleteDirectory(String path)
+        public static Task DeleteDirectory(String path)
         {
             if (Directory.Exists(path))
             {
-                var directory = await StorageFolder.GetFolderFromPathAsync(path);
-                await directory.DeleteAsync(StorageDeleteOption.PermanentDelete);
+                return Task.Run(async () =>
+                {
+                    var directory = await StorageFolder.GetFolderFromPathAsync(path);
+                    await directory.DeleteAsync(StorageDeleteOption.PermanentDelete);
+                });
             }
+
+            return Task.CompletedTask;
         }
     }
 }

@@ -50,6 +50,7 @@ namespace SimpleWeather.Controls
         private ElementTheme backgroundTheme = ElementTheme.Dark;
 
         // Radar
+        private const string RadarUriFormat = "https://earth.nullschool.net/#current/wind/surface/level/overlay=precip_3hr/orthographic={1},{0},3000";
         private Uri radarURL;
 
         private String weatherCredit;
@@ -59,9 +60,12 @@ namespace SimpleWeather.Controls
 
         public event PropertyChangedEventHandler PropertyChanged;
         // Create the OnPropertyChanged method to raise the event
-        protected void OnPropertyChanged(string name)
+        protected async void OnPropertyChanged(string name)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            await AsyncTask.RunOnUIThread(() =>
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            }).ConfigureAwait(true);
         }
 
         #endregion DependencyProperties
@@ -88,7 +92,7 @@ namespace SimpleWeather.Controls
         public ImageDataViewModel ImageData { get => imageData; private set { if (!Equals(imageData, value)) { imageData = value; OnPropertyChanged(nameof(ImageData)); } } }
         public Color PendingBackgroundColor { get => pendingBackgroundColor; private set { if (!Equals(pendingBackgroundColor, value)) { pendingBackgroundColor = value; OnPropertyChanged(nameof(PendingBackgroundColor)); } } }
         public ElementTheme BackgroundTheme { get => backgroundTheme; private set { if (!Equals(backgroundTheme, value)) { backgroundTheme = value; OnPropertyChanged(nameof(BackgroundTheme)); } } }
-        public Uri RadarURL { get => radarURL; private set { if (!Equals(radarURL, value)) { radarURL = value; OnPropertyChanged(nameof(RadarURL)); } } }
+        public Uri RadarURL { get => radarURL; private set { if (!Equals(radarURL?.ToString(), value?.ToString())) { radarURL = value; OnPropertyChanged(nameof(RadarURL)); } } }
         public string WeatherCredit { get => weatherCredit; private set { if (!Equals(weatherCredit, value)) { weatherCredit = value; OnPropertyChanged(nameof(WeatherCredit)); } } }
         public string WeatherSource { get => weatherSource; private set { if (!Equals(weatherSource, value)) { weatherSource = value; OnPropertyChanged(nameof(WeatherSource)); } } }
         public string WeatherLocale { get => weatherLocale; private set { if (!Equals(weatherLocale, value)) { weatherLocale = value; OnPropertyChanged(nameof(WeatherLocale)); } } }
@@ -350,17 +354,14 @@ namespace SimpleWeather.Controls
                 // Additional Details
                 AirQuality = weather.condition.airQuality != null ? new AirQualityViewModel(weather.condition.airQuality) : null;
 
-                var url = "https://earth.nullschool.net/#current/wind/surface/level/overlay=precip_3hr/orthographic={1},{0},3000";
                 if (!String.IsNullOrWhiteSpace(weather.location.latitude) && !String.IsNullOrWhiteSpace(weather.location.longitude))
-                    RadarURL = new Uri(String.Format(url, weather.location.latitude, weather.location.longitude));
+                    RadarURL = new Uri(String.Format(CultureInfo.InvariantCulture, RadarUriFormat, weather.location.latitude, weather.location.longitude));
                 else
                     RadarURL = null;
 
                 // Additional Details
                 WeatherSource = weather?.source;
-                string creditPrefix = "Data from";
-
-                creditPrefix = SimpleLibrary.ResLoader.GetString("Credit_Prefix/Text");
+                string creditPrefix = SimpleLibrary.ResLoader.GetString("Credit_Prefix/Text");
 
                 WeatherCredit = String.Format("{0} {1}",
                     creditPrefix, WeatherAPI.APIs.First(WApi => WeatherSource.Equals(WApi.Value)));
@@ -370,23 +371,28 @@ namespace SimpleWeather.Controls
             }
         }
 
-        public async Task UpdateBackground()
+        public Task UpdateBackground()
         {
-            var imageData = await WeatherUtils.GetImageData(weather);
+            return Task.Run(async () =>
+            {
+                if (weather == null) return;
 
-            if (imageData != null)
-            {
-                ImageData = imageData;
-                PendingBackgroundColor = imageData.Color;
-                BackgroundTheme = ColorUtils.IsSuperLight(PendingBackgroundColor) ?
-                    ElementTheme.Light : ElementTheme.Dark;
-            }
-            else
-            {
-                ImageData = null;
-                PendingBackgroundColor = defaultColor;
-                BackgroundTheme = ElementTheme.Dark;
-            }
+                var imageData = await WeatherUtils.GetImageData(weather);
+
+                if (imageData != null)
+                {
+                    ImageData = imageData;
+                    PendingBackgroundColor = imageData.Color;
+                    BackgroundTheme = ColorUtils.IsSuperLight(PendingBackgroundColor) ?
+                        ElementTheme.Light : ElementTheme.Dark;
+                }
+                else
+                {
+                    ImageData = null;
+                    PendingBackgroundColor = defaultColor;
+                    BackgroundTheme = ElementTheme.Dark;
+                }
+            });
         }
 
         public bool IsValid => weather != null && weather.IsValid();

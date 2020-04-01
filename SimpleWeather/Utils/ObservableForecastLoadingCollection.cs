@@ -85,7 +85,10 @@ namespace SimpleWeather.Utils
                                     f = new ForecastItemViewModel(dataItem);
                                 }
 
-                                await AsyncTask.RunOnUIThread(() => Add((T)f));
+                                lock (this)
+                                {
+                                    Add((T)f);
+                                }
                                 resultCount++;
                             }
                         }
@@ -123,7 +126,10 @@ namespace SimpleWeather.Utils
                             {
                                 await db.GetChildrenAsync(dataItem);
                                 object fcast = new HourlyForecastItemViewModel(dataItem.hr_forecast);
-                                await AsyncTask.RunOnUIThread(() => Add((T)fcast));
+                                lock (this)
+                                {
+                                    Add((T)fcast);
+                                }
                                 resultCount++;
                             }
                         }

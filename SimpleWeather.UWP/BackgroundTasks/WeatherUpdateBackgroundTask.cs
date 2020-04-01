@@ -5,6 +5,7 @@ using SimpleWeather.UWP.WeatherAlerts;
 using SimpleWeather.WeatherData;
 using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
@@ -44,7 +45,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                     {
                         Logger.WriteLine(LoggerLevel.Debug, "WeatherUpdateBackgroundTask: Getting weather data...");
                         // Retrieve weather data.
-                        var weather = await AsyncTask.RunAsync(GetWeather);
+                        var weather = await GetWeather();
 
                         if (cts.IsCancellationRequested) return;
 
@@ -52,7 +53,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                         Logger.WriteLine(LoggerLevel.Debug, "WeatherUpdateBackgroundTask: Weather is NULL = " + (weather == null).ToString());
                         Logger.WriteLine(LoggerLevel.Debug, "WeatherUpdateBackgroundTask: Updating primary tile...");
                         if (weather != null)
-                            WeatherTileCreator.TileUpdater(Settings.HomeData, new WeatherNowViewModel(weather));
+                            await AsyncTask.RunAsync(WeatherTileCreator.TileUpdater(await Settings.GetHomeData(), new WeatherNowViewModel(weather)));
 
                         if (cts.IsCancellationRequested) return;
 
@@ -78,7 +79,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                         // Post alerts if setting is on
                         Logger.WriteLine(LoggerLevel.Debug, "WeatherUpdateBackgroundTask: Posting alerts...");
                         if (Settings.ShowAlerts && wm.SupportsAlerts && weather != null)
-                            await AsyncTask.RunAsync(WeatherAlertHandler.PostAlerts(Settings.HomeData, weather.weather_alerts));
+                            await AsyncTask.RunAsync(WeatherAlertHandler.PostAlerts(await Settings.GetHomeData(), weather.weather_alerts));
 
                         if (cts.IsCancellationRequested) return;
 
@@ -194,159 +195,165 @@ namespace SimpleWeather.UWP.BackgroundTasks
             }
         }
 
-        private async Task<Weather> GetWeather()
+        private ConfiguredTaskAwaitable<Weather> GetWeather()
         {
-            Weather weather = null;
-
-            try
+            return AsyncTask.CreateTask(async () =>
             {
-                if (Settings.FollowGPS)
-                    await AsyncTask.RunAsync(UpdateLocation);
-
-                cts.Token.ThrowIfCancellationRequested();
-
-                var wloader = new WeatherDataLoader(Settings.HomeData);
-                weather = await AsyncTask.RunAsync(wloader.LoadWeatherData(
-                    new WeatherRequest.Builder()
-                        .ForceRefresh(false)
-                        .LoadAlerts()
-                        .LoadForecasts()
-                        .Build()));
-            }
-            catch (OperationCanceledException cancelEx)
-            {
-                Logger.WriteLine(LoggerLevel.Info, cancelEx, "{0}: GetWeather cancelled", taskName);
-                return null;
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteLine(LoggerLevel.Error, ex, "{0}: GetWeather error", taskName);
-                return null;
-            }
-
-            return weather;
-        }
-
-        private async Task<bool> UpdateLocation()
-        {
-            bool locationChanged = false;
-
-            if (Settings.FollowGPS)
-            {
-                Geoposition newGeoPos = null;
-                Geolocator geolocal = new Geolocator() { DesiredAccuracyInMeters = 5000, ReportInterval = 900000, MovementThreshold = 1600 };
+                Weather weather = null;
 
                 try
                 {
+                    if (Settings.FollowGPS)
+                        await UpdateLocation();
+
                     cts.Token.ThrowIfCancellationRequested();
-                    newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10))
-                        .AsTask(cts.Token).ConfigureAwait(false);
+
+                    var wloader = new WeatherDataLoader(await Settings.GetHomeData());
+                    weather = await AsyncTask.RunAsync(wloader.LoadWeatherData(
+                        new WeatherRequest.Builder()
+                            .ForceRefresh(false)
+                            .LoadAlerts()
+                            .LoadForecasts()
+                            .Build()));
                 }
-                catch (OperationCanceledException)
+                catch (OperationCanceledException cancelEx)
                 {
-                    return locationChanged;
+                    Logger.WriteLine(LoggerLevel.Info, cancelEx, "{0}: GetWeather cancelled", taskName);
+                    return null;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    var geoStatus = GeolocationAccessStatus.Unspecified;
+                    Logger.WriteLine(LoggerLevel.Error, ex, "{0}: GetWeather error", taskName);
+                    return null;
+                }
+
+                return weather;
+            });
+        }
+
+        private ConfiguredTaskAwaitable<bool> UpdateLocation()
+        {
+            return AsyncTask.CreateTask(async () =>
+            {
+                bool locationChanged = false;
+
+                if (Settings.FollowGPS)
+                {
+                    Geoposition newGeoPos = null;
+                    Geolocator geolocal = new Geolocator() { DesiredAccuracyInMeters = 5000, ReportInterval = 900000, MovementThreshold = 1600 };
 
                     try
                     {
                         cts.Token.ThrowIfCancellationRequested();
-                        geoStatus = await Geolocator.RequestAccessAsync()
+                        newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10))
                             .AsTask(cts.Token).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
                         return locationChanged;
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
-                        Logger.WriteLine(LoggerLevel.Error, ex, "{0}: error requesting location permission", taskName);
+                        var geoStatus = GeolocationAccessStatus.Unspecified;
+
+                        try
+                        {
+                            cts.Token.ThrowIfCancellationRequested();
+                            geoStatus = await Geolocator.RequestAccessAsync()
+                                .AsTask(cts.Token).ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            return locationChanged;
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.WriteLine(LoggerLevel.Error, ex, "{0}: error requesting location permission", taskName);
+                        }
+                        finally
+                        {
+                            if (!cts.IsCancellationRequested && geoStatus == GeolocationAccessStatus.Allowed)
+                            {
+                                try
+                                {
+                                    newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10))
+                                        .AsTask(cts.Token).ConfigureAwait(false);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Logger.WriteLine(LoggerLevel.Error, ex, "{0}: GetWeather error", taskName);
+                                }
+                            }
+                            else if (geoStatus == GeolocationAccessStatus.Denied)
+                            {
+                                // Disable gps feature
+                                Settings.FollowGPS = false;
+                            }
+                        }
+
+                        if (!Settings.FollowGPS)
+                            return false;
                     }
-                    finally
+
+                    // Access to location granted
+                    if (newGeoPos != null)
                     {
-                        if (!cts.IsCancellationRequested && geoStatus == GeolocationAccessStatus.Allowed)
+                        var lastGPSLocData = await Settings.GetLastGPSLocData();
+
+                        if (cts.IsCancellationRequested) return locationChanged;
+
+                        // Check previous location difference
+                        if (lastGPSLocData.query != null
+                            && Math.Abs(ConversionMethods.CalculateHaversine(lastGPSLocData.latitude, lastGPSLocData.longitude,
+                            newGeoPos.Coordinate.Point.Position.Latitude, newGeoPos.Coordinate.Point.Position.Longitude)) < geolocal.MovementThreshold)
+                        {
+                            return false;
+                        }
+
+                        LocationQueryViewModel view = null;
+
+                        await Task.Run(async () =>
                         {
                             try
                             {
-                                newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10))
-                                    .AsTask(cts.Token).ConfigureAwait(false);
+                                view = await wm.GetLocation(newGeoPos);
+
+                                if (String.IsNullOrEmpty(view.LocationQuery))
+                                    view = new LocationQueryViewModel();
                             }
-                            catch (Exception ex)
+                            catch (WeatherException ex)
                             {
-                                Logger.WriteLine(LoggerLevel.Error, ex, "{0}: GetWeather error", taskName);
-                            }
-                        }
-                        else if (geoStatus == GeolocationAccessStatus.Denied)
-                        {
-                            // Disable gps feature
-                            Settings.FollowGPS = false;
-                        }
-                    }
-
-                    if (!Settings.FollowGPS)
-                        return false;
-                }
-
-                // Access to location granted
-                if (newGeoPos != null)
-                {
-                    var lastGPSLocData = await Settings.GetLastGPSLocData();
-
-                    if (cts.IsCancellationRequested) return locationChanged;
-
-                    // Check previous location difference
-                    if (lastGPSLocData.query != null
-                        && Math.Abs(ConversionMethods.CalculateHaversine(lastGPSLocData.latitude, lastGPSLocData.longitude,
-                        newGeoPos.Coordinate.Point.Position.Latitude, newGeoPos.Coordinate.Point.Position.Longitude)) < geolocal.MovementThreshold)
-                    {
-                        return false;
-                    }
-
-                    LocationQueryViewModel view = null;
-
-                    await Task.Run(async () =>
-                    {
-                        try
-                        {
-                            view = await AsyncTask.RunAsync(wm.GetLocation(newGeoPos));
-
-                            if (String.IsNullOrEmpty(view.LocationQuery))
                                 view = new LocationQueryViewModel();
-                        }
-                        catch (WeatherException ex)
+                            }
+                        }, cts.Token).ConfigureAwait(false);
+
+                        if (String.IsNullOrWhiteSpace(view.LocationQuery))
                         {
-                            view = new LocationQueryViewModel();
+                            // Stop since there is no valid query
+                            return false;
                         }
-                    }, cts.Token).ConfigureAwait(false);
 
-                    if (String.IsNullOrWhiteSpace(view.LocationQuery))
-                    {
-                        // Stop since there is no valid query
-                        return false;
+                        if (cts.IsCancellationRequested) return locationChanged;
+
+                        // Save oldkey
+                        string oldkey = lastGPSLocData.query;
+
+                        // Save location as last known
+                        lastGPSLocData.SetData(view, newGeoPos);
+                        Settings.SaveLastGPSLocData(lastGPSLocData);
+
+                        // Update tile id for location
+                        if (oldkey != null && SecondaryTileUtils.Exists(oldkey))
+                        {
+                            await AsyncTask.RunAsync(SecondaryTileUtils.UpdateTileId(oldkey, lastGPSLocData.query));
+                        }
+
+                        locationChanged = true;
                     }
-
-                    if (cts.IsCancellationRequested) return locationChanged;
-
-                    // Save oldkey
-                    string oldkey = lastGPSLocData.query;
-
-                    // Save location as last known
-                    lastGPSLocData.SetData(view, newGeoPos);
-                    Settings.SaveLastGPSLocData(lastGPSLocData);
-
-                    // Update tile id for location
-                    if (oldkey != null && SecondaryTileUtils.Exists(oldkey))
-                    {
-                        await AsyncTask.RunAsync(SecondaryTileUtils.UpdateTileId(oldkey, lastGPSLocData.query));
-                    }
-
-                    locationChanged = true;
                 }
-            }
 
-            return locationChanged;
+                return locationChanged;
+            });
         }
 
         public void Dispose()

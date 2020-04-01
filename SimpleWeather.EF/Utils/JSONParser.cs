@@ -75,45 +75,47 @@ namespace SimpleWeather.Utils
         }
 
 #if WINDOWS_UWP
-        public static Task<T> DeserializerAsync<T>(StorageFile file)
+        public static T Deserializer<T>(StorageFile file)
         {
-            return Task.Run(async () =>
+            // Wait for file to be free
+            while (FileUtils.IsFileLocked(file))
             {
-                // Wait for file to be free
-                while (FileUtils.IsFileLocked(file))
-                {
-                    await Task.Delay(100).ConfigureAwait(false);
-                }
+                Task.Delay(100);
+            }
 
-                var obj = default(T);
+            var obj = default(T);
 
-                try
+            try
+            {
+                using (var fStream = new FileStream(file.Path, FileMode.Open, FileAccess.Read))
                 {
-                    using (var fStream = new FileStream(file.Path, FileMode.Open, FileAccess.Read))
+                    try
                     {
-                        try
+                        obj = JsonSerializer.Deserialize<T>(fStream);
+                    }
+                    catch (FormatterNotRegisteredException formatEx)
+                    {
+                        Logger.WriteLine(LoggerLevel.Warn, formatEx, "SimpleWeather: JSONParser: falling back to Newtonsoft.Json");
+                        using (var reader = new Newtonsoft.Json.JsonTextReader(new StreamReader(fStream)))
                         {
-                            obj = await JsonSerializer.DeserializeAsync<T>(fStream);
-                        }
-                        catch (FormatterNotRegisteredException formatEx)
-                        {
-                            Logger.WriteLine(LoggerLevel.Warn, formatEx, "SimpleWeather: JSONParser: falling back to Newtonsoft.Json");
-                            using (var reader = new Newtonsoft.Json.JsonTextReader(new StreamReader(fStream)))
-                            {
-                                var serializer = Newtonsoft.Json.JsonSerializer.Create(DefaultSettings);
-                                obj = serializer.Deserialize<T>(reader);
-                            }
+                            var serializer = Newtonsoft.Json.JsonSerializer.Create(DefaultSettings);
+                            obj = serializer.Deserialize<T>(reader);
                         }
                     }
                 }
-                catch (Exception ex)
-                {
-                    Logger.WriteLine(LoggerLevel.Error, ex, "SimpleWeather: JSONParser: error deserializing or with file");
-                    obj = default(T);
-                }
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLine(LoggerLevel.Error, ex, "SimpleWeather: JSONParser: error deserializing or with file");
+                obj = default(T);
+            }
 
-                return obj;
-            });
+            return obj;
+        }
+
+        public static Task<T> DeserializerAsync<T>(StorageFile file)
+        {
+            return Task.Run(() => Deserializer<T>(file));
         }
 
         public static void Serializer(Object obj, StorageFile file)
@@ -149,6 +151,11 @@ namespace SimpleWeather.Utils
                     await transaction.CommitAsync();
                 }
             }).ConfigureAwait(false);
+        }
+
+        public static Task SerializerAsync(Object obj, StorageFile file)
+        {
+            return Task.Run(() => Serializer(obj, file));
         }
 #endif
 

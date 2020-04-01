@@ -28,14 +28,14 @@ namespace SimpleWeather.UWP.Preferences
             CommandBarLabel = App.ResLoader.GetString("Nav_Settings/Label");
         }
 
-        public async Task<bool> OnBackRequested()
+        public Task<bool> OnBackRequested()
         {
             if (SettingsFrame?.Content is IBackRequestedPage backRequestedPage)
             {
-                return await backRequestedPage.OnBackRequested();
+                return backRequestedPage.OnBackRequested();
             }
 
-            return false;
+            return Task.FromResult(false);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)

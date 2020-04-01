@@ -72,7 +72,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\OAuthUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\ObservableForecastLoadingCollection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\ObservableLoadingCollection.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utils\AsyncObservableCollection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Settings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\StringUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherException.cs" />

@@ -61,12 +61,12 @@ namespace SimpleWeather.UWP.Main
 
                 if (weather?.IsValid() == true)
                 {
-                    WeatherView.UpdateView(weather);
-                    await WeatherView.UpdateBackground();
                     await AsyncTask.RunOnUIThread(() =>
                     {
+                        WeatherView.UpdateView(weather);
                         LoadingRing.IsActive = false;
                     }).ConfigureAwait(false);
+                    await WeatherView.UpdateBackground();
 
                     if (wm.SupportsAlerts)
                     {
@@ -86,7 +86,7 @@ namespace SimpleWeather.UWP.Main
                     }
 
                     // Update home tile if it hasn't been already
-                    if (Settings.HomeData.Equals(location)
+                    if (Equals(location, await Settings.GetHomeData())
                         && (TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval)
                         || !WeatherTileCreator.TileUpdated)
                     {
@@ -246,18 +246,15 @@ namespace SimpleWeather.UWP.Main
             return PrimaryCommands.First() as AppBarButton;
         }
 
-        private void WeatherNow_Resuming(object sender, object e)
+        private async void WeatherNow_Resuming(object sender, object e)
         {
-            AsyncTask.RunOnUIThread(async () =>
+            if (Shell.Instance.AppFrame.SourcePageType == this.GetType())
             {
-                if (Shell.Instance.AppFrame.SourcePageType == this.GetType())
-                {
-                    // Check pin tile status
-                    await AsyncTask.RunAsync(CheckTiles);
+                // Check pin tile status
+                await AsyncTask.CreateTask(CheckTiles);
 
-                    await AsyncTask.RunAsync(Resume);
-                }
-            });
+                await AsyncTask.CreateTask(Resume);
+            }
         }
 
         private void MainViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
@@ -391,6 +388,14 @@ namespace SimpleWeather.UWP.Main
             WeatherNowArgs args = e.Parameter as WeatherNowArgs;
 
             bool locationChanged = false;
+
+            // Check if we're loading from tile
+            if (args?.TileId != null && SecondaryTileUtils.GetQueryFromId(args.TileId) is string locQuery)
+            {
+                location = await Settings.GetLocation(locQuery);
+                locationChanged = loaded = true;
+            }
+
             if (!loaded)
             {
                 // Load new favorite location if argument data is present
@@ -403,7 +408,7 @@ namespace SimpleWeather.UWP.Main
                 {
                     // Check if home location changed
                     // For ex. due to GPS setting change
-                    LocationData homeData = Settings.HomeData;
+                    LocationData homeData = await Settings.GetHomeData();
                     if (!location.Equals(homeData))
                     {
                         location = homeData;
@@ -422,7 +427,7 @@ namespace SimpleWeather.UWP.Main
             // Weather location changed (ex. due to GPS setting) -> locationChanged = true
             if (loaded || locationChanged || wLoader == null)
             {
-                await AsyncTask.RunAsync(Restore);
+                await AsyncTask.CreateTask(Restore);
             }
             else
             {
@@ -433,219 +438,228 @@ namespace SimpleWeather.UWP.Main
                 if (!String.Equals(WeatherView.WeatherSource, Settings.API) ||
                     wm.SupportsWeatherLocale && !String.Equals(WeatherView.WeatherLocale, locale))
                 {
-                    await AsyncTask.RunAsync(Restore);
+                    await AsyncTask.CreateTask(Restore);
                 }
                 else
                 {
-                    await AsyncTask.RunAsync(Resume);
+                    await AsyncTask.CreateTask(Resume);
                 }
             }
 
             loaded = true;
         }
 
-        private async Task Resume()
+        private Task Resume()
         {
-            // Check pin tile status
-            await AsyncTask.RunAsync(CheckTiles);
-
-            // Update weather if needed on resume
-            if (Settings.FollowGPS && await AsyncTask.RunAsync(UpdateLocation))
+            return Task.Run(async () =>
             {
-                // Setup loader from updated location
-                wLoader = new WeatherDataLoader(location);
-            }
+                // Check pin tile status
+                await CheckTiles().ConfigureAwait(false);
 
-            if (cts?.IsCancellationRequested == true)
-                return;
+                // Update weather if needed on resume
+                if (Settings.FollowGPS && await UpdateLocation())
+                {
+                    // Setup loader from updated location
+                    wLoader = new WeatherDataLoader(location);
+                }
 
-            RefreshWeather(false);
+                if (cts?.IsCancellationRequested == true)
+                    return;
 
-            loaded = true;
+                RefreshWeather(false);
+
+                loaded = true;
+            });
         }
 
-        private async Task Restore()
+        private Task Restore()
         {
-            bool forceRefresh = false;
-
-            // GPS Follow location
-            if (Settings.FollowGPS && (location == null || location.locationType == LocationType.GPS))
+            return Task.Run(async () =>
             {
-                LocationData locData = await Settings.GetLastGPSLocData();
+                bool forceRefresh = false;
 
-                if (locData == null)
+                // GPS Follow location
+                if (Settings.FollowGPS && (location == null || location.locationType == LocationType.GPS))
                 {
-                    // Update location if not setup
-                    await AsyncTask.RunAsync(UpdateLocation);
-                    forceRefresh = true;
-                }
-                else
-                {
-                    // Reset locdata if source is different
-                    if (locData.weatherSource != Settings.API)
-                        Settings.SaveLastGPSLocData(new LocationData());
+                    LocationData locData = await Settings.GetLastGPSLocData();
 
-                    if (await AsyncTask.RunAsync(UpdateLocation))
+                    if (locData == null)
                     {
-                        // Setup loader from updated location
+                        // Update location if not setup
+                        await UpdateLocation();
                         forceRefresh = true;
                     }
                     else
                     {
-                        // Setup loader saved location data
-                        location = locData;
-                    }
-                }
-            }
-            // Regular mode
-            else if (location == null && wLoader == null)
-            {
-                // Weather was loaded before. Lets load it up...
-                location = Settings.HomeData;
-            }
+                        // Reset locdata if source is different
+                        if (locData.weatherSource != Settings.API)
+                            Settings.SaveLastGPSLocData(new LocationData());
 
-            if (cts?.IsCancellationRequested == true)
-                return;
-
-            // Check pin tile status
-            await AsyncTask.RunAsync(CheckTiles);
-
-            if (location != null)
-                wLoader = new WeatherDataLoader(location);
-
-            // Load up weather data
-            RefreshWeather(forceRefresh);
-        }
-
-        private async Task<bool> UpdateLocation()
-        {
-            bool locationChanged = false;
-
-            if (Settings.FollowGPS && (location == null || location.locationType == LocationType.GPS))
-            {
-                Geoposition newGeoPos = null;
-
-                try
-                {
-                    newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10));
-                }
-                catch (Exception)
-                {
-                    var geoStatus = GeolocationAccessStatus.Unspecified;
-
-                    try
-                    {
-                        geoStatus = await Geolocator.RequestAccessAsync();
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.WriteLine(LoggerLevel.Error, ex, "WeatherNow: GetWeather error");
-                    }
-                    finally
-                    {
-                        if (geoStatus == GeolocationAccessStatus.Allowed)
+                        if (await UpdateLocation())
                         {
-                            try
-                            {
-                                newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10));
-                            }
-                            catch (Exception ex)
-                            {
-                                Logger.WriteLine(LoggerLevel.Error, ex, "WeatherNow: GetWeather error");
-                            }
+                            // Setup loader from updated location
+                            forceRefresh = true;
                         }
-                        else if (geoStatus == GeolocationAccessStatus.Denied)
+                        else
                         {
-                            // Disable gps feature
-                            Settings.FollowGPS = false;
+                            // Setup loader saved location data
+                            location = locData;
                         }
                     }
-
-                    if (!Settings.FollowGPS)
-                        return false;
+                }
+                // Regular mode
+                else if (location == null && wLoader == null)
+                {
+                    // Weather was loaded before. Lets load it up...
+                    location = await Settings.GetHomeData();
                 }
 
                 if (cts?.IsCancellationRequested == true)
-                    return false;
+                    return;
 
-                // Access to location granted
-                if (newGeoPos != null)
+                // Check pin tile status
+                await CheckTiles().ConfigureAwait(false);
+
+                if (location != null)
+                    wLoader = new WeatherDataLoader(location);
+
+                // Load up weather data
+                RefreshWeather(forceRefresh);
+            });
+        }
+
+        private Task<bool> UpdateLocation()
+        {
+            return Task.Run(async () =>
+            {
+                bool locationChanged = false;
+
+                if (Settings.FollowGPS && (location == null || location.locationType == LocationType.GPS))
                 {
-                    LocationData lastGPSLocData = await Settings.GetLastGPSLocData();
+                    Geoposition newGeoPos = null;
 
-                    // Check previous location difference
-                    if (lastGPSLocData.query != null
-                        && geoPos != null && ConversionMethods.CalculateGeopositionDistance(geoPos, newGeoPos) < geolocal.MovementThreshold)
+                    try
                     {
-                        return false;
+                        newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10));
                     }
-
-                    if (lastGPSLocData.query != null
-                        && Math.Abs(ConversionMethods.CalculateHaversine(lastGPSLocData.latitude, lastGPSLocData.longitude,
-                        newGeoPos.Coordinate.Point.Position.Latitude, newGeoPos.Coordinate.Point.Position.Longitude)) < geolocal.MovementThreshold)
+                    catch (Exception)
                     {
-                        return false;
-                    }
+                        var geoStatus = GeolocationAccessStatus.Unspecified;
 
-                    LocationQueryViewModel view = null;
-
-                    if (cts?.IsCancellationRequested == true)
-                        return false;
-
-                    await AsyncTask.RunAsync(async () =>
-                    {
                         try
                         {
-                            view = await AsyncTask.RunAsync(wm.GetLocation(newGeoPos));
-
-                            if (String.IsNullOrEmpty(view.LocationQuery))
-                                view = new LocationQueryViewModel();
+                            geoStatus = await Geolocator.RequestAccessAsync();
                         }
-                        catch (WeatherException ex)
+                        catch (Exception ex)
                         {
-                            view = new LocationQueryViewModel();
-
-                            await AsyncTask.RunOnUIThread(() =>
-                            {
-                                ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
-                            }).ConfigureAwait(false);
+                            Logger.WriteLine(LoggerLevel.Error, ex, "WeatherNow: GetWeather error");
                         }
-                    });
+                        finally
+                        {
+                            if (geoStatus == GeolocationAccessStatus.Allowed)
+                            {
+                                try
+                                {
+                                    newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10));
+                                }
+                                catch (Exception ex)
+                                {
+                                    Logger.WriteLine(LoggerLevel.Error, ex, "WeatherNow: GetWeather error");
+                                }
+                            }
+                            else if (geoStatus == GeolocationAccessStatus.Denied)
+                            {
+                                // Disable gps feature
+                                Settings.FollowGPS = false;
+                            }
+                        }
 
-                    if (String.IsNullOrWhiteSpace(view.LocationQuery))
-                    {
-                        // Stop since there is no valid query
-                        return false;
+                        if (!Settings.FollowGPS)
+                            return false;
                     }
 
                     if (cts?.IsCancellationRequested == true)
                         return false;
 
-                    // Save oldkey
-                    string oldkey = lastGPSLocData.query;
-
-                    // Save location as last known
-                    lastGPSLocData.SetData(view, newGeoPos);
-                    Settings.SaveLastGPSLocData(lastGPSLocData);
-
-                    // Update tile id for location
-                    if (oldkey != null && SecondaryTileUtils.Exists(oldkey))
+                    // Access to location granted
+                    if (newGeoPos != null)
                     {
-                        await AsyncTask.RunAsync(SecondaryTileUtils.UpdateTileId(oldkey, lastGPSLocData.query));
+                        LocationData lastGPSLocData = await Settings.GetLastGPSLocData();
+
+                        // Check previous location difference
+                        if (lastGPSLocData.query != null
+                            && geoPos != null && ConversionMethods.CalculateGeopositionDistance(geoPos, newGeoPos) < geolocal.MovementThreshold)
+                        {
+                            return false;
+                        }
+
+                        if (lastGPSLocData.query != null
+                            && Math.Abs(ConversionMethods.CalculateHaversine(lastGPSLocData.latitude, lastGPSLocData.longitude,
+                            newGeoPos.Coordinate.Point.Position.Latitude, newGeoPos.Coordinate.Point.Position.Longitude)) < geolocal.MovementThreshold)
+                        {
+                            return false;
+                        }
+
+                        LocationQueryViewModel view = null;
+
+                        if (cts?.IsCancellationRequested == true)
+                            return false;
+
+                        await AsyncTask.CreateTask(async () =>
+                        {
+                            try
+                            {
+                                view = await wm.GetLocation(newGeoPos);
+
+                                if (String.IsNullOrEmpty(view.LocationQuery))
+                                    view = new LocationQueryViewModel();
+                            }
+                            catch (WeatherException ex)
+                            {
+                                view = new LocationQueryViewModel();
+
+                                await AsyncTask.RunOnUIThread(() =>
+                                {
+                                    ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
+                                }).ConfigureAwait(false);
+                            }
+                        });
+
+                        if (String.IsNullOrWhiteSpace(view.LocationQuery))
+                        {
+                            // Stop since there is no valid query
+                            return false;
+                        }
+
+                        if (cts?.IsCancellationRequested == true)
+                            return false;
+
+                        // Save oldkey
+                        string oldkey = lastGPSLocData.query;
+
+                        // Save location as last known
+                        lastGPSLocData.SetData(view, newGeoPos);
+                        Settings.SaveLastGPSLocData(lastGPSLocData);
+
+                        // Update tile id for location
+                        if (oldkey != null && SecondaryTileUtils.Exists(oldkey))
+                        {
+                            await AsyncTask.RunAsync(SecondaryTileUtils.UpdateTileId(oldkey, lastGPSLocData.query));
+                        }
+
+                        location = lastGPSLocData;
+                        geoPos = newGeoPos;
+                        locationChanged = true;
                     }
-
-                    location = lastGPSLocData;
-                    geoPos = newGeoPos;
-                    locationChanged = true;
                 }
-            }
 
-            return locationChanged;
+                return locationChanged;
+            });
         }
 
         private async void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            if (Settings.FollowGPS && await AsyncTask.RunAsync(UpdateLocation))
+            if (Settings.FollowGPS && await UpdateLocation())
                 // Setup loader from updated location
                 wLoader = new WeatherDataLoader(location);
 
@@ -713,32 +727,35 @@ namespace SimpleWeather.UWP.Main
             GotoAlertsPage();
         }
 
-        private async Task CheckTiles()
+        private Task CheckTiles()
         {
-            var pinBtn = GetPinBtn();
-
-            if (pinBtn != null)
+            return Task.Run(async () =>
             {
-                await AsyncTask.RunOnUIThread(() =>
-                {
-                    pinBtn.IsEnabled = false;
-                }).ConfigureAwait(false);
+                var pinBtn = GetPinBtn();
 
-                // Check if your app is currently pinned
-                bool isPinned = SecondaryTileUtils.Exists(location?.query);
-
-                await AsyncTask.RunOnUIThread(async () =>
+                if (pinBtn != null)
                 {
-                    await SetPinButton(isPinned).ConfigureAwait(true);
-                    pinBtn.Visibility = Visibility.Visible;
-                    pinBtn.IsEnabled = true;
-                }).ConfigureAwait(false);
-            }
+                    await AsyncTask.RunOnUIThread(() =>
+                    {
+                        pinBtn.IsEnabled = false;
+                    }).ConfigureAwait(false);
+
+                    // Check if your app is currently pinned
+                    bool isPinned = SecondaryTileUtils.Exists(location?.query);
+
+                    await AsyncTask.RunOnUIThread(async () =>
+                    {
+                        await SetPinButton(isPinned).ConfigureAwait(true);
+                        pinBtn.Visibility = Visibility.Visible;
+                        pinBtn.IsEnabled = true;
+                    }).ConfigureAwait(false);
+                }
+            });
         }
 
-        private async Task SetPinButton(bool isPinned)
+        private Task SetPinButton(bool isPinned)
         {
-            await AsyncTask.RunOnUIThread(() =>
+            return AsyncTask.RunOnUIThread(() =>
             {
                 var pinBtn = GetPinBtn();
 
@@ -755,7 +772,7 @@ namespace SimpleWeather.UWP.Main
                         pinBtn.Label = App.ResLoader.GetString("Label_Pin/Text");
                     }
                 }
-            }).ConfigureAwait(false);
+            });
         }
 
         private async void PinButton_Click(object sender, RoutedEventArgs e)
@@ -864,22 +881,7 @@ namespace SimpleWeather.UWP.Main
 
         private WebView CreateWebView()
         {
-            WebView webview = null;
-            if (Windows.Foundation.Metadata.ApiInformation.IsEnumNamedValuePresent("Windows.UI.Xaml.Controls.WebViewExecutionMode", "SeparateProcess"))
-            {
-                try
-                {
-                    // NOTE: Potential managed code exception; don't know why
-                    webview = new WebView(WebViewExecutionMode.SeparateProcess);
-                }
-                catch (Exception e)
-                {
-                    Logger.WriteLine(LoggerLevel.Error, e);
-                }
-            }
-
-            if (webview == null)
-                webview = new WebView(WebViewExecutionMode.SeparateThread);
+            WebView webview = new WebView(WebViewExecutionMode.SeparateThread);
 
             webview.NavigationCompleted += async (s, args) =>
             {

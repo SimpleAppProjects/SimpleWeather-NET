@@ -23,5 +23,6 @@ namespace SimpleWeather.UWP.Main
     internal class WeatherNowArgs : WeatherPageArgs
     {
         public bool IsHome { get; set; }
+        public String TileId { get; set; }
     }
 }

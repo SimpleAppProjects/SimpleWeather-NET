@@ -301,18 +301,19 @@ namespace SimpleWeather.UWP.Main
             }).ConfigureAwait(true);
         }
 
-        private void LoadLocations()
+        private Task LoadLocations()
         {
-            AsyncTask.Run(async () =>
+            return Task.Run(async () =>
             {
                 await AsyncTask.RunOnUIThread(() =>
                 {
                     // Disable EditMode button
                     EditButton.IsEnabled = false;
+                    AddLocationsButton.IsEnabled = false;
                 }).ConfigureAwait(false);
 
                 // Lets load it up...
-                var locations = new List<LocationData>(await AsyncTask.RunAsync(async () => await Settings.GetFavorites()));
+                var locations = new List<LocationData>(await Settings.GetFavorites());
                 await AsyncTask.RunOnUIThread(() =>
                 {
                     PanelAdapter.RemoveAll();
@@ -325,19 +326,12 @@ namespace SimpleWeather.UWP.Main
                 LocationData gpsData = null;
                 if (Settings.FollowGPS)
                 {
-                    gpsData = await GetGPSPanel()
-                    .ConfigureAwait(false);
+                    gpsData = await GetGPSPanel().ConfigureAwait(false);
 
                     if (gpsData != null)
-                    {
-                        var gpsPanelViewModel = new LocationPanelViewModel()
-                        {
-                            LocationData = gpsData
-                        };
-                        await AsyncTask.RunOnUIThread(() => PanelAdapter.Add(0, gpsPanelViewModel))
-                        .ConfigureAwait(false);
-                    }
+                        locations.Insert(0, gpsData);
                 }
+
                 foreach (LocationData location in locations)
                 {
                     var panel = new LocationPanelViewModel()
@@ -352,9 +346,6 @@ namespace SimpleWeather.UWP.Main
                 if (cts?.IsCancellationRequested == true)
                     return;
 
-                if (gpsData != null)
-                    locations.Insert(0, gpsData);
-
                 foreach (LocationData location in locations)
                 {
                     AsyncTask.Run(() =>
@@ -364,7 +355,7 @@ namespace SimpleWeather.UWP.Main
                                     .ForceRefresh(false)
                                     .SetErrorListener(this)
                                     .Build())
-                                    .ContinueWith((t) => 
+                                    .ContinueWith((t) =>
                                     {
                                         if (t.IsCompletedSuccessfully)
                                             OnWeatherLoaded(location, t.Result);
@@ -376,44 +367,49 @@ namespace SimpleWeather.UWP.Main
                 {
                     // Enable EditMode button
                     EditButton.IsEnabled = true;
+                    AddLocationsButton.IsEnabled = true;
                 }).ConfigureAwait(false);
             });
         }
 
-        private async Task<LocationData> GetGPSPanel()
+        private Task<LocationData> GetGPSPanel()
         {
-            if (Settings.FollowGPS)
+            return Task.Run(async () =>
             {
-                var locData = await Settings.GetLastGPSLocData();
-
-                if (cts?.IsCancellationRequested == true)
-                    return null;
-
-                if (locData == null || locData.query == null)
+                if (Settings.FollowGPS)
                 {
-                    locData = await UpdateLocation().ConfigureAwait(false);
+                    var locData = await Settings.GetLastGPSLocData();
+
+                    if (cts?.IsCancellationRequested == true)
+                        return null;
+
+                    if (locData == null || locData.query == null)
+                    {
+                        locData = await UpdateLocation();
+                    }
+
+                    if (cts?.IsCancellationRequested == true)
+                        return null;
+
+                    if (locData != null && locData.query != null)
+                    {
+                        return locData;
+                    }
                 }
 
-                if (cts?.IsCancellationRequested == true)
-                    return null;
-
-                if (locData != null && locData.query != null)
-                {
-                    return locData;
-                }
-            }
-
-            return null;
+                return null;
+            });
         }
 
-        private void RefreshLocations()
+        private Task RefreshLocations()
         {
-            AsyncTask.Run(async () =>
+            return Task.Run(async () =>
             {
                 await AsyncTask.RunOnUIThread(() =>
                 {
                     // Disable EditMode button
                     EditButton.IsEnabled = false;
+                    AddLocationsButton.IsEnabled = false;
                 }).ConfigureAwait(false);
 
                 // Reload all panels if needed
@@ -451,7 +447,7 @@ namespace SimpleWeather.UWP.Main
                     {
                         PanelAdapter.RemoveAll();
                     }).ConfigureAwait(false);
-                    LoadLocations();
+                    await LoadLocations();
                 }
                 else
                 {
@@ -479,13 +475,14 @@ namespace SimpleWeather.UWP.Main
                 {
                     // Enable EditMode button
                     EditButton.IsEnabled = true;
+                    AddLocationsButton.IsEnabled = true;
                 }).ConfigureAwait(false);
             });
         }
 
-        private void AddGPSPanel()
+        private Task AddGPSPanel()
         {
-            AsyncTask.Run(async () =>
+            return Task.Run(async () =>
             {
                 LocationData gpsData = null;
                 if (Settings.FollowGPS)
@@ -533,111 +530,114 @@ namespace SimpleWeather.UWP.Main
             }
         }
 
-        private async Task<LocationData> UpdateLocation()
+        private Task<LocationData> UpdateLocation()
         {
-            LocationData locationData = null;
-
-            if (Settings.FollowGPS)
+            return Task.Run(async () =>
             {
-                Geoposition newGeoPos = null;
+                LocationData locationData = null;
 
-                try
+                if (Settings.FollowGPS)
                 {
-                    newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10));
-                }
-                catch (Exception)
-                {
-                    var geoStatus = GeolocationAccessStatus.Unspecified;
+                    Geoposition newGeoPos = null;
 
                     try
                     {
-                        geoStatus = await Geolocator.RequestAccessAsync();
+                        newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10));
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
-                        Logger.WriteLine(LoggerLevel.Error, ex, "LocationsPage: error getting location permission");
-                    }
-                    finally
-                    {
-                        if (geoStatus == GeolocationAccessStatus.Allowed)
-                        {
-                            try
-                            {
-                                newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10));
-                            }
-                            catch (Exception ex)
-                            {
-                                Logger.WriteLine(LoggerLevel.Error, ex, "LocationsPage: error getting location");
-                            }
-                        }
-                        else if (geoStatus == GeolocationAccessStatus.Denied)
-                        {
-                            // Disable gps feature
-                            Settings.FollowGPS = false;
-                            RemoveGPSPanel();
-                        }
-                        else
-                        {
-                            RemoveGPSPanel();
-                        }
-                    }
-
-                    if (!Settings.FollowGPS)
-                        return null;
-                }
-
-                if (cts?.IsCancellationRequested == true)
-                    return null;
-
-                // Access to location granted
-                if (newGeoPos != null)
-                {
-                    LocationQueryViewModel view = await Task.Run(async () =>
-                    {
-                        LocationQueryViewModel locView = null;
-
-                        if (cts?.IsCancellationRequested == true)
-                            return null;
+                        var geoStatus = GeolocationAccessStatus.Unspecified;
 
                         try
                         {
-                            locView = await AsyncTask.RunAsync(wm.GetLocation(newGeoPos));
+                            geoStatus = await Geolocator.RequestAccessAsync();
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.WriteLine(LoggerLevel.Error, ex, "LocationsPage: error getting location permission");
+                        }
+                        finally
+                        {
+                            if (geoStatus == GeolocationAccessStatus.Allowed)
+                            {
+                                try
+                                {
+                                    newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10));
+                                }
+                                catch (Exception ex)
+                                {
+                                    Logger.WriteLine(LoggerLevel.Error, ex, "LocationsPage: error getting location");
+                                }
+                            }
+                            else if (geoStatus == GeolocationAccessStatus.Denied)
+                            {
+                                // Disable gps feature
+                                Settings.FollowGPS = false;
+                                RemoveGPSPanel();
+                            }
+                            else
+                            {
+                                RemoveGPSPanel();
+                            }
+                        }
+
+                        if (!Settings.FollowGPS)
+                            return null;
+                    }
+
+                    if (cts?.IsCancellationRequested == true)
+                        return null;
+
+                    // Access to location granted
+                    if (newGeoPos != null)
+                    {
+                        LocationQueryViewModel view = await Task.Run(async () =>
+                        {
+                            LocationQueryViewModel locView = null;
 
                             if (cts?.IsCancellationRequested == true)
                                 return null;
 
-                            if (String.IsNullOrEmpty(locView.LocationQuery))
+                            try
+                            {
+                                locView = await wm.GetLocation(newGeoPos);
+
+                                if (cts?.IsCancellationRequested == true)
+                                    return null;
+
+                                if (String.IsNullOrEmpty(locView.LocationQuery))
+                                    locView = new LocationQueryViewModel();
+                            }
+                            catch (WeatherException)
+                            {
                                 locView = new LocationQueryViewModel();
-                        }
-                        catch (WeatherException)
+                            }
+
+                            return locView;
+                        }).ConfigureAwait(true);
+
+                        if (String.IsNullOrWhiteSpace(view?.LocationQuery))
                         {
-                            locView = new LocationQueryViewModel();
+                            // Stop since there is no valid query
+                            RemoveGPSPanel();
                         }
 
-                        return locView;
-                    }).ConfigureAwait(true);
-
-                    if (String.IsNullOrWhiteSpace(view?.LocationQuery))
-                    {
-                        // Stop since there is no valid query
-                        RemoveGPSPanel();
+                        // Save location as last known
+                        locationData = new LocationData(view, newGeoPos);
                     }
-
-                    // Save location as last known
-                    locationData = new LocationData(view, newGeoPos);
                 }
-            }
 
-            return locationData;
+                return locationData;
+            });
         }
 
-        private void LocationsPanel_ItemClick(object sender, ItemClickEventArgs e)
+        private async void LocationsPanel_ItemClick(object sender, ItemClickEventArgs e)
         {
             if (e.ClickedItem is LocationPanelViewModel panel)
             {
                 this.Frame.Navigate(typeof(WeatherNow), new WeatherNowArgs()
                 {
-                    IsHome = Object.Equals(panel.LocationData, Settings.HomeData),
+                    IsHome = Object.Equals(panel.LocationData, await Settings.GetHomeData()),
                     Location = panel.LocationData
                 });
                 try
@@ -736,13 +736,13 @@ namespace SimpleWeather.UWP.Main
         {
             if (args.SwipeControl is FrameworkElement button && button.DataContext is LocationPanelViewModel view)
             {
-                await PanelAdapter.RemovePanel(view);
+                await PanelAdapter.RemovePanel(view).ConfigureAwait(true);
             }
         }
 
         private async void DeleteBtn_Click(object sender, RoutedEventArgs e)
         {
-            await PanelAdapter.BatchRemovePanels(LocationsPanel.SelectedItems.Cast<LocationPanelViewModel>());
+            await PanelAdapter.BatchRemovePanels(LocationsPanel.SelectedItems.Cast<LocationPanelViewModel>()).ConfigureAwait(true);
         }
 
         private void LocationPanel_Holding(object sender, HoldingRoutedEventArgs e)

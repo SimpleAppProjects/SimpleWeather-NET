@@ -186,18 +186,14 @@ namespace SimpleWeather.UWP.Preferences
 
         public Task<bool> OnBackRequested()
         {
-            var tcs = new TaskCompletionSource<bool>();
-
             if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.API_KEY) && WeatherManager.IsKeyRequired(APIComboBox.SelectedValue.ToString()))
             {
                 KeyBorder.BorderBrush = new SolidColorBrush(Colors.Red);
                 ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Msg_EnterAPIKey"), SnackbarDuration.Long));
-                tcs.SetResult(true);
-                return tcs.Task;
+                return Task.FromResult(true);
             }
 
-            tcs.SetResult(false);
-            return tcs.Task;
+            return Task.FromResult(false);
         }
 
         public void OnNavigatedToPage(NavigationEventArgs e)

@@ -23,9 +23,12 @@ namespace SimpleWeather.Controls
 
         public event PropertyChangedEventHandler PropertyChanged;
         // Create the OnPropertyChanged method to raise the event
-        protected void OnPropertyChanged(string name)
+        protected async void OnPropertyChanged(string name)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            await AsyncTask.RunOnUIThread(() =>
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            }).ConfigureAwait(true);
         }
         #endregion
 
@@ -93,21 +96,24 @@ namespace SimpleWeather.Controls
             }
         }
 
-        public async Task UpdateBackground()
+        public Task UpdateBackground()
         {
-            var imageData = await WeatherUtils.GetImageData(weather);
+            return Task.Run(async () =>
+            {
+                var imageData = await WeatherUtils.GetImageData(weather);
 
-            if (imageData != null)
-            {
-                ImageData = imageData;
-                BackgroundTheme = ColorUtils.IsSuperLight(imageData.Color) ?
-                    ElementTheme.Light : ElementTheme.Dark;
-            }
-            else
-            {
-                ImageData = null;
-                BackgroundTheme = ElementTheme.Dark;
-            }
+                if (imageData != null)
+                {
+                    ImageData = imageData;
+                    BackgroundTheme = ColorUtils.IsSuperLight(imageData.Color) ?
+                        ElementTheme.Light : ElementTheme.Dark;
+                }
+                else
+                {
+                    ImageData = null;
+                    BackgroundTheme = ElementTheme.Dark;
+                }
+            });
         }
     }
 }

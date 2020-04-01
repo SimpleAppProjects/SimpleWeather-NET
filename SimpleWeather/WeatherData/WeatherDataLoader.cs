@@ -38,7 +38,7 @@ namespace SimpleWeather.WeatherData
         /// <exception cref="WeatherException"></exception>
         private ConfiguredTaskAwaitable GetWeatherData(WeatherRequest request)
         {
-            return AsyncTask.RunAsync(async () =>
+            return AsyncTask.CreateTask(async () =>
             {
                 WeatherException wEx = null;
                 bool loadedSavedData = false;
@@ -51,7 +51,7 @@ namespace SimpleWeather.WeatherData
                         if (!String.IsNullOrWhiteSpace(location.weatherSource) &&
                             !WeatherAPI.NWS.Equals(location.weatherSource))
                         {
-                            weather = await AsyncTask.RunAsync(WeatherManager.GetProvider(location.weatherSource).GetWeather(location));
+                            weather = await WeatherManager.GetProvider(location.weatherSource).GetWeather(location);
                         }
                         else
                         {
@@ -61,7 +61,7 @@ namespace SimpleWeather.WeatherData
                     else
                     {
                         // Load weather from provider
-                        weather = await AsyncTask.RunAsync(wm.GetWeather(location));
+                        weather = await wm.GetWeather(location);
                     }
                 }
                 catch (WeatherException weatherEx)
@@ -78,7 +78,7 @@ namespace SimpleWeather.WeatherData
                 // Load old data if available and we can't get new data
                 if (weather == null)
                 {
-                    loadedSavedData = await AsyncTask.RunAsync(LoadSavedWeatherData(request, true));
+                    loadedSavedData = await LoadSavedWeatherData(request, true);
                 }
                 else if (weather != null)
                 {
@@ -103,7 +103,7 @@ namespace SimpleWeather.WeatherData
                         await Settings.UpdateLocation(location);
                     }
 
-                    await AsyncTask.RunAsync(SaveWeatherData);
+                    await SaveWeatherData();
                 }
 
                 // Throw exception if we're unable to get any weather data
@@ -148,7 +148,7 @@ namespace SimpleWeather.WeatherData
                         {
                             if (!IsDataValid(false))
                             {
-                                await AsyncTask.RunAsync(_LoadWeatherData(request));
+                                await _LoadWeatherData(request);
                             }
                         }
                     }
@@ -174,88 +174,76 @@ namespace SimpleWeather.WeatherData
         /// <param name="request"></param>
         /// <returns></returns>
         /// <exception cref="WeatherException"></exception>
-        private async Task _LoadWeatherData(WeatherRequest request)
+        private ConfiguredTaskAwaitable _LoadWeatherData(WeatherRequest request)
         {
-            /*
-             * If unable to retrieve saved data, data is old, or units don't match
-             * Refresh weather data
-            */
-
-            Logger.WriteLine(LoggerLevel.Debug, "{0}: Loading weather data for {1}", TAG, location?.ToString());
-
-            bool gotData = await AsyncTask.RunAsync(LoadSavedWeatherData(request));
-
-            if (!gotData)
+            return AsyncTask.CreateTask(async () =>
             {
-                Logger.WriteLine(LoggerLevel.Debug, "{0}: Saved weather data invalid for {1}", TAG, location?.ToString());
-                Logger.WriteLine(LoggerLevel.Debug, "{0}: Retrieving data from weather provider", TAG);
+                /*
+                 * If unable to retrieve saved data, data is old, or units don't match
+                 * Refresh weather data
+                */
 
-                if ((weather != null && weather.source != Settings.API)
-                    || (weather == null && location != null && location.weatherSource != Settings.API))
+                Logger.WriteLine(LoggerLevel.Debug, "{0}: Loading weather data for {1}", TAG, location?.ToString());
+
+                bool gotData = await LoadSavedWeatherData(request);
+
+                if (!gotData)
                 {
-                    if (!WeatherAPI.NWS.Equals(location.weatherSource) || "US".Equals(location.country_code))
+                    Logger.WriteLine(LoggerLevel.Debug, "{0}: Saved weather data invalid for {1}", TAG, location?.ToString());
+                    Logger.WriteLine(LoggerLevel.Debug, "{0}: Retrieving data from weather provider", TAG);
+
+                    if ((weather != null && weather.source != Settings.API)
+                        || (weather == null && location != null && location.weatherSource != Settings.API))
                     {
-                        // Update location query and source for new API
-                        string oldKey = location.query;
+                        if (!WeatherAPI.NWS.Equals(location.weatherSource) || "US".Equals(location.country_code))
+                        {
+                            // Update location query and source for new API
+                            string oldKey = location.query;
 
-                        if (weather != null)
-                            location.query = wm.UpdateLocationQuery(weather);
-                        else
-                            location.query = wm.UpdateLocationQuery(location);
+                            if (weather != null)
+                                location.query = wm.UpdateLocationQuery(weather);
+                            else
+                                location.query = wm.UpdateLocationQuery(location);
 
-                        location.weatherSource = Settings.API;
+                            location.weatherSource = Settings.API;
 
-                        // Update database as well
-                        if (location.locationType == LocationType.GPS)
-                            Settings.SaveLastGPSLocData(location);
-                        else
-                            await Settings.UpdateLocationWithKey(location, oldKey);
+                            // Update database as well
+                            if (location.locationType == LocationType.GPS)
+                                Settings.SaveLastGPSLocData(location);
+                            else
+                                await Settings.UpdateLocationWithKey(location, oldKey);
 
 #if WINDOWS_UWP && !UNIT_TEST
-                        // Update tile id for location
-                        if (SecondaryTileUtils.Exists(oldKey))
-                        {
-                            await AsyncTask.RunAsync(SecondaryTileUtils.UpdateTileId(oldKey, location.query));
-                        }
+                            // Update tile id for location
+                            if (SecondaryTileUtils.Exists(oldKey))
+                            {
+                                await SecondaryTileUtils.UpdateTileId(oldKey, location.query);
+                            }
 #endif
+                        }
                     }
+
+                    await GetWeatherData(request);
                 }
-
-                await GetWeatherData(request);
-            }
+            });
         }
 
-        private async Task<bool> LoadSavedWeatherData(WeatherRequest request)
+        private ConfiguredTaskAwaitable<bool> LoadSavedWeatherData(WeatherRequest request)
         {
-            return await LoadSavedWeatherData(request, false);
+            return LoadSavedWeatherData(request, false);
         }
 
-        private async Task<bool> LoadSavedWeatherData(WeatherRequest request, bool _override)
+        private ConfiguredTaskAwaitable<bool> LoadSavedWeatherData(WeatherRequest request, bool _override)
         {
-            // Load weather data
-            try
+            return AsyncTask.CreateTask(async () =>
             {
-                weather = await Settings.GetWeatherData(location.query);
-
-                if (request.LoadAlerts && weather != null && wm.SupportsAlerts)
-                    weather.weather_alerts = await Settings.GetWeatherAlertData(location.query);
-
-                if (request.LoadForecasts && weather != null)
+                // Load weather data
+                try
                 {
-                    var forecasts = await Settings.GetWeatherForecastData(location.query);
-                    var hrForecasts = await Settings.GetHourlyWeatherForecastData(location.query);
-                    weather.forecast = forecasts.forecast;
-                    weather.hr_forecast = hrForecasts;
-                    weather.txt_forecast = forecasts.txt_forecast;
-                }
-
-                if (_override && weather == null)
-                {
-                    // If weather is still unavailable try manually searching for it
-                    weather = await Settings.GetWeatherDataByCoordinate(location);
+                    weather = await Settings.GetWeatherData(location.query);
 
                     if (request.LoadAlerts && weather != null && wm.SupportsAlerts)
-                        weather.weather_alerts = await Settings.GetWeatherAlertData(weather.query);
+                        weather.weather_alerts = await Settings.GetWeatherAlertData(location.query);
 
                     if (request.LoadForecasts && weather != null)
                     {
@@ -265,15 +253,33 @@ namespace SimpleWeather.WeatherData
                         weather.hr_forecast = hrForecasts;
                         weather.txt_forecast = forecasts.txt_forecast;
                     }
-                }
-            }
-            catch (Exception ex)
-            {
-                weather = null;
-                Logger.WriteLine(LoggerLevel.Error, ex, "WeatherDataLoader: error loading saved weather data");
-            }
 
-            return IsDataValid(_override);
+                    if (_override && weather == null)
+                    {
+                        // If weather is still unavailable try manually searching for it
+                        weather = await Settings.GetWeatherDataByCoordinate(location);
+
+                        if (request.LoadAlerts && weather != null && wm.SupportsAlerts)
+                            weather.weather_alerts = await Settings.GetWeatherAlertData(weather.query);
+
+                        if (request.LoadForecasts && weather != null)
+                        {
+                            var forecasts = await Settings.GetWeatherForecastData(location.query);
+                            var hrForecasts = await Settings.GetHourlyWeatherForecastData(location.query);
+                            weather.forecast = forecasts.forecast;
+                            weather.hr_forecast = hrForecasts;
+                            weather.txt_forecast = forecasts.txt_forecast;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    weather = null;
+                    Logger.WriteLine(LoggerLevel.Error, ex, "WeatherDataLoader: error loading saved weather data");
+                }
+
+                return IsDataValid(_override);
+            });
         }
 
         private bool IsDataValid(bool _override)
@@ -324,7 +330,7 @@ namespace SimpleWeather.WeatherData
 
         private ConfiguredTaskAwaitable SaveWeatherAlerts()
         {
-            return AsyncTask.RunAsync(async () =>
+            return AsyncTask.CreateTask(async () =>
             {
                 if (weather.weather_alerts != null)
                 {

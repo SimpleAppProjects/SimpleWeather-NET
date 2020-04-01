@@ -14,60 +14,63 @@ namespace SimpleWeather.NWS
 {
     public class NWSAlertProvider : IWeatherAlertProvider
     {
-        public async Task<List<WeatherAlert>> GetAlerts(LocationData location)
+        public Task<List<WeatherAlert>> GetAlerts(LocationData location)
         {
-            List<WeatherAlert> alerts = null;
-
-            string queryAPI = null;
-            Uri queryURL = null;
-
-            queryAPI = "https://api.weather.gov/alerts/active?point={0},{1}";
-            queryURL = new Uri(string.Format(queryAPI, location.latitude, location.longitude));
-
-            try
+            return Task.Run(async () =>
             {
-                CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
+                List<WeatherAlert> alerts = null;
 
-                // Connect to webstream
-                HttpClient webClient = new HttpClient();
+                string queryAPI = null;
+                Uri queryURL = null;
 
-                var version = string.Format("v{0}.{1}.{2}",
-                    Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
+                queryAPI = "https://api.weather.gov/alerts/active?point={0},{1}";
+                queryURL = new Uri(string.Format(queryAPI, location.latitude, location.longitude));
 
-                webClient.DefaultRequestHeaders.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
-                webClient.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
-
-                HttpResponseMessage response = await AsyncTask.RunAsync(webClient.GetAsync(queryURL).AsTask(cts.Token));
-                response.EnsureSuccessStatusCode();
-                Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-                // End Stream
-                webClient.Dispose();
-                cts.Dispose();
-
-                // Load data
-                var root = JSONParser.Deserializer<AlertRootobject>(contentStream);
-
-                alerts = new List<WeatherAlert>(root.graph.Length);
-
-                foreach (AlertGraph result in root.graph)
+                try
                 {
-                    alerts.Add(new WeatherAlert(result));
+                    CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
+
+                    // Connect to webstream
+                    HttpClient webClient = new HttpClient();
+
+                    var version = string.Format("v{0}.{1}.{2}",
+                        Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
+
+                    webClient.DefaultRequestHeaders.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
+                    webClient.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
+
+                    HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
+                    response.EnsureSuccessStatusCode();
+                    Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                    // End Stream
+                    webClient.Dispose();
+                    cts.Dispose();
+
+                    // Load data
+                    var root = JSONParser.Deserializer<AlertRootobject>(contentStream);
+
+                    alerts = new List<WeatherAlert>(root.graph.Length);
+
+                    foreach (AlertGraph result in root.graph)
+                    {
+                        alerts.Add(new WeatherAlert(result));
+                    }
+
+                    // End Stream
+                    if (contentStream != null)
+                        contentStream.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    alerts = new List<WeatherAlert>();
+                    Logger.WriteLine(LoggerLevel.Error, ex, "NWSAlertProvider: error getting weather alert data");
                 }
 
-                // End Stream
-                if (contentStream != null)
-                    contentStream.Dispose();
-            }
-            catch (Exception ex)
-            {
-                alerts = new List<WeatherAlert>();
-                Logger.WriteLine(LoggerLevel.Error, ex, "NWSAlertProvider: error getting weather alert data");
-            }
+                if (alerts == null)
+                    alerts = new List<WeatherAlert>();
 
-            if (alerts == null)
-                alerts = new List<WeatherAlert>();
-
-            return alerts;
+                return alerts;
+            });
         }
     }
 }

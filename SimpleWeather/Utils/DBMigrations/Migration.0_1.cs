@@ -17,7 +17,7 @@ namespace SimpleWeather.Utils
     {
         public static ConfiguredTaskAwaitable MigrateDataJsonToDB(SQLiteAsyncConnection locationDB, SQLiteAsyncConnection weatherDB)
         {
-            return AsyncTask.RunAsync(async () =>
+            return Task.Run(async () =>
             {
                 var appDataFolder = ApplicationData.Current.LocalFolder;
 
@@ -75,8 +75,8 @@ namespace SimpleWeather.Utils
                         {
                             var weather = oldWeather[query] as Weather;
                             var prov = WeatherManager.GetProvider(weather.source);
-                            var qview = await AsyncTask.RunAsync(prov.GetLocation(
-                                new WeatherUtils.Coordinate(String.Format("{0},{1}", weather.location.latitude, weather.location.longitude))));
+                            var qview = await prov.GetLocation(
+                                new WeatherUtils.Coordinate(String.Format("{0},{1}", weather.location.latitude, weather.location.longitude)));
 
                             LocationData loc = new LocationData(qview);
                             data.Add(loc);
@@ -94,7 +94,7 @@ namespace SimpleWeather.Utils
                     await dataFile.DeleteAsync();
                     dataFile = null;
                 }
-            });
+            }).ConfigureAwait(false);
         }
     }
 }

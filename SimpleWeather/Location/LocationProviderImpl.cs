@@ -28,35 +28,38 @@ namespace SimpleWeather.Location
         public abstract String GetAPIKey();
 
         // Utils Methods
-        public virtual async Task UpdateLocationData(LocationData location, String weatherAPI)
+        public virtual Task UpdateLocationData(LocationData location, String weatherAPI)
         {
-            LocationQueryViewModel qview = null;
-            try
+            return Task.Run(async () =>
             {
-                qview = await AsyncTask.RunAsync(GetLocation(new WeatherUtils.Coordinate(location), weatherAPI));
-            }
-            catch (WeatherException wEx)
-            {
-                Logger.WriteLine(LoggerLevel.Error, wEx, "LocationProviderImpl: UpdateLocationData: WeatherException!");
-            }
-
-            if (qview != null && !String.IsNullOrWhiteSpace(qview.LocationQuery))
-            {
-                location.name = qview.LocationName;
-                location.latitude = qview.LocationLat;
-                location.longitude = qview.LocationLong;
-                location.tz_long = qview.LocationTZLong;
-                if (String.IsNullOrEmpty(qview.LocationTZLong) && location.longitude != 0 && location.latitude != 0)
+                LocationQueryViewModel qview = null;
+                try
                 {
-                    String tzId = await AsyncTask.RunAsync(TZDB.TZDBCache.GetTimeZone(location.latitude, location.longitude));
-                    if (!String.IsNullOrWhiteSpace(tzId))
-                        location.tz_long = tzId;
+                    qview = await GetLocation(new WeatherUtils.Coordinate(location), weatherAPI);
                 }
-                location.locationSource = qview.LocationSource;
+                catch (WeatherException wEx)
+                {
+                    Logger.WriteLine(LoggerLevel.Error, wEx, "LocationProviderImpl: UpdateLocationData: WeatherException!");
+                }
 
-                // Update DB here or somewhere else
-                await Settings.UpdateLocation(location);
-            }
+                if (qview != null && !String.IsNullOrWhiteSpace(qview.LocationQuery))
+                {
+                    location.name = qview.LocationName;
+                    location.latitude = qview.LocationLat;
+                    location.longitude = qview.LocationLong;
+                    location.tz_long = qview.LocationTZLong;
+                    if (String.IsNullOrEmpty(qview.LocationTZLong) && location.longitude != 0 && location.latitude != 0)
+                    {
+                        String tzId = await TZDB.TZDBCache.GetTimeZone(location.latitude, location.longitude);
+                        if (!String.IsNullOrWhiteSpace(tzId))
+                            location.tz_long = tzId;
+                    }
+                    location.locationSource = qview.LocationSource;
+
+                    // Update DB here or somewhere else
+                    await Settings.UpdateLocation(location);
+                }
+            });
         }
 
         public virtual String LocaleToLangCode(String iso, String name) { return "EN"; }

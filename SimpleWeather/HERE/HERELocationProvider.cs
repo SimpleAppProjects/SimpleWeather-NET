@@ -25,158 +25,233 @@ namespace SimpleWeather.HERE
         public override bool SupportsWeatherLocale => true;
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string location_query, string weatherAPI)
+        public override Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string location_query, string weatherAPI)
         {
-            ObservableCollection<LocationQueryViewModel> locations = null;
+            return Task.Run(async () =>
+            {
+                ObservableCollection<LocationQueryViewModel> locations = null;
 
-            var userlang = GlobalizationPreferences.Languages[0];
-            var culture = new CultureInfo(userlang);
+                var userlang = GlobalizationPreferences.Languages[0];
+                var culture = new CultureInfo(userlang);
 
-            string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
+                string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
 #if DEBUG
-            string queryAPI = "https://autocomplete.geocoder.ls.hereapi.com/6.2/suggest.json";
+                string queryAPI = "https://autocomplete.geocoder.ls.hereapi.com/6.2/suggest.json";
 #else
-            string queryAPI = "https://autocomplete.geocoder.ls.hereapi.com/6.2/suggest.json";
+                string queryAPI = "https://autocomplete.geocoder.ls.hereapi.com/6.2/suggest.json";
 #endif
-            string query = "?query={0}&language={1}&maxresults=10";
+                string query = "?query={0}&language={1}&maxresults=10";
 
-            OAuthRequest authRequest = new OAuthRequest(APIKeys.GetHERECliID(), APIKeys.GetHERECliSecr());
+                OAuthRequest authRequest = new OAuthRequest(APIKeys.GetHERECliID(), APIKeys.GetHERECliSecr());
 
-            Uri queryURL = new Uri(String.Format(queryAPI + query, location_query, locale));
-            WeatherException wEx = null;
-            // Limit amount of results shown
-            int maxResults = 10;
+                Uri queryURL = new Uri(String.Format(queryAPI + query, location_query, locale));
+                WeatherException wEx = null;
+                // Limit amount of results shown
+                int maxResults = 10;
 
-            using (HttpClient webClient = new HttpClient())
-            using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-            using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
-            {
-                try
+                using (HttpClient webClient = new HttpClient())
+                using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
                 {
-                    // Add headers to request
-                    request.Headers.Add("Authorization", await AsyncTask.RunAsync(HEREOAuthUtils.GetBearerToken()));
-
-                    // Connect to webstream
-                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.SendRequestAsync(request).AsTask(cts.Token));
-                    response.EnsureSuccessStatusCode();
-                    Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-                    // End Stream
-                    webClient.Dispose();
-
-                    // Load data
-                    var locationSet = new HashSet<LocationQueryViewModel>();
-                    AC_Rootobject root = await AsyncTask.RunAsync(() =>
+                    try
                     {
-                        return JSONParser.Deserializer<AC_Rootobject>(contentStream);
-                    });
+                        // Add headers to request
+                        request.Headers.Add("Authorization", await HEREOAuthUtils.GetBearerToken());
 
-                    foreach (Suggestion result in root.suggestions)
-                    {
-                        // Filter: only store city results
-                        bool added = false;
-                        if ("city".Equals(result.matchLevel)
-                                || "district".Equals(result.matchLevel)
-                                || "postalCode".Equals(result.matchLevel))
-                            added = locationSet.Add(new LocationQueryViewModel(result, weatherAPI));
-                        else
-                            continue;
+                        // Connect to webstream
+                        HttpResponseMessage response = await webClient.SendRequestAsync(request).AsTask(cts.Token);
+                        response.EnsureSuccessStatusCode();
+                        Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                        // End Stream
+                        webClient.Dispose();
 
-                        // Limit amount of results
-                        if (added)
+                        // Load data
+                        var locationSet = new HashSet<LocationQueryViewModel>();
+                        AC_Rootobject root = JSONParser.Deserializer<AC_Rootobject>(contentStream);
+
+                        foreach (Suggestion result in root.suggestions)
                         {
-                            maxResults--;
-                            if (maxResults <= 0)
-                                break;
+                            // Filter: only store city results
+                            bool added = false;
+                            if ("city".Equals(result.matchLevel)
+                                    || "district".Equals(result.matchLevel)
+                                    || "postalCode".Equals(result.matchLevel))
+                                added = locationSet.Add(new LocationQueryViewModel(result, weatherAPI));
+                            else
+                                continue;
+
+                            // Limit amount of results
+                            if (added)
+                            {
+                                maxResults--;
+                                if (maxResults <= 0)
+                                    break;
+                            }
                         }
+
+                        locations = new ObservableCollection<LocationQueryViewModel>(locationSet);
+
+                        // End Stream
+                        contentStream?.Dispose();
                     }
-
-                    locations = new ObservableCollection<LocationQueryViewModel>(locationSet);
-
-                    // End Stream
-                    contentStream?.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                    catch (Exception ex)
                     {
-                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                        if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                        {
+                            wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                        }
+                        Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting locations");
                     }
-                    Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting locations");
+
+                    if (wEx != null)
+                        throw wEx;
+
+                    if (locations == null || locations.Count == 0)
+                        locations = new ObservableCollection<LocationQueryViewModel>() { new LocationQueryViewModel() };
+
+                    return locations;
                 }
-
-                if (wEx != null)
-                    throw wEx;
-
-                if (locations == null || locations.Count == 0)
-                    locations = new ObservableCollection<LocationQueryViewModel>() { new LocationQueryViewModel() };
-
-                return locations;
-            }
+            });
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override async Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coord, string weatherAPI)
+        public override Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coord, string weatherAPI)
         {
-            LocationQueryViewModel location = null;
+            return Task.Run(async () =>
+            {
+                LocationQueryViewModel location = null;
 
-            var userlang = GlobalizationPreferences.Languages[0];
-            var culture = new CultureInfo(userlang);
+                var userlang = GlobalizationPreferences.Languages[0];
+                var culture = new CultureInfo(userlang);
 
-            string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
+                string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
 #if DEBUG
-            string queryAPI = "https://reverse.geocoder.ls.hereapi.com/6.2/reversegeocode.json";
+                string queryAPI = "https://reverse.geocoder.ls.hereapi.com/6.2/reversegeocode.json";
 #else
-            string queryAPI = "https://reverse.geocoder.ls.hereapi.com/6.2/reversegeocode.json";
+                string queryAPI = "https://reverse.geocoder.ls.hereapi.com/6.2/reversegeocode.json";
 #endif
-            string location_query = string.Format("{0},{1}", coord.Latitude.ToString(CultureInfo.InvariantCulture), coord.Longitude.ToString(CultureInfo.InvariantCulture));
-            string query = "?prox={0},150&mode=retrieveAddresses&maxresults=1&additionaldata=Country2,true&gen=9&jsonattributes=1" +
-                "&locationattributes=adminInfo,timeZone,-mapView,-mapReference&language={1}";
+                string location_query = string.Format("{0},{1}", coord.Latitude.ToString(CultureInfo.InvariantCulture), coord.Longitude.ToString(CultureInfo.InvariantCulture));
+                string query = "?prox={0},150&mode=retrieveAddresses&maxresults=1&additionaldata=Country2,true&gen=9&jsonattributes=1" +
+                    "&locationattributes=adminInfo,timeZone,-mapView,-mapReference&language={1}";
 
-            Uri queryURL = new Uri(String.Format(queryAPI + query, location_query, locale));
-            Result result = null;
-            WeatherException wEx = null;
+                Uri queryURL = new Uri(String.Format(queryAPI + query, location_query, locale));
+                Result result = null;
+                WeatherException wEx = null;
 
-            using (HttpClient webClient = new HttpClient())
-            using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-            using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
-            {
-                try
+                using (HttpClient webClient = new HttpClient())
+                using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
                 {
-                    // Add headers to request
-                    request.Headers.Add("Authorization", await AsyncTask.RunAsync(HEREOAuthUtils.GetBearerToken()));
-
-                    // Connect to webstream
-                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.SendRequestAsync(request).AsTask(cts.Token));
-                    response.EnsureSuccessStatusCode();
-                    Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-
-                    // End Stream
-                    webClient.Dispose();
-
-                    // Load data
-                    Geo_Rootobject root = await AsyncTask.RunAsync(() =>
+                    try
                     {
-                        return JSONParser.Deserializer<Geo_Rootobject>(contentStream);
-                    });
+                        // Add headers to request
+                        request.Headers.Add("Authorization", await HEREOAuthUtils.GetBearerToken());
 
-                    if (root.response.view.Length > 0 && root.response.view[0].result.Length > 0)
-                        result = root.response.view[0].result[0];
+                        // Connect to webstream
+                        HttpResponseMessage response = await webClient.SendRequestAsync(request).AsTask(cts.Token);
+                        response.EnsureSuccessStatusCode();
+                        Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
-                    // End Stream
-                    contentStream?.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    result = null;
+                        // End Stream
+                        webClient.Dispose();
 
-                    if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                        // Load data
+                        Geo_Rootobject root = JSONParser.Deserializer<Geo_Rootobject>(contentStream);
+
+                        if (root.response.view.Length > 0 && root.response.view[0].result.Length > 0)
+                            result = root.response.view[0].result[0];
+
+                        // End Stream
+                        contentStream?.Dispose();
+                    }
+                    catch (Exception ex)
                     {
-                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                        result = null;
+
+                        if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                        {
+                            wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                        }
+
+                        Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting location");
                     }
 
-                    Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting location");
+                    if (wEx != null)
+                        throw wEx;
+
+                    if (result != null && !String.IsNullOrWhiteSpace(result.location.locationId))
+                        location = new LocationQueryViewModel(result, weatherAPI);
+                    else
+                        location = new LocationQueryViewModel();
+
+                    return location;
+                }
+            });
+        }
+
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
+        public Task<LocationQueryViewModel> GetLocationFromLocID(string locationID, string weatherAPI)
+        {
+            return Task.Run(async () =>
+            {
+                LocationQueryViewModel location = null;
+
+                var userlang = GlobalizationPreferences.Languages[0];
+                var culture = new CultureInfo(userlang);
+
+                string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
+
+#if DEBUG
+                string queryAPI = "https://geocoder.ls.hereapi.com/6.2/geocode.json";
+#else
+                string queryAPI = "https://geocoder.ls.hereapi.com/6.2/geocode.json";
+#endif
+                string query = "?locationid={0}&mode=retrieveAddresses&maxresults=1&additionaldata=Country2,true&gen=9&jsonattributes=1" +
+                    "&locationattributes=adminInfo,timeZone,-mapView,-mapReference&language={1}";
+
+                Uri queryURL = new Uri(String.Format(queryAPI + query, locationID, locale));
+                Result result = null;
+                WeatherException wEx = null;
+
+                using (HttpClient webClient = new HttpClient())
+                using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
+                {
+                    try
+                    {
+                        // Add headers to request
+                        request.Headers.Add("Authorization", await HEREOAuthUtils.GetBearerToken());
+
+                        // Connect to webstream
+                        HttpResponseMessage response = await webClient.SendRequestAsync(request).AsTask(cts.Token);
+                        response.EnsureSuccessStatusCode();
+                        Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+
+                        // End Stream
+                        webClient.Dispose();
+
+                        // Load data
+                        Geo_Rootobject root = JSONParser.Deserializer<Geo_Rootobject>(contentStream);
+
+                        if (root.response.view.Length > 0 && root.response.view[0].result.Length > 0)
+                            result = root.response.view[0].result[0];
+
+                        // End Stream
+                        contentStream?.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        result = null;
+
+                        if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                        {
+                            wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                        }
+
+                        Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting location");
+                    }
                 }
 
                 if (wEx != null)
@@ -188,90 +263,13 @@ namespace SimpleWeather.HERE
                     location = new LocationQueryViewModel();
 
                 return location;
-            }
-        }
-
-        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public async Task<LocationQueryViewModel> GetLocationFromLocID(string locationID, string weatherAPI)
-        {
-            LocationQueryViewModel location = null;
-
-            var userlang = GlobalizationPreferences.Languages[0];
-            var culture = new CultureInfo(userlang);
-
-            string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
-
-#if DEBUG
-            string queryAPI = "https://geocoder.ls.hereapi.com/6.2/geocode.json";
-#else
-            string queryAPI = "https://geocoder.ls.hereapi.com/6.2/geocode.json";
-#endif
-            string query = "?locationid={0}&mode=retrieveAddresses&maxresults=1&additionaldata=Country2,true&gen=9&jsonattributes=1" +
-                "&locationattributes=adminInfo,timeZone,-mapView,-mapReference&language={1}";
-
-            Uri queryURL = new Uri(String.Format(queryAPI + query, locationID, locale));
-            Result result = null;
-            WeatherException wEx = null;
-
-            using (HttpClient webClient = new HttpClient())
-            using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-            using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
-            {
-                try
-                {
-                    // Add headers to request
-                    request.Headers.Add("Authorization", await AsyncTask.RunAsync(HEREOAuthUtils.GetBearerToken()));
-
-                    // Connect to webstream
-                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.SendRequestAsync(request).AsTask(cts.Token));
-                    response.EnsureSuccessStatusCode();
-                    Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-
-                    // End Stream
-                    webClient.Dispose();
-
-                    // Load data
-                    Geo_Rootobject root = await AsyncTask.RunAsync(() =>
-                    {
-                        return JSONParser.Deserializer<Geo_Rootobject>(contentStream);
-                    });
-
-                    if (root.response.view.Length > 0 && root.response.view[0].result.Length > 0)
-                        result = root.response.view[0].result[0];
-
-                    // End Stream
-                    contentStream?.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    result = null;
-
-                    if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
-                    {
-                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                    }
-
-                    Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting location");
-                }
-            }
-
-            if (wEx != null)
-                throw wEx;
-
-            if (result != null && !String.IsNullOrWhiteSpace(result.location.locationId))
-                location = new LocationQueryViewModel(result, weatherAPI);
-            else
-                location = new LocationQueryViewModel();
-
-            return location;
+            });
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override Task<bool> IsKeyValid(string key)
         {
-            var tcs = new TaskCompletionSource<bool>();
-            tcs.SetResult(false);
-            return tcs.Task;
+            return Task.FromResult(false);
         }
 
         public override String GetAPIKey()

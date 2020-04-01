@@ -24,7 +24,6 @@ namespace SimpleWeather.Utils
         public static bool IsFahrenheit { get { return Unit == Fahrenheit; } }
         public static bool FollowGPS { get { return UseFollowGPS(); } set { SetFollowGPS(value); } }
         private static string LastGPSLocation { get { return GetLastGPSLocation(); } set { SetLastGPSLocation(value); } }
-        public static LocationData HomeData { get { return GetHomeData(); } }
         public static DateTime UpdateTime { get { return GetUpdateTime(); } set { SetUpdateTime(value); } }
         public static int RefreshInterval { get { return GetRefreshInterval(); } set { SetRefreshInterval(value); } }
         public static bool ShowAlerts { get { return UseAlerts(); } set { SetAlerts(value); } }
@@ -130,110 +129,144 @@ namespace SimpleWeather.Utils
             }
         }
 
-        public static async Task LoadIfNeeded()
+        public static void LoadIfNeeded()
         {
             if (!loaded)
             {
-                await Load();
+                Load();
                 loaded = true;
             }
         }
 
-        private static async Task CreateDatabase()
+        internal static void CreateDatabase()
         {
-            await locationDB.CreateTableAsync<LocationData>();
-            await locationDB.CreateTableAsync<Favorites>();
-            await weatherDB.CreateTableAsync<Weather>();
-            await weatherDB.CreateTableAsync<WeatherAlerts>();
-            await weatherDB.CreateTableAsync<Forecasts>();
-            await weatherDB.CreateTableAsync<HourlyForecasts>();
-        }
+            var locDBConn = locationDB.GetConnection();
+            var weatherDBConn = weatherDB.GetConnection();
 
-        private static async Task DestroyDatabase()
-        {
-            await locationDB.DropTableAsync<Favorites>();
-            await locationDB.DropTableAsync<LocationData>();
-            await weatherDB.DropTableAsync<WeatherAlerts>();
-            await weatherDB.DropTableAsync<Forecasts>();
-            await weatherDB.DropTableAsync<HourlyForecasts>();
-            await weatherDB.DropTableAsync<Weather>();
-        }
-
-        private static async Task Load()
-        {
-            // Create DB tables
-            TextBlobOperations.SetTextSerializer(new DBTextBlobSerializer());
-            await AsyncTask.RunAsync(CreateDatabase);
-
-            // Migrate old data if available
-            await DataMigrations.PerformDBMigrations(weatherDB, locationDB);
-
-            if (!String.IsNullOrWhiteSpace(LastGPSLocation))
+            using (locDBConn.Lock())
+            using (weatherDBConn.Lock())
             {
-                try
-                {
-                    var jsonTextReader = new Utf8Json.JsonReader(System.Text.Encoding.UTF8.GetBytes(LastGPSLocation));
-                    lastGPSLocData = new LocationData();
-                    lastGPSLocData.FromJson(ref jsonTextReader);
-                }
-                catch (Exception ex)
-                {
-                    Logger.WriteLine(LoggerLevel.Error, ex, "SimpleWeather: Settings.Load(): LastGPSLocation");
-                }
-                finally
-                {
-                    if (lastGPSLocData == null || !lastGPSLocData.IsValid())
-                        lastGPSLocData = new LocationData();
-                }
+                locDBConn.CreateTable<LocationData>();
+                locDBConn.CreateTable<Favorites>();
+                weatherDBConn.CreateTable<Weather>();
+                weatherDBConn.CreateTable<WeatherAlerts>();
+                weatherDBConn.CreateTable<Forecasts>();
+                weatherDBConn.CreateTable<HourlyForecasts>();
             }
+        }
 
-            DataMigrations.PerformVersionMigrations(weatherDB, locationDB);
+        internal static void DestroyDatabase()
+        {
+            var locDBConn = locationDB.GetConnection();
+            var weatherDBConn = weatherDB.GetConnection();
+
+            using (locDBConn.Lock())
+            using (weatherDBConn.Lock())
+            {
+                locDBConn.DropTable<Favorites>();
+                locDBConn.DropTable<LocationData>();
+                weatherDBConn.DropTable<HourlyForecasts>();
+                weatherDBConn.DropTable<Forecasts>();
+                weatherDBConn.DropTable<WeatherAlerts>();
+                weatherDBConn.DropTable<Weather>();
+            }
+        }
+
+        /// <summary>
+        /// Load
+        /// </summary>
+        /// <exception cref="ObjectDisposedException"></exception>
+        /// <exception cref="AggregateException"></exception>
+        private static void Load()
+        {
+            Task.Run(async () =>
+            {
+                // Create DB tables
+                TextBlobOperations.SetTextSerializer(new DBTextBlobSerializer());
+                CreateDatabase();
+
+                // Migrate old data if available
+                await DataMigrations.PerformDBMigrations(locationDB, weatherDB);
+
+                if (!String.IsNullOrWhiteSpace(LastGPSLocation))
+                {
+                    try
+                    {
+                        var jsonTextReader = new Utf8Json.JsonReader(System.Text.Encoding.UTF8.GetBytes(LastGPSLocation));
+                        lastGPSLocData = new LocationData();
+                        lastGPSLocData.FromJson(ref jsonTextReader);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.WriteLine(LoggerLevel.Error, ex, "SimpleWeather: Settings.Load(): LastGPSLocation");
+                    }
+                    finally
+                    {
+                        if (lastGPSLocData == null || !lastGPSLocData.IsValid())
+                            lastGPSLocData = new LocationData();
+                    }
+                }
+
+                await DataMigrations.PerformVersionMigrations(weatherDB, locationDB);
+            }).Wait();
+        }
+
+        public static ConfiguredTaskAwaitable<LocationData> GetFirstFavorite()
+        {
+            return AsyncTask.CreateTask<LocationData>(async () =>
+            {
+                LoadIfNeeded();
+
+                var query = await locationDB.QueryAsync<LocationData>(
+                    "select locations.* from locations INNER JOIN favorites on locations.query = favorites.query ORDER by favorites.position LIMIT 1");
+                return query?.FirstOrDefault();
+            });
         }
 
         public static ConfiguredTaskAwaitable<IEnumerable<LocationData>> GetFavorites()
         {
-            return AsyncTask.RunAsync<IEnumerable<LocationData>>(async () =>
+            return AsyncTask.CreateTask<IEnumerable<LocationData>>(async () =>
             {
-                await LoadIfNeeded();
+                LoadIfNeeded();
 
-                var query = await AsyncTask.RunAsync(locationDB.QueryAsync<LocationData>(
-                    "select locations.* from locations INNER JOIN favorites on locations.query = favorites.query ORDER by favorites.position"));
+                var query = await locationDB.QueryAsync<LocationData>(
+                    "select locations.* from locations INNER JOIN favorites on locations.query = favorites.query ORDER by favorites.position");
                 return query;
             });
         }
 
         public static ConfiguredTaskAwaitable<IEnumerable<LocationData>> GetLocationData()
         {
-            return AsyncTask.RunAsync<IEnumerable<LocationData>>(async () =>
+            return AsyncTask.CreateTask<IEnumerable<LocationData>>(async () =>
             {
-                await LoadIfNeeded();
-                return await AsyncTask.RunAsync(locationDB.Table<LocationData>().ToListAsync());
+                LoadIfNeeded();
+                return await locationDB.Table<LocationData>().ToListAsync();
             });
         }
 
         public static ConfiguredTaskAwaitable<LocationData> GetLocation(string key)
         {
-            return AsyncTask.RunAsync(async () =>
+            return AsyncTask.CreateTask(async () =>
             {
-                await LoadIfNeeded();
-                return await AsyncTask.RunAsync(locationDB.FindAsync<LocationData>(key));
+                LoadIfNeeded();
+                return await locationDB.FindAsync<LocationData>(key);
             });
         }
 
         public static ConfiguredTaskAwaitable<Weather> GetWeatherData(string key)
         {
-            return AsyncTask.RunAsync(async () =>
+            return AsyncTask.CreateTask(async () =>
             {
-                await LoadIfNeeded();
-                return await AsyncTask.RunAsync(weatherDB.FindWithChildrenAsync<Weather>(key));
+                LoadIfNeeded();
+                return await weatherDB.FindWithChildrenAsync<Weather>(key);
             });
         }
 
         public static ConfiguredTaskAwaitable<Weather> GetWeatherDataByCoordinate(LocationData location)
         {
-            return AsyncTask.RunAsync(async () =>
+            return AsyncTask.CreateTask(async () =>
             {
-                await LoadIfNeeded();
+                LoadIfNeeded();
                 var culture = System.Globalization.CultureInfo.InvariantCulture;
                 var escapedQuery = String.Format(culture, "\\\"latitude\\\":\\\"{0}\\\",\\\"longitude\\\":\\\"{1}\\\"",
                         location.latitude.ToString(culture), location.longitude.ToString(culture));
@@ -250,15 +283,15 @@ namespace SimpleWeather.Utils
 
         public static ConfiguredTaskAwaitable<ICollection<WeatherAlert>> GetWeatherAlertData(string key)
         {
-            return AsyncTask.RunAsync(async () =>
+            return AsyncTask.CreateTask(async () =>
             {
-                await LoadIfNeeded();
+                LoadIfNeeded();
 
                 ICollection<WeatherAlert> alerts = null;
 
                 try
                 {
-                    var weatherAlertData = await AsyncTask.RunAsync(weatherDB.FindWithChildrenAsync<WeatherAlerts>(key));
+                    var weatherAlertData = await weatherDB.FindWithChildrenAsync<WeatherAlerts>(key);
 
                     if (weatherAlertData != null && weatherAlertData.alerts != null)
                         alerts = weatherAlertData.alerts;
@@ -279,39 +312,37 @@ namespace SimpleWeather.Utils
 
         public static ConfiguredTaskAwaitable<Forecasts> GetWeatherForecastData(string key)
         {
-            return AsyncTask.RunAsync(async () =>
+            return AsyncTask.CreateTask(async () =>
             {
-                await LoadIfNeeded();
-                return await AsyncTask.RunAsync(weatherDB.FindWithChildrenAsync<Forecasts>(key));
+                LoadIfNeeded();
+                return await weatherDB.FindWithChildrenAsync<Forecasts>(key);
             });
         }
 
         public static ConfiguredTaskAwaitable<IList<HourlyForecast>> GetHourlyWeatherForecastData(string key)
         {
-            return AsyncTask.RunAsync<IList<HourlyForecast>>(async () =>
+            return AsyncTask.CreateTask<IList<HourlyForecast>>(async () =>
             {
-                await LoadIfNeeded();
-                return await AsyncTask.RunAsync(async () =>
-                {
-                    var list = (await weatherDB.Table<HourlyForecasts>()
-                                                            .Where(hrf => hrf.query == key)
-                                                            .OrderBy(hrf => hrf.dateblob)
-                                                            .ToListAsync());
-                    foreach (var item in list)
-                    {
-                        await weatherDB.GetChildrenAsync(item);
-                    }
+                LoadIfNeeded();
 
-                    return list.Select(hrf => hrf.hr_forecast).ToList();
-                });
+                var list = (await weatherDB.Table<HourlyForecasts>()
+                                                        .Where(hrf => hrf.query == key)
+                                                        .OrderBy(hrf => hrf.dateblob)
+                                                        .ToListAsync());
+                foreach (var item in list)
+                {
+                    await weatherDB.GetChildrenAsync(item);
+                }
+
+                return list.Select(hrf => hrf.hr_forecast).ToList();
             });
         }
 
         public static ConfiguredTaskAwaitable<LocationData> GetLastGPSLocData()
         {
-            return AsyncTask.RunAsync(async () =>
+            return AsyncTask.CreateTask(async () =>
             {
-                await LoadIfNeeded();
+                LoadIfNeeded();
 
                 if (lastGPSLocData != null && lastGPSLocData.locationType != LocationType.GPS)
                     lastGPSLocData.locationType = LocationType.GPS;
@@ -322,43 +353,44 @@ namespace SimpleWeather.Utils
 
         public static ConfiguredTaskAwaitable SaveWeatherData(Weather weather)
         {
-            return AsyncTask.RunAsync(async () =>
+            return AsyncTask.CreateTask(async () =>
             {
                 if (weather != null && weather.IsValid())
                 {
-                    await AsyncTask.RunAsync(weatherDB.InsertOrReplaceWithChildrenAsync(weather));
+                    await weatherDB.InsertOrReplaceWithChildrenAsync(weather);
                 }
 
-                if (await AsyncTask.RunAsync(weatherDB.Table<Weather>().CountAsync()) > CACHE_LIMIT)
-                    CleanupWeatherData();
+                int count = await weatherDB.Table<Weather>().CountAsync();
+                if (count > CACHE_LIMIT) CleanupWeatherData();
             });
         }
 
         public static ConfiguredTaskAwaitable SaveWeatherAlerts(LocationData location, ICollection<WeatherAlert> alerts)
         {
-            return AsyncTask.RunAsync(async () =>
+            return AsyncTask.CreateTask(async () =>
             {
                 if (location != null && location.IsValid())
                 {
                     var alertdata = new WeatherAlerts(location.query, alerts);
-                    await AsyncTask.RunAsync(weatherDB.InsertOrReplaceWithChildrenAsync(alertdata));
+                    await weatherDB.InsertOrReplaceWithChildrenAsync(alertdata);
                 }
 
-                if (await AsyncTask.RunAsync(weatherDB.Table<WeatherAlerts>().CountAsync()) > CACHE_LIMIT)
-                    CleanupWeatherAlertData();
+                int count = await weatherDB.Table<WeatherAlerts>().CountAsync();
+                if (count > CACHE_LIMIT) CleanupWeatherAlertData();
             });
         }
 
         public static ConfiguredTaskAwaitable SaveWeatherForecasts(Forecasts forecasts)
         {
-            return AsyncTask.RunAsync(async () =>
+            return AsyncTask.CreateTask(async () =>
             {
                 if (forecasts != null)
                 {
-                    await AsyncTask.RunAsync(weatherDB.InsertOrReplaceWithChildrenAsync(forecasts));
+                    await weatherDB.InsertOrReplaceWithChildrenAsync(forecasts);
                 }
 
-                if ((await AsyncTask.RunAsync(weatherDB.Table<Forecasts>().CountAsync())) > CACHE_LIMIT / 2)
+                int count = await weatherDB.Table<Forecasts>().CountAsync();
+                if (count > CACHE_LIMIT / 2)
                 {
                     CleanupWeatherForecastData();
                 }
@@ -367,22 +399,19 @@ namespace SimpleWeather.Utils
 
         public static ConfiguredTaskAwaitable SaveWeatherForecasts(LocationData location, IEnumerable<HourlyForecasts> forecasts)
         {
-            return AsyncTask.RunAsync(async () =>
+            return AsyncTask.CreateTask(async () =>
             {
-                await AsyncTask.RunAsync(weatherDB.ExecuteAsync("delete from hr_forecasts where query = ?", location.query));
+                await weatherDB.ExecuteAsync("delete from hr_forecasts where query = ?", location.query);
                 if (forecasts != null)
                 {
                     foreach (var fcast in forecasts)
                     {
-                        await AsyncTask.RunAsync(weatherDB.InsertOrReplaceWithChildrenAsync(fcast));
+                        await weatherDB.InsertOrReplaceWithChildrenAsync(fcast);
                     }
                 }
 
-                if ((await AsyncTask.RunAsync(weatherDB.ExecuteScalarAsync<int>(
-                    "select count(*) from (select count(*) from hr_forecasts group by query)"))) > CACHE_LIMIT / 2)
-                {
-                    CleanupWeatherForecastData();
-                }
+                int count = await weatherDB.ExecuteScalarAsync<int>("select count(*) from (select count(*) from hr_forecasts group by query)");
+                if (count > CACHE_LIMIT / 2) CleanupWeatherForecastData();
             });
         }
 
@@ -390,11 +419,11 @@ namespace SimpleWeather.Utils
         {
             AsyncTask.Run(async () =>
             {
-                var locs = await AsyncTask.RunAsync(locationDB.Table<LocationData>().ToListAsync());
+                var locs = await locationDB.Table<LocationData>().ToListAsync();
                 if (FollowGPS) locs.Add(lastGPSLocData);
                 var locQueries = locs.Select(l => l.query);
 
-                await AsyncTask.RunAsync(weatherDB.DeleteAllIdsNotInAsync<Weather>(locQueries));
+                await weatherDB.DeleteAllIdsNotInAsync<Weather>(locQueries);
             });
         }
 
@@ -402,12 +431,12 @@ namespace SimpleWeather.Utils
         {
             AsyncTask.Run(async () =>
             {
-                var locs = await AsyncTask.RunAsync(locationDB.Table<LocationData>().ToListAsync());
+                var locs = await locationDB.Table<LocationData>().ToListAsync();
                 if (FollowGPS) locs.Add(lastGPSLocData);
                 var locQueries = locs.Select(l => l.query);
 
-                await AsyncTask.RunAsync(weatherDB.DeleteAllIdsNotInAsync<Forecasts>(locQueries));
-                await AsyncTask.RunAsync(weatherDB.DeleteAllIdsNotInAsync<HourlyForecasts>("query", locQueries));
+                await weatherDB.DeleteAllIdsNotInAsync<Forecasts>(locQueries);
+                await weatherDB.DeleteAllIdsNotInAsync<HourlyForecasts>("query", locQueries);
             });
         }
 
@@ -415,17 +444,17 @@ namespace SimpleWeather.Utils
         {
             AsyncTask.Run(async () =>
             {
-                var locs = await AsyncTask.RunAsync(locationDB.Table<LocationData>().ToListAsync());
+                var locs = await locationDB.Table<LocationData>().ToListAsync();
                 if (FollowGPS) locs.Add(lastGPSLocData);
                 var locQueries = locs.Select(l => l.query);
 
-                await AsyncTask.RunAsync(weatherDB.DeleteAllIdsNotInAsync<WeatherAlerts>(locQueries));
+                await weatherDB.DeleteAllIdsNotInAsync<WeatherAlerts>(locQueries);
             });
         }
 
         public static ConfiguredTaskAwaitable SaveLocationData(List<LocationData> locationData)
         {
-            return AsyncTask.RunAsync(async () =>
+            return AsyncTask.CreateTask(async () =>
             {
                 if (locationData != null)
                 {
@@ -435,13 +464,13 @@ namespace SimpleWeather.Utils
 
                         if (loc != null && loc.IsValid())
                         {
-                            await AsyncTask.RunAsync(locationDB.InsertOrReplaceAsync(loc));
+                            await locationDB.InsertOrReplaceAsync(loc);
                             var fav = new Favorites() { query = loc.query, position = i };
-                            await AsyncTask.RunAsync(locationDB.InsertOrReplaceAsync(fav));
+                            await locationDB.InsertOrReplaceAsync(fav);
                         }
                     }
 
-                    var locs = await AsyncTask.RunAsync(locationDB.Table<LocationData>().ToListAsync());
+                    var locs = await locationDB.Table<LocationData>().ToListAsync();
                     var locToDelete = locs.Where(l => locationData.All(l2 => !l2.Equals(l)));
                     int count = locToDelete.Count();
 
@@ -449,8 +478,8 @@ namespace SimpleWeather.Utils
                     {
                         foreach (LocationData loc in locToDelete)
                         {
-                            await AsyncTask.RunAsync(locationDB.DeleteAsync<LocationData>(loc.query));
-                            await AsyncTask.RunAsync(locationDB.DeleteAsync<Favorites>(loc.query));
+                            await locationDB.DeleteAsync<LocationData>(loc.query);
+                            await locationDB.DeleteAsync<Favorites>(loc.query);
                         }
                     }
                 }
@@ -459,22 +488,22 @@ namespace SimpleWeather.Utils
 
         public static ConfiguredTaskAwaitable AddLocation(LocationData location)
         {
-            return AsyncTask.RunAsync(async () =>
+            return AsyncTask.CreateTask(async () =>
             {
                 // We only store searched locations in the db
                 // GPS location is stored in [the] local settings [container]
                 if (location?.locationType == LocationType.Search && location?.IsValid() == true)
                 {
-                    await AsyncTask.RunAsync(locationDB.InsertOrReplaceAsync(location));
-                    int pos = await AsyncTask.RunAsync(locationDB.Table<LocationData>().CountAsync());
-                    await AsyncTask.RunAsync(locationDB.InsertOrReplaceAsync(new Favorites() { query = location.query, position = pos }));
+                    await locationDB.InsertOrReplaceAsync(location);
+                    int pos = await locationDB.Table<LocationData>().CountAsync();
+                    await locationDB.InsertOrReplaceAsync(new Favorites() { query = location.query, position = pos });
                 }
             });
         }
 
         public static ConfiguredTaskAwaitable UpdateLocation(LocationData location)
         {
-            return AsyncTask.RunAsync(async () =>
+            return AsyncTask.CreateTask(async () =>
             {
                 // We only store searched locations in the db
                 // GPS location is stored in [the] local settings [container]
@@ -482,14 +511,14 @@ namespace SimpleWeather.Utils
                     Settings.SaveLastGPSLocData(location);
                 else if (location?.locationType == LocationType.Search && location?.IsValid() == true)
                 {
-                    await AsyncTask.RunAsync(locationDB.UpdateAsync(location));
+                    await locationDB.UpdateAsync(location);
                 }
             });
         }
 
         public static ConfiguredTaskAwaitable UpdateLocationWithKey(LocationData location, string oldKey)
         {
-            return AsyncTask.RunAsync(async () =>
+            return AsyncTask.CreateTask(async () =>
             {
                 if (location != null && location.IsValid() && !String.IsNullOrWhiteSpace(oldKey))
                 {
@@ -504,33 +533,33 @@ namespace SimpleWeather.Utils
                     int pos = fav.position;
 
                     // Remove location from table
-                    await AsyncTask.RunAsync(locationDB.DeleteAsync<LocationData>(oldKey));
-                    await AsyncTask.RunAsync(locationDB.DeleteAsync<Favorites>(oldKey));
+                    await locationDB.DeleteAsync<LocationData>(oldKey);
+                    await locationDB.DeleteAsync<Favorites>(oldKey);
 
                     // Add updated location with new query (pkey)
-                    await AsyncTask.RunAsync(locationDB.InsertOrReplaceAsync(location));
-                    await AsyncTask.RunAsync(locationDB.InsertOrReplaceAsync(new Favorites() { query = location.query, position = pos }));
+                    await locationDB.InsertOrReplaceAsync(location);
+                    await locationDB.InsertOrReplaceAsync(new Favorites() { query = location.query, position = pos });
                 }
             });
         }
 
         public static ConfiguredTaskAwaitable DeleteLocations()
         {
-            return AsyncTask.RunAsync(async () =>
+            return AsyncTask.CreateTask(async () =>
             {
-                await AsyncTask.RunAsync(locationDB.DeleteAllAsync<LocationData>());
-                await AsyncTask.RunAsync(locationDB.DeleteAllAsync<Favorites>());
+                await locationDB.DeleteAllAsync<LocationData>();
+                await locationDB.DeleteAllAsync<Favorites>();
             });
         }
 
         public static ConfiguredTaskAwaitable DeleteLocation(string key)
         {
-            return AsyncTask.RunAsync(async () =>
+            return AsyncTask.CreateTask(async () =>
             {
                 if (!String.IsNullOrWhiteSpace(key))
                 {
-                    await AsyncTask.RunAsync(locationDB.DeleteAsync<LocationData>(key));
-                    await AsyncTask.RunAsync(locationDB.DeleteAsync<Favorites>(key));
+                    await locationDB.DeleteAsync<LocationData>(key);
+                    await locationDB.DeleteAsync<Favorites>(key);
                     await ResetPosition();
                 }
             });
@@ -538,24 +567,24 @@ namespace SimpleWeather.Utils
 
         public static ConfiguredTaskAwaitable MoveLocation(string key, int toPos)
         {
-            return AsyncTask.RunAsync(async () =>
+            return AsyncTask.CreateTask(async () =>
             {
                 if (!String.IsNullOrWhiteSpace(key))
                 {
-                    await AsyncTask.RunAsync(locationDB.ExecuteAsync("update favorites set position = ? where query = ?", toPos, key));
+                    await locationDB.ExecuteAsync("update favorites set position = ? where query = ?", toPos, key);
                 }
             });
         }
 
         private static ConfiguredTaskAwaitable ResetPosition()
         {
-            return AsyncTask.RunAsync(async () =>
+            return AsyncTask.CreateTask(async () =>
             {
-                var favs = await AsyncTask.RunAsync(locationDB.Table<Favorites>().OrderBy(f => f.position).ToListAsync());
+                var favs = await locationDB.Table<Favorites>().OrderBy(f => f.position).ToListAsync();
                 foreach (Favorites fav in favs)
                 {
                     fav.position = favs.IndexOf(fav);
-                    await AsyncTask.RunAsync(locationDB.UpdateAsync(fav));
+                    await locationDB.UpdateAsync(fav);
                 }
             });
         }
@@ -566,16 +595,19 @@ namespace SimpleWeather.Utils
             LastGPSLocation = lastGPSLocData?.ToJson();
         }
 
-        private static LocationData GetHomeData()
+        public static Task<LocationData> GetHomeData()
         {
-            LocationData homeData = null;
+            return Task.Run(async () =>
+            {
+                LocationData homeData = null;
 
-            if (FollowGPS)
-                homeData = AsyncTask.RunAsync(async () => await GetLastGPSLocData()).GetAwaiter().GetResult();
-            else
-                homeData = AsyncTask.RunAsync(async () => (await GetFavorites()).FirstOrDefault()).GetAwaiter().GetResult();
+                if (FollowGPS)
+                    homeData = await GetLastGPSLocData();
+                else
+                    homeData = await GetFirstFavorite();
 
-            return homeData;
+                return homeData;
+            });
         }
     }
 }

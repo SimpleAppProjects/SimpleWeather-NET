@@ -23,72 +23,75 @@ namespace SimpleWeather.WeatherData
         // Methods
         // AutoCompleteQuery
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(String ac_query)
+        public Task<ObservableCollection<LocationQueryViewModel>> GetLocations(String ac_query)
         {
-            return await AsyncTask.RunAsync(LocationProvider.GetLocations(ac_query, WeatherAPI));
+            return LocationProvider.GetLocations(ac_query, WeatherAPI);
         }
         // GeopositionQuery
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public async Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coordinate)
+        public Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coordinate)
         {
-            return await AsyncTask.RunAsync(LocationProvider.GetLocation(coordinate, WeatherAPI));
+            return LocationProvider.GetLocation(coordinate, WeatherAPI);
         }
         // Weather
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public abstract Task<Weather> GetWeather(String location_query);
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public virtual async Task<Weather> GetWeather(LocationData location)
+        public virtual Task<Weather> GetWeather(LocationData location)
         {
-            if (location == null || location.query == null)
-                throw new WeatherException(WeatherUtils.ErrorStatus.Unknown);
-
-            var weather = await AsyncTask.RunAsync(GetWeather(location.query));
-
-            if (String.IsNullOrWhiteSpace(location.tz_long))
+            return Task.Run(async () =>
             {
-                if (!String.IsNullOrWhiteSpace(weather.location.tz_long))
+                if (location == null || location.query == null)
+                    throw new WeatherException(WeatherUtils.ErrorStatus.Unknown);
+
+                var weather = await AsyncTask.RunAsync(GetWeather(location.query));
+
+                if (String.IsNullOrWhiteSpace(location.tz_long))
                 {
-                    location.tz_long = weather.location.tz_long;
-                }
-                else if (location.longitude != 0 && location.latitude != 0)
-                {
-                    String tzId = await AsyncTask.RunAsync(TZDB.TZDBCache.GetTimeZone(location.latitude, location.longitude));
-                    if (!String.IsNullOrWhiteSpace(tzId))
-                        location.tz_long = tzId;
-                }
+                    if (!String.IsNullOrWhiteSpace(weather.location.tz_long))
+                    {
+                        location.tz_long = weather.location.tz_long;
+                    }
+                    else if (location.longitude != 0 && location.latitude != 0)
+                    {
+                        String tzId = await AsyncTask.RunAsync(TZDB.TZDBCache.GetTimeZone(location.latitude, location.longitude));
+                        if (!String.IsNullOrWhiteSpace(tzId))
+                            location.tz_long = tzId;
+                    }
 
 #if !UNIT_TEST
-                // Update DB here or somewhere else
-                await Settings.UpdateLocation(location);
+                    // Update DB here or somewhere else
+                    await Settings.UpdateLocation(location);
 #endif
-            }
+                }
 
-            if (String.IsNullOrWhiteSpace(weather.location.tz_long))
-                weather.location.tz_long = location.tz_long;
+                if (String.IsNullOrWhiteSpace(weather.location.tz_long))
+                    weather.location.tz_long = location.tz_long;
 
-            if (String.IsNullOrWhiteSpace(weather.location.name))
-                weather.location.name = location.name;
+                if (String.IsNullOrWhiteSpace(weather.location.name))
+                    weather.location.name = location.name;
 
-            weather.location.latitude = location.latitude.ToString(CultureInfo.InvariantCulture);
-            weather.location.longitude = location.longitude.ToString(CultureInfo.InvariantCulture);
-            weather.location.tz_short = location.tz_short;
-            weather.location.tz_offset = location.tz_offset;
+                weather.location.latitude = location.latitude.ToString(CultureInfo.InvariantCulture);
+                weather.location.longitude = location.longitude.ToString(CultureInfo.InvariantCulture);
+                weather.location.tz_short = location.tz_short;
+                weather.location.tz_offset = location.tz_offset;
 
-            // Additional external data
-            if (SupportsAlerts && NeedsExternalAlertData)
-                weather.weather_alerts = await AsyncTask.RunAsync(GetAlerts(location));
+                // Additional external data
+                if (SupportsAlerts && NeedsExternalAlertData)
+                    weather.weather_alerts = await AsyncTask.RunAsync(GetAlerts(location));
 
-            weather.condition.airQuality = await AsyncTask.RunAsync(new AQICN.AQICNProvider().GetAirQualityData(location));
+                weather.condition.airQuality = await AsyncTask.RunAsync(new AQICN.AQICNProvider().GetAirQualityData(location));
 
-            return weather;
+                return weather;
+            });
         }
         // Alerts
-        public virtual async Task<List<WeatherAlert>> GetAlerts(LocationData location)
+        public virtual Task<List<WeatherAlert>> GetAlerts(LocationData location)
         {
             if ("US".Equals(location.country_code))
-                return await AsyncTask.RunAsync(new NWS.NWSAlertProvider().GetAlerts(location));
+                return new NWS.NWSAlertProvider().GetAlerts(location);
             else
-                return null;
+                return Task.FromResult<List<WeatherAlert>>(null);
         }
 
         // KeyCheck
@@ -97,9 +100,9 @@ namespace SimpleWeather.WeatherData
         public abstract String GetAPIKey();
 
         // Utils Methods
-        public async Task UpdateLocationData(LocationData location)
+        public Task UpdateLocationData(LocationData location)
         {
-            await AsyncTask.RunAsync(LocationProvider.UpdateLocationData(location, WeatherAPI));
+            return LocationProvider.UpdateLocationData(location, WeatherAPI);
         }
         public abstract String UpdateLocationQuery(Weather weather);
         public abstract String UpdateLocationQuery(LocationData location);

@@ -22,49 +22,52 @@ namespace SimpleWeather.TZDB
     {
         private static SQLiteAsyncConnection tzDB;
 
-        public static async Task<string> GetTimeZone(double latitude, double longitude)
+        public static Task<string> GetTimeZone(double latitude, double longitude)
         {
-            if (latitude != 0 && longitude != 0)
+            return Task.Run(async () =>
             {
-                // Initialize db if it hasn't been already
-                if (tzDB == null)
+                if (latitude != 0 && longitude != 0)
                 {
-                    tzDB = new SQLiteAsyncConnection(Settings.GetTZDBConnectionString(), SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.FullMutex);
-                    await tzDB.CreateTableAsync<TZDB>();
-                }
-
-                // Search db if result already exists
-                var dbResult = await tzDB.ExecuteScalarAsync<string>(
-                    "select tz_long from tzdb where latitude = ? AND longitude = ?",
-                    latitude, longitude);
-
-                if (!String.IsNullOrWhiteSpace(dbResult))
-                    return dbResult;
-
-                // Search tz lookup
-                var result = await AsyncTask.RunAsync(() => TimeZoneLookup.GetTimeZone(latitude, longitude).Result);
-
-                if (!String.IsNullOrWhiteSpace(result))
-                {
-                    // Cache result
-                    AsyncTask.Run(async () =>
+                    // Initialize db if it hasn't been already
+                    if (tzDB == null)
                     {
-                        await tzDB.InsertOrReplaceAsync(new TZDB()
+                        tzDB = new SQLiteAsyncConnection(Settings.GetTZDBConnectionString(), SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.FullMutex);
+                        await tzDB.CreateTableAsync<TZDB>();
+                    }
+
+                    // Search db if result already exists
+                    var dbResult = await tzDB.ExecuteScalarAsync<string>(
+                        "select tz_long from tzdb where latitude = ? AND longitude = ?",
+                        latitude, longitude);
+
+                    if (!String.IsNullOrWhiteSpace(dbResult))
+                        return dbResult;
+
+                    // Search tz lookup
+                    var result = TimeZoneLookup.GetTimeZone(latitude, longitude).Result;
+
+                    if (!String.IsNullOrWhiteSpace(result))
+                    {
+                        // Cache result
+                        AsyncTask.Run(async () =>
                         {
-                            latitude = latitude,
-                            longitude = longitude,
-                            tz_long = result
+                            await tzDB.InsertOrReplaceAsync(new TZDB()
+                            {
+                                latitude = latitude,
+                                longitude = longitude,
+                                tz_long = result
+                            });
+
+                            // Run GC since tz lookup takes up a good chunk of memory
+                            GC.Collect();
                         });
 
-                        // Run GC since tz lookup takes up a good chunk of memory
-                        GC.Collect();
-                    });
-
-                    return result;
+                        return result;
+                    }
                 }
-            }
 
-            return "UTC";
+                return "UTC";
+            });
         }
     }
 }

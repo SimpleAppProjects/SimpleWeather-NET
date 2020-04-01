@@ -141,11 +141,12 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <toolkitControls:ImageEx x:Name="BackgroundOverlay" CachingStrategy="Custom" IsCacheEnabled="True" DecodePixelWidth="960"
-                                 x:Load="{x:Bind WeatherView.ImageData.ImageUri, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
+                                 x:Load="{x:Bind WeatherView.ImageData.ImageUri, Mode=OneWay,
+                                            Converter={StaticResource stringBooleanConverter}, TargetNullValue=false, FallbackValue=false}"
                                  Source="{x:Bind WeatherView.ImageData.ImageUri, Mode=OneWay}" Style="{ThemeResource ImageExProgressStyle}"
                                  Foreground="White" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center" />
         <Grid x:Name="GradientOverlay" Grid.Row="0"
-              x:Load="{x:Bind WeatherView.ImageData.ImageUri, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}">
+              x:Load="{x:Bind WeatherView.ImageData.ImageUri, Mode=OneWay, Converter={StaticResource stringBooleanConverter}, TargetNullValue=false, FallbackValue=false}">
             <Grid.Background>
                 <toolkitMedia:RadialGradientBrush AlphaMode="Premultiplied" Center="0.5,0.5" ColorInterpolationMode="SRgbLinearInterpolation"
                                                   GradientOrigin="0.5,0.5" RadiusX="0.5" RadiusY="0.5" SpreadMethod="Pad">
@@ -222,10 +223,10 @@
                         <Span><Run Text="{x:Bind WeatherView.HiTemp, Mode=OneWay}" /><Run Text=" &#xf058;"/><Run Text=" | "/><Run Text="{x:Bind WeatherView.LoTemp, Mode=OneWay}" /><Run Text=" &#xf044;"/></Span>
                     </TextBlock>
                     <HyperlinkButton x:Name="Attribution" Padding="5" FontSize="11" FontWeight="Medium" VerticalAlignment="Bottom" HorizontalAlignment="Right"
-                                     x:Load="{x:Bind WeatherView.ImageData.OriginalLink, Converter={StaticResource stringBooleanConverter}, Mode=OneWay}"
+                                     x:Load="{x:Bind WeatherView.ImageData.OriginalLink, Converter={StaticResource stringBooleanConverter}, Mode=OneWay, TargetNullValue=false, FallbackValue=false}"
                                      Visibility="{x:Bind WeatherView.ImageData.OriginalLink, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}"
                                      NavigateUri="{x:Bind WeatherView.ImageData.OriginalLink, Mode=OneWay}"
-                                     Grid.Row="7" Style="{ThemeResource HyperlinkButtonStyle}">
+                                     Grid.Row="7" Style="{ThemeResource AttributionStyle}">
                         <HyperlinkButton.Content>
                             <TextBlock>
                                 <Span><Run Text="Photo by " /><Run Text="{x:Bind WeatherView.ImageData.ArtistName, Mode=OneWay}" /><Run Text=" on " /><Run Text="{x:Bind WeatherView.ImageData.SiteName, Mode=OneWay}" /></Span>

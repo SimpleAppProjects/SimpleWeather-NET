@@ -27,56 +27,59 @@ namespace SimpleWeather.OpenWeather
         public override bool NeedsExternalAlertData => true;
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override async Task<bool> IsKeyValid(string key)
+        public override Task<bool> IsKeyValid(string key)
         {
-            string queryAPI = "https://api.openweathermap.org/data/2.5/";
-            string query = "forecast?appid=";
-
-            Uri queryURL = new Uri(String.Format("{0}{1}{2}", queryAPI, query, key));
-            bool isValid = false;
-            WeatherException wEx = null;
-
-            try
+            return Task.Run(async () =>
             {
-                if (String.IsNullOrWhiteSpace(key))
-                    throw (wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey));
+                string queryAPI = "https://api.openweathermap.org/data/2.5/";
+                string query = "forecast?appid=";
 
-                CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
+                Uri queryURL = new Uri(String.Format("{0}{1}{2}", queryAPI, query, key));
+                bool isValid = false;
+                WeatherException wEx = null;
 
-                // Connect to webstream
-                HttpClient webClient = new HttpClient();
-                HttpResponseMessage response = await AsyncTask.RunAsync(webClient.GetAsync(queryURL).AsTask(cts.Token));
-
-                // Check for errors
-                switch (response.StatusCode)
+                try
                 {
-                    // 400 (OK since this isn't a valid request)
-                    case HttpStatusCode.BadRequest:
-                        isValid = true;
-                        break;
-                    // 401 (Unauthorized - Key is invalid)
-                    case HttpStatusCode.Unauthorized:
-                        wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
-                        isValid = false;
-                        break;
+                    if (String.IsNullOrWhiteSpace(key))
+                        throw (wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey));
+
+                    CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
+
+                    // Connect to webstream
+                    HttpClient webClient = new HttpClient();
+                    HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
+
+                    // Check for errors
+                    switch (response.StatusCode)
+                    {
+                        // 400 (OK since this isn't a valid request)
+                        case HttpStatusCode.BadRequest:
+                            isValid = true;
+                            break;
+                        // 401 (Unauthorized - Key is invalid)
+                        case HttpStatusCode.Unauthorized:
+                            wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
+                            isValid = false;
+                            break;
+                    }
+
+                    // End Stream
+                    response.Dispose();
+                    webClient.Dispose();
+                    cts.Dispose();
+                }
+                catch (Exception)
+                {
+                    isValid = false;
                 }
 
-                // End Stream
-                response.Dispose();
-                webClient.Dispose();
-                cts.Dispose();
-            }
-            catch (Exception)
-            {
-                isValid = false;
-            }
+                if (wEx != null)
+                {
+                    throw wEx;
+                }
 
-            if (wEx != null)
-            {
-                throw wEx;
-            }
-
-            return isValid;
+                return isValid;
+            });
         }
 
         public override string GetAPIKey()
@@ -85,104 +88,101 @@ namespace SimpleWeather.OpenWeather
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override async Task<WeatherData.Weather> GetWeather(string location_query)
+        public override Task<WeatherData.Weather> GetWeather(string location_query)
         {
-            WeatherData.Weather weather = null;
-
-            string currentAPI = null;
-            Uri currentURL = null;
-            string forecastAPI = null;
-            Uri forecastURL = null;
-            string query = null;
-
-            var userlang = GlobalizationPreferences.Languages[0];
-            var culture = new CultureInfo(userlang);
-
-            string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
-
-            if (int.TryParse(location_query, out int id))
+            return Task.Run(async () =>
             {
-                query = string.Format("id={0}", id);
-            }
-            else
-            {
-                query = location_query;
-            }
+                WeatherData.Weather weather = null;
 
-            string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
+                string currentAPI = null;
+                Uri currentURL = null;
+                string forecastAPI = null;
+                Uri forecastURL = null;
+                string query = null;
 
-            currentAPI = "https://api.openweathermap.org/data/2.5/weather?{0}&appid={1}&lang=" + locale;
-            currentURL = new Uri(string.Format(currentAPI, query, key));
-            forecastAPI = "https://api.openweathermap.org/data/2.5/forecast?{0}&appid={1}&lang=" + locale;
-            forecastURL = new Uri(string.Format(forecastAPI, query, key));
+                var userlang = GlobalizationPreferences.Languages[0];
+                var culture = new CultureInfo(userlang);
 
-            using (HttpClient webClient = new HttpClient())
-            using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-            {
-                WeatherException wEx = null;
+                string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
-                try
+                if (int.TryParse(location_query, out int id))
                 {
-                    // Get response
-                    HttpResponseMessage currentResponse = await AsyncTask.RunAsync(webClient.GetAsync(currentURL).AsTask(cts.Token));
-                    currentResponse.EnsureSuccessStatusCode();
-                    HttpResponseMessage forecastResponse = await AsyncTask.RunAsync(webClient.GetAsync(forecastURL).AsTask(cts.Token));
-                    forecastResponse.EnsureSuccessStatusCode();
-
-                    Stream currentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await currentResponse.Content.ReadAsInputStreamAsync());
-                    Stream forecastStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await forecastResponse.Content.ReadAsInputStreamAsync());
-
-                    // Reset exception
-                    wEx = null;
-
-                    // Load weather
-                    CurrentRootobject currRoot = await AsyncTask.RunAsync(() =>
-                    {
-                        return JSONParser.Deserializer<CurrentRootobject>(currentStream);
-                    });
-                    ForecastRootobject foreRoot = await AsyncTask.RunAsync(() =>
-                    {
-                        return JSONParser.Deserializer<ForecastRootobject>(forecastStream);
-                    });
-
-                    // End Streams
-                    currentStream.Dispose();
-                    forecastStream.Dispose();
-
-                    weather = new WeatherData.Weather(currRoot, foreRoot);
+                    query = string.Format("id={0}", id);
                 }
-                catch (Exception ex)
+                else
                 {
-                    weather = null;
+                    query = location_query;
+                }
 
-                    if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
+
+                currentAPI = "https://api.openweathermap.org/data/2.5/weather?{0}&appid={1}&lang=" + locale;
+                currentURL = new Uri(string.Format(currentAPI, query, key));
+                forecastAPI = "https://api.openweathermap.org/data/2.5/forecast?{0}&appid={1}&lang=" + locale;
+                forecastURL = new Uri(string.Format(forecastAPI, query, key));
+
+                using (HttpClient webClient = new HttpClient())
+                using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                {
+                    WeatherException wEx = null;
+
+                    try
                     {
-                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                        // Get response
+                        HttpResponseMessage currentResponse = await AsyncTask.RunAsync(webClient.GetAsync(currentURL).AsTask(cts.Token));
+                        currentResponse.EnsureSuccessStatusCode();
+                        HttpResponseMessage forecastResponse = await AsyncTask.RunAsync(webClient.GetAsync(forecastURL).AsTask(cts.Token));
+                        forecastResponse.EnsureSuccessStatusCode();
+
+                        Stream currentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await currentResponse.Content.ReadAsInputStreamAsync());
+                        Stream forecastStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await forecastResponse.Content.ReadAsInputStreamAsync());
+
+                        // Reset exception
+                        wEx = null;
+
+                        // Load weather
+                        CurrentRootobject currRoot = JSONParser.Deserializer<CurrentRootobject>(currentStream);
+                        ForecastRootobject foreRoot = JSONParser.Deserializer<ForecastRootobject>(forecastStream);
+
+                        // End Streams
+                        currentStream.Dispose();
+                        forecastStream.Dispose();
+
+                        weather = new WeatherData.Weather(currRoot, foreRoot);
+                    }
+                    catch (Exception ex)
+                    {
+                        weather = null;
+
+                        if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                        {
+                            wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                        }
+
+                        Logger.WriteLine(LoggerLevel.Error, ex, "OpenWeatherMapProvider: error getting weather data");
                     }
 
-                    Logger.WriteLine(LoggerLevel.Error, ex, "OpenWeatherMapProvider: error getting weather data");
+                    // End Stream
+                    webClient.Dispose();
+
+                    if (weather == null || !weather.IsValid())
+                    {
+                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
+                    }
+                    else if (weather != null)
+                    {
+                        if (SupportsWeatherLocale)
+                            weather.locale = locale;
+
+                        weather.query = location_query;
+                    }
+
+                    if (wEx != null)
+                        throw wEx;
+
+                    return weather;
                 }
-
-                // End Stream
-                webClient.Dispose();
-
-                if (weather == null || !weather.IsValid())
-                {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
-                }
-                else if (weather != null)
-                {
-                    if (SupportsWeatherLocale)
-                        weather.locale = locale;
-
-                    weather.query = location_query;
-                }
-
-                if (wEx != null)
-                    throw wEx;
-
-                return weather;
-            }
+            });
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>

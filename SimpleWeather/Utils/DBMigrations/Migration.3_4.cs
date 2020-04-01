@@ -14,9 +14,9 @@ namespace SimpleWeather.Utils
 {
     public static partial class DBMigrations
     {
-        public static void SetLocationData(SQLiteAsyncConnection locationDB, String API)
+        public static Task SetLocationData(SQLiteAsyncConnection locationDB, String API)
         {
-            AsyncTask.Run(async () =>
+            return Task.Run(async () =>
             {
                 foreach (LocationData location in await locationDB.Table<LocationData>().ToListAsync()
                         .ConfigureAwait(false))

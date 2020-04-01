@@ -18,8 +18,11 @@ namespace SimpleWeather.Utils
         {
             try
             {
-                return AsyncTask.RunAsync(dbConn?.Table<Weather>()?.CountAsync())
-                        .GetAwaiter().GetResult() > 0;
+                var conn = dbConn.GetConnection();
+                using (conn.Lock())
+                {
+                    return conn.Table<Weather>().Count() > 0;
+                }
             }
             catch (Exception)
             {
@@ -31,8 +34,11 @@ namespace SimpleWeather.Utils
         {
             try
             {
-                return AsyncTask.RunAsync(dbConn?.Table<LocationData>()?.CountAsync())
-                        .GetAwaiter().GetResult() > 0;
+                var conn = dbConn.GetConnection();
+                using (conn.Lock())
+                {
+                    return conn.Table<LocationData>().Count() > 0;
+                }
             }
             catch (Exception)
             {

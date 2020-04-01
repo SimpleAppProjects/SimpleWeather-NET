@@ -8,19 +8,16 @@ namespace SimpleWeather.Utils
 {
     public static class AsyncTask
     {
-        public static ConfiguredTaskAwaitable RunAsync(Func<Task> function)
+        public static ConfiguredTaskAwaitable CreateTask(Func<Task> function)
         {
-            return Task.Run(function).ConfigureAwait(false);
+            if (function is null) throw new ArgumentNullException(nameof(function));
+            return function.Invoke().ConfigureAwait(false);
         }
 
-        public static ConfiguredTaskAwaitable<T> RunAsync<T>(Func<T> function)
+        public static ConfiguredTaskAwaitable<T> CreateTask<T>(Func<Task<T>> function)
         {
-            return Task.Run<T>(function).ConfigureAwait(false);
-        }
-
-        public static ConfiguredTaskAwaitable<T> RunAsync<T>(Func<Task<T>> function)
-        {
-            return Task.Run<T>(function).ConfigureAwait(false);
+            if (function is null) throw new ArgumentNullException(nameof(function));
+            return function.Invoke().ConfigureAwait(false);
         }
 
         public static ConfiguredTaskAwaitable RunAsync(Task task)

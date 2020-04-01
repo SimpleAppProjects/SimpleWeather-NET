@@ -14,69 +14,78 @@ namespace SimpleWeather.Utils
             return fileinfo.Exists && fileinfo.Length > 0;
         }
 
-        public async static Task<String> ReadFile(string FilePath)
+        public static Task<String> ReadFile(string FilePath)
         {
-            if (FilePath is null || !File.Exists(FilePath))
+            return Task.Run(async () =>
             {
-                return null;
-            }
-
-            // Wait for file to be free
-            while (IsFileLocked(FilePath))
-            {
-                await AsyncTask.RunAsync(Task.Delay(100));
-            }
-
-            using (StreamReader reader = new StreamReader(File.Open(FilePath, FileMode.Open)))
-            {
-                String line = await AsyncTask.RunAsync(reader.ReadLineAsync);
-                StringBuilder sBuilder = new StringBuilder();
-
-                while (line != null)
+                if (FilePath is null || !File.Exists(FilePath))
                 {
-                    sBuilder.Append(line).Append("\n");
-                    line = await AsyncTask.RunAsync(reader.ReadLineAsync);
+                    return null;
                 }
 
-                reader.Dispose();
-                return sBuilder.ToString();
-            }
+                // Wait for file to be free
+                while (IsFileLocked(FilePath))
+                {
+                    await Task.Delay(100);
+                }
+
+                using (StreamReader reader = new StreamReader(File.Open(FilePath, FileMode.Open)))
+                {
+                    String line = await reader.ReadLineAsync();
+                    StringBuilder sBuilder = new StringBuilder();
+
+                    while (line != null)
+                    {
+                        sBuilder.Append(line).Append("\n");
+                        line = await reader.ReadLineAsync();
+                    }
+
+                    reader.Dispose();
+                    return sBuilder.ToString();
+                }
+            });
         }
 
-        public static async Task WriteFile(String data, String filePath)
+        public static Task WriteFile(String data, String filePath)
         {
-            // Wait for file to be free
-            while (IsFileLocked(filePath))
+            return Task.Run(async () => 
             {
-                await AsyncTask.RunAsync(Task.Delay(100));
-            }
+                // Wait for file to be free
+                while (IsFileLocked(filePath))
+                {
+                    await Task.Delay(100);
+                }
 
-            using (var fileStream = File.Open(filePath, FileMode.OpenOrCreate, FileAccess.Write))
-            using (var writer = new StreamWriter(fileStream))
-            {
-                // reset stream size to override the file
-                //writer.BaseStream.SetLength(0);
-                await writer.WriteAsync(data);
-                await writer.FlushAsync();
-            }
+                using (var fileStream = File.Open(filePath, FileMode.OpenOrCreate, FileAccess.Write))
+                using (var writer = new StreamWriter(fileStream))
+                {
+                    // reset stream size to override the file
+                    //writer.BaseStream.SetLength(0);
+                    await writer.WriteAsync(data);
+                    await writer.FlushAsync();
+                }
+            });
         }
 
-        public static async Task WriteFile(Byte[] data, String filePath)
+        public static Task WriteFile(Byte[] data, String filePath)
         {
-            // Wait for file to be free
-            while (IsFileLocked(filePath))
+            return Task.Run(async () =>
             {
-                await AsyncTask.RunAsync(Task.Delay(100));
-            }
+                // Wait for file to be free
+                while (IsFileLocked(filePath))
+                {
+                    await Task.Delay(100);
+                }
 
-            using (var fileStream = File.Open(filePath, FileMode.OpenOrCreate, FileAccess.Write))
-            using (var writer = new StreamWriter(fileStream))
-            {
-                // reset stream size to override the file
-                //writer.BaseStream.SetLength(0);
-                await writer.WriteAsync(Encoding.UTF8.GetString(data));
-                await writer.FlushAsync();
-            }
+                using (var fileStream = File.Open(filePath, FileMode.OpenOrCreate, FileAccess.Write))
+                using (var writer = new StreamWriter(fileStream))
+                {
+                    // reset stream size to override the file
+                    //writer.BaseStream.SetLength(0);
+                    await writer.WriteAsync(Encoding.UTF8.GetString(data));
+                    await writer.FlushAsync();
+                }
+            });
         }
 
         public static bool IsFileLocked(string filePath)

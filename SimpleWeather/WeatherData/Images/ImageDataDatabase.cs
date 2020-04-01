@@ -21,73 +21,82 @@ namespace SimpleWeather.WeatherData.Images
             }
         }
 
-        public static async Task<IEnumerable<ImageData>> GetAllImageDataForCondition(String backgroundCode)
+        public static Task<List<ImageData>> GetAllImageDataForCondition(String backgroundCode)
         {
-            var list = new List<ImageData>();
-
-            if (!await ImageDatabaseCache.IsEmpty())
+            return Task.Run(async () =>
             {
-                return await ImageDatabaseCache.GetAllImageData();
-            }
-            else
-            {
-                var db = await Firebase.FirestoreHelper.GetFirestoreDB();
-                await db.Collection("background_images")
-                        .WhereEqualTo("condition", backgroundCode)
-                        .StreamAsync()
-                        .ForEachAsync((docSnapshot) =>
-                        {
-                            if (docSnapshot.Exists)
-                                list.Add(docSnapshot.ConvertTo<ImageData>());
-                        }).ConfigureAwait(false);
+                var list = new List<ImageData>();
 
-                await SaveSnapshot(db);
-            }
+                if (!await ImageDatabaseCache.IsEmpty())
+                {
+                    return await ImageDatabaseCache.GetAllImageData();
+                }
+                else
+                {
+                    var db = await Firebase.FirestoreHelper.GetFirestoreDB();
+                    await db.Collection("background_images")
+                            .WhereEqualTo("condition", backgroundCode)
+                            .StreamAsync()
+                            .ForEachAsync((docSnapshot) =>
+                            {
+                                if (docSnapshot.Exists)
+                                    list.Add(docSnapshot.ConvertTo<ImageData>());
+                            }).ConfigureAwait(false);
 
-            return list;
+                    await SaveSnapshot(db);
+                }
+
+                return list;
+            });
         }
 
-        public static async Task<ImageData> GetRandomImageForCondition(String backgroundCode)
+        public static Task<ImageData> GetRandomImageForCondition(String backgroundCode)
         {
-            if (!await ImageDatabaseCache.IsEmpty())
+            return Task.Run(async () =>
             {
-                return await ImageDatabaseCache.GetRandomImageForCondition(backgroundCode);
-            }
-            else
-            {
-                var db = await Firebase.FirestoreHelper.GetFirestoreDB();
+                if (!await ImageDatabaseCache.IsEmpty())
+                {
+                    return await ImageDatabaseCache.GetRandomImageForCondition(backgroundCode);
+                }
+                else
+                {
+                    var db = await Firebase.FirestoreHelper.GetFirestoreDB();
 
-                var rand = new Random();
+                    var rand = new Random();
 
-                var imageData = await db.Collection("background_images")
-                                        .WhereEqualTo("condition", backgroundCode)
-                                        .StreamAsync()
-                                        .OrderBy(doc => rand.Next())
-                                        .Take(1)
-                                        .Select((docSnapshot) => 
-                                        {
-                                            return docSnapshot.ConvertTo<ImageData>();
-                                        })
-                                        .FirstOrDefault()
-                                        .ConfigureAwait(false);
+                    var imageData = await db.Collection("background_images")
+                                            .WhereEqualTo("condition", backgroundCode)
+                                            .StreamAsync()
+                                            .OrderBy(doc => rand.Next())
+                                            .Take(1)
+                                            .Select((docSnapshot) =>
+                                            {
+                                                return docSnapshot.ConvertTo<ImageData>();
+                                            })
+                                            .FirstOrDefault()
+                                            .ConfigureAwait(false);
 
-                await SaveSnapshot(db);
+                    await SaveSnapshot(db);
 
-                return imageData;
-            }
+                    return imageData;
+                }
+            });
         }
 
-        private static async Task SaveSnapshot(Google.Cloud.Firestore.FirestoreDb firestoreDb)
+        private static Task SaveSnapshot(Google.Cloud.Firestore.FirestoreDb firestoreDb)
         {
-            await ImageDatabaseCache.ClearCache();
+            return Task.Run(async () =>
+            {
+                await ImageDatabaseCache.ClearCache();
 
-            await firestoreDb.Collection("background_images")
-                             .StreamAsync()
-                             .ForEachAsync(async (docSnapshot) =>
-                             {
-                                 if (docSnapshot.Exists)
-                                     await ImageDatabaseCache.InsertData(docSnapshot.ConvertTo<ImageData>());
-                             }).ConfigureAwait(false);
+                await firestoreDb.Collection("background_images")
+                                 .StreamAsync()
+                                 .ForEachAsync(async (docSnapshot) =>
+                                 {
+                                     if (docSnapshot.Exists)
+                                         await ImageDatabaseCache.InsertData(docSnapshot.ConvertTo<ImageData>());
+                                 }).ConfigureAwait(false);
+            });
         }
     }
 
@@ -103,41 +112,45 @@ namespace SimpleWeather.WeatherData.Images
             dbConnection.GetConnection().CreateTable<ImageData>();
         }
 
-        public async Task<bool> IsEmpty()
+        public Task<bool> IsEmpty()
         {
-            return (await dbConnection.Table<ImageData>().CountAsync()) == 0;
+            return Task.Run(async () =>
+            {
+                int count = await dbConnection.Table<ImageData>().CountAsync();
+                return count == 0;
+            });
         }
 
         // Select
-        public async Task<IEnumerable<ImageData>> GetAllImageData()
+        public Task<List<ImageData>> GetAllImageData()
         {
-            return await dbConnection.Table<ImageData>().ToListAsync();
+            return dbConnection.Table<ImageData>().ToListAsync();
         }
 
-        public async Task<IEnumerable<ImageData>> GetAllImageDataForCondition(String backgroundCode)
+        public Task<List<ImageData>> GetAllImageDataForCondition(String backgroundCode)
         {
-            return await dbConnection.Table<ImageData>()
-                                     .Where(i => Equals(i.Condition, backgroundCode))
-                                     .ToListAsync();
+            return dbConnection.Table<ImageData>()
+                               .Where(i => Equals(i.Condition, backgroundCode))
+                               .ToListAsync();
         }
 
-        public async Task<ImageData> GetRandomImageForCondition(String backgroundCode)
+        public Task<ImageData> GetRandomImageForCondition(String backgroundCode)
         {
             // TODO: change if we end up having alot more items
             // This is ok for now as table size will be relatively low
-            return await dbConnection.FindWithQueryAsync<ImageData>("SELECT * FROM imagedata WHERE condition = ? ORDER BY RANDOM() LIMIT 1", backgroundCode);
+            return dbConnection.FindWithQueryAsync<ImageData>("SELECT * FROM imagedata WHERE condition = ? ORDER BY RANDOM() LIMIT 1", backgroundCode);
         }
 
         // Insert
-        public async Task InsertData(ImageData imageData)
+        public Task InsertData(ImageData imageData)
         {
-            await dbConnection.InsertAsync(imageData);
+            return dbConnection.InsertAsync(imageData);
         }
 
         // Delete
-        public async Task ClearCache()
+        public Task ClearCache()
         {
-            await dbConnection.DeleteAllAsync<ImageData>();
+            return dbConnection.DeleteAllAsync<ImageData>();
         }
     }
 }

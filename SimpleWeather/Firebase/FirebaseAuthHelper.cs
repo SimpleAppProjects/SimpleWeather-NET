@@ -17,25 +17,28 @@ namespace SimpleWeather.Firebase
         private static ApplicationDataContainer FirebaseContainer = ApplicationData.Current.LocalSettings.
             CreateContainer(FirebaseContainerKey, ApplicationDataCreateDisposition.Always);
 
-        public static async Task<FirebaseAuthLink> GetAuthLink()
+        public static Task<FirebaseAuthLink> GetAuthLink()
         {
-            // specify your app’s client key when creating the auth provider
-            var config = new FirebaseConfig(Keys.FirebaseConfig.GetGoogleAPIKey());
-            using (var ap = new FirebaseAuthProvider(config))
+            return Task.Run(async () =>
             {
-                var token = await AsyncTask.RunAsync(GetTokenFromStorage);
-                if (token != null)
+                // specify your app’s client key when creating the auth provider
+                var config = new FirebaseConfig(Keys.FirebaseConfig.GetGoogleAPIKey());
+                using (var ap = new FirebaseAuthProvider(config))
                 {
-                    return await new FirebaseAuthLink(ap, token).GetFreshAuthAsync();
+                    var token = await GetTokenFromStorage();
+                    if (token != null)
+                    {
+                        return await new FirebaseAuthLink(ap, token).GetFreshAuthAsync();
+                    }
+                    else
+                    {
+                        // sign in anonymously
+                        var authTokenLink = await ap.SignInAnonymouslyAsync();
+                        StoreToken(authTokenLink);
+                        return authTokenLink;
+                    }
                 }
-                else
-                {
-                    // sign in anonymously
-                    var authTokenLink = await ap.SignInAnonymouslyAsync();
-                    StoreToken(authTokenLink);
-                    return authTokenLink;
-                }
-            }
+            });
         }
 
         private static async Task<FirebaseAuth> GetTokenFromStorage()
@@ -45,10 +48,7 @@ namespace SimpleWeather.Firebase
                 var tokenJSON = FirebaseContainer.Values[KEY_AUTHTOKEN]?.ToString();
                 if (tokenJSON != null)
                 {
-                    var token = await AsyncTask.RunAsync(() =>
-                    {
-                        return JSONParser.Deserializer<FirebaseAuth>(tokenJSON);
-                    });
+                    return await JSONParser.DeserializerAsync<FirebaseAuth>(tokenJSON);
                 }
             }
 

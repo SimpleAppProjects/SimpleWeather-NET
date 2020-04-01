@@ -44,10 +44,7 @@ namespace SimpleWeather.UWP.Main
         {
             if (Frame.CanGoBack) Frame.GoBack(); else Frame.Navigate(typeof(LocationsPage));
 
-            var tcs = new TaskCompletionSource<bool>();
-            tcs.SetResult(true);
-
-            return tcs.Task;
+            return Task.FromResult(true);
         }
 
         public void Dispose()

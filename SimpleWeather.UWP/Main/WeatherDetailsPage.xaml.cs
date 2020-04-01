@@ -62,17 +62,13 @@ namespace SimpleWeather.UWP.Main
 
         public Task<bool> OnBackRequested()
         {
-            var tcs = new TaskCompletionSource<bool>();
-
             if (Frame.CanGoBack)
             {
                 Frame.GoBack();
-                tcs.SetResult(true);
-                return tcs.Task;
+                return Task.FromResult(true);
             }
 
-            tcs.SetResult(false);
-            return tcs.Task;
+            return Task.FromResult(false);
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -86,7 +82,7 @@ namespace SimpleWeather.UWP.Main
                 IsHourly = args.IsHourly;
 
                 if (location == null)
-                    location = Settings.HomeData;
+                    location = await Settings.GetHomeData();
                 if (WeatherView == null)
                     WeatherView = new WeatherNowViewModel();
 

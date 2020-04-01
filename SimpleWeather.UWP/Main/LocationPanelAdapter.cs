@@ -211,9 +211,9 @@ namespace SimpleWeather.UWP.Main
             });
         }
 
-        internal async Task RemovePanel(LocationPanelViewModel panel)
+        internal Task RemovePanel(LocationPanelViewModel panel)
         {
-            await AsyncTask.RunOnUIThread(() =>
+            return AsyncTask.RunOnUIThread(() =>
             {
                 int dataPosition = GetDataset((LocationType)panel.LocationType).IndexOf(panel);
 
@@ -259,12 +259,12 @@ namespace SimpleWeather.UWP.Main
                     }
                 };
                 SnackMgr.Show(snackbar);
-            }).ConfigureAwait(true);
+            });
         }
 
-        internal async Task BatchRemovePanels(IEnumerable<LocationPanelViewModel> panelsToDelete)
+        internal Task BatchRemovePanels(IEnumerable<LocationPanelViewModel> panelsToDelete)
         {
-            await AsyncTask.RunOnUIThread(() =>
+            return AsyncTask.RunOnUIThread(() =>
             {
                 var panelPairs = new List<KeyValuePair<int, LocationPanelViewModel>>();
                 foreach (LocationPanelViewModel panel in panelsToDelete)
@@ -324,7 +324,7 @@ namespace SimpleWeather.UWP.Main
                     }
                 };
                 SnackMgr?.Show(snackbar);
-            }).ConfigureAwait(true);
+            });
         }
     }
 

@@ -17,55 +17,58 @@ namespace SimpleWeather.AQICN
 {
     public class AQICNProvider : IAirQualityProvider
     {
-        public async Task<AirQuality> GetAirQualityData(LocationData location)
+        public Task<AirQuality> GetAirQualityData(LocationData location)
         {
-            AirQuality aqiData = null;
-
-            string queryAPI = null;
-            Uri queryURL = null;
-
-            string key = APIKeys.GetAQICNKey();
-            if (String.IsNullOrWhiteSpace(key))
-                return null;
-
-            queryAPI = "https://api.waqi.info/feed/geo:{0};{1}/?token={2}";
-            queryURL = new Uri(string.Format(queryAPI, location.latitude, location.longitude, key));
-
-            try
+            return Task.Run(async () =>
             {
-                CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
+                AirQuality aqiData = null;
 
-                // Connect to webstream
-                HttpClient webClient = new HttpClient();
+                string queryAPI = null;
+                Uri queryURL = null;
 
-                var version = string.Format("v{0}.{1}.{2}",
-                    Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
+                string key = APIKeys.GetAQICNKey();
+                if (String.IsNullOrWhiteSpace(key))
+                    return null;
 
-                webClient.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
+                queryAPI = "https://api.waqi.info/feed/geo:{0};{1}/?token={2}";
+                queryURL = new Uri(string.Format(queryAPI, location.latitude, location.longitude, key));
 
-                HttpResponseMessage response = await AsyncTask.RunAsync(webClient.GetAsync(queryURL).AsTask(cts.Token));
-                response.EnsureSuccessStatusCode();
-                Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-                // End Stream
-                webClient.Dispose();
-                cts.Dispose();
+                try
+                {
+                    CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
 
-                // Load data
-                var root = JSONParser.Deserializer<Rootobject>(contentStream);
+                    // Connect to webstream
+                    HttpClient webClient = new HttpClient();
 
-                aqiData = new AirQuality(root);
+                    var version = string.Format("v{0}.{1}.{2}",
+                        Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
 
-                // End Stream
-                if (contentStream != null)
-                    contentStream.Dispose();
-            }
-            catch (Exception ex)
-            {
-                aqiData = null;
-                Logger.WriteLine(LoggerLevel.Error, ex, "AQICNProvider: error getting air quality data");
-            }
+                    webClient.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
 
-            return aqiData;
+                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.GetAsync(queryURL).AsTask(cts.Token));
+                    response.EnsureSuccessStatusCode();
+                    Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                    // End Stream
+                    webClient.Dispose();
+                    cts.Dispose();
+
+                    // Load data
+                    var root = JSONParser.Deserializer<Rootobject>(contentStream);
+
+                    aqiData = new AirQuality(root);
+
+                    // End Stream
+                    if (contentStream != null)
+                        contentStream.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    aqiData = null;
+                    Logger.WriteLine(LoggerLevel.Error, ex, "AQICNProvider: error getting air quality data");
+                }
+
+                return aqiData;
+            });
         }
     }
 }

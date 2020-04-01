@@ -918,74 +918,80 @@ namespace SimpleWeather.UWP.Tiles
             }
         }
 
-        public static async Task TileUpdater(LocationData location)
+        public static Task TileUpdater(LocationData location)
         {
-            try
+            return Task.Run(async () => 
             {
-                var wloader = new WeatherDataLoader(location);
-                var weather = await AsyncTask.RunAsync(wloader.LoadWeatherData(
-                            new WeatherRequest.Builder()
-                                .ForceRefresh(false)
-                                .LoadForecasts()
-                                .Build()));
-
-
-                if (weather != null)
+                try
                 {
-                    var weatherView = new WeatherNowViewModel(weather);
-                    await weatherView.UpdateBackground();
-                    TileUpdater(location, weatherView);
+                    var wloader = new WeatherDataLoader(location);
+                    var weather = await AsyncTask.RunAsync(wloader.LoadWeatherData(
+                                new WeatherRequest.Builder()
+                                    .ForceRefresh(false)
+                                    .LoadForecasts()
+                                    .Build()));
+
+
+                    if (weather != null)
+                    {
+                        var weatherView = new WeatherNowViewModel(weather);
+                        await weatherView.UpdateBackground();
+                        TileUpdater(location, weatherView);
+                    }
                 }
-            }
-            catch (WeatherException wEx)
-            {
-                Logger.WriteLine(LoggerLevel.Error, wEx);
-            }
+                catch (WeatherException wEx)
+                {
+                    Logger.WriteLine(LoggerLevel.Error, wEx);
+                }
+            });
         }
 
-        public static async Task TileUpdater(LocationData location, WeatherNowViewModel weather)
+        public static Task TileUpdater(LocationData location, WeatherNowViewModel weather)
         {
-            if (weather.ImageData == null)
-                await weather.UpdateBackground();
-
-            // And send the notification to the tile
-            if (location.Equals(Settings.HomeData))
+            return Task.Run(async () =>
             {
-                // Update both primary and secondary tile if it exists
-                var appTileUpdater = TileUpdateManager.CreateTileUpdaterForApplication();
-                // Lock instance to avoid rare concurrency issue
-                // (when BGTask is running and tile is updated via WeatherNowPage)
-                lock (appTileUpdater)
-                {
-                    UpdateContent(appTileUpdater, weather);
-                }
-                if (SecondaryTileUtils.Exists(location.query))
-                {
-                    var tileUpdater = TileUpdateManager.CreateTileUpdaterForSecondaryTile(
-                            SecondaryTileUtils.GetTileId(location.query));
-                    lock (tileUpdater)
-                    {
-                        UpdateContent(tileUpdater, weather);
-                    }
-                }
+                if (weather.ImageData == null)
+                    await weather.UpdateBackground();
 
-                TileUpdated = true;
-            }
-            else
-            {
-                // Update secondary tile
-                if (SecondaryTileUtils.Exists(location.query))
+                // And send the notification to the tile
+                if (Equals(await Settings.GetHomeData(), location))
                 {
-                    var tileUpdater = TileUpdateManager.CreateTileUpdaterForSecondaryTile(
-                            SecondaryTileUtils.GetTileId(location.query));
+                    // Update both primary and secondary tile if it exists
+                    var appTileUpdater = TileUpdateManager.CreateTileUpdaterForApplication();
                     // Lock instance to avoid rare concurrency issue
                     // (when BGTask is running and tile is updated via WeatherNowPage)
-                    lock (tileUpdater)
+                    lock (appTileUpdater)
                     {
-                        UpdateContent(tileUpdater, weather);
+                        UpdateContent(appTileUpdater, weather);
+                    }
+                    if (SecondaryTileUtils.Exists(location.query))
+                    {
+                        var tileUpdater = TileUpdateManager.CreateTileUpdaterForSecondaryTile(
+                                SecondaryTileUtils.GetTileId(location.query));
+                        lock (tileUpdater)
+                        {
+                            UpdateContent(tileUpdater, weather);
+                        }
+                    }
+
+                    TileUpdated = true;
+                }
+                else
+                {
+                    // Update secondary tile
+                    if (SecondaryTileUtils.Exists(location.query))
+                    {
+                        var tileUpdater = TileUpdateManager.CreateTileUpdaterForSecondaryTile(
+                                SecondaryTileUtils.GetTileId(location.query));
+                        // Lock instance to avoid rare concurrency issue
+                        // (when BGTask is running and tile is updated via WeatherNowPage)
+                        lock (tileUpdater)
+                        {
+                            UpdateContent(tileUpdater, weather);
+                        }
                     }
                 }
-            }
+            });
         }
     }
 }

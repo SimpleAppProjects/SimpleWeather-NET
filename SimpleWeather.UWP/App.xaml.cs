@@ -110,8 +110,10 @@ namespace SimpleWeather.UWP
             // Subscribe to the event that informs the app of this change.
             MemoryManager.AppMemoryUsageIncreased += MemoryManager_AppMemoryUsageIncreased;
 
+#if !DEBUG
             AppCenter.LogLevel = LogLevel.Verbose;
             AppCenter.Start(APIKeys.GetAppCenterSecret(), typeof(Analytics), typeof(Crashes));
+#endif
 
             UISettings = new UISettings();
             IsSystemDarkTheme = UISettings.GetColorValue(UIColorType.Background).ToString() == "#FF000000";
@@ -254,53 +256,54 @@ namespace SimpleWeather.UWP
                     case "view-alerts":
                         if (Settings.WeatherLoaded && Settings.OnBoardComplete && args.Contains("data"))
                         {
-                            Task.Run(async () =>
+                            Task.Run(() =>
                             {
                                 var data = args["data"];
 
                                 // App loaded for first time
-                                await AsyncTask.RunAsync(Initialize(e));
-
-                                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                                Initialize(e).ContinueWith(async (t) => 
                                 {
-                                    if (RootFrame.Content == null)
-                                    {
-                                        RootFrame.Navigate(typeof(Shell), "suppressNavigate");
-                                    }
-                                });
-
-                                if (Shell.Instance != null)
-                                {
-                                    var locData = JSONParser.Deserializer<LocationData>(data);
-
                                     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                                     {
-                                        // If we're already on WeatherNow navigate to Alert page
-                                        if (Shell.Instance.AppFrame.Content != null && Shell.Instance.AppFrame.SourcePageType.Equals(typeof(WeatherNow)))
+                                        if (RootFrame.Content == null)
                                         {
-                                            Shell.Instance.AppFrame.Navigate(typeof(WeatherAlertPage), new WeatherPageArgs()
-                                            {
-                                                Location = locData
-                                            });
-                                        }
-                                        // If not clear backstack and navigate to Alert page
-                                        // Add a WeatherNow page in backstack to go back to
-                                        else
-                                        {
-                                            Shell.Instance.AppFrame.Navigate(typeof(WeatherAlertPage), new WeatherPageArgs() 
-                                            {
-                                                Location = locData
-                                            });
-                                            Shell.Instance.AppFrame.BackStack.Clear();
-                                            Shell.Instance.AppFrame.BackStack.Add(new PageStackEntry(typeof(WeatherNow), new WeatherNowArgs() 
-                                            {
-                                                Location = locData,
-                                                IsHome = Object.Equals(locData, Settings.HomeData)
-                                            }, null));
-                                            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+                                            RootFrame.Navigate(typeof(Shell), "suppressNavigate");
                                         }
                                     });
-                                }
+
+                                    if (Shell.Instance != null)
+                                    {
+                                        var locData = JSONParser.Deserializer<LocationData>(data);
+
+                                        await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+                                        {
+                                            // If we're already on WeatherNow navigate to Alert page
+                                            if (Shell.Instance.AppFrame.Content != null && Shell.Instance.AppFrame.SourcePageType.Equals(typeof(WeatherNow)))
+                                            {
+                                                Shell.Instance.AppFrame.Navigate(typeof(WeatherAlertPage), new WeatherPageArgs()
+                                                {
+                                                    Location = locData
+                                                });
+                                            }
+                                            // If not clear backstack and navigate to Alert page
+                                            // Add a WeatherNow page in backstack to go back to
+                                            else
+                                            {
+                                                Shell.Instance.AppFrame.Navigate(typeof(WeatherAlertPage), new WeatherPageArgs()
+                                                {
+                                                    Location = locData
+                                                });
+                                                Shell.Instance.AppFrame.BackStack.Clear();
+                                                Shell.Instance.AppFrame.BackStack.Add(new PageStackEntry(typeof(WeatherNow), new WeatherNowArgs()
+                                                {
+                                                    Location = locData,
+                                                    IsHome = Object.Equals(locData, await Settings.GetHomeData())
+                                                }, null));
+                                                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+                                            }
+                                        });
+                                    }
+                                });
                             });
                         }
                         break;
@@ -379,22 +382,16 @@ namespace SimpleWeather.UWP
                         // Navigate to WeatherNow page for location
                         if (Shell.Instance != null)
                         {
-                            var locData = await AsyncTask.RunAsync(async () => await Settings.GetLocationData());
-                            var locations = new List<LocationData>(locData)
-                            {
-                                Settings.HomeData
-                            };
-                            var location = locations.FirstOrDefault(loc => loc.query != null && loc.query.Equals(SecondaryTileUtils.GetQueryFromId(e.TileId)));
-                            if (location != null)
+                            if (e.TileId != null)
                             {
                                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                                 {
                                     Shell.Instance.AppFrame.Navigate(typeof(WeatherNow), new WeatherNowArgs()
                                     {
-                                        IsHome = Object.Equals(location, locations.FirstOrDefault()),
-                                        Location = location
+                                        TileId = e.TileId
                                     });
                                     Shell.Instance.AppFrame.BackStack.Clear();
+                                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
                                 });
                             }
 
@@ -407,6 +404,8 @@ namespace SimpleWeather.UWP
                                     {
                                         IsHome = true
                                     });
+                                    Shell.Instance.AppFrame.BackStack.Clear();
+                                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
                                 }
                             });
                         }
@@ -448,76 +447,79 @@ namespace SimpleWeather.UWP
             UISettings.ColorValuesChanged -= DefaultTheme_ColorValuesChanged;
         }
 
-        private async Task Initialize(IActivatedEventArgs e)
+        private Task Initialize(IActivatedEventArgs e)
         {
-            var Dispatcher = CoreApplication.MainView.CoreWindow.Dispatcher;
-
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            return Task.Run(async () =>
             {
-                RootFrame = Window.Current?.Content as Frame;
+                var Dispatcher = CoreApplication.MainView.CoreWindow.Dispatcher;
 
-                // Do not repeat app initialization when the Window already has content,
-                // just ensure that the window is active
-                if (RootFrame == null)
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
-                    // Create a Frame to act as the navigation context and navigate to the first page
-                    RootFrame = new Frame();
+                    RootFrame = Window.Current?.Content as Frame;
 
-                    RootFrame.NavigationFailed += OnNavigationFailed;
-
-                    if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
+                    // Do not repeat app initialization when the Window already has content,
+                    // just ensure that the window is active
+                    if (RootFrame == null)
                     {
-                        //TODO: Load state from previously suspended application
+                        // Create a Frame to act as the navigation context and navigate to the first page
+                        RootFrame = new Frame();
+
+                        RootFrame.NavigationFailed += OnNavigationFailed;
+
+                        if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
+                        {
+                            //TODO: Load state from previously suspended application
+                        }
+
+                        // Place the frame in the current Window
+                        Window.Current.Content = RootFrame;
                     }
 
-                    // Place the frame in the current Window
-                    Window.Current.Content = RootFrame;
+                    if (ResLoader == null)
+                        ResLoader = ResourceLoader.GetForCurrentView();
+                });
+
+                // TitleBar
+                if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+                {
+                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        Window.Current.SizeChanged += async (sender, eventArgs) =>
+                        {
+                            if (ApplicationView.GetForCurrentView()?.Orientation == ApplicationViewOrientation.Landscape)
+                                await StatusBar.GetForCurrentView()?.HideAsync();
+                            else
+                                await StatusBar.GetForCurrentView()?.ShowAsync();
+                        };
+                    });
+                }
+
+                Initialized = true;
+            });
+        }
+
+        private Task Initialize(IBackgroundActivatedEventArgs _)
+        {
+            return Task.Run(() =>
+            {
+                Logger.WriteLine(LoggerLevel.Debug, "App: Initializing...");
+
+                if (Initialized)
+                {
+                    Logger.WriteLine(LoggerLevel.Debug, "App: Already initialized...");
+                    return;
                 }
 
                 if (ResLoader == null)
-                    ResLoader = ResourceLoader.GetForCurrentView();
+                    ResLoader = ResourceLoader.GetForViewIndependentUse();
+
+                // Load data if needed
+                Settings.LoadIfNeeded();
+
+                Initialized = true;
+
+                Logger.WriteLine(LoggerLevel.Debug, "App: Initialize complete...");
             });
-
-            // Load data if needed
-            await Settings.LoadIfNeeded();
-
-            // TitleBar
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-                if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
-                {
-                    Window.Current.SizeChanged += async (sender, eventArgs) =>
-                    {
-                        if (ApplicationView.GetForCurrentView()?.Orientation == ApplicationViewOrientation.Landscape)
-                            await StatusBar.GetForCurrentView()?.HideAsync();
-                        else
-                            await StatusBar.GetForCurrentView()?.ShowAsync();
-                    };
-                }
-            });
-
-            Initialized = true;
-        }
-
-        private async Task Initialize(IBackgroundActivatedEventArgs _)
-        {
-            Logger.WriteLine(LoggerLevel.Debug, "App: Initializing...");
-
-            if (Initialized)
-            {
-                Logger.WriteLine(LoggerLevel.Debug, "App: Already initialized...");
-                return;
-            }
-
-            if (ResLoader == null)
-                ResLoader = ResourceLoader.GetForViewIndependentUse();
-
-            // Load data if needed
-            await Settings.LoadIfNeeded();
-
-            Initialized = true;
-
-            Logger.WriteLine(LoggerLevel.Debug, "App: Initialize complete...");
         }
 
         /// <summary>
