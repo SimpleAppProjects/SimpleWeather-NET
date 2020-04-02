@@ -25,7 +25,7 @@ namespace SimpleWeather.HERE
                 if (!forceRefresh)
                 {
                     var token = await GetTokenFromStorage();
-                    if (token != null)
+                    if (!String.IsNullOrWhiteSpace(token))
                         return token;
                     else
                         forceRefresh = true;

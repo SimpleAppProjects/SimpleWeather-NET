@@ -57,7 +57,11 @@ namespace SimpleWeather.HERE
                     try
                     {
                         // Add headers to request
-                        request.Headers.Add("Authorization", await HEREOAuthUtils.GetBearerToken());
+                        var token = await HEREOAuthUtils.GetBearerToken();
+                        if (!String.IsNullOrWhiteSpace(token))
+                            request.Headers.Add("Authorization", token);
+                        else
+                            throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
 
                         // Connect to webstream
                         HttpResponseMessage response = await webClient.SendRequestAsync(request).AsTask(cts.Token);
@@ -147,7 +151,11 @@ namespace SimpleWeather.HERE
                     try
                     {
                         // Add headers to request
-                        request.Headers.Add("Authorization", await HEREOAuthUtils.GetBearerToken());
+                        var token = await HEREOAuthUtils.GetBearerToken();
+                        if (!String.IsNullOrWhiteSpace(token))
+                            request.Headers.Add("Authorization", token);
+                        else
+                            throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
 
                         // Connect to webstream
                         HttpResponseMessage response = await webClient.SendRequestAsync(request).AsTask(cts.Token);
@@ -222,7 +230,11 @@ namespace SimpleWeather.HERE
                     try
                     {
                         // Add headers to request
-                        request.Headers.Add("Authorization", await HEREOAuthUtils.GetBearerToken());
+                        var token = await HEREOAuthUtils.GetBearerToken();
+                        if (!String.IsNullOrWhiteSpace(token))
+                            request.Headers.Add("Authorization", token);
+                        else
+                            throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
 
                         // Connect to webstream
                         HttpResponseMessage response = await webClient.SendRequestAsync(request).AsTask(cts.Token);
