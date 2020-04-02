@@ -2512,10 +2512,12 @@ namespace SimpleWeather.WeatherData
         }
 
         [TextBlob(nameof(hrforecastblob))]
+        [NotNull]
         public HourlyForecast hr_forecast { get; set; }
 
         [Indexed(Name = "dateIdx", Order = 2)]
         [DataMember(Name = "date")]
+        [NotNull]
         // Keep DateTimeOffset column name to get data as string
         public string dateblob { get; set; }
         [IgnoreDataMember]

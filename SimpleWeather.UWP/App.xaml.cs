@@ -333,6 +333,9 @@ namespace SimpleWeather.UWP
 
             Initialize(args).ContinueWith(t =>
             {
+                if (!t.IsCompletedSuccessfully)
+                    return;
+
                 switch (args?.TaskInstance?.Task?.Name)
                 {
                     case nameof(WeatherUpdateBackgroundTask):

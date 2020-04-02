@@ -111,15 +111,15 @@ namespace SimpleWeather.Utils
                             if (lastItem is HourlyForecastItemViewModel hrfcast)
                             {
                                 data = await db.QueryAsync<HourlyForecasts>(
-                                    "select * from hr_forecasts where query = ? AND dateblob > ? ORDER BY dateblob LIMIT ?",
+                                    "select * from hr_forecasts where query = ? AND dateblob > ? AND hrforecastblob IS NOT NULL ORDER BY dateblob LIMIT ?",
                                     weather.query, hrfcast.Forecast.date.ToString("yyyy-MM-dd HH:mm:ss zzzz"), (int)count);
                             }
                             else
                             {
-                                data = (await dbSet.Where(hrf => hrf.query == weather.query)
-                                            .Skip(currentCount)
-                                            .Take((int)count)
-                                            .ToListAsync());
+                                data = await dbSet.Where(hrf => hrf.query == weather.query && hrf.hrforecastblob != null)
+                                                  .Skip(currentCount)
+                                                  .Take((int)count)
+                                                  .ToListAsync();
                             }
 
                             foreach (var dataItem in data)

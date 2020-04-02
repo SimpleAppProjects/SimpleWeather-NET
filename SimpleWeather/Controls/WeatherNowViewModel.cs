@@ -263,8 +263,8 @@ namespace SimpleWeather.Controls
                 // Astronomy
                 if (weather.astronomy != null)
                 {
-                    Sunrise = weather.astronomy.sunrise.ToString("t", culture);
-                    Sunset = weather.astronomy.sunset.ToString("t", culture);
+                    Sunrise = weather.astronomy.sunrise.ToString("t", CultureInfo.InvariantCulture);
+                    Sunset = weather.astronomy.sunset.ToString("t", CultureInfo.InvariantCulture);
 
                     if (weather.astronomy.moonrise != null && weather.astronomy.moonset != null
                             && weather.astronomy.moonrise.CompareTo(DateTime.MinValue) > 0

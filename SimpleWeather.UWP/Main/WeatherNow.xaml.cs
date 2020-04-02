@@ -213,11 +213,9 @@ namespace SimpleWeather.UWP.Main
                             await Task.Delay(1).ConfigureAwait(true);
                         }
 
-                        var userlang = GlobalizationPreferences.Languages[0];
-                        var culture = new CultureInfo(userlang);
-
                         SunPhasePanel?.SetSunriseSetTimes(
-                            DateTime.Parse(WeatherView.Sunrise, culture).TimeOfDay, DateTime.Parse(WeatherView.Sunset, culture).TimeOfDay,
+                            DateTime.Parse(WeatherView.Sunrise, CultureInfo.InvariantCulture).TimeOfDay,
+                            DateTime.Parse(WeatherView.Sunset, CultureInfo.InvariantCulture).TimeOfDay,
                             location?.tz_offset);
                     }
                     break;
@@ -238,12 +236,12 @@ namespace SimpleWeather.UWP.Main
 
         private AppBarButton GetRefreshBtn()
         {
-            return PrimaryCommands.Last() as AppBarButton;
+            return PrimaryCommands.LastOrDefault() as AppBarButton;
         }
 
         private AppBarButton GetPinBtn()
         {
-            return PrimaryCommands.First() as AppBarButton;
+            return PrimaryCommands.FirstOrDefault() as AppBarButton;
         }
 
         private async void WeatherNow_Resuming(object sender, object e)
@@ -729,26 +727,20 @@ namespace SimpleWeather.UWP.Main
 
         private Task CheckTiles()
         {
-            return Task.Run(async () =>
+            return AsyncTask.RunOnUIThread(async () =>
             {
                 var pinBtn = GetPinBtn();
 
                 if (pinBtn != null)
                 {
-                    await AsyncTask.RunOnUIThread(() =>
-                    {
-                        pinBtn.IsEnabled = false;
-                    }).ConfigureAwait(false);
+                    pinBtn.IsEnabled = false;
 
                     // Check if your app is currently pinned
                     bool isPinned = SecondaryTileUtils.Exists(location?.query);
 
-                    await AsyncTask.RunOnUIThread(async () =>
-                    {
-                        await SetPinButton(isPinned).ConfigureAwait(true);
-                        pinBtn.Visibility = Visibility.Visible;
-                        pinBtn.IsEnabled = true;
-                    }).ConfigureAwait(false);
+                    await SetPinButton(isPinned).ConfigureAwait(true);
+                    pinBtn.Visibility = Visibility.Visible;
+                    pinBtn.IsEnabled = true;
                 }
             });
         }

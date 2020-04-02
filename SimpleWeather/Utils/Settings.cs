@@ -273,7 +273,7 @@ namespace SimpleWeather.Utils
                 var query = String.Format(culture, "\"latitude\":\"{0}\",\"longitude\":\"{1}\"",
                         location.latitude.ToString(culture), location.longitude.ToString(culture));
                 var filteredData = (await weatherDB.QueryAsync<Weather>(
-                    "SELECT * FROM weatherdata WHERE `locationblob` LIKE {0} OR `locationblob` LIKE {1} LIMIT 1",
+                    "SELECT * FROM weatherdata WHERE `locationblob` LIKE ? OR `locationblob` LIKE ? LIMIT 1",
                         "%" + escapedQuery + "%", "%" + query + "%")).FirstOrDefault();
                 if (filteredData != null)
                     await weatherDB.GetChildrenAsync(filteredData);
@@ -325,10 +325,10 @@ namespace SimpleWeather.Utils
             {
                 LoadIfNeeded();
 
-                var list = (await weatherDB.Table<HourlyForecasts>()
-                                                        .Where(hrf => hrf.query == key)
-                                                        .OrderBy(hrf => hrf.dateblob)
-                                                        .ToListAsync());
+                var list = await weatherDB.Table<HourlyForecasts>()
+                                          .Where(hrf => hrf.query == key && hrf.hrforecastblob != null)
+                                          .OrderBy(hrf => hrf.dateblob)
+                                          .ToListAsync();
                 foreach (var item in list)
                 {
                     await weatherDB.GetChildrenAsync(item);

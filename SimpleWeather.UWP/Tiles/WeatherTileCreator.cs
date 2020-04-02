@@ -692,12 +692,6 @@ namespace SimpleWeather.UWP.Tiles
             else if (forecastTileType == ForecastTileType.Large)
             {
                 // Condition + 5-day forecast
-                var forecastGroup = new AdaptiveGroup();
-
-                int forecastLength = LARGE_FORECAST_LENGTH;
-                if (weather.Forecasts.Count < forecastLength)
-                    forecastLength = weather.Forecasts.Count;
-
                 var conditionGroup = new AdaptiveGroup()
                 {
                     Children =
@@ -748,14 +742,23 @@ namespace SimpleWeather.UWP.Tiles
                     Text = ""
                 };
 
-                for (int i = 0; i < forecastLength; i++)
-                {
-                    var forecast = weather.Forecasts[i];
+                var forecastGroup = new AdaptiveGroup();
+                bool hasForecast = weather.Forecasts.Count > 0;
 
-                    var subgroup = new AdaptiveSubgroup()
+                if (hasForecast)
+                {
+                    int forecastLength = LARGE_FORECAST_LENGTH;
+                    if (weather.Forecasts.Count < forecastLength)
+                        forecastLength = weather.Forecasts.Count;
+
+                    for (int i = 0; i < forecastLength; i++)
                     {
-                        HintWeight = 1,
-                        Children =
+                        var forecast = weather.Forecasts[i];
+
+                        var subgroup = new AdaptiveSubgroup()
+                        {
+                            HintWeight = 1,
+                            Children =
                         {
                             new AdaptiveText()
                             {
@@ -779,14 +782,16 @@ namespace SimpleWeather.UWP.Tiles
                                 HintAlign = AdaptiveTextAlign.Center
                             }
                         }
-                    };
+                        };
 
-                    forecastGroup.Children.Add(subgroup);
+                        forecastGroup.Children.Add(subgroup);
+                    }
                 }
 
                 content.Children.Add(conditionGroup);
                 content.Children.Add(text);
-                content.Children.Add(forecastGroup);
+                if (hasForecast)
+                    content.Children.Add(forecastGroup);
             }
 
             return content;
@@ -920,6 +925,10 @@ namespace SimpleWeather.UWP.Tiles
 
         public static Task TileUpdater(LocationData location)
         {
+            // Check if Notification service is available
+            if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.ApplicationModel.Background.ToastNotificationActionTrigger"))
+                return Task.CompletedTask;
+
             return Task.Run(async () => 
             {
                 try
@@ -948,6 +957,10 @@ namespace SimpleWeather.UWP.Tiles
 
         public static Task TileUpdater(LocationData location, WeatherNowViewModel weather)
         {
+            // Check if Notification service is available
+            if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.ApplicationModel.Background.ToastNotificationActionTrigger"))
+                return Task.CompletedTask;
+
             return Task.Run(async () =>
             {
                 if (weather.ImageData == null)
