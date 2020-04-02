@@ -39,7 +39,7 @@ namespace SimpleWeather.Utils
         private static SQLiteAsyncConnection weatherDB;
         private static string tzDBConnStr;
         private const int CACHE_LIMIT = 25;
-        public const int MAX_LOCATIONS = 10;
+        public const int MAX_LOCATIONS = 16;
 
         // Units
         public const string Fahrenheit = "F";
