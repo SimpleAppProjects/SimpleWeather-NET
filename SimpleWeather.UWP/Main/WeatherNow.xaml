@@ -156,7 +156,8 @@
             </Grid.Background>
         </Grid>
         <ScrollViewer x:Name="MainViewer" VerticalScrollMode="Auto" ViewChanged="MainViewer_ViewChanged" Padding="16,0"
-                      x:Load="{x:Bind WeatherView.Location, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}">
+                      x:Load="{x:Bind WeatherView.Location, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
+                      Loaded="DeferedControl_Loaded">
             <StackPanel RequestedTheme="{x:Bind WeatherView.BackgroundTheme, Mode=OneWay}" MaxWidth="1280">
                 <Grid x:Name="ConditionPanel">
                     <Grid.RowDefinitions>
@@ -168,14 +169,18 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <TextBlock Name="Location" Text="{x:Bind WeatherView.Location, FallbackValue='New York, NY', Mode=OneWay}"
-                               FontSize="28" FontWeight="Medium" TextAlignment="Center"
-                               Margin="0,10,0,0" Grid.Row="0" MaxLines="2"
-                               TextWrapping="WrapWholeWords" TextTrimming="CharacterEllipsis"
-                               Transitions="{StaticResource TextTransitions}" />
-                    <TextBlock Name="UpdateDate" Text="{x:Bind WeatherView.UpdateDate, FallbackValue='Updated on 11:12 PM', Mode=OneWay}"
-                               HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Row="1"
-                               Padding="5" Transitions="{StaticResource TextTransitions}" FontSize="12" FontWeight="Medium" />
+                    <toolkitControls:DropShadowPanel BlurRadius="10.0" ShadowOpacity="1" 
+                                                     HorizontalAlignment="Center" Margin="0,10,0,0" Grid.Row="0">
+                        <TextBlock Name="Location" Text="{x:Bind WeatherView.Location, FallbackValue='New York, NY', Mode=OneWay}"
+                                   FontSize="28" FontWeight="Medium" TextAlignment="Center"
+                                   MaxLines="2" TextWrapping="WrapWholeWords" TextTrimming="CharacterEllipsis"
+                                   Transitions="{StaticResource TextTransitions}" />
+                    </toolkitControls:DropShadowPanel>
+                    <toolkitControls:DropShadowPanel BlurRadius="10.0" ShadowOpacity="1"
+                                                     HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Row="1">
+                        <TextBlock Name="UpdateDate" Text="{x:Bind WeatherView.UpdateDate, FallbackValue='Updated on 11:12 PM', Mode=OneWay}"
+                                   Padding="5" Transitions="{StaticResource TextTransitions}" FontSize="12" FontWeight="Medium" />
+                    </toolkitControls:DropShadowPanel>
                     <Button x:Name="AlertButton"
                             Height="30" Padding="0" Background="OrangeRed"
                             HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
@@ -207,21 +212,29 @@
                             </Grid>
                         </Button.Content>
                     </Button>
-                    <Viewbox x:Name="WeatherBox" VerticalAlignment="Bottom" Grid.Row="3"
-                             Height="50" Width="50">
-                        <TextBlock x:Name="WeatherIcon" Style="{ThemeResource WeatherIcon}" Text="{x:Bind WeatherView.WeatherIcon, FallbackValue='&#xf00d;', Mode=OneWay}" />
+                    <Viewbox x:Name="WeatherBox" Height="50" Width="50"
+                             HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Row="3">
+                        <toolkitControls:DropShadowPanel BlurRadius="10.0" ShadowOpacity="1">
+                            <TextBlock x:Name="WeatherIcon" Style="{ThemeResource WeatherIcon}" Text="{x:Bind WeatherView.WeatherIcon, FallbackValue='&#xf00d;', Mode=OneWay}" />
+                        </toolkitControls:DropShadowPanel>
                     </Viewbox>
-                    <TextBlock Name="CurCondition" Text="{x:Bind WeatherView.CurCondition, FallbackValue='Sunny', Mode=OneWay}"
-                               FontSize="24" FontWeight="Medium" Transitions="{StaticResource TextTransitions}"
-                               HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="4" />
-                    <TextBlock Name="CurTemp" Text="{x:Bind WeatherView.CurTemp, FallbackValue='70&#xF045;', Mode=OneWay}"
-                               FontSize="24" FontWeight="Medium" Style="{ThemeResource WeatherIcon}"
-                               HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5,0,0,0" Grid.Row="5" />
-                    <TextBlock FontSize="24" FontWeight="Medium" Style="{ThemeResource WeatherIcon}"
-                               HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5,0,0,0"
-                               Grid.Row="6" Visibility="{x:Bind WeatherView.HiTemp, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
-                        <Span><Run Text="{x:Bind WeatherView.HiTemp, Mode=OneWay}" /><Run Text=" &#xf058;"/><Run Text=" | "/><Run Text="{x:Bind WeatherView.LoTemp, Mode=OneWay}" /><Run Text=" &#xf044;"/></Span>
-                    </TextBlock>
+                    <toolkitControls:DropShadowPanel BlurRadius="10.0" ShadowOpacity="1"
+                                                     HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="4">
+                        <TextBlock Name="CurCondition" Text="{x:Bind WeatherView.CurCondition, FallbackValue='Sunny', Mode=OneWay}"
+                                   FontSize="24" FontWeight="Medium" Transitions="{StaticResource TextTransitions}" />
+                    </toolkitControls:DropShadowPanel>
+                    <toolkitControls:DropShadowPanel BlurRadius="10.0" ShadowOpacity="1"
+                                                     HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5,0,0,0" Grid.Row="5">
+                        <TextBlock Name="CurTemp" Text="{x:Bind WeatherView.CurTemp, FallbackValue='70&#xF045;', Mode=OneWay}"
+                                   FontSize="24" FontWeight="Medium" Style="{ThemeResource WeatherIcon}" />
+                    </toolkitControls:DropShadowPanel>
+                    <toolkitControls:DropShadowPanel BlurRadius="10.0" ShadowOpacity="1"
+                                                     HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5,0,0,0" Grid.Row="6">
+                        <TextBlock FontSize="24" FontWeight="Medium" Style="{ThemeResource WeatherIcon}"
+                                   Visibility="{x:Bind WeatherView.HiTemp, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
+                            <Span><Run Text="{x:Bind WeatherView.HiTemp, Mode=OneWay}" /><Run Text=" &#xf058;"/><Run Text=" | "/><Run Text="{x:Bind WeatherView.LoTemp, Mode=OneWay}" /><Run Text=" &#xf044;"/></Span>
+                        </TextBlock>
+                    </toolkitControls:DropShadowPanel>
                     <HyperlinkButton x:Name="Attribution" Padding="5" FontSize="11" FontWeight="Medium" VerticalAlignment="Bottom" HorizontalAlignment="Right"
                                      x:Load="{x:Bind WeatherView.ImageData.OriginalLink, Converter={StaticResource stringBooleanConverter}, Mode=OneWay, TargetNullValue=false, FallbackValue=false}"
                                      Visibility="{x:Bind WeatherView.ImageData.OriginalLink, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}"
