@@ -101,7 +101,7 @@ namespace SimpleWeather.Utils
 
                             // List all log files not in the above list
                             var logDir = new DirectoryInfo(directory);
-                            var logs = logDir.GetFiles("?Logger*.log", SearchOption.TopDirectoryOnly);
+                            var logs = logDir.EnumerateFiles("Logger*.log", SearchOption.TopDirectoryOnly);
 
                             foreach (var log in logs)
                             {
@@ -120,6 +120,7 @@ namespace SimpleWeather.Utils
 #endif
                         }
                     });
+                    ranCleanup = true;
                 }
             }
 #pragma warning disable CA1031 // Do not catch general exception types
