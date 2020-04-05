@@ -21,7 +21,8 @@ namespace SimpleWeather.Controls
         Moonset,
         MoonPhase,
         Beaufort,
-        UV
+        UV,
+        AirQuality
     }
 
     public class DetailItemViewModel
@@ -234,6 +235,39 @@ namespace SimpleWeather.Controls
                 case Beaufort.BeaufortScale.B12:
                     this.Icon = WeatherIcons.WIND_BEAUFORT_12;
                     break;
+            }
+        }
+
+        public DetailItemViewModel(AirQuality aqi)
+        {
+            this.DetailsType = WeatherDetailsType.AirQuality;
+            this.Label = SimpleLibrary.ResLoader.GetString("AQI_Label");
+            this.Icon = WeatherIcons.CLOUDY_GUSTS;
+            this.IconRotation = 0;
+
+            if (aqi.index < 51)
+            {
+                this.Value = SimpleLibrary.ResLoader.GetString("AQI_Level_0_50");
+            }
+            else if (aqi.index < 101)
+            {
+                this.Value = SimpleLibrary.ResLoader.GetString("AQI_Level_51_100");
+            }
+            else if (aqi.index < 151)
+            {
+                this.Value = SimpleLibrary.ResLoader.GetString("AQI_Level_101_150");
+            }
+            else if (aqi.index < 201)
+            {
+                this.Value = SimpleLibrary.ResLoader.GetString("AQI_Level_151_200");
+            }
+            else if (aqi.index < 301)
+            {
+                this.Value = SimpleLibrary.ResLoader.GetString("AQI_Level_201_300");
+            }
+            else if (aqi.index >= 301)
+            {
+                this.Value = SimpleLibrary.ResLoader.GetString("AQI_Level_300");
             }
         }
     }
