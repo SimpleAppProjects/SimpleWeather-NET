@@ -41,6 +41,20 @@ namespace SimpleWeather.UWP.Main
             }
         }
 
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+            if (RadarWebViewContainer?.Child is WebView webview)
+            {
+                webview.Stop();
+                webview.NavigationStarting -= RadarWebView_NavigationStarting;
+                webview.Navigate(new Uri("about:blank"));
+                webview.NavigationStarting += RadarWebView_NavigationStarting;
+                RadarWebViewContainer.Child = null;
+                webview = null;
+            }
+        }
+
         private void NavigateToRadarURL()
         {
             if (RadarURI == null) return;
