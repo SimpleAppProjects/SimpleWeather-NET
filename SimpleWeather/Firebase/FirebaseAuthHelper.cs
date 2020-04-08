@@ -1,5 +1,5 @@
 ﻿using Firebase.Auth;
-using SimpleWeather.Utils;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -50,7 +50,11 @@ namespace SimpleWeather.Firebase
                 var tokenJSON = FirebaseContainer.Values[KEY_AUTHTOKEN]?.ToString();
                 if (tokenJSON != null)
                 {
-                    return await JSONParser.DeserializerAsync<FirebaseAuth>(tokenJSON);
+                    try
+                    {
+                        return JsonConvert.DeserializeObject<FirebaseAuth>(tokenJSON);
+                    }
+                    catch (Exception) { }
                 }
             }
 
@@ -59,7 +63,7 @@ namespace SimpleWeather.Firebase
 
         private static void StoreToken(FirebaseAuth authToken)
         {
-            FirebaseContainer.Values[KEY_AUTHTOKEN] = JSONParser.Serializer(authToken);
+            FirebaseContainer.Values[KEY_AUTHTOKEN] = JsonConvert.SerializeObject(authToken);
         }
     }
 }
