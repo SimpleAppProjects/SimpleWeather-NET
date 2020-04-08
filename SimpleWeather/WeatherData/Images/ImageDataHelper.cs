@@ -1,11 +1,10 @@
-﻿using SimpleWeather.Controls;
-using SimpleWeather.Utils;
-using SimpleWeather.WeatherData.Images.Model;
+﻿using SimpleWeather.WeatherData.Images.Model;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace SimpleWeather.WeatherData.Images
 {
@@ -14,7 +13,7 @@ namespace SimpleWeather.WeatherData.Images
     // Have UWP extend this and create its own implementation
     // Move platform specific code to its own implementation
     // Ex: caching image data and default data from assets
-    public static class ImageDataHelper
+    public static partial class ImageDataHelper
     {
         private static ImageDataHelperImpl sImageDataHelperImpl;
         internal static ImageDataHelperImpl ImageDataHelperImpl
@@ -33,6 +32,27 @@ namespace SimpleWeather.WeatherData.Images
                 return sImageDataHelperImpl;
             }
         }
+
+        public static long ImageDBUpdateTime { get { return GetImageDBUpdateTime(); } set { SetImageDBUpdateTime(value); } }
+
+#if WINDOWS_UWP
+        private static ApplicationDataContainer LocalSettings = ApplicationData.Current.LocalSettings;
+
+        private static long GetImageDBUpdateTime()
+        {
+            if (LocalSettings.Containers.ContainsKey("ImageDB_LastUpdated"))
+            {
+                return (long)LocalSettings.Values["ImageDB_LastUpdated"];
+            }
+
+            return 0;
+        }
+
+        private static void SetImageDBUpdateTime(long value)
+        {
+            LocalSettings.Values["ImageDB_LastUpdated"] = value;
+        }
+#endif
     }
 
     public abstract class ImageDataHelperImpl
@@ -80,5 +100,7 @@ namespace SimpleWeather.WeatherData.Images
         public abstract Task ClearCachedImageData();
 
         public abstract ImageData GetDefaultImageData(String backgroundCode, Weather weather);
+
+        public abstract Task<bool> IsEmpty();
     }
 }

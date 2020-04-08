@@ -1,9 +1,11 @@
 ﻿using SimpleWeather.WeatherData.Images.Model;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace SimpleWeather.WeatherData.Images
 {
@@ -90,12 +92,41 @@ namespace SimpleWeather.WeatherData.Images
                 await ImageDatabaseCache.ClearCache();
 
                 await firestoreDb.Collection("background_images")
+                                 .WhereGreaterThan("condition", "")
                                  .StreamAsync()
                                  .ForEachAsync(async (docSnapshot) =>
                                  {
                                      if (docSnapshot.Exists)
                                          await ImageDatabaseCache.InsertData(docSnapshot.ConvertTo<ImageData>());
                                  }).ConfigureAwait(false);
+
+                // Register background task to update
+#if WINDOWS_UWP && !UNIT_TEST
+                await UWP.BackgroundTasks.ImageDatabaseTask.RegisterBackgroundTask();
+#endif
+            });
+        }
+
+        public static Task<long> GetLastUpdateTime()
+        {
+            return Task.Run(async () =>
+            {
+                var firestoreDb = await Firebase.FirestoreHelper.GetFirestoreDB();
+
+                var docSnapshot = await firestoreDb.Collection("background_images_info")
+                                                   .Document("collection_info")
+                                                   .GetSnapshotAsync();
+
+                var map = docSnapshot.ToDictionary();
+                if (map.TryGetValue("last_updated", out object updateTime))
+                {
+                    if (updateTime is long)
+                    {
+                        return (long)updateTime;
+                    }
+                }
+
+                return 0L;
             });
         }
     }

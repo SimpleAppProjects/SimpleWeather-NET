@@ -124,6 +124,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                 AppTrigger = new ApplicationTrigger();
 
             // Request access
+            BackgroundExecutionManager.RemoveAccess();
             var backgroundAccessStatus = await BackgroundExecutionManager.RequestAccessAsync();
 
             // If allowed
@@ -154,6 +155,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                 AppTrigger = new ApplicationTrigger();
 
             // Request access
+            BackgroundExecutionManager.RemoveAccess();
             var backgroundAccessStatus = await BackgroundExecutionManager.RequestAccessAsync();
 
             // If allowed

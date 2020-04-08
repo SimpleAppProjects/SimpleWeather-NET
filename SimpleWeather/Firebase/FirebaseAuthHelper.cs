@@ -28,15 +28,17 @@ namespace SimpleWeather.Firebase
                     var token = await GetTokenFromStorage();
                     if (token != null)
                     {
-                        return await new FirebaseAuthLink(ap, token).GetFreshAuthAsync();
+                        var authLink = await new FirebaseAuthLink(ap, token).GetFreshAuthAsync();
+                        if (!authLink.IsExpired() && authLink.FirebaseToken != null)
+                        {
+                            return authLink;
+                        }
                     }
-                    else
-                    {
-                        // sign in anonymously
-                        var authTokenLink = await ap.SignInAnonymouslyAsync();
-                        StoreToken(authTokenLink);
-                        return authTokenLink;
-                    }
+
+                    // sign in anonymously
+                    var authTokenLink = await ap.SignInAnonymouslyAsync();
+                    StoreToken(authTokenLink);
+                    return authTokenLink;
                 }
             });
         }
@@ -57,10 +59,7 @@ namespace SimpleWeather.Firebase
 
         private static void StoreToken(FirebaseAuth authToken)
         {
-            AsyncTask.Run(() =>
-            {
-                FirebaseContainer.Values[KEY_AUTHTOKEN] = JSONParser.Serializer(authToken);
-            });
+            FirebaseContainer.Values[KEY_AUTHTOKEN] = JSONParser.Serializer(authToken);
         }
     }
 }

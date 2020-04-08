@@ -260,6 +260,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BackgroundTasks\ImageDatabaseTask.cs" />
+    <Compile Include="BackgroundTasks\UpdateTask.cs" />
+    <Compile Include="BackgroundTasks\WNSPushBackgroundTask.cs" />
     <Compile Include="Controls\BottomNavigationBarItem.cs" />
     <Compile Include="Controls\BottomNavigationBar.cs" />
     <Compile Include="Controls\DataTemplates.xaml.cs">
@@ -384,6 +387,7 @@
     <Compile Include="Main\WeatherNow.xaml.cs">
       <DependentUpon>WeatherNow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WNS\WNSHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">

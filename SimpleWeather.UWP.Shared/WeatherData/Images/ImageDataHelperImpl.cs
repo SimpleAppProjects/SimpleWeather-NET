@@ -55,7 +55,7 @@ namespace SimpleWeather.UWP.Shared.WeatherData.Images
 
         protected override Task<ImageData> StoreImage(Uri imageUri, ImageData imageData)
         {
-            return Task.Run(async () => 
+            return Task.Run(async () =>
             {
                 // Download image to local cache folder
                 await CreateDataFolderIfNeeded();
@@ -92,7 +92,7 @@ namespace SimpleWeather.UWP.Shared.WeatherData.Images
 
         public override Task ClearCachedImageData()
         {
-            return Task.Run(async () => 
+            return Task.Run(async () =>
             {
                 if (ImageDataFolder != null)
                 {
@@ -144,6 +144,11 @@ namespace SimpleWeather.UWP.Shared.WeatherData.Images
             }
 
             return imageData;
+        }
+
+        public override Task<bool> IsEmpty()
+        {
+            return Task.FromResult(ImageDataContainer.Values.Keys.Count == 0);
         }
     }
 }

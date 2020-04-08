@@ -189,7 +189,6 @@ namespace SimpleWeather.UWP.Main
             }
 
             // Setup background task
-            Windows.ApplicationModel.Background.BackgroundExecutionManager.RemoveAccess();
             Task.Run(WeatherUpdateBackgroundTask.RegisterBackgroundTask);
         }
 
