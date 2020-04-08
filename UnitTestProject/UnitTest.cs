@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SimpleWeather.HERE;
 using SimpleWeather.Keys;
 using SimpleWeather.Location;
+using SimpleWeather.TZDB;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 
@@ -15,7 +17,7 @@ namespace UnitTestProject
         [TestInitialize]
         public void Initialize()
         {
-            Settings.LoadIfNeeded().GetAwaiter().GetResult();
+            Settings.LoadIfNeeded();
         }
 
         /// <summary>
@@ -142,6 +144,14 @@ namespace UnitTestProject
         {
             var token = HEREOAuthUtils.GetBearerToken(true).ConfigureAwait(false).GetAwaiter().GetResult();
             Assert.IsTrue(!String.IsNullOrWhiteSpace(token));
+        }
+
+        [TestMethod]
+        public void GetTimeZone()
+        {
+            var tz = new TimeZoneProvider().GetTimeZone(0, 0).ConfigureAwait(false).GetAwaiter().GetResult();
+            Debug.WriteLine("TZTest: tz = " + tz);
+            Assert.IsTrue(!String.IsNullOrWhiteSpace(tz));
         }
     }
 }

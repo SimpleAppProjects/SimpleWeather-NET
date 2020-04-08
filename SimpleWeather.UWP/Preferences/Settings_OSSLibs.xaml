@@ -13,60 +13,230 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Orientation="Vertical">
             <RichTextBlock Padding="16,8" IsTextSelectionEnabled="False">
-                <Paragraph>                    <Span>
-                        <InlineUIContainer>
-                            <HyperlinkButton NavigateUri="https://github.com/mj1856/GeoTimeZone" Style="{ThemeResource HyperlinkButtonStyle}" Content="GeoTimeZone" />
-                        </InlineUIContainer>
-                    </Span>                    <Span>
-                        <LineBreak /> Copyright (c) 2014 Matt Johnson &amp; Simon Bartlett                        <LineBreak />                        <LineBreak /> https://github.com/mj1856/GeoTimeZone                        <LineBreak />                        <LineBreak /> While we certainly hope this software is useful, none of the authors or                        <LineBreak /> contributors place any guarantees as to the accuracy of the data or the                        <LineBreak /> results returned by querying it using this library.                        <LineBreak />                        <LineBreak /> Contains code from Geohash-net                        <LineBreak /> Copyright (c) 2011 Sharon Lourduraj                        <LineBreak /> https://github.com/sharonjl/geohash-net                        <LineBreak />                        <LineBreak /> Geohash-net is a port of Geohash-js                        <LineBreak /> Copyright (c) 2008 David Troy                        <LineBreak /> https://github.com/davetroy/geohash-js                        <LineBreak />                        <LineBreak /> GeoTimeZone, Geohash-net and Geohash-js are distributed under the MIT License:                        <LineBreak />                        <LineBreak /> -----------------------------------------------------------------------------                        <LineBreak /> The MIT License (MIT)                        <LineBreak />                        <LineBreak /> Permission is hereby granted, free of charge, to any person obtaining a copy of                        <LineBreak /> this software and associated documentation files (the "Software"), to deal in                        <LineBreak /> the Software without restriction, including without limitation the rights to                        <LineBreak /> use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of                        <LineBreak /> the Software, and to permit persons to whom the Software is furnished to do so,                        <LineBreak /> subject to the following conditions:                        <LineBreak />                        <LineBreak /> The above copyright notice and this permission notice shall be included in all                        <LineBreak /> copies or substantial portions of the Software.                        <LineBreak />                        <LineBreak /> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR                        <LineBreak /> IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS                        <LineBreak /> FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR                        <LineBreak /> COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER                        <LineBreak /> IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                        <LineBreak /> CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                        <LineBreak /> -----------------------------------------------------------------------------                        <LineBreak />                        <LineBreak /> Time zone boundary data is sourced from Open Street Map (OSM), and correlated via                        <LineBreak /> the Time Zone Boundary Builder, by Evan Siroky.                        <LineBreak /> https://github.com/evansiroky/timezone-boundary-builder                        <LineBreak />                        <LineBreak /> The data is licensed under the Open Data Commons Open Database License (ODbL).                        <LineBreak /> http://opendatacommons.org/licenses/odbl/                    </Span>                    <LineBreak />                    <LineBreak />
+                <Paragraph>
                     <Span>
                         <InlineUIContainer>
                             <HyperlinkButton NavigateUri="https://github.com/Microsoft/UWPCommunityToolkit" Style="{ThemeResource HyperlinkButtonStyle}">Microsoft UWP Community Toolkit</HyperlinkButton>
                         </InlineUIContainer>
-                    </Span>                    <Span>
-                        <LineBreak /> The MIT License (MIT)                        <LineBreak />                        <LineBreak /> Copyright (c) .NET Foundation and Contributors                        <LineBreak />                        <LineBreak /> Permission is hereby granted, free of charge, to any person obtaining a copy                        <LineBreak /> of this software and associated documentation files (the "Software"), to deal                        <LineBreak /> in the Software without restriction, including without limitation the rights                        <LineBreak /> to use, copy, modify, merge, publish, distribute, sublicense, and/or sell                        <LineBreak /> copies of the Software, and to permit persons to whom the Software is                        <LineBreak /> furnished to do so, subject to the following conditions:                        <LineBreak />                        <LineBreak /> The above copyright notice and this permission notice shall be included in all                        <LineBreak /> copies or substantial portions of the Software.                        <LineBreak />                        <LineBreak /> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR                        <LineBreak /> IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,                        <LineBreak /> FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE                        <LineBreak /> AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER                        <LineBreak /> LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,                        <LineBreak /> OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE                        <LineBreak /> SOFTWARE.                    </Span>                    <LineBreak />                    <LineBreak />
+                    </Span>
+                    <Span>
+                        <LineBreak /> The MIT License (MIT)
+                        <LineBreak />
+                        <LineBreak /> Copyright (c) .NET Foundation and Contributors
+                        <LineBreak />
+                        <LineBreak /> Permission is hereby granted, free of charge, to any person obtaining a copy
+                        <LineBreak /> of this software and associated documentation files (the "Software"), to deal
+                        <LineBreak /> in the Software without restriction, including without limitation the rights
+                        <LineBreak /> to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+                        <LineBreak /> copies of the Software, and to permit persons to whom the Software is
+                        <LineBreak /> furnished to do so, subject to the following conditions:
+                        <LineBreak />
+                        <LineBreak /> The above copyright notice and this permission notice shall be included in all
+                        <LineBreak /> copies or substantial portions of the Software.
+                        <LineBreak />
+                        <LineBreak /> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+                        <LineBreak /> IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+                        <LineBreak /> FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+                        <LineBreak /> AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+                        <LineBreak /> LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+                        <LineBreak /> OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+                        <LineBreak /> SOFTWARE.
+                    </Span>
+                    <LineBreak />
+                    <LineBreak />
                     <Span>
                         <InlineUIContainer>
                             <HyperlinkButton NavigateUri="https://github.com/nodatime/nodatime" Style="{ThemeResource HyperlinkButtonStyle}">NodaTime</HyperlinkButton>
                         </InlineUIContainer>
-                    </Span>                    <Span>
-                        <LineBreak /> Copyright (C) 2015 The Noda Time Authors                        <LineBreak />                        <LineBreak /> Licensed under the Apache License, Version 2.0 (the "License");                        <LineBreak /> you may not use this file except in compliance with the License.                        <LineBreak /> You may obtain a copy of the License at                        <LineBreak />                        <LineBreak /> http://www.apache.org/licenses/LICENSE-2.0                        <LineBreak />                        <LineBreak /> Unless required by applicable law or agreed to in writing, software                        <LineBreak /> distributed under the License is distributed on an "AS IS" BASIS,                        <LineBreak /> WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.                        <LineBreak /> See the License for the specific language governing permissions and                        <LineBreak /> limitations under the License.                    </Span>                    <LineBreak />                    <LineBreak />
+                    </Span>
+                    <Span>
+                        <LineBreak /> Copyright (C) 2015 The Noda Time Authors
+                        <LineBreak />
+                        <LineBreak /> Licensed under the Apache License, Version 2.0 (the "License");
+                        <LineBreak /> you may not use this file except in compliance with the License.
+                        <LineBreak /> You may obtain a copy of the License at
+                        <LineBreak />
+                        <LineBreak /> http://www.apache.org/licenses/LICENSE-2.0
+                        <LineBreak />
+                        <LineBreak /> Unless required by applicable law or agreed to in writing, software
+                        <LineBreak /> distributed under the License is distributed on an "AS IS" BASIS,
+                        <LineBreak /> WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+                        <LineBreak /> See the License for the specific language governing permissions and
+                        <LineBreak /> limitations under the License.
+                    </Span>
+                    <LineBreak />
+                    <LineBreak />
                     <Span>
                         <InlineUIContainer>
                             <HyperlinkButton NavigateUri="https://github.com/praeclarum/sqlite-net" Style="{ThemeResource HyperlinkButtonStyle}">SQLite-net</HyperlinkButton>
                         </InlineUIContainer>
-                    </Span>                    <Span>
-                        <LineBreak /> The MIT License (MIT)                        <LineBreak />                        <LineBreak /> Copyright (c) 2009-2016 Krueger Systems, Inc.                        <LineBreak />                        <LineBreak /> Permission is hereby granted, free of charge, to any person obtaining a copy                        <LineBreak /> of this software and associated documentation files (the "Software"), to deal                        <LineBreak /> in the Software without restriction, including without limitation the rights                        <LineBreak /> to use, copy, modify, merge, publish, distribute, sublicense, and/or sell                        <LineBreak /> copies of the Software, and to permit persons to whom the Software is                        <LineBreak /> furnished to do so, subject to the following conditions:                        <LineBreak />                        <LineBreak /> The above copyright notice and this permission notice shall be included in                        <LineBreak /> all copies or substantial portions of the Software.                        <LineBreak />                        <LineBreak /> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR                        <LineBreak /> IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,                        <LineBreak /> FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE                        <LineBreak /> AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER                        <LineBreak /> LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,                        <LineBreak /> OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN                        <LineBreak /> THE SOFTWARE.                    </Span>                    <LineBreak />                    <LineBreak />
+                    </Span>
+                    <Span>
+                        <LineBreak /> The MIT License (MIT)
+                        <LineBreak />
+                        <LineBreak /> Copyright (c) 2009-2016 Krueger Systems, Inc.
+                        <LineBreak />
+                        <LineBreak /> Permission is hereby granted, free of charge, to any person obtaining a copy
+                        <LineBreak /> of this software and associated documentation files (the "Software"), to deal
+                        <LineBreak /> in the Software without restriction, including without limitation the rights
+                        <LineBreak /> to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+                        <LineBreak /> copies of the Software, and to permit persons to whom the Software is
+                        <LineBreak /> furnished to do so, subject to the following conditions:
+                        <LineBreak />
+                        <LineBreak /> The above copyright notice and this permission notice shall be included in
+                        <LineBreak /> all copies or substantial portions of the Software.
+                        <LineBreak />
+                        <LineBreak /> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+                        <LineBreak /> IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+                        <LineBreak /> FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+                        <LineBreak /> AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+                        <LineBreak /> LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+                        <LineBreak /> OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+                        <LineBreak /> THE SOFTWARE.
+                    </Span>
+                    <LineBreak />
+                    <LineBreak />
                     <Span>
                         <InlineUIContainer>
                             <HyperlinkButton NavigateUri="https://bitbucket.org/twincoders/sqlite-net-extensions" Style="{ThemeResource HyperlinkButtonStyle}">SQLite-net Extensions</HyperlinkButton>
                         </InlineUIContainer>
-                    </Span>                    <Span>
-                        <LineBreak /> The MIT License (MIT)                        <LineBreak />                        <LineBreak /> Copyright (C) 2013 TwinCoders S.L.                        <LineBreak />                        <LineBreak /> Permission is hereby granted, free of charge, to any person obtaining a copy                        <LineBreak /> of this software and associated documentation files (the "Software"), to deal                        <LineBreak /> in the Software without restriction, including without limitation the rights                        <LineBreak /> to use, copy, modify, merge, publish, distribute, sublicense, and/or sell                        <LineBreak /> copies of the Software, and to permit persons to whom the Software is                        <LineBreak /> furnished to do so, subject to the following conditions:                        <LineBreak />                        <LineBreak /> The above copyright notice and this permission notice shall be included in                        <LineBreak /> all copies or substantial portions of the Software.                        <LineBreak />                        <LineBreak /> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR                        <LineBreak /> IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,                        <LineBreak /> FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE                        <LineBreak /> AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER                        <LineBreak /> LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,                        <LineBreak /> OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN                        <LineBreak /> THE SOFTWARE.                    </Span>                    <LineBreak />                    <LineBreak />
+                    </Span>
+                    <Span>
+                        <LineBreak /> The MIT License (MIT)
+                        <LineBreak />
+                        <LineBreak /> Copyright (C) 2013 TwinCoders S.L.
+                        <LineBreak />
+                        <LineBreak /> Permission is hereby granted, free of charge, to any person obtaining a copy
+                        <LineBreak /> of this software and associated documentation files (the "Software"), to deal
+                        <LineBreak /> in the Software without restriction, including without limitation the rights
+                        <LineBreak /> to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+                        <LineBreak /> copies of the Software, and to permit persons to whom the Software is
+                        <LineBreak /> furnished to do so, subject to the following conditions:
+                        <LineBreak />
+                        <LineBreak /> The above copyright notice and this permission notice shall be included in
+                        <LineBreak /> all copies or substantial portions of the Software.
+                        <LineBreak />
+                        <LineBreak /> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+                        <LineBreak /> IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+                        <LineBreak /> FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+                        <LineBreak /> AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+                        <LineBreak /> LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+                        <LineBreak /> OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+                        <LineBreak /> THE SOFTWARE.
+                    </Span>
+                    <LineBreak />
+                    <LineBreak />
                     <Span>
                         <InlineUIContainer>
                             <HyperlinkButton NavigateUri="https://github.com/neuecc/Utf8Json" Style="{ThemeResource HyperlinkButtonStyle}">Utf8Json</HyperlinkButton>
                         </InlineUIContainer>
-                    </Span>                    <Span>
-                        <LineBreak /> MIT License                        <LineBreak />                        <LineBreak /> Copyright (c) 2017 Yoshifumi Kawai                        <LineBreak />                        <LineBreak /> Permission is hereby granted, free of charge, to any person obtaining a copy                        <LineBreak /> of this software and associated documentation files (the "Software"), to deal                        <LineBreak /> in the Software without restriction, including without limitation the rights                        <LineBreak /> to use, copy, modify, merge, publish, distribute, sublicense, and/or sell                        <LineBreak /> copies of the Software, and to permit persons to whom the Software is                        <LineBreak /> furnished to do so, subject to the following conditions:                        <LineBreak />                        <LineBreak /> The above copyright notice and this permission notice shall be included in all                        <LineBreak /> copies or substantial portions of the Software.                        <LineBreak />                        <LineBreak /> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR                        <LineBreak /> IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,                        <LineBreak /> FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE                        <LineBreak /> AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER                        <LineBreak /> LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,                        <LineBreak /> OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE                        <LineBreak /> SOFTWARE.                    </Span>                    <LineBreak />                    <LineBreak />
+                    </Span>
+                    <Span>
+                        <LineBreak /> MIT License
+                        <LineBreak />
+                        <LineBreak /> Copyright (c) 2017 Yoshifumi Kawai
+                        <LineBreak />
+                        <LineBreak /> Permission is hereby granted, free of charge, to any person obtaining a copy
+                        <LineBreak /> of this software and associated documentation files (the "Software"), to deal
+                        <LineBreak /> in the Software without restriction, including without limitation the rights
+                        <LineBreak /> to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+                        <LineBreak /> copies of the Software, and to permit persons to whom the Software is
+                        <LineBreak /> furnished to do so, subject to the following conditions:
+                        <LineBreak />
+                        <LineBreak /> The above copyright notice and this permission notice shall be included in all
+                        <LineBreak /> copies or substantial portions of the Software.
+                        <LineBreak />
+                        <LineBreak /> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+                        <LineBreak /> IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+                        <LineBreak /> FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+                        <LineBreak /> AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+                        <LineBreak /> LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+                        <LineBreak /> OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+                        <LineBreak /> SOFTWARE.
+                    </Span>
+                    <LineBreak />
+                    <LineBreak />
                     <Span>
                         <InlineUIContainer>
                             <HyperlinkButton NavigateUri="http://weathericons.io/" Style="{ThemeResource HyperlinkButtonStyle}">WeatherIcons</HyperlinkButton>
                         </InlineUIContainer>
-                    </Span>                    <Span>
-                        <LineBreak /> Author - Erik Flowers - erik@helloerik.com                        <LineBreak />                        <LineBreak /> Font licensed under SIL OFL 1.1                        <LineBreak /> http://scripts.sil.org/OFL                        <LineBreak />                        <LineBreak /> Documentation licensed under CC BY 3.0                        <LineBreak /> http://creativecommons.org/licenses/by/3.0/                        <LineBreak />                        <LineBreak /> Inspired by and works great as a companion with Font Awesome                        <LineBreak /> "Font Awesome by Dave Gandy - http://fontawesome.io"                    </Span>                    <LineBreak />                    <LineBreak />
+                    </Span>
+                    <Span>
+                        <LineBreak /> Author - Erik Flowers - erik@helloerik.com
+                        <LineBreak />
+                        <LineBreak /> Font licensed under SIL OFL 1.1
+                        <LineBreak /> http://scripts.sil.org/OFL
+                        <LineBreak />
+                        <LineBreak /> Documentation licensed under CC BY 3.0
+                        <LineBreak /> http://creativecommons.org/licenses/by/3.0/
+                        <LineBreak />
+                        <LineBreak /> Inspired by and works great as a companion with Font Awesome
+                        <LineBreak /> "Font Awesome by Dave Gandy - http://fontawesome.io"
+                    </Span>
+                    <LineBreak />
+                    <LineBreak />
                     <Span>
                         <InlineUIContainer>
                             <HyperlinkButton NavigateUri="https://github.com/Microsoft/Win2D" Style="{ThemeResource HyperlinkButtonStyle}">Win2D UWP</HyperlinkButton>
                         </InlineUIContainer>
-                    </Span>                    <Span>
-                        <LineBreak /> Win2D                        <LineBreak />                        <LineBreak /> Copyright (c) Microsoft Corporation. All rights reserved.                        <LineBreak />                        <LineBreak /> MIT License                        <LineBreak />                        <LineBreak /> Permission is hereby granted, free of charge, to any person obtaining a copy                        <LineBreak /> of this software and associated documentation files (the ""Software""), to                        <LineBreak /> deal in the Software without restriction, including without limitation the                        <LineBreak /> rights to use, copy, modify, merge, publish, distribute, sublicense, and/or                        <LineBreak /> sell copies of the Software, and to permit persons to whom the Software is                        <LineBreak /> furnished to do so, subject to the following conditions:                        <LineBreak />                        <LineBreak /> The above copyright notice and this permission notice shall be included in all                        <LineBreak /> copies or substantial portions of the Software.                        <LineBreak />                        <LineBreak /> THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR                        <LineBreak /> IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,                        <LineBreak /> FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE                        <LineBreak /> AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER                        <LineBreak /> LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,                        <LineBreak /> OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE                        <LineBreak /> SOFTWARE.                    </Span>                    <LineBreak />                    <LineBreak />
+                    </Span>
+                    <Span>
+                        <LineBreak /> Win2D
+                        <LineBreak />
+                        <LineBreak /> Copyright (c) Microsoft Corporation. All rights reserved.
+                        <LineBreak />
+                        <LineBreak /> MIT License
+                        <LineBreak />
+                        <LineBreak /> Permission is hereby granted, free of charge, to any person obtaining a copy
+                        <LineBreak /> of this software and associated documentation files (the ""Software""), to
+                        <LineBreak /> deal in the Software without restriction, including without limitation the
+                        <LineBreak /> rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+                        <LineBreak /> sell copies of the Software, and to permit persons to whom the Software is
+                        <LineBreak /> furnished to do so, subject to the following conditions:
+                        <LineBreak />
+                        <LineBreak /> The above copyright notice and this permission notice shall be included in all
+                        <LineBreak /> copies or substantial portions of the Software.
+                        <LineBreak />
+                        <LineBreak /> THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+                        <LineBreak /> IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+                        <LineBreak /> FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+                        <LineBreak /> AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+                        <LineBreak /> LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+                        <LineBreak /> OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+                        <LineBreak /> SOFTWARE.
+                    </Span>
+                    <LineBreak />
+                    <LineBreak />
                     <Span>
                         <InlineUIContainer>
                             <HyperlinkButton NavigateUri="https://github.com/Microsoft/microsoft-ui-xaml" Style="{ThemeResource HyperlinkButtonStyle}">Windows UI Library</HyperlinkButton>
                         </InlineUIContainer>
-                    </Span>                    <Span>
-                        <LineBreak /> MIT License                        <LineBreak />                        <LineBreak /> Copyright (c) Microsoft Corporation. All rights reserved.                        <LineBreak />                        <LineBreak /> Permission is hereby granted, free of charge, to any person obtaining a copy                        <LineBreak /> of this software and associated documentation files (the "Software"), to deal                        <LineBreak /> in the Software without restriction, including without limitation the rights                        <LineBreak /> to use, copy, modify, merge, publish, distribute, sublicense, and/or sell                        <LineBreak /> copies of the Software, and to permit persons to whom the Software is                        <LineBreak /> furnished to do so, subject to the following conditions:                        <LineBreak />                        <LineBreak /> The above copyright notice and this permission notice shall be included in all                        <LineBreak /> copies or substantial portions of the Software.                        <LineBreak />                        <LineBreak /> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR                        <LineBreak /> IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,                        <LineBreak /> FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE                        <LineBreak /> AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER                        <LineBreak /> LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,                        <LineBreak /> OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE                        <LineBreak /> SOFTWARE                    </Span>                    <LineBreak />                    <LineBreak />
+                    </Span>
+                    <Span>
+                        <LineBreak /> MIT License
+                        <LineBreak />
+                        <LineBreak /> Copyright (c) Microsoft Corporation. All rights reserved.
+                        <LineBreak />
+                        <LineBreak /> Permission is hereby granted, free of charge, to any person obtaining a copy
+                        <LineBreak /> of this software and associated documentation files (the "Software"), to deal
+                        <LineBreak /> in the Software without restriction, including without limitation the rights
+                        <LineBreak /> to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+                        <LineBreak /> copies of the Software, and to permit persons to whom the Software is
+                        <LineBreak /> furnished to do so, subject to the following conditions:
+                        <LineBreak />
+                        <LineBreak /> The above copyright notice and this permission notice shall be included in all
+                        <LineBreak /> copies or substantial portions of the Software.
+                        <LineBreak />
+                        <LineBreak /> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+                        <LineBreak /> IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+                        <LineBreak /> FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+                        <LineBreak /> AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+                        <LineBreak /> LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+                        <LineBreak /> OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+                        <LineBreak /> SOFTWARE
+                    </Span>
+                    <LineBreak />
+                    <LineBreak />
                 </Paragraph>
             </RichTextBlock>
         </StackPanel>

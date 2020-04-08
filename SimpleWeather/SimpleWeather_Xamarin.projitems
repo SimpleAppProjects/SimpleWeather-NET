@@ -42,6 +42,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Keys\HEREWeatherKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HERE\HEREWeatherProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HERE\Weather.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Keys\TimeZoneAPI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Location\ILocationProviderImpl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Location\LocationData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Location\LocationProviderImpl.cs" />
@@ -57,6 +58,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\OpenWeatherMapProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SimpleLibrary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SQLiteNet\SQLiteNetPCLExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TZDB\ITimeZoneProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TZDB\TimeZoneProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TZDB\TZDB.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utf8JsonGen\Utf8JsonGenerated.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\AppCenterLoggingTree.cs" />

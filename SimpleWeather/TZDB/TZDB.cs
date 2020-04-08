@@ -1,5 +1,4 @@
-﻿using GeoTimeZone;
-using SimpleWeather.Utils;
+﻿using SimpleWeather.Utils;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -44,7 +43,7 @@ namespace SimpleWeather.TZDB
                         return dbResult;
 
                     // Search tz lookup
-                    var result = TimeZoneLookup.GetTimeZone(latitude, longitude).Result;
+                    var result = await new TimeZoneProvider().GetTimeZone(latitude, longitude);
 
                     if (!String.IsNullOrWhiteSpace(result))
                     {
