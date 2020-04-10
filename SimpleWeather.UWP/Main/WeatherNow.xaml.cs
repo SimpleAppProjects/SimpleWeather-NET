@@ -916,7 +916,13 @@ namespace SimpleWeather.UWP.Main
 
         private void RadarWebView_Loaded(object sender, RoutedEventArgs e)
         {
-            NavigateToRadarURL();
+            AsyncTask.Run(async () =>
+            {
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
+                {
+                    NavigateToRadarURL();
+                });
+            }, 1000);
         }
 
         private void RadarWebView_Tapped(object sender, TappedRoutedEventArgs e)
