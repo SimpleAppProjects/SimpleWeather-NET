@@ -951,7 +951,7 @@ namespace SimpleWeather.UWP.Tiles
         public static Task TileUpdater(LocationData location)
         {
             // Check if Notification service is available
-            if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.ApplicationModel.Background.ToastNotificationActionTrigger"))
+            if (!Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.ApplicationModel.Background.ToastNotificationActionTrigger"))
                 return Task.CompletedTask;
 
             return Task.Run(async () => 
@@ -983,7 +983,7 @@ namespace SimpleWeather.UWP.Tiles
         public static Task TileUpdater(LocationData location, WeatherNowViewModel weather)
         {
             // Check if Notification service is available
-            if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.ApplicationModel.Background.ToastNotificationActionTrigger"))
+            if (!Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.ApplicationModel.Background.ToastNotificationActionTrigger"))
                 return Task.CompletedTask;
 
             return Task.Run(async () =>
