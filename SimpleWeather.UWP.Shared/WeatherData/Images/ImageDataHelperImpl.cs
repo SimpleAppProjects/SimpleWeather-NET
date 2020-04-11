@@ -57,34 +57,44 @@ namespace SimpleWeather.UWP.Shared.WeatherData.Images
         {
             return Task.Run(async () =>
             {
-                // Download image to local cache folder
-                await CreateDataFolderIfNeeded();
+                ImageData newImageData = null;
 
-                StorageFile imageFile = await ImageDataFolder.CreateFileAsync(
-                    String.Format("{0}-{1}", imageData.Condition, Guid.NewGuid().ToString()), CreationCollisionOption.ReplaceExisting);
-
-                var storage = await FirebaseStorageHelper.GetFirebaseStorage();
-                var storageRef = storage.GetReferenceFromUrl(imageUri);
-
-                var imageDownloadUri = new Uri(await storageRef.GetDownloadUrlAsync());
-
-                using (var fStream = await imageFile.OpenAsync(FileAccessMode.ReadWrite))
-                using (HttpClient webClient = new HttpClient())
-                using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                using (var request = new HttpRequestMessage(HttpMethod.Get, imageDownloadUri))
+                try
                 {
-                    // Connect to webstream
-                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.SendRequestAsync(request).AsTask(cts.Token));
-                    response.EnsureSuccessStatusCode();
+                    // Download image to local cache folder
+                    await CreateDataFolderIfNeeded();
 
-                    // Download content to file
-                    await response.Content.WriteToStreamAsync(fStream);
-                    await fStream.FlushAsync();
+                    StorageFile imageFile = await ImageDataFolder.CreateFileAsync(
+                        String.Format("{0}-{1}", imageData.Condition, Guid.NewGuid().ToString()), CreationCollisionOption.ReplaceExisting);
+
+                    var storage = await FirebaseStorageHelper.GetFirebaseStorage();
+                    var storageRef = storage.GetReferenceFromUrl(imageUri);
+
+                    var imageDownloadUri = new Uri(await storageRef.GetDownloadUrlAsync());
+
+                    using (var fStream = await imageFile.OpenAsync(FileAccessMode.ReadWrite))
+                    using (HttpClient webClient = new HttpClient())
+                    using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
+                    using (var request = new HttpRequestMessage(HttpMethod.Get, imageDownloadUri))
+                    {
+                        // Connect to webstream
+                        HttpResponseMessage response = await AsyncTask.RunAsync(webClient.SendRequestAsync(request).AsTask(cts.Token));
+                        response.EnsureSuccessStatusCode();
+
+                        // Download content to file
+                        await response.Content.WriteToStreamAsync(fStream);
+                        await fStream.FlushAsync();
+                    }
+
+                    newImageData = ImageData.CopyWithNewImageUrl(imageData, imageFile.Path);
+
+                    ImageDataContainer.Values[imageData.Condition] = JSONParser.Serializer(newImageData);
                 }
-
-                var newImageData = ImageData.CopyWithNewImageUrl(imageData, imageFile.Path);
-
-                ImageDataContainer.Values[imageData.Condition] = JSONParser.Serializer(newImageData);
+                catch (Exception e)
+                {
+                    newImageData = null;
+                    Logger.WriteLine(LoggerLevel.Error, e, "ImageDataHelper: error storing image data");
+                }
 
                 return newImageData;
             });

@@ -79,15 +79,18 @@ namespace SimpleWeather.WeatherData.Images
         {
             return Task.Run(async () =>
             {
-                // Check if image url is valid
-                Uri imageUri = new Uri(imageData.ImageUrl);
-                if (imageUri.IsWellFormedOriginalString() &&
-                    (imageUri.Scheme.Equals("gs") || imageUri.Scheme.Equals("https") || imageUri.Scheme.Equals("http")))
+                if (imageData?.IsValid() == true)
                 {
-                    // Download image to storage
-                    // and image metadata to settings
-                    var cachedImage = await StoreImage(imageUri, imageData);
-                    return cachedImage;
+                    // Check if image url is valid
+                    Uri imageUri = new Uri(imageData.ImageUrl);
+                    if (imageUri.IsWellFormedOriginalString() &&
+                        (imageUri.Scheme.Equals("gs") || imageUri.Scheme.Equals("https") || imageUri.Scheme.Equals("http")))
+                    {
+                        // Download image to storage
+                        // and image metadata to settings
+                        var cachedImage = await StoreImage(imageUri, imageData);
+                        return cachedImage;
+                    }
                 }
 
                 // Invalid image uri

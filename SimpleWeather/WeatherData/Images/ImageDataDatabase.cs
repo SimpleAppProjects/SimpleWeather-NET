@@ -1,4 +1,5 @@
-﻿using SimpleWeather.WeatherData.Images.Model;
+﻿using SimpleWeather.Utils;
+using SimpleWeather.WeatherData.Images.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -29,23 +30,30 @@ namespace SimpleWeather.WeatherData.Images
             {
                 var list = new List<ImageData>();
 
-                if (!await ImageDatabaseCache.IsEmpty())
+                try
                 {
-                    return await ImageDatabaseCache.GetAllImageData();
-                }
-                else
-                {
-                    var db = await Firebase.FirestoreHelper.GetFirestoreDB();
-                    await db.Collection("background_images")
-                            .WhereEqualTo("condition", backgroundCode)
-                            .StreamAsync()
-                            .ForEachAsync((docSnapshot) =>
-                            {
-                                if (docSnapshot.Exists)
-                                    list.Add(docSnapshot.ConvertTo<ImageData>());
-                            }).ConfigureAwait(false);
+                    if (!await ImageDatabaseCache.IsEmpty())
+                    {
+                        return await ImageDatabaseCache.GetAllImageData();
+                    }
+                    else
+                    {
+                        var db = await Firebase.FirestoreHelper.GetFirestoreDB();
+                        await db.Collection("background_images")
+                                .WhereEqualTo("condition", backgroundCode)
+                                .StreamAsync()
+                                .ForEachAsync((docSnapshot) =>
+                                {
+                                    if (docSnapshot.Exists)
+                                        list.Add(docSnapshot.ConvertTo<ImageData>());
+                                }).ConfigureAwait(false);
 
-                    await SaveSnapshot(db);
+                        await SaveSnapshot(db);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.WriteLine(LoggerLevel.Error, e, "ImageDatabase: error retrieving image data");
                 }
 
                 return list;
@@ -56,32 +64,41 @@ namespace SimpleWeather.WeatherData.Images
         {
             return Task.Run(async () =>
             {
-                if (!await ImageDatabaseCache.IsEmpty())
+                try
                 {
-                    return await ImageDatabaseCache.GetRandomImageForCondition(backgroundCode);
+                    if (!await ImageDatabaseCache.IsEmpty())
+                    {
+                        return await ImageDatabaseCache.GetRandomImageForCondition(backgroundCode);
+                    }
+                    else
+                    {
+                        var db = await Firebase.FirestoreHelper.GetFirestoreDB();
+
+                        var rand = new Random();
+
+                        var imageData = await db.Collection("background_images")
+                                                .WhereEqualTo("condition", backgroundCode)
+                                                .StreamAsync()
+                                                .OrderBy(doc => rand.Next())
+                                                .Take(1)
+                                                .Select((docSnapshot) =>
+                                                {
+                                                    return docSnapshot.ConvertTo<ImageData>();
+                                                })
+                                                .FirstOrDefault()
+                                                .ConfigureAwait(false);
+
+                        await SaveSnapshot(db);
+
+                        return imageData;
+                    }
                 }
-                else
+                catch (Exception e)
                 {
-                    var db = await Firebase.FirestoreHelper.GetFirestoreDB();
-
-                    var rand = new Random();
-
-                    var imageData = await db.Collection("background_images")
-                                            .WhereEqualTo("condition", backgroundCode)
-                                            .StreamAsync()
-                                            .OrderBy(doc => rand.Next())
-                                            .Take(1)
-                                            .Select((docSnapshot) =>
-                                            {
-                                                return docSnapshot.ConvertTo<ImageData>();
-                                            })
-                                            .FirstOrDefault()
-                                            .ConfigureAwait(false);
-
-                    await SaveSnapshot(db);
-
-                    return imageData;
+                    Logger.WriteLine(LoggerLevel.Error, e, "ImageDatabase: error retrieving image data");
                 }
+
+                return null;
             });
         }
 
@@ -89,21 +106,28 @@ namespace SimpleWeather.WeatherData.Images
         {
             return Task.Run(async () =>
             {
-                await ImageDatabaseCache.ClearCache();
+                try
+                {
+                    await ImageDatabaseCache.ClearCache();
 
-                await firestoreDb.Collection("background_images")
-                                 .WhereGreaterThan("condition", "")
-                                 .StreamAsync()
-                                 .ForEachAsync(async (docSnapshot) =>
-                                 {
-                                     if (docSnapshot.Exists)
-                                         await ImageDatabaseCache.InsertData(docSnapshot.ConvertTo<ImageData>());
-                                 }).ConfigureAwait(false);
+                    await firestoreDb.Collection("background_images")
+                                     .WhereGreaterThan("condition", "")
+                                     .StreamAsync()
+                                     .ForEachAsync(async (docSnapshot) =>
+                                     {
+                                         if (docSnapshot.Exists)
+                                             await ImageDatabaseCache.InsertData(docSnapshot.ConvertTo<ImageData>());
+                                     }).ConfigureAwait(false);
 
-                // Register background task to update
+                    // Register background task to update
 #if WINDOWS_UWP && !UNIT_TEST
-                await UWP.BackgroundTasks.ImageDatabaseTask.RegisterBackgroundTask();
+                    await UWP.BackgroundTasks.ImageDatabaseTask.RegisterBackgroundTask();
 #endif
+                }
+                catch (Exception e)
+                {
+                    Logger.WriteLine(LoggerLevel.Error, e, "ImageDatabase: error saving snapshot");
+                }
             });
         }
 
@@ -111,19 +135,26 @@ namespace SimpleWeather.WeatherData.Images
         {
             return Task.Run(async () =>
             {
-                var firestoreDb = await Firebase.FirestoreHelper.GetFirestoreDB();
-
-                var docSnapshot = await firestoreDb.Collection("background_images_info")
-                                                   .Document("collection_info")
-                                                   .GetSnapshotAsync();
-
-                var map = docSnapshot.ToDictionary();
-                if (map.TryGetValue("last_updated", out object updateTime))
+                try
                 {
-                    if (updateTime is long)
+                    var firestoreDb = await Firebase.FirestoreHelper.GetFirestoreDB();
+
+                    var docSnapshot = await firestoreDb.Collection("background_images_info")
+                                                       .Document("collection_info")
+                                                       .GetSnapshotAsync();
+
+                    var map = docSnapshot.ToDictionary();
+                    if (map.TryGetValue("last_updated", out object updateTime))
                     {
-                        return (long)updateTime;
+                        if (updateTime is long)
+                        {
+                            return (long)updateTime;
+                        }
                     }
+                }
+                catch (Exception e)
+                {
+                    Logger.WriteLine(LoggerLevel.Error, e, "ImageDatabase: error querying update time");
                 }
 
                 return 0L;
