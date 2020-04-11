@@ -338,6 +338,28 @@ namespace SimpleWeather.Utils
             });
         }
 
+        public static ConfiguredTaskAwaitable<IList<HourlyForecast>> GetHourlyWeatherForecastDataByPageIndexByLimit(string key, int pageIndex, int loadSize)
+        {
+            return AsyncTask.CreateTask<IList<HourlyForecast>>(async () =>
+            {
+                LoadIfNeeded();
+
+                var list = await weatherDB.Table<HourlyForecasts>()
+                                          .Where(hrf => hrf.query == key && hrf.hrforecastblob != null)
+                                          .OrderBy(hrf => hrf.dateblob)
+                                          .Skip(pageIndex * loadSize)
+                                          .Take(loadSize)
+                                          .ToListAsync();
+
+                foreach (var item in list)
+                {
+                    await weatherDB.GetChildrenAsync(item);
+                }
+
+                return list.Select(hrf => hrf.hr_forecast).ToList();
+            });
+        }
+
         public static ConfiguredTaskAwaitable<LocationData> GetLastGPSLocData()
         {
             return AsyncTask.CreateTask(async () =>

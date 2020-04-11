@@ -10,7 +10,8 @@
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    DataContext="{x:Bind Forecasts, Mode=OneWay}">
 
     <Page.Resources>
         <Style x:Key="ListViewItemStyle" TargetType="ListViewItem">
@@ -82,12 +83,10 @@
                            FontSize="16" Padding="16" />
             </Viewbox>
         </Border>
-
         <ListView x:Name="ListControl" SelectionMode="None" IsItemClickEnabled="False" Grid.Row="1"
                   IsSwipeEnabled="False" AllowDrop="False" CanReorderItems="False" CanDragItems="False"
-                  HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
-                  IncrementalLoadingTrigger="Edge" ShowsScrollingPlaceholders="False"
-                  IncrementalLoadingThreshold="2" DataFetchSize="2">
+                  HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" ItemsSource="{x:Bind Forecasts, Mode=OneWay}"
+                  DataFetchSize="24" ShowsScrollingPlaceholders="True">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Border Background="{ThemeResource ToggleButtonBackgroundThemeBrush}" BorderBrush="{ThemeResource TextBoxDisabledBorderThemeBrush}" BorderThickness="0,0,0,0.5">
@@ -106,5 +105,9 @@
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
+        <ProgressRing Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Height="50" Width="50" IsActive="True"
+                      Visibility="{Binding Count, Mode=OneWay, Converter={StaticResource valueVisibilityConverter}, ConverterParameter=true, FallbackValue='Visible'}" />
+        <uicontrols:ProgressBar IsIndeterminate="True" Grid.Row="1" VerticalAlignment="Bottom"
+                                Visibility="{Binding IsLoading, Mode=OneWay, Converter={StaticResource booleanToVisibilityConverter}, FallbackValue='Collapsed'}" />
     </Grid>
 </helpers:CustomPage>

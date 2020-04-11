@@ -63,28 +63,10 @@ namespace SimpleWeather.UWP.Controls
             {
                 SetValue(ForecastsProperty, value);
 
-                // Remove handler
-                if (_forecasts is INotifyCollectionChanged && _forecasts is IObservableLoadingCollection)
-                {
-                    (_forecasts as INotifyCollectionChanged).CollectionChanged -= NotifyCollection_CollectionChanged;
-                }
-
                 _forecasts = value as IEnumerable<BaseForecastItemViewModel>;
-
-                // Add new handler
-                if (_forecasts is INotifyCollectionChanged && _forecasts is IObservableLoadingCollection)
-                {
-                    (_forecasts as INotifyCollectionChanged).CollectionChanged += NotifyCollection_CollectionChanged;
-                }
 
                 UpdateLineView(false);
             }
-        }
-
-        private async void NotifyCollection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (_forecasts is IObservableLoadingCollection)
-                await UpdateLineView(false);
         }
 
         private IEnumerable<BaseForecastItemViewModel> _forecasts;
@@ -98,62 +80,6 @@ namespace SimpleWeather.UWP.Controls
         public ForecastGraphPanel()
         {
             this.InitializeComponent();
-            ViewChanged += ForecastGraphPanel_ViewChanged;
-            GraphView.ItemWidthChanged += ForecastGraphPanel_SizeChanged;
-        }
-
-        private async void ForecastGraphPanel_SizeChanged(object sender, ItemSizeChangedEventArgs e)
-        {
-            if (ScrollViewer.ViewportWidth > 0 && e.NewSize.Width > 0)
-            {
-                // trigger if (LineView) drawing does not fit viewport
-                if (e.NewSize.Width <= ScrollViewer.ViewportWidth &&
-                    _forecasts is IObservableLoadingCollection _collection)
-                {
-                    int desiredFetchSize = MAX_FETCH_SIZE - _forecasts.Count();
-                    if (desiredFetchSize > 0 && _collection.HasMoreItems && !_collection.IsLoading)
-                    {
-                        await _collection.LoadMoreItemsAsync((uint)desiredFetchSize);
-                    }
-                }
-            }
-        }
-
-        protected override Size ArrangeOverride(Size finalSize)
-        {
-            var size = base.ArrangeOverride(finalSize);
-
-            var distanceToEnd = ScrollViewer.ExtentWidth - (ScrollViewer.HorizontalOffset + ScrollViewer.ViewportWidth);
-
-            if (distanceToEnd <= ScrollViewer.ViewportWidth &&
-                _forecasts is IObservableLoadingCollection _collection)
-            {
-                int desiredFetchSize = MAX_FETCH_SIZE - _forecasts.Count();
-                if (desiredFetchSize > 0 && _collection.HasMoreItems && !_collection.IsLoading)
-                {
-                    _collection.LoadMoreItemsAsync((uint)desiredFetchSize);
-                }
-            }
-
-            return size;
-        }
-
-        private async void ForecastGraphPanel_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
-        {
-            var distanceToEnd = ScrollViewer.ExtentWidth - (ScrollViewer.HorizontalOffset + ScrollViewer.ViewportWidth);
-
-            // trigger if (LineView) drawing does not fit viewport
-            // or
-            // if scrolling within 2 viewports of the end
-            if (distanceToEnd <= 2.0 * ScrollViewer.ViewportWidth &&
-                _forecasts is IObservableLoadingCollection _collection)
-            {
-                int desiredFetchSize = MAX_FETCH_SIZE - _forecasts.Count();
-                if (desiredFetchSize > 0 && _collection.HasMoreItems && !_collection.IsLoading)
-                {
-                    await _collection.LoadMoreItemsAsync((uint)desiredFetchSize);
-                }
-            }
         }
 
         private async void ToggleButton_Checked(object sender, RoutedEventArgs e)

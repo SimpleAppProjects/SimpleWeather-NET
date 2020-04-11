@@ -20,6 +20,7 @@ namespace SimpleWeather.UWP.Main
     {
         private LocationData location { get; set; }
         public WeatherNowViewModel WeatherView { get; set; }
+        public WeatherAlertsViewModel AlertsView { get; set; }
 
         public WeatherAlertPage()
         {
@@ -76,31 +77,36 @@ namespace SimpleWeather.UWP.Main
             {
                 location = args.Location;
                 WeatherView = args.WeatherNowView;
+                AlertsView = args.AlertsView;
 
                 if (location == null)
                     location = await Settings.GetHomeData();
                 if (WeatherView == null)
                     WeatherView = new WeatherNowViewModel();
+                if (AlertsView == null)
+                    AlertsView = new WeatherAlertsViewModel();
 
                 if (WeatherView?.IsValid != true)
                 {
                     new WeatherDataLoader(location)
                         .LoadWeatherData(new WeatherRequest.Builder()
-                            .LoadAlerts()
                             .ForceLoadSavedData()
                             .SetErrorListener(this)
                             .Build())
-                            .ContinueWith((t) => 
+                            .ContinueWith((t) =>
                             {
                                 if (t.IsCompletedSuccessfully)
                                 {
                                     AsyncTask.RunOnUIThread(() =>
                                     {
                                         WeatherView.UpdateView(t.Result);
+                                        AlertsView?.UpdateAlerts(location);
                                     });
                                 }
                             });
                 }
+
+                AlertsView?.UpdateAlerts(location);
             }
         }
     }

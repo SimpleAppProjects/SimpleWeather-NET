@@ -6,8 +6,10 @@ using SimpleWeather.UWP.Helpers;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using Windows.UI.Core;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
@@ -22,7 +24,21 @@ namespace SimpleWeather.UWP.Main
     {
         private LocationData location { get; set; }
         public WeatherNowViewModel WeatherView { get; set; }
+        public ForecastsViewModel ForecastsView { get; set; }
         public bool IsHourly { get; set; }
+
+        public static readonly DependencyProperty ForecastsProperty =
+            DependencyProperty.Register("Forecasts", typeof(object),
+            typeof(ForecastGraphPanel), new PropertyMetadata(null));
+
+        public object Forecasts
+        {
+            get { return GetValue(ForecastsProperty); }
+            set
+            {
+                SetValue(ForecastsProperty, value);
+            }
+        }
 
         public WeatherDetailsPage()
         {
@@ -71,6 +87,12 @@ namespace SimpleWeather.UWP.Main
             return Task.FromResult(false);
         }
 
+        /// <summary>
+        /// OnNavigatedTo
+        /// </summary>
+        /// <param name="e"></param>
+        /// <exception cref="WeatherException">Ignore.</exception>
+        /// <exception cref="ObjectDisposedException">Ignore.</exception>
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
@@ -85,17 +107,22 @@ namespace SimpleWeather.UWP.Main
                     location = await Settings.GetHomeData();
                 if (WeatherView == null)
                     WeatherView = new WeatherNowViewModel();
+                if (ForecastsView == null)
+                    ForecastsView = new ForecastsViewModel();
+
+                await ForecastsView?.UpdateForecasts(location);
 
                 if (IsHourly)
-                    ListControl.ItemsSource = WeatherView.HourlyForecasts;
+                    Forecasts = ForecastsView.HourlyForecasts;
                 else
-                    ListControl.ItemsSource = WeatherView.Forecasts;
+                    Forecasts = ForecastsView.Forecasts;
+
+                ForecastsView.PropertyChanged += ForecastsView_PropertyChanged;
 
                 if (WeatherView?.IsValid == false)
                 {
-                    new WeatherDataLoader(location)
+                    _ = new WeatherDataLoader(location)
                         .LoadWeatherData(new WeatherRequest.Builder()
-                            .LoadAlerts()
                             .ForceLoadSavedData()
                             .SetErrorListener(this)
                             .Build())
@@ -104,21 +131,29 @@ namespace SimpleWeather.UWP.Main
                                 AsyncTask.RunOnUIThread(() =>
                                 {
                                     WeatherView.UpdateView(t.Result);
+                                    ForecastsView.UpdateForecasts(location);
                                 });
                             });
                 }
+            }
+        }
 
-                this.Loaded += async (sender, ev) =>
-                {
-                    if (args.ScrollToPosition <= ListControl.Items.Count)
-                    {
-                        var item = ListControl.Items[args.ScrollToPosition];
-                        await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                        {
-                            ListControl.ScrollIntoView(item, ScrollIntoViewAlignment.Leading);
-                        });
-                    }
-                };
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+            ForecastsView.PropertyChanged -= ForecastsView_PropertyChanged;
+        }
+
+        private void ForecastsView_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "Forecasts":
+                    Forecasts = ForecastsView.Forecasts;
+                    break;
+                case "HourlyForecasts":
+                    Forecasts = ForecastsView.HourlyForecasts;
+                    break;
             }
         }
     }

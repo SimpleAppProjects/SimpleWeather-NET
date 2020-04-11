@@ -3,6 +3,8 @@ using SimpleWeather.Controls;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -40,7 +42,7 @@ namespace SimpleWeather.UWP.Tiles
             }
         }
 
-        private static TileBindingContentAdaptive GenerateForecast(WeatherNowViewModel weather, ForecastTileType forecastTileType)
+        private static TileBindingContentAdaptive GenerateForecast(WeatherNowViewModel weather, List<ForecastItemViewModel> forecasts, ForecastTileType forecastTileType)
         {
             var userlang = GlobalizationPreferences.Languages[0];
             var culture = new CultureInfo(userlang);
@@ -82,9 +84,9 @@ namespace SimpleWeather.UWP.Tiles
                 var tempGroup = new AdaptiveGroup();
 
                 // 3day forecast
-                for (int i = 0; i < MEDIUM_FORECAST_LENGTH; i++)
+                for (int i = 0; i < Math.Min((int)forecasts?.Count, MEDIUM_FORECAST_LENGTH); i++)
                 {
-                    var forecast = weather.Forecasts[i];
+                    var forecast = forecasts[i];
 
                     var dateSubgroup = new AdaptiveSubgroup()
                     {
@@ -140,13 +142,11 @@ namespace SimpleWeather.UWP.Tiles
                 var dateGroup = new AdaptiveGroup();
                 var forecastGroup = new AdaptiveGroup();
 
-                int forecastLength = WIDE_FORECAST_LENGTH;
-                if (weather.Forecasts.Count < forecastLength)
-                    forecastLength = weather.Forecasts.Count;
+                int forecastLength = Math.Min((int)forecasts?.Count, WIDE_FORECAST_LENGTH);
 
                 for (int i = 0; i < forecastLength; i++)
                 {
-                    var forecast = weather.Forecasts[i];
+                    var forecast = forecasts[i];
 
                     var dateSubgroup = new AdaptiveSubgroup()
                     {
@@ -208,9 +208,7 @@ namespace SimpleWeather.UWP.Tiles
                 // Condition + 5-day forecast
                 var forecastGroup = new AdaptiveGroup();
 
-                int forecastLength = LARGE_FORECAST_LENGTH;
-                if (weather.Forecasts.Count < forecastLength)
-                    forecastLength = weather.Forecasts.Count;
+                int forecastLength = Math.Min((int)forecasts?.Count, LARGE_FORECAST_LENGTH);
 
                 var conditionGroup = new AdaptiveGroup()
                 {
@@ -264,7 +262,7 @@ namespace SimpleWeather.UWP.Tiles
 
                 for (int i = 0; i < forecastLength; i++)
                 {
-                    var forecast = weather.Forecasts[i];
+                    var forecast = forecasts[i];
 
                     var subgroup = new AdaptiveSubgroup()
                     {
@@ -306,7 +304,7 @@ namespace SimpleWeather.UWP.Tiles
             return content;
         }
 
-        private static TileBindingContentAdaptive GenerateHrForecast(WeatherNowViewModel weather, ForecastTileType forecastTileType)
+        private static TileBindingContentAdaptive GenerateHrForecast(WeatherNowViewModel weather, List<HourlyForecastItemViewModel> forecasts, ForecastTileType forecastTileType)
         {
             var userlang = GlobalizationPreferences.Languages[0];
             var culture = new CultureInfo(userlang);
@@ -347,14 +345,12 @@ namespace SimpleWeather.UWP.Tiles
                 var forecastGroup = new AdaptiveGroup();
                 var tempGroup = new AdaptiveGroup();
 
-                int forecastLength = MEDIUM_FORECAST_LENGTH;
-                if (weather.HourlyForecasts.Count < forecastLength)
-                    forecastLength = weather.HourlyForecasts.Count;
+                int forecastLength = Math.Min((int)forecasts?.Count, MEDIUM_FORECAST_LENGTH);
 
                 // 3hr forecast
                 for (int i = 0; i < forecastLength; i++)
                 {
-                    var hrforecast = weather.HourlyForecasts[i];
+                    var hrforecast = forecasts[i];
 
                     var dateSubgroup = new AdaptiveSubgroup()
                     {
@@ -412,13 +408,11 @@ namespace SimpleWeather.UWP.Tiles
                 string timeformat = culture.DateTimeFormat.ShortTimePattern.Contains("H") ?
                     "HH" : "ht";
 
-                int forecastLength = LARGE_FORECAST_LENGTH;
-                if (weather.HourlyForecasts.Count < forecastLength)
-                    forecastLength = weather.HourlyForecasts.Count;
+                int forecastLength = Math.Min((int)forecasts?.Count, LARGE_FORECAST_LENGTH);
 
                 for (int i = 0; i < forecastLength; i++)
                 {
-                    var hrforecast = weather.HourlyForecasts[i];
+                    var hrforecast = forecasts[i];
 
                     var subgroup = new AdaptiveSubgroup()
                     {
@@ -457,9 +451,7 @@ namespace SimpleWeather.UWP.Tiles
                     App.ResLoader.GetString("Cloudiness_Label") : App.ResLoader.GetString("Precipitation_Label"); // Cloudiness or Precipitation
                 var popDetail = weather.WeatherDetails.FirstOrDefault(detail => detail.DetailsType == WeatherDetailsType.PoPCloudiness || detail.DetailsType == WeatherDetailsType.PoPChance);
 
-                int forecastLength = LARGE_FORECAST_LENGTH;
-                if (weather.HourlyForecasts.Count < forecastLength)
-                    forecastLength = weather.HourlyForecasts.Count;
+                int forecastLength = Math.Min((int)forecasts?.Count, LARGE_FORECAST_LENGTH);
 
                 var conditionGroup = new AdaptiveGroup()
                 {
@@ -518,7 +510,7 @@ namespace SimpleWeather.UWP.Tiles
 
                 for (int i = 0; i < forecastLength; i++)
                 {
-                    var hrforecast = weather.HourlyForecasts[i];
+                    var hrforecast = forecasts[i];
 
                     var subgroup = new AdaptiveSubgroup()
                     {
@@ -554,7 +546,7 @@ namespace SimpleWeather.UWP.Tiles
             return content;
         }
 
-        private static TileBindingContentAdaptive GenerateCondition(WeatherNowViewModel weather, ForecastTileType forecastTileType)
+        private static TileBindingContentAdaptive GenerateCondition(WeatherNowViewModel weather, List<ForecastItemViewModel> forecasts, ForecastTileType forecastTileType)
         {
             var userlang = GlobalizationPreferences.Languages[0];
             var culture = new CultureInfo(userlang);
@@ -743,17 +735,15 @@ namespace SimpleWeather.UWP.Tiles
                 };
 
                 var forecastGroup = new AdaptiveGroup();
-                bool hasForecast = weather.Forecasts.Count > 0;
+                bool hasForecast = forecasts?.Count > 0;
 
                 if (hasForecast)
                 {
-                    int forecastLength = LARGE_FORECAST_LENGTH;
-                    if (weather.Forecasts.Count < forecastLength)
-                        forecastLength = weather.Forecasts.Count;
+                    int forecastLength = Math.Min(forecasts.Count, LARGE_FORECAST_LENGTH);
 
                     for (int i = 0; i < forecastLength; i++)
                     {
-                        var forecast = weather.Forecasts[i];
+                        var forecast = forecasts[i];
 
                         var subgroup = new AdaptiveSubgroup()
                         {
@@ -797,10 +787,13 @@ namespace SimpleWeather.UWP.Tiles
             return content;
         }
 
-        private static void UpdateContent(TileUpdater tileUpdater, WeatherNowViewModel weather)
+        private static async Task UpdateContent(TileUpdater tileUpdater, LocationData location, WeatherNowViewModel weather)
         {
-            bool hasHourly = weather.HourlyForecasts.Count > 0;
-            bool hasForecast = weather.Forecasts.Count > 0;
+            var forecasts = await GetForecasts(location);
+            var hrforecasts = await GetHourlyForecasts(location);
+
+            bool hasHourly = hrforecasts?.Count > 0;
+            bool hasForecast = forecasts?.Count > 0;
             TileContent forecastTileContent = null;
             TileContent currentTileContent = null;
             TileContent hrforecastTileContent = null;
@@ -815,24 +808,24 @@ namespace SimpleWeather.UWP.Tiles
                         TileSmall = new TileBinding()
                         {
                             Branding = TileBranding.None,
-                            Content = GenerateHrForecast(weather, ForecastTileType.Small),
+                            Content = GenerateHrForecast(weather, hrforecasts, ForecastTileType.Small),
                         },
                         TileMedium = new TileBinding()
                         {
                             // Mini forecast (3-hr)
                             Branding = TileBranding.Name,
-                            Content = GenerateHrForecast(weather, ForecastTileType.Medium),
+                            Content = GenerateHrForecast(weather, hrforecasts, ForecastTileType.Medium),
                         },
                         TileWide = new TileBinding()
                         {
                             // 5-hr forecast
                             Branding = TileBranding.Name,
-                            Content = GenerateHrForecast(weather, ForecastTileType.Wide),
+                            Content = GenerateHrForecast(weather, hrforecasts, ForecastTileType.Wide),
                         },
                         TileLarge = new TileBinding()
                         {
                             Branding = TileBranding.Name,
-                            Content = GenerateHrForecast(weather, ForecastTileType.Large),
+                            Content = GenerateHrForecast(weather, hrforecasts, ForecastTileType.Large),
                         }
                     }
                 };
@@ -848,19 +841,19 @@ namespace SimpleWeather.UWP.Tiles
                         TileSmall = new TileBinding()
                         {
                             Branding = TileBranding.None,
-                            Content = GenerateForecast(weather, ForecastTileType.Small),
+                            Content = GenerateForecast(weather, forecasts, ForecastTileType.Small),
                         },
                         TileMedium = new TileBinding()
                         {
                             // Mini forecast (2-day)
                             Branding = TileBranding.Name,
-                            Content = GenerateForecast(weather, ForecastTileType.Medium),
+                            Content = GenerateForecast(weather, forecasts, ForecastTileType.Medium),
                         },
                         TileWide = new TileBinding()
                         {
                             // 5-day forecast
                             Branding = TileBranding.Name,
-                            Content = GenerateForecast(weather, ForecastTileType.Wide),
+                            Content = GenerateForecast(weather, forecasts, ForecastTileType.Wide),
                         },
                         /*
                          * All ready shown in current tile
@@ -882,24 +875,24 @@ namespace SimpleWeather.UWP.Tiles
                     TileSmall = new TileBinding()
                     {
                         Branding = TileBranding.None,
-                        Content = GenerateCondition(weather, ForecastTileType.Small),
+                        Content = GenerateCondition(weather, forecasts, ForecastTileType.Small),
                     },
                     TileMedium = new TileBinding()
                     {
                         // Mini forecast (2-day)
                         Branding = TileBranding.Name,
-                        Content = GenerateCondition(weather, ForecastTileType.Medium),
+                        Content = GenerateCondition(weather, forecasts, ForecastTileType.Medium),
                     },
                     TileWide = new TileBinding()
                     {
                         // 5-day forecast
                         Branding = TileBranding.Name,
-                        Content = GenerateCondition(weather, ForecastTileType.Wide),
+                        Content = GenerateCondition(weather, forecasts, ForecastTileType.Wide),
                     },
                     TileLarge = new TileBinding()
                     {
                         Branding = TileBranding.Name,
-                        Content = GenerateCondition(weather, ForecastTileType.Large),
+                        Content = GenerateCondition(weather, forecasts, ForecastTileType.Large),
                     }
                 }
             };
@@ -921,6 +914,38 @@ namespace SimpleWeather.UWP.Tiles
                 var hrforecastTileNotif = new TileNotification(hrforecastTileContent.GetXml()) { Tag = "Hourly Forecast" };
                 tileUpdater.Update(hrforecastTileNotif);
             }
+        }
+
+        private static async Task<List<ForecastItemViewModel>> GetForecasts(LocationData location)
+        {
+            var forecasts = await Settings.GetWeatherForecastData(location.query);
+            var result = new List<ForecastItemViewModel>(LARGE_FORECAST_LENGTH);
+
+            if (forecasts.forecast?.Count > 0)
+            {
+                foreach (var fcast in forecasts.forecast)
+                {
+                    result.Add(new ForecastItemViewModel(fcast));
+                }
+            }
+
+            return result;
+        }
+
+        private static async Task<List<HourlyForecastItemViewModel>> GetHourlyForecasts(LocationData location)
+        {
+            var forecasts = await Settings.GetHourlyWeatherForecastDataByPageIndexByLimit(location.query, 0, LARGE_FORECAST_LENGTH);
+            var result = new List<HourlyForecastItemViewModel>(LARGE_FORECAST_LENGTH);
+
+            if (forecasts?.Count > 0)
+            {
+                foreach (var fcast in forecasts)
+                {
+                    result.Add(new HourlyForecastItemViewModel(fcast));
+                }
+            }
+
+            return result;
         }
 
         public static Task TileUpdater(LocationData location)
@@ -975,7 +1000,7 @@ namespace SimpleWeather.UWP.Tiles
                     // (when BGTask is running and tile is updated via WeatherNowPage)
                     lock (appTileUpdater)
                     {
-                        UpdateContent(appTileUpdater, weather);
+                        UpdateContent(appTileUpdater, location, weather).Wait();
                     }
                     if (SecondaryTileUtils.Exists(location.query))
                     {
@@ -983,7 +1008,7 @@ namespace SimpleWeather.UWP.Tiles
                                 SecondaryTileUtils.GetTileId(location.query));
                         lock (tileUpdater)
                         {
-                            UpdateContent(tileUpdater, weather);
+                            UpdateContent(tileUpdater, location, weather).Wait();
                         }
                     }
 
@@ -1000,7 +1025,7 @@ namespace SimpleWeather.UWP.Tiles
                         // (when BGTask is running and tile is updated via WeatherNowPage)
                         lock (tileUpdater)
                         {
-                            UpdateContent(tileUpdater, weather);
+                            UpdateContent(tileUpdater, location, weather).Wait();
                         }
                     }
                 }

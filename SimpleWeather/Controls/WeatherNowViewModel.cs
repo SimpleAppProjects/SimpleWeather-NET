@@ -30,18 +30,11 @@ namespace SimpleWeather.Controls
         // Weather Details
         private string sunrise;
         private string sunset;
-        private ObservableCollection<DetailItemViewModel> weatherDetails;
+        private List<DetailItemViewModel> weatherDetails;
         private UVIndexViewModel uvIndex;
         private BeaufortViewModel beaufort;
         private MoonPhaseViewModel moonPhase;
         private AirQualityViewModel airQuality;
-
-        // Forecast
-        private ObservableForecastLoadingCollection<ForecastItemViewModel> forecasts;
-
-        // Additional Details
-        private ObservableForecastLoadingCollection<HourlyForecastItemViewModel> hourlyForecasts;
-        private ObservableCollection<WeatherAlertViewModel> alerts;
 
         // Background
         private ImageDataViewModel imageData;
@@ -81,10 +74,7 @@ namespace SimpleWeather.Controls
         public string LoTemp { get => loTemp; private set { if (!Equals(loTemp, value)) { loTemp = value; OnPropertyChanged(nameof(LoTemp)); } } }
         public string Sunrise { get => sunrise; private set { if (!Equals(sunrise, value)) { sunrise = value; OnPropertyChanged(nameof(Sunrise)); } } }
         public string Sunset { get => sunset; private set { if (!Equals(sunset, value)) { sunset = value; OnPropertyChanged(nameof(Sunset)); } } }
-        public ObservableForecastLoadingCollection<ForecastItemViewModel> Forecasts { get => forecasts; private set { forecasts = value; OnPropertyChanged(nameof(Forecasts)); } }
-        public ObservableForecastLoadingCollection<HourlyForecastItemViewModel> HourlyForecasts { get => hourlyForecasts; private set { hourlyForecasts = value; OnPropertyChanged(nameof(HourlyForecasts)); } }
-        public ObservableCollection<WeatherAlertViewModel> Alerts { get => alerts; private set { alerts = value; OnPropertyChanged(nameof(Alerts)); } }
-        public ObservableCollection<DetailItemViewModel> WeatherDetails { get => weatherDetails; private set { weatherDetails = value; OnPropertyChanged(nameof(WeatherDetails)); } }
+        public List<DetailItemViewModel> WeatherDetails { get => weatherDetails; private set { weatherDetails = value; OnPropertyChanged(nameof(WeatherDetails)); } }
         public UVIndexViewModel UVIndex { get => uvIndex; private set { if (!Equals(uvIndex, value)) { uvIndex = value; OnPropertyChanged(nameof(UVIndex)); } } }
         public BeaufortViewModel Beaufort { get => beaufort; private set { if (!Equals(beaufort, value)) { beaufort = value; OnPropertyChanged(nameof(Beaufort)); } } }
         public MoonPhaseViewModel MoonPhase { get => moonPhase; private set { if (!Equals(moonPhase, value)) { moonPhase = value; OnPropertyChanged(nameof(MoonPhase)); } } }
@@ -105,15 +95,7 @@ namespace SimpleWeather.Controls
         public WeatherNowViewModel()
         {
             wm = WeatherManager.GetInstance();
-
-            Forecasts = new ObservableForecastLoadingCollection<ForecastItemViewModel>();
-            Forecasts.CollectionChanged += Forecasts_CollectionChanged;
-
-            HourlyForecasts = new ObservableForecastLoadingCollection<HourlyForecastItemViewModel>();
-            HourlyForecasts.CollectionChanged += HourlyForecasts_CollectionChanged;
-
-            WeatherDetails = new ObservableCollection<DetailItemViewModel>();
-            Alerts = new ObservableCollection<WeatherAlertViewModel>();
+            WeatherDetails = new List<DetailItemViewModel>();
         }
 
         public WeatherNowViewModel(Weather weather) : this()
@@ -286,71 +268,6 @@ namespace SimpleWeather.Controls
                 }
                 OnPropertyChanged(nameof(WeatherDetails));
 
-                // Add UI elements
-                if (weather?.forecast?.Count > 0)
-                {
-                    Forecasts.Clear();
-                    int textForecastSize = (weather?.txt_forecast?.Count).GetValueOrDefault(0);
-
-                    bool isDayAndNt = textForecastSize == weather?.forecast?.Count * 2;
-                    bool addTextFct = isDayAndNt || textForecastSize == weather?.forecast?.Count;
-                    for (int i = 0; i < weather?.forecast?.Count; i++)
-                    {
-                        Forecast forecast = weather.forecast[i];
-                        ForecastItemViewModel forecastView;
-
-                        if (addTextFct)
-                        {
-                            if (isDayAndNt)
-                                forecastView = new ForecastItemViewModel(forecast, weather?.txt_forecast[i * 2], weather?.txt_forecast[(i * 2) + 1]);
-                            else
-                                forecastView = new ForecastItemViewModel(forecast, weather?.txt_forecast[i]);
-                        }
-                        else
-                            forecastView = new ForecastItemViewModel(forecast);
-
-                        Forecasts.Add(forecastView);
-                    }
-                }
-                else
-                {
-                    // Let collection handle changes (clearing, etc.)
-                    Forecasts.SetWeather(weather);
-                }
-                OnPropertyChanged(nameof(Forecasts));
-
-                if (weather?.hr_forecast?.Any() == true)
-                {
-                    HourlyForecasts.Clear();
-
-                    foreach (HourlyForecast hr_forecast in weather.hr_forecast)
-                    {
-                        var hrforecastView = new HourlyForecastItemViewModel(hr_forecast);
-                        HourlyForecasts.Add(hrforecastView);
-                    }
-                }
-                else
-                {
-                    // Let collection handle changes (clearing, etc.)
-                    HourlyForecasts.SetWeather(weather);
-                }
-                OnPropertyChanged(nameof(HourlyForecasts));
-
-                Alerts.Clear();
-                if (weather?.weather_alerts?.Any() == true)
-                {
-                    foreach (WeatherAlert alert in weather.weather_alerts)
-                    {
-                        // Skip if alert has expired
-                        if (alert.ExpiresDate <= DateTimeOffset.Now)
-                            continue;
-
-                        WeatherAlertViewModel alertView = new WeatherAlertViewModel(alert);
-                        Alerts.Add(alertView);
-                    }
-                }
-                OnPropertyChanged(nameof(Alerts));
-
                 // Additional Details
                 AirQuality = weather.condition.airQuality != null ? new AirQualityViewModel(weather.condition.airQuality) : null;
 
@@ -369,6 +286,14 @@ namespace SimpleWeather.Controls
                 // Language
                 WeatherLocale = weather.locale;
             }
+        }
+
+        public Task UpdateViewAsync(Weather weather)
+        {
+            return Task.Run(() =>
+            {
+                UpdateView(weather);
+            });
         }
 
         public Task UpdateBackground()

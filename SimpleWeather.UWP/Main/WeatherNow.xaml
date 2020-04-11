@@ -185,7 +185,7 @@
                             Height="30" Padding="0" Background="OrangeRed"
                             HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
                             Click="AlertButton_Click"
-                            x:Load="{x:Bind WeatherView.Alerts, Mode=OneWay, Converter={StaticResource collectionBooleanConverter}}"
+                            x:Load="{x:Bind AlertsView.Alerts, Mode=OneWay, Converter={StaticResource collectionBooleanConverter}}"
                             Loaded="DeferedControl_Loaded"
                             Grid.Row="2">
                         <Button.Content>
@@ -248,7 +248,7 @@
                     </HyperlinkButton>
                 </Grid>
                 <StackPanel Name="ForecastPanel" Margin="0,0,0,25"
-                            x:Load="{x:Bind WeatherView.Forecasts, Mode=OneWay, Converter={StaticResource collectionBooleanConverter}}"
+                            x:Load="{x:Bind ForecastView.Forecasts, Mode=OneWay, Converter={StaticResource collectionBooleanConverter}}"
                             Loaded="DeferedControl_Loaded">
                     <Border Style="{ThemeResource Divider}" />
                     <toolkitControls:HeaderedContentControl Style="{ThemeResource SectionLabelStyle}" x:Uid="Label_Forecast" Header="Forecast"
@@ -267,12 +267,12 @@
                                     Style="{ThemeResource RightArrowButton}" />
                             <localcontrols:ForecastGraphPanel x:Name="ForecastGraphPanel" Grid.Column="1"
                                                               GraphViewTapped="LineView_Tapped"
-                                                              Forecasts="{x:Bind WeatherView.Forecasts, Mode=OneWay}" />
+                                                              Forecasts="{x:Bind ForecastView.Forecasts, Mode=OneWay}" />
                         </Grid>
                     </toolkitControls:HeaderedContentControl>
                 </StackPanel>
                 <StackPanel Name="HourlyForecastPanel" Margin="0,0,0,25"
-                            x:Load="{x:Bind WeatherView.HourlyForecasts, Mode=OneWay, Converter={StaticResource collectionBooleanConverter}}"
+                            x:Load="{x:Bind ForecastView.HourlyForecasts, Mode=OneWay, Converter={StaticResource collectionBooleanConverter}}"
                             Loaded="DeferedControl_Loaded">
                     <Border Style="{ThemeResource Divider}" />
                     <toolkitControls:HeaderedContentControl Style="{ThemeResource SectionLabelStyle}" x:Uid="Label_Hourly" Header="Hourly"
@@ -291,7 +291,7 @@
                                     Style="{ThemeResource RightArrowButton}" Grid.Column="2" />
                             <localcontrols:ForecastGraphPanel x:Name="HourlyGraphPanel" Grid.Column="1"
                                                               GraphViewTapped="LineView_Tapped"
-                                                              Forecasts="{x:Bind WeatherView.HourlyForecasts, Mode=OneWay}" />
+                                                              Forecasts="{x:Bind ForecastView.HourlyForecasts, Mode=OneWay}" />
                         </Grid>
                     </toolkitControls:HeaderedContentControl>
                 </StackPanel>

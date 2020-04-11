@@ -17,12 +17,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\BaseForecastItemViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ComboBoxItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\DetailItemViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\ForecastsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\MoonPhaseViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ProviderEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\HourlyForecastItemViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ForecastItemViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\LocationQueryViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UVIndexViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\WeatherAlertsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\WeatherAlertViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\WeatherNowViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ImageDataViewModel.cs" />
@@ -73,8 +75,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\DBUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\FileUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\OAuthUtils.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utils\ObservableForecastLoadingCollection.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utils\ObservableLoadingCollection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Settings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\StringUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherException.cs" />

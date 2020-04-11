@@ -26,7 +26,7 @@
         <ScrollViewer HorizontalScrollMode="Disabled" HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Auto" VerticalScrollMode="Enabled"
                       Margin="10" Grid.Row="1">
-            <ItemsControl x:Name="StackControl" ItemsSource="{x:Bind WeatherView.Alerts, Mode=OneWay}">
+            <ItemsControl x:Name="StackControl" ItemsSource="{x:Bind AlertsView.Alerts, Mode=OneWay}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="controls:WeatherAlertViewModel">
                         <StackPanel>

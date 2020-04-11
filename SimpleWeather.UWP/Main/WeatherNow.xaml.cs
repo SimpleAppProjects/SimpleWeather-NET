@@ -39,6 +39,8 @@ namespace SimpleWeather.UWP.Main
         private LocationData location = null;
         private bool loaded = false;
         private WeatherNowViewModel WeatherView { get; set; }
+        private ForecastGraphViewModel ForecastView { get; set; }
+        private WeatherAlertsViewModel AlertsView { get; set; }
 
         private double BGAlpha = 1.0;
         private double GradAlpha = 1.0;
@@ -61,12 +63,14 @@ namespace SimpleWeather.UWP.Main
 
                 if (weather?.IsValid() == true)
                 {
-                    await AsyncTask.RunOnUIThread(() =>
+                    await WeatherView.UpdateViewAsync(weather);
+                    await AlertsView.UpdateAlerts(location);
+                    await ForecastView.UpdateForecasts(location);
+                    await WeatherView.UpdateBackground();
+                    await AsyncTask.RunOnUIThread(async () =>
                     {
-                        WeatherView.UpdateView(weather);
                         LoadingRing.IsActive = false;
                     }).ConfigureAwait(false);
-                    await WeatherView.UpdateBackground();
 
                     if (wm.SupportsAlerts)
                     {
@@ -149,6 +153,8 @@ namespace SimpleWeather.UWP.Main
             wm = WeatherManager.GetInstance();
             WeatherView = new WeatherNowViewModel();
             WeatherView.PropertyChanged += WeatherView_PropertyChanged;
+            ForecastView = new ForecastGraphViewModel();
+            AlertsView = new WeatherAlertsViewModel();
 
             geolocal = new Geolocator() { DesiredAccuracyInMeters = 5000, ReportInterval = 900000, MovementThreshold = 1600 };
 
@@ -672,7 +678,6 @@ namespace SimpleWeather.UWP.Main
                 if (cts?.IsCancellationRequested == false)
                     wLoader?.LoadWeatherData(new WeatherRequest.Builder()
                             .ForceRefresh(forceRefresh)
-                            .LoadAlerts()
                             .SetErrorListener(this)
                             .Build())
                             .ContinueWith((t) => 
