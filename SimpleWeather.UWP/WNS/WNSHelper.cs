@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using SimpleWeather.Utils;
+﻿using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.WeatherData.Images;
 using System;
@@ -87,9 +85,7 @@ namespace SimpleWeather.UWP.WNS
 
     internal class WNSChannel
     {
-        [JsonProperty]
-        internal String ChannelUri { get; set; }
-        [JsonProperty]
-        internal DateTimeOffset ExpirationTime { get; set; }
+        public String ChannelUri { get; set; }
+        public DateTimeOffset ExpirationTime { get; set; }
     }
 }

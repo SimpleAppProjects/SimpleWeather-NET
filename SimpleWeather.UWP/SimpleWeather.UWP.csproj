@@ -357,6 +357,7 @@
     <Compile Include="Main\WeatherAlertPage.xaml.cs">
       <DependentUpon>WeatherAlertPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utf8JsonGen\Utf8JsonGenerated.cs" />
     <Compile Include="WeatherAlerts\WeatherAlertHandler.cs" />
     <Compile Include="BackgroundTasks\WeatherUpdateBackgroundTask.cs" />
     <Compile Include="Controls\KeyEntryDialog.xaml.cs">

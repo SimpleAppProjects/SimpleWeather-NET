@@ -43,7 +43,7 @@ namespace SimpleWeather.Utf8JsonGen.Resolvers
 
         static GeneratedResolverGetFormatterHelper()
         {
-            lookup = new global::System.Collections.Generic.Dictionary<Type, int>(111)
+            lookup = new global::System.Collections.Generic.Dictionary<Type, int>(112)
             {
                 {typeof(global::SimpleWeather.AQICN.Attribution[]), 0 },
                 {typeof(global::SimpleWeather.Bing.Value[]), 1 },
@@ -156,6 +156,7 @@ namespace SimpleWeather.Utf8JsonGen.Resolvers
                 {typeof(global::SimpleWeather.WeatherYahoo.Current_Observation), 108 },
                 {typeof(global::SimpleWeather.WeatherYahoo.Forecast), 109 },
                 {typeof(global::SimpleWeather.WeatherYahoo.Rootobject), 110 },
+                {typeof(global::SimpleWeather.WeatherData.Images.Model.ImageData), 111 },
             };
         }
 
@@ -277,6 +278,7 @@ namespace SimpleWeather.Utf8JsonGen.Resolvers
                 case 108: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherYahoo.Current_ObservationFormatter();
                 case 109: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherYahoo.ForecastFormatter();
                 case 110: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherYahoo.RootobjectFormatter();
+                case 111: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.Images.Model.ImageDataFormatter();
                 default: return null;
             }
         }
@@ -11676,6 +11678,170 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherYahoo
             if(__location__b__) ____result.location = __location__;
             if(__current_observation__b__) ____result.current_observation = __current_observation__;
             if(__forecasts__b__) ____result.forecasts = __forecasts__;
+
+            return ____result;
+        }
+    }
+
+}
+
+#pragma warning disable 168
+#pragma warning restore 219
+#pragma warning restore 414
+#pragma warning restore 618
+#pragma warning restore 612
+#pragma warning disable 618
+#pragma warning disable 612
+#pragma warning disable 414
+#pragma warning disable 219
+#pragma warning disable 168
+
+namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.Images.Model
+{
+    using System;
+    using Utf8Json;
+
+
+    public sealed class ImageDataFormatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.WeatherData.Images.Model.ImageData>
+    {
+        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
+        readonly byte[][] ____stringByteKeys;
+
+        public ImageDataFormatter()
+        {
+            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
+            {
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("ArtistName"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("HexColor"), 1},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("Condition"), 2},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("ImageUrl"), 3},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("Location"), 4},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("OriginalLink"), 5},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("SiteName"), 6},
+            };
+
+            this.____stringByteKeys = new byte[][]
+            {
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("ArtistName"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("HexColor"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("Condition"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("ImageUrl"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("Location"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("OriginalLink"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("SiteName"),
+                
+            };
+        }
+
+        public void Serialize(ref JsonWriter writer, global::SimpleWeather.WeatherData.Images.Model.ImageData value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
+            
+
+            writer.WriteRaw(this.____stringByteKeys[0]);
+            writer.WriteString(value.ArtistName);
+            writer.WriteRaw(this.____stringByteKeys[1]);
+            writer.WriteString(value.HexColor);
+            writer.WriteRaw(this.____stringByteKeys[2]);
+            writer.WriteString(value.Condition);
+            writer.WriteRaw(this.____stringByteKeys[3]);
+            writer.WriteString(value.ImageUrl);
+            writer.WriteRaw(this.____stringByteKeys[4]);
+            writer.WriteString(value.Location);
+            writer.WriteRaw(this.____stringByteKeys[5]);
+            writer.WriteString(value.OriginalLink);
+            writer.WriteRaw(this.____stringByteKeys[6]);
+            writer.WriteString(value.SiteName);
+            
+            writer.WriteEndObject();
+        }
+
+        public global::SimpleWeather.WeatherData.Images.Model.ImageData Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (reader.ReadIsNull())
+            {
+                return null;
+            }
+            
+
+            var __ArtistName__ = default(string);
+            var __ArtistName__b__ = false;
+            var __HexColor__ = default(string);
+            var __HexColor__b__ = false;
+            var __Condition__ = default(string);
+            var __Condition__b__ = false;
+            var __ImageUrl__ = default(string);
+            var __ImageUrl__b__ = false;
+            var __Location__ = default(string);
+            var __Location__b__ = false;
+            var __OriginalLink__ = default(string);
+            var __OriginalLink__b__ = false;
+            var __SiteName__ = default(string);
+            var __SiteName__b__ = false;
+
+            var ____count = 0;
+            reader.ReadIsBeginObjectWithVerify();
+            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
+            {
+                var stringKey = reader.ReadPropertyNameSegmentRaw();
+                int key;
+                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
+                {
+                    reader.ReadNextBlock();
+                    goto NEXT_LOOP;
+                }
+
+                switch (key)
+                {
+                    case 0:
+                        __ArtistName__ = reader.ReadString();
+                        __ArtistName__b__ = true;
+                        break;
+                    case 1:
+                        __HexColor__ = reader.ReadString();
+                        __HexColor__b__ = true;
+                        break;
+                    case 2:
+                        __Condition__ = reader.ReadString();
+                        __Condition__b__ = true;
+                        break;
+                    case 3:
+                        __ImageUrl__ = reader.ReadString();
+                        __ImageUrl__b__ = true;
+                        break;
+                    case 4:
+                        __Location__ = reader.ReadString();
+                        __Location__b__ = true;
+                        break;
+                    case 5:
+                        __OriginalLink__ = reader.ReadString();
+                        __OriginalLink__b__ = true;
+                        break;
+                    case 6:
+                        __SiteName__ = reader.ReadString();
+                        __SiteName__b__ = true;
+                        break;
+                    default:
+                        reader.ReadNextBlock();
+                        break;
+                }
+
+                NEXT_LOOP:
+                continue;
+            }
+
+            var ____result = new global::SimpleWeather.WeatherData.Images.Model.ImageData();
+            if(__ArtistName__b__) ____result.ArtistName = __ArtistName__;
+            if(__HexColor__b__) ____result.HexColor = __HexColor__;
+            if(__Condition__b__) ____result.Condition = __Condition__;
+            if(__ImageUrl__b__) ____result.ImageUrl = __ImageUrl__;
+            if(__Location__b__) ____result.Location = __Location__;
+            if(__OriginalLink__b__) ____result.OriginalLink = __OriginalLink__;
+            if(__SiteName__b__) ____result.SiteName = __SiteName__;
 
             return ____result;
         }

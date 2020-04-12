@@ -17,6 +17,9 @@ namespace SimpleWeather.EF.Utf8JsonGen
 #if !EF_PROJECT
                 SimpleWeather.Utf8JsonGen.Resolvers.GeneratedResolver.Instance,
 #endif
+#if WINDOWS_UWP && !UNIT_TEST
+                SimpleWeather.UWP.Utf8JsonGen.Resolvers.GeneratedResolver.Instance,
+#endif
                 // set StandardResolver or your use resolver chain
                 Utf8Json.Resolvers.AttributeFormatterResolver.Instance,
                 Utf8Json.Resolvers.BuiltinResolver.Instance,
@@ -57,6 +60,9 @@ namespace SimpleWeather.EF.Utf8JsonGen
                 SimpleWeather.EF.Utf8JsonGen.Resolvers.GeneratedResolver.Instance,
 #if !EF_PROJECT
                 SimpleWeather.Utf8JsonGen.Resolvers.GeneratedResolver.Instance,
+#endif
+#if WINDOWS_UWP && !UNIT_TEST
+                SimpleWeather.UWP.Utf8JsonGen.Resolvers.GeneratedResolver.Instance,
 #endif
                 // set StandardResolver or your use resolver chain
                 Utf8Json.Resolvers.BuiltinResolver.Instance,
