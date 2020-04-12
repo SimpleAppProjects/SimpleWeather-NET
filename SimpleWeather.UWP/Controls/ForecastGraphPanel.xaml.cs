@@ -63,13 +63,17 @@ namespace SimpleWeather.UWP.Controls
             {
                 SetValue(ForecastsProperty, value);
 
-                _forecasts = value as IEnumerable<BaseForecastItemViewModel>;
+                if (value is IEnumerable<BaseForecastItemViewModel> forecasts)
+                {
+                    _forecasts.Clear();
+                    _forecasts.AddRange(forecasts);
+                }
 
                 UpdateLineView(false);
             }
         }
 
-        private IEnumerable<BaseForecastItemViewModel> _forecasts;
+        private List<BaseForecastItemViewModel> _forecasts;
 
         public ScrollViewer ScrollViewer { get { return GraphView?.ScrollViewer; } }
 
@@ -79,6 +83,7 @@ namespace SimpleWeather.UWP.Controls
 
         public ForecastGraphPanel()
         {
+            _forecasts = new List<BaseForecastItemViewModel>();
             this.InitializeComponent();
         }
 
@@ -111,15 +116,16 @@ namespace SimpleWeather.UWP.Controls
 
         private async Task UpdateLineView(bool resetOffset)
         {
-            if (_forecasts?.Count() > 0)
-            {
-                UpdateToggles();
+            UpdateToggles();
+            GraphView?.ResetData();
 
+            if (_forecasts.Count > 0)
+            {
                 switch (SelectedButton?.Tag)
                 {
                     case "Temp":
                     default:
-                        if (_forecasts?.Count() > 0 && GraphView != null)
+                        if (_forecasts.Count > 0 && GraphView != null)
                         {
                             GraphView.DrawGridLines = false;
                             GraphView.DrawDotLine = false;
@@ -134,15 +140,15 @@ namespace SimpleWeather.UWP.Controls
                             List<YEntryData> hiTempSeries = new List<YEntryData>();
                             List<YEntryData> loTempSeries = null;
 
-                            if (_forecasts?.First() is ForecastItemViewModel)
+                            if (_forecasts.FirstOrDefault() is ForecastItemViewModel)
                             {
                                 loTempSeries = new List<YEntryData>();
                                 GraphView.DrawSeriesLabels = true;
                             }
 
-                            int itemCount = 0;
-                            foreach (BaseForecastItemViewModel forecastItemViewModel in _forecasts)
+                            for (int i = 0; i < Math.Min(_forecasts.Count, MAX_FETCH_SIZE); i++)
                             {
+                                BaseForecastItemViewModel forecastItemViewModel = _forecasts.ElementAt(i);
                                 try
                                 {
                                     float hiTemp = float.Parse(forecastItemViewModel.HiTemp.RemoveNonDigitChars());
@@ -163,9 +169,6 @@ namespace SimpleWeather.UWP.Controls
                                 {
                                     Logger.WriteLine(LoggerLevel.Debug, ex, "WeatherNow: error!!");
                                 }
-
-                                itemCount++;
-                                if (itemCount >= MAX_FETCH_SIZE) break;
                             }
 
                             tempDataSeries.Add(new LineDataSeries("High", hiTempSeries));
@@ -184,7 +187,7 @@ namespace SimpleWeather.UWP.Controls
                         break;
 
                     case "Wind":
-                        if (_forecasts?.Count() > 0 && GraphView != null)
+                        if (_forecasts.Count > 0 && GraphView != null)
                         {
                             GraphView.DrawGridLines = false;
                             GraphView.DrawDotLine = false;
@@ -198,9 +201,9 @@ namespace SimpleWeather.UWP.Controls
                             List<LineDataSeries> windDataList = new List<LineDataSeries>();
                             List<YEntryData> windDataSeries = new List<YEntryData>();
 
-                            int itemCount = 0;
-                            foreach (BaseForecastItemViewModel forecastItemViewModel in _forecasts)
+                            for (int i = 0; i < Math.Min(_forecasts.Count, MAX_FETCH_SIZE); i++)
                             {
+                                BaseForecastItemViewModel forecastItemViewModel = _forecasts[i];
                                 try
                                 {
                                     float wind = float.Parse(forecastItemViewModel.WindSpeed.RemoveNonDigitChars());
@@ -214,9 +217,6 @@ namespace SimpleWeather.UWP.Controls
                                 {
                                     Logger.WriteLine(LoggerLevel.Debug, ex, "WeatherNow: error!!");
                                 }
-
-                                itemCount++;
-                                if (itemCount >= MAX_FETCH_SIZE) break;
                             }
 
                             windDataList.Add(new LineDataSeries(windDataSeries));
@@ -231,7 +231,7 @@ namespace SimpleWeather.UWP.Controls
                         break;
 
                     case "Rain":
-                        if (_forecasts?.Count() > 0 && GraphView != null)
+                        if (_forecasts.Count > 0 && GraphView != null)
                         {
                             GraphView.DrawGridLines = false;
                             GraphView.DrawDotLine = false;
@@ -245,9 +245,9 @@ namespace SimpleWeather.UWP.Controls
                             List<LineDataSeries> popDataList = new List<LineDataSeries>();
                             List<YEntryData> popDataSeries = new List<YEntryData>();
 
-                            int itemCount = 0;
-                            foreach (BaseForecastItemViewModel forecastItemViewModel in _forecasts)
+                            for (int i = 0; i < Math.Min(_forecasts.Count, MAX_FETCH_SIZE); i++)
                             {
+                                BaseForecastItemViewModel forecastItemViewModel = _forecasts[i];
                                 try
                                 {
                                     float pop = float.Parse(forecastItemViewModel.PoP.RemoveNonDigitChars());
@@ -261,9 +261,6 @@ namespace SimpleWeather.UWP.Controls
                                 {
                                     Logger.WriteLine(LoggerLevel.Debug, ex, "WeatherNow: error!!");
                                 }
-
-                                itemCount++;
-                                if (itemCount >= MAX_FETCH_SIZE) break;
                             }
 
                             popDataList.Add(new LineDataSeries(popDataSeries));
@@ -285,7 +282,7 @@ namespace SimpleWeather.UWP.Controls
         private void UpdateToggles()
         {
             int count = 1;
-            var first = _forecasts?.First();
+            var first = _forecasts.FirstOrDefault();
             if (first is ForecastItemViewModel)
             {
                 if (!String.IsNullOrWhiteSpace(first.WindSpeed) &&

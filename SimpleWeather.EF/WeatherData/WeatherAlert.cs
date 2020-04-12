@@ -217,9 +217,11 @@ namespace SimpleWeather.WeatherData
         }
     }
 
-    [Table("weatheralerts")]
+    [Table(TABLE_NAME)]
     public class WeatherAlerts
     {
+        public const String TABLE_NAME = "weatheralerts";
+
         [PrimaryKey]
         public string query { get; set; }
         [TextBlob("alertsblob")]

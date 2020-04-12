@@ -179,7 +179,7 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20">
-            <ToggleButton x:Name="TempToggleButton" Margin="5,0" Padding="4" Checked="ToggleButton_Checked" Tag="Temp" IsChecked="True"
+            <ToggleButton x:Name="TempToggleButton" Margin="5,0" Padding="4" Checked="ToggleButton_Checked" Tag="Temp"
                           Style="{ThemeResource ToggleButtonNoDisableRevealStyle}">
                 <ToggleButton.Content>
                     <StackPanel Orientation="Horizontal">

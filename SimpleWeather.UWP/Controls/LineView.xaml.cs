@@ -168,6 +168,20 @@ namespace SimpleWeather.UWP.Controls
             }
         }
 
+        public void ResetData()
+        {
+            this.dataLists.Clear();
+            this.dataLabels.Clear();
+            this.xCoordinateList.Clear();
+            this.yCoordinateList.Clear();
+            this.drawDotLists.Clear();
+            bottomTextDescent = 0;
+            longestTextWidth = 0;
+            DrawIconLabels = false;
+            RefreshAfterDataChanged();
+            InvalidateMeasure();
+        }
+
         public void SetData(List<XLabelData> dataLabels, List<LineDataSeries> dataLists)
         {
             if (dataLabels is null)

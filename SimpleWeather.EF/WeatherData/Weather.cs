@@ -2458,9 +2458,11 @@ namespace SimpleWeather.WeatherData
         }
     }
 
-    [Table("forecasts")]
+    [Table(TABLE_NAME)]
     public class Forecasts
     {
+        public const string TABLE_NAME = "forecasts";
+
         [PrimaryKey]
         public string query { get; set; }
 
@@ -2485,9 +2487,11 @@ namespace SimpleWeather.WeatherData
         }
     }
 
-    [Table("hr_forecasts")]
+    [Table(TABLE_NAME)]
     public class HourlyForecasts
     {
+        public const string TABLE_NAME = "hr_forecasts";
+
         [PrimaryKey]
         public string id { get; set; }
         [Indexed(Name = "queryIdx", Order = 1)]

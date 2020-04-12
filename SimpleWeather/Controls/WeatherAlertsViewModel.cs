@@ -2,6 +2,7 @@
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
+using SQLiteNetExtensions.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,7 +15,7 @@ namespace SimpleWeather.Controls
 {
     public class WeatherAlertsViewModel : INotifyPropertyChanged
     {
-        private LocationData LocationData { get; set; }
+        private String locationKey;
 
         private List<WeatherAlertViewModel> alerts;
 
@@ -39,26 +40,66 @@ namespace SimpleWeather.Controls
             }).ConfigureAwait(true);
         }
 
-        public async Task UpdateAlerts(LocationData location)
+        public Task UpdateAlerts(LocationData location)
         {
-            this.LocationData = location;
-
-            // Update alerts from database
-            var alerts = await Settings.GetWeatherAlertData(location.query);
-
-            Alerts.Clear();
-            if (alerts != null && alerts.Count > 0)
+            return Task.Run(() =>
             {
-                foreach (var alert in alerts)
+                if (!Equals(this.locationKey, location.query))
+                {
+                    this.locationKey = location.query;
+
+                    // Update alerts from database
+                    RefreshAlerts();
+                }
+            });
+        }
+
+        private void DbConn_TableChanged(object sender, SQLite.NotifyTableChangedEventArgs e)
+        {
+            if (e?.Table?.TableName == WeatherAlerts.TABLE_NAME)
+            {
+                RefreshAlerts();
+            }
+        }
+
+        private void RefreshAlerts()
+        {
+            Alerts.Clear();
+
+            ICollection<WeatherAlert> alertData = null;
+            try
+            {
+                var db = Settings.GetWeatherDBConnection();
+                var dbConn = db.GetConnection();
+                using (dbConn.Lock())
+                {
+                    dbConn.TableChanged -= DbConn_TableChanged;
+                    var weatherAlertData = dbConn.FindWithChildren<WeatherAlerts>(locationKey);
+
+                    if (weatherAlertData != null && weatherAlertData.alerts != null)
+                        alertData = weatherAlertData.alerts;
+
+                    dbConn.TableChanged += DbConn_TableChanged;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLine(LoggerLevel.Error, ex, "{0}: error refreshing alerts", nameof(WeatherAlertsViewModel));
+            }
+
+            if (alerts?.Count > 0)
+            {
+                foreach (var alert in alertData)
                 {
                     // Skip if alert has expired
                     if (alert.ExpiresDate <= DateTimeOffset.Now)
                         continue;
 
-                    WeatherAlertViewModel alertView = new WeatherAlertViewModel(alert);
-                    Alerts.Add(alertView);
+                    Alerts.Add(new WeatherAlertViewModel(alert));
                 }
             }
+
+            OnPropertyChanged(nameof(Alerts));
         }
     }
 }

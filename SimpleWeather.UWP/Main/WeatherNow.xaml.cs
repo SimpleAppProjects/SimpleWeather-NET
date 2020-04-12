@@ -67,7 +67,7 @@ namespace SimpleWeather.UWP.Main
                     await AlertsView.UpdateAlerts(location);
                     await ForecastView.UpdateForecasts(location);
                     await WeatherView.UpdateBackground();
-                    await AsyncTask.RunOnUIThread(async () =>
+                    await AsyncTask.RunOnUIThread(() =>
                     {
                         LoadingRing.IsActive = false;
                     }).ConfigureAwait(false);
@@ -255,9 +255,9 @@ namespace SimpleWeather.UWP.Main
             if (Shell.Instance.AppFrame.SourcePageType == this.GetType())
             {
                 // Check pin tile status
-                await AsyncTask.CreateTask(CheckTiles);
+                await CheckTiles();
 
-                await AsyncTask.CreateTask(Resume);
+                await Resume();
             }
         }
 
@@ -431,7 +431,7 @@ namespace SimpleWeather.UWP.Main
             // Weather location changed (ex. due to GPS setting) -> locationChanged = true
             if (loaded || locationChanged || wLoader == null)
             {
-                await AsyncTask.CreateTask(Restore);
+                await Restore();
             }
             else
             {
@@ -442,11 +442,11 @@ namespace SimpleWeather.UWP.Main
                 if (!String.Equals(WeatherView.WeatherSource, Settings.API) ||
                     wm.SupportsWeatherLocale && !String.Equals(WeatherView.WeatherLocale, locale))
                 {
-                    await AsyncTask.CreateTask(Restore);
+                    await Restore();
                 }
                 else
                 {
-                    await AsyncTask.CreateTask(Resume);
+                    await Resume();
                 }
             }
 
@@ -609,7 +609,7 @@ namespace SimpleWeather.UWP.Main
                         if (cts?.IsCancellationRequested == true)
                             return false;
 
-                        await AsyncTask.CreateTask(async () =>
+                        await Task.Run(async () =>
                         {
                             try
                             {

@@ -2,6 +2,7 @@
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
+using SQLiteNetExtensions.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,7 +15,7 @@ namespace SimpleWeather.UWP.Controls
 {
     public class ForecastGraphViewModel : INotifyPropertyChanged
     {
-        private LocationData locationData;
+        private String locationKey;
 
         private List<ForecastItemViewModel> forecasts;
         private List<HourlyForecastItemViewModel> hourlyForecasts;
@@ -47,16 +48,54 @@ namespace SimpleWeather.UWP.Controls
             }).ConfigureAwait(true);
         }
 
-        public async Task UpdateForecasts(LocationData location)
+        public Task UpdateForecasts(LocationData location)
         {
-            this.locationData = location;
+            return Task.Run(() =>
+            {
+                if (!Equals(this.locationKey, location.query))
+                {
+                    this.locationKey = location.query;
 
-            // Update forecasts from database
+                    // Update forecasts from database
+                    RefreshForecasts();
+                    RefreshHourlyForecasts();
+                }
+            });
+        }
+
+        private void DbConn_TableChanged(object sender, SQLite.NotifyTableChangedEventArgs e)
+        {
+            if (e?.Table?.TableName == WeatherData.Forecasts.TABLE_NAME)
+            {
+                RefreshForecasts();
+            }
+
+            if (e?.Table?.TableName == WeatherData.HourlyForecasts.TABLE_NAME)
+            {
+                RefreshHourlyForecasts();
+            }
+        }
+
+        private void RefreshForecasts()
+        {
             Forecasts.Clear();
-            HourlyForecasts.Clear();
 
-            var fcasts = await Settings.GetWeatherForecastData(location.query);
-            var hourlyFcasts = await Settings.GetHourlyWeatherForecastDataByPageIndexByLimit(location.query, 0, 24);
+            Forecasts fcasts = null;
+            try
+            {
+                var db = Settings.GetWeatherDBConnection();
+                var dbConn = db.GetConnection();
+                using (dbConn.Lock())
+                {
+                    dbConn.TableChanged -= DbConn_TableChanged;
+                    fcasts = dbConn.FindWithChildren<Forecasts>(locationKey);
+                    dbConn.TableChanged += DbConn_TableChanged;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLine(LoggerLevel.Error, ex, "{0}: error refreshing forecasts", nameof(ForecastGraphViewModel));
+            }
 
             if (fcasts?.forecast?.Count > 0)
             {
@@ -83,15 +122,52 @@ namespace SimpleWeather.UWP.Controls
                     Forecasts.Add(f);
                 }
             }
-            OnPropertyChanged(nameof(Forecasts));
 
-            if (hourlyFcasts?.Count > 0)
+            OnPropertyChanged(nameof(Forecasts));
+        }
+
+        private void RefreshHourlyForecasts()
+        {
+            HourlyForecasts.Clear();
+
+            IList<HourlyForecast> hrfcasts = null;
+            try
             {
-                foreach (var dataItem in hourlyFcasts)
+                var db = Settings.GetWeatherDBConnection();
+                var dbConn = db.GetConnection();
+                using (dbConn.Lock())
+                {
+                    dbConn.TableChanged -= DbConn_TableChanged;
+
+                    var list = dbConn.Table<HourlyForecasts>()
+                                     .Where(hrf => hrf.query == locationKey && hrf.hrforecastblob != null)
+                                     .OrderBy(hrf => hrf.dateblob)
+                                     .Take(24)
+                                     .ToList();
+
+                    foreach (var item in list)
+                    {
+                        dbConn.GetChildren(item);
+                    }
+
+                    hrfcasts = list.Select(hrf => hrf.hr_forecast).ToList();
+
+                    dbConn.TableChanged += DbConn_TableChanged;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLine(LoggerLevel.Error, ex, "{0}: error refreshing hourly forecasts", nameof(ForecastGraphViewModel));
+            }
+
+            if (hrfcasts?.Count > 0)
+            {
+                foreach (var dataItem in hrfcasts)
                 {
                     HourlyForecasts.Add(new HourlyForecastItemViewModel(dataItem));
                 }
             }
+
             OnPropertyChanged(nameof(HourlyForecasts));
         }
     }
