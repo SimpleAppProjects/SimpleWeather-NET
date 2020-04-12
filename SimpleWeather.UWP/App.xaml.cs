@@ -535,7 +535,7 @@ namespace SimpleWeather.UWP
             try
             {
                 // NOTE: Run on UI Thread since this may be called off the main thread
-                await AsyncTask.RunOnUIThread(() =>
+                await AsyncTask.TryRunOnUIThread(() =>
                 {
                     var uiTheme = UISettings.GetColorValue(UIColorType.Background).ToString();
                     IsSystemDarkTheme = uiTheme == "#FF000000";

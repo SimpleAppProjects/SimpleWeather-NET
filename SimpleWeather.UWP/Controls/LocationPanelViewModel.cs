@@ -25,7 +25,7 @@ namespace SimpleWeather.Controls
         // Create the OnPropertyChanged method to raise the event
         protected async void OnPropertyChanged(string name)
         {
-            await AsyncTask.RunOnUIThread(() =>
+            await AsyncTask.TryRunOnUIThread(() =>
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
             }).ConfigureAwait(true);

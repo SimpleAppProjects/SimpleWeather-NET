@@ -51,7 +51,7 @@ namespace SimpleWeather.UWP.Main
 
         public void OnWeatherError(WeatherException wEx)
         {
-            AsyncTask.RunOnUIThread(() =>
+            Dispatcher.RunOnUIThread(() =>
             {
                 switch (wEx.ErrorStatus)
                 {
@@ -128,7 +128,7 @@ namespace SimpleWeather.UWP.Main
                             .Build())
                             .ContinueWith((t) =>
                             {
-                                AsyncTask.RunOnUIThread(() =>
+                                Dispatcher.RunOnUIThread(() =>
                                 {
                                     WeatherView.UpdateView(t.Result);
                                     ForecastsView.UpdateForecasts(location);

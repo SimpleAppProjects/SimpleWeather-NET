@@ -94,7 +94,7 @@ namespace SimpleWeather.UWP.Main
 
         public async void OnWeatherError(WeatherException wEx)
         {
-            await AsyncTask.RunOnUIThread(() =>
+            await Dispatcher.RunOnUIThread(() =>
             {
                 if (cts?.IsCancellationRequested == true)
                     return;
@@ -278,7 +278,7 @@ namespace SimpleWeather.UWP.Main
 
         private async void LocationPanels_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            await AsyncTask.RunOnUIThread(() =>
+            await Dispatcher.RunOnUIThread(() =>
             {
                 bool dataMoved = (e.Action == NotifyCollectionChangedAction.Remove) || (e.Action == NotifyCollectionChangedAction.Move);
                 bool onlyHomeIsLeft = PanelAdapter.FavoritesCount == 1;
@@ -305,7 +305,7 @@ namespace SimpleWeather.UWP.Main
         {
             return Task.Run(async () =>
             {
-                await AsyncTask.RunOnUIThread(() =>
+                await Dispatcher.RunOnUIThread(() =>
                 {
                     // Disable EditMode button
                     EditButton.IsEnabled = false;
@@ -314,7 +314,7 @@ namespace SimpleWeather.UWP.Main
 
                 // Lets load it up...
                 var locations = new List<LocationData>(await Settings.GetFavorites());
-                await AsyncTask.RunOnUIThread(() =>
+                await Dispatcher.RunOnUIThread(() =>
                 {
                     PanelAdapter.RemoveAll();
                 }).ConfigureAwait(false);
@@ -339,7 +339,7 @@ namespace SimpleWeather.UWP.Main
                         // Save index to tag (to easily retreive)
                         LocationData = location
                     };
-                    await AsyncTask.RunOnUIThread(() => PanelAdapter.Add(panel))
+                    await Dispatcher.RunOnUIThread(() => PanelAdapter.Add(panel))
                     .ConfigureAwait(false);
                 }
 
@@ -363,7 +363,7 @@ namespace SimpleWeather.UWP.Main
                     });
                 }
 
-                await AsyncTask.RunOnUIThread(() =>
+                await Dispatcher.RunOnUIThread(() =>
                 {
                     // Enable EditMode button
                     EditButton.IsEnabled = true;
@@ -405,7 +405,7 @@ namespace SimpleWeather.UWP.Main
         {
             return Task.Run(async () =>
             {
-                await AsyncTask.RunOnUIThread(() =>
+                await Dispatcher.RunOnUIThread(() =>
                 {
                     // Disable EditMode button
                     EditButton.IsEnabled = false;
@@ -443,7 +443,7 @@ namespace SimpleWeather.UWP.Main
 
                 if (reload)
                 {
-                    await AsyncTask.RunOnUIThread(() =>
+                    await Dispatcher.RunOnUIThread(() =>
                     {
                         PanelAdapter.RemoveAll();
                     }).ConfigureAwait(false);
@@ -471,7 +471,7 @@ namespace SimpleWeather.UWP.Main
                     }
                 }
 
-                await AsyncTask.RunOnUIThread(() =>
+                await Dispatcher.RunOnUIThread(() =>
                 {
                     // Enable EditMode button
                     EditButton.IsEnabled = true;
@@ -496,7 +496,7 @@ namespace SimpleWeather.UWP.Main
                             LocationData = gpsData
                         };
 
-                        await AsyncTask.RunOnUIThread(() =>
+                        await Dispatcher.RunOnUIThread(() =>
                         {
                             PanelAdapter.Add(0, gpsPanelViewModel);
                         }).ConfigureAwait(false);

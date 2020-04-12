@@ -3,6 +3,8 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
+using Windows.UI.Core;
 
 namespace SimpleWeather.Utils
 {
@@ -75,52 +77,44 @@ namespace SimpleWeather.Utils
             });
         }
 
-        private static Windows.UI.Core.CoreDispatcher GetDispatcher()
+        public static Task RunOnUIThread(this CoreDispatcher Dispatcher, Action action)
         {
-            Windows.UI.Core.CoreDispatcher Dispatcher = null;
+            return Dispatcher.AwaitableRunAsync(action);
+        }
+
+        public static Task<T> RunOnUIThread<T>(this CoreDispatcher Dispatcher, Func<T> function)
+        {
+            return Dispatcher.AwaitableRunAsync(function);
+        }
+
+        private static CoreDispatcher GetDispatcher()
+        {
+            CoreDispatcher Dispatcher = null;
 
             try
             {
-                Dispatcher = Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher;
+                Dispatcher = CoreApplication.MainView.Dispatcher;
             }
             catch (Exception e)
             {
-                System.Console.WriteLine("Dispatcher unavailable");
+                Console.WriteLine("Dispatcher unavailable");
             }
 
             return Dispatcher;
         }
 
-        public static Task RunOnUIThread(Action action)
+        public static Task TryRunOnUIThread(Action action)
         {
             var Dispatcher = GetDispatcher();
 
-            if (Dispatcher == null)
-            {
-                // Dispatcher is not available
-                // Execute action on current thread
-                action.Invoke();
-                return Task.CompletedTask;
-            }
-            else
+            if (Dispatcher != null)
             {
                 return Dispatcher.AwaitableRunAsync(action);
             }
-        }
-
-        public static Task<T> RunOnUIThread<T>(Func<T> function)
-        {
-            var Dispatcher = GetDispatcher();
-
-            if (Dispatcher == null)
-            {
-                // Dispatcher is not available
-                // Execute action on current thread
-                return Task.FromResult(function.Invoke());
-            }
             else
             {
-                return Dispatcher.AwaitableRunAsync(function);
+                // Dispatcher is not available
+                return Task.CompletedTask;
             }
         }
     }

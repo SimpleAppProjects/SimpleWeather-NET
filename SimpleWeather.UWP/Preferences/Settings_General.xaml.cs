@@ -282,7 +282,7 @@ namespace SimpleWeather.UWP.Preferences
                 {
                     if (await WeatherManager.IsKeyValid(key, API))
                     {
-                        await AsyncTask.RunOnUIThread(() =>
+                        await Dispatcher.RunOnUIThread(() =>
                         {
                             KeyEntry.Text = Settings.API_KEY = key;
                             Settings.API = API;
@@ -301,7 +301,7 @@ namespace SimpleWeather.UWP.Preferences
                     }
                     else
                     {
-                        await AsyncTask.RunOnUIThread(() =>
+                        await Dispatcher.RunOnUIThread(() =>
                         {
                             diag.CanClose = false;
                         });
@@ -310,13 +310,13 @@ namespace SimpleWeather.UWP.Preferences
                 catch (WeatherException ex)
                 {
                     Logger.WriteLine(LoggerLevel.Error, ex, "Settings: KeyEntry: invalid key");
-                    await AsyncTask.RunOnUIThread(() =>
+                    await Dispatcher.RunOnUIThread(() =>
                     {
                         ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
                     });
                 }
             };
-            await AsyncTask.RunOnUIThread(async () =>
+            await Dispatcher.RunOnUIThread(async () =>
             {
                 await keydialog.ShowAsync();
             });
@@ -501,7 +501,7 @@ namespace SimpleWeather.UWP.Preferences
                         break;
 
                     case GeolocationAccessStatus.Denied:
-                        await AsyncTask.RunOnUIThread(() =>
+                        await Dispatcher.RunOnUIThread(() =>
                         {
                             var snackbar = Snackbar.Make(App.ResLoader.GetString("Msg_LocDeniedSettings"), SnackbarDuration.Long);
                             snackbar.SetAction(App.ResLoader.GetString("Label_Settings"), async () =>
@@ -514,7 +514,7 @@ namespace SimpleWeather.UWP.Preferences
                         break;
 
                     case GeolocationAccessStatus.Unspecified:
-                        await AsyncTask.RunOnUIThread(() =>
+                        await Dispatcher.RunOnUIThread(() =>
                         {
                             ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_Location"), SnackbarDuration.Short));
                             sw.IsOn = false;
@@ -527,7 +527,7 @@ namespace SimpleWeather.UWP.Preferences
             }
 
             // Update ids when switching GPS feature
-            if (await AsyncTask.RunOnUIThread(() => sw.IsOn))
+            if (await Dispatcher.RunOnUIThread(() => sw.IsOn))
             {
                 var prevLoc = (await Settings.GetFavorites()).FirstOrDefault();
                 if (prevLoc?.query != null && SecondaryTileUtils.Exists(prevLoc.query))
@@ -550,7 +550,7 @@ namespace SimpleWeather.UWP.Preferences
                 }
             }
 
-            await AsyncTask.RunOnUIThread(() =>
+            await Dispatcher.RunOnUIThread(() =>
             {
                 Settings.FollowGPS = sw.IsOn;
             });

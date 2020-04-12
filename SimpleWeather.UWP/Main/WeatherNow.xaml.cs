@@ -67,7 +67,7 @@ namespace SimpleWeather.UWP.Main
                     await AlertsView.UpdateAlerts(location);
                     await ForecastView.UpdateForecasts(location);
                     await WeatherView.UpdateBackground();
-                    await AsyncTask.RunOnUIThread(() =>
+                    await Dispatcher.RunOnUIThread(() =>
                     {
                         LoadingRing.IsActive = false;
                     }).ConfigureAwait(false);
@@ -110,7 +110,7 @@ namespace SimpleWeather.UWP.Main
 
         public void OnWeatherError(WeatherException wEx)
         {
-            AsyncTask.RunOnUIThread(() =>
+            Dispatcher.RunOnUIThread(() =>
             {
                 if (cts?.IsCancellationRequested == true)
                     return;
@@ -622,7 +622,7 @@ namespace SimpleWeather.UWP.Main
                             {
                                 view = new LocationQueryViewModel();
 
-                                await AsyncTask.RunOnUIThread(() =>
+                                await Dispatcher.RunOnUIThread(() =>
                                 {
                                     ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
                                 }).ConfigureAwait(false);
@@ -672,7 +672,7 @@ namespace SimpleWeather.UWP.Main
 
         private void RefreshWeather(bool forceRefresh)
         {
-            AsyncTask.RunOnUIThread(() => LoadingRing.IsActive = true);
+            Dispatcher.RunOnUIThread(() => LoadingRing.IsActive = true);
             AsyncTask.Run(() =>
             {
                 if (cts?.IsCancellationRequested == false)
@@ -732,7 +732,7 @@ namespace SimpleWeather.UWP.Main
 
         private Task CheckTiles()
         {
-            return AsyncTask.RunOnUIThread(async () =>
+            return Dispatcher.RunOnUIThread(async () =>
             {
                 var pinBtn = GetPinBtn();
 
@@ -752,7 +752,7 @@ namespace SimpleWeather.UWP.Main
 
         private Task SetPinButton(bool isPinned)
         {
-            return AsyncTask.RunOnUIThread(() =>
+            return Dispatcher.RunOnUIThread(() =>
             {
                 var pinBtn = GetPinBtn();
 

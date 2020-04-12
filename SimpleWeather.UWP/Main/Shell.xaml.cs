@@ -101,7 +101,7 @@ namespace SimpleWeather.UWP.Main
         private async void UISettings_ColorValuesChanged(UISettings sender, object args)
         {
             // NOTE: Run on UI Thread since this may be called off the main thread
-            await AsyncTask.RunOnUIThread(() =>
+            await Dispatcher?.RunOnUIThread(() =>
             {
                 if (AppFrame == null)
                     return;
@@ -112,7 +112,7 @@ namespace SimpleWeather.UWP.Main
                     bool isDarkTheme = uiTheme == "#FF000000";
                     AppFrame.RequestedTheme = isDarkTheme ? ElementTheme.Dark : ElementTheme.Light;
                 }
-            }).ConfigureAwait(false);
+            });
         }
 
         public void UpdateAppTheme()

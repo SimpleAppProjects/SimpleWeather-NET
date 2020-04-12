@@ -213,7 +213,7 @@ namespace SimpleWeather.UWP.Main
 
         internal Task RemovePanel(LocationPanelViewModel panel)
         {
-            return AsyncTask.RunOnUIThread(() =>
+            return ParentListView?.Dispatcher?.RunOnUIThread(() =>
             {
                 int dataPosition = GetDataset((LocationType)panel.LocationType).IndexOf(panel);
 
@@ -264,7 +264,7 @@ namespace SimpleWeather.UWP.Main
 
         internal Task BatchRemovePanels(IEnumerable<LocationPanelViewModel> panelsToDelete)
         {
-            return AsyncTask.RunOnUIThread(() =>
+            return ParentListView?.Dispatcher?.RunOnUIThread(() =>
             {
                 var panelPairs = new List<KeyValuePair<int, LocationPanelViewModel>>();
                 foreach (LocationPanelViewModel panel in panelsToDelete)
