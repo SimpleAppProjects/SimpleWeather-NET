@@ -85,6 +85,10 @@ namespace SimpleWeather.UWP.Controls
         {
             _forecasts = new List<BaseForecastItemViewModel>();
             this.InitializeComponent();
+            TempToggleButton.IsChecked = true;
+            TempToggleButton.Checked += ToggleButton_Checked;
+            WindToggleButton.Checked += ToggleButton_Checked;
+            RainToggleButton.Checked += ToggleButton_Checked;
         }
 
         private async void ToggleButton_Checked(object sender, RoutedEventArgs e)
