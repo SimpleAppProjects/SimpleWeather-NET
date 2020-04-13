@@ -23,7 +23,7 @@ namespace SimpleWeather.EF.Utf8JsonGen
                 // set StandardResolver or your use resolver chain
                 Utf8Json.Resolvers.AttributeFormatterResolver.Instance,
                 Utf8Json.Resolvers.BuiltinResolver.Instance,
-                Utf8Json.Resolvers.EnumResolver.UnderlyingValue,
+                SimpleWeather.EF.Utf8JsonGen.Resolvers.EnumResolver.ByValue,
                 SimpleWeather.EF.Utf8JsonGen.EnumerableCollectionResolver.Instance
         };
 
@@ -66,7 +66,7 @@ namespace SimpleWeather.EF.Utf8JsonGen
 #endif
                 // set StandardResolver or your use resolver chain
                 Utf8Json.Resolvers.BuiltinResolver.Instance,
-                Utf8Json.Resolvers.EnumResolver.UnderlyingValue,
+                SimpleWeather.EF.Utf8JsonGen.Resolvers.EnumResolver.ByValue,
                 SimpleWeather.EF.Utf8JsonGen.EnumerableCollectionResolver.Instance
         };
 
