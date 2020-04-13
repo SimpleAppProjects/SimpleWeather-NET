@@ -1,4 +1,4 @@
-﻿using Google.Cloud.Firestore;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,27 +6,25 @@ using System.Text;
 
 namespace SimpleWeather.WeatherData.Images.Model
 {
-    [FirestoreData]
     [SQLite.Table("imagedata")]
     public class ImageData
     {
         [SQLite.PrimaryKey]
-        [FirestoreDocumentId]
         internal string DocumentId { get; set; }
 
-        [FirestoreProperty("artistName")]
+        [JsonProperty("artistName")]
         public string ArtistName { get; set; }
-        [FirestoreProperty("color")]
+        [JsonProperty("color")]
         public string HexColor { get; set; }
-        [FirestoreProperty("condition")]
+        [JsonProperty("condition")]
         public string Condition { get; set; }
-        [FirestoreProperty("imageURL")]
+        [JsonProperty("imageURL")]
         public string ImageUrl { get; set; }
-        [FirestoreProperty("location")]
+        [JsonProperty("location")]
         public string Location { get; set; }
-        [FirestoreProperty("originalLink")]
+        [JsonProperty("originalLink")]
         public string OriginalLink { get; set; }
-        [FirestoreProperty("siteName")]
+        [JsonProperty("siteName")]
         public string SiteName { get; set; }
 
         public bool IsValid()

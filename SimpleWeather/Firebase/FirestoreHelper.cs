@@ -1,6 +1,5 @@
-﻿using Google.Cloud.Firestore;
-using Google.Cloud.Firestore.V1;
-using Grpc.Core;
+﻿using Google.Apis.Firestore.v1fix;
+using Google.Apis.Services;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,21 +9,24 @@ namespace SimpleWeather.Firebase
 {
     public static class FirestoreHelper
     {
-        public static Task<FirestoreDb> GetFirestoreDB()
+        public static Task<FirestoreService> GetFirestoreDB()
         {
             return Task.Run(async () =>
             {
                 var auth = await FirebaseAuthHelper.GetAuthLink();
-                return await new FirestoreDbBuilder()
+                var service = new FirestoreService(new BaseClientService.Initializer()
                 {
-                    ProjectId = Keys.FirebaseConfig.GetProjectID(),
-                    TokenAccessMethod = async (s, cts) =>
-                    {
-                        if (auth.IsExpired()) auth = await auth.GetFreshAuthAsync();
-                        return auth.FirebaseToken;
-                    }
-                }.BuildAsync().ConfigureAwait(false);
+                    ApplicationName = "SimpleWeather",
+                    ApiKey = Keys.FirebaseConfig.GetGoogleAPIKey()
+                });
+
+                return service;
             });
+        }
+
+        public static String GetParentPath()
+        {
+            return "projects/" + Keys.FirebaseConfig.GetProjectID() + "/databases/(default)/documents";
         }
     }
 }

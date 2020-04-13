@@ -1,10 +1,13 @@
-﻿using SimpleWeather.Utils;
+﻿using Google.Apis.Auth.OAuth2;
+using Google.Apis.Firestore.v1fix.Data;
+using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.WeatherData.Images;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
 using Windows.Networking.PushNotifications;
@@ -60,16 +63,21 @@ namespace SimpleWeather.UWP.WNS
                 {
                     // Write to firestore db
                     var auth = await Firebase.FirebaseAuthHelper.GetAuthLink();
-                    var firestoreDB = await Firebase.FirestoreHelper.GetFirestoreDB();
-                    var userInfo = new Dictionary<String, Object>
+                    var db = await Firebase.FirestoreHelper.GetFirestoreDB();
+                    var request = db.Projects.Databases.Documents.Patch(new Document()
                     {
-                        { "channel_uri", channel.Uri },
-                        { "expiration_time", channel.ExpirationTime.ToUnixTimeSeconds() },
-                        { "package_name", Windows.ApplicationModel.Package.Current.Id.Name }
-                    };
-                    await firestoreDB.Collection("uwp_users")
-                                     .Document(auth.User.LocalId)
-                                     .SetAsync(userInfo);
+                        Fields = new Dictionary<String, Value>
+                        {
+                            { "channel_uri", new Value() { StringValue = channel.Uri } },
+                            { "expiration_time", new Value() { IntegerValue = channel.ExpirationTime.ToUnixTimeSeconds() } },
+                            { "package_name", new Value() { StringValue = Windows.ApplicationModel.Package.Current.Id.Name } }
+                        }
+                    }, Firebase.FirestoreHelper.GetParentPath() + "/uwp_users/" + auth.User.LocalId);
+                    var authLink = await Firebase.FirebaseAuthHelper.GetAuthLink();
+                    request.AddCredential(GoogleCredential.FromAccessToken(authLink.FirebaseToken));
+                    var cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
+                    var resp = await request.ExecuteAsync(cts.Token);
+
                     // replace in settings
                     var newChannel = new WNSChannel()
                     {
@@ -78,6 +86,8 @@ namespace SimpleWeather.UWP.WNS
                     };
                     var json = JSONParser.Serializer(newChannel);
                     WNSSettings.Values[KEY_WNSCHANNEL] = json;
+
+                    cts.Dispose();
                 }
             });
         }

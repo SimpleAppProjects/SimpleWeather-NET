@@ -8,6 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
 
+using Google.Apis.Services;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Firestore.v1fix.Data;
+using System.Threading;
+
 namespace SimpleWeather.WeatherData.Images
 {
     public static class ImageDatabase
@@ -24,7 +29,7 @@ namespace SimpleWeather.WeatherData.Images
             }
         }
 
-        public static Task<List<ImageData>> GetAllImageDataForCondition(String backgroundCode)
+        private static Task<List<ImageData>> GetSnapshot()
         {
             return Task.Run(async () =>
             {
@@ -32,24 +37,58 @@ namespace SimpleWeather.WeatherData.Images
 
                 try
                 {
-                    if (!await ImageDatabaseCache.IsEmpty())
-                    {
-                        return await ImageDatabaseCache.GetAllImageData();
-                    }
-                    else
-                    {
-                        var db = await Firebase.FirestoreHelper.GetFirestoreDB();
-                        await db.Collection("background_images")
-                                .WhereEqualTo("condition", backgroundCode)
-                                .StreamAsync()
-                                .ForEachAsync((docSnapshot) =>
-                                {
-                                    if (docSnapshot.Exists)
-                                        list.Add(docSnapshot.ConvertTo<ImageData>());
-                                }).ConfigureAwait(false);
+                    var db = await Firebase.FirestoreHelper.GetFirestoreDB();
+                    string pageToken = null;
 
-                        await SaveSnapshot(db);
+                    do
+                    {
+                        var request = db.Projects.Databases.Documents.List(Firebase.FirestoreHelper.GetParentPath(), "background_images");
+                        var authLink = await Firebase.FirebaseAuthHelper.GetAuthLink();
+                        request.AddCredential(GoogleCredential.FromAccessToken(authLink.FirebaseToken));
+                        request.PageToken = pageToken;
+
+                        var cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
+                        var resp = await request.ExecuteAsync(cts.Token);
+                        var docs = resp.Documents;
+                        foreach (var doc in docs)
+                        {
+                            var imgData = new ImageData();
+                            foreach (var field in doc.Fields)
+                            {
+                                switch (field.Key)
+                                {
+                                    case "artistName":
+                                        imgData.ArtistName = field.Value.StringValue;
+                                        break;
+                                    case "color":
+                                        imgData.HexColor = field.Value.StringValue;
+                                        break;
+                                    case "condition":
+                                        imgData.Condition = field.Value.StringValue;
+                                        break;
+                                    case "imageURL":
+                                        imgData.ImageUrl = field.Value.StringValue;
+                                        break;
+                                    case "location":
+                                        imgData.Location = field.Value.StringValue;
+                                        break;
+                                    case "originalLink":
+                                        imgData.OriginalLink = field.Value.StringValue;
+                                        break;
+                                    case "siteName":
+                                        imgData.SiteName = field.Value.StringValue;
+                                        break;
+                                }
+                            }
+                            list.Add(imgData);
+                        }
+                        pageToken = resp.NextPageToken;
+                        cts.Dispose();
                     }
+                    while (pageToken != null);
+
+
+                    await SaveSnapshot(list);
                 }
                 catch (Exception e)
                 {
@@ -72,23 +111,14 @@ namespace SimpleWeather.WeatherData.Images
                     }
                     else
                     {
-                        var db = await Firebase.FirestoreHelper.GetFirestoreDB();
-
                         var rand = new Random();
 
-                        var imageData = await db.Collection("background_images")
-                                                .WhereEqualTo("condition", backgroundCode)
-                                                .StreamAsync()
-                                                .OrderBy(doc => rand.Next())
-                                                .Take(1)
-                                                .Select((docSnapshot) =>
-                                                {
-                                                    return docSnapshot.ConvertTo<ImageData>();
-                                                })
-                                                .FirstOrDefault()
-                                                .ConfigureAwait(false);
+                        var list = await GetSnapshot();
 
-                        await SaveSnapshot(db);
+                        var imageData = list.Where(img => img.Condition == backgroundCode)
+                                            .OrderBy(img => rand.Next())
+                                            .Take(1)
+                                            .FirstOrDefault();
 
                         return imageData;
                     }
@@ -102,7 +132,7 @@ namespace SimpleWeather.WeatherData.Images
             });
         }
 
-        private static Task SaveSnapshot(Google.Cloud.Firestore.FirestoreDb firestoreDb)
+        private static Task SaveSnapshot(IEnumerable<ImageData> images)
         {
             return Task.Run(async () =>
             {
@@ -110,14 +140,10 @@ namespace SimpleWeather.WeatherData.Images
                 {
                     await ImageDatabaseCache.ClearCache();
 
-                    await firestoreDb.Collection("background_images")
-                                     .WhereGreaterThan("condition", "")
-                                     .StreamAsync()
-                                     .ForEachAsync(async (docSnapshot) =>
-                                     {
-                                         if (docSnapshot.Exists)
-                                             await ImageDatabaseCache.InsertData(docSnapshot.ConvertTo<ImageData>());
-                                     }).ConfigureAwait(false);
+                    foreach (var img in images)
+                    {
+                        await ImageDatabaseCache.InsertData(img);
+                    }
 
                     // Register background task to update
 #if WINDOWS_UWP && !UNIT_TEST
@@ -137,20 +163,22 @@ namespace SimpleWeather.WeatherData.Images
             {
                 try
                 {
-                    var firestoreDb = await Firebase.FirestoreHelper.GetFirestoreDB();
+                    var db = await Firebase.FirestoreHelper.GetFirestoreDB();
+                    var request = db.Projects.Databases.Documents.Get(Firebase.FirestoreHelper.GetParentPath() + "background_images_info/collection_info");
+                    var authLink = await Firebase.FirebaseAuthHelper.GetAuthLink();
+                    request.AddCredential(GoogleCredential.FromAccessToken(authLink.FirebaseToken));
+                    var cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
+                    var doc = await request.ExecuteAsync(cts.Token);
 
-                    var docSnapshot = await firestoreDb.Collection("background_images_info")
-                                                       .Document("collection_info")
-                                                       .GetSnapshotAsync();
-
-                    var map = docSnapshot.ToDictionary();
-                    if (map.TryGetValue("last_updated", out object updateTime))
+                    if (doc.Fields.TryGetValue("last_updated", out Value value))
                     {
-                        if (updateTime is long)
+                        if (value.IntegerValue is long)
                         {
-                            return (long)updateTime;
+                            return (long)value.IntegerValue;
                         }
                     }
+
+                    cts.Dispose();
                 }
                 catch (Exception e)
                 {
