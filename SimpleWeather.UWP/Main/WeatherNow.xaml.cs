@@ -4,6 +4,7 @@ using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.UWP.Controls;
 using SimpleWeather.UWP.Helpers;
+using SimpleWeather.UWP.Shared.Helpers;
 using SimpleWeather.UWP.Tiles;
 using SimpleWeather.UWP.WeatherAlerts;
 using SimpleWeather.WeatherData;
@@ -732,6 +733,10 @@ namespace SimpleWeather.UWP.Main
 
         private Task CheckTiles()
         {
+            // Check if Tile service is available
+            if (!DeviceTypeHelper.IsTileSupported())
+                return Task.CompletedTask;
+
             return Dispatcher.RunOnUIThread(async () =>
             {
                 var pinBtn = GetPinBtn();
@@ -774,6 +779,9 @@ namespace SimpleWeather.UWP.Main
 
         private async void PinButton_Click(object sender, RoutedEventArgs e)
         {
+            // Check if Tile service is available
+            if (!DeviceTypeHelper.IsTileSupported()) return;
+
             var pinBtn = sender as AppBarButton;
             pinBtn.IsEnabled = false;
 

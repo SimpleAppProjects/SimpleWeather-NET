@@ -2,6 +2,7 @@
 using SimpleWeather.Controls;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
+using SimpleWeather.UWP.Shared.Helpers;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
@@ -950,8 +951,8 @@ namespace SimpleWeather.UWP.Tiles
 
         public static Task TileUpdater(LocationData location)
         {
-            // Check if Notification service is available
-            if (!Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.ApplicationModel.Background.ToastNotificationActionTrigger"))
+            // Check if Tile service is available
+            if (!DeviceTypeHelper.IsTileSupported())
                 return Task.CompletedTask;
 
             return Task.Run(async () => 
@@ -982,8 +983,8 @@ namespace SimpleWeather.UWP.Tiles
 
         public static Task TileUpdater(LocationData location, WeatherNowViewModel weather)
         {
-            // Check if Notification service is available
-            if (!Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.ApplicationModel.Background.ToastNotificationActionTrigger"))
+            // Check if Tile service is available
+            if (!DeviceTypeHelper.IsTileSupported())
                 return Task.CompletedTask;
 
             return Task.Run(async () =>

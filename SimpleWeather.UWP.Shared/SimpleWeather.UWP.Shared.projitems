@@ -9,6 +9,7 @@
     <Import_RootNamespace>SimpleWeather.UWP.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\DeviceTypeHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\StringExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\UserThemeMode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\FileUtils.cs" />
