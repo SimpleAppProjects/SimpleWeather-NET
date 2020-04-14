@@ -111,10 +111,8 @@ namespace SimpleWeather.UWP
             // Subscribe to the event that informs the app of this change.
             MemoryManager.AppMemoryUsageIncreased += MemoryManager_AppMemoryUsageIncreased;
 
-#if !DEBUG
             AppCenter.LogLevel = LogLevel.Verbose;
             AppCenter.Start(APIKeys.GetAppCenterSecret(), typeof(Analytics), typeof(Crashes));
-#endif
 
             UISettings = new UISettings();
             IsSystemDarkTheme = UISettings.GetColorValue(UIColorType.Background).ToString() == "#FF000000";

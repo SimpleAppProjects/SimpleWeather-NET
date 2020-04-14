@@ -95,7 +95,7 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
     <CodeAnalysisRuleSet>SimpleWeather.UWP.ruleset</CodeAnalysisRuleSet>
-    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+    <UseDotNetNativeToolchain>false</UseDotNetNativeToolchain>
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <Optimize>false</Optimize>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
