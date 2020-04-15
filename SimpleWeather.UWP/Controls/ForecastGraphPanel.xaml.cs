@@ -63,17 +63,13 @@ namespace SimpleWeather.UWP.Controls
             {
                 SetValue(ForecastsProperty, value);
 
-                if (value is IEnumerable<BaseForecastItemViewModel> forecasts)
-                {
-                    _forecasts.Clear();
-                    _forecasts.AddRange(forecasts);
-                }
+                _forecasts = value as IEnumerable<BaseForecastItemViewModel>;
 
                 UpdateLineView(false);
             }
         }
 
-        private List<BaseForecastItemViewModel> _forecasts;
+        private IEnumerable<BaseForecastItemViewModel> _forecasts;
 
         public ScrollViewer ScrollViewer { get { return GraphView?.ScrollViewer; } }
 
@@ -83,7 +79,6 @@ namespace SimpleWeather.UWP.Controls
 
         public ForecastGraphPanel()
         {
-            _forecasts = new List<BaseForecastItemViewModel>();
             this.InitializeComponent();
             TempToggleButton.IsChecked = true;
             TempToggleButton.Checked += ToggleButton_Checked;
@@ -91,7 +86,7 @@ namespace SimpleWeather.UWP.Controls
             RainToggleButton.Checked += ToggleButton_Checked;
         }
 
-        private async void ToggleButton_Checked(object sender, RoutedEventArgs e)
+        private void ToggleButton_Checked(object sender, RoutedEventArgs e)
         {
             var btn = sender as ToggleButton;
             SelectedButton = btn;
@@ -110,26 +105,26 @@ namespace SimpleWeather.UWP.Controls
             }
 
             // Update line view
-            await UpdateLineView(true);
+            UpdateLineView(true);
         }
 
-        private async void GraphLineView_Loaded(object sender, RoutedEventArgs e)
+        private void GraphLineView_Loaded(object sender, RoutedEventArgs e)
         {
-            await UpdateLineView(true);
+            UpdateLineView(true);
         }
 
-        private async Task UpdateLineView(bool resetOffset)
+        private void UpdateLineView(bool resetOffset)
         {
             UpdateToggles();
             GraphView?.ResetData();
 
-            if (_forecasts.Count > 0)
+            if (_forecasts?.Any() == true && GraphView != null)
             {
+                var forecasts = new List<BaseForecastItemViewModel>(_forecasts);
                 switch (SelectedButton?.Tag)
                 {
                     case "Temp":
                     default:
-                        if (_forecasts.Count > 0 && GraphView != null)
                         {
                             GraphView.DrawGridLines = false;
                             GraphView.DrawDotLine = false;
@@ -144,15 +139,15 @@ namespace SimpleWeather.UWP.Controls
                             List<YEntryData> hiTempSeries = new List<YEntryData>();
                             List<YEntryData> loTempSeries = null;
 
-                            if (_forecasts.FirstOrDefault() is ForecastItemViewModel)
+                            if (forecasts.FirstOrDefault() is ForecastItemViewModel)
                             {
                                 loTempSeries = new List<YEntryData>();
                                 GraphView.DrawSeriesLabels = true;
                             }
 
-                            for (int i = 0; i < Math.Min(_forecasts.Count, MAX_FETCH_SIZE); i++)
+                            for (int i = 0; i < Math.Min(forecasts.Count, MAX_FETCH_SIZE); i++)
                             {
-                                BaseForecastItemViewModel forecastItemViewModel = _forecasts.ElementAt(i);
+                                var forecastItemViewModel = forecasts[i];
                                 try
                                 {
                                     float hiTemp = float.Parse(forecastItemViewModel.HiTemp.RemoveNonDigitChars());
@@ -181,17 +176,22 @@ namespace SimpleWeather.UWP.Controls
                                 tempDataSeries.Add(new LineDataSeries("Low", loTempSeries));
                             }
 
-                            while (GraphView == null || (bool)!GraphView?.ReadyToDraw)
+                            Task.Run(async () =>
                             {
-                                await Task.Delay(1);
-                            }
+                                while (GraphView == null || await Dispatcher.RunOnUIThread(() => (bool)!GraphView?.ReadyToDraw))
+                                {
+                                    await Task.Delay(1);
+                                }
 
-                            GraphView.SetData(labelData, tempDataSeries);
+                                await Dispatcher.RunOnUIThread(() =>
+                                {
+                                    GraphView.SetData(labelData, tempDataSeries);
+                                });
+                            });
                         }
                         break;
 
                     case "Wind":
-                        if (_forecasts.Count > 0 && GraphView != null)
                         {
                             GraphView.DrawGridLines = false;
                             GraphView.DrawDotLine = false;
@@ -205,9 +205,9 @@ namespace SimpleWeather.UWP.Controls
                             List<LineDataSeries> windDataList = new List<LineDataSeries>();
                             List<YEntryData> windDataSeries = new List<YEntryData>();
 
-                            for (int i = 0; i < Math.Min(_forecasts.Count, MAX_FETCH_SIZE); i++)
+                            for (int i = 0; i < Math.Min(forecasts.Count, MAX_FETCH_SIZE); i++)
                             {
-                                BaseForecastItemViewModel forecastItemViewModel = _forecasts[i];
+                                var forecastItemViewModel = forecasts[i];
                                 try
                                 {
                                     float wind = float.Parse(forecastItemViewModel.WindSpeed.RemoveNonDigitChars());
@@ -225,17 +225,22 @@ namespace SimpleWeather.UWP.Controls
 
                             windDataList.Add(new LineDataSeries(windDataSeries));
 
-                            while (GraphView == null || (bool)!GraphView?.ReadyToDraw)
+                            Task.Run(async () =>
                             {
-                                await Task.Delay(1);
-                            }
+                                while (GraphView == null || await Dispatcher.RunOnUIThread(() => (bool)!GraphView?.ReadyToDraw))
+                                {
+                                    await Task.Delay(1);
+                                }
 
-                            GraphView.SetData(labelData, windDataList);
+                                await Dispatcher.RunOnUIThread(() =>
+                                {
+                                    GraphView.SetData(labelData, windDataList);
+                                });
+                            });
                         }
                         break;
 
                     case "Rain":
-                        if (_forecasts.Count > 0 && GraphView != null)
                         {
                             GraphView.DrawGridLines = false;
                             GraphView.DrawDotLine = false;
@@ -249,9 +254,9 @@ namespace SimpleWeather.UWP.Controls
                             List<LineDataSeries> popDataList = new List<LineDataSeries>();
                             List<YEntryData> popDataSeries = new List<YEntryData>();
 
-                            for (int i = 0; i < Math.Min(_forecasts.Count, MAX_FETCH_SIZE); i++)
+                            for (int i = 0; i < Math.Min(forecasts.Count, MAX_FETCH_SIZE); i++)
                             {
-                                BaseForecastItemViewModel forecastItemViewModel = _forecasts[i];
+                                var forecastItemViewModel = forecasts[i];
                                 try
                                 {
                                     float pop = float.Parse(forecastItemViewModel.PoP.RemoveNonDigitChars());
@@ -269,12 +274,18 @@ namespace SimpleWeather.UWP.Controls
 
                             popDataList.Add(new LineDataSeries(popDataSeries));
 
-                            while (GraphView == null || (bool)!GraphView?.ReadyToDraw)
+                            Task.Run(async () =>
                             {
-                                await Task.Delay(1);
-                            }
+                                while (GraphView == null || await Dispatcher.RunOnUIThread(() => (bool)!GraphView?.ReadyToDraw))
+                                {
+                                    await Task.Delay(1);
+                                }
 
-                            GraphView.SetData(labelData, popDataList);
+                                await Dispatcher.RunOnUIThread(() =>
+                                {
+                                    GraphView.SetData(labelData, popDataList);
+                                });
+                            });
                         }
                         break;
                 }
@@ -286,7 +297,7 @@ namespace SimpleWeather.UWP.Controls
         private void UpdateToggles()
         {
             int count = 1;
-            var first = _forecasts.FirstOrDefault();
+            var first = _forecasts?.FirstOrDefault();
             if (first is ForecastItemViewModel)
             {
                 if (!String.IsNullOrWhiteSpace(first.WindSpeed) &&

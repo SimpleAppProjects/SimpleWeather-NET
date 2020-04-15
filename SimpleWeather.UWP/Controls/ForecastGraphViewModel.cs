@@ -20,7 +20,7 @@ namespace SimpleWeather.UWP.Controls
         private List<ForecastItemViewModel> forecasts;
         private List<HourlyForecastItemViewModel> hourlyForecasts;
 
-        public List<ForecastItemViewModel> Forecasts 
+        public List<ForecastItemViewModel> Forecasts
         {
             get { return forecasts; }
             private set { forecasts = value; OnPropertyChanged(nameof(Forecasts)); }
@@ -34,8 +34,8 @@ namespace SimpleWeather.UWP.Controls
 
         public ForecastGraphViewModel()
         {
-            Forecasts = new List<ForecastItemViewModel>(10);
-            HourlyForecasts = new List<HourlyForecastItemViewModel>(24);
+            Forecasts = new List<ForecastItemViewModel>();
+            HourlyForecasts = new List<HourlyForecastItemViewModel>();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -78,8 +78,6 @@ namespace SimpleWeather.UWP.Controls
 
         private void RefreshForecasts()
         {
-            Forecasts.Clear();
-
             Forecasts fcasts = null;
             try
             {
@@ -97,39 +95,42 @@ namespace SimpleWeather.UWP.Controls
                 Logger.WriteLine(LoggerLevel.Error, ex, "{0}: error refreshing forecasts", nameof(ForecastGraphViewModel));
             }
 
-            if (fcasts?.forecast?.Count > 0)
+            AsyncTask.TryRunOnUIThread(() =>
             {
-                bool isDayAndNt = fcasts.txt_forecast?.Count == fcasts.forecast?.Count * 2;
-                bool addTextFct = isDayAndNt || fcasts.txt_forecast?.Count == fcasts.forecast?.Count;
+                Forecasts.Clear();
 
-                for (int i = 0; i < Math.Min(fcasts.forecast.Count, 24); i++)
+                if (fcasts?.forecast?.Count > 0)
                 {
-                    ForecastItemViewModel f;
-                    var dataItem = fcasts.forecast[i];
+                    bool isDayAndNt = fcasts.txt_forecast?.Count == fcasts.forecast?.Count * 2;
+                    bool addTextFct = isDayAndNt || fcasts.txt_forecast?.Count == fcasts.forecast?.Count;
 
-                    if (addTextFct)
+                    for (int i = 0; i < Math.Min(fcasts.forecast.Count, 24); i++)
                     {
-                        if (isDayAndNt)
-                            f = new ForecastItemViewModel(dataItem, fcasts.txt_forecast[i * 2], fcasts.txt_forecast[(i * 2) + 1]);
+                        ForecastItemViewModel f;
+                        var dataItem = fcasts.forecast[i];
+
+                        if (addTextFct)
+                        {
+                            if (isDayAndNt)
+                                f = new ForecastItemViewModel(dataItem, fcasts.txt_forecast[i * 2], fcasts.txt_forecast[(i * 2) + 1]);
+                            else
+                                f = new ForecastItemViewModel(dataItem, fcasts.txt_forecast[i]);
+                        }
                         else
-                            f = new ForecastItemViewModel(dataItem, fcasts.txt_forecast[i]);
-                    }
-                    else
-                    {
-                        f = new ForecastItemViewModel(dataItem);
+                        {
+                            f = new ForecastItemViewModel(dataItem);
+                        }
+
+                        Forecasts.Add(f);
                     }
 
-                    Forecasts.Add(f);
+                    OnPropertyChanged(nameof(Forecasts));
                 }
-            }
-
-            OnPropertyChanged(nameof(Forecasts));
+            });
         }
 
         private void RefreshHourlyForecasts()
         {
-            HourlyForecasts.Clear();
-
             IList<HourlyForecast> hrfcasts = null;
             try
             {
@@ -160,15 +161,20 @@ namespace SimpleWeather.UWP.Controls
                 Logger.WriteLine(LoggerLevel.Error, ex, "{0}: error refreshing hourly forecasts", nameof(ForecastGraphViewModel));
             }
 
-            if (hrfcasts?.Count > 0)
+            AsyncTask.TryRunOnUIThread(() =>
             {
-                foreach (var dataItem in hrfcasts)
-                {
-                    HourlyForecasts.Add(new HourlyForecastItemViewModel(dataItem));
-                }
-            }
+                HourlyForecasts.Clear();
 
-            OnPropertyChanged(nameof(HourlyForecasts));
+                if (hrfcasts?.Count > 0)
+                {
+                    foreach (var dataItem in hrfcasts)
+                    {
+                        HourlyForecasts.Add(new HourlyForecastItemViewModel(dataItem));
+                    }
+                }
+
+                OnPropertyChanged(nameof(HourlyForecasts));
+            });
         }
     }
 }
