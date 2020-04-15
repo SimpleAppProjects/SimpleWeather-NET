@@ -123,18 +123,30 @@ namespace SimpleWeather.Utils
             return false;
         }
 
-        public static Task DeleteDirectory(String path)
+        public static Task<bool> DeleteDirectory(String path)
         {
             if (Directory.Exists(path))
             {
                 return Task.Run(async () =>
                 {
-                    var directory = await StorageFolder.GetFolderFromPathAsync(path);
-                    await directory.DeleteAsync(StorageDeleteOption.PermanentDelete);
+                    bool success = true;
+
+                    try
+                    {
+                        var directory = await StorageFolder.GetFolderFromPathAsync(path);
+                        await directory.DeleteAsync(StorageDeleteOption.PermanentDelete);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.WriteLine(LoggerLevel.Error, e);
+                        success = false;
+                    }
+
+                    return success;
                 });
             }
 
-            return Task.CompletedTask;
+            return Task.FromResult(false);
         }
     }
 }

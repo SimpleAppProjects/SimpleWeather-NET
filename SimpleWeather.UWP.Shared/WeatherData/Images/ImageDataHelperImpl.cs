@@ -106,7 +106,14 @@ namespace SimpleWeather.UWP.Shared.WeatherData.Images
             {
                 if (ImageDataFolder != null)
                 {
-                    await ImageDataFolder.DeleteAsync(StorageDeleteOption.PermanentDelete);
+                    try
+                    {
+                        await ImageDataFolder.DeleteAsync(StorageDeleteOption.PermanentDelete);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.WriteLine(LoggerLevel.Error, e);
+                    }
                 }
 
                 ImageDataContainer.Values.Clear();
