@@ -40,11 +40,14 @@ namespace SimpleWeather.UWP.Controls
 
         private Thickness ViewPadding = new Thickness(20, 20, 20, 20);
 
-        private Color BottomTextColor = Colors.White;
         private const float BottomTextSize = 12;
         private CanvasTextFormat BottomTextFormat;
 
         public bool ReadyToDraw => Canvas.ReadyToDraw;
+
+        private Color PaintColor => PaintColorBrush.Color;
+        private Color PhaseArcColor => PhaseArcColorBrush.Color;
+        private Color BottomTextColor => BottomTextColorBrush.Color;
 
         public SunPhasePanel()
         {
@@ -152,8 +155,8 @@ namespace SimpleWeather.UWP.Controls
                 using (var drawingSession = sender.CreateDrawingSession(region))
                 {
                     DrawLabels(region, drawingSession);
-                    DrawDots(region, drawingSession);
                     DrawArc(region, drawingSession);
+                    DrawDots(region, drawingSession);
                 }
             }
         }
@@ -162,18 +165,13 @@ namespace SimpleWeather.UWP.Controls
         {
             // Draw Dots
             if (RectHelper.Contains(region, new Point(sunriseX + (float)ViewPadding.Left, GraphHeight)))
-                drawingSession.FillCircle(sunriseX + (float)ViewPadding.Left, GraphHeight, DOT_RADIUS, Colors.Yellow);
+                drawingSession.FillCircle(sunriseX + (float)ViewPadding.Left, GraphHeight, DOT_RADIUS, PaintColor);
             if (RectHelper.Contains(region, new Point(sunsetX + (float)ViewPadding.Right, GraphHeight)))
-                drawingSession.FillCircle(sunsetX + (float)ViewPadding.Right, GraphHeight, DOT_RADIUS, Colors.Yellow);
+                drawingSession.FillCircle(sunsetX + (float)ViewPadding.Right, GraphHeight, DOT_RADIUS, PaintColor);
         }
 
         private void DrawArc(Rect region, CanvasDrawingSession drawingSession)
         {
-            Color bgColor = Colors.Yellow;
-            bgColor.A = 0x50;
-            Color arcColor = Colors.White;
-            Color iconColor = Colors.Yellow;
-
             float radius = GraphHeight * 0.9f;
             float trueRadius = (sunsetX - sunriseX) * 0.5f;
 
@@ -190,7 +188,7 @@ namespace SimpleWeather.UWP.Controls
             using (var iconTxtFormat = new CanvasTextFormat()
             {
                 FontFamily = "ms-appx:///Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons",
-                FontSize = 14,
+                FontSize = 18,
                 HorizontalAlignment = CanvasHorizontalAlignment.Left
             })
             using (var iconLayout = new CanvasTextLayout(drawingSession, WeatherIcons.DAY_SUNNY, iconTxtFormat, 0, 0))
@@ -285,8 +283,8 @@ namespace SimpleWeather.UWP.Controls
                         mPathBackground.EndFigure(CanvasFigureLoop.Closed);
                         using (var arc = CanvasGeometry.CreatePath(mPathBackground))
                         {
-                            drawingSession.DrawGeometry(arc, arcColor, 1.0f, arcStroke);
-                            drawingSession.FillGeometry(arc, bgColor);
+                            drawingSession.DrawGeometry(arc, PhaseArcColor, 1.0f, arcStroke);
+                            drawingSession.FillGeometry(arc, ColorUtils.SetAlphaComponent(PaintColor, 0x50));
                         }
 
                         using (var FullArcPath = new CanvasPathBuilder(drawingSession))
@@ -296,7 +294,7 @@ namespace SimpleWeather.UWP.Controls
                             FullArcPath.EndFigure(CanvasFigureLoop.Closed);
                             using (var fullArc = CanvasGeometry.CreatePath(FullArcPath))
                             {
-                                drawingSession.DrawGeometry(fullArc, arcColor, 1.0f, arcStroke);
+                                drawingSession.DrawGeometry(fullArc, PhaseArcColor, 1.0f, arcStroke);
                             }
                         }
                     }
@@ -305,7 +303,7 @@ namespace SimpleWeather.UWP.Controls
                     {
                         if (!RectHelper.Intersect(region, iconLayout.DrawBounds).IsEmpty)
                         {
-                            drawingSession.DrawTextLayout(iconLayout, (float)(x - iconBounds.Width / 2), (float)(y - iconBounds.Height / 2), iconColor);
+                            drawingSession.DrawTextLayout(iconLayout, (float)(x - iconBounds.Width / 2), (float)(y - iconBounds.Height / 2), PaintColor);
                         }
                     }
                 }

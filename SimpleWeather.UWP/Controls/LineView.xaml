@@ -10,6 +10,29 @@
     d:DesignHeight="200"
     d:DesignWidth="1000">
 
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Dark">
+                    <Color x:Key="LineViewBackgroundLineColor">#80808080</Color>
+                    <Color x:Key="LineViewBottomTextColor">White</Color>
+                    <Color x:Key="LineViewLineColor">#80808080</Color>
+                    <Color x:Key="LineViewSmallCirColor">#80808080</Color>
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Light">
+                    <Color x:Key="LineViewBackgroundLineColor">#80FFFFFF</Color>
+                    <Color x:Key="LineViewBottomTextColor">Black</Color>
+                    <Color x:Key="LineViewLineColor">#80808080</Color>
+                    <Color x:Key="LineViewSmallCirColor">#80808080</Color>
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+            <SolidColorBrush x:Name="BackgroundLineColorBrush" Color="{ThemeResource LineViewBackgroundLineColor}" />
+            <SolidColorBrush x:Name="BottomTextColorBrush" Color="{ThemeResource LineViewBottomTextColor}" />
+            <SolidColorBrush x:Name="LineColorBrush" Color="{ThemeResource LineViewLineColor}" />
+            <SolidColorBrush x:Name="SmallCirColorBrush" Color="{ThemeResource LineViewSmallCirColor}" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <ScrollViewer x:Name="InternalScrollViewer" VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Disabled"
                   HorizontalScrollBarVisibility="Hidden" HorizontalScrollMode="Enabled">
         <win2d:CanvasVirtualControl x:Name="Canvas" Background="Transparent" ClearColor="Transparent"

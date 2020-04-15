@@ -143,6 +143,18 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
+            <Grid.Resources>
+                <ResourceDictionary>
+                    <ResourceDictionary.ThemeDictionaries>
+                        <ResourceDictionary x:Key="Dark">
+                            <SolidColorBrush x:Key="BottomNavigationBarItemNormalColor" Color="#80FFFFFF" />
+                        </ResourceDictionary>
+                        <ResourceDictionary x:Key="Light">
+                            <SolidColorBrush x:Key="BottomNavigationBarItemNormalColor" Color="#98000000" />
+                        </ResourceDictionary>
+                    </ResourceDictionary.ThemeDictionaries>
+                </ResourceDictionary>
+            </Grid.Resources>
             <Viewbox Grid.Row="0" Height="24" Margin="8,8,8,0" HorizontalAlignment="Stretch">
                 <ContentPresenter x:Name="Icon" Content="{TemplateBinding Icon}" Padding="2" Foreground="{TemplateBinding Foreground}" />
             </Viewbox>
@@ -154,8 +166,8 @@
                         <VisualState.Setters>
                             <Setter Target="LayoutRoot.(RevealBrush.State)" Value="Normal" />
                             <Setter Target="LayoutRoot.Background" Value="{ThemeResource AppBarButtonRevealBackground}" />
-                            <Setter Target="Icon.Foreground" Value="#80FFFFFF" />
-                            <Setter Target="ItemLabel.Foreground" Value="#80FFFFFF" />
+                            <Setter Target="Icon.Foreground" Value="{ThemeResource BottomNavigationBarItemNormalColor}" />
+                            <Setter Target="ItemLabel.Foreground" Value="{ThemeResource BottomNavigationBarItemNormalColor}" />
                         </VisualState.Setters>
                         <Storyboard>
                             <PointerUpThemeAnimation Storyboard.TargetName="LayoutRoot" />

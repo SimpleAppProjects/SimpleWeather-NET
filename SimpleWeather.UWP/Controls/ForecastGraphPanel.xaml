@@ -184,9 +184,9 @@
                 <ToggleButton.Content>
                     <StackPanel Orientation="Horizontal">
                         <FontIcon Margin="4,0" Glyph="&#xf055;" FontSize="15" Style="{StaticResource WeatherFontIcon}" VerticalAlignment="Center"
-                                  FontFamily="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons" Foreground="White" />
+                                  FontFamily="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons" />
                         <TextBlock x:Name="Label" x:Uid="Label_Temperature" Text="Temperature" FontSize="14" VerticalAlignment="Center" Margin="4,0,0,0"
-                                   TextLineBounds="Tight" Foreground="White" />
+                                   TextLineBounds="Tight" />
                     </StackPanel>
                 </ToggleButton.Content>
             </ToggleButton>
@@ -195,24 +195,20 @@
                 <ToggleButton.Content>
                     <StackPanel Orientation="Horizontal">
                         <FontIcon Margin="4,0" Glyph="&#xf050;" FontSize="15" Style="{StaticResource WeatherFontIcon}"
-                                  FontFamily="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons"
-                                  Foreground="White" />
+                                  FontFamily="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons" />
                         <TextBlock x:Uid="Label_Wind" Text="Wind" FontSize="14" VerticalAlignment="Center" Margin="4,0,0,0"
-                                   TextLineBounds="Tight" Visibility="{Binding ElementName=Label, Path=Visibility, Mode=OneWay}"
-                                   Foreground="White" />
+                                   TextLineBounds="Tight" Visibility="{Binding ElementName=Label, Path=Visibility, Mode=OneWay}" />
                     </StackPanel>
                 </ToggleButton.Content>
             </ToggleButton>
             <ToggleButton x:Name="RainToggleButton" Margin="5,0" Padding="4" Tag="Rain"
-                          Style="{ThemeResource ToggleButtonNoDisableRevealStyle}" Foreground="White">
+                          Style="{ThemeResource ToggleButtonNoDisableRevealStyle}">
                 <ToggleButton.Content>
                     <StackPanel Orientation="Horizontal">
                         <FontIcon Margin="4,0" Glyph="&#xf078;" FontSize="15" Style="{StaticResource WeatherFontIcon}"
-                                  FontFamily="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons"
-                                  Foreground="White" />
+                                  FontFamily="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons" />
                         <TextBlock x:Uid="Label_Precipitation" Text="Precipitation" FontSize="14" VerticalAlignment="Center" Margin="4,0,0,0"
-                                   TextLineBounds="Tight" Visibility="{Binding ElementName=Label, Path=Visibility, Mode=OneWay}"
-                                   Foreground="White" />
+                                   TextLineBounds="Tight" Visibility="{Binding ElementName=Label, Path=Visibility, Mode=OneWay}" />
                     </StackPanel>
                 </ToggleButton.Content>
             </ToggleButton>

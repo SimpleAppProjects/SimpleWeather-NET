@@ -10,7 +10,22 @@
     d:DesignWidth="720"
     Tag="{x:Bind ViewModel.LocationData, Mode=OneWay}">
 
-    <Grid x:Name="MainGrid" Background="{ThemeResource SystemAccentColor}" RequestedTheme="{x:Bind ViewModel.BackgroundTheme, FallbackValue='Light', Mode=OneWay}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Dark">
+                    <x:Double x:Key="DropShadowOpacity">0.7</x:Double>
+                    <Color x:Key="DropShadowColorBrush">Black</Color>
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Light">
+                    <x:Double x:Key="DropShadowOpacity">0.7</x:Double>
+                    <Color x:Key="DropShadowColorBrush">Gray</Color>
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid x:Name="MainGrid" Background="{ThemeResource SystemAccentColor}" RequestedTheme="{x:Bind ViewModel.BackgroundTheme, Mode=OneWay}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
@@ -30,17 +45,21 @@
             </Grid.Background>
         </Grid>
         <ProgressRing Grid.ColumnSpan="3" IsActive="{x:Bind ViewModel.IsLoading, Mode=OneWay}" Foreground="White" />
-        <toolkitControls:DropShadowPanel BlurRadius="10.0" ShadowOpacity="0.75" Color="Black" VerticalAlignment="Center" Margin="10,0">
+        <toolkitControls:DropShadowPanel BlurRadius="10.0" 
+                                         ShadowOpacity="{ThemeResource DropShadowOpacity}" Color="{ThemeResource DropShadowColorBrush}"
+                                         VerticalAlignment="Center" Margin="10,0">
             <TextBlock x:Name="LocationName" Text="{x:Bind ViewModel.LocationName, FallbackValue='San Fernando del Valle de Catamarca, Argentina', Mode=OneWay}"
                        FontSize="24" FontWeight="SemiBold"
                        TextWrapping="WrapWholeWords" TextTrimming="CharacterEllipsis" />
         </toolkitControls:DropShadowPanel>
-        <toolkitControls:DropShadowPanel BlurRadius="10.0" ShadowOpacity="1.0" Color="Black" VerticalAlignment="Center" Grid.Column="1">
+        <toolkitControls:DropShadowPanel BlurRadius="10.0" ShadowOpacity="{ThemeResource DropShadowOpacity}" Color="{ThemeResource DropShadowColorBrush}"
+                                         VerticalAlignment="Center" Grid.Column="1">
             <TextBlock x:Name="CurrentTemp" Text="{x:Bind ViewModel.CurrTemp, FallbackValue='70º', Mode=OneWay}"
                        FontSize="26" FontWeight="Bold" Padding="10,0" />
         </toolkitControls:DropShadowPanel>
         <Viewbox Name="IconBox" Height="48" Grid.Column="2">
-            <toolkitControls:DropShadowPanel BlurRadius="10.0" ShadowOpacity="1.0" Color="Black" VerticalAlignment="Center">
+            <toolkitControls:DropShadowPanel BlurRadius="10.0" ShadowOpacity="{ThemeResource DropShadowOpacity}" Color="{ThemeResource DropShadowColorBrush}"
+                                             VerticalAlignment="Center">
                 <TextBlock x:Name="WeatherIcon" Text="{x:Bind ViewModel.WeatherIcon, FallbackValue='&#xf00d;', Mode=OneWay}"
                            FontSize="48" FontWeight="SemiBold" Style="{StaticResource WeatherIcon}" />
             </toolkitControls:DropShadowPanel>

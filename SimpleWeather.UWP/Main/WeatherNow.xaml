@@ -157,9 +157,9 @@
         </Grid>
         <ScrollViewer x:Name="MainViewer" VerticalScrollMode="Auto" ViewChanged="MainViewer_ViewChanged" Padding="16,0"
                       x:Load="{x:Bind WeatherView.Location, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
-                      Loaded="DeferedControl_Loaded">
-            <StackPanel RequestedTheme="{x:Bind WeatherView.BackgroundTheme, Mode=OneWay}" MaxWidth="1280">
-                <Grid x:Name="ConditionPanel">
+                      Loaded="DeferedControl_Loaded" RequestedTheme="{x:Bind WeatherView.BackgroundTheme, Mode=OneWay}">
+            <StackPanel MaxWidth="1280">
+                <Grid x:Name="ConditionPanel" RequestedTheme="Dark">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -363,7 +363,7 @@
                             <Border x:Name="RadarWebViewContainer" Loaded="RadarWebView_Loaded" MaxWidth="640" Height="360" />
                         </Grid>
                     </toolkitControls:HeaderedContentControl>
-                    <TextBlock Padding="5" Foreground="White" FontSize="12" HorizontalAlignment="Center"><Span>
+                    <TextBlock Padding="5" FontSize="12" HorizontalAlignment="Center"><Span>
                         <Run x:Uid="Credit_Prefix" Text="Data from"/><Run Text=" EarthWindMap Project"/></Span>
                     </TextBlock>
                 </StackPanel>

@@ -17,22 +17,23 @@
             </toolkitControls:HeaderedContentControl.Header>
             <RelativePanel>
                 <TextBlock x:Name="UVIcon" Text="{x:Bind ViewModel.Icon, Mode=OneWay, FallbackValue='&#xf00d;'}"
-                           Foreground="White" FontSize="32"
-                           Width="75" Padding="5" VerticalAlignment="Center"
+                           FontSize="32" Width="75" Padding="5"
+                           VerticalAlignment="Center"
                            Style="{StaticResource WeatherIcon}"
                            RelativePanel.AlignTopWithPanel="True"
                            RelativePanel.AlignLeftWithPanel="True"
                            RelativePanel.Above="UVProgressBar" />
                 <TextBlock x:Name="UVDescription" TextLineBounds="Tight"
-                           Foreground="White" FontSize="18"
-                           Padding="5" VerticalAlignment="Center"
+                           FontSize="18" Padding="5"
+                           VerticalAlignment="Center"
                            RelativePanel.RightOf="UVIcon"
                            RelativePanel.AlignTopWithPanel="True"
                            RelativePanel.AlignRightWithPanel="True"
                            RelativePanel.Above="UVProgressBar">
                         <Span><Run Text="{x:Bind ViewModel.Index, Mode=OneWay, FallbackValue='9'}" /><Run Text=", " /><Run Text="{x:Bind ViewModel.Description, Mode=OneWay, FallbackValue='Very High'}" /></Span>
                 </TextBlock>
-                <ProgressBar x:Name="UVProgressBar" Height="5" Value="{x:Bind ViewModel.Progress, Mode=OneWay, FallbackValue='66'}" Maximum="100" Background="DimGray"
+                <ProgressBar x:Name="UVProgressBar" Height="5" Value="{x:Bind ViewModel.Progress, Mode=OneWay, FallbackValue='66'}" Maximum="100"
+                             Background="{ThemeResource ProgressBarBackgroundBrush}"
                              Margin="15,5"
                              RelativePanel.AlignBottomWithPanel="True"
                              RelativePanel.AlignLeftWithPanel="True"

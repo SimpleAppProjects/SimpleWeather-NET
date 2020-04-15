@@ -17,21 +17,22 @@
             </toolkitControls:HeaderedContentControl.Header>
             <RelativePanel>
                 <TextBlock x:Name="BeaufortIcon" Text="{x:Bind ViewModel.Beaufort.Icon, Mode=OneWay, FallbackValue='&#xf0c2;'}"
-                           Foreground="White" FontSize="32"
-                           Width="75" Padding="5" VerticalAlignment="Center"
+                           FontSize="32" Width="75" Padding="5"
+                           VerticalAlignment="Center"
                            Style="{StaticResource WeatherIcon}"
                            RelativePanel.AlignTopWithPanel="True"
                            RelativePanel.AlignLeftWithPanel="True"
                            RelativePanel.Above="BeaufortProgressBar" />
                 <TextBlock x:Name="BeaufortDescription" TextLineBounds="Tight"
-                           Foreground="White" FontSize="18"
-                           Padding="5" VerticalAlignment="Center"
+                           FontSize="18" Padding="5"
+                           VerticalAlignment="Center"
                            Text="{x:Bind ViewModel.Beaufort.Value, Mode=OneWay, FallbackValue='Violent Storm'}"
                            RelativePanel.RightOf="BeaufortIcon"
                            RelativePanel.AlignTopWithPanel="True"
                            RelativePanel.AlignRightWithPanel="True"
                            RelativePanel.Above="BeaufortProgressBar" />
-                <ProgressBar x:Name="BeaufortProgressBar" Height="5" Value="{x:Bind ViewModel.BeaufortScaleProgress, Mode=OneWay, FallbackValue='66'}" Maximum="100" Background="DimGray"
+                <ProgressBar x:Name="BeaufortProgressBar" Height="5" Value="{x:Bind ViewModel.BeaufortScaleProgress, Mode=OneWay, FallbackValue='66'}" Maximum="100"
+                             Background="{ThemeResource ProgressBarBackgroundBrush}"
                              Margin="15,5"
                              RelativePanel.AlignBottomWithPanel="True"
                              RelativePanel.AlignLeftWithPanel="True"

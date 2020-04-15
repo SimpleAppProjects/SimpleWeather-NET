@@ -38,11 +38,11 @@ namespace SimpleWeather.Controls
             }
             else if (uvIdx.index < 11)
             {
-                ProgressColor = Colors.Maroon;
+                ProgressColor = Color.FromArgb(0xFF, 0xBD, 0x00, 0x35); // Maroon
             }
             else if (uvIdx.index >= 11)
             {
-                ProgressColor = Colors.Purple;
+                ProgressColor = Color.FromArgb(0xFF, 0xAA, 0x00, 0xFF); // Purple
             }
         }
     }

@@ -83,15 +83,16 @@ namespace SimpleWeather.UWP.Controls
         private readonly float DOT_OUTER_CIR_RADIUS;
         private readonly float MIN_TOP_LINE_LENGTH;
         private readonly float LEGEND_MARGIN_HEIGHT;
-        private readonly Color BackgroundLineColor = Color.FromArgb(0x80, 0xF5, 0xF5, 0xF5); // WhiteSmoke
-        private readonly Color BottomTextColor = Colors.White;
-        private readonly Color LineColor = Color.FromArgb(0x80, 0x00, 0x00, 0x00); // Black
 
         private float topLineLength;
         private float sideLineLength;
         private float backgroundGridWidth;
         private float longestTextWidth;
 
+        private Color BackgroundLineColor => BackgroundLineColorBrush.Color;
+        private Color BottomTextColor => BottomTextColorBrush.Color;
+        private Color LineColor => LineColorBrush.Color;
+        private Color smallCirColor => SmallCirColorBrush.Color;
         private Color[] colorArray = { Color.FromArgb(0xFF, 0x00, 0x70, 0xc0), Colors.LightSeaGreen, Colors.YellowGreen };
 
         public bool DrawGridLines { get; set; }
@@ -481,7 +482,7 @@ namespace SimpleWeather.UWP.Controls
                             if (RectHelper.Contains(region, new Point(dot.X, dot.Y)))
                             {
                                 drawingSession.FillCircle(dot.X, dot.Y, DOT_OUTER_CIR_RADIUS, bigCirColor);
-                                drawingSession.FillCircle(dot.X, dot.Y, DOT_INNER_CIR_RADIUS, Colors.White);
+                                drawingSession.FillCircle(dot.X, dot.Y, DOT_INNER_CIR_RADIUS, smallCirColor);
                             }
                         }
                     }

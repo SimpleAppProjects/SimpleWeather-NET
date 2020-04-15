@@ -33,6 +33,7 @@
                                 <Setter Property="Margin" Value="0" />
                             </Style>
                             <SolidColorBrush x:Key="SnackbarForegroundBrush" Color="{ThemeResource SystemAccentColorLight1}" />
+                            <SolidColorBrush x:Key="ProgressBarBackgroundBrush" Color="#8AF1F1F1" />
                         </ResourceDictionary>
                         <Win1809NotPresent:ResourceDictionary>
                             <!-- Compat -->
@@ -83,6 +84,7 @@
                                 <Setter Property="Margin" Value="0" />
                             </Style>
                             <SolidColorBrush x:Key="SnackbarForegroundBrush" Color="{ThemeResource SystemAccentColorDark1}" />
+                            <SolidColorBrush x:Key="ProgressBarBackgroundBrush" Color="#B3616161" />
                         </ResourceDictionary>
                         <Win1809NotPresent:ResourceDictionary>
                             <!-- Compat -->
@@ -490,7 +492,6 @@
                                         <Setter Property="Padding" Value="15,10" />
                                         <Setter Property="FontSize" Value="18" />
                                         <Setter Property="FontWeight" Value="SemiBold" />
-                                        <Setter Property="Foreground" Value="White" />
                                         <Setter Property="HorizontalAlignment" Value="Left" />
                                         <Setter Property="VerticalAlignment" Value="Top" />
                                     </Style>

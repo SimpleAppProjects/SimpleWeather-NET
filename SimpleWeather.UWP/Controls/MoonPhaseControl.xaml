@@ -9,9 +9,24 @@
     mc:Ignorable="d">
 
     <UserControl.Resources>
-        <Style x:Key="MoonStyle" BasedOn="{StaticResource WeatherIcon}" TargetType="TextBlock">
-            <Setter Property="Opacity" Value="0.25" />
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="DisabledMoonPhaseBrush" Color="WhiteSmoke" />
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="DisabledMoonPhaseBrush" Color="Gray" />
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+            <Style x:Key="DisabledMoonStyle" BasedOn="{StaticResource WeatherIcon}" TargetType="TextBlock">
+                <Setter Property="Opacity" Value="0.5" />
+                <Setter Property="Foreground" Value="{ThemeResource DisabledMoonPhaseBrush}" />
+            </Style>
+            <Style x:Key="MoonStyle" BasedOn="{StaticResource WeatherIcon}" TargetType="TextBlock">
+                <Setter Property="Opacity" Value="1" />
+                <Setter Property="Foreground" Value="White" />
+            </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <StackPanel>
@@ -24,35 +39,35 @@
             <StackPanel Padding="15,0">
                 <StackPanel x:Name="MoonStack" Orientation="Horizontal" Padding="15,0" HorizontalAlignment="Center">
                     <!-- New Moon -->
-                    <TextBlock Text="&#xf095;" Style="{StaticResource MoonStyle}"
+                    <TextBlock Text="&#xf095;" Style="{ThemeResource DisabledMoonStyle}"
                                FontSize="32" Padding="5" Width="50">
                     </TextBlock>
                     <!-- Waxing Crescent -->
-                    <TextBlock Text="&#xf098;" Style="{StaticResource MoonStyle}"
+                    <TextBlock Text="&#xf098;" Style="{ThemeResource DisabledMoonStyle}"
                                FontSize="32" Padding="5" Width="50">
                     </TextBlock>
                     <!-- First Qtr -->
-                    <TextBlock Text="&#xf09c;" Style="{StaticResource MoonStyle}"
+                    <TextBlock Text="&#xf09c;" Style="{ThemeResource DisabledMoonStyle}"
                                FontSize="32" Padding="5" Width="50">
                     </TextBlock>
                     <!-- Waxing Gibbous -->
-                    <TextBlock Text="&#xf09f;" Style="{StaticResource MoonStyle}"
+                    <TextBlock Text="&#xf09f;" Style="{ThemeResource DisabledMoonStyle}"
                                FontSize="32" Padding="5" Width="50">
                     </TextBlock>
                     <!-- Full Moon -->
-                    <TextBlock Text="&#xf0a3;" Style="{StaticResource MoonStyle}"
+                    <TextBlock Text="&#xf0a3;" Style="{ThemeResource DisabledMoonStyle}"
                                FontSize="32" Padding="5" Width="50">
                     </TextBlock>
                     <!-- Waning Gibbous -->
-                    <TextBlock Text="&#xf0a6;" Style="{StaticResource MoonStyle}"
+                    <TextBlock Text="&#xf0a6;" Style="{ThemeResource DisabledMoonStyle}"
                                FontSize="32" Padding="5" Width="50">
                     </TextBlock>
                     <!-- Third Qtr -->
-                    <TextBlock Text="&#xf0aa;" Style="{StaticResource MoonStyle}"
+                    <TextBlock Text="&#xf0aa;" Style="{ThemeResource DisabledMoonStyle}"
                                FontSize="32" Padding="5" Width="50">
                     </TextBlock>
                     <!-- Waning Crescent -->
-                    <TextBlock Text="&#xf0ad;" Style="{StaticResource MoonStyle}"
+                    <TextBlock Text="&#xf0ad;" Style="{ThemeResource DisabledMoonStyle}"
                                FontSize="32" Padding="5" Width="50">
                     </TextBlock>
                 </StackPanel>

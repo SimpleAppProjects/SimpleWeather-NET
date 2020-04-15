@@ -28,14 +28,14 @@
                         <SolidColorBrush Color="{x:Bind ViewModel.ProgressColor, Mode=OneWay, FallbackValue='Red'}" />
                     </TextBlock.Foreground>
                 </TextBlock>
-                <TextBlock x:Name="AQILevel" Foreground="White" FontSize="18" FontWeight="Medium"
+                <TextBlock x:Name="AQILevel" FontSize="18" FontWeight="Medium"
                            Padding="5,2"
                            Text="{x:Bind ViewModel.Level, Mode=OneWay, FallbackValue='Unhealthy'}"
                            RelativePanel.RightOf="AQIndex"
                            RelativePanel.AlignTopWithPanel="True"
                            RelativePanel.AlignRightWithPanel="True"
                            RelativePanel.AlignRightWith="AQIndex" />
-                <TextBlock x:Name="AQIBlock" Foreground="White" FontSize="14"
+                <TextBlock x:Name="AQIBlock" FontSize="14"
                            Padding="5,2" VerticalAlignment="Top"
                            TextWrapping="Wrap" TextTrimming="WordEllipsis"
                            Text="{x:Bind ViewModel.Description, Mode=OneWay, FallbackValue='Everyone may begin to experience health effects; members of sensitive groups may experience more serious health effects'}"
@@ -44,7 +44,8 @@
                            RelativePanel.Above="AQIProgresBar"
                            RelativePanel.AlignRightWithPanel="True"
                            RelativePanel.AlignRightWith="AQIndex" />
-                <ProgressBar x:Name="AQIProgresBar" Height="5" Value="{x:Bind ViewModel.Progress, Mode=OneWay, FallbackValue='50'}" Maximum="100" Background="DimGray"
+                <ProgressBar x:Name="AQIProgresBar" Height="5" Value="{x:Bind ViewModel.Progress, Mode=OneWay, FallbackValue='50'}" Maximum="100"
+                             Background="{ThemeResource ProgressBarBackgroundBrush}"
                              Margin="15,5"
                              RelativePanel.AlignBottomWithPanel="True"
                              RelativePanel.AlignLeftWithPanel="True"
@@ -55,7 +56,7 @@
                 </ProgressBar>
             </RelativePanel>
         </toolkitControls:HeaderedContentControl>
-        <TextBlock x:Name="Attribution" Padding="5" Foreground="White" FontSize="12"
+        <TextBlock x:Name="Attribution" Padding="5" FontSize="12"
                    HorizontalAlignment="Center">
             <Span><Run x:Uid="Credit_Prefix" Text="Data from"/><Run Text=" World Air Quality Index Project"/></Span>
         </TextBlock>

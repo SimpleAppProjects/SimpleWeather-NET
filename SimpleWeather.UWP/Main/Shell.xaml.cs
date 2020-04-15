@@ -151,6 +151,7 @@ namespace SimpleWeather.UWP.Main
                 bool isLightBackground = ColorUtils.IsSuperLight(color);
 
                 CommandBar.RequestedTheme = isLightBackground ? ElementTheme.Light : ElementTheme.Dark;
+                NavBar.RequestedTheme = isLightBackground ? ElementTheme.Light : ElementTheme.Dark;
                 if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
                 {
                     // Mobile

@@ -23,37 +23,37 @@ namespace SimpleWeather.Controls
 
             if (aqi.index < 51)
             {
-                ProgressColor = Colors.Green;
+                ProgressColor = Colors.LimeGreen;
                 Level = SimpleLibrary.ResLoader.GetString("AQI_Level_0_50");
                 Description = SimpleLibrary.ResLoader.GetString("AQI_Desc_0_50");
             }
             else if (aqi.index < 101)
             {
-                ProgressColor = Colors.Yellow;
+                ProgressColor = Color.FromArgb(0xff, 0xff, 0xde, 0x33);
                 Level = SimpleLibrary.ResLoader.GetString("AQI_Level_51_100");
                 Description = SimpleLibrary.ResLoader.GetString("AQI_Desc_51_100");
             }
             else if (aqi.index < 151)
             {
-                ProgressColor = Colors.Orange;
+                ProgressColor = Color.FromArgb(0xff, 0xff, 0x99, 0x33);
                 Level = SimpleLibrary.ResLoader.GetString("AQI_Level_101_150");
                 Description = SimpleLibrary.ResLoader.GetString("AQI_Desc_101_150");
             }
             else if (aqi.index < 201)
             {
-                ProgressColor = Colors.Red;
+                ProgressColor = Color.FromArgb(0xff, 0xcc, 0x00, 0x33);
                 Level = SimpleLibrary.ResLoader.GetString("AQI_Level_151_200");
                 Description = SimpleLibrary.ResLoader.GetString("AQI_Desc_151_200");
             }
             else if (aqi.index < 301)
             {
-                ProgressColor = Colors.Purple;
+                ProgressColor = Color.FromArgb(0xff, 0xaa, 0x00, 0xff); // 0xff660099
                 Level = SimpleLibrary.ResLoader.GetString("AQI_Level_201_300");
                 Description = SimpleLibrary.ResLoader.GetString("AQI_Desc_201_300");
             }
             else if (aqi.index >= 301)
             {
-                ProgressColor = Colors.Maroon;
+                ProgressColor = Color.FromArgb(0xff, 0xbd, 0x00, 0x35); // 0xff7e0023
                 Level = SimpleLibrary.ResLoader.GetString("AQI_Level_300");
                 Description = SimpleLibrary.ResLoader.GetString("AQI_Desc_300");
             }

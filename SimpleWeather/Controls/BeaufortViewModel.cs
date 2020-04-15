@@ -30,31 +30,31 @@ namespace SimpleWeather.Controls
                 {
                     case WeatherData.Beaufort.BeaufortScale.B0:
                         BeaufortScaleProgress = 0;
-                        BeaufortScaleProgressColor = Colors.SkyBlue;
+                        BeaufortScaleProgressColor = Colors.DodgerBlue;
                         break;
                     case WeatherData.Beaufort.BeaufortScale.B1:
                         BeaufortScaleProgress = (int)((1f / 12) * 100);
-                        BeaufortScaleProgressColor = Colors.LightSkyBlue;
+                        BeaufortScaleProgressColor = Colors.DeepSkyBlue;
                         break;
                     case WeatherData.Beaufort.BeaufortScale.B2:
                         BeaufortScaleProgress = (int)((2f / 12) * 100);
-                        BeaufortScaleProgressColor = Colors.DeepSkyBlue;
+                        BeaufortScaleProgressColor = Colors.SkyBlue;
                         break;
                     case WeatherData.Beaufort.BeaufortScale.B3:
                         BeaufortScaleProgress = (int)((3f / 12) * 100);
-                        BeaufortScaleProgressColor = Colors.Green;
+                        BeaufortScaleProgressColor = Colors.LimeGreen;
                         break;
                     case WeatherData.Beaufort.BeaufortScale.B4:
                         BeaufortScaleProgress = (int)((4f / 12) * 100);
-                        BeaufortScaleProgressColor = Colors.GreenYellow;
+                        BeaufortScaleProgressColor = Colors.Lime;
                         break;
                     case WeatherData.Beaufort.BeaufortScale.B5:
                         BeaufortScaleProgress = (int)((5f / 12) * 100);
-                        BeaufortScaleProgressColor = Colors.LimeGreen;
+                        BeaufortScaleProgressColor = Colors.GreenYellow;
                         break;
                     case WeatherData.Beaufort.BeaufortScale.B6:
                         BeaufortScaleProgress = (int)((6f / 12) * 100);
-                        BeaufortScaleProgressColor = Colors.LightGreen;
+                        BeaufortScaleProgressColor = Colors.PaleGreen;
                         break;
                     case WeatherData.Beaufort.BeaufortScale.B7:
                         BeaufortScaleProgress = (int)((7f / 12) * 100);
@@ -78,7 +78,7 @@ namespace SimpleWeather.Controls
                         break;
                     case WeatherData.Beaufort.BeaufortScale.B12:
                         BeaufortScaleProgress = 100;
-                        BeaufortScaleProgressColor = Colors.Maroon;
+                        BeaufortScaleProgressColor = Color.FromArgb(0xFF, 0xBD, 0x00, 0x35); // FFBD0035
                         break;
                 }
             }
