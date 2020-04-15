@@ -403,6 +403,16 @@ namespace SimpleWeather.UWP.Main
 
             if (!loaded)
             {
+                // Check if current location still exists (is valid)
+                if (location?.locationType == LocationType.Search)
+                {
+                    if (await Settings.GetLocation(location?.query) == null)
+                    {
+                        location = null;
+                        wLoader = null;
+                        locationChanged = true;
+                    }
+                }
                 // Load new favorite location if argument data is present
                 if (args?.Location != null && !Object.Equals(location, args?.Location))
                 {
