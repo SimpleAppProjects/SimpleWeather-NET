@@ -46,7 +46,7 @@ namespace SimpleWeather.Utils
         public const string Celsius = "C";
         private const string DEFAULT_UPDATE_INTERVAL = "60"; // 60 minutes (1hr)
         public const int DefaultInterval = 60;
-        public const int READ_TIMEOUT = 15000; // 15s
+        public const int READ_TIMEOUT = 10000; // 10s
 
         // Settings Keys
         private const string KEY_API = "API";

@@ -29,12 +29,15 @@ namespace SimpleWeather.UWP.WNS
         {
             try
             {
-                var channel = await PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync();
+                using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                {
+                    var channel = await PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync().AsTask(cts.Token);
 
-                // Update channel info
-                await WNSHelper.UpdateChannelUri(channel);
-                // Register background task
-                await WNSPushBackgroundTask.RegisterBackgroundTask();
+                    // Update channel info
+                    await WNSHelper.UpdateChannelUri(channel);
+                    // Register background task
+                    await WNSPushBackgroundTask.RegisterBackgroundTask();
+                }
             }
             catch (Exception e)
             {
@@ -75,19 +78,20 @@ namespace SimpleWeather.UWP.WNS
                     }, Firebase.FirestoreHelper.GetParentPath() + "/uwp_users/" + auth.User.LocalId);
                     var authLink = await Firebase.FirebaseAuthHelper.GetAuthLink();
                     request.AddCredential(GoogleCredential.FromAccessToken(authLink.FirebaseToken));
-                    var cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
-                    var resp = await request.ExecuteAsync(cts.Token);
 
-                    // replace in settings
-                    var newChannel = new WNSChannel()
+                    using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     {
-                        ChannelUri = channel.Uri,
-                        ExpirationTime = channel.ExpirationTime
-                    };
-                    var json = JSONParser.Serializer(newChannel);
-                    WNSSettings.Values[KEY_WNSCHANNEL] = json;
+                        var resp = await request.ExecuteAsync(cts.Token);
 
-                    cts.Dispose();
+                        // replace in settings
+                        var newChannel = new WNSChannel()
+                        {
+                            ChannelUri = channel.Uri,
+                            ExpirationTime = channel.ExpirationTime
+                        };
+                        var json = JSONParser.Serializer(newChannel);
+                        WNSSettings.Values[KEY_WNSCHANNEL] = json;
+                    }
                 }
             });
         }
