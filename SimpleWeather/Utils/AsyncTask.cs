@@ -93,7 +93,16 @@ namespace SimpleWeather.Utils
 
             try
             {
-                Dispatcher = CoreApplication.MainView.Dispatcher;
+                try
+                {
+                    Dispatcher = CoreApplication.MainView?.Dispatcher;
+                }
+                catch (Exception) { }
+
+                if (Dispatcher == null)
+                {
+                    Dispatcher = CoreApplication.MainView?.CoreWindow?.Dispatcher;
+                }
             }
             catch (Exception e)
             {
