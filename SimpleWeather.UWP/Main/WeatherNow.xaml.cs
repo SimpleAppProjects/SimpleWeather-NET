@@ -65,8 +65,8 @@ namespace SimpleWeather.UWP.Main
                 if (weather?.IsValid() == true)
                 {
                     await WeatherView.UpdateViewAsync(weather);
-                    await AlertsView.UpdateAlerts(location);
-                    await ForecastView.UpdateForecasts(location);
+                    await AlertsView.UpdateAlerts(weather);
+                    await ForecastView.UpdateForecasts(weather);
                     await WeatherView.UpdateBackground();
                     await Dispatcher.RunOnUIThread(() =>
                     {

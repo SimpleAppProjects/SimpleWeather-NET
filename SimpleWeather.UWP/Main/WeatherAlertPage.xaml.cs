@@ -4,6 +4,7 @@ using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls;
 using SimpleWeather.UWP.Helpers;
 using SimpleWeather.WeatherData;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
@@ -107,7 +108,22 @@ namespace SimpleWeather.UWP.Main
                 }
 
                 AlertsView?.UpdateAlerts(location);
+                Settings.GetWeatherDBConnection().GetConnection().TableChanged += WeatherAlertPage_TableChanged;
             }
+        }
+
+        private void WeatherAlertPage_TableChanged(object sender, SQLite.NotifyTableChangedEventArgs e)
+        {
+            if (e?.Table?.TableName == WeatherData.WeatherAlerts.TABLE_NAME)
+            {
+                AlertsView?.RefreshAlerts();
+            }
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            Settings.GetWeatherDBConnection().GetConnection().TableChanged -= WeatherAlertPage_TableChanged;
+            base.OnNavigatedFrom(e);
         }
     }
 }

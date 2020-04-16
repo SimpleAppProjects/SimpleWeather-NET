@@ -135,13 +135,28 @@ namespace SimpleWeather.UWP.Main
                                 });
                             });
                 }
+
+                Settings.GetWeatherDBConnection().GetConnection().TableChanged += WeatherDetailsPage_TableChanged;
+            }
+        }
+
+        private void WeatherDetailsPage_TableChanged(object sender, SQLite.NotifyTableChangedEventArgs e)
+        {
+            if (e?.Table?.TableName == WeatherData.Forecasts.TABLE_NAME)
+            {
+                ForecastsView?.RefreshForecasts();
+            }
+            if (e?.Table?.TableName == WeatherData.HourlyForecasts.TABLE_NAME)
+            {
+                ForecastsView?.RefreshHourlyForecasts();
             }
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            base.OnNavigatedFrom(e);
             ForecastsView.PropertyChanged -= ForecastsView_PropertyChanged;
+            Settings.GetWeatherDBConnection().GetConnection().TableChanged -= WeatherDetailsPage_TableChanged;
+            base.OnNavigatedFrom(e);
         }
 
         private void ForecastsView_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -149,10 +164,16 @@ namespace SimpleWeather.UWP.Main
             switch (e.PropertyName)
             {
                 case "Forecasts":
-                    Forecasts = ForecastsView.Forecasts;
+                    if (!IsHourly)
+                    {
+                        Forecasts = ForecastsView.Forecasts;
+                    }
                     break;
                 case "HourlyForecasts":
-                    Forecasts = ForecastsView.HourlyForecasts;
+                    if (IsHourly)
+                    {
+                        Forecasts = ForecastsView.HourlyForecasts;
+                    }
                     break;
             }
         }
