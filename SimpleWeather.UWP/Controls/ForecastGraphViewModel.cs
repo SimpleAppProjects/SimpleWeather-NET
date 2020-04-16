@@ -17,17 +17,18 @@ namespace SimpleWeather.UWP.Controls
     {
         private Weather weather;
         private String locationKey;
+        private String tempUnit;
 
-        private List<ForecastItemViewModel> forecasts;
-        private List<HourlyForecastItemViewModel> hourlyForecasts;
+        private SimpleObservableList<ForecastItemViewModel> forecasts;
+        private SimpleObservableList<HourlyForecastItemViewModel> hourlyForecasts;
 
-        public List<ForecastItemViewModel> Forecasts
+        public SimpleObservableList<ForecastItemViewModel> Forecasts
         {
             get { return forecasts; }
             private set { forecasts = value; OnPropertyChanged(nameof(Forecasts)); }
         }
 
-        public List<HourlyForecastItemViewModel> HourlyForecasts
+        public SimpleObservableList<HourlyForecastItemViewModel> HourlyForecasts
         {
             get { return hourlyForecasts; }
             private set { hourlyForecasts = value; OnPropertyChanged(nameof(HourlyForecasts)); }
@@ -35,8 +36,8 @@ namespace SimpleWeather.UWP.Controls
 
         public ForecastGraphViewModel()
         {
-            Forecasts = new List<ForecastItemViewModel>();
-            HourlyForecasts = new List<HourlyForecastItemViewModel>();
+            Forecasts = new SimpleObservableList<ForecastItemViewModel>();
+            HourlyForecasts = new SimpleObservableList<HourlyForecastItemViewModel>();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -53,9 +54,10 @@ namespace SimpleWeather.UWP.Controls
         {
             return Task.Run(() =>
             {
-                if (!Equals(this.weather, weather))
+                if (!Equals(this.weather, weather) || !Equals(tempUnit, Settings.Unit))
                 {
                     this.weather = weather;
+                    this.tempUnit = Settings.Unit;
 
                     // Update forecasts from database
                     RefreshForecasts();
@@ -68,9 +70,10 @@ namespace SimpleWeather.UWP.Controls
         {
             return Task.Run(() =>
             {
-                if (!Equals(this.locationKey, location.query))
+                if (!Equals(this.locationKey, location.query) || !Equals(tempUnit, Settings.Unit))
                 {
                     this.locationKey = location.query;
+                    this.tempUnit = Settings.Unit;
 
                     // Update forecasts from database
                     RefreshForecasts();
@@ -123,6 +126,7 @@ namespace SimpleWeather.UWP.Controls
                         }
 
                         OnPropertyChanged(nameof(Forecasts));
+                        Forecasts.NotifyCollectionChanged();
                     }
                 }).ConfigureAwait(true);
             });
@@ -155,6 +159,7 @@ namespace SimpleWeather.UWP.Controls
                     }
 
                     OnPropertyChanged(nameof(HourlyForecasts));
+                    HourlyForecasts.NotifyCollectionChanged();
                 }).ConfigureAwait(true);
             });
         }

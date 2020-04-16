@@ -20,11 +20,12 @@ namespace SimpleWeather.Controls
     {
         private Weather weather;
         private String locationKey;
+        private String tempUnit;
 
-        private List<ForecastItemViewModel> forecasts;
+        private SimpleObservableList<ForecastItemViewModel> forecasts;
         private IncrementalLoadingCollection<HourlyForecastSource, HourlyForecastItemViewModel> hourlyForecasts;
 
-        public List<ForecastItemViewModel> Forecasts
+        public SimpleObservableList<ForecastItemViewModel> Forecasts
         {
             get { return forecasts; }
             private set { forecasts = value; OnPropertyChanged(nameof(Forecasts)); }
@@ -38,7 +39,7 @@ namespace SimpleWeather.Controls
 
         public ForecastsViewModel()
         {
-            Forecasts = new List<ForecastItemViewModel>();
+            Forecasts = new SimpleObservableList<ForecastItemViewModel>();
             //HourlyForecasts = new IncrementalLoadingCollection<HourlyForecastSource, HourlyForecastItemViewModel>();
         }
 
@@ -60,10 +61,16 @@ namespace SimpleWeather.Controls
                 {
                     this.weather = weather;
                     this.locationKey = weather.query;
+                    this.tempUnit = Settings.Unit;
 
                     // Update forecasts from database
                     RefreshForecasts();
                     ResetHourlyForecasts();
+                }
+                else if (!Equals(tempUnit, Settings.Unit))
+                {
+                    RefreshForecasts();
+                    RefreshHourlyForecasts();
                 }
             });
         }
@@ -75,10 +82,16 @@ namespace SimpleWeather.Controls
                 if (!Equals(this.locationKey, location.query))
                 {
                     this.locationKey = location.query;
+                    this.tempUnit = Settings.Unit;
 
                     // Update forecasts from database
                     RefreshForecasts();
                     ResetHourlyForecasts();
+                }
+                else if (!Equals(tempUnit, Settings.Unit))
+                {
+                    RefreshForecasts();
+                    RefreshHourlyForecasts();
                 }
             });
         }
@@ -125,7 +138,11 @@ namespace SimpleWeather.Controls
                     }
                 }
 
-                OnPropertyChanged(nameof(Forecasts));
+                AsyncTask.TryRunOnUIThread(() =>
+                {
+                    OnPropertyChanged(nameof(Forecasts));
+                    Forecasts.NotifyCollectionChanged();
+                });
             });
         }
 

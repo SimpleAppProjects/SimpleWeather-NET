@@ -14,7 +14,7 @@
     mc:Ignorable="d"
     d:DesignHeight="1600"
     d:DesignWidth="1600"
-    DataContext="{x:Bind WeatherView}">
+    DataContext="{x:Bind WeatherView, Mode=OneWay}">
 
     <Page.Resources>
         <ResourceDictionary>
