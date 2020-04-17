@@ -79,12 +79,27 @@ namespace SimpleWeather.Utils
 
         public static Task RunOnUIThread(this CoreDispatcher Dispatcher, Action action)
         {
-            return Dispatcher.AwaitableRunAsync(action);
+            if (Dispatcher.HasThreadAccess)
+            {
+                action?.Invoke();
+                return Task.CompletedTask;
+            }
+            else
+            {
+                return Dispatcher.AwaitableRunAsync(action);
+            }
         }
 
         public static Task<T> RunOnUIThread<T>(this CoreDispatcher Dispatcher, Func<T> function)
         {
-            return Dispatcher.AwaitableRunAsync(function);
+            if (Dispatcher.HasThreadAccess)
+            {
+                return Task.FromResult(function.Invoke());
+            }
+            else
+            {
+                return Dispatcher.AwaitableRunAsync(function);
+            }
         }
 
         private static CoreDispatcher GetDispatcher()
@@ -118,7 +133,15 @@ namespace SimpleWeather.Utils
 
             if (Dispatcher != null)
             {
-                return Dispatcher.AwaitableRunAsync(action);
+                if (Dispatcher.HasThreadAccess)
+                {
+                    action?.Invoke();
+                    return Task.CompletedTask;
+                }
+                else
+                {
+                    return Dispatcher.AwaitableRunAsync(action);
+                }
             }
             else
             {
