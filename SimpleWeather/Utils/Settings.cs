@@ -423,12 +423,18 @@ namespace SimpleWeather.Utils
         {
             return AsyncTask.CreateTask(async () =>
             {
+                if (location?.query == null) return;
+
                 await weatherDB.ExecuteAsync("delete from hr_forecasts where query = ?", location.query);
+
                 if (forecasts != null)
                 {
                     foreach (var fcast in forecasts)
                     {
-                        await weatherDB.InsertOrReplaceWithChildrenAsync(fcast);
+                        if (fcast != null)
+                        {
+                            await weatherDB.InsertOrReplaceWithChildrenAsync(fcast);
+                        }
                     }
                 }
 

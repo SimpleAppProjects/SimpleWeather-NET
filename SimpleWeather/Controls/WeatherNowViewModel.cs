@@ -288,7 +288,7 @@ namespace SimpleWeather.Controls
                            weather.astronomy.moonset.ToString("t", culture)));
                 }
 
-                MoonPhase = new MoonPhaseViewModel(weather.astronomy.moonphase);
+                MoonPhase = weather.astronomy.moonphase != null ? new MoonPhaseViewModel(weather.astronomy.moonphase) : null;
             }
             else
             {
