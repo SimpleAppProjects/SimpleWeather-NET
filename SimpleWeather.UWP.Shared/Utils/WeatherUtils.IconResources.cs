@@ -9,6 +9,11 @@ namespace SimpleWeather.Utils
     {
         public static String GetWeatherIconURI(string icon)
         {
+            return GetWeatherIconURI(icon, true);
+        }
+
+        public static String GetWeatherIconURI(string icon, bool isAbsoluteUri)
+        {
             string baseuri = "ms-appx:///Assets/WeatherIcons/png/";
             string fileIcon = string.Empty;
 
@@ -309,7 +314,14 @@ namespace SimpleWeather.Utils
                 fileIcon = "na.png";
             }
 
-            return baseuri + fileIcon;
+            if (isAbsoluteUri)
+            {
+                return baseuri + fileIcon;
+            }
+            else
+            {
+                return fileIcon;
+            }
         }
     }
 }

@@ -109,7 +109,7 @@ namespace SimpleWeather.UWP.Tiles
                             new AdaptiveImage()
                             {
                                 HintRemoveMargin = true,
-                                Source = WeatherUtils.GetWeatherIconURI(forecast.WeatherIcon)
+                                Source = WeatherUtils.GetWeatherIconURI(forecast.WeatherIcon, false)
                             },
                         }
                     };
@@ -171,7 +171,7 @@ namespace SimpleWeather.UWP.Tiles
                             new AdaptiveImage()
                             {
                                 HintRemoveMargin = true,
-                                Source = WeatherUtils.GetWeatherIconURI(forecast.WeatherIcon)
+                                Source = WeatherUtils.GetWeatherIconURI(forecast.WeatherIcon, false)
                             }
                         }
                     };
@@ -223,7 +223,7 @@ namespace SimpleWeather.UWP.Tiles
                             {
                                 new AdaptiveImage()
                                 {
-                                    Source = WeatherUtils.GetWeatherIconURI(weather.WeatherIcon)
+                                    Source = WeatherUtils.GetWeatherIconURI(weather.WeatherIcon, false)
                                 }
                             }
                         },
@@ -234,7 +234,7 @@ namespace SimpleWeather.UWP.Tiles
                             {
                                 new AdaptiveText()
                                 {
-                                    Text = weather.CurCondition,
+                                    Text = weather.CurCondition?.Substring(0, Math.Min(weather.CurCondition.Length, 30)),
                                     HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
@@ -278,7 +278,7 @@ namespace SimpleWeather.UWP.Tiles
                             new AdaptiveImage()
                             {
                                 HintRemoveMargin = true,
-                                Source = WeatherUtils.GetWeatherIconURI(forecast.WeatherIcon)
+                                Source = WeatherUtils.GetWeatherIconURI(forecast.WeatherIcon, false)
                             },
                             new AdaptiveText()
                             {
@@ -373,7 +373,7 @@ namespace SimpleWeather.UWP.Tiles
                             new AdaptiveImage()
                             {
                                 HintRemoveMargin = true,
-                                Source = WeatherUtils.GetWeatherIconURI(hrforecast.WeatherIcon)
+                                Source = WeatherUtils.GetWeatherIconURI(hrforecast.WeatherIcon, false)
                             },
                         }
                     };
@@ -428,7 +428,7 @@ namespace SimpleWeather.UWP.Tiles
                             new AdaptiveImage()
                             {
                                 HintRemoveMargin = true,
-                                Source = WeatherUtils.GetWeatherIconURI(hrforecast.WeatherIcon)
+                                Source = WeatherUtils.GetWeatherIconURI(hrforecast.WeatherIcon, false)
                             },
                             new AdaptiveText()
                             {
@@ -466,7 +466,7 @@ namespace SimpleWeather.UWP.Tiles
                             {
                                 new AdaptiveImage()
                                 {
-                                    Source = WeatherUtils.GetWeatherIconURI(weather.WeatherIcon)
+                                    Source = WeatherUtils.GetWeatherIconURI(weather.WeatherIcon, false)
                                 }
                             }
                         },
@@ -477,7 +477,7 @@ namespace SimpleWeather.UWP.Tiles
                             {
                                 new AdaptiveText()
                                 {
-                                    Text = weather.CurCondition,
+                                    Text = weather.CurCondition?.Substring(0, Math.Min(weather.CurCondition.Length, 30)),
                                     HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
@@ -526,7 +526,7 @@ namespace SimpleWeather.UWP.Tiles
                             new AdaptiveImage()
                             {
                                 HintRemoveMargin = true,
-                                Source = WeatherUtils.GetWeatherIconURI(hrforecast.WeatherIcon)
+                                Source = WeatherUtils.GetWeatherIconURI(hrforecast.WeatherIcon, false)
                             },
                             new AdaptiveText()
                             {
@@ -608,7 +608,7 @@ namespace SimpleWeather.UWP.Tiles
                                 new AdaptiveImage()
                                 {
                                     HintRemoveMargin = true,
-                                    Source = WeatherUtils.GetWeatherIconURI(weather.WeatherIcon)
+                                    Source = WeatherUtils.GetWeatherIconURI(weather.WeatherIcon, false)
                                 },
                                 new AdaptiveText()
                                 {
@@ -645,7 +645,7 @@ namespace SimpleWeather.UWP.Tiles
                         new AdaptiveImage()
                         {
                             HintRemoveMargin = true,
-                            Source = WeatherUtils.GetWeatherIconURI(weather.WeatherIcon)
+                            Source = WeatherUtils.GetWeatherIconURI(weather.WeatherIcon, false)
                         }
                     },
                     HintTextStacking = AdaptiveSubgroupTextStacking.Center
@@ -657,7 +657,7 @@ namespace SimpleWeather.UWP.Tiles
                     {
                         new AdaptiveText()
                         {
-                            Text = weather.CurCondition,
+                            Text = weather.CurCondition?.Substring(0, Math.Min(weather.CurCondition.Length, 30)),
                             HintStyle = AdaptiveTextStyle.Caption
                         },
                         new AdaptiveText()
@@ -697,7 +697,7 @@ namespace SimpleWeather.UWP.Tiles
                             {
                                 new AdaptiveImage()
                                 {
-                                    Source = WeatherUtils.GetWeatherIconURI(weather.WeatherIcon)
+                                    Source = WeatherUtils.GetWeatherIconURI(weather.WeatherIcon, false)
                                 }
                             }
                         },
@@ -708,7 +708,7 @@ namespace SimpleWeather.UWP.Tiles
                             {
                                 new AdaptiveText()
                                 {
-                                    Text = weather.CurCondition,
+                                    Text = weather.CurCondition?.Substring(0, Math.Min(weather.CurCondition.Length, 30)),
                                     HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
@@ -759,7 +759,7 @@ namespace SimpleWeather.UWP.Tiles
                             new AdaptiveImage()
                             {
                                 HintRemoveMargin = true,
-                                Source = WeatherUtils.GetWeatherIconURI(forecast.WeatherIcon)
+                                Source = WeatherUtils.GetWeatherIconURI(forecast.WeatherIcon, false)
                             },
                             new AdaptiveText()
                             {
@@ -805,7 +805,8 @@ namespace SimpleWeather.UWP.Tiles
                 {
                     Visual = new TileVisual()
                     {
-                        DisplayName = weather.Location,
+                        BaseUri = new Uri("Assets/WeatherIcons/png/", UriKind.Relative),
+                        DisplayName = weather.Location?.Substring(0, Math.Min(weather.Location.Length, 40)),
                         TileSmall = new TileBinding()
                         {
                             Branding = TileBranding.None,
@@ -838,7 +839,8 @@ namespace SimpleWeather.UWP.Tiles
                 {
                     Visual = new TileVisual()
                     {
-                        DisplayName = weather.Location,
+                        BaseUri = new Uri("Assets/WeatherIcons/png/", UriKind.Relative),
+                        DisplayName = weather.Location?.Substring(0, Math.Min(weather.Location.Length, 40)),
                         TileSmall = new TileBinding()
                         {
                             Branding = TileBranding.None,
@@ -872,7 +874,8 @@ namespace SimpleWeather.UWP.Tiles
             {
                 Visual = new TileVisual()
                 {
-                    DisplayName = weather.Location,
+                    BaseUri = new Uri("Assets/WeatherIcons/png/", UriKind.Relative),
+                    DisplayName = weather.Location?.Substring(0, Math.Min(weather.Location.Length, 40)),
                     TileSmall = new TileBinding()
                     {
                         Branding = TileBranding.None,
