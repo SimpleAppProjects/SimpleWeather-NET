@@ -165,15 +165,18 @@ namespace SimpleWeather.UWP.BackgroundTasks
                 // Register a task for each trigger
                 var tb1 = new BackgroundTaskBuilder() { Name = taskName };
                 tb1.SetTrigger(new TimeTrigger((uint)Settings.RefreshInterval, false));
+                tb1.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
                 var tb2 = new BackgroundTaskBuilder() { Name = taskName };
                 tb2.SetTrigger(new SystemTrigger(SystemTriggerType.SessionConnected, false));
+                tb2.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
                 var tb3 = new BackgroundTaskBuilder() { Name = taskName };
                 tb3.SetTrigger(AppTrigger);
+                tb3.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
 
-                tb1.Register();
-                tb2.Register();
                 try
                 {
+                    tb1.Register();
+                    tb2.Register();
                     tb3.Register();
                 }
                 catch (Exception ex)
@@ -181,6 +184,10 @@ namespace SimpleWeather.UWP.BackgroundTasks
                     if (ex.HResult == -2147942583)
                     {
                         Logger.WriteLine(LoggerLevel.Error, ex, "{0}: background task already registered", taskName);
+                    }
+                    else
+                    {
+                        Logger.WriteLine(LoggerLevel.Error, ex, "{0}: error registering background task", taskName);
                     }
                 }
             }
