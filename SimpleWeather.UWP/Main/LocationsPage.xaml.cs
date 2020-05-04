@@ -66,7 +66,7 @@ namespace SimpleWeather.UWP.Main
                     // Update panel weather
                     LocationPanelViewModel panelView = null;
 
-                    if (location.locationType == LocationType.GPS)
+                    if (location?.locationType == LocationType.GPS)
                     {
                         panelView = dataSet.FirstOrDefault(panelVM => panelVM?.LocationData?.locationType == LocationType.GPS);
                     }
@@ -74,16 +74,16 @@ namespace SimpleWeather.UWP.Main
                     {
                         panelView = dataSet.FirstOrDefault(panelVM =>
                             (bool)!panelVM.LocationData?.locationType.Equals(LocationType.GPS)
-                                && (bool)panelVM.LocationData?.query?.Equals(location.query));
+                                && (bool)panelVM.LocationData?.query?.Equals(location?.query));
                     }
 
                     // Just in case
                     if (panelView == null)
                     {
-                        panelView = dataSet.FirstOrDefault(panelVM => panelVM.LocationData.name.Equals(location.name) &&
-                                                        panelVM.LocationData.latitude.Equals(location.latitude) &&
-                                                        panelVM.LocationData.longitude.Equals(location.longitude) &&
-                                                        panelVM.LocationData.tz_long.Equals(location.tz_long));
+                        panelView = dataSet.FirstOrDefault(panelVM => panelVM.LocationData.name.Equals(location?.name) &&
+                                                        panelVM.LocationData.latitude.Equals(location?.latitude) &&
+                                                        panelVM.LocationData.longitude.Equals(location?.longitude) &&
+                                                        panelVM.LocationData.tz_long.Equals(location?.tz_long));
                     }
 
                     panelView?.SetWeather(weather);
