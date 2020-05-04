@@ -309,7 +309,6 @@
     <Compile Include="Controls\BeaufortControl.xaml.cs">
       <DependentUpon>BeaufortControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\ControlSizeTrigger.cs" />
     <Compile Include="Helpers\LocationTypeConverter.cs" />
     <Compile Include="Helpers\BooleanToGridLengthConverter.cs" />
     <Compile Include="Helpers\ColorToSolidColorBrushConverter.cs" />
