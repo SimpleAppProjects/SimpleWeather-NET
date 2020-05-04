@@ -30,6 +30,7 @@ namespace SimpleWeather.UWP.Main
 
             // CommandBar
             CommandBarLabel = App.ResLoader.GetString("Label_WeatherAlerts/Text");
+            AnalyticsLogger.LogEvent("WeatherAlertPage");
         }
 
         public void OnWeatherError(WeatherException wEx)

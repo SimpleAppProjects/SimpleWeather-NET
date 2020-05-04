@@ -22,6 +22,7 @@ namespace SimpleWeather.UWP.Setup
 
             wm = WeatherManager.GetInstance();
             RestoreSettings();
+            AnalyticsLogger.LogEvent("SetupSettingsPage");
         }
 
         private void RestoreSettings()

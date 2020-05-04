@@ -207,6 +207,11 @@ namespace SimpleWeather.UWP
         {
             // If the app has caches or other memory it can free, it should do so now.
             // << App can release memory here >>
+            AnalyticsLogger.LogEvent("App: ReduceMemoryUsage", 
+                new Dictionary<string, string>() 
+                {
+                    { "limit (bytes)", limit.ToString() }
+                });
 
             // Additionally, if the application is currently
             // in background mode and still has a view with content
@@ -316,7 +321,11 @@ namespace SimpleWeather.UWP
             base.OnBackgroundActivated(args);
             Initialize(args);
 
-            Logger.WriteLine(LoggerLevel.Debug, "App: Background Activated");
+            AnalyticsLogger.LogEvent("App: Background Activated",
+                new Dictionary<string, string>()
+                {
+                    { "Task", args?.TaskInstance?.Task?.Name }
+                });
 
             switch (args?.TaskInstance?.Task?.Name)
             {
@@ -537,6 +546,13 @@ namespace SimpleWeather.UWP
                 {
                     var uiTheme = UISettings.GetColorValue(UIColorType.Background).ToString();
                     IsSystemDarkTheme = uiTheme == "#FF000000";
+
+                    AnalyticsLogger.LogEvent("App: UpdateColorValues",
+                        new Dictionary<string, string>()
+                        {
+                            { "UITheme", uiTheme },
+                            { "IsSystemDarkTheme", IsSystemDarkTheme.ToString() }
+                        });
 
                     if (Shell.Instance == null && Settings.UserTheme == UserThemeMode.System)
                     {

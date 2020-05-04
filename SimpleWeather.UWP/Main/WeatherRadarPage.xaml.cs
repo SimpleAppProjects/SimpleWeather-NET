@@ -28,6 +28,7 @@ namespace SimpleWeather.UWP.Main
 
             // CommandBar
             CommandBarLabel = App.ResLoader.GetString("Label_Radar/Header");
+            AnalyticsLogger.LogEvent("WeatherRadarPage");
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)

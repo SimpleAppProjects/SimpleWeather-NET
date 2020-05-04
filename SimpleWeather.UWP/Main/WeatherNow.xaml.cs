@@ -186,6 +186,8 @@ namespace SimpleWeather.UWP.Main
             };
 
             loaded = true;
+
+            AnalyticsLogger.LogEvent("WeatherNow");
         }
 
         private void UpdateWindowColors()
@@ -253,6 +255,8 @@ namespace SimpleWeather.UWP.Main
 
         private async void WeatherNow_Resuming(object sender, object e)
         {
+            AnalyticsLogger.LogEvent("WeatherNow: WeatherNow_Resuming");
+
             if (Shell.Instance.AppFrame.SourcePageType == this.GetType())
             {
                 // Check pin tile status
@@ -281,6 +285,7 @@ namespace SimpleWeather.UWP.Main
 
         private void MainGrid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
+            AnalyticsLogger.LogEvent("WeatherNow: MainGrid_SizeChanged");
             AdjustViewLayout();
         }
 
@@ -383,6 +388,8 @@ namespace SimpleWeather.UWP.Main
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
+            AnalyticsLogger.LogEvent("WeatherNow: OnNavigatedTo");
 
             cts = new CancellationTokenSource();
 
@@ -674,6 +681,8 @@ namespace SimpleWeather.UWP.Main
 
         private async void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
+            AnalyticsLogger.LogEvent("WeatherNow: RefreshButton_Click");
+
             if (Settings.FollowGPS && await UpdateLocation())
                 // Setup loader from updated location
                 wLoader = new WeatherDataLoader(location);
@@ -729,6 +738,7 @@ namespace SimpleWeather.UWP.Main
 
         private void GotoAlertsPage()
         {
+            AnalyticsLogger.LogEvent("WeatherNow: GotoAlertsPage");
             Frame.Navigate(typeof(WeatherAlertPage), new WeatherPageArgs() 
             {
                 Location = location,
@@ -789,6 +799,8 @@ namespace SimpleWeather.UWP.Main
 
         private async void PinButton_Click(object sender, RoutedEventArgs e)
         {
+            AnalyticsLogger.LogEvent("WeatherNow: PinButton_Click");
+
             // Check if Tile service is available
             if (!DeviceTypeHelper.IsTileSupported()) return;
 
@@ -863,6 +875,8 @@ namespace SimpleWeather.UWP.Main
 
         private void LineView_Tapped(object sender, TappedRoutedEventArgs e)
         {
+            AnalyticsLogger.LogEvent("WeatherNow: LineView_Tapped");
+
             var control = sender as LineView;
             FrameworkElement controlParent = null;
 
@@ -951,7 +965,10 @@ namespace SimpleWeather.UWP.Main
         private void RadarWebView_Tapped(object sender, TappedRoutedEventArgs e)
         {
             if (WeatherView?.RadarURL != null)
+            {
+                AnalyticsLogger.LogEvent("WeatherNow: RadarWebView_Tapped");
                 Frame.Navigate(typeof(WeatherRadarPage), WeatherView?.RadarURL);
+            }
         }
     }
 }

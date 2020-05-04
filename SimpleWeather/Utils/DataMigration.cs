@@ -2,12 +2,9 @@
 using SimpleWeather.WeatherData;
 using SQLite;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-#if !DEBUG && !UNIT_TEST
-using Microsoft.AppCenter.Analytics;
-using System.Collections.Generic;
-#endif
 
 namespace SimpleWeather.Utils
 {
@@ -21,6 +18,13 @@ namespace SimpleWeather.Utils
                 {
                     try
                     {
+                        AnalyticsLogger.LogEvent("DataMigrations: PerformDBMigrations",
+                            new Dictionary<string, string>()
+                            {
+                                { "Version", Settings.DBVersion.ToString() },
+                                { "CurrentDBVersion", Settings.CurrentDBVersion.ToString() }
+                            });
+
                         switch (Settings.DBVersion)
                         {
                             // Move data from json to db
@@ -48,6 +52,13 @@ namespace SimpleWeather.Utils
                     }
                     catch (Exception e)
                     {
+                        AnalyticsLogger.LogEvent("DataMigrations: Migration failed",
+                            new Dictionary<string, string>()
+                            {
+                                { "Version", Settings.DBVersion.ToString() },
+                                { "CurrentDBVersion", Settings.CurrentDBVersion.ToString() }
+                            });
+
                         // Allow recovery if  migration fails since weatherdata is expendable
                         Logger.WriteLine(LoggerLevel.Error, e, "Migration v{0} -> v{1} failed; Purging weather database!!", Settings.DBVersion, Settings.CurrentDBVersion);
 
@@ -119,13 +130,13 @@ namespace SimpleWeather.Utils
                             }
                         }
                     }
-#if !DEBUG && !UNIT_TEST
-                    Analytics.TrackEvent("App upgrading", new Dictionary<string, string>()
+                    AnalyticsLogger.LogEvent("App upgrading", new Dictionary<string, string>()
                     {
                         { "API", Settings.API },
-                        { "API_IsInternalKey", (!Settings.UsePersonalKey).ToString() }
+                        { "API_IsInternalKey", (!Settings.UsePersonalKey).ToString() },
+                        { "VersionCode", Settings.VersionCode.ToString() },
+                        { "CurrentVersionCode", CurrentVersionCode.ToString() }
                     });
-#endif
                 }
                 Settings.VersionCode = CurrentVersionCode;
             });

@@ -95,6 +95,7 @@ namespace SimpleWeather.UWP.Setup
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            AnalyticsLogger.LogEvent("SetupLocationsPage");
             InitSnackManager();
             Restore();
         }

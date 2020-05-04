@@ -47,6 +47,7 @@ namespace SimpleWeather.UWP.Main
 
             // CommandBar
             CommandBarLabel = App.ResLoader.GetString("Label_Forecast/Header");
+            AnalyticsLogger.LogEvent("WeatherDetailsPage");
         }
 
         public void OnWeatherError(WeatherException wEx)

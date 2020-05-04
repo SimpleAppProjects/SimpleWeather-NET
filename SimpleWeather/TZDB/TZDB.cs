@@ -27,6 +27,8 @@ namespace SimpleWeather.TZDB
             {
                 if (latitude != 0 && longitude != 0)
                 {
+                    AnalyticsLogger.LogEvent("TZDBCache: querying");
+
                     // Initialize db if it hasn't been already
                     if (tzDB == null)
                     {

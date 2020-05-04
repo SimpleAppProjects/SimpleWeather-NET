@@ -38,6 +38,7 @@ namespace SimpleWeather.UWP.Main
             // CommandBar
             CommandBarLabel = App.ResLoader.GetString("Nav_Locations/Label");
             PrimaryCommands = new List<ICommandBarElement>(0);
+            AnalyticsLogger.LogEvent("LocationSearchPage");
         }
 
         public Task<bool> OnBackRequested()

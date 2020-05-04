@@ -80,6 +80,7 @@ namespace SimpleWeather.UWP.Main
                     // Just in case
                     if (panelView == null)
                     {
+                        AnalyticsLogger.LogEvent("LocationsPage: panelView == null");
                         panelView = dataSet.FirstOrDefault(panelVM => panelVM.LocationData.name.Equals(location?.name) &&
                                                         panelVM.LocationData.latitude.Equals(location?.latitude) &&
                                                         panelVM.LocationData.longitude.Equals(location?.longitude) &&
@@ -178,16 +179,20 @@ namespace SimpleWeather.UWP.Main
             EditButton = PrimaryCommands[0] as AppBarButton;
             EditButton.Click += AppBarButton_Click;
             cts = new CancellationTokenSource();
+
+            AnalyticsLogger.LogEvent("LocationsPage");
         }
 
         private void LocationsPage_Resuming(object sender, object e)
         {
+            AnalyticsLogger.LogEvent("LocationsPage: LocationsPage_Resuming");
             RefreshLocations();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            AnalyticsLogger.LogEvent("LocationsPage: OnNavigatedTo");
 
             cts = new CancellationTokenSource();
 
@@ -633,6 +638,7 @@ namespace SimpleWeather.UWP.Main
 
         private async void LocationsPanel_ItemClick(object sender, ItemClickEventArgs e)
         {
+            AnalyticsLogger.LogEvent("LocationsPage: LocationsPanel_ItemClick");
             if (e.ClickedItem is LocationPanelViewModel panel)
             {
                 this.Frame.Navigate(typeof(WeatherNow), new WeatherNowArgs()
@@ -655,6 +661,7 @@ namespace SimpleWeather.UWP.Main
 
         private void AddLocationsButton_Click(object sender, RoutedEventArgs e)
         {
+            AnalyticsLogger.LogEvent("LocationsPage: AddLocationsButton_Click");
             Frame.Navigate(typeof(LocationSearchPage));
         }
 
@@ -736,12 +743,14 @@ namespace SimpleWeather.UWP.Main
         {
             if (args.SwipeControl is FrameworkElement button && button.DataContext is LocationPanelViewModel view)
             {
+                AnalyticsLogger.LogEvent("LocationsPage: SwipeItem_Invoked");
                 await PanelAdapter.RemovePanel(view).ConfigureAwait(true);
             }
         }
 
         private async void DeleteBtn_Click(object sender, RoutedEventArgs e)
         {
+            AnalyticsLogger.LogEvent("LocationsPage: DeleteBtn_Click");
             await PanelAdapter.BatchRemovePanels(LocationsPanel.SelectedItems.Cast<LocationPanelViewModel>()).ConfigureAwait(true);
         }
 

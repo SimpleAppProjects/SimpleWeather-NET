@@ -110,6 +110,14 @@ namespace SimpleWeather.UWP.Main
                 {
                     var uiTheme = sender.GetColorValue(UIColorType.Background).ToString();
                     bool isDarkTheme = uiTheme == "#FF000000";
+
+                    AnalyticsLogger.LogEvent("Shell: UISettings_ColorValuesChanged",
+                        new Dictionary<string, string>()
+                        {
+                            { "UITheme", uiTheme },
+                            { "IsSystemDarkTheme", isDarkTheme.ToString() }
+                        });
+
                     AppFrame.RequestedTheme = isDarkTheme ? ElementTheme.Dark : ElementTheme.Light;
                 }
             });
@@ -182,6 +190,12 @@ namespace SimpleWeather.UWP.Main
 
             if ("suppressNavigate".Equals(e?.Parameter?.ToString()))
                 suppressNavigate = true;
+
+            AnalyticsLogger.LogEvent("Shell",
+                new Dictionary<string, string>()
+                {
+                    { "suppressNavigate", suppressNavigate.ToString() }
+                });
 
             // Navigate to WeatherNow page
             if (AppFrame.Content == null && !suppressNavigate)

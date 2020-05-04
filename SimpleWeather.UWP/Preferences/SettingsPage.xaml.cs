@@ -1,4 +1,5 @@
-﻿using SimpleWeather.UWP.Helpers;
+﻿using SimpleWeather.Utils;
+using SimpleWeather.UWP.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,7 @@ namespace SimpleWeather.UWP.Preferences
 
             // CommandBar
             CommandBarLabel = App.ResLoader.GetString("Nav_Settings/Label");
+            AnalyticsLogger.LogEvent("SettingsPage");
         }
 
         public Task<bool> OnBackRequested()
@@ -41,6 +43,7 @@ namespace SimpleWeather.UWP.Preferences
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            AnalyticsLogger.LogEvent("SettingsPage: OnNavigatedTo");
 
             var firstItem = SettingsNavView.MenuItems.First();
 
@@ -73,6 +76,13 @@ namespace SimpleWeather.UWP.Preferences
                     pageType = typeof(Settings_About);
                     break;
             }
+
+            AnalyticsLogger.LogEvent("SettingsPage: NavigationView_SelectionChanged",
+                new Dictionary<string, string>()
+                {
+                    { "PageType", pageType?.Name }
+                });
+
             SettingsFrame.Navigate(pageType, null, args.RecommendedNavigationTransitionInfo);
         }
 

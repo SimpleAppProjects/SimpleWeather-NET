@@ -16,6 +16,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utf8JsonGen\EnumResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utf8JsonGen\Utf8JsonGenerated.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utf8JsonGen\Utf8JsonResolver.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\AnalyticsLogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\DateTimeUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\FileLoggingTree.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\JSONParser.cs" />

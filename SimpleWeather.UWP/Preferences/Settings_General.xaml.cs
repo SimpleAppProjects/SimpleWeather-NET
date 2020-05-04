@@ -6,6 +6,7 @@ using SimpleWeather.UWP.Main;
 using SimpleWeather.UWP.Tiles;
 using SimpleWeather.WeatherData;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
@@ -56,6 +57,8 @@ namespace SimpleWeather.UWP.Preferences
             LightMode.Checked += LightMode_Checked;
             DarkMode.Checked += DarkMode_Checked;
             SystemMode.Checked += SystemMode_Checked;
+
+            AnalyticsLogger.LogEvent("Settings_General");
         }
 
         public void InitSnackManager()
@@ -199,6 +202,7 @@ namespace SimpleWeather.UWP.Preferences
         public void OnNavigatedToPage(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            AnalyticsLogger.LogEvent("Settings_General: OnNavigatedToPage");
             InitSnackManager();
             RequestAppTrigger = false;
             Application.Current.Suspending += OnSuspending;
@@ -266,6 +270,8 @@ namespace SimpleWeather.UWP.Preferences
 
         private async void KeyEntry_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
+            AnalyticsLogger.LogEvent("Settings_General: KeyEntry_Tapped");
+
             var keydialog = new KeyEntryDialog(APIComboBox.SelectedValue.ToString())
             {
                 RequestedTheme = Shell.Instance.AppFrame.RequestedTheme
@@ -372,13 +378,11 @@ namespace SimpleWeather.UWP.Preferences
                 {
                     Settings.API = API;
                     RequestAppTrigger = true;
-#if !DEBUG
-                    Analytics.TrackEvent("Update API", new Dictionary<string, string>()
+                    AnalyticsLogger.LogEvent("Update API", new Dictionary<string, string>()
                     {
                         { "API", Settings.API },
                         { "API_IsInternalKey", (!Settings.UsePersonalKey).ToString() }
                     });
-#endif
                 }
             }
             else
@@ -392,13 +396,11 @@ namespace SimpleWeather.UWP.Preferences
                 if (KeyPanel != null)
                     KeyPanel.Visibility = Visibility.Collapsed;
 
-#if !DEBUG
-                Analytics.TrackEvent("Update API", new Dictionary<string, string>()
+                AnalyticsLogger.LogEvent("Update API", new Dictionary<string, string>()
                 {
                     { "API", Settings.API },
                     { "API_IsInternalKey", (!Settings.UsePersonalKey).ToString() }
                 });
-#endif
             }
 
             wm.UpdateAPI();
@@ -412,6 +414,8 @@ namespace SimpleWeather.UWP.Preferences
 
         private void PersonalKeySwitch_Toggled(object sender, RoutedEventArgs e)
         {
+            AnalyticsLogger.LogEvent("Settings_General: PersonalKeySwitch_Toggled");
+
             ToggleSwitch sw = sender as ToggleSwitch;
             Settings.UsePersonalKey = sw.IsOn;
 
@@ -465,18 +469,24 @@ namespace SimpleWeather.UWP.Preferences
 
         private void Fahrenheit_Checked(object sender, RoutedEventArgs e)
         {
+            AnalyticsLogger.LogEvent("Settings_General: Fahrenheit_Checked");
+
             Settings.Unit = Settings.Fahrenheit;
             RequestAppTrigger = true;
         }
 
         private void Celsius_Checked(object sender, RoutedEventArgs e)
         {
+            AnalyticsLogger.LogEvent("Settings_General: Celsius_Checked");
+
             Settings.Unit = Settings.Celsius;
             RequestAppTrigger = true;
         }
 
         private async void FollowGPS_Toggled(object sender, RoutedEventArgs e)
         {
+            AnalyticsLogger.LogEvent("Settings_General: FollowGPS_Toggled");
+
             ToggleSwitch sw = sender as ToggleSwitch;
 
             if (sw.IsOn)
@@ -559,18 +569,24 @@ namespace SimpleWeather.UWP.Preferences
 
         private void SystemMode_Checked(object sender, RoutedEventArgs e)
         {
+            AnalyticsLogger.LogEvent("Settings_General: SystemMode_Checked");
+
             Settings.UserTheme = UserThemeMode.System;
             Shell.Instance.UpdateAppTheme();
         }
 
         private void DarkMode_Checked(object sender, RoutedEventArgs e)
         {
+            AnalyticsLogger.LogEvent("Settings_General: DarkMode_Checked");
+
             Settings.UserTheme = UserThemeMode.Dark;
             Shell.Instance.UpdateAppTheme();
         }
 
         private void LightMode_Checked(object sender, RoutedEventArgs e)
         {
+            AnalyticsLogger.LogEvent("Settings_General: LightMode_Checked");
+
             Settings.UserTheme = UserThemeMode.Light;
             Shell.Instance.UpdateAppTheme();
         }

@@ -64,6 +64,7 @@ namespace SimpleWeather.UWP.Setup
             {
                 AppFrame.Navigate(Pages[PageIdx = 0]);
             }
+            AnalyticsLogger.LogEvent("SetupPage");
         }
 
         private void BackBtn_Click(object sender, RoutedEventArgs e)
