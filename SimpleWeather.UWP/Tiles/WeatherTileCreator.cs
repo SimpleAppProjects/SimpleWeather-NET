@@ -20,8 +20,6 @@ namespace SimpleWeather.UWP.Tiles
         private const int WIDE_FORECAST_LENGTH = 3;
         private const int LARGE_FORECAST_LENGTH = 5;
 
-        public static bool TileUpdated { get; private set; }
-
         public enum ForecastTileType
         {
             Small,
@@ -234,7 +232,7 @@ namespace SimpleWeather.UWP.Tiles
                             {
                                 new AdaptiveText()
                                 {
-                                    Text = weather.CurCondition?.Substring(0, Math.Min(weather.CurCondition.Length, 30)),
+                                    Text = weather.CurCondition?.Ellipsize(30),
                                     HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
@@ -477,7 +475,7 @@ namespace SimpleWeather.UWP.Tiles
                             {
                                 new AdaptiveText()
                                 {
-                                    Text = weather.CurCondition?.Substring(0, Math.Min(weather.CurCondition.Length, 30)),
+                                    Text = weather.CurCondition?.Ellipsize(30),
                                     HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
@@ -657,7 +655,7 @@ namespace SimpleWeather.UWP.Tiles
                     {
                         new AdaptiveText()
                         {
-                            Text = weather.CurCondition?.Substring(0, Math.Min(weather.CurCondition.Length, 30)),
+                            Text = weather.CurCondition?.Ellipsize(30),
                             HintStyle = AdaptiveTextStyle.Caption
                         },
                         new AdaptiveText()
@@ -708,7 +706,7 @@ namespace SimpleWeather.UWP.Tiles
                             {
                                 new AdaptiveText()
                                 {
-                                    Text = weather.CurCondition?.Substring(0, Math.Min(weather.CurCondition.Length, 30)),
+                                    Text = weather.CurCondition?.Ellipsize(30),
                                     HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
@@ -806,7 +804,7 @@ namespace SimpleWeather.UWP.Tiles
                     Visual = new TileVisual()
                     {
                         BaseUri = new Uri("Assets/WeatherIcons/png/", UriKind.Relative),
-                        DisplayName = weather.Location?.Substring(0, Math.Min(weather.Location.Length, 40)),
+                        DisplayName = weather.Location?.Ellipsize(40),
                         TileSmall = new TileBinding()
                         {
                             Branding = TileBranding.None,
@@ -840,7 +838,7 @@ namespace SimpleWeather.UWP.Tiles
                     Visual = new TileVisual()
                     {
                         BaseUri = new Uri("Assets/WeatherIcons/png/", UriKind.Relative),
-                        DisplayName = weather.Location?.Substring(0, Math.Min(weather.Location.Length, 40)),
+                        DisplayName = weather.Location?.Ellipsize(40),
                         TileSmall = new TileBinding()
                         {
                             Branding = TileBranding.None,
@@ -875,7 +873,7 @@ namespace SimpleWeather.UWP.Tiles
                 Visual = new TileVisual()
                 {
                     BaseUri = new Uri("Assets/WeatherIcons/png/", UriKind.Relative),
-                    DisplayName = weather.Location?.Substring(0, Math.Min(weather.Location.Length, 40)),
+                    DisplayName = weather.Location?.Ellipsize(40),
                     TileSmall = new TileBinding()
                     {
                         Branding = TileBranding.None,
@@ -897,7 +895,10 @@ namespace SimpleWeather.UWP.Tiles
                     {
                         Branding = TileBranding.Name,
                         Content = GenerateCondition(weather, forecasts, ForecastTileType.Large),
-                    }
+                    },
+                    LockDetailedStatus1 = weather.Location?.Ellipsize(40),
+                    LockDetailedStatus2 = String.Format("{0} - {1}", weather.CurTemp?.RemoveNonDigitChars() + "º", weather.CurCondition?.Ellipsize(33)),
+                    LockDetailedStatus3 = String.Format("{0} | {1}", weather.HiTemp, weather.LoTemp)
                 }
             };
 
@@ -1015,8 +1016,6 @@ namespace SimpleWeather.UWP.Tiles
                             UpdateContent(tileUpdater, location, weather).Wait();
                         }
                     }
-
-                    TileUpdated = true;
                 }
                 else
                 {

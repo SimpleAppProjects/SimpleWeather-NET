@@ -91,14 +91,13 @@ namespace SimpleWeather.UWP.Main
                     }
 
                     // Update home tile if it hasn't been already
-                    if (Equals(location, await Settings.GetHomeData())
-                        && (TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval)
-                        || !WeatherTileCreator.TileUpdated)
+                    bool isHome = Equals(location, await Settings.GetHomeData());
+                    if (isHome && (TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval))
                     {
                         AsyncTask.Run(async () => await WeatherUpdateBackgroundTask.RequestAppTrigger()
                         .ConfigureAwait(false));
                     }
-                    else if (SecondaryTileUtils.Exists(location?.query))
+                    else if (isHome || SecondaryTileUtils.Exists(location?.query))
                     {
                         AsyncTask.Run(() =>
                         {

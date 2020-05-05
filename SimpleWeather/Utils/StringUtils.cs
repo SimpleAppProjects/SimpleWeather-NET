@@ -37,5 +37,16 @@ namespace SimpleWeather.Utils
             else
                 return Regex.Replace(@string, "[^\\d.-]", "").Trim();
         }
+
+        public static String Ellipsize(this String @string, int maxLength)
+        {
+            if (@string.Length > maxLength)
+            {
+                var substr = @string.Substring(0, maxLength - 1);
+                return substr + "\u2026";
+            }
+
+            return @string;
+        }
     }
 }
