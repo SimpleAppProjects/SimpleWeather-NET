@@ -203,6 +203,10 @@ namespace SimpleWeather.UWP.Main
             else
             {
                 var color = WeatherView.PendingBackgroundColor;
+                if (WeatherView.BackgroundTheme != ElementTheme.Light && ColorUtils.IsSuperLight(color))
+                {
+                    color = ColorUtils.BlendColor(color, Colors.Black, 0.25f);
+                }
                 MainGrid.Background = new SolidColorBrush(color);
                 Shell.Instance.AppBarColor = color;
             }

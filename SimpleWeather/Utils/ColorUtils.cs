@@ -9,7 +9,7 @@ namespace SimpleWeather.Utils
     /* Collection of color related methods ported from Android */
     public static class ColorUtils
     {
-        private const float MIN_CONTRAST_RATIO = 2f;
+        private const float MIN_CONTRAST_RATIO = 4.5f;
         private static ThreadLocal<double[]> TEMP_ARRAY = new ThreadLocal<double[]>();
 
         public static Color ParseColor(String colorString)
@@ -63,7 +63,7 @@ namespace SimpleWeather.Utils
          */
         private static bool IsLegible(Color foreground, Color background)
         {
-            background.A = 255;
+            background.A = 0xFF;
             return CalculateContrast(foreground, background) >= MIN_CONTRAST_RATIO;
         }
 
