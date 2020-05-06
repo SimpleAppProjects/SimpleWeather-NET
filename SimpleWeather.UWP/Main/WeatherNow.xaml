@@ -323,19 +323,19 @@
                                 <localcontrols:UVControl x:Name="UVContrl"
                                                          x:Load="{x:Bind WeatherView.UVIndex, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
                                                          Visibility="{x:Bind WeatherView.UVIndex, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
-                                                         DataContext="{x:Bind WeatherView.UVIndex, Mode=OneWay}" Margin="10,5" />
+                                                         DataContext="{Binding UVIndex, Mode=OneWay}" Margin="10,5" />
                                 <localcontrols:BeaufortControl x:Name="BeaufControl"
                                                                x:Load="{x:Bind WeatherView.Beaufort, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
                                                                Visibility="{x:Bind WeatherView.Beaufort, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
-                                                               DataContext="{x:Bind WeatherView.Beaufort, Mode=OneWay}" Margin="10,5" />
+                                                               DataContext="{Binding Beaufort, Mode=OneWay}" Margin="10,5" />
                                 <localcontrols:AQIControl x:Name="AQIndexControl"
                                                           x:Load="{x:Bind WeatherView.AirQuality, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
                                                           Visibility="{x:Bind WeatherView.AirQuality, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
-                                                          DataContext="{x:Bind WeatherView.AirQuality, Mode=OneWay}" Margin="10,5" />
+                                                          DataContext="{Binding AirQuality, Mode=OneWay}" Margin="10,5" />
                                 <localcontrols:MoonPhaseControl x:Name="MoonControl"
                                                                 x:Load="{x:Bind WeatherView.MoonPhase, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
                                                                 Visibility="{x:Bind WeatherView.MoonPhase, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
-                                                                DataContext="{x:Bind WeatherView.MoonPhase, Mode=OneWay}" Margin="10,5" />
+                                                                DataContext="{Binding MoonPhase, Mode=OneWay}" Margin="10,5" />
                             </localcontrols:ExtendingWrapPanel>
                         </StackPanel>
                     </toolkitControls:HeaderedContentControl>
