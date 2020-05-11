@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     mc:Ignorable="d"
     d:DesignHeight="100"
@@ -31,7 +32,7 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition x:Name="IconColumn" Width="70" />
         </Grid.ColumnDefinitions>
-        <toolkitControls:ImageEx CachingStrategy="Custom" IsCacheEnabled="True" DecodePixelWidth="1080" Source="{x:Bind ViewModel.ImageData.ImageUri, Mode=OneWay}" Foreground="White" 
+        <toolkitControls:ImageEx CachingStrategy="Custom" IsCacheEnabled="True" DecodePixelWidth="1080" Source="{x:Bind ViewModel.ImageData.ImageUri, Mode=OneWay}" Foreground="White"
                                  Stretch="UniformToFill" Grid.ColumnSpan="3" VerticalAlignment="Center" HorizontalAlignment="Center" Style="{ThemeResource ImageExProgressStyle}" />
         <ProgressRing Grid.ColumnSpan="3" IsActive="{x:Bind ViewModel.IsLoading, Mode=OneWay}" Foreground="White" />
         <toolkitControls:DropShadowPanel BlurRadius="15.0"

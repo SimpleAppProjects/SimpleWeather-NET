@@ -6,8 +6,8 @@
     xmlns:localcontrols="using:SimpleWeather.UWP.Controls"
     xmlns:local="using:SimpleWeather.UWP.Main"
     xmlns:helpers="using:SimpleWeather.UWP.Helpers"
+    xmlns:media="using:Microsoft.UI.Xaml.Media"
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    xmlns:toolkitMedia="using:Microsoft.Toolkit.Uwp.UI.Media"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:utils="using:SimpleWeather.Utils"
@@ -148,11 +148,12 @@
         <Grid x:Name="GradientOverlay" Grid.Row="0"
               x:Load="{x:Bind WeatherView.ImageData.ImageUri, Mode=OneWay, Converter={StaticResource stringBooleanConverter}, TargetNullValue=false, FallbackValue=false}">
             <Grid.Background>
-                <toolkitMedia:RadialGradientBrush AlphaMode="Premultiplied" Center="0.5,0.5" ColorInterpolationMode="SRgbLinearInterpolation"
-                                                  GradientOrigin="0.5,0.5" RadiusX="0.5" RadiusY="0.5" SpreadMethod="Pad">
+                <media:RadialGradientBrush Center="0.5,0.5" GradientOrigin="0.5,0.5"
+                                           RadiusX="1" RadiusY="1" SpreadMethod="Pad"
+                                           MappingMode="RelativeToBoundingBox">
                     <GradientStop Color="#83121212" Offset="0" />
                     <GradientStop Color="Transparent" Offset="1" />
-                </toolkitMedia:RadialGradientBrush>
+                </media:RadialGradientBrush>
             </Grid.Background>
         </Grid>
         <ScrollViewer x:Name="MainViewer" VerticalScrollMode="Auto" ViewChanged="MainViewer_ViewChanged" Padding="16,0"
@@ -169,7 +170,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <toolkitControls:DropShadowPanel BlurRadius="10.0" ShadowOpacity="1" 
+                    <toolkitControls:DropShadowPanel BlurRadius="10.0" ShadowOpacity="1"
                                                      HorizontalAlignment="Center" Margin="0,10,0,0" Grid.Row="0">
                         <TextBlock Name="Location" Text="{x:Bind WeatherView.Location, FallbackValue='New York, NY', Mode=OneWay}"
                                    FontSize="28" FontWeight="Medium" TextAlignment="Center"
@@ -232,7 +233,7 @@
                                                      HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5,0,0,0" Grid.Row="6">
                         <TextBlock FontSize="24" FontWeight="Medium" Style="{ThemeResource WeatherIcon}"
                                    Visibility="{x:Bind WeatherView.HiTemp, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
-                            <Span><Run Text="{x:Bind WeatherView.HiTemp, Mode=OneWay}" /><Run Text=" &#xf058;"/><Run Text=" | "/><Run Text="{x:Bind WeatherView.LoTemp, Mode=OneWay}" /><Run Text=" &#xf044;"/></Span>
+                            <Span><Run Text="{x:Bind WeatherView.HiTemp, Mode=OneWay}" /><Run Text=" &#xf058;" /><Run Text=" | " /><Run Text="{x:Bind WeatherView.LoTemp, Mode=OneWay}" /><Run Text=" &#xf044;" /></Span>
                         </TextBlock>
                     </toolkitControls:DropShadowPanel>
                     <HyperlinkButton x:Name="Attribution" Padding="5" FontSize="11" FontWeight="Medium" VerticalAlignment="Bottom" HorizontalAlignment="Right"
@@ -259,7 +260,7 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <Button x:Name="LeftButton" Click="LeftButton_Click" Grid.Column="0" 
+                            <Button x:Name="LeftButton" Click="LeftButton_Click" Grid.Column="0"
                                     IsEnabled="{x:Bind helpers:ScrollViewerHelper.CanScrollToStart(ForecastGraphPanel.ScrollViewer.HorizontalOffset), Mode=OneWay}"
                                     Style="{ThemeResource LeftArrowButton}" />
                             <Button x:Name="RightButton" Click="RightButton_Click" Grid.Column="2"
@@ -364,7 +365,7 @@
                         </Grid>
                     </toolkitControls:HeaderedContentControl>
                     <TextBlock Padding="5" FontSize="12" HorizontalAlignment="Center"><Span>
-                        <Run x:Uid="Credit_Prefix" Text="Data from"/><Run Text=" EarthWindMap Project"/></Span>
+                        <Run x:Uid="Credit_Prefix" Text="Data from" /><Run Text=" EarthWindMap Project" /></Span>
                     </TextBlock>
                 </StackPanel>
                 <Border Style="{ThemeResource Divider}" />

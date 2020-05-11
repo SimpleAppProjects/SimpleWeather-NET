@@ -6,7 +6,7 @@
     xmlns:helpers="using:SimpleWeather.UWP.Helpers"
     xmlns:local="using:SimpleWeather.UWP.Main"
     xmlns:localcontrols="using:SimpleWeather.UWP.Controls"
-    xmlns:uicontrols="using:Microsoft.UI.Xaml.Controls"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -107,7 +107,7 @@
         </ListView>
         <ProgressRing Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Height="50" Width="50" IsActive="True"
                       Visibility="{Binding Count, Mode=OneWay, Converter={StaticResource valueVisibilityConverter}, ConverterParameter=true, FallbackValue='Visible'}" />
-        <uicontrols:ProgressBar IsIndeterminate="True" Grid.Row="1" VerticalAlignment="Bottom"
-                                Visibility="{Binding IsLoading, Mode=OneWay, Converter={StaticResource booleanToVisibilityConverter}, FallbackValue='Collapsed'}" />
+        <muxc:ProgressBar IsIndeterminate="True" Grid.Row="1" VerticalAlignment="Bottom"
+                          Visibility="{Binding IsLoading, Mode=OneWay, Converter={StaticResource booleanToVisibilityConverter}, FallbackValue='Collapsed'}" />
     </Grid>
 </helpers:CustomPage>

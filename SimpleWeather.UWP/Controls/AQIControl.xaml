@@ -3,13 +3,14 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:SimpleWeather.UWP.Controls"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
     <StackPanel>
-        <toolkitControls:HeaderedContentControl HorizontalContentAlignment="Stretch" 
+        <toolkitControls:HeaderedContentControl HorizontalContentAlignment="Stretch"
                                                 Style="{StaticResource SectionLabelStyle}">
             <toolkitControls:HeaderedContentControl.Header>
                 <TextBlock Text="{x:Bind ViewModel.Title, Mode=OneWay, FallbackValue='Air Quality Index'}"
@@ -44,21 +45,21 @@
                            RelativePanel.Above="AQIProgresBar"
                            RelativePanel.AlignRightWithPanel="True"
                            RelativePanel.AlignRightWith="AQIndex" />
-                <ProgressBar x:Name="AQIProgresBar" Height="5" Value="{x:Bind ViewModel.Progress, Mode=OneWay, FallbackValue='50'}" Maximum="100"
-                             Background="{ThemeResource ProgressBarBackgroundBrush}"
-                             Margin="15,5"
-                             RelativePanel.AlignBottomWithPanel="True"
-                             RelativePanel.AlignLeftWithPanel="True"
-                             RelativePanel.AlignRightWithPanel="True">
-                    <ProgressBar.Foreground>
+                <muxc:ProgressBar x:Name="AQIProgresBar" Height="5" Value="{x:Bind ViewModel.Progress, Mode=OneWay, FallbackValue='50'}" Maximum="100"
+                                  Background="{ThemeResource ProgressBarBackgroundBrush}"
+                                  Margin="15,5"
+                                  RelativePanel.AlignBottomWithPanel="True"
+                                  RelativePanel.AlignLeftWithPanel="True"
+                                  RelativePanel.AlignRightWithPanel="True">
+                    <muxc:ProgressBar.Foreground>
                         <SolidColorBrush Color="{x:Bind ViewModel.ProgressColor, Mode=OneWay, FallbackValue='Red'}" />
-                    </ProgressBar.Foreground>
-                </ProgressBar>
+                    </muxc:ProgressBar.Foreground>
+                </muxc:ProgressBar>
             </RelativePanel>
         </toolkitControls:HeaderedContentControl>
         <TextBlock x:Name="Attribution" Padding="5" FontSize="12"
                    HorizontalAlignment="Center">
-            <Span><Run x:Uid="Credit_Prefix" Text="Data from"/><Run Text=" World Air Quality Index Project"/></Span>
+            <Span><Run x:Uid="Credit_Prefix" Text="Data from" /><Run Text=" World Air Quality Index Project" /></Span>
         </TextBlock>
     </StackPanel>
 </UserControl>
