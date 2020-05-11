@@ -87,8 +87,11 @@ namespace SimpleWeather.UWP.Main
                                                         panelVM.LocationData.tz_long.Equals(location?.tz_long));
                     }
 
-                    panelView?.SetWeather(weather);
-                    await panelView?.UpdateBackground();
+                    if (panelView != null)
+                    {
+                        panelView?.SetWeather(weather);
+                        await panelView?.UpdateBackground();
+                    }
                 }
             });
         }
