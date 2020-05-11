@@ -60,21 +60,27 @@ namespace SimpleWeather.WeatherData.Images
                                     case "artistName":
                                         imgData.ArtistName = field.Value.StringValue;
                                         break;
+
                                     case "color":
                                         imgData.HexColor = field.Value.StringValue;
                                         break;
+
                                     case "condition":
                                         imgData.Condition = field.Value.StringValue;
                                         break;
+
                                     case "imageURL":
                                         imgData.ImageUrl = field.Value.StringValue;
                                         break;
+
                                     case "location":
                                         imgData.Location = field.Value.StringValue;
                                         break;
+
                                     case "originalLink":
                                         imgData.OriginalLink = field.Value.StringValue;
                                         break;
+
                                     case "siteName":
                                         imgData.SiteName = field.Value.StringValue;
                                         break;
@@ -86,7 +92,6 @@ namespace SimpleWeather.WeatherData.Images
                         cts.Dispose();
                     }
                     while (pageToken != null);
-
 
                     await SaveSnapshot(list);
                 }
@@ -199,7 +204,12 @@ namespace SimpleWeather.WeatherData.Images
             dbConnection = new SQLite.SQLiteAsyncConnection(imageDBPath,
                 SQLite.SQLiteOpenFlags.Create | SQLite.SQLiteOpenFlags.ReadWrite | SQLite.SQLiteOpenFlags.FullMutex);
 
-            dbConnection.GetConnection().CreateTable<ImageData>();
+            var conn = dbConnection.GetConnection();
+            var _lock = conn.Lock();
+            conn.BusyTimeout = TimeSpan.FromSeconds(5);
+            conn.EnableWriteAheadLogging();
+            conn.CreateTable<ImageData>();
+            _lock.Dispose();
         }
 
         public Task<bool> IsEmpty()

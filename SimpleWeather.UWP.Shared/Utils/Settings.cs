@@ -1,6 +1,7 @@
 ﻿using SimpleWeather.UWP.Helpers;
 using SimpleWeather.WeatherData;
 using SQLite;
+using SQLiteNetExtensionsAsync.Extensions;
 using System;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -22,12 +23,26 @@ namespace SimpleWeather.Utils
         private static void Init()
         {
             if (locationDB == null)
+            {
                 locationDB = new SQLiteAsyncConnection(
                     Path.Combine(appDataFolder.Path, "locations.db"), SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.FullMutex);
+                var conn = locationDB.GetConnection();
+                var _lock = conn.Lock();
+                conn.BusyTimeout = TimeSpan.FromSeconds(5);
+                conn.EnableWriteAheadLogging();
+                _lock.Dispose();
+            }
 
             if (weatherDB == null)
+            {
                 weatherDB = new SQLiteAsyncConnection(
                     Path.Combine(appDataFolder.Path, "weatherdata.db"), SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.FullMutex);
+                var conn = weatherDB.GetConnection();
+                var _lock = conn.Lock();
+                conn.BusyTimeout = TimeSpan.FromSeconds(5);
+                conn.EnableWriteAheadLogging();
+                _lock.Dispose();
+            }
 
             if (tzDBConnStr == null)
                 tzDBConnStr = Path.Combine(appDataFolder.Path, "tzdb.db");

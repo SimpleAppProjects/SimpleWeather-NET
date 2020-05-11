@@ -33,6 +33,12 @@ namespace SimpleWeather.TZDB
                     if (tzDB == null)
                     {
                         tzDB = new SQLiteAsyncConnection(Settings.GetTZDBConnectionString(), SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.FullMutex);
+                        var conn = tzDB.GetConnection();
+                        var _lock = conn.Lock();
+                        conn.BusyTimeout = TimeSpan.FromSeconds(5);
+                        conn.EnableWriteAheadLogging();
+                        _lock.Dispose();
+
                         await tzDB.CreateTableAsync<TZDB>();
                     }
 
