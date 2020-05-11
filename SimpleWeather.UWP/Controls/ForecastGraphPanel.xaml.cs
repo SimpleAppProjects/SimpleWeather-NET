@@ -170,8 +170,12 @@ namespace SimpleWeather.UWP.Controls
                                 }
                             }
 
-                            tempDataSeries.Add(new LineDataSeries("High", hiTempSeries));
-                            if (loTempSeries != null)
+                            if (hiTempSeries?.Count > 0)
+                            {
+                                tempDataSeries.Add(new LineDataSeries("High", hiTempSeries));
+                            }
+
+                            if (loTempSeries?.Count > 0)
                             {
                                 tempDataSeries.Add(new LineDataSeries("Low", loTempSeries));
                             }
@@ -223,7 +227,10 @@ namespace SimpleWeather.UWP.Controls
                                 }
                             }
 
-                            windDataList.Add(new LineDataSeries(windDataSeries));
+                            if (windDataSeries?.Count > 0)
+                            {
+                                windDataList.Add(new LineDataSeries(windDataSeries));
+                            }
 
                             Task.Run(async () =>
                             {
@@ -272,7 +279,10 @@ namespace SimpleWeather.UWP.Controls
                                 }
                             }
 
-                            popDataList.Add(new LineDataSeries(popDataSeries));
+                            if (popDataSeries?.Count > 0)
+                            {
+                                popDataList.Add(new LineDataSeries(popDataSeries));
+                            }
 
                             Task.Run(async () =>
                             {
