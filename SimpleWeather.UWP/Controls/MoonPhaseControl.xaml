@@ -13,9 +13,11 @@
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
                     <SolidColorBrush x:Key="DisabledMoonPhaseBrush" Color="WhiteSmoke" />
+                    <SolidColorBrush x:Key="MoonPhaseBrush" Color="White" />
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
-                    <SolidColorBrush x:Key="DisabledMoonPhaseBrush" Color="Gray" />
+                    <SolidColorBrush x:Key="DisabledMoonPhaseBrush" Color="Black" />
+                    <SolidColorBrush x:Key="MoonPhaseBrush" Color="Black" />
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
             <Style x:Key="DisabledMoonStyle" BasedOn="{StaticResource WeatherIcon}" TargetType="TextBlock">
@@ -24,7 +26,7 @@
             </Style>
             <Style x:Key="MoonStyle" BasedOn="{StaticResource WeatherIcon}" TargetType="TextBlock">
                 <Setter Property="Opacity" Value="1" />
-                <Setter Property="Foreground" Value="White" />
+                <Setter Property="Foreground" Value="{ThemeResource MoonPhaseBrush}" />
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>

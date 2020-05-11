@@ -48,6 +48,8 @@ namespace SimpleWeather.UWP.Main
             Instance = this;
             this.InitializeComponent();
 
+            AnalyticsLogger.LogEvent("Shell");
+
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
             SystemNavigationManager.GetForCurrentView().BackRequested += Shell_BackRequested;
 
@@ -191,7 +193,7 @@ namespace SimpleWeather.UWP.Main
             if ("suppressNavigate".Equals(e?.Parameter?.ToString()))
                 suppressNavigate = true;
 
-            AnalyticsLogger.LogEvent("Shell",
+            AnalyticsLogger.LogEvent("Shell: OnNavigatedTo",
                 new Dictionary<string, string>()
                 {
                     { "suppressNavigate", suppressNavigate.ToString() }

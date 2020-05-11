@@ -41,7 +41,6 @@ namespace SimpleWeather.Controls
         private ImageDataViewModel imageData;
         private Color defaultColor = Color.FromArgb(255, 0, 111, 191); // SimpleBlue;
         private Color pendingBackgroundColor = Color.FromArgb(255, 0, 111, 191);
-        private ElementTheme backgroundTheme = ElementTheme.Dark;
 
         // Radar
         private const string RadarUriFormat = "https://earth.nullschool.net/#current/wind/surface/level/overlay=precip_3hr/orthographic={1},{0},3000";
@@ -82,7 +81,6 @@ namespace SimpleWeather.Controls
         public AirQualityViewModel AirQuality { get => airQuality; private set { if (!Equals(airQuality, value)) { airQuality = value; OnPropertyChanged(nameof(AirQuality)); } } }
         public ImageDataViewModel ImageData { get => imageData; private set { if (!Equals(imageData, value)) { imageData = value; OnPropertyChanged(nameof(ImageData)); } } }
         public Color PendingBackgroundColor { get => pendingBackgroundColor; private set { if (!Equals(pendingBackgroundColor, value)) { pendingBackgroundColor = value; OnPropertyChanged(nameof(PendingBackgroundColor)); } } }
-        public ElementTheme BackgroundTheme { get => backgroundTheme; private set { if (!Equals(backgroundTheme, value)) { backgroundTheme = value; OnPropertyChanged(nameof(BackgroundTheme)); } } }
         public Uri RadarURL { get => radarURL; private set { if (!Equals(radarURL?.ToString(), value?.ToString())) { radarURL = value; OnPropertyChanged(nameof(RadarURL)); } } }
         public string WeatherCredit { get => weatherCredit; private set { if (!Equals(weatherCredit, value)) { weatherCredit = value; OnPropertyChanged(nameof(WeatherCredit)); } } }
         public string WeatherSource { get => weatherSource; private set { if (!Equals(weatherSource, value)) { weatherSource = value; OnPropertyChanged(nameof(WeatherSource)); } } }
@@ -126,7 +124,6 @@ namespace SimpleWeather.Controls
                     // Update backgrounds
                     ImageData = null;
                     PendingBackgroundColor = defaultColor;
-                    BackgroundTheme = ElementTheme.Dark;
 
                     // Location
                     Location = weather?.location?.name;
@@ -330,14 +327,11 @@ namespace SimpleWeather.Controls
                 {
                     ImageData = imageData;
                     PendingBackgroundColor = imageData.Color;
-                    BackgroundTheme = ColorUtils.IsSuperLight(PendingBackgroundColor) ?
-                        ElementTheme.Light : ElementTheme.Dark;
                 }
                 else
                 {
                     ImageData = null;
                     PendingBackgroundColor = defaultColor;
-                    BackgroundTheme = ElementTheme.Dark;
                 }
             });
         }

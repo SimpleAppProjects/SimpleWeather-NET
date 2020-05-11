@@ -34,14 +34,14 @@ namespace SimpleWeather.Controls
 
         #region Properties
         public string LocationName { get => locationName; set { if (!Equals(locationName, value)) { locationName = value; OnPropertyChanged("LocationName"); } } }
-        public string CurrTemp { get => currTemp; set { if (!Equals(locationName, value)) { currTemp = value; OnPropertyChanged("CurrTemp"); } } }
-        public string WeatherIcon { get => weatherIcon; set { if (!Equals(locationName, value)) { weatherIcon = value; OnPropertyChanged("WeatherIcon"); } } }
-        public bool EditMode { get => editMode; set { if (!Equals(locationName, value)) { editMode = value; OnPropertyChanged("EditMode"); } } }
+        public string CurrTemp { get => currTemp; set { if (!Equals(currTemp, value)) { currTemp = value; OnPropertyChanged("CurrTemp"); } } }
+        public string WeatherIcon { get => weatherIcon; set { if (!Equals(weatherIcon, value)) { weatherIcon = value; OnPropertyChanged("WeatherIcon"); } } }
+        public bool EditMode { get => editMode; set { if (!Equals(editMode, value)) { editMode = value; OnPropertyChanged("EditMode"); } } }
         public ImageDataViewModel ImageData { get => imageData; set { if (!Equals(imageData, value)) { imageData = value; OnPropertyChanged(nameof(ImageData)); } } }
-        public ElementTheme BackgroundTheme { get => backgroundTheme; set { if (!Equals(locationName, value)) { backgroundTheme = value; OnPropertyChanged("BackgroundTheme"); } } }
-        public bool IsLoading { get => isLoading; set { if (!Equals(locationName, value)) { isLoading = value; OnPropertyChanged("IsLoading"); } } }
-        public LocationData LocationData { get => locationData; set { if (!Equals(locationName, value)) { locationData = value; OnPropertyChanged("LocationData"); } } }
-        public string WeatherSource { get => weatherSource; set { if (!Equals(locationName, value)) { weatherSource = value; OnPropertyChanged("WeatherSource"); } } }
+        public ElementTheme BackgroundTheme { get => backgroundTheme; set { if (!Equals(backgroundTheme, value)) { backgroundTheme = value; OnPropertyChanged("BackgroundTheme"); } } }
+        public bool IsLoading { get => isLoading; set { if (!Equals(isLoading, value)) { isLoading = value; OnPropertyChanged("IsLoading"); } } }
+        public LocationData LocationData { get => locationData; set { if (!Equals(locationData, value)) { locationData = value; OnPropertyChanged("LocationData"); } } }
+        public string WeatherSource { get => weatherSource; set { if (!Equals(weatherSource, value)) { weatherSource = value; OnPropertyChanged("WeatherSource"); } } }
         public int LocationType
         {
             get

@@ -50,6 +50,16 @@ namespace SimpleWeather.UWP.Main
         private Geolocator geolocal = null;
         private Geoposition geoPos = null;
 
+        public ElementTheme BackgroundTheme
+        {
+            get { return (ElementTheme)GetValue(BackgroundThemeProperty); }
+            set { SetValue(BackgroundThemeProperty, value); }
+        }
+
+        public static readonly DependencyProperty BackgroundThemeProperty =
+            DependencyProperty.Register(nameof(BackgroundTheme), typeof(ElementTheme),
+                typeof(WeatherNow), new PropertyMetadata(ElementTheme.Default));
+
         public void Dispose()
         {
             cts?.Dispose();
@@ -146,6 +156,7 @@ namespace SimpleWeather.UWP.Main
         public WeatherNow()
         {
             this.InitializeComponent();
+            BackgroundTheme = ElementTheme.Default;
             NavigationCacheMode = NavigationCacheMode.Required;
             Application.Current.Resuming += WeatherNow_Resuming;
             cts = new CancellationTokenSource();
@@ -194,22 +205,25 @@ namespace SimpleWeather.UWP.Main
             if (cts?.IsCancellationRequested == true)
                 return;
 
+            Color backgroundColor;
             if ((Settings.UserTheme == UserThemeMode.Dark || (Settings.UserTheme == UserThemeMode.System && App.IsSystemDarkTheme)) && WeatherView?.PendingBackgroundColor != App.AppColor)
             {
-                var color = ColorUtils.BlendColor(WeatherView.PendingBackgroundColor, Colors.Black, 0.75f);
-                MainGrid.Background = new SolidColorBrush(color);
-                Shell.Instance.AppBarColor = color;
+                backgroundColor = ColorUtils.BlendColor(WeatherView.PendingBackgroundColor, Colors.Black, 0.75f);
+                MainGrid.Background = new SolidColorBrush(backgroundColor);
+                Shell.Instance.AppBarColor = backgroundColor;
             }
             else
             {
-                var color = WeatherView.PendingBackgroundColor;
-                if (WeatherView.BackgroundTheme != ElementTheme.Light && ColorUtils.IsSuperLight(color))
+                backgroundColor = WeatherView.PendingBackgroundColor;
+                if (ColorUtils.IsSuperLight(backgroundColor))
                 {
-                    color = ColorUtils.BlendColor(color, Colors.Black, 0.25f);
+                    backgroundColor = ColorUtils.BlendColor(backgroundColor, Colors.Black, 0.25f);
                 }
-                MainGrid.Background = new SolidColorBrush(color);
-                Shell.Instance.AppBarColor = color;
+                MainGrid.Background = new SolidColorBrush(backgroundColor);
+                Shell.Instance.AppBarColor = backgroundColor;
             }
+
+            BackgroundTheme = ColorUtils.IsSuperLight(backgroundColor) ? ElementTheme.Light : ElementTheme.Dark;
         }
 
         private async void WeatherView_PropertyChanged(object sender, PropertyChangedEventArgs e)
