@@ -1488,7 +1488,7 @@ namespace Google.Apis.Firestore.v1fix
                                 IsRequired = true,
                                 ParameterType = "path",
                                 DefaultValue = null,
-                                Pattern = @"^projects/[^/]+/databases/[^/]+/documents/[^/]+/.*$",
+                                Pattern = @"^projects/[^/]+/databases/[^/]+/documents(/[^/]+/.*$)?",
                             });
                         RequestParameters.Add(
                             "currentDocument.exists", new Google.Apis.Discovery.Parameter
@@ -1582,7 +1582,7 @@ namespace Google.Apis.Firestore.v1fix
                                 IsRequired = true,
                                 ParameterType = "path",
                                 DefaultValue = null,
-                                Pattern = @"^projects/[^/]+/databases/[^/]+/documents/[^/]+/.*$",
+                                Pattern = @"^projects/[^/]+/databases/[^/]+/documents(/[^/]+/.*$)?",
                             });
                         RequestParameters.Add(
                             "mask.fieldPaths", new Google.Apis.Discovery.Parameter
@@ -2023,7 +2023,7 @@ namespace Google.Apis.Firestore.v1fix
                                 IsRequired = true,
                                 ParameterType = "path",
                                 DefaultValue = null,
-                                Pattern = @"^projects/[^/]+/databases/[^/]+/documents/[^/]+/.*$",
+                                Pattern = @"^projects/[^/]+/databases/[^/]+/documents(/[^/]+/.*$)?",
                             });
                         RequestParameters.Add(
                             "currentDocument.exists", new Google.Apis.Discovery.Parameter
