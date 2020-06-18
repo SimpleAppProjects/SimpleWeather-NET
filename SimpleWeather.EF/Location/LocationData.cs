@@ -72,8 +72,12 @@ namespace SimpleWeather.Location
                 if (!String.IsNullOrWhiteSpace(tz_long))
                 {
                     var tzdbLocation = NodaTime.TimeZones.TzdbDateTimeZoneSource.Default.ZoneLocations
-                        .First(tzdbloc => tzdbloc.ZoneId.Equals(tz_long));
-                    return tzdbLocation.CountryCode;
+                        .FirstOrDefault(tzdbloc => tzdbloc.ZoneId.Equals(tz_long));
+
+                    if (tzdbLocation != null)
+                    {
+                        return tzdbLocation.CountryCode;
+                    }
                 }
                 return String.Empty;
             }

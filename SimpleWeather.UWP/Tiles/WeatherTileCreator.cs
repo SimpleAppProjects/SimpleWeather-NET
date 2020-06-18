@@ -926,9 +926,9 @@ namespace SimpleWeather.UWP.Tiles
             var forecasts = await Settings.GetWeatherForecastData(location.query);
             var result = new List<ForecastItemViewModel>(LARGE_FORECAST_LENGTH);
 
-            if (forecasts.forecast?.Count > 0)
+            if (forecasts?.forecast?.Count > 0)
             {
-                foreach (var fcast in forecasts.forecast)
+                foreach (var fcast in forecasts?.forecast)
                 {
                     result.Add(new ForecastItemViewModel(fcast));
                 }
@@ -959,7 +959,7 @@ namespace SimpleWeather.UWP.Tiles
             if (!DeviceTypeHelper.IsTileSupported())
                 return Task.CompletedTask;
 
-            return Task.Run(async () => 
+            return Task.Run(async () =>
             {
                 try
                 {
@@ -969,7 +969,6 @@ namespace SimpleWeather.UWP.Tiles
                                     .ForceRefresh(false)
                                     .LoadForecasts()
                                     .Build()));
-
 
                     if (weather != null)
                     {

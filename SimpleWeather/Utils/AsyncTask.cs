@@ -102,6 +102,8 @@ namespace SimpleWeather.Utils
             }
         }
 
+        private static CoreDispatcher CoreDispatcher = null;
+
         private static CoreDispatcher GetDispatcher()
         {
             CoreDispatcher Dispatcher = null;
@@ -129,18 +131,21 @@ namespace SimpleWeather.Utils
 
         public static Task TryRunOnUIThread(Action action)
         {
-            var Dispatcher = GetDispatcher();
-
-            if (Dispatcher != null)
+            if (CoreDispatcher == null)
             {
-                if (Dispatcher.HasThreadAccess)
+                CoreDispatcher = GetDispatcher();
+            }
+
+            if (CoreDispatcher != null)
+            {
+                if (CoreDispatcher.HasThreadAccess)
                 {
                     action?.Invoke();
                     return Task.CompletedTask;
                 }
                 else
                 {
-                    return Dispatcher.AwaitableRunAsync(action);
+                    return CoreDispatcher.AwaitableRunAsync(action);
                 }
             }
             else

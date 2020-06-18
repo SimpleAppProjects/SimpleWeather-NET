@@ -1,4 +1,5 @@
-﻿using SimpleWeather.Controls;
+﻿using Microsoft.Toolkit.Uwp.Helpers;
+using SimpleWeather.Controls;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
@@ -289,9 +290,9 @@ namespace SimpleWeather.UWP.Main
             {
                 // Default adj = 1.25f
                 float adj = 1.25f;
-                double backAlpha = ConditionPanel.ActualHeight > 0 ? 
+                double backAlpha = ConditionPanel.ActualHeight > 0 ?
                     1 - (1 * adj * viewer.VerticalOffset / ConditionPanel.ActualHeight) : 1;
-                double gradAlpha = ConditionPanel.ActualHeight > 0 ? 
+                double gradAlpha = ConditionPanel.ActualHeight > 0 ?
                     1 - (1 * adj * viewer.VerticalOffset / ConditionPanel.ActualHeight) : 1;
                 BGAlpha = Math.Max(backAlpha, (float)0x25 / 0xFF); // 0x25
                 GradAlpha = Math.Max(gradAlpha, 0);
@@ -717,7 +718,7 @@ namespace SimpleWeather.UWP.Main
                             .ForceRefresh(forceRefresh)
                             .SetErrorListener(this)
                             .Build())
-                            .ContinueWith((t) => 
+                            .ContinueWith((t) =>
                             {
                                 if (t.IsCompletedSuccessfully)
                                     OnWeatherLoaded(location, t.Result);
@@ -756,7 +757,7 @@ namespace SimpleWeather.UWP.Main
         private void GotoAlertsPage()
         {
             AnalyticsLogger.LogEvent("WeatherNow: GotoAlertsPage");
-            Frame.Navigate(typeof(WeatherAlertPage), new WeatherPageArgs() 
+            Frame.Navigate(typeof(WeatherAlertPage), new WeatherPageArgs()
             {
                 Location = location,
                 WeatherNowView = WeatherView
@@ -972,10 +973,10 @@ namespace SimpleWeather.UWP.Main
         {
             AsyncTask.Run(async () =>
             {
-                await Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
+                await Dispatcher.AwaitableRunAsync(() =>
                 {
                     NavigateToRadarURL();
-                });
+                }, CoreDispatcherPriority.Low).ConfigureAwait(true);
             }, 1000);
         }
 

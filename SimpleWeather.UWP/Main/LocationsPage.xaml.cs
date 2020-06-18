@@ -36,7 +36,7 @@ namespace SimpleWeather.UWP.Main
     {
         private WeatherManager wm;
 
-        private Geolocator geolocal = null;
+        private Geolocator geolocal;
         private LocationPanelAdapter PanelAdapter;
 
         public bool EditMode { get; set; } = false;
@@ -156,6 +156,8 @@ namespace SimpleWeather.UWP.Main
             Application.Current.Resuming += LocationsPage_Resuming;
 
             wm = WeatherManager.GetInstance();
+
+            geolocal = new Geolocator() { DesiredAccuracyInMeters = 5000, ReportInterval = 900000, MovementThreshold = 1600 };
 
             PanelAdapter = new LocationPanelAdapter(LocationsPanel);
             PanelAdapter.ListChanged += LocationPanels_CollectionChanged;

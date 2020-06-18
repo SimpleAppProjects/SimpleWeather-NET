@@ -2,14 +2,10 @@
 using Google.Apis.Firestore.v1fix.Data;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
-using SimpleWeather.WeatherData.Images;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Background;
 using Windows.Networking.PushNotifications;
 using Windows.Storage;
 
@@ -19,6 +15,7 @@ namespace SimpleWeather.UWP.WNS
     {
         private static readonly ApplicationDataContainer LocalSettings =
             ApplicationData.Current.LocalSettings;
+
         private static readonly ApplicationDataContainer WNSSettings =
             LocalSettings.CreateContainer("wns",
                 ApplicationDataCreateDisposition.Always);

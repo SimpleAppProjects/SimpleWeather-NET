@@ -134,15 +134,12 @@ namespace SimpleWeather.Controls
                     else
                         RadarURL = null;
 
-                    // Additional Details
-                    WeatherSource = weather?.source;
-
                     // Language
-                    WeatherLocale = weather.locale;
+                    WeatherLocale = weather?.locale;
 
                     // Refresh locale/unit dependent values
                     RefreshView();
-                } 
+                }
                 else if (!Equals(tempUnit, Settings.Unit))
                 {
                     RefreshView();
@@ -302,9 +299,11 @@ namespace SimpleWeather.Controls
             // Additional Details
             AirQuality = weather.condition.airQuality != null ? new AirQualityViewModel(weather.condition.airQuality) : null;
 
+            WeatherSource = weather?.source;
+
             string creditPrefix = SimpleLibrary.ResLoader.GetString("Credit_Prefix/Text");
             WeatherCredit = String.Format("{0} {1}",
-                creditPrefix, WeatherAPI.APIs.First(WApi => WeatherSource.Equals(WApi.Value)));
+                creditPrefix, WeatherAPI.APIs.First(WApi => Equals(WeatherSource, WApi.Value)));
         }
 
         public Task UpdateViewAsync(Weather weather)

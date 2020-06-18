@@ -114,8 +114,8 @@ namespace SimpleWeather.Controls
 
                 if (fcasts?.forecast?.Count > 0)
                 {
-                    bool isDayAndNt = fcasts.txt_forecast?.Count == fcasts.forecast?.Count * 2;
-                    bool addTextFct = isDayAndNt || fcasts.txt_forecast?.Count == fcasts.forecast?.Count;
+                    bool isDayAndNt = fcasts.txt_forecast?.Count == (fcasts.forecast?.Count * 2);
+                    bool addTextFct = isDayAndNt || (fcasts.txt_forecast?.Count == fcasts.forecast?.Count && fcasts.txt_forecast?.Count > 0);
 
                     for (int i = 0; i < fcasts.forecast.Count; i++)
                     {

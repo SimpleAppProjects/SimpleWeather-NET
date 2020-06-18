@@ -3,6 +3,7 @@ using SimpleWeather.WeatherData;
 using SQLite;
 using SQLiteNetExtensionsAsync.Extensions;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using Windows.Storage;
@@ -179,15 +180,20 @@ namespace SimpleWeather.Utils
 
         private static DateTime GetUpdateTime()
         {
-            if (!localSettings.Values.ContainsKey(KEY_UPDATETIME) || localSettings.Values[KEY_UPDATETIME] == null)
-                return DateTime.MinValue;
-            else
-                return DateTime.Parse((string)localSettings.Values[KEY_UPDATETIME]);
+            if (localSettings.Values.ContainsKey(KEY_UPDATETIME) && localSettings.Values[KEY_UPDATETIME] != null)
+            {
+                if (DateTime.TryParse(localSettings.Values[KEY_UPDATETIME] as string, out DateTime result))
+                {
+                    return result;
+                }
+            }
+
+            return DateTime.MinValue;
         }
 
         public static void SetUpdateTime(DateTime value)
         {
-            localSettings.Values[KEY_UPDATETIME] = value.ToString();
+            localSettings.Values[KEY_UPDATETIME] = value.ToString(CultureInfo.InvariantCulture);
         }
 
         private static int GetDBVersion()

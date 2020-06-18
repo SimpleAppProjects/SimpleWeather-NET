@@ -289,9 +289,9 @@ namespace SimpleWeather.WeatherData
                         if (time.location.maxTemperature?.value != null && time.location.minTemperature?.value != null)
                         {
                             condition.high_f = float.Parse(ConversionMethods.CtoF(time.location.maxTemperature.value.ToString(CultureInfo.InvariantCulture)));
-                            condition.high_c = (float) Math.Round(time.location.maxTemperature.value);
+                            condition.high_c = (float)Math.Round(time.location.maxTemperature.value);
                             condition.low_f = float.Parse(ConversionMethods.CtoF(time.location.minTemperature.value.ToString(CultureInfo.InvariantCulture)));
-                            condition.low_c = (float) Math.Round(time.location.minTemperature.value);
+                            condition.low_c = (float)Math.Round(time.location.minTemperature.value);
                         }
                     }
 
@@ -368,7 +368,7 @@ namespace SimpleWeather.WeatherData
             forecast = new List<Forecast>(8);
             txt_forecast = new List<TextForecast>(16);
 
-            for (int i = 0; i < forecastRootobject.periods.Length; i++)
+            for (int i = 0; i < forecastRootobject?.periods?.Length; i++)
             {
                 NWS.Period forecastItem = forecastRootobject.periods[i];
 
@@ -897,7 +897,7 @@ namespace SimpleWeather.WeatherData
                 low_c = float.Parse(ConversionMethods.FtoC(loTempF.ToString()));
             }
             else
-            { 
+            {
                 high_f = 0.00f;
                 high_c = 0.00f;
                 low_f = 0.00f;
@@ -943,22 +943,30 @@ namespace SimpleWeather.WeatherData
         public Condition(NWS.ObservationsCurrentRootobject obsCurrentRootObject)
         {
             weather = obsCurrentRootObject.textDescription;
-            if (obsCurrentRootObject.temperature.value.HasValue)
+            if (float.TryParse(obsCurrentRootObject.temperature.value, out float tempC))
             {
-                temp_c = obsCurrentRootObject.temperature.value.GetValueOrDefault(0.00f);
-                temp_f = float.Parse(ConversionMethods.CtoF(temp_c.ToString()));
+                temp_c = tempC;
+                temp_f = float.Parse(ConversionMethods.CtoF(tempC.ToString()));
             }
             else
             {
                 temp_c = 0.00f;
                 temp_f = 0.00f;
             }
-            wind_degrees = (int)obsCurrentRootObject.windDirection.value.GetValueOrDefault(0);
 
-            if (obsCurrentRootObject.windSpeed.value.HasValue)
+            if (int.TryParse(obsCurrentRootObject.windDirection.value, out int windDegrees))
             {
-                wind_mph = float.Parse(ConversionMethods.MSecToMph(obsCurrentRootObject.windSpeed.value.GetValueOrDefault(0.00f).ToString()));
-                wind_kph = float.Parse(ConversionMethods.MSecToKph(obsCurrentRootObject.windSpeed.value.GetValueOrDefault(0.00f).ToString()));
+                wind_degrees = windDegrees;
+            }
+            else
+            {
+                wind_degrees = 0;
+            }
+
+            if (float.TryParse(obsCurrentRootObject.windSpeed.value, out float windMSec))
+            {
+                wind_mph = float.Parse(ConversionMethods.MSecToMph(windMSec.ToString()));
+                wind_kph = float.Parse(ConversionMethods.MSecToKph(windMSec.ToString()));
             }
             else
             {
@@ -966,8 +974,7 @@ namespace SimpleWeather.WeatherData
                 wind_kph = -1.00f;
             }
 
-            float humidity = obsCurrentRootObject.relativeHumidity.value.GetValueOrDefault(-1.0f);
-            if (temp_f != temp_c)
+            if (temp_f != temp_c && float.TryParse(obsCurrentRootObject.relativeHumidity.value, out float humidity))
             {
                 feelslike_f = float.Parse(WeatherUtils.GetFeelsLikeTemp(temp_f.ToString(),
                     wind_mph.ToString(), humidity.ToString()));
@@ -1076,29 +1083,29 @@ namespace SimpleWeather.WeatherData
 
         public Atmosphere(NWS.ObservationsCurrentRootobject obsCurrentRootObject)
         {
-            if (obsCurrentRootObject.relativeHumidity.value.HasValue)
+            if (float.TryParse(obsCurrentRootObject.relativeHumidity.value, out float relativeHumidity))
             {
-                humidity = ((int)Math.Round(obsCurrentRootObject.relativeHumidity.value.GetValueOrDefault(0.00f))).ToString();
+                humidity = ((int)Math.Round(relativeHumidity)).ToString();
             }
 
-            if (obsCurrentRootObject.barometricPressure.value.HasValue)
+            if (float.TryParse(obsCurrentRootObject.barometricPressure.value, out float barometricPressure))
             {
-                var pressure_pa = obsCurrentRootObject.barometricPressure.value.GetValueOrDefault(0.00f);
+                var pressure_pa = barometricPressure;
                 pressure_in = ConversionMethods.PaToInHg(pressure_pa.ToString());
                 pressure_mb = ConversionMethods.PaToMB(pressure_pa.ToString());
             }
             pressure_trend = String.Empty;
 
-            if (obsCurrentRootObject.visibility.value.HasValue)
+            if (float.TryParse(obsCurrentRootObject.visibility.value, out float visibility))
             {
-                visibility_km = (obsCurrentRootObject.visibility.value.GetValueOrDefault(0.00f) / 1000).ToString();
-                visibility_mi = ConversionMethods.KmToMi((obsCurrentRootObject.visibility.value.GetValueOrDefault(0.00f) / 1000).ToString());
+                visibility_km = (visibility / 1000).ToString();
+                visibility_mi = ConversionMethods.KmToMi((visibility / 1000).ToString());
             }
 
-            if (obsCurrentRootObject.dewpoint.value.HasValue)
+            if (float.TryParse(obsCurrentRootObject.dewpoint.value, out float dewpoint))
             {
-                dewpoint_c = obsCurrentRootObject.dewpoint.value.GetValueOrDefault(0.00f).ToString();
-                dewpoint_f = ConversionMethods.CtoF(obsCurrentRootObject.dewpoint.value.GetValueOrDefault(0.00f).ToString());
+                dewpoint_c = dewpoint.ToString();
+                dewpoint_f = ConversionMethods.CtoF(dewpoint.ToString());
             }
         }
     }

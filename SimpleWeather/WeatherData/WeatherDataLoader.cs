@@ -249,9 +249,9 @@ namespace SimpleWeather.WeatherData
                     {
                         var forecasts = await Settings.GetWeatherForecastData(location.query);
                         var hrForecasts = await Settings.GetHourlyWeatherForecastData(location.query);
-                        weather.forecast = forecasts.forecast;
+                        weather.forecast = forecasts?.forecast;
                         weather.hr_forecast = hrForecasts;
-                        weather.txt_forecast = forecasts.txt_forecast;
+                        weather.txt_forecast = forecasts?.txt_forecast;
                     }
 
                     if (_override && weather == null)
@@ -266,9 +266,9 @@ namespace SimpleWeather.WeatherData
                         {
                             var forecasts = await Settings.GetWeatherForecastData(location.query);
                             var hrForecasts = await Settings.GetHourlyWeatherForecastData(location.query);
-                            weather.forecast = forecasts.forecast;
+                            weather.forecast = forecasts?.forecast;
                             weather.hr_forecast = hrForecasts;
-                            weather.txt_forecast = forecasts.txt_forecast;
+                            weather.txt_forecast = forecasts?.txt_forecast;
                         }
                     }
                 }
@@ -365,7 +365,7 @@ namespace SimpleWeather.WeatherData
                 forecast = weather.forecast,
                 txt_forecast = weather.txt_forecast
             });
-            await Settings.SaveWeatherForecasts(location, weather.hr_forecast?.Select(f => new HourlyForecasts(weather.query, f)));
+            await Settings.SaveWeatherForecasts(location, weather?.hr_forecast?.Select(f => new HourlyForecasts(weather?.query, f)));
         }
     }
 }
