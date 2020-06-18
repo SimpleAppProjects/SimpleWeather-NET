@@ -11,9 +11,6 @@
 
     <Page.TopAppBar>
         <CommandBar x:Name="CommandBar" RequestedTheme="Dark">
-            <CommandBar.Background>
-                <SolidColorBrush Color="{x:Bind AppBarColor, Mode=OneWay}" />
-            </CommandBar.Background>
             <CommandBar.Content>
                 <TextBlock x:Name="CommandBarTitle" Text="SimpleWeather" Style="{StaticResource CommandBarLabel}"
                            Win1809NotPresent:Margin="16,12,0,0" Win1809Present:Margin="16,8,0,0" VerticalAlignment="Center" />
@@ -27,10 +24,6 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Frame x:Name="FrameContent" Grid.Row="0" />
-        <localControls:BottomNavigationBar x:Name="NavBar" Grid.Row="1" SelectionChanged="NavBarItem_Seletected">
-            <localControls:BottomNavigationBar.Background>
-                <SolidColorBrush Color="{x:Bind AppBarColor, Mode=OneWay}" />
-            </localControls:BottomNavigationBar.Background>
-        </localControls:BottomNavigationBar>
+        <localControls:BottomNavigationBar x:Name="NavBar" Grid.Row="1" SelectionChanged="NavBarItem_Seletected" />
     </Grid>
 </Page>

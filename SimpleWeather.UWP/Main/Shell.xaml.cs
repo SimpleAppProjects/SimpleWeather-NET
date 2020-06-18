@@ -183,6 +183,8 @@ namespace SimpleWeather.UWP.Main
                         titlebar.ForegroundColor = isLightBackground ? Colors.Black : Colors.White;
                     }
                 }
+                CommandBar.Background = new SolidColorBrush(color);
+                NavBar.Background = new SolidColorBrush(color);
             }
         }
 
