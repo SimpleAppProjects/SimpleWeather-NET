@@ -124,8 +124,18 @@ namespace SimpleWeather.UWP.BackgroundTasks
                 AppTrigger = new ApplicationTrigger();
 
             // Request access
-            BackgroundExecutionManager.RemoveAccess();
-            var backgroundAccessStatus = await BackgroundExecutionManager.RequestAccessAsync();
+            var backgroundAccessStatus = BackgroundAccessStatus.Unspecified;
+
+            try
+            {
+                BackgroundExecutionManager.RemoveAccess();
+                backgroundAccessStatus = await BackgroundExecutionManager.RequestAccessAsync();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // An access denied exception may be thrown if two requests are issued at the same time
+                // For this specific sample, that could be if the user double clicks "Request access"
+            }
 
             // If allowed
             if (backgroundAccessStatus == BackgroundAccessStatus.AlwaysAllowed ||
@@ -155,8 +165,18 @@ namespace SimpleWeather.UWP.BackgroundTasks
                 AppTrigger = new ApplicationTrigger();
 
             // Request access
-            BackgroundExecutionManager.RemoveAccess();
-            var backgroundAccessStatus = await BackgroundExecutionManager.RequestAccessAsync();
+            var backgroundAccessStatus = BackgroundAccessStatus.Unspecified;
+
+            try
+            {
+                BackgroundExecutionManager.RemoveAccess();
+                backgroundAccessStatus = await BackgroundExecutionManager.RequestAccessAsync();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // An access denied exception may be thrown if two requests are issued at the same time
+                // For this specific sample, that could be if the user double clicks "Request access"
+            }
 
             // If allowed
             if (backgroundAccessStatus == BackgroundAccessStatus.AlwaysAllowed ||
