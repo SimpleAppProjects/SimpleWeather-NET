@@ -22,8 +22,18 @@ namespace SimpleWeather.Utils
         public FileLoggingTree()
             : base()
         {
-            flushTimer = new Timer(TimeSpan.FromSeconds(30).TotalMilliseconds);
+            flushTimer = new Timer(TimeSpan.FromSeconds(5).TotalMilliseconds);
             flushTimer.Elapsed += (s, e) =>
+            {
+                if (writer != null)
+                {
+                    lock (writer)
+                    {
+                        writer.Flush();
+                    }
+                }
+            };
+            flushTimer.Disposed += (s, e) =>
             {
                 if (writer != null)
                 {
@@ -135,9 +145,9 @@ namespace SimpleWeather.Utils
 
         public void Dispose()
         {
-            fileStream?.Dispose();
-            writer?.Dispose();
             flushTimer?.Dispose();
+            writer?.Dispose();
+            fileStream?.Dispose();
         }
     }
 }
