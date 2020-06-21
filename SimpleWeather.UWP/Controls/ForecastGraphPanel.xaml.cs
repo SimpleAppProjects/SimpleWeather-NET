@@ -121,6 +121,8 @@ namespace SimpleWeather.UWP.Controls
             if (_forecasts?.Any() == true && GraphView != null)
             {
                 var forecasts = new List<BaseForecastItemViewModel>(_forecasts);
+                var itemCount = Math.Min(forecasts.Count, MAX_FETCH_SIZE);
+
                 switch (SelectedButton?.Tag)
                 {
                     case "Temp":
@@ -145,20 +147,50 @@ namespace SimpleWeather.UWP.Controls
                                 GraphView.DrawSeriesLabels = true;
                             }
 
-                            for (int i = 0; i < Math.Min(forecasts.Count, MAX_FETCH_SIZE); i++)
+                            for (int i = 0; i < itemCount; i++)
                             {
                                 var forecastItemViewModel = forecasts[i];
                                 try
                                 {
-                                    float hiTemp = float.Parse(forecastItemViewModel.HiTemp.RemoveNonDigitChars());
-                                    YEntryData hiTempData = new YEntryData(hiTemp, forecastItemViewModel.HiTemp.Trim());
-                                    hiTempSeries.Add(hiTempData);
+                                    if (float.TryParse(forecastItemViewModel.HiTemp.RemoveNonDigitChars(), out float hiTemp))
+                                    {
+                                        YEntryData hiTempData = new YEntryData(hiTemp, forecastItemViewModel.HiTemp.Trim());
+                                        hiTempSeries.Add(hiTempData);
+                                    }
+                                    // For NWS, which contains bi-daily forecasts
+                                    else if (i == 0 && i + 1 < itemCount)
+                                    {
+                                        var nextVM = forecasts[i + 1];
+                                        YEntryData hiTempData = new YEntryData(float.Parse(nextVM.HiTemp.RemoveNonDigitChars()), String.Empty);
+                                        hiTempSeries.Add(hiTempData);
+                                    }
+                                    else if (i == itemCount - 1)
+                                    {
+                                        var prevVM = forecasts[i - 1];
+                                        YEntryData hiTempData = new YEntryData(float.Parse(prevVM.HiTemp.RemoveNonDigitChars()), String.Empty);
+                                        hiTempSeries.Add(hiTempData);
+                                    }
 
                                     if (loTempSeries != null && forecastItemViewModel is ForecastItemViewModel fVM)
                                     {
-                                        float loTemp = float.Parse(fVM.LoTemp.RemoveNonDigitChars());
-                                        YEntryData loTempData = new YEntryData(loTemp, fVM.LoTemp.Trim());
-                                        loTempSeries.Add(loTempData);
+                                        if (float.TryParse(fVM.LoTemp.RemoveNonDigitChars(), out float loTemp))
+                                        {
+                                            YEntryData loTempData = new YEntryData(loTemp, fVM.LoTemp.Trim());
+                                            loTempSeries.Add(loTempData);
+                                        }
+                                        // For NWS, which contains bi-daily forecasts
+                                        else if (i == 0 && i + 1 < itemCount)
+                                        {
+                                            var nextVM = forecasts[i + 1] as ForecastItemViewModel;
+                                            YEntryData loTempData = new YEntryData(float.Parse(nextVM.LoTemp.RemoveNonDigitChars()), String.Empty);
+                                            loTempSeries.Add(loTempData);
+                                        }
+                                        else if (i == itemCount - 1)
+                                        {
+                                            var prevVM = forecasts[i - 1] as ForecastItemViewModel;
+                                            YEntryData loTempData = new YEntryData(float.Parse(prevVM.LoTemp.RemoveNonDigitChars()), String.Empty);
+                                            loTempSeries.Add(loTempData);
+                                        }
                                     }
 
                                     XLabelData xLabelData = new XLabelData(forecastItemViewModel.Date, forecastItemViewModel.WeatherIcon);
@@ -209,7 +241,7 @@ namespace SimpleWeather.UWP.Controls
                             List<LineDataSeries> windDataList = new List<LineDataSeries>();
                             List<YEntryData> windDataSeries = new List<YEntryData>();
 
-                            for (int i = 0; i < Math.Min(forecasts.Count, MAX_FETCH_SIZE); i++)
+                            for (int i = 0; i < itemCount; i++)
                             {
                                 var forecastItemViewModel = forecasts[i];
                                 try
@@ -261,7 +293,7 @@ namespace SimpleWeather.UWP.Controls
                             List<LineDataSeries> popDataList = new List<LineDataSeries>();
                             List<YEntryData> popDataSeries = new List<YEntryData>();
 
-                            for (int i = 0; i < Math.Min(forecasts.Count, MAX_FETCH_SIZE); i++)
+                            for (int i = 0; i < itemCount; i++)
                             {
                                 var forecastItemViewModel = forecasts[i];
                                 try

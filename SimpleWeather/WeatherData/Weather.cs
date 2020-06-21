@@ -336,11 +336,13 @@ namespace SimpleWeather.WeatherData
             var now = root.feedCreation;
 
             location = new Location(root.observations.location[0]);
-            update_time = root.feedCreation;
+            update_time = now;
             forecast = new List<Forecast>(root.dailyForecasts.forecastLocation.forecast.Length);
-            for (int i = 0; i < root.dailyForecasts.forecastLocation.forecast.Length; i++)
+            txt_forecast = new List<TextForecast>(root.dailyForecasts.forecastLocation.forecast.Length);
+            foreach (HERE.Forecast fcast in root.dailyForecasts.forecastLocation.forecast)
             {
-                forecast.Add(new Forecast(root.dailyForecasts.forecastLocation.forecast[i]));
+                forecast.Add(new Forecast(fcast));
+                txt_forecast.Add(new TextForecast(fcast));
             }
             hr_forecast = new List<HourlyForecast>(root.hourlyForecasts.forecastLocation.forecast.Length);
             foreach (HERE.Forecast1 forecast1 in root.hourlyForecasts.forecastLocation.forecast)
@@ -350,15 +352,14 @@ namespace SimpleWeather.WeatherData
 
                 hr_forecast.Add(new HourlyForecast(forecast1));
             }
-            txt_forecast = new List<TextForecast>(root.dailyForecasts.forecastLocation.forecast.Length);
-            for (int i = 0; i < root.dailyForecasts.forecastLocation.forecast.Length; i++)
-            {
-                txt_forecast.Add(new TextForecast(root.dailyForecasts.forecastLocation.forecast[i]));
-            }
-            condition = new Condition(root.observations.location[0].observation[0], root.dailyForecasts.forecastLocation.forecast[0]);
-            atmosphere = new Atmosphere(root.observations.location[0].observation[0]);
+
+            var observation = root.observations.location[0].observation[0];
+            var todaysForecast = root.dailyForecasts.forecastLocation.forecast[0];
+
+            condition = new Condition(observation, todaysForecast);
+            atmosphere = new Atmosphere(observation);
             astronomy = new Astronomy(root.astronomy.astronomy);
-            precipitation = new Precipitation(root.dailyForecasts.forecastLocation.forecast[0]);
+            precipitation = new Precipitation(todaysForecast);
             ttl = "180";
 
             source = WeatherAPI.Here;
@@ -417,16 +418,18 @@ namespace SimpleWeather.WeatherData
             {
                 NWS.Period forecastItem = forecastRootobject.periods[i];
 
-                if (forecast.Count == 0 && !forecastItem.isDaytime)
-                    continue;
-
-                if (forecastItem.isDaytime && (i + 1) < forecastRootobject.periods.Length)
+                if ((forecast.Count == 0 && !forecastItem.isDaytime) ||
+                    (forecast.Count == forecastRootobject.periods.Length - 1 && forecastItem.isDaytime))
+                {
+                    forecast.Add(new Forecast(forecastItem));
+                    txt_forecast.Add(new TextForecast(forecastItem));
+                }
+                else if (forecastItem.isDaytime && (i + 1) < forecastRootobject.periods.Length)
                 {
                     NWS.Period ntForecastItem = forecastRootobject.periods[i + 1];
-                    forecast.Add(new Forecast(forecastItem, ntForecastItem));
 
-                    txt_forecast.Add(new TextForecast(forecastItem));
-                    txt_forecast.Add(new TextForecast(ntForecastItem));
+                    forecast.Add(new Forecast(forecastItem, ntForecastItem));
+                    txt_forecast.Add(new TextForecast(forecastItem, ntForecastItem));
 
                     i++;
                 }
@@ -651,6 +654,33 @@ namespace SimpleWeather.WeatherData
             }
         }
 
+        public Forecast(NWS.Period forecastItem)
+        {
+            date = forecastItem.startTime.DateTime;
+            if (forecastItem.isDaytime)
+            {
+                high_f = forecastItem.temperature.ToString();
+                high_c = ConversionMethods.FtoC(high_f);
+            }
+            else
+            {
+                low_f = forecastItem.temperature.ToString();
+                low_c = ConversionMethods.FtoC(low_f);
+            }
+            condition = forecastItem.shortForecast;
+            icon = WeatherManager.GetProvider(WeatherAPI.NWS)
+                        .GetWeatherIcon(forecastItem.icon);
+
+            // Extras
+            extras = new ForecastExtras();
+            extras.wind_degrees = WeatherUtils.GetWindDirection(forecastItem.windDirection);
+            if (float.TryParse(forecastItem.windSpeed.RemoveNonDigitChars(), out float windSpeed))
+            {
+                extras.wind_mph = windSpeed;
+                extras.wind_kph = float.Parse(ConversionMethods.MphToKph(windSpeed.ToString(CultureInfo.InvariantCulture)));
+            }
+        }
+
         public Forecast(NWS.Period forecastItem, NWS.Period ntForecastItem)
         {
             date = forecastItem.startTime.DateTime;
@@ -833,45 +863,29 @@ namespace SimpleWeather.WeatherData
     {
         public TextForecast(HERE.Forecast forecast)
         {
-            title = forecast.weekday;
-
-            String fctxt = String.Format("{0} {1} {2}: {3}",
-                forecast.description.ToPascalCase(), forecast.beaufortDescription.ToPascalCase(),
-                SimpleLibrary.ResLoader.GetString("Label_Humidity/Text"),
-                forecast.humidity + "%");
-
-            fcttext = String.Format("{0} {1} {2}F. {3} {4}F. {5} {6} {7}mph",
-                fctxt,
-                SimpleLibrary.ResLoader.GetString("Label_High"),
-                Math.Round(double.Parse(forecast.highTemperature)),
-                SimpleLibrary.ResLoader.GetString("Label_Low"),
-                Math.Round(double.Parse(forecast.lowTemperature)),
-                SimpleLibrary.ResLoader.GetString("Label_Wind/Text"),
-                forecast.windDesc, Math.Round(double.Parse(forecast.windSpeed)));
-
-            fcttext_metric = String.Format("{0} {1} {2}C. {3} {4}C. {5} {6} {7}kph",
-                fctxt,
-                SimpleLibrary.ResLoader.GetString("Label_High"),
-                ConversionMethods.FtoC(forecast.highTemperature),
-                SimpleLibrary.ResLoader.GetString("Label_Low"),
-                ConversionMethods.FtoC(forecast.lowTemperature),
-                SimpleLibrary.ResLoader.GetString("Label_Wind/Text"),
-                forecast.windDesc, Math.Round(double.Parse(ConversionMethods.MphToKph(forecast.windSpeed))));
-
-            icon = WeatherManager.GetProvider(WeatherAPI.Here)
-                   .GetWeatherIcon(string.Format("{0}_{1}", forecast.daylight, forecast.iconName));
-
-            pop = forecast.precipitationProbability;
+            date = forecast.utcTime;
+            fcttext = String.Format(CultureInfo.InvariantCulture, "{0} - {1} {2}",
+                forecast.weekday,
+                forecast.description.ToPascalCase(), forecast.beaufortDescription.ToPascalCase());
+            fcttext_metric = fcttext;
         }
 
         public TextForecast(NWS.Period forecastItem)
         {
-            title = forecastItem.name;
-            fcttext = forecastItem.detailedForecast;
-            fcttext_metric = forecastItem.detailedForecast;
-            icon = WeatherManager.GetProvider(WeatherAPI.NWS)
-                        .GetWeatherIcon(forecastItem.icon);
-            pop = null;
+            date = forecastItem.startTime;
+            fcttext = String.Format(CultureInfo.InvariantCulture,
+                "{0} - {1}", forecastItem.name, forecastItem.detailedForecast);
+            fcttext_metric = fcttext;
+        }
+
+        public TextForecast(NWS.Period forecastItem, NWS.Period ntForecastItem)
+        {
+            date = forecastItem.startTime;
+            fcttext = String.Format(CultureInfo.InvariantCulture,
+                "{0} - {1}\n\n{2} - {3}",
+                forecastItem.name, forecastItem.detailedForecast,
+                ntForecastItem.name, ntForecastItem.detailedForecast);
+            fcttext_metric = fcttext;
         }
     }
 

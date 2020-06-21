@@ -38,11 +38,11 @@ namespace SimpleWeather.Controls
             try
             {
                 HiTemp = (Settings.IsFahrenheit ?
-                    Math.Round(double.Parse(hrForecast.high_f)).ToString() : Math.Round(double.Parse(hrForecast.high_c)).ToString()) + "º ";
+                    Math.Round(double.Parse(hrForecast.high_f)).ToString() : Math.Round(double.Parse(hrForecast.high_c)).ToString()) + "º";
             }
             catch (FormatException ex)
             {
-                HiTemp = "--º ";
+                HiTemp = "--";
                 Logger.WriteLine(LoggerLevel.Error, "Invalid number format", ex);
             }
             PoP = hrForecast.pop + "%";

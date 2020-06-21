@@ -27,6 +27,7 @@ namespace SimpleWeather.Controls
         private string weatherIcon;
         private string hiTemp;
         private string loTemp;
+        private bool showHiLo;
 
         // Weather Details
         private string sunrise;
@@ -72,6 +73,7 @@ namespace SimpleWeather.Controls
         public string WeatherIcon { get => weatherIcon; private set { if (!Equals(weatherIcon, value)) { weatherIcon = value; OnPropertyChanged(nameof(WeatherIcon)); } } }
         public string HiTemp { get => hiTemp; private set { if (!Equals(hiTemp, value)) { hiTemp = value; OnPropertyChanged(nameof(HiTemp)); } } }
         public string LoTemp { get => loTemp; private set { if (!Equals(loTemp, value)) { loTemp = value; OnPropertyChanged(nameof(LoTemp)); } } }
+        public bool ShowHiLo { get => showHiLo; private set { if (!Equals(showHiLo, value)) { showHiLo = value; OnPropertyChanged(nameof(ShowHiLo)); } } }
         public string Sunrise { get => sunrise; private set { if (!Equals(sunrise, value)) { sunrise = value; OnPropertyChanged(nameof(Sunrise)); } } }
         public string Sunset { get => sunset; private set { if (!Equals(sunset, value)) { sunset = value; OnPropertyChanged(nameof(Sunset)); } } }
         public SimpleObservableList<DetailItemViewModel> WeatherDetails { get => weatherDetails; private set { weatherDetails = value; OnPropertyChanged(nameof(WeatherDetails)); } }
@@ -166,23 +168,32 @@ namespace SimpleWeather.Controls
             }
             else
             {
-                tmpCurTemp = "---";
+                tmpCurTemp = "--";
             }
             var unitTemp = Settings.IsFahrenheit ? WeatherIcons.FAHRENHEIT : WeatherIcons.CELSIUS;
             CurTemp = tmpCurTemp + unitTemp;
-            CurCondition = (String.IsNullOrWhiteSpace(weather.condition.weather)) ? "---" : weather.condition.weather;
+            CurCondition = (String.IsNullOrWhiteSpace(weather.condition.weather)) ? "--" : weather.condition.weather;
             WeatherIcon = weather.condition.icon;
 
-            if (weather.condition.high_f != weather.condition.high_c && weather.condition.low_f != weather.condition.low_c)
+            if (weather.condition.high_f != weather.condition.high_c)
             {
                 HiTemp = (int)(Settings.IsFahrenheit ? Math.Round(weather.condition.high_f) : Math.Round(weather.condition.high_c)) + "°";
-                LoTemp = (int)(Settings.IsFahrenheit ? Math.Round(weather.condition.low_f) : Math.Round(weather.condition.low_c)) + "°";
             }
             else
             {
                 HiTemp = null;
+            }
+
+            if (weather.condition.low_f != weather.condition.low_c)
+            {
+                LoTemp = (int)(Settings.IsFahrenheit ? Math.Round(weather.condition.low_f) : Math.Round(weather.condition.low_c)) + "°";
+            }
+            else
+            {
                 LoTemp = null;
             }
+
+            ShowHiLo = HiTemp != null || LoTemp != null;
 
             // WeatherDetails
             WeatherDetails.Clear();

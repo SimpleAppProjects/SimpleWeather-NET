@@ -31,22 +31,36 @@ namespace SimpleWeather.Controls
             Condition = forecast.condition;
             try
             {
-                HiTemp = (Settings.IsFahrenheit ?
-                    Math.Round(double.Parse(forecast.high_f)).ToString() : Math.Round(double.Parse(forecast.high_c)).ToString()) + "º ";
+                if (forecast.high_f != null && forecast.high_c != null)
+                {
+                    HiTemp = (Settings.IsFahrenheit ?
+                        Math.Round(double.Parse(forecast.high_f)).ToString() : Math.Round(double.Parse(forecast.high_c)).ToString()) + "º";
+                }
+                else
+                {
+                    HiTemp = "--";
+                }
             }
             catch (FormatException ex)
             {
-                HiTemp = "--º ";
+                HiTemp = "--";
                 Logger.WriteLine(LoggerLevel.Error, "Invalid number format", ex);
             }
             try
             {
-                LoTemp = (Settings.IsFahrenheit ?
-                    Math.Round(double.Parse(forecast.low_f)).ToString() : Math.Round(double.Parse(forecast.low_c)).ToString()) + "º ";
+                if (forecast.low_f != null && forecast.low_c != null)
+                {
+                    LoTemp = (Settings.IsFahrenheit ?
+                        Math.Round(double.Parse(forecast.low_f)).ToString() : Math.Round(double.Parse(forecast.low_c)).ToString()) + "º";
+                }
+                else
+                {
+                    LoTemp = "--";
+                }
             }
             catch (FormatException ex)
             {
-                LoTemp = "--º ";
+                LoTemp = "--";
                 Logger.WriteLine(LoggerLevel.Error, "Invalid number format", ex);
             }
 
@@ -150,16 +164,14 @@ namespace SimpleWeather.Controls
                     StringBuilder sb = new StringBuilder();
 
                     TextForecast fctDay = txtForecasts[0];
-                    sb.AppendFormat(CultureInfo.InvariantCulture, "{0} - {1}", fctDay.title,
-                        Settings.IsFahrenheit ? fctDay.fcttext : fctDay.fcttext_metric);
+                    sb.Append(Settings.IsFahrenheit ? fctDay.fcttext : fctDay.fcttext_metric);
 
                     if (dayAndNt)
                     {
                         sb.Append(Environment.NewLine).Append(Environment.NewLine);
 
                         TextForecast fctNt = txtForecasts[1];
-                        sb.AppendFormat(CultureInfo.InvariantCulture, "{0} - {1}", fctNt.title,
-                            Settings.IsFahrenheit ? fctNt.fcttext : fctNt.fcttext_metric);
+                        sb.Append(Settings.IsFahrenheit ? fctNt.fcttext : fctNt.fcttext_metric);
                     }
 
                     ConditionLong = sb.ToString();

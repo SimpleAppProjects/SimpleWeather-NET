@@ -86,7 +86,7 @@ namespace SimpleWeather.Controls
 
                 case WeatherDetailsType.PoPChance:
                     this.Label = SimpleLibrary.ResLoader.GetString("Label_Chance/Text");
-                    this.Icon = WeatherIcons.RAINDROP;
+                    this.Icon = WeatherIcons.UMBRELLA;
                     break;
 
                 case WeatherDetailsType.PoPRain:

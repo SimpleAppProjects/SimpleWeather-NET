@@ -232,8 +232,8 @@
                     <toolkitControls:DropShadowPanel BlurRadius="10.0" ShadowOpacity="1"
                                                      HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5,0,0,0" Grid.Row="6">
                         <TextBlock FontSize="24" FontWeight="Medium" Style="{ThemeResource WeatherIcon}"
-                                   Visibility="{x:Bind WeatherView.HiTemp, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
-                            <Span><Run Text="{x:Bind WeatherView.HiTemp, Mode=OneWay}" /><Run Text=" &#xf058;" /><Run Text=" | " /><Run Text="{x:Bind WeatherView.LoTemp, Mode=OneWay}" /><Run Text=" &#xf044;" /></Span>
+                                   Visibility="{x:Bind WeatherView.ShowHiLo, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
+                            <Span><Run Text="{x:Bind WeatherView.HiTemp, Mode=OneWay, TargetNullValue='--'}" /><Run Text=" &#xf058;" /><Run Text=" | " /><Run Text="{x:Bind WeatherView.LoTemp, Mode=OneWay, TargetNullValue='--'}" /><Run Text=" &#xf044;" /></Span>
                         </TextBlock>
                     </toolkitControls:DropShadowPanel>
                     <HyperlinkButton x:Name="Attribution" Padding="5" FontSize="11" FontWeight="Medium" VerticalAlignment="Bottom" HorizontalAlignment="Right"

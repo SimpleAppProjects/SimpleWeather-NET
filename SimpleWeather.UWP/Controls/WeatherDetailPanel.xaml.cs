@@ -70,7 +70,7 @@ namespace SimpleWeather.UWP.Controls
             {
                 Date = forecastViewModel.Date;
                 Icon = forecastViewModel.WeatherIcon;
-                Condition = String.Format("{0}/ {1}- {2}",
+                Condition = String.Format(CultureInfo.InvariantCulture, "{0} / {1} - {2}",
                     forecastViewModel.HiTemp, forecastViewModel.LoTemp, forecastViewModel.Condition);
                 ConditionLongDesc = forecastViewModel.ConditionLong;
                 Extras = new ObservableCollection<DetailItemViewModel>();
@@ -101,7 +101,7 @@ namespace SimpleWeather.UWP.Controls
             {
                 Date = hrforecastViewModel.Date;
                 Icon = hrforecastViewModel.WeatherIcon;
-                Condition = String.Format("{0}- {1}",
+                Condition = String.Format(CultureInfo.InvariantCulture, "{0} - {1}",
                     hrforecastViewModel.HiTemp, hrforecastViewModel.Condition);
                 Extras = new ObservableCollection<DetailItemViewModel>();
 

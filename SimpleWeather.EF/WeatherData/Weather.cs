@@ -949,11 +949,10 @@ namespace SimpleWeather.WeatherData
     [JsonFormatter(typeof(CustomJsonConverter<TextForecast>))]
     public partial class TextForecast : CustomJsonObject
     {
-        public string title { get; set; }
+        [JsonFormatter(typeof(DateTimeOffsetFormatter), DateTimeUtils.ISO8601_DATETIMEOFFSET_FORMAT)]
+        public DateTimeOffset date { get; set; }
         public string fcttext { get; set; }
         public string fcttext_metric { get; set; }
-        public string icon { get; set; }
-        public string pop { get; set; }
 
         internal TextForecast()
         {
@@ -963,16 +962,18 @@ namespace SimpleWeather.WeatherData
         public override bool Equals(object obj)
         {
             return obj is TextForecast forecast &&
-                   title == forecast.title &&
+                   date == forecast.date &&
                    fcttext == forecast.fcttext &&
-                   fcttext_metric == forecast.fcttext_metric &&
-                   icon == forecast.icon &&
-                   pop == forecast.pop;
+                   fcttext_metric == forecast.fcttext_metric;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(title, fcttext, fcttext_metric, icon, pop);
+            var hash = new HashCode();
+            hash.Add(date);
+            hash.Add(fcttext);
+            hash.Add(fcttext_metric);
+            return hash.ToHashCode();
         }
 
         public override void FromJson(ref JsonReader extReader)
@@ -1004,8 +1005,8 @@ namespace SimpleWeather.WeatherData
 
                 switch (property)
                 {
-                    case nameof(title):
-                        this.title = reader.ReadString();
+                    case nameof(date):
+                        this.date = DateTimeOffset.ParseExact(reader.ReadString(), DateTimeUtils.ISO8601_DATETIMEOFFSET_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
                         break;
 
                     case nameof(fcttext):
@@ -1016,15 +1017,8 @@ namespace SimpleWeather.WeatherData
                         this.fcttext_metric = reader.ReadString();
                         break;
 
-                    case nameof(icon):
-                        this.icon = reader.ReadString();
-                        break;
-
-                    case nameof(pop):
-                        this.pop = reader.ReadString();
-                        break;
-
                     default:
+                        reader.ReadNext();
                         break;
                 }
             }
@@ -1037,9 +1031,9 @@ namespace SimpleWeather.WeatherData
             // {
             writer.WriteBeginObject();
 
-            // "title" : ""
-            writer.WritePropertyName(nameof(title));
-            writer.WriteString(title);
+            // "date" : ""
+            writer.WritePropertyName(nameof(date));
+            writer.WriteString(date.ToISO8601Format());
 
             writer.WriteValueSeparator();
 
@@ -1052,18 +1046,6 @@ namespace SimpleWeather.WeatherData
             // "fcttext_metric" : ""
             writer.WritePropertyName(nameof(fcttext_metric));
             writer.WriteString(fcttext_metric);
-
-            writer.WriteValueSeparator();
-
-            // "icon" : ""
-            writer.WritePropertyName(nameof(icon));
-            writer.WriteString(icon);
-
-            writer.WriteValueSeparator();
-
-            // "pop" : ""
-            writer.WritePropertyName(nameof(pop));
-            writer.WriteString(pop);
 
             // }
             writer.WriteEndObject();

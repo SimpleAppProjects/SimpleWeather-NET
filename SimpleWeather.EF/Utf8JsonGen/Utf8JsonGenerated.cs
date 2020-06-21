@@ -1139,20 +1139,16 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
         {
             this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
             {
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("title"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("date"), 0},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("fcttext"), 1},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("fcttext_metric"), 2},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("icon"), 3},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("pop"), 4},
             };
 
             this.____stringByteKeys = new byte[][]
             {
-                JsonWriter.GetEncodedPropertyNameWithBeginObject("title"),
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("date"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("fcttext"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("fcttext_metric"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("icon"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("pop"),
                 
             };
         }
@@ -1167,15 +1163,11 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             
 
             writer.WriteRaw(this.____stringByteKeys[0]);
-            writer.WriteString(value.title);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Serialize(ref writer, value.date, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[1]);
             writer.WriteString(value.fcttext);
             writer.WriteRaw(this.____stringByteKeys[2]);
             writer.WriteString(value.fcttext_metric);
-            writer.WriteRaw(this.____stringByteKeys[3]);
-            writer.WriteString(value.icon);
-            writer.WriteRaw(this.____stringByteKeys[4]);
-            writer.WriteString(value.pop);
             
             writer.WriteEndObject();
         }
@@ -1188,16 +1180,12 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             }
             
 
-            var __title__ = default(string);
-            var __title__b__ = false;
+            var __date__ = default(global::System.DateTimeOffset);
+            var __date__b__ = false;
             var __fcttext__ = default(string);
             var __fcttext__b__ = false;
             var __fcttext_metric__ = default(string);
             var __fcttext_metric__b__ = false;
-            var __icon__ = default(string);
-            var __icon__b__ = false;
-            var __pop__ = default(string);
-            var __pop__b__ = false;
 
             var ____count = 0;
             reader.ReadIsBeginObjectWithVerify();
@@ -1214,8 +1202,8 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
                 switch (key)
                 {
                     case 0:
-                        __title__ = reader.ReadString();
-                        __title__b__ = true;
+                        __date__ = formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Deserialize(ref reader, formatterResolver);
+                        __date__b__ = true;
                         break;
                     case 1:
                         __fcttext__ = reader.ReadString();
@@ -1224,14 +1212,6 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
                     case 2:
                         __fcttext_metric__ = reader.ReadString();
                         __fcttext_metric__b__ = true;
-                        break;
-                    case 3:
-                        __icon__ = reader.ReadString();
-                        __icon__b__ = true;
-                        break;
-                    case 4:
-                        __pop__ = reader.ReadString();
-                        __pop__b__ = true;
                         break;
                     default:
                         reader.ReadNextBlock();
@@ -1243,11 +1223,9 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             }
 
             var ____result = new global::SimpleWeather.WeatherData.TextForecast();
-            if(__title__b__) ____result.title = __title__;
+            if(__date__b__) ____result.date = __date__;
             if(__fcttext__b__) ____result.fcttext = __fcttext__;
             if(__fcttext_metric__b__) ____result.fcttext_metric = __fcttext_metric__;
-            if(__icon__b__) ____result.icon = __icon__;
-            if(__pop__b__) ____result.pop = __pop__;
 
             return ____result;
         }
@@ -1541,6 +1519,7 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("low_f"), 13},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("low_c"), 14},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("airQuality"), 15},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("observation_time"), 16},
             };
 
             this.____stringByteKeys = new byte[][]
@@ -1561,6 +1540,7 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("low_f"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("low_c"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("airQuality"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("observation_time"),
                 
             };
         }
@@ -1606,6 +1586,8 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             writer.WriteSingle(value.low_c);
             writer.WriteRaw(this.____stringByteKeys[15]);
             formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherData.AirQuality>().Serialize(ref writer, value.airQuality, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[16]);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Serialize(ref writer, value.observation_time, formatterResolver);
             
             writer.WriteEndObject();
         }
@@ -1650,6 +1632,8 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             var __low_c__b__ = false;
             var __airQuality__ = default(global::SimpleWeather.WeatherData.AirQuality);
             var __airQuality__b__ = false;
+            var __observation_time__ = default(global::System.DateTimeOffset);
+            var __observation_time__b__ = false;
 
             var ____count = 0;
             reader.ReadIsBeginObjectWithVerify();
@@ -1729,6 +1713,10 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
                         __airQuality__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherData.AirQuality>().Deserialize(ref reader, formatterResolver);
                         __airQuality__b__ = true;
                         break;
+                    case 16:
+                        __observation_time__ = formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Deserialize(ref reader, formatterResolver);
+                        __observation_time__b__ = true;
+                        break;
                     default:
                         reader.ReadNextBlock();
                         break;
@@ -1755,6 +1743,7 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             if(__low_f__b__) ____result.low_f = __low_f__;
             if(__low_c__b__) ____result.low_c = __low_c__;
             if(__airQuality__b__) ____result.airQuality = __airQuality__;
+            if(__observation_time__b__) ____result.observation_time = __observation_time__;
 
             return ____result;
         }
