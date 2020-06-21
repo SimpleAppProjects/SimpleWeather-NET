@@ -86,7 +86,7 @@ namespace SimpleWeather.Controls
                     Logger.WriteLine(LoggerLevel.Error, ex, "{0}: error refreshing alerts", nameof(WeatherAlertsViewModel));
                 }
 
-                if (alerts?.Count > 0)
+                if (alertData?.Count > 0)
                 {
                     foreach (var alert in alertData)
                     {
