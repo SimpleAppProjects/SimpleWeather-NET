@@ -7,6 +7,7 @@ namespace SimpleWeather.Utils
     {
         public const string DATETIMEOFFSET_FORMAT = "dd.MM.yyyy HH:mm:ss zzzz";
         public const string ISO8601_DATETIME_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ssZ";
+        public const string ISO8601_DATETIMEOFFSET_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ss zzzz";
         public const string TIME_OFFSET_FORMAT = "hh':'mm':'ss";
 
         public static TimeSpan MaxTimeOfDay()
@@ -42,22 +43,49 @@ namespace SimpleWeather.Utils
             return start.AddDays(daysToRemove);
         }
 
+        /// <summary>
+        /// Outputs DateTimeOffset to the following format: "dd.MM.yyyy HH:mm:ss zzzz"
+        /// </summary>
         public static String ToDateTimeOffsetFormat(this DateTimeOffset date)
         {
             return date.ToString(DATETIMEOFFSET_FORMAT, CultureInfo.InvariantCulture);
         }
 
+        /// <summary>
+        /// Outputs DateTimeOffset to the following format: "yyyy-MM-ddTHH:mm:ss zzzz"
+        /// </summary>
+        public static String ToISO8601Format(this DateTimeOffset date)
+        {
+            return date.ToString(ISO8601_DATETIMEOFFSET_FORMAT, CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// Outputs DateTime to the following format: "yyyy-MM-ddTHH:mm:ssZ"
+        /// </summary>
         public static String ToISO8601Format(this DateTime date)
         {
             return date.ToString(ISO8601_DATETIME_FORMAT, CultureInfo.InvariantCulture);
         }
 
+        /// <summary>
+        /// Outputs TimeSpan to the following format: "hh:mm:ss"
+        /// </summary>
         public static String ToZoneOffsetFormat(this TimeSpan time)
         {
             if (time.CompareTo(TimeSpan.Zero) < 0)
                 return "-" + time.ToString(TIME_OFFSET_FORMAT, CultureInfo.InvariantCulture);
             else
                 return time.ToString(TIME_OFFSET_FORMAT, CultureInfo.InvariantCulture);
+        }
+
+        /// Functionality thanks to: https://stackoverflow.com/a/153014
+        /// <summary>
+        /// Use to trim a DateTime to a specific precision
+        /// </summary>
+        /// <param name="roundTicks">The ticks to round DateTime object to. (ex. TimeSpan.TicksPerMinute)</param>
+        public static DateTime Trim(this DateTime date, long roundTicks)
+        {
+            return new DateTime(date.Ticks - date.Ticks % roundTicks, date.Kind);
         }
     }
 }

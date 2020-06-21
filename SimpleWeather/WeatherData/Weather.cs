@@ -40,6 +40,8 @@ namespace SimpleWeather.WeatherData
                 condition.low_c = float.Parse(forecast[0].low_c);
             }
 
+            condition.observation_time = update_time;
+
             source = WeatherAPI.Yahoo;
         }
 
@@ -120,6 +122,8 @@ namespace SimpleWeather.WeatherData
                 condition.low_f = float.Parse(forecast[0].low_f);
                 condition.low_c = float.Parse(forecast[0].low_c);
             }
+
+            condition.observation_time = update_time;
 
             source = WeatherAPI.OpenWeatherMap;
         }
@@ -322,6 +326,8 @@ namespace SimpleWeather.WeatherData
                 condition.low_c = float.Parse(forecast[0].low_c);
             }
 
+            condition.observation_time = update_time;
+
             source = WeatherAPI.MetNo;
         }
 
@@ -339,7 +345,7 @@ namespace SimpleWeather.WeatherData
             hr_forecast = new List<HourlyForecast>(root.hourlyForecasts.forecastLocation.forecast.Length);
             foreach (HERE.Forecast1 forecast1 in root.hourlyForecasts.forecastLocation.forecast)
             {
-                if (forecast1.utcTime.UtcDateTime < now.UtcDateTime)
+                if (forecast1.utcTime.UtcDateTime < now.UtcDateTime.Trim(TimeSpan.TicksPerHour))
                     continue;
 
                 hr_forecast.Add(new HourlyForecast(forecast1));
@@ -356,13 +362,52 @@ namespace SimpleWeather.WeatherData
             ttl = "180";
 
             source = WeatherAPI.Here;
+
+            // Check for outdated observation
+            int ttlMins = int.Parse(ttl);
+            if ((DateTimeOffset.Now - condition.observation_time).TotalMinutes > ttlMins)
+            {
+                if (hr_forecast.FirstOrDefault() is HourlyForecast hrf)
+                {
+                    condition.weather = hrf.condition;
+                    condition.icon = hrf.icon;
+
+                    condition.temp_f = float.Parse(hrf.high_f, CultureInfo.InvariantCulture);
+                    condition.temp_c = float.Parse(hrf.high_c, CultureInfo.InvariantCulture);
+
+                    condition.wind_mph = hrf.wind_mph;
+                    condition.wind_kph = hrf.wind_kph;
+                    condition.wind_degrees = hrf.wind_degrees;
+
+                    condition.beaufort = null;
+                    condition.feelslike_f = hrf.extras?.feelslike_f ?? 0.0f;
+                    condition.feelslike_c = hrf.extras?.feelslike_c ?? 0.0f;
+                    condition.uv = null;
+
+                    atmosphere.dewpoint_f = hrf.extras?.dewpoint_f;
+                    atmosphere.dewpoint_c = hrf.extras?.dewpoint_c;
+                    atmosphere.humidity = hrf.extras?.humidity;
+                    atmosphere.pressure_trend = null;
+                    atmosphere.pressure_in = hrf.extras?.pressure_in;
+                    atmosphere.pressure_mb = hrf.extras?.pressure_mb;
+                    atmosphere.visibility_mi = hrf.extras?.visibility_mi;
+                    atmosphere.visibility_km = hrf.extras?.visibility_km;
+
+                    precipitation.pop = hrf.extras?.pop;
+                    precipitation.qpf_rain_in = hrf.extras?.qpf_rain_in > 0 ? hrf.extras.qpf_rain_in : 0.0f;
+                    precipitation.qpf_rain_mm = hrf.extras?.qpf_rain_mm > 0 ? hrf.extras.qpf_rain_mm : 0.0f;
+                    precipitation.qpf_snow_in = hrf.extras?.qpf_snow_in > 0 ? hrf.extras.qpf_snow_in : 0.0f;
+                    precipitation.qpf_snow_cm = hrf.extras?.qpf_snow_cm > 0 ? hrf.extras.qpf_snow_cm : 0.0f;
+                }
+            }
         }
 
         public Weather(NWS.PointsRootobject pointsRootobject, NWS.ForecastRootobject forecastRootobject,
             NWS.ForecastRootobject hourlyForecastRootobject, NWS.ObservationsCurrentRootobject obsCurrentRootObject)
         {
             location = new Location(pointsRootobject);
-            update_time = DateTimeOffset.UtcNow;
+            var now = DateTimeOffset.UtcNow;
+            update_time = now;
 
             // ~8-day forecast
             forecast = new List<Forecast>(8);
@@ -389,9 +434,12 @@ namespace SimpleWeather.WeatherData
             if (hourlyForecastRootobject != null)
             {
                 hr_forecast = new List<HourlyForecast>(hourlyForecastRootobject.periods.Length);
-                for (int i = 0; i < hourlyForecastRootobject.periods.Length; i++)
+                foreach (NWS.Period period in hourlyForecastRootobject.periods)
                 {
-                    hr_forecast.Add(new HourlyForecast(hourlyForecastRootobject.periods[i]));
+                    if (period.startTime.UtcDateTime < now.UtcDateTime.Trim(TimeSpan.TicksPerHour))
+                        continue;
+
+                    hr_forecast.Add(new HourlyForecast(period));
                 }
             }
             condition = new Condition(obsCurrentRootObject);
@@ -409,6 +457,24 @@ namespace SimpleWeather.WeatherData
             }
 
             source = WeatherAPI.NWS;
+
+            // Check for outdated observation
+            int ttlMins = int.Parse(ttl);
+            if ((DateTimeOffset.Now - condition.observation_time).TotalMinutes > ttlMins)
+            {
+                if (hr_forecast.FirstOrDefault() is HourlyForecast hrf)
+                {
+                    condition.weather = hrf.condition;
+                    condition.icon = hrf.icon;
+
+                    condition.temp_f = float.Parse(hrf.high_f, CultureInfo.InvariantCulture);
+                    condition.temp_c = float.Parse(hrf.high_c, CultureInfo.InvariantCulture);
+
+                    condition.wind_mph = hrf.wind_mph;
+                    condition.wind_kph = hrf.wind_kph;
+                    condition.wind_degrees = hrf.wind_degrees;
+                }
+            }
         }
     }
 
@@ -938,6 +1004,8 @@ namespace SimpleWeather.WeatherData
 
             if (float.TryParse(forecastItem.uvIndex, out float index))
                 uv = new UV(index, forecastItem.uvDesc);
+
+            observation_time = observation.utcTime;
         }
 
         public Condition(NWS.ObservationsCurrentRootobject obsCurrentRootObject)
@@ -987,6 +1055,8 @@ namespace SimpleWeather.WeatherData
             }
             icon = WeatherManager.GetProvider(WeatherAPI.NWS)
                         .GetWeatherIcon(obsCurrentRootObject.icon);
+
+            observation_time = obsCurrentRootObject.timestamp;
         }
     }
 

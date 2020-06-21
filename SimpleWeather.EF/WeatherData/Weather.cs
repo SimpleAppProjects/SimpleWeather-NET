@@ -1391,6 +1391,7 @@ namespace SimpleWeather.WeatherData
         public float low_f { get; set; }
         public float low_c { get; set; }
         public AirQuality airQuality { get; set; }
+        public DateTimeOffset observation_time { get; set; }
 
         internal Condition()
         {
@@ -1415,7 +1416,8 @@ namespace SimpleWeather.WeatherData
                    high_c == condition.high_c &&
                    low_f == condition.low_f &&
                    low_c == condition.low_c &&
-                   Object.Equals(airQuality, condition.airQuality);
+                   Object.Equals(airQuality, condition.airQuality) &&
+                   observation_time == condition.observation_time;
         }
 
         public override int GetHashCode()
@@ -1437,6 +1439,7 @@ namespace SimpleWeather.WeatherData
             hash.Add(low_f);
             hash.Add(low_c);
             hash.Add(airQuality);
+            hash.Add(observation_time);
             return hash.ToHashCode();
         }
 
@@ -1534,6 +1537,10 @@ namespace SimpleWeather.WeatherData
                     case nameof(airQuality):
                         this.airQuality = new AirQuality();
                         this.airQuality.FromJson(ref reader);
+                        break;
+
+                    case nameof(observation_time):
+                        this.observation_time = DateTimeOffset.ParseExact(reader.ReadString(), DateTimeUtils.ISO8601_DATETIMEOFFSET_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
                         break;
 
                     default:
@@ -1651,6 +1658,12 @@ namespace SimpleWeather.WeatherData
                 writer.WritePropertyName(nameof(airQuality));
                 writer.WriteString(airQuality?.ToJson());
             }
+
+            writer.WriteValueSeparator();
+
+            // "observation_time" : ""
+            writer.WritePropertyName(nameof(observation_time));
+            writer.WriteString(observation_time.ToISO8601Format());
 
             // }
             writer.WriteEndObject();
