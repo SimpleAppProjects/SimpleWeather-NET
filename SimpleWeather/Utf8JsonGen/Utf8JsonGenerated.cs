@@ -7864,7 +7864,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS
             writer.WriteRaw(this.____stringByteKeys[4]);
             writer.WriteBoolean(value.isDaytime);
             writer.WriteRaw(this.____stringByteKeys[5]);
-            writer.WriteString(value.temperature);
+            writer.WriteInt32(value.temperature);
             writer.WriteRaw(this.____stringByteKeys[6]);
             writer.WriteString(value.temperatureUnit);
             writer.WriteRaw(this.____stringByteKeys[7]);
@@ -7901,7 +7901,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS
             var __endTime__b__ = false;
             var __isDaytime__ = default(bool);
             var __isDaytime__b__ = false;
-            var __temperature__ = default(string);
+            var __temperature__ = default(int);
             var __temperature__b__ = false;
             var __temperatureUnit__ = default(string);
             var __temperatureUnit__b__ = false;
@@ -7953,7 +7953,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS
                         __isDaytime__b__ = true;
                         break;
                     case 5:
-                        __temperature__ = reader.ReadString();
+                        __temperature__ = reader.ReadInt32();
                         __temperature__b__ = true;
                         break;
                     case 6:
@@ -8261,7 +8261,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS
             
 
             writer.WriteRaw(this.____stringByteKeys[0]);
-            writer.WriteString(value.value);
+            formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.value, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[1]);
             writer.WriteString(value.unitCode);
             writer.WriteRaw(this.____stringByteKeys[2]);
@@ -8278,7 +8278,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS
             }
             
 
-            var __value__ = default(string);
+            var __value__ = default(float?);
             var __value__b__ = false;
             var __unitCode__ = default(string);
             var __unitCode__b__ = false;
@@ -8300,7 +8300,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS
                 switch (key)
                 {
                     case 0:
-                        __value__ = reader.ReadString();
+                        __value__ = formatterResolver.GetFormatterWithVerify<float?>().Deserialize(ref reader, formatterResolver);
                         __value__b__ = true;
                         break;
                     case 1:
@@ -8363,7 +8363,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS
             
 
             writer.WriteRaw(this.____stringByteKeys[0]);
-            writer.WriteString(value.value);
+            formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.value, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[1]);
             writer.WriteString(value.unitCode);
             writer.WriteRaw(this.____stringByteKeys[2]);
@@ -8380,7 +8380,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS
             }
             
 
-            var __value__ = default(string);
+            var __value__ = default(float?);
             var __value__b__ = false;
             var __unitCode__ = default(string);
             var __unitCode__b__ = false;
@@ -8402,7 +8402,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS
                 switch (key)
                 {
                     case 0:
-                        __value__ = reader.ReadString();
+                        __value__ = formatterResolver.GetFormatterWithVerify<float?>().Deserialize(ref reader, formatterResolver);
                         __value__b__ = true;
                         break;
                     case 1:
@@ -8465,7 +8465,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS
             
 
             writer.WriteRaw(this.____stringByteKeys[0]);
-            writer.WriteString(value.value);
+            formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.value, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[1]);
             writer.WriteString(value.unitCode);
             writer.WriteRaw(this.____stringByteKeys[2]);
@@ -8482,7 +8482,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS
             }
             
 
-            var __value__ = default(string);
+            var __value__ = default(float?);
             var __value__b__ = false;
             var __unitCode__ = default(string);
             var __unitCode__b__ = false;
@@ -8504,7 +8504,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS
                 switch (key)
                 {
                     case 0:
-                        __value__ = reader.ReadString();
+                        __value__ = formatterResolver.GetFormatterWithVerify<float?>().Deserialize(ref reader, formatterResolver);
                         __value__b__ = true;
                         break;
                     case 1:
@@ -8567,7 +8567,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS
             
 
             writer.WriteRaw(this.____stringByteKeys[0]);
-            writer.WriteString(value.value);
+            formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.value, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[1]);
             writer.WriteString(value.unitCode);
             writer.WriteRaw(this.____stringByteKeys[2]);
@@ -8584,7 +8584,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS
             }
             
 
-            var __value__ = default(string);
+            var __value__ = default(float?);
             var __value__b__ = false;
             var __unitCode__ = default(string);
             var __unitCode__b__ = false;
@@ -8606,7 +8606,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS
                 switch (key)
                 {
                     case 0:
-                        __value__ = reader.ReadString();
+                        __value__ = formatterResolver.GetFormatterWithVerify<float?>().Deserialize(ref reader, formatterResolver);
                         __value__b__ = true;
                         break;
                     case 1:
@@ -8669,7 +8669,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS
             
 
             writer.WriteRaw(this.____stringByteKeys[0]);
-            writer.WriteString(value.value);
+            formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.value, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[1]);
             writer.WriteString(value.unitCode);
             writer.WriteRaw(this.____stringByteKeys[2]);
@@ -8686,7 +8686,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS
             }
             
 
-            var __value__ = default(string);
+            var __value__ = default(float?);
             var __value__b__ = false;
             var __unitCode__ = default(string);
             var __unitCode__b__ = false;
@@ -8708,7 +8708,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS
                 switch (key)
                 {
                     case 0:
-                        __value__ = reader.ReadString();
+                        __value__ = formatterResolver.GetFormatterWithVerify<float?>().Deserialize(ref reader, formatterResolver);
                         __value__b__ = true;
                         break;
                     case 1:
@@ -8771,7 +8771,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS
             
 
             writer.WriteRaw(this.____stringByteKeys[0]);
-            writer.WriteString(value.value);
+            formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.value, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[1]);
             writer.WriteString(value.unitCode);
             writer.WriteRaw(this.____stringByteKeys[2]);
@@ -8788,7 +8788,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS
             }
             
 
-            var __value__ = default(string);
+            var __value__ = default(float?);
             var __value__b__ = false;
             var __unitCode__ = default(string);
             var __unitCode__b__ = false;
@@ -8810,7 +8810,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS
                 switch (key)
                 {
                     case 0:
-                        __value__ = reader.ReadString();
+                        __value__ = formatterResolver.GetFormatterWithVerify<float?>().Deserialize(ref reader, formatterResolver);
                         __value__b__ = true;
                         break;
                     case 1:
@@ -8873,7 +8873,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS
             
 
             writer.WriteRaw(this.____stringByteKeys[0]);
-            writer.WriteString(value.value);
+            formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.value, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[1]);
             writer.WriteString(value.unitCode);
             writer.WriteRaw(this.____stringByteKeys[2]);
@@ -8890,7 +8890,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS
             }
             
 
-            var __value__ = default(string);
+            var __value__ = default(float?);
             var __value__b__ = false;
             var __unitCode__ = default(string);
             var __unitCode__b__ = false;
@@ -8912,7 +8912,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS
                 switch (key)
                 {
                     case 0:
-                        __value__ = reader.ReadString();
+                        __value__ = formatterResolver.GetFormatterWithVerify<float?>().Deserialize(ref reader, formatterResolver);
                         __value__b__ = true;
                         break;
                     case 1:

@@ -160,7 +160,7 @@ namespace SimpleWeather.NWS
         public DateTimeOffset startTime { get; set; }
         public DateTimeOffset endTime { get; set; }
         public bool isDaytime { get; set; }
-        public string temperature { get; set; }
+        public int temperature { get; set; }
         public string temperatureUnit { get; set; }
         public string temperatureTrend { get; set; }
         public string windSpeed { get; set; }
@@ -229,28 +229,28 @@ namespace SimpleWeather.NWS
 
     public class Temperature
     {
-        public string value { get; set; }
+        public float? value { get; set; }
         public string unitCode { get; set; }
         public string qualityControl { get; set; }
     }
 
     public class Dewpoint
     {
-        public string value { get; set; }
+        public float? value { get; set; }
         public string unitCode { get; set; }
         public string qualityControl { get; set; }
     }
 
     public class Winddirection
     {
-        public string value { get; set; }
+        public float? value { get; set; }
         public string unitCode { get; set; }
         public string qualityControl { get; set; }
     }
 
     public class Windspeed
     {
-        public string value { get; set; }
+        public float? value { get; set; }
         public string unitCode { get; set; }
         public string qualityControl { get; set; }
     }
@@ -258,7 +258,7 @@ namespace SimpleWeather.NWS
     /*
     public class Windgust
     {
-        public string value { get; set; }
+        public float? value { get; set; }
         public string unitCode { get; set; }
         public string qualityControl { get; set; }
     }
@@ -266,7 +266,7 @@ namespace SimpleWeather.NWS
 
     public class Barometricpressure
     {
-        public string value { get; set; }
+        public float? value { get; set; }
         public string unitCode { get; set; }
         public string qualityControl { get; set; }
     }
@@ -274,7 +274,7 @@ namespace SimpleWeather.NWS
     /*
     public class Sealevelpressure
     {
-        public string value { get; set; }
+        public float? value { get; set; }
         public string unitCode { get; set; }
         public string qualityControl { get; set; }
     }
@@ -282,7 +282,7 @@ namespace SimpleWeather.NWS
 
     public class Visibility
     {
-        public string value { get; set; }
+        public float? value { get; set; }
         public string unitCode { get; set; }
         public string qualityControl { get; set; }
     }
@@ -290,35 +290,35 @@ namespace SimpleWeather.NWS
     /*
     public class Maxtemperaturelast24hours
     {
-        public string value { get; set; }
+        public float? value { get; set; }
         public string unitCode { get; set; }
         public string qualityControl { get; set; }
     }
 
     public class Mintemperaturelast24hours
     {
-        public string value { get; set; }
+        public float? value { get; set; }
         public string unitCode { get; set; }
         public string qualityControl { get; set; }
     }
 
     public class Precipitationlasthour
     {
-        public string value { get; set; }
+        public float? value { get; set; }
         public string unitCode { get; set; }
         public string qualityControl { get; set; }
     }
 
     public class Precipitationlast3hours
     {
-        public string value { get; set; }
+        public float? value { get; set; }
         public string unitCode { get; set; }
         public string qualityControl { get; set; }
     }
 
     public class Precipitationlast6hours
     {
-        public string value { get; set; }
+        public float? value { get; set; }
         public string unitCode { get; set; }
         public string qualityControl { get; set; }
     }
@@ -326,7 +326,7 @@ namespace SimpleWeather.NWS
 
     public class Relativehumidity
     {
-        public string value { get; set; }
+        public float? value { get; set; }
         public string unitCode { get; set; }
         public string qualityControl { get; set; }
     }
@@ -334,14 +334,14 @@ namespace SimpleWeather.NWS
     /*
     public class Windchill
     {
-        public string value { get; set; }
+        public float? value { get; set; }
         public string unitCode { get; set; }
         public string qualityControl { get; set; }
     }
 
     public class Heatindex
     {
-        public string value { get; set; }
+        public float? value { get; set; }
         public string unitCode { get; set; }
         public string qualityControl { get; set; }
     }
