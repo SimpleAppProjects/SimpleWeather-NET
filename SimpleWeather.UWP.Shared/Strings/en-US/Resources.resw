@@ -561,4 +561,16 @@
   <data name="Label_Radar.Header" xml:space="preserve">
     <value>Radar</value>
   </data>
+  <data name="Label_Day" xml:space="preserve">
+    <value>Afternoon</value>
+  </data>
+  <data name="Label_Eve" xml:space="preserve">
+    <value>Evening</value>
+  </data>
+  <data name="Label_Morning" xml:space="preserve">
+    <value>Morning</value>
+  </data>
+  <data name="Label_Night" xml:space="preserve">
+    <value>Night</value>
+  </data>
 </root>

@@ -94,10 +94,8 @@ namespace SimpleWeather.OpenWeather
             {
                 WeatherData.Weather weather = null;
 
-                string currentAPI = null;
-                Uri currentURL = null;
-                string forecastAPI = null;
-                Uri forecastURL = null;
+                string weatherAPI = null;
+                Uri weatherURL = null;
                 string query = null;
 
                 var userlang = GlobalizationPreferences.Languages[0];
@@ -116,10 +114,8 @@ namespace SimpleWeather.OpenWeather
 
                 string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
 
-                currentAPI = "https://api.openweathermap.org/data/2.5/weather?{0}&appid={1}&lang=" + locale;
-                currentURL = new Uri(string.Format(currentAPI, query, key));
-                forecastAPI = "https://api.openweathermap.org/data/2.5/forecast?{0}&appid={1}&lang=" + locale;
-                forecastURL = new Uri(string.Format(forecastAPI, query, key));
+                weatherAPI = "https://api.openweathermap.org/data/2.5/onecall?{0}&exclude=minutely&appid={1}&lang=" + locale;
+                weatherURL = new Uri(string.Format(weatherAPI, query, key));
 
                 using (HttpClient webClient = new HttpClient())
                 using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
@@ -129,26 +125,21 @@ namespace SimpleWeather.OpenWeather
                     try
                     {
                         // Get response
-                        HttpResponseMessage currentResponse = await AsyncTask.RunAsync(webClient.GetAsync(currentURL).AsTask(cts.Token));
-                        currentResponse.EnsureSuccessStatusCode();
-                        HttpResponseMessage forecastResponse = await AsyncTask.RunAsync(webClient.GetAsync(forecastURL).AsTask(cts.Token));
-                        forecastResponse.EnsureSuccessStatusCode();
+                        HttpResponseMessage response = await AsyncTask.RunAsync(webClient.GetAsync(weatherURL).AsTask(cts.Token));
+                        response.EnsureSuccessStatusCode();
 
-                        Stream currentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await currentResponse.Content.ReadAsInputStreamAsync());
-                        Stream forecastStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await forecastResponse.Content.ReadAsInputStreamAsync());
+                        Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
                         // Reset exception
                         wEx = null;
 
                         // Load weather
-                        CurrentRootobject currRoot = JSONParser.Deserializer<CurrentRootobject>(currentStream);
-                        ForecastRootobject foreRoot = JSONParser.Deserializer<ForecastRootobject>(forecastStream);
+                        Rootobject root = JSONParser.Deserializer<Rootobject>(contentStream);
 
                         // End Streams
-                        currentStream.Dispose();
-                        forecastStream.Dispose();
+                        contentStream.Dispose();
 
-                        weather = new WeatherData.Weather(currRoot, foreRoot);
+                        weather = new WeatherData.Weather(root);
                     }
                     catch (Exception ex)
                     {

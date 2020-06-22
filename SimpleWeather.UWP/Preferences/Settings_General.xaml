@@ -75,8 +75,9 @@
                                                GotFocus="KeyEntry_GotFocus" />
                     </Border>
                     <HyperlinkButton x:Name="RegisterKeyButton"
-                                                 x:Uid="RegisterKeyBox" Content="Register for API Key here"
-                                                 Padding="0,10" Visibility="{x:Bind KeyEntry.Visibility, Mode=OneWay}" />
+                                     x:Uid="RegisterKeyBox" Content="Register for API Key here"
+                                     Padding="0,10" Visibility="{x:Bind KeyEntry.Visibility, Mode=OneWay}"
+                                     Style="{ThemeResource HyperlinkButtonStyle}" />
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>
