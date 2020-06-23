@@ -211,11 +211,17 @@ namespace SimpleWeather.Controls
                 {
                     WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPRain, Qpf_Rain));
                     WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPSnow, Qpf_Snow));
-                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPCloudiness, Chance));
+                    if (!String.IsNullOrWhiteSpace(weather.precipitation.pop))
+                    {
+                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPCloudiness, Chance));
+                    }
                 }
                 else
                 {
-                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPChance, Chance));
+                    if (!String.IsNullOrWhiteSpace(weather.precipitation.pop))
+                    {
+                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPChance, Chance));
+                    }
                     WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPRain, Qpf_Rain));
                     WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPSnow, Qpf_Snow));
                 }

@@ -218,12 +218,12 @@ namespace SimpleWeather.NWS
         public Visibility visibility { get; set; }
         //public Maxtemperaturelast24hours maxTemperatureLast24Hours { get; set; }
         //public Mintemperaturelast24hours minTemperatureLast24Hours { get; set; }
-        //public Precipitationlasthour precipitationLastHour { get; set; }
-        //public Precipitationlast3hours precipitationLast3Hours { get; set; }
-        //public Precipitationlast6hours precipitationLast6Hours { get; set; }
+        public Precipitationlasthour precipitationLastHour { get; set; }
+        public Precipitationlast3hours precipitationLast3Hours { get; set; }
+        public Precipitationlast6hours precipitationLast6Hours { get; set; }
         public Relativehumidity relativeHumidity { get; set; }
-        //public Windchill windChill { get; set; }
-        //public Heatindex heatIndex { get; set; }
+        public Windchill windChill { get; set; }
+        public Heatindex heatIndex { get; set; }
         //public Cloudlayer[] cloudLayers { get; set; }
     }
 
@@ -301,6 +301,7 @@ namespace SimpleWeather.NWS
         public string unitCode { get; set; }
         public string qualityControl { get; set; }
     }
+    */
 
     public class Precipitationlasthour
     {
@@ -322,7 +323,6 @@ namespace SimpleWeather.NWS
         public string unitCode { get; set; }
         public string qualityControl { get; set; }
     }
-    */
 
     public class Relativehumidity
     {
@@ -331,7 +331,6 @@ namespace SimpleWeather.NWS
         public string qualityControl { get; set; }
     }
 
-    /*
     public class Windchill
     {
         public float? value { get; set; }
@@ -346,6 +345,7 @@ namespace SimpleWeather.NWS
         public string qualityControl { get; set; }
     }
 
+    /*
     public class Cloudlayer
     {
         public Base _base { get; set; }

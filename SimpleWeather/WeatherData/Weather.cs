@@ -440,7 +440,7 @@ namespace SimpleWeather.WeatherData
             condition = new Condition(obsCurrentRootObject);
             atmosphere = new Atmosphere(obsCurrentRootObject);
             //astronomy = new Astronomy(obsCurrentRootObject);
-            //precipitation = new Precipitation(obsCurrentRootObject);
+            precipitation = new Precipitation(obsCurrentRootObject);
             ttl = "180";
 
             if (condition.high_f == condition.high_c && forecast.Count > 0)
@@ -721,15 +721,6 @@ namespace SimpleWeather.WeatherData
             condition = forecastItem.shortForecast;
             icon = WeatherManager.GetProvider(WeatherAPI.NWS)
                         .GetWeatherIcon(forecastItem.icon);
-
-            // Extras
-            extras = new ForecastExtras();
-            extras.wind_degrees = WeatherUtils.GetWindDirection(forecastItem.windDirection);
-            if (float.TryParse(forecastItem.windSpeed.RemoveNonDigitChars(), out float windSpeed))
-            {
-                extras.wind_mph = windSpeed;
-                extras.wind_kph = float.Parse(ConversionMethods.MphToKph(windSpeed.ToString(CultureInfo.InvariantCulture)));
-            }
         }
 
         public Forecast(NWS.Period forecastItem, NWS.Period ntForecastItem)
@@ -1152,10 +1143,10 @@ namespace SimpleWeather.WeatherData
         public Condition(NWS.ObservationsCurrentRootobject obsCurrentRootObject)
         {
             weather = obsCurrentRootObject.textDescription;
-            if (float.TryParse(obsCurrentRootObject.temperature.value, out float tempC))
+            if (obsCurrentRootObject.temperature.value.HasValue)
             {
-                temp_c = tempC;
-                temp_f = float.Parse(ConversionMethods.CtoF(tempC.ToString()));
+                temp_c = obsCurrentRootObject.temperature.value.GetValueOrDefault(0.00f);
+                temp_f = float.Parse(ConversionMethods.CtoF(temp_c.ToString()));
             }
             else
             {
@@ -1163,19 +1154,19 @@ namespace SimpleWeather.WeatherData
                 temp_f = 0.00f;
             }
 
-            if (int.TryParse(obsCurrentRootObject.windDirection.value, out int windDegrees))
+            if (obsCurrentRootObject.windDirection.value.HasValue)
             {
-                wind_degrees = windDegrees;
+                wind_degrees = (int)obsCurrentRootObject.windDirection.value.GetValueOrDefault(0);
             }
             else
             {
                 wind_degrees = 0;
             }
 
-            if (float.TryParse(obsCurrentRootObject.windSpeed.value, out float windMSec))
+            if (obsCurrentRootObject.windSpeed.value.HasValue)
             {
-                wind_mph = float.Parse(ConversionMethods.MSecToMph(windMSec.ToString()));
-                wind_kph = float.Parse(ConversionMethods.MSecToKph(windMSec.ToString()));
+                wind_kph = obsCurrentRootObject.windSpeed.value.GetValueOrDefault(0.00f);
+                wind_mph = float.Parse(ConversionMethods.KphToMph(wind_kph.ToString()));
             }
             else
             {
@@ -1183,8 +1174,19 @@ namespace SimpleWeather.WeatherData
                 wind_kph = -1.00f;
             }
 
-            if (temp_f != temp_c && float.TryParse(obsCurrentRootObject.relativeHumidity.value, out float humidity))
+            if (obsCurrentRootObject.heatIndex.value.HasValue)
             {
+                feelslike_c = obsCurrentRootObject.heatIndex.value.GetValueOrDefault(0.00f);
+                feelslike_f = float.Parse(ConversionMethods.CtoF(feelslike_c.ToString()));
+            }
+            else if (obsCurrentRootObject.windChill.value.HasValue)
+            {
+                feelslike_c = obsCurrentRootObject.windChill.value.GetValueOrDefault(0.00f);
+                feelslike_f = float.Parse(ConversionMethods.CtoF(feelslike_c.ToString()));
+            }
+            else if (temp_f != temp_c)
+            {
+                float humidity = obsCurrentRootObject.relativeHumidity.value.GetValueOrDefault(-1.0f);
                 feelslike_f = float.Parse(WeatherUtils.GetFeelsLikeTemp(temp_f.ToString(),
                     wind_mph.ToString(), humidity.ToString()));
                 feelslike_c = float.Parse(ConversionMethods.FtoC(feelslike_f.ToString()));
@@ -1297,29 +1299,29 @@ namespace SimpleWeather.WeatherData
 
         public Atmosphere(NWS.ObservationsCurrentRootobject obsCurrentRootObject)
         {
-            if (float.TryParse(obsCurrentRootObject.relativeHumidity.value, out float relativeHumidity))
+            if (obsCurrentRootObject.relativeHumidity.value.HasValue)
             {
-                humidity = ((int)Math.Round(relativeHumidity)).ToString();
+                humidity = ((int)Math.Round(obsCurrentRootObject.relativeHumidity.value.GetValueOrDefault(0.00f))).ToString();
             }
 
-            if (float.TryParse(obsCurrentRootObject.barometricPressure.value, out float barometricPressure))
+            if (obsCurrentRootObject.barometricPressure.value.HasValue)
             {
-                var pressure_pa = barometricPressure;
+                var pressure_pa = obsCurrentRootObject.barometricPressure.value.GetValueOrDefault(0.00f);
                 pressure_in = ConversionMethods.PaToInHg(pressure_pa.ToString());
                 pressure_mb = ConversionMethods.PaToMB(pressure_pa.ToString());
             }
             pressure_trend = String.Empty;
 
-            if (float.TryParse(obsCurrentRootObject.visibility.value, out float visibility))
+            if (obsCurrentRootObject.visibility.value.HasValue)
             {
-                visibility_km = (visibility / 1000).ToString();
-                visibility_mi = ConversionMethods.KmToMi((visibility / 1000).ToString());
+                visibility_km = (obsCurrentRootObject.visibility.value.GetValueOrDefault(0.00f) / 1000).ToString();
+                visibility_mi = ConversionMethods.KmToMi((obsCurrentRootObject.visibility.value.GetValueOrDefault(0.00f) / 1000).ToString());
             }
 
-            if (float.TryParse(obsCurrentRootObject.dewpoint.value, out float dewpoint))
+            if (obsCurrentRootObject.dewpoint.value.HasValue)
             {
-                dewpoint_c = dewpoint.ToString();
-                dewpoint_f = ConversionMethods.CtoF(dewpoint.ToString());
+                dewpoint_c = obsCurrentRootObject.dewpoint.value.GetValueOrDefault(0.00f).ToString();
+                dewpoint_f = ConversionMethods.CtoF(obsCurrentRootObject.dewpoint.value.GetValueOrDefault(0.00f).ToString());
             }
         }
     }
@@ -1597,6 +1599,23 @@ namespace SimpleWeather.WeatherData
                 qpf_snow_in = 0.00f;
                 qpf_snow_cm = 0.00f;
             }
+        }
+
+        public Precipitation(NWS.ObservationsCurrentRootobject obsCurrentRootObject)
+        {
+            if (obsCurrentRootObject.precipitationLastHour.value.HasValue)
+            {
+                // "unit:m"
+                qpf_rain_mm = obsCurrentRootObject.precipitationLastHour.value.GetValueOrDefault(0.00f) * 1000;
+                qpf_rain_in = float.Parse(ConversionMethods.MMToIn(qpf_rain_mm.ToString(CultureInfo.InvariantCulture)));
+            }
+            else if (obsCurrentRootObject.precipitationLast3Hours.value.HasValue)
+            {
+                // "unit:m"
+                qpf_rain_mm = obsCurrentRootObject.precipitationLast3Hours.value.GetValueOrDefault(0.00f) * 1000;
+                qpf_rain_in = float.Parse(ConversionMethods.MMToIn(qpf_rain_mm.ToString(CultureInfo.InvariantCulture)));
+            }
+            // The rest DNE
         }
     }
 
