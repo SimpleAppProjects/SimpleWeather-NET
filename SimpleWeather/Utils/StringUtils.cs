@@ -1,5 +1,6 @@
 ﻿using SimpleWeather.UWP.Helpers;
 using System;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -47,6 +48,26 @@ namespace SimpleWeather.Utils
             }
 
             return @string;
+        }
+
+        public static String ToInvariantString(this float @num)
+        {
+            return num.ToString(CultureInfo.InvariantCulture);
+        }
+
+        public static String ToInvariantString(this double @num)
+        {
+            return num.ToString(CultureInfo.InvariantCulture);
+        }
+
+        public static String ToInvariantString(this int @num)
+        {
+            return num.ToString(CultureInfo.InvariantCulture);
+        }
+
+        public static String ToInvariantString(this long @num)
+        {
+            return num.ToString(CultureInfo.InvariantCulture);
         }
     }
 }
