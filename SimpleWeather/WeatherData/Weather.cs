@@ -120,185 +120,94 @@ namespace SimpleWeather.WeatherData
             }
         }
 
-        public Weather(Metno.weatherdata foreRoot, Metno.astrodata astroRoot)
+        public Weather(Metno.Rootobject foreRoot, Metno.AstroRootobject astroRoot)
         {
+            var now = DateTimeOffset.UtcNow;
+
             location = new Location(foreRoot);
-            update_time = foreRoot.created;
+            update_time = now;
 
             // 9-day forecast / hrly -> 6hrly forecast
             forecast = new List<Forecast>(10);
-            hr_forecast = new List<HourlyForecast>(90);
+            hr_forecast = new List<HourlyForecast>(foreRoot.properties.timeseries.Length);
 
             // Store potential min/max values
             float dayMax = float.NaN;
             float dayMin = float.NaN;
 
-            // Flag values
-            bool end = false;
-            bool conditionSet = false;
-            int fcastCount = 0;
-
-            DateTime startDate = foreRoot.meta.model.from;
-            DateTime endDate = foreRoot.meta.model.to;
+            DateTime currentDate = DateTime.MinValue;
             Forecast fcast = null;
 
             // Metno data is troublesome to parse thru
-            for (int i = 0; i < foreRoot.product.time.Length; i++)
+            for (int i = 0; i < foreRoot.properties.timeseries.Length; i++)
             {
-                var time = foreRoot.product.time[i];
-                DateTime date = time.from;
+                var time = foreRoot.properties.timeseries[i];
+                DateTime date = time.time;
 
                 // Create condition for next 2hrs from data
-                if (i == 0 && date.Equals(startDate))
+                if (i == 0)
                 {
                     condition = new Condition(time);
                     atmosphere = new Atmosphere(time);
                     precipitation = new Precipitation(time);
                 }
 
-                // This contains all weather details
-                if (!end && time.to.Subtract(time.from).Ticks == 0)
-                {
-                    // Find max/min for each hour
-                    float temp = (float)time.location.temperature.value;
-                    if (!float.IsNaN(temp) && (float.IsNaN(dayMax) || temp > dayMax))
-                    {
-                        dayMax = temp;
-                    }
-                    if (!float.IsNaN(temp) && (float.IsNaN(dayMin) || temp < dayMin))
-                    {
-                        dayMin = temp;
-                    }
-
-                    // Add a new hour
+                // Add a new hour
+                if (time.time >= now.UtcDateTime.Trim(TimeSpan.TicksPerHour))
                     hr_forecast.Add(new HourlyForecast(time));
 
-                    // Create new forecast
-                    if (date.Hour == 0 || date.Equals(startDate))
-                    {
-                        fcastCount++;
-
-                        // Oops, we missed one
-                        if (fcast != null && fcastCount != forecast.Count)
-                        {
-                            // Set forecast properties here:
-                            // condition (set in provider GetWeather method)
-                            // date
-                            fcast.date = date;
-                            // high
-                            fcast.high_f = ConversionMethods.CtoF(dayMax.ToString(CultureInfo.InvariantCulture));
-                            fcast.high_c = Math.Round(dayMax).ToString();
-                            // low
-                            fcast.low_f = ConversionMethods.CtoF(dayMin.ToString(CultureInfo.InvariantCulture));
-                            fcast.low_c = Math.Round(dayMin).ToString();
-                            // icon
-                            forecast.Add(fcast);
-
-                            // Reset
-                            dayMax = float.NaN;
-                            dayMin = float.NaN;
-                        }
-
-                        fcast = new Forecast(time);
-                    }
+                // Create new forecast
+                if (currentDate.Date != date.Date)
+                {
                     // Last forecast for day; create forecast
-                    if (date.Hour == 23 || date.Equals(endDate))
+                    if (fcast != null)
                     {
                         // condition (set in provider GetWeather method)
                         // date
-                        fcast.date = date;
+                        fcast.date = currentDate;
                         // high
                         fcast.high_f = ConversionMethods.CtoF(dayMax.ToString(CultureInfo.InvariantCulture));
                         fcast.high_c = Math.Round(dayMax).ToString();
                         // low
                         fcast.low_f = ConversionMethods.CtoF(dayMin.ToString(CultureInfo.InvariantCulture));
                         fcast.low_c = Math.Round(dayMin).ToString();
-                        // icon
+
                         forecast.Add(fcast);
-
-                        if (date.Equals(endDate))
-                            end = true;
-
-                        // Reset
-                        dayMax = float.NaN;
-                        dayMin = float.NaN;
-                        fcast = null;
                     }
+
+                    currentDate = date;
+                    fcast = new Forecast(time)
+                    {
+                        date = date
+                    };
+
+                    // Reset
+                    dayMax = float.NaN;
+                    dayMin = float.NaN;
                 }
 
-                // Get conditions for hour if available
-                if (hr_forecast.Count > 1 &&
-                    hr_forecast[hr_forecast.Count - 2].date.Equals(time.from))
+                // Find max/min for each hour
+                float temp = time.data.instant.details.air_temperature ?? float.NaN;
+                if (!float.IsNaN(temp) && (float.IsNaN(dayMax) || temp > dayMax))
                 {
-                    // Set condition from id
-                    var hr = hr_forecast[hr_forecast.Count - 2];
-                    if (String.IsNullOrEmpty(hr.icon))
-                    {
-                        if (time.location.symbol != null)
-                        {
-                            hr.condition = time.location.symbol.id;
-                            hr.icon = time.location.symbol.number.ToString();
-                        }
-                    }
+                    dayMax = temp;
                 }
-                else if (end && hr_forecast.Last().date.Equals(time.from))
+                if (!float.IsNaN(temp) && (float.IsNaN(dayMin) || temp < dayMin))
                 {
-                    // Set condition from id
-                    var hr = hr_forecast.Last();
-                    if (String.IsNullOrEmpty(hr.icon))
-                    {
-                        if (time.location.symbol != null)
-                        {
-                            hr.condition = time.location.symbol.id;
-                            hr.icon = time.location.symbol.number.ToString();
-                        }
-                    }
-                }
-
-                if (fcast != null && fcast.date.Equals(time.from) && time.to.Subtract(time.from).TotalHours >= 1)
-                {
-                    if (time.location.symbol != null)
-                    {
-                        fcast.condition = time.location.symbol.id;
-                        fcast.icon = time.location.symbol.number.ToString();
-                    }
-                }
-                else if (forecast.Count > 0 && forecast.Last().date.Equals(time.from) && time.to.Subtract(time.from).TotalHours >= 1)
-                {
-                    if (String.IsNullOrEmpty(forecast.Last().icon))
-                    {
-                        if (time.location.symbol != null)
-                        {
-                            forecast.Last().condition = time.location.symbol.id;
-                            forecast.Last().icon = time.location.symbol.number.ToString();
-                        }
-                    }
-                }
-
-                if (!conditionSet && condition != null && date.Equals(startDate) && time.to.Subtract(time.from).TotalHours >= 2)
-                {
-                    // Set condition from id
-                    if (time.location.symbol != null)
-                    {
-                        condition.icon = time.location.symbol.number.ToString();
-                        condition.weather = time.location.symbol.id;
-                        if (time.location.maxTemperature?.value != null && time.location.minTemperature?.value != null)
-                        {
-                            condition.high_f = float.Parse(ConversionMethods.CtoF(time.location.maxTemperature.value.ToString(CultureInfo.InvariantCulture)));
-                            condition.high_c = (float)Math.Round(time.location.maxTemperature.value);
-                            condition.low_f = float.Parse(ConversionMethods.CtoF(time.location.minTemperature.value.ToString(CultureInfo.InvariantCulture)));
-                            condition.low_c = (float)Math.Round(time.location.minTemperature.value);
-                        }
-                    }
-
-                    conditionSet = true;
+                    dayMin = temp;
                 }
             }
 
-            fcast = forecast.Last();
+            fcast = forecast.LastOrDefault();
             if (fcast?.condition == null && fcast?.icon == null)
             {
                 forecast.RemoveAt(forecast.Count - 1);
+            }
+
+            if (hr_forecast.LastOrDefault() is HourlyForecast hrfcast &&
+                hrfcast?.condition == null && hrfcast?.icon == null)
+            {
+                hr_forecast.RemoveAt(hr_forecast.Count - 1);
             }
 
             astronomy = new Astronomy(astroRoot);
@@ -318,9 +227,47 @@ namespace SimpleWeather.WeatherData
                 condition.low_c = float.Parse(forecast[0].low_c);
             }
 
-            condition.observation_time = update_time;
+            condition.observation_time = foreRoot.properties.meta.updated_at;
 
             source = WeatherAPI.MetNo;
+
+            // Check for outdated observation
+            int ttlMins = int.Parse(ttl);
+            if ((DateTimeOffset.Now - condition.observation_time).TotalMinutes > ttlMins)
+            {
+                if (hr_forecast.FirstOrDefault() is HourlyForecast hrf)
+                {
+                    condition.weather = hrf.condition;
+                    condition.icon = hrf.icon;
+
+                    condition.temp_f = float.Parse(hrf.high_f, CultureInfo.InvariantCulture);
+                    condition.temp_c = float.Parse(hrf.high_c, CultureInfo.InvariantCulture);
+
+                    condition.wind_mph = hrf.wind_mph;
+                    condition.wind_kph = hrf.wind_kph;
+                    condition.wind_degrees = hrf.wind_degrees;
+
+                    condition.beaufort = null;
+                    condition.feelslike_f = hrf.extras?.feelslike_f ?? 0.0f;
+                    condition.feelslike_c = hrf.extras?.feelslike_c ?? 0.0f;
+                    condition.uv = hrf.extras != null && hrf.extras.uv_index >= 0 ? new UV(hrf.extras.uv_index) : null;
+
+                    atmosphere.dewpoint_f = hrf.extras?.dewpoint_f;
+                    atmosphere.dewpoint_c = hrf.extras?.dewpoint_c;
+                    atmosphere.humidity = hrf.extras?.humidity;
+                    atmosphere.pressure_trend = null;
+                    atmosphere.pressure_in = hrf.extras?.pressure_in;
+                    atmosphere.pressure_mb = hrf.extras?.pressure_mb;
+                    atmosphere.visibility_mi = hrf.extras?.visibility_mi;
+                    atmosphere.visibility_km = hrf.extras?.visibility_km;
+
+                    precipitation.pop = hrf.extras?.pop;
+                    precipitation.qpf_rain_in = hrf.extras?.qpf_rain_in > 0 ? hrf.extras.qpf_rain_in : 0.0f;
+                    precipitation.qpf_rain_mm = hrf.extras?.qpf_rain_mm > 0 ? hrf.extras.qpf_rain_mm : 0.0f;
+                    precipitation.qpf_snow_in = hrf.extras?.qpf_snow_in > 0 ? hrf.extras.qpf_snow_in : 0.0f;
+                    precipitation.qpf_snow_cm = hrf.extras?.qpf_snow_cm > 0 ? hrf.extras.qpf_snow_cm : 0.0f;
+                }
+            }
         }
 
         public Weather(HERE.Rootobject root)
@@ -524,12 +471,12 @@ namespace SimpleWeather.WeatherData
             }
         }
 
-        public Location(Metno.weatherdata foreRoot)
+        public Location(Metno.Rootobject foreRoot)
         {
             // API doesn't provide location name (at all)
             name = null;
-            latitude = foreRoot.product.time.First().location.latitude.ToString(CultureInfo.InvariantCulture);
-            longitude = foreRoot.product.time.First().location.longitude.ToString(CultureInfo.InvariantCulture);
+            latitude = foreRoot.geometry.coordinates[1].ToString("0.####", CultureInfo.InvariantCulture);
+            longitude = foreRoot.geometry.coordinates[0].ToString("0.####", CultureInfo.InvariantCulture);
             tz_offset = TimeSpan.Zero;
             tz_short = "UTC";
         }
@@ -621,9 +568,22 @@ namespace SimpleWeather.WeatherData
             }
         }
 
-        public Forecast(Metno.weatherdataProductTime time)
+        public Forecast(Metno.Timesery time)
         {
-            date = time.from;
+            date = time.time;
+
+            if (time.data.next_12_hours != null)
+            {
+                icon = time.data.next_12_hours.summary.symbol_code;
+            }
+            else if (time.data.next_6_hours != null)
+            {
+                icon = time.data.next_6_hours.summary.symbol_code;
+            }
+            else if (time.data.next_1_hours != null)
+            {
+                icon = time.data.next_1_hours.summary.symbol_code;
+            }
             // Don't bother setting other values; they're not available yet
         }
 
@@ -794,34 +754,56 @@ namespace SimpleWeather.WeatherData
             }
         }
 
-        public HourlyForecast(Metno.weatherdataProductTime hr_forecast)
+        public HourlyForecast(Metno.Timesery hr_forecast)
         {
-            date = new DateTimeOffset(hr_forecast.from, TimeSpan.Zero);
-            high_f = ConversionMethods.CtoF(hr_forecast.location.temperature.value.ToString(CultureInfo.InvariantCulture));
-            high_c = hr_forecast.location.temperature.value.ToString();
-            //condition = hr_forecast.weather[0].main;
-            //icon = hr_forecast.weather[0].id.ToString();
+            date = new DateTimeOffset(hr_forecast.time, TimeSpan.Zero);
+            high_f = ConversionMethods.CtoF(hr_forecast.data.instant.details.air_temperature.Value.ToString(CultureInfo.InvariantCulture));
+            high_c = hr_forecast.data.instant.details.air_temperature.Value.ToString();
             // Use cloudiness value here
-            pop = ((int)Math.Round(hr_forecast.location.cloudiness.percent)).ToString();
-            wind_degrees = (int)Math.Round(hr_forecast.location.windDirection.deg);
-            wind_mph = (float)Math.Round(double.Parse(ConversionMethods.MSecToMph(hr_forecast.location.windSpeed.mps.ToString())));
-            wind_kph = (float)Math.Round(double.Parse(ConversionMethods.MSecToKph(hr_forecast.location.windSpeed.mps.ToString())));
+            pop = ((int)Math.Round(hr_forecast.data.instant.details.cloud_area_fraction.Value)).ToString();
+            wind_degrees = (int)Math.Round(hr_forecast.data.instant.details.wind_from_direction.Value);
+            wind_mph = (float)Math.Round(double.Parse(ConversionMethods.MSecToMph(hr_forecast.data.instant.details.wind_speed.Value.ToString())));
+            wind_kph = (float)Math.Round(double.Parse(ConversionMethods.MSecToKph(hr_forecast.data.instant.details.wind_speed.Value.ToString())));
 
+            if (hr_forecast.data.next_1_hours != null)
+            {
+                icon = hr_forecast.data.next_1_hours.summary.symbol_code;
+            }
+            else if (hr_forecast.data.next_6_hours != null)
+            {
+                icon = hr_forecast.data.next_6_hours.summary.symbol_code;
+            }
+            else if (hr_forecast.data.next_12_hours != null)
+            {
+                icon = hr_forecast.data.next_12_hours.summary.symbol_code;
+            }
+
+            float humidity = hr_forecast.data.instant.details.relative_humidity.Value;
             // Extras
             extras = new ForecastExtras()
             {
-                feelslike_f = float.Parse(WeatherUtils.GetFeelsLikeTemp(high_f, wind_mph.ToString(CultureInfo.InvariantCulture), Math.Round(hr_forecast.location.humidity.value).ToString(CultureInfo.InvariantCulture))),
-                feelslike_c = float.Parse(ConversionMethods.FtoC(WeatherUtils.GetFeelsLikeTemp(high_f, wind_mph.ToString(CultureInfo.InvariantCulture), Math.Round(hr_forecast.location.humidity.value).ToString(CultureInfo.InvariantCulture)))),
-                humidity = Math.Round(hr_forecast.location.humidity.value).ToString(CultureInfo.InvariantCulture),
-                dewpoint_f = ConversionMethods.CtoF(hr_forecast.location.dewpointTemperature.value.ToString(CultureInfo.InvariantCulture)),
-                dewpoint_c = hr_forecast.location.dewpointTemperature.value.ToString(CultureInfo.InvariantCulture),
+                feelslike_f = float.Parse(WeatherUtils.GetFeelsLikeTemp(high_f, wind_mph.ToString(CultureInfo.InvariantCulture), Math.Round(humidity).ToString(CultureInfo.InvariantCulture))),
+                feelslike_c = float.Parse(ConversionMethods.FtoC(WeatherUtils.GetFeelsLikeTemp(high_f, wind_mph.ToString(CultureInfo.InvariantCulture), Math.Round(humidity).ToString(CultureInfo.InvariantCulture)))),
+                humidity = Math.Round(humidity).ToString(CultureInfo.InvariantCulture),
+                dewpoint_f = ConversionMethods.CtoF(hr_forecast.data.instant.details.dew_point_temperature.Value.ToString(CultureInfo.InvariantCulture)),
+                dewpoint_c = hr_forecast.data.instant.details.dew_point_temperature.Value.ToString(CultureInfo.InvariantCulture),
                 pop = pop,
-                pressure_in = ConversionMethods.MBToInHg(hr_forecast.location.pressure.value.ToString(CultureInfo.InvariantCulture)),
-                pressure_mb = hr_forecast.location.pressure.value.ToString(CultureInfo.InvariantCulture),
+                pressure_in = ConversionMethods.MBToInHg(hr_forecast.data.instant.details.air_pressure_at_sea_level.Value.ToString(CultureInfo.InvariantCulture)),
+                pressure_mb = hr_forecast.data.instant.details.air_pressure_at_sea_level.Value.ToString(CultureInfo.InvariantCulture),
                 wind_degrees = wind_degrees,
                 wind_mph = wind_mph,
                 wind_kph = wind_kph
             };
+            if (hr_forecast.data.instant.details.fog_area_fraction.HasValue)
+            {
+                float visMi = 10.0f;
+                extras.visibility_mi = (visMi - (visMi * hr_forecast.data.instant.details.fog_area_fraction.Value / 100)).ToString(CultureInfo.InvariantCulture);
+                extras.visibility_km = ConversionMethods.MiToKm(extras.visibility_mi);
+            }
+            if (hr_forecast.data.instant.details.ultraviolet_index_clear_sky.HasValue)
+            {
+                extras.uv_index = hr_forecast.data.instant.details.ultraviolet_index_clear_sky.Value;
+            }
         }
 
         public HourlyForecast(HERE.Forecast1 hr_forecast)
@@ -1049,19 +1031,30 @@ namespace SimpleWeather.WeatherData
             observation_time = DateTimeOffset.FromUnixTimeSeconds(current.dt);
         }
 
-        public Condition(Metno.weatherdataProductTime time)
+        public Condition(Metno.Timesery time)
         {
             // weather
-            temp_f = float.Parse(ConversionMethods.CtoF(time.location.temperature.value.ToString()));
-            temp_c = (float)time.location.temperature.value;
-            wind_degrees = (int)Math.Round(time.location.windDirection.deg);
-            wind_mph = (float)Math.Round(double.Parse(ConversionMethods.MSecToMph(time.location.windSpeed.mps.ToString())));
-            wind_kph = (float)Math.Round(double.Parse(ConversionMethods.MSecToKph(time.location.windSpeed.mps.ToString())));
+            temp_f = float.Parse(ConversionMethods.CtoF(time.data.instant.details.air_temperature.Value.ToString()));
+            temp_c = (float)time.data.instant.details.air_temperature.Value;
+            wind_degrees = (int)Math.Round(time.data.instant.details.wind_from_direction.Value);
+            wind_mph = (float)Math.Round(double.Parse(ConversionMethods.MSecToMph(time.data.instant.details.wind_speed.Value.ToString())));
+            wind_kph = (float)Math.Round(double.Parse(ConversionMethods.MSecToKph(time.data.instant.details.wind_speed.Value.ToString())));
             // This will be calculated after with formula
             feelslike_f = temp_f;
             feelslike_c = temp_c;
-            // icon
-            beaufort = new Beaufort(time.location.windSpeed.beaufort);
+
+            if (time.data.next_12_hours != null)
+            {
+                icon = time.data.next_12_hours.summary.symbol_code;
+            }
+            else if (time.data.next_6_hours != null)
+            {
+                icon = time.data.next_6_hours.summary.symbol_code;
+            }
+            else if (time.data.next_1_hours != null)
+            {
+                icon = time.data.next_1_hours.summary.symbol_code;
+            }
         }
 
         public Condition(HERE.Observation observation, HERE.Forecast forecastItem)
@@ -1228,34 +1221,24 @@ namespace SimpleWeather.WeatherData
             dewpoint_c = ConversionMethods.KtoC(current.dew_point.ToString(CultureInfo.InvariantCulture));
         }
 
-        public Atmosphere(Metno.weatherdataProductTime time)
+        public Atmosphere(Metno.Timesery time)
         {
-            humidity = Math.Round(time.location.humidity.value).ToString();
-            pressure_mb = time.location.pressure.value.ToString(CultureInfo.InvariantCulture);
-            pressure_in = ConversionMethods.MBToInHg(time.location.pressure.value.ToString(CultureInfo.InvariantCulture));
+            humidity = Math.Round(time.data.instant.details.relative_humidity.Value).ToString();
+            pressure_mb = time.data.instant.details.air_pressure_at_sea_level.Value.ToString(CultureInfo.InvariantCulture);
+            pressure_in = ConversionMethods.MBToInHg(time.data.instant.details.air_pressure_at_sea_level.Value.ToString(CultureInfo.InvariantCulture));
             pressure_trend = String.Empty;
 
-            try
+            if (time.data.instant.details.fog_area_fraction.HasValue)
             {
                 float visMi = 10.0f;
-                visibility_mi = (visMi - (visMi * (float)time.location.fog.percent / 100)).ToString(CultureInfo.InvariantCulture);
+                visibility_mi = (visMi - (visMi * time.data.instant.details.fog_area_fraction.Value / 100)).ToString(CultureInfo.InvariantCulture);
                 visibility_km = ConversionMethods.MiToKm(visibility_mi);
             }
-            catch (FormatException)
-            {
-                visibility_mi = Weather.NA;
-                visibility_km = Weather.NA;
-            }
 
-            try
+            if (time.data.instant.details.dew_point_temperature.HasValue)
             {
-                dewpoint_f = ConversionMethods.CtoF(time.location.dewpointTemperature.value.ToString(CultureInfo.InvariantCulture));
-                dewpoint_c = ((float)time.location.dewpointTemperature.value).ToString(CultureInfo.InvariantCulture);
-            }
-            catch (FormatException)
-            {
-                dewpoint_f = null;
-                dewpoint_c = null;
+                dewpoint_f = ConversionMethods.CtoF(time.data.instant.details.dew_point_temperature.Value.ToString(CultureInfo.InvariantCulture));
+                dewpoint_c = (time.data.instant.details.dew_point_temperature.Value).ToString(CultureInfo.InvariantCulture);
             }
         }
 
@@ -1386,11 +1369,11 @@ namespace SimpleWeather.WeatherData
             }
         }
 
-        public Astronomy(Metno.astrodata astroRoot)
+        public Astronomy(Metno.AstroRootobject astroRoot)
         {
             int moonPhaseValue = -1;
 
-            foreach (Metno.astrodataLocationTime time in astroRoot.location.time)
+            foreach (Metno.Time time in astroRoot.location.time)
             {
                 if (time.sunrise != null)
                 {
@@ -1412,7 +1395,7 @@ namespace SimpleWeather.WeatherData
 
                 if (time.moonphase != null)
                 {
-                    moonPhaseValue = (int)Math.Round(time.moonphase.value);
+                    moonPhaseValue = (int)Math.Round(double.Parse(time.moonphase.value));
                 }
             }
 
@@ -1567,10 +1550,10 @@ namespace SimpleWeather.WeatherData
             }
         }
 
-        public Precipitation(Metno.weatherdataProductTime time)
+        public Precipitation(Metno.Timesery time)
         {
             // Use cloudiness value here
-            pop = Math.Round(time.location.cloudiness.percent).ToString();
+            pop = Math.Round(time.data.instant.details.cloud_area_fraction.Value).ToString();
             // The rest DNE
         }
 

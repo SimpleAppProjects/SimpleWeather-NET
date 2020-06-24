@@ -1,4 +1,5 @@
-﻿using SimpleWeather.Location;
+﻿using Newtonsoft.Json.Linq;
+using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
@@ -50,9 +51,9 @@ namespace SimpleWeather.Metno
                 string sunrisesetAPI = null;
                 Uri sunrisesetURL = null;
 
-                forecastAPI = "https://api.met.no/weatherapi/locationforecast/1.9/?{0}";
+                forecastAPI = "https://api.met.no/weatherapi/locationforecast/2.0/complete.json?{0}";
                 forecastURL = new Uri(string.Format(forecastAPI, location_query));
-                sunrisesetAPI = "https://api.met.no/weatherapi/sunrise/2.0/?{0}&date={1}&offset=+00:00";
+                sunrisesetAPI = "https://api.met.no/weatherapi/sunrise/2.0/.json?{0}&date={1}&offset=+00:00";
                 string date = DateTime.Now.ToString("yyyy-MM-dd");
                 sunrisesetURL = new Uri(string.Format(sunrisesetAPI, location_query, date));
 
@@ -88,19 +89,8 @@ namespace SimpleWeather.Metno
                         wEx = null;
 
                         // Load weather
-                        weatherdata foreRoot = null;
-                        astrodata astroRoot = null;
-
-                        XmlSerializer foreDeserializer = new XmlSerializer(typeof(weatherdata));
-                        foreRoot = await Task.Run(() => 
-                        {
-                            return (weatherdata)foreDeserializer.Deserialize(forecastStream);
-                        });
-                        XmlSerializer astroDeserializer = new XmlSerializer(typeof(astrodata));
-                        astroRoot = await Task.Run(() => 
-                        {
-                            return (astrodata)astroDeserializer.Deserialize(sunrisesetStream);
-                        });
+                        Rootobject foreRoot = JSONParser.Deserializer<Rootobject>(forecastStream);
+                        AstroRootobject astroRoot = JSONParser.Deserializer<AstroRootobject>(sunrisesetStream);
 
                         weather = new Weather(foreRoot, astroRoot);
                         // Release resources
@@ -129,12 +119,6 @@ namespace SimpleWeather.Metno
                     else if (weather != null)
                     {
                         weather.query = location_query;
-
-                        foreach (Forecast forecast in weather.forecast)
-                        {
-                            forecast.condition = GetWeatherCondition(forecast.icon);
-                            forecast.icon = GetWeatherIcon(forecast.icon);
-                        }
                     }
 
                     if (wEx != null)
@@ -177,114 +161,41 @@ namespace SimpleWeather.Metno
 
             weather.condition.weather = GetWeatherCondition(weather.condition.icon);
             weather.condition.icon = GetWeatherIcon(now < sunrise || now > sunset, weather.condition.icon);
+            weather.condition.observation_time = weather.condition.observation_time.ToOffset(offset);
 
             foreach (Forecast forecast in weather.forecast)
             {
                 forecast.date = forecast.date.Add(offset);
+                forecast.condition = GetWeatherCondition(forecast.icon);
+                forecast.icon = GetWeatherIcon(forecast.icon);
             }
 
             foreach (HourlyForecast hr_forecast in weather.hr_forecast)
             {
                 hr_forecast.date = hr_forecast.date.ToOffset(offset);
 
-                var hrnow = hr_forecast.date.TimeOfDay;
-                var sunriseTime = weather.astronomy.sunrise.TimeOfDay;
-                var sunsetTime = weather.astronomy.sunset.TimeOfDay;
-
                 hr_forecast.condition = GetWeatherCondition(hr_forecast.icon);
-                hr_forecast.icon = GetWeatherIcon(hrnow < sunriseTime || hrnow > sunsetTime, hr_forecast.icon);
+                hr_forecast.icon = GetWeatherIcon(hr_forecast.icon != null && 
+                    (hr_forecast.icon.EndsWith("_night") || hr_forecast.icon.EndsWith("_polartwilight")),
+                    hr_forecast.icon);
             }
 
             return weather;
         }
 
-        // TODO: Move this out
-        public static string GetWeatherCondition(string icon)
+        private static string GetWeatherCondition(string icon)
         {
-            string condition = String.Empty;
+            var icon_neutral = GetNeutralIconName(icon);
 
-            switch (icon)
+            var icon_obj = LegendObject.GetValue(icon_neutral);
+
+            if (icon_obj != null)
             {
-                case "1": // Sun
-                    condition = "Clear";
-                    break;
-
-                case "2": // LightCloud
-                case "3": // PartlyCloud
-                    condition = "Partly Cloudy";
-                    break;
-
-                case "4": // Cloud
-                    condition = "Mostly Cloudy";
-                    break;
-
-                case "5": // LightRainSun
-                case "6": // LightRainThunderSun
-                case "9": // LightRain
-                case "22": // LightRainThunder
-                    condition = "Light Rain";
-                    break;
-
-                case "7": // SleetSun
-                case "12": // Sleet
-                case "20": // SleetSunThunder
-                case "23": // SleetThunder
-                case "26": // LightSleetThunderSun
-                case "27": // HeavySleetThunderSun
-                case "31": // LightSleetThunder
-                case "32": // HeavySleetThunder
-                case "42": // LightSleetSun
-                case "43": // HeavySleetSun
-                case "47": // LightSleet
-                case "48": // HeavySleet
-                    condition = "Sleet";
-                    break;
-
-                case "8": // SnowSun
-                case "13": // Snow
-                case "14": // SnowThunder
-                case "21": // SnowSunThunder
-                    condition = "Snow";
-                    break;
-
-                case "10": // Rain
-                case "11": // RainThunder
-                case "25": // RainThunderSun
-                case "41": // RainSun
-                    condition = "Rain";
-                    break;
-
-                case "15": // Fog
-                    condition = "Fog";
-                    break;
-
-                case "24": // DrizzleThunderSun
-                case "30": // DrizzleThunder
-                case "40": // DrizzleSun
-                case "46": // Drizzle
-                    condition = "Drizzle";
-                    break;
-
-                case "28": // LightSnowThunderSun
-                case "33": // LightSnowThunder
-                case "44": // LightSnowSun
-                case "49": // LightSnow
-                    condition = "Light Snow";
-                    break;
-
-                case "29": // HeavySnowThunderSun
-                case "34": // HeavySnowThunder
-                case "45": // HeavySnowSun
-                case "50": // HeavySnow
-                    condition = "Heavy Snow";
-                    break;
-
-                default:
-                    condition = Weather.NA;
-                    break;
+                var condition =  icon_obj.Value<String>("desc_en");
+                return condition;
             }
 
-            return condition;
+            return Weather.NA;
         }
 
         public override string UpdateLocationQuery(Weather weather)
@@ -294,7 +205,7 @@ namespace SimpleWeather.Metno
 
         public override string UpdateLocationQuery(LocationData location)
         {
-            return string.Format("lat={0}&lon={1}", location.latitude.ToString(CultureInfo.InvariantCulture), location.longitude.ToString(CultureInfo.InvariantCulture));
+            return string.Format("lat={0}&lon={1}", location.latitude.ToString("0.####", CultureInfo.InvariantCulture), location.longitude.ToString("0.####", CultureInfo.InvariantCulture));
         }
 
         public override string GetWeatherIcon(string icon)
@@ -306,131 +217,132 @@ namespace SimpleWeather.Metno
         public override string GetWeatherIcon(bool isNight, string icon)
         {
             string WeatherIcon = string.Empty;
+            icon = GetNeutralIconName(icon);
 
             switch (icon)
             {
-                case "1": // Sun
+                case "clearsky":
                     if (isNight)
                         WeatherIcon = WeatherIcons.NIGHT_CLEAR;
                     else
                         WeatherIcon = WeatherIcons.DAY_SUNNY;
                     break;
 
-                case "2": // LightCloud
-                case "3": // PartlyCloud
+                case "fair":
+                case "partlycloudy":
                     if (isNight)
                         WeatherIcon = WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY;
                     else
                         WeatherIcon = WeatherIcons.DAY_SUNNY_OVERCAST;
                     break;
 
-                case "4": // Cloud
+                case "cloudy":
                     WeatherIcon = WeatherIcons.CLOUDY;
                     break;
 
-                case "5": // LightRainSun
+                case "rainshowers":
                     if (isNight)
                         WeatherIcon = WeatherIcons.NIGHT_ALT_SPRINKLE;
                     else
                         WeatherIcon = WeatherIcons.DAY_SPRINKLE;
                     break;
 
-                case "6": // LightRainThunderSun
+                case "rainshowersandthunder":
                     if (isNight)
                         WeatherIcon = WeatherIcons.NIGHT_ALT_THUNDERSTORM;
                     else
                         WeatherIcon = WeatherIcons.DAY_THUNDERSTORM;
                     break;
 
-                case "7": // SleetSun
-                case "42": // LightSleetSun
-                case "43": // HeavySleetSun
+                case "sleetshowers":
+                case "lightsleetshowers":
+                case "heavysleetshowers":
                     if (isNight)
                         WeatherIcon = WeatherIcons.NIGHT_ALT_SLEET;
                     else
                         WeatherIcon = WeatherIcons.DAY_SLEET;
                     break;
 
-                case "8": // SnowSun
-                case "44": // LightSnowSun
-                case "45": // HeavySnowSun
+                case "snowshowers":
+                case "lightsnowshowers":
+                case "heavysnowshowers":
                     if (isNight)
                         WeatherIcon = WeatherIcons.NIGHT_ALT_SNOW;
                     else
                         WeatherIcon = WeatherIcons.DAY_SNOW;
                     break;
 
-                case "9": // LightRain
-                case "46": // Drizzle
+                case "rain":
+                case "lightrain":
                     WeatherIcon = WeatherIcons.SPRINKLE;
                     break;
 
-                case "10": // Rain
+                case "heavyrain":
                     WeatherIcon = WeatherIcons.RAIN;
                     break;
 
-                case "11": // RainThunder
+                case "heavyrainandthunder":
                     WeatherIcon = WeatherIcons.THUNDERSTORM;
                     break;
 
-                case "12": // Sleet
-                case "47": // LightSleet
-                case "48": // HeavySleet
+                case "sleet":
+                case "lightsleet":
+                case "heavysleet":
                     WeatherIcon = WeatherIcons.SLEET;
                     break;
 
-                case "13": // Snow
-                case "49": // LightSnow
+                case "snow":
+                case "lightsnow":
                     WeatherIcon = WeatherIcons.SNOW;
                     break;
 
-                case "14": // SnowThunder
-                case "21": // SnowSunThunder
-                case "28": // LightSnowThunderSun
-                case "29": // HeavySnowThunderSun
-                case "33": // LightSnowThunder
-                case "34": // HeavySnowThunder
+                case "snowandthunder":
+                case "snowshowersandthunder":
+                case "lightssnowshowersandthunder":
+                case "heavysnowshowersandthunder":
+                case "lightsnowandthunder":
+                case "heavysnowandthunder":
                     if (isNight)
                         WeatherIcon = WeatherIcons.NIGHT_ALT_SNOW_THUNDERSTORM;
                     else
                         WeatherIcon = WeatherIcons.DAY_SNOW_THUNDERSTORM;
                     break;
 
-                case "15": // Fog
+                case "fog":
                     WeatherIcon = WeatherIcons.FOG;
                     break;
 
-                case "20": // SleetSunThunder
-                case "23": // SleetThunder
-                case "26": // LightSleetThunderSun
-                case "27": // HeavySleetThunderSun
-                case "31": // LightSleetThunder
-                case "32": // HeavySleetThunder
+                case "sleetshowersandthunder":
+                case "sleetandthunder":
+                case "lightssleetshowersandthunder":
+                case "heavysleetshowersandthunder":
+                case "lightsleetandthunder":
+                case "heavysleetandthunder":
                     if (isNight)
                         WeatherIcon = WeatherIcons.NIGHT_ALT_SLEET_STORM;
                     else
                         WeatherIcon = WeatherIcons.DAY_SLEET_STORM;
                     break;
 
-                case "22": // LightRainThunder
-                case "30": // DrizzleThunder
-                case "24": // DrizzleThunderSun
-                case "25": // RainThunderSun
+                case "rainandthunder":
+                case "lightrainandthunder":
+                case "lightrainshowersandthunder":
+                case "heavyrainshowersandthunder":
                     if (isNight)
                         WeatherIcon = WeatherIcons.NIGHT_ALT_STORM_SHOWERS;
                     else
                         WeatherIcon = WeatherIcons.DAY_STORM_SHOWERS;
                     break;
 
-                case "40": // DrizzleSun
-                case "41": // RainSun
+                case "lightrainshowers":
+                case "heavyrainshowers":
                     if (isNight)
                         WeatherIcon = WeatherIcons.NIGHT_ALT_RAIN;
                     else
                         WeatherIcon = WeatherIcons.DAY_RAIN;
                     break;
 
-                case "50": // HeavySnow
+                case "heavysnow":
                     WeatherIcon = WeatherIcons.SNOW_WIND;
                     break;
 

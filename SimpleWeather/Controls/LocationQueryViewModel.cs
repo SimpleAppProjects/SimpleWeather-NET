@@ -1,10 +1,8 @@
-﻿using SimpleWeather.HERE;
-using SimpleWeather.WeatherData;
+﻿using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using Windows.Services.Maps;
 
 namespace SimpleWeather.Controls
 {
@@ -29,12 +27,12 @@ namespace SimpleWeather.Controls
             LocationQuery = string.Empty;
         }
 
-        public LocationQueryViewModel(Suggestion location, String weatherAPI)
+        public LocationQueryViewModel(HERE.Suggestion location, String weatherAPI)
         {
             SetLocation(location, weatherAPI);
         }
 
-        public void SetLocation(Suggestion location, String weatherAPI)
+        public void SetLocation(HERE.Suggestion location, String weatherAPI)
         {
             if (location?.address == null)
                 return;
@@ -71,12 +69,12 @@ namespace SimpleWeather.Controls
             WeatherSource = weatherAPI;
         }
 
-        public LocationQueryViewModel(Result location, String weatherAPI)
+        public LocationQueryViewModel(HERE.Result location, String weatherAPI)
         {
             SetLocation(location, weatherAPI);
         }
 
-        public void SetLocation(Result location, String weatherAPI)
+        public void SetLocation(HERE.Result location, String weatherAPI)
         {
             if (location?.location?.address == null)
                 return;
@@ -85,7 +83,7 @@ namespace SimpleWeather.Controls
 
             if (location.location.address.additionalData != null)
             {
-                foreach (Additionaldata item in location.location.address.additionalData)
+                foreach (HERE.Additionaldata item in location.location.address.additionalData)
                 {
                     if ("Country2".Equals(item.key))
                         country = item.value;
@@ -194,12 +192,12 @@ namespace SimpleWeather.Controls
             WeatherSource = weatherAPI;
         }
 
-        public LocationQueryViewModel(MapLocation result, String weatherAPI)
+        public LocationQueryViewModel(Windows.Services.Maps.MapLocation result, String weatherAPI)
         {
             SetLocation(result, weatherAPI);
         }
 
-        private void SetLocation(MapLocation result, String weatherAPI)
+        private void SetLocation(Windows.Services.Maps.MapLocation result, String weatherAPI)
         {
             if (result?.Address == null)
                 return;
@@ -254,15 +252,15 @@ namespace SimpleWeather.Controls
         {
             if (WeatherAPI.Here.Equals(WeatherSource))
             {
-                LocationQuery = String.Format("latitude={0}&longitude={1}", LocationLat.ToString(CultureInfo.InvariantCulture), LocationLong.ToString(CultureInfo.InvariantCulture));
+                LocationQuery = String.Format("latitude={0}&longitude={1}", LocationLat.ToString("0.####", CultureInfo.InvariantCulture), LocationLong.ToString("0.####", CultureInfo.InvariantCulture));
             }
             else if (WeatherAPI.NWS.Equals(WeatherSource))
             {
-                LocationQuery = String.Format("{0},{1}", LocationLat.ToString(CultureInfo.InvariantCulture), LocationLong.ToString(CultureInfo.InvariantCulture));
+                LocationQuery = String.Format("{0},{1}", LocationLat.ToString("0.####", CultureInfo.InvariantCulture), LocationLong.ToString("0.####", CultureInfo.InvariantCulture));
             }
             else
             {
-                LocationQuery = String.Format("lat={0}&lon={1}", LocationLat.ToString(CultureInfo.InvariantCulture), LocationLong.ToString(CultureInfo.InvariantCulture));
+                LocationQuery = String.Format("lat={0}&lon={1}", LocationLat.ToString("0.####", CultureInfo.InvariantCulture), LocationLong.ToString("0.####", CultureInfo.InvariantCulture));
             }
         }
 

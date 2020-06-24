@@ -1,943 +1,116 @@
-﻿namespace SimpleWeather.Metno
+﻿using System;
+
+namespace SimpleWeather.Metno
 {
-    // NOTE: Generated code may require at least .NET Framework 4.5 or .NET Core/Standard 2.0.
-    /// <remarks/>
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class astrodata
+    public class AstroRootobject
     {
-
-        private astrodataMeta metaField;
-
-        private astrodataLocation locationField;
-
-        /// <remarks/>
-        public astrodataMeta meta
-        {
-            get
-            {
-                return this.metaField;
-            }
-            set
-            {
-                this.metaField = value;
-            }
-        }
-
-        /// <remarks/>
-        public astrodataLocation location
-        {
-            get
-            {
-                return this.locationField;
-            }
-            set
-            {
-                this.locationField = value;
-            }
-        }
+        public AstroMeta meta { get; set; }
+        public Location location { get; set; }
     }
 
-    /// <remarks/>
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-    public partial class astrodataMeta
+    public class AstroMeta
     {
-
-        private string licenseurlField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string licenseurl
-        {
-            get
-            {
-                return this.licenseurlField;
-            }
-            set
-            {
-                this.licenseurlField = value;
-            }
-        }
+        public string licenseurl { get; set; }
     }
 
-    /// <remarks/>
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-    public partial class astrodataLocation
+    public class Location
     {
-
-        private astrodataLocationTime[] timeField;
-
-        private decimal latitudeField;
-
-        private decimal longitudeField;
-
-        private byte heightField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("time")]
-        public astrodataLocationTime[] time
-        {
-            get
-            {
-                return this.timeField;
-            }
-            set
-            {
-                this.timeField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public decimal latitude
-        {
-            get
-            {
-                return this.latitudeField;
-            }
-            set
-            {
-                this.latitudeField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public decimal longitude
-        {
-            get
-            {
-                return this.longitudeField;
-            }
-            set
-            {
-                this.longitudeField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public byte height
-        {
-            get
-            {
-                return this.heightField;
-            }
-            set
-            {
-                this.heightField = value;
-            }
-        }
+        public Time[] time { get; set; }
+        public string longitude { get; set; }
+        public string latitude { get; set; }
+        public string height { get; set; }
     }
 
-    /// <remarks/>
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-    public partial class astrodataLocationTime
+    public class Time
     {
-
-        private astrodataLocationTimeSunrise sunriseField;
-
-        private astrodataLocationTimeSunset sunsetField;
-
-        private astrodataLocationTimeMoonphase moonphaseField;
-
-        private astrodataLocationTimeMoonshadow moonshadowField;
-
-        private astrodataLocationTimeMoonposition moonpositionField;
-
-        private astrodataLocationTimeLow_moon low_moonField;
-
-        private astrodataLocationTimeSolarnoon solarnoonField;
-
-        private astrodataLocationTimeMoonrise moonriseField;
-
-        private astrodataLocationTimeHigh_moon high_moonField;
-
-        private astrodataLocationTimeMoonset moonsetField;
-
-        private astrodataLocationTimeSolarmidnight solarmidnightField;
-
-        private System.DateTime dateField;
-
-        /// <remarks/>
-        public astrodataLocationTimeMoonphase moonphase
-        {
-            get
-            {
-                return this.moonphaseField;
-            }
-            set
-            {
-                this.moonphaseField = value;
-            }
-        }
-
-        /// <remarks/>
-        public astrodataLocationTimeMoonshadow moonshadow
-        {
-            get
-            {
-                return this.moonshadowField;
-            }
-            set
-            {
-                this.moonshadowField = value;
-            }
-        }
-
-        /// <remarks/>
-        public astrodataLocationTimeMoonposition moonposition
-        {
-            get
-            {
-                return this.moonpositionField;
-            }
-            set
-            {
-                this.moonpositionField = value;
-            }
-        }
-
-        /// <remarks/>
-        public astrodataLocationTimeLow_moon low_moon
-        {
-            get
-            {
-                return this.low_moonField;
-            }
-            set
-            {
-                this.low_moonField = value;
-            }
-        }
-
-        /// <remarks/>
-        public astrodataLocationTimeSolarnoon solarnoon
-        {
-            get
-            {
-                return this.solarnoonField;
-            }
-            set
-            {
-                this.solarnoonField = value;
-            }
-        }
-
-        /// <remarks/>
-        public astrodataLocationTimeMoonrise moonrise
-        {
-            get
-            {
-                return this.moonriseField;
-            }
-            set
-            {
-                this.moonriseField = value;
-            }
-        }
-
-        /// <remarks/>
-        public astrodataLocationTimeHigh_moon high_moon
-        {
-            get
-            {
-                return this.high_moonField;
-            }
-            set
-            {
-                this.high_moonField = value;
-            }
-        }
-
-        /// <remarks/>
-        public astrodataLocationTimeMoonset moonset
-        {
-            get
-            {
-                return this.moonsetField;
-            }
-            set
-            {
-                this.moonsetField = value;
-            }
-        }
-
-        /// <remarks/>
-        public astrodataLocationTimeSolarmidnight solarmidnight
-        {
-            get
-            {
-                return this.solarmidnightField;
-            }
-            set
-            {
-                this.solarmidnightField = value;
-            }
-        }
-
-        /// <remarks/>
-        public astrodataLocationTimeSunrise sunrise
-        {
-            get
-            {
-                return this.sunriseField;
-            }
-            set
-            {
-                this.sunriseField = value;
-            }
-        }
-
-        /// <remarks/>
-        public astrodataLocationTimeSunset sunset
-        {
-            get
-            {
-                return this.sunsetField;
-            }
-            set
-            {
-                this.sunsetField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute(DataType = "date")]
-        public System.DateTime date
-        {
-            get
-            {
-                return this.dateField;
-            }
-            set
-            {
-                this.dateField = value;
-            }
-        }
+        public Low_Moon low_moon { get; set; }
+        public High_Moon high_moon { get; set; }
+        public Solarnoon solarnoon { get; set; }
+        public Moonphase moonphase { get; set; }
+        public Moonposition moonposition { get; set; }
+        public Sunrise sunrise { get; set; }
+        public string date { get; set; }
+        public Moonshadow moonshadow { get; set; }
+        public Moonrise moonrise { get; set; }
+        public Solarmidnight solarmidnight { get; set; }
+        public Sunset sunset { get; set; }
+        public Moonset moonset { get; set; }
     }
 
-    /// <remarks/>
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-    public partial class astrodataLocationTimeMoonphase
+    public class Low_Moon
     {
-
-        private System.DateTime timeField;
-
-        private decimal valueField;
-
-        private string descField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public System.DateTime time
-        {
-            get
-            {
-                return this.timeField;
-            }
-            set
-            {
-                this.timeField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public decimal value
-        {
-            get
-            {
-                return this.valueField;
-            }
-            set
-            {
-                this.valueField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string desc
-        {
-            get
-            {
-                return this.descField;
-            }
-            set
-            {
-                this.descField = value;
-            }
-        }
+        public string elevation { get; set; }
+        public DateTime time { get; set; }
+        public string desc { get; set; }
     }
 
-    /// <remarks/>
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-    public partial class astrodataLocationTimeMoonshadow
+    public class High_Moon
     {
-
-        private System.DateTime timeField;
-
-        private decimal elevationField;
-
-        private decimal azimuthField;
-
-        private string descField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public System.DateTime time
-        {
-            get
-            {
-                return this.timeField;
-            }
-            set
-            {
-                this.timeField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public decimal elevation
-        {
-            get
-            {
-                return this.elevationField;
-            }
-            set
-            {
-                this.elevationField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public decimal azimuth
-        {
-            get
-            {
-                return this.azimuthField;
-            }
-            set
-            {
-                this.azimuthField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string desc
-        {
-            get
-            {
-                return this.descField;
-            }
-            set
-            {
-                this.descField = value;
-            }
-        }
+        public string elevation { get; set; }
+        public DateTime time { get; set; }
+        public string desc { get; set; }
     }
 
-    /// <remarks/>
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-    public partial class astrodataLocationTimeMoonposition
+    public class Solarnoon
     {
-
-        private System.DateTime timeField;
-
-        private decimal elevationField;
-
-        private decimal azimuthField;
-
-        private decimal rangeField;
-
-        private decimal phaseField;
-
-        private string descField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public System.DateTime time
-        {
-            get
-            {
-                return this.timeField;
-            }
-            set
-            {
-                this.timeField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public decimal elevation
-        {
-            get
-            {
-                return this.elevationField;
-            }
-            set
-            {
-                this.elevationField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public decimal azimuth
-        {
-            get
-            {
-                return this.azimuthField;
-            }
-            set
-            {
-                this.azimuthField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public decimal range
-        {
-            get
-            {
-                return this.rangeField;
-            }
-            set
-            {
-                this.rangeField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public decimal phase
-        {
-            get
-            {
-                return this.phaseField;
-            }
-            set
-            {
-                this.phaseField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string desc
-        {
-            get
-            {
-                return this.descField;
-            }
-            set
-            {
-                this.descField = value;
-            }
-        }
+        public string desc { get; set; }
+        public DateTime time { get; set; }
+        public string elevation { get; set; }
     }
 
-    /// <remarks/>
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-    public partial class astrodataLocationTimeSolarmidnight
+    public class Moonphase
     {
-
-        private System.DateTime timeField;
-
-        private decimal elevationField;
-
-        private string descField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public System.DateTime time
-        {
-            get
-            {
-                return this.timeField;
-            }
-            set
-            {
-                this.timeField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public decimal elevation
-        {
-            get
-            {
-                return this.elevationField;
-            }
-            set
-            {
-                this.elevationField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string desc
-        {
-            get
-            {
-                return this.descField;
-            }
-            set
-            {
-                this.descField = value;
-            }
-        }
+        public string value { get; set; }
+        public string desc { get; set; }
+        public DateTime time { get; set; }
     }
 
-    /// <remarks/>
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-    public partial class astrodataLocationTimeHigh_moon
+    public class Moonposition
     {
-
-        private System.DateTime timeField;
-
-        private decimal elevationField;
-
-        private string descField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public System.DateTime time
-        {
-            get
-            {
-                return this.timeField;
-            }
-            set
-            {
-                this.timeField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public decimal elevation
-        {
-            get
-            {
-                return this.elevationField;
-            }
-            set
-            {
-                this.elevationField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string desc
-        {
-            get
-            {
-                return this.descField;
-            }
-            set
-            {
-                this.descField = value;
-            }
-        }
+        public string desc { get; set; }
+        public string azimuth { get; set; }
+        public string phase { get; set; }
+        public DateTime time { get; set; }
+        public string range { get; set; }
+        public string elevation { get; set; }
     }
 
-    /// <remarks/>
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-    public partial class astrodataLocationTimeSunrise
+    public class Sunrise
     {
-
-        private System.DateTime timeField;
-
-        private string descField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public System.DateTime time
-        {
-            get
-            {
-                return this.timeField;
-            }
-            set
-            {
-                this.timeField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string desc
-        {
-            get
-            {
-                return this.descField;
-            }
-            set
-            {
-                this.descField = value;
-            }
-        }
+        public DateTime time { get; set; }
+        public string desc { get; set; }
     }
 
-    /// <remarks/>
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-    public partial class astrodataLocationTimeMoonset
+    public class Moonshadow
     {
-
-        private System.DateTime timeField;
-
-        private string descField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public System.DateTime time
-        {
-            get
-            {
-                return this.timeField;
-            }
-            set
-            {
-                this.timeField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string desc
-        {
-            get
-            {
-                return this.descField;
-            }
-            set
-            {
-                this.descField = value;
-            }
-        }
+        public string elevation { get; set; }
+        public DateTime time { get; set; }
+        public string azimuth { get; set; }
+        public string desc { get; set; }
     }
 
-    /// <remarks/>
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-    public partial class astrodataLocationTimeSolarnoon
+    public class Moonrise
     {
-
-        private System.DateTime timeField;
-
-        private decimal elevationField;
-
-        private string descField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public System.DateTime time
-        {
-            get
-            {
-                return this.timeField;
-            }
-            set
-            {
-                this.timeField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public decimal elevation
-        {
-            get
-            {
-                return this.elevationField;
-            }
-            set
-            {
-                this.elevationField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string desc
-        {
-            get
-            {
-                return this.descField;
-            }
-            set
-            {
-                this.descField = value;
-            }
-        }
+        public DateTime time { get; set; }
+        public string desc { get; set; }
     }
 
-    /// <remarks/>
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-    public partial class astrodataLocationTimeLow_moon
+    public class Solarmidnight
     {
-
-        private System.DateTime timeField;
-
-        private decimal elevationField;
-
-        private string descField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public System.DateTime time
-        {
-            get
-            {
-                return this.timeField;
-            }
-            set
-            {
-                this.timeField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public decimal elevation
-        {
-            get
-            {
-                return this.elevationField;
-            }
-            set
-            {
-                this.elevationField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string desc
-        {
-            get
-            {
-                return this.descField;
-            }
-            set
-            {
-                this.descField = value;
-            }
-        }
+        public DateTime time { get; set; }
+        public string elevation { get; set; }
+        public string desc { get; set; }
     }
 
-    /// <remarks/>
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-    public partial class astrodataLocationTimeSunset
+    public class Sunset
     {
-
-        private System.DateTime timeField;
-
-        private string descField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public System.DateTime time
-        {
-            get
-            {
-                return this.timeField;
-            }
-            set
-            {
-                this.timeField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string desc
-        {
-            get
-            {
-                return this.descField;
-            }
-            set
-            {
-                this.descField = value;
-            }
-        }
+        public DateTime time { get; set; }
+        public string desc { get; set; }
     }
 
-    /// <remarks/>
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-    public partial class astrodataLocationTimeMoonrise
+    public class Moonset
     {
-
-        private System.DateTime timeField;
-
-        private string descField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public System.DateTime time
-        {
-            get
-            {
-                return this.timeField;
-            }
-            set
-            {
-                this.timeField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string desc
-        {
-            get
-            {
-                return this.descField;
-            }
-            set
-            {
-                this.descField = value;
-            }
-        }
+        public DateTime time { get; set; }
+        public string desc { get; set; }
     }
 }

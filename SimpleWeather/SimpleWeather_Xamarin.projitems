@@ -52,6 +52,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Metno\Astrodata.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Metno\MetnoWeatherProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Metno\Weather.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Metno\WeatherIcon.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NWS\Alert.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NWS\NWSWeatherProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NWS\NWSAlertProvider.cs" />
