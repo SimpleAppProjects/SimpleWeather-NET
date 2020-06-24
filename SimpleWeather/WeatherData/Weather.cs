@@ -97,7 +97,7 @@ namespace SimpleWeather.WeatherData
                     condition.wind_kph = hrf.wind_kph;
                     condition.wind_degrees = hrf.wind_degrees;
 
-                    condition.beaufort = null;
+                    condition.beaufort = new Beaufort((int)WeatherUtils.GetBeaufortScale((int)Math.Round(hrf.wind_mph)));
                     condition.feelslike_f = hrf.extras?.feelslike_f ?? 0.0f;
                     condition.feelslike_c = hrf.extras?.feelslike_c ?? 0.0f;
                     condition.uv = null;
@@ -215,10 +215,6 @@ namespace SimpleWeather.WeatherData
 
             query = string.Format("lat={0}&lon={1}", location.latitude, location.longitude);
 
-            // Set feelslike temp
-            condition.feelslike_f = float.Parse(WeatherUtils.GetFeelsLikeTemp(condition.temp_f.ToString(), condition.wind_mph.ToString(), atmosphere.humidity));
-            condition.feelslike_c = float.Parse(ConversionMethods.FtoC(condition.feelslike_f.ToString()));
-
             if (condition.high_f == condition.high_c && forecast.Count > 0)
             {
                 condition.high_f = float.Parse(forecast[0].high_f);
@@ -247,7 +243,7 @@ namespace SimpleWeather.WeatherData
                     condition.wind_kph = hrf.wind_kph;
                     condition.wind_degrees = hrf.wind_degrees;
 
-                    condition.beaufort = null;
+                    condition.beaufort = new Beaufort((int)WeatherUtils.GetBeaufortScale((int)Math.Round(hrf.wind_mph)));
                     condition.feelslike_f = hrf.extras?.feelslike_f ?? 0.0f;
                     condition.feelslike_c = hrf.extras?.feelslike_c ?? 0.0f;
                     condition.uv = hrf.extras != null && hrf.extras.uv_index >= 0 ? new UV(hrf.extras.uv_index) : null;
@@ -319,7 +315,7 @@ namespace SimpleWeather.WeatherData
                     condition.wind_kph = hrf.wind_kph;
                     condition.wind_degrees = hrf.wind_degrees;
 
-                    condition.beaufort = null;
+                    condition.beaufort = new Beaufort((int)WeatherUtils.GetBeaufortScale((int)Math.Round(hrf.wind_mph)));
                     condition.feelslike_f = hrf.extras?.feelslike_f ?? 0.0f;
                     condition.feelslike_c = hrf.extras?.feelslike_c ?? 0.0f;
                     condition.uv = null;
@@ -422,6 +418,8 @@ namespace SimpleWeather.WeatherData
                     condition.wind_mph = hrf.wind_mph;
                     condition.wind_kph = hrf.wind_kph;
                     condition.wind_degrees = hrf.wind_degrees;
+
+                    condition.beaufort = new Beaufort((int)WeatherUtils.GetBeaufortScale((int)Math.Round(hrf.wind_mph)));
                 }
             }
         }
@@ -681,6 +679,21 @@ namespace SimpleWeather.WeatherData
             condition = forecastItem.shortForecast;
             icon = WeatherManager.GetProvider(WeatherAPI.NWS)
                         .GetWeatherIcon(forecastItem.icon);
+
+            if (forecastItem.windSpeed != null && forecastItem.windDirection != null)
+            {
+                var speeds = forecastItem.windSpeed.Replace(" mph", String.Empty).Split(" to ");
+                var maxWindSpeed = speeds.LastOrDefault();
+                if (!String.IsNullOrWhiteSpace(maxWindSpeed) && int.TryParse(maxWindSpeed, out int windSpeed))
+                {
+                    extras = new ForecastExtras()
+                    {
+                        wind_degrees = WeatherUtils.GetWindDirection(forecastItem.windDirection),
+                        wind_mph = windSpeed,
+                        wind_kph = float.Parse(ConversionMethods.MphToKph(maxWindSpeed))
+                    };
+                }
+            }
         }
 
         public Forecast(NWS.Period forecastItem, NWS.Period ntForecastItem)
@@ -693,6 +706,23 @@ namespace SimpleWeather.WeatherData
             condition = forecastItem.shortForecast;
             icon = WeatherManager.GetProvider(WeatherAPI.NWS)
                         .GetWeatherIcon(forecastItem.icon);
+
+            if (forecastItem.windSpeed != null && forecastItem.windDirection != null)
+            {
+                // windSpeed is reported usually as, for ex., '7 to 10 mph'
+                // Format and split text into min and max
+                var speeds = forecastItem.windSpeed.Replace(" mph", String.Empty).Split(" to ");
+                var maxWindSpeed = speeds.LastOrDefault();
+                if (!String.IsNullOrWhiteSpace(maxWindSpeed) && int.TryParse(maxWindSpeed, out int windSpeed))
+                {
+                    extras = new ForecastExtras()
+                    {
+                        wind_degrees = WeatherUtils.GetWindDirection(forecastItem.windDirection),
+                        wind_mph = windSpeed,
+                        wind_kph = float.Parse(ConversionMethods.MphToKph(maxWindSpeed))
+                    };
+                }
+            }
         }
     }
 
@@ -851,6 +881,16 @@ namespace SimpleWeather.WeatherData
                 extras.dewpoint_f = null;
                 extras.dewpoint_c = null;
             }
+            try
+            {
+                extras.visibility_mi = hr_forecast.visibility;
+                extras.visibility_km = ConversionMethods.MiToKm(hr_forecast.visibility);
+            }
+            catch (FormatException)
+            {
+                extras.visibility_mi = null;
+                extras.visibility_km = null;
+            }
             extras.pop = hr_forecast.precipitationProbability;
             if (float.TryParse(hr_forecast.rainFall, out float rain_in))
             {
@@ -877,19 +917,30 @@ namespace SimpleWeather.WeatherData
             condition = forecastItem.shortForecast;
             icon = WeatherManager.GetProvider(WeatherAPI.NWS)
                         .GetWeatherIcon(forecastItem.icon);
-            if (float.TryParse(forecastItem.windSpeed.RemoveNonDigitChars(), out float windSpeed))
-            {
-                wind_mph = windSpeed;
-                wind_kph = float.Parse(ConversionMethods.MphToKph(windSpeed.ToString(CultureInfo.InvariantCulture)));
-            }
             pop = null;
-            wind_degrees = WeatherUtils.GetWindDirection(forecastItem.windDirection);
 
-            // Extras
-            extras = new ForecastExtras();
-            extras.wind_degrees = wind_degrees;
-            extras.wind_mph = wind_mph;
-            extras.wind_kph = wind_kph;
+            if (forecastItem.windSpeed != null && forecastItem.windDirection != null)
+            {
+                wind_degrees = WeatherUtils.GetWindDirection(forecastItem.windDirection);
+
+                // windSpeed is reported usually as, for ex., '7 to 10 mph'
+                // Format and split text into min and max
+                var speeds = forecastItem.windSpeed.Replace(" mph", String.Empty).Split(" to ");
+                var maxWindSpeed = speeds.LastOrDefault();
+                if (!String.IsNullOrWhiteSpace(maxWindSpeed) && int.TryParse(maxWindSpeed, out int windSpeed))
+                {
+                    wind_mph = windSpeed;
+                    wind_kph = float.Parse(ConversionMethods.MphToKph(maxWindSpeed));
+
+                    // Extras
+                    extras = new ForecastExtras()
+                    {
+                        wind_degrees = this.wind_degrees,
+                        wind_mph = this.wind_mph,
+                        wind_kph = this.wind_kph
+                    };
+                }
+            }
         }
     }
 
@@ -1004,6 +1055,8 @@ namespace SimpleWeather.WeatherData
             feelslike_c = float.Parse(ConversionMethods.FtoC(observation.wind.chill.ToString(CultureInfo.InvariantCulture)));
             icon = WeatherManager.GetProvider(WeatherAPI.Yahoo)
                    .GetWeatherIcon(observation.condition.code.ToString(CultureInfo.InvariantCulture));
+
+            beaufort = new Beaufort((int)WeatherUtils.GetBeaufortScale((int)Math.Round(wind_mph)));
         }
 
         public Condition(OpenWeather.Current current)
@@ -1027,6 +1080,7 @@ namespace SimpleWeather.WeatherData
                    .GetWeatherIcon(current.weather[0].id.ToString() + dn);
 
             uv = new UV(current.uvi);
+            beaufort = new Beaufort((int)WeatherUtils.GetBeaufortScale(current.wind_speed));
 
             observation_time = DateTimeOffset.FromUnixTimeSeconds(current.dt);
         }
@@ -1039,9 +1093,8 @@ namespace SimpleWeather.WeatherData
             wind_degrees = (int)Math.Round(time.data.instant.details.wind_from_direction.Value);
             wind_mph = (float)Math.Round(double.Parse(ConversionMethods.MSecToMph(time.data.instant.details.wind_speed.Value.ToString())));
             wind_kph = (float)Math.Round(double.Parse(ConversionMethods.MSecToKph(time.data.instant.details.wind_speed.Value.ToString())));
-            // This will be calculated after with formula
-            feelslike_f = temp_f;
-            feelslike_c = temp_c;
+            feelslike_f = float.Parse(WeatherUtils.GetFeelsLikeTemp(temp_f.ToString(), wind_mph.ToString(), time.data.instant.details.relative_humidity.Value.ToString()));
+            feelslike_c = float.Parse(ConversionMethods.FtoC(feelslike_f.ToString()));
 
             if (time.data.next_12_hours != null)
             {
@@ -1054,6 +1107,12 @@ namespace SimpleWeather.WeatherData
             else if (time.data.next_1_hours != null)
             {
                 icon = time.data.next_1_hours.summary.symbol_code;
+            }
+
+            beaufort = new Beaufort((int)WeatherUtils.GetBeaufortScale(time.data.instant.details.wind_speed.Value));
+            if (time.data.instant.details.ultraviolet_index_clear_sky.HasValue)
+            {
+                uv = new UV(time.data.instant.details.ultraviolet_index_clear_sky.Value);
             }
         }
 
@@ -1191,6 +1250,8 @@ namespace SimpleWeather.WeatherData
             }
             icon = WeatherManager.GetProvider(WeatherAPI.NWS)
                         .GetWeatherIcon(obsCurrentRootObject.icon);
+
+            beaufort = new Beaufort((int)WeatherUtils.GetBeaufortScale((int)Math.Round(wind_mph)));
 
             observation_time = obsCurrentRootObject.timestamp;
         }
