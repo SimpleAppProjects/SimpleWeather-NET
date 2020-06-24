@@ -175,7 +175,7 @@ namespace SimpleWeather.Metno
                 hr_forecast.date = hr_forecast.date.ToOffset(offset);
 
                 hr_forecast.condition = GetWeatherCondition(hr_forecast.icon);
-                hr_forecast.icon = GetWeatherIcon(hr_forecast.icon != null && 
+                hr_forecast.icon = GetWeatherIcon(hr_forecast.icon != null &&
                     (hr_forecast.icon.EndsWith("_night") || hr_forecast.icon.EndsWith("_polartwilight")),
                     hr_forecast.icon);
             }
@@ -191,7 +191,7 @@ namespace SimpleWeather.Metno
 
             if (icon_obj != null)
             {
-                var condition =  icon_obj.Value<String>("desc_en");
+                var condition = icon_obj.Value<String>("desc_en");
                 return condition;
             }
 
@@ -205,7 +205,7 @@ namespace SimpleWeather.Metno
 
         public override string UpdateLocationQuery(LocationData location)
         {
-            return string.Format("lat={0}&lon={1}", location.latitude.ToString("0.####", CultureInfo.InvariantCulture), location.longitude.ToString("0.####", CultureInfo.InvariantCulture));
+            return string.Format("lat={0}&lon={1}", location.latitude.ToInvariantString("0.####"), location.longitude.ToInvariantString("0.####"));
         }
 
         public override string GetWeatherIcon(string icon)

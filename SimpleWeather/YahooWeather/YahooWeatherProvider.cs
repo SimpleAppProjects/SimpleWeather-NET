@@ -38,7 +38,7 @@ namespace SimpleWeather.WeatherYahoo
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         private Task<Rootobject> GetRootobject(string location_query)
         {
-            return Task.Run(async () => 
+            return Task.Run(async () =>
             {
                 Rootobject root = null;
 
@@ -177,7 +177,7 @@ namespace SimpleWeather.WeatherYahoo
 
         public override string UpdateLocationQuery(LocationData location)
         {
-            return string.Format("lat={0}&lon={1}", location.latitude.ToString(CultureInfo.InvariantCulture), location.longitude.ToString(CultureInfo.InvariantCulture));
+            return string.Format("lat={0}&lon={1}", location.latitude.ToInvariantString("0.####"), location.longitude.ToInvariantString("0.####"));
         }
 
         public override string GetWeatherIcon(string icon)

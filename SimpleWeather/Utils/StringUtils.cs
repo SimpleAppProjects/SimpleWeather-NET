@@ -69,5 +69,25 @@ namespace SimpleWeather.Utils
         {
             return num.ToString(CultureInfo.InvariantCulture);
         }
+
+        public static String ToInvariantString(this float @num, String format)
+        {
+            return num.ToString(format, CultureInfo.InvariantCulture);
+        }
+
+        public static String ToInvariantString(this double @num, String format)
+        {
+            return num.ToString(format, CultureInfo.InvariantCulture);
+        }
+
+        public static String ToInvariantString(this int @num, String format)
+        {
+            return num.ToString(format, CultureInfo.InvariantCulture);
+        }
+
+        public static String ToInvariantString(this long @num, String format)
+        {
+            return num.ToString(format, CultureInfo.InvariantCulture);
+        }
     }
 }

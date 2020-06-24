@@ -281,7 +281,7 @@ namespace SimpleWeather.HERE
 
         public override string UpdateLocationQuery(LocationData location)
         {
-            return string.Format("latitude={0}&longitude={1}", location.latitude.ToString(CultureInfo.InvariantCulture), location.longitude.ToString(CultureInfo.InvariantCulture));
+            return string.Format("latitude={0}&longitude={1}", location.latitude.ToInvariantString("0.####"), location.longitude.ToInvariantString("0.####"));
         }
 
         public override String LocaleToLangCode(String iso, String name)

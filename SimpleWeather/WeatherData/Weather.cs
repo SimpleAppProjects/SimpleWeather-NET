@@ -431,8 +431,8 @@ namespace SimpleWeather.WeatherData
         {
             // Use location name from location provider
             name = null;
-            latitude = location.lat.ToInvariantString();
-            longitude = location._long.ToInvariantString();
+            latitude = location.lat.ToInvariantString("0.####");
+            longitude = location._long.ToInvariantString("0.####");
             var nodaTz = NodaTime.DateTimeZoneProviders.Tzdb.GetZoneOrNull(location.timezone_id);
             if (nodaTz != null)
             {
@@ -452,8 +452,8 @@ namespace SimpleWeather.WeatherData
         {
             // Use location name from location provider
             name = null;
-            latitude = root.lat.ToInvariantString();
-            longitude = root.lon.ToInvariantString();
+            latitude = root.lat.ToInvariantString("0.####");
+            longitude = root.lon.ToInvariantString("0.####");
             var nodaTz = NodaTime.DateTimeZoneProviders.Tzdb.GetZoneOrNull(root.timezone);
             if (nodaTz != null)
             {
@@ -483,8 +483,8 @@ namespace SimpleWeather.WeatherData
         {
             // Use location name from location provider
             name = null;
-            latitude = location.latitude.ToInvariantString();
-            longitude = location.longitude.ToInvariantString();
+            latitude = location.latitude.ToInvariantString("0.####");
+            longitude = location.longitude.ToInvariantString("0.####");
             tz_offset = TimeSpan.Zero;
             tz_short = "UTC";
         }

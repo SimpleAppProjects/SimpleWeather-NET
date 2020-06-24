@@ -337,7 +337,7 @@ namespace SimpleWeather.NWS
 
         public override string UpdateLocationQuery(LocationData location)
         {
-            return string.Format("{0},{1}", location.latitude.ToString(CultureInfo.InvariantCulture), location.longitude.ToString(CultureInfo.InvariantCulture));
+            return string.Format("{0},{1}", location.latitude.ToInvariantString("0.####"), location.longitude.ToInvariantString("0.####"));
         }
 
         public override string GetWeatherIcon(string icon)
