@@ -1,4 +1,6 @@
-﻿using Microsoft.AppCenter.Analytics;
+﻿#if !DEBUG && !UNIT_TEST
+using Microsoft.AppCenter.Analytics;
+#endif
 using SimpleWeather.Utils;
 using System;
 using System.Collections.Generic;
