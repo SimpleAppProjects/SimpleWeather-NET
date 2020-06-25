@@ -96,7 +96,7 @@ namespace UnitTestProject
             var provider = WeatherManager.GetProvider(WeatherAPI.Here);
             var weather = GetWeather(provider).ConfigureAwait(false).GetAwaiter().GetResult();
             Assert.IsTrue(weather?.IsValid() == true);
-            //Assert.IsTrue(SerializerTest(weather).ConfigureAwait(false).GetAwaiter().GetResult());
+            Assert.IsTrue(SerializerTest(weather).ConfigureAwait(false).GetAwaiter().GetResult());
             //SerializerSpeedTest(weather);
         }
 
@@ -106,7 +106,7 @@ namespace UnitTestProject
             var provider = WeatherManager.GetProvider(WeatherAPI.Yahoo);
             var weather = GetWeather(provider).ConfigureAwait(false).GetAwaiter().GetResult();
             Assert.IsTrue(weather?.IsValid() == true);
-            //Assert.IsTrue(SerializerTest(weather).ConfigureAwait(false).GetAwaiter().GetResult());
+            Assert.IsTrue(SerializerTest(weather).ConfigureAwait(false).GetAwaiter().GetResult());
             //SerializerSpeedTest(weather);
         }
 
@@ -116,7 +116,7 @@ namespace UnitTestProject
             var provider = WeatherManager.GetProvider(WeatherAPI.MetNo);
             var weather = GetWeather(provider).ConfigureAwait(false).GetAwaiter().GetResult();
             Assert.IsTrue(weather?.IsValid() == true);
-            //Assert.IsTrue(SerializerTest(weather).ConfigureAwait(false).GetAwaiter().GetResult());
+            Assert.IsTrue(SerializerTest(weather).ConfigureAwait(false).GetAwaiter().GetResult());
             //SerializerSpeedTest(weather);
         }
 
@@ -126,7 +126,7 @@ namespace UnitTestProject
             var provider = WeatherManager.GetProvider(WeatherAPI.NWS);
             var weather = GetWeather(provider).ConfigureAwait(false).GetAwaiter().GetResult();
             Assert.IsTrue(weather?.IsValid() == true);
-            //Assert.IsTrue(SerializerTest(weather).ConfigureAwait(false).GetAwaiter().GetResult());
+            Assert.IsTrue(SerializerTest(weather).ConfigureAwait(false).GetAwaiter().GetResult());
             //SerializerSpeedTest(weather);
         }
 
@@ -136,7 +136,7 @@ namespace UnitTestProject
             var provider = WeatherManager.GetProvider(WeatherAPI.OpenWeatherMap);
             var weather = GetWeather(provider).ConfigureAwait(false).GetAwaiter().GetResult();
             Assert.IsTrue(weather?.IsValid() == true);
-            //Assert.IsTrue(SerializerTest(weather).ConfigureAwait(false).GetAwaiter().GetResult());
+            Assert.IsTrue(SerializerTest(weather).ConfigureAwait(false).GetAwaiter().GetResult());
             //SerializerSpeedTest(weather);
         }
 
