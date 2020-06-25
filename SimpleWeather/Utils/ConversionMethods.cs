@@ -124,7 +124,17 @@ namespace SimpleWeather.Utils
 
         public static float ToRadians(float angle)
         {
-            return (float)(Math.PI * angle / 180.0f);
+            return (float)ToRadians((double)angle);
+        }
+
+        public static double ToDegrees(double angle)
+        {
+            return 180.0 * angle / Math.PI;
+        }
+
+        public static float ToDegrees(float angle)
+        {
+            return (float)ToDegrees((double)angle);
         }
 
         public static double CalculateHaversine(double lat1, double lon1, double lat2, double lon2)
