@@ -327,6 +327,9 @@ namespace SimpleWeather.NWS
             var offset = location.tz_offset;
             weather.update_time = weather.update_time.ToOffset(offset);
 
+            // NWS does not provide astrodata; calculate this ourselves (using their calculator)
+            weather.astronomy = await AsyncTask.RunAsync(new SolCalcAstroProvider().GetAstronomyData(location, weather.update_time));
+
             return weather;
         }
 

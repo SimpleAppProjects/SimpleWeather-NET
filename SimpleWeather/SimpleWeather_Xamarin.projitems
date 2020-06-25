@@ -61,6 +61,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\OpenWeatherMapProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SimpleLibrary.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NWS\SolCalcAstroProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SQLiteNet\SQLiteNetPCLExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TZDB\ITimeZoneProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TZDB\TimeZoneProvider.cs" />
@@ -84,7 +85,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.Coordinate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.Images.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.SolCalc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IAirQualityProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IAstroDataProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\Images\ImageDataDatabase.cs" />

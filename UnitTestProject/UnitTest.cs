@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SimpleWeather.HERE;
 using SimpleWeather.Keys;
 using SimpleWeather.Location;
+using SimpleWeather.NWS;
 using SimpleWeather.TZDB;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
@@ -152,6 +153,22 @@ namespace UnitTestProject
             var tz = new TimeZoneProvider().GetTimeZone(0, 0).ConfigureAwait(false).GetAwaiter().GetResult();
             Debug.WriteLine("TZTest: tz = " + tz);
             Assert.IsTrue(!String.IsNullOrWhiteSpace(tz));
+        }
+
+        [TestMethod]
+        public void GetSunriseSetTime()
+        {
+            var date = DateTimeOffset.UtcNow;
+            var tz_long = "America/Los_Angeles";
+            var astro = new SolCalcAstroProvider().GetAstronomyData(
+                new LocationData()
+                {
+                    latitude = 47.6721646,
+                    longitude = -122.1706614,
+                    tz_long = tz_long
+                }, date).ConfigureAwait(false).GetAwaiter().GetResult();
+            Debug.WriteLine("SolCalc - Sunrise: {0}; Sunset: {1}", astro.sunrise, astro.sunset);
+            Assert.IsNotNull(astro.sunrise != DateTime.MinValue && astro.sunset != DateTime.MinValue);
         }
     }
 }
