@@ -84,6 +84,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.Coordinate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.Images.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.SolCalc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IAirQualityProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IAstroDataProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\Images\ImageDataDatabase.cs" />
