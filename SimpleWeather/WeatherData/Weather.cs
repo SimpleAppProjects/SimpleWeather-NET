@@ -157,7 +157,7 @@ namespace SimpleWeather.WeatherData
                     hr_forecast.Add(new HourlyForecast(time));
 
                 // Create new forecast
-                if (currentDate.Date != date.Date)
+                if (currentDate.Date != date.Date && date >= currentDate.AddDays(1))
                 {
                     // Last forecast for day; create forecast
                     if (fcast != null)
