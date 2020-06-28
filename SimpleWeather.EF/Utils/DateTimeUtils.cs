@@ -87,5 +87,15 @@ namespace SimpleWeather.Utils
         {
             return new DateTime(date.Ticks - date.Ticks % roundTicks, date.Kind);
         }
+
+        /// Functionality thanks to: https://stackoverflow.com/a/153014
+        /// <summary>
+        /// Use to trim a DateTime to a specific precision
+        /// </summary>
+        /// <param name="roundTicks">The ticks to round DateTime object to. (ex. TimeSpan.TicksPerMinute)</param>
+        public static DateTimeOffset Trim(this DateTimeOffset date, long roundTicks)
+        {
+            return new DateTimeOffset(new DateTime(date.UtcDateTime.Ticks - date.UtcDateTime.Ticks % roundTicks, DateTimeKind.Utc)).ToOffset(date.Offset);
+        }
     }
 }

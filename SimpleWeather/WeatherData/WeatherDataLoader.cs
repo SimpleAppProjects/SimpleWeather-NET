@@ -271,6 +271,61 @@ namespace SimpleWeather.WeatherData
                             weather.txt_forecast = forecasts?.txt_forecast;
                         }
                     }
+
+                    if (weather != null)
+                    {
+                        var durationMins = (DateTimeOffset.Now - weather.condition.observation_time).TotalMinutes;
+                        if (durationMins > 60)
+                        {
+                            var hrf = await Settings.GetFirstHourlyWeatherForecastDataByDate(location.query, DateTimeOffset.Now.ToOffset(location.tz_offset).Trim(TimeSpan.TicksPerHour).ToString("yyyy-MM-dd HH:mm:ss zzzz"));
+
+                            if (hrf != null)
+                            {
+                                weather.condition.weather = hrf.condition;
+                                weather.condition.icon = hrf.icon;
+
+                                weather.condition.temp_f = float.Parse(hrf.high_f, CultureInfo.InvariantCulture);
+                                weather.condition.temp_c = float.Parse(hrf.high_c, CultureInfo.InvariantCulture);
+
+                                weather.condition.wind_mph = hrf.wind_mph;
+                                weather.condition.wind_kph = hrf.wind_kph;
+                                weather.condition.wind_degrees = hrf.wind_degrees;
+
+                                weather.condition.beaufort = new Beaufort((int)WeatherUtils.GetBeaufortScale((int)Math.Round(hrf.wind_mph)));
+                                weather.condition.feelslike_f = hrf.extras?.feelslike_f ?? 0.0f;
+                                weather.condition.feelslike_c = hrf.extras?.feelslike_c ?? 0.0f;
+                                weather.condition.uv = hrf.extras != null && hrf.extras.uv_index >= 0 ? new UV(hrf.extras.uv_index) : null;
+
+                                weather.condition.observation_time = hrf.date;
+
+                                if (durationMins > 60 * 6)
+                                {
+                                    weather.condition.high_f = weather.condition.high_c = 0f;
+                                    weather.condition.low_f = weather.condition.low_c = 0f;
+                                }
+
+                                weather.atmosphere.dewpoint_f = hrf.extras?.dewpoint_f;
+                                weather.atmosphere.dewpoint_c = hrf.extras?.dewpoint_c;
+                                weather.atmosphere.humidity = hrf.extras?.humidity;
+                                weather.atmosphere.pressure_trend = null;
+                                weather.atmosphere.pressure_in = hrf.extras?.pressure_in;
+                                weather.atmosphere.pressure_mb = hrf.extras?.pressure_mb;
+                                weather.atmosphere.visibility_mi = hrf.extras?.visibility_mi;
+                                weather.atmosphere.visibility_km = hrf.extras?.visibility_km;
+
+                                if (weather.precipitation != null)
+                                {
+                                    weather.precipitation.pop = hrf.extras?.pop;
+                                    weather.precipitation.qpf_rain_in = hrf.extras?.qpf_rain_in >= 0 ? hrf.extras.qpf_rain_in : 0.0f;
+                                    weather.precipitation.qpf_rain_mm = hrf.extras?.qpf_rain_mm >= 0 ? hrf.extras.qpf_rain_mm : 0.0f;
+                                    weather.precipitation.qpf_snow_in = hrf.extras?.qpf_snow_in >= 0 ? hrf.extras.qpf_snow_in : 0.0f;
+                                    weather.precipitation.qpf_snow_cm = hrf.extras?.qpf_snow_cm >= 0 ? hrf.extras.qpf_snow_cm : 0.0f;
+                                }
+
+                                await Settings.SaveWeatherData(weather);
+                            }
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {

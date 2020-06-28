@@ -105,7 +105,4 @@
     <Compile Include="$(MSBuildThisFileDirectory)Keys\YahooKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)YahooWeather\YahooWeatherProvider.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)SQLiteNet\" />
-  </ItemGroup>
 </Project>

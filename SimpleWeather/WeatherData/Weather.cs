@@ -80,44 +80,6 @@ namespace SimpleWeather.WeatherData
             }
 
             source = WeatherAPI.OpenWeatherMap;
-
-            // Check for outdated observation
-            int ttlMins = int.Parse(ttl);
-            if ((DateTimeOffset.Now - condition.observation_time).TotalMinutes > ttlMins)
-            {
-                if (hr_forecast.FirstOrDefault() is HourlyForecast hrf)
-                {
-                    condition.weather = hrf.condition;
-                    condition.icon = hrf.icon;
-
-                    condition.temp_f = float.Parse(hrf.high_f, CultureInfo.InvariantCulture);
-                    condition.temp_c = float.Parse(hrf.high_c, CultureInfo.InvariantCulture);
-
-                    condition.wind_mph = hrf.wind_mph;
-                    condition.wind_kph = hrf.wind_kph;
-                    condition.wind_degrees = hrf.wind_degrees;
-
-                    condition.beaufort = new Beaufort((int)WeatherUtils.GetBeaufortScale((int)Math.Round(hrf.wind_mph)));
-                    condition.feelslike_f = hrf.extras?.feelslike_f ?? 0.0f;
-                    condition.feelslike_c = hrf.extras?.feelslike_c ?? 0.0f;
-                    condition.uv = null;
-
-                    atmosphere.dewpoint_f = hrf.extras?.dewpoint_f;
-                    atmosphere.dewpoint_c = hrf.extras?.dewpoint_c;
-                    atmosphere.humidity = hrf.extras?.humidity;
-                    atmosphere.pressure_trend = null;
-                    atmosphere.pressure_in = hrf.extras?.pressure_in;
-                    atmosphere.pressure_mb = hrf.extras?.pressure_mb;
-                    atmosphere.visibility_mi = hrf.extras?.visibility_mi;
-                    atmosphere.visibility_km = hrf.extras?.visibility_km;
-
-                    precipitation.pop = hrf.extras?.pop;
-                    precipitation.qpf_rain_in = hrf.extras?.qpf_rain_in > 0 ? hrf.extras.qpf_rain_in : 0.0f;
-                    precipitation.qpf_rain_mm = hrf.extras?.qpf_rain_mm > 0 ? hrf.extras.qpf_rain_mm : 0.0f;
-                    precipitation.qpf_snow_in = hrf.extras?.qpf_snow_in > 0 ? hrf.extras.qpf_snow_in : 0.0f;
-                    precipitation.qpf_snow_cm = hrf.extras?.qpf_snow_cm > 0 ? hrf.extras.qpf_snow_cm : 0.0f;
-                }
-            }
         }
 
         public Weather(Metno.Rootobject foreRoot, Metno.AstroRootobject astroRoot)
@@ -226,44 +188,6 @@ namespace SimpleWeather.WeatherData
             condition.observation_time = foreRoot.properties.meta.updated_at;
 
             source = WeatherAPI.MetNo;
-
-            // Check for outdated observation
-            int ttlMins = int.Parse(ttl);
-            if ((DateTimeOffset.Now - condition.observation_time).TotalMinutes > ttlMins)
-            {
-                if (hr_forecast.FirstOrDefault() is HourlyForecast hrf)
-                {
-                    condition.weather = hrf.condition;
-                    condition.icon = hrf.icon;
-
-                    condition.temp_f = float.Parse(hrf.high_f, CultureInfo.InvariantCulture);
-                    condition.temp_c = float.Parse(hrf.high_c, CultureInfo.InvariantCulture);
-
-                    condition.wind_mph = hrf.wind_mph;
-                    condition.wind_kph = hrf.wind_kph;
-                    condition.wind_degrees = hrf.wind_degrees;
-
-                    condition.beaufort = new Beaufort((int)WeatherUtils.GetBeaufortScale((int)Math.Round(hrf.wind_mph)));
-                    condition.feelslike_f = hrf.extras?.feelslike_f ?? 0.0f;
-                    condition.feelslike_c = hrf.extras?.feelslike_c ?? 0.0f;
-                    condition.uv = hrf.extras != null && hrf.extras.uv_index >= 0 ? new UV(hrf.extras.uv_index) : null;
-
-                    atmosphere.dewpoint_f = hrf.extras?.dewpoint_f;
-                    atmosphere.dewpoint_c = hrf.extras?.dewpoint_c;
-                    atmosphere.humidity = hrf.extras?.humidity;
-                    atmosphere.pressure_trend = null;
-                    atmosphere.pressure_in = hrf.extras?.pressure_in;
-                    atmosphere.pressure_mb = hrf.extras?.pressure_mb;
-                    atmosphere.visibility_mi = hrf.extras?.visibility_mi;
-                    atmosphere.visibility_km = hrf.extras?.visibility_km;
-
-                    precipitation.pop = hrf.extras?.pop;
-                    precipitation.qpf_rain_in = hrf.extras?.qpf_rain_in > 0 ? hrf.extras.qpf_rain_in : 0.0f;
-                    precipitation.qpf_rain_mm = hrf.extras?.qpf_rain_mm > 0 ? hrf.extras.qpf_rain_mm : 0.0f;
-                    precipitation.qpf_snow_in = hrf.extras?.qpf_snow_in > 0 ? hrf.extras.qpf_snow_in : 0.0f;
-                    precipitation.qpf_snow_cm = hrf.extras?.qpf_snow_cm > 0 ? hrf.extras.qpf_snow_cm : 0.0f;
-                }
-            }
         }
 
         public Weather(HERE.Rootobject root)
@@ -298,44 +222,6 @@ namespace SimpleWeather.WeatherData
             ttl = "180";
 
             source = WeatherAPI.Here;
-
-            // Check for outdated observation
-            int ttlMins = int.Parse(ttl);
-            if ((DateTimeOffset.Now - condition.observation_time).TotalMinutes > ttlMins)
-            {
-                if (hr_forecast.FirstOrDefault() is HourlyForecast hrf)
-                {
-                    condition.weather = hrf.condition;
-                    condition.icon = hrf.icon;
-
-                    condition.temp_f = float.Parse(hrf.high_f, CultureInfo.InvariantCulture);
-                    condition.temp_c = float.Parse(hrf.high_c, CultureInfo.InvariantCulture);
-
-                    condition.wind_mph = hrf.wind_mph;
-                    condition.wind_kph = hrf.wind_kph;
-                    condition.wind_degrees = hrf.wind_degrees;
-
-                    condition.beaufort = new Beaufort((int)WeatherUtils.GetBeaufortScale((int)Math.Round(hrf.wind_mph)));
-                    condition.feelslike_f = hrf.extras?.feelslike_f ?? 0.0f;
-                    condition.feelslike_c = hrf.extras?.feelslike_c ?? 0.0f;
-                    condition.uv = null;
-
-                    atmosphere.dewpoint_f = hrf.extras?.dewpoint_f;
-                    atmosphere.dewpoint_c = hrf.extras?.dewpoint_c;
-                    atmosphere.humidity = hrf.extras?.humidity;
-                    atmosphere.pressure_trend = null;
-                    atmosphere.pressure_in = hrf.extras?.pressure_in;
-                    atmosphere.pressure_mb = hrf.extras?.pressure_mb;
-                    atmosphere.visibility_mi = hrf.extras?.visibility_mi;
-                    atmosphere.visibility_km = hrf.extras?.visibility_km;
-
-                    precipitation.pop = hrf.extras?.pop;
-                    precipitation.qpf_rain_in = hrf.extras?.qpf_rain_in > 0 ? hrf.extras.qpf_rain_in : 0.0f;
-                    precipitation.qpf_rain_mm = hrf.extras?.qpf_rain_mm > 0 ? hrf.extras.qpf_rain_mm : 0.0f;
-                    precipitation.qpf_snow_in = hrf.extras?.qpf_snow_in > 0 ? hrf.extras.qpf_snow_in : 0.0f;
-                    precipitation.qpf_snow_cm = hrf.extras?.qpf_snow_cm > 0 ? hrf.extras.qpf_snow_cm : 0.0f;
-                }
-            }
         }
 
         public Weather(NWS.PointsRootobject pointsRootobject, NWS.ForecastRootobject forecastRootobject,
@@ -402,26 +288,6 @@ namespace SimpleWeather.WeatherData
             }
 
             source = WeatherAPI.NWS;
-
-            // Check for outdated observation
-            int ttlMins = int.Parse(ttl);
-            if ((DateTimeOffset.Now - condition.observation_time).TotalMinutes > ttlMins)
-            {
-                if (hr_forecast.FirstOrDefault() is HourlyForecast hrf)
-                {
-                    condition.weather = hrf.condition;
-                    condition.icon = hrf.icon;
-
-                    condition.temp_f = float.Parse(hrf.high_f, CultureInfo.InvariantCulture);
-                    condition.temp_c = float.Parse(hrf.high_c, CultureInfo.InvariantCulture);
-
-                    condition.wind_mph = hrf.wind_mph;
-                    condition.wind_kph = hrf.wind_kph;
-                    condition.wind_degrees = hrf.wind_degrees;
-
-                    condition.beaufort = new Beaufort((int)WeatherUtils.GetBeaufortScale((int)Math.Round(hrf.wind_mph)));
-                }
-            }
         }
     }
 

@@ -360,6 +360,25 @@ namespace SimpleWeather.Utils
             });
         }
 
+        public static ConfiguredTaskAwaitable<HourlyForecast> GetFirstHourlyWeatherForecastDataByDate(string key, string dateblob)
+        {
+            return AsyncTask.CreateTask<HourlyForecast>(async () =>
+            {
+                LoadIfNeeded();
+
+                var data = await weatherDB.FindWithQueryAsync<HourlyForecasts>(
+                    "SELECT * FROM " + HourlyForecasts.TABLE_NAME + " WHERE `query` = ? AND `dateblob` >= ? ORDER BY `dateblob` LIMIT 1",
+                    key, dateblob);
+
+                if (data != null)
+                {
+                    await weatherDB.GetChildrenAsync(data);
+                }
+
+                return data?.hr_forecast;
+            });
+        }
+
         public static ConfiguredTaskAwaitable<LocationData> GetLastGPSLocData()
         {
             return AsyncTask.CreateTask(async () =>
