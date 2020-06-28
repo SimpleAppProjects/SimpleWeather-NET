@@ -342,11 +342,11 @@ namespace SimpleWeather.UWP.Controls
             var first = _forecasts?.FirstOrDefault();
             if (first is ForecastItemViewModel)
             {
-                if (!String.IsNullOrWhiteSpace(first.WindSpeed) &&
-                    !String.IsNullOrWhiteSpace(first.PoP.Replace("%", "")))
-                {
-                    count = 3;
-                }
+                if (!String.IsNullOrWhiteSpace(first.WindSpeed))
+                    count++;
+
+                if (!String.IsNullOrWhiteSpace(first.PoP.Replace("%", "")))
+                    count++;
             }
 
             if (first is HourlyForecastItemViewModel)
