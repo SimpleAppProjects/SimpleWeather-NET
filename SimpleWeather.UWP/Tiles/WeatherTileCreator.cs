@@ -898,7 +898,7 @@ namespace SimpleWeather.UWP.Tiles
                     },
                     LockDetailedStatus1 = weather.Location?.Ellipsize(40),
                     LockDetailedStatus2 = String.Format("{0} - {1}", weather.CurTemp?.RemoveNonDigitChars() + "º", weather.CurCondition?.Ellipsize(33)),
-                    LockDetailedStatus3 = String.Format("{0} | {1}", weather.HiTemp, weather.LoTemp)
+                    LockDetailedStatus3 = String.Format("{0} | {1}", weather.HiTemp ?? "--", weather.LoTemp ?? "--")
                 }
             };
 
