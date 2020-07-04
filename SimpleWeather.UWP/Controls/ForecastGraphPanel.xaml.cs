@@ -345,7 +345,7 @@ namespace SimpleWeather.UWP.Controls
                 if (!String.IsNullOrWhiteSpace(first.WindSpeed))
                     count++;
 
-                if (!String.IsNullOrWhiteSpace(first.PoP.Replace("%", "")))
+                if (!String.IsNullOrWhiteSpace(first.PoP?.Replace("%", "")))
                     count++;
             }
 
