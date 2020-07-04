@@ -172,12 +172,12 @@ namespace SimpleWeather.Metno
 
             foreach (HourlyForecast hr_forecast in weather.hr_forecast)
             {
-                hr_forecast.date = hr_forecast.date.ToOffset(offset);
+                var hrf_date = hr_forecast.date.ToOffset(offset);
+                hr_forecast.date = hrf_date;
 
+                var hrf_localTime = hrf_date.LocalDateTime.TimeOfDay;
                 hr_forecast.condition = GetWeatherCondition(hr_forecast.icon);
-                hr_forecast.icon = GetWeatherIcon(hr_forecast.icon != null &&
-                    (hr_forecast.icon.EndsWith("_night") || hr_forecast.icon.EndsWith("_polartwilight")),
-                    hr_forecast.icon);
+                hr_forecast.icon = GetWeatherIcon(hrf_localTime < sunrise || hrf_localTime > sunset, hr_forecast.icon);
             }
 
             return weather;
