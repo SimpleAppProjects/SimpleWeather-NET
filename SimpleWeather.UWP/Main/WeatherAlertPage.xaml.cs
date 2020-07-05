@@ -82,7 +82,7 @@ namespace SimpleWeather.UWP.Main
                 AlertsView = args.AlertsView;
 
                 if (location == null)
-                    location = await Settings.GetHomeData();
+                    location = await Settings.GetHomeData().ConfigureAwait(true);
                 if (WeatherView == null)
                     WeatherView = new WeatherNowViewModel();
                 if (AlertsView == null)
@@ -99,13 +99,10 @@ namespace SimpleWeather.UWP.Main
                             {
                                 if (t.IsCompletedSuccessfully)
                                 {
-                                    Dispatcher.RunOnUIThread(() =>
-                                    {
-                                        WeatherView.UpdateView(t.Result);
-                                        AlertsView?.UpdateAlerts(location);
-                                    });
+                                    WeatherView.UpdateView(t.Result);
+                                    AlertsView?.UpdateAlerts(location);
                                 }
-                            });
+                            }, TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(true);
                 }
 
                 AlertsView?.UpdateAlerts(location);

@@ -1,4 +1,5 @@
-﻿using SimpleWeather.UWP.Controls;
+﻿using SimpleWeather.Utils;
+using SimpleWeather.UWP.Controls;
 using System.Collections.Generic;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -22,12 +23,18 @@ namespace SimpleWeather.UWP.Helpers
 
         public void ShowSnackbar(Snackbar snackbar)
         {
-            SnackMgr?.Show(snackbar);
+            Dispatcher.RunOnUIThread(() =>
+            {
+                SnackMgr?.Show(snackbar);
+            });
         }
 
         public void DismissAllSnackbars()
         {
-            SnackMgr?.DismissAll();
+            Dispatcher.RunOnUIThread(() =>
+            {
+                SnackMgr?.DismissAll();
+            });
         }
 
         public void UnloadSnackManager()

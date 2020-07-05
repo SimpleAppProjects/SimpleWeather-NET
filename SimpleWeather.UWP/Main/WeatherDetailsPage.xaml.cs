@@ -94,7 +94,7 @@ namespace SimpleWeather.UWP.Main
         /// <param name="e"></param>
         /// <exception cref="WeatherException">Ignore.</exception>
         /// <exception cref="ObjectDisposedException">Ignore.</exception>
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
 
@@ -104,40 +104,41 @@ namespace SimpleWeather.UWP.Main
                 WeatherView = args.WeatherNowView;
                 IsHourly = args.IsHourly;
 
-                if (location == null)
-                    location = await Settings.GetHomeData();
-                if (WeatherView == null)
-                    WeatherView = new WeatherNowViewModel();
-                if (ForecastsView == null)
-                    ForecastsView = new ForecastsViewModel();
-
-                await ForecastsView?.UpdateForecasts(location);
-
-                if (IsHourly)
-                    Forecasts = ForecastsView.HourlyForecasts;
-                else
-                    Forecasts = ForecastsView.Forecasts;
-
-                ForecastsView.PropertyChanged += ForecastsView_PropertyChanged;
-
-                if (WeatherView?.IsValid == false)
+                Task.Run(async () =>
                 {
-                    _ = new WeatherDataLoader(location)
-                        .LoadWeatherData(new WeatherRequest.Builder()
-                            .ForceLoadSavedData()
-                            .SetErrorListener(this)
-                            .Build())
-                            .ContinueWith((t) =>
-                            {
-                                Dispatcher.RunOnUIThread(() =>
+                    if (location == null)
+                        location = await Settings.GetHomeData();
+                    if (WeatherView == null)
+                        WeatherView = new WeatherNowViewModel();
+                    if (ForecastsView == null)
+                        ForecastsView = new ForecastsViewModel();
+
+                    await ForecastsView?.UpdateForecasts(location);
+                }).ContinueWith((t) =>
+                {
+                    if (IsHourly)
+                        Forecasts = ForecastsView.HourlyForecasts;
+                    else
+                        Forecasts = ForecastsView.Forecasts;
+
+                    ForecastsView.PropertyChanged += ForecastsView_PropertyChanged;
+
+                    if (WeatherView?.IsValid == false)
+                    {
+                        new WeatherDataLoader(location)
+                            .LoadWeatherData(new WeatherRequest.Builder()
+                                .ForceLoadSavedData()
+                                .SetErrorListener(this)
+                                .Build())
+                                .ContinueWith((t2) =>
                                 {
-                                    WeatherView.UpdateView(t.Result);
+                                    WeatherView.UpdateView(t2.Result);
                                     ForecastsView.UpdateForecasts(location);
                                 });
-                            });
-                }
+                    }
 
-                Settings.GetWeatherDBConnection().GetConnection().TableChanged += WeatherDetailsPage_TableChanged;
+                    Settings.GetWeatherDBConnection().GetConnection().TableChanged += WeatherDetailsPage_TableChanged;
+                }, TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(true);
             }
         }
 
@@ -170,6 +171,7 @@ namespace SimpleWeather.UWP.Main
                         Forecasts = ForecastsView.Forecasts;
                     }
                     break;
+
                 case "HourlyForecasts":
                     if (IsHourly)
                     {

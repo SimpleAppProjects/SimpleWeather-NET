@@ -323,14 +323,6 @@ namespace SimpleWeather.Controls
                 creditPrefix, WeatherAPI.APIs.First(WApi => Equals(WeatherSource, WApi.Value)));
         }
 
-        public Task UpdateViewAsync(Weather weather)
-        {
-            return Task.Run(() =>
-            {
-                UpdateView(weather);
-            });
-        }
-
         public Task UpdateBackground()
         {
             return Task.Run(async () =>

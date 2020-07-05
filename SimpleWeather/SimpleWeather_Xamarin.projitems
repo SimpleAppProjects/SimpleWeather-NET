@@ -71,6 +71,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\AsyncTask.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\ColorUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\ConversionMethods.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\CustomException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\DataMigration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\DBMigrations\Migration.0_1.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\DBMigrations\Migration.3_4.cs" />

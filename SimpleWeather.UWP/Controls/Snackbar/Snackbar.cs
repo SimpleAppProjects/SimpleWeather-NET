@@ -1,5 +1,8 @@
 ﻿using Microsoft.Toolkit.Uwp.UI.Controls;
+using SimpleWeather.Utils;
 using System;
+using System.Threading.Tasks;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
@@ -22,14 +25,17 @@ namespace SimpleWeather.UWP.Controls
         // Summary:
         //     When the system dismissed the notification.
         Programmatic = InAppNotificationDismissKind.Programmatic,
+
         //
         // Summary:
         //     When user explicitly dismissed the notification.
         User = InAppNotificationDismissKind.User,
+
         //
         // Summary:
         //     When the system dismissed the notification after timeout.
         Timeout = InAppNotificationDismissKind.Timeout,
+
         //
         // Summary:
         //     When the user dismissed the notification by clicking the action button.
@@ -40,6 +46,7 @@ namespace SimpleWeather.UWP.Controls
      * Wrapper for the Snackbar/InAppNotification
      * Snackbar is managed by SnackbarManager
      */
+
     public sealed class Snackbar : DependencyObject
     {
         private Snackbar()
@@ -62,6 +69,20 @@ namespace SimpleWeather.UWP.Controls
             };
 
             return snackbar;
+        }
+
+        public static Task<Snackbar> MakeAsync(CoreDispatcher dispatcher, String message, SnackbarDuration duration)
+        {
+            return AsyncTask.RunOnUIThread(dispatcher, () =>
+            {
+                Snackbar snackbar = new Snackbar()
+                {
+                    Message = message,
+                    Duration = duration
+                };
+
+                return snackbar;
+            });
         }
 
         public void SetAction(String buttonTxt, Action action)

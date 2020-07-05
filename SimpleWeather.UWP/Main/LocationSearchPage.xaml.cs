@@ -61,6 +61,12 @@ namespace SimpleWeather.UWP.Main
                 LoadingRing.IsActive = !enable;
         }
 
+        /// <summary>
+        /// Location_TextChanged
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        /// <exception cref="ObjectDisposedException">Ignore.</exception>
         private void Location_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
             // user is typing: reset already started timer (if existing)
@@ -82,7 +88,7 @@ namespace SimpleWeather.UWP.Main
                 {
                     Interval = TimeSpan.FromMilliseconds(1000)
                 };
-                timer.Tick += async (t, e) =>
+                timer.Tick += (t, e) =>
                 {
                     if (!String.IsNullOrWhiteSpace(sender.Text) && args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
                     {
@@ -93,36 +99,45 @@ namespace SimpleWeather.UWP.Main
                         cts = new CancellationTokenSource();
                         var ctsToken = cts.Token;
 
-                        await Task.Run(async () =>
+                        Task.Run(async () =>
                         {
-                            if (ctsToken.IsCancellationRequested) return;
+                            ctsToken.ThrowIfCancellationRequested();
 
+                            ObservableCollection<LocationQueryViewModel> results = await wm.GetLocations(query);
+
+                            ctsToken.ThrowIfCancellationRequested();
+
+                            return results;
+                        }).ContinueWith((task) =>
+                        {
                             ObservableCollection<LocationQueryViewModel> results;
 
-                            try
+                            if (task.IsFaulted)
                             {
-                                results = await AsyncTask.RunAsync(wm.GetLocations(query));
-                            }
-                            catch (WeatherException ex)
-                            {
-                                await Dispatcher.RunOnUIThread(() =>
+                                var ex = task.Exception.GetBaseException();
+
+                                if (ex is WeatherException)
                                 {
                                     ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
-                                }).ConfigureAwait(false);
+                                }
+                            }
+
+                            if (task.Result != null)
+                            {
+                                results = task.Result;
+                            }
+                            else
+                            {
                                 results = new ObservableCollection<LocationQueryViewModel>() { new LocationQueryViewModel() };
                             }
 
-                            if (ctsToken.IsCancellationRequested) return;
-
                             // Refresh list
-                            await Dispatcher.RunOnUIThread(() =>
-                            {
-                                LocationQuerys = results;
-                                sender.ItemsSource = null;
-                                sender.ItemsSource = LocationQuerys;
-                                sender.IsSuggestionListOpen = true;
-                            }).ConfigureAwait(false);
-                        }).ConfigureAwait(true);
+                            LocationQuerys = results;
+                            sender.ItemsSource = null;
+                            sender.ItemsSource = LocationQuerys;
+                            sender.IsSuggestionListOpen = true;
+                            timer.Stop();
+                        }, TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(true);
                     }
                     else if (String.IsNullOrWhiteSpace(sender.Text))
                     {
@@ -130,14 +145,10 @@ namespace SimpleWeather.UWP.Main
                         cts?.Cancel();
                         cts = new CancellationTokenSource();
                         // Hide flyout if query is empty or null
-                        await Dispatcher.RunOnUIThread(() =>
-                        {
-                            LocationQuerys.Clear();
-                            sender.IsSuggestionListOpen = false;
-                        }).ConfigureAwait(true);
+                        LocationQuerys.Clear();
+                        sender.IsSuggestionListOpen = false;
+                        timer.Stop();
                     }
-
-                    timer.Stop();
                 };
                 timer.Start();
             }
@@ -156,224 +167,162 @@ namespace SimpleWeather.UWP.Main
             sender.IsSuggestionListOpen = false;
         }
 
-        private async void Location_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        /// <summary>
+        /// Location_QuerySubmitted
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        /// <exception cref="ObjectDisposedException">Ignore.</exception>
+        private void Location_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
-            LocationQueryViewModel query_vm = null;
-
-            if (args.ChosenSuggestion != null)
-            {
-                // User selected an item from the suggestion list, take an action on it here.
-                var theChosenOne = args.ChosenSuggestion as LocationQueryViewModel;
-
-                if (!String.IsNullOrEmpty(theChosenOne.LocationQuery))
-                    query_vm = theChosenOne;
-                else
-                    query_vm = new LocationQueryViewModel();
-            }
-            else if (!String.IsNullOrEmpty(args.QueryText))
-            {
-                // Use args.QueryText to determine what to do.
-                var queryText = args.QueryText;
-                query_vm = await Task.Run(async () =>
-                {
-                    ObservableCollection<LocationQueryViewModel> results;
-
-                    try
-                    {
-                        results = await AsyncTask.RunAsync(wm.GetLocations(queryText));
-                    }
-                    catch (WeatherException ex)
-                    {
-                        await Dispatcher.RunOnUIThread(() =>
-                        {
-                            ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
-                        }).ConfigureAwait(false);
-                        results = new ObservableCollection<LocationQueryViewModel>() { new LocationQueryViewModel() };
-                    }
-
-                    var result = results.FirstOrDefault();
-                    if (result != null && !String.IsNullOrWhiteSpace(result.LocationQuery))
-                    {
-                        await Dispatcher.RunOnUIThread(() =>
-                        {
-                            sender.Text = result.LocationName;
-                        }).ConfigureAwait(false);
-                        return result;
-                    }
-                    else
-                    {
-                        return new LocationQueryViewModel();
-                    }
-                }).ConfigureAwait(true);
-            }
-            else if (String.IsNullOrWhiteSpace(args.QueryText))
-            {
-                // Stop since there is no valid query
-                return;
-            }
-
-            if (String.IsNullOrWhiteSpace(query_vm.LocationQuery))
-            {
-                // Stop since there is no valid query
-                return;
-            }
+            EnableControls(false);
 
             // Cancel other tasks
             cts?.Cancel();
             cts = new CancellationTokenSource();
             var ctsToken = cts.Token;
 
-            await Dispatcher.RunOnUIThread(() =>
-            {
-                EnableControls(false);
-            }).ConfigureAwait(false);
+            var theChosenOne = args.ChosenSuggestion as LocationQueryViewModel;
+            // Use args.QueryText to determine what to do.
+            var queryText = args.QueryText;
 
-            if (ctsToken.IsCancellationRequested)
+            Task.Run(async () =>
             {
-                await Dispatcher.RunOnUIThread(() =>
+                LocationQueryViewModel query_vm = null;
+
+                if (theChosenOne != null)
                 {
-                    EnableControls(true);
-                }).ConfigureAwait(false);
-                return;
-            }
-
-            String country_code = query_vm?.LocationCountry;
-            if (!String.IsNullOrWhiteSpace(country_code))
-                country_code = country_code.ToLower();
-
-            if (WeatherAPI.NWS.Equals(Settings.API) && !("usa".Equals(country_code) || "us".Equals(country_code)))
-            {
-                await Dispatcher.RunOnUIThread(() =>
+                    if (!String.IsNullOrEmpty(theChosenOne.LocationQuery))
+                        query_vm = theChosenOne;
+                    else
+                        query_vm = new LocationQueryViewModel();
+                }
+                else if (!String.IsNullOrEmpty(queryText))
                 {
-                    ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_WeatherUSOnly"), SnackbarDuration.Short));
-                    EnableControls(true);
-                }).ConfigureAwait(false);
-                return;
-            }
+                    query_vm = await Task.Run(async () =>
+                    {
+                        ObservableCollection<LocationQueryViewModel> results;
+                        results = await AsyncTask.RunAsync(wm.GetLocations(queryText));
 
-            // Need to get FULL location data for HERE API
-            // Data provided is incomplete
-            if (WeatherAPI.Here.Equals(query_vm.LocationSource)
-                    && query_vm.LocationLat == -1 && query_vm.LocationLong == -1
-                    && query_vm.LocationTZLong == null)
-            {
-                try
+                        var result = results.FirstOrDefault();
+
+                        if (result != null && !String.IsNullOrWhiteSpace(result.LocationQuery))
+                        {
+                            return result;
+                        }
+                        else
+                        {
+                            return new LocationQueryViewModel();
+                        }
+                    }, ctsToken).ConfigureAwait(true);
+                }
+                else if (String.IsNullOrWhiteSpace(queryText))
+                {
+                    // Stop since there is no valid query
+                    throw new CustomException(App.ResLoader.GetString("Error_Location"));
+                }
+
+                if (String.IsNullOrWhiteSpace(query_vm.LocationQuery))
+                {
+                    // Stop since there is no valid query
+                    throw new CustomException(App.ResLoader.GetString("Error_Location"));
+                }
+
+                ctsToken.ThrowIfCancellationRequested();
+
+                String country_code = query_vm?.LocationCountry;
+                if (!String.IsNullOrWhiteSpace(country_code))
+                    country_code = country_code.ToLower();
+
+                if (WeatherAPI.NWS.Equals(Settings.API) && !("usa".Equals(country_code) || "us".Equals(country_code)))
+                {
+                    throw new CustomException(App.ResLoader.GetString("Error_WeatherUSOnly"));
+                }
+
+                // Need to get FULL location data for HERE API
+                // Data provided is incomplete
+                if (WeatherAPI.Here.Equals(query_vm.LocationSource)
+                        && query_vm.LocationLat == -1 && query_vm.LocationLong == -1
+                        && query_vm.LocationTZLong == null)
                 {
                     query_vm = await AsyncTask.RunAsync(
                         new HERE.HERELocationProvider().GetLocationFromLocID(query_vm.LocationQuery, query_vm.WeatherSource));
                 }
-                catch (WeatherException ex)
-                {
-                    await Dispatcher.RunOnUIThread(() =>
-                    {
-                        ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
-                        EnableControls(true);
-                    }).ConfigureAwait(false);
-                    return;
-                }
-            }
-            else if (WeatherAPI.BingMaps.Equals(query_vm.LocationSource)
-                    && query_vm.LocationLat == -1 && query_vm.LocationLong == -1
-                    && query_vm.LocationTZLong == null)
-            {
-                try
+                else if (WeatherAPI.BingMaps.Equals(query_vm.LocationSource)
+                        && query_vm.LocationLat == -1 && query_vm.LocationLong == -1
+                        && query_vm.LocationTZLong == null)
                 {
                     query_vm = await AsyncTask.RunAsync(
                         new Bing.BingMapsLocationProvider().GetLocationFromAddress(query_vm.LocationQuery, query_vm.WeatherSource));
                 }
-                catch (WeatherException ex)
+
+                // Check if location already exists
+                var locData = await Settings.GetLocationData();
+                if (locData.Any(l => l.query == query_vm.LocationQuery))
                 {
-                    await Dispatcher.RunOnUIThread(() =>
+                    return true;
+                }
+
+                ctsToken.ThrowIfCancellationRequested();
+
+                var location = new LocationData(query_vm);
+                if (!location.IsValid())
+                {
+                    throw new CustomException(App.ResLoader.GetString("WError_NoWeather"));
+                }
+
+                var weather = await Settings.GetWeatherData(location.query);
+                if (weather == null)
+                {
+                    weather = await wm.GetWeather(location);
+                }
+
+                if (weather == null)
+                {
+                    throw new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
+                }
+
+                // Save data
+                await Settings.AddLocation(location);
+                if (wm.SupportsAlerts && weather.weather_alerts != null)
+                    await Settings.SaveWeatherAlerts(location, weather.weather_alerts);
+                await Settings.SaveWeatherData(weather);
+                await Settings.SaveWeatherForecasts(new Forecasts(weather.query, weather.forecast, weather.txt_forecast));
+                await Settings.SaveWeatherForecasts(location, weather.hr_forecast == null ? null :
+                    weather.hr_forecast.Select(f => new HourlyForecasts(weather.query, f)));
+
+                var panelView = new LocationPanelViewModel(weather)
+                {
+                    LocationData = location
+                };
+
+                return true;
+            }).ContinueWith((t) =>
+            {
+                // Restore controls
+                EnableControls(true);
+
+                if (t.IsFaulted)
+                {
+                    var ex = t.Exception.GetBaseException();
+
+                    if (ex is WeatherException || ex is CustomException)
                     {
                         ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
-                        EnableControls(true);
-                    }).ConfigureAwait(false);
-                    return;
-                }
-            }
-
-            // Check if location already exists
-            var locData = await Settings.GetLocationData();
-            if (locData.Any(l => l.query == query_vm.LocationQuery))
-            {
-                await Dispatcher.RunOnUIThread(() =>
-                {
-                    if (Frame.CanGoBack) Frame.GoBack(); else Frame.Navigate(typeof(LocationsPage));
-                }).ConfigureAwait(false);
-                return;
-            }
-
-            if (ctsToken.IsCancellationRequested)
-            {
-                await Dispatcher.RunOnUIThread(() =>
-                {
-                    EnableControls(true);
-                }).ConfigureAwait(false);
-                return;
-            }
-
-            var location = new LocationData(query_vm);
-            if (!location.IsValid())
-            {
-                await Dispatcher.RunOnUIThread(() =>
-                {
-                    ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("WError_NoWeather"), SnackbarDuration.Short));
-                    EnableControls(true);
-                }).ConfigureAwait(false);
-                return;
-            }
-            var weather = await Settings.GetWeatherData(location.query);
-            if (weather == null)
-            {
-                try
-                {
-                    weather = await AsyncTask.RunAsync(wm.GetWeather(location));
-                }
-                catch (WeatherException wEx)
-                {
-                    weather = null;
-                    await Dispatcher.RunOnUIThread(() =>
+                    }
+                    else
                     {
-                        ShowSnackbar(Snackbar.Make(wEx.Message, SnackbarDuration.Short));
-                    }).ConfigureAwait(false);
+                        ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_Location"), SnackbarDuration.Short));
+                    }
                 }
-            }
-
-            if (weather == null)
-            {
-                await Dispatcher.RunOnUIThread(() =>
+                else if (t.IsCompletedSuccessfully && t.Result)
                 {
-                    EnableControls(true);
-                }).ConfigureAwait(false);
-                return;
-            }
-
-            // We got our data so disable controls just in case
-            await Dispatcher.RunOnUIThread(() =>
-            {
-                sender.IsSuggestionListOpen = false;
-            }).ConfigureAwait(false);
-
-            // Save data
-            await Settings.AddLocation(location);
-            if (wm.SupportsAlerts && weather.weather_alerts != null)
-                await Settings.SaveWeatherAlerts(location, weather.weather_alerts);
-            await Settings.SaveWeatherData(weather);
-            await Settings.SaveWeatherForecasts(new Forecasts(weather.query, weather.forecast, weather.txt_forecast));
-            await Settings.SaveWeatherForecasts(location, weather.hr_forecast == null ? null :
-                weather.hr_forecast.Select(f => new HourlyForecasts(weather.query, f)));
-
-            var panelView = new LocationPanelViewModel(weather)
-            {
-                LocationData = location
-            };
-
-            // Hide add locations panel
-            await Dispatcher.RunOnUIThread(() =>
-            {
-                EnableControls(true);
-                if (Frame.CanGoBack) Frame.GoBack(); else Frame.Navigate(typeof(LocationsPage));
-            }).ConfigureAwait(false);
+                    if (Frame.CanGoBack)
+                        Frame.GoBack();
+                    else
+                        Frame.Navigate(typeof(LocationsPage));
+                }
+            }, TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(true);
         }
     }
 }

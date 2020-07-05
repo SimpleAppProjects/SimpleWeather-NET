@@ -56,53 +56,50 @@ namespace SimpleWeather.UWP.Main
         {
             var dataSet = PanelAdapter.GetDataset();
 
-            AsyncTask.Run(async () =>
+            if (cts?.IsCancellationRequested == true)
+                return;
+
+            if (weather?.IsValid() == true)
             {
-                if (cts?.IsCancellationRequested == true)
-                    return;
+                // Update panel weather
+                LocationPanelViewModel panelView = null;
 
-                if (weather?.IsValid() == true)
+                if (location?.locationType == LocationType.GPS)
                 {
-                    // Update panel weather
-                    LocationPanelViewModel panelView = null;
-
-                    if (location?.locationType == LocationType.GPS)
-                    {
-                        panelView = dataSet.FirstOrDefault(panelVM => panelVM?.LocationData?.locationType == LocationType.GPS);
-                    }
-                    else
-                    {
-                        panelView = dataSet.FirstOrDefault(panelVM =>
-                            (bool)!panelVM.LocationData?.locationType.Equals(LocationType.GPS)
-                                && (bool)panelVM.LocationData?.query?.Equals(location?.query));
-                    }
-
-                    // Just in case
-                    if (panelView == null)
-                    {
-                        AnalyticsLogger.LogEvent("LocationsPage: panelView == null");
-                        panelView = dataSet.FirstOrDefault(panelVM => panelVM.LocationData.name.Equals(location?.name) &&
-                                                        panelVM.LocationData.latitude.Equals(location?.latitude) &&
-                                                        panelVM.LocationData.longitude.Equals(location?.longitude) &&
-                                                        panelVM.LocationData.tz_long.Equals(location?.tz_long));
-                    }
-
-                    if (panelView != null)
-                    {
-                        panelView?.SetWeather(weather);
-                        await panelView?.UpdateBackground();
-                    }
+                    panelView = dataSet.FirstOrDefault(panelVM => panelVM?.LocationData?.locationType == LocationType.GPS);
                 }
-            });
+                else
+                {
+                    panelView = dataSet.FirstOrDefault(panelVM =>
+                        (bool)!panelVM.LocationData?.locationType.Equals(LocationType.GPS)
+                            && (bool)panelVM.LocationData?.query?.Equals(location?.query));
+                }
+
+                // Just in case
+                if (panelView == null)
+                {
+                    AnalyticsLogger.LogEvent("LocationsPage: panelView == null");
+                    panelView = dataSet.FirstOrDefault(panelVM => panelVM.LocationData.name.Equals(location?.name) &&
+                                                    panelVM.LocationData.latitude.Equals(location?.latitude) &&
+                                                    panelVM.LocationData.longitude.Equals(location?.longitude) &&
+                                                    panelVM.LocationData.tz_long.Equals(location?.tz_long));
+                }
+
+                if (panelView != null)
+                {
+                    panelView.SetWeather(weather);
+                    Task.Run(panelView.UpdateBackground).ConfigureAwait(true);
+                }
+            }
         }
 
-        public async void OnWeatherError(WeatherException wEx)
+        public void OnWeatherError(WeatherException wEx)
         {
-            await Dispatcher.RunOnUIThread(() =>
-            {
-                if (cts?.IsCancellationRequested == true)
-                    return;
+            if (cts?.IsCancellationRequested == true)
+                return;
 
+            Dispatcher.RunOnUIThread(() =>
+            {
                 switch (wEx.ErrorStatus)
                 {
                     case WeatherUtils.ErrorStatus.NetworkError:
@@ -141,7 +138,7 @@ namespace SimpleWeather.UWP.Main
                         }
                         break;
                 }
-            }).ConfigureAwait(false);
+            });
         }
 
         public LocationsPage()
@@ -311,26 +308,23 @@ namespace SimpleWeather.UWP.Main
             }).ConfigureAwait(true);
         }
 
-        private Task LoadLocations()
+        /// <summary>
+        /// LoadLocations
+        /// </summary>
+        /// <exception cref="ObjectDisposedException">Ignore.</exception>
+        private void LoadLocations()
         {
-            return Task.Run(async () =>
-            {
-                await Dispatcher.RunOnUIThread(() =>
-                {
-                    // Disable EditMode button
-                    EditButton.IsEnabled = false;
-                    AddLocationsButton.IsEnabled = false;
-                }).ConfigureAwait(false);
+            // Disable EditMode button
+            EditButton.IsEnabled = false;
+            AddLocationsButton.IsEnabled = false;
+            PanelAdapter.RemoveAll();
 
+            Task.Run(async () =>
+            {
                 // Lets load it up...
                 var locations = new List<LocationData>(await Settings.GetFavorites());
-                await Dispatcher.RunOnUIThread(() =>
-                {
-                    PanelAdapter.RemoveAll();
-                }).ConfigureAwait(false);
 
-                if (cts?.IsCancellationRequested == true)
-                    return;
+                cts?.Token.ThrowIfCancellationRequested();
 
                 // Setup saved favorite locations
                 LocationData gpsData = null;
@@ -342,44 +336,40 @@ namespace SimpleWeather.UWP.Main
                         locations.Insert(0, gpsData);
                 }
 
-                foreach (LocationData location in locations)
+                return locations;
+            }).ContinueWith((t) =>
+            {
+                if (t.IsCompletedSuccessfully)
                 {
-                    var panel = new LocationPanelViewModel()
-                    {
-                        // Save index to tag (to easily retreive)
-                        LocationData = location
-                    };
-                    await Dispatcher.RunOnUIThread(() => PanelAdapter.Add(panel))
-                    .ConfigureAwait(false);
-                }
+                    var locations = t.Result;
 
-                if (cts?.IsCancellationRequested == true)
-                    return;
-
-                foreach (LocationData location in locations)
-                {
-                    AsyncTask.Run(() =>
+                    foreach (LocationData location in locations)
                     {
+                        var panel = new LocationPanelViewModel()
+                        {
+                            // Save index to tag (to easily retreive)
+                            LocationData = location
+                        };
+
+                        PanelAdapter.Add(panel);
+
                         var wLoader = new WeatherDataLoader(location);
                         wLoader.LoadWeatherData(new WeatherRequest.Builder()
                                     .ForceRefresh(false)
                                     .SetErrorListener(this)
                                     .Build())
-                                    .ContinueWith((t) =>
+                                    .ContinueWith((t2) =>
                                     {
-                                        if (t.IsCompletedSuccessfully)
-                                            OnWeatherLoaded(location, t.Result);
-                                    });
-                    });
+                                        if (t2.IsCompletedSuccessfully)
+                                            OnWeatherLoaded(location, t2.Result);
+                                    }).ConfigureAwait(true);
+                    }
                 }
 
-                await Dispatcher.RunOnUIThread(() =>
-                {
-                    // Enable EditMode button
-                    EditButton.IsEnabled = true;
-                    AddLocationsButton.IsEnabled = true;
-                }).ConfigureAwait(false);
-            });
+                // Enable EditMode button
+                EditButton.IsEnabled = true;
+                AddLocationsButton.IsEnabled = true;
+            }, TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(true);
         }
 
         private Task<LocationData> GetGPSPanel()
@@ -411,17 +401,18 @@ namespace SimpleWeather.UWP.Main
             });
         }
 
-        private Task RefreshLocations()
+        /// <summary>
+        /// RefreshLocations
+        /// </summary>
+        /// <exception cref="ObjectDisposedException">Ignore.</exception>
+        private void RefreshLocations()
         {
-            return Task.Run(async () =>
-            {
-                await Dispatcher.RunOnUIThread(() =>
-                {
-                    // Disable EditMode button
-                    EditButton.IsEnabled = false;
-                    AddLocationsButton.IsEnabled = false;
-                }).ConfigureAwait(false);
+            // Disable EditMode button
+            EditButton.IsEnabled = false;
+            AddLocationsButton.IsEnabled = false;
 
+            Task.Run(async () =>
+            {
                 // Reload all panels if needed
                 var locations = (await Settings.GetLocationData()).ToList();
                 if (Settings.FollowGPS)
@@ -448,88 +439,40 @@ namespace SimpleWeather.UWP.Main
                         reload = true;
                 }
 
-                if (cts?.IsCancellationRequested == true)
-                    return;
+                cts?.Token.ThrowIfCancellationRequested();
 
-                if (reload)
-                {
-                    await Dispatcher.RunOnUIThread(() =>
-                    {
-                        PanelAdapter.RemoveAll();
-                    }).ConfigureAwait(false);
-                    await LoadLocations();
-                }
-                else
+                if (!reload)
                 {
                     var dataset = PanelAdapter.GetDataset();
 
                     foreach (var view in dataset)
                     {
-                        AsyncTask.Run(() =>
-                        {
-                            var wLoader = new WeatherDataLoader(view.LocationData);
-                            wLoader.LoadWeatherData(new WeatherRequest.Builder()
-                                        .ForceRefresh(false)
-                                        .SetErrorListener(this)
-                                        .Build())
-                                        .ContinueWith((t) =>
-                                        {
-                                            if (t.IsCompletedSuccessfully)
-                                                OnWeatherLoaded(view.LocationData, t.Result);
-                                        });
-                        });
+                        var wLoader = new WeatherDataLoader(view.LocationData);
+                        wLoader.LoadWeatherData(new WeatherRequest.Builder()
+                                    .ForceRefresh(false)
+                                    .SetErrorListener(this)
+                                    .Build())
+                                    .ContinueWith((t) =>
+                                    {
+                                        if (t.IsCompletedSuccessfully)
+                                            OnWeatherLoaded(view.LocationData, t.Result);
+                                    });
                     }
                 }
 
-                await Dispatcher.RunOnUIThread(() =>
-                {
-                    // Enable EditMode button
-                    EditButton.IsEnabled = true;
-                    AddLocationsButton.IsEnabled = true;
-                }).ConfigureAwait(false);
-            });
-        }
-
-        private Task AddGPSPanel()
-        {
-            return Task.Run(async () =>
+                return reload;
+            }).ContinueWith((t) =>
             {
-                LocationData gpsData = null;
-                if (Settings.FollowGPS)
+                // Enable EditMode button
+                EditButton.IsEnabled = true;
+                AddLocationsButton.IsEnabled = true;
+
+                if (t.IsCompletedSuccessfully && t.Result)
                 {
-                    gpsData = await GetGPSPanel();
-
-                    if (gpsData != null)
-                    {
-                        var gpsPanelViewModel = new LocationPanelViewModel()
-                        {
-                            LocationData = gpsData
-                        };
-
-                        await Dispatcher.RunOnUIThread(() =>
-                        {
-                            PanelAdapter.Add(0, gpsPanelViewModel);
-                        }).ConfigureAwait(false);
-                    }
+                    PanelAdapter.RemoveAll();
+                    LoadLocations();
                 }
-
-                if (cts?.IsCancellationRequested == true)
-                    return;
-
-                if (gpsData != null)
-                {
-                    var wLoader = new WeatherDataLoader(gpsData);
-                    wLoader.LoadWeatherData(new WeatherRequest.Builder()
-                            .ForceRefresh(false)
-                            .SetErrorListener(this)
-                            .Build())
-                            .ContinueWith((t) =>
-                            {
-                                if (t.IsCompletedSuccessfully)
-                                    OnWeatherLoaded(gpsData, t.Result);
-                            });
-                }
-            });
+            }, TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(true);
         }
 
         private void RemoveGPSPanel()
@@ -648,7 +591,7 @@ namespace SimpleWeather.UWP.Main
             {
                 this.Frame.Navigate(typeof(WeatherNow), new WeatherNowArgs()
                 {
-                    IsHome = Object.Equals(panel.LocationData, await Settings.GetHomeData()),
+                    IsHome = Object.Equals(panel.LocationData, await Settings.GetHomeData().ConfigureAwait(true)),
                     Location = panel.LocationData
                 });
                 try
