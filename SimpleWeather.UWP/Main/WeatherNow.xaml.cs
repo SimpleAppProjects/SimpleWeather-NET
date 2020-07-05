@@ -200,7 +200,20 @@ namespace SimpleWeather.UWP.Main
 
             loaded = true;
 
+            RegisterPropertyChangedCallback(BackgroundThemeProperty, WeatherNow_PropertyChanged);
+
             AnalyticsLogger.LogEvent("WeatherNow");
+        }
+
+        private void WeatherNow_PropertyChanged(DependencyObject sender, DependencyProperty property)
+        {
+            if (BackgroundThemeProperty == property)
+            {
+                if (MainViewer != null)
+                {
+                    MainViewer.RequestedTheme = BackgroundTheme;
+                }
+            }
         }
 
         private void UpdateWindowColors()
@@ -310,6 +323,11 @@ namespace SimpleWeather.UWP.Main
 
         private void DeferedControl_Loaded(object sender, RoutedEventArgs e)
         {
+            if (sender is ScrollViewer v && v.Name == "MainViewer")
+            {
+                v.RequestedTheme = BackgroundTheme;
+            }
+
             AdjustViewLayout();
         }
 

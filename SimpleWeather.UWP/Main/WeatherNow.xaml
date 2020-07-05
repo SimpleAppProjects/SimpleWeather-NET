@@ -158,7 +158,7 @@
         </Grid>
         <ScrollViewer x:Name="MainViewer" VerticalScrollMode="Auto" ViewChanged="MainViewer_ViewChanged" Padding="16,0"
                       x:Load="{x:Bind WeatherView.Location, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
-                      Loaded="DeferedControl_Loaded" RequestedTheme="{x:Bind BackgroundTheme, Mode=OneWay}">
+                      Loaded="DeferedControl_Loaded">
             <StackPanel MaxWidth="1280">
                 <Grid x:Name="ConditionPanel" RequestedTheme="Dark">
                     <Grid.RowDefinitions>
