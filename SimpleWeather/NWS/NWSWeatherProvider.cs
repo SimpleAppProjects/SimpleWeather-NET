@@ -335,12 +335,14 @@ namespace SimpleWeather.NWS
 
         public override string UpdateLocationQuery(Weather weather)
         {
-            return string.Format("{0},{1}", weather.location.latitude, weather.location.longitude);
+            var str = string.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}", weather.location.latitude, weather.location.longitude);
+            return str;
         }
 
         public override string UpdateLocationQuery(LocationData location)
         {
-            return string.Format("{0},{1}", location.latitude.ToInvariantString("0.####"), location.longitude.ToInvariantString("0.####"));
+            var str = string.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}", location.latitude, location.longitude);
+            return str;
         }
 
         public override string GetWeatherIcon(string icon)

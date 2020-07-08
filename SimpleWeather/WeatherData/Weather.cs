@@ -24,21 +24,21 @@ namespace SimpleWeather.WeatherData
             condition = new Condition(root.current_observation);
             atmosphere = new Atmosphere(root.current_observation.atmosphere);
             astronomy = new Astronomy(root.current_observation.astronomy);
-            ttl = "120";
+            ttl = 120;
 
             // Set feelslike temp
-            if (condition.temp_f > 80)
+            if (condition.temp_f.HasValue && condition.temp_f > 80 && atmosphere.humidity.HasValue)
             {
-                condition.feelslike_f = (float)WeatherUtils.CalculateHeatIndex(condition.temp_f, int.Parse(atmosphere.humidity.Replace("%", "")));
-                condition.feelslike_c = float.Parse(ConversionMethods.FtoC(condition.feelslike_f.ToInvariantString()));
+                condition.feelslike_f = WeatherUtils.CalculateHeatIndex(condition.temp_f.Value, atmosphere.humidity.Value);
+                condition.feelslike_c = ConversionMethods.FtoC(condition.feelslike_f.Value);
             }
 
-            if (condition.high_f == condition.high_c && forecast.Count > 0)
+            if ((!condition.high_f.HasValue || !condition.low_f.HasValue) && forecast.Count > 0)
             {
-                condition.high_f = float.Parse(forecast[0].high_f);
-                condition.high_c = float.Parse(forecast[0].high_c);
-                condition.low_f = float.Parse(forecast[0].low_f);
-                condition.low_c = float.Parse(forecast[0].low_c);
+                condition.high_f = forecast[0].high_f;
+                condition.high_c = forecast[0].high_c;
+                condition.low_f = forecast[0].low_f;
+                condition.low_c = forecast[0].low_c;
             }
 
             condition.observation_time = update_time;
@@ -67,16 +67,16 @@ namespace SimpleWeather.WeatherData
             atmosphere = new Atmosphere(root.current);
             astronomy = new Astronomy(root.current);
             precipitation = new Precipitation(root.current);
-            ttl = "120";
+            ttl = 120;
 
-            query = string.Format("lat={0}&lon={1}", location.latitude, location.longitude);
+            query = string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}", location.latitude, location.longitude);
 
-            if (condition.high_f == condition.high_c && forecast.Count > 0)
+            if ((!condition.high_f.HasValue || !condition.low_f.HasValue) && forecast.Count > 0)
             {
-                condition.high_f = float.Parse(forecast[0].high_f);
-                condition.high_c = float.Parse(forecast[0].high_c);
-                condition.low_f = float.Parse(forecast[0].low_f);
-                condition.low_c = float.Parse(forecast[0].low_c);
+                condition.high_f = forecast[0].high_f.Value;
+                condition.high_c = forecast[0].high_c.Value;
+                condition.low_f = forecast[0].low_f.Value;
+                condition.low_c = forecast[0].low_c.Value;
             }
 
             source = WeatherAPI.OpenWeatherMap;
@@ -128,11 +128,11 @@ namespace SimpleWeather.WeatherData
                         // date
                         fcast.date = currentDate;
                         // high
-                        fcast.high_f = ConversionMethods.CtoF(dayMax.ToInvariantString());
-                        fcast.high_c = Math.Round(dayMax).ToString();
+                        fcast.high_f = ConversionMethods.CtoF(dayMax);
+                        fcast.high_c = (float)Math.Round(dayMax);
                         // low
-                        fcast.low_f = ConversionMethods.CtoF(dayMin.ToInvariantString());
-                        fcast.low_c = Math.Round(dayMin).ToString();
+                        fcast.low_f = ConversionMethods.CtoF(dayMin);
+                        fcast.low_c = (float)Math.Round(dayMin);
 
                         forecast.Add(fcast);
                     }
@@ -173,16 +173,16 @@ namespace SimpleWeather.WeatherData
             }
 
             astronomy = new Astronomy(astroRoot);
-            ttl = "120";
+            ttl = 120;
 
-            query = string.Format("lat={0}&lon={1}", location.latitude, location.longitude);
+            query = string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}", location.latitude, location.longitude);
 
-            if (condition.high_f == condition.high_c && forecast.Count > 0)
+            if ((!condition.high_f.HasValue || !condition.low_f.HasValue) && forecast.Count > 0)
             {
-                condition.high_f = float.Parse(forecast[0].high_f);
-                condition.high_c = float.Parse(forecast[0].high_c);
-                condition.low_f = float.Parse(forecast[0].low_f);
-                condition.low_c = float.Parse(forecast[0].low_c);
+                condition.high_f = forecast[0].high_f.Value;
+                condition.high_c = forecast[0].high_c.Value;
+                condition.low_f = forecast[0].low_f.Value;
+                condition.low_c = forecast[0].low_c.Value;
             }
 
             condition.observation_time = foreRoot.properties.meta.updated_at;
@@ -219,7 +219,7 @@ namespace SimpleWeather.WeatherData
             atmosphere = new Atmosphere(observation);
             astronomy = new Astronomy(root.astronomy.astronomy);
             precipitation = new Precipitation(todaysForecast);
-            ttl = "180";
+            ttl = 180;
 
             source = WeatherAPI.Here;
         }
@@ -270,21 +270,17 @@ namespace SimpleWeather.WeatherData
             atmosphere = new Atmosphere(obsCurrentRootObject);
             //astronomy = new Astronomy(obsCurrentRootObject);
             precipitation = new Precipitation(obsCurrentRootObject);
-            ttl = "180";
+            ttl = 180;
 
-            if (condition.high_f == condition.high_c && forecast.Count > 0)
+            if (!condition.high_f.HasValue && forecast.Count > 0)
             {
-                if (forecast[0].high_f != null)
-                    condition.high_f = float.Parse(forecast[0].high_f);
-                if (forecast[0].high_c != null)
-                    condition.high_c = float.Parse(forecast[0].high_c);
+                condition.high_f = forecast[0].high_f;
+                condition.high_c = forecast[0].high_c;
             }
-            if (condition.low_f == condition.low_c && forecast.Count > 0)
+            if (!condition.low_f.HasValue && forecast.Count > 0)
             {
-                if (forecast[0].low_f != null)
-                    condition.low_f = float.Parse(forecast[0].low_f);
-                if (forecast[0].low_c != null)
-                    condition.low_c = float.Parse(forecast[0].low_c);
+                condition.low_f = forecast[0].low_f;
+                condition.low_c = forecast[0].low_c;
             }
 
             source = WeatherAPI.NWS;
@@ -297,8 +293,8 @@ namespace SimpleWeather.WeatherData
         {
             // Use location name from location provider
             name = null;
-            latitude = location.lat.ToInvariantString("0.####");
-            longitude = location._long.ToInvariantString("0.####");
+            latitude = (float)location.lat;
+            longitude = (float)location._long;
             var nodaTz = NodaTime.DateTimeZoneProviders.Tzdb.GetZoneOrNull(location.timezone_id);
             if (nodaTz != null)
             {
@@ -318,8 +314,8 @@ namespace SimpleWeather.WeatherData
         {
             // Use location name from location provider
             name = null;
-            latitude = root.lat.ToInvariantString("0.####");
-            longitude = root.lon.ToInvariantString("0.####");
+            latitude = root.lat;
+            longitude = root.lon;
             var nodaTz = NodaTime.DateTimeZoneProviders.Tzdb.GetZoneOrNull(root.timezone);
             if (nodaTz != null)
             {
@@ -339,8 +335,8 @@ namespace SimpleWeather.WeatherData
         {
             // API doesn't provide location name (at all)
             name = null;
-            latitude = foreRoot.geometry.coordinates[1].ToString("0.####", CultureInfo.InvariantCulture);
-            longitude = foreRoot.geometry.coordinates[0].ToString("0.####", CultureInfo.InvariantCulture);
+            latitude = foreRoot.geometry.coordinates[1];
+            longitude = foreRoot.geometry.coordinates[0];
             tz_offset = TimeSpan.Zero;
             tz_short = "UTC";
         }
@@ -349,8 +345,8 @@ namespace SimpleWeather.WeatherData
         {
             // Use location name from location provider
             name = null;
-            latitude = location.latitude.ToInvariantString("0.####");
-            longitude = location.longitude.ToInvariantString("0.####");
+            latitude = location.latitude;
+            longitude = location.longitude;
             tz_offset = TimeSpan.Zero;
             tz_short = "UTC";
         }
@@ -380,10 +376,10 @@ namespace SimpleWeather.WeatherData
         public Forecast(WeatherYahoo.Forecast forecast)
         {
             date = ConversionMethods.ToEpochDateTime(forecast.date.ToInvariantString());
-            high_f = forecast.high.ToInvariantString();
-            high_c = ConversionMethods.FtoC(high_f);
-            low_f = forecast.low.ToInvariantString();
-            low_c = ConversionMethods.FtoC(low_f);
+            high_f = forecast.high;
+            high_c = ConversionMethods.FtoC(forecast.high);
+            low_f = forecast.low;
+            low_c = ConversionMethods.FtoC(forecast.low);
             condition = forecast.text;
             icon = WeatherManager.GetProvider(WeatherAPI.Yahoo)
                    .GetWeatherIcon(forecast.code.ToInvariantString());
@@ -392,10 +388,10 @@ namespace SimpleWeather.WeatherData
         public Forecast(OpenWeather.Daily forecast)
         {
             date = DateTimeOffset.FromUnixTimeSeconds(forecast.dt).DateTime;
-            high_f = ConversionMethods.KtoF(forecast.temp.max.ToInvariantString());
-            high_c = ConversionMethods.KtoC(forecast.temp.max.ToInvariantString());
-            low_f = ConversionMethods.KtoF(forecast.temp.min.ToInvariantString());
-            low_c = ConversionMethods.KtoC(forecast.temp.min.ToInvariantString());
+            high_f = ConversionMethods.KtoF(forecast.temp.max);
+            high_c = ConversionMethods.KtoC(forecast.temp.max);
+            low_f = ConversionMethods.KtoF(forecast.temp.min);
+            low_c = ConversionMethods.KtoC(forecast.temp.min);
             condition = forecast.weather[0].description.ToUpperCase();
             icon = WeatherManager.GetProvider(WeatherAPI.OpenWeatherMap)
                    .GetWeatherIcon(forecast.weather[0].id.ToInvariantString());
@@ -403,32 +399,32 @@ namespace SimpleWeather.WeatherData
             // Extras
             extras = new ForecastExtras()
             {
-                dewpoint_f = ConversionMethods.KtoF(forecast.dew_point.ToInvariantString()),
-                dewpoint_c = ConversionMethods.KtoC(forecast.dew_point.ToInvariantString()),
-                humidity = forecast.humidity.ToInvariantString(),
-                pop = forecast.clouds.ToInvariantString(),
+                dewpoint_f = ConversionMethods.KtoF(forecast.dew_point),
+                dewpoint_c = ConversionMethods.KtoC(forecast.dew_point),
+                humidity = forecast.humidity,
+                pop = forecast.clouds,
                 // 1hPA = 1mbar
-                pressure_mb = forecast.pressure.ToInvariantString(),
-                pressure_in = ConversionMethods.MBToInHg(forecast.pressure.ToInvariantString()),
+                pressure_mb = forecast.pressure,
+                pressure_in = ConversionMethods.MBToInHg(forecast.pressure),
                 wind_degrees = forecast.wind_deg,
-                wind_mph = (float)Math.Round(double.Parse(ConversionMethods.MSecToMph(forecast.wind_speed.ToInvariantString()))),
-                wind_kph = (float)Math.Round(double.Parse(ConversionMethods.MSecToKph(forecast.wind_speed.ToInvariantString()))),
+                wind_mph = (float)Math.Round(ConversionMethods.MSecToMph(forecast.wind_speed)),
+                wind_kph = (float)Math.Round(ConversionMethods.MSecToKph(forecast.wind_speed)),
                 uv_index = forecast.uvi
             };
             if (forecast.visibility.HasValue)
             {
-                extras.visibility_km = forecast.visibility.Value.ToInvariantString();
-                extras.visibility_mi = ConversionMethods.KmToMi(extras.visibility_km);
+                extras.visibility_km = forecast.visibility.Value;
+                extras.visibility_mi = ConversionMethods.KmToMi(forecast.visibility.Value);
             }
             if (forecast.rain.HasValue)
             {
                 extras.qpf_rain_mm = forecast.rain.Value;
-                extras.qpf_rain_in = float.Parse(ConversionMethods.MMToIn(forecast.rain.Value.ToInvariantString()));
+                extras.qpf_rain_in = ConversionMethods.MMToIn(forecast.rain.Value);
             }
             if (forecast.snow.HasValue)
             {
                 extras.qpf_snow_cm = forecast.snow.Value / 10;
-                extras.qpf_rain_in = float.Parse(ConversionMethods.MMToIn(forecast.snow.Value.ToInvariantString()));
+                extras.qpf_rain_in = ConversionMethods.MMToIn(forecast.snow.Value);
             }
         }
 
@@ -454,25 +450,15 @@ namespace SimpleWeather.WeatherData
         public Forecast(HERE.Forecast forecast)
         {
             date = forecast.utcTime.UtcDateTime;
-            try
+            if (float.TryParse(forecast.highTemperature, out float highF))
             {
-                high_f = forecast.highTemperature;
-                high_c = ConversionMethods.FtoC(forecast.highTemperature);
+                high_f = highF;
+                high_c = ConversionMethods.FtoC(highF);
             }
-            catch (FormatException)
+            if (float.TryParse(forecast.lowTemperature, out float lowF))
             {
-                high_f = null;
-                high_c = null;
-            }
-            try
-            {
-                low_f = forecast.lowTemperature;
-                low_c = ConversionMethods.FtoC(forecast.lowTemperature);
-            }
-            catch (FormatException)
-            {
-                low_f = null;
-                low_c = null;
+                low_f = lowF;
+                low_c = ConversionMethods.FtoC(lowF);
             }
             condition = forecast.description.ToPascalCase();
             icon = WeatherManager.GetProvider(WeatherAPI.Here)
@@ -480,48 +466,47 @@ namespace SimpleWeather.WeatherData
 
             // Extras
             extras = new ForecastExtras();
-            if (float.TryParse(forecast.comfort, out float comfortTemp_f))
+            if (float.TryParse(forecast.comfort, out float comfortTempF))
             {
-                extras.feelslike_f = comfortTemp_f;
-                extras.feelslike_c = float.Parse(ConversionMethods.FtoC(comfortTemp_f.ToInvariantString()));
+                extras.feelslike_f = comfortTempF;
+                extras.feelslike_c = ConversionMethods.FtoC(comfortTempF);
             }
-            extras.humidity = forecast.humidity;
-            try
+            if (int.TryParse(forecast.humidity, out int humidity))
             {
-                extras.dewpoint_f = forecast.dewPoint;
-                extras.dewpoint_c = ConversionMethods.FtoC(forecast.dewPoint);
+                extras.humidity = humidity;
             }
-            catch (FormatException)
+            if (float.TryParse(forecast.dewPoint, out float dewpointF))
             {
-                extras.dewpoint_f = null;
-                extras.dewpoint_c = null;
+                extras.dewpoint_f = dewpointF;
+                extras.dewpoint_c = ConversionMethods.FtoC(dewpointF);
             }
-            extras.pop = forecast.precipitationProbability;
+            if (int.TryParse(forecast.precipitationProbability, out int pop))
+            {
+                extras.pop = pop;
+            }
             if (float.TryParse(forecast.rainFall, out float rain_in))
             {
                 extras.qpf_rain_in = rain_in;
-                extras.qpf_rain_mm = float.Parse(ConversionMethods.InToMM(rain_in.ToInvariantString()));
+                extras.qpf_rain_mm = ConversionMethods.InToMM(rain_in);
             }
             if (float.TryParse(forecast.snowFall, out float snow_in))
             {
                 extras.qpf_snow_in = snow_in;
-                extras.qpf_snow_cm = float.Parse(ConversionMethods.InToMM((snow_in / 10).ToInvariantString()));
+                extras.qpf_snow_cm = ConversionMethods.InToMM(snow_in / 10);
             }
-            try
+            if (float.TryParse(forecast.barometerPressure, out float pressureIN))
             {
-                extras.pressure_in = forecast.barometerPressure;
-                extras.pressure_mb = ConversionMethods.InHgToMB(forecast.barometerPressure);
+                extras.pressure_in = pressureIN;
+                extras.pressure_mb = ConversionMethods.InHgToMB(pressureIN);
             }
-            catch (FormatException)
+            if (int.TryParse(forecast.windDirection, out int windDegrees))
             {
-                extras.pressure_in = null;
-                extras.pressure_mb = null;
+                extras.wind_degrees = windDegrees;
             }
-            extras.wind_degrees = int.Parse(forecast.windDirection);
             if (float.TryParse(forecast.windSpeed, out float windSpeed))
             {
                 extras.wind_mph = windSpeed;
-                extras.wind_kph = float.Parse(ConversionMethods.MphToKph(windSpeed.ToInvariantString()));
+                extras.wind_kph = ConversionMethods.MphToKph(windSpeed);
             }
             if (float.TryParse(forecast.uvIndex, out float uv_index))
             {
@@ -534,13 +519,13 @@ namespace SimpleWeather.WeatherData
             date = forecastItem.startTime.DateTime;
             if (forecastItem.isDaytime)
             {
-                high_f = forecastItem.temperature.ToString();
-                high_c = ConversionMethods.FtoC(high_f);
+                high_f = forecastItem.temperature;
+                high_c = ConversionMethods.FtoC(forecastItem.temperature);
             }
             else
             {
-                low_f = forecastItem.temperature.ToString();
-                low_c = ConversionMethods.FtoC(low_f);
+                low_f = forecastItem.temperature;
+                low_c = ConversionMethods.FtoC(forecastItem.temperature);
             }
             condition = forecastItem.shortForecast;
             icon = WeatherManager.GetProvider(WeatherAPI.NWS)
@@ -556,7 +541,7 @@ namespace SimpleWeather.WeatherData
                     {
                         wind_degrees = WeatherUtils.GetWindDirection(forecastItem.windDirection),
                         wind_mph = windSpeed,
-                        wind_kph = float.Parse(ConversionMethods.MphToKph(maxWindSpeed))
+                        wind_kph = ConversionMethods.MphToKph(windSpeed)
                     };
                 }
             }
@@ -565,10 +550,10 @@ namespace SimpleWeather.WeatherData
         public Forecast(NWS.Period forecastItem, NWS.Period ntForecastItem)
         {
             date = forecastItem.startTime.DateTime;
-            high_f = forecastItem.temperature.ToString();
-            high_c = ConversionMethods.FtoC(high_f);
-            low_f = ntForecastItem.temperature.ToString();
-            low_c = ConversionMethods.FtoC(low_f);
+            high_f = forecastItem.temperature;
+            high_c = ConversionMethods.FtoC(forecastItem.temperature);
+            low_f = ntForecastItem.temperature;
+            low_c = ConversionMethods.FtoC(ntForecastItem.temperature);
             condition = forecastItem.shortForecast;
             icon = WeatherManager.GetProvider(WeatherAPI.NWS)
                         .GetWeatherIcon(forecastItem.icon);
@@ -585,7 +570,7 @@ namespace SimpleWeather.WeatherData
                     {
                         wind_degrees = WeatherUtils.GetWindDirection(forecastItem.windDirection),
                         wind_mph = windSpeed,
-                        wind_kph = float.Parse(ConversionMethods.MphToKph(maxWindSpeed))
+                        wind_kph = ConversionMethods.MphToKph(windSpeed)
                     };
                 }
             }
@@ -597,8 +582,8 @@ namespace SimpleWeather.WeatherData
         public HourlyForecast(OpenWeather.Hourly hr_forecast)
         {
             date = DateTimeOffset.FromUnixTimeSeconds(hr_forecast.dt);
-            high_f = ConversionMethods.KtoF(hr_forecast.temp.ToInvariantString());
-            high_c = ConversionMethods.KtoC(hr_forecast.temp.ToInvariantString());
+            high_f = ConversionMethods.KtoF(hr_forecast.temp);
+            high_c = ConversionMethods.KtoC(hr_forecast.temp);
             condition = hr_forecast.weather[0].description.ToUpperCase();
 
             // Use icon to determine if day or night
@@ -612,54 +597,54 @@ namespace SimpleWeather.WeatherData
                    .GetWeatherIcon(hr_forecast.weather[0].id.ToInvariantString() + dn);
 
             // Use cloudiness value here
-            pop = hr_forecast.clouds.ToInvariantString();
+            pop = hr_forecast.clouds;
             wind_degrees = hr_forecast.wind_deg;
-            wind_mph = (float)Math.Round(double.Parse(ConversionMethods.MSecToMph(hr_forecast.wind_speed.ToInvariantString())));
-            wind_kph = (float)Math.Round(double.Parse(ConversionMethods.MSecToKph(hr_forecast.wind_speed.ToInvariantString())));
+            wind_mph = (float)Math.Round(ConversionMethods.MSecToMph(hr_forecast.wind_speed));
+            wind_kph = (float)Math.Round(ConversionMethods.MSecToKph(hr_forecast.wind_speed));
 
             // Extras
             extras = new ForecastExtras()
             {
-                feelslike_f = float.Parse(ConversionMethods.KtoF(hr_forecast.feels_like.ToInvariantString())),
-                feelslike_c = float.Parse(ConversionMethods.KtoC(hr_forecast.feels_like.ToInvariantString())),
-                dewpoint_f = ConversionMethods.KtoF(hr_forecast.dew_point.ToInvariantString()),
-                dewpoint_c = ConversionMethods.KtoC(hr_forecast.dew_point.ToInvariantString()),
-                humidity = hr_forecast.humidity.ToInvariantString(),
-                pop = hr_forecast.clouds.ToInvariantString(),
+                feelslike_f = ConversionMethods.KtoF(hr_forecast.feels_like),
+                feelslike_c = ConversionMethods.KtoC(hr_forecast.feels_like),
+                dewpoint_f = ConversionMethods.KtoF(hr_forecast.dew_point),
+                dewpoint_c = ConversionMethods.KtoC(hr_forecast.dew_point),
+                humidity = hr_forecast.humidity,
+                pop = hr_forecast.clouds,
                 // 1hPA = 1mbar
-                pressure_mb = hr_forecast.pressure.ToInvariantString(),
-                pressure_in = ConversionMethods.MBToInHg(hr_forecast.pressure.ToInvariantString()),
+                pressure_mb = hr_forecast.pressure,
+                pressure_in = ConversionMethods.MBToInHg(hr_forecast.pressure),
                 wind_degrees = this.wind_degrees,
                 wind_mph = this.wind_mph,
                 wind_kph = this.wind_kph
             };
             if (hr_forecast.visibility.HasValue)
             {
-                extras.visibility_km = hr_forecast.visibility.Value.ToInvariantString();
-                extras.visibility_mi = ConversionMethods.KmToMi(extras.visibility_km);
+                extras.visibility_km = hr_forecast.visibility.Value;
+                extras.visibility_mi = ConversionMethods.KmToMi(hr_forecast.visibility.Value);
             }
             if (hr_forecast.rain != null)
             {
                 extras.qpf_rain_mm = hr_forecast.rain._1h;
-                extras.qpf_rain_in = float.Parse(ConversionMethods.MMToIn(hr_forecast.rain._1h.ToInvariantString()));
+                extras.qpf_rain_in = ConversionMethods.MMToIn(hr_forecast.rain._1h);
             }
             if (hr_forecast.snow != null)
             {
                 extras.qpf_snow_cm = hr_forecast.snow._1h / 10;
-                extras.qpf_rain_in = float.Parse(ConversionMethods.MMToIn(hr_forecast.snow._1h.ToInvariantString()));
+                extras.qpf_rain_in = ConversionMethods.MMToIn(hr_forecast.snow._1h);
             }
         }
 
         public HourlyForecast(Metno.Timesery hr_forecast)
         {
             date = new DateTimeOffset(hr_forecast.time, TimeSpan.Zero);
-            high_f = ConversionMethods.CtoF(hr_forecast.data.instant.details.air_temperature.Value.ToInvariantString());
-            high_c = hr_forecast.data.instant.details.air_temperature.Value.ToString();
+            high_f = ConversionMethods.CtoF(hr_forecast.data.instant.details.air_temperature.Value);
+            high_c = hr_forecast.data.instant.details.air_temperature.Value;
             // Use cloudiness value here
-            pop = ((int)Math.Round(hr_forecast.data.instant.details.cloud_area_fraction.Value)).ToString();
+            pop = (int)Math.Round(hr_forecast.data.instant.details.cloud_area_fraction.Value);
             wind_degrees = (int)Math.Round(hr_forecast.data.instant.details.wind_from_direction.Value);
-            wind_mph = (float)Math.Round(double.Parse(ConversionMethods.MSecToMph(hr_forecast.data.instant.details.wind_speed.Value.ToInvariantString())));
-            wind_kph = (float)Math.Round(double.Parse(ConversionMethods.MSecToKph(hr_forecast.data.instant.details.wind_speed.Value.ToInvariantString())));
+            wind_mph = (float)Math.Round(ConversionMethods.MSecToMph(hr_forecast.data.instant.details.wind_speed.Value));
+            wind_kph = (float)Math.Round(ConversionMethods.MSecToKph(hr_forecast.data.instant.details.wind_speed.Value));
 
             if (hr_forecast.data.next_1_hours != null)
             {
@@ -678,14 +663,14 @@ namespace SimpleWeather.WeatherData
             // Extras
             extras = new ForecastExtras()
             {
-                feelslike_f = float.Parse(WeatherUtils.GetFeelsLikeTemp(high_f, wind_mph.ToInvariantString(), Math.Round(humidity).ToInvariantString())),
-                feelslike_c = float.Parse(ConversionMethods.FtoC(WeatherUtils.GetFeelsLikeTemp(high_f, wind_mph.ToInvariantString(), Math.Round(humidity).ToInvariantString()))),
-                humidity = Math.Round(humidity).ToInvariantString(),
-                dewpoint_f = ConversionMethods.CtoF(hr_forecast.data.instant.details.dew_point_temperature.Value.ToInvariantString()),
-                dewpoint_c = hr_forecast.data.instant.details.dew_point_temperature.Value.ToInvariantString(),
+                feelslike_f = WeatherUtils.GetFeelsLikeTemp(high_f.Value, wind_mph.Value, (int)Math.Round(humidity)),
+                feelslike_c = ConversionMethods.FtoC(WeatherUtils.GetFeelsLikeTemp(high_f.Value, wind_mph.Value, (int)Math.Round(humidity))),
+                humidity = (int)Math.Round(humidity),
+                dewpoint_f = ConversionMethods.CtoF(hr_forecast.data.instant.details.dew_point_temperature.Value),
+                dewpoint_c = hr_forecast.data.instant.details.dew_point_temperature.Value,
                 pop = pop,
-                pressure_in = ConversionMethods.MBToInHg(hr_forecast.data.instant.details.air_pressure_at_sea_level.Value.ToInvariantString()),
-                pressure_mb = hr_forecast.data.instant.details.air_pressure_at_sea_level.Value.ToInvariantString(),
+                pressure_in = ConversionMethods.MBToInHg(hr_forecast.data.instant.details.air_pressure_at_sea_level.Value),
+                pressure_mb = hr_forecast.data.instant.details.air_pressure_at_sea_level.Value,
                 wind_degrees = wind_degrees,
                 wind_mph = wind_mph,
                 wind_kph = wind_kph
@@ -693,8 +678,8 @@ namespace SimpleWeather.WeatherData
             if (hr_forecast.data.instant.details.fog_area_fraction.HasValue)
             {
                 float visMi = 10.0f;
-                extras.visibility_mi = (visMi - (visMi * hr_forecast.data.instant.details.fog_area_fraction.Value / 100)).ToInvariantString();
-                extras.visibility_km = ConversionMethods.MiToKm(extras.visibility_mi);
+                extras.visibility_mi = (visMi - (visMi * hr_forecast.data.instant.details.fog_area_fraction.Value / 100));
+                extras.visibility_km = ConversionMethods.MiToKm(extras.visibility_mi.Value);
             }
             if (hr_forecast.data.instant.details.ultraviolet_index_clear_sky.HasValue)
             {
@@ -705,28 +690,26 @@ namespace SimpleWeather.WeatherData
         public HourlyForecast(HERE.Forecast1 hr_forecast)
         {
             date = hr_forecast.utcTime;
-            try
+            if (float.TryParse(hr_forecast.temperature, out float highF))
             {
-                high_f = hr_forecast.temperature;
-                high_c = ConversionMethods.FtoC(hr_forecast.temperature);
-            }
-            catch (FormatException)
-            {
-                high_f = null;
-                high_c = null;
+                high_f = highF;
+                high_c = ConversionMethods.FtoC(highF);
             }
             condition = hr_forecast.description.ToPascalCase();
 
             icon = WeatherManager.GetProvider(WeatherAPI.Here)
                    .GetWeatherIcon(string.Format("{0}_{1}", hr_forecast.daylight, hr_forecast.iconName));
 
-            pop = hr_forecast.precipitationProbability;
+            if (int.TryParse(hr_forecast.precipitationProbability, out int pop))
+            {
+                this.pop = pop;
+            }
             if (int.TryParse(hr_forecast.windDirection, out int windDeg))
                 wind_degrees = windDeg;
             if (float.TryParse(hr_forecast.windSpeed, out float windSpeed))
             {
                 wind_mph = windSpeed;
-                wind_kph = float.Parse(ConversionMethods.MphToKph(windSpeed.ToInvariantString()));
+                wind_kph = ConversionMethods.MphToKph(windSpeed);
             }
 
             // Extras
@@ -734,39 +717,35 @@ namespace SimpleWeather.WeatherData
             if (float.TryParse(hr_forecast.comfort, out float comfortTemp_f))
             {
                 extras.feelslike_f = comfortTemp_f;
-                extras.feelslike_c = float.Parse(ConversionMethods.FtoC(comfortTemp_f.ToInvariantString()));
+                extras.feelslike_c = ConversionMethods.FtoC(comfortTemp_f);
             }
-            extras.humidity = hr_forecast.humidity;
-            try
+            if (int.TryParse(hr_forecast.humidity, out int humidity))
             {
-                extras.dewpoint_f = hr_forecast.dewPoint;
-                extras.dewpoint_c = ConversionMethods.FtoC(hr_forecast.dewPoint);
+                extras.humidity = humidity;
             }
-            catch (FormatException)
+            if (float.TryParse(hr_forecast.dewPoint, out float dewpointF))
             {
-                extras.dewpoint_f = null;
-                extras.dewpoint_c = null;
+                extras.dewpoint_f = dewpointF;
+                extras.dewpoint_c = ConversionMethods.FtoC(dewpointF);
             }
-            try
+            if (float.TryParse(hr_forecast.visibility, out float visibilityMI))
             {
-                extras.visibility_mi = hr_forecast.visibility;
-                extras.visibility_km = ConversionMethods.MiToKm(hr_forecast.visibility);
+                extras.visibility_mi = visibilityMI;
+                extras.visibility_km = ConversionMethods.MiToKm(visibilityMI);
             }
-            catch (FormatException)
+            if (int.TryParse(hr_forecast.precipitationProbability, out int PoP))
             {
-                extras.visibility_mi = null;
-                extras.visibility_km = null;
+                extras.pop = PoP;
             }
-            extras.pop = hr_forecast.precipitationProbability;
             if (float.TryParse(hr_forecast.rainFall, out float rain_in))
             {
                 extras.qpf_rain_in = rain_in;
-                extras.qpf_rain_mm = float.Parse(ConversionMethods.InToMM(rain_in.ToInvariantString()));
+                extras.qpf_rain_mm = ConversionMethods.InToMM(rain_in);
             }
             if (float.TryParse(hr_forecast.snowFall, out float snow_in))
             {
                 extras.qpf_snow_in = snow_in;
-                extras.qpf_snow_cm = float.Parse(ConversionMethods.InToMM((snow_in / 10).ToInvariantString()));
+                extras.qpf_snow_cm = ConversionMethods.InToMM(snow_in / 10);
             }
             //extras.pressure_in = hr_forecast.barometerPressure;
             //extras.pressure_mb = ConversionMethods.InHgToMB(hr_forecast.barometerPressure);
@@ -778,8 +757,8 @@ namespace SimpleWeather.WeatherData
         public HourlyForecast(NWS.Period forecastItem)
         {
             date = forecastItem.startTime;
-            high_f = forecastItem.temperature.ToString();
-            high_c = ConversionMethods.FtoC(high_f);
+            high_f = forecastItem.temperature;
+            high_c = ConversionMethods.FtoC(forecastItem.temperature);
             condition = forecastItem.shortForecast;
             icon = WeatherManager.GetProvider(WeatherAPI.NWS)
                         .GetWeatherIcon(forecastItem.icon);
@@ -796,7 +775,7 @@ namespace SimpleWeather.WeatherData
                 if (!String.IsNullOrWhiteSpace(maxWindSpeed) && int.TryParse(maxWindSpeed, out int windSpeed))
                 {
                     wind_mph = windSpeed;
-                    wind_kph = float.Parse(ConversionMethods.MphToKph(maxWindSpeed));
+                    wind_kph = ConversionMethods.MphToKph(windSpeed);
 
                     // Extras
                     extras = new ForecastExtras()
@@ -820,30 +799,30 @@ namespace SimpleWeather.WeatherData
             sb.AppendFormat(CultureInfo.InvariantCulture,
                 "{0} - {1}: {2}°; {3}: {4}°", SimpleLibrary.ResLoader.GetString("Label_Morning"),
                 SimpleLibrary.ResLoader.GetString("Temp_Label"),
-                ConversionMethods.KtoF(forecast.temp.morn.ToInvariantString()),
+                ConversionMethods.KtoF(forecast.temp.morn),
                 SimpleLibrary.ResLoader.GetString("FeelsLike_Label"),
-                ConversionMethods.KtoF(forecast.feels_like.morn.ToInvariantString()));
+                ConversionMethods.KtoF(forecast.feels_like.morn));
             sb.AppendLine();
             sb.AppendFormat(CultureInfo.InvariantCulture,
                 "{0} - {1}: {2}°; {3}: {4}°", SimpleLibrary.ResLoader.GetString("Label_Day"),
                 SimpleLibrary.ResLoader.GetString("Temp_Label"),
-                ConversionMethods.KtoF(forecast.temp.day.ToInvariantString()),
+                ConversionMethods.KtoF(forecast.temp.day),
                 SimpleLibrary.ResLoader.GetString("FeelsLike_Label"),
-                ConversionMethods.KtoF(forecast.feels_like.day.ToInvariantString()));
+                ConversionMethods.KtoF(forecast.feels_like.day));
             sb.AppendLine();
             sb.AppendFormat(CultureInfo.InvariantCulture,
                 "{0} - {1}: {2}°; {3}: {4}°", SimpleLibrary.ResLoader.GetString("Label_Eve"),
                 SimpleLibrary.ResLoader.GetString("Temp_Label"),
-                ConversionMethods.KtoF(forecast.temp.eve.ToInvariantString()),
+                ConversionMethods.KtoF(forecast.temp.eve),
                 SimpleLibrary.ResLoader.GetString("FeelsLike_Label"),
-                ConversionMethods.KtoF(forecast.feels_like.eve.ToInvariantString()));
+                ConversionMethods.KtoF(forecast.feels_like.eve));
             sb.AppendLine();
             sb.AppendFormat(CultureInfo.InvariantCulture,
                 "{0} - {1}: {2}°; {3}: {4}°", SimpleLibrary.ResLoader.GetString("Label_Night"),
                 SimpleLibrary.ResLoader.GetString("Temp_Label"),
-                ConversionMethods.KtoF(forecast.temp.night.ToInvariantString()),
+                ConversionMethods.KtoF(forecast.temp.night),
                 SimpleLibrary.ResLoader.GetString("FeelsLike_Label"),
-                ConversionMethods.KtoF(forecast.feels_like.night.ToInvariantString()));
+                ConversionMethods.KtoF(forecast.feels_like.night));
 
             fcttext = sb.ToString();
 
@@ -851,30 +830,30 @@ namespace SimpleWeather.WeatherData
             sb_metric.AppendFormat(CultureInfo.InvariantCulture,
                 "{0} - {1}: {2}°; {3}: {4}°", SimpleLibrary.ResLoader.GetString("Label_Morning"),
                 SimpleLibrary.ResLoader.GetString("Temp_Label"),
-                ConversionMethods.KtoC(forecast.temp.morn.ToInvariantString()),
+                ConversionMethods.KtoC(forecast.temp.morn),
                 SimpleLibrary.ResLoader.GetString("FeelsLike_Label"),
-                ConversionMethods.KtoC(forecast.feels_like.morn.ToInvariantString()));
+                ConversionMethods.KtoC(forecast.feels_like.morn));
             sb_metric.AppendLine();
             sb_metric.AppendFormat(CultureInfo.InvariantCulture,
                 "{0} - {1}: {2}°; {3}: {4}°", SimpleLibrary.ResLoader.GetString("Label_Day"),
                 SimpleLibrary.ResLoader.GetString("Temp_Label"),
-                ConversionMethods.KtoC(forecast.temp.day.ToInvariantString()),
+                ConversionMethods.KtoC(forecast.temp.day),
                 SimpleLibrary.ResLoader.GetString("FeelsLike_Label"),
-                ConversionMethods.KtoC(forecast.feels_like.day.ToInvariantString()));
+                ConversionMethods.KtoC(forecast.feels_like.day));
             sb_metric.AppendLine();
             sb_metric.AppendFormat(CultureInfo.InvariantCulture,
                 "{0} - {1}: {2}°; {3}: {4}°", SimpleLibrary.ResLoader.GetString("Label_Eve"),
                 SimpleLibrary.ResLoader.GetString("Temp_Label"),
-                ConversionMethods.KtoC(forecast.temp.eve.ToInvariantString()),
+                ConversionMethods.KtoC(forecast.temp.eve),
                 SimpleLibrary.ResLoader.GetString("FeelsLike_Label"),
-                ConversionMethods.KtoC(forecast.feels_like.eve.ToInvariantString()));
+                ConversionMethods.KtoC(forecast.feels_like.eve));
             sb_metric.AppendLine();
             sb_metric.AppendFormat(CultureInfo.InvariantCulture,
                 "{0} - {1}: {2}°; {3}: {4}°", SimpleLibrary.ResLoader.GetString("Label_Night"),
                 SimpleLibrary.ResLoader.GetString("Temp_Label"),
-                ConversionMethods.KtoC(forecast.temp.night.ToInvariantString()),
+                ConversionMethods.KtoC(forecast.temp.night),
                 SimpleLibrary.ResLoader.GetString("FeelsLike_Label"),
-                ConversionMethods.KtoC(forecast.feels_like.night.ToInvariantString()));
+                ConversionMethods.KtoC(forecast.feels_like.night));
 
             fcttext_metric = sb_metric.ToString();
         }
@@ -913,28 +892,28 @@ namespace SimpleWeather.WeatherData
         {
             weather = observation.condition.text;
             temp_f = observation.condition.temperature;
-            temp_c = float.Parse(ConversionMethods.FtoC(observation.condition.temperature.ToInvariantString()));
+            temp_c = ConversionMethods.FtoC(observation.condition.temperature);
             wind_degrees = observation.wind.direction;
             wind_mph = observation.wind.speed;
-            wind_kph = float.Parse(ConversionMethods.MphToKph(observation.wind.speed.ToInvariantString()));
+            wind_kph = ConversionMethods.MphToKph(observation.wind.speed);
             feelslike_f = observation.wind.chill;
-            feelslike_c = float.Parse(ConversionMethods.FtoC(observation.wind.chill.ToInvariantString()));
+            feelslike_c = ConversionMethods.FtoC(observation.wind.chill);
             icon = WeatherManager.GetProvider(WeatherAPI.Yahoo)
                    .GetWeatherIcon(observation.condition.code.ToInvariantString());
 
-            beaufort = new Beaufort((int)WeatherUtils.GetBeaufortScale((int)Math.Round(wind_mph)));
+            beaufort = new Beaufort((int)WeatherUtils.GetBeaufortScale((int)Math.Round(observation.wind.speed)));
         }
 
         public Condition(OpenWeather.Current current)
         {
             weather = current.weather[0].description.ToUpperCase();
-            temp_f = float.Parse(ConversionMethods.KtoF(current.temp.ToInvariantString()));
-            temp_c = float.Parse(ConversionMethods.KtoC(current.temp.ToInvariantString()));
+            temp_f = ConversionMethods.KtoF(current.temp);
+            temp_c = ConversionMethods.KtoC(current.temp);
             wind_degrees = current.wind_deg;
-            wind_mph = float.Parse(ConversionMethods.MSecToMph(current.wind_speed.ToInvariantString()));
-            wind_kph = float.Parse(ConversionMethods.MSecToKph(current.wind_speed.ToInvariantString()));
-            feelslike_f = float.Parse(ConversionMethods.KtoF(current.feels_like.ToInvariantString()));
-            feelslike_c = float.Parse(ConversionMethods.KtoC(current.feels_like.ToInvariantString()));
+            wind_mph = ConversionMethods.MSecToMph(current.wind_speed);
+            wind_kph = ConversionMethods.MSecToKph(current.wind_speed);
+            feelslike_f = ConversionMethods.KtoF(current.feels_like);
+            feelslike_c = ConversionMethods.KtoC(current.feels_like);
 
             string ico = current.weather[0].icon;
             string dn = ico.Last().ToString();
@@ -954,13 +933,13 @@ namespace SimpleWeather.WeatherData
         public Condition(Metno.Timesery time)
         {
             // weather
-            temp_f = float.Parse(ConversionMethods.CtoF(time.data.instant.details.air_temperature.Value.ToInvariantString()));
+            temp_f = ConversionMethods.CtoF(time.data.instant.details.air_temperature.Value);
             temp_c = (float)time.data.instant.details.air_temperature.Value;
             wind_degrees = (int)Math.Round(time.data.instant.details.wind_from_direction.Value);
-            wind_mph = (float)Math.Round(double.Parse(ConversionMethods.MSecToMph(time.data.instant.details.wind_speed.Value.ToInvariantString())));
-            wind_kph = (float)Math.Round(double.Parse(ConversionMethods.MSecToKph(time.data.instant.details.wind_speed.Value.ToInvariantString())));
-            feelslike_f = float.Parse(WeatherUtils.GetFeelsLikeTemp(temp_f.ToInvariantString(), wind_mph.ToInvariantString(), time.data.instant.details.relative_humidity.Value.ToInvariantString()));
-            feelslike_c = float.Parse(ConversionMethods.FtoC(feelslike_f.ToInvariantString()));
+            wind_mph = (float)Math.Round(ConversionMethods.MSecToMph(time.data.instant.details.wind_speed.Value));
+            wind_kph = (float)Math.Round(ConversionMethods.MSecToKph(time.data.instant.details.wind_speed.Value));
+            feelslike_f = WeatherUtils.GetFeelsLikeTemp(temp_f.Value, wind_mph.Value, (int)time.data.instant.details.relative_humidity.Value);
+            feelslike_c = ConversionMethods.FtoC(feelslike_f.Value);
 
             if (time.data.next_12_hours != null)
             {
@@ -988,36 +967,24 @@ namespace SimpleWeather.WeatherData
             if (float.TryParse(observation.temperature, out float tempF))
             {
                 temp_f = tempF;
-                temp_c = float.Parse(ConversionMethods.FtoC(tempF.ToInvariantString()));
-            }
-            else
-            {
-                temp_f = 0.00f;
-                temp_c = 0.00f;
+                temp_c = ConversionMethods.FtoC(tempF);
             }
 
             if (float.TryParse(observation.highTemperature, out float hiTempF) &&
                 float.TryParse(observation.lowTemperature, out float loTempF))
             {
                 high_f = hiTempF;
-                high_c = float.Parse(ConversionMethods.FtoC(hiTempF.ToInvariantString()));
+                high_c = ConversionMethods.FtoC(hiTempF);
                 low_f = loTempF;
-                low_c = float.Parse(ConversionMethods.FtoC(loTempF.ToInvariantString()));
+                low_c = ConversionMethods.FtoC(loTempF);
             }
             else if (float.TryParse(forecastItem.highTemperature, out hiTempF) &&
                 float.TryParse(forecastItem.lowTemperature, out loTempF))
             {
                 high_f = hiTempF;
-                high_c = float.Parse(ConversionMethods.FtoC(hiTempF.ToInvariantString()));
+                high_c = ConversionMethods.FtoC(hiTempF);
                 low_f = loTempF;
-                low_c = float.Parse(ConversionMethods.FtoC(loTempF.ToInvariantString()));
-            }
-            else
-            {
-                high_f = 0.00f;
-                high_c = 0.00f;
-                low_f = 0.00f;
-                low_c = 0.00f;
+                low_c = ConversionMethods.FtoC(loTempF);
             }
 
             if (int.TryParse(observation.windDirection, out int windDegrees))
@@ -1028,24 +995,15 @@ namespace SimpleWeather.WeatherData
             if (float.TryParse(observation.windSpeed, out float wind_Speed))
             {
                 wind_mph = wind_Speed;
-                wind_kph = float.Parse(ConversionMethods.MphToKph(observation.windSpeed));
-            }
-            else
-            {
-                wind_mph = 0.00f;
-                wind_kph = 0.00f;
+                wind_kph = ConversionMethods.MphToKph(wind_Speed);
             }
 
             if (float.TryParse(observation.comfort, out float comfortTempF))
             {
                 feelslike_f = comfortTempF;
-                feelslike_c = float.Parse(ConversionMethods.FtoC(comfortTempF.ToInvariantString()));
+                feelslike_c = ConversionMethods.FtoC(comfortTempF);
             }
-            else
-            {
-                feelslike_f = 0.00f;
-                feelslike_c = 0.00f;
-            }
+
             icon = WeatherManager.GetProvider(WeatherAPI.Here)
                    .GetWeatherIcon(string.Format("{0}_{1}", observation.daylight, observation.iconName));
 
@@ -1064,60 +1022,44 @@ namespace SimpleWeather.WeatherData
             if (obsCurrentRootObject.temperature.value.HasValue)
             {
                 temp_c = obsCurrentRootObject.temperature.value.GetValueOrDefault(0.00f);
-                temp_f = float.Parse(ConversionMethods.CtoF(temp_c.ToInvariantString()));
-            }
-            else
-            {
-                temp_c = 0.00f;
-                temp_f = 0.00f;
+                temp_f = ConversionMethods.CtoF(temp_c.Value);
             }
 
             if (obsCurrentRootObject.windDirection.value.HasValue)
             {
                 wind_degrees = (int)obsCurrentRootObject.windDirection.value.GetValueOrDefault(0);
             }
-            else
-            {
-                wind_degrees = 0;
-            }
 
             if (obsCurrentRootObject.windSpeed.value.HasValue)
             {
                 wind_kph = obsCurrentRootObject.windSpeed.value.GetValueOrDefault(0.00f);
-                wind_mph = float.Parse(ConversionMethods.KphToMph(wind_kph.ToInvariantString()));
-            }
-            else
-            {
-                wind_mph = -1.00f;
-                wind_kph = -1.00f;
+                wind_mph = ConversionMethods.KphToMph(wind_kph.Value);
             }
 
             if (obsCurrentRootObject.heatIndex.value.HasValue)
             {
                 feelslike_c = obsCurrentRootObject.heatIndex.value.GetValueOrDefault(0.00f);
-                feelslike_f = float.Parse(ConversionMethods.CtoF(feelslike_c.ToInvariantString()));
+                feelslike_f = ConversionMethods.CtoF(feelslike_c.Value);
             }
             else if (obsCurrentRootObject.windChill.value.HasValue)
             {
                 feelslike_c = obsCurrentRootObject.windChill.value.GetValueOrDefault(0.00f);
-                feelslike_f = float.Parse(ConversionMethods.CtoF(feelslike_c.ToInvariantString()));
+                feelslike_f = ConversionMethods.CtoF(feelslike_c.Value);
             }
             else if (temp_f != temp_c)
             {
                 float humidity = obsCurrentRootObject.relativeHumidity.value.GetValueOrDefault(-1.0f);
-                feelslike_f = float.Parse(WeatherUtils.GetFeelsLikeTemp(temp_f.ToInvariantString(),
-                    wind_mph.ToInvariantString(), humidity.ToInvariantString()));
-                feelslike_c = float.Parse(ConversionMethods.FtoC(feelslike_f.ToInvariantString()));
+                feelslike_f = WeatherUtils.GetFeelsLikeTemp(temp_f.Value, wind_mph.Value, (int)humidity);
+                feelslike_c = ConversionMethods.FtoC(feelslike_f.Value);
             }
-            else
-            {
-                feelslike_f = -1.00f;
-                feelslike_c = -1.00f;
-            }
+
             icon = WeatherManager.GetProvider(WeatherAPI.NWS)
                         .GetWeatherIcon(obsCurrentRootObject.icon);
 
-            beaufort = new Beaufort((int)WeatherUtils.GetBeaufortScale((int)Math.Round(wind_mph)));
+            if (wind_mph.HasValue)
+            {
+                beaufort = new Beaufort((int)WeatherUtils.GetBeaufortScale((int)Math.Round(wind_mph.Value)));
+            }
 
             observation_time = obsCurrentRootObject.timestamp;
         }
@@ -1127,83 +1069,72 @@ namespace SimpleWeather.WeatherData
     {
         public Atmosphere(WeatherYahoo.Atmosphere atmosphere)
         {
-            humidity = atmosphere.humidity;
-            pressure_in = atmosphere.pressure.ToInvariantString();
-            pressure_mb = ConversionMethods.InHgToMB(pressure_in);
+            humidity = int.Parse(atmosphere.humidity);
+            pressure_in = atmosphere.pressure;
+            pressure_mb = ConversionMethods.InHgToMB(atmosphere.pressure);
             pressure_trend = atmosphere.rising.ToInvariantString();
-            visibility_mi = atmosphere.visibility.ToInvariantString();
-            visibility_km = ConversionMethods.MiToKm(visibility_mi);
+            visibility_mi = atmosphere.visibility;
+            visibility_km = ConversionMethods.MiToKm(atmosphere.visibility);
         }
 
         public Atmosphere(OpenWeather.Current current)
         {
-            humidity = current.humidity.ToInvariantString();
+            humidity = current.humidity;
             // 1hPa = 1mbar
-            pressure_mb = current.pressure.ToInvariantString();
-            pressure_in = ConversionMethods.MBToInHg(pressure_mb);
+            pressure_mb = current.pressure;
+            pressure_in = ConversionMethods.MBToInHg(current.pressure);
             pressure_trend = String.Empty;
-            visibility_km = (current.visibility / 1000).ToInvariantString();
-            visibility_mi = ConversionMethods.KmToMi(visibility_km);
-            dewpoint_f = ConversionMethods.KtoF(current.dew_point.ToInvariantString());
-            dewpoint_c = ConversionMethods.KtoC(current.dew_point.ToInvariantString());
+            visibility_km = current.visibility / 1000;
+            visibility_mi = ConversionMethods.KmToMi(visibility_km.Value);
+            dewpoint_f = ConversionMethods.KtoF(current.dew_point);
+            dewpoint_c = ConversionMethods.KtoC(current.dew_point);
         }
 
         public Atmosphere(Metno.Timesery time)
         {
-            humidity = Math.Round(time.data.instant.details.relative_humidity.Value).ToString();
-            pressure_mb = time.data.instant.details.air_pressure_at_sea_level.Value.ToInvariantString();
-            pressure_in = ConversionMethods.MBToInHg(time.data.instant.details.air_pressure_at_sea_level.Value.ToInvariantString());
+            humidity = (int?)Math.Round(time.data.instant.details.relative_humidity.Value);
+            pressure_mb = time.data.instant.details.air_pressure_at_sea_level.Value;
+            pressure_in = ConversionMethods.MBToInHg(time.data.instant.details.air_pressure_at_sea_level.Value);
             pressure_trend = String.Empty;
 
             if (time.data.instant.details.fog_area_fraction.HasValue)
             {
                 float visMi = 10.0f;
-                visibility_mi = (visMi - (visMi * time.data.instant.details.fog_area_fraction.Value / 100)).ToInvariantString();
-                visibility_km = ConversionMethods.MiToKm(visibility_mi);
+                visibility_mi = (visMi - (visMi * time.data.instant.details.fog_area_fraction.Value / 100));
+                visibility_km = ConversionMethods.MiToKm(visibility_mi.Value);
             }
 
             if (time.data.instant.details.dew_point_temperature.HasValue)
             {
-                dewpoint_f = ConversionMethods.CtoF(time.data.instant.details.dew_point_temperature.Value.ToInvariantString());
-                dewpoint_c = (time.data.instant.details.dew_point_temperature.Value).ToInvariantString();
+                dewpoint_f = ConversionMethods.CtoF(time.data.instant.details.dew_point_temperature.Value);
+                dewpoint_c = time.data.instant.details.dew_point_temperature.Value;
             }
         }
 
         public Atmosphere(HERE.Observation observation)
         {
-            humidity = observation.humidity;
-            try
+            if (int.TryParse(observation.humidity, out int Humidity))
             {
-                pressure_mb = ConversionMethods.InHgToMB(observation.barometerPressure);
-                pressure_in = observation.barometerPressure;
+                humidity = Humidity;
             }
-            catch (FormatException)
+
+            if (float.TryParse(observation.barometerPressure, out float pressureIN))
             {
-                pressure_mb = null;
-                pressure_in = null;
+                pressure_in = pressureIN;
+                pressure_mb = ConversionMethods.InHgToMB(pressureIN);
             }
             pressure_trend = observation.barometerTrend;
 
-            try
+            if (float.TryParse(observation.visibility, out float visibilityMI))
             {
-                visibility_mi = observation.visibility;
-                visibility_km = ConversionMethods.MiToKm(observation.visibility);
-            }
-            catch (FormatException)
-            {
-                visibility_mi = null;
-                visibility_km = null;
+                visibility_mi = visibilityMI;
+                visibility_km = ConversionMethods.MiToKm(visibilityMI);
             }
 
-            try
+            if (float.TryParse(observation.dewPoint, out float dewpointF))
             {
-                dewpoint_f = observation.dewPoint;
-                dewpoint_c = ConversionMethods.FtoC(observation.dewPoint);
-            }
-            catch (FormatException)
-            {
-                dewpoint_f = null;
-                dewpoint_c = null;
+                dewpoint_f = dewpointF;
+                dewpoint_c = ConversionMethods.FtoC(dewpointF);
             }
         }
 
@@ -1211,27 +1142,27 @@ namespace SimpleWeather.WeatherData
         {
             if (obsCurrentRootObject.relativeHumidity.value.HasValue)
             {
-                humidity = ((int)Math.Round(obsCurrentRootObject.relativeHumidity.value.GetValueOrDefault(0.00f))).ToString();
+                humidity = (int)Math.Round(obsCurrentRootObject.relativeHumidity.value.GetValueOrDefault(0.00f));
             }
 
             if (obsCurrentRootObject.barometricPressure.value.HasValue)
             {
                 var pressure_pa = obsCurrentRootObject.barometricPressure.value.GetValueOrDefault(0.00f);
-                pressure_in = ConversionMethods.PaToInHg(pressure_pa.ToInvariantString());
-                pressure_mb = ConversionMethods.PaToMB(pressure_pa.ToInvariantString());
+                pressure_in = ConversionMethods.PaToInHg(pressure_pa);
+                pressure_mb = ConversionMethods.PaToMB(pressure_pa);
             }
             pressure_trend = String.Empty;
 
             if (obsCurrentRootObject.visibility.value.HasValue)
             {
-                visibility_km = (obsCurrentRootObject.visibility.value.GetValueOrDefault(0.00f) / 1000).ToString();
-                visibility_mi = ConversionMethods.KmToMi((obsCurrentRootObject.visibility.value.GetValueOrDefault(0.00f) / 1000).ToInvariantString());
+                visibility_km = obsCurrentRootObject.visibility.value.GetValueOrDefault(0.00f) / 1000;
+                visibility_mi = ConversionMethods.KmToMi(obsCurrentRootObject.visibility.value.GetValueOrDefault(0.00f) / 1000);
             }
 
             if (obsCurrentRootObject.dewpoint.value.HasValue)
             {
-                dewpoint_c = obsCurrentRootObject.dewpoint.value.GetValueOrDefault(0.00f).ToString();
-                dewpoint_f = ConversionMethods.CtoF(obsCurrentRootObject.dewpoint.value.GetValueOrDefault(0.00f).ToInvariantString());
+                dewpoint_c = obsCurrentRootObject.dewpoint.value.GetValueOrDefault(0.00f);
+                dewpoint_f = ConversionMethods.CtoF(obsCurrentRootObject.dewpoint.value.GetValueOrDefault(0.00f));
             }
         }
     }
@@ -1464,15 +1395,15 @@ namespace SimpleWeather.WeatherData
         public Precipitation(OpenWeather.Current current)
         {
             // Use cloudiness value here
-            pop = current.clouds.ToInvariantString();
+            pop = current.clouds;
             if (current.rain != null)
             {
-                qpf_rain_in = float.Parse(ConversionMethods.MMToIn(current.rain._1h.ToInvariantString()));
+                qpf_rain_in = ConversionMethods.MMToIn(current.rain._1h);
                 qpf_rain_mm = current.rain._1h;
             }
             if (current.snow != null)
             {
-                qpf_snow_in = float.Parse(ConversionMethods.MMToIn(current.snow._1h.ToInvariantString()));
+                qpf_snow_in = ConversionMethods.MMToIn(current.snow._1h);
                 qpf_snow_cm = current.snow._1h / 10;
             }
         }
@@ -1480,34 +1411,25 @@ namespace SimpleWeather.WeatherData
         public Precipitation(Metno.Timesery time)
         {
             // Use cloudiness value here
-            pop = Math.Round(time.data.instant.details.cloud_area_fraction.Value).ToString();
+            pop = (int)Math.Round(time.data.instant.details.cloud_area_fraction.Value);
             // The rest DNE
         }
 
         public Precipitation(HERE.Forecast forecast)
         {
-            pop = forecast.precipitationProbability;
+            if (int.TryParse(forecast.precipitationProbability, out int PoP))
+                pop = PoP;
 
             if (float.TryParse(forecast.rainFall, NumberStyles.Float, CultureInfo.InvariantCulture, out float rain_in))
             {
                 qpf_rain_in = rain_in;
-                qpf_rain_mm = float.Parse(ConversionMethods.InToMM(qpf_rain_in.ToInvariantString()));
-            }
-            else
-            {
-                qpf_rain_in = 0.00f;
-                qpf_rain_mm = 0.00f;
+                qpf_rain_mm = ConversionMethods.InToMM(qpf_rain_in.Value);
             }
 
             if (float.TryParse(forecast.snowFall, NumberStyles.Float, CultureInfo.InvariantCulture, out float snow_in))
             {
                 qpf_snow_in = snow_in;
-                qpf_snow_cm = float.Parse(ConversionMethods.InToMM(qpf_snow_in.ToInvariantString())) / 10;
-            }
-            else
-            {
-                qpf_snow_in = 0.00f;
-                qpf_snow_cm = 0.00f;
+                qpf_snow_cm = ConversionMethods.InToMM(qpf_snow_in.Value) / 10;
             }
         }
 
@@ -1517,13 +1439,13 @@ namespace SimpleWeather.WeatherData
             {
                 // "unit:m"
                 qpf_rain_mm = obsCurrentRootObject.precipitationLastHour.value.GetValueOrDefault(0.00f) * 1000;
-                qpf_rain_in = float.Parse(ConversionMethods.MMToIn(qpf_rain_mm.ToInvariantString()));
+                qpf_rain_in = ConversionMethods.MMToIn(qpf_rain_mm.Value);
             }
             else if (obsCurrentRootObject.precipitationLast3Hours.value.HasValue)
             {
                 // "unit:m"
                 qpf_rain_mm = obsCurrentRootObject.precipitationLast3Hours.value.GetValueOrDefault(0.00f) * 1000;
-                qpf_rain_in = float.Parse(ConversionMethods.MMToIn(qpf_rain_mm.ToInvariantString()));
+                qpf_rain_in = ConversionMethods.MMToIn(qpf_rain_mm.Value);
             }
             // The rest DNE
         }

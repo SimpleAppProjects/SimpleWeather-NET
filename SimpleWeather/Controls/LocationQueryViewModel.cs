@@ -252,15 +252,15 @@ namespace SimpleWeather.Controls
         {
             if (WeatherAPI.Here.Equals(WeatherSource))
             {
-                LocationQuery = String.Format("latitude={0}&longitude={1}", LocationLat.ToString("0.####", CultureInfo.InvariantCulture), LocationLong.ToString("0.####", CultureInfo.InvariantCulture));
+                LocationQuery = String.Format(CultureInfo.InvariantCulture, "latitude={0:0.####}&longitude={1:0.####}", LocationLat, LocationLong);
             }
             else if (WeatherAPI.NWS.Equals(WeatherSource))
             {
-                LocationQuery = String.Format("{0},{1}", LocationLat.ToString("0.####", CultureInfo.InvariantCulture), LocationLong.ToString("0.####", CultureInfo.InvariantCulture));
+                LocationQuery = String.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}", LocationLat, LocationLong);
             }
             else
             {
-                LocationQuery = String.Format("lat={0}&lon={1}", LocationLat.ToString("0.####", CultureInfo.InvariantCulture), LocationLong.ToString("0.####", CultureInfo.InvariantCulture));
+                LocationQuery = String.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}", LocationLat, LocationLong);
             }
         }
 

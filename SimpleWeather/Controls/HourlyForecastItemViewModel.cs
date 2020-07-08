@@ -37,103 +37,131 @@ namespace SimpleWeather.Controls
             Condition = hrForecast.condition;
             try
             {
-                HiTemp = (Settings.IsFahrenheit ?
-                    Math.Round(double.Parse(hrForecast.high_f)).ToString() : Math.Round(double.Parse(hrForecast.high_c)).ToString()) + "º";
+                if (hrForecast.high_f.HasValue && hrForecast.high_c.HasValue)
+                {
+                    var value = Settings.IsFahrenheit ? Math.Round(hrForecast.high_f.Value) : Math.Round(hrForecast.high_c.Value);
+                    HiTemp = String.Format(culture, "{0}º", value);
+                }
+                else
+                {
+                    HiTemp = "--";
+                }
             }
             catch (FormatException ex)
             {
                 HiTemp = "--";
                 Logger.WriteLine(LoggerLevel.Error, "Invalid number format", ex);
             }
-            PoP = hrForecast.pop + "%";
-            WindDirection = hrForecast.wind_degrees;
-            WindDir = WeatherUtils.GetWindDirection(hrForecast.wind_degrees);
-            WindSpeed = (Settings.IsFahrenheit ?
-                   Math.Round(hrForecast.wind_mph) + " mph" :
-                   Math.Round(hrForecast.wind_kph) + " kph");
+
+            PoP = hrForecast.pop.HasValue ? hrForecast.pop.Value + "%" : null;
+
+            if (hrForecast.wind_mph.HasValue && hrForecast.wind_mph >= 0 &&
+                hrForecast.wind_degrees.HasValue && hrForecast.wind_degrees >= 0)
+            {
+                WindDirection = hrForecast.wind_degrees.GetValueOrDefault(0);
+
+                WindDir = WeatherUtils.GetWindDirection(WindDirection);
+
+                var speedVal = Settings.IsFahrenheit ? Math.Round(hrForecast.wind_mph.Value) : Math.Round(hrForecast.wind_kph.Value);
+                var speedUnit = Settings.IsFahrenheit ? "mph" : "kph";
+                WindSpeed = String.Format(culture, "{0} {1}", speedVal, speedUnit);
+            }
 
             // Extras
             if (hrForecast.extras != null)
             {
-                if (hrForecast.extras.feelslike_f != 0 && (hrForecast.extras.feelslike_f != hrForecast.extras.feelslike_c))
+                if (hrForecast.extras.feelslike_f.HasValue && (hrForecast.extras.feelslike_f != hrForecast.extras.feelslike_c))
                 {
-                    DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.FeelsLike,
-                           Settings.IsFahrenheit ?
-                                Math.Round(hrForecast.extras.feelslike_f) + "º" :
-                                Math.Round(hrForecast.extras.feelslike_c) + "º"));
-                }
+                    var value = Settings.IsFahrenheit ? Math.Round(hrForecast.extras.feelslike_f.Value) : Math.Round(hrForecast.extras.feelslike_c.Value);
 
-                string Qpf_Rain = Settings.IsFahrenheit ?
-                    hrForecast.extras.qpf_rain_in.ToString("0.00", culture) + " in" : hrForecast.extras.qpf_rain_mm.ToString(culture) + " mm";
-                string Qpf_Snow = Settings.IsFahrenheit ?
-                    hrForecast.extras.qpf_snow_in.ToString("0.00", culture) + " in" : hrForecast.extras.qpf_snow_cm.ToString(culture) + " cm";
+                    DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.FeelsLike,
+                           String.Format(culture, "{0}º", value)));
+                }
 
                 if (WeatherAPI.OpenWeatherMap.Equals(Settings.API) || WeatherAPI.MetNo.Equals(Settings.API))
                 {
-                    if (hrForecast.extras.qpf_rain_in >= 0)
-                        DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPRain, Qpf_Rain));
-                    if (hrForecast.extras.qpf_snow_in >= 0)
-                        DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPSnow, Qpf_Snow));
-                    if (!String.IsNullOrWhiteSpace(hrForecast.pop))
+                    if (hrForecast.extras.qpf_rain_in.HasValue && hrForecast.extras.qpf_rain_in >= 0)
+                    {
+                        DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPRain,
+                            Settings.IsFahrenheit ?
+                            hrForecast.extras.qpf_rain_in.Value.ToString("0.00", culture) + " in" :
+                            hrForecast.extras.qpf_rain_mm.Value.ToString("0.00", culture) + " mm"));
+                    }
+                    if (hrForecast.extras.qpf_snow_in.HasValue && hrForecast.extras.qpf_snow_in >= 0)
+                    {
+                        DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPSnow,
+                            Settings.IsFahrenheit ?
+                            hrForecast.extras.qpf_snow_in.Value.ToString("0.00", culture) + " in" :
+                            hrForecast.extras.qpf_snow_cm.Value.ToString("0.00", culture) + " cm"));
+                    }
+                    if (hrForecast.extras.pop.HasValue && hrForecast.extras.pop >= 0)
                         DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPCloudiness, PoP));
                 }
                 else
                 {
-                    if (!String.IsNullOrWhiteSpace(hrForecast.pop))
+                    if (hrForecast.extras.pop.HasValue && hrForecast.extras.pop >= 0)
                         DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPChance, PoP));
-                    if (hrForecast.extras.qpf_rain_in >= 0)
-                        DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPRain, Qpf_Rain));
-                    if (hrForecast.extras.qpf_snow_in >= 0)
-                        DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPSnow, Qpf_Snow));
+                    if (hrForecast.extras.qpf_rain_in.HasValue && hrForecast.extras.qpf_rain_in >= 0)
+                    {
+                        DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPRain,
+                            Settings.IsFahrenheit ?
+                            hrForecast.extras.qpf_rain_in.Value.ToString("0.00", culture) + " in" :
+                            hrForecast.extras.qpf_rain_mm.Value.ToString("0.00", culture) + " mm"));
+                    }
+                    if (hrForecast.extras.qpf_snow_in.HasValue && hrForecast.extras.qpf_snow_in >= 0)
+                    {
+                        DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPSnow,
+                            Settings.IsFahrenheit ?
+                            hrForecast.extras.qpf_snow_in.Value.ToString("0.00", culture) + " in" :
+                            hrForecast.extras.qpf_snow_cm.Value.ToString("0.00", culture) + " cm"));
+                    }
                 }
 
-                if (!String.IsNullOrWhiteSpace(hrForecast.extras.humidity))
+                if (hrForecast.extras.humidity.HasValue)
                 {
                     DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.Humidity,
-                        hrForecast.extras.humidity.EndsWith("%", StringComparison.Ordinal) ?
-                                hrForecast.extras.humidity : hrForecast.extras.humidity + "%"));
+                        String.Format(culture, "{0}%", hrForecast.extras.humidity)));
                 }
 
-                if (!String.IsNullOrWhiteSpace(hrForecast.extras.dewpoint_f))
+                if (hrForecast.extras.dewpoint_f.HasValue && (hrForecast.extras.dewpoint_f != hrForecast.extras.dewpoint_c))
                 {
                     DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.Dewpoint,
-                           Settings.IsFahrenheit ?
-                                Math.Round(float.Parse(hrForecast.extras.dewpoint_f)) + "º" :
-                                Math.Round(float.Parse(hrForecast.extras.dewpoint_c)) + "º"));
+                        String.Format(culture, "{0}º",
+                        Settings.IsFahrenheit ?
+                                Math.Round(hrForecast.extras.dewpoint_f.Value) :
+                                Math.Round(hrForecast.extras.dewpoint_c.Value))));
                 }
 
-                if (hrForecast.extras.uv_index >= 0)
+                if (hrForecast.extras.uv_index.HasValue && hrForecast.extras.uv_index >= 0)
                 {
-                    UV uv = new UV(hrForecast.extras.uv_index);
+                    UV uv = new UV(hrForecast.extras.uv_index.Value);
 
                     DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.UV,
-                           string.Format("{0}, {1}", uv.index, uv.desc)));
+                           string.Format("{0:0.0}, {1}", uv.index, uv.desc)));
                 }
 
-                if (!String.IsNullOrWhiteSpace(hrForecast.extras.pressure_in))
+                if (hrForecast.extras.pressure_in.HasValue)
                 {
-                    var pressureVal = Settings.IsFahrenheit ? hrForecast.extras.pressure_in : hrForecast.extras.pressure_mb;
+                    var pressureVal = Settings.IsFahrenheit ? hrForecast.extras.pressure_in.Value : hrForecast.extras.pressure_mb.Value;
                     var pressureUnit = Settings.IsFahrenheit ? "in" : "mb";
 
-                    if (float.TryParse(pressureVal, NumberStyles.Float, CultureInfo.InvariantCulture, out float pressure))
-                        DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.Pressure,
-                            string.Format("{0} {1}", pressure.ToString(culture), pressureUnit)));
+                    DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.Pressure,
+                        String.Format(culture, "{0:0.00} {1}", pressureVal, pressureUnit)));
                 }
 
                 if (!String.IsNullOrWhiteSpace(WindSpeed))
                 {
                     DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.WindSpeed,
-                        String.Format(CultureInfo.InvariantCulture, "{0}, {1}", WindSpeed, WindDir), WindDirection));
+                        String.Format(culture, "{0}, {1}", WindSpeed, WindDir), WindDirection));
                 }
 
-                if (!String.IsNullOrWhiteSpace(hrForecast.extras.visibility_mi))
+                if (hrForecast.extras.visibility_mi.HasValue && hrForecast.extras.visibility_mi >= 0)
                 {
-                    var visibilityVal = Settings.IsFahrenheit ? hrForecast.extras.visibility_mi : hrForecast.extras.visibility_km;
+                    var visibilityVal = Settings.IsFahrenheit ? hrForecast.extras.visibility_mi.Value : hrForecast.extras.visibility_km.Value;
                     var visibilityUnit = Settings.IsFahrenheit ? "mi" : "km";
 
-                    if (float.TryParse(visibilityVal, NumberStyles.Float, CultureInfo.InvariantCulture, out float visibility))
-                        DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.Visibility,
-                               string.Format("{0} {1}", visibility.ToString(culture), visibilityUnit)));
+                    DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.Visibility,
+                           String.Format(culture, "{0:0.00} {1}", visibilityVal, visibilityUnit)));
                 }
             }
         }

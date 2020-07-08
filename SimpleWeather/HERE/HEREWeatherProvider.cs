@@ -276,12 +276,12 @@ namespace SimpleWeather.HERE
 
         public override string UpdateLocationQuery(Weather weather)
         {
-            return string.Format("latitude={0}&longitude={1}", weather.location.latitude, weather.location.longitude);
+            return string.Format(CultureInfo.InvariantCulture, "latitude={0:0.####}&longitude={1:0.####}", weather.location.latitude, weather.location.longitude);
         }
 
         public override string UpdateLocationQuery(LocationData location)
         {
-            return string.Format("latitude={0}&longitude={1}", location.latitude.ToInvariantString("0.####"), location.longitude.ToInvariantString("0.####"));
+            return string.Format(CultureInfo.InvariantCulture, "latitude={0:0.####}&longitude={1:0.####}", location.latitude, location.longitude);
         }
 
         public override String LocaleToLangCode(String iso, String name)

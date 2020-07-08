@@ -18,7 +18,7 @@ namespace SimpleWeather.Controls
         public AirQualityViewModel(AirQuality aqi)
         {
             Title = SimpleLibrary.ResLoader.GetString("AQI_Label");
-            Index = aqi.index;
+            Index = aqi.index.GetValueOrDefault();
             Progress = aqi.index >= 300 ? 100 : (int)((aqi.index / 300f) * 100);
 
             if (aqi.index < 51)

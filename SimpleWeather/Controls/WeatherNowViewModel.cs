@@ -131,7 +131,7 @@ namespace SimpleWeather.Controls
                     Location = weather?.location?.name;
 
                     // Additional Details
-                    if (!String.IsNullOrWhiteSpace(weather.location.latitude) && !String.IsNullOrWhiteSpace(weather.location.longitude))
+                    if (weather?.location?.latitude.HasValue == true && weather?.location?.longitude.HasValue == true)
                         RadarURL = new Uri(String.Format(CultureInfo.InvariantCulture, RadarUriFormat, weather.location.latitude, weather.location.longitude));
                     else
                         RadarURL = null;
@@ -161,10 +161,10 @@ namespace SimpleWeather.Controls
 
             // Update Current Condition
             String tmpCurTemp;
-            if (weather.condition.temp_f != weather.condition.temp_c)
+            if (weather.condition.temp_f.HasValue && weather.condition.temp_f != weather.condition.temp_c)
             {
-                var temp = (int)(Settings.IsFahrenheit ? Math.Round(weather.condition.temp_f) : Math.Round(weather.condition.temp_c));
-                tmpCurTemp = temp.ToString();
+                var temp = Settings.IsFahrenheit ? Math.Round(weather.condition.temp_f.Value) : Math.Round(weather.condition.temp_c.Value);
+                tmpCurTemp = temp.ToString(culture);
             }
             else
             {
@@ -175,18 +175,20 @@ namespace SimpleWeather.Controls
             CurCondition = (String.IsNullOrWhiteSpace(weather.condition.weather)) ? "--" : weather.condition.weather;
             WeatherIcon = weather.condition.icon;
 
-            if (weather.condition.high_f != weather.condition.high_c)
+            if (weather.condition.high_f.HasValue && weather.condition.high_f != weather.condition.high_c)
             {
-                HiTemp = (int)(Settings.IsFahrenheit ? Math.Round(weather.condition.high_f) : Math.Round(weather.condition.high_c)) + "°";
+                var value = Settings.IsFahrenheit ? Math.Round(weather.condition.high_f.Value) : Math.Round(weather.condition.high_c.Value);
+                HiTemp = String.Format(culture, "{0}º", value);
             }
             else
             {
                 HiTemp = null;
             }
 
-            if (weather.condition.low_f != weather.condition.low_c)
+            if (weather.condition.low_f.HasValue && weather.condition.low_f != weather.condition.low_c)
             {
-                LoTemp = (int)(Settings.IsFahrenheit ? Math.Round(weather.condition.low_f) : Math.Round(weather.condition.low_c)) + "°";
+                var value = Settings.IsFahrenheit ? Math.Round(weather.condition.low_f.Value) : Math.Round(weather.condition.low_c.Value);
+                LoTemp = String.Format(culture, "{0}º", value);
             }
             else
             {
@@ -201,84 +203,104 @@ namespace SimpleWeather.Controls
             // Precipitation
             if (weather.precipitation != null)
             {
-                string Chance = weather.precipitation.pop + "%";
-                string Qpf_Rain = Settings.IsFahrenheit ?
-                    weather.precipitation.qpf_rain_in.ToString("0.00", culture) + " in" : weather.precipitation.qpf_rain_mm.ToString(culture) + " mm";
-                string Qpf_Snow = Settings.IsFahrenheit ?
-                    weather.precipitation.qpf_snow_in.ToString("0.00", culture) + " in" : weather.precipitation.qpf_snow_cm.ToString(culture) + " cm";
+                string Chance = weather.precipitation.pop.HasValue ? weather.precipitation.pop.Value + "%" : null;
 
                 if (WeatherAPI.OpenWeatherMap.Equals(Settings.API) || WeatherAPI.MetNo.Equals(Settings.API))
                 {
-                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPRain, Qpf_Rain));
-                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPSnow, Qpf_Snow));
-                    if (!String.IsNullOrWhiteSpace(weather.precipitation.pop))
+                    if (weather.precipitation.qpf_rain_in.HasValue && weather.precipitation.qpf_rain_in >= 0)
                     {
-                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPCloudiness, Chance));
+                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPRain,
+                            Settings.IsFahrenheit ?
+                            weather.precipitation.qpf_rain_in.Value.ToString("0.00", culture) + " in" :
+                            weather.precipitation.qpf_rain_mm.Value.ToString("0.00", culture) + " mm"));
                     }
+                    if (weather.precipitation.qpf_snow_in.HasValue && weather.precipitation.qpf_snow_in >= 0)
+                    {
+                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPSnow,
+                            Settings.IsFahrenheit ?
+                            weather.precipitation.qpf_snow_in.Value.ToString("0.00", culture) + " in" :
+                            weather.precipitation.qpf_snow_cm.Value.ToString("0.00", culture) + " cm"));
+                    }
+                    if (weather.precipitation.pop.HasValue && weather.precipitation.pop >= 0)
+                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPCloudiness, Chance));
                 }
                 else
                 {
-                    if (!String.IsNullOrWhiteSpace(weather.precipitation.pop))
-                    {
+                    if (weather.precipitation.pop.HasValue && weather.precipitation.pop >= 0)
                         WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPChance, Chance));
+                    if (weather.precipitation.qpf_rain_in.HasValue && weather.precipitation.qpf_rain_in >= 0)
+                    {
+                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPRain,
+                            Settings.IsFahrenheit ?
+                            weather.precipitation.qpf_rain_in.Value.ToString("0.00", culture) + " in" :
+                            weather.precipitation.qpf_rain_mm.Value.ToString("0.00", culture) + " mm"));
                     }
-                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPRain, Qpf_Rain));
-                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPSnow, Qpf_Snow));
+                    if (weather.precipitation.qpf_snow_in.HasValue && weather.precipitation.qpf_snow_in >= 0)
+                    {
+                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPSnow,
+                            Settings.IsFahrenheit ?
+                            weather.precipitation.qpf_snow_in.Value.ToString("0.00", culture) + " in" :
+                            weather.precipitation.qpf_snow_cm.Value.ToString("0.00", culture) + " cm"));
+                    }
                 }
             }
 
             // Atmosphere
-            if (!String.IsNullOrWhiteSpace(weather.atmosphere.pressure_mb))
+            if (weather.atmosphere.pressure_mb.HasValue)
             {
                 var pressureVal = Settings.IsFahrenheit ? weather.atmosphere.pressure_in : weather.atmosphere.pressure_mb;
                 var pressureUnit = Settings.IsFahrenheit ? "in" : "mb";
 
-                if (float.TryParse(pressureVal, NumberStyles.Float, CultureInfo.InvariantCulture, out float pressure))
-                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Pressure,
-                        string.Format("{0} {1} {2}", WeatherUtils.GetPressureStateIcon(weather.atmosphere.pressure_trend), pressure.ToString(culture), pressureUnit)));
+                WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Pressure,
+                    String.Format(culture, "{0} {1:0.00} {2}",
+                    WeatherUtils.GetPressureStateIcon(weather.atmosphere.pressure_trend),
+                    pressureVal, pressureUnit)));
             }
 
-            if (!String.IsNullOrWhiteSpace(weather.atmosphere.humidity))
+            if (weather.atmosphere.humidity.HasValue)
             {
                 WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Humidity,
-                weather.atmosphere.humidity.EndsWith("%", StringComparison.Ordinal) ?
-                        weather.atmosphere.humidity : weather.atmosphere.humidity + "%"));
+                    String.Format(culture, "{0}%", weather.atmosphere.humidity.Value)));
             }
 
-            if (!String.IsNullOrWhiteSpace(weather.atmosphere.dewpoint_f))
+            if (weather.atmosphere.dewpoint_f.HasValue && (weather.atmosphere.dewpoint_f != weather.atmosphere.dewpoint_c))
             {
                 WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Dewpoint,
-                       Settings.IsFahrenheit ?
-                            Math.Round(float.Parse(weather.atmosphere.dewpoint_f)) + "º" :
-                            Math.Round(float.Parse(weather.atmosphere.dewpoint_c)) + "º"));
+                    String.Format(culture, "{0}º",
+                    Settings.IsFahrenheit ?
+                        Math.Round(weather.atmosphere.dewpoint_f.Value) :
+                        Math.Round(weather.atmosphere.dewpoint_c.Value))));
             }
 
-            if (!String.IsNullOrWhiteSpace(weather.atmosphere.visibility_mi))
+            if (weather.atmosphere.visibility_mi.HasValue && weather.atmosphere.visibility_mi >= 0)
             {
                 var visibilityVal = Settings.IsFahrenheit ? weather.atmosphere.visibility_mi : weather.atmosphere.visibility_km;
                 var visibilityUnit = Settings.IsFahrenheit ? "mi" : "km";
 
-                if (float.TryParse(visibilityVal, NumberStyles.Float, CultureInfo.InvariantCulture, out float visibility))
-                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Visibility,
-                           string.Format("{0} {1}", visibility.ToString(culture), visibilityUnit)));
+                WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Visibility,
+                    String.Format(culture, "{0:0.00} {1}", visibilityVal, visibilityUnit)));
             }
 
             UVIndex = weather.condition.uv != null ? new UVIndexViewModel(weather.condition.uv) : null;
 
-            if (weather.condition.feelslike_f != weather.condition.feelslike_c)
+            if (weather.condition.feelslike_f.HasValue && (weather.condition.feelslike_f != weather.condition.feelslike_c))
             {
+                var value = Settings.IsFahrenheit ? Math.Round(weather.condition.feelslike_f.Value) : Math.Round(weather.condition.feelslike_c.Value);
+
                 WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.FeelsLike,
-                       Settings.IsFahrenheit ?
-                            Math.Round(weather.condition.feelslike_f) + "º" : Math.Round(weather.condition.feelslike_c) + "º"));
+                       String.Format(culture, "{0}º", value)));
             }
+
             // Wind
-            if (weather.condition.wind_mph >= 0 && weather.condition.wind_kph >= 0)
+            if (weather.condition.wind_mph.HasValue && weather.condition.wind_mph >= 0 &&
+                weather.condition.wind_degrees.HasValue && weather.condition.wind_degrees >= 0)
             {
+                var speedVal = Settings.IsFahrenheit ? Math.Round(weather.condition.wind_mph.Value) : Math.Round(weather.condition.wind_kph.Value);
+                var speedUnit = Settings.IsFahrenheit ? "mph" : "kph";
+
                 WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.WindSpeed,
-                   Settings.IsFahrenheit ?
-                        String.Format("{0} mph, {1}", Math.Round(weather.condition.wind_mph), WeatherUtils.GetWindDirection(weather.condition.wind_degrees)) :
-                        String.Format("{0} kph, {1}", Math.Round(weather.condition.wind_kph), WeatherUtils.GetWindDirection(weather.condition.wind_degrees)),
-                   weather.condition.wind_degrees + 180));
+                   String.Format(culture, "{0} {1}, {2}", speedVal, speedUnit, WeatherUtils.GetWindDirection(weather.condition.wind_degrees.Value)),
+                   weather.condition.wind_degrees.Value + 180));
             }
 
             Beaufort = weather.condition.beaufort != null ? new BeaufortViewModel(weather.condition.beaufort) : null;

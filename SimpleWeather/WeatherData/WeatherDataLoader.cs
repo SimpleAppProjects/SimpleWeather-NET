@@ -90,10 +90,11 @@ namespace SimpleWeather.WeatherData
 
                         await Settings.UpdateLocation(location);
                     }
-                    if (location.latitude == 0 && location.longitude == 0)
+                    if (location.latitude == 0 && location.longitude == 0 &&
+                        weather.location.latitude.HasValue && weather.location.longitude.HasValue)
                     {
-                        location.latitude = double.Parse(weather.location.latitude);
-                        location.longitude = double.Parse(weather.location.longitude);
+                        location.latitude = weather.location.latitude.Value;
+                        location.longitude = weather.location.longitude.Value;
 
                         await Settings.UpdateLocation(location);
                     }
@@ -301,17 +302,20 @@ namespace SimpleWeather.WeatherData
                             weather.condition.weather = hrf.condition;
                             weather.condition.icon = hrf.icon;
 
-                            weather.condition.temp_f = float.Parse(hrf.high_f, CultureInfo.InvariantCulture);
-                            weather.condition.temp_c = float.Parse(hrf.high_c, CultureInfo.InvariantCulture);
+                            weather.condition.temp_f = hrf.high_f;
+                            weather.condition.temp_c = hrf.high_c;
 
                             weather.condition.wind_mph = hrf.wind_mph;
                             weather.condition.wind_kph = hrf.wind_kph;
                             weather.condition.wind_degrees = hrf.wind_degrees;
 
-                            weather.condition.beaufort = new Beaufort((int)WeatherUtils.GetBeaufortScale((int)Math.Round(hrf.wind_mph)));
+                            if (hrf.wind_mph.HasValue)
+                            {
+                                weather.condition.beaufort = new Beaufort((int)WeatherUtils.GetBeaufortScale((int)Math.Round(hrf.wind_mph.Value)));
+                            }
                             weather.condition.feelslike_f = hrf.extras?.feelslike_f ?? 0.0f;
                             weather.condition.feelslike_c = hrf.extras?.feelslike_c ?? 0.0f;
-                            weather.condition.uv = hrf.extras != null && hrf.extras.uv_index >= 0 ? new UV(hrf.extras.uv_index) : null;
+                            weather.condition.uv = hrf.extras?.uv_index.HasValue == true && hrf.extras?.uv_index >= 0 ? new UV(hrf.extras.uv_index.Value) : null;
 
                             weather.condition.observation_time = hrf.date;
 
@@ -366,11 +370,7 @@ namespace SimpleWeather.WeatherData
             if (_override || isInvalid) return !isInvalid;
 
             // Weather data expiration
-            if (!int.TryParse(weather.ttl, out int ttl))
-            {
-                ttl = Settings.DefaultInterval;
-            }
-            ttl = Math.Max(ttl, Settings.RefreshInterval);
+            int ttl = Math.Max(weather.ttl, Settings.RefreshInterval);
 
             // Check file age
             DateTimeOffset updateTime = weather.update_time;

@@ -200,12 +200,12 @@ namespace SimpleWeather.OpenWeather
 
         public override string UpdateLocationQuery(WeatherData.Weather weather)
         {
-            return string.Format("lat={0}&lon={1}", weather.location.latitude, weather.location.longitude);
+            return string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}", weather.location.latitude, weather.location.longitude);
         }
 
         public override string UpdateLocationQuery(LocationData location)
         {
-            return string.Format("lat={0}&lon={1}", location.latitude.ToInvariantString("0.####"), location.longitude.ToInvariantString("0.####"));
+            return string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}", location.latitude, location.longitude);
         }
 
         public override String LocaleToLangCode(String iso, String name)

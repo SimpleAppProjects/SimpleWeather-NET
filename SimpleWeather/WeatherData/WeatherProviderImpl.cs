@@ -71,8 +71,8 @@ namespace SimpleWeather.WeatherData
                 if (String.IsNullOrWhiteSpace(weather.location.name))
                     weather.location.name = location.name;
 
-                weather.location.latitude = location.latitude.ToInvariantString("0.####");
-                weather.location.longitude = location.longitude.ToInvariantString("0.####");
+                weather.location.latitude = (float)location.latitude;
+                weather.location.longitude = (float)location.longitude;
                 weather.location.tz_short = location.tz_short;
                 weather.location.tz_offset = location.tz_offset;
 

@@ -61,23 +61,16 @@ namespace SimpleWeather.Utils
             }
         }
 
-        public static String GetFeelsLikeTemp(String tempF, String windMph, String humidityPercent)
+        public static float GetFeelsLikeTemp(float tempF, float windMph, int humidityPercent)
         {
-            String feelslikeTemp = tempF;
+            float feelslikeTemp;
 
-            if (float.TryParse(tempF, out float temp))
-            {
-                if (temp < 50 && float.TryParse(windMph, out float windmph))
-                {
-                    feelslikeTemp = CalculateWindChill(temp, windmph).ToString();
-                }
-                else if (temp > 80 && int.TryParse(humidityPercent, out int humidity))
-                {
-                    feelslikeTemp = CalculateHeatIndex(temp, humidity).ToString();
-                }
-                else
-                    feelslikeTemp = tempF;
-            }
+            if (tempF < 50)
+                feelslikeTemp = CalculateWindChill(tempF, windMph);
+            else if (tempF > 80)
+                feelslikeTemp = CalculateHeatIndex(tempF, humidityPercent);
+            else
+                feelslikeTemp = tempF;
 
             return feelslikeTemp;
         }
@@ -90,7 +83,7 @@ namespace SimpleWeather.Utils
                 return tempF;
         }
 
-        public static double CalculateHeatIndex(float tempF, int humidity)
+        public static float CalculateHeatIndex(float tempF, int humidity)
         {
             if (tempF > 80)
             {
@@ -116,7 +109,7 @@ namespace SimpleWeather.Utils
                 }
 
                 if (HI > 80 && HI > tempF)
-                    return HI;
+                    return (float)HI;
                 else
                     return tempF;
             }

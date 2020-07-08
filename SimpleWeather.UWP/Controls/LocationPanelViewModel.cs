@@ -3,7 +3,9 @@ using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
 using System.ComponentModel;
+using System.Globalization;
 using System.Threading.Tasks;
+using Windows.System.UserProfile;
 using Windows.UI.Xaml;
 
 namespace SimpleWeather.Controls
@@ -11,6 +13,7 @@ namespace SimpleWeather.Controls
     public class LocationPanelViewModel : INotifyPropertyChanged
     {
         #region DependencyProperties
+
         private string locationName;
         private string currTemp;
         private string weatherIcon;
@@ -22,6 +25,7 @@ namespace SimpleWeather.Controls
         private string weatherSource;
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         // Create the OnPropertyChanged method to raise the event
         protected async void OnPropertyChanged(string name)
         {
@@ -30,9 +34,11 @@ namespace SimpleWeather.Controls
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
             }).ConfigureAwait(true);
         }
-        #endregion
+
+        #endregion DependencyProperties
 
         #region Properties
+
         public string LocationName { get => locationName; set { if (!Equals(locationName, value)) { locationName = value; OnPropertyChanged("LocationName"); } } }
         public string CurrTemp { get => currTemp; set { if (!Equals(currTemp, value)) { currTemp = value; OnPropertyChanged("CurrTemp"); } } }
         public string WeatherIcon { get => weatherIcon; set { if (!Equals(weatherIcon, value)) { weatherIcon = value; OnPropertyChanged("WeatherIcon"); } } }
@@ -42,6 +48,7 @@ namespace SimpleWeather.Controls
         public bool IsLoading { get => isLoading; set { if (!Equals(isLoading, value)) { isLoading = value; OnPropertyChanged("IsLoading"); } } }
         public LocationData LocationData { get => locationData; set { if (!Equals(locationData, value)) { locationData = value; OnPropertyChanged("LocationData"); } } }
         public string WeatherSource { get => weatherSource; set { if (!Equals(weatherSource, value)) { weatherSource = value; OnPropertyChanged("WeatherSource"); } } }
+
         public int LocationType
         {
             get
@@ -51,7 +58,8 @@ namespace SimpleWeather.Controls
                 return (int)Location.LocationType.Search;
             }
         }
-        #endregion
+
+        #endregion Properties
 
         private readonly WeatherManager wm;
         private Weather weather;
@@ -73,22 +81,32 @@ namespace SimpleWeather.Controls
         {
             if ((bool)weather?.IsValid() && !Equals(this.weather, weather))
             {
+                var userlang = GlobalizationPreferences.Languages[0];
+                var culture = new CultureInfo(userlang);
+
                 this.weather = weather;
 
                 ImageData = null;
                 BackgroundTheme = ElementTheme.Dark;
 
                 LocationName = weather.location.name;
-                CurrTemp = (Settings.IsFahrenheit ?
-                    Math.Round(weather.condition.temp_f) : Math.Round(weather.condition.temp_c)) + "º";
+                if (weather.condition.temp_f.HasValue && weather.condition.temp_f != weather.condition.temp_c)
+                {
+                    var temp = Settings.IsFahrenheit ? Math.Round(weather.condition.temp_f.Value) : Math.Round(weather.condition.temp_c.Value);
+                    CurrTemp = String.Format(culture, "{0}º", temp);
+                }
+                else
+                {
+                    CurrTemp = "--";
+                }
                 WeatherIcon = weather.condition.icon;
                 WeatherSource = weather.source;
 
                 if (LocationData.query == null)
                 {
                     LocationData.query = weather.query;
-                    LocationData.latitude = double.Parse(weather.location.latitude);
-                    LocationData.longitude = double.Parse(weather.location.longitude);
+                    LocationData.latitude = weather.location.latitude.GetValueOrDefault(0.0f);
+                    LocationData.longitude = weather.location.longitude.GetValueOrDefault(0.0f);
                     LocationData.weatherSource = weather.source;
                 }
 

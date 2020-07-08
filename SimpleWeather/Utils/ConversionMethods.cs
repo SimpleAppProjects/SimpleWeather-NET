@@ -5,111 +5,95 @@ namespace SimpleWeather.Utils
     public static class ConversionMethods
     {
         // Constants
-        private const double KM_TO_MI = 0.621371192;
-        private const double MI_TO_KM = 1.609344;
-        private const double INHG_TO_MB = 1013.25 / 29.92;
-        private const double MB_TO_INHG = 29.92 / 1013.25;
-        private const double MSEC_TO_MPH = 2.23694;
-        private const double MSEC_TO_KPH = 3.6;
-        private const double MM_TO_IN = 1 / 25.4;
-        private const double IN_TO_MM = 25.4;
-        private const double PA_TO_INHG = 0.0002952998751;
-        private const double PA_TO_MB = 0.01;
+        private const float KM_TO_MI = 0.621371192f;
+        private const float MI_TO_KM = 1.609344f;
+        private const float INHG_TO_MB = 1013.25f / 29.92f;
+        private const float MB_TO_INHG = 29.92f / 1013.25f;
+        private const float MSEC_TO_MPH = 2.23694f;
+        private const float MSEC_TO_KPH = 3.6f;
+        private const float MM_TO_IN = 1f / 25.4f;
+        private const float IN_TO_MM = 25.4f;
+        private const float PA_TO_INHG = 0.0002952998751f;
+        private const float PA_TO_MB = 0.01f;
 
-        public static string MBToInHg(String input)
+        public static float MBToInHg(float input)
         {
-            double result = MB_TO_INHG * double.Parse(input);
-            return Math.Round(result, 2).ToString();
+            return MB_TO_INHG * input;
         }
 
-        public static string InHgToMB(String input)
+        public static float InHgToMB(float input)
         {
-            double result = INHG_TO_MB * double.Parse(input);
-            return Math.Round(result, 2).ToString();
+            return INHG_TO_MB * input;
         }
 
-        public static string PaToInHg(String input)
+        public static float PaToInHg(float input)
         {
-            double result = PA_TO_INHG * double.Parse(input);
-            return Math.Round(result, 2).ToString();
+            return PA_TO_INHG * input;
         }
 
-        public static string PaToMB(String input)
+        public static float PaToMB(float input)
         {
-            double result = PA_TO_MB * double.Parse(input);
-            return Math.Round(result, 2).ToString();
+            return PA_TO_MB * input;
         }
 
-        public static string KmToMi(String input)
+        public static float KmToMi(float input)
         {
-            double result = KM_TO_MI * double.Parse(input);
-            return Math.Round(result).ToString();
+            return KM_TO_MI * input;
         }
 
-        public static string MiToKm(String input)
+        public static float MiToKm(float input)
         {
-            double result = MI_TO_KM * double.Parse(input);
-            return Math.Round(result).ToString();
+            return MI_TO_KM * input;
         }
 
-        public static string MMToIn(String input)
+        public static float MMToIn(float input)
         {
-            double result = MM_TO_IN * double.Parse(input);
-            return Math.Round(result).ToString();
+            return MM_TO_IN * input;
         }
 
-        public static string InToMM(String input)
+        public static float InToMM(float input)
         {
-            double result = IN_TO_MM * double.Parse(input);
-            return Math.Round(result).ToString();
+            return IN_TO_MM * input;
         }
 
-        public static string MphToKph(String input)
+        public static float MphToKph(float input)
         {
-            double result = MI_TO_KM * double.Parse(input);
-            return Math.Round(result).ToString();
+            return MI_TO_KM * input;
         }
 
-        public static string KphToMph(String input)
+        public static float KphToMph(float input)
         {
-            double result = KM_TO_MI * double.Parse(input);
-            return Math.Round(result).ToString();
+            return KM_TO_MI * input;
         }
 
-        public static string MSecToMph(String input)
+        public static float MSecToMph(float input)
         {
-            double result = double.Parse(input) * MSEC_TO_MPH;
-            return Math.Round(result, 2).ToString();
+            return input * MSEC_TO_MPH;
         }
 
-        public static string MSecToKph(String input)
+        public static float MSecToKph(float input)
         {
-            double result = double.Parse(input) * MSEC_TO_KPH;
-            return Math.Round(result, 2).ToString();
+            return input * MSEC_TO_KPH;
         }
 
-        public static string FtoC(String input)
+        public static float FtoC(float input)
         {
-            double result = (double.Parse(input) - 32) * ((double)5 / 9);
-            return Math.Round(result).ToString();
+            return (input - 32) * (5f / 9);
         }
 
-        public static string CtoF(String input)
+        public static float CtoF(float input)
         {
-            double result = (double.Parse(input) * ((double)9 / 5)) + 32;
-            return Math.Round(result).ToString();
+            return (input * (9f / 5)) + 32;
         }
 
-        public static string KtoC(String input)
+        public static float KtoC(float input)
         {
-            double result = double.Parse(input) - 273.15;
-            return Math.Round(result).ToString();
+            return input - 273.15f;
         }
 
-        public static string KtoF(String input)
+        public static float KtoF(float input)
         {
-            double result = (double.Parse(input) * ((double)9 / 5)) - 459.67;
-            return Math.Round(result).ToString();
+            return (input * (9f / 5)) - 459.67f;
         }
 
         public static DateTime ToEpochDateTime(string epochTime)
