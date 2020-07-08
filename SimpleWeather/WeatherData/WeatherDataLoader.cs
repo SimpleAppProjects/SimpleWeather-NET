@@ -291,11 +291,11 @@ namespace SimpleWeather.WeatherData
                 if (weather != null)
                 {
                     // Check for outdated observation
-                    var now = DateTimeOffset.Now;
+                    var now = DateTimeOffset.Now.ToOffset(location.tz_offset);
                     var durationMins = (now - weather.condition.observation_time).TotalMinutes;
                     if (durationMins > 60)
                     {
-                        var hrf = await Settings.GetFirstHourlyWeatherForecastDataByDate(location.query, now.ToOffset(location.tz_offset).Trim(TimeSpan.TicksPerHour).ToString("yyyy-MM-dd HH:mm:ss zzzz"));
+                        var hrf = await Settings.GetFirstHourlyWeatherForecastDataByDate(location.query, now.Trim(TimeSpan.TicksPerHour).ToString("yyyy-MM-dd HH:mm:ss zzzz"));
 
                         if (hrf != null)
                         {
@@ -321,8 +321,21 @@ namespace SimpleWeather.WeatherData
 
                             if (durationMins > 60 * 6)
                             {
-                                weather.condition.high_f = weather.condition.high_c = 0f;
-                                weather.condition.low_f = weather.condition.low_c = 0f;
+                                var fcasts = await Settings.GetWeatherForecastData(location.query);
+                                var fcast = fcasts.forecast?.FirstOrDefault(f => f.date.Date == now.Date);
+
+                                if (fcast != null)
+                                {
+                                    weather.condition.high_f = fcast.high_f;
+                                    weather.condition.high_c = fcast.high_c;
+                                    weather.condition.low_f = fcast.low_f;
+                                    weather.condition.low_c = fcast.low_c;
+                                }
+                                else
+                                {
+                                    weather.condition.high_f = weather.condition.high_c = 0f;
+                                    weather.condition.low_f = weather.condition.low_c = 0f;
+                                }
                             }
 
                             weather.atmosphere.dewpoint_f = hrf.extras?.dewpoint_f;
