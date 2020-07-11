@@ -17,8 +17,10 @@
                 <TextBlock x:Uid="Pref_SummaryUnits" Text="Display units in:"
                                        Style="{StaticResource PrefTitleStyle}" />
                 <StackPanel Orientation="Horizontal" Padding="10,5">
-                    <RadioButton x:Name="Fahrenheit" Content="Fahrenheit" GroupName="Unit" />
-                    <RadioButton x:Name="Celsius" Content="Celsius" GroupName="Unit" />
+                    <RadioButton x:Name="Fahrenheit" x:Uid="Pref_UnitFahrenheit" Content="Fahrenheit (Imperial)" GroupName="Unit"
+                                 Margin="0,0,10,0" />
+                    <RadioButton x:Name="Celsius" x:Uid="Pref_UnitCelsius" Content="Celsius (Metric)" GroupName="Unit"
+                                 Margin="10,0,0,0" />
                 </StackPanel>
                 <Rectangle Height="1" Fill="LightGray" Margin="0,7.5" />
                 <TextBlock x:Uid="Pref_SummaryFollowGPS" Text="Follow current location via GPS" Style="{StaticResource PrefTitleStyle}" />

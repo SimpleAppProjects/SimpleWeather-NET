@@ -228,13 +228,13 @@
   <data name="Msg_LocDeniedSettings" xml:space="preserve">
     <value>Access to location was denied. Please enable in Settings.</value>
   </data>
-  <data name="Nav_Locations.Label" xml:space="preserve">
+  <data name="Nav_Locations.Content" xml:space="preserve">
     <value>Locations</value>
   </data>
-  <data name="Nav_Settings.Label" xml:space="preserve">
+  <data name="Nav_Settings.Content" xml:space="preserve">
     <value>Settings</value>
   </data>
-  <data name="Nav_WeatherNow.Label" xml:space="preserve">
+  <data name="Nav_WeatherNow.Content" xml:space="preserve">
     <value>Weather</value>
   </data>
   <data name="OSSLibs.Content" xml:space="preserve">
@@ -572,5 +572,20 @@
   </data>
   <data name="Label_Night" xml:space="preserve">
     <value>Night</value>
+  </data>
+  <data name="Nav_WeatherAlerts.Content" xml:space="preserve">
+    <value>Weather Alerts</value>
+  </data>
+  <data name="Nav_WeatherRadar.Content" xml:space="preserve">
+    <value>Radar</value>
+  </data>
+  <data name="NoWeatherAlerts_Prompt.Text" xml:space="preserve">
+    <value>No weather alerts available.</value>
+  </data>
+  <data name="Pref_UnitCelsius.Content" xml:space="preserve">
+    <value>Celsius (Metric)</value>
+  </data>
+  <data name="Pref_UnitFahrenheit.Content" xml:space="preserve">
+    <value>Fahrenheit (Imperial)</value>
   </data>
 </root>

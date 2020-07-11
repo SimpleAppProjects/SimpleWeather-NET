@@ -13,8 +13,8 @@
 
     <Grid Background="{ThemeResource RegionBrush}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Border Grid.Row="0" BorderBrush="{ThemeResource TextBoxDisabledBorderThemeBrush}" BorderThickness="0,0,0,0.5">
             <Viewbox Height="48" HorizontalAlignment="Left">
@@ -26,7 +26,11 @@
         <ScrollViewer HorizontalScrollMode="Disabled" HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Auto" VerticalScrollMode="Enabled"
                       Margin="10" Grid.Row="1">
-            <ItemsControl x:Name="StackControl" ItemsSource="{x:Bind AlertsView.Alerts, Mode=OneWay}">
+            <toolkitControls:HeaderedItemsControl x:Name="StackControl" ItemsSource="{x:Bind AlertsView.Alerts, Mode=OneWay}">
+                <toolkitControls:HeaderedItemsControl.Header>
+                    <TextBlock x:Uid="NoWeatherAlerts_Prompt" Text="No weather alerts available." Padding="4"
+                               Visibility="{x:Bind AlertsView.Alerts, Converter={StaticResource collectionVisibilityConverter}, ConverterParameter=true, Mode=OneWay}" />
+                </toolkitControls:HeaderedItemsControl.Header>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="controls:WeatherAlertViewModel">
                         <StackPanel>
@@ -41,7 +45,7 @@
                         <ItemsStackPanel Orientation="Vertical" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
-            </ItemsControl>
+            </toolkitControls:HeaderedItemsControl>
         </ScrollViewer>
     </Grid>
 </helpers:CustomPage>

@@ -11,10 +11,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:utils="using:SimpleWeather.Utils"
-    mc:Ignorable="d"
-    d:DesignHeight="1600"
-    d:DesignWidth="1600"
-    DataContext="{x:Bind WeatherView, Mode=OneWay}">
+    mc:Ignorable="d">
 
     <Page.Resources>
         <ResourceDictionary>
@@ -24,21 +21,10 @@
             <Style x:Key="WeatherIcon" TargetType="TextBlock" BasedOn="{StaticResource WeatherIcon}">
                 <Setter Property="Transitions" Value="{StaticResource TextTransitions}" />
             </Style>
-            <Style x:Key="ArrowButton" TargetType="Button">
+            <Style x:Key="ArrowButton" TargetType="Button" BasedOn="{StaticResource ButtonRevealStyle}">
                 <Setter Property="Background" Value="{ThemeResource SystemControlTransparentRevealBackgroundBrush}" />
-                <Setter Property="Foreground" Value="{ThemeResource ButtonForegroundThemeBrush}" />
-                <Setter Property="BorderBrush" Value="{ThemeResource SystemControlForegroundTransparentBrush}" />
-                <Setter Property="BorderThickness" Value="1" />
                 <Setter Property="Padding" Value="8,4,8,4" />
                 <Setter Property="Margin" Value="4" />
-                <Setter Property="Width" Value="Auto" />
-                <Setter Property="Height" Value="Auto" />
-                <Setter Property="HorizontalAlignment" Value="Left" />
-                <Setter Property="VerticalAlignment" Value="Center" />
-                <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
-                <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
-                <Setter Property="UseSystemFocusVisuals" Value="True" />
-                <Setter Property="FocusVisualMargin" Value="-3" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
@@ -53,16 +39,16 @@
                                         <VisualState x:Name="PointerOver">
                                             <VisualState.Setters>
                                                 <Setter Target="RootGrid.(RevealBrush.State)" Value="PointerOver" />
-                                                <Setter Target="RootGrid.Background" Value="{ThemeResource SystemControlHighlightListLowRevealBackgroundBrush}" />
-                                                <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource SystemControlTransparentRevealListLowBorderBrush}" />
+                                                <Setter Target="RootGrid.Background" Value="{ThemeResource ButtonRevealBackgroundPointerOver}" />
+                                                <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ButtonRevealBorderBrushPointerOver}" />
                                                 <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ButtonForegroundPointerOver}" />
                                             </VisualState.Setters>
                                         </VisualState>
                                         <VisualState x:Name="Pressed">
                                             <VisualState.Setters>
                                                 <Setter Target="RootGrid.(RevealBrush.State)" Value="Pressed" />
-                                                <Setter Target="RootGrid.Background" Value="{ThemeResource SystemControlHighlightListMediumRevealBackgroundBrush}" />
-                                                <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource SystemControlTransparentRevealListLowBorderBrush}" />
+                                                <Setter Target="RootGrid.Background" Value="{ThemeResource ButtonRevealBackgroundPressed}" />
+                                                <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ButtonRevealBorderBrushPressed}" />
                                                 <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ButtonForegroundPressed}" />
                                             </VisualState.Setters>
                                         </VisualState>
@@ -123,6 +109,99 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+            <Style TargetType="Button" x:Key="AlertButtonRevealStyle">
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <RevealBackgroundBrush TargetTheme="Light" Color="OrangeRed" FallbackColor="OrangeRed" />
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Foreground" Value="{ThemeResource ButtonForeground}" />
+                <Setter Property="BorderBrush" Value="{ThemeResource ButtonRevealBorderBrush}" />
+                <Setter Property="BorderThickness" Value="{ThemeResource ButtonRevealBorderThemeThickness}" />
+                <Setter Property="Padding" Value="{ThemeResource ButtonPadding}" />
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Setter Property="Margin" Value="0,5,0,5" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
+                <Setter Property="FontWeight" Value="Normal" />
+                <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
+                <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
+                <Setter Property="FocusVisualMargin" Value="-3" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}">
+
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+
+                                            <Storyboard>
+                                                <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
+                                            </Storyboard>
+                                        </VisualState>
+
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Target="RootGrid.(RevealBrush.State)" Value="PointerOver" />
+                                                <Setter Target="RootGrid.Background">
+                                                    <Setter.Value>
+                                                        <RevealBackgroundBrush TargetTheme="Light" Color="Red" FallbackColor="Red" />
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ButtonRevealBorderBrushPointerOver}" />
+                                                <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ButtonForegroundPointerOver}" />
+                                            </VisualState.Setters>
+
+                                            <Storyboard>
+                                                <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
+                                            </Storyboard>
+                                        </VisualState>
+
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="RootGrid.(RevealBrush.State)" Value="Pressed" />
+                                                <Setter Target="RootGrid.Background">
+                                                    <Setter.Value>
+                                                        <RevealBackgroundBrush TargetTheme="Light" Color="Red" FallbackColor="Red" />
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ButtonRevealBorderBrushPressed}" />
+                                                <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ButtonForegroundPressed}" />
+                                            </VisualState.Setters>
+
+                                            <Storyboard>
+                                                <PointerDownThemeAnimation Storyboard.TargetName="RootGrid" />
+                                            </Storyboard>
+                                        </VisualState>
+
+                                        <VisualState x:Name="Disabled">
+                                            <VisualState.Setters>
+                                                <Setter Target="RootGrid.Background" Value="{ThemeResource ButtonRevealBackgroundDisabled}" />
+                                                <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ButtonRevealBorderBrushDisabled}" />
+                                                <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ButtonForegroundDisabled}" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <ContentControl x:Name="ContentPresenter" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Padding="{TemplateBinding Padding}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw">
+                                    <Grid Width="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Width, Mode=OneWay}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="50" />
+                                        </Grid.ColumnDefinitions>
+                                        <FontIcon Glyph="&#xE783;" FontFamily="Segoe MDL2 Assets" Grid.Column="0" Margin="5,2,5,0" />
+                                        <TextBlock x:Uid="Label_WeatherAlerts" Text="Severe Weather Alerts" Grid.Column="1" FontSize="12" Foreground="White" Padding="5,0" VerticalAlignment="Center" />
+                                        <FontIcon Glyph="&#xE76C;" FontFamily="Segoe MDL2 Assets" Grid.Column="2" FontSize="12" Margin="5,0" VerticalAlignment="Center" />
+                                    </Grid>
+                                </ContentControl>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
                     <Style x:Key="AttributionStyle" TargetType="HyperlinkButton" BasedOn="{StaticResource HyperlinkButtonStyle}">
@@ -136,31 +215,32 @@
         </ResourceDictionary>
     </Page.Resources>
 
-    <Grid x:Name="MainGrid" Background="{ThemeResource SystemAccentColor}" SizeChanged="MainGrid_SizeChanged">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+    <Grid x:Name="MainGrid" Background="{ThemeResource RegionBrush}">
         <toolkitControls:ImageEx x:Name="BackgroundOverlay" CachingStrategy="Custom" IsCacheEnabled="True" DecodePixelWidth="960"
-                                 x:Load="{x:Bind WeatherView.ImageData.ImageUri, Mode=OneWay,
-                                            Converter={StaticResource stringBooleanConverter}, TargetNullValue=false, FallbackValue=false}"
-                                 Source="{x:Bind WeatherView.ImageData.ImageUri, Mode=OneWay}" Style="{ThemeResource ImageExProgressStyle}"
-                                 Foreground="White" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center" />
-        <Grid x:Name="GradientOverlay" Grid.Row="0"
-              x:Load="{x:Bind WeatherView.ImageData.ImageUri, Mode=OneWay, Converter={StaticResource stringBooleanConverter}, TargetNullValue=false, FallbackValue=false}">
+                                             x:Load="{x:Bind WeatherView.ImageData.ImageUri, Mode=OneWay, Converter={StaticResource stringBooleanConverter}, TargetNullValue=false, FallbackValue=false}"
+                                             Source="{x:Bind WeatherView.ImageData.ImageUri, Mode=OneWay}"
+                                             ImageExOpened="BackgroundOverlay_ImageExOpened"
+                                             Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center" />
+        <Grid x:Name="GradientOverlay" Grid.RowSpan="7" Visibility="Collapsed">
             <Grid.Background>
-                <media:RadialGradientBrush Center="0.5,0.5" GradientOrigin="0.5,0.5"
-                                           RadiusX="1" RadiusY="1" SpreadMethod="Pad"
-                                           MappingMode="RelativeToBoundingBox">
-                    <GradientStop Color="#83121212" Offset="0" />
-                    <GradientStop Color="Transparent" Offset="1" />
-                </media:RadialGradientBrush>
+                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1" SpreadMethod="Pad">
+                    <LinearGradientBrush.GradientStops>
+                        <GradientStop Color="#83121212" Offset="0" />
+                        <GradientStop Color="#27121212" Offset="1" />
+                    </LinearGradientBrush.GradientStops>
+                </LinearGradientBrush>
             </Grid.Background>
         </Grid>
-        <ScrollViewer x:Name="MainViewer" VerticalScrollMode="Auto" ViewChanged="MainViewer_ViewChanged" Padding="16,0"
+        <ScrollViewer x:Name="MainViewer" VerticalScrollMode="Auto" SizeChanged="MainGrid_SizeChanged"
+                      ViewChanged="MainViewer_ViewChanged"
                       x:Load="{x:Bind WeatherView.Location, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
                       Loaded="DeferedControl_Loaded">
-            <StackPanel MaxWidth="1280">
-                <Grid x:Name="ConditionPanel" RequestedTheme="Dark">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid x:Name="ConditionPanel" RequestedTheme="Dark" Grid.Row="0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -170,211 +250,182 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <toolkitControls:DropShadowPanel BlurRadius="10.0" ShadowOpacity="1"
-                                                     HorizontalAlignment="Center" Margin="0,10,0,0" Grid.Row="0">
+                    <toolkitControls:DropShadowPanel BlurRadius="15.0" ShadowOpacity="1"
+                                                     HorizontalAlignment="Center" Margin="0,10,0,5" Grid.Row="0">
                         <TextBlock Name="Location" Text="{x:Bind WeatherView.Location, FallbackValue='New York, NY', Mode=OneWay}"
                                    FontSize="28" FontWeight="Medium" TextAlignment="Center"
                                    MaxLines="2" TextWrapping="WrapWholeWords" TextTrimming="CharacterEllipsis"
                                    Transitions="{StaticResource TextTransitions}" />
                     </toolkitControls:DropShadowPanel>
-                    <toolkitControls:DropShadowPanel BlurRadius="10.0" ShadowOpacity="1"
+                    <toolkitControls:DropShadowPanel BlurRadius="15.0" ShadowOpacity="1"
                                                      HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Row="1">
                         <TextBlock Name="UpdateDate" Text="{x:Bind WeatherView.UpdateDate, FallbackValue='Updated on 11:12 PM', Mode=OneWay}"
-                                   Padding="5" Transitions="{StaticResource TextTransitions}" FontSize="12" FontWeight="Medium" />
+                                       Padding="5" Transitions="{StaticResource TextTransitions}" FontSize="12" FontWeight="Medium" />
                     </toolkitControls:DropShadowPanel>
-                    <Button x:Name="AlertButton"
-                            Height="30" Padding="0" Background="OrangeRed"
-                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
-                            Click="AlertButton_Click"
+                    <Button x:Name="AlertButton" Grid.Row="2"
                             x:Load="{x:Bind AlertsView.Alerts, Mode=OneWay, Converter={StaticResource collectionBooleanConverter}}"
-                            Loaded="DeferedControl_Loaded"
-                            Grid.Row="2">
-                        <Button.Content>
-                            <Grid Padding="4" Background="OrangeRed">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <toolkitControls:ImageEx Source="/Assets/WeatherIcons/png/ic_error_white.png"
-                                                     Grid.Column="0"
-                                                     Width="25" Padding="5"
-                                                     VerticalAlignment="Center" />
-                                <TextBlock x:Uid="Label_WeatherAlerts" Text="Severe Weather Alerts"
-                                       Grid.Column="1"
-                                       FontSize="12" Foreground="White"
-                                       Padding="5"
-                                       VerticalAlignment="Center" />
-                                <FontIcon Glyph="&#xE76C;"
-                                      Grid.Column="2"
-                                      FontSize="12"
-                                      HorizontalAlignment="Right"
-                                      Foreground="White" />
-                            </Grid>
-                        </Button.Content>
-                    </Button>
-                    <Viewbox x:Name="WeatherBox" Height="50" Width="50"
-                             HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Row="3">
-                        <toolkitControls:DropShadowPanel BlurRadius="10.0" ShadowOpacity="1">
+                            Click="AlertButton_Click" Loaded="DeferedControl_Loaded"
+                            Style="{ThemeResource AlertButtonRevealStyle}" />
+                    <Viewbox x:Name="WeatherBox" MaxHeight="155" Grid.Row="3"
+                             HorizontalAlignment="Center" VerticalAlignment="Bottom">
+                        <toolkitControls:DropShadowPanel BlurRadius="2.0" ShadowOpacity="1">
                             <TextBlock x:Name="WeatherIcon" Style="{ThemeResource WeatherIcon}" Text="{x:Bind WeatherView.WeatherIcon, FallbackValue='&#xf00d;', Mode=OneWay}" />
                         </toolkitControls:DropShadowPanel>
                     </Viewbox>
-                    <toolkitControls:DropShadowPanel BlurRadius="10.0" ShadowOpacity="1"
+                    <toolkitControls:DropShadowPanel BlurRadius="15.0" ShadowOpacity="1"
                                                      HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="4">
                         <TextBlock Name="CurCondition" Text="{x:Bind WeatherView.CurCondition, FallbackValue='Sunny', Mode=OneWay}"
                                    FontSize="24" FontWeight="Medium" Transitions="{StaticResource TextTransitions}" />
                     </toolkitControls:DropShadowPanel>
-                    <toolkitControls:DropShadowPanel BlurRadius="10.0" ShadowOpacity="1"
+                    <toolkitControls:DropShadowPanel BlurRadius="15.0" ShadowOpacity="1"
                                                      HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5,0,0,0" Grid.Row="5">
                         <TextBlock Name="CurTemp" Text="{x:Bind WeatherView.CurTemp, FallbackValue='70&#xF045;', Mode=OneWay}"
                                    FontSize="24" FontWeight="Medium" Style="{ThemeResource WeatherIcon}" />
                     </toolkitControls:DropShadowPanel>
-                    <toolkitControls:DropShadowPanel BlurRadius="10.0" ShadowOpacity="1"
+                    <toolkitControls:DropShadowPanel BlurRadius="15.0" ShadowOpacity="1"
                                                      HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5,0,0,0" Grid.Row="6">
                         <TextBlock FontSize="24" FontWeight="Medium" Style="{ThemeResource WeatherIcon}"
                                    Visibility="{x:Bind WeatherView.ShowHiLo, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
                             <Span><Run Text="{x:Bind WeatherView.HiTemp, Mode=OneWay, TargetNullValue='--'}" /><Run Text=" &#xf058;" /><Run Text=" | " /><Run Text="{x:Bind WeatherView.LoTemp, Mode=OneWay, TargetNullValue='--'}" /><Run Text=" &#xf044;" /></Span>
                         </TextBlock>
                     </toolkitControls:DropShadowPanel>
-                    <HyperlinkButton x:Name="Attribution" Padding="5" FontSize="11" FontWeight="Medium" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                    <HyperlinkButton x:Name="Attribution" Padding="5" FontSize="11" FontWeight="Medium"
+                                     VerticalAlignment="Bottom" HorizontalAlignment="Right"
                                      x:Load="{x:Bind WeatherView.ImageData.OriginalLink, Converter={StaticResource stringBooleanConverter}, Mode=OneWay, TargetNullValue=false, FallbackValue=false}"
                                      Visibility="{x:Bind WeatherView.ImageData.OriginalLink, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}"
                                      NavigateUri="{x:Bind WeatherView.ImageData.OriginalLink, Mode=OneWay}"
                                      Grid.Row="7" Style="{ThemeResource AttributionStyle}">
                         <HyperlinkButton.Content>
-                            <TextBlock>
-                                <Span><Run Text="Photo by " /><Run Text="{x:Bind WeatherView.ImageData.ArtistName, Mode=OneWay}" /><Run Text=" on " /><Run Text="{x:Bind WeatherView.ImageData.SiteName, Mode=OneWay}" /></Span>
-                            </TextBlock>
+                            <toolkitControls:DropShadowPanel BlurRadius="15.0" ShadowOpacity="1" Margin="16,0">
+                                <TextBlock>
+                                    <Span><Run Text="Photo by " /><Run Text="{x:Bind WeatherView.ImageData.ArtistName, Mode=OneWay}" /><Run Text=" on " /><Run Text="{x:Bind WeatherView.ImageData.SiteName, Mode=OneWay}" /></Span>
+                                </TextBlock>
+                            </toolkitControls:DropShadowPanel>
                         </HyperlinkButton.Content>
                     </HyperlinkButton>
                 </Grid>
-                <StackPanel Name="ForecastPanel" Margin="0,0,0,25"
-                            x:Load="{x:Bind ForecastView.Forecasts, Mode=OneWay, Converter={StaticResource collectionBooleanConverter}}"
-                            Loaded="DeferedControl_Loaded">
-                    <Border Style="{ThemeResource Divider}" />
-                    <toolkitControls:HeaderedContentControl Style="{ThemeResource SectionLabelStyle}" x:Uid="Label_Forecast" Header="Forecast"
+                <StackPanel Grid.Row="1" MaxWidth="1280" Padding="16,0">
+                    <StackPanel Name="ForecastPanel" Margin="0,0,0,25" Loaded="DeferedControl_Loaded"
+                            x:Load="{x:Bind ForecastView.Forecasts, Mode=OneWay, Converter={StaticResource collectionBooleanConverter}}">
+                        <toolkitControls:HeaderedContentControl Style="{ThemeResource SectionLabelStyle}" x:Uid="Label_Forecast" Header="Forecast"
                                                             HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <Button x:Name="LeftButton" Click="LeftButton_Click" Grid.Column="0"
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Button x:Name="LeftButton" Click="LeftButton_Click" Grid.Column="0"
                                     IsEnabled="{x:Bind helpers:ScrollViewerHelper.CanScrollToStart(ForecastGraphPanel.ScrollViewer.HorizontalOffset), Mode=OneWay}"
                                     Style="{ThemeResource LeftArrowButton}" />
-                            <Button x:Name="RightButton" Click="RightButton_Click" Grid.Column="2"
+                                <Button x:Name="RightButton" Click="RightButton_Click" Grid.Column="2"
                                     IsEnabled="{x:Bind helpers:ScrollViewerHelper.CanScrollToEnd(ForecastGraphPanel.ScrollViewer.HorizontalOffset, ForecastGraphPanel.ScrollViewer.ViewportWidth, ForecastGraphPanel.ScrollViewer.ExtentWidth), Mode=OneWay}"
                                     Style="{ThemeResource RightArrowButton}" />
-                            <localcontrols:ForecastGraphPanel x:Name="ForecastGraphPanel" Grid.Column="1"
+                                <localcontrols:ForecastGraphPanel x:Name="ForecastGraphPanel" Grid.Column="1"
                                                               GraphViewTapped="LineView_Tapped"
                                                               Forecasts="{x:Bind ForecastView.Forecasts, Mode=OneWay}" />
-                        </Grid>
-                    </toolkitControls:HeaderedContentControl>
-                </StackPanel>
-                <StackPanel Name="HourlyForecastPanel" Margin="0,0,0,25"
-                            x:Load="{x:Bind ForecastView.HourlyForecasts, Mode=OneWay, Converter={StaticResource collectionBooleanConverter}}"
-                            Loaded="DeferedControl_Loaded">
-                    <Border Style="{ThemeResource Divider}" />
-                    <toolkitControls:HeaderedContentControl Style="{ThemeResource SectionLabelStyle}" x:Uid="Label_Hourly" Header="Hourly"
+                            </Grid>
+                        </toolkitControls:HeaderedContentControl>
+                    </StackPanel>
+                    <StackPanel Name="HourlyForecastPanel" Margin="0,0,0,25" Loaded="DeferedControl_Loaded"
+                            x:Load="{x:Bind ForecastView.HourlyForecasts, Mode=OneWay, Converter={StaticResource collectionBooleanConverter}}">
+                        <Border Style="{ThemeResource Divider}" />
+                        <toolkitControls:HeaderedContentControl Style="{ThemeResource SectionLabelStyle}" x:Uid="Label_Hourly" Header="Hourly"
                                                             HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <Button x:Name="HourlyLeftButton" Click="LeftButton_Click"
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Button x:Name="HourlyLeftButton" Click="LeftButton_Click"
                                     IsEnabled="{x:Bind helpers:ScrollViewerHelper.CanScrollToStart(HourlyGraphPanel.ScrollViewer.HorizontalOffset), Mode=OneWay}"
                                     Style="{ThemeResource LeftArrowButton}" Grid.Column="0" />
-                            <Button x:Name="HourlyRightButton" Click="RightButton_Click"
+                                <Button x:Name="HourlyRightButton" Click="RightButton_Click"
                                     IsEnabled="{x:Bind helpers:ScrollViewerHelper.CanScrollToEnd(HourlyGraphPanel.ScrollViewer.HorizontalOffset, HourlyGraphPanel.ScrollViewer.ViewportWidth, HourlyGraphPanel.ScrollViewer.ExtentWidth), Mode=OneWay}"
                                     Style="{ThemeResource RightArrowButton}" Grid.Column="2" />
-                            <localcontrols:ForecastGraphPanel x:Name="HourlyGraphPanel" Grid.Column="1"
+                                <localcontrols:ForecastGraphPanel x:Name="HourlyGraphPanel" Grid.Column="1"
                                                               GraphViewTapped="LineView_Tapped"
                                                               Forecasts="{x:Bind ForecastView.HourlyForecasts, Mode=OneWay}" />
-                        </Grid>
-                    </toolkitControls:HeaderedContentControl>
-                </StackPanel>
-                <StackPanel x:Name="DetailsContainer" Margin="0,0,0,25">
-                    <Border Style="{ThemeResource Divider}" />
-                    <toolkitControls:HeaderedContentControl Style="{ThemeResource SectionLabelStyle}"
-                                                            HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
-                                                            x:Uid="Label_Details" Header="Details">
-                        <StackPanel>
-                            <ItemsControl x:Name="DetailsPanel" HorizontalAlignment="Center" HorizontalContentAlignment="Center"
-                                      ItemsSource="{x:Bind WeatherView.WeatherDetails, Mode=OneWay}"
-                                      x:Load="{x:Bind WeatherView.WeatherDetails, Mode=OneWay, Converter={StaticResource collectionBooleanConverter}}"
-                                      Loaded="DeferedControl_Loaded">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="controls:DetailItemViewModel">
-                                        <Grid>
-                                            <localcontrols:DetailItem HorizontalAlignment="Center"
-                                                              ItemColor="{Binding ElementName=MainGrid, Path=Background, Mode=OneWay, Converter={StaticResource solidColorBrush2ColorConverter}}" />
-                                        </Grid>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <ItemsWrapGrid Orientation="Horizontal" Transitions="{StaticResource TextTransitions}" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                            </ItemsControl>
-                            <localcontrols:ExtendingWrapPanel x:Name="DetailsGrid" Orientation="Horizontal" MinItemWidth="340">
-                                <localcontrols:UVControl x:Name="UVContrl"
-                                                         x:Load="{x:Bind WeatherView.UVIndex, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
-                                                         Visibility="{x:Bind WeatherView.UVIndex, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
-                                                         DataContext="{Binding UVIndex, Mode=OneWay}" Margin="10,5" />
-                                <localcontrols:BeaufortControl x:Name="BeaufControl"
-                                                               x:Load="{x:Bind WeatherView.Beaufort, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
-                                                               Visibility="{x:Bind WeatherView.Beaufort, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
-                                                               DataContext="{Binding Beaufort, Mode=OneWay}" Margin="10,5" />
-                                <localcontrols:AQIControl x:Name="AQIndexControl"
-                                                          x:Load="{x:Bind WeatherView.AirQuality, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
-                                                          Visibility="{x:Bind WeatherView.AirQuality, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
-                                                          DataContext="{Binding AirQuality, Mode=OneWay}" Margin="10,5" />
-                                <localcontrols:MoonPhaseControl x:Name="MoonControl"
-                                                                x:Load="{x:Bind WeatherView.MoonPhase, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
-                                                                Visibility="{x:Bind WeatherView.MoonPhase, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
-                                                                DataContext="{Binding MoonPhase, Mode=OneWay}" Margin="10,5" />
-                            </localcontrols:ExtendingWrapPanel>
-                        </StackPanel>
-                    </toolkitControls:HeaderedContentControl>
-                </StackPanel>
-                <StackPanel x:Name="SunPhaseContainer" Margin="0,0,0,25"
+                            </Grid>
+                        </toolkitControls:HeaderedContentControl>
+                    </StackPanel>
+                    <StackPanel x:Name="DetailsContainer" Margin="0,0,0,25">
+                        <Border Style="{ThemeResource Divider}" />
+                        <toolkitControls:HeaderedContentControl Style="{ThemeResource SectionLabelStyle}"
+                                                                HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                                                                x:Uid="Label_Details" Header="Details">
+                            <StackPanel>
+                                <ItemsControl x:Name="DetailsPanel" HorizontalAlignment="Center" HorizontalContentAlignment="Center"
+                                              ItemsSource="{x:Bind WeatherView.WeatherDetails, Mode=OneWay}"
+                                              x:Load="{x:Bind WeatherView.WeatherDetails, Mode=OneWay, Converter={StaticResource collectionBooleanConverter}}"
+                                              Loaded="DeferedControl_Loaded">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="controls:DetailItemViewModel">
+                                            <localcontrols:DetailItem HorizontalAlignment="Center" ItemColor="{ThemeResource RegionColor}" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <ItemsWrapGrid Orientation="Horizontal" Transitions="{StaticResource TextTransitions}" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                                <localcontrols:ExtendingWrapPanel x:Name="DetailsGrid" Orientation="Horizontal" MinItemWidth="340">
+                                    <localcontrols:UVControl x:Name="UVContrl"
+                                                             x:Load="{x:Bind WeatherView.UVIndex, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
+                                                             Visibility="{x:Bind WeatherView.UVIndex, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
+                                                             DataContext="{x:Bind WeatherView.UVIndex, Mode=OneWay}" Margin="10,5" />
+                                    <localcontrols:BeaufortControl x:Name="BeaufControl"
+                                                                   x:Load="{x:Bind WeatherView.Beaufort, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
+                                                                   Visibility="{x:Bind WeatherView.Beaufort, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
+                                                                   DataContext="{x:Bind WeatherView.Beaufort, Mode=OneWay}" Margin="10,5" />
+                                    <localcontrols:AQIControl x:Name="AQIndexControl"
+                                                              x:Load="{x:Bind WeatherView.AirQuality, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
+                                                              Visibility="{x:Bind WeatherView.AirQuality, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
+                                                              DataContext="{x:Bind WeatherView.AirQuality, Mode=OneWay}" Margin="10,5" />
+                                    <localcontrols:MoonPhaseControl x:Name="MoonControl"
+                                                                    x:Load="{x:Bind WeatherView.MoonPhase, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
+                                                                    Visibility="{x:Bind WeatherView.MoonPhase, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
+                                                                    DataContext="{x:Bind WeatherView.MoonPhase, Mode=OneWay}" Margin="10,5" />
+                                </localcontrols:ExtendingWrapPanel>
+                            </StackPanel>
+                        </toolkitControls:HeaderedContentControl>
+                    </StackPanel>
+                    <StackPanel x:Name="SunPhaseContainer" Margin="0,0,0,25"
                             x:Load="{x:Bind WeatherView.Sunrise, Converter={StaticResource stringBooleanConverter}, Mode=OneWay}"
                             Loaded="DeferedControl_Loaded">
-                    <Border Style="{ThemeResource Divider}" />
-                    <toolkitControls:HeaderedContentControl Style="{ThemeResource SectionLabelStyle}"
+                        <Border Style="{ThemeResource Divider}" />
+                        <toolkitControls:HeaderedContentControl Style="{ThemeResource SectionLabelStyle}"
                                                             x:Uid="Label_Sunriseset" Header="Sunrise / Sunset"
                                                             HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                        <localcontrols:SunPhasePanel x:Name="SunPhasePanel" Height="250" MaxWidth="640" Margin="0,0,0,0" />
-                    </toolkitControls:HeaderedContentControl>
-                </StackPanel>
-                <StackPanel x:Name="RadarContainer" Margin="0,0,0,25"
+                            <localcontrols:SunPhasePanel x:Name="SunPhasePanel" Height="250" MaxWidth="640" Margin="0,0,0,0" />
+                        </toolkitControls:HeaderedContentControl>
+                    </StackPanel>
+                    <StackPanel x:Name="RadarContainer" Margin="0,0,0,25"
                             x:Load="{x:Bind WeatherView.RadarURL, Converter={StaticResource stringBooleanConverter}, Mode=OneWay}">
-                    <Border Style="{ThemeResource Divider}" />
-                    <toolkitControls:HeaderedContentControl Style="{ThemeResource SectionLabelStyle}"
+                        <Border Style="{ThemeResource Divider}" />
+                        <toolkitControls:HeaderedContentControl Style="{ThemeResource SectionLabelStyle}"
                                                             x:Uid="Label_Radar" Header="Radar"
                                                             HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                        <Grid>
-                            <Rectangle Height="{Binding ElementName=RadarWebViewContainer, Path=Height}"
-                                       MaxWidth="{Binding ElementName=RadarWebViewContainer, Path=MaxWidth}"
-                                       Fill="Transparent" Tapped="RadarWebView_Tapped" Canvas.ZIndex="1" />
-                            <Border x:Name="RadarWebViewContainer" Loaded="RadarWebView_Loaded" MaxWidth="640" Height="360" />
-                        </Grid>
-                    </toolkitControls:HeaderedContentControl>
-                    <TextBlock Padding="5" FontSize="12" HorizontalAlignment="Center"><Span>
+                            <Grid>
+                                <Rectangle Height="{Binding ElementName=RadarWebViewContainer, Path=Height, Mode=OneWay}"
+                                           MaxWidth="{Binding ElementName=RadarWebViewContainer, Path=MaxWidth, Mode=OneWay}"
+                                           Fill="Transparent" Tapped="RadarWebView_Tapped" Canvas.ZIndex="1" />
+                                <Border x:Name="RadarWebViewContainer" Loaded="RadarWebView_Loaded" MaxWidth="640" Height="360" />
+                            </Grid>
+                        </toolkitControls:HeaderedContentControl>
+                        <TextBlock Padding="5" FontSize="12" HorizontalAlignment="Center"><Span>
                         <Run x:Uid="Credit_Prefix" Text="Data from" /><Run Text=" EarthWindMap Project" /></Span>
-                    </TextBlock>
+                        </TextBlock>
+                    </StackPanel>
+                    <Border Style="{ThemeResource Divider}" />
+                    <TextBlock Text="{x:Bind WeatherView.WeatherCredit, FallbackValue='Data from Weather Provider', Mode=OneWay}"
+                               Padding="10" FontSize="14" HorizontalAlignment="Center" />
                 </StackPanel>
-                <Border Style="{ThemeResource Divider}" />
-                <TextBlock Text="{x:Bind WeatherView.WeatherCredit, FallbackValue='Data from Weather Provider', Mode=OneWay}"
-                           Padding="10" FontSize="14" HorizontalAlignment="Center" />
-            </StackPanel>
+            </Grid>
         </ScrollViewer>
-        <ProgressRing x:Name="LoadingRing" Grid.Row="1"
-                      HorizontalAlignment="Center" VerticalAlignment="Center"
-                      IsActive="True" Foreground="White" />
+        <ProgressRing x:Name="LoadingRing" HorizontalAlignment="Center" VerticalAlignment="Center"
+                      IsActive="True" Grid.RowSpan="2" />
     </Grid>
 </helpers:CustomPage>

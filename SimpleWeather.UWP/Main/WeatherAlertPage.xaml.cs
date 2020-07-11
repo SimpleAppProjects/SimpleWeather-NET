@@ -75,39 +75,38 @@ namespace SimpleWeather.UWP.Main
         {
             base.OnNavigatedTo(e);
 
-            if (e?.Parameter is WeatherPageArgs args)
+            WeatherPageArgs args = e?.Parameter as WeatherPageArgs;
+
+            location = args?.Location;
+            WeatherView = args?.WeatherNowView;
+            AlertsView = args?.AlertsView;
+
+            if (location == null)
+                location = await Settings.GetHomeData().ConfigureAwait(true);
+            if (WeatherView == null)
+                WeatherView = new WeatherNowViewModel();
+            if (AlertsView == null)
+                AlertsView = new WeatherAlertsViewModel();
+
+            if (WeatherView?.IsValid != true)
             {
-                location = args.Location;
-                WeatherView = args.WeatherNowView;
-                AlertsView = args.AlertsView;
-
-                if (location == null)
-                    location = await Settings.GetHomeData().ConfigureAwait(true);
-                if (WeatherView == null)
-                    WeatherView = new WeatherNowViewModel();
-                if (AlertsView == null)
-                    AlertsView = new WeatherAlertsViewModel();
-
-                if (WeatherView?.IsValid != true)
-                {
-                    new WeatherDataLoader(location)
-                        .LoadWeatherData(new WeatherRequest.Builder()
-                            .ForceLoadSavedData()
-                            .SetErrorListener(this)
-                            .Build())
-                            .ContinueWith((t) =>
+                new WeatherDataLoader(location)
+                    .LoadWeatherData(new WeatherRequest.Builder()
+                        .ForceLoadSavedData()
+                        .SetErrorListener(this)
+                        .Build())
+                        .ContinueWith((t) =>
+                        {
+                            if (t.IsCompletedSuccessfully)
                             {
-                                if (t.IsCompletedSuccessfully)
-                                {
-                                    WeatherView.UpdateView(t.Result);
-                                    AlertsView?.UpdateAlerts(location);
-                                }
-                            }, TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(true);
-                }
-
-                AlertsView?.UpdateAlerts(location);
-                Settings.GetWeatherDBConnection().GetConnection().TableChanged += WeatherAlertPage_TableChanged;
+                                WeatherView.UpdateView(t.Result);
+                                AlertsView?.UpdateAlerts(location);
+                            }
+                        }, TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(true);
             }
+
+            AlertsView?.UpdateAlerts(location);
+            Settings.GetWeatherDBConnection().GetConnection().TableChanged += WeatherAlertPage_TableChanged;
         }
 
         private void WeatherAlertPage_TableChanged(object sender, SQLite.NotifyTableChangedEventArgs e)

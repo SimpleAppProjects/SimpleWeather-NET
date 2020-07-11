@@ -1,8 +1,10 @@
-﻿using SimpleWeather.Utils;
+﻿using Microsoft.UI.Xaml.Controls;
+using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.UWP.Controls;
 using SimpleWeather.UWP.Helpers;
 using SimpleWeather.UWP.Preferences;
+using SimpleWeather.UWP.Shared.Helpers;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
@@ -15,8 +17,11 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+
+using muxc = Microsoft.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 namespace SimpleWeather.UWP.Main
@@ -29,19 +34,17 @@ namespace SimpleWeather.UWP.Main
         public Frame AppFrame { get { return FrameContent; } }
         public static Shell Instance { get; set; }
 
-        public static readonly DependencyProperty AppBarColorProperty =
-            DependencyProperty.Register("AppBarColor", typeof(Color),
-            typeof(Shell), new PropertyMetadata(Color.FromArgb(0xff, 0x0, 0x70, 0xc0)));
-
-        public Color AppBarColor
-        {
-            get { return (Color)GetValue(AppBarColorProperty); }
-            set { SetValue(AppBarColorProperty, value); }
-        }
-
-        private List<BottomNavigationBarItem> NavBarItems { get; }
-
         private UISettings UISettings;
+
+        // List of ValueTuple holding the Navigation Tag and the relative Navigation Page
+        private readonly List<(string Tag, Type Page)> _pages = new List<(string Tag, Type Page)>
+        {
+            ("WeatherNow", typeof(WeatherNow)),
+            ("WeatherAlertPage", typeof(WeatherAlertPage)),
+            ("WeatherRadarPage", typeof(WeatherRadarPage)),
+            ("LocationsPage", typeof(LocationsPage)),
+            ("SettingsPage", typeof(SettingsPage)),
+        };
 
         public Shell()
         {
@@ -53,51 +56,30 @@ namespace SimpleWeather.UWP.Main
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
             SystemNavigationManager.GetForCurrentView().BackRequested += Shell_BackRequested;
 
-            NavBarItems = new List<BottomNavigationBarItem>
-            {
-                new BottomNavigationBarItem()
-                {
-                    Icon = new FontIcon()
-                    {
-                        Glyph = WeatherIcons.DAY_CLOUDY,
-                        FontFamily = new FontFamily("/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons"),
-                        FontSize = 15
-                    },
-                    Label = App.ResLoader.GetString("Nav_WeatherNow/Label"),
-                    Tag = typeof(WeatherNow),
-                },
-                new BottomNavigationBarItem()
-                {
-                    Icon = new FontIcon()
-                    {
-                        Glyph = "\uEA37",
-                        FontFamily = new FontFamily("Segoe MDL2 Assets"),
-                        FontSize = 15
-                    },
-                    Label = App.ResLoader.GetString("Nav_Locations/Label"),
-                    Tag = typeof(LocationsPage),
-                },
-                new BottomNavigationBarItem()
-                {
-                    Icon = new FontIcon()
-                    {
-                        Glyph = "\uE713",
-                        FontFamily = new FontFamily("Segoe MDL2 Assets"),
-                        FontSize = 15
-                    },
-                    Label = App.ResLoader.GetString("Nav_Settings/Label"),
-                    Tag = typeof(SettingsPage),
-                }
-            };
-            FindName("NavBar");
-            NavBar.ItemsSource = NavBarItems;
             AppFrame.Navigated += AppFrame_Navigated;
             AppFrame.CacheSize = 1;
+
+            // Add keyboard accelerators for backwards navigation.
+            var goBack = new KeyboardAccelerator { Key = Windows.System.VirtualKey.GoBack };
+            goBack.Invoked += BackInvoked;
+            this.KeyboardAccelerators.Add(goBack);
+            if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.UIElement", "KeyboardAcceleratorPlacementMode"))
+            {
+                this.KeyboardAcceleratorPlacementMode = KeyboardAcceleratorPlacementMode.Hidden;
+            }
+
+            // ALT routes here
+            var altLeft = new KeyboardAccelerator
+            {
+                Key = Windows.System.VirtualKey.Left,
+                Modifiers = Windows.System.VirtualKeyModifiers.Menu
+            };
+            altLeft.Invoked += BackInvoked;
+            this.KeyboardAccelerators.Add(altLeft);
 
             UISettings = new UISettings();
             UISettings.ColorValuesChanged += UISettings_ColorValuesChanged;
             UpdateAppTheme();
-            RegisterPropertyChangedCallback(AppBarColorProperty, Shell_PropertyChanged);
         }
 
         private async void UISettings_ColorValuesChanged(UISettings sender, object args)
@@ -149,43 +131,6 @@ namespace SimpleWeather.UWP.Main
             }
             FrameworkElement window = Window.Current.Content as FrameworkElement;
             AppFrame.RequestedTheme = window.RequestedTheme = isDarkTheme ? ElementTheme.Dark : ElementTheme.Light;
-            if (AppFrame.SourcePageType != typeof(WeatherNow))
-                AppBarColor = App.AppColor;
-        }
-
-        private void Shell_PropertyChanged(DependencyObject sender, DependencyProperty property)
-        {
-            if (AppBarColorProperty == property)
-            {
-                Color color = AppBarColor;
-                bool isLightBackground = ColorUtils.IsSuperLight(color);
-
-                CommandBar.RequestedTheme = isLightBackground ? ElementTheme.Light : ElementTheme.Dark;
-                NavBar.RequestedTheme = isLightBackground ? ElementTheme.Light : ElementTheme.Dark;
-                if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
-                {
-                    // Mobile
-                    var statusBar = StatusBar.GetForCurrentView();
-                    if (statusBar != null)
-                    {
-                        statusBar.BackgroundColor = color;
-                        statusBar.ForegroundColor = isLightBackground ? Colors.Black : Colors.White;
-                    }
-                }
-                else
-                {
-                    // Desktop
-                    var titlebar = ApplicationView.GetForCurrentView()?.TitleBar;
-                    if (titlebar != null)
-                    {
-                        titlebar.BackgroundColor = color;
-                        titlebar.ButtonBackgroundColor = titlebar.BackgroundColor;
-                        titlebar.ForegroundColor = isLightBackground ? Colors.Black : Colors.White;
-                    }
-                }
-                CommandBar.Background = new SolidColorBrush(color);
-                NavBar.Background = new SolidColorBrush(color);
-            }
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -204,7 +149,7 @@ namespace SimpleWeather.UWP.Main
             // Navigate to WeatherNow page
             if (AppFrame.Content == null && !suppressNavigate)
             {
-                AppFrame.Navigate(typeof(WeatherNow), e.Parameter);
+                AppFrame.Navigate(typeof(WeatherNow), e.Parameter, new Windows.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo());
             }
 
             // Setup background task
@@ -213,76 +158,122 @@ namespace SimpleWeather.UWP.Main
 
         private void AppFrame_Navigated(object sender, NavigationEventArgs e)
         {
-            if (AppFrame.CanGoBack)
-                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
-            else
-                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
+                AppFrame.CanGoBack ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
 
-            int idx = NavBarItems.FindIndex(item => item.Tag as Type == e.SourcePageType);
-            if (idx >= 0) NavBar.SelectedIndex = idx;
+            if (e.SourcePageType == typeof(SettingsPage))
+            {
+                // SettingsItem is not part of NavView.MenuItems, and doesn't have a Tag.
+                NavView.SelectedItem = (muxc.NavigationViewItem)NavView.SettingsItem;
+            }
+            else if (e.SourcePageType != null)
+            {
+                var item = _pages.FirstOrDefault(p => p.Page == e.SourcePageType);
 
-            if (e.SourcePageType != typeof(WeatherNow))
-                AppBarColor = App.AppColor;
+                NavView.SelectedItem = NavView.MenuItems
+                    .OfType<muxc.NavigationViewItem>()
+                    .FirstOrDefault(n => n.Tag.Equals(item.Tag));
+            }
 
             UpdateCommandBar();
         }
 
         private async void Shell_BackRequested(object sender, BackRequestedEventArgs e)
         {
-            if (AppFrame == null)
-                return;
+            await On_BackRequested().ConfigureAwait(true);
+            e.Handled = true;
+        }
+
+        private async void NavView_BackRequested(muxc.NavigationView sender, muxc.NavigationViewBackRequestedEventArgs args)
+        {
+            await On_BackRequested().ConfigureAwait(true);
+        }
+
+        private async void BackInvoked(KeyboardAccelerator sender,
+                         KeyboardAcceleratorInvokedEventArgs args)
+        {
+            await On_BackRequested().ConfigureAwait(true);
+            args.Handled = true;
+        }
+
+        private async Task<bool> On_BackRequested()
+        {
+            if (!AppFrame.CanGoBack)
+                return false;
 
             // Navigate back if possible, and if the event has not
             // already been handled.
-            bool PageRequestedToStay = e.Handled = AppFrame.Content is IBackRequestedPage backPage &&
+            bool PageRequestedToStay = AppFrame.Content is IBackRequestedPage backPage &&
                 await backPage.OnBackRequested().ConfigureAwait(true);
 
-            if (!PageRequestedToStay && AppFrame.BackStackDepth > 0)
-            {
-                try
-                {
-                    // Remove all from backstack except home
-                    var home = AppFrame.BackStack.ElementAt(0);
-                    AppFrame.BackStack.Clear();
-                    AppFrame.BackStack.Add(home);
-                    AppFrame.GoBack();
-                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-                }
-                catch (Exception ex)
-                {
-                    Logger.WriteLine(LoggerLevel.Error, ex, "Exception!!");
-                }
+            if (PageRequestedToStay)
+                return false;
 
-                e.Handled = true;
+            // Don't go back if the nav pane is overlayed.
+            if (NavView.IsPaneOpen &&
+                (NavView.DisplayMode == muxc.NavigationViewDisplayMode.Compact ||
+                 NavView.DisplayMode == muxc.NavigationViewDisplayMode.Minimal))
+                return false;
+
+            AppFrame.GoBack();
+            return true;
+        }
+
+        private void NavView_ItemInvoked(muxc.NavigationView sender, muxc.NavigationViewItemInvokedEventArgs args)
+        {
+            if (args.IsSettingsInvoked == true)
+            {
+                NavView_Navigate("SettingsPage", args.RecommendedNavigationTransitionInfo);
+            }
+            else if (args.InvokedItemContainer != null)
+            {
+                var navItemTag = args.InvokedItemContainer.Tag.ToString();
+                NavView_Navigate(navItemTag, args.RecommendedNavigationTransitionInfo);
             }
         }
 
-        private void NavBarItem_Seletected(object sender, SelectionChangedEventArgs e)
+        private void NavView_Navigate(
+            string navItemTag,
+            Windows.UI.Xaml.Media.Animation.NavigationTransitionInfo transitionInfo)
         {
-            var navBar = sender as Selector;
-
-            if (navBar?.SelectedItem is BottomNavigationBarItem btn && btn.Tag is Type pageType && pageType != AppFrame.SourcePageType)
+            Type _page = null;
+            if (navItemTag == "SettingsPage")
             {
-                if (pageType == typeof(WeatherNow) && AppFrame.BackStackDepth >= 1)
+                _page = typeof(SettingsPage);
+            }
+            else
+            {
+                var item = _pages.FirstOrDefault(p => p.Tag.Equals(navItemTag));
+                _page = item.Page;
+            }
+            // Get the page type before navigation so you can prevent duplicate
+            // entries in the backstack.
+            var preNavPageType = AppFrame.CurrentSourcePageType;
+
+            // Only navigate if the selected page isn't currently loaded.
+            if (!(_page is null) && !Type.Equals(preNavPageType, _page))
+            {
+                object parameter = null;
+
+                if (Type.Equals(preNavPageType, typeof(WeatherNow)))
                 {
-                    try
+                    var wnowPage = AppFrame.Content as WeatherNow;
+
+                    if (Type.Equals(_page, typeof(WeatherAlertPage)))
                     {
-                        // Remove all from backstack except home
-                        var home = AppFrame.BackStack.ElementAt(0);
-                        AppFrame.BackStack.Clear();
-                        AppFrame.BackStack.Add(home);
-                        AppFrame.GoBack();
-                        SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                        parameter = new WeatherPageArgs()
+                        {
+                            Location = wnowPage?.location,
+                            WeatherNowView = wnowPage?.WeatherView
+                        };
                     }
-                    catch (Exception ex)
+                    else if (Type.Equals(_page, typeof(WeatherAlertPage)))
                     {
-                        Logger.WriteLine(LoggerLevel.Error, ex, "Exception!!");
+                        parameter = wnowPage?.WeatherView?.RadarURL;
                     }
                 }
-                else
-                {
-                    AppFrame.Navigate(pageType, null);
-                }
+
+                AppFrame.Navigate(_page, parameter, transitionInfo);
             }
         }
 
@@ -296,15 +287,20 @@ namespace SimpleWeather.UWP.Main
             if (AppFrame.Content is ICommandBarPage cmdBarPage)
             {
                 CommandBarTitle.Text = cmdBarPage.CommandBarLabel;
-                CommandBar.PrimaryCommands.Clear();
+                CommandBar.Children.Clear();
                 if (cmdBarPage.PrimaryCommands != null)
-                    cmdBarPage.PrimaryCommands.ForEach(cmd => CommandBar.PrimaryCommands.Add(cmd));
+                    cmdBarPage.PrimaryCommands.ForEach(cmd => CommandBar.Children.Add(cmd));
             }
             else
             {
                 CommandBarTitle.Text = "SimpleWeather";
-                CommandBar.PrimaryCommands.Clear();
+                CommandBar.Children.Clear();
             }
+        }
+
+        private void TogglePaneButton_Click(object sender, RoutedEventArgs e)
+        {
+            NavView.IsPaneOpen = !NavView.IsPaneOpen;
         }
     }
 }

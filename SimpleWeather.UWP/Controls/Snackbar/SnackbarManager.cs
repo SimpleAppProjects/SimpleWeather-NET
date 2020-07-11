@@ -63,6 +63,7 @@ namespace SimpleWeather.UWP.Controls
         /**
          * Removes the current snackbar after it times out
          */
+
         private void RemoveSnack(SnackbarDismissEvent @event)
         {
             if (Snacks.Count == 0) return;
@@ -76,6 +77,7 @@ namespace SimpleWeather.UWP.Controls
         /**
          * Update the Snackbar view
          */
+
         private void UpdateView()
         {
             // Get current Snackbar

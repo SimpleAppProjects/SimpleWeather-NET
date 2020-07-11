@@ -27,6 +27,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using muxc = Microsoft.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 namespace SimpleWeather.UWP.Main
@@ -39,28 +40,16 @@ namespace SimpleWeather.UWP.Main
         private WeatherManager wm;
         private WeatherDataLoader wLoader = null;
 
-        private LocationData location = null;
+        internal LocationData location = null;
         private bool loaded = false;
-        private WeatherNowViewModel WeatherView { get; set; }
-        private ForecastGraphViewModel ForecastView { get; set; }
-        private WeatherAlertsViewModel AlertsView { get; set; }
+        internal WeatherNowViewModel WeatherView { get; private set; }
+        internal ForecastGraphViewModel ForecastView { get; private set; }
+        internal WeatherAlertsViewModel AlertsView { get; private set; }
 
-        private double BGAlpha = 1.0;
-        private double GradAlpha = 1.0;
         private CancellationTokenSource cts;
 
         private Geolocator geolocal = null;
         private Geoposition geoPos = null;
-
-        public ElementTheme BackgroundTheme
-        {
-            get { return (ElementTheme)GetValue(BackgroundThemeProperty); }
-            set { SetValue(BackgroundThemeProperty, value); }
-        }
-
-        public static readonly DependencyProperty BackgroundThemeProperty =
-            DependencyProperty.Register(nameof(BackgroundTheme), typeof(ElementTheme),
-                typeof(WeatherNow), new PropertyMetadata(ElementTheme.Default));
 
         public void Dispose()
         {
@@ -159,7 +148,6 @@ namespace SimpleWeather.UWP.Main
         public WeatherNow()
         {
             this.InitializeComponent();
-            BackgroundTheme = ElementTheme.Default;
             NavigationCacheMode = NavigationCacheMode.Required;
             Application.Current.Resuming += WeatherNow_Resuming;
             cts = new CancellationTokenSource();
@@ -173,73 +161,29 @@ namespace SimpleWeather.UWP.Main
             geolocal = new Geolocator() { DesiredAccuracyInMeters = 5000, ReportInterval = 900000, MovementThreshold = 1600 };
 
             // CommandBar
-            CommandBarLabel = App.ResLoader.GetString("Nav_WeatherNow/Label");
-            PrimaryCommands = new List<ICommandBarElement>()
+            CommandBarLabel = App.ResLoader.GetString("Nav_WeatherNow/Content");
+            PrimaryCommands = new List<muxc.NavigationViewItemBase>()
             {
-                new AppBarButton()
+                new muxc.NavigationViewItem()
                 {
                     Icon = new SymbolIcon(Symbol.Pin),
-                    Label = App.ResLoader.GetString("Label_Pin/Text"),
+                    Content = App.ResLoader.GetString("Label_Pin/Text"),
                     Tag = "pin",
                     Visibility = Visibility.Collapsed
                 },
-                new AppBarButton()
+                new muxc.NavigationViewItem()
                 {
                     Icon = new SymbolIcon(Symbol.Refresh),
-                    Label = App.ResLoader.GetString("Button_Refresh/Label"),
+                    Content = App.ResLoader.GetString("Button_Refresh/Label"),
                     Tag = "refresh"
                 }
             };
-            GetRefreshBtn().Click += RefreshButton_Click;
-            GetPinBtn().Click += PinButton_Click;
-
-            MainGrid.Loaded += (s, e) =>
-            {
-                UpdateWindowColors();
-            };
+            GetRefreshBtn().Tapped += RefreshButton_Click;
+            GetPinBtn().Tapped += PinButton_Click;
 
             loaded = true;
 
-            RegisterPropertyChangedCallback(BackgroundThemeProperty, WeatherNow_PropertyChanged);
-
             AnalyticsLogger.LogEvent("WeatherNow");
-        }
-
-        private void WeatherNow_PropertyChanged(DependencyObject sender, DependencyProperty property)
-        {
-            if (BackgroundThemeProperty == property)
-            {
-                if (MainViewer != null)
-                {
-                    MainViewer.RequestedTheme = BackgroundTheme;
-                }
-            }
-        }
-
-        private void UpdateWindowColors()
-        {
-            if (cts?.IsCancellationRequested == true)
-                return;
-
-            Color backgroundColor;
-            if ((Settings.UserTheme == UserThemeMode.Dark || (Settings.UserTheme == UserThemeMode.System && App.IsSystemDarkTheme)) && WeatherView?.PendingBackgroundColor != App.AppColor)
-            {
-                backgroundColor = ColorUtils.BlendColor(WeatherView.PendingBackgroundColor, Colors.Black, 0.75f);
-                MainGrid.Background = new SolidColorBrush(backgroundColor);
-                Shell.Instance.AppBarColor = backgroundColor;
-            }
-            else
-            {
-                backgroundColor = WeatherView.PendingBackgroundColor;
-                if (ColorUtils.IsSuperLight(backgroundColor))
-                {
-                    backgroundColor = ColorUtils.BlendColor(backgroundColor, Colors.Black, 0.25f);
-                }
-                MainGrid.Background = new SolidColorBrush(backgroundColor);
-                Shell.Instance.AppBarColor = backgroundColor;
-            }
-
-            BackgroundTheme = ColorUtils.IsSuperLight(backgroundColor) ? ElementTheme.Light : ElementTheme.Dark;
         }
 
         private async void WeatherView_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -266,24 +210,24 @@ namespace SimpleWeather.UWP.Main
                     ResizeAlertPanel();
                     break;
 
-                case "PendingBackgroundColor":
-                    UpdateWindowColors();
-                    break;
-
                 case "RadarURL":
                     NavigateToRadarURL();
+                    break;
+
+                case "ImageData":
+                    GradientOverlay.Visibility = Visibility.Collapsed;
                     break;
             }
         }
 
-        private AppBarButton GetRefreshBtn()
+        private muxc.NavigationViewItem GetRefreshBtn()
         {
-            return PrimaryCommands.LastOrDefault() as AppBarButton;
+            return PrimaryCommands.LastOrDefault() as muxc.NavigationViewItem;
         }
 
-        private AppBarButton GetPinBtn()
+        private muxc.NavigationViewItem GetPinBtn()
         {
-            return PrimaryCommands.FirstOrDefault() as AppBarButton;
+            return PrimaryCommands.FirstOrDefault() as muxc.NavigationViewItem;
         }
 
         private void WeatherNow_Resuming(object sender, object e)
@@ -308,10 +252,8 @@ namespace SimpleWeather.UWP.Main
                     1 - (1 * adj * viewer.VerticalOffset / ConditionPanel.ActualHeight) : 1;
                 double gradAlpha = ConditionPanel.ActualHeight > 0 ?
                     1 - (1 * adj * viewer.VerticalOffset / ConditionPanel.ActualHeight) : 1;
-                BGAlpha = Math.Max(backAlpha, (float)0x25 / 0xFF); // 0x25
-                GradAlpha = Math.Max(gradAlpha, 0);
-                BackgroundOverlay.Opacity = BGAlpha;
-                GradientOverlay.Opacity = GradAlpha;
+                BackgroundOverlay.Opacity = Math.Max(backAlpha, (float)0x25 / 0xFF); // 0x25
+                GradientOverlay.Opacity = Math.Max(gradAlpha, 0);
             }
         }
 
@@ -323,11 +265,6 @@ namespace SimpleWeather.UWP.Main
 
         private void DeferedControl_Loaded(object sender, RoutedEventArgs e)
         {
-            if (sender is ScrollViewer v && v.Name == "MainViewer")
-            {
-                v.RequestedTheme = BackgroundTheme;
-            }
-
             AdjustViewLayout();
         }
 
@@ -437,9 +374,8 @@ namespace SimpleWeather.UWP.Main
 
             // NOTE: ChangeView does not work here for some reason
             MainViewer?.ScrollToVerticalOffset(0);
-            BGAlpha = GradAlpha = 1.0f;
 
-            WeatherNowArgs args = e.Parameter as WeatherNowArgs;
+            WeatherNowArgs args = e?.Parameter as WeatherNowArgs;
 
             Task.Run(async () =>
             {
@@ -851,12 +787,12 @@ namespace SimpleWeather.UWP.Main
                 if (isPinned)
                 {
                     pinBtn.Icon = new SymbolIcon(Symbol.UnPin);
-                    pinBtn.Label = App.ResLoader.GetString("Label_Unpin/Text");
+                    pinBtn.Content = App.ResLoader.GetString("Label_Unpin/Text");
                 }
                 else
                 {
                     pinBtn.Icon = new SymbolIcon(Symbol.Pin);
-                    pinBtn.Label = App.ResLoader.GetString("Label_Pin/Text");
+                    pinBtn.Content = App.ResLoader.GetString("Label_Pin/Text");
                 }
             }
         }
@@ -868,7 +804,7 @@ namespace SimpleWeather.UWP.Main
             // Check if Tile service is available
             if (!DeviceTypeHelper.IsTileSupported()) return;
 
-            var pinBtn = sender as AppBarButton;
+            var pinBtn = sender as muxc.NavigationViewItem;
             pinBtn.IsEnabled = false;
 
             if (SecondaryTileUtils.Exists(location?.query))
@@ -1033,6 +969,11 @@ namespace SimpleWeather.UWP.Main
                 AnalyticsLogger.LogEvent("WeatherNow: RadarWebView_Tapped");
                 Frame.Navigate(typeof(WeatherRadarPage), WeatherView?.RadarURL);
             }
+        }
+
+        private void BackgroundOverlay_ImageExOpened(object sender, Microsoft.Toolkit.Uwp.UI.Controls.ImageExOpenedEventArgs e)
+        {
+            GradientOverlay.Visibility = Visibility.Visible;
         }
     }
 }

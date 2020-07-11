@@ -36,8 +36,7 @@ namespace SimpleWeather.UWP.Main
             LocationQuerys = new ObservableCollection<LocationQueryViewModel>();
 
             // CommandBar
-            CommandBarLabel = App.ResLoader.GetString("Nav_Locations/Label");
-            PrimaryCommands = new List<ICommandBarElement>(0);
+            CommandBarLabel = App.ResLoader.GetString("Nav_Locations/Content");
             AnalyticsLogger.LogEvent("LocationSearchPage");
         }
 

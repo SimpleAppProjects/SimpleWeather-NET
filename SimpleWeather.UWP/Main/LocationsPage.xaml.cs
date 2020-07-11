@@ -25,6 +25,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using muxc = Microsoft.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 namespace SimpleWeather.UWP.Main
@@ -45,7 +46,7 @@ namespace SimpleWeather.UWP.Main
         private bool[] ErrorCounter;
         private CancellationTokenSource cts;
 
-        private AppBarButton EditButton;
+        private muxc.NavigationViewItem EditButton;
 
         public void Dispose()
         {
@@ -169,17 +170,17 @@ namespace SimpleWeather.UWP.Main
             ErrorCounter = new bool[Enum.GetValues(typeof(WeatherUtils.ErrorStatus)).Length];
 
             // CommandBar
-            CommandBarLabel = App.ResLoader.GetString("Nav_Locations/Label");
-            PrimaryCommands = new List<ICommandBarElement>()
+            CommandBarLabel = App.ResLoader.GetString("Nav_Locations/Content");
+            PrimaryCommands = new List<muxc.NavigationViewItemBase>()
             {
-                new AppBarButton()
+                new muxc.NavigationViewItem()
                 {
                     Icon = new SymbolIcon(Symbol.Edit),
-                    Label = App.ResLoader.GetString("Label_Edit"),
+                    Content = App.ResLoader.GetString("Label_Edit"),
                 }
             };
-            EditButton = PrimaryCommands[0] as AppBarButton;
-            EditButton.Click += AppBarButton_Click;
+            EditButton = PrimaryCommands[0] as muxc.NavigationViewItem;
+            EditButton.Tapped += AppBarButton_Click;
             cts = new CancellationTokenSource();
 
             AnalyticsLogger.LogEvent("LocationsPage");
@@ -624,7 +625,7 @@ namespace SimpleWeather.UWP.Main
             EditMode = !EditMode;
 
             EditButton.Icon = new SymbolIcon(EditMode ? Symbol.Accept : Symbol.Edit);
-            EditButton.Label = EditMode ? App.ResLoader.GetString("Label_Done") : App.ResLoader.GetString("Label_Edit");
+            EditButton.Content = EditMode ? App.ResLoader.GetString("Label_Done") : App.ResLoader.GetString("Label_Edit");
             LocationsPanel.IsItemClickEnabled = !EditMode;
             // Enable selection mode for non-Mobile (non-Touch devices)
             if (!ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
@@ -634,14 +635,14 @@ namespace SimpleWeather.UWP.Main
                 if (EditMode && PrimaryCommands.Count == 1)
                 {
                     PrimaryCommands.Insert(0,
-                        new AppBarButton()
+                        new muxc.NavigationViewItem()
                         {
                             Icon = new SymbolIcon(Symbol.Delete),
-                            Label = App.ResLoader.GetString("Label_Delete"),
+                            Content = App.ResLoader.GetString("Label_Delete"),
                         }
                     );
-                    var deleteBtn = PrimaryCommands[0] as AppBarButton;
-                    deleteBtn.Click += DeleteBtn_Click;
+                    var deleteBtn = PrimaryCommands[0] as muxc.NavigationViewItem;
+                    deleteBtn.Tapped += DeleteBtn_Click;
                 }
                 else if (PrimaryCommands.Count > 1)
                 {

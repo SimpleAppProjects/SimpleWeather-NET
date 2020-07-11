@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using NavigationView = Microsoft.UI.Xaml.Controls.NavigationView;
-using NavigationViewItem = Microsoft.UI.Xaml.Controls.NavigationViewItem;
+using muxc = Microsoft.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 namespace SimpleWeather.UWP.Preferences
@@ -19,14 +18,14 @@ namespace SimpleWeather.UWP.Preferences
     public sealed partial class SettingsPage : Page, ICommandBarPage, IBackRequestedPage
     {
         public string CommandBarLabel { get; set; }
-        public List<ICommandBarElement> PrimaryCommands { get; set; }
+        public List<muxc.NavigationViewItemBase> PrimaryCommands { get; set; }
 
         public SettingsPage()
         {
             this.InitializeComponent();
 
             // CommandBar
-            CommandBarLabel = App.ResLoader.GetString("Nav_Settings/Label");
+            CommandBarLabel = App.ResLoader.GetString("Nav_Settings/Content");
             AnalyticsLogger.LogEvent("SettingsPage");
         }
 
@@ -57,21 +56,24 @@ namespace SimpleWeather.UWP.Preferences
             }
         }
 
-        private void NavigationView_SelectionChanged(NavigationView sender, Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs args)
+        private void NavigationView_SelectionChanged(muxc.NavigationView sender, muxc.NavigationViewSelectionChangedEventArgs args)
         {
             Type pageType;
-            switch ((args.SelectedItem as NavigationViewItem)?.Tag)
+            switch ((args.SelectedItem as muxc.NavigationViewItem)?.Tag)
             {
                 case "General":
                 default:
                     pageType = typeof(Settings_General);
                     break;
+
                 case "Credits":
                     pageType = typeof(Settings_Credits);
                     break;
+
                 case "OSSLibs":
                     pageType = typeof(Settings_OSSLibs);
                     break;
+
                 case "About":
                     pageType = typeof(Settings_About);
                     break;

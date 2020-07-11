@@ -10,24 +10,6 @@
     d:DesignHeight="1300"
     NavigationCacheMode="Enabled">
 
-    <Page.Resources>
-        <SolidColorBrush x:Key="NavigationViewTopPaneBackground" Color="{ThemeResource SystemAccentColor}" />
-        <SolidColorBrush x:Key="NavigationViewSelectionIndicatorForeground" Color="White" />
-
-        <RevealBorderBrush x:Key="NavigationViewItemBorderBrush" TargetTheme="Dark" Color="Transparent" FallbackColor="Transparent" />
-        <RevealBorderBrush x:Key="NavigationViewItemBorderBrushPointerOver" TargetTheme="Dark" Color="Transparent" FallbackColor="Transparent" />
-        <RevealBorderBrush x:Key="NavigationViewItemBorderBrushPressed" TargetTheme="Dark" Color="Transparent" FallbackColor="Transparent" />
-
-        <RevealBackgroundBrush x:Key="TopNavigationViewItemBackgroundPointerOver" TargetTheme="Dark" Color="#18FFFFFF" FallbackColor="#18FFFFFF" />
-        <RevealBackgroundBrush x:Key="TopNavigationViewItemBackgroundPressed" TargetTheme="Dark" Color="#30FFFFFF" FallbackColor="#30FFFFFF" />
-        <RevealBackgroundBrush x:Key="TopNavigationViewItemBackgroundSelected" TargetTheme="Dark" Color="Transparent" FallbackColor="Transparent" />
-
-        <SolidColorBrush x:Key="TopNavigationViewItemForeground" Color="White" Opacity="0.7" />
-        <SolidColorBrush x:Key="TopNavigationViewItemForegroundPointerOver" Color="White" />
-        <SolidColorBrush x:Key="TopNavigationViewItemForegroundPressed" Color="White" />
-        <SolidColorBrush x:Key="TopNavigationViewItemForegroundSelected" Color="White" />
-    </Page.Resources>
-
     <Grid Background="{ThemeResource RegionBrush}">
         <controls:NavigationView x:Name="SettingsNavView" PaneDisplayMode="Top" SelectionFollowsFocus="Enabled"
                                  IsBackButtonVisible="Collapsed" IsBackEnabled="False"

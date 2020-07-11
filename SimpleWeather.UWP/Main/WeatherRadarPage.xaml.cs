@@ -20,7 +20,9 @@ namespace SimpleWeather.UWP.Main
     /// </summary>
     public sealed partial class WeatherRadarPage : CustomPage
     {
+        private readonly Uri DefaultRadarUri = new Uri("https://earth.nullschool.net/#current/wind/surface/level/overlay=precip_3hr/orthographic");
         private Uri RadarURI { get; set; }
+
         public WeatherRadarPage()
         {
             this.InitializeComponent();
@@ -35,11 +37,10 @@ namespace SimpleWeather.UWP.Main
         {
             base.OnNavigatedTo(e);
 
-            if (e?.Parameter is Uri radarUri)
-            {
-                RadarURI = radarUri;
-                NavigateToRadarURL();
-            }
+            Uri radarUri = e?.Parameter as Uri;
+
+            RadarURI = radarUri ?? DefaultRadarUri;
+            NavigateToRadarURL();
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
