@@ -77,6 +77,7 @@ namespace SimpleWeather.Controls
 
         private readonly WeatherManager wm;
         private Weather weather;
+        private string tempUnit;
 
         public LocationPanelViewModel()
         {
@@ -93,101 +94,116 @@ namespace SimpleWeather.Controls
 
         public void SetWeather(Weather weather)
         {
-            if ((bool)weather?.IsValid() && !Equals(this.weather, weather))
+            if ((bool)weather?.IsValid())
             {
-                var userlang = GlobalizationPreferences.Languages[0];
-                var culture = new CultureInfo(userlang);
-
-                this.weather = weather;
-
-                ImageData = null;
-                BackgroundTheme = ElementTheme.Dark;
-
-                LocationName = weather.location.name;
-
-                if (weather.condition.temp_f.HasValue && weather.condition.temp_f != weather.condition.temp_c)
+                if (!Equals(this.weather, weather))
                 {
-                    var temp = Settings.IsFahrenheit ? Math.Round(weather.condition.temp_f.Value) : Math.Round(weather.condition.temp_c.Value);
-                    var unitTemp = Settings.IsFahrenheit ? WeatherIcons.FAHRENHEIT : WeatherIcons.CELSIUS;
+                    this.weather = weather;
 
-                    CurrTemp = String.Format(culture, "{0}{1}", temp, unitTemp);
-                }
-                else
-                {
-                    CurrTemp = "--";
-                }
+                    ImageData = null;
+                    BackgroundTheme = ElementTheme.Dark;
 
-                CurrWeather = weather.condition.weather;
+                    LocationName = weather.location.name;
 
-                if (weather.condition.high_f.HasValue && weather.condition.high_f != weather.condition.high_c)
-                {
-                    var temp = Settings.IsFahrenheit ? Math.Round(weather.condition.high_f.Value) : Math.Round(weather.condition.high_c.Value);
-                    HiTemp = String.Format(culture, "{0}º", temp);
-                }
-                else
-                {
-                    HiTemp = "--";
-                }
+                    // Refresh locale/unit dependent values
+                    RefreshView();
 
-                if (weather.condition.low_f.HasValue && weather.condition.low_f != weather.condition.low_c)
-                {
-                    var temp = Settings.IsFahrenheit ? Math.Round(weather.condition.low_f.Value) : Math.Round(weather.condition.low_c.Value);
-                    LoTemp = String.Format(culture, "{0}º", temp);
-                }
-                else
-                {
-                    LoTemp = "--";
-                }
-
-                // Wind
-                if (weather.condition.wind_mph.HasValue && weather.condition.wind_mph >= 0 &&
-                    weather.condition.wind_degrees.HasValue && weather.condition.wind_degrees >= 0)
-                {
-                    var speedVal = Settings.IsFahrenheit ? Math.Round(weather.condition.wind_mph.Value) : Math.Round(weather.condition.wind_kph.Value);
-                    var speedUnit = Settings.IsFahrenheit ? "mph" : "kph";
-
-                    WindSpeed = String.Format(culture, "{0} {1}", speedVal, speedUnit);
-                    WindDirection = weather.condition.wind_degrees.Value;
-                }
-                else
-                {
-                    WindSpeed = "--";
-                    WindDirection = 0;
-                }
-
-                if (weather.precipitation != null)
-                {
-                    PoP = weather.precipitation.pop.HasValue ? weather.precipitation.pop.Value + "%" : null;
-
-                    if (WeatherAPI.OpenWeatherMap.Equals(Settings.API) || WeatherAPI.MetNo.Equals(Settings.API))
+                    if (LocationData.query == null)
                     {
-                        if (weather.precipitation.pop.HasValue && weather.precipitation.pop >= 0)
-                        {
-                            PoPIcon = WeatherIcons.CLOUDY;
-                        }
+                        LocationData.query = weather.query;
+                        LocationData.latitude = weather.location.latitude.GetValueOrDefault(0.0f);
+                        LocationData.longitude = weather.location.longitude.GetValueOrDefault(0.0f);
+                        LocationData.weatherSource = weather.source;
                     }
-                    else
-                    {
-                        if (weather.precipitation.pop.HasValue && weather.precipitation.pop >= 0)
-                        {
-                            PoPIcon = WeatherIcons.UMBRELLA;
-                        }
-                    }
+
+                    IsLoading = false;
                 }
-
-                WeatherIcon = weather.condition.icon;
-                WeatherSource = weather.source;
-
-                if (LocationData.query == null)
+                else if (!Equals(tempUnit, Settings.Unit))
                 {
-                    LocationData.query = weather.query;
-                    LocationData.latitude = weather.location.latitude.GetValueOrDefault(0.0f);
-                    LocationData.longitude = weather.location.longitude.GetValueOrDefault(0.0f);
-                    LocationData.weatherSource = weather.source;
+                    RefreshView();
                 }
-
-                IsLoading = false;
             }
+        }
+
+        private void RefreshView()
+        {
+            var userlang = GlobalizationPreferences.Languages[0];
+            var culture = new CultureInfo(userlang);
+
+            tempUnit = Settings.Unit;
+
+            if (weather.condition.temp_f.HasValue && weather.condition.temp_f != weather.condition.temp_c)
+            {
+                var temp = Settings.IsFahrenheit ? Math.Round(weather.condition.temp_f.Value) : Math.Round(weather.condition.temp_c.Value);
+                var unitTemp = Settings.IsFahrenheit ? WeatherIcons.FAHRENHEIT : WeatherIcons.CELSIUS;
+
+                CurrTemp = String.Format(culture, "{0}{1}", temp, unitTemp);
+            }
+            else
+            {
+                CurrTemp = "--";
+            }
+
+            CurrWeather = weather.condition.weather;
+
+            if (weather.condition.high_f.HasValue && weather.condition.high_f != weather.condition.high_c)
+            {
+                var temp = Settings.IsFahrenheit ? Math.Round(weather.condition.high_f.Value) : Math.Round(weather.condition.high_c.Value);
+                HiTemp = String.Format(culture, "{0}º", temp);
+            }
+            else
+            {
+                HiTemp = "--";
+            }
+
+            if (weather.condition.low_f.HasValue && weather.condition.low_f != weather.condition.low_c)
+            {
+                var temp = Settings.IsFahrenheit ? Math.Round(weather.condition.low_f.Value) : Math.Round(weather.condition.low_c.Value);
+                LoTemp = String.Format(culture, "{0}º", temp);
+            }
+            else
+            {
+                LoTemp = "--";
+            }
+
+            // Wind
+            if (weather.condition.wind_mph.HasValue && weather.condition.wind_mph >= 0 &&
+                weather.condition.wind_degrees.HasValue && weather.condition.wind_degrees >= 0)
+            {
+                var speedVal = Settings.IsFahrenheit ? Math.Round(weather.condition.wind_mph.Value) : Math.Round(weather.condition.wind_kph.Value);
+                var speedUnit = Settings.IsFahrenheit ? "mph" : "kph";
+
+                WindSpeed = String.Format(culture, "{0} {1}", speedVal, speedUnit);
+                WindDirection = weather.condition.wind_degrees.Value;
+            }
+            else
+            {
+                WindSpeed = "--";
+                WindDirection = 0;
+            }
+
+            if (weather.precipitation != null)
+            {
+                PoP = weather.precipitation.pop.HasValue ? weather.precipitation.pop.Value + "%" : null;
+
+                if (WeatherAPI.OpenWeatherMap.Equals(Settings.API) || WeatherAPI.MetNo.Equals(Settings.API))
+                {
+                    if (weather.precipitation.pop.HasValue && weather.precipitation.pop >= 0)
+                    {
+                        PoPIcon = WeatherIcons.CLOUDY;
+                    }
+                }
+                else
+                {
+                    if (weather.precipitation.pop.HasValue && weather.precipitation.pop >= 0)
+                    {
+                        PoPIcon = WeatherIcons.UMBRELLA;
+                    }
+                }
+            }
+
+            WeatherIcon = weather.condition.icon;
+            WeatherSource = weather.source;
         }
 
         public Task UpdateBackground()
