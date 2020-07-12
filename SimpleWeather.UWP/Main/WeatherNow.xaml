@@ -112,7 +112,7 @@
             <Style TargetType="Button" x:Key="AlertButtonRevealStyle">
                 <Setter Property="Background">
                     <Setter.Value>
-                        <RevealBackgroundBrush TargetTheme="Light" Color="OrangeRed" FallbackColor="OrangeRed" />
+                        <RevealBackgroundBrush TargetTheme="Dark" Color="OrangeRed" FallbackColor="OrangeRed" />
                     </Setter.Value>
                 </Setter>
                 <Setter Property="Foreground" Value="{ThemeResource ButtonForeground}" />
@@ -147,7 +147,7 @@
                                                 <Setter Target="RootGrid.(RevealBrush.State)" Value="PointerOver" />
                                                 <Setter Target="RootGrid.Background">
                                                     <Setter.Value>
-                                                        <RevealBackgroundBrush TargetTheme="Light" Color="Red" FallbackColor="Red" />
+                                                        <RevealBackgroundBrush TargetTheme="Dark" Color="Red" FallbackColor="Red" />
                                                     </Setter.Value>
                                                 </Setter>
                                                 <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ButtonRevealBorderBrushPointerOver}" />
@@ -164,7 +164,7 @@
                                                 <Setter Target="RootGrid.(RevealBrush.State)" Value="Pressed" />
                                                 <Setter Target="RootGrid.Background">
                                                     <Setter.Value>
-                                                        <RevealBackgroundBrush TargetTheme="Light" Color="Red" FallbackColor="Red" />
+                                                        <RevealBackgroundBrush TargetTheme="Dark" Color="Red" FallbackColor="Red" />
                                                     </Setter.Value>
                                                 </Setter>
                                                 <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ButtonRevealBorderBrushPressed}" />
