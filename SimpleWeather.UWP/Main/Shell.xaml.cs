@@ -267,7 +267,7 @@ namespace SimpleWeather.UWP.Main
                             WeatherNowView = wnowPage?.WeatherView
                         };
                     }
-                    else if (Type.Equals(_page, typeof(WeatherAlertPage)))
+                    else if (Type.Equals(_page, typeof(WeatherRadarPage)))
                     {
                         parameter = wnowPage?.WeatherView?.RadarURL;
                     }

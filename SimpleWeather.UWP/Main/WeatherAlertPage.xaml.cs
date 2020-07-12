@@ -75,11 +75,12 @@ namespace SimpleWeather.UWP.Main
         {
             base.OnNavigatedTo(e);
 
-            WeatherPageArgs args = e?.Parameter as WeatherPageArgs;
-
-            location = args?.Location;
-            WeatherView = args?.WeatherNowView;
-            AlertsView = args?.AlertsView;
+            if (e?.Parameter is WeatherPageArgs args)
+            {
+                location = args.Location;
+                WeatherView = args.WeatherNowView;
+                AlertsView = args.AlertsView;
+            }
 
             if (location == null)
                 location = await Settings.GetHomeData().ConfigureAwait(true);
