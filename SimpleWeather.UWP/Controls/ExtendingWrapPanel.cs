@@ -36,7 +36,7 @@ namespace SimpleWeather.UWP.Controls
             DependencyProperty.Register(
                 nameof(HorizontalSpacing),
                 typeof(double),
-                typeof(WrapPanel),
+                typeof(ExtendingWrapPanel),
                 new PropertyMetadata(0d, LayoutPropertyChanged));
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace SimpleWeather.UWP.Controls
             DependencyProperty.Register(
                 nameof(VerticalSpacing),
                 typeof(double),
-                typeof(WrapPanel),
+                typeof(ExtendingWrapPanel),
                 new PropertyMetadata(0d, LayoutPropertyChanged));
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace SimpleWeather.UWP.Controls
             DependencyProperty.Register(
                 nameof(Orientation),
                 typeof(Orientation),
-                typeof(WrapPanel),
+                typeof(ExtendingWrapPanel),
                 new PropertyMetadata(Orientation.Horizontal, LayoutPropertyChanged));
 
         /// <summary>
@@ -101,21 +101,8 @@ namespace SimpleWeather.UWP.Controls
             DependencyProperty.Register(
                 nameof(Padding),
                 typeof(Thickness),
-                typeof(WrapPanel),
-                new PropertyMetadata(default(Thickness), LayoutPropertyChanged));
-        
-        public double MinItemWidth
-        {
-            get { return (double)GetValue(MinItemWidthProperty); }
-            set { SetValue(MinItemWidthProperty, value); }
-        }
-
-        public static readonly DependencyProperty MinItemWidthProperty =
-            DependencyProperty.Register(
-                nameof(MinItemWidth),
-                typeof(double),
                 typeof(ExtendingWrapPanel),
-                new PropertyMetadata(0d, LayoutPropertyChanged));
+                new PropertyMetadata(default(Thickness), LayoutPropertyChanged));
 
         private static void LayoutPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -164,13 +151,7 @@ namespace SimpleWeather.UWP.Controls
             {
                 child.Measure(availableSize);
 
-                var desiredWidth = child.DesiredSize.Width;
-                if (MinItemWidth > 0 && desiredWidth != 0 && desiredWidth < MinItemWidth)
-                {
-                    desiredWidth = MinItemWidth;
-                }
-
-                var currentMeasure = new UvMeasure(Orientation, desiredWidth, child.DesiredSize.Height);
+                var currentMeasure = new UvMeasure(Orientation, child.DesiredSize.Width, child.DesiredSize.Height);
                 if (currentMeasure.U == 0)
                 {
                     continue; // ignore collapsed items
@@ -240,13 +221,7 @@ namespace SimpleWeather.UWP.Controls
                 var rowItems = new LinkedList<FrameworkElement>();
                 void Arrange(FrameworkElement child, bool isLast = false)
                 {
-                    var desiredWidth = child.DesiredSize.Width;
-                    if (MinItemWidth > 0 && desiredWidth != 0 && desiredWidth < MinItemWidth)
-                    {
-                        desiredWidth = MinItemWidth;
-                    }
-
-                    var desiredMeasure = new UvMeasure(Orientation, desiredWidth, child.DesiredSize.Height);
+                    var desiredMeasure = new UvMeasure(Orientation, child.DesiredSize.Width, child.DesiredSize.Height);
                     if (desiredMeasure.U == 0)
                     {
                         return; // if an item is collapsed, avoid adding the spacing
@@ -316,10 +291,9 @@ namespace SimpleWeather.UWP.Controls
 
                         foreach (var rowItem in rowItems)
                         {
-                            var width = Math.Max(rowItem.DesiredSize.Width, MinItemWidth);
-                            if (width > MinItemWidth)
+                            if (rowItem.DesiredSize.Width > 0)
                             {
-                                freeSpace -= width;
+                                freeSpace -= rowItem.DesiredSize.Width;
                                 expandingItems--;
                             }
                         }
@@ -339,7 +313,7 @@ namespace SimpleWeather.UWP.Controls
                                 return; // if an item is collapsed, avoid adding the spacing
                             }
 
-                            if (desiredMeasure.U <= MinItemWidth && expandingItems > 0)
+                            if (desiredMeasure.U <= 0 && expandingItems > 0)
                             {
                                 desiredMeasure.U = (freeSpace / expandingItems);
                             }

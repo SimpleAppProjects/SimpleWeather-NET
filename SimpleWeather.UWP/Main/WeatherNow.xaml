@@ -307,6 +307,7 @@
                 <StackPanel Grid.Row="1" MaxWidth="1280" Padding="16,0">
                     <StackPanel Name="ForecastPanel" Margin="0,0,0,25" Loaded="DeferedControl_Loaded"
                             x:Load="{x:Bind ForecastView.Forecasts, Mode=OneWay, Converter={StaticResource collectionBooleanConverter}}">
+                        <Border Style="{ThemeResource Divider}" />
                         <toolkitControls:HeaderedContentControl Style="{ThemeResource SectionLabelStyle}" x:Uid="Label_Forecast" Header="Forecast"
                                                             HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                             <Grid>
@@ -371,20 +372,20 @@
                                         </ItemsPanelTemplate>
                                     </ItemsControl.ItemsPanel>
                                 </ItemsControl>
-                                <localcontrols:ExtendingWrapPanel x:Name="DetailsGrid" Orientation="Horizontal" MinItemWidth="340">
-                                    <localcontrols:UVControl x:Name="UVContrl"
+                                <localcontrols:ExtendingWrapPanel x:Name="DetailsGrid" Orientation="Horizontal">
+                                    <localcontrols:UVControl x:Name="UVContrl" MinWidth="340"
                                                              x:Load="{x:Bind WeatherView.UVIndex, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
                                                              Visibility="{x:Bind WeatherView.UVIndex, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
                                                              DataContext="{x:Bind WeatherView.UVIndex, Mode=OneWay}" Margin="10,5" />
-                                    <localcontrols:BeaufortControl x:Name="BeaufControl"
+                                    <localcontrols:BeaufortControl x:Name="BeaufControl" MinWidth="340"
                                                                    x:Load="{x:Bind WeatherView.Beaufort, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
                                                                    Visibility="{x:Bind WeatherView.Beaufort, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
                                                                    DataContext="{x:Bind WeatherView.Beaufort, Mode=OneWay}" Margin="10,5" />
-                                    <localcontrols:AQIControl x:Name="AQIndexControl"
+                                    <localcontrols:AQIControl x:Name="AQIndexControl" MinWidth="340"
                                                               x:Load="{x:Bind WeatherView.AirQuality, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
                                                               Visibility="{x:Bind WeatherView.AirQuality, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
                                                               DataContext="{x:Bind WeatherView.AirQuality, Mode=OneWay}" Margin="10,5" />
-                                    <localcontrols:MoonPhaseControl x:Name="MoonControl"
+                                    <localcontrols:MoonPhaseControl x:Name="MoonControl" MinWidth="340"
                                                                     x:Load="{x:Bind WeatherView.MoonPhase, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
                                                                     Visibility="{x:Bind WeatherView.MoonPhase, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
                                                                     DataContext="{x:Bind WeatherView.MoonPhase, Mode=OneWay}" Margin="10,5" />
@@ -403,7 +404,7 @@
                         </toolkitControls:HeaderedContentControl>
                     </StackPanel>
                     <StackPanel x:Name="RadarContainer" Margin="0,0,0,25"
-                            x:Load="{x:Bind WeatherView.RadarURL, Converter={StaticResource stringBooleanConverter}, Mode=OneWay}">
+                                x:Load="{x:Bind WeatherView.RadarURL, Converter={StaticResource stringBooleanConverter}, Mode=OneWay}">
                         <Border Style="{ThemeResource Divider}" />
                         <toolkitControls:HeaderedContentControl Style="{ThemeResource SectionLabelStyle}"
                                                             x:Uid="Label_Radar" Header="Radar"
