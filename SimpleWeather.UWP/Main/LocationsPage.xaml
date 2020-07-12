@@ -46,7 +46,7 @@
             </ItemsControl.ItemTemplate>
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <ItemsWrapGrid MaximumRowsOrColumns="3" Orientation="Horizontal" Margin="16,0" />
+                    <ItemsWrapGrid MaximumRowsOrColumns="4" Orientation="Horizontal" Margin="16,0" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemContainerStyle>

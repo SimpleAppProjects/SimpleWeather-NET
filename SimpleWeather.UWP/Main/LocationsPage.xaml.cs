@@ -271,9 +271,13 @@ namespace SimpleWeather.UWP.Main
             {
                 if (StackWidth >= 1280)
                 {
-                    WrapsGrid.ItemWidth = (StackWidth - WrapsGrid.Margin.Left - WrapsGrid.Margin.Right) / 3;
+                    WrapsGrid.ItemWidth = (StackWidth - WrapsGrid.Margin.Left - WrapsGrid.Margin.Right) / 4;
                 }
                 else if (StackWidth >= 1007)
+                {
+                    WrapsGrid.ItemWidth = (StackWidth - WrapsGrid.Margin.Left - WrapsGrid.Margin.Right) / 3;
+                }
+                else if (StackWidth >= 640)
                 {
                     WrapsGrid.ItemWidth = (StackWidth - WrapsGrid.Margin.Left - WrapsGrid.Margin.Right) / 2;
                 }

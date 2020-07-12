@@ -16,7 +16,14 @@ namespace SimpleWeather.Controls
 
         private string locationName;
         private string currTemp;
+        private string currWeather;
         private string weatherIcon;
+        private string hiTemp;
+        private string loTemp;
+        private string pop;
+        private string popIcon;
+        private int windDir;
+        private string windSpeed;
         private bool editMode;
         private ImageDataViewModel imageData;
         private ElementTheme backgroundTheme = ElementTheme.Dark;
@@ -39,15 +46,22 @@ namespace SimpleWeather.Controls
 
         #region Properties
 
-        public string LocationName { get => locationName; set { if (!Equals(locationName, value)) { locationName = value; OnPropertyChanged("LocationName"); } } }
-        public string CurrTemp { get => currTemp; set { if (!Equals(currTemp, value)) { currTemp = value; OnPropertyChanged("CurrTemp"); } } }
-        public string WeatherIcon { get => weatherIcon; set { if (!Equals(weatherIcon, value)) { weatherIcon = value; OnPropertyChanged("WeatherIcon"); } } }
-        public bool EditMode { get => editMode; set { if (!Equals(editMode, value)) { editMode = value; OnPropertyChanged("EditMode"); } } }
+        public string LocationName { get => locationName; set { if (!Equals(locationName, value)) { locationName = value; OnPropertyChanged(nameof(LocationName)); } } }
+        public string CurrTemp { get => currTemp; set { if (!Equals(currTemp, value)) { currTemp = value; OnPropertyChanged(nameof(CurrTemp)); } } }
+        public string CurrWeather { get => currWeather; set { if (!Equals(currWeather, value)) { currWeather = value; OnPropertyChanged(nameof(CurrWeather)); } } }
+        public string HiTemp { get => hiTemp; set { if (!Equals(hiTemp, value)) { hiTemp = value; OnPropertyChanged(nameof(HiTemp)); } } }
+        public string LoTemp { get => loTemp; set { if (!Equals(loTemp, value)) { loTemp = value; OnPropertyChanged(nameof(LoTemp)); } } }
+        public string PoP { get => pop; set { if (!Equals(pop, value)) { pop = value; OnPropertyChanged(nameof(PoP)); } } }
+        public string PoPIcon { get => popIcon; set { if (!Equals(popIcon, value)) { popIcon = value; OnPropertyChanged(nameof(PoPIcon)); } } }
+        public string WeatherIcon { get => weatherIcon; set { if (!Equals(weatherIcon, value)) { weatherIcon = value; OnPropertyChanged(nameof(WeatherIcon)); } } }
+        public string WindSpeed { get => windSpeed; set { if (!Equals(windSpeed, value)) { windSpeed = value; OnPropertyChanged(nameof(WindSpeed)); } } }
+        public int WindDirection { get => windDir; set { if (!Equals(windDir, value)) { windDir = value; OnPropertyChanged(nameof(WindDirection)); } } }
+        public bool EditMode { get => editMode; set { if (!Equals(editMode, value)) { editMode = value; OnPropertyChanged(nameof(EditMode)); } } }
         public ImageDataViewModel ImageData { get => imageData; set { if (!Equals(imageData, value)) { imageData = value; OnPropertyChanged(nameof(ImageData)); } } }
-        public ElementTheme BackgroundTheme { get => backgroundTheme; set { if (!Equals(backgroundTheme, value)) { backgroundTheme = value; OnPropertyChanged("BackgroundTheme"); } } }
-        public bool IsLoading { get => isLoading; set { if (!Equals(isLoading, value)) { isLoading = value; OnPropertyChanged("IsLoading"); } } }
-        public LocationData LocationData { get => locationData; set { if (!Equals(locationData, value)) { locationData = value; OnPropertyChanged("LocationData"); } } }
-        public string WeatherSource { get => weatherSource; set { if (!Equals(weatherSource, value)) { weatherSource = value; OnPropertyChanged("WeatherSource"); } } }
+        public ElementTheme BackgroundTheme { get => backgroundTheme; set { if (!Equals(backgroundTheme, value)) { backgroundTheme = value; OnPropertyChanged(nameof(BackgroundTheme)); } } }
+        public bool IsLoading { get => isLoading; set { if (!Equals(isLoading, value)) { isLoading = value; OnPropertyChanged(nameof(IsLoading)); } } }
+        public LocationData LocationData { get => locationData; set { if (!Equals(locationData, value)) { locationData = value; OnPropertyChanged(nameof(LocationData)); } } }
+        public string WeatherSource { get => weatherSource; set { if (!Equals(weatherSource, value)) { weatherSource = value; OnPropertyChanged(nameof(WeatherSource)); } } }
 
         public int LocationType
         {
@@ -90,15 +104,77 @@ namespace SimpleWeather.Controls
                 BackgroundTheme = ElementTheme.Dark;
 
                 LocationName = weather.location.name;
+
                 if (weather.condition.temp_f.HasValue && weather.condition.temp_f != weather.condition.temp_c)
                 {
                     var temp = Settings.IsFahrenheit ? Math.Round(weather.condition.temp_f.Value) : Math.Round(weather.condition.temp_c.Value);
-                    CurrTemp = String.Format(culture, "{0}º", temp);
+                    var unitTemp = Settings.IsFahrenheit ? WeatherIcons.FAHRENHEIT : WeatherIcons.CELSIUS;
+
+                    CurrTemp = String.Format(culture, "{0}{1}", temp, unitTemp);
                 }
                 else
                 {
                     CurrTemp = "--";
                 }
+
+                CurrWeather = weather.condition.weather;
+
+                if (weather.condition.high_f.HasValue && weather.condition.high_f != weather.condition.high_c)
+                {
+                    var temp = Settings.IsFahrenheit ? Math.Round(weather.condition.high_f.Value) : Math.Round(weather.condition.high_c.Value);
+                    HiTemp = String.Format(culture, "{0}º", temp);
+                }
+                else
+                {
+                    HiTemp = "--";
+                }
+
+                if (weather.condition.low_f.HasValue && weather.condition.low_f != weather.condition.low_c)
+                {
+                    var temp = Settings.IsFahrenheit ? Math.Round(weather.condition.low_f.Value) : Math.Round(weather.condition.low_c.Value);
+                    LoTemp = String.Format(culture, "{0}º", temp);
+                }
+                else
+                {
+                    LoTemp = "--";
+                }
+
+                // Wind
+                if (weather.condition.wind_mph.HasValue && weather.condition.wind_mph >= 0 &&
+                    weather.condition.wind_degrees.HasValue && weather.condition.wind_degrees >= 0)
+                {
+                    var speedVal = Settings.IsFahrenheit ? Math.Round(weather.condition.wind_mph.Value) : Math.Round(weather.condition.wind_kph.Value);
+                    var speedUnit = Settings.IsFahrenheit ? "mph" : "kph";
+
+                    WindSpeed = String.Format(culture, "{0} {1}", speedVal, speedUnit);
+                    WindDirection = weather.condition.wind_degrees.Value;
+                }
+                else
+                {
+                    WindSpeed = "--";
+                    WindDirection = 0;
+                }
+
+                if (weather.precipitation != null)
+                {
+                    PoP = weather.precipitation.pop.HasValue ? weather.precipitation.pop.Value + "%" : null;
+
+                    if (WeatherAPI.OpenWeatherMap.Equals(Settings.API) || WeatherAPI.MetNo.Equals(Settings.API))
+                    {
+                        if (weather.precipitation.pop.HasValue && weather.precipitation.pop >= 0)
+                        {
+                            PoPIcon = WeatherIcons.CLOUDY;
+                        }
+                    }
+                    else
+                    {
+                        if (weather.precipitation.pop.HasValue && weather.precipitation.pop >= 0)
+                        {
+                            PoPIcon = WeatherIcons.UMBRELLA;
+                        }
+                    }
+                }
+
                 WeatherIcon = weather.condition.icon;
                 WeatherSource = weather.source;
 
