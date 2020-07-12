@@ -3,7 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:SimpleWeather.UWP.Preferences"
-    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
@@ -11,19 +11,16 @@
     NavigationCacheMode="Enabled">
 
     <Grid Background="{ThemeResource RegionBrush}">
-        <controls:NavigationView x:Name="SettingsNavView" PaneDisplayMode="Top" SelectionFollowsFocus="Enabled"
-                                 IsBackButtonVisible="Collapsed" IsBackEnabled="False"
-                                 IsSettingsVisible="False" SelectionChanged="NavigationView_SelectionChanged">
-            <controls:NavigationView.PaneHeader>
-                <Rectangle Width="4" />
-            </controls:NavigationView.PaneHeader>
-            <controls:NavigationView.MenuItems>
-                <controls:NavigationViewItem x:Uid="General" Content="General" Tag="General" />
-                <controls:NavigationViewItem x:Uid="Credits" Content="Credits" Tag="Credits" />
-                <controls:NavigationViewItem x:Uid="OSSLibs" Content="Open Source Libraries" Tag="OSSLibs" />
-                <controls:NavigationViewItem x:Uid="About" Content="About" Tag="About" />
-            </controls:NavigationView.MenuItems>
+        <muxc:NavigationView x:Name="SettingsNavView" PaneDisplayMode="Top" 
+                             IsBackButtonVisible="Collapsed" IsBackEnabled="False"
+                             IsSettingsVisible="False" ItemInvoked="SettingsNavView_ItemInvoked">
+            <muxc:NavigationView.MenuItems>
+                <muxc:NavigationViewItem x:Uid="General" Content="General" Tag="General" />
+                <muxc:NavigationViewItem x:Uid="Credits" Content="Credits" Tag="Credits" />
+                <muxc:NavigationViewItem x:Uid="OSSLibs" Content="Open Source Libraries" Tag="OSSLibs" />
+                <muxc:NavigationViewItem x:Uid="About" Content="About" Tag="About" />
+            </muxc:NavigationView.MenuItems>
             <Frame x:Name="SettingsFrame" Navigated="SettingsFrame_Navigated" />
-        </controls:NavigationView>
+        </muxc:NavigationView>
     </Grid>
 </Page>

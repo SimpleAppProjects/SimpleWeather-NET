@@ -20,6 +20,15 @@ namespace SimpleWeather.UWP.Preferences
         public string CommandBarLabel { get; set; }
         public List<muxc.NavigationViewItemBase> PrimaryCommands { get; set; }
 
+        // List of ValueTuple holding the Navigation Tag and the relative Navigation Page
+        private readonly List<(string Tag, Type Page)> _pages = new List<(string Tag, Type Page)>
+        {
+            ("General", typeof(Settings_General)),
+            ("Credits", typeof(Settings_Credits)),
+            ("OSSLibs", typeof(Settings_OSSLibs)),
+            ("About", typeof(Settings_About)),
+        };
+
         public SettingsPage()
         {
             this.InitializeComponent();
@@ -44,48 +53,41 @@ namespace SimpleWeather.UWP.Preferences
             base.OnNavigatedTo(e);
             AnalyticsLogger.LogEvent("SettingsPage: OnNavigatedTo");
 
-            var firstItem = SettingsNavView.MenuItems.First();
+            // NavView doesn't load any page by default, so load home page.
+            SettingsNavView.SelectedItem = SettingsNavView.MenuItems[0];
+            SettingsNavView_Navigate("General", new Windows.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo());
+        }
+        private void SettingsNavView_ItemInvoked(muxc.NavigationView sender, muxc.NavigationViewItemInvokedEventArgs args)
+        {
+            if (args.InvokedItemContainer != null)
+            {
+                var navItemTag = args.InvokedItemContainer.Tag.ToString();
+                SettingsNavView_Navigate(navItemTag, args.RecommendedNavigationTransitionInfo);
 
-            if (SettingsNavView.SelectedItem == firstItem)
-            {
-                SettingsFrame_Navigated(SettingsFrame, e);
-            }
-            else
-            {
-                SettingsNavView.SelectedItem = firstItem;
+                AnalyticsLogger.LogEvent("SettingsPage: NavigationView_SelectionChanged",
+                    new Dictionary<string, string>()
+                    {
+                        { "PageType", navItemTag }
+                    });
             }
         }
 
-        private void NavigationView_SelectionChanged(muxc.NavigationView sender, muxc.NavigationViewSelectionChangedEventArgs args)
+        private void SettingsNavView_Navigate(
+            string navItemTag,
+            Windows.UI.Xaml.Media.Animation.NavigationTransitionInfo transitionInfo)
         {
-            Type pageType;
-            switch ((args.SelectedItem as muxc.NavigationViewItem)?.Tag)
+            Type _page = null;
+            var item = _pages.FirstOrDefault(p => p.Tag.Equals(navItemTag));
+            _page = item.Page;
+            // Get the page type before navigation so you can prevent duplicate
+            // entries in the backstack.
+            var preNavPageType = SettingsFrame.CurrentSourcePageType;
+
+            // Only navigate if the selected page isn't currently loaded.
+            if (!(_page is null) && !Type.Equals(preNavPageType, _page))
             {
-                case "General":
-                default:
-                    pageType = typeof(Settings_General);
-                    break;
-
-                case "Credits":
-                    pageType = typeof(Settings_Credits);
-                    break;
-
-                case "OSSLibs":
-                    pageType = typeof(Settings_OSSLibs);
-                    break;
-
-                case "About":
-                    pageType = typeof(Settings_About);
-                    break;
+                SettingsFrame.Navigate(_page, null, transitionInfo);
             }
-
-            AnalyticsLogger.LogEvent("SettingsPage: NavigationView_SelectionChanged",
-                new Dictionary<string, string>()
-                {
-                    { "PageType", pageType?.Name }
-                });
-
-            SettingsFrame.Navigate(pageType, null, args.RecommendedNavigationTransitionInfo);
         }
 
         private void SettingsFrame_Navigated(object sender, NavigationEventArgs e)
@@ -98,6 +100,15 @@ namespace SimpleWeather.UWP.Preferences
             if (SettingsFrame?.Content is IFrameContentPage contentPage)
             {
                 contentPage.OnNavigatedToPage(e);
+            }
+
+            if (SettingsFrame.SourcePageType != null)
+            {
+                var item = _pages.FirstOrDefault(p => p.Page == e.SourcePageType);
+
+                SettingsNavView.SelectedItem = SettingsNavView.MenuItems
+                    .OfType<muxc.NavigationViewItem>()
+                    .FirstOrDefault(n => n.Tag.Equals(item.Tag));
             }
         }
 
