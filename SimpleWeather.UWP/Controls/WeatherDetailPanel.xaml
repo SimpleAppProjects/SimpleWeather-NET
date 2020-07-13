@@ -13,10 +13,10 @@
         <ResourceDictionary>
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
-                    <SolidColorBrush x:Key="ColorTextDarkForeground" Color="#FFFFFFFF" />
+                    <SolidColorBrush x:Key="ExtraTextForegroundBrush" Color="{ThemeResource SimpleBlueLight}" />
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
-                    <SolidColorBrush x:Key="ColorTextDarkForeground" Color="#FF000000" />
+                    <SolidColorBrush x:Key="ExtraTextForegroundBrush" Color="{ThemeResource SystemAccentColor}" />
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
             <!-- Default style for Windows.UI.Xaml.Controls.Primitives.ToggleButton -->
@@ -213,7 +213,7 @@
         </Grid.RowDefinitions>
 
         <ToggleButton x:Name="DetailHeader" Background="{ThemeResource RegionBrush}" Style="{StaticResource DetailPanelToggleButtonStyle}" Grid.Row="0"
-                      Foreground="{ThemeResource ColorTextDarkForeground}" IsChecked="False" IsEnabled="{x:Bind ViewModel.HasExtras, Mode=OneWay}">
+                      IsChecked="False" IsEnabled="{x:Bind ViewModel.HasExtras, Mode=OneWay}">
             <Grid MinHeight="60">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -221,7 +221,7 @@
                 </Grid.ColumnDefinitions>
                 <Viewbox Name="IconBox" Height="50" Width="50" Margin="8,0" VerticalAlignment="Center" Grid.Column="0">
                     <TextBlock x:Name="WeatherIcon" Text="{x:Bind ViewModel.Icon, FallbackValue='&#xf00d;', Mode=OneWay}"
-                               Foreground="{ThemeResource ColorTextDarkForeground}" Style="{StaticResource WeatherIcon}" />
+                               Style="{StaticResource WeatherIcon}" />
                 </Viewbox>
                 <StackPanel Orientation="Vertical" Grid.Column="1" VerticalAlignment="Center">
                     <TextBlock x:Name="Date" Text="{x:Bind ViewModel.Date, FallbackValue='Someday XX', Mode=OneWay}" FontWeight="Bold" Padding="2" MaxLines="1"
@@ -232,7 +232,7 @@
                                VerticalAlignment="Center" />
                     <TextBlock x:Name="Extra" Text="{x:Bind ViewModel.ForecastExtra, FallbackValue='&#xf078; 100%&#x2003;&#xf050; 5 mph, WNW', Mode=OneWay}"
                                Padding="2" MaxLines="1" FontFamily="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons"
-                               FontSize="{x:Bind Date.FontSize, Mode=OneWay}" Foreground="{ThemeResource SimpleBlueLight}" TextTrimming="CharacterEllipsis"
+                               FontSize="{x:Bind Date.FontSize, Mode=OneWay}" Foreground="{ThemeResource ExtraTextForegroundBrush}" TextTrimming="CharacterEllipsis"
                                VerticalAlignment="Center" Visibility="{x:Bind ViewModel.ForecastExtra, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
                 </StackPanel>
             </Grid>

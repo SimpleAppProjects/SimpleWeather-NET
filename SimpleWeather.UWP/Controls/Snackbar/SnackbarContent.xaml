@@ -21,8 +21,9 @@
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Padding="4,0" Grid.Column="1">
             <Button x:Name="ActionButton" Content="{x:Bind SnackbarModel.ButtonLabel, Mode=OneWay}" FontWeight="SemiBold"
                     Visibility="{x:Bind SnackbarModel.ButtonLabel, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
-                        Background="Transparent" Foreground="{ThemeResource SnackbarForegroundBrush}"
-                        Style="{ThemeResource TextBlockButtonStyle}" />
+                    Background="Transparent"
+                    Foreground="{ThemeResource SnackbarForegroundBrush}"
+                    Style="{ThemeResource TextBlockButtonStyle}" />
         </StackPanel>
     </Grid>
 

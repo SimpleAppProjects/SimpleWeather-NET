@@ -27,6 +27,8 @@ namespace SimpleWeather.Controls
             LocationQuery = string.Empty;
         }
 
+        public bool IsEmpty => String.IsNullOrEmpty(LocationCountry) && String.IsNullOrEmpty(LocationQuery);
+
         public LocationQueryViewModel(HERE.Suggestion location, String weatherAPI)
         {
             SetLocation(location, weatherAPI);

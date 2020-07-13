@@ -18,6 +18,9 @@
     mc:Ignorable="d">
 
     <Page.Resources>
+        <AcrylicBrush x:Key="NavigationViewDefaultPaneBackground" BackgroundSource="Backdrop" TintColor="{ThemeResource SystemChromeAltHighColor}" TintOpacity="0.8" TintTransitionDuration="0" FallbackColor="{ThemeResource SystemChromeMediumColor}" />
+        <AcrylicBrush x:Key="NavigationViewTopPaneBackground" BackgroundSource="Backdrop" TintColor="{ThemeResource SystemChromeAltHighColor}" TintOpacity="0.8" TintTransitionDuration="0" FallbackColor="{ThemeResource SystemChromeMediumColor}" />
+
         <x:Double x:Key="NavigationViewCompactPaneLength">48</x:Double>
         <x:Double x:Key="NavigationViewItemOnLeftMinHeight">48</x:Double>
         <x:Double x:Key="PaneToggleButtonHeight">48</x:Double>

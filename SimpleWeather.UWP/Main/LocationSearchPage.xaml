@@ -16,10 +16,10 @@
         </TransitionCollection>
     </Page.Transitions>
 
-    <Grid Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
+    <Grid Background="{ThemeResource RegionBrush}">
         <localControls:ProgressAutoSuggestBox x:Name="Location" VerticalAlignment="Top" Margin="12"
                                               TextChanged="Location_TextChanged" SuggestionChosen="Location_SuggestionChosen"
                                               QuerySubmitted="Location_QuerySubmitted" HeaderText="Add a location"
-                                              x:Uid="LocationSearchHint" PlaceholderText="Enter Location" />
+                                              x:Uid="LocationSearchHint" PlaceholderText="Enter a location" />
     </Grid>
 </helpers:CustomPage>

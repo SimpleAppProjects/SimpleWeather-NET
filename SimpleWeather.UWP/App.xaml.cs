@@ -56,12 +56,12 @@ namespace SimpleWeather.UWP
                 {
                     if (window.RequestedTheme == ElementTheme.Light)
                     {
-                        var brush = Application.Current.Resources["SimpleBlue"] as SolidColorBrush;
+                        var brush = Application.Current.Resources["SimpleBlueBrush"] as SolidColorBrush;
                         return brush.Color;
                     }
                     else
                     {
-                        var brush = Application.Current.Resources["SimpleBlueDark"] as SolidColorBrush;
+                        var brush = Application.Current.Resources["SimpleBlueDarkBrush"] as SolidColorBrush;
                         return brush.Color;
                     }
                 }
@@ -207,8 +207,8 @@ namespace SimpleWeather.UWP
         {
             // If the app has caches or other memory it can free, it should do so now.
             // << App can release memory here >>
-            AnalyticsLogger.LogEvent("App: ReduceMemoryUsage", 
-                new Dictionary<string, string>() 
+            AnalyticsLogger.LogEvent("App: ReduceMemoryUsage",
+                new Dictionary<string, string>()
                 {
                     { "limit (bytes)", limit.ToString() }
                 });
@@ -368,7 +368,7 @@ namespace SimpleWeather.UWP
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
             {
-                this.DebugSettings.EnableFrameRateCounter = true;
+                //this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
             Logger.WriteLine(LoggerLevel.Info, "Started logger...");

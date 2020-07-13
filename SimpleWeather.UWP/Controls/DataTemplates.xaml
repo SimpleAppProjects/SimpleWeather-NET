@@ -3,13 +3,41 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="SimpleWeather.UWP.Controls.DataTemplates"
     xmlns:controls="using:SimpleWeather.Controls"
+    xmlns:helpers="using:SimpleWeather.UWP.Helpers"
     xmlns:local="using:SimpleWeather.UWP.Controls"
     xmlns:localControls="using:SimpleWeather.UWP.Controls">
 
     <DataTemplate x:Key="LocationQueryDataTemplate" x:DataType="controls:LocationQueryViewModel">
-        <localControls:LocationQuery MinWidth="300" HorizontalAlignment="Stretch"
-                                                                 VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch"
-                                                                 LocationName="{x:Bind LocationName, Mode=OneWay}"
-                                                                 LocationCountry="{x:Bind LocationCountry, Mode=OneWay}" />
+        <Grid Padding="0,5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <FontIcon x:Name="PinIcon"
+                      FontFamily="Segoe MDL2 Assets"
+                      Glyph="&#xE7B7;"
+                      Margin="-8,0,0,0"
+                      Width="50" Foreground="{ThemeResource SimpleBlue}"
+                      Visibility="{x:Bind helpers:BindingExtensions.BoolToVisibility(IsEmpty, x:True), FallbackValue=Collapsed, Mode=OneWay}"
+                      Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" />
+            <TextBlock x:Name="LocationName"
+                       Text="{x:Bind LocationName, Mode=OneWay}"
+                       FontSize="14"
+                       Padding="5"
+                       TextAlignment="Left"
+                       Grid.Row="0" Grid.Column="1" />
+            <TextBlock x:Name="LocationCountry"
+                       Text="{x:Bind LocationCountry, Mode=OneWay}"
+                       FontSize="12"
+                       Padding="5"
+                       TextAlignment="Left"
+                       Grid.Row="1" Grid.Column="1" />
+        </Grid>
     </DataTemplate>
 </ResourceDictionary>

@@ -7,26 +7,28 @@
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Win1809Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <!-- Default style for Windows.UI.Xaml.Controls.Primitives.ToggleButton -->
-        <Style x:Key="AlertPanelToggleButtonStyle" TargetType="ToggleButton">
-            <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
-            <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundChromeWhiteBrush}"/>
-            <Setter Property="BorderBrush" Value="{ThemeResource SystemControlForegroundTransparentBrush}" />
-            <Setter Property="BorderThickness" Value="{ThemeResource ToggleButtonBorderThemeThickness}" />
-            <Setter Property="Padding" Value="8,4,8,4" />
+        <Style x:Key="AlertPanelToggleButtonStyle" TargetType="ToggleButton" BasedOn="{StaticResource ToggleButtonRevealStyle}">
+            <Setter Property="Background" Value="{ThemeResource ToggleButtonRevealBackground}" />
+            <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundChromeWhiteBrush}" />
+            <Setter Property="BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrush}" />
+            <Setter Property="BorderThickness" Value="{ThemeResource ToggleButtonRevealBorderThemeThickness}" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="Padding" Value="{ThemeResource ButtonPadding}" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
-            <Setter Property="UseSystemFocusVisuals" Value="True" />
+            <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
+            <Setter Property="FocusVisualMargin" Value="-3" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ToggleButton">
-                        <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" HorizontalAlignment="Stretch"
-                              BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                        <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}">
                             <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroup x:Name="CommonStates">
                                     <VisualState x:Name="Normal">
@@ -38,13 +40,13 @@
                                         </Storyboard>
                                     </VisualState>
                                     <VisualState x:Name="PointerOver">
-                                        <Storyboard>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background"
-                                                                       Storyboard.TargetName="RootGrid">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="{ThemeResource SystemControlHighlightAltListAccentMediumBrush}" />
-                                            </ObjectAnimationUsingKeyFrames>
+                                        <VisualState.Setters>
+                                            <Setter Target="RootGrid.(RevealBrush.State)" Value="PointerOver" />
+                                            <Setter Target="RootGrid.Background" Value="{ThemeResource SystemControlHighlightAccentRevealBackgroundBrush}" />
+                                            <Setter Target="ContentGrid.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushPointerOver}" />
+                                        </VisualState.Setters>
 
+                                        <Storyboard>
                                             <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
                                             <DoubleAnimation BeginTime="0:0:0" Duration="0:0:0.1" To="0.0"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
@@ -52,13 +54,13 @@
                                         </Storyboard>
                                     </VisualState>
                                     <VisualState x:Name="Pressed">
-                                        <Storyboard>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background"
-                                                                       Storyboard.TargetName="RootGrid">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="{ThemeResource SystemControlHighlightAltListAccentHighBrush}" />
-                                            </ObjectAnimationUsingKeyFrames>
+                                        <VisualState.Setters>
+                                            <Setter Target="RootGrid.(RevealBrush.State)" Value="Pressed" />
+                                            <Setter Target="RootGrid.Background" Value="{ThemeResource SystemControlHighlightAccentRevealBackgroundBrush}" />
+                                            <Setter Target="ContentGrid.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushPressed}" />
+                                        </VisualState.Setters>
 
+                                        <Storyboard>
                                             <DoubleAnimation BeginTime="0:0:0" Duration="0:0:0.1" To="0.0"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
                                                          Storyboard.TargetName="Arrow" />
@@ -66,26 +68,25 @@
                                         </Storyboard>
                                     </VisualState>
                                     <VisualState x:Name="Disabled">
-                                        <Storyboard>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background"
-                                                                       Storyboard.TargetName="RootGrid">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
-                                            </ObjectAnimationUsingKeyFrames>
+                                        <VisualState.Setters>
+                                            <Setter Target="RootGrid.Background" Value="{ThemeResource ToggleButtonRevealBackgroundDisabled}" />
+                                            <Setter Target="ContentGrid.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushDisabled}" />
+                                        </VisualState.Setters>
 
+                                        <Storyboard>
                                             <DoubleAnimation BeginTime="0:0:0" Duration="0:0:0.1" To="0.0"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
                                                          Storyboard.TargetName="Arrow" />
                                         </Storyboard>
                                     </VisualState>
                                     <VisualState x:Name="Checked">
-                                        <Storyboard>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background"
-                                                                       Storyboard.TargetName="RootGrid">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="{ThemeResource SystemControlHighlightAccentBrush}" />
-                                            </ObjectAnimationUsingKeyFrames>
+                                        <VisualState.Setters>
+                                            <Setter Target="RootGrid.Background" Value="{ThemeResource ToggleButtonRevealBackgroundChecked}" />
+                                            <Setter Target="RootGrid.CornerRadius" Value="2,2,0,0" />
+                                            <Setter Target="ContentGrid.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushChecked}" />
+                                        </VisualState.Setters>
 
+                                        <Storyboard>
                                             <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
                                             <DoubleAnimation BeginTime="0:0:0" Duration="0:0:0.1" To="{Binding ElementName=ArrowRotation, Path=Value}"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
@@ -93,13 +94,14 @@
                                         </Storyboard>
                                     </VisualState>
                                     <VisualState x:Name="CheckedPointerOver">
-                                        <Storyboard>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background"
-                                                                       Storyboard.TargetName="RootGrid">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="{ThemeResource SystemControlHighlightAltListAccentMediumBrush}" />
-                                            </ObjectAnimationUsingKeyFrames>
+                                        <VisualState.Setters>
+                                            <Setter Target="RootGrid.(RevealBrush.State)" Value="PointerOver" />
+                                            <Setter Target="RootGrid.CornerRadius" Value="2,2,0,0" />
+                                            <Setter Target="RootGrid.Background" Value="{ThemeResource ToggleButtonRevealBackgroundCheckedPointerOver}" />
+                                            <Setter Target="ContentGrid.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushCheckedPointerOver}" />
+                                        </VisualState.Setters>
 
+                                        <Storyboard>
                                             <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
                                             <DoubleAnimation BeginTime="0:0:0" Duration="0:0:0.1" To="{Binding ElementName=ArrowRotation, Path=Value}"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
@@ -107,13 +109,14 @@
                                         </Storyboard>
                                     </VisualState>
                                     <VisualState x:Name="CheckedPressed">
-                                        <Storyboard>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background"
-                                                                       Storyboard.TargetName="RootGrid">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="{ThemeResource SystemControlHighlightAltListAccentHighBrush}" />
-                                            </ObjectAnimationUsingKeyFrames>
+                                        <VisualState.Setters>
+                                            <Setter Target="RootGrid.(RevealBrush.State)" Value="Pressed" />
+                                            <Setter Target="RootGrid.CornerRadius" Value="2,2,0,0" />
+                                            <Setter Target="RootGrid.Background" Value="{ThemeResource ToggleButtonRevealBackgroundCheckedPressed}" />
+                                            <Setter Target="ContentGrid.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushCheckedPressed}" />
+                                        </VisualState.Setters>
 
+                                        <Storyboard>
                                             <DoubleAnimation BeginTime="0:0:0" Duration="0:0:0.1" To="{Binding ElementName=ArrowRotation, Path=Value}"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
                                                          Storyboard.TargetName="Arrow" />
@@ -121,126 +124,78 @@
                                         </Storyboard>
                                     </VisualState>
                                     <VisualState x:Name="CheckedDisabled">
+                                        <VisualState.Setters>
+                                            <Setter Target="RootGrid.Background" Value="{ThemeResource ToggleButtonRevealBackgroundCheckedDisabled}" />
+                                            <Setter Target="RootGrid.CornerRadius" Value="2,2,0,0" />
+                                            <Setter Target="ContentGrid.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushCheckedDisabled}" />
+                                            <Setter Target="Arrow.Foreground" Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
+                                        </VisualState.Setters>
+
                                         <Storyboard>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background"
-                                                                       Storyboard.TargetName="RootGrid">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
-                                            </ObjectAnimationUsingKeyFrames>
-
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground"
-                                                                       Storyboard.TargetName="Arrow">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
-                                            </ObjectAnimationUsingKeyFrames>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground"
-                                                                       Storyboard.TargetName="ContentPresenter">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
-                                            </ObjectAnimationUsingKeyFrames>
-
                                             <DoubleAnimation BeginTime="0:0:0" Duration="0:0:0.1" To="{Binding ElementName=ArrowRotation, Path=Value}"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
                                                          Storyboard.TargetName="Arrow" />
                                         </Storyboard>
                                     </VisualState>
                                     <VisualState x:Name="Indeterminate">
+                                        <VisualState.Setters>
+                                            <Setter Target="RootGrid.Background" Value="{ThemeResource ToggleButtonRevealBackgroundIndeterminate}" />
+                                            <Setter Target="ContentGrid.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushIndeterminate}" />
+                                        </VisualState.Setters>
+
                                         <Storyboard>
                                             <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
                                         </Storyboard>
                                     </VisualState>
                                     <VisualState x:Name="IndeterminatePointerOver">
+                                        <VisualState.Setters>
+                                            <Setter Target="RootGrid.(RevealBrush.State)" Value="PointerOver" />
+                                            <Setter Target="RootGrid.Background" Value="{ThemeResource ToggleButtonRevealBackgroundIndeterminatePointerOver}" />
+                                            <Setter Target="ContentGrid.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushIndeterminatePointerOver}" />
+                                            <Setter Target="Arrow.Foreground" Value="{ThemeResource SystemControlHighlightBaseHighBrush}" />
+                                        </VisualState.Setters>
+
                                         <Storyboard>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background"
-                                                                       Storyboard.TargetName="RootGrid">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
-                                            </ObjectAnimationUsingKeyFrames>
-
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground"
-                                                                       Storyboard.TargetName="Arrow">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="{ThemeResource SystemControlHighlightBaseHighBrush}" />
-                                            </ObjectAnimationUsingKeyFrames>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground"
-                                                                       Storyboard.TargetName="ContentPresenter">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="{ThemeResource SystemControlHighlightBaseHighBrush}" />
-                                            </ObjectAnimationUsingKeyFrames>
-
                                             <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
                                         </Storyboard>
                                     </VisualState>
                                     <VisualState x:Name="IndeterminatePressed">
+                                        <VisualState.Setters>
+                                            <Setter Target="RootGrid.(RevealBrush.State)" Value="Pressed" />
+                                            <Setter Target="RootGrid.Background" Value="{ThemeResource ToggleButtonRevealBackgroundIndeterminatePressed}" />
+                                            <Setter Target="ContentGrid.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushIndeterminatePressed}" />
+                                            <Setter Target="Arrow.Foreground" Value="{ThemeResource SystemControlHighlightBaseHighBrush}" />
+                                        </VisualState.Setters>
+
                                         <Storyboard>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background"
-                                                                       Storyboard.TargetName="RootGrid">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="{ThemeResource SystemControlBackgroundBaseMediumLowBrush}" />
-                                            </ObjectAnimationUsingKeyFrames>
-
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground"
-                                                                       Storyboard.TargetName="Arrow">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="{ThemeResource SystemControlHighlightBaseHighBrush}" />
-                                            </ObjectAnimationUsingKeyFrames>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground"
-                                                                       Storyboard.TargetName="ContentPresenter">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="{ThemeResource SystemControlHighlightBaseHighBrush}" />
-                                            </ObjectAnimationUsingKeyFrames>
-
                                             <PointerDownThemeAnimation Storyboard.TargetName="RootGrid" />
                                         </Storyboard>
                                     </VisualState>
                                     <VisualState x:Name="IndeterminateDisabled">
-                                        <Storyboard>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background"
-                                                                       Storyboard.TargetName="RootGrid">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
-                                            </ObjectAnimationUsingKeyFrames>
-
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground"
-                                                                       Storyboard.TargetName="Arrow">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
-                                            </ObjectAnimationUsingKeyFrames>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground"
-                                                                       Storyboard.TargetName="ContentPresenter">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
-                                            </ObjectAnimationUsingKeyFrames>
-                                        </Storyboard>
+                                        <VisualState.Setters>
+                                            <Setter Target="RootGrid.Background" Value="{ThemeResource ToggleButtonRevealBackgroundIndeterminateDisabled}" />
+                                            <Setter Target="ContentGrid.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushIndeterminateDisabled}" />
+                                            <Setter Target="Arrow.Foreground" Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
+                                        </VisualState.Setters>
                                     </VisualState>
                                 </VisualStateGroup>
                             </VisualStateManager.VisualStateGroups>
 
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+                            <Grid x:Name="ContentGrid" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
 
-                            <Slider x:Name="ArrowRotation" Visibility="Collapsed" Value="180" Minimum="-180" Maximum="180" />
-                            
-                            <ContentPresenter x:Name="ContentPresenter" Grid.Column="0"
-                                                Content="{TemplateBinding Content}"
-                                                ContentTransitions="{TemplateBinding ContentTransitions}"
-                                                ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                HorizontalAlignment="Stretch"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                AutomationProperties.AccessibilityView="Raw"/>
-                            <FontIcon x:Name="Arrow" Width="40"
-                                      Grid.Column="1"
-                                      Foreground="{TemplateBinding Foreground}"
-                                      RenderTransformOrigin="0.5,0.5"
-                                      FontSize="12"
-                                      Glyph="&#xE70D;">
-                                <FontIcon.RenderTransform>
-                                    <RotateTransform />
-                                </FontIcon.RenderTransform>
-                            </FontIcon>
+                                <Slider x:Name="ArrowRotation" Visibility="Collapsed" Value="180" Minimum="-180" Maximum="180" />
+
+                                <ContentPresenter x:Name="ContentPresenter" Grid.Column="0" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Padding="{TemplateBinding Padding}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw" />
+                                <FontIcon x:Name="Arrow" Width="40" Grid.Column="1" Foreground="{TemplateBinding Foreground}" RenderTransformOrigin="0.5,0.5" FontSize="12" Glyph="&#xE70D;">
+                                    <FontIcon.RenderTransform>
+                                        <RotateTransform />
+                                    </FontIcon.RenderTransform>
+                                </FontIcon>
+                            </Grid>
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
@@ -254,9 +209,10 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <ToggleButton x:Name="AlertHeader" Style="{StaticResource AlertPanelToggleButtonStyle}" Grid.Row="0" Height="40" IsChecked="False">
+        <ToggleButton x:Name="AlertHeader" Style="{StaticResource AlertPanelToggleButtonStyle}" Grid.Row="0" IsChecked="False">
             <ToggleButton.Background>
-                <SolidColorBrush Color="{x:Bind AlertHeaderColor, FallbackValue='#FF006FBF', Mode=OneWay}" />
+                <RevealBackgroundBrush TargetTheme="Dark" Color="{x:Bind AlertHeaderColor, FallbackValue='#FF006FBF', Mode=OneWay}"
+                                       FallbackColor="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Color}" />
             </ToggleButton.Background>
             <Grid Padding="5">
                 <Grid.ColumnDefinitions>
@@ -268,50 +224,65 @@
                                          Source="{x:Bind AlertIconSrc, TargetNullValue='/Assets/WeatherIcons/png/ic_error_white.png', Mode=OneWay}"
                                          HorizontalAlignment="Left" VerticalAlignment="Center">
                 </toolkitControls:ImageEx>
-                <Viewbox Name="TitleBox" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center">
-                    <TextBlock x:Name="Title" Text="{x:Bind WeatherAlert.Title, Mode=OneWay, FallbackValue='Flood Warning, Areal Flood Advisory'}"
-                               Padding="5" FontSize="12" />
-                </Viewbox>
-                <TextBlock x:Name="Date" Text="{x:Bind WeatherAlert.PostDate, Mode=OneWay, FallbackValue='1hr ago'}" Padding="5" Grid.Column="2"
+                <TextBlock x:Name="Title" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"
+                           Text="{Binding Title, Mode=OneWay, FallbackValue='Flood Warning, Areal Flood Advisory'}"
+                           Padding="5" />
+                <TextBlock x:Name="Date" Padding="5" Grid.Column="2" Text="{x:Bind WeatherAlert.PostDate, Mode=OneWay, FallbackValue='1hr ago'}"
                            FontSize="{Binding ElementName=Title, Path=FontSize, Mode=OneWay}"
                            VerticalAlignment="Center" />
             </Grid>
         </ToggleButton>
-        <StackPanel Background="LightGray" Grid.Row="1" 
-                    Padding="5" Visibility="{x:Bind AlertHeader.IsChecked, Mode=OneWay}">
+        <StackPanel Background="LightGray" Grid.Row="1"
+                    Padding="5" Visibility="{x:Bind AlertHeader.IsChecked, Mode=OneWay}"
+                    Win1809Present:CornerRadius="0,0,2,2"
+                    BorderBrush="Transparent" BorderThickness="0.5,0">
             <StackPanel Padding="10">
-                <TextBlock Text="{x:Bind WeatherAlert.ExpireDate, Mode=OneWay}" IsTextSelectionEnabled="False"
-                           TextWrapping="WrapWholeWords" FontSize="{Binding ElementName=Title, Path=FontSize, Mode=OneWay}" />
-                <TextBlock Text="{x:Bind WeatherAlert.Message, Mode=OneWay}" IsTextSelectionEnabled="False"
-                           TextWrapping="WrapWholeWords" FontSize="{Binding ElementName=Title, Path=FontSize, Mode=OneWay}" />
-                <TextBlock Text="{x:Bind WeatherAlert.Attribution, Mode=OneWay}" IsTextSelectionEnabled="False"
-                           TextWrapping="WrapWholeWords" FontSize="{Binding ElementName=Title, Path=FontSize, Mode=OneWay}" />
+                <RichTextBlock IsTextSelectionEnabled="False" TextWrapping="WrapWholeWords"
+                           FontSize="{Binding ElementName=Title, Path=FontSize, Mode=OneWay}">
+                    <Paragraph>
+                        <Span>
+                            <Run Text="{Binding ExpireDate, Mode=OneWay}" />
+                            <LineBreak />
+                        </Span>
+                    </Paragraph>
+                    <Paragraph>
+                        <Span>
+                            <Run Text="{Binding Message, Mode=OneWay}" />
+                            <LineBreak />
+                        </Span>
+                    </Paragraph>
+                    <Paragraph>
+                        <Span>
+                            <Run Text="{Binding Attribution, Mode=OneWay}" />
+                        </Span>
+                    </Paragraph>
+                </RichTextBlock>
             </StackPanel>
         </StackPanel>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="WidthStates">
                 <VisualState x:Name="Mobile">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="0"/>
+                        <AdaptiveTrigger MinWindowWidth="0" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="Title.FontSize" Value="12"/>
+                        <Setter Target="Title.FontSize" Value="12" />
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Medium">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="641"/>
+                        <AdaptiveTrigger MinWindowWidth="641" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="Title.FontSize" Value="12"/>
+                        <Setter Target="Title.FontSize" Value="12" />
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Large">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="1007"/>
+                        <AdaptiveTrigger MinWindowWidth="1007" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="Title.FontSize" Value="14"/>
+                        <Setter Target="Title.FontSize" Value="14" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>

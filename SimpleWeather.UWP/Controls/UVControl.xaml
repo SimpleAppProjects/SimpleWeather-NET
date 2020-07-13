@@ -9,6 +9,20 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Dark">
+                    <Color x:Key="SunPaintColor">Yellow</Color>
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Light">
+                    <Color x:Key="SunPaintColor">Orange</Color>
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+            <SolidColorBrush x:Name="SunPaintColorBrush" Color="{ThemeResource SunPaintColor}" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <StackPanel>
         <toolkitControls:HeaderedContentControl HorizontalContentAlignment="Stretch"
                                                 Style="{StaticResource SectionLabelStyle}">
@@ -20,6 +34,7 @@
                 <TextBlock x:Name="UVIcon" Text="{x:Bind ViewModel.Icon, Mode=OneWay, FallbackValue='&#xf00d;'}"
                            FontSize="32" Width="75" Padding="5"
                            VerticalAlignment="Center"
+                           Foreground="{ThemeResource SunPaintColorBrush}"
                            Style="{StaticResource WeatherIcon}"
                            RelativePanel.AlignTopWithPanel="True"
                            RelativePanel.AlignLeftWithPanel="True"

@@ -10,8 +10,13 @@
     d:DesignHeight="1300"
     NavigationCacheMode="Enabled">
 
+    <Page.Resources>
+        <AcrylicBrush x:Key="NavigationViewDefaultPaneBackground" BackgroundSource="Backdrop" TintColor="{ThemeResource SystemChromeAltHighColor}" TintOpacity="0.8" TintTransitionDuration="0" FallbackColor="{ThemeResource SystemChromeMediumColor}" />
+        <AcrylicBrush x:Key="NavigationViewTopPaneBackground" BackgroundSource="Backdrop" TintColor="{ThemeResource SystemChromeAltHighColor}" TintOpacity="0.8" TintTransitionDuration="0" FallbackColor="{ThemeResource SystemChromeMediumColor}" />
+    </Page.Resources>
+
     <Grid Background="{ThemeResource RegionBrush}">
-        <muxc:NavigationView x:Name="SettingsNavView" PaneDisplayMode="Top" 
+        <muxc:NavigationView x:Name="SettingsNavView" PaneDisplayMode="Top"
                              IsBackButtonVisible="Collapsed" IsBackEnabled="False"
                              IsSettingsVisible="False" ItemInvoked="SettingsNavView_ItemInvoked">
             <muxc:NavigationView.MenuItems>

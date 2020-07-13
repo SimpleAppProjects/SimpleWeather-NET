@@ -129,8 +129,31 @@ namespace SimpleWeather.UWP.Main
                     isDarkTheme = true;
                     break;
             }
+
             FrameworkElement window = Window.Current.Content as FrameworkElement;
             AppFrame.RequestedTheme = window.RequestedTheme = isDarkTheme ? ElementTheme.Dark : ElementTheme.Light;
+
+            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            {
+                // Mobile
+                var statusBar = StatusBar.GetForCurrentView();
+                if (statusBar != null)
+                {
+                    statusBar.BackgroundColor = App.AppColor;
+                    statusBar.ForegroundColor = Colors.White;
+                }
+            }
+            else
+            {
+                // Desktop
+                var titlebar = ApplicationView.GetForCurrentView()?.TitleBar;
+                if (titlebar != null)
+                {
+                    titlebar.BackgroundColor = App.AppColor;
+                    titlebar.ButtonBackgroundColor = titlebar.BackgroundColor;
+                    titlebar.ForegroundColor = Colors.White;
+                }
+            }
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)

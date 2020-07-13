@@ -27,7 +27,8 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid x:Name="MainGrid" Background="{ThemeResource SystemAccentColor}" RequestedTheme="Dark">
+    <Grid x:Name="MainGrid" Background="{ThemeResource SystemAccentColor}" RequestedTheme="Dark"
+          CornerRadius="2">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />

@@ -18,13 +18,13 @@ namespace SimpleWeather.UWP.Controls
 
         public static readonly DependencyProperty ItemColorProperty =
             DependencyProperty.Register("ItemColor", typeof(Color),
-            typeof(DetailItem), new PropertyMetadata(Color.FromArgb(0xB3, 0xff, 0xff, 0xff)));
+            typeof(DetailItem), new PropertyMetadata(Color.FromArgb(0x80, 0xff, 0xff, 0xff)));
         public Color ItemColor
         {
             get
             {
                 Color color = (Color)GetValue(ItemColorProperty);
-                color.A = 0xB3;
+                color.A = 0x80;
                 return color;
             }
             set { SetValue(ItemColorProperty, value); }

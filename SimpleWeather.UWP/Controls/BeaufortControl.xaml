@@ -9,6 +9,20 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Dark">
+                    <Color x:Key="BeaufortPaintColor">DodgerBlue</Color>
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Light">
+                    <Color x:Key="BeaufortPaintColor">Purple</Color>
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+            <SolidColorBrush x:Name="BeaufortPaintColorBrush" Color="{ThemeResource BeaufortPaintColor}" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <StackPanel>
         <toolkitControls:HeaderedContentControl HorizontalContentAlignment="Stretch"
                                                 Style="{StaticResource SectionLabelStyle}">
@@ -20,6 +34,7 @@
                 <TextBlock x:Name="BeaufortIcon" Text="{x:Bind ViewModel.Beaufort.Icon, Mode=OneWay, FallbackValue='&#xf0c2;'}"
                            FontSize="32" Width="75" Padding="5"
                            VerticalAlignment="Center"
+                           Foreground="{ThemeResource BeaufortPaintColorBrush}"
                            Style="{StaticResource WeatherIcon}"
                            RelativePanel.AlignTopWithPanel="True"
                            RelativePanel.AlignLeftWithPanel="True"

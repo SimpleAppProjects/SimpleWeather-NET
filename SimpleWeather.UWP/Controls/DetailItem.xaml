@@ -10,50 +10,66 @@
     d:DesignHeight="175"
     d:DesignWidth="175">
 
-    <Border x:Name="ItemBorder" Margin="15" CornerRadius="2.5" BorderThickness="1" BorderBrush="#40D3D3D3" Background="#B3FFFFFF">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Dark">
+                    <StaticResource x:Key="IconPaintColor" ResourceKey="SimpleBlueLight" />
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Light">
+                    <StaticResource x:Key="IconPaintColor" ResourceKey="SimpleBlueDark" />
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+            <SolidColorBrush x:Name="IconPaintColorBrush" Color="{ThemeResource IconPaintColor}" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Border x:Name="ItemBorder" Margin="15" CornerRadius="2" BorderThickness="1" BorderBrush="#40D3D3D3" Background="#B3FFFFFF">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <TextBlock Name="DetailLabel" Text="{x:Bind Details.Label, FallbackValue='Label', Mode=OneWay}" Grid.Row="0"
                        HorizontalAlignment="Center" VerticalAlignment="Center" Padding="8" />
             <Viewbox Name="WeatherBox" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock Style="{StaticResource WeatherIcon}" Text="{x:Bind Details.Icon, FallbackValue='&#xf00d;', Mode=OneWay}"
+                           Foreground="{ThemeResource IconPaintColorBrush}"
                            RenderTransformOrigin="0.5,0.5" TextLineBounds="Tight" Width="50">
                     <TextBlock.RenderTransform>
                         <RotateTransform Angle="{x:Bind Details.IconRotation, Mode=OneWay}" />
                     </TextBlock.RenderTransform>
                 </TextBlock>
             </Viewbox>
-            <TextBlock Name="DetailValue" Grid.Row="2" Text="{x:Bind Details.Value, FallbackValue=' 50.00 in', Mode=OneWay}"
-                       FontFamily="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons"
-                       HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="WrapWholeWords"
-                       Padding="8" />
+            <Viewbox HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2"
+                     StretchDirection="DownOnly">
+                <TextBlock Name="DetailValue" Text="{Binding Value, FallbackValue=' 50.00 in', Mode=OneWay}"
+                           Style="{StaticResource WeatherIcon}" TextWrapping="WrapWholeWords" Padding="8" />
+            </Viewbox>
         </Grid>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
                 <VisualState x:Name="Mobile">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="0"/>
+                        <AdaptiveTrigger MinWindowWidth="0" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="DetailLabel.FontSize" Value="13"/>
-                        <Setter Target="DetailValue.FontSize" Value="13"/>
-                        <Setter Target="Control.Height" Value="150"/>
-                        <Setter Target="Control.Width" Value="150"/>
+                        <Setter Target="DetailLabel.FontSize" Value="13" />
+                        <Setter Target="DetailValue.FontSize" Value="15" />
+                        <Setter Target="Control.Height" Value="150" />
+                        <Setter Target="Control.Width" Value="150" />
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Desktop">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="641"/>
+                        <AdaptiveTrigger MinWindowWidth="641" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="DetailLabel.FontSize" Value="15"/>
-                        <Setter Target="DetailValue.FontSize" Value="15"/>
-                        <Setter Target="Control.Height" Value="175"/>
-                        <Setter Target="Control.Width" Value="175"/>
+                        <Setter Target="DetailLabel.FontSize" Value="16" />
+                        <Setter Target="DetailValue.FontSize" Value="18" />
+                        <Setter Target="Control.Height" Value="175" />
+                        <Setter Target="Control.Width" Value="175" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>

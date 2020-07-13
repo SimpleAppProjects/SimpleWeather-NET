@@ -284,7 +284,6 @@
     <Compile Include="Controls\LineView.xaml.cs">
       <DependentUpon>LineView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\LocationQuery.cs" />
     <Compile Include="Controls\ProgressAutoSuggestBox.cs" />
     <Compile Include="Controls\RelayCommand.cs" />
     <Compile Include="Controls\Snackbar\Snackbar.cs" />
@@ -309,6 +308,7 @@
     <Compile Include="Controls\BeaufortControl.xaml.cs">
       <DependentUpon>BeaufortControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\BindingExtensions.cs" />
     <Compile Include="Helpers\LocationTypeConverter.cs" />
     <Compile Include="Helpers\BooleanToGridLengthConverter.cs" />
     <Compile Include="Helpers\ColorToSolidColorBrushConverter.cs" />
@@ -423,8 +423,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="Controls\DataTemplates.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\DetailItem.xaml">
       <Generator>MSBuild:Compile</Generator>

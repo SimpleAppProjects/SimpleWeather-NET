@@ -276,11 +276,11 @@ namespace SimpleWeather.UWP.Main
                 return;
 
             if (w <= 640)
-                AlertButton.Width = w;
+                AlertButton.MaxWidth = w;
             else if (w <= 1080)
-                AlertButton.Width = w * (0.75);
+                AlertButton.MaxWidth = w * (0.75);
             else
-                AlertButton.Width = w * (0.50);
+                AlertButton.MaxWidth = w * (0.50);
         }
 
         private void AdjustViewLayout()
@@ -290,7 +290,7 @@ namespace SimpleWeather.UWP.Main
 
             if (MainViewer == null) return;
 
-            double w = MainViewer.ActualWidth - MainViewer.Padding.Left - MainViewer.Padding.Right;
+            double w = MainViewer.ActualWidth - 16d - 16d; // Scrollbar padding
             double h = MainViewer.ActualHeight - MainViewer.Padding.Top - MainViewer.Padding.Bottom;
 
             if (w <= 0 || h <= 0) return;
@@ -300,10 +300,7 @@ namespace SimpleWeather.UWP.Main
             if (ConditionPanel != null)
             {
                 ConditionPanel.Height = h;
-                if (w >= 1280)
-                    ConditionPanel.Width = 1280;
-                else
-                    ConditionPanel.Width = w;
+                ConditionPanel.MaxWidth = 1280;
             }
 
             if (Bounds.Height >= 691)

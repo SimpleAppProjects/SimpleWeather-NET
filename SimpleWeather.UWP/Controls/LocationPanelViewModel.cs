@@ -174,7 +174,7 @@ namespace SimpleWeather.Controls
                 var speedUnit = Settings.IsFahrenheit ? "mph" : "kph";
 
                 WindSpeed = String.Format(culture, "{0} {1}", speedVal, speedUnit);
-                WindDirection = weather.condition.wind_degrees.Value;
+                WindDirection = weather.condition.wind_degrees.Value + 180;
             }
             else
             {

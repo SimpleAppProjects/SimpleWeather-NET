@@ -220,7 +220,7 @@
     <value>Wind</value>
   </data>
   <data name="LocationSearchHint.PlaceholderText" xml:space="preserve">
-    <value>Add a location to start</value>
+    <value>Enter a location</value>
   </data>
   <data name="Message_EnterAPIKey.Text" xml:space="preserve">
     <value>Please enter a Provider Key</value>
@@ -587,5 +587,14 @@
   </data>
   <data name="Pref_UnitFahrenheit.Content" xml:space="preserve">
     <value>Fahrenheit (Imperial)</value>
+  </data>
+  <data name="LocationSearchHint.HeaderText" xml:space="preserve">
+    <value>Add a location</value>
+  </data>
+  <data name="SetupLocationSearchHint.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SetupLocationSearchHint.PlaceholderText" xml:space="preserve">
+    <value>Add a location to start</value>
   </data>
 </root>
