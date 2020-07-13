@@ -597,4 +597,46 @@
   <data name="SetupLocationSearchHint.PlaceholderText" xml:space="preserve">
     <value>Add a location to start</value>
   </data>
+  <data name="Features.Content" xml:space="preserve">
+    <value>Features</value>
+  </data>
+  <data name="FeatureOption_AQI.Content" xml:space="preserve">
+    <value>Air Quality Index</value>
+  </data>
+  <data name="FeatureOption_Background.Content" xml:space="preserve">
+    <value>Background Image</value>
+  </data>
+  <data name="FeatureOption_Beaufort.Content" xml:space="preserve">
+    <value>Beaufort</value>
+  </data>
+  <data name="FeatureOption_Details.Content" xml:space="preserve">
+    <value>Weather Details</value>
+  </data>
+  <data name="FeatureOption_Forecast.Content" xml:space="preserve">
+    <value>Forecast</value>
+  </data>
+  <data name="FeatureOption_HrForecast.Content" xml:space="preserve">
+    <value>Hourly Forecast</value>
+  </data>
+  <data name="FeatureOption_LocPanelBackground.Content" xml:space="preserve">
+    <value>Location Panel Image</value>
+  </data>
+  <data name="FeatureOption_MoonPhase.Content" xml:space="preserve">
+    <value>Moon Phase</value>
+  </data>
+  <data name="FeatureOption_Radar.Content" xml:space="preserve">
+    <value>Weather Radar</value>
+  </data>
+  <data name="FeatureOption_SunPhase.Content" xml:space="preserve">
+    <value>Sun Phase</value>
+  </data>
+  <data name="FeatureOption_UV.Content" xml:space="preserve">
+    <value>UV</value>
+  </data>
+  <data name="Pref_Features_Subtitle.Text" xml:space="preserve">
+    <value>Select features to enable/disable:</value>
+  </data>
+  <data name="Pref_Features_Title.Text" xml:space="preserve">
+    <value>Features</value>
+  </data>
 </root>

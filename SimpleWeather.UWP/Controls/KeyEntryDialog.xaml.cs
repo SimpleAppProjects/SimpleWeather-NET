@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimpleWeather.Utils;
+using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -21,7 +22,7 @@ namespace SimpleWeather.UWP.Controls
         public KeyEntryDialog()
         {
             if (String.IsNullOrWhiteSpace(CurrentAPI))
-                CurrentAPI = Utils.Settings.API;
+                CurrentAPI = Settings.API;
 
             Initialize();
         }
@@ -35,7 +36,7 @@ namespace SimpleWeather.UWP.Controls
 
             if (CurrentAPI == WeatherData.WeatherAPI.Here)
             {
-                Key = Utils.Settings.API_KEY;
+                Key = Settings.API_KEY;
 
                 string app_id = String.Empty;
                 string app_code = String.Empty;
@@ -59,7 +60,7 @@ namespace SimpleWeather.UWP.Controls
                 KeyEntry_2.Visibility = Visibility.Visible;
             }
             else
-                KeyEntry.Text = Key = Utils.Settings.API_KEY;
+                KeyEntry.Text = Key = Settings.API_KEY;
         }
 
         private void KeyEntryDialog_Closing(ContentDialog sender, ContentDialogClosingEventArgs args)

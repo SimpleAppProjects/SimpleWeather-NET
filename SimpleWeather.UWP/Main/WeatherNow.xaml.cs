@@ -8,6 +8,7 @@ using SimpleWeather.UWP.Controls;
 using SimpleWeather.UWP.Helpers;
 using SimpleWeather.UWP.Shared.Helpers;
 using SimpleWeather.UWP.Tiles;
+using SimpleWeather.UWP.Utils;
 using SimpleWeather.UWP.WeatherAlerts;
 using SimpleWeather.WeatherData;
 using System;
@@ -213,10 +214,6 @@ namespace SimpleWeather.UWP.Main
                 case "RadarURL":
                     NavigateToRadarURL();
                     break;
-
-                case "ImageData":
-                    GradientOverlay.Visibility = Visibility.Collapsed;
-                    break;
             }
         }
 
@@ -299,7 +296,15 @@ namespace SimpleWeather.UWP.Main
 
             if (ConditionPanel != null)
             {
-                ConditionPanel.Height = h;
+                if (!FeatureSettings.BackgroundImage)
+                {
+                    ConditionPanel.Height = double.NaN;
+                }
+                else
+                {
+                    ConditionPanel.Height = h;
+                }
+
                 ConditionPanel.MaxWidth = 1280;
             }
 
@@ -371,6 +376,9 @@ namespace SimpleWeather.UWP.Main
 
             // NOTE: ChangeView does not work here for some reason
             MainViewer?.ScrollToVerticalOffset(0);
+
+            // Force binding update for FeatureSettings
+            this.Bindings.Update();
 
             WeatherNowArgs args = e?.Parameter as WeatherNowArgs;
 
@@ -966,11 +974,6 @@ namespace SimpleWeather.UWP.Main
                 AnalyticsLogger.LogEvent("WeatherNow: RadarWebView_Tapped");
                 Frame.Navigate(typeof(WeatherRadarPage), WeatherView?.RadarURL);
             }
-        }
-
-        private void BackgroundOverlay_ImageExOpened(object sender, Microsoft.Toolkit.Uwp.UI.Controls.ImageExOpenedEventArgs e)
-        {
-            GradientOverlay.Visibility = Visibility.Visible;
         }
     }
 }

@@ -1,0 +1,37 @@
+﻿<Page
+    x:Class="SimpleWeather.UWP.Preferences.Settings_Features"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SimpleWeather.UWP.Preferences"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:mtuc="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:uwpUtils="using:SimpleWeather.UWP.Utils"
+    xmlns:utils="using:SimpleWeather.Utils"
+    mc:Ignorable="d"
+    Background="{ThemeResource RegionBrush}"
+    NavigationCacheMode="Enabled">
+
+    <Grid>
+        <ScrollViewer HorizontalScrollMode="Disabled" VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto" Padding="16,0">
+            <StackPanel>
+                <TextBlock x:Uid="Pref_Features_Title" Text="Features"
+                           Style="{ThemeResource SettingTitleStyle}" />
+                <TextBlock x:Uid="Pref_Features_Subtitle" Text="Select features to enable/disable:"
+                           Padding="0,5,0,10" Style="{StaticResource PrefTitleStyle}" />
+                <CheckBox x:Uid="FeatureOption_Background" Content="Background Image" IsChecked="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=TwoWay}" />
+                <CheckBox x:Uid="FeatureOption_Forecast" Content="Forecast" IsChecked="{x:Bind uwpUtils:FeatureSettings.Forecast, Mode=TwoWay}" />
+                <CheckBox x:Uid="FeatureOption_HrForecast" Content="Hourly Forecast" IsChecked="{x:Bind uwpUtils:FeatureSettings.HourlyForecast, Mode=TwoWay}" />
+                <CheckBox x:Uid="FeatureOption_Details" Content="Weather Details" IsChecked="{x:Bind uwpUtils:FeatureSettings.WeatherDetails, Mode=TwoWay}" />
+                <CheckBox x:Uid="FeatureOption_UV" Content="UV" IsChecked="{x:Bind uwpUtils:FeatureSettings.UV, Mode=TwoWay}" />
+                <CheckBox x:Uid="FeatureOption_Beaufort" Content="Beaufort" IsChecked="{x:Bind uwpUtils:FeatureSettings.Beaufort, Mode=TwoWay}" />
+                <CheckBox x:Uid="FeatureOption_AQI" Content="Air Quality Index" IsChecked="{x:Bind uwpUtils:FeatureSettings.AQIndex, Mode=TwoWay}" />
+                <CheckBox x:Uid="FeatureOption_MoonPhase" Content="Moon Phase" IsChecked="{x:Bind uwpUtils:FeatureSettings.MoonPhase, Mode=TwoWay}" />
+                <CheckBox x:Uid="FeatureOption_SunPhase" Content="Sun Phase" IsChecked="{x:Bind uwpUtils:FeatureSettings.SunPhase, Mode=TwoWay}" />
+                <CheckBox x:Uid="FeatureOption_Radar" Content="Weather Radar" IsChecked="{x:Bind uwpUtils:FeatureSettings.WeatherRadar, Mode=TwoWay}" />
+                <CheckBox x:Uid="FeatureOption_LocPanelBackground" Content="Location Panel Image" IsChecked="{x:Bind uwpUtils:FeatureSettings.LocationPanelBackgroundImage, Mode=TwoWay}" />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

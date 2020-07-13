@@ -323,6 +323,9 @@
     <Compile Include="Main\WeatherRadarPage.xaml.cs">
       <DependentUpon>WeatherRadarPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Preferences\Settings_Features.xaml.cs">
+      <DependentUpon>Settings_Features.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tiles\SecondaryTileUtils.cs" />
     <Compile Include="Helpers\StringBooleanConverter.cs" />
     <Compile Include="Helpers\IPageVerification.cs" />
@@ -357,6 +360,7 @@
       <DependentUpon>WeatherAlertPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utf8JsonGen\Utf8JsonGenerated.cs" />
+    <Compile Include="Utils\FeatureSettings.cs" />
     <Compile Include="WeatherAlerts\WeatherAlertHandler.cs" />
     <Compile Include="BackgroundTasks\WeatherUpdateBackgroundTask.cs" />
     <Compile Include="Controls\KeyEntryDialog.xaml.cs">
@@ -495,6 +499,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Preferences\Settings_Credits.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Preferences\Settings_Features.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

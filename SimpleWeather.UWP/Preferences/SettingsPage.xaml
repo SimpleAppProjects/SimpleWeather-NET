@@ -21,6 +21,7 @@
                              IsSettingsVisible="False" ItemInvoked="SettingsNavView_ItemInvoked">
             <muxc:NavigationView.MenuItems>
                 <muxc:NavigationViewItem x:Uid="General" Content="General" Tag="General" />
+                <muxc:NavigationViewItem x:Uid="Features" Content="Features" Tag="Features" />
                 <muxc:NavigationViewItem x:Uid="Credits" Content="Credits" Tag="Credits" />
                 <muxc:NavigationViewItem x:Uid="OSSLibs" Content="Open Source Libraries" Tag="OSSLibs" />
                 <muxc:NavigationViewItem x:Uid="About" Content="About" Tag="About" />
