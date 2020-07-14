@@ -215,16 +215,15 @@
 
     <Grid x:Name="MainGrid" Background="{ThemeResource RegionBrush}">
         <ParallaxView x:Name="ParllxView" Source="{x:Bind MainViewer}" VerticalShift="1000"
-                      x:Load="{x:Bind WeatherView.ImageData.ImageUri, Mode=OneWay, Converter={StaticResource stringBooleanConverter}, TargetNullValue=false, FallbackValue=false}">
+                      x:Load="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay}"
+                      Visibility="{x:Bind WeatherView.ImageData.ImageUri, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
             <Grid>
                 <toolkitControls:ImageEx x:Name="BackgroundOverlay" CachingStrategy="Custom" IsCacheEnabled="True" DecodePixelWidth="720"
                                  Source="{x:Bind WeatherView.ImageData.ImageUri, Mode=OneWay}"
                                  Foreground="{ThemeResource SimpleBlueBrush}"
                                  Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                 Style="{StaticResource ImageExProgressStyle}"
-                                 Visibility="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
-                <Grid x:Name="GradientOverlay"
-                      Visibility="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}">
+                                 Style="{StaticResource ImageExProgressStyle}" />
+                <Grid x:Name="GradientOverlay">
                     <Grid.Background>
                         <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1" SpreadMethod="Pad">
                             <LinearGradientBrush.GradientStops>
@@ -302,8 +301,8 @@
                     </toolkitControls:DropShadowPanel>
                     <HyperlinkButton x:Name="Attribution" Padding="5" FontSize="11" FontWeight="Medium"
                                      VerticalAlignment="Bottom" HorizontalAlignment="Right"
-                                     x:Load="{x:Bind WeatherView.ImageData.OriginalLink, Converter={StaticResource stringBooleanConverter}, Mode=OneWay, TargetNullValue=false, FallbackValue=false}"
-                                     Visibility="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}"
+                                     x:Load="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay}"
+                                     Visibility="{x:Bind WeatherView.ImageData.OriginalLink, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}"
                                      NavigateUri="{x:Bind WeatherView.ImageData.OriginalLink, Mode=OneWay}"
                                      Grid.Row="7" Style="{ThemeResource AttributionStyle}">
                         <HyperlinkButton.Content>
@@ -317,8 +316,8 @@
                 </Grid>
                 <StackPanel Grid.Row="1" MaxWidth="1280" Padding="16,0">
                     <StackPanel Name="ForecastPanel" Margin="0,0,0,25" Loaded="DeferedControl_Loaded"
-                                x:Load="{x:Bind ForecastView.Forecasts, Mode=OneWay, Converter={StaticResource collectionBooleanConverter}}"
-                                Visibility="{x:Bind uwpUtils:FeatureSettings.Forecast, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}">
+                                x:Load="{x:Bind uwpUtils:FeatureSettings.Forecast, Mode=OneWay}"
+                                Visibility="{x:Bind ForecastView.Forecasts, Mode=OneWay, Converter={StaticResource collectionVisibilityConverter}}">
                         <Border Style="{ThemeResource Divider}" />
                         <toolkitControls:HeaderedContentControl Style="{ThemeResource SectionLabelStyle}" x:Uid="Label_Forecast" Header="Forecast"
                                                             HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
@@ -341,8 +340,8 @@
                         </toolkitControls:HeaderedContentControl>
                     </StackPanel>
                     <StackPanel Name="HourlyForecastPanel" Margin="0,0,0,25" Loaded="DeferedControl_Loaded"
-                                x:Load="{x:Bind ForecastView.HourlyForecasts, Mode=OneWay, Converter={StaticResource collectionBooleanConverter}}"
-                                Visibility="{x:Bind uwpUtils:FeatureSettings.HourlyForecast, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}">
+                                x:Load="{x:Bind uwpUtils:FeatureSettings.HourlyForecast, Mode=OneWay}"
+                                Visibility="{x:Bind ForecastView.HourlyForecasts, Mode=OneWay, Converter={StaticResource collectionVisibilityConverter}}">
                         <Border Style="{ThemeResource Divider}" />
                         <toolkitControls:HeaderedContentControl Style="{ThemeResource SectionLabelStyle}" x:Uid="Label_Hourly" Header="Hourly"
                                                             HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
@@ -365,7 +364,7 @@
                         </toolkitControls:HeaderedContentControl>
                     </StackPanel>
                     <StackPanel x:Name="DetailsContainer" Margin="0,0,0,25"
-                                Visibility="{x:Bind uwpUtils:FeatureSettings.DetailsEnabled, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}">
+                                x:Load="{x:Bind uwpUtils:FeatureSettings.DetailsEnabled, Mode=OneWay}">
                         <Border Style="{ThemeResource Divider}" />
                         <toolkitControls:HeaderedContentControl Style="{ThemeResource SectionLabelStyle}"
                                                                 HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
@@ -373,9 +372,9 @@
                             <StackPanel>
                                 <ItemsControl x:Name="DetailsPanel" HorizontalAlignment="Center" HorizontalContentAlignment="Center"
                                               ItemsSource="{x:Bind WeatherView.WeatherDetails, Mode=OneWay}"
-                                              x:Load="{x:Bind WeatherView.WeatherDetails, Mode=OneWay, Converter={StaticResource collectionBooleanConverter}}"
+                                              x:Load="{x:Bind uwpUtils:FeatureSettings.WeatherDetails, Mode=OneWay}"
                                               Loaded="DeferedControl_Loaded"
-                                              Visibility="{x:Bind uwpUtils:FeatureSettings.WeatherDetails, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}">
+                                              Visibility="{x:Bind WeatherView.WeatherDetails, Mode=OneWay, Converter={StaticResource collectionVisibilityConverter}}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate x:DataType="controls:DetailItemViewModel">
                                             <localcontrols:DetailItem HorizontalAlignment="Center" ItemColor="{ThemeResource RegionColor}" />
@@ -388,31 +387,31 @@
                                     </ItemsControl.ItemsPanel>
                                 </ItemsControl>
                                 <localcontrols:ExtendingWrapPanel x:Name="DetailsGrid" Orientation="Horizontal"
-                                                                  Visibility="{x:Bind uwpUtils:FeatureSettings.ExtraDetailsEnabled, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}">
+                                                                  x:Load="{x:Bind uwpUtils:FeatureSettings.ExtraDetailsEnabled, Mode=OneWay}">
                                     <localcontrols:UVControl x:Name="UVContrl" MinWidth="340"
-                                                             x:Load="{x:Bind WeatherView.UVIndex, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
+                                                             x:Load="{x:Bind uwpUtils:FeatureSettings.UV, Mode=OneWay}"
                                                              DataContext="{x:Bind WeatherView.UVIndex, Mode=OneWay}" Margin="10,5"
-                                                             Visibility="{x:Bind uwpUtils:FeatureSettings.UV, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+                                                             Visibility="{x:Bind WeatherView.UVIndex, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
                                     <localcontrols:BeaufortControl x:Name="BeaufControl" MinWidth="340"
-                                                                   x:Load="{x:Bind WeatherView.Beaufort, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
+                                                                   x:Load="{x:Bind uwpUtils:FeatureSettings.Beaufort, Mode=OneWay}"
                                                                    DataContext="{x:Bind WeatherView.Beaufort, Mode=OneWay}" Margin="10,5"
-                                                                   Visibility="{x:Bind uwpUtils:FeatureSettings.Beaufort, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+                                                                   Visibility="{x:Bind WeatherView.Beaufort, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
                                     <localcontrols:AQIControl x:Name="AQIndexControl" MinWidth="340"
-                                                              x:Load="{x:Bind WeatherView.AirQuality, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
+                                                              x:Load="{x:Bind uwpUtils:FeatureSettings.AQIndex, Mode=OneWay}"
                                                               DataContext="{x:Bind WeatherView.AirQuality, Mode=OneWay}" Margin="10,5"
-                                                              Visibility="{x:Bind uwpUtils:FeatureSettings.AQIndex, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+                                                              Visibility="{x:Bind WeatherView.AirQuality, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
                                     <localcontrols:MoonPhaseControl x:Name="MoonControl" MinWidth="340"
-                                                                    x:Load="{x:Bind WeatherView.MoonPhase, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
+                                                                    x:Load="{x:Bind uwpUtils:FeatureSettings.MoonPhase, Mode=OneWay}"
                                                                     DataContext="{x:Bind WeatherView.MoonPhase, Mode=OneWay}" Margin="10,5"
-                                                                    Visibility="{x:Bind uwpUtils:FeatureSettings.MoonPhase, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
+                                                                    Visibility="{x:Bind WeatherView.MoonPhase, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
                                 </localcontrols:ExtendingWrapPanel>
                             </StackPanel>
                         </toolkitControls:HeaderedContentControl>
                     </StackPanel>
                     <StackPanel x:Name="SunPhaseContainer" Margin="0,0,0,25"
-                                x:Load="{x:Bind WeatherView.Sunrise, Converter={StaticResource stringBooleanConverter}, Mode=OneWay}"
+                                x:Load="{x:Bind uwpUtils:FeatureSettings.SunPhase, Mode=OneWay}"
                                 Loaded="DeferedControl_Loaded"
-                                Visibility="{x:Bind uwpUtils:FeatureSettings.SunPhase, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}">
+                                Visibility="{x:Bind WeatherView.Sunrise, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}">
                         <Border Style="{ThemeResource Divider}" />
                         <toolkitControls:HeaderedContentControl Style="{ThemeResource SectionLabelStyle}"
                                                                 x:Uid="Label_Sunriseset" Header="Sunrise / Sunset"
@@ -421,12 +420,12 @@
                         </toolkitControls:HeaderedContentControl>
                     </StackPanel>
                     <StackPanel x:Name="RadarContainer" Margin="0,0,0,25"
-                                x:Load="{x:Bind WeatherView.RadarURL, Converter={StaticResource stringBooleanConverter}, Mode=OneWay}"
-                                Visibility="{x:Bind uwpUtils:FeatureSettings.WeatherRadar, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}">
+                                x:Load="{x:Bind uwpUtils:FeatureSettings.WeatherRadar, Mode=OneWay}"
+                                Visibility="{x:Bind WeatherView.RadarURL, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}">
                         <Border Style="{ThemeResource Divider}" />
                         <toolkitControls:HeaderedContentControl Style="{ThemeResource SectionLabelStyle}"
-                                                            x:Uid="Label_Radar" Header="Radar"
-                                                            HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                                                                x:Uid="Label_Radar" Header="Radar"
+                                                                HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                             <Grid>
                                 <Rectangle Height="{Binding ElementName=RadarWebViewContainer, Path=Height, Mode=OneWay}"
                                            MaxWidth="{Binding ElementName=RadarWebViewContainer, Path=MaxWidth, Mode=OneWay}"
