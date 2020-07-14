@@ -270,6 +270,7 @@ namespace SimpleWeather.UWP.Controls
                 void ArrangeRowItems()
                 {
                     double freeSpace = parentMeasure.U - (spacingMeasure.U * rowItems.Count) - paddingStart.U;
+                    double initFreeSpace = freeSpace;
                     int expandingItems = rowItems.Count;
                     if (rowItems.Count == 1)
                     {
@@ -289,8 +290,11 @@ namespace SimpleWeather.UWP.Controls
                     {
                         var newPostition = UvMeasure.Zero; newPostition.U = paddingStart.U; newPostition.V = position.V;
 
+                        double maxWidth = 0;
                         foreach (var rowItem in rowItems)
                         {
+                            maxWidth = Math.Max(maxWidth, rowItem.DesiredSize.Width);
+
                             if (rowItem.DesiredSize.Width > 0)
                             {
                                 freeSpace -= rowItem.DesiredSize.Width;
@@ -299,10 +303,15 @@ namespace SimpleWeather.UWP.Controls
                         }
 
                         bool fillSpace = false;
+                        bool uniformWidth = false;
                         if (expandingItems <= 0 && freeSpace > 0)
                         {
                             expandingItems = rowItems.Count;
                             fillSpace = true;
+                            if (maxWidth * rowItems.Count > 0)
+                            {
+                                uniformWidth = true;
+                            }
                         }
 
                         foreach (var rowItem in rowItems)
@@ -313,13 +322,16 @@ namespace SimpleWeather.UWP.Controls
                                 return; // if an item is collapsed, avoid adding the spacing
                             }
 
-                            if (desiredMeasure.U <= 0 && expandingItems > 0)
+                            if (fillSpace && freeSpace > 0 && expandingItems > 0)
                             {
-                                desiredMeasure.U = (freeSpace / expandingItems);
-                            }
-                            else if (fillSpace && freeSpace > 0 && expandingItems > 0)
-                            {
-                                desiredMeasure.U += (freeSpace / expandingItems);
+                                if (uniformWidth)
+                                {
+                                    desiredMeasure.U = initFreeSpace / rowItems.Count;
+                                }
+                                else
+                                {
+                                    desiredMeasure.U += (freeSpace / expandingItems);
+                                }
                             }
 
                             // place the item

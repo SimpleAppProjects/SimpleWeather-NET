@@ -388,19 +388,19 @@
                                 </ItemsControl>
                                 <localcontrols:ExtendingWrapPanel x:Name="DetailsGrid" Orientation="Horizontal"
                                                                   x:Load="{x:Bind uwpUtils:FeatureSettings.ExtraDetailsEnabled, Mode=OneWay}">
-                                    <localcontrols:UVControl x:Name="UVContrl" MinWidth="340"
+                                    <localcontrols:UVControl x:Name="UVContrl"
                                                              x:Load="{x:Bind uwpUtils:FeatureSettings.UV, Mode=OneWay}"
                                                              DataContext="{x:Bind WeatherView.UVIndex, Mode=OneWay}" Margin="10,5"
                                                              Visibility="{x:Bind WeatherView.UVIndex, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
-                                    <localcontrols:BeaufortControl x:Name="BeaufControl" MinWidth="340"
+                                    <localcontrols:BeaufortControl x:Name="BeaufControl"
                                                                    x:Load="{x:Bind uwpUtils:FeatureSettings.Beaufort, Mode=OneWay}"
                                                                    DataContext="{x:Bind WeatherView.Beaufort, Mode=OneWay}" Margin="10,5"
                                                                    Visibility="{x:Bind WeatherView.Beaufort, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
-                                    <localcontrols:AQIControl x:Name="AQIndexControl" MinWidth="340"
+                                    <localcontrols:AQIControl x:Name="AQIndexControl"
                                                               x:Load="{x:Bind uwpUtils:FeatureSettings.AQIndex, Mode=OneWay}"
                                                               DataContext="{x:Bind WeatherView.AirQuality, Mode=OneWay}" Margin="10,5"
                                                               Visibility="{x:Bind WeatherView.AirQuality, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
-                                    <localcontrols:MoonPhaseControl x:Name="MoonControl" MinWidth="340"
+                                    <localcontrols:MoonPhaseControl x:Name="MoonControl"
                                                                     x:Load="{x:Bind uwpUtils:FeatureSettings.MoonPhase, Mode=OneWay}"
                                                                     DataContext="{x:Bind WeatherView.MoonPhase, Mode=OneWay}" Margin="10,5"
                                                                     Visibility="{x:Bind WeatherView.MoonPhase, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
