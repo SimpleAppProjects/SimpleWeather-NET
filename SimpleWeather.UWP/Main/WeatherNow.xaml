@@ -17,12 +17,6 @@
 
     <Page.Resources>
         <ResourceDictionary>
-            <TransitionCollection x:Name="TextTransitions">
-                <EntranceThemeTransition />
-            </TransitionCollection>
-            <Style x:Key="WeatherIcon" TargetType="TextBlock" BasedOn="{StaticResource WeatherIcon}">
-                <Setter Property="Transitions" Value="{StaticResource TextTransitions}" />
-            </Style>
             <Style x:Key="ArrowButton" TargetType="Button" BasedOn="{StaticResource ButtonRevealStyle}">
                 <Setter Property="Background" Value="{ThemeResource SystemControlTransparentRevealBackgroundBrush}" />
                 <Setter Property="Padding" Value="8,4,8,4" />
@@ -220,24 +214,28 @@
     </Page.Resources>
 
     <Grid x:Name="MainGrid" Background="{ThemeResource RegionBrush}">
-        <toolkitControls:ImageEx x:Name="BackgroundOverlay" CachingStrategy="Custom" IsCacheEnabled="True" DecodePixelWidth="960"
-                                 x:Load="{x:Bind WeatherView.ImageData.ImageUri, Mode=OneWay, Converter={StaticResource stringBooleanConverter}, TargetNullValue=false, FallbackValue=false}"
+        <ParallaxView x:Name="ParllxView" Source="{x:Bind MainViewer}" VerticalShift="1000"
+                      x:Load="{x:Bind WeatherView.ImageData.ImageUri, Mode=OneWay, Converter={StaticResource stringBooleanConverter}, TargetNullValue=false, FallbackValue=false}">
+            <Grid>
+                <toolkitControls:ImageEx x:Name="BackgroundOverlay" CachingStrategy="Custom" IsCacheEnabled="True" DecodePixelWidth="720"
                                  Source="{x:Bind WeatherView.ImageData.ImageUri, Mode=OneWay}"
                                  Foreground="{ThemeResource SimpleBlueBrush}"
-                                 Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                 Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center"
                                  Style="{StaticResource ImageExProgressStyle}"
                                  Visibility="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}" />
-        <Grid x:Name="GradientOverlay" Grid.RowSpan="7"
-              Visibility="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}">
-            <Grid.Background>
-                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1" SpreadMethod="Pad">
-                    <LinearGradientBrush.GradientStops>
-                        <GradientStop Color="#83121212" Offset="0" />
-                        <GradientStop Color="#27121212" Offset="1" />
-                    </LinearGradientBrush.GradientStops>
-                </LinearGradientBrush>
-            </Grid.Background>
-        </Grid>
+                <Grid x:Name="GradientOverlay"
+                      Visibility="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Converter={StaticResource booleanToVisibilityConverter}, Mode=OneWay}">
+                    <Grid.Background>
+                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1" SpreadMethod="Pad">
+                            <LinearGradientBrush.GradientStops>
+                                <GradientStop Color="#83121212" Offset="0" />
+                                <GradientStop Color="#27121212" Offset="1" />
+                            </LinearGradientBrush.GradientStops>
+                        </LinearGradientBrush>
+                    </Grid.Background>
+                </Grid>
+            </Grid>
+        </ParallaxView>
         <ScrollViewer x:Name="MainViewer" VerticalScrollMode="Auto" SizeChanged="MainGrid_SizeChanged"
                       ViewChanged="MainViewer_ViewChanged"
                       x:Load="{x:Bind WeatherView.Location, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
@@ -263,14 +261,13 @@
                                                      HorizontalAlignment="Center" Margin="0,10,0,5" Grid.Row="0">
                         <TextBlock Name="Location" Text="{x:Bind WeatherView.Location, FallbackValue='New York, NY', Mode=OneWay}"
                                    FontSize="28" FontWeight="Medium" TextAlignment="Center"
-                                   MaxLines="2" TextWrapping="WrapWholeWords" TextTrimming="CharacterEllipsis"
-                                   Transitions="{StaticResource TextTransitions}" />
+                                   MaxLines="2" TextWrapping="WrapWholeWords" TextTrimming="CharacterEllipsis" />
                     </toolkitControls:DropShadowPanel>
                     <toolkitControls:DropShadowPanel BlurRadius="15.0"
                                                      ShadowOpacity="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Converter={StaticResource boolToBinaryValueConverter}}"
                                                      HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Row="1">
                         <TextBlock Name="UpdateDate" Text="{x:Bind WeatherView.UpdateDate, FallbackValue='Updated on 11:12 PM', Mode=OneWay}"
-                                       Padding="5" Transitions="{StaticResource TextTransitions}" FontSize="12" FontWeight="Medium" />
+                                   Padding="5" FontSize="12" FontWeight="Medium" />
                     </toolkitControls:DropShadowPanel>
                     <Button x:Name="AlertButton" Grid.Row="2"
                             x:Load="{x:Bind AlertsView.Alerts, Mode=OneWay, Converter={StaticResource collectionBooleanConverter}}"
@@ -287,7 +284,7 @@
                                                      ShadowOpacity="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Converter={StaticResource boolToBinaryValueConverter}}"
                                                      HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="4">
                         <TextBlock Name="CurCondition" Text="{x:Bind WeatherView.CurCondition, FallbackValue='Sunny', Mode=OneWay}"
-                                   FontSize="24" FontWeight="Medium" Transitions="{StaticResource TextTransitions}" />
+                                   FontSize="24" FontWeight="Medium" />
                     </toolkitControls:DropShadowPanel>
                     <toolkitControls:DropShadowPanel BlurRadius="15.0"
                                                      ShadowOpacity="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Converter={StaticResource boolToBinaryValueConverter}}"
@@ -386,7 +383,7 @@
                                     </ItemsControl.ItemTemplate>
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
-                                            <ItemsWrapGrid Orientation="Horizontal" Transitions="{StaticResource TextTransitions}" />
+                                            <ItemsWrapGrid Orientation="Horizontal" />
                                         </ItemsPanelTemplate>
                                     </ItemsControl.ItemsPanel>
                                 </ItemsControl>
