@@ -71,8 +71,8 @@ namespace SimpleWeather.OpenWeather
     public class Daily
     {
         public long dt { get; set; }
-        public int sunrise { get; set; }
-        public int sunset { get; set; }
+        public long sunrise { get; set; }
+        public long sunset { get; set; }
         public Temp temp { get; set; }
         public Feels_Like feels_like { get; set; }
         public float pressure { get; set; }

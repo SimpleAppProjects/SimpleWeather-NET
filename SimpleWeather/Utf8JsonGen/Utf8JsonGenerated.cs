@@ -14498,9 +14498,9 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather
             writer.WriteRaw(this.____stringByteKeys[0]);
             writer.WriteInt64(value.dt);
             writer.WriteRaw(this.____stringByteKeys[1]);
-            writer.WriteInt32(value.sunrise);
+            writer.WriteInt64(value.sunrise);
             writer.WriteRaw(this.____stringByteKeys[2]);
-            writer.WriteInt32(value.sunset);
+            writer.WriteInt64(value.sunset);
             writer.WriteRaw(this.____stringByteKeys[3]);
             formatterResolver.GetFormatterWithVerify<global::SimpleWeather.OpenWeather.Temp>().Serialize(ref writer, value.temp, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[4]);
@@ -14541,9 +14541,9 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather
 
             var __dt__ = default(long);
             var __dt__b__ = false;
-            var __sunrise__ = default(int);
+            var __sunrise__ = default(long);
             var __sunrise__b__ = false;
-            var __sunset__ = default(int);
+            var __sunset__ = default(long);
             var __sunset__b__ = false;
             var __temp__ = default(global::SimpleWeather.OpenWeather.Temp);
             var __temp__b__ = false;
@@ -14591,11 +14591,11 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather
                         __dt__b__ = true;
                         break;
                     case 1:
-                        __sunrise__ = reader.ReadInt32();
+                        __sunrise__ = reader.ReadInt64();
                         __sunrise__b__ = true;
                         break;
                     case 2:
-                        __sunset__ = reader.ReadInt32();
+                        __sunset__ = reader.ReadInt64();
                         __sunset__b__ = true;
                         break;
                     case 3:

@@ -168,7 +168,7 @@ namespace UnitTestProject
                     tz_long = tz_long
                 }, date).ConfigureAwait(false).GetAwaiter().GetResult();
             Debug.WriteLine("SolCalc - Sunrise: {0}; Sunset: {1}", astro.sunrise, astro.sunset);
-            Assert.IsNotNull(astro.sunrise != DateTime.MinValue && astro.sunset != DateTime.MinValue);
+            Assert.IsTrue(astro.sunrise != DateTime.MinValue && astro.sunset != DateTime.MinValue);
         }
     }
 }

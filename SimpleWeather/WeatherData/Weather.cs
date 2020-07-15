@@ -424,7 +424,7 @@ namespace SimpleWeather.WeatherData
             if (forecast.snow.HasValue)
             {
                 extras.qpf_snow_cm = forecast.snow.Value / 10;
-                extras.qpf_rain_in = ConversionMethods.MMToIn(forecast.snow.Value);
+                extras.qpf_snow_in = ConversionMethods.MMToIn(forecast.snow.Value);
             }
         }
 
