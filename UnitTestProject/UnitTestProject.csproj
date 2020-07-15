@@ -145,7 +145,7 @@
       <Version>1.0.3</Version>
     </PackageReference>
     <PackageReference Include="Google.Apis.Firestore.v1">
-      <Version>1.46.0.1968</Version>
+      <Version>1.48.0.1968</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Bcl.HashCode">
       <Version>1.1.0</Version>
