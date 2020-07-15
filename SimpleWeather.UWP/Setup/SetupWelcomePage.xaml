@@ -6,15 +6,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource RegionBrush}">
+    Background="Transparent">
 
-    <Page.Transitions>
-        <TransitionCollection>
-            <EdgeUIThemeTransition Edge="Left" />
-        </TransitionCollection>
-    </Page.Transitions>
-
-    <Grid Background="{ThemeResource SystemAccentColor}">
+    <Grid>
         <RelativePanel VerticalAlignment="Center" HorizontalAlignment="Center">
             <Viewbox Name="AppLogo" Height="125" Margin="0,25,0,0"
                  RelativePanel.Above="Spacer" RelativePanel.AlignHorizontalCenterWithPanel="True">

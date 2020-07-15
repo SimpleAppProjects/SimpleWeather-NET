@@ -75,18 +75,17 @@ namespace SimpleWeather.UWP.Setup
 
         private void ResizeControls()
         {
-            if (MainPanel != null)
-            {
-                if (this.ActualWidth > 640)
-                    Location.Width = ActualWidth / 2;
-                else
-                    Location.Width = double.NaN;
+            if (this.ActualWidth <= 640)
+                Location.MaxWidth = this.ActualWidth;
+            else if (this.ActualWidth <= 1080)
+                Location.MaxWidth = this.ActualWidth * (0.75);
+            else
+                Location.MaxWidth = this.ActualWidth * (0.50);
 
-                if (this.ActualHeight > 480)
-                    AppLogo.Height = 150;
-                else
-                    AppLogo.Height = 100;
-            }
+            if (this.ActualHeight > 480)
+                AppLogo.Height = 150;
+            else
+                AppLogo.Height = 100;
         }
 
         public void Dispose()
@@ -380,9 +379,6 @@ namespace SimpleWeather.UWP.Setup
 
         private void Restore()
         {
-            var mainPanel = FindName(nameof(MainPanel)) as FrameworkElement;
-            mainPanel.Visibility = Visibility.Visible;
-
             // Sizing
             ResizeControls();
 

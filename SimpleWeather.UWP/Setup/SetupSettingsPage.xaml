@@ -5,16 +5,9 @@
     xmlns:local="using:SimpleWeather.UWP.Setup"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource RegionBrush}">
+    mc:Ignorable="d">
 
-    <Page.Transitions>
-        <TransitionCollection>
-            <EdgeUIThemeTransition Edge="Left" />
-        </TransitionCollection>
-    </Page.Transitions>
-
-    <ScrollViewer Background="{ThemeResource SystemAccentColor}">
+    <ScrollViewer>
         <StackPanel Orientation="Vertical" RequestedTheme="Dark">
             <Viewbox Height="50" Margin="0,32,0,0" HorizontalAlignment="Center">
                 <SymbolIcon Symbol="Setting" />
@@ -23,16 +16,18 @@
             <StackPanel Orientation="Vertical" RequestedTheme="Light" Background="White" MaxWidth="640" Padding="16" Margin="0,16,0,0">
                 <TextBlock x:Uid="Pref_SummaryUnits" Text="Display units in:" Padding="0,5" />
                 <StackPanel Orientation="Horizontal" Padding="10,5">
-                    <RadioButton x:Name="Fahrenheit" Content="Fahrenheit" />
-                    <RadioButton x:Name="Celsius" Content="Celsius" />
+                    <RadioButton x:Name="Fahrenheit" x:Uid="Pref_UnitFahrenheit" Content="Fahrenheit (Imperial)" GroupName="Unit"
+                                 Margin="0,0,10,0" />
+                    <RadioButton x:Name="Celsius" x:Uid="Pref_UnitCelsius" Content="Celsius (Metric)" GroupName="Unit"
+                                 Margin="10,0,0,0" />
                 </StackPanel>
                 <ComboBox x:Name="RefreshComboBox" MinWidth="260" Margin="0,10">
                     <ComboBox.Items>
-                        <TextBlock x:Uid="Pref_Refresh60Min" Text="1 hour"/>
-                        <TextBlock x:Uid="Pref_Refresh2Hrs" Text="2 hours"/>
-                        <TextBlock x:Uid="Pref_Refresh3Hrs" Text="3 hours"/>
-                        <TextBlock x:Uid="Pref_Refresh6Hrs" Text="6 hours"/>
-                        <TextBlock x:Uid="Pref_Refresh12Hrs" Text="12 hours"/>
+                        <TextBlock x:Uid="Pref_Refresh60Min" Text="1 hour" />
+                        <TextBlock x:Uid="Pref_Refresh2Hrs" Text="2 hours" />
+                        <TextBlock x:Uid="Pref_Refresh3Hrs" Text="3 hours" />
+                        <TextBlock x:Uid="Pref_Refresh6Hrs" Text="6 hours" />
+                        <TextBlock x:Uid="Pref_Refresh12Hrs" Text="12 hours" />
                     </ComboBox.Items>
                     <ComboBox.Header>
                         <TextBlock x:Uid="Pref_RefreshInterval" Text="Update Frequency" />

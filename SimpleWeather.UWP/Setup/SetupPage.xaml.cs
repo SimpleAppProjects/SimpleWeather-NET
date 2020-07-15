@@ -8,6 +8,7 @@ using System.Linq;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -28,6 +29,7 @@ namespace SimpleWeather.UWP.Setup
             typeof(SetupLocationsPage),
             typeof(SetupSettingsPage)
         };
+
         private int PageIdx = 0;
 
         public SetupPage()
@@ -55,7 +57,7 @@ namespace SimpleWeather.UWP.Setup
             if (PageIdx >= Pages.Count) PageIdx = 0;
 
             if (!(AppFrame.Content is IPageVerification page) || page.CanContinue())
-                AppFrame.Navigate(Pages[PageIdx]);
+                AppFrame.Navigate(Pages[PageIdx], null, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromLeft });
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
