@@ -427,8 +427,7 @@
                                                                 x:Uid="Label_Radar" Header="Radar"
                                                                 HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                             <Grid>
-                                <Rectangle Height="{Binding ElementName=RadarWebViewContainer, Path=Height, Mode=OneWay}"
-                                           MaxWidth="{Binding ElementName=RadarWebViewContainer, Path=MaxWidth, Mode=OneWay}"
+                                <Rectangle Height="360" MaxWidth="640"
                                            Fill="Transparent" Tapped="RadarWebView_Tapped" Canvas.ZIndex="1" />
                                 <Border x:Name="RadarWebViewContainer" Loaded="RadarWebView_Loaded" MaxWidth="640" Height="360" />
                             </Grid>

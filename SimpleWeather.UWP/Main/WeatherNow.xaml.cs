@@ -915,7 +915,24 @@ namespace SimpleWeather.UWP.Main
 
         private WebView CreateWebView()
         {
-            WebView webview = new WebView(WebViewExecutionMode.SeparateThread);
+            WebView webview = null;
+
+            // Windows 1803+
+            if (Windows.Foundation.Metadata.ApiInformation.IsEnumNamedValuePresent("Windows.UI.Xaml.Controls.WebViewExecutionMode", "SeparateProcess"))
+            {
+                try
+                {
+                    // NOTE: Potential managed code exception; don't know why
+                    webview = new WebView(WebViewExecutionMode.SeparateProcess);
+                }
+                catch (Exception e)
+                {
+                    webview = null;
+                }
+            }
+
+            if (webview == null)
+                webview = new WebView(WebViewExecutionMode.SeparateThread);
 
             webview.NavigationCompleted += async (s, args) =>
             {

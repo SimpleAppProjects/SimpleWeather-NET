@@ -46,6 +46,8 @@ namespace SimpleWeather.UWP.Main
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
+
+            // Destroy webview if we leave
             if (RadarWebViewContainer?.Child is WebView webview)
             {
                 webview.Stop();
@@ -74,10 +76,23 @@ namespace SimpleWeather.UWP.Main
 
         private WebView CreateWebView()
         {
-            WebView webview;
+            WebView webview = null;
+
+            // Windows 1803+
             if (Windows.Foundation.Metadata.ApiInformation.IsEnumNamedValuePresent("Windows.UI.Xaml.Controls.WebViewExecutionMode", "SeparateProcess"))
-                webview = new WebView(WebViewExecutionMode.SeparateProcess);
-            else
+            {
+                try
+                {
+                    // NOTE: Potential managed code exception; don't know why
+                    webview = new WebView(WebViewExecutionMode.SeparateProcess);
+                }
+                catch (Exception e)
+                {
+                    webview = null;
+                }
+            }
+
+            if (webview == null)
                 webview = new WebView(WebViewExecutionMode.SeparateThread);
 
             if (Windows.Foundation.Metadata.ApiInformation.IsEventPresent("Windows.UI.Xaml.Controls.WebView", "SeparateProcessLost"))
