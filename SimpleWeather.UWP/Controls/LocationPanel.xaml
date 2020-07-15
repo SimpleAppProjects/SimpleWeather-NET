@@ -33,7 +33,7 @@
           CornerRadius="2">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -85,7 +85,7 @@
                                              Color="{ThemeResource DropShadowColorBrush}">
                 <TextBlock x:Name="CurWeather" Text="{x:Bind ViewModel.CurrWeather, Mode=OneWay, FallbackValue='Mostly Cloudy'}"
                            FontSize="16" FontWeight="Medium" MaxLines="1" Padding="5,0"
-                           MaxWidth="200" TextTrimming="WordEllipsis" />
+                           TextTrimming="CharacterEllipsis" />
             </toolkitControls:DropShadowPanel>
         </StackPanel>
         <toolkitControls:DropShadowPanel BlurRadius="15.0"
@@ -98,8 +98,7 @@
                        HorizontalTextAlignment="Right"
                        Visibility="{x:Bind ViewModel.HiTemp, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
                     <Span><Run Text="{x:Bind ViewModel.HiTemp, Mode=OneWay, FallbackValue='80º', TargetNullValue='--'}" /><Run Text=" &#xf058;" /></Span>
-                    <LineBreak />
-                    <Span><Run Text="{x:Bind ViewModel.LoTemp, Mode=OneWay, FallbackValue='65º', TargetNullValue='--'}" /><Run Text=" &#xf044;" /></Span>
+                    <LineBreak /><Span><Run Text="{x:Bind ViewModel.LoTemp, Mode=OneWay, FallbackValue='65º', TargetNullValue='--'}" /><Run Text=" &#xf044;" /></Span>
             </TextBlock>
         </toolkitControls:DropShadowPanel>
         <StackPanel Grid.Row="1" Grid.Column="2" Margin="10,0" VerticalAlignment="Center" HorizontalAlignment="Center">
