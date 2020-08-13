@@ -22,8 +22,11 @@ namespace SimpleWeather.UWP.Controls
             this.InitializeComponent();
             this.DataContextChanged += (sender, args) =>
             {
-                AlertHeaderColor = GetColorFromAlertSeverity(WeatherAlert.AlertSeverity);
-                AlertIconSrc = GetAssetFromAlertType(WeatherAlert.AlertType);
+                if (WeatherAlert != null)
+                {
+                    AlertHeaderColor = GetColorFromAlertSeverity(WeatherAlert.AlertSeverity);
+                    AlertIconSrc = GetAssetFromAlertType(WeatherAlert.AlertType);
+                }
 
                 this.Bindings.Update();
             };

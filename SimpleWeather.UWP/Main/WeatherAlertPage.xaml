@@ -26,11 +26,15 @@
         <ScrollViewer HorizontalScrollMode="Disabled" HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Auto" VerticalScrollMode="Enabled"
                       Margin="10" Grid.Row="1">
-            <toolkitControls:HeaderedItemsControl x:Name="StackControl" ItemsSource="{x:Bind AlertsView.Alerts, Mode=OneWay}">
-                <toolkitControls:HeaderedItemsControl.Header>
+            <ListView x:Name="StackControl" ItemsSource="{x:Bind AlertsView.Alerts, Mode=OneWay}"
+                      SelectionMode="None" IsItemClickEnabled="False"
+                      IsSwipeEnabled="False" AllowDrop="False" CanReorderItems="False" CanDragItems="False"
+                      HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                      ContainerContentChanging="StackControl_ContainerContentChanging">
+                <ListView.Header>
                     <TextBlock x:Uid="NoWeatherAlerts_Prompt" Text="No weather alerts available." Padding="4"
                                Visibility="{x:Bind AlertsView.Alerts, Converter={StaticResource collectionVisibilityConverter}, ConverterParameter=true, Mode=OneWay}" />
-                </toolkitControls:HeaderedItemsControl.Header>
+                </ListView.Header>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="controls:WeatherAlertViewModel">
                         <StackPanel>
@@ -45,7 +49,12 @@
                         <ItemsStackPanel Orientation="Vertical" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
-            </toolkitControls:HeaderedItemsControl>
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="ListViewItem" BasedOn="{StaticResource ListViewItemRevealStyle}">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+            </ListView>
         </ScrollViewer>
     </Grid>
 </helpers:CustomPage>

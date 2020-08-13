@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -122,6 +123,20 @@ namespace SimpleWeather.UWP.Main
         {
             Settings.GetWeatherDBConnection().GetConnection().TableChanged -= WeatherAlertPage_TableChanged;
             base.OnNavigatedFrom(e);
+        }
+
+        private void StackControl_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
+        {
+            if (args.Item is WeatherAlertViewModel)
+            {
+                var container = args.ItemContainer;
+                var headerToggle = VisualTreeHelperExtensions.FindChild<ToggleButton>(container, "AlertHeader");
+
+                if (headerToggle != null)
+                {
+                    headerToggle.IsChecked = false;
+                }
+            }
         }
     }
 }

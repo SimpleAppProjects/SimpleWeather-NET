@@ -86,7 +86,7 @@
         <ListView x:Name="ListControl" SelectionMode="None" IsItemClickEnabled="False" Grid.Row="1"
                   IsSwipeEnabled="False" AllowDrop="False" CanReorderItems="False" CanDragItems="False"
                   HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" ItemsSource="{x:Bind Forecasts, Mode=OneWay}"
-                  DataFetchSize="24" ShowsScrollingPlaceholders="True">
+                  DataFetchSize="24" ShowsScrollingPlaceholders="True" ContainerContentChanging="ListControl_ContainerContentChanging">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Border Background="{ThemeResource ToggleButtonBackgroundThemeBrush}" BorderBrush="{ThemeResource TextBoxDisabledBorderThemeBrush}" BorderThickness="0,0,0,0.5">

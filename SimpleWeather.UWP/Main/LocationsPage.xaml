@@ -13,6 +13,38 @@
 
     <helpers:CustomPage.Resources>
         <helpers:LocationTypeConverter x:Key="locTypeConverter" />
+        <Style x:Key="LocationsPanelHeaderStyle" TargetType="GridViewHeaderItem">
+            <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
+            <Setter Property="FontSize" Value="{ThemeResource GridViewHeaderItemThemeFontSize}" />
+            <Setter Property="Background" Value="{ThemeResource GridViewHeaderItemBackground}" />
+            <Setter Property="Margin" Value="0,0,0,4" />
+            <Setter Property="Padding" Value="8,8,8,0" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="VerticalContentAlignment" Value="Top" />
+            <Setter Property="MinHeight" Value="{ThemeResource GridViewHeaderItemMinHeight}" />
+            <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GridViewHeaderItem">
+                        <StackPanel Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}">
+                            <ContentPresenter x:Name="ContentPresenter"
+                                              Margin="{TemplateBinding Padding}"
+                                              Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              ContentTransitions="{TemplateBinding ContentTransitions}"
+                                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                            <Rectangle Stroke="{ThemeResource GridViewHeaderItemDividerStroke}"
+                                       StrokeThickness="0.5"
+                                       Height="1"
+                                       VerticalAlignment="Bottom"
+                                       HorizontalAlignment="Stretch"
+                                       Margin="0,8,0,0" />
+                        </StackPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </helpers:CustomPage.Resources>
 
     <Grid Background="{ThemeResource RegionBrush}">
@@ -21,7 +53,7 @@
                   HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
                   ContainerContentChanging="LocationsPanel_ContainerContentChanging">
             <ItemsControl.GroupStyle>
-                <GroupStyle HidesIfEmpty="True">
+                <GroupStyle HidesIfEmpty="True" HeaderContainerStyle="{ThemeResource LocationsPanelHeaderStyle}">
                     <GroupStyle.HeaderTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Path=LocationType, Converter={StaticResource locTypeConverter}}"

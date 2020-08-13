@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -178,6 +179,20 @@ namespace SimpleWeather.UWP.Main
                         Forecasts = ForecastsView.HourlyForecasts;
                     }
                     break;
+            }
+        }
+
+        private void ListControl_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
+        {
+            if (args.Item is BaseForecastItemViewModel)
+            {
+                var container = args.ItemContainer;
+                var headerToggle = VisualTreeHelperExtensions.FindChild<ToggleButton>(container, "DetailHeader");
+
+                if (headerToggle != null)
+                {
+                    headerToggle.IsChecked = false;
+                }
             }
         }
     }
