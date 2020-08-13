@@ -40,7 +40,8 @@ namespace SimpleWeather.UWP.Shared.Helpers
         public static bool IsTileSupported()
         {
             if (DeviceType == DeviceTypes.Xbox || DeviceType == DeviceTypes.IoT ||
-                !ApiInformation.IsTypePresent("Windows.ApplicationModel.Background.ToastNotificationActionTrigger"))
+                !ApiInformation.IsTypePresent("Windows.ApplicationModel.Background.ToastNotificationActionTrigger") ||
+                !ApiInformation.IsTypePresent("Windows.UI.StartScreen.SecondaryTile"))
                 return false;
 
             return true;

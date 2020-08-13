@@ -19,6 +19,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
+using Windows.Foundation.Metadata;
 using Windows.System.UserProfile;
 using Windows.UI;
 using Windows.UI.Core;
@@ -27,6 +28,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using muxc = Microsoft.UI.Xaml.Controls;
 
@@ -751,11 +753,19 @@ namespace SimpleWeather.UWP.Main
         private void GotoAlertsPage()
         {
             AnalyticsLogger.LogEvent("WeatherNow: GotoAlertsPage");
+
+            var transition = new SlideNavigationTransitionInfo();
+
+            if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo", "Effect"))
+            {
+                transition.Effect = SlideNavigationTransitionEffect.FromRight;
+            }
+
             Frame.Navigate(typeof(WeatherAlertPage), new WeatherPageArgs()
             {
                 Location = location,
                 WeatherNowView = WeatherView
-            });
+            }, transition);
         }
 
         private void AlertButton_Click(object sender, RoutedEventArgs e)
@@ -807,7 +817,7 @@ namespace SimpleWeather.UWP.Main
             AnalyticsLogger.LogEvent("WeatherNow: PinButton_Click");
 
             // Check if Tile service is available
-            if (!DeviceTypeHelper.IsTileSupported()) return;
+            if (!DeviceTypeHelper.IsTileSupported() || location?.query == null) return;
 
             var pinBtn = sender as muxc.NavigationViewItem;
             pinBtn.IsEnabled = false;
@@ -875,7 +885,7 @@ namespace SimpleWeather.UWP.Main
                     WeatherNowView = WeatherView,
                     IsHourly = IsHourly,
                     ScrollToPosition = Position
-                });
+                }, new DrillInNavigationTransitionInfo());
         }
 
         private void LineView_Tapped(object sender, TappedRoutedEventArgs e)
@@ -989,7 +999,7 @@ namespace SimpleWeather.UWP.Main
             if (WeatherView?.RadarURL != null)
             {
                 AnalyticsLogger.LogEvent("WeatherNow: RadarWebView_Tapped");
-                Frame.Navigate(typeof(WeatherRadarPage), WeatherView?.RadarURL);
+                Frame.Navigate(typeof(WeatherRadarPage), WeatherView?.RadarURL, new DrillInNavigationTransitionInfo());
             }
         }
     }

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Windows.ApplicationModel.Core;
+using Windows.Foundation.Metadata;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
@@ -57,7 +58,16 @@ namespace SimpleWeather.UWP.Setup
             if (PageIdx >= Pages.Count) PageIdx = 0;
 
             if (!(AppFrame.Content is IPageVerification page) || page.CanContinue())
-                AppFrame.Navigate(Pages[PageIdx], null, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromLeft });
+            {
+                var transition = new SlideNavigationTransitionInfo();
+
+                if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo", "Effect"))
+                {
+                    transition.Effect = SlideNavigationTransitionEffect.FromLeft;
+                }
+
+                AppFrame.Navigate(Pages[PageIdx], null, transition);
+            }
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
