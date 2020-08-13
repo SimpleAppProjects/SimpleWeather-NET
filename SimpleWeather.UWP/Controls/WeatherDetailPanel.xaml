@@ -226,7 +226,7 @@
                 <StackPanel Orientation="Vertical" Grid.Column="1" VerticalAlignment="Center">
                     <TextBlock x:Name="Date" Text="{x:Bind ViewModel.Date, FallbackValue='Someday XX', Mode=OneWay}" FontWeight="Bold" Padding="2" MaxLines="1"
                                TextTrimming="CharacterEllipsis" />
-                    <TextBlock x:Name="Condition" Text="{x:Bind ViewModel.Condition, FallbackValue='50º / 44º - Sprinkles early. Mostly cloudy. Mild', Mode=OneWay}"
+                    <TextBlock x:Name="Condition" Text="{x:Bind ViewModel.Condition, FallbackValue='50° / 44° - Sprinkles early. Mostly cloudy. Mild', Mode=OneWay}"
                                Padding="2" MaxLines="1"
                                FontSize="{x:Bind Date.FontSize, Mode=OneWay}" TextTrimming="CharacterEllipsis"
                                VerticalAlignment="Center" />

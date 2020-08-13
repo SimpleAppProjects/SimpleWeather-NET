@@ -178,7 +178,7 @@ namespace SimpleWeather.Controls
             if (weather.condition.high_f.HasValue && weather.condition.high_f != weather.condition.high_c)
             {
                 var value = Settings.IsFahrenheit ? Math.Round(weather.condition.high_f.Value) : Math.Round(weather.condition.high_c.Value);
-                HiTemp = String.Format(culture, "{0}º", value);
+                HiTemp = String.Format(culture, "{0}°", value);
             }
             else
             {
@@ -188,7 +188,7 @@ namespace SimpleWeather.Controls
             if (weather.condition.low_f.HasValue && weather.condition.low_f != weather.condition.low_c)
             {
                 var value = Settings.IsFahrenheit ? Math.Round(weather.condition.low_f.Value) : Math.Round(weather.condition.low_c.Value);
-                LoTemp = String.Format(culture, "{0}º", value);
+                LoTemp = String.Format(culture, "{0}°", value);
             }
             else
             {
@@ -266,7 +266,7 @@ namespace SimpleWeather.Controls
             if (weather.atmosphere.dewpoint_f.HasValue && (weather.atmosphere.dewpoint_f != weather.atmosphere.dewpoint_c))
             {
                 WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Dewpoint,
-                    String.Format(culture, "{0}º",
+                    String.Format(culture, "{0}°",
                     Settings.IsFahrenheit ?
                         Math.Round(weather.atmosphere.dewpoint_f.Value) :
                         Math.Round(weather.atmosphere.dewpoint_c.Value))));
@@ -288,7 +288,7 @@ namespace SimpleWeather.Controls
                 var value = Settings.IsFahrenheit ? Math.Round(weather.condition.feelslike_f.Value) : Math.Round(weather.condition.feelslike_c.Value);
 
                 WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.FeelsLike,
-                       String.Format(culture, "{0}º", value)));
+                       String.Format(culture, "{0}°", value)));
             }
 
             // Wind

@@ -34,7 +34,7 @@ namespace SimpleWeather.Controls
                 if (forecast.high_f.HasValue && forecast.high_c.HasValue)
                 {
                     var value = Settings.IsFahrenheit ? Math.Round(forecast.high_f.Value) : Math.Round(forecast.high_c.Value);
-                    HiTemp = String.Format(culture, "{0}º", value);
+                    HiTemp = String.Format(culture, "{0}°", value);
                 }
                 else
                 {
@@ -51,7 +51,7 @@ namespace SimpleWeather.Controls
                 if (forecast.low_f.HasValue && forecast.low_c.HasValue)
                 {
                     var value = Settings.IsFahrenheit ? Math.Round(forecast.low_f.Value) : Math.Round(forecast.low_c.Value);
-                    LoTemp = String.Format(culture, "{0}º", value);
+                    LoTemp = String.Format(culture, "{0}°", value);
                 }
                 else
                 {
@@ -72,7 +72,7 @@ namespace SimpleWeather.Controls
                     var value = Settings.IsFahrenheit ? Math.Round(forecast.extras.feelslike_f.Value) : Math.Round(forecast.extras.feelslike_c.Value);
 
                     DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.FeelsLike,
-                           String.Format(culture, "{0}º", value)));
+                           String.Format(culture, "{0}°", value)));
                 }
 
                 string Chance = PoP = forecast.extras.pop.HasValue ? forecast.extras.pop.Value + "%" : null;
@@ -125,7 +125,7 @@ namespace SimpleWeather.Controls
                 if (forecast.extras.dewpoint_f.HasValue && (forecast.extras.dewpoint_f != forecast.extras.dewpoint_c))
                 {
                     DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.Dewpoint,
-                        String.Format(culture, "{0}º",
+                        String.Format(culture, "{0}°",
                         Settings.IsFahrenheit ?
                                 Math.Round(forecast.extras.dewpoint_f.Value) :
                                 Math.Round(forecast.extras.dewpoint_c.Value))));

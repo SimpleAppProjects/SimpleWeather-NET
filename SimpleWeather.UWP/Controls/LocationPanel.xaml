@@ -77,7 +77,7 @@
                                              ShadowOpacity="{ThemeResource DropShadowOpacity}"
                                              Color="{ThemeResource DropShadowColorBrush}"
                                              VerticalAlignment="Center">
-                <TextBlock x:Name="CurrentTemp" Text="{x:Bind ViewModel.CurrTemp, FallbackValue='70º', Mode=OneWay}"
+                <TextBlock x:Name="CurrentTemp" Text="{x:Bind ViewModel.CurrTemp, FallbackValue='70°', Mode=OneWay}"
                            FontSize="36" FontWeight="Medium" Style="{StaticResource WeatherIcon}" Padding="5,0" />
             </toolkitControls:DropShadowPanel>
             <toolkitControls:DropShadowPanel BlurRadius="15.0"
@@ -97,8 +97,8 @@
                        Style="{ThemeResource WeatherIcon}"
                        HorizontalTextAlignment="Right"
                        Visibility="{x:Bind ViewModel.HiTemp, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
-                    <Span><Run Text="{x:Bind ViewModel.HiTemp, Mode=OneWay, FallbackValue='80º', TargetNullValue='--'}" /><Run Text=" &#xf058;" /></Span>
-                    <LineBreak /><Span><Run Text="{x:Bind ViewModel.LoTemp, Mode=OneWay, FallbackValue='65º', TargetNullValue='--'}" /><Run Text=" &#xf044;" /></Span>
+                    <Span><Run Text="{x:Bind ViewModel.HiTemp, Mode=OneWay, FallbackValue='80°', TargetNullValue='--'}" /><Run Text=" &#xf058;" /></Span>
+                    <LineBreak /><Span><Run Text="{x:Bind ViewModel.LoTemp, Mode=OneWay, FallbackValue='65°', TargetNullValue='--'}" /><Run Text=" &#xf044;" /></Span>
             </TextBlock>
         </toolkitControls:DropShadowPanel>
         <StackPanel Grid.Row="1" Grid.Column="2" Margin="10,0" VerticalAlignment="Center" HorizontalAlignment="Center">

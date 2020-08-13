@@ -149,7 +149,7 @@ namespace SimpleWeather.Controls
             if (weather.condition.high_f.HasValue && weather.condition.high_f != weather.condition.high_c)
             {
                 var temp = Settings.IsFahrenheit ? Math.Round(weather.condition.high_f.Value) : Math.Round(weather.condition.high_c.Value);
-                HiTemp = String.Format(culture, "{0}º", temp);
+                HiTemp = String.Format(culture, "{0}°", temp);
             }
             else
             {
@@ -159,7 +159,7 @@ namespace SimpleWeather.Controls
             if (weather.condition.low_f.HasValue && weather.condition.low_f != weather.condition.low_c)
             {
                 var temp = Settings.IsFahrenheit ? Math.Round(weather.condition.low_f.Value) : Math.Round(weather.condition.low_c.Value);
-                LoTemp = String.Format(culture, "{0}º", temp);
+                LoTemp = String.Format(culture, "{0}°", temp);
             }
             else
             {

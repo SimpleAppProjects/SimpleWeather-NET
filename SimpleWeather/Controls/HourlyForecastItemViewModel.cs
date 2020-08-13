@@ -40,7 +40,7 @@ namespace SimpleWeather.Controls
                 if (hrForecast.high_f.HasValue && hrForecast.high_c.HasValue)
                 {
                     var value = Settings.IsFahrenheit ? Math.Round(hrForecast.high_f.Value) : Math.Round(hrForecast.high_c.Value);
-                    HiTemp = String.Format(culture, "{0}º", value);
+                    HiTemp = String.Format(culture, "{0}°", value);
                 }
                 else
                 {
@@ -75,7 +75,7 @@ namespace SimpleWeather.Controls
                     var value = Settings.IsFahrenheit ? Math.Round(hrForecast.extras.feelslike_f.Value) : Math.Round(hrForecast.extras.feelslike_c.Value);
 
                     DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.FeelsLike,
-                           String.Format(culture, "{0}º", value)));
+                           String.Format(culture, "{0}°", value)));
                 }
 
                 if (WeatherAPI.OpenWeatherMap.Equals(Settings.API) || WeatherAPI.MetNo.Equals(Settings.API))
@@ -126,7 +126,7 @@ namespace SimpleWeather.Controls
                 if (hrForecast.extras.dewpoint_f.HasValue && (hrForecast.extras.dewpoint_f != hrForecast.extras.dewpoint_c))
                 {
                     DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.Dewpoint,
-                        String.Format(culture, "{0}º",
+                        String.Format(culture, "{0}°",
                         Settings.IsFahrenheit ?
                                 Math.Round(hrForecast.extras.dewpoint_f.Value) :
                                 Math.Round(hrForecast.extras.dewpoint_c.Value))));

@@ -61,7 +61,7 @@ namespace SimpleWeather.UWP.Tiles
                             {
                                 new AdaptiveText()
                                 {
-                                    Text = weather.CurTemp.RemoveNonDigitChars() + "º",
+                                    Text = weather.CurTemp.RemoveNonDigitChars() + "°",
                                     HintStyle = AdaptiveTextStyle.Body,
                                     HintAlign = AdaptiveTextAlign.Center
                                 },
@@ -237,7 +237,7 @@ namespace SimpleWeather.UWP.Tiles
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("Temp_Label"), weather.CurTemp.RemoveNonDigitChars() + "º"),
+                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("Temp_Label"), weather.CurTemp.RemoveNonDigitChars() + "°"),
                                     HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
@@ -323,7 +323,7 @@ namespace SimpleWeather.UWP.Tiles
                             {
                                 new AdaptiveText()
                                 {
-                                    Text = weather.CurTemp.RemoveNonDigitChars() + "º",
+                                    Text = weather.CurTemp.RemoveNonDigitChars() + "°",
                                     HintStyle = AdaptiveTextStyle.Body,
                                     HintAlign = AdaptiveTextAlign.Center
                                 },
@@ -480,7 +480,7 @@ namespace SimpleWeather.UWP.Tiles
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("Temp_Label"), weather.CurTemp.RemoveNonDigitChars() + "º"),
+                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("Temp_Label"), weather.CurTemp.RemoveNonDigitChars() + "°"),
                                     HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
@@ -565,7 +565,7 @@ namespace SimpleWeather.UWP.Tiles
                             {
                                 new AdaptiveText()
                                 {
-                                    Text = weather.CurTemp.RemoveNonDigitChars() + "º",
+                                    Text = weather.CurTemp.RemoveNonDigitChars() + "°",
                                     HintStyle = AdaptiveTextStyle.Body,
                                     HintAlign = AdaptiveTextAlign.Center
                                 },
@@ -610,7 +610,7 @@ namespace SimpleWeather.UWP.Tiles
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = weather.CurTemp.RemoveNonDigitChars() + "º",
+                                    Text = weather.CurTemp.RemoveNonDigitChars() + "°",
                                     HintStyle = AdaptiveTextStyle.Body,
                                     HintAlign = AdaptiveTextAlign.Center,
                                 }
@@ -660,7 +660,7 @@ namespace SimpleWeather.UWP.Tiles
                         },
                         new AdaptiveText()
                         {
-                            Text = string.Format("{0}: {1}", App.ResLoader.GetString("Temp_Label"), weather.CurTemp.RemoveNonDigitChars() + "º"),
+                            Text = string.Format("{0}: {1}", App.ResLoader.GetString("Temp_Label"), weather.CurTemp.RemoveNonDigitChars() + "°"),
                             HintStyle = AdaptiveTextStyle.Caption
                         },
                         new AdaptiveText()
@@ -711,7 +711,7 @@ namespace SimpleWeather.UWP.Tiles
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("Temp_Label"), weather.CurTemp.RemoveNonDigitChars() + "º"),
+                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("Temp_Label"), weather.CurTemp.RemoveNonDigitChars() + "°"),
                                     HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
@@ -897,7 +897,7 @@ namespace SimpleWeather.UWP.Tiles
                         Content = GenerateCondition(weather, forecasts, ForecastTileType.Large),
                     },
                     LockDetailedStatus1 = weather.Location?.Ellipsize(40),
-                    LockDetailedStatus2 = String.Format("{0} - {1}", weather.CurTemp?.RemoveNonDigitChars() + "º", weather.CurCondition?.Ellipsize(33)),
+                    LockDetailedStatus2 = String.Format("{0} - {1}", weather.CurTemp?.RemoveNonDigitChars() + "°", weather.CurCondition?.Ellipsize(33)),
                     LockDetailedStatus3 = String.Format("{0} | {1}", weather.HiTemp ?? "--", weather.LoTemp ?? "--")
                 }
             };
