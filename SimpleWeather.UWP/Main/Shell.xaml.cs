@@ -286,7 +286,7 @@ namespace SimpleWeather.UWP.Main
                     {
                         parameter = new WeatherPageArgs()
                         {
-                            Location = wnowPage?.location,
+                            Location = wnowPage?.locationData,
                             WeatherNowView = wnowPage?.WeatherView
                         };
                     }
