@@ -95,6 +95,7 @@ namespace SimpleWeather.UWP.Main
         /// <param name="e"></param>
         /// <exception cref="WeatherException">Ignore.</exception>
         /// <exception cref="ObjectDisposedException">Ignore.</exception>
+        /// <exception cref="InvalidOperationException">Ignore.</exception>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
@@ -137,6 +138,25 @@ namespace SimpleWeather.UWP.Main
                                     ForecastsView.UpdateForecasts(location);
                                 });
                     }
+
+                    // Scroll item into view
+                    void contentChangedListener(ListViewBase sender, ContainerContentChangingEventArgs cccEvArgs)
+                    {
+                        ListControl.ContainerContentChanging -= contentChangedListener;
+
+                        void layoutUpdateListener(object s, object layoutEvArgs)
+                        {
+                            ListControl.LayoutUpdated -= layoutUpdateListener;
+
+                            if (ListControl.Items?.Count > 0 && ListControl.Items?.Count >= args.ScrollToPosition)
+                            {
+                                ListControl.ScrollIntoView(ListControl.Items[args.ScrollToPosition], ScrollIntoViewAlignment.Leading);
+                            }
+                        };
+
+                        ListControl.LayoutUpdated += layoutUpdateListener;
+                    };
+                    ListControl.ContainerContentChanging += contentChangedListener;
 
                     Settings.GetWeatherDBConnection().GetConnection().TableChanged += WeatherDetailsPage_TableChanged;
                 }, TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(true);
