@@ -497,50 +497,26 @@ namespace SimpleWeather.UWP.Main
                 if (Settings.FollowGPS)
                 {
                     Geoposition newGeoPos = null;
+                    var geoStatus = GeolocationAccessStatus.Unspecified;
 
                     try
                     {
-                        newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10));
+                        geoStatus = await Geolocator.RequestAccessAsync();
                     }
                     catch (Exception)
                     {
-                        var geoStatus = GeolocationAccessStatus.Unspecified;
+                        // Access denied
+                    }
 
-                        try
-                        {
-                            geoStatus = await Geolocator.RequestAccessAsync();
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.WriteLine(LoggerLevel.Error, ex, "LocationsPage: error getting location permission");
-                        }
-                        finally
-                        {
-                            if (geoStatus == GeolocationAccessStatus.Allowed)
-                            {
-                                try
-                                {
-                                    newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10));
-                                }
-                                catch (Exception ex)
-                                {
-                                    Logger.WriteLine(LoggerLevel.Error, ex, "LocationsPage: error getting location");
-                                }
-                            }
-                            else if (geoStatus == GeolocationAccessStatus.Denied)
-                            {
-                                // Disable gps feature
-                                Settings.FollowGPS = false;
-                                RemoveGPSPanel();
-                            }
-                            else
-                            {
-                                RemoveGPSPanel();
-                            }
-                        }
-
-                        if (!Settings.FollowGPS)
-                            return null;
+                    try
+                    {
+                        // Fallback to coarse (less accurate) location
+                        geolocal.AllowFallbackToConsentlessPositions();
+                        newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10));
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.WriteLine(LoggerLevel.Error, ex, "Error retrieving location");
                     }
 
                     if (cts?.IsCancellationRequested == true)

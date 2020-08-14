@@ -573,45 +573,26 @@ namespace SimpleWeather.UWP.Main
                 if (Settings.FollowGPS && (location == null || location.locationType == LocationType.GPS))
                 {
                     Geoposition newGeoPos = null;
+                    var geoStatus = GeolocationAccessStatus.Unspecified;
 
                     try
                     {
-                        newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10));
+                        geoStatus = await Geolocator.RequestAccessAsync();
                     }
                     catch (Exception)
                     {
-                        var geoStatus = GeolocationAccessStatus.Unspecified;
+                        // Access denied
+                    }
 
-                        try
-                        {
-                            geoStatus = await Geolocator.RequestAccessAsync();
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.WriteLine(LoggerLevel.Error, ex, "WeatherNow: GetWeather error");
-                        }
-                        finally
-                        {
-                            if (geoStatus == GeolocationAccessStatus.Allowed)
-                            {
-                                try
-                                {
-                                    newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10));
-                                }
-                                catch (Exception ex)
-                                {
-                                    Logger.WriteLine(LoggerLevel.Error, ex, "WeatherNow: GetWeather error");
-                                }
-                            }
-                            else if (geoStatus == GeolocationAccessStatus.Denied)
-                            {
-                                // Disable gps feature
-                                Settings.FollowGPS = false;
-                            }
-                        }
-
-                        if (!Settings.FollowGPS)
-                            return false;
+                    try
+                    {
+                        // Fallback to coarse (less accurate) location
+                        geolocal.AllowFallbackToConsentlessPositions();
+                        newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10));
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.WriteLine(LoggerLevel.Error, ex, "Error retrieving location");
                     }
 
                     if (cts?.IsCancellationRequested == true)

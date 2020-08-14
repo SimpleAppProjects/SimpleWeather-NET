@@ -274,6 +274,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                     try
                     {
                         cts.Token.ThrowIfCancellationRequested();
+                        geolocal.AllowFallbackToConsentlessPositions();
                         newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10))
                             .AsTask(cts.Token).ConfigureAwait(false);
                     }
@@ -281,47 +282,9 @@ namespace SimpleWeather.UWP.BackgroundTasks
                     {
                         return locationChanged;
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        var geoStatus = GeolocationAccessStatus.Unspecified;
-
-                        try
-                        {
-                            cts.Token.ThrowIfCancellationRequested();
-                            geoStatus = await Geolocator.RequestAccessAsync()
-                                .AsTask(cts.Token).ConfigureAwait(false);
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            return locationChanged;
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.WriteLine(LoggerLevel.Error, ex, "{0}: error requesting location permission", taskName);
-                        }
-                        finally
-                        {
-                            if (!cts.IsCancellationRequested && geoStatus == GeolocationAccessStatus.Allowed)
-                            {
-                                try
-                                {
-                                    newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10))
-                                        .AsTask(cts.Token).ConfigureAwait(false);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Logger.WriteLine(LoggerLevel.Error, ex, "{0}: GetWeather error", taskName);
-                                }
-                            }
-                            else if (geoStatus == GeolocationAccessStatus.Denied)
-                            {
-                                // Disable gps feature
-                                Settings.FollowGPS = false;
-                            }
-                        }
-
-                        if (!Settings.FollowGPS)
-                            return false;
+                        Logger.WriteLine(LoggerLevel.Error, ex, "{0}: error requesting location permission", taskName);
                     }
 
                     // Access to location granted
