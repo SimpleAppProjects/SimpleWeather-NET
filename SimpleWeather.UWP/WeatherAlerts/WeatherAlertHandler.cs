@@ -30,7 +30,8 @@ namespace SimpleWeather.UWP.WeatherAlerts
 #if DEBUG
                     var unotifiedAlerts = alerts;
 #else
-                    var unotifiedAlerts = alerts.Where(alert => alert.Notified == false && alert.ExpiresDate > DateTimeOffset.Now);
+                    var now = DateTimeOffset.Now;
+                    var unotifiedAlerts = alerts.Where(alert => alert.Notified == false && alert.ExpiresDate > now && alert.Date <= now);
 #endif
 
                     // Post any un-notified alerts
@@ -46,10 +47,15 @@ namespace SimpleWeather.UWP.WeatherAlerts
         {
             if (alerts != null)
             {
+                var now = DateTimeOffset.Now;
+
                 // Update all alerts
                 foreach (var alert in alerts)
                 {
-                    alert.Notified = true;
+                    if (alert.Date <= now)
+                    {
+                        alert.Notified = true;
+                    }
                 }
 
                 // Save alert data

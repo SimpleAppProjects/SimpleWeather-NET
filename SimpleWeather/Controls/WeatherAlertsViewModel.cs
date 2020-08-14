@@ -88,10 +88,11 @@ namespace SimpleWeather.Controls
 
                 if (alertData?.Count > 0)
                 {
+                    var now = DateTimeOffset.Now;
                     foreach (var alert in alertData)
                     {
                         // Skip if alert has expired
-                        if (alert.ExpiresDate <= DateTimeOffset.Now)
+                        if (alert.ExpiresDate <= now || alert.Date > now)
                             continue;
 
                         Alerts.Add(new WeatherAlertViewModel(alert));

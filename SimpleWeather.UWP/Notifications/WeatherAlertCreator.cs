@@ -4,6 +4,7 @@ using SimpleWeather.Controls;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
+using System;
 using System.Collections.Generic;
 using Windows.UI.Notifications;
 
@@ -20,6 +21,9 @@ namespace SimpleWeather.UWP.Notifications
 
             foreach (WeatherAlert alert in alerts)
             {
+                if (alert.Date > DateTimeOffset.Now)
+                    continue;
+
                 var alertVM = new WeatherAlertViewModel(alert);
 
                 var toastContent = new ToastContent()
