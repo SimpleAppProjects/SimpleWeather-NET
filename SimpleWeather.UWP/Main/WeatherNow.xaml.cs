@@ -1002,5 +1002,14 @@ namespace SimpleWeather.UWP.Main
                 Frame.Navigate(typeof(WeatherRadarPage), WeatherView?.RadarURL, new DrillInNavigationTransitionInfo());
             }
         }
+
+        private void BackgroundOverlay_ImageExOpened(object sender, Microsoft.Toolkit.Uwp.UI.Controls.ImageExOpenedEventArgs e)
+        {
+            var image = VisualTreeHelperExtensions.FindChild<Image>(sender as FrameworkElement, "Image");
+            if (image != null)
+            {
+                ParllxView.VerticalShift = Math.Min(image.ActualHeight / 3, 500);
+            }
+        }
     }
 }

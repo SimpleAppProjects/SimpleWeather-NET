@@ -205,24 +205,27 @@
                     <Style x:Key="AttributionStyle" TargetType="HyperlinkButton" BasedOn="{StaticResource HyperlinkButtonStyle}">
                         <Setter Property="Foreground" Value="White" />
                     </Style>
+                    <SolidColorBrush x:Key="ProgressBarBrush" Color="White" />
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
                     <Style x:Key="AttributionStyle" TargetType="HyperlinkButton" BasedOn="{StaticResource HyperlinkButtonStyle}" />
+                    <SolidColorBrush x:Key="ProgressBarBrush" Color="Black" />
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
         </ResourceDictionary>
     </Page.Resources>
 
     <Grid x:Name="MainGrid" Background="{ThemeResource RegionBrush}">
-        <ParallaxView x:Name="ParllxView" Source="{x:Bind MainViewer}" VerticalShift="1000"
+        <ParallaxView x:Name="ParllxView" Source="{x:Bind MainViewer}" VerticalShift="100"
                       x:Load="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay}"
                       Visibility="{x:Bind WeatherView.ImageData.ImageUri, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
             <Grid>
                 <toolkitControls:ImageEx x:Name="BackgroundOverlay" CachingStrategy="Custom" IsCacheEnabled="True" DecodePixelWidth="720"
-                                 Source="{x:Bind WeatherView.ImageData.ImageUri, Mode=OneWay}"
-                                 Foreground="{ThemeResource SimpleBlueBrush}"
-                                 Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                 Style="{StaticResource ImageExProgressStyle}" />
+                                         ImageExOpened="BackgroundOverlay_ImageExOpened"
+                                         Source="{x:Bind WeatherView.ImageData.ImageUri, Mode=OneWay}"
+                                         Foreground="White"
+                                         Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                         Style="{StaticResource ImageExProgressStyle}" />
                 <Grid x:Name="GradientOverlay">
                     <Grid.Background>
                         <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1" SpreadMethod="Pad">
@@ -443,6 +446,7 @@
             </Grid>
         </ScrollViewer>
         <ProgressRing x:Name="LoadingRing" HorizontalAlignment="Center" VerticalAlignment="Center"
-                      IsActive="True" Grid.RowSpan="2" />
+                      Height="36" Width="36"
+                      IsActive="True" Foreground="{ThemeResource ProgressBarBrush}" Grid.RowSpan="2" />
     </Grid>
 </helpers:CustomPage>

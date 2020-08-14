@@ -487,6 +487,7 @@
                                       VerticalAlignment="Center"
                                       Background="Transparent"
                                       Foreground="{TemplateBinding Foreground}"
+                                      Height="36" Width="36"
                                       IsActive="False"
                                       Visibility="Collapsed" />
                                 <VisualStateManager.VisualStateGroups>
