@@ -344,6 +344,11 @@ namespace SimpleWeather.UWP
                     new WNSPushBackgroundTask().Run(args.TaskInstance);
                     break;
 
+                case nameof(WNSWorkerBackgroundTask):
+                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting WNSWorkerBackgroundTask");
+                    new WNSWorkerBackgroundTask().Run(args.TaskInstance);
+                    break;
+
                 case nameof(UpdateTask):
                     Logger.WriteLine(LoggerLevel.Debug, "App: Starting UpdateTask");
                     new UpdateTask().Run(args.TaskInstance);

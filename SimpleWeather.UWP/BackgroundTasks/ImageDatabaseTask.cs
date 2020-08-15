@@ -66,6 +66,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                 var taskBuilder = new BackgroundTaskBuilder() { Name = taskName };
                 taskBuilder.SetTrigger(new TimeTrigger(10080, false)); // Weekly task
                 taskBuilder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
+                taskBuilder.AddCondition(new SystemCondition(SystemConditionType.SessionConnected));
 
                 try
                 {
