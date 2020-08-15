@@ -18,6 +18,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
 using Windows.Devices.Geolocation;
 using Windows.Foundation.Metadata;
 using Windows.System.UserProfile;
@@ -372,8 +373,13 @@ namespace SimpleWeather.UWP.Main
             // NOTE: ChangeView does not work here for some reason
             MainViewer?.ScrollToVerticalOffset(0);
 
-            // Force binding update for FeatureSettings
-            this.Bindings.Update();
+            if (FeatureSettings.WasUpdated)
+            {
+                // Force binding update for FeatureSettings
+                this.Bindings.Update();
+
+                FeatureSettings.WasUpdated = false;
+            }
 
             args = e?.Parameter as WeatherNowArgs;
 

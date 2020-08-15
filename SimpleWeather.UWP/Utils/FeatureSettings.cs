@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
 using Windows.Storage;
 
 namespace SimpleWeather.UWP.Utils
@@ -38,6 +39,7 @@ namespace SimpleWeather.UWP.Utils
         private const string KEY_SUNPHASE = "key_sunphase";
         private const string KEY_RADAR = "key_radar";
         private const string KEY_LOCPANELBGIMAGE = "key_locpanelbgimage";
+        public const string KEY_UPDATED = "key_updated";
 
         #endregion Settings Keys
 
@@ -46,6 +48,19 @@ namespace SimpleWeather.UWP.Utils
 
         private static readonly ApplicationDataContainer featureSettings =
             localSettings.CreateContainer("features", ApplicationDataCreateDisposition.Always);
+
+        public static bool WasUpdated
+        {
+            get
+            {
+                return CoreApplication.Properties.ContainsKey(KEY_UPDATED) && CoreApplication.Properties[KEY_UPDATED] is bool updated && updated;
+            }
+
+            set
+            {
+                CoreApplication.Properties[KEY_UPDATED] = value;
+            }
+        }
 
         private static bool GetBackgroundImageEnabled()
         {
@@ -61,6 +76,7 @@ namespace SimpleWeather.UWP.Utils
         private static void SetBackgroundImageEnabled(bool value)
         {
             featureSettings.Values[KEY_BGIMAGE] = value;
+            WasUpdated = true;
         }
 
         private static bool GetForecastEnabled()
@@ -77,6 +93,7 @@ namespace SimpleWeather.UWP.Utils
         private static void SetForecastEnabled(bool value)
         {
             featureSettings.Values[KEY_FORECAST] = value;
+            WasUpdated = true;
         }
 
         private static bool GetHourlyForecastEnabled()
@@ -93,6 +110,7 @@ namespace SimpleWeather.UWP.Utils
         private static void SetHourlyForecastEnabled(bool value)
         {
             featureSettings.Values[KEY_HRFORECAST] = value;
+            WasUpdated = true;
         }
 
         private static bool GetWeatherDetailsEnabled()
@@ -109,6 +127,7 @@ namespace SimpleWeather.UWP.Utils
         private static void SetWeatherDetailsEnabled(bool value)
         {
             featureSettings.Values[KEY_WEATHERDETAILS] = value;
+            WasUpdated = true;
         }
 
         private static bool GetUVEnabled()
@@ -125,6 +144,7 @@ namespace SimpleWeather.UWP.Utils
         private static void SetUVEnabled(bool value)
         {
             featureSettings.Values[KEY_UVINDEX] = value;
+            WasUpdated = true;
         }
 
         private static bool GetBeaufortEnabled()
@@ -141,6 +161,7 @@ namespace SimpleWeather.UWP.Utils
         private static void SetBeaufortEnabled(bool value)
         {
             featureSettings.Values[KEY_BEAUFORT] = value;
+            WasUpdated = true;
         }
 
         private static bool GetAQIEnabled()
@@ -157,6 +178,7 @@ namespace SimpleWeather.UWP.Utils
         private static void SetAQIEnabled(bool value)
         {
             featureSettings.Values[KEY_AQINDEX] = value;
+            WasUpdated = true;
         }
 
         private static bool GetMoonPhaseEnabled()
@@ -173,6 +195,7 @@ namespace SimpleWeather.UWP.Utils
         private static void SetMoonPhaseEnabled(bool value)
         {
             featureSettings.Values[KEY_MOONPHASE] = value;
+            WasUpdated = true;
         }
 
         private static bool GetSunPhaseEnabled()
@@ -189,6 +212,7 @@ namespace SimpleWeather.UWP.Utils
         private static void SetSunPhaseEnabled(bool value)
         {
             featureSettings.Values[KEY_SUNPHASE] = value;
+            WasUpdated = true;
         }
 
         private static bool GetRadarEnabled()
@@ -205,6 +229,7 @@ namespace SimpleWeather.UWP.Utils
         private static void SetRadarEnabled(bool value)
         {
             featureSettings.Values[KEY_RADAR] = value;
+            WasUpdated = true;
         }
 
         private static bool GetPanelBackgroundImageEnabled()
@@ -221,6 +246,7 @@ namespace SimpleWeather.UWP.Utils
         private static void SetPanelBackgroundImageEnabled(bool value)
         {
             featureSettings.Values[KEY_LOCPANELBGIMAGE] = value;
+            WasUpdated = true;
         }
     }
 }

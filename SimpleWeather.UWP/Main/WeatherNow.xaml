@@ -220,7 +220,7 @@
                       x:Load="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay}"
                       Visibility="{x:Bind WeatherView.ImageData.ImageUri, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
             <Grid>
-                <toolkitControls:ImageEx x:Name="BackgroundOverlay" CachingStrategy="Custom" IsCacheEnabled="True" DecodePixelWidth="720"
+                <toolkitControls:ImageEx x:Name="BackgroundOverlay" CachingStrategy="Custom" IsCacheEnabled="True"
                                          ImageExOpened="BackgroundOverlay_ImageExOpened"
                                          Source="{x:Bind WeatherView.ImageData.ImageUri, Mode=OneWay}"
                                          Foreground="White"
