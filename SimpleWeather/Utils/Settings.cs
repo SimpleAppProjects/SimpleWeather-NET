@@ -486,13 +486,7 @@ namespace SimpleWeather.Utils
 
                 if (forecasts != null)
                 {
-                    foreach (var fcast in forecasts)
-                    {
-                        if (fcast != null)
-                        {
-                            await weatherDB.InsertOrReplaceWithChildrenAsync(fcast);
-                        }
-                    }
+                    await weatherDB.InsertOrReplaceAllWithChildrenAsync(forecasts);
                 }
 
                 int count = await weatherDB.ExecuteScalarAsync<int>("select count(*) from (select count(*) from hr_forecasts group by query)");
