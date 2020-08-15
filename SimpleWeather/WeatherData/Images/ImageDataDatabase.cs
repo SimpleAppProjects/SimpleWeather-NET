@@ -169,7 +169,7 @@ namespace SimpleWeather.WeatherData.Images
                 try
                 {
                     var db = await Firebase.FirestoreHelper.GetFirestoreDB();
-                    var request = db.Projects.Databases.Documents.Get(Firebase.FirestoreHelper.GetParentPath() + "background_images_info/collection_info");
+                    var request = db.Projects.Databases.Documents.Get(Firebase.FirestoreHelper.GetParentPath() + "/background_images_info/collection_info");
                     var authLink = await Firebase.FirebaseAuthHelper.GetAuthLink();
                     request.AddCredential(GoogleCredential.FromAccessToken(authLink.FirebaseToken));
                     var cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
@@ -177,9 +177,13 @@ namespace SimpleWeather.WeatherData.Images
 
                     if (doc.Fields.TryGetValue("last_updated", out Value value))
                     {
-                        if (value.IntegerValue is long)
+                        if (value.IntegerValue.HasValue)
                         {
                             return (long)value.IntegerValue;
+                        }
+                        else if (value.DoubleValue.HasValue)
+                        {
+                            return (long)value.DoubleValue.Value;
                         }
                     }
 
