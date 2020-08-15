@@ -15,7 +15,7 @@ namespace SimpleWeather.Utils
 #if DEBUG
             string append = properties == null ? String.Empty : Environment.NewLine + JSONParser.Serializer(properties);
             Logger.WriteLine(LoggerLevel.Info, "EVENT | " + eventName + append);
-#else
+#elif !UNIT_TEST
             Analytics.TrackEvent(eventName, properties);
 #endif
         }

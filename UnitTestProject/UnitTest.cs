@@ -170,5 +170,12 @@ namespace UnitTestProject
             Debug.WriteLine("SolCalc - Sunrise: {0}; Sunset: {1}", astro.sunrise, astro.sunset);
             Assert.IsTrue(astro.sunrise != DateTime.MinValue && astro.sunset != DateTime.MinValue);
         }
+
+        [TestMethod]
+        public void FirestoreDBTest()
+        {
+            var updateTime = SimpleWeather.WeatherData.Images.ImageDatabase.GetLastUpdateTime().ConfigureAwait(false).GetAwaiter().GetResult();
+            Assert.IsTrue(updateTime != 0);
+        }
     }
 }
