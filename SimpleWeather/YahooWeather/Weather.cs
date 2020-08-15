@@ -39,14 +39,10 @@ namespace SimpleWeather.WeatherYahoo
 
     public class Atmosphere
     {
-        [DataMember(Name = "humidity")]
-        private int _humidity { get; set; }
+        public int humidity { get; set; }
         public float pressure { get; set; }
         public int rising { get; set; }
         public float visibility { get; set; }
-
-        [IgnoreDataMember]
-        public string humidity { get { return _humidity + "%"; } set { _humidity = int.Parse(value); } }
     }
 
     public class Astronomy

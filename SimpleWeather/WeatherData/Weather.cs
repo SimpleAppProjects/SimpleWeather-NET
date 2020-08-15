@@ -15,7 +15,7 @@ namespace SimpleWeather.WeatherData
         public Weather(WeatherYahoo.Rootobject root)
         {
             location = new Location(root.location);
-            update_time = ConversionMethods.ToEpochDateTime(root.current_observation.pubDate.ToInvariantString());
+            update_time = ConversionMethods.ToEpochDateTime(root.current_observation.pubDate);
             forecast = new List<Forecast>(root.forecasts.Length);
             for (int i = 0; i < root.forecasts.Length; i++)
             {
@@ -375,7 +375,7 @@ namespace SimpleWeather.WeatherData
     {
         public Forecast(WeatherYahoo.Forecast forecast)
         {
-            date = ConversionMethods.ToEpochDateTime(forecast.date.ToInvariantString());
+            date = ConversionMethods.ToEpochDateTime(forecast.date);
             high_f = forecast.high;
             high_c = ConversionMethods.FtoC(forecast.high);
             low_f = forecast.low;
@@ -1069,7 +1069,7 @@ namespace SimpleWeather.WeatherData
     {
         public Atmosphere(WeatherYahoo.Atmosphere atmosphere)
         {
-            humidity = int.Parse(atmosphere.humidity);
+            humidity = atmosphere.humidity;
             pressure_in = atmosphere.pressure;
             pressure_mb = ConversionMethods.InHgToMB(atmosphere.pressure);
             pressure_trend = atmosphere.rising.ToInvariantString();
