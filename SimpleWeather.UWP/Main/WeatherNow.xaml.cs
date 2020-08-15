@@ -43,6 +43,8 @@ namespace SimpleWeather.UWP.Main
         private WeatherManager wm;
         private WeatherDataLoader wLoader = null;
 
+        private WeatherNowArgs args;
+
         internal LocationData locationData = null;
         internal WeatherNowViewModel WeatherView { get; private set; }
         internal ForecastGraphViewModel ForecastView { get; private set; }
@@ -65,16 +67,18 @@ namespace SimpleWeather.UWP.Main
 
             if (weather?.IsValid() == true)
             {
+                WeatherView.UpdateView(weather);
+
                 Task.Run(async () =>
                 {
-                    WeatherView.UpdateView(weather);
-                    await AlertsView.UpdateAlerts(weather);
-                    await ForecastView.UpdateForecasts(weather);
                     await WeatherView.UpdateBackground();
                 }).ContinueWith((t) =>
                 {
                     LoadingRing.IsActive = false;
                 }, TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(true);
+
+                AlertsView.UpdateAlerts(locationData);
+                ForecastView.UpdateForecasts(locationData);
 
                 Task.Run(async () =>
                 {
@@ -83,15 +87,11 @@ namespace SimpleWeather.UWP.Main
                         if (weather.weather_alerts != null && weather.weather_alerts.Any())
                         {
                             // Alerts are posted to the user here. Set them as notified.
-                            AsyncTask.Run(async () =>
-                            {
 #if DEBUG
-                                await WeatherAlertHandler.PostAlerts(location, weather.weather_alerts)
-                                .ConfigureAwait(false);
+                            await WeatherAlertHandler.PostAlerts(location, weather.weather_alerts)
+                            .ConfigureAwait(false);
 #endif
-                                await WeatherAlertHandler.SetasNotified(location, weather.weather_alerts)
-                                .ConfigureAwait(false);
-                            });
+                            WeatherAlertHandler.SetasNotified(location, weather.weather_alerts);
                         }
                     }
 
@@ -99,14 +99,11 @@ namespace SimpleWeather.UWP.Main
                     bool isHome = Equals(location, await Settings.GetHomeData());
                     if (isHome && (TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval))
                     {
-                        AsyncTask.Run(async () => await WeatherUpdateBackgroundTask.RequestAppTrigger());
+                        WeatherUpdateBackgroundTask.RequestAppTrigger();
                     }
                     else if (isHome || SecondaryTileUtils.Exists(location?.query))
                     {
-                        AsyncTask.Run(() =>
-                        {
-                            WeatherTileCreator.TileUpdater(location);
-                        });
+                        WeatherTileCreator.TileUpdater(location);
                     }
                 });
             }
@@ -378,51 +375,66 @@ namespace SimpleWeather.UWP.Main
             // Force binding update for FeatureSettings
             this.Bindings.Update();
 
-            WeatherNowArgs args = e?.Parameter as WeatherNowArgs;
+            args = e?.Parameter as WeatherNowArgs;
 
+            Resume();
+        }
+
+        private async Task<bool> VerifyLocationData()
+        {
+            bool locationChanged = false;
+
+            // Check if we're loading from tile
+            if (args?.TileId != null && SecondaryTileUtils.GetQueryFromId(args.TileId) is string locQuery)
+            {
+                locationData = await Settings.GetLocation(locQuery).ConfigureAwait(true);
+                locationChanged = true;
+            }
+
+            // Check if current location still exists (is valid)
+            if (locationData?.locationType == LocationType.Search)
+            {
+                if (await Settings.GetLocation(locationData?.query).ConfigureAwait(true) == null)
+                {
+                    locationData = null;
+                    wLoader = null;
+                    locationChanged = true;
+                }
+            }
+            // Load new favorite location if argument data is present
+            if (args == null || args?.IsHome == true)
+            {
+                // Check if home location changed
+                // For ex. due to GPS setting change
+                LocationData homeData = await Settings.GetHomeData().ConfigureAwait(true);
+                if (!Equals(locationData, homeData))
+                {
+                    locationData = homeData;
+                    locationChanged = true;
+                }
+            }
+            else if (args?.Location != null && !Equals(locationData, args?.Location))
+            {
+                locationData = args?.Location;
+                locationChanged = true;
+            }
+
+            if (locationData == null)
+                locationData = args?.Location;
+
+            return locationChanged;
+        }
+
+        /// <summary>
+        /// Resume
+        /// </summary>
+        /// <exception cref="ObjectDisposedException">Ignore.</exception>
+        /// <exception cref="InvalidOperationException">Ignore.</exception>
+        private void Resume()
+        {
             Task.Run(async () =>
             {
-                bool locationChanged = false;
-
-                // Check if we're loading from tile
-                if (args?.TileId != null && SecondaryTileUtils.GetQueryFromId(args.TileId) is string locQuery)
-                {
-                    locationData = await Settings.GetLocation(locQuery);
-                    locationChanged = true;
-                }
-
-                // Check if current location still exists (is valid)
-                if (locationData?.locationType == LocationType.Search)
-                {
-                    if (await Settings.GetLocation(locationData?.query) == null)
-                    {
-                        locationData = null;
-                        wLoader = null;
-                        locationChanged = true;
-                    }
-                }
-                // Load new favorite location if argument data is present
-                if (args == null || args?.IsHome == true)
-                {
-                    // Check if home location changed
-                    // For ex. due to GPS setting change
-                    LocationData homeData = await Settings.GetHomeData();
-                    if (!Equals(locationData, homeData))
-                    {
-                        locationData = homeData;
-                        locationChanged = true;
-                    }
-                }
-                else if (args?.Location != null && !Equals(locationData, args?.Location))
-                {
-                    locationData = args?.Location;
-                    locationChanged = true;
-                }
-
-                if (locationData == null)
-                    locationData = args?.Location;
-
-                return locationChanged;
+                return await VerifyLocationData();
             }).ContinueWith((t) =>
             {
                 if (t.IsCompletedSuccessfully)
@@ -449,7 +461,21 @@ namespace SimpleWeather.UWP.Main
                         }
                         else
                         {
-                            Resume();
+                            // Check pin tile status
+                            CheckTiles();
+
+                            Task.Run(async () =>
+                            {
+                                // Update weather if needed on resume
+                                if (Settings.FollowGPS && await UpdateLocation())
+                                {
+                                    // Setup loader from updated location
+                                    wLoader = new WeatherDataLoader(locationData);
+                                }
+                            }).ContinueWith((t2) =>
+                            {
+                                RefreshWeather(false);
+                            }, TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(true);
                         }
                     }
                 }
@@ -463,34 +489,11 @@ namespace SimpleWeather.UWP.Main
             }, TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(true);
         }
 
-        private void Resume()
-        {
-            // Check pin tile status
-            CheckTiles();
-
-            Task.Run(async () =>
-            {
-                // Update weather if needed on resume
-                if (Settings.FollowGPS && await UpdateLocation().ConfigureAwait(true))
-                {
-                    // Setup loader from updated location
-                    wLoader = new WeatherDataLoader(locationData);
-                }
-
-                cts?.Token.ThrowIfCancellationRequested();
-            }).ContinueWith((t) =>
-            {
-                if (t.IsCompletedSuccessfully)
-                {
-                    RefreshWeather(false);
-                }
-            }, TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(true);
-        }
-
         /// <summary>
         /// Restore
         /// </summary>
         /// <exception cref="ObjectDisposedException">Ignore.</exception>
+        /// <exception cref="InvalidOperationException">Ignore.</exception>
         private void Restore()
         {
             // Check pin tile status
@@ -589,7 +592,7 @@ namespace SimpleWeather.UWP.Main
                     // Access to location granted
                     if (newGeoPos != null)
                     {
-                        LocationData lastGPSLocData = await Settings.GetLastGPSLocData();
+                        LocationData lastGPSLocData = await Settings.GetLastGPSLocData().ConfigureAwait(false);
 
                         // Check previous location difference
                         if (lastGPSLocData.query != null
@@ -649,7 +652,7 @@ namespace SimpleWeather.UWP.Main
                         // Update tile id for location
                         if (oldkey != null && SecondaryTileUtils.Exists(oldkey))
                         {
-                            await AsyncTask.RunAsync(SecondaryTileUtils.UpdateTileId(oldkey, lastGPSLocData.query));
+                            await SecondaryTileUtils.UpdateTileId(oldkey, lastGPSLocData.query).ConfigureAwait(false);
                         }
 
                         locationData = lastGPSLocData;
@@ -675,10 +678,15 @@ namespace SimpleWeather.UWP.Main
 
         private void RefreshWeather(bool forceRefresh)
         {
-            LoadingRing.IsActive = true;
-
             if (cts?.IsCancellationRequested == false)
             {
+                LoadingRing.IsActive = true;
+
+                if (wLoader == null && locationData != null)
+                {
+                    wLoader = new WeatherDataLoader(locationData);
+                }
+
                 wLoader?.LoadWeatherData(new WeatherRequest.Builder()
                         .ForceRefresh(forceRefresh)
                         .SetErrorListener(this)
@@ -977,7 +985,14 @@ namespace SimpleWeather.UWP.Main
             var image = VisualTreeHelperExtensions.FindChild<Image>(sender as FrameworkElement, "Image");
             if (image != null)
             {
-                ParllxView.VerticalShift = Math.Min(image.ActualHeight / 3, 500);
+                if (image.ActualHeight / 3 < 500)
+                {
+                    ParllxView.VerticalShift = Math.Min(image.ActualHeight / 3, 100);
+                }
+                else
+                {
+                    ParllxView.VerticalShift = Math.Min(image.ActualHeight / 3, 500);
+                }
             }
         }
     }

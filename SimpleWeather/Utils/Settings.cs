@@ -45,7 +45,7 @@ namespace SimpleWeather.Utils
         public const string Fahrenheit = "F";
         public const string Celsius = "C";
         private const string DEFAULT_UPDATE_INTERVAL = "60"; // 60 minutes (1hr)
-        public const int DefaultInterval = 60;
+        public const int DefaultInterval = 120;
         public const int READ_TIMEOUT = 10000; // 10s
 
         // Settings Keys
@@ -211,9 +211,9 @@ namespace SimpleWeather.Utils
             }).Wait();
         }
 
-        public static ConfiguredTaskAwaitable<LocationData> GetFirstFavorite()
+        public static Task<LocationData> GetFirstFavorite()
         {
-            return AsyncTask.CreateTask<LocationData>(async () =>
+            return Task.Run<LocationData>(async () =>
             {
                 LoadIfNeeded();
 
@@ -223,9 +223,9 @@ namespace SimpleWeather.Utils
             });
         }
 
-        public static ConfiguredTaskAwaitable<IEnumerable<LocationData>> GetFavorites()
+        public static Task<IEnumerable<LocationData>> GetFavorites()
         {
-            return AsyncTask.CreateTask<IEnumerable<LocationData>>(async () =>
+            return Task.Run<IEnumerable<LocationData>>(async () =>
             {
                 LoadIfNeeded();
 
@@ -235,36 +235,36 @@ namespace SimpleWeather.Utils
             });
         }
 
-        public static ConfiguredTaskAwaitable<IEnumerable<LocationData>> GetLocationData()
+        public static Task<IEnumerable<LocationData>> GetLocationData()
         {
-            return AsyncTask.CreateTask<IEnumerable<LocationData>>(async () =>
+            return Task.Run<IEnumerable<LocationData>>(async () =>
             {
                 LoadIfNeeded();
                 return await locationDB.Table<LocationData>().ToListAsync();
             });
         }
 
-        public static ConfiguredTaskAwaitable<LocationData> GetLocation(string key)
+        public static Task<LocationData> GetLocation(string key)
         {
-            return AsyncTask.CreateTask(async () =>
+            return Task.Run(async () =>
             {
                 LoadIfNeeded();
                 return await locationDB.FindAsync<LocationData>(key);
             });
         }
 
-        public static ConfiguredTaskAwaitable<Weather> GetWeatherData(string key)
+        public static Task<Weather> GetWeatherData(string key)
         {
-            return AsyncTask.CreateTask(async () =>
+            return Task.Run(async () =>
             {
                 LoadIfNeeded();
                 return await weatherDB.FindWithChildrenAsync<Weather>(key);
             });
         }
 
-        public static ConfiguredTaskAwaitable<Weather> GetWeatherDataByCoordinate(LocationData location)
+        public static Task<Weather> GetWeatherDataByCoordinate(LocationData location)
         {
-            return AsyncTask.CreateTask(async () =>
+            return Task.Run(async () =>
             {
                 LoadIfNeeded();
                 var culture = System.Globalization.CultureInfo.InvariantCulture;
@@ -281,9 +281,9 @@ namespace SimpleWeather.Utils
             });
         }
 
-        public static ConfiguredTaskAwaitable<ICollection<WeatherAlert>> GetWeatherAlertData(string key)
+        public static Task<ICollection<WeatherAlert>> GetWeatherAlertData(string key)
         {
-            return AsyncTask.CreateTask(async () =>
+            return Task.Run(async () =>
             {
                 LoadIfNeeded();
 
@@ -310,18 +310,18 @@ namespace SimpleWeather.Utils
             });
         }
 
-        public static ConfiguredTaskAwaitable<Forecasts> GetWeatherForecastData(string key)
+        public static Task<Forecasts> GetWeatherForecastData(string key)
         {
-            return AsyncTask.CreateTask(async () =>
+            return Task.Run(async () =>
             {
                 LoadIfNeeded();
                 return await weatherDB.FindWithChildrenAsync<Forecasts>(key);
             });
         }
 
-        public static ConfiguredTaskAwaitable<IList<HourlyForecast>> GetHourlyWeatherForecastData(string key)
+        public static Task<IList<HourlyForecast>> GetHourlyWeatherForecastData(string key)
         {
-            return AsyncTask.CreateTask<IList<HourlyForecast>>(async () =>
+            return Task.Run<IList<HourlyForecast>>(async () =>
             {
                 LoadIfNeeded();
 
@@ -338,9 +338,28 @@ namespace SimpleWeather.Utils
             });
         }
 
-        public static ConfiguredTaskAwaitable<IList<HourlyForecast>> GetHourlyWeatherForecastDataByPageIndexByLimit(string key, int pageIndex, int loadSize)
+        public static Task<IList<HourlyForecast>> GetHourlyWeatherForecastDataFilterByDate(string key, string dateblob)
         {
-            return AsyncTask.CreateTask<IList<HourlyForecast>>(async () =>
+            return Task.Run<IList<HourlyForecast>>(async () =>
+            {
+                LoadIfNeeded();
+
+                var list = await weatherDB.QueryAsync<HourlyForecasts>(
+                    "SELECT * FROM " + HourlyForecasts.TABLE_NAME + " WHERE `query` = ? AND `hrforecastblob` IS NOT NULL AND `dateblob` >= ? ORDER BY `dateblob`",
+                    key, dateblob);
+
+                foreach (var item in list)
+                {
+                    await weatherDB.GetChildrenAsync(item);
+                }
+
+                return list.Select(hrf => hrf.hr_forecast).ToList();
+            });
+        }
+
+        public static Task<IList<HourlyForecast>> GetHourlyWeatherForecastDataByPageIndexByLimit(string key, int pageIndex, int loadSize)
+        {
+            return Task.Run<IList<HourlyForecast>>(async () =>
             {
                 LoadIfNeeded();
 
@@ -360,9 +379,28 @@ namespace SimpleWeather.Utils
             });
         }
 
-        public static ConfiguredTaskAwaitable<HourlyForecast> GetFirstHourlyWeatherForecastDataByDate(string key, string dateblob)
+        public static Task<IList<HourlyForecast>> GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(string key, int pageIndex, int loadSize, string dateblob)
         {
-            return AsyncTask.CreateTask<HourlyForecast>(async () =>
+            return Task.Run<IList<HourlyForecast>>(async () =>
+            {
+                LoadIfNeeded();
+
+                var list = await weatherDB.QueryAsync<HourlyForecasts>(
+                    "SELECT * FROM " + HourlyForecasts.TABLE_NAME + " WHERE `query` = ? AND `hrforecastblob` IS NOT NULL AND `dateblob` >= ? ORDER BY `dateblob` LIMIT ? OFFSET ?",
+                    key, dateblob, loadSize, pageIndex * loadSize);
+
+                foreach (var item in list)
+                {
+                    await weatherDB.GetChildrenAsync(item);
+                }
+
+                return list.Select(hrf => hrf.hr_forecast).ToList();
+            });
+        }
+
+        public static Task<HourlyForecast> GetFirstHourlyWeatherForecastDataByDate(string key, string dateblob)
+        {
+            return Task.Run<HourlyForecast>(async () =>
             {
                 LoadIfNeeded();
 
@@ -379,9 +417,9 @@ namespace SimpleWeather.Utils
             });
         }
 
-        public static ConfiguredTaskAwaitable<LocationData> GetLastGPSLocData()
+        public static Task<LocationData> GetLastGPSLocData()
         {
-            return AsyncTask.CreateTask(async () =>
+            return Task.Run(async () =>
             {
                 LoadIfNeeded();
 
@@ -392,9 +430,9 @@ namespace SimpleWeather.Utils
             });
         }
 
-        public static ConfiguredTaskAwaitable SaveWeatherData(Weather weather)
+        public static Task SaveWeatherData(Weather weather)
         {
-            return AsyncTask.CreateTask(async () =>
+            return Task.Run(async () =>
             {
                 if (weather != null && weather.IsValid())
                 {
@@ -406,9 +444,9 @@ namespace SimpleWeather.Utils
             });
         }
 
-        public static ConfiguredTaskAwaitable SaveWeatherAlerts(LocationData location, ICollection<WeatherAlert> alerts)
+        public static Task SaveWeatherAlerts(LocationData location, ICollection<WeatherAlert> alerts)
         {
-            return AsyncTask.CreateTask(async () =>
+            return Task.Run(async () =>
             {
                 if (location != null && location.IsValid())
                 {
@@ -421,9 +459,9 @@ namespace SimpleWeather.Utils
             });
         }
 
-        public static ConfiguredTaskAwaitable SaveWeatherForecasts(Forecasts forecasts)
+        public static Task SaveWeatherForecasts(Forecasts forecasts)
         {
-            return AsyncTask.CreateTask(async () =>
+            return Task.Run(async () =>
             {
                 if (forecasts != null)
                 {
@@ -438,9 +476,9 @@ namespace SimpleWeather.Utils
             });
         }
 
-        public static ConfiguredTaskAwaitable SaveWeatherForecasts(LocationData location, IEnumerable<HourlyForecasts> forecasts)
+        public static Task SaveWeatherForecasts(LocationData location, IEnumerable<HourlyForecasts> forecasts)
         {
-            return AsyncTask.CreateTask(async () =>
+            return Task.Run(async () =>
             {
                 if (location?.query == null) return;
 
@@ -499,9 +537,9 @@ namespace SimpleWeather.Utils
             });
         }
 
-        public static ConfiguredTaskAwaitable SaveLocationData(List<LocationData> locationData)
+        public static Task SaveLocationData(List<LocationData> locationData)
         {
-            return AsyncTask.CreateTask(async () =>
+            return Task.Run(async () =>
             {
                 if (locationData != null)
                 {
@@ -533,9 +571,9 @@ namespace SimpleWeather.Utils
             });
         }
 
-        public static ConfiguredTaskAwaitable AddLocation(LocationData location)
+        public static Task AddLocation(LocationData location)
         {
-            return AsyncTask.CreateTask(async () =>
+            return Task.Run(async () =>
             {
                 // We only store searched locations in the db
                 // GPS location is stored in [the] local settings [container]
@@ -548,9 +586,9 @@ namespace SimpleWeather.Utils
             });
         }
 
-        public static ConfiguredTaskAwaitable UpdateLocation(LocationData location)
+        public static Task UpdateLocation(LocationData location)
         {
-            return AsyncTask.CreateTask(async () =>
+            return Task.Run(async () =>
             {
                 // We only store searched locations in the db
                 // GPS location is stored in [the] local settings [container]
@@ -563,9 +601,9 @@ namespace SimpleWeather.Utils
             });
         }
 
-        public static ConfiguredTaskAwaitable UpdateLocationWithKey(LocationData location, string oldKey)
+        public static Task UpdateLocationWithKey(LocationData location, string oldKey)
         {
-            return AsyncTask.CreateTask(async () =>
+            return Task.Run(async () =>
             {
                 if (location != null && location.IsValid() && !String.IsNullOrWhiteSpace(oldKey))
                 {
@@ -590,18 +628,18 @@ namespace SimpleWeather.Utils
             });
         }
 
-        public static ConfiguredTaskAwaitable DeleteLocations()
+        public static Task DeleteLocations()
         {
-            return AsyncTask.CreateTask(async () =>
+            return Task.Run(async () =>
             {
                 await locationDB.DeleteAllAsync<LocationData>();
                 await locationDB.DeleteAllAsync<Favorites>();
             });
         }
 
-        public static ConfiguredTaskAwaitable DeleteLocation(string key)
+        public static Task DeleteLocation(string key)
         {
-            return AsyncTask.CreateTask(async () =>
+            return Task.Run(async () =>
             {
                 if (!String.IsNullOrWhiteSpace(key))
                 {
@@ -612,9 +650,9 @@ namespace SimpleWeather.Utils
             });
         }
 
-        public static ConfiguredTaskAwaitable MoveLocation(string key, int toPos)
+        public static Task MoveLocation(string key, int toPos)
         {
-            return AsyncTask.CreateTask(async () =>
+            return Task.Run(async () =>
             {
                 if (!String.IsNullOrWhiteSpace(key))
                 {

@@ -27,6 +27,18 @@ namespace SimpleWeather.Controls
             LocationQuery = string.Empty;
         }
 
+        public LocationQueryViewModel(Location.LocationData data)
+        {
+            LocationQuery = data.query;
+            LocationName = data.name;
+            LocationLat = data.latitude;
+            LocationLong = data.longitude;
+            LocationTZLong = data.tz_long;
+            WeatherSource = data.weatherSource;
+            LocationSource = data.locationSource;
+            LocationCountry = data.country_code;
+        }
+
         public bool IsEmpty => String.IsNullOrEmpty(LocationCountry) && String.IsNullOrEmpty(LocationQuery);
 
         public LocationQueryViewModel(HERE.Suggestion location, String weatherAPI)

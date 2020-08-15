@@ -108,21 +108,6 @@ namespace SimpleWeather.UWP.Main
             }
 
             AlertsView?.UpdateAlerts(location);
-            Settings.GetWeatherDBConnection().GetConnection().TableChanged += WeatherAlertPage_TableChanged;
-        }
-
-        private void WeatherAlertPage_TableChanged(object sender, SQLite.NotifyTableChangedEventArgs e)
-        {
-            if (e?.Table?.TableName == WeatherData.WeatherAlerts.TABLE_NAME)
-            {
-                AlertsView?.RefreshAlerts();
-            }
-        }
-
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            Settings.GetWeatherDBConnection().GetConnection().TableChanged -= WeatherAlertPage_TableChanged;
-            base.OnNavigatedFrom(e);
         }
 
         private void StackControl_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)

@@ -939,7 +939,8 @@ namespace SimpleWeather.UWP.Tiles
 
         private static async Task<List<HourlyForecastItemViewModel>> GetHourlyForecasts(LocationData location)
         {
-            var forecasts = await Settings.GetHourlyWeatherForecastDataByPageIndexByLimit(location.query, 0, LARGE_FORECAST_LENGTH);
+            var dateBlob = DateTimeOffset.Now.ToOffset(location.tz_offset).Trim(TimeSpan.TicksPerHour).ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture);
+            var forecasts = await Settings.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(location.query, 0, LARGE_FORECAST_LENGTH, dateBlob);
             var result = new List<HourlyForecastItemViewModel>(LARGE_FORECAST_LENGTH);
 
             if (forecasts?.Count > 0)

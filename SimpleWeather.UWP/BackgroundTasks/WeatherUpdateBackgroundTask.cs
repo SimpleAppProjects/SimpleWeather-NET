@@ -184,8 +184,9 @@ namespace SimpleWeather.UWP.BackgroundTasks
             {
                 // Register a task for each trigger
                 var tb1 = new BackgroundTaskBuilder() { Name = taskName };
-                tb1.SetTrigger(new TimeTrigger((uint)Settings.RefreshInterval, false));
+                tb1.SetTrigger(new TimeTrigger(60, false));
                 tb1.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
+                tb1.AddCondition(new SystemCondition(SystemConditionType.BackgroundWorkCostNotHigh));
                 var tb2 = new BackgroundTaskBuilder() { Name = taskName };
                 tb2.SetTrigger(new SystemTrigger(SystemTriggerType.SessionConnected, false));
                 tb2.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));

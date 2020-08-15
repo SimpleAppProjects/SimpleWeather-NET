@@ -8,17 +8,18 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SimpleWeather.Controls
 {
-    public class WeatherAlertsViewModel : INotifyPropertyChanged
+    public class WeatherAlertsViewModel : INotifyPropertyChanged, IDisposable
     {
-        private Weather weather;
         private String locationKey;
 
         private List<WeatherAlertViewModel> alerts;
+        private ObservableItem<ICollection<WeatherAlert>> currentAlertsData;
 
         public List<WeatherAlertViewModel> Alerts
         {
@@ -29,6 +30,8 @@ namespace SimpleWeather.Controls
         public WeatherAlertsViewModel()
         {
             Alerts = new List<WeatherAlertViewModel>();
+            currentAlertsData = new ObservableItem<ICollection<WeatherAlert>>();
+            currentAlertsData.ItemValueChanged += CurrentAlertsData_ItemValueChanged;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -41,50 +44,50 @@ namespace SimpleWeather.Controls
             }).ConfigureAwait(true);
         }
 
-        public Task UpdateAlerts(Weather weather)
-        {
-            return Task.Run(() =>
-            {
-                if (!Equals(this.weather, weather))
-                {
-                    this.weather = weather;
-                    this.locationKey = weather.query;
-
-                    // Update alerts from database
-                    RefreshAlerts();
-                }
-            });
-        }
-
         public Task UpdateAlerts(LocationData location)
-        {
-            return Task.Run(() =>
-            {
-                if (!Equals(this.locationKey, location?.query))
-                {
-                    this.locationKey = location?.query;
-
-                    // Update alerts from database
-                    RefreshAlerts();
-                }
-            });
-        }
-
-        public Task RefreshAlerts()
         {
             return Task.Run(async () =>
             {
-                Alerts.Clear();
+                if (!Equals(this.locationKey, location?.query))
+                {
+                    Settings.GetWeatherDBConnection().GetConnection().TableChanged -= WeatherAlertsViewModel_TableChanged;
 
-                ICollection<WeatherAlert> alertData = null;
-                try
-                {
-                    alertData = await Settings.GetWeatherAlertData(locationKey);
+                    this.locationKey = location?.query;
+
+                    // Update alerts from database
+                    currentAlertsData.SetValue(await Settings.GetWeatherAlertData(locationKey));
+
+                    Settings.GetWeatherDBConnection().GetConnection().TableChanged += WeatherAlertsViewModel_TableChanged;
                 }
-                catch (Exception ex)
+            });
+        }
+
+        private void WeatherAlertsViewModel_TableChanged(object sender, SQLite.NotifyTableChangedEventArgs e)
+        {
+            if (locationKey == null) return;
+
+            Task.Run(async () =>
+            {
+                if (e?.Table?.TableName == WeatherData.WeatherAlerts.TABLE_NAME)
                 {
-                    Logger.WriteLine(LoggerLevel.Error, ex, "{0}: error refreshing alerts", nameof(WeatherAlertsViewModel));
+                    currentAlertsData.SetValue(await Settings.GetWeatherAlertData(locationKey));
                 }
+            });
+        }
+
+        private async void CurrentAlertsData_ItemValueChanged(object sender, ObservableItemChangedEventArgs e)
+        {
+            if (e.NewValue is ICollection<WeatherAlert> alertData)
+            {
+                await RefreshAlerts(alertData);
+            }
+        }
+
+        public ConfiguredTaskAwaitable RefreshAlerts(ICollection<WeatherAlert> alertData)
+        {
+            return AsyncTask.TryRunOnUIThread(() =>
+            {
+                Alerts.Clear();
 
                 if (alertData?.Count > 0)
                 {
@@ -100,7 +103,29 @@ namespace SimpleWeather.Controls
                 }
 
                 OnPropertyChanged(nameof(Alerts));
-            });
+            }).ConfigureAwait(true);
+        }
+
+        private bool isDisposed;
+        // Dispose() calls Dispose(true)
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        // The bulk of the clean-up code is implemented in Dispose(bool)
+        protected virtual void Dispose(bool disposing)
+        {
+            if (isDisposed) return;
+
+            if (disposing)
+            {
+                // free managed resources
+                Settings.GetWeatherDBConnection().GetConnection().TableChanged -= WeatherAlertsViewModel_TableChanged;
+            }
+
+            isDisposed = true;
         }
     }
 }

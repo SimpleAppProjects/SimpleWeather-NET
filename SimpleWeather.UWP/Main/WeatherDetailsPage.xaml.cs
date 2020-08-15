@@ -157,28 +157,13 @@ namespace SimpleWeather.UWP.Main
                         ListControl.LayoutUpdated += layoutUpdateListener;
                     };
                     ListControl.ContainerContentChanging += contentChangedListener;
-
-                    Settings.GetWeatherDBConnection().GetConnection().TableChanged += WeatherDetailsPage_TableChanged;
                 }, TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(true);
-            }
-        }
-
-        private void WeatherDetailsPage_TableChanged(object sender, SQLite.NotifyTableChangedEventArgs e)
-        {
-            if (e?.Table?.TableName == WeatherData.Forecasts.TABLE_NAME)
-            {
-                ForecastsView?.RefreshForecasts();
-            }
-            if (e?.Table?.TableName == WeatherData.HourlyForecasts.TABLE_NAME)
-            {
-                ForecastsView?.RefreshHourlyForecasts();
             }
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             ForecastsView.PropertyChanged -= ForecastsView_PropertyChanged;
-            Settings.GetWeatherDBConnection().GetConnection().TableChanged -= WeatherDetailsPage_TableChanged;
             base.OnNavigatedFrom(e);
         }
 

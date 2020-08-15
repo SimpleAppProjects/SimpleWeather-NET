@@ -2,25 +2,30 @@
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
+using SQLite;
 using SQLiteNetExtensions.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SimpleWeather.UWP.Controls
 {
-    public class ForecastGraphViewModel : INotifyPropertyChanged
+    public class ForecastGraphViewModel : INotifyPropertyChanged, IDisposable
     {
-        private Weather weather;
-        private String locationKey;
-        private String tempUnit;
+        private LocationData locationData;
+        private string tempUnit;
 
         private SimpleObservableList<ForecastItemViewModel> forecasts;
         private SimpleObservableList<HourlyForecastItemViewModel> hourlyForecasts;
+
+        private ObservableItem<Forecasts> currentForecastsData;
+        private ObservableItem<IList<HourlyForecast>> currentHrForecastsData;
 
         public SimpleObservableList<ForecastItemViewModel> Forecasts
         {
@@ -36,6 +41,11 @@ namespace SimpleWeather.UWP.Controls
 
         public ForecastGraphViewModel()
         {
+            currentForecastsData = new ObservableItem<Forecasts>();
+            currentForecastsData.ItemValueChanged += CurrentForecastsData_ItemValueChanged;
+            currentHrForecastsData = new ObservableItem<IList<HourlyForecast>>();
+            currentHrForecastsData.ItemValueChanged += CurrentHrForecastsData_ItemValueChanged;
+
             Forecasts = new SimpleObservableList<ForecastItemViewModel>();
             HourlyForecasts = new SimpleObservableList<HourlyForecastItemViewModel>();
         }
@@ -50,118 +60,145 @@ namespace SimpleWeather.UWP.Controls
             }).ConfigureAwait(true);
         }
 
-        public Task UpdateForecasts(Weather weather)
-        {
-            return Task.Run(() =>
-            {
-                if (!Equals(this.weather, weather) || !Equals(tempUnit, Settings.Unit))
-                {
-                    this.weather = weather;
-                    this.tempUnit = Settings.Unit;
-
-                    // Update forecasts from database
-                    RefreshForecasts();
-                    RefreshHourlyForecasts();
-                }
-            });
-        }
-
         public Task UpdateForecasts(LocationData location)
         {
-            return Task.Run(() =>
+            return Task.Run(async () =>
             {
-                if (!Equals(this.locationKey, location.query) || !Equals(tempUnit, Settings.Unit))
+                if (this.locationData == null || !Equals(this.locationData?.query, location?.query))
                 {
-                    this.locationKey = location.query;
+                    Settings.GetWeatherDBConnection().GetConnection().TableChanged -= ForecastGraphViewModel_TableChanged;
+
+                    // Clone location data
+                    this.locationData = new LocationData(new LocationQueryViewModel(location));
+
                     this.tempUnit = Settings.Unit;
 
-                    // Update forecasts from database
-                    RefreshForecasts();
-                    RefreshHourlyForecasts();
+                    currentForecastsData.SetValue(await Settings.GetWeatherForecastData(location.query));
+
+                    var dateBlob = DateTimeOffset.Now.ToOffset(location.tz_offset).Trim(TimeSpan.TicksPerHour).ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture);
+                    currentHrForecastsData.SetValue(await Settings.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(location.query, 0, 24, dateBlob));
+
+                    Settings.GetWeatherDBConnection().GetConnection().TableChanged += ForecastGraphViewModel_TableChanged;
+                }
+                else if (!Equals(tempUnit, Settings.Unit))
+                {
+                    this.tempUnit = Settings.Unit;
+
+                    RefreshForecasts(currentForecastsData.GetValue());
+                    RefreshHourlyForecasts(currentHrForecastsData.GetValue());
                 }
             });
         }
 
-        private Task RefreshForecasts()
+        private void ForecastGraphViewModel_TableChanged(object sender, NotifyTableChangedEventArgs e)
         {
-            return Task.Run(async () =>
+            if (locationData == null) return;
+
+            Task.Run(async () =>
             {
-                Forecasts fcasts = null;
-                try
+                if (e?.Table?.TableName == WeatherData.Forecasts.TABLE_NAME)
                 {
-                    fcasts = await Settings.GetWeatherForecastData(weather.query);
+                    currentForecastsData.SetValue(await Settings.GetWeatherForecastData(locationData.query));
                 }
-                catch (Exception ex)
+                if (e?.Table?.TableName == WeatherData.HourlyForecasts.TABLE_NAME)
                 {
-                    Logger.WriteLine(LoggerLevel.Error, ex, "{0}: error refreshing forecasts", nameof(ForecastGraphViewModel));
+                    currentHrForecastsData.SetValue(await Settings.GetHourlyWeatherForecastDataByPageIndexByLimit(locationData.query, 0, 24));
                 }
+            });
+        }
 
-                await AsyncTask.TryRunOnUIThread(() =>
+        private void CurrentForecastsData_ItemValueChanged(object sender, ObservableItemChangedEventArgs e)
+        {
+            if (e.NewValue is Forecasts fcasts)
+            {
+                RefreshForecasts(fcasts);
+            }
+        }
+
+        private ConfiguredTaskAwaitable RefreshForecasts(Forecasts fcasts)
+        {
+            return AsyncTask.TryRunOnUIThread(() =>
+            {
+                Forecasts.Clear();
+
+                if (fcasts?.forecast?.Count > 0)
                 {
-                    Forecasts.Clear();
+                    bool isDayAndNt = fcasts.txt_forecast?.Count == fcasts.forecast?.Count * 2;
+                    bool addTextFct = isDayAndNt || fcasts.txt_forecast?.Count == fcasts.forecast?.Count;
 
-                    if (fcasts?.forecast?.Count > 0)
+                    for (int i = 0; i < Math.Min(fcasts.forecast.Count, 24); i++)
                     {
-                        bool isDayAndNt = fcasts.txt_forecast?.Count == fcasts.forecast?.Count * 2;
-                        bool addTextFct = isDayAndNt || fcasts.txt_forecast?.Count == fcasts.forecast?.Count;
+                        ForecastItemViewModel f;
+                        var dataItem = fcasts.forecast[i];
 
-                        for (int i = 0; i < Math.Min(fcasts.forecast.Count, 24); i++)
+                        if (addTextFct)
                         {
-                            ForecastItemViewModel f;
-                            var dataItem = fcasts.forecast[i];
-
-                            if (addTextFct)
-                            {
-                                if (isDayAndNt)
-                                    f = new ForecastItemViewModel(dataItem, fcasts.txt_forecast[i * 2], fcasts.txt_forecast[(i * 2) + 1]);
-                                else
-                                    f = new ForecastItemViewModel(dataItem, fcasts.txt_forecast[i]);
-                            }
+                            if (isDayAndNt)
+                                f = new ForecastItemViewModel(dataItem, fcasts.txt_forecast[i * 2], fcasts.txt_forecast[(i * 2) + 1]);
                             else
-                            {
-                                f = new ForecastItemViewModel(dataItem);
-                            }
-
-                            Forecasts.Add(f);
+                                f = new ForecastItemViewModel(dataItem, fcasts.txt_forecast[i]);
+                        }
+                        else
+                        {
+                            f = new ForecastItemViewModel(dataItem);
                         }
 
-                        OnPropertyChanged(nameof(Forecasts));
-                        Forecasts.NotifyCollectionChanged();
+                        Forecasts.Add(f);
                     }
-                }).ConfigureAwait(true);
-            });
+
+                    OnPropertyChanged(nameof(Forecasts));
+                    Forecasts.NotifyCollectionChanged();
+                }
+            }).ConfigureAwait(true);
         }
 
-        private Task RefreshHourlyForecasts()
+        private void CurrentHrForecastsData_ItemValueChanged(object sender, ObservableItemChangedEventArgs e)
         {
-            return Task.Run(async () =>
+            if (e.NewValue is IList<HourlyForecast> hrfcasts)
             {
-                IList<HourlyForecast> hrfcasts = null;
-                try
-                {
-                    hrfcasts = await Settings.GetHourlyWeatherForecastDataByPageIndexByLimit(weather.query, 0, 24);
-                }
-                catch (Exception ex)
-                {
-                    Logger.WriteLine(LoggerLevel.Error, ex, "{0}: error refreshing hourly forecasts", nameof(ForecastGraphViewModel));
-                }
+                RefreshHourlyForecasts(hrfcasts);
+            }
+        }
 
-                await AsyncTask.TryRunOnUIThread(() =>
-                {
-                    HourlyForecasts.Clear();
+        private ConfiguredTaskAwaitable RefreshHourlyForecasts(IList<HourlyForecast> hrfcasts)
+        {
+            return AsyncTask.TryRunOnUIThread(() =>
+            {
+                HourlyForecasts.Clear();
 
-                    if (hrfcasts?.Count > 0)
+                if (hrfcasts?.Count > 0)
+                {
+                    foreach (var dataItem in hrfcasts)
                     {
-                        foreach (var dataItem in hrfcasts)
-                        {
-                            HourlyForecasts.Add(new HourlyForecastItemViewModel(dataItem));
-                        }
+                        HourlyForecasts.Add(new HourlyForecastItemViewModel(dataItem));
                     }
+                }
 
-                    OnPropertyChanged(nameof(HourlyForecasts));
-                    HourlyForecasts.NotifyCollectionChanged();
-                }).ConfigureAwait(true);
-            });
+                OnPropertyChanged(nameof(HourlyForecasts));
+                HourlyForecasts.NotifyCollectionChanged();
+            }).ConfigureAwait(true);
+        }
+
+        private bool isDisposed;
+        // Dispose() calls Dispose(true)
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        // The bulk of the clean-up code is implemented in Dispose(bool)
+        protected virtual void Dispose(bool disposing)
+        {
+            if (isDisposed) return;
+
+            if (disposing)
+            {
+                // free managed resources
+                Settings.GetWeatherDBConnection().GetConnection().TableChanged -= ForecastGraphViewModel_TableChanged;
+            }
+
+            isDisposed = true;
         }
     }
 }

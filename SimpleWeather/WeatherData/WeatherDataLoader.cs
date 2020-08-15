@@ -295,7 +295,7 @@ namespace SimpleWeather.WeatherData
                     var durationMins = (now - weather.condition.observation_time).TotalMinutes;
                     if (durationMins > 60)
                     {
-                        var hrf = await Settings.GetFirstHourlyWeatherForecastDataByDate(location.query, now.Trim(TimeSpan.TicksPerHour).ToString("yyyy-MM-dd HH:mm:ss zzzz"));
+                        var hrf = await Settings.GetFirstHourlyWeatherForecastDataByDate(location.query, now.Trim(TimeSpan.TicksPerHour).ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture));
 
                         if (hrf != null)
                         {
@@ -358,6 +358,16 @@ namespace SimpleWeather.WeatherData
 
                             await Settings.SaveWeatherData(weather);
                         }
+                    }
+
+                    if (weather.forecast?.Count > 0)
+                    {
+                        weather.forecast = weather.forecast.Where(f => f.date.Trim(TimeSpan.TicksPerDay) >= now.Date.Trim(TimeSpan.TicksPerDay)).ToList();
+                    }
+
+                    if (weather.hr_forecast?.Count > 0)
+                    {
+                        weather.hr_forecast = weather.hr_forecast.Where(f => f.date.Trim(TimeSpan.TicksPerHour) >= now.Trim(TimeSpan.TicksPerHour)).ToList();
                     }
                 }
             });

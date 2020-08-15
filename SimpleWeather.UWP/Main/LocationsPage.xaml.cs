@@ -89,7 +89,7 @@ namespace SimpleWeather.UWP.Main
                 if (panelView != null)
                 {
                     panelView.SetWeather(weather);
-                    Task.Run(panelView.UpdateBackground).ConfigureAwait(true);
+                    Task.Run(panelView.UpdateBackground);
                 }
             }
         }
@@ -99,47 +99,44 @@ namespace SimpleWeather.UWP.Main
             if (cts?.IsCancellationRequested == true)
                 return;
 
-            Dispatcher.RunOnUIThread(() =>
+            switch (wEx.ErrorStatus)
             {
-                switch (wEx.ErrorStatus)
-                {
-                    case WeatherUtils.ErrorStatus.NetworkError:
-                    case WeatherUtils.ErrorStatus.NoWeather:
-                        // Show error message and prompt to refresh
-                        // Only warn once
-                        if (!ErrorCounter[(int)wEx.ErrorStatus])
+                case WeatherUtils.ErrorStatus.NetworkError:
+                case WeatherUtils.ErrorStatus.NoWeather:
+                    // Show error message and prompt to refresh
+                    // Only warn once
+                    if (!ErrorCounter[(int)wEx.ErrorStatus])
+                    {
+                        Snackbar snackbar = Snackbar.Make(wEx.Message, SnackbarDuration.Short);
+                        snackbar.SetAction(App.ResLoader.GetString("Action_Retry"), () =>
                         {
-                            Snackbar snackbar = Snackbar.Make(wEx.Message, SnackbarDuration.Short);
-                            snackbar.SetAction(App.ResLoader.GetString("Action_Retry"), () =>
-                            {
-                                // Reset counter to allow retry
-                                ErrorCounter[(int)wEx.ErrorStatus] = false;
-                                RefreshLocations();
-                            });
-                            ShowSnackbar(snackbar);
-                            ErrorCounter[(int)wEx.ErrorStatus] = true;
-                        }
-                        break;
+                            // Reset counter to allow retry
+                            ErrorCounter[(int)wEx.ErrorStatus] = false;
+                            RefreshLocations();
+                        });
+                        ShowSnackbar(snackbar);
+                        ErrorCounter[(int)wEx.ErrorStatus] = true;
+                    }
+                    break;
 
-                    case WeatherUtils.ErrorStatus.QueryNotFound:
-                        if (!ErrorCounter[(int)wEx.ErrorStatus] && WeatherAPI.NWS.Equals(Settings.API))
-                        {
-                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_WeatherUSOnly"), SnackbarDuration.Short));
-                            ErrorCounter[(int)wEx.ErrorStatus] = true;
-                        }
-                        break;
+                case WeatherUtils.ErrorStatus.QueryNotFound:
+                    if (!ErrorCounter[(int)wEx.ErrorStatus] && WeatherAPI.NWS.Equals(Settings.API))
+                    {
+                        ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_WeatherUSOnly"), SnackbarDuration.Short));
+                        ErrorCounter[(int)wEx.ErrorStatus] = true;
+                    }
+                    break;
 
-                    default:
-                        // Show error message
-                        // Only warn once
-                        if (!ErrorCounter[(int)wEx.ErrorStatus])
-                        {
-                            ShowSnackbar(Snackbar.Make(wEx.Message, SnackbarDuration.Short));
-                            ErrorCounter[(int)wEx.ErrorStatus] = true;
-                        }
-                        break;
-                }
-            });
+                default:
+                    // Show error message
+                    // Only warn once
+                    if (!ErrorCounter[(int)wEx.ErrorStatus])
+                    {
+                        ShowSnackbar(Snackbar.Make(wEx.Message, SnackbarDuration.Short));
+                        ErrorCounter[(int)wEx.ErrorStatus] = true;
+                    }
+                    break;
+            }
         }
 
         public LocationsPage()
@@ -288,35 +285,33 @@ namespace SimpleWeather.UWP.Main
             }
         }
 
-        private async void LocationPanels_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void LocationPanels_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            await Dispatcher.RunOnUIThread(() =>
-            {
-                bool dataMoved = (e.Action == NotifyCollectionChangedAction.Remove) || (e.Action == NotifyCollectionChangedAction.Move);
-                bool onlyHomeIsLeft = PanelAdapter.FavoritesCount == 1;
-                bool limitReached = PanelAdapter.ItemCount >= Settings.MAX_LOCATIONS;
+            bool dataMoved = (e.Action == NotifyCollectionChangedAction.Remove) || (e.Action == NotifyCollectionChangedAction.Move);
+            bool onlyHomeIsLeft = PanelAdapter.FavoritesCount == 1;
+            bool limitReached = PanelAdapter.ItemCount >= Settings.MAX_LOCATIONS;
 
-                // Flag that data has changed
-                if (EditMode && dataMoved)
-                    DataChanged = true;
+            // Flag that data has changed
+            if (EditMode && dataMoved)
+                DataChanged = true;
 
-                if (EditMode && e.NewStartingIndex == App.HomeIdx)
-                    HomeChanged = true;
+            if (EditMode && e.NewStartingIndex == App.HomeIdx)
+                HomeChanged = true;
 
-                // Cancel edit Mode
-                if (EditMode && onlyHomeIsLeft)
-                    ToggleEditMode();
+            // Cancel edit Mode
+            if (EditMode && onlyHomeIsLeft)
+                ToggleEditMode();
 
-                // Disable EditMode if only single location
-                EditButton.Visibility = onlyHomeIsLeft ? Visibility.Collapsed : Visibility.Visible;
-                AddLocationsButton.Visibility = limitReached ? Visibility.Collapsed : Visibility.Visible;
-            }).ConfigureAwait(true);
+            // Disable EditMode if only single location
+            EditButton.Visibility = onlyHomeIsLeft ? Visibility.Collapsed : Visibility.Visible;
+            AddLocationsButton.Visibility = limitReached ? Visibility.Collapsed : Visibility.Visible;
         }
 
         /// <summary>
         /// LoadLocations
         /// </summary>
         /// <exception cref="ObjectDisposedException">Ignore.</exception>
+        /// <exception cref="InvalidOperationException">Ignore.</exception>
         private void LoadLocations()
         {
             // Disable EditMode button
@@ -367,7 +362,7 @@ namespace SimpleWeather.UWP.Main
                                     {
                                         if (t2.IsCompletedSuccessfully)
                                             OnWeatherLoaded(location, t2.Result);
-                                    }).ConfigureAwait(true);
+                                    });
                     }
                 }
 
@@ -410,6 +405,7 @@ namespace SimpleWeather.UWP.Main
         /// RefreshLocations
         /// </summary>
         /// <exception cref="ObjectDisposedException">Ignore.</exception>
+        /// <exception cref="InvalidOperationException">Ignore.</exception>
         private void RefreshLocations()
         {
             // Disable EditMode button
