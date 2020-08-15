@@ -52,7 +52,7 @@ namespace SimpleWeather.NWS
                     AutomaticDecompression = true
                 })
                 using (HttpClient webClient = new HttpClient(handler))
-                using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                using (var cts = new CancellationTokenSource((int)(Settings.READ_TIMEOUT * 1.5f)))
                 {
                     try
                     {
@@ -141,7 +141,7 @@ namespace SimpleWeather.NWS
                     AutomaticDecompression = true
                 })
                 using (HttpClient webClient = new HttpClient(handler))
-                using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                using (var cts = new CancellationTokenSource((int)(Settings.READ_TIMEOUT * 1.5f)))
                 {
                     try
                     {
@@ -203,7 +203,7 @@ namespace SimpleWeather.NWS
                     AutomaticDecompression = true
                 })
                 using (HttpClient webClient = new HttpClient(handler))
-                using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                using (var cts = new CancellationTokenSource((int)(Settings.READ_TIMEOUT * 1.5f)))
                 {
                     try
                     {
@@ -260,7 +260,7 @@ namespace SimpleWeather.NWS
                     AutomaticDecompression = true
                 })
                 using (HttpClient webClient = new HttpClient(handler))
-                using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                using (var cts = new CancellationTokenSource((int)(Settings.READ_TIMEOUT * 1.5f)))
                 {
                     try
                     {
