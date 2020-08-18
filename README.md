@@ -6,7 +6,11 @@ Available for <a href='https://github.com/SimpleAppProjects/SimpleWeather-Window
 
 ## Release
 
-<a href="https://www.microsoft.com/store/apps/9NKC37BC8SRX?ocid=badge"><img src="https://assets.windowsphone.com/f2f77ec7-9ba9-4850-9ebe-77e366d08adc/English_Get_it_Win_10_InvariantCulture_Default.png" alt="Get it on Windows 10" width=250 /></a>
+<a href='//www.microsoft.com/store/apps/9NKC37BC8SRX?cid=storebadge&ocid=badge'><img src='images/English_get-it-from-MS.png' alt='English badge' style='width: 284px; height: 104px;'/></a>
+
+<b>OR</b>
+
+Download the package (.appxbundle) to sideload from <a href="https://github.com/SimpleAppProjects/SimpleWeather-Windows/releases">HERE</a>
 
 ## License
 
