@@ -58,6 +58,9 @@ namespace SimpleWeather.Firebase
                 FirebaseStorageReference storageRef = null;
                 foreach (var child in childPaths)
                 {
+                    if (String.IsNullOrWhiteSpace(child))
+                        continue;
+
                     if (storageRef == null)
                     {
                         storageRef = storage.Child(child);
