@@ -88,7 +88,7 @@ namespace SimpleWeather.UWP.Main
             if (WeatherView == null)
                 WeatherView = new WeatherNowViewModel();
             if (AlertsView == null)
-                AlertsView = new WeatherAlertsViewModel();
+                AlertsView = new WeatherAlertsViewModel(Dispatcher);
 
             if (WeatherView?.IsValid != true)
             {

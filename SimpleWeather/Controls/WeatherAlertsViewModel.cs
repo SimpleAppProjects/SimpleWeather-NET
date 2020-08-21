@@ -11,11 +11,14 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Core;
 
 namespace SimpleWeather.Controls
 {
     public class WeatherAlertsViewModel : INotifyPropertyChanged, IDisposable
     {
+        private CoreDispatcher Dispatcher;
+
         private String locationKey;
 
         private List<WeatherAlertViewModel> alerts;
@@ -27,8 +30,10 @@ namespace SimpleWeather.Controls
             private set { alerts = value; OnPropertyChanged(nameof(Alerts)); }
         }
 
-        public WeatherAlertsViewModel()
+        public WeatherAlertsViewModel(CoreDispatcher dispatcher)
         {
+            Dispatcher = dispatcher;
+
             Alerts = new List<WeatherAlertViewModel>();
             currentAlertsData = new ObservableItem<ICollection<WeatherAlert>>();
             currentAlertsData.ItemValueChanged += CurrentAlertsData_ItemValueChanged;
@@ -38,7 +43,7 @@ namespace SimpleWeather.Controls
         // Create the OnPropertyChanged method to raise the event
         protected async void OnPropertyChanged(string name)
         {
-            await AsyncTask.TryRunOnUIThread(() =>
+            await Dispatcher.RunOnUIThread(() =>
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
             }).ConfigureAwait(true);
@@ -85,7 +90,7 @@ namespace SimpleWeather.Controls
 
         public ConfiguredTaskAwaitable RefreshAlerts(ICollection<WeatherAlert> alertData)
         {
-            return AsyncTask.TryRunOnUIThread(() =>
+            return Dispatcher.RunOnUIThread(() =>
             {
                 Alerts.Clear();
 
@@ -123,6 +128,7 @@ namespace SimpleWeather.Controls
             {
                 // free managed resources
                 Settings.GetWeatherDBConnection().GetConnection().TableChanged -= WeatherAlertsViewModel_TableChanged;
+                Dispatcher = null;
             }
 
             isDisposed = true;

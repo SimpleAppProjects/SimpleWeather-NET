@@ -113,7 +113,7 @@ namespace SimpleWeather.UWP.Main
                     if (WeatherView == null)
                         WeatherView = new WeatherNowViewModel();
                     if (ForecastsView == null)
-                        ForecastsView = new ForecastsViewModel();
+                        ForecastsView = new ForecastsViewModel(Dispatcher);
 
                     await ForecastsView?.UpdateForecasts(location);
                 }).ContinueWith((t) =>

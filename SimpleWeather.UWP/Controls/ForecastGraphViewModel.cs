@@ -13,11 +13,14 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Core;
 
 namespace SimpleWeather.UWP.Controls
 {
     public class ForecastGraphViewModel : INotifyPropertyChanged, IDisposable
     {
+        private CoreDispatcher Dispatcher;
+
         private LocationData locationData;
         private string tempUnit;
 
@@ -39,8 +42,10 @@ namespace SimpleWeather.UWP.Controls
             private set { hourlyForecasts = value; OnPropertyChanged(nameof(HourlyForecasts)); }
         }
 
-        public ForecastGraphViewModel()
+        public ForecastGraphViewModel(CoreDispatcher dispatcher)
         {
+            Dispatcher = dispatcher;
+
             currentForecastsData = new ObservableItem<Forecasts>();
             currentForecastsData.ItemValueChanged += CurrentForecastsData_ItemValueChanged;
             currentHrForecastsData = new ObservableItem<IList<HourlyForecast>>();
@@ -54,7 +59,7 @@ namespace SimpleWeather.UWP.Controls
         // Create the OnPropertyChanged method to raise the event
         protected async void OnPropertyChanged(string name)
         {
-            await AsyncTask.TryRunOnUIThread(() =>
+            await Dispatcher.RunOnUIThread(() =>
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
             }).ConfigureAwait(true);
@@ -117,7 +122,7 @@ namespace SimpleWeather.UWP.Controls
 
         private ConfiguredTaskAwaitable RefreshForecasts(Forecasts fcasts)
         {
-            return AsyncTask.TryRunOnUIThread(() =>
+            return Dispatcher.RunOnUIThread(() =>
             {
                 Forecasts.Clear();
 
@@ -162,7 +167,7 @@ namespace SimpleWeather.UWP.Controls
 
         private ConfiguredTaskAwaitable RefreshHourlyForecasts(IList<HourlyForecast> hrfcasts)
         {
-            return AsyncTask.TryRunOnUIThread(() =>
+            return Dispatcher.RunOnUIThread(() =>
             {
                 HourlyForecasts.Clear();
 
@@ -196,6 +201,7 @@ namespace SimpleWeather.UWP.Controls
             {
                 // free managed resources
                 Settings.GetWeatherDBConnection().GetConnection().TableChanged -= ForecastGraphViewModel_TableChanged;
+                Dispatcher = null;
             }
 
             isDisposed = true;

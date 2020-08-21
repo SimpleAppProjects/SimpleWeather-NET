@@ -14,11 +14,14 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.UI.Core;
 
 namespace SimpleWeather.Controls
 {
     public class ForecastsViewModel : INotifyPropertyChanged, IDisposable
     {
+        private CoreDispatcher Dispatcher;
+
         private LocationData locationData;
         private string tempUnit;
 
@@ -37,11 +40,16 @@ namespace SimpleWeather.Controls
             private set { hourlyForecasts = value; OnPropertyChanged(nameof(HourlyForecasts)); }
         }
 
+        public ForecastsViewModel(CoreDispatcher dispatcher)
+        {
+            Dispatcher = dispatcher;
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         // Create the OnPropertyChanged method to raise the event
         protected async void OnPropertyChanged(string name)
         {
-            await AsyncTask.TryRunOnUIThread(() =>
+            await Dispatcher.RunOnUIThread(() =>
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
             }).ConfigureAwait(true);
@@ -108,7 +116,10 @@ namespace SimpleWeather.Controls
             }
             else
             {
-                Forecasts.RefreshAsync();
+                Dispatcher.RunOnUIThread(() =>
+                {
+                    Forecasts.RefreshAsync();
+                });
             }
         }
 
@@ -127,7 +138,10 @@ namespace SimpleWeather.Controls
             }
             else
             {
-                HourlyForecasts.RefreshAsync();
+                Dispatcher.RunOnUIThread(() =>
+                {
+                    HourlyForecasts.RefreshAsync();
+                });
             }
         }
 
@@ -148,6 +162,7 @@ namespace SimpleWeather.Controls
             {
                 // free managed resources
                 Settings.GetWeatherDBConnection().GetConnection().TableChanged -= ForecastsViewModel_TableChanged;
+                Dispatcher = null;
             }
 
             isDisposed = true;

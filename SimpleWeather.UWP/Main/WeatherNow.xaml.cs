@@ -155,8 +155,8 @@ namespace SimpleWeather.UWP.Main
             wm = WeatherManager.GetInstance();
             WeatherView = new WeatherNowViewModel();
             WeatherView.PropertyChanged += WeatherView_PropertyChanged;
-            ForecastView = new ForecastGraphViewModel();
-            AlertsView = new WeatherAlertsViewModel();
+            ForecastView = new ForecastGraphViewModel(Dispatcher);
+            AlertsView = new WeatherAlertsViewModel(Dispatcher);
 
             geolocal = new Geolocator() { DesiredAccuracyInMeters = 5000, ReportInterval = 900000, MovementThreshold = 1600 };
 
