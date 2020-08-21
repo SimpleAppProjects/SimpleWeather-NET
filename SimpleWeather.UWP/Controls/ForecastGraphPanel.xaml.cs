@@ -164,7 +164,7 @@ namespace SimpleWeather.UWP.Controls
                                         YEntryData hiTempData = new YEntryData(float.Parse(nextVM.HiTemp.RemoveNonDigitChars()), String.Empty);
                                         hiTempSeries.Add(hiTempData);
                                     }
-                                    else if (i == itemCount - 1)
+                                    else if (i > 0 && i == itemCount - 1)
                                     {
                                         var prevVM = forecasts[i - 1];
                                         YEntryData hiTempData = new YEntryData(float.Parse(prevVM.HiTemp.RemoveNonDigitChars()), String.Empty);
@@ -185,7 +185,7 @@ namespace SimpleWeather.UWP.Controls
                                             YEntryData loTempData = new YEntryData(float.Parse(nextVM.LoTemp.RemoveNonDigitChars()), String.Empty);
                                             loTempSeries.Add(loTempData);
                                         }
-                                        else if (i == itemCount - 1)
+                                        else if (i > 0 && i == itemCount - 1)
                                         {
                                             var prevVM = forecasts[i - 1] as ForecastItemViewModel;
                                             YEntryData loTempData = new YEntryData(float.Parse(prevVM.LoTemp.RemoveNonDigitChars()), String.Empty);
