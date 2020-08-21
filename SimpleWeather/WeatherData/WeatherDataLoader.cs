@@ -293,7 +293,7 @@ namespace SimpleWeather.WeatherData
                     // Check for outdated observation
                     var now = DateTimeOffset.Now.ToOffset(location.tz_offset);
                     var durationMins = (now - weather.condition.observation_time).TotalMinutes;
-                    if (durationMins > 60)
+                    if (durationMins > 120)
                     {
                         var hrf = await Settings.GetFirstHourlyWeatherForecastDataByDate(location.query, now.Trim(TimeSpan.TicksPerHour).ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture));
 
