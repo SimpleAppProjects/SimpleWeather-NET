@@ -6,7 +6,7 @@ Available for <a href='https://github.com/SimpleAppProjects/SimpleWeather-Window
 
 ## Release
 
-<a href='//www.microsoft.com/store/apps/9NKC37BC8SRX?cid=storebadge&ocid=badge'><img src='images/English_get-it-from-MS.png' alt='English badge' style='width: 284px; height: 104px;'/></a>
+<a href='//www.microsoft.com/store/apps/9NKC37BC8SRX?cid=storebadge&ocid=badge'><img src='https://developer.microsoft.com/en-us/store/badges/images/English_get-it-from-MS.png' alt='English badge' width='284px' height='104px'/></a>
 
 <b>OR</b>
 
