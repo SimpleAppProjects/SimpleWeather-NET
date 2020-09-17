@@ -1082,6 +1082,8 @@ namespace SimpleWeather.WeatherData
         public float? wind_kph { get; set; }
         public float? visibility_mi { get; set; }
         public float? visibility_km { get; set; }
+        public float? windgust_mph { get; set; }
+        public float? windgust_kph { get; set; }
 
         internal ForecastExtras()
         {
@@ -1108,12 +1110,14 @@ namespace SimpleWeather.WeatherData
                    wind_mph == extras.wind_mph &&
                    wind_kph == extras.wind_kph &&
                    visibility_mi == extras.visibility_mi &&
-                   visibility_km == extras.visibility_km;
+                   visibility_km == extras.visibility_km &&
+                   windgust_mph == extras.windgust_mph &&
+                   windgust_kph == extras.windgust_kph;
         }
 
         public override int GetHashCode()
         {
-            var hash = new HashCode();
+            HashCode hash = new HashCode();
             hash.Add(feelslike_f);
             hash.Add(feelslike_c);
             hash.Add(humidity);
@@ -1132,6 +1136,8 @@ namespace SimpleWeather.WeatherData
             hash.Add(wind_kph);
             hash.Add(visibility_mi);
             hash.Add(visibility_km);
+            hash.Add(windgust_mph);
+            hash.Add(windgust_kph);
             return hash.ToHashCode();
         }
 
@@ -1242,6 +1248,14 @@ namespace SimpleWeather.WeatherData
                     case nameof(visibility_km):
                         if (float.TryParse(reader.ReadString(), out float visibilityKM))
                             this.visibility_km = visibilityKM;
+                        break;
+
+                    case nameof(windgust_mph):
+                        this.windgust_mph = reader.ReadSingle();
+                        break;
+
+                    case nameof(windgust_kph):
+                        this.windgust_kph = reader.ReadSingle();
                         break;
 
                     default:
@@ -1362,6 +1376,18 @@ namespace SimpleWeather.WeatherData
             writer.WritePropertyName(nameof(visibility_km));
             writer.WriteString(visibility_km?.ToInvariantString());
 
+            writer.WriteValueSeparator();
+
+            // "windgust_mph" : ""
+            writer.WritePropertyName(nameof(windgust_mph));
+            writer.WriteSingle(windgust_mph.GetValueOrDefault(-1.0f));
+
+            writer.WriteValueSeparator();
+
+            // "windgust_kph" : ""
+            writer.WritePropertyName(nameof(windgust_kph));
+            writer.WriteSingle(windgust_kph.GetValueOrDefault(-1.0f));
+
             // }
             writer.WriteEndObject();
 
@@ -1378,6 +1404,8 @@ namespace SimpleWeather.WeatherData
         public int? wind_degrees { get; set; }
         public float? wind_mph { get; set; }
         public float? wind_kph { get; set; }
+        public float? windgust_mph { get; set; }
+        public float? windgust_kph { get; set; }
         public float? feelslike_f { get; set; }
         public float? feelslike_c { get; set; }
         public string icon { get; set; }
@@ -1493,6 +1521,14 @@ namespace SimpleWeather.WeatherData
                         this.wind_kph = reader.ReadSingle();
                         break;
 
+                    case nameof(windgust_mph):
+                        this.windgust_mph = reader.ReadSingle();
+                        break;
+
+                    case nameof(windgust_kph):
+                        this.windgust_kph = reader.ReadSingle();
+                        break;
+
                     case nameof(feelslike_f):
                         this.feelslike_f = reader.ReadSingle();
                         break;
@@ -1586,6 +1622,18 @@ namespace SimpleWeather.WeatherData
             // "wind_kph" : ""
             writer.WritePropertyName(nameof(wind_kph));
             writer.WriteSingle(wind_kph.GetValueOrDefault(-1.0f));
+
+            writer.WriteValueSeparator();
+
+            // "windgust_mph" : ""
+            writer.WritePropertyName(nameof(windgust_mph));
+            writer.WriteSingle(windgust_mph.GetValueOrDefault(-1.0f));
+
+            writer.WriteValueSeparator();
+
+            // "windgust_kph" : ""
+            writer.WritePropertyName(nameof(windgust_kph));
+            writer.WriteSingle(windgust_kph.GetValueOrDefault(-1.0f));
 
             writer.WriteValueSeparator();
 

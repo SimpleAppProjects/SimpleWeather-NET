@@ -416,6 +416,11 @@ namespace SimpleWeather.WeatherData
                 extras.visibility_km = forecast.visibility.Value;
                 extras.visibility_mi = ConversionMethods.KmToMi(forecast.visibility.Value);
             }
+            if (forecast.wind_gust.HasValue)
+            {
+                extras.windgust_mph = (float)Math.Round(ConversionMethods.MSecToMph(forecast.wind_gust.Value));
+                extras.windgust_kph = (float)Math.Round(ConversionMethods.MSecToKph(forecast.wind_gust.Value));
+            }
             if (forecast.rain.HasValue)
             {
                 extras.qpf_rain_mm = forecast.rain.Value;
@@ -618,6 +623,11 @@ namespace SimpleWeather.WeatherData
                 wind_mph = this.wind_mph,
                 wind_kph = this.wind_kph
             };
+            if (hr_forecast.wind_gust.HasValue)
+            {
+                extras.windgust_mph = (float)Math.Round(ConversionMethods.MSecToMph(hr_forecast.wind_gust.Value));
+                extras.windgust_kph = (float)Math.Round(ConversionMethods.MSecToKph(hr_forecast.wind_gust.Value));
+            }
             if (hr_forecast.visibility.HasValue)
             {
                 extras.visibility_km = hr_forecast.visibility.Value;
@@ -675,6 +685,11 @@ namespace SimpleWeather.WeatherData
                 wind_mph = wind_mph,
                 wind_kph = wind_kph
             };
+            if (hr_forecast.data.instant.details.wind_speed_of_gust.HasValue)
+            {
+                extras.windgust_mph = (float)Math.Round(ConversionMethods.MSecToMph(hr_forecast.data.instant.details.wind_speed_of_gust.Value));
+                extras.windgust_kph = (float)Math.Round(ConversionMethods.MSecToKph(hr_forecast.data.instant.details.wind_speed_of_gust.Value));
+            }
             if (hr_forecast.data.instant.details.fog_area_fraction.HasValue)
             {
                 float visMi = 10.0f;
@@ -914,6 +929,11 @@ namespace SimpleWeather.WeatherData
             wind_kph = ConversionMethods.MSecToKph(current.wind_speed);
             feelslike_f = ConversionMethods.KtoF(current.feels_like);
             feelslike_c = ConversionMethods.KtoC(current.feels_like);
+            if (current.wind_gust.HasValue)
+            {
+                windgust_mph = ConversionMethods.MSecToMph(current.wind_gust.Value);
+                windgust_kph = ConversionMethods.MSecToMph(current.wind_gust.Value);
+            }
 
             string ico = current.weather[0].icon;
             string dn = ico.Last().ToString();
@@ -940,6 +960,11 @@ namespace SimpleWeather.WeatherData
             wind_kph = (float)Math.Round(ConversionMethods.MSecToKph(time.data.instant.details.wind_speed.Value));
             feelslike_f = WeatherUtils.GetFeelsLikeTemp(temp_f.Value, wind_mph.Value, (int)time.data.instant.details.relative_humidity.Value);
             feelslike_c = ConversionMethods.FtoC(feelslike_f.Value);
+            if (time.data.instant.details.wind_speed_of_gust.HasValue)
+            {
+                windgust_mph = (float) Math.Round(ConversionMethods.MSecToMph(time.data.instant.details.wind_speed_of_gust.Value));
+                windgust_kph = (float) Math.Round(ConversionMethods.MSecToKph(time.data.instant.details.wind_speed_of_gust.Value));
+            }
 
             if (time.data.next_12_hours != null)
             {
@@ -1034,6 +1059,12 @@ namespace SimpleWeather.WeatherData
             {
                 wind_kph = obsCurrentRootObject.windSpeed.value.GetValueOrDefault(0.00f);
                 wind_mph = ConversionMethods.KphToMph(wind_kph.Value);
+            }
+
+            if (obsCurrentRootObject.windGust.value.HasValue)
+            {
+                windgust_kph = obsCurrentRootObject.windGust.value;
+                windgust_mph = ConversionMethods.KphToMph(windgust_kph.Value);
             }
 
             if (obsCurrentRootObject.heatIndex.value.HasValue)

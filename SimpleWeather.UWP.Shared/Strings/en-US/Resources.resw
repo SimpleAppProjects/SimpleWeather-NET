@@ -639,4 +639,7 @@
   <data name="Pref_Features_Title.Text" xml:space="preserve">
     <value>Features</value>
   </data>
+  <data name="WindGust_Label" xml:space="preserve">
+    <value>Wind Gust</value>
+  </data>
 </root>

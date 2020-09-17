@@ -9,6 +9,7 @@ namespace SimpleWeather.Controls
         Sunset,
         FeelsLike,
         WindSpeed,
+        WindGust,
         Humidity,
         Pressure,
         Visibility,
@@ -62,6 +63,11 @@ namespace SimpleWeather.Controls
                 case WeatherDetailsType.WindSpeed:
                     this.Label = SimpleLibrary.ResLoader.GetString("Label_Wind/Text");
                     this.Icon = WeatherIcons.WIND_DIRECTION;
+                    break;
+
+                case WeatherDetailsType.WindGust:
+                    this.Label = SimpleLibrary.ResLoader.GetString("WindGust_Label");
+                    this.Icon = WeatherIcons.CLOUDY_GUSTS;
                     break;
 
                 case WeatherDetailsType.Humidity:

@@ -212,7 +212,7 @@ namespace SimpleWeather.NWS
         public Dewpoint dewpoint { get; set; }
         public Winddirection windDirection { get; set; }
         public Windspeed windSpeed { get; set; }
-        //public Windgust windGust { get; set; }
+        public Windgust windGust { get; set; }
         public Barometricpressure barometricPressure { get; set; }
         //public Sealevelpressure seaLevelPressure { get; set; }
         public Visibility visibility { get; set; }
@@ -255,14 +255,12 @@ namespace SimpleWeather.NWS
         public string qualityControl { get; set; }
     }
 
-    /*
     public class Windgust
     {
         public float? value { get; set; }
         public string unitCode { get; set; }
         public string qualityControl { get; set; }
     }
-    */
 
     public class Barometricpressure
     {

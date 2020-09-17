@@ -163,6 +163,15 @@ namespace SimpleWeather.Controls
                            String.Format(culture, "{0}, {1}", WindSpeed, WindDir), WindDirection));
                 }
 
+                if (forecast.extras.windgust_mph.HasValue && forecast.extras.windgust_kph.HasValue && forecast.extras.windgust_mph >= 0)
+                {
+                    var speedVal = Settings.IsFahrenheit ? Math.Round(forecast.extras.windgust_mph.Value) : Math.Round(forecast.extras.windgust_kph.Value);
+                    var speedUnit = Settings.IsFahrenheit ? "mph" : "kph";
+
+                    var windGustSpeed = String.Format(culture, "{0} {1}", speedVal, speedUnit);
+                    DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.WindGust, windGustSpeed));
+                }
+
                 if (forecast.extras.visibility_mi.HasValue && forecast.extras.visibility_mi >= 0)
                 {
                     var visibilityVal = Settings.IsFahrenheit ? forecast.extras.visibility_mi.Value : forecast.extras.visibility_km.Value;

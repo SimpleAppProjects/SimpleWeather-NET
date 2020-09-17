@@ -27,6 +27,7 @@ namespace SimpleWeather.OpenWeather
         public float uvi { get; set; }
         public int visibility { get; set; }
         public float wind_speed { get; set; }
+        public float? wind_gust { get; set; }
         public int wind_deg { get; set; }
         public Rain rain { get; set; }
         public Snow snow { get; set; }
@@ -52,6 +53,7 @@ namespace SimpleWeather.OpenWeather
         public int clouds { get; set; }
         public int? visibility { get; set; }
         public float wind_speed { get; set; }
+        public float? wind_gust { get; set; }
         public int wind_deg { get; set; }
         public Rain rain { get; set; }
         public Snow snow { get; set; }
@@ -79,6 +81,7 @@ namespace SimpleWeather.OpenWeather
         public int humidity { get; set; }
         public float dew_point { get; set; }
         public float wind_speed { get; set; }
+        public float? wind_gust { get; set; }
         public int wind_deg { get; set; }
         public int clouds { get; set; }
         public float uvi { get; set; }

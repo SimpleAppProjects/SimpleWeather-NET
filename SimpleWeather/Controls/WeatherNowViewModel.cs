@@ -303,6 +303,15 @@ namespace SimpleWeather.Controls
                    weather.condition.wind_degrees.Value + 180));
             }
 
+            if (weather.condition.windgust_mph.HasValue && (weather.condition.windgust_mph != weather.condition.windgust_kph))
+            {
+                var speedVal = Settings.IsFahrenheit ? Math.Round(weather.condition.windgust_mph.Value) : Math.Round(weather.condition.windgust_kph.Value);
+                var speedUnit = Settings.IsFahrenheit ? "mph" : "kph";
+
+                WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.WindGust,
+                    String.Format(culture, "{0} {1}", speedVal, speedUnit)));
+            }
+
             Beaufort = weather.condition.beaufort != null ? new BeaufortViewModel(weather.condition.beaufort) : null;
 
             // Astronomy
