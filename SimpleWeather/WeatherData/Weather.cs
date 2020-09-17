@@ -837,30 +837,30 @@ namespace SimpleWeather.WeatherData
             sb.AppendFormat(CultureInfo.InvariantCulture,
                 "{0} - {1}: {2}°; {3}: {4}°", SimpleLibrary.ResLoader.GetString("Label_Morning"),
                 SimpleLibrary.ResLoader.GetString("Temp_Label"),
-                ConversionMethods.KtoF(forecast.temp.morn),
+                Math.Round(ConversionMethods.KtoF(forecast.temp.morn)),
                 SimpleLibrary.ResLoader.GetString("FeelsLike_Label"),
-                ConversionMethods.KtoF(forecast.feels_like.morn));
+                Math.Round(ConversionMethods.KtoF(forecast.feels_like.morn)));
             sb.AppendLine();
             sb.AppendFormat(CultureInfo.InvariantCulture,
                 "{0} - {1}: {2}°; {3}: {4}°", SimpleLibrary.ResLoader.GetString("Label_Day"),
                 SimpleLibrary.ResLoader.GetString("Temp_Label"),
-                ConversionMethods.KtoF(forecast.temp.day),
+                Math.Round(ConversionMethods.KtoF(forecast.temp.day)),
                 SimpleLibrary.ResLoader.GetString("FeelsLike_Label"),
-                ConversionMethods.KtoF(forecast.feels_like.day));
+                Math.Round(ConversionMethods.KtoF(forecast.temp.day)));
             sb.AppendLine();
             sb.AppendFormat(CultureInfo.InvariantCulture,
                 "{0} - {1}: {2}°; {3}: {4}°", SimpleLibrary.ResLoader.GetString("Label_Eve"),
                 SimpleLibrary.ResLoader.GetString("Temp_Label"),
-                ConversionMethods.KtoF(forecast.temp.eve),
+                Math.Round(ConversionMethods.KtoF(forecast.temp.eve)),
                 SimpleLibrary.ResLoader.GetString("FeelsLike_Label"),
-                ConversionMethods.KtoF(forecast.feels_like.eve));
+                Math.Round(ConversionMethods.KtoF(forecast.feels_like.eve)));
             sb.AppendLine();
             sb.AppendFormat(CultureInfo.InvariantCulture,
                 "{0} - {1}: {2}°; {3}: {4}°", SimpleLibrary.ResLoader.GetString("Label_Night"),
                 SimpleLibrary.ResLoader.GetString("Temp_Label"),
-                ConversionMethods.KtoF(forecast.temp.night),
+                Math.Round(ConversionMethods.KtoF(forecast.temp.night)),
                 SimpleLibrary.ResLoader.GetString("FeelsLike_Label"),
-                ConversionMethods.KtoF(forecast.feels_like.night));
+                Math.Round(ConversionMethods.KtoF(forecast.feels_like.night)));
 
             fcttext = sb.ToString();
 
@@ -868,30 +868,30 @@ namespace SimpleWeather.WeatherData
             sb_metric.AppendFormat(CultureInfo.InvariantCulture,
                 "{0} - {1}: {2}°; {3}: {4}°", SimpleLibrary.ResLoader.GetString("Label_Morning"),
                 SimpleLibrary.ResLoader.GetString("Temp_Label"),
-                ConversionMethods.KtoC(forecast.temp.morn),
+                Math.Round(ConversionMethods.KtoC(forecast.temp.morn)),
                 SimpleLibrary.ResLoader.GetString("FeelsLike_Label"),
-                ConversionMethods.KtoC(forecast.feels_like.morn));
+                Math.Round(ConversionMethods.KtoC(forecast.feels_like.morn)));
             sb_metric.AppendLine();
             sb_metric.AppendFormat(CultureInfo.InvariantCulture,
                 "{0} - {1}: {2}°; {3}: {4}°", SimpleLibrary.ResLoader.GetString("Label_Day"),
                 SimpleLibrary.ResLoader.GetString("Temp_Label"),
-                ConversionMethods.KtoC(forecast.temp.day),
+                Math.Round(ConversionMethods.KtoC(forecast.temp.day)),
                 SimpleLibrary.ResLoader.GetString("FeelsLike_Label"),
-                ConversionMethods.KtoC(forecast.feels_like.day));
+                Math.Round(ConversionMethods.KtoC(forecast.feels_like.day)));
             sb_metric.AppendLine();
             sb_metric.AppendFormat(CultureInfo.InvariantCulture,
                 "{0} - {1}: {2}°; {3}: {4}°", SimpleLibrary.ResLoader.GetString("Label_Eve"),
                 SimpleLibrary.ResLoader.GetString("Temp_Label"),
-                ConversionMethods.KtoC(forecast.temp.eve),
+                Math.Round(ConversionMethods.KtoC(forecast.temp.eve)),
                 SimpleLibrary.ResLoader.GetString("FeelsLike_Label"),
-                ConversionMethods.KtoC(forecast.feels_like.eve));
+                Math.Round(ConversionMethods.KtoC(forecast.feels_like.eve)));
             sb_metric.AppendLine();
             sb_metric.AppendFormat(CultureInfo.InvariantCulture,
                 "{0} - {1}: {2}°; {3}: {4}°", SimpleLibrary.ResLoader.GetString("Label_Night"),
                 SimpleLibrary.ResLoader.GetString("Temp_Label"),
-                ConversionMethods.KtoC(forecast.temp.night),
+                Math.Round(ConversionMethods.KtoC(forecast.temp.night)),
                 SimpleLibrary.ResLoader.GetString("FeelsLike_Label"),
-                ConversionMethods.KtoC(forecast.feels_like.night));
+                Math.Round(ConversionMethods.KtoC(forecast.feels_like.night)));
 
             fcttext_metric = sb_metric.ToString();
         }
