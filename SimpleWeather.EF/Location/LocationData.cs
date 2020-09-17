@@ -126,7 +126,6 @@ namespace SimpleWeather.Location
                 reader.ReadIsBeginObject(); // StartObject
 
                 string property = reader.ReadPropertyName();
-                //reader.ReadNext(); // prop value
 
                 switch (property)
                 {
@@ -160,6 +159,10 @@ namespace SimpleWeather.Location
 
                     case "locsource":
                         this.locationSource = reader.ReadString();
+                        break;
+
+                    default:
+                        reader.ReadNextBlock();
                         break;
                 }
             }

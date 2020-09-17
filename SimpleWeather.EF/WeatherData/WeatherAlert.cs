@@ -132,6 +132,7 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     default:
+                        reader.ReadNextBlock();
                         break;
                 }
             }

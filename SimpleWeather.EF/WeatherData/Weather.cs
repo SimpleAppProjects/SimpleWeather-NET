@@ -237,6 +237,7 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     default:
+                        reader.ReadNextBlock();
                         break;
                 }
             }
@@ -523,6 +524,7 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     default:
+                        reader.ReadNextBlock();
                         break;
                 }
             }
@@ -679,6 +681,7 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     default:
+                        reader.ReadNextBlock();
                         break;
                 }
             }
@@ -865,6 +868,7 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     default:
+                        reader.ReadNextBlock();
                         break;
                 }
             }
@@ -1011,7 +1015,7 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     default:
-                        reader.ReadNext();
+                        reader.ReadNextBlock();
                         break;
                 }
             }
@@ -1253,6 +1257,7 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     default:
+                        reader.ReadNextBlock();
                         break;
                 }
             }
@@ -1577,6 +1582,7 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     default:
+                        reader.ReadNextBlock();
                         break;
                 }
             }
@@ -1821,6 +1827,7 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     default:
+                        reader.ReadNextBlock();
                         break;
                 }
             }
@@ -1970,6 +1977,7 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     default:
+                        reader.ReadNextBlock();
                         break;
                 }
             }
@@ -2107,6 +2115,7 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     default:
+                        reader.ReadNextBlock();
                         break;
                 }
             }
@@ -2238,6 +2247,7 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     default:
+                        reader.ReadNextBlock();
                         break;
                 }
             }
@@ -2340,6 +2350,7 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     default:
+                        reader.ReadNextBlock();
                         break;
                 }
             }
@@ -2430,6 +2441,7 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     default:
+                        reader.ReadNextBlock();
                         break;
                 }
             }
@@ -2514,6 +2526,7 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     default:
+                        reader.ReadNextBlock();
                         break;
                 }
             }
