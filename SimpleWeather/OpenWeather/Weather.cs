@@ -51,6 +51,7 @@ namespace SimpleWeather.OpenWeather
         public int humidity { get; set; }
         public float dew_point { get; set; }
         public int clouds { get; set; }
+        public float? pop { get; set; }
         public int? visibility { get; set; }
         public float wind_speed { get; set; }
         public float? wind_gust { get; set; }
@@ -84,6 +85,7 @@ namespace SimpleWeather.OpenWeather
         public float? wind_gust { get; set; }
         public int wind_deg { get; set; }
         public int clouds { get; set; }
+        public float? pop { get; set; }
         public float uvi { get; set; }
         public int? visibility { get; set; }
         public float? rain { get; set; }

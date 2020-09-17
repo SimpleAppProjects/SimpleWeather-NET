@@ -402,7 +402,7 @@ namespace SimpleWeather.WeatherData
                 dewpoint_f = ConversionMethods.KtoF(forecast.dew_point),
                 dewpoint_c = ConversionMethods.KtoC(forecast.dew_point),
                 humidity = forecast.humidity,
-                pop = forecast.clouds,
+                cloudiness = forecast.clouds,
                 // 1hPA = 1mbar
                 pressure_mb = forecast.pressure,
                 pressure_in = ConversionMethods.MBToInHg(forecast.pressure),
@@ -411,9 +411,13 @@ namespace SimpleWeather.WeatherData
                 wind_kph = (float)Math.Round(ConversionMethods.MSecToKph(forecast.wind_speed)),
                 uv_index = forecast.uvi
             };
+            if (forecast.pop.HasValue)
+            {
+                extras.pop = (int?)Math.Round(forecast.pop.Value * 100);
+            }
             if (forecast.visibility.HasValue)
             {
-                extras.visibility_km = forecast.visibility.Value;
+                extras.visibility_km = forecast.visibility.Value / 1000;
                 extras.visibility_mi = ConversionMethods.KmToMi(forecast.visibility.Value);
             }
             if (forecast.wind_gust.HasValue)
@@ -602,7 +606,6 @@ namespace SimpleWeather.WeatherData
                    .GetWeatherIcon(hr_forecast.weather[0].id.ToInvariantString() + dn);
 
             // Use cloudiness value here
-            pop = hr_forecast.clouds;
             wind_degrees = hr_forecast.wind_deg;
             wind_mph = (float)Math.Round(ConversionMethods.MSecToMph(hr_forecast.wind_speed));
             wind_kph = (float)Math.Round(ConversionMethods.MSecToKph(hr_forecast.wind_speed));
@@ -615,7 +618,7 @@ namespace SimpleWeather.WeatherData
                 dewpoint_f = ConversionMethods.KtoF(hr_forecast.dew_point),
                 dewpoint_c = ConversionMethods.KtoC(hr_forecast.dew_point),
                 humidity = hr_forecast.humidity,
-                pop = hr_forecast.clouds,
+                cloudiness = hr_forecast.clouds,
                 // 1hPA = 1mbar
                 pressure_mb = hr_forecast.pressure,
                 pressure_in = ConversionMethods.MBToInHg(hr_forecast.pressure),
@@ -623,6 +626,10 @@ namespace SimpleWeather.WeatherData
                 wind_mph = this.wind_mph,
                 wind_kph = this.wind_kph
             };
+            if (hr_forecast.pop.HasValue)
+            {
+                extras.pop = (int)Math.Round(hr_forecast.pop.Value * 100);
+            }
             if (hr_forecast.wind_gust.HasValue)
             {
                 extras.windgust_mph = (float)Math.Round(ConversionMethods.MSecToMph(hr_forecast.wind_gust.Value));
@@ -630,7 +637,7 @@ namespace SimpleWeather.WeatherData
             }
             if (hr_forecast.visibility.HasValue)
             {
-                extras.visibility_km = hr_forecast.visibility.Value;
+                extras.visibility_km = hr_forecast.visibility.Value / 1000;
                 extras.visibility_mi = ConversionMethods.KmToMi(hr_forecast.visibility.Value);
             }
             if (hr_forecast.rain != null)
@@ -650,8 +657,6 @@ namespace SimpleWeather.WeatherData
             date = new DateTimeOffset(hr_forecast.time, TimeSpan.Zero);
             high_f = ConversionMethods.CtoF(hr_forecast.data.instant.details.air_temperature.Value);
             high_c = hr_forecast.data.instant.details.air_temperature.Value;
-            // Use cloudiness value here
-            pop = (int)Math.Round(hr_forecast.data.instant.details.cloud_area_fraction.Value);
             wind_degrees = (int)Math.Round(hr_forecast.data.instant.details.wind_from_direction.Value);
             wind_mph = (float)Math.Round(ConversionMethods.MSecToMph(hr_forecast.data.instant.details.wind_speed.Value));
             wind_kph = (float)Math.Round(ConversionMethods.MSecToKph(hr_forecast.data.instant.details.wind_speed.Value));
@@ -678,13 +683,33 @@ namespace SimpleWeather.WeatherData
                 humidity = (int)Math.Round(humidity),
                 dewpoint_f = ConversionMethods.CtoF(hr_forecast.data.instant.details.dew_point_temperature.Value),
                 dewpoint_c = hr_forecast.data.instant.details.dew_point_temperature.Value,
-                pop = pop,
                 pressure_in = ConversionMethods.MBToInHg(hr_forecast.data.instant.details.air_pressure_at_sea_level.Value),
                 pressure_mb = hr_forecast.data.instant.details.air_pressure_at_sea_level.Value,
                 wind_degrees = wind_degrees,
                 wind_mph = wind_mph,
                 wind_kph = wind_kph
             };
+            if (hr_forecast.data.instant.details.cloud_area_fraction.HasValue)
+            {
+                extras.cloudiness = (int)Math.Round(hr_forecast.data.instant.details.cloud_area_fraction.Value);
+            }
+            // Precipitation
+            if (hr_forecast.data.instant.details?.probability_of_precipitation.HasValue == true)
+            {
+                extras.pop = (int)Math.Round(hr_forecast.data.instant.details.probability_of_precipitation.Value);
+            }
+            else if (hr_forecast.data.next_1_hours?.details?.probability_of_precipitation.HasValue == true)
+            {
+                extras.pop = (int)Math.Round(hr_forecast.data.next_1_hours.details.probability_of_precipitation.Value);
+            }
+            else if (hr_forecast.data.next_6_hours?.details?.probability_of_precipitation.HasValue == true)
+            {
+                extras.pop = (int)Math.Round(hr_forecast.data.next_6_hours.details.probability_of_precipitation.Value);
+            }
+            else if (hr_forecast.data.next_12_hours?.details?.probability_of_precipitation.HasValue == true)
+            {
+                extras.pop = (int)Math.Round(hr_forecast.data.next_12_hours.details.probability_of_precipitation.Value);
+            }
             if (hr_forecast.data.instant.details.wind_speed_of_gust.HasValue)
             {
                 extras.windgust_mph = (float)Math.Round(ConversionMethods.MSecToMph(hr_forecast.data.instant.details.wind_speed_of_gust.Value));
@@ -715,10 +740,6 @@ namespace SimpleWeather.WeatherData
             icon = WeatherManager.GetProvider(WeatherAPI.Here)
                    .GetWeatherIcon(string.Format("{0}_{1}", hr_forecast.daylight, hr_forecast.iconName));
 
-            if (int.TryParse(hr_forecast.precipitationProbability, out int pop))
-            {
-                this.pop = pop;
-            }
             if (int.TryParse(hr_forecast.windDirection, out int windDeg))
                 wind_degrees = windDeg;
             if (float.TryParse(hr_forecast.windSpeed, out float windSpeed))
@@ -762,8 +783,11 @@ namespace SimpleWeather.WeatherData
                 extras.qpf_snow_in = snow_in;
                 extras.qpf_snow_cm = ConversionMethods.InToMM(snow_in / 10);
             }
-            //extras.pressure_in = hr_forecast.barometerPressure;
-            //extras.pressure_mb = ConversionMethods.InHgToMB(hr_forecast.barometerPressure);
+            if (float.TryParse(hr_forecast.barometerPressure, out float pressureIN))
+            {
+                extras.pressure_in = pressureIN;
+                extras.pressure_mb = ConversionMethods.InHgToMB(pressureIN);
+            }
             extras.wind_degrees = wind_degrees;
             extras.wind_mph = wind_mph;
             extras.wind_kph = wind_kph;
@@ -777,7 +801,6 @@ namespace SimpleWeather.WeatherData
             condition = forecastItem.shortForecast;
             icon = WeatherManager.GetProvider(WeatherAPI.NWS)
                         .GetWeatherIcon(forecastItem.icon);
-            pop = null;
 
             if (forecastItem.windSpeed != null && forecastItem.windDirection != null)
             {
@@ -1426,7 +1449,7 @@ namespace SimpleWeather.WeatherData
         public Precipitation(OpenWeather.Current current)
         {
             // Use cloudiness value here
-            pop = current.clouds;
+            cloudiness = current.clouds;
             if (current.rain != null)
             {
                 qpf_rain_in = ConversionMethods.MMToIn(current.rain._1h);
@@ -1442,7 +1465,24 @@ namespace SimpleWeather.WeatherData
         public Precipitation(Metno.Timesery time)
         {
             // Use cloudiness value here
-            pop = (int)Math.Round(time.data.instant.details.cloud_area_fraction.Value);
+            cloudiness = (int)Math.Round(time.data.instant.details.cloud_area_fraction.Value);
+            // Precipitation
+            if (time.data.instant.details?.probability_of_precipitation.HasValue == true)
+            {
+                pop = (int)Math.Round(time.data.instant.details.probability_of_precipitation.Value);
+            }
+            else if (time.data.next_1_hours?.details?.probability_of_precipitation.HasValue == true)
+            {
+                pop = (int)Math.Round(time.data.next_1_hours.details.probability_of_precipitation.Value);
+            }
+            else if (time.data.next_6_hours?.details?.probability_of_precipitation.HasValue == true)
+            {
+                pop = (int)Math.Round(time.data.next_6_hours.details.probability_of_precipitation.Value);
+            }
+            else if (time.data.next_12_hours?.details?.probability_of_precipitation.HasValue == true)
+            {
+                pop = (int)Math.Round(time.data.next_12_hours.details.probability_of_precipitation.Value);
+            }
             // The rest DNE
         }
 

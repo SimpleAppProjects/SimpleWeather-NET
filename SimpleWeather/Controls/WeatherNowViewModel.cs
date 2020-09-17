@@ -205,44 +205,24 @@ namespace SimpleWeather.Controls
             {
                 string Chance = weather.precipitation.pop.HasValue ? weather.precipitation.pop.Value + "%" : null;
 
-                if (WeatherAPI.OpenWeatherMap.Equals(Settings.API) || WeatherAPI.MetNo.Equals(Settings.API))
+                if (weather.precipitation.pop.HasValue && weather.precipitation.pop >= 0)
+                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPChance, weather.precipitation.pop.Value + "%"));
+                if (weather.precipitation.qpf_rain_in.HasValue && weather.precipitation.qpf_rain_in >= 0)
                 {
-                    if (weather.precipitation.qpf_rain_in.HasValue && weather.precipitation.qpf_rain_in >= 0)
-                    {
-                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPRain,
-                            Settings.IsFahrenheit ?
-                            weather.precipitation.qpf_rain_in.Value.ToString("0.00", culture) + " in" :
-                            weather.precipitation.qpf_rain_mm.Value.ToString("0.00", culture) + " mm"));
-                    }
-                    if (weather.precipitation.qpf_snow_in.HasValue && weather.precipitation.qpf_snow_in >= 0)
-                    {
-                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPSnow,
-                            Settings.IsFahrenheit ?
-                            weather.precipitation.qpf_snow_in.Value.ToString("0.00", culture) + " in" :
-                            weather.precipitation.qpf_snow_cm.Value.ToString("0.00", culture) + " cm"));
-                    }
-                    if (weather.precipitation.pop.HasValue && weather.precipitation.pop >= 0)
-                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPCloudiness, Chance));
+                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPRain,
+                        Settings.IsFahrenheit ?
+                        weather.precipitation.qpf_rain_in.Value.ToString("0.00", culture) + " in" :
+                        weather.precipitation.qpf_rain_mm.Value.ToString("0.00", culture) + " mm"));
                 }
-                else
+                if (weather.precipitation.qpf_snow_in.HasValue && weather.precipitation.qpf_snow_in >= 0)
                 {
-                    if (weather.precipitation.pop.HasValue && weather.precipitation.pop >= 0)
-                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPChance, Chance));
-                    if (weather.precipitation.qpf_rain_in.HasValue && weather.precipitation.qpf_rain_in >= 0)
-                    {
-                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPRain,
-                            Settings.IsFahrenheit ?
-                            weather.precipitation.qpf_rain_in.Value.ToString("0.00", culture) + " in" :
-                            weather.precipitation.qpf_rain_mm.Value.ToString("0.00", culture) + " mm"));
-                    }
-                    if (weather.precipitation.qpf_snow_in.HasValue && weather.precipitation.qpf_snow_in >= 0)
-                    {
-                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPSnow,
-                            Settings.IsFahrenheit ?
-                            weather.precipitation.qpf_snow_in.Value.ToString("0.00", culture) + " in" :
-                            weather.precipitation.qpf_snow_cm.Value.ToString("0.00", culture) + " cm"));
-                    }
+                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPSnow,
+                        Settings.IsFahrenheit ?
+                        weather.precipitation.qpf_snow_in.Value.ToString("0.00", culture) + " in" :
+                        weather.precipitation.qpf_snow_cm.Value.ToString("0.00", culture) + " cm"));
                 }
+                if (weather.precipitation.cloudiness.HasValue && weather.precipitation.cloudiness >= 0)
+                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPCloudiness, weather.precipitation.cloudiness.Value + "%"));
             }
 
             // Atmosphere

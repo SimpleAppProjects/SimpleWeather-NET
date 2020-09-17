@@ -76,6 +76,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\DBMigrations\Migration.0_1.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\DBMigrations\Migration.3_4.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\DBMigrations\Migration.4_5.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\DBMigrations\Migration.5_6.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\DBUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\FileUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\OAuthUtils.cs" />

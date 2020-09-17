@@ -350,6 +350,7 @@ namespace SimpleWeather.WeatherData
                             if (weather.precipitation != null)
                             {
                                 weather.precipitation.pop = hrf.extras?.pop;
+                                weather.precipitation.cloudiness = hrf.extras?.cloudiness;
                                 weather.precipitation.qpf_rain_in = hrf.extras?.qpf_rain_in >= 0 ? hrf.extras.qpf_rain_in : 0.0f;
                                 weather.precipitation.qpf_rain_mm = hrf.extras?.qpf_rain_mm >= 0 ? hrf.extras.qpf_rain_mm : 0.0f;
                                 weather.precipitation.qpf_snow_in = hrf.extras?.qpf_snow_in >= 0 ? hrf.extras.qpf_snow_in : 0.0f;

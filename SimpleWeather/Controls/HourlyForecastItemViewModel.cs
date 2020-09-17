@@ -53,8 +53,6 @@ namespace SimpleWeather.Controls
                 Logger.WriteLine(LoggerLevel.Error, "Invalid number format", ex);
             }
 
-            PoP = hrForecast.pop.HasValue ? hrForecast.pop.Value + "%" : null;
-
             if (hrForecast.wind_mph.HasValue && hrForecast.wind_mph >= 0 &&
                 hrForecast.wind_degrees.HasValue && hrForecast.wind_degrees >= 0)
             {
@@ -78,44 +76,24 @@ namespace SimpleWeather.Controls
                            String.Format(culture, "{0}°", value)));
                 }
 
-                if (WeatherAPI.OpenWeatherMap.Equals(Settings.API) || WeatherAPI.MetNo.Equals(Settings.API))
+                if (hrForecast.extras.pop.HasValue && hrForecast.extras.pop >= 0)
+                    DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPChance, hrForecast.extras.pop.Value + "%"));
+                if (hrForecast.extras.qpf_rain_in.HasValue && hrForecast.extras.qpf_rain_in >= 0)
                 {
-                    if (hrForecast.extras.qpf_rain_in.HasValue && hrForecast.extras.qpf_rain_in >= 0)
-                    {
-                        DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPRain,
-                            Settings.IsFahrenheit ?
-                            hrForecast.extras.qpf_rain_in.Value.ToString("0.00", culture) + " in" :
-                            hrForecast.extras.qpf_rain_mm.Value.ToString("0.00", culture) + " mm"));
-                    }
-                    if (hrForecast.extras.qpf_snow_in.HasValue && hrForecast.extras.qpf_snow_in >= 0)
-                    {
-                        DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPSnow,
-                            Settings.IsFahrenheit ?
-                            hrForecast.extras.qpf_snow_in.Value.ToString("0.00", culture) + " in" :
-                            hrForecast.extras.qpf_snow_cm.Value.ToString("0.00", culture) + " cm"));
-                    }
-                    if (hrForecast.extras.pop.HasValue && hrForecast.extras.pop >= 0)
-                        DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPCloudiness, PoP));
+                    DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPRain,
+                        Settings.IsFahrenheit ?
+                        hrForecast.extras.qpf_rain_in.Value.ToString("0.00", culture) + " in" :
+                        hrForecast.extras.qpf_rain_mm.Value.ToString("0.00", culture) + " mm"));
                 }
-                else
+                if (hrForecast.extras.qpf_snow_in.HasValue && hrForecast.extras.qpf_snow_in >= 0)
                 {
-                    if (hrForecast.extras.pop.HasValue && hrForecast.extras.pop >= 0)
-                        DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPChance, PoP));
-                    if (hrForecast.extras.qpf_rain_in.HasValue && hrForecast.extras.qpf_rain_in >= 0)
-                    {
-                        DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPRain,
-                            Settings.IsFahrenheit ?
-                            hrForecast.extras.qpf_rain_in.Value.ToString("0.00", culture) + " in" :
-                            hrForecast.extras.qpf_rain_mm.Value.ToString("0.00", culture) + " mm"));
-                    }
-                    if (hrForecast.extras.qpf_snow_in.HasValue && hrForecast.extras.qpf_snow_in >= 0)
-                    {
-                        DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPSnow,
-                            Settings.IsFahrenheit ?
-                            hrForecast.extras.qpf_snow_in.Value.ToString("0.00", culture) + " in" :
-                            hrForecast.extras.qpf_snow_cm.Value.ToString("0.00", culture) + " cm"));
-                    }
+                    DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPSnow,
+                        Settings.IsFahrenheit ?
+                        hrForecast.extras.qpf_snow_in.Value.ToString("0.00", culture) + " in" :
+                        hrForecast.extras.qpf_snow_cm.Value.ToString("0.00", culture) + " cm"));
                 }
+                if (hrForecast.extras.cloudiness.HasValue && hrForecast.extras.cloudiness >= 0)
+                    DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPCloudiness, hrForecast.extras.cloudiness.Value + "%"));
 
                 if (hrForecast.extras.humidity.HasValue)
                 {

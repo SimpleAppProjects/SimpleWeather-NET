@@ -45,6 +45,12 @@ namespace SimpleWeather.Utils
                                 {
                                     await DBMigrations.Migrate4_5(weatherDB);
                                 }
+                                goto case 5;
+                            case 5:
+                                if (await weatherDB.Table<Weather>().CountAsync() > 0)
+                                {
+                                    await DBMigrations.Migrate5_6(weatherDB);
+                                }
                                 break;
                             default:
                                 break;

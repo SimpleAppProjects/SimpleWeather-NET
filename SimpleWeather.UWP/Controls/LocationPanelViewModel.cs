@@ -184,21 +184,15 @@ namespace SimpleWeather.Controls
 
             if (weather.precipitation != null)
             {
-                PoP = weather.precipitation.pop.HasValue ? weather.precipitation.pop.Value + "%" : null;
-
-                if (WeatherAPI.OpenWeatherMap.Equals(Settings.API) || WeatherAPI.MetNo.Equals(Settings.API))
+                if (weather.precipitation.pop.HasValue)
                 {
-                    if (weather.precipitation.pop.HasValue && weather.precipitation.pop >= 0)
-                    {
-                        PoPIcon = WeatherIcons.CLOUDY;
-                    }
+                    PoP = weather.precipitation.pop.Value + "%";
+                    PoPIcon = WeatherIcons.UMBRELLA;
                 }
-                else
+                else if (weather.precipitation.cloudiness.HasValue)
                 {
-                    if (weather.precipitation.pop.HasValue && weather.precipitation.pop >= 0)
-                    {
-                        PoPIcon = WeatherIcons.UMBRELLA;
-                    }
+                    PoP = weather.precipitation.cloudiness.Value + "%";
+                    PoPIcon = WeatherIcons.CLOUDY;
                 }
             }
 

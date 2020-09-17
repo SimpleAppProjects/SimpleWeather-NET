@@ -34,7 +34,7 @@ namespace SimpleWeather.Utils
         internal static int DBVersion { get { return GetDBVersion(); } set { SetDBVersion(value); } }
 
         // Data
-        internal const int CurrentDBVersion = 5;
+        internal const int CurrentDBVersion = 6;
         private static SQLiteAsyncConnection locationDB;
         private static SQLiteAsyncConnection weatherDB;
         private static string tzDBConnStr;

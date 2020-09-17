@@ -75,6 +75,7 @@ namespace SimpleWeather.Metno
         public float? cloud_area_fraction_medium { get; set; }
         public float? dew_point_temperature { get; set; }
         public float? fog_area_fraction { get; set; }
+        public float? probability_of_precipitation { get; set; }
         public float? relative_humidity { get; set; }
         public float? ultraviolet_index_clear_sky { get; set; }
         public float? wind_from_direction { get; set; }

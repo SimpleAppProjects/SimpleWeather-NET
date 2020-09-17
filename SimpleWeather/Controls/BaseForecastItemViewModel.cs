@@ -12,7 +12,6 @@ namespace SimpleWeather.Controls
         public string ShortDate { get; set; }
         public string Condition { get; set; }
         public string HiTemp { get; set; }
-        public string PoP { get; set; }
         public string WindDir { get; set; }
         public int WindDirection { get; set; }
         public string WindSpeed { get; set; }

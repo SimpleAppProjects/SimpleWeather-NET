@@ -757,7 +757,6 @@ namespace SimpleWeather.WeatherData
         public float? high_c { get; set; }
         public string condition { get; set; }
         public string icon { get; set; }
-        public int? pop { get; set; }
         public int? wind_degrees { get; set; }
         public float? wind_mph { get; set; }
         public float? wind_kph { get; set; }
@@ -776,7 +775,6 @@ namespace SimpleWeather.WeatherData
                    high_c == forecast.high_c &&
                    condition == forecast.condition &&
                    icon == forecast.icon &&
-                   pop == forecast.pop &&
                    wind_degrees == forecast.wind_degrees &&
                    wind_mph == forecast.wind_mph &&
                    wind_kph == forecast.wind_kph &&
@@ -791,7 +789,6 @@ namespace SimpleWeather.WeatherData
             hash.Add(high_c);
             hash.Add(condition);
             hash.Add(icon);
-            hash.Add(pop);
             hash.Add(wind_degrees);
             hash.Add(wind_mph);
             hash.Add(wind_kph);
@@ -848,11 +845,6 @@ namespace SimpleWeather.WeatherData
 
                     case nameof(icon):
                         this.icon = reader.ReadString();
-                        break;
-
-                    case nameof(pop):
-                        if (int.TryParse(reader.ReadString(), out int POP))
-                            this.pop = POP;
                         break;
 
                     case nameof(wind_degrees):
@@ -912,12 +904,6 @@ namespace SimpleWeather.WeatherData
             // "icon" : ""
             writer.WritePropertyName(nameof(icon));
             writer.WriteString(icon);
-
-            writer.WriteValueSeparator();
-
-            // "pop" : ""
-            writer.WritePropertyName(nameof(pop));
-            writer.WriteString(pop?.ToInvariantString());
 
             writer.WriteValueSeparator();
 
@@ -1071,6 +1057,7 @@ namespace SimpleWeather.WeatherData
         public float? dewpoint_c { get; set; }
         public float? uv_index { get; set; }
         public int? pop { get; set; }
+        public int? cloudiness { get; set; }
         public float? qpf_rain_in { get; set; }
         public float? qpf_rain_mm { get; set; }
         public float? qpf_snow_in { get; set; }
@@ -1100,6 +1087,7 @@ namespace SimpleWeather.WeatherData
                    dewpoint_c == extras.dewpoint_c &&
                    uv_index == extras.uv_index &&
                    pop == extras.pop &&
+                   cloudiness == extras.cloudiness &&
                    qpf_rain_in == extras.qpf_rain_in &&
                    qpf_rain_mm == extras.qpf_rain_mm &&
                    qpf_snow_in == extras.qpf_snow_in &&
@@ -1125,6 +1113,7 @@ namespace SimpleWeather.WeatherData
             hash.Add(dewpoint_c);
             hash.Add(uv_index);
             hash.Add(pop);
+            hash.Add(cloudiness);
             hash.Add(qpf_rain_in);
             hash.Add(qpf_rain_mm);
             hash.Add(qpf_snow_in);
@@ -1200,6 +1189,11 @@ namespace SimpleWeather.WeatherData
                     case nameof(pop):
                         if (int.TryParse(reader.ReadString(), out int POP))
                             this.pop = POP;
+                        break;
+
+                    case nameof(cloudiness):
+                        if (int.TryParse(reader.ReadString(), out int Clouds))
+                            this.cloudiness = Clouds;
                         break;
 
                     case nameof(qpf_rain_in):
@@ -1309,6 +1303,12 @@ namespace SimpleWeather.WeatherData
             // "pop" : ""
             writer.WritePropertyName(nameof(pop));
             writer.WriteString(pop?.ToInvariantString());
+
+            writer.WriteValueSeparator();
+
+            // "cloudiness" : ""
+            writer.WritePropertyName(nameof(cloudiness));
+            writer.WriteString(cloudiness?.ToInvariantString());
 
             writer.WriteValueSeparator();
 
@@ -2024,6 +2024,7 @@ namespace SimpleWeather.WeatherData
     public partial class Precipitation : CustomJsonObject
     {
         public int? pop { get; set; }
+        public int? cloudiness { get; set; }
         public float? qpf_rain_in { get; set; }
         public float? qpf_rain_mm { get; set; }
         public float? qpf_snow_in { get; set; }
@@ -2038,6 +2039,7 @@ namespace SimpleWeather.WeatherData
         {
             return obj is Precipitation precipitation &&
                    pop == precipitation.pop &&
+                   cloudiness == precipitation.cloudiness &&
                    qpf_rain_in == precipitation.qpf_rain_in &&
                    qpf_rain_mm == precipitation.qpf_rain_mm &&
                    qpf_snow_in == precipitation.qpf_snow_in &&
@@ -2046,7 +2048,7 @@ namespace SimpleWeather.WeatherData
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(pop, qpf_rain_in, qpf_rain_mm, qpf_snow_in, qpf_snow_cm);
+            return HashCode.Combine(pop, cloudiness, qpf_rain_in, qpf_rain_mm, qpf_snow_in, qpf_snow_cm);
         }
 
         public override void FromJson(ref JsonReader extReader)
@@ -2083,6 +2085,11 @@ namespace SimpleWeather.WeatherData
                             this.pop = POP;
                         break;
 
+                    case nameof(cloudiness):
+                        if (int.TryParse(reader.ReadString(), out int Clouds))
+                            this.cloudiness = Clouds;
+                        break;
+
                     case nameof(qpf_rain_in):
                         this.qpf_rain_in = reader.ReadSingle();
                         break;
@@ -2115,6 +2122,12 @@ namespace SimpleWeather.WeatherData
             // "pop" : ""
             writer.WritePropertyName(nameof(pop));
             writer.WriteString(pop?.ToInvariantString());
+
+            writer.WriteValueSeparator();
+
+            // "cloudiness" : ""
+            writer.WritePropertyName(nameof(cloudiness));
+            writer.WriteString(cloudiness?.ToInvariantString());
 
             writer.WriteValueSeparator();
 

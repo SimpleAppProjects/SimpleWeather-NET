@@ -296,14 +296,19 @@ namespace SimpleWeather.UWP.Controls
                             for (int i = 0; i < itemCount; i++)
                             {
                                 var forecastItemViewModel = forecasts[i];
+                                var popModel = forecastItemViewModel.DetailExtras?.FirstOrDefault(f => f.DetailsType == WeatherDetailsType.PoPChance);
+
                                 try
                                 {
-                                    float pop = float.Parse(forecastItemViewModel.PoP.RemoveNonDigitChars());
-                                    YEntryData popData = new YEntryData(pop, forecastItemViewModel.PoP.Trim());
+                                    if (popModel != null)
+                                    {
+                                        float pop = float.Parse(popModel.Value);
+                                        YEntryData popData = new YEntryData(pop, popModel.Value);
 
-                                    popDataSeries.Add(popData);
-                                    XLabelData xLabelData = new XLabelData(forecastItemViewModel.Date, WeatherIcons.RAINDROP, 0);
-                                    labelData.Add(xLabelData);
+                                        popDataSeries.Add(popData);
+                                        XLabelData xLabelData = new XLabelData(forecastItemViewModel.Date, WeatherIcons.RAINDROP, 0);
+                                        labelData.Add(xLabelData);
+                                    }
                                 }
                                 catch (FormatException ex)
                                 {
@@ -340,12 +345,12 @@ namespace SimpleWeather.UWP.Controls
         {
             int count = 1;
             var first = _forecasts?.FirstOrDefault();
-            if (first is ForecastItemViewModel)
+            if (first != null)
             {
-                if (!String.IsNullOrWhiteSpace(first.WindSpeed))
+                if (!String.IsNullOrWhiteSpace(first?.WindSpeed))
                     count++;
 
-                if (!String.IsNullOrWhiteSpace(first.PoP?.Replace("%", "")))
+                if (first.DetailExtras?.FirstOrDefault(f => f.DetailsType == WeatherDetailsType.PoPChance) != null)
                     count++;
             }
 
