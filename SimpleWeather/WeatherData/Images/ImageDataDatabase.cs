@@ -47,50 +47,51 @@ namespace SimpleWeather.WeatherData.Images
                         request.AddCredential(GoogleCredential.FromAccessToken(authLink.FirebaseToken));
                         request.PageToken = pageToken;
 
-                        var cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
-                        var resp = await request.ExecuteAsync(cts.Token);
-                        var docs = resp.Documents;
-                        list.EnsureCapacity(docs.Count);
-                        foreach (var doc in docs)
+                        using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                         {
-                            var imgData = new ImageData();
-                            foreach (var field in doc.Fields)
+                            var resp = await request.ExecuteAsync(cts.Token);
+                            var docs = resp.Documents;
+                            list.EnsureCapacity(docs.Count);
+                            foreach (var doc in docs)
                             {
-                                switch (field.Key)
+                                var imgData = new ImageData();
+                                foreach (var field in doc.Fields)
                                 {
-                                    case "artistName":
-                                        imgData.ArtistName = field.Value.StringValue;
-                                        break;
+                                    switch (field.Key)
+                                    {
+                                        case "artistName":
+                                            imgData.ArtistName = field.Value.StringValue;
+                                            break;
 
-                                    case "color":
-                                        imgData.HexColor = field.Value.StringValue;
-                                        break;
+                                        case "color":
+                                            imgData.HexColor = field.Value.StringValue;
+                                            break;
 
-                                    case "condition":
-                                        imgData.Condition = field.Value.StringValue;
-                                        break;
+                                        case "condition":
+                                            imgData.Condition = field.Value.StringValue;
+                                            break;
 
-                                    case "imageURL":
-                                        imgData.ImageUrl = field.Value.StringValue;
-                                        break;
+                                        case "imageURL":
+                                            imgData.ImageUrl = field.Value.StringValue;
+                                            break;
 
-                                    case "location":
-                                        imgData.Location = field.Value.StringValue;
-                                        break;
+                                        case "location":
+                                            imgData.Location = field.Value.StringValue;
+                                            break;
 
-                                    case "originalLink":
-                                        imgData.OriginalLink = field.Value.StringValue;
-                                        break;
+                                        case "originalLink":
+                                            imgData.OriginalLink = field.Value.StringValue;
+                                            break;
 
-                                    case "siteName":
-                                        imgData.SiteName = field.Value.StringValue;
-                                        break;
+                                        case "siteName":
+                                            imgData.SiteName = field.Value.StringValue;
+                                            break;
+                                    }
                                 }
+                                list.Add(imgData);
                             }
-                            list.Add(imgData);
+                            pageToken = resp.NextPageToken;
                         }
-                        pageToken = resp.NextPageToken;
-                        cts.Dispose();
                     }
                     while (pageToken != null);
 
@@ -173,22 +174,22 @@ namespace SimpleWeather.WeatherData.Images
                     var request = db.Projects.Databases.Documents.Get(Firebase.FirestoreHelper.GetParentPath() + "/background_images_info/collection_info");
                     var authLink = await Firebase.FirebaseAuthHelper.GetAuthLink();
                     request.AddCredential(GoogleCredential.FromAccessToken(authLink.FirebaseToken));
-                    var cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
-                    var doc = await request.ExecuteAsync(cts.Token);
-
-                    if (doc.Fields.TryGetValue("last_updated", out Value value))
+                    using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     {
-                        if (value.IntegerValue.HasValue)
+                        var doc = await request.ExecuteAsync(cts.Token);
+
+                        if (doc.Fields.TryGetValue("last_updated", out Value value))
                         {
-                            return (long)value.IntegerValue;
-                        }
-                        else if (value.DoubleValue.HasValue)
-                        {
-                            return (long)value.DoubleValue.Value;
+                            if (value.IntegerValue.HasValue)
+                            {
+                                return (long)value.IntegerValue;
+                            }
+                            else if (value.DoubleValue.HasValue)
+                            {
+                                return (long)value.DoubleValue.Value;
+                            }
                         }
                     }
-
-                    cts.Dispose();
                 }
                 catch (Exception e)
                 {

@@ -14,6 +14,7 @@ namespace SimpleWeather.WeatherYahoo
 {
     public partial class YahooWeatherProvider : WeatherProviderImpl, IAstroDataProvider
     {
+        private const String QUERY_URL = "https://weather-ydn-yql.media.yahoo.com/forecastrss?{0}&format=json&u=f";
         public YahooWeatherProvider() : base()
         {
             LocationProvider = new Bing.BingMapsLocationProvider();
@@ -41,41 +42,32 @@ namespace SimpleWeather.WeatherYahoo
             return Task.Run(async () =>
             {
                 Rootobject root = null;
-
-                string queryAPI = "https://weather-ydn-yql.media.yahoo.com/forecastrss";
-                Uri weatherURL = null;
-
-                OAuthRequest authRequest = new OAuthRequest(APIKeys.GetYahooCliID(), APIKeys.GetYahooCliSecr());
-
                 WeatherException wEx = null;
 
                 try
                 {
-                    string query = "?" + location_query + "&format=json&u=f";
-                    weatherURL = new Uri(queryAPI + query);
+                    Uri weatherURL = new Uri(String.Format(QUERY_URL, location_query));
+                    OAuthRequest authRequest = new OAuthRequest(APIKeys.GetYahooCliID(), APIKeys.GetYahooCliSecr());
                     string authorization = authRequest.GetAuthorizationHeader(weatherURL);
 
-                    // Get response
-                    using (HttpClient webClient = new HttpClient())
                     using (var request = new HttpRequestMessage(HttpMethod.Get, weatherURL))
-                    using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     {
                         // Add headers to request
                         request.Headers.Add("Authorization", authorization);
                         request.Headers.Add("X-Yahoo-App-Id", APIKeys.GetYahooAppID());
                         request.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/json"));
 
-                        HttpResponseMessage response = await webClient.SendRequestAsync(request, HttpCompletionOption.ResponseHeadersRead).AsTask(cts.Token);
-                        response.EnsureSuccessStatusCode();
-                        Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-                        // Reset exception
-                        wEx = null;
+                        // Get response
+                        var webClient = SimpleLibrary.WebClient;
+                        using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                        using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                        {
+                            response.EnsureSuccessStatusCode();
+                            Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
-                        // Load weather
-                        root = JSONParser.Deserializer<Rootobject>(contentStream);
-
-                        // End Stream
-                        contentStream?.Dispose();
+                            // Load weather
+                            root = JSONParser.Deserializer<Rootobject>(contentStream);
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -146,7 +138,7 @@ namespace SimpleWeather.WeatherYahoo
                 try
                 {
                     String query = UpdateLocationQuery(location);
-                    Rootobject root = await AsyncTask.RunAsync(GetRootobject(query));
+                    Rootobject root = await GetRootobject(query);
                     return new WeatherData.Astronomy(root.current_observation.astronomy);
                 }
                 catch (WeatherException wEx)
@@ -163,7 +155,7 @@ namespace SimpleWeather.WeatherYahoo
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<Weather> GetWeather(LocationData location)
         {
-            var weather = await AsyncTask.RunAsync(base.GetWeather(location));
+            var weather = await base.GetWeather(location);
 
             weather.update_time = weather.update_time.ToOffset(location.tz_offset);
 

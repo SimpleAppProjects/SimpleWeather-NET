@@ -10,6 +10,7 @@ using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Web.Http;
+using Windows.Web.Http.Headers;
 
 namespace SimpleWeather.TZDB
 {
@@ -27,8 +28,6 @@ namespace SimpleWeather.TZDB
             {
                 String tzLong = null;
 
-                Uri queryURL = null;
-
                 try
                 {
                     // Get Firebase token
@@ -38,27 +37,26 @@ namespace SimpleWeather.TZDB
                     if (String.IsNullOrWhiteSpace(tzAPI) || String.IsNullOrWhiteSpace(userToken))
                         return null;
 
-                    queryURL = new Uri(string.Format(CultureInfo.InvariantCulture, "{0}?lat={1}&lon={2}", tzAPI, latitude, longitude));
+                    Uri queryURL = new Uri(string.Format(CultureInfo.InvariantCulture, "{0}?lat={1}&lon={2}", tzAPI, latitude, longitude));
 
-                    // Connect to webstream
-                    using (HttpClient webClient = new HttpClient())
                     using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
-                    using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     {
                         // Add headers to request
-                        request.Headers.Add("Authorization", String.Format(CultureInfo.InvariantCulture, "Bearer {0}", userToken));
+                        request.Headers.Authorization = new HttpCredentialsHeaderValue("Bearer", userToken);
 
-                        HttpResponseMessage response = await webClient.SendRequestAsync(request, HttpCompletionOption.ResponseHeadersRead).AsTask(cts.Token);
-                        response.EnsureSuccessStatusCode();
-                        Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                        // Connect to webstream
+                        var webClient = SimpleLibrary.WebClient;
+                        using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                        using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                        {
+                            response.EnsureSuccessStatusCode();
+                            Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
-                        // Load weather
-                        var root = await JsonSerializer.DeserializeAsync<TimeZoneData>(contentStream);
+                            // Load weather
+                            var root = await JsonSerializer.DeserializeAsync<TimeZoneData>(contentStream);
 
-                        tzLong = root.TZLong;
-
-                        // End Stream
-                        contentStream?.Dispose();
+                            tzLong = root.TZLong;
+                        }
                     }
                 }
                 catch (Exception ex)

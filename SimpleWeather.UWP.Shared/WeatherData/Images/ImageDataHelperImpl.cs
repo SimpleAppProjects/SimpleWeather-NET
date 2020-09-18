@@ -73,17 +73,19 @@ namespace SimpleWeather.UWP.Shared.WeatherData.Images
                     var imageDownloadUri = new Uri(await storageRef.GetDownloadUrlAsync());
 
                     using (var fStream = await imageFile.OpenAsync(FileAccessMode.ReadWrite))
-                    using (HttpClient webClient = new HttpClient())
                     using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
                     using (var request = new HttpRequestMessage(HttpMethod.Get, imageDownloadUri))
                     {
                         // Connect to webstream
-                        HttpResponseMessage response = await AsyncTask.RunAsync(webClient.SendRequestAsync(request).AsTask(cts.Token));
-                        response.EnsureSuccessStatusCode();
+                        var webClient = SimpleLibrary.WebClient;
+                        using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                        {
+                            response.EnsureSuccessStatusCode();
 
-                        // Download content to file
-                        await response.Content.WriteToStreamAsync(fStream);
-                        await fStream.FlushAsync();
+                            // Download content to file
+                            await response.Content.WriteToStreamAsync(fStream);
+                            await fStream.FlushAsync();
+                        }
                     }
 
                     newImageData = ImageData.CopyWithNewImageUrl(imageData, imageFile.Path);

@@ -18,6 +18,9 @@ namespace SimpleWeather.Metno
 {
     public partial class MetnoWeatherProvider : WeatherProviderImpl
     {
+        private const String FORECAST_QUERY_URL = "https://api.met.no/weatherapi/locationforecast/2.0/complete.json?{0}";
+        private const String ASTRONOMY_QUERY_URL = "https://api.met.no/weatherapi/sunrise/2.0/.json?{0}&date={1}&offset=+00:00";
+
         public MetnoWeatherProvider() : base()
         {
             LocationProvider = new Bing.BingMapsLocationProvider();
@@ -45,94 +48,79 @@ namespace SimpleWeather.Metno
             return Task.Run(async () =>
             {
                 Weather weather = null;
+                WeatherException wEx = null;
 
-                string forecastAPI = null;
-                Uri forecastURL = null;
-                string sunrisesetAPI = null;
-                Uri sunrisesetURL = null;
-
-                forecastAPI = "https://api.met.no/weatherapi/locationforecast/2.0/complete.json?{0}";
-                forecastURL = new Uri(string.Format(forecastAPI, location_query));
-                sunrisesetAPI = "https://api.met.no/weatherapi/sunrise/2.0/.json?{0}&date={1}&offset=+00:00";
-                string date = DateTime.Now.ToString("yyyy-MM-dd");
-                sunrisesetURL = new Uri(string.Format(sunrisesetAPI, location_query, date));
-
-                using (var handler = new HttpBaseProtocolFilter()
+                try
                 {
-                    AllowAutoRedirect = true,
-                    AutomaticDecompression = true
-                })
-                using (HttpClient webClient = new HttpClient(handler))
-                using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                {
-                    // Use GZIP compression
-                    var version = string.Format("v{0}.{1}.{2}",
-                        Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
+                    Uri forecastURL = new Uri(string.Format(FORECAST_QUERY_URL, location_query));
+                    string date = DateTime.Now.ToString("yyyy-MM-dd");
+                    Uri sunrisesetURL = new Uri(string.Format(ASTRONOMY_QUERY_URL, location_query, date));
 
-                    webClient.DefaultRequestHeaders.AcceptEncoding.Add(new HttpContentCodingWithQualityHeaderValue("gzip"));
-                    webClient.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
-
-                    WeatherException wEx = null;
-
-                    try
+                    using (var forecastRequest = new HttpRequestMessage(HttpMethod.Get, forecastURL))
+                    using (var astronomyRequest = new HttpRequestMessage(HttpMethod.Get, sunrisesetURL))
                     {
+                        // Add headers
+                        forecastRequest.Headers.AcceptEncoding.Add(new HttpContentCodingWithQualityHeaderValue("gzip"));
+                        astronomyRequest.Headers.AcceptEncoding.Add(new HttpContentCodingWithQualityHeaderValue("gzip"));
+
                         // Get response
-                        HttpResponseMessage forecastResponse = await webClient.GetAsync(forecastURL).AsTask(cts.Token);
-                        forecastResponse.EnsureSuccessStatusCode();
-                        HttpResponseMessage sunrisesetResponse = await webClient.GetAsync(sunrisesetURL).AsTask(cts.Token);
-                        sunrisesetResponse.EnsureSuccessStatusCode();
-
-                        Stream forecastStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await forecastResponse.Content.ReadAsInputStreamAsync());
-                        Stream sunrisesetStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await sunrisesetResponse.Content.ReadAsInputStreamAsync());
-
-                        // Reset exception
-                        wEx = null;
-
-                        // Load weather
-                        Rootobject foreRoot = JSONParser.Deserializer<Rootobject>(forecastStream);
-                        AstroRootobject astroRoot = JSONParser.Deserializer<AstroRootobject>(sunrisesetStream);
-
-                        weather = new Weather(foreRoot, astroRoot);
-                        // Release resources
-                        cts.Dispose();
-                    }
-                    catch (Exception ex)
-                    {
-                        weather = null;
-
-                        if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                        var webClient = SimpleLibrary.WebClient;
+                        using (var ctsF = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                        using (var forecastResponse = await webClient.SendRequestAsync(forecastRequest).AsTask(ctsF.Token))
                         {
-                            wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                            forecastResponse.EnsureSuccessStatusCode();
+                            using (var ctsA = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                            using (var sunrisesetResponse = await webClient.SendRequestAsync(astronomyRequest).AsTask(ctsA.Token))
+                            {
+                                sunrisesetResponse.EnsureSuccessStatusCode();
+
+                                Stream forecastStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await forecastResponse.Content.ReadAsInputStreamAsync());
+                                Stream sunrisesetStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await sunrisesetResponse.Content.ReadAsInputStreamAsync());
+
+                                // Reset exception
+                                wEx = null;
+
+                                // Load weather
+                                Rootobject foreRoot = JSONParser.Deserializer<Rootobject>(forecastStream);
+                                AstroRootobject astroRoot = JSONParser.Deserializer<AstroRootobject>(sunrisesetStream);
+
+                                weather = new Weather(foreRoot, astroRoot);
+                            }
                         }
-
-                        Logger.WriteLine(LoggerLevel.Error, ex, "MetnoWeatherProvider: error getting weather data");
                     }
-
-                    // End Stream
-                    webClient.Dispose();
-                    handler.Dispose();
-
-                    if (wEx == null && (weather == null || !weather.IsValid()))
-                    {
-                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
-                    }
-                    else if (weather != null)
-                    {
-                        weather.query = location_query;
-                    }
-
-                    if (wEx != null)
-                        throw wEx;
-
-                    return weather;
                 }
+                catch (Exception ex)
+                {
+                    weather = null;
+
+                    if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                    {
+                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    }
+
+                    Logger.WriteLine(LoggerLevel.Error, ex, "MetnoWeatherProvider: error getting weather data");
+                }
+
+                if (wEx == null && (weather == null || !weather.IsValid()))
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
+                }
+                else if (weather != null)
+                {
+                    weather.query = location_query;
+                }
+
+                if (wEx != null)
+                    throw wEx;
+
+                return weather;
             });
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<Weather> GetWeather(LocationData location)
         {
-            var weather = await AsyncTask.RunAsync(base.GetWeather(location));
+            var weather = await base.GetWeather(location);
 
             // OWM reports datetime in UTC; add location tz_offset
             var offset = location.tz_offset;

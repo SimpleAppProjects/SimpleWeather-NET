@@ -17,49 +17,37 @@ namespace SimpleWeather.AQICN
 {
     public class AQICNProvider : IAirQualityProvider
     {
+        private const String QUERY_URL = "https://api.waqi.info/feed/geo:{0};{1}/?token={2}";
         public Task<AirQuality> GetAirQualityData(LocationData location)
         {
             return Task.Run(async () =>
             {
                 AirQuality aqiData = null;
 
-                string queryAPI = null;
-                Uri queryURL = null;
-
                 string key = APIKeys.GetAQICNKey();
                 if (String.IsNullOrWhiteSpace(key))
                     return null;
 
-                queryAPI = "https://api.waqi.info/feed/geo:{0};{1}/?token={2}";
-                queryURL = new Uri(string.Format(queryAPI, location.latitude, location.longitude, key));
+                Uri queryURL = new Uri(string.Format(QUERY_URL, location.latitude, location.longitude, key));
 
                 try
                 {
-                    CancellationTokenSource cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
-
                     // Connect to webstream
-                    HttpClient webClient = new HttpClient();
+                    HttpClient webClient = SimpleLibrary.WebClient;
+                    var request = new HttpRequestMessage(HttpMethod.Get, queryURL);
 
-                    var version = string.Format("v{0}.{1}.{2}",
-                        Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
+                    using (request)
+                    using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                    using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                    {
+                        response.EnsureSuccessStatusCode();
+                        Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
-                    webClient.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
+                        // Load data
+                        var root = JSONParser.Deserializer<Rootobject>(contentStream);
 
-                    HttpResponseMessage response = await AsyncTask.RunAsync(webClient.GetAsync(queryURL).AsTask(cts.Token));
-                    response.EnsureSuccessStatusCode();
-                    Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-                    // End Stream
-                    webClient.Dispose();
-                    cts.Dispose();
-
-                    // Load data
-                    var root = JSONParser.Deserializer<Rootobject>(contentStream);
-
-                    aqiData = new AirQuality(root);
-
-                    // End Stream
-                    if (contentStream != null)
-                        contentStream.Dispose();
+                        aqiData = new AirQuality(root);
+                    }
                 }
                 catch (Exception ex)
                 {

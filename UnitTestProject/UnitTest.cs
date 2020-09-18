@@ -121,6 +121,16 @@ namespace UnitTestProject
         }
 
         [TestMethod]
+        public async void GetNWSAlerts()
+        {
+            var location = await WeatherManager.GetProvider(WeatherAPI.OpenWeatherMap)
+                .GetLocation(new WeatherUtils.Coordinate(47.6721646, -122.1706614));
+            var locData = new LocationData(location);
+            var alerts = await new NWSAlertProvider().GetAlerts(locData);
+            Assert.IsNotNull(alerts);
+        }
+
+        [TestMethod]
         public void GetNWSWeather()
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.NWS);

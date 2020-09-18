@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Windows.ApplicationModel;
 using Windows.ApplicationModel.Resources;
+using Windows.Web.Http;
+using Windows.Web.Http.Filters;
+using Windows.Web.Http.Headers;
 
 namespace SimpleWeather
 {
-    public sealed class SimpleLibrary
+    public sealed class SimpleLibrary : IDisposable
     {
         private ResourceLoader ResourceLoader;
+        private HttpClient HttpWebClient;
 
         private static SimpleLibrary sSimpleLib;
 
@@ -22,6 +27,15 @@ namespace SimpleWeather
             {
                 Init();
                 return sSimpleLib.ResourceLoader;
+            }
+        }
+
+        public static HttpClient WebClient
+        {
+            get
+            {
+                Init();
+                return sSimpleLib.GetHttpClient();
             }
         }
 
@@ -41,6 +55,33 @@ namespace SimpleWeather
             {
                 return ResourceLoader.GetForViewIndependentUse();
             }
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Client will be disposed")]
+        private HttpClient GetHttpClient()
+        {
+            if (HttpWebClient == null)
+            {
+                var handler = new HttpBaseProtocolFilter()
+                {
+                    AllowAutoRedirect = true,
+                    AutomaticDecompression = true,
+                    AllowUI = false
+                };
+                HttpWebClient = new HttpClient(handler);
+
+                var version = string.Format("v{0}.{1}.{2}",
+                    Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
+
+                HttpWebClient.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
+            }
+
+            return HttpWebClient;
+        }
+
+        public void Dispose()
+        {
+            HttpWebClient.Dispose();
         }
     }
 }

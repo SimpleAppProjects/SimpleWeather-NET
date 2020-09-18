@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+// NOTE: Using .NET HttpClient; UWP HttpClient doesn't work for some reason
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
@@ -33,14 +34,12 @@ namespace SimpleWeather.HERE
 
                 if (forceRefresh)
                 {
-                    Stream contentStream = null;
-                    var oAuthRequest = new OAuthRequest(APIKeys.GetHERECliID(), APIKeys.GetHERECliSecr(), OAuthSignatureMethod.HMAC_SHA256, HTTPRequestType.POST);
-
-                    using (HttpClient webClient = new HttpClient())
-                    using (var request = new HttpRequestMessage(HttpMethod.Post, HERE_OAUTH_URL))
-                    using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                    try
                     {
-                        try
+                        var oAuthRequest = new OAuthRequest(APIKeys.GetHERECliID(), APIKeys.GetHERECliSecr(), OAuthSignatureMethod.HMAC_SHA256, HTTPRequestType.POST);
+
+                        using (HttpClient webClient = new HttpClient())
+                        using (var request = new HttpRequestMessage(HttpMethod.Post, HERE_OAUTH_URL))
                         {
                             // Add headers to request
                             var authHeader = oAuthRequest.GetAuthorizationHeader(request.RequestUri, true);
@@ -57,34 +56,37 @@ namespace SimpleWeather.HERE
                             };
                             request.Content = new FormUrlEncodedContent(contentList);
 
-                            HttpResponseMessage response = await webClient.SendAsync(request, cts.Token);
-                            response.EnsureSuccessStatusCode();
-                            contentStream = await response.Content.ReadAsStreamAsync();
-
-                            var date = response.Headers.Date.GetValueOrDefault(DateTimeOffset.UtcNow);
-
-                            var tokenRoot = JSONParser.Deserializer<TokenRootobject>(contentStream);
-
-                            if (tokenRoot != null)
+                            using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                            using (var response = await webClient.SendAsync(request, cts.Token))
                             {
-                                var tokenStr = String.Format(CultureInfo.InvariantCulture, "Bearer {0}", tokenRoot.access_token);
+                                response.EnsureSuccessStatusCode();
+                                Stream contentStream = await response.Content.ReadAsStreamAsync();
 
-                                // Store token for future operations
-                                var token = new Token()
+                                var date = response.Headers.Date.GetValueOrDefault(DateTimeOffset.UtcNow);
+
+                                var tokenRoot = JSONParser.Deserializer<TokenRootobject>(contentStream);
+
+                                if (tokenRoot != null)
                                 {
-                                    expiration_date = date.UtcDateTime.AddSeconds(tokenRoot.expires_in),
-                                    access_token = tokenStr
-                                };
+                                    var tokenStr = String.Format(CultureInfo.InvariantCulture, "Bearer {0}", tokenRoot.access_token);
 
-                                StoreToken(token);
+                                    // Store token for future operations
+                                    var token = new Token()
+                                    {
+                                        expiration_date = date.UtcDateTime.AddSeconds(tokenRoot.expires_in),
+                                        access_token = tokenStr
+                                    };
 
-                                return tokenStr;
+                                    StoreToken(token);
+
+                                    return tokenStr;
+                                }
                             }
                         }
-                        catch (Exception e)
-                        {
-                            Logger.WriteLine(LoggerLevel.Error, e, "HEREOAuthUtils: Error retrieving token");
-                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.WriteLine(LoggerLevel.Error, e, "HEREOAuthUtils: Error retrieving token");
                     }
                 }
 

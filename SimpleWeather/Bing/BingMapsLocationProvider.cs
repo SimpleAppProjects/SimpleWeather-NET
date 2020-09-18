@@ -20,6 +20,9 @@ namespace SimpleWeather.Bing
 {
     public class BingMapsLocationProvider : LocationProviderImpl
     {
+        // http://dev.virtualearth.net/REST/v1/Autosuggest?query=new%20york&userLocation=0,0&includeEntityTypes=Place&key=API_KEY&culture=fr-FR&userRegion=FR
+        private const String AUTOCOMPLETE_QUERY_URL = "http://dev.virtualearth.net/REST/v1/Autosuggest?query={0}&userLocation=0,0&includeEntityTypes=Place&key={1}&culture={2}&maxResults=10";
+
         public override string LocationAPI => WeatherAPI.BingMaps;
 
         public override bool KeyRequired => false;
@@ -36,29 +39,25 @@ namespace SimpleWeather.Bing
                 var userlang = GlobalizationPreferences.Languages[0];
                 var culture = new CultureInfo(userlang);
 
-                // http://dev.virtualearth.net/REST/v1/Autosuggest?query=new%20york&userLocation=0,0&includeEntityTypes=Place&key=API_KEY&culture=fr-FR&userRegion=FR
-                string queryAPI = "http://dev.virtualearth.net/REST/v1/Autosuggest";
-                string query = "?query={0}&userLocation=0,0&includeEntityTypes=Place&key={1}&culture={2}&maxResults=10";
-
                 // TODO: NOTE: Decide if we will allow users to provide their own keys for loc providers
                 string key = GetAPIKey();
 
-                Uri queryURL = new Uri(String.Format(queryAPI + query, location_query, key, culture.Name));
                 WeatherException wEx = null;
                 // Limit amount of results shown
                 int maxResults = 10;
 
-                using (HttpClient webClient = new HttpClient())
-                using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                try
                 {
-                    try
+                    Uri queryURL = new Uri(String.Format(AUTOCOMPLETE_QUERY_URL, location_query, key, culture.Name));
+
+                    // Connect to webstream
+                    var webClient = SimpleLibrary.WebClient;
+                    using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
+                    using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                    using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                     {
-                        // Connect to webstream
-                        HttpResponseMessage response = await webClient.GetAsync(queryURL).AsTask(cts.Token);
                         response.EnsureSuccessStatusCode();
                         Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-                        // End Stream
-                        webClient.Dispose();
 
                         // Load data
                         var locationSet = new HashSet<LocationQueryViewModel>();
@@ -83,18 +82,15 @@ namespace SimpleWeather.Bing
                         }
 
                         locations = new ObservableCollection<LocationQueryViewModel>(locationSet);
-
-                        // End Stream
-                        contentStream?.Dispose();
                     }
-                    catch (Exception ex)
+                }
+                catch (Exception ex)
+                {
+                    if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                     {
-                        if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
-                        {
-                            wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                        }
-                        Logger.WriteLine(LoggerLevel.Error, ex, "BingMapsLocationProvider: error getting locations");
+                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                     }
+                    Logger.WriteLine(LoggerLevel.Error, ex, "BingMapsLocationProvider: error getting locations");
                 }
 
                 if (wEx != null)
@@ -117,12 +113,10 @@ namespace SimpleWeather.Bing
                 var userlang = GlobalizationPreferences.Languages[0];
                 var culture = new CultureInfo(userlang);
 
-                // TODO: NOTE: Decide if we will allow users to provide their own keys for loc providers
                 string key = GetAPIKey();
 
                 MapLocation result = null;
                 WeatherException wEx = null;
-                var cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
 
                 try
                 {
@@ -135,33 +129,36 @@ namespace SimpleWeather.Bing
                     };
                     Geopoint pointToReverseGeocode = new Geopoint(geoPoint);
 
-                    // Geocode the specified address, using the specified reference point
-                    // as a query hint. Return no more than a single result.
-                    MapLocationFinderResult mapResult = await MapLocationFinder.FindLocationsAtAsync(pointToReverseGeocode, MapLocationDesiredAccuracy.High).AsTask(cts.Token);
-
-                    switch (mapResult.Status)
+                    using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     {
-                        case MapLocationFinderStatus.Success:
-                            result = mapResult.Locations[0];
-                            break;
+                        // Geocode the specified address, using the specified reference point
+                        // as a query hint. Return no more than a single result.
+                        MapLocationFinderResult mapResult = await MapLocationFinder.FindLocationsAtAsync(pointToReverseGeocode, MapLocationDesiredAccuracy.High).AsTask(cts.Token);
 
-                        case MapLocationFinderStatus.UnknownError:
-                        case MapLocationFinderStatus.IndexFailure:
-                            wEx = new WeatherException(WeatherUtils.ErrorStatus.Unknown);
-                            break;
+                        switch (mapResult.Status)
+                        {
+                            case MapLocationFinderStatus.Success:
+                                result = mapResult.Locations[0];
+                                break;
 
-                        case MapLocationFinderStatus.InvalidCredentials:
-                            wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
-                            break;
+                            case MapLocationFinderStatus.UnknownError:
+                            case MapLocationFinderStatus.IndexFailure:
+                                wEx = new WeatherException(WeatherUtils.ErrorStatus.Unknown);
+                                break;
 
-                        case MapLocationFinderStatus.BadLocation:
-                        case MapLocationFinderStatus.NotSupported:
-                            wEx = new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
-                            break;
+                            case MapLocationFinderStatus.InvalidCredentials:
+                                wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
+                                break;
 
-                        case MapLocationFinderStatus.NetworkFailure:
-                            wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                            break;
+                            case MapLocationFinderStatus.BadLocation:
+                            case MapLocationFinderStatus.NotSupported:
+                                wEx = new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
+                                break;
+
+                            case MapLocationFinderStatus.NetworkFailure:
+                                wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                                break;
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -171,10 +168,6 @@ namespace SimpleWeather.Bing
                         wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                     }
                     Logger.WriteLine(LoggerLevel.Error, ex, "BingMapsLocationProvider: error getting location");
-                }
-                finally
-                {
-                    cts?.Dispose();
                 }
 
                 if (wEx != null)
@@ -199,12 +192,10 @@ namespace SimpleWeather.Bing
                 var userlang = GlobalizationPreferences.Languages[0];
                 var culture = new CultureInfo(userlang);
 
-                // TODO: NOTE: Decide if we will allow users to provide their own keys for loc providers
                 string key = GetAPIKey();
 
                 MapLocation result = null;
                 WeatherException wEx = null;
-                var cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
 
                 try
                 {
@@ -217,33 +208,36 @@ namespace SimpleWeather.Bing
                     };
                     Geopoint hintPoint = new Geopoint(queryHint);
 
-                    // Geocode the specified address, using the specified reference point
-                    // as a query hint. Return no more than a single result.
-                    MapLocationFinderResult mapResult = await MapLocationFinder.FindLocationsAsync(address, hintPoint, 1).AsTask(cts.Token);
-
-                    switch (mapResult.Status)
+                    using(var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     {
-                        case MapLocationFinderStatus.Success:
-                            result = mapResult.Locations[0];
-                            break;
+                        // Geocode the specified address, using the specified reference point
+                        // as a query hint. Return no more than a single result.
+                        MapLocationFinderResult mapResult = await MapLocationFinder.FindLocationsAsync(address, hintPoint, 1).AsTask(cts.Token);
 
-                        case MapLocationFinderStatus.UnknownError:
-                        case MapLocationFinderStatus.IndexFailure:
-                            wEx = new WeatherException(WeatherUtils.ErrorStatus.Unknown);
-                            break;
+                        switch (mapResult.Status)
+                        {
+                            case MapLocationFinderStatus.Success:
+                                result = mapResult.Locations[0];
+                                break;
 
-                        case MapLocationFinderStatus.InvalidCredentials:
-                            wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
-                            break;
+                            case MapLocationFinderStatus.UnknownError:
+                            case MapLocationFinderStatus.IndexFailure:
+                                wEx = new WeatherException(WeatherUtils.ErrorStatus.Unknown);
+                                break;
 
-                        case MapLocationFinderStatus.BadLocation:
-                        case MapLocationFinderStatus.NotSupported:
-                            wEx = new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
-                            break;
+                            case MapLocationFinderStatus.InvalidCredentials:
+                                wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
+                                break;
 
-                        case MapLocationFinderStatus.NetworkFailure:
-                            wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                            break;
+                            case MapLocationFinderStatus.BadLocation:
+                            case MapLocationFinderStatus.NotSupported:
+                                wEx = new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
+                                break;
+
+                            case MapLocationFinderStatus.NetworkFailure:
+                                wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                                break;
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -254,10 +248,6 @@ namespace SimpleWeather.Bing
                         wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                     }
                     Logger.WriteLine(LoggerLevel.Error, ex, "BingMapsLocationProvider: error getting location");
-                }
-                finally
-                {
-                    cts?.Dispose();
                 }
 
                 if (wEx != null)
