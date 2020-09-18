@@ -89,7 +89,7 @@ namespace SimpleWeather.SQLiteNet
 
         private static List<List<T>> Split<T>(List<T> items, int sliceSize = 30)
         {
-            List<List<T>> list = new List<List<T>>();
+            List<List<T>> list = new List<List<T>>((int)Math.Ceiling((decimal)items.Count / sliceSize));
             for (int i = 0; i < items.Count; i += sliceSize)
                 list.Add(items.GetRange(i, Math.Min(sliceSize, items.Count - i)));
             return list;

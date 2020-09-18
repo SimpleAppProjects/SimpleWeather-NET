@@ -5,6 +5,7 @@ using Microsoft.Graphics.Canvas.UI.Xaml;
 using SimpleWeather.Utils;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using Windows.Foundation;
@@ -351,6 +352,7 @@ namespace SimpleWeather.UWP.Controls
         private void RefreshXCoordinateList()
         {
             xCoordinateList.Clear();
+            xCoordinateList.EnsureCapacity(HorizontalGridNum);
             for (int i = 0; i < (HorizontalGridNum + 1); i++)
             {
                 xCoordinateList.Add(sideLineLength + backgroundGridWidth * i);
@@ -360,6 +362,7 @@ namespace SimpleWeather.UWP.Controls
         private void RefreshYCoordinateList()
         {
             yCoordinateList.Clear();
+            yCoordinateList.EnsureCapacity((int)Math.Ceiling(VerticalGridNum));
             for (int i = 0; i < (VerticalGridNum + 1); i++)
             {
                 yCoordinateList.Add(topLineLength + ((GraphHeight) * i / (VerticalGridNum)));
@@ -382,8 +385,16 @@ namespace SimpleWeather.UWP.Controls
                 float minValue = 0;
                 for (int k = 0; k < dataLists.Count; k++)
                 {
-                    float kMax = dataLists[k].SeriesData.Max().Y;
-                    float kMin = dataLists[k].SeriesData.Min().Y;
+                    float kMax = 0;
+                    float kMin = 0;
+
+                    foreach (var seriesData in dataLists[k].SeriesData)
+                    {
+                        if (kMax < seriesData.Y)
+                            kMax = seriesData.Y;
+                        if (kMin > seriesData.Y)
+                            kMin = seriesData.Y;
+                    }
 
                     if (maxValue < kMax)
                         maxValue = kMax;
@@ -393,6 +404,11 @@ namespace SimpleWeather.UWP.Controls
                 for (int k = 0; k < dataLists.Count; k++)
                 {
                     int drawDotSize = drawDotLists[k].Count;
+
+                    if (drawDotSize > 0)
+                    {
+                        drawDotLists[k].EnsureCapacity(dataLists[k].SeriesData.Count);
+                    }
 
                     for (int i = 0; i < dataLists[k].SeriesData.Count; i++)
                     {
@@ -752,7 +768,7 @@ namespace SimpleWeather.UWP.Controls
                     String title = dataLists[i].SeriesLabel;
                     if (String.IsNullOrWhiteSpace(title))
                     {
-                        title = "Series " + i;
+                        title = String.Format(CultureInfo.CurrentCulture, "{0} {1}", App.ResLoader.GetString("Label_Series"), i);
                     }
 
                     using (var txtLayout = new CanvasTextLayout(Canvas, title, BottomTextFormat, 0, 0))

@@ -50,6 +50,7 @@ namespace SimpleWeather.WeatherData.Images
                         var cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
                         var resp = await request.ExecuteAsync(cts.Token);
                         var docs = resp.Documents;
+                        list.EnsureCapacity(docs.Count);
                         foreach (var doc in docs)
                         {
                             var imgData = new ImageData();

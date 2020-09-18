@@ -136,14 +136,14 @@ namespace SimpleWeather.UWP.Controls
                             GraphView.DrawDotPoints = false;
                             GraphView.DrawSeriesLabels = false;
 
-                            List<XLabelData> labelData = new List<XLabelData>();
-                            List<LineDataSeries> tempDataSeries = new List<LineDataSeries>();
-                            List<YEntryData> hiTempSeries = new List<YEntryData>();
+                            List<XLabelData> labelData = new List<XLabelData>(itemCount);
+                            List<LineDataSeries> tempDataSeries = new List<LineDataSeries>(2);
+                            List<YEntryData> hiTempSeries = new List<YEntryData>(itemCount);
                             List<YEntryData> loTempSeries = null;
 
                             if (forecasts.FirstOrDefault() is ForecastItemViewModel)
                             {
-                                loTempSeries = new List<YEntryData>();
+                                loTempSeries = new List<YEntryData>(itemCount);
                                 GraphView.DrawSeriesLabels = true;
                             }
 
@@ -204,12 +204,14 @@ namespace SimpleWeather.UWP.Controls
 
                             if (hiTempSeries?.Count > 0)
                             {
-                                tempDataSeries.Add(new LineDataSeries("High", hiTempSeries));
+                                var hiTempSeriesLabel = App.ResLoader.GetString("Label_High");
+                                tempDataSeries.Add(new LineDataSeries(hiTempSeriesLabel, hiTempSeries));
                             }
 
                             if (loTempSeries?.Count > 0)
                             {
-                                tempDataSeries.Add(new LineDataSeries("Low", loTempSeries));
+                                var loTempSeriesLabel = App.ResLoader.GetString("Label_Low");
+                                tempDataSeries.Add(new LineDataSeries(loTempSeriesLabel, loTempSeries));
                             }
 
                             Task.Run(async () =>
@@ -237,9 +239,9 @@ namespace SimpleWeather.UWP.Controls
                             GraphView.DrawDotPoints = false;
                             GraphView.DrawSeriesLabels = false;
 
-                            List<XLabelData> labelData = new List<XLabelData>();
-                            List<LineDataSeries> windDataList = new List<LineDataSeries>();
-                            List<YEntryData> windDataSeries = new List<YEntryData>();
+                            List<XLabelData> labelData = new List<XLabelData>(itemCount);
+                            List<LineDataSeries> windDataList = new List<LineDataSeries>(1);
+                            List<YEntryData> windDataSeries = new List<YEntryData>(itemCount);
 
                             for (int i = 0; i < itemCount; i++)
                             {
@@ -289,9 +291,9 @@ namespace SimpleWeather.UWP.Controls
                             GraphView.DrawDotPoints = false;
                             GraphView.DrawSeriesLabels = false;
 
-                            List<XLabelData> labelData = new List<XLabelData>();
-                            List<LineDataSeries> popDataList = new List<LineDataSeries>();
-                            List<YEntryData> popDataSeries = new List<YEntryData>();
+                            List<XLabelData> labelData = new List<XLabelData>(itemCount);
+                            List<LineDataSeries> popDataList = new List<LineDataSeries>(1);
+                            List<YEntryData> popDataSeries = new List<YEntryData>(itemCount);
 
                             for (int i = 0; i < itemCount; i++)
                             {
@@ -352,19 +354,6 @@ namespace SimpleWeather.UWP.Controls
 
                 if (first.DetailExtras?.FirstOrDefault(f => f.DetailsType == WeatherDetailsType.PoPChance) != null)
                     count++;
-            }
-
-            if (first is HourlyForecastItemViewModel)
-            {
-                if (Settings.API.Equals(WeatherAPI.OpenWeatherMap) || Settings.API.Equals(WeatherAPI.MetNo) ||
-                    Settings.API.Equals(WeatherAPI.NWS))
-                {
-                    count = 2;
-                }
-                else
-                {
-                    count = 3;
-                }
             }
 
             switch (count)

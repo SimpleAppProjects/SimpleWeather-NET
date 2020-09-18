@@ -114,13 +114,8 @@ namespace SimpleWeather.WeatherData
 
         public static bool IsKeyRequired(string API)
         {
-            WeatherProviderImpl provider = null;
-            bool needsKey = false;
-
-            provider = GetProvider(API);
-
-            needsKey = provider.KeyRequired;
-            provider = null;
+            WeatherProviderImpl provider = GetProvider(API);
+            bool needsKey = provider.KeyRequired;
             return needsKey;
         }
 

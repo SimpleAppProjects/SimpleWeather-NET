@@ -97,6 +97,7 @@ namespace SimpleWeather.Controls
                 if (alertData?.Count > 0)
                 {
                     var now = DateTimeOffset.Now;
+                    Alerts.EnsureCapacity(alertData.Count);
                     foreach (var alert in alertData)
                     {
                         // Skip if alert has expired

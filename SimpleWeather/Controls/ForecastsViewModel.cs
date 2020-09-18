@@ -185,8 +185,6 @@ namespace SimpleWeather.Controls
                 if (locationData?.query == null)
                     return new List<ForecastItemViewModel>(0);
 
-                List<ForecastItemViewModel> models = new List<ForecastItemViewModel>();
-
                 Forecasts fcasts = null;
                 try
                 {
@@ -198,6 +196,7 @@ namespace SimpleWeather.Controls
                 }
 
                 int totalCount = (int)fcasts?.forecast?.Count;
+                var models = new List<ForecastItemViewModel>(Math.Min(totalCount, pageSize));
 
                 if (totalCount > 0)
                 {
@@ -251,7 +250,7 @@ namespace SimpleWeather.Controls
                 var dateBlob = DateTimeOffset.Now.ToOffset(locationData.tz_offset).Trim(TimeSpan.TicksPerHour).ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture);
                 var result = await Settings.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(locationData?.query, pageIndex, pageSize, dateBlob);
 
-                List<HourlyForecastItemViewModel> models = new List<HourlyForecastItemViewModel>();
+                var models = new List<HourlyForecastItemViewModel>(Math.Min(pageSize, (int)result?.Count));
 
                 if (result?.Count > 0)
                 {

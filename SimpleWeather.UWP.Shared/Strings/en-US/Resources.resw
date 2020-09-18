@@ -642,4 +642,7 @@
   <data name="WindGust_Label" xml:space="preserve">
     <value>Wind Gust</value>
   </data>
+  <data name="Label_Series" xml:space="preserve">
+    <value>Series</value>
+  </data>
 </root>

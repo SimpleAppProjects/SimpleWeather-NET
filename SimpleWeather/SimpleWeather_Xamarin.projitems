@@ -69,6 +69,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utf8JsonGen\Utf8JsonGenerated.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\AppCenterLoggingTree.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\AsyncTask.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\ListUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\ColorUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\ConversionMethods.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\CustomException.cs" />
