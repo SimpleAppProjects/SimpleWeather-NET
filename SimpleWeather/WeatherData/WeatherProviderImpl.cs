@@ -35,7 +35,7 @@ namespace SimpleWeather.WeatherData
         }
         // Weather
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public abstract Task<Weather> GetWeather(String location_query);
+        public abstract Task<Weather> GetWeather(String location_query, String country_code);
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public virtual Task<Weather> GetWeather(LocationData location)
         {
@@ -44,7 +44,7 @@ namespace SimpleWeather.WeatherData
                 if (location == null || location.query == null)
                     throw new WeatherException(WeatherUtils.ErrorStatus.Unknown);
 
-                var weather = await AsyncTask.RunAsync(GetWeather(location.query));
+                var weather = await AsyncTask.RunAsync(GetWeather(location.query, location.country_code));
 
                 if (String.IsNullOrWhiteSpace(location.tz_long))
                 {

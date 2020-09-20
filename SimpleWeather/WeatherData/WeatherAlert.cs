@@ -1,4 +1,5 @@
-﻿using SimpleWeather.Utils;
+﻿using SimpleWeather.HERE;
+using SimpleWeather.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,12 +11,15 @@ namespace SimpleWeather.WeatherData
 {
     public partial class WeatherAlert
     {
+        // NWS Alerts
         public WeatherAlert(NWS.AlertGraph alert)
         {
             // Alert Type
             switch (alert._event)
             {
                 case "Hurricane Local Statement":
+                    Type = WeatherAlertType.HurricaneLocalStatement;
+                    break;
                 case "Hurricane Force Wind Watch":
                 case "Hurricane Watch":
                 case "Hurricane Force Wind Warning":
@@ -150,6 +154,7 @@ namespace SimpleWeather.WeatherData
             Attribution = "Information provided by the U.S. National Weather Service";
         }
 
+        // HERE GlobalAlerts
         public WeatherAlert(HERE.Alert alert)
         {
             // Alert Type
@@ -277,6 +282,192 @@ namespace SimpleWeather.WeatherData
             SetDateTimeFromSegment(alert.timeSegment);
 
             Attribution = "Information provided by HERE Weather";
+        }
+
+        // HERE NWS Alerts
+        public WeatherAlert(Watch alert)
+        {
+            int type = -1;
+            if (int.TryParse(alert.type, out int parsedType))
+            {
+                type = parsedType;
+            }
+
+            Type = GetAlertType(type, alert.description);
+            Severity = GetAlertSeverity(alert.severity);
+
+            Title = alert.description;
+            Message = alert.message;
+
+            Date = alert.validFromTimeLocal;
+            ExpiresDate = alert.validUntilTimeLocal;
+
+            Attribution = "Information provided by HERE Weather";
+        }
+
+        public WeatherAlert(Warning alert)
+        {
+            int type = -1;
+            if (int.TryParse(alert.type, out int parsedType))
+            {
+                type = parsedType;
+            }
+
+            Type = GetAlertType(type, alert.description);
+            Severity = GetAlertSeverity(alert.severity);
+
+            Title = alert.description;
+            Message = alert.message;
+
+            Date = alert.validFromTimeLocal;
+            ExpiresDate = alert.validUntilTimeLocal;
+
+            Attribution = "Information provided by HERE Weather";
+        }
+
+        private WeatherAlertType GetAlertType(int type, String alertDescription)
+        {
+            switch (type)
+            {
+                case 0: // Aviation Weather Warning
+                case 1: // Civil Emergency Message
+                case 10: // Lakeshore Warning or Statement
+                case 11: // Marine Weather Statement
+                case 12: // Non Precipitation Warning, Watch, or Statement
+                case 13: // Public Severe Weather Alert
+                case 14: // Red Flag Warning
+                case 16: // River Recreation Statement
+                case 17: // River Statement
+                case 19: // Preliminary Notice of Watch Cancellation - Aviation Message
+                case 20: // Special Dispersion Statement
+                case 22: // SPC Watch Point Information Message
+                case 25: // Special Marine Warning
+                case 27: // Special Weather Statement
+                case 38: // Air Stagnation Advisory
+                default:
+                    {
+                        // Try to get a more detailed alert type
+                        if (alertDescription.Contains("Hurricane", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            return WeatherAlertType.HurricaneWindWarning;
+                        }
+                        else if (alertDescription.Contains("Tornado", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            return WeatherAlertType.TornadoWarning;
+                        }
+                        else if (alertDescription.Contains("Heat", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            return WeatherAlertType.Heat;
+                        }
+                        else if (alertDescription.Contains("Dense Fog", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            return WeatherAlertType.DenseFog;
+                        }
+                        else if (alertDescription.Contains("Dense Smoke", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            return WeatherAlertType.DenseSmoke;
+                        }
+                        else if (alertDescription.Contains("Fire", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            return WeatherAlertType.Fire;
+                        }
+                        else if (alertDescription.Contains("Wind", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            return WeatherAlertType.HighWind;
+                        }
+                        else if (alertDescription.Contains("Snow", StringComparison.InvariantCultureIgnoreCase) || alertDescription.Contains("Blizzard", StringComparison.InvariantCultureIgnoreCase) ||
+                              alertDescription.Contains("Winter", StringComparison.InvariantCultureIgnoreCase) || alertDescription.Contains("Ice", StringComparison.InvariantCultureIgnoreCase) ||
+                              alertDescription.Contains("Ice", StringComparison.InvariantCultureIgnoreCase) || alertDescription.Contains("Ice", StringComparison.InvariantCultureIgnoreCase) ||
+                              alertDescription.Contains("Avalanche", StringComparison.InvariantCultureIgnoreCase) || alertDescription.Contains("Cold", StringComparison.InvariantCultureIgnoreCase) ||
+                              alertDescription.Contains("Freez", StringComparison.InvariantCultureIgnoreCase) || alertDescription.Contains("Frost", StringComparison.InvariantCultureIgnoreCase) ||
+                              alertDescription.Contains("Chill", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            return WeatherAlertType.WinterWeather;
+                        }
+                        else if (alertDescription.Contains("Earthquake", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            return WeatherAlertType.EarthquakeWarning;
+                        }
+                        else if (alertDescription.Contains("Gale", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            return WeatherAlertType.GaleWarning;
+                        }
+                        else if (alertDescription.Contains("Dust", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            return WeatherAlertType.DustAdvisory;
+                        }
+                        else if (alertDescription.Contains("Small Craft", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            return WeatherAlertType.SmallCraft;
+                        }
+                        else if (alertDescription.Contains("Storm", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            return WeatherAlertType.StormWarning;
+                        }
+                        else if (alertDescription.Contains("Tsunami", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            return WeatherAlertType.TsunamiWarning;
+                        }
+
+                        return WeatherAlertType.SpecialWeatherAlert;
+                    }
+                case 2: // Coastal Flood Warning, Watch, or Statement
+                case 5: // Flash Flood Warning
+                case 7: // Flood Warning
+                case 8: // Urban and Small Stream Flood Advisory
+                    return WeatherAlertType.FloodWarning;
+                case 3: // Flash Flood Watch
+                case 4: // Flash Flood Statement
+                case 6: // Flood Statement
+                    return WeatherAlertType.FloodWatch;
+                case 9: // Hurricane Local Statement
+                    return WeatherAlertType.HurricaneLocalStatement;
+                case 15: // River Ice Statement
+                case 18: // Snow Avalanche Bulletin
+                case 37: // Winter Weather Warning, Watch, or Advisory
+                    return WeatherAlertType.WinterWeather;
+                case 21: // Severe Local Storm Watch or Watch Cancellation
+                case 23: // Severe Local Storm Watch and Areal Outline
+                case 26: // Storm Strike Probability Bulletin from the TPC
+                    return WeatherAlertType.SevereThunderstormWatch;
+                case 24: // Marine Subtropical Storm Advisory
+                    return WeatherAlertType.StormWarning;
+                case 28: // Severe Thunderstorm Warning
+                    return WeatherAlertType.SevereThunderstormWarning;
+                case 29: // Severe Weather Statement
+                    return WeatherAlertType.SevereWeather;
+                case 30: // Tropical Cyclone Advisory
+                case 31: // Tropical Cyclone Advisory for Marine and Aviation Interests
+                case 32: // Public Tropical Cyclone Advisory
+                case 33: // Tropical Cyclone Update
+                    return WeatherAlertType.HurricaneWindWarning;
+                case 34: // Tornado Warning
+                    return WeatherAlertType.TornadoWarning;
+                case 35: // Tsunami Watch or Warning
+                    return WeatherAlertType.TsunamiWarning;
+                case 36: // Volcanic Activity Advisory
+                    return WeatherAlertType.Volcano;
+            }
+        }
+
+        private WeatherAlertSeverity GetAlertSeverity(int severity)
+        {
+            if (severity >= 75)
+            {
+                return WeatherAlertSeverity.Extreme;
+            }
+            else if (severity >= 50)
+            {
+                return WeatherAlertSeverity.Severe;
+            }
+            else if (severity >= 25)
+            {
+                return WeatherAlertSeverity.Moderate;
+            }
+            else
+            {
+                return WeatherAlertSeverity.Minor;
+            }
         }
 
         private void SetDateTimeFromSegment(HERE.Timesegment[] timeSegment)

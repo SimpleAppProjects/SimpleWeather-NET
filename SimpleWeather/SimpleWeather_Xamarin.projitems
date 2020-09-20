@@ -38,6 +38,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)HERE\GeopositionQuery.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HERE\HERELocationProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HERE\HEREOAuthUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HERE\NWSAlerts.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Keys\AppCenterKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Keys\AQICNKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Keys\BingMapsKey.cs" />

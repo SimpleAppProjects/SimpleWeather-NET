@@ -89,7 +89,7 @@ namespace SimpleWeather.WeatherYahoo
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override Task<Weather> GetWeather(string location_query)
+        public override Task<Weather> GetWeather(string location_query, string country_code)
         {
             return Task.Run(async () =>
             {

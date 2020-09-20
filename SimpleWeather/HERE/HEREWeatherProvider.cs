@@ -17,9 +17,12 @@ namespace SimpleWeather.HERE
 {
     public partial class HEREWeatherProvider : WeatherProviderImpl
     {
-        private const String QUERY_URL = "https://weather.ls.hereapi.com/weather/1.0/report.json?product=alerts&product=forecast_7days_simple" +
+        private const String WEATHER_GLOBAL_QUERY_URL = "https://weather.ls.hereapi.com/weather/1.0/report.json?product=alerts&product=forecast_7days_simple" +
             "&product=forecast_hourly&product=forecast_astronomy&product=observation&oneobservation=true&{0}&language={1}&metric=false";
-        private const String ALERT_QUERY_URL = "https://weather.ls.hereapi.com/weather/1.0/report.json?product=alerts&{0}&language={1}&metric=false";
+        private const String WEATHER_US_CA_QUERY_URL = "https://weather.ls.hereapi.com/weather/1.0/report.json?product=nws_alerts&product=forecast_7days_simple" +
+            "&product=forecast_hourly&product=forecast_astronomy&product=observation&oneobservation=true&{0}&language={1}&metric=false";
+        private const String ALERTS_GLOBAL_QUERY_URL = "https://weather.ls.hereapi.com/weather/1.0/report.json?product=alerts&{0}&language={1}&metric=false";
+        private const String ALERTS_US_CA_QUERY_URL = "https://weather.ls.hereapi.com/weather/1.0/report.json?product=nws_alerts&{0}&language={1}&metric=false";
 
         public HEREWeatherProvider() : base()
         {
@@ -44,7 +47,7 @@ namespace SimpleWeather.HERE
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override Task<Weather> GetWeather(string location_query)
+        public override Task<Weather> GetWeather(string location_query, string country_code)
         {
             return Task.Run(async () =>
             {
@@ -57,7 +60,15 @@ namespace SimpleWeather.HERE
                 string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
                 OAuthRequest authRequest = new OAuthRequest(APIKeys.GetHERECliID(), APIKeys.GetHERECliSecr());
-                Uri queryURL = new Uri(String.Format(QUERY_URL, location_query, locale));
+                Uri queryURL;
+                if ("US".Equals(country_code, StringComparison.InvariantCultureIgnoreCase) || "CA".Equals(country_code, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    queryURL = new Uri(String.Format(WEATHER_US_CA_QUERY_URL, location_query, locale));
+                }
+                else
+                {
+                    queryURL = new Uri(String.Format(WEATHER_GLOBAL_QUERY_URL, location_query, locale));
+                }
 
                 try
                 {
@@ -106,12 +117,26 @@ namespace SimpleWeather.HERE
                             // Add weather alerts if available
                             if (root.alerts?.alerts?.Length > 0)
                             {
-                                if (weather.weather_alerts == null)
-                                    weather.weather_alerts = new List<WeatherAlert>(root.alerts.alerts.Length);
+                                weather.weather_alerts = new List<WeatherAlert>(root.alerts.alerts.Length);
 
                                 foreach (Alert result in root.alerts.alerts)
                                 {
                                     weather.weather_alerts.Add(new WeatherAlert(result));
+                                }
+                            }
+                            else if (root.nwsAlerts?.watch?.Length > 0 || root.nwsAlerts?.warning?.Length > 0)
+                            {
+                                int numOfAlerts = (int)(root.nwsAlerts?.watch?.Length + root.nwsAlerts?.warning?.Length);
+
+                                weather.weather_alerts = new List<WeatherAlert>(numOfAlerts);
+
+                                foreach (var watchItem in root.nwsAlerts.watch)
+                                {
+                                    weather.weather_alerts.Add(new WeatherAlert(watchItem));
+                                }
+                                foreach (var warningItem in root.nwsAlerts.warning)
+                                {
+                                    weather.weather_alerts.Add(new WeatherAlert(warningItem));
                                 }
                             }
                         }
@@ -195,7 +220,15 @@ namespace SimpleWeather.HERE
                 try
                 {
                     OAuthRequest authRequest = new OAuthRequest(APIKeys.GetHERECliID(), APIKeys.GetHERECliSecr());
-                    Uri queryURL = new Uri(String.Format(ALERT_QUERY_URL, location.query, locale));
+                    Uri queryURL;
+                    if ("US".Equals(location.country_code, StringComparison.InvariantCultureIgnoreCase) || "CA".Equals(location.country_code, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        queryURL = new Uri(String.Format(ALERTS_US_CA_QUERY_URL, location.query, locale));
+                    }
+                    else
+                    {
+                        queryURL = new Uri(String.Format(ALERTS_GLOBAL_QUERY_URL, location.query, locale));
+                    }
 
                     using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
                     {

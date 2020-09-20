@@ -173,9 +173,9 @@ namespace SimpleWeather.WeatherData
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public Task<Weather> GetWeather(string query)
+        public Task<Weather> GetWeather(string query, string country_code)
         {
-            return WeatherProvider.GetWeather(query);
+            return WeatherProvider.GetWeather(query, country_code);
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>

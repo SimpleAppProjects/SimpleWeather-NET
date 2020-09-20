@@ -8,6 +8,7 @@ namespace SimpleWeather.HERE
         public Dailyforecasts dailyForecasts { get; set; }
         public Hourlyforecasts hourlyForecasts { get; set; }
         public Alerts alerts { get; set; }
+        public Nwsalerts nwsAlerts { get; set; }
         public Astronomy astronomy { get; set; }
         public DateTimeOffset feedCreation { get; set; }
         public bool metric { get; set; }
