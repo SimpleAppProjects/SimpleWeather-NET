@@ -221,6 +221,11 @@ namespace SimpleWeather.UWP.Setup
         /// <param name="sender"></param>
         /// <param name="args"></param>
         /// <exception cref="ObjectDisposedException">Ignore.</exception>
+        /// <exception cref="InvalidOperationException">Ignore.</exception>
+        /// <exception cref="AggregateException">Ignore.</exception>
+        /// <exception cref="TaskCanceledException">Ignore.</exception>
+        /// <exception cref="WeatherException">Ignore.</exception>
+        /// <exception cref="CustomException">Ignore.</exception>
         private void Location_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
             EnableControls(false);
@@ -317,12 +322,16 @@ namespace SimpleWeather.UWP.Setup
                 Weather weather = await Settings.GetWeatherData(location.query);
                 if (weather == null)
                 {
-                    weather = await AsyncTask.RunAsync(wm.GetWeather(location));
+                    weather = await wm.GetWeather(location);
                 }
 
                 if (weather == null)
                 {
                     throw new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
+                }
+                else if (wm.SupportsAlerts && wm.NeedsExternalAlertData)
+                {
+                    weather.weather_alerts = await wm.GetAlerts(location);
                 }
 
                 // Save weather data
@@ -411,6 +420,11 @@ namespace SimpleWeather.UWP.Setup
         /// FetchGeoLocation
         /// </summary>
         /// <exception cref="ObjectDisposedException">Ignore.</exception>
+        /// <exception cref="InvalidOperationException">Ignore.</exception>
+        /// <exception cref="AggregateException">Ignore.</exception>
+        /// <exception cref="TaskCanceledException">Ignore.</exception>
+        /// <exception cref="WeatherException">Ignore.</exception>
+        /// <exception cref="CustomException">Ignore.</exception>
         private void FetchGeoLocation()
         {
             GPSButton.IsEnabled = false;
@@ -470,6 +484,10 @@ namespace SimpleWeather.UWP.Setup
                     if (weather == null)
                     {
                         throw new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
+                    }
+                    else if (wm.SupportsAlerts && wm.NeedsExternalAlertData)
+                    {
+                        weather.weather_alerts = await wm.GetAlerts(location);
                     }
 
                     ctsToken.ThrowIfCancellationRequested();

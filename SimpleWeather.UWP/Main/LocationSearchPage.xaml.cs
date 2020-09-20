@@ -280,6 +280,10 @@ namespace SimpleWeather.UWP.Main
                 {
                     throw new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
                 }
+                else if (wm.SupportsAlerts && wm.NeedsExternalAlertData)
+                {
+                    weather.weather_alerts = await AsyncTask.RunAsync(wm.GetAlerts(location));
+                }
 
                 // Save data
                 await Settings.AddLocation(location);

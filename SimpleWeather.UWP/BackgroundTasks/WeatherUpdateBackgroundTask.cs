@@ -239,12 +239,12 @@ namespace SimpleWeather.UWP.BackgroundTasks
                     cts.Token.ThrowIfCancellationRequested();
 
                     var wloader = new WeatherDataLoader(await Settings.GetHomeData());
-                    weather = await AsyncTask.RunAsync(wloader.LoadWeatherData(
+                    weather = await wloader.LoadWeatherData(
                         new WeatherRequest.Builder()
                             .ForceRefresh(false)
                             .LoadAlerts()
                             .LoadForecasts()
-                            .Build()));
+                            .Build());
                 }
                 catch (OperationCanceledException cancelEx)
                 {

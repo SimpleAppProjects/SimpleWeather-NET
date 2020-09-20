@@ -105,6 +105,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\WeatherManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\WeatherProviderImpl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\WeatherRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WeatherData\WeatherResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)YahooWeather\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Keys\YahooKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)YahooWeather\YahooWeatherProvider.cs" />

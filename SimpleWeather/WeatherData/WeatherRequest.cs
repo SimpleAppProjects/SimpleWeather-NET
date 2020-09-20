@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace SimpleWeather.WeatherData
 {
@@ -14,8 +15,22 @@ namespace SimpleWeather.WeatherData
         internal bool LoadAlerts { get; set; }
         internal bool LoadForecasts { get; set; }
         internal bool ForceLoadSavedData { get; set; }
-
+        internal bool ShouldSaveData { get; set; } = true;
         internal IWeatherErrorListener ErrorListener { get; set; }
+        internal CancellationToken CancelToken { get; set; }
+
+        /// <summary>
+        /// ThrowIfCancellationRequested
+        /// </summary>
+        /// <exception cref="OperationCanceledException"></exception>
+        /// <exception cref="ObjectDisposedException"></exception>
+        internal void ThrowIfCancellationRequested()
+        {
+            if (CancelToken != null)
+            {
+                CancelToken.ThrowIfCancellationRequested();
+            }
+        }
 
         public sealed class Builder
         {
@@ -51,9 +66,23 @@ namespace SimpleWeather.WeatherData
                 return this;
             }
 
+            public Builder ForceRefreshWithoutSave()
+            {
+                request.ForceRefresh = true;
+                request.ForceLoadSavedData = false;
+                request.ShouldSaveData = false;
+                return this;
+            }
+
             public Builder SetErrorListener(IWeatherErrorListener listener)
             {
                 request.ErrorListener = listener;
+                return this;
+            }
+
+            public Builder SetCancellationToken(CancellationToken token)
+            {
+                request.CancelToken = token;
                 return this;
             }
 

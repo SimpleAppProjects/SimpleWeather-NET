@@ -78,24 +78,10 @@ namespace SimpleWeather.UWP.Main
                     LoadingRing.IsActive = false;
                 }, TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(true);
 
-                AlertsView.UpdateAlerts(locationData);
                 ForecastView.UpdateForecasts(locationData);
 
                 Task.Run(async () =>
                 {
-                    if (wm.SupportsAlerts)
-                    {
-                        if (weather.weather_alerts != null && weather.weather_alerts.Any())
-                        {
-                            // Alerts are posted to the user here. Set them as notified.
-#if DEBUG
-                            await WeatherAlertHandler.PostAlerts(location, weather.weather_alerts)
-                            .ConfigureAwait(false);
-#endif
-                            WeatherAlertHandler.SetasNotified(location, weather.weather_alerts);
-                        }
-                    }
-
                     // Update home tile if it hasn't been already
                     bool isHome = Equals(location, await Settings.GetHomeData());
                     if (isHome && (TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval))
@@ -682,6 +668,11 @@ namespace SimpleWeather.UWP.Main
             RefreshWeather(true);
         }
 
+        /// <summary>
+        /// RefreshWeather
+        /// </summary>
+        /// <param name="forceRefresh"></param>
+        /// <exception cref="InvalidOperationException">Ignore.</exception>
         private void RefreshWeather(bool forceRefresh)
         {
             if (cts?.IsCancellationRequested == false)
@@ -693,15 +684,45 @@ namespace SimpleWeather.UWP.Main
                     wLoader = new WeatherDataLoader(locationData);
                 }
 
-                wLoader?.LoadWeatherData(new WeatherRequest.Builder()
+                wLoader?.LoadWeatherResult(new WeatherRequest.Builder()
                         .ForceRefresh(forceRefresh)
                         .SetErrorListener(this)
                         .Build())
                         .ContinueWith((t) =>
                         {
                             if (t.IsCompletedSuccessfully)
-                                OnWeatherLoaded(locationData, t.Result);
-                        }, TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(true);
+                            {
+                                Dispatcher.RunOnUIThread(() =>
+                                {
+                                    OnWeatherLoaded(locationData, t.Result.Weather);
+                                });
+                                return wLoader.LoadWeatherAlerts(t.Result.IsSavedData);
+                            }
+                            else
+                            {
+                                return Task.FromCanceled<ICollection<WeatherAlert>>(new CancellationToken(true));
+                            }
+                        })
+                        .Unwrap()
+                        .ContinueWith((t) =>
+                        {
+                            AlertsView.UpdateAlerts(locationData);
+
+                            if (wm.SupportsAlerts)
+                            {
+                                if (t.Result?.Any() == true)
+                                {
+                                    // Alerts are posted to the user here. Set them as notified.
+#if DEBUG
+                                    WeatherAlertHandler.PostAlerts(locationData, t.Result)
+                                    .ConfigureAwait(false);
+#endif
+                                    WeatherAlertHandler.SetasNotified(locationData, t.Result);
+                                }
+                            }
+
+                        }, TaskScheduler.FromCurrentSynchronizationContext())
+                        .ConfigureAwait(true);
             }
         }
 

@@ -169,15 +169,6 @@ namespace SimpleWeather.HERE
                     }
                 }
             }
-            else if ("US".Equals(location.country_code))
-            {
-                List<WeatherAlert> alerts = await AsyncTask.RunAsync(new NWS.NWSAlertProvider().GetAlerts(location));
-
-                if (weather.weather_alerts != null)
-                    alerts.AddRange(weather.weather_alerts);
-
-                weather.weather_alerts = alerts;
-            }
 
             // Update tz for weather properties
             weather.update_time = weather.update_time.ToOffset(offset);

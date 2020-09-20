@@ -77,10 +77,7 @@ namespace SimpleWeather.WeatherData
                 weather.location.tz_offset = location.tz_offset;
 
                 // Additional external data
-                if (SupportsAlerts && NeedsExternalAlertData)
-                    weather.weather_alerts = await AsyncTask.RunAsync(GetAlerts(location));
-
-                weather.condition.airQuality = await AsyncTask.RunAsync(new AQICN.AQICNProvider().GetAirQualityData(location));
+                weather.condition.airQuality = await new AQICN.AQICNProvider().GetAirQualityData(location);
 
                 return weather;
             });
