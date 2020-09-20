@@ -18,9 +18,6 @@ namespace SimpleWeather.Controls
 
         public BeaufortViewModel(Beaufort beaufort)
         {
-            var userlang = GlobalizationPreferences.Languages[0];
-            var culture = new CultureInfo(userlang);
-
             if (beaufort != null)
             {
                 Beaufort = (new DetailItemViewModel(beaufort.scale, beaufort.desc));

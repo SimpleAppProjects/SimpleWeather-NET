@@ -20,6 +20,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\WeatherProviderImpl.cs" />
   </ItemGroup>
   <ItemGroup>
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en-US\AQIndex.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en-US\Beaufort.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en-US\MoonPhases.resw" />
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en-US\Resources.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en-US\UVIndex.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en-US\WeatherConditions.resw" />
   </ItemGroup>
 </Project>

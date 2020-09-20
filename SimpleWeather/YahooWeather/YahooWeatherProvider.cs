@@ -207,23 +207,23 @@ namespace SimpleWeather.WeatherYahoo
                         WeatherIcon = WeatherIcons.TORNADO;
                         break;
 
-                    case 1: // Tropical Storm
-                    case 37:
+                    case 37: // isolated thunderstorms
                     case 38: // Scattered Thunderstorms/showers
-                    case 39:
-                    case 45:
-                    case 47:
+                    case 39: // scattered showers (day)
+                    case 45: // scattered showers (night)
+                    case 47: // scattered thundershowers
                         if (isNight)
                             WeatherIcon = WeatherIcons.NIGHT_ALT_STORM_SHOWERS;
                         else
                             WeatherIcon = WeatherIcons.DAY_STORM_SHOWERS;
                         break;
 
+                    case 1: // Tropical Storm
                     case 2: // Hurricane
                         WeatherIcon = WeatherIcons.HURRICANE;
                         break;
 
-                    case 3:
+                    case 3: // severe thunderstorms
                     case 4: // Scattered Thunderstorms
                         WeatherIcon = WeatherIcons.THUNDERSTORM;
                         break;
@@ -244,7 +244,7 @@ namespace SimpleWeather.WeatherYahoo
 
                     case 9: // Drizzle
                     case 11: // Showers
-                    case 12:
+                    case 12: // rain
                     case 40: // Scattered Showers
                         WeatherIcon = WeatherIcons.SHOWERS;
                         break;
@@ -259,7 +259,7 @@ namespace SimpleWeather.WeatherYahoo
 
                     case 15: // Blowing Snow
                     case 41: // Heavy Snow
-                    case 43:
+                    case 43: // blizzard
                         WeatherIcon = WeatherIcons.SNOW_WIND;
                         break;
 
@@ -297,8 +297,6 @@ namespace SimpleWeather.WeatherYahoo
 
                     case 27: // Mostly Cloudy (Night)
                     case 28: // Mostly Cloudy (Day)
-                    case 29: // Partly Cloudy (Night)
-                    case 30: // Partly Cloudy (Day)
                         if (isNight)
                             WeatherIcon = WeatherIcons.NIGHT_ALT_CLOUDY;
                         else
@@ -313,6 +311,8 @@ namespace SimpleWeather.WeatherYahoo
                             WeatherIcon = WeatherIcons.DAY_SUNNY;
                         break;
 
+                    case 29: // Partly Cloudy (Night)
+                    case 30: // Partly Cloudy (Day)
                     case 33: // Fair (Night)
                     case 34: // Fair (Day)
                     case 44: // Partly Cloudy
@@ -343,6 +343,106 @@ namespace SimpleWeather.WeatherYahoo
             }
 
             return WeatherIcon;
+        }
+
+        public override String GetWeatherCondition(String icon)
+        {
+            try
+            {
+                int code = int.Parse(icon);
+
+                switch (code)
+                {
+                    case 0: // Tornado
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_tornado");
+                    case 37: // isolated thunderstorms
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_isotstorms");
+                    case 39: // scattered showers (day)
+                    case 45: // scattered showers (night)
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_scatteredshowers");
+                    case 38: // Scattered Thunderstorms/showers
+                    case 47: // scattered thundershowers
+                    case 4: // Scattered Thunderstorms
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_scatteredtstorms");
+                    case 1: // Tropical Storm
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_tropicalstorm");
+                    case 2: // Hurricane
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_hurricane");
+                    case 3: // severe thunderstorms
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_severetstorms");
+                    case 5: // Mixed Rain/Snow
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_rainandsnow");
+                    case 6: // Mixed Rain/Sleet
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_rainandsleet");
+                    case 7: // Mixed Snow/Sleet
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_snowandsleet");
+                    case 18: // Sleet
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_sleet");
+                    case 17: // Hail
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_hail");
+                    case 35: // Mixed Rain/Hail
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_rainandhail");
+                    case 8: // Freezing Drizzle
+                    case 10: // Freezing Rain
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_freezingrain");
+                    case 9: // Drizzle
+                    case 12: // rain
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_rain");
+                    case 11: // Showers
+                    case 40: // Scattered Showers
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_rainshowers");
+                    case 13: // Snow Flurries
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_snowflurries");
+                    case 16: // Snow
+                    case 46: // Snow Showers
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_snow");
+                    case 14: // Light Snow Showers
+                    case 42: // Scattered Snow Showers
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_lightsnowshowers");
+                    case 15: // Blowing Snow
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_blowingsnow");
+                    case 41: // Heavy Snow
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_heavysnow");
+                    case 43: // blizzard
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_blizzard");
+                    case 19: // Dust
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_dust");
+                    case 20: // Foggy
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_foggy");
+                    case 21: // Haze
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_haze");
+                    case 22: // Smoky
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_smoky");
+                    case 23: // Blustery
+                    case 24: // Windy
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_windy");
+                    case 25: // Cold
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_cold");
+                    case 26: // Cloudy
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_cloudy");
+                    case 27: // Mostly Cloudy (Night)
+                    case 28: // Mostly Cloudy (Day)
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_mostlycloudy");
+                    case 29: // Partly Cloudy (Night)
+                    case 30: // Partly Cloudy (Day)
+                    case 44: // Partly Cloudy
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_partlycloudy");
+                    case 31: // Clear (Night)
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_clear");
+                    case 32: // Sunny
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_sunny");
+                    case 33: // Fair (Night)
+                    case 34: // Fair (Day)
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_fair");
+                    case 36: // HOT
+                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_hot");
+                }
+            }
+            catch (FormatException)
+            {
+            }
+
+            return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_notavailable");
         }
 
         // Some conditions can be for any time of day

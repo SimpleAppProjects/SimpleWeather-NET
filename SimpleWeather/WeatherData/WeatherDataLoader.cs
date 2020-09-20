@@ -470,8 +470,7 @@ namespace SimpleWeather.WeatherData
 
         private bool IsDataValid(bool _override)
         {
-            var userlang = GlobalizationPreferences.Languages[0];
-            var culture = new CultureInfo(userlang);
+            var culture = CultureUtils.UserCulture;
             var locale = wm.LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
             String API = Settings.API;

@@ -92,8 +92,7 @@ namespace SimpleWeather.OpenWeather
                 WeatherData.Weather weather = null;
                 WeatherException wEx = null;
 
-                var userlang = GlobalizationPreferences.Languages[0];
-                var culture = new CultureInfo(userlang);
+                var culture = CultureUtils.UserCulture;
 
                 string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 

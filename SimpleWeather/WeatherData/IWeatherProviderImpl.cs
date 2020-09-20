@@ -28,6 +28,7 @@ namespace SimpleWeather.WeatherData
         Task<List<WeatherAlert>> GetAlerts(LocationData location);
         string GetWeatherIcon(string icon);
         string GetWeatherIcon(bool isNight, string icon);
+        string GetWeatherCondition(string icon);
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         Task<bool> IsKeyValid(string key);
         string GetAPIKey();

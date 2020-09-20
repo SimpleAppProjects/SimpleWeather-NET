@@ -15,8 +15,7 @@ namespace SimpleWeather.Utils
                 return String.Empty;
             }
 
-            var userlang = GlobalizationPreferences.Languages[0];
-            var culture = new CultureInfo(userlang);
+            var culture = CultureUtils.UserCulture;
 
             String date;
             String prefix;

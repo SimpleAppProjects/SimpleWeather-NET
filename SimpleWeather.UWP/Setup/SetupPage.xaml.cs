@@ -128,7 +128,7 @@ namespace SimpleWeather.UWP.Setup
                 BackBtn.Visibility = Visibility.Collapsed;
                 NextBtn.Visibility = Visibility.Visible;
                 NextBtn.Icon = new SymbolIcon(Symbol.Forward);
-                NextBtn.Label = App.ResLoader.GetString("Label_Next");
+                NextBtn.Label = App.ResLoader.GetString("Label_Next/Label");
             }
             else if (e.SourcePageType == Pages.Last())
             {

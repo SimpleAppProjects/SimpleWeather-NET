@@ -133,7 +133,7 @@
     <value>Credits</value>
   </data>
   <data name="Error_Location" xml:space="preserve">
-    <value>Unable to retrieve location status</value>
+    <value>Unable to get location</value>
   </data>
   <data name="General.Content" xml:space="preserve">
     <value>General</value>
@@ -143,9 +143,6 @@
   </data>
   <data name="Label_AddLocation.Text" xml:space="preserve">
     <value>Add Location</value>
-  </data>
-  <data name="Label_Atmosphere.Text" xml:space="preserve">
-    <value>Atmosphere</value>
   </data>
   <data name="Label_Cancel" xml:space="preserve">
     <value>Cancel</value>
@@ -167,12 +164,6 @@
   </data>
   <data name="Label_ErrLocationDenied" xml:space="preserve">
     <value>Location access denied</value>
-  </data>
-  <data name="Label_Error" xml:space="preserve">
-    <value>Error</value>
-  </data>
-  <data name="Label_ErrorLocation" xml:space="preserve">
-    <value>Location access error</value>
   </data>
   <data name="Label_FeelsLike.Text" xml:space="preserve">
     <value>Feels Like</value>
@@ -260,9 +251,6 @@
   </data>
   <data name="WError_QueryNotFound" xml:space="preserve">
     <value>No cities match your search query</value>
-  </data>
-  <data name="Label_Loading.Text" xml:space="preserve">
-    <value>Loading...</value>
   </data>
   <data name="Error_NoResults" xml:space="preserve">
     <value>No results found</value>
@@ -378,101 +366,20 @@
   <data name="Pref_PersonalKey.Text" xml:space="preserve">
     <value>Use personal provider key:</value>
   </data>
-  <data name="Label_Next" xml:space="preserve">
-    <value>Next</value>
-  </data>
-  <data name="Beaufort_0" xml:space="preserve">
-    <value>Calm</value>
-  </data>
-  <data name="Beaufort_1" xml:space="preserve">
-    <value>Light Air</value>
-  </data>
-  <data name="Beaufort_10" xml:space="preserve">
-    <value>Storm</value>
-  </data>
-  <data name="Beaufort_11" xml:space="preserve">
-    <value>Violent Storm</value>
-  </data>
-  <data name="Beaufort_12" xml:space="preserve">
-    <value>Hurricane</value>
-  </data>
-  <data name="Beaufort_2" xml:space="preserve">
-    <value>Light Breeze</value>
-  </data>
-  <data name="Beaufort_3" xml:space="preserve">
-    <value>Gentle Breeze</value>
-  </data>
-  <data name="Beaufort_4" xml:space="preserve">
-    <value>Moderate Breeze</value>
-  </data>
-  <data name="Beaufort_5" xml:space="preserve">
-    <value>Fresh Breeze</value>
-  </data>
-  <data name="Beaufort_6" xml:space="preserve">
-    <value>Strong Breeze</value>
-  </data>
-  <data name="Beaufort_7" xml:space="preserve">
-    <value>Near Gale</value>
-  </data>
-  <data name="Beaufort_8" xml:space="preserve">
-    <value>Gale</value>
-  </data>
-  <data name="Beaufort_9" xml:space="preserve">
-    <value>Severe Gale</value>
-  </data>
   <data name="Beaufort_Label" xml:space="preserve">
     <value>Beaufort</value>
   </data>
   <data name="Dewpoint_Label" xml:space="preserve">
     <value>Dew Point</value>
   </data>
-  <data name="MoonPhase_FirstQtr" xml:space="preserve">
-    <value>First Quarter</value>
-  </data>
-  <data name="MoonPhase_Full" xml:space="preserve">
-    <value>Full Moon</value>
-  </data>
   <data name="MoonPhase_Label" xml:space="preserve">
     <value>Moon Phase</value>
-  </data>
-  <data name="MoonPhase_LastQtr" xml:space="preserve">
-    <value>Last Quarter</value>
-  </data>
-  <data name="MoonPhase_New" xml:space="preserve">
-    <value>New Moon</value>
-  </data>
-  <data name="MoonPhase_WanCrescent" xml:space="preserve">
-    <value>Waning Crescent</value>
-  </data>
-  <data name="MoonPhase_WanGibbous" xml:space="preserve">
-    <value>Waning Gibbous</value>
-  </data>
-  <data name="MoonPhase_WaxCrescent" xml:space="preserve">
-    <value>Waxing Crescent</value>
-  </data>
-  <data name="MoonPhase_WaxGibbous" xml:space="preserve">
-    <value>Waxing Gibbous</value>
   </data>
   <data name="Moonrise_Label" xml:space="preserve">
     <value>Moonrise</value>
   </data>
   <data name="Moonset_Label" xml:space="preserve">
     <value>Moonset</value>
-  </data>
-  <data name="UV_0" xml:space="preserve">
-    <value>Low</value>
-  </data>
-  <data name="UV_11" xml:space="preserve">
-    <value>Extreme</value>
-  </data>
-  <data name="UV_3" xml:space="preserve">
-    <value>Moderate</value>
-  </data>
-  <data name="UV_6" xml:space="preserve">
-    <value>High</value>
-  </data>
-  <data name="UV_8" xml:space="preserve">
-    <value>Very High</value>
   </data>
   <data name="UV_Label" xml:space="preserve">
     <value>UV Index</value>
@@ -516,45 +423,6 @@
   <data name="Header_GPSLocation" xml:space="preserve">
     <value>Current Location</value>
   </data>
-  <data name="Moon_Label" xml:space="preserve">
-    <value>Moon</value>
-  </data>
-  <data name="AQI_Desc_0_50" xml:space="preserve">
-    <value>Air quality is considered satisfactory, and air pollution poses little or no risk</value>
-  </data>
-  <data name="AQI_Desc_101_150" xml:space="preserve">
-    <value>Members of sensitive groups may experience health effects. The general public is not likely to be affected.</value>
-  </data>
-  <data name="AQI_Desc_151_200" xml:space="preserve">
-    <value>Everyone may begin to experience health effects; members of sensitive groups may experience more serious health effects</value>
-  </data>
-  <data name="AQI_Desc_201_300" xml:space="preserve">
-    <value>Health warnings of emergency conditions. The entire population is more likely to be affected.</value>
-  </data>
-  <data name="AQI_Desc_300" xml:space="preserve">
-    <value>Health alert: everyone may experience more serious health effects</value>
-  </data>
-  <data name="AQI_Desc_51_100" xml:space="preserve">
-    <value>Air quality is acceptable</value>
-  </data>
-  <data name="AQI_Level_0_50" xml:space="preserve">
-    <value>Good</value>
-  </data>
-  <data name="AQI_Level_101_150" xml:space="preserve">
-    <value>Unhealthy for Sensitive Groups</value>
-  </data>
-  <data name="AQI_Level_151_200" xml:space="preserve">
-    <value>Unhealthy</value>
-  </data>
-  <data name="AQI_Level_201_300" xml:space="preserve">
-    <value>Very Unhealthy</value>
-  </data>
-  <data name="AQI_Level_300" xml:space="preserve">
-    <value>Hazardous</value>
-  </data>
-  <data name="AQI_Level_51_100" xml:space="preserve">
-    <value>Moderate</value>
-  </data>
   <data name="AQI_Label" xml:space="preserve">
     <value>Air Quality Index</value>
   </data>
@@ -590,9 +458,6 @@
   </data>
   <data name="LocationSearchHint.HeaderText" xml:space="preserve">
     <value>Add a location</value>
-  </data>
-  <data name="SetupLocationSearchHint.HeaderText" xml:space="preserve">
-    <value />
   </data>
   <data name="SetupLocationSearchHint.PlaceholderText" xml:space="preserve">
     <value>Add a location to start</value>

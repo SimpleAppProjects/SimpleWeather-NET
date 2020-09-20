@@ -1,4 +1,5 @@
-﻿using SimpleWeather.WeatherData;
+﻿using SimpleWeather.Utils;
+using SimpleWeather.WeatherData;
 using System;
 using System.Globalization;
 using Windows.System.UserProfile;
@@ -37,8 +38,7 @@ namespace SimpleWeather.Controls
                 PostDate = string.Format(SimpleLibrary.ResLoader.GetString("DateTime_SecAgo"),
                     (int)Math.Floor(sincePost.TotalSeconds));
 
-            var userlang = GlobalizationPreferences.Languages[0];
-            var culture = new CultureInfo(userlang);
+            var culture = CultureUtils.UserCulture;
 
             // Format: Monday, June 15, 2009 1:45 PM
             ExpireDate = string.Format("{0} {1} {2:zzz}",

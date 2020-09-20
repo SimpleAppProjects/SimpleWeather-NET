@@ -53,7 +53,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Metno\Astrodata.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Metno\MetnoWeatherProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Metno\Weather.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Metno\WeatherIcon.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NWS\Alert.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NWS\NWSWeatherProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NWS\NWSAlertProvider.cs" />
@@ -70,6 +69,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utf8JsonGen\Utf8JsonGenerated.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\AppCenterLoggingTree.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\AsyncTask.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\CultureUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\ListUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\ColorUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\ConversionMethods.cs" />

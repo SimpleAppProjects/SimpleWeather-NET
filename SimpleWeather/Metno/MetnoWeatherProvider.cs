@@ -171,21 +171,6 @@ namespace SimpleWeather.Metno
             return weather;
         }
 
-        private static string GetWeatherCondition(string icon)
-        {
-            var icon_neutral = GetNeutralIconName(icon);
-
-            var icon_obj = LegendObject.GetValue(icon_neutral);
-
-            if (icon_obj != null)
-            {
-                var condition = icon_obj.Value<String>("desc_en");
-                return condition;
-            }
-
-            return Weather.NA;
-        }
-
         public override string UpdateLocationQuery(Weather weather)
         {
             return string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}", weather.location.latitude, weather.location.longitude);
@@ -194,6 +179,11 @@ namespace SimpleWeather.Metno
         public override string UpdateLocationQuery(LocationData location)
         {
             return string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}", location.latitude, location.longitude);
+        }
+
+        private static String GetNeutralIconName(String icon_variant)
+        {
+            return icon_variant?.Replace("_day", String.Empty).Replace("_night", String.Empty).Replace("_polartwilight", String.Empty);
         }
 
         public override string GetWeatherIcon(string icon)
@@ -347,6 +337,95 @@ namespace SimpleWeather.Metno
             return WeatherIcon;
         }
 
+        public override String GetWeatherCondition(String icon)
+        {
+            if (icon == null)
+                return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_notavailable");
+
+            icon = GetNeutralIconName(icon);
+
+            switch (icon)
+            {
+                case "clearsky":
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_clearsky");
+
+                case "fair":
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_fair");
+                case "partlycloudy":
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_partlycloudy");
+
+                case "cloudy":
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_cloudy");
+
+                case "rainshowers":
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_rainshowers");
+
+                case "rainshowersandthunder":
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_tstorms");
+
+                case "sleetshowers":
+                case "lightsleetshowers":
+                case "sleet":
+                case "lightsleet":
+                case "heavysleet":
+                case "heavysleetshowers":
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_sleet");
+
+                case "snow":
+                case "snowshowers":
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_snow");
+
+                case "lightsnowshowers":
+                case "lightsnow":
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_lightsnowshowers");
+
+                case "heavysnowshowers":
+                case "heavysnow":
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_heavysnow");
+
+                case "rain":
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_rain");
+                case "lightrain":
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_lightrain");
+
+                case "heavyrain":
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_heavyrain");
+
+                case "rainandthunder":
+                case "lightrainandthunder":
+                case "lightrainshowersandthunder":
+                case "heavyrainshowersandthunder":
+                case "heavyrainandthunder":
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_tstorms");
+
+                case "snowandthunder":
+                case "snowshowersandthunder":
+                case "lightssnowshowersandthunder":
+                case "heavysnowshowersandthunder":
+                case "lightsnowandthunder":
+                case "heavysnowandthunder":
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_snow_tstorms");
+
+                case "fog":
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_fog");
+
+                case "sleetshowersandthunder":
+                case "sleetandthunder":
+                case "lightssleetshowersandthunder":
+                case "heavysleetshowersandthunder":
+                case "lightsleetandthunder":
+                case "heavysleetandthunder":
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_sleet_tstorms");
+
+                case "lightrainshowers":
+                case "heavyrainshowers":
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_rainshowers");
+
+                default:
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_notavailable");
+            }
+        }
+        
         // Met.no conditions can be for any time of day
         // So use sunrise/set data as fallback
         public override bool IsNight(Weather weather)

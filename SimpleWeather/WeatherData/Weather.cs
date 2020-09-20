@@ -375,14 +375,24 @@ namespace SimpleWeather.WeatherData
     {
         public Forecast(WeatherYahoo.Forecast forecast)
         {
+            var provider = WeatherManager.GetProvider(WeatherAPI.Yahoo);
+            var culture = CultureUtils.UserCulture;
+
+            if (culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) || culture.Equals(CultureInfo.InvariantCulture))
+            {
+                condition = forecast.text;
+            }
+            else
+            {
+                condition = provider.GetWeatherCondition(forecast.code.ToInvariantString());
+            }
+            icon = provider.GetWeatherIcon(forecast.code.ToInvariantString());
+
             date = ConversionMethods.ToEpochDateTime(forecast.date);
             high_f = forecast.high;
             high_c = ConversionMethods.FtoC(forecast.high);
             low_f = forecast.low;
             low_c = ConversionMethods.FtoC(forecast.low);
-            condition = forecast.text;
-            icon = WeatherManager.GetProvider(WeatherAPI.Yahoo)
-                   .GetWeatherIcon(forecast.code.ToInvariantString());
         }
 
         public Forecast(OpenWeather.Daily forecast)
@@ -525,6 +535,9 @@ namespace SimpleWeather.WeatherData
 
         public Forecast(NWS.Period forecastItem)
         {
+            var provider = WeatherManager.GetProvider(WeatherAPI.NWS);
+            var culture = CultureUtils.UserCulture;
+
             date = forecastItem.startTime.DateTime;
             if (forecastItem.isDaytime)
             {
@@ -536,9 +549,16 @@ namespace SimpleWeather.WeatherData
                 low_f = forecastItem.temperature;
                 low_c = ConversionMethods.FtoC(forecastItem.temperature);
             }
-            condition = forecastItem.shortForecast;
-            icon = WeatherManager.GetProvider(WeatherAPI.NWS)
-                        .GetWeatherIcon(forecastItem.icon);
+
+            if (culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) || culture.Equals(CultureInfo.InvariantCulture))
+            {
+                condition = forecastItem.shortForecast;
+            }
+            else
+            {
+                condition = provider.GetWeatherCondition(forecastItem.icon);
+            }
+            icon = provider.GetWeatherIcon(forecastItem.icon);
 
             if (forecastItem.windSpeed != null && forecastItem.windDirection != null)
             {
@@ -558,14 +578,24 @@ namespace SimpleWeather.WeatherData
 
         public Forecast(NWS.Period forecastItem, NWS.Period ntForecastItem)
         {
+            var provider = WeatherManager.GetProvider(WeatherAPI.NWS);
+            var culture = CultureUtils.UserCulture;
+
             date = forecastItem.startTime.DateTime;
             high_f = forecastItem.temperature;
             high_c = ConversionMethods.FtoC(forecastItem.temperature);
             low_f = ntForecastItem.temperature;
             low_c = ConversionMethods.FtoC(ntForecastItem.temperature);
-            condition = forecastItem.shortForecast;
-            icon = WeatherManager.GetProvider(WeatherAPI.NWS)
-                        .GetWeatherIcon(forecastItem.icon);
+
+            if (culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) || culture.Equals(CultureInfo.InvariantCulture))
+            {
+                condition = forecastItem.shortForecast;
+            }
+            else
+            {
+                condition = provider.GetWeatherCondition(forecastItem.icon);
+            }
+            icon = provider.GetWeatherIcon(forecastItem.icon);
 
             if (forecastItem.windSpeed != null && forecastItem.windDirection != null)
             {
@@ -795,12 +825,22 @@ namespace SimpleWeather.WeatherData
 
         public HourlyForecast(NWS.Period forecastItem)
         {
+            var provider = WeatherManager.GetProvider(WeatherAPI.NWS);
+            var culture = CultureUtils.UserCulture;
+
             date = forecastItem.startTime;
             high_f = forecastItem.temperature;
             high_c = ConversionMethods.FtoC(forecastItem.temperature);
-            condition = forecastItem.shortForecast;
-            icon = WeatherManager.GetProvider(WeatherAPI.NWS)
-                        .GetWeatherIcon(forecastItem.icon);
+
+            if (culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) || culture.Equals(CultureInfo.InvariantCulture))
+            {
+                condition = forecastItem.shortForecast;
+            }
+            else
+            {
+                condition = provider.GetWeatherCondition(forecastItem.icon);
+            }
+            icon = provider.GetWeatherIcon(forecastItem.icon);
 
             if (forecastItem.windSpeed != null && forecastItem.windDirection != null)
             {
@@ -928,7 +968,19 @@ namespace SimpleWeather.WeatherData
     {
         public Condition(WeatherYahoo.Current_Observation observation)
         {
-            weather = observation.condition.text;
+            var provider = WeatherManager.GetProvider(WeatherAPI.Yahoo);
+            var culture = CultureUtils.UserCulture;
+
+            if (culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) || culture.Equals(CultureInfo.InvariantCulture))
+            {
+                weather = observation.condition.text;
+            }
+            else
+            {
+                weather = provider.GetWeatherCondition(observation.condition.code.ToInvariantString());
+            }
+            icon = provider.GetWeatherIcon(observation.condition.code.ToInvariantString());
+
             temp_f = observation.condition.temperature;
             temp_c = ConversionMethods.FtoC(observation.condition.temperature);
             wind_degrees = observation.wind.direction;
@@ -936,8 +988,6 @@ namespace SimpleWeather.WeatherData
             wind_kph = ConversionMethods.MphToKph(observation.wind.speed);
             feelslike_f = observation.wind.chill;
             feelslike_c = ConversionMethods.FtoC(observation.wind.chill);
-            icon = WeatherManager.GetProvider(WeatherAPI.Yahoo)
-                   .GetWeatherIcon(observation.condition.code.ToInvariantString());
 
             beaufort = new Beaufort((int)WeatherUtils.GetBeaufortScale((int)Math.Round(observation.wind.speed)));
         }
@@ -1066,7 +1116,19 @@ namespace SimpleWeather.WeatherData
 
         public Condition(NWS.ObservationsCurrentRootobject obsCurrentRootObject)
         {
-            weather = obsCurrentRootObject.textDescription;
+            var provider = WeatherManager.GetProvider(WeatherAPI.NWS);
+            var culture = CultureUtils.UserCulture;
+
+            if (culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) || culture.Equals(CultureInfo.InvariantCulture))
+            {
+                weather = obsCurrentRootObject.textDescription;
+            }
+            else
+            {
+                weather = provider.GetWeatherCondition(obsCurrentRootObject.icon);
+            }
+            icon = provider.GetWeatherIcon(obsCurrentRootObject.icon);
+
             if (obsCurrentRootObject.temperature.value.HasValue)
             {
                 temp_c = obsCurrentRootObject.temperature.value.GetValueOrDefault(0.00f);
@@ -1106,9 +1168,6 @@ namespace SimpleWeather.WeatherData
                 feelslike_f = WeatherUtils.GetFeelsLikeTemp(temp_f.Value, wind_mph.Value, (int)humidity);
                 feelslike_c = ConversionMethods.FtoC(feelslike_f.Value);
             }
-
-            icon = WeatherManager.GetProvider(WeatherAPI.NWS)
-                        .GetWeatherIcon(obsCurrentRootObject.icon);
 
             if (wind_mph.HasValue)
             {
@@ -1530,67 +1589,67 @@ namespace SimpleWeather.WeatherData
             {
                 case 0:
                     scale = BeaufortScale.B0;
-                    desc = SimpleLibrary.ResLoader.GetString("Beaufort_0");
+                    desc = SimpleLibrary.ResLoader.GetString("/Beaufort/Beaufort_0");
                     break;
 
                 case 1:
                     scale = BeaufortScale.B1;
-                    desc = SimpleLibrary.ResLoader.GetString("Beaufort_1");
+                    desc = SimpleLibrary.ResLoader.GetString("/Beaufort/Beaufort_1");
                     break;
 
                 case 2:
                     scale = BeaufortScale.B2;
-                    desc = SimpleLibrary.ResLoader.GetString("Beaufort_2");
+                    desc = SimpleLibrary.ResLoader.GetString("/Beaufort/Beaufort_2");
                     break;
 
                 case 3:
                     scale = BeaufortScale.B3;
-                    desc = SimpleLibrary.ResLoader.GetString("Beaufort_3");
+                    desc = SimpleLibrary.ResLoader.GetString("/Beaufort/Beaufort_3");
                     break;
 
                 case 4:
                     scale = BeaufortScale.B4;
-                    desc = SimpleLibrary.ResLoader.GetString("Beaufort_4");
+                    desc = SimpleLibrary.ResLoader.GetString("/Beaufort/Beaufort_4");
                     break;
 
                 case 5:
                     scale = BeaufortScale.B5;
-                    desc = SimpleLibrary.ResLoader.GetString("Beaufort_5");
+                    desc = SimpleLibrary.ResLoader.GetString("/Beaufort/Beaufort_5");
                     break;
 
                 case 6:
                     scale = BeaufortScale.B6;
-                    desc = SimpleLibrary.ResLoader.GetString("Beaufort_6");
+                    desc = SimpleLibrary.ResLoader.GetString("/Beaufort/Beaufort_6");
                     break;
 
                 case 7:
                     scale = BeaufortScale.B7;
-                    desc = SimpleLibrary.ResLoader.GetString("Beaufort_7");
+                    desc = SimpleLibrary.ResLoader.GetString("/Beaufort/Beaufort_7");
                     break;
 
                 case 8:
                     scale = BeaufortScale.B8;
-                    desc = SimpleLibrary.ResLoader.GetString("Beaufort_8");
+                    desc = SimpleLibrary.ResLoader.GetString("/Beaufort/Beaufort_8");
                     break;
 
                 case 9:
                     scale = BeaufortScale.B9;
-                    desc = SimpleLibrary.ResLoader.GetString("Beaufort_9");
+                    desc = SimpleLibrary.ResLoader.GetString("/Beaufort/Beaufort_9");
                     break;
 
                 case 10:
                     scale = BeaufortScale.B10;
-                    desc = SimpleLibrary.ResLoader.GetString("Beaufort_10");
+                    desc = SimpleLibrary.ResLoader.GetString("/Beaufort/Beaufort_10");
                     break;
 
                 case 11:
                     scale = BeaufortScale.B11;
-                    desc = SimpleLibrary.ResLoader.GetString("Beaufort_11");
+                    desc = SimpleLibrary.ResLoader.GetString("/Beaufort/Beaufort_11");
                     break;
 
                 case 12:
                     scale = BeaufortScale.B12;
-                    desc = SimpleLibrary.ResLoader.GetString("Beaufort_12");
+                    desc = SimpleLibrary.ResLoader.GetString("/Beaufort/Beaufort_12");
                     break;
             }
         }
@@ -1612,35 +1671,35 @@ namespace SimpleWeather.WeatherData
             switch (moonPhaseType)
             {
                 case MoonPhaseType.NewMoon:
-                    desc = SimpleLibrary.ResLoader.GetString("MoonPhase_New");
+                    desc = SimpleLibrary.ResLoader.GetString("/MoonPhases/MoonPhase_New");
                     break;
 
                 case MoonPhaseType.WaxingCrescent:
-                    desc = SimpleLibrary.ResLoader.GetString("MoonPhase_WaxCrescent");
+                    desc = SimpleLibrary.ResLoader.GetString("/MoonPhases/MoonPhase_WaxCrescent");
                     break;
 
                 case MoonPhaseType.FirstQtr:
-                    desc = SimpleLibrary.ResLoader.GetString("MoonPhase_FirstQtr");
+                    desc = SimpleLibrary.ResLoader.GetString("/MoonPhases/MoonPhase_FirstQtr");
                     break;
 
                 case MoonPhaseType.WaxingGibbous:
-                    desc = SimpleLibrary.ResLoader.GetString("MoonPhase_WaxGibbous");
+                    desc = SimpleLibrary.ResLoader.GetString("/MoonPhases/MoonPhase_WaxGibbous");
                     break;
 
                 case MoonPhaseType.FullMoon:
-                    desc = SimpleLibrary.ResLoader.GetString("MoonPhase_Full");
+                    desc = SimpleLibrary.ResLoader.GetString("/MoonPhases/MoonPhase_Full");
                     break;
 
                 case MoonPhaseType.WaningGibbous:
-                    desc = SimpleLibrary.ResLoader.GetString("MoonPhase_WanGibbous");
+                    desc = SimpleLibrary.ResLoader.GetString("/MoonPhases/MoonPhase_WanGibbous");
                     break;
 
                 case MoonPhaseType.LastQtr:
-                    desc = SimpleLibrary.ResLoader.GetString("MoonPhase_LastQtr");
+                    desc = SimpleLibrary.ResLoader.GetString("/MoonPhases/MoonPhase_LastQtr");
                     break;
 
                 case MoonPhaseType.WaningCrescent:
-                    desc = SimpleLibrary.ResLoader.GetString("MoonPhase_WanCrescent");
+                    desc = SimpleLibrary.ResLoader.GetString("/MoonPhases/MoonPhase_WanCrescent");
                     break;
             }
         }
@@ -1661,23 +1720,23 @@ namespace SimpleWeather.WeatherData
 
             if (index >= 0 && index < 3)
             {
-                desc = SimpleLibrary.ResLoader.GetString("UV_0");
+                desc = SimpleLibrary.ResLoader.GetString("/UVIndex/UV_0");
             }
             else if (index >= 3 && index < 6)
             {
-                desc = SimpleLibrary.ResLoader.GetString("UV_3");
+                desc = SimpleLibrary.ResLoader.GetString("/UVIndex/UV_3");
             }
             else if (index >= 6 && index < 8)
             {
-                desc = SimpleLibrary.ResLoader.GetString("UV_6");
+                desc = SimpleLibrary.ResLoader.GetString("/UVIndex/UV_6");
             }
             else if (index >= 8 && index < 11)
             {
-                desc = SimpleLibrary.ResLoader.GetString("UV_8");
+                desc = SimpleLibrary.ResLoader.GetString("/UVIndex/UV_8");
             }
             else if (index >= 11)
             {
-                desc = SimpleLibrary.ResLoader.GetString("UV_11");
+                desc = SimpleLibrary.ResLoader.GetString("/UVIndex/UV_11");
             }
         }
 

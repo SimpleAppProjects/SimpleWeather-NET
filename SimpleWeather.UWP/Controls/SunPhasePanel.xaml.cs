@@ -69,8 +69,7 @@ namespace SimpleWeather.UWP.Controls
         {
             get
             {
-                var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages[0];
-                var culture = new System.Globalization.CultureInfo(userlang);
+                var culture = CultureUtils.UserCulture;
 
                 return DateTime.Today.Add(sunrise).ToString("t", culture);
             }
@@ -80,8 +79,7 @@ namespace SimpleWeather.UWP.Controls
         {
             get
             {
-                var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages[0];
-                var culture = new System.Globalization.CultureInfo(userlang);
+                var culture = CultureUtils.UserCulture;
 
                 return DateTime.Today.Add(sunset).ToString("t", culture);
             }

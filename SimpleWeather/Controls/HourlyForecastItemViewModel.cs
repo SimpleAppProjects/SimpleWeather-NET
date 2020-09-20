@@ -18,8 +18,7 @@ namespace SimpleWeather.Controls
             }
             this.Forecast = hrForecast;
 
-            var userlang = Windows.System.UserProfile.GlobalizationPreferences.Languages[0];
-            var culture = new CultureInfo(userlang);
+            var culture = CultureUtils.UserCulture;
 
             WeatherIcon = hrForecast.icon;
 

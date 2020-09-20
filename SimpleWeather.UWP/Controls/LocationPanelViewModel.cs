@@ -127,8 +127,7 @@ namespace SimpleWeather.Controls
 
         private void RefreshView()
         {
-            var userlang = GlobalizationPreferences.Languages[0];
-            var culture = new CultureInfo(userlang);
+            var culture = CultureUtils.UserCulture;
 
             tempUnit = Settings.Unit;
 

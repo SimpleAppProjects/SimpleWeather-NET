@@ -442,8 +442,7 @@ namespace SimpleWeather.UWP.Main
                     }
                     else
                     {
-                        var userlang = GlobalizationPreferences.Languages[0];
-                        var culture = new CultureInfo(userlang);
+                        var culture = CultureUtils.UserCulture;
                         var locale = wm.LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
                         if (!String.Equals(WeatherView.WeatherSource, Settings.API) ||

@@ -111,6 +111,98 @@ namespace SimpleWeather.WeatherData
             return GetWeatherIcon(icon);
         }
 
+        /// <summary>
+        /// Map the passed icon string to a localized weather condition string (if available)
+        /// </summary>
+        /// <param name="icon">The WeatherIcons to map</param>
+        /// <returns>A localized weather condition string (if available); returns NULL if provider already supports localized data</returns>
+        public virtual string GetWeatherCondition(String icon)
+        {
+            /* For reference
+            switch (icon)
+            {
+                case WeatherIcons.DAY_SUNNY:
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_sunny");
+                case WeatherIcons.NIGHT_CLEAR:
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_clearv);
+                case WeatherIcons.DAY_SUNNY_OVERCAST:
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_overcast");
+                case WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY:
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_partlycloudy");
+                case WeatherIcons.DAY_CLOUDY:
+                case WeatherIcons.NIGHT_ALT_CLOUDY:
+                case WeatherIcons.CLOUDY:
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_cloudy");
+                case WeatherIcons.DAY_SPRINKLE:
+                case WeatherIcons.NIGHT_ALT_SPRINKLE:
+                case WeatherIcons.SPRINKLE:
+                case WeatherIcons.DAY_SHOWERS:
+                case WeatherIcons.NIGHT_ALT_SHOWERS:
+                case WeatherIcons.SHOWERS:
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_rainshowers");
+                case WeatherIcons.DAY_THUNDERSTORM:
+                case WeatherIcons.NIGHT_ALT_THUNDERSTORM:
+                case WeatherIcons.THUNDERSTORM:
+                case WeatherIcons.DAY_STORM_SHOWERS:
+                case WeatherIcons.NIGHT_ALT_STORM_SHOWERS:
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_tstorms");
+                case WeatherIcons.DAY_SLEET:
+                case WeatherIcons.NIGHT_ALT_SLEET:
+                case WeatherIcons.SLEET:
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_sleet");
+                case WeatherIcons.DAY_SNOW:
+                case WeatherIcons.NIGHT_ALT_SNOW:
+                case WeatherIcons.SNOW:
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_snow");
+                case WeatherIcons.DAY_SNOW_WIND:
+                case WeatherIcons.NIGHT_ALT_SNOW_WIND:
+                case WeatherIcons.SNOW_WIND:
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_heavysnow");
+                case WeatherIcons.DAY_SNOW_THUNDERSTORM:
+                case WeatherIcons.NIGHT_ALT_SNOW_THUNDERSTORM:
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_snow_tstorms");
+                case WeatherIcons.DAY_RAIN:
+                case WeatherIcons.NIGHT_ALT_RAIN:
+                case WeatherIcons.RAIN:
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_rain");
+                case WeatherIcons.DAY_FOG:
+                case WeatherIcons.NIGHT_FOG:
+                case WeatherIcons.FOG:
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_fog");
+                case WeatherIcons.DAY_SLEET_STORM:
+                case WeatherIcons.NIGHT_ALT_SLEET_STORM:
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_sleet_tstorms");
+                case WeatherIcons.SNOWFLAKE_COLD:
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_cold");
+                case WeatherIcons.DAY_HOT:
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_hot");
+                case WeatherIcons.DAY_HAZE:
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_haze");
+                case WeatherIcons.SMOKE:
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_smoky");
+                case WeatherIcons.DUST:
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_dust");
+                case WeatherIcons.TORNADO:
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_tornado");
+                case WeatherIcons.DAY_RAIN_MIX:
+                case WeatherIcons.NIGHT_ALT_RAIN_MIX:
+                case WeatherIcons.RAIN_MIX:
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_rainandsnow");
+                case WeatherIcons.DAY_WINDY:
+                case WeatherIcons.WINDY:
+                case WeatherIcons.DAY_CLOUDY_WINDY:
+                case WeatherIcons.NIGHT_ALT_CLOUDY_WINDY:
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_windy");
+                case WeatherIcons.HURRICANE:
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_tropicalstorm");
+                default:
+                    return "";
+            }
+            */
+
+            return null;
+        }
+
         // Used for current condition
         public virtual bool IsNight(Weather weather)
         {

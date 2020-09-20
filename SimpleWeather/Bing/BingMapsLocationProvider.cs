@@ -36,8 +36,7 @@ namespace SimpleWeather.Bing
             {
                 ObservableCollection<LocationQueryViewModel> locations = null;
 
-                var userlang = GlobalizationPreferences.Languages[0];
-                var culture = new CultureInfo(userlang);
+                var culture = CultureUtils.UserCulture;
 
                 // TODO: NOTE: Decide if we will allow users to provide their own keys for loc providers
                 string key = GetAPIKey();
@@ -110,8 +109,7 @@ namespace SimpleWeather.Bing
             {
                 LocationQueryViewModel location = null;
 
-                var userlang = GlobalizationPreferences.Languages[0];
-                var culture = new CultureInfo(userlang);
+                var culture = CultureUtils.UserCulture;
 
                 string key = GetAPIKey();
 
@@ -189,8 +187,7 @@ namespace SimpleWeather.Bing
             {
                 LocationQueryViewModel location = null;
 
-                var userlang = GlobalizationPreferences.Languages[0];
-                var culture = new CultureInfo(userlang);
+                var culture = CultureUtils.UserCulture;
 
                 string key = GetAPIKey();
 

@@ -2,15 +2,18 @@
     x:Class="SimpleWeather.UWP.Controls.WeatherAlertPanel"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:SimpleWeather.UWP.Controls"
-    xmlns:controls="using:SimpleWeather.Controls"
-    xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:Win1809Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
+    xmlns:controls="using:SimpleWeather.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:SimpleWeather.UWP.Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <Style x:Key="AlertPanelToggleButtonStyle" TargetType="ToggleButton" BasedOn="{StaticResource ToggleButtonRevealStyle}">
+        <Style
+            x:Key="AlertPanelToggleButtonStyle"
+            BasedOn="{StaticResource ToggleButtonRevealStyle}"
+            TargetType="ToggleButton">
             <Setter Property="Background" Value="{ThemeResource ToggleButtonRevealBackground}" />
             <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundChromeWhiteBrush}" />
             <Setter Property="BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrush}" />
@@ -28,15 +31,61 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ToggleButton">
-                        <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}">
+                        <Grid
+                            x:Name="RootGrid"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                            <Grid
+                                x:Name="ContentGrid"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{TemplateBinding CornerRadius}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <Slider
+                                    x:Name="ArrowRotation"
+                                    Maximum="180"
+                                    Minimum="-180"
+                                    Visibility="Collapsed"
+                                    Value="180" />
+
+                                <ContentPresenter
+                                    x:Name="ContentPresenter"
+                                    Grid.Column="0"
+                                    Padding="{TemplateBinding Padding}"
+                                    HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    AutomationProperties.AccessibilityView="Raw"
+                                    Content="{TemplateBinding Content}"
+                                    ContentTemplate="{TemplateBinding ContentTemplate}"
+                                    ContentTransitions="{TemplateBinding ContentTransitions}" />
+                                <FontIcon
+                                    x:Name="Arrow"
+                                    Grid.Column="1"
+                                    Width="40"
+                                    FontSize="12"
+                                    Foreground="{TemplateBinding Foreground}"
+                                    Glyph="&#xE70D;"
+                                    RenderTransformOrigin="0.5,0.5">
+                                    <FontIcon.RenderTransform>
+                                        <RotateTransform />
+                                    </FontIcon.RenderTransform>
+                                </FontIcon>
+                            </Grid>
                             <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroup x:Name="CommonStates">
                                     <VisualState x:Name="Normal">
                                         <Storyboard>
                                             <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
-                                            <DoubleAnimation BeginTime="0:0:0" Duration="0:0:0.1" To="0.0"
-                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                         Storyboard.TargetName="Arrow" />
+                                            <DoubleAnimation
+                                                BeginTime="0:0:0"
+                                                Storyboard.TargetName="Arrow"
+                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                                To="0.0"
+                                                Duration="0:0:0.1" />
                                         </Storyboard>
                                     </VisualState>
                                     <VisualState x:Name="PointerOver">
@@ -48,9 +97,12 @@
 
                                         <Storyboard>
                                             <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
-                                            <DoubleAnimation BeginTime="0:0:0" Duration="0:0:0.1" To="0.0"
-                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                         Storyboard.TargetName="Arrow" />
+                                            <DoubleAnimation
+                                                BeginTime="0:0:0"
+                                                Storyboard.TargetName="Arrow"
+                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                                To="0.0"
+                                                Duration="0:0:0.1" />
                                         </Storyboard>
                                     </VisualState>
                                     <VisualState x:Name="Pressed">
@@ -61,9 +113,12 @@
                                         </VisualState.Setters>
 
                                         <Storyboard>
-                                            <DoubleAnimation BeginTime="0:0:0" Duration="0:0:0.1" To="0.0"
-                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                         Storyboard.TargetName="Arrow" />
+                                            <DoubleAnimation
+                                                BeginTime="0:0:0"
+                                                Storyboard.TargetName="Arrow"
+                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                                To="0.0"
+                                                Duration="0:0:0.1" />
                                             <PointerDownThemeAnimation Storyboard.TargetName="RootGrid" />
                                         </Storyboard>
                                     </VisualState>
@@ -74,9 +129,12 @@
                                         </VisualState.Setters>
 
                                         <Storyboard>
-                                            <DoubleAnimation BeginTime="0:0:0" Duration="0:0:0.1" To="0.0"
-                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                         Storyboard.TargetName="Arrow" />
+                                            <DoubleAnimation
+                                                BeginTime="0:0:0"
+                                                Storyboard.TargetName="Arrow"
+                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                                To="0.0"
+                                                Duration="0:0:0.1" />
                                         </Storyboard>
                                     </VisualState>
                                     <VisualState x:Name="Checked">
@@ -88,9 +146,12 @@
 
                                         <Storyboard>
                                             <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
-                                            <DoubleAnimation BeginTime="0:0:0" Duration="0:0:0.1" To="{Binding ElementName=ArrowRotation, Path=Value}"
-                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                         Storyboard.TargetName="Arrow" />
+                                            <DoubleAnimation
+                                                BeginTime="0:0:0"
+                                                Storyboard.TargetName="Arrow"
+                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                                To="{Binding ElementName=ArrowRotation, Path=Value}"
+                                                Duration="0:0:0.1" />
                                         </Storyboard>
                                     </VisualState>
                                     <VisualState x:Name="CheckedPointerOver">
@@ -103,9 +164,12 @@
 
                                         <Storyboard>
                                             <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
-                                            <DoubleAnimation BeginTime="0:0:0" Duration="0:0:0.1" To="{Binding ElementName=ArrowRotation, Path=Value}"
-                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                         Storyboard.TargetName="Arrow" />
+                                            <DoubleAnimation
+                                                BeginTime="0:0:0"
+                                                Storyboard.TargetName="Arrow"
+                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                                To="{Binding ElementName=ArrowRotation, Path=Value}"
+                                                Duration="0:0:0.1" />
                                         </Storyboard>
                                     </VisualState>
                                     <VisualState x:Name="CheckedPressed">
@@ -117,9 +181,12 @@
                                         </VisualState.Setters>
 
                                         <Storyboard>
-                                            <DoubleAnimation BeginTime="0:0:0" Duration="0:0:0.1" To="{Binding ElementName=ArrowRotation, Path=Value}"
-                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                         Storyboard.TargetName="Arrow" />
+                                            <DoubleAnimation
+                                                BeginTime="0:0:0"
+                                                Storyboard.TargetName="Arrow"
+                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                                To="{Binding ElementName=ArrowRotation, Path=Value}"
+                                                Duration="0:0:0.1" />
                                             <PointerDownThemeAnimation Storyboard.TargetName="RootGrid" />
                                         </Storyboard>
                                     </VisualState>
@@ -132,9 +199,12 @@
                                         </VisualState.Setters>
 
                                         <Storyboard>
-                                            <DoubleAnimation BeginTime="0:0:0" Duration="0:0:0.1" To="{Binding ElementName=ArrowRotation, Path=Value}"
-                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                         Storyboard.TargetName="Arrow" />
+                                            <DoubleAnimation
+                                                BeginTime="0:0:0"
+                                                Storyboard.TargetName="Arrow"
+                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                                To="{Binding ElementName=ArrowRotation, Path=Value}"
+                                                Duration="0:0:0.1" />
                                         </Storyboard>
                                     </VisualState>
                                     <VisualState x:Name="Indeterminate">
@@ -180,22 +250,6 @@
                                     </VisualState>
                                 </VisualStateGroup>
                             </VisualStateManager.VisualStateGroups>
-
-                            <Grid x:Name="ContentGrid" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <Slider x:Name="ArrowRotation" Visibility="Collapsed" Value="180" Minimum="-180" Maximum="180" />
-
-                                <ContentPresenter x:Name="ContentPresenter" Grid.Column="0" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Padding="{TemplateBinding Padding}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw" />
-                                <FontIcon x:Name="Arrow" Width="40" Grid.Column="1" Foreground="{TemplateBinding Foreground}" RenderTransformOrigin="0.5,0.5" FontSize="12" Glyph="&#xE70D;">
-                                    <FontIcon.RenderTransform>
-                                        <RotateTransform />
-                                    </FontIcon.RenderTransform>
-                                </FontIcon>
-                            </Grid>
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
@@ -209,10 +263,16 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <ToggleButton x:Name="AlertHeader" Style="{StaticResource AlertPanelToggleButtonStyle}" Grid.Row="0" IsChecked="False">
+        <ToggleButton
+            x:Name="AlertHeader"
+            Grid.Row="0"
+            IsChecked="False"
+            Style="{StaticResource AlertPanelToggleButtonStyle}">
             <ToggleButton.Background>
-                <RevealBackgroundBrush TargetTheme="Dark" Color="{x:Bind AlertHeaderColor, FallbackValue='#FF006FBF', Mode=OneWay}"
-                                       FallbackColor="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Color}" />
+                <RevealBackgroundBrush
+                    FallbackColor="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Color}"
+                    TargetTheme="Dark"
+                    Color="{x:Bind AlertHeaderColor, FallbackValue='#FF006FBF', Mode=OneWay}" />
             </ToggleButton.Background>
             <Grid Padding="5">
                 <Grid.ColumnDefinitions>
@@ -220,25 +280,43 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <toolkitControls:ImageEx x:Name="AlertIcon" Width="25" Margin="2,0,0,0"  Grid.Column="0"
-                                         Source="{x:Bind AlertIconSrc, TargetNullValue='/Assets/WeatherIcons/png/ic_error_white.png', Mode=OneWay}"
-                                         HorizontalAlignment="Left" VerticalAlignment="Center">
-                </toolkitControls:ImageEx>
-                <TextBlock x:Name="Title" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"
-                           Text="{Binding Title, Mode=OneWay, FallbackValue='Flood Warning, Areal Flood Advisory'}"
-                           Padding="5" />
-                <TextBlock x:Name="Date" Padding="5" Grid.Column="2" Text="{x:Bind WeatherAlert.PostDate, Mode=OneWay, FallbackValue='1hr ago'}"
-                           FontSize="{Binding ElementName=Title, Path=FontSize, Mode=OneWay}"
-                           VerticalAlignment="Center" />
+                <toolkitControls:ImageEx
+                    x:Name="AlertIcon"
+                    Grid.Column="0"
+                    Width="25"
+                    Margin="2,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Source="{x:Bind AlertIconSrc, TargetNullValue='/Assets/WeatherIcons/png/ic_error_white.png', Mode=OneWay}" />
+                <TextBlock
+                    x:Name="Title"
+                    Grid.Column="1"
+                    Padding="5"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="{Binding Title, Mode=OneWay, FallbackValue='Flood Warning, Areal Flood Advisory'}" />
+                <TextBlock
+                    x:Name="Date"
+                    Grid.Column="2"
+                    Padding="5"
+                    VerticalAlignment="Center"
+                    FontSize="{Binding ElementName=Title, Path=FontSize, Mode=OneWay}"
+                    Text="{x:Bind WeatherAlert.PostDate, Mode=OneWay, FallbackValue='1hr ago'}" />
             </Grid>
         </ToggleButton>
-        <StackPanel Background="LightGray" Grid.Row="1"
-                    Padding="5" Visibility="{x:Bind AlertHeader.IsChecked, Mode=OneWay}"
-                    Win1809Present:CornerRadius="0,0,2,2"
-                    BorderBrush="Transparent" BorderThickness="0.5,0">
+        <StackPanel
+            Grid.Row="1"
+            Padding="5"
+            Win1809Present:CornerRadius="0,0,2,2"
+            Background="LightGray"
+            BorderBrush="Transparent"
+            BorderThickness="0.5,0"
+            Visibility="{x:Bind AlertHeader.IsChecked, Mode=OneWay}">
             <StackPanel Padding="10">
-                <RichTextBlock IsTextSelectionEnabled="False" TextWrapping="WrapWholeWords"
-                           FontSize="{Binding ElementName=Title, Path=FontSize, Mode=OneWay}">
+                <RichTextBlock
+                    FontSize="{Binding ElementName=Title, Path=FontSize, Mode=OneWay}"
+                    IsTextSelectionEnabled="False"
+                    TextWrapping="WrapWholeWords">
                     <Paragraph>
                         <Span>
                             <Run Text="{Binding ExpireDate, Mode=OneWay}" />

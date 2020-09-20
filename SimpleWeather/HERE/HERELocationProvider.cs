@@ -40,8 +40,7 @@ namespace SimpleWeather.HERE
             {
                 ObservableCollection<LocationQueryViewModel> locations = null;
 
-                var userlang = GlobalizationPreferences.Languages[0];
-                var culture = new CultureInfo(userlang);
+                var culture = CultureUtils.UserCulture;
 
                 string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
@@ -124,8 +123,7 @@ namespace SimpleWeather.HERE
             {
                 LocationQueryViewModel location = null;
 
-                var userlang = GlobalizationPreferences.Languages[0];
-                var culture = new CultureInfo(userlang);
+                var culture = CultureUtils.UserCulture;
 
                 string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
@@ -194,8 +192,7 @@ namespace SimpleWeather.HERE
             {
                 LocationQueryViewModel location = null;
 
-                var userlang = GlobalizationPreferences.Languages[0];
-                var culture = new CultureInfo(userlang);
+                var culture = CultureUtils.UserCulture;
 
                 string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 

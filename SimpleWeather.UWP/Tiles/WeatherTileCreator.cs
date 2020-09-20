@@ -43,8 +43,7 @@ namespace SimpleWeather.UWP.Tiles
 
         private static TileBindingContentAdaptive GenerateForecast(WeatherNowViewModel weather, List<ForecastItemViewModel> forecasts, ForecastTileType forecastTileType)
         {
-            var userlang = GlobalizationPreferences.Languages[0];
-            var culture = new CultureInfo(userlang);
+            var culture = CultureUtils.UserCulture;
 
             var content = new TileBindingContentAdaptive();
             SetContentBackground(content, weather);
@@ -305,8 +304,7 @@ namespace SimpleWeather.UWP.Tiles
 
         private static TileBindingContentAdaptive GenerateHrForecast(WeatherNowViewModel weather, List<HourlyForecastItemViewModel> forecasts, ForecastTileType forecastTileType)
         {
-            var userlang = GlobalizationPreferences.Languages[0];
-            var culture = new CultureInfo(userlang);
+            var culture = CultureUtils.UserCulture;
 
             var content = new TileBindingContentAdaptive();
             SetContentBackground(content, weather);
@@ -547,8 +545,7 @@ namespace SimpleWeather.UWP.Tiles
 
         private static TileBindingContentAdaptive GenerateCondition(WeatherNowViewModel weather, List<ForecastItemViewModel> forecasts, ForecastTileType forecastTileType)
         {
-            var userlang = GlobalizationPreferences.Languages[0];
-            var culture = new CultureInfo(userlang);
+            var culture = CultureUtils.UserCulture;
 
             var content = new TileBindingContentAdaptive();
             SetContentBackground(content, weather);

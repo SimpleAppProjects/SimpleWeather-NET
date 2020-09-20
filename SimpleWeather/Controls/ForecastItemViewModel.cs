@@ -21,8 +21,7 @@ namespace SimpleWeather.Controls
                 throw new ArgumentNullException(nameof(forecast));
             }
 
-            var userlang = GlobalizationPreferences.Languages[0];
-            var culture = new CultureInfo(userlang);
+            var culture = CultureUtils.UserCulture;
 
             WeatherIcon = forecast.icon;
             Date = forecast.date.ToString("ddd dd", culture);

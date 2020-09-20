@@ -204,6 +204,11 @@ namespace SimpleWeather.WeatherData
             return WeatherProvider.GetWeatherIcon(isNight, icon);
         }
 
+        public string GetWeatherCondition(string icon)
+        {
+            return WeatherProvider.GetWeatherCondition(icon);
+        }
+
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public Task<bool> IsKeyValid(string key)
         {
