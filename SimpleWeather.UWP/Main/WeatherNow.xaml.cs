@@ -694,6 +694,8 @@ namespace SimpleWeather.UWP.Main
                                 Dispatcher.RunOnUIThread(() =>
                                 {
                                     OnWeatherLoaded(locationData, t.Result.Weather);
+                                    if (AlertButton != null)
+                                        AlertButton.Visibility = Visibility.Collapsed;
                                 });
                                 return wLoader.LoadWeatherAlerts(t.Result.IsSavedData);
                             }
@@ -707,19 +709,24 @@ namespace SimpleWeather.UWP.Main
                         {
                             AlertsView.UpdateAlerts(locationData);
 
-                            if (wm.SupportsAlerts)
+                            if (t.IsCompletedSuccessfully)
                             {
-                                if (t.Result?.Any() == true)
+                                if (wm.SupportsAlerts)
                                 {
-                                    // Alerts are posted to the user here. Set them as notified.
+                                    if (t.Result?.Any() == true)
+                                    {
+                                        if (AlertButton != null)
+                                            AlertButton.Visibility = Visibility.Visible;
+
+                                        // Alerts are posted to the user here. Set them as notified.
 #if DEBUG
-                                    WeatherAlertHandler.PostAlerts(locationData, t.Result)
-                                    .ConfigureAwait(false);
+                                        WeatherAlertHandler.PostAlerts(locationData, t.Result)
+                                        .ConfigureAwait(false);
 #endif
-                                    WeatherAlertHandler.SetasNotified(locationData, t.Result);
+                                        WeatherAlertHandler.SetasNotified(locationData, t.Result);
+                                    }
                                 }
                             }
-
                         }, TaskScheduler.FromCurrentSynchronizationContext())
                         .ConfigureAwait(true);
             }
