@@ -1,12 +1,12 @@
 ﻿<helpers:CustomPage
-    xmlns:helpers="using:SimpleWeather.UWP.Helpers"
     x:Class="SimpleWeather.UWP.Main.LocationSearchPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:SimpleWeather.UWP.Main"
     xmlns:controls="using:SimpleWeather.Controls"
-    xmlns:localControls="using:SimpleWeather.UWP.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:SimpleWeather.UWP.Helpers"
+    xmlns:local="using:SimpleWeather.UWP.Main"
+    xmlns:localControls="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
@@ -17,9 +17,15 @@
     </Page.Transitions>
 
     <Grid Background="{ThemeResource RegionBrush}">
-        <localControls:ProgressAutoSuggestBox x:Name="Location" VerticalAlignment="Top" Margin="12"
-                                              TextChanged="Location_TextChanged" SuggestionChosen="Location_SuggestionChosen"
-                                              QuerySubmitted="Location_QuerySubmitted" HeaderText="Add a location"
-                                              x:Uid="LocationSearchHint" PlaceholderText="Enter a location" />
+        <localControls:ProgressAutoSuggestBox
+            x:Name="Location"
+            x:Uid="LocationSearchHint"
+            Margin="12"
+            VerticalAlignment="Top"
+            HeaderText="Add a location"
+            PlaceholderText="Enter a location"
+            QuerySubmitted="Location_QuerySubmitted"
+            SuggestionChosen="Location_SuggestionChosen"
+            TextChanged="Location_TextChanged" />
     </Grid>
 </helpers:CustomPage>

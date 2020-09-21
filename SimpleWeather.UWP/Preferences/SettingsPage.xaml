@@ -2,29 +2,60 @@
     x:Class="SimpleWeather.UWP.Preferences.SettingsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:SimpleWeather.UWP.Preferences"
-    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:SimpleWeather.UWP.Preferences"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     d:DesignHeight="1300"
-    NavigationCacheMode="Enabled">
+    NavigationCacheMode="Enabled"
+    mc:Ignorable="d">
 
     <Page.Resources>
-        <AcrylicBrush x:Key="NavigationViewDefaultPaneBackground" BackgroundSource="Backdrop" TintColor="{ThemeResource SystemChromeAltHighColor}" TintOpacity="0.8" TintTransitionDuration="0" FallbackColor="{ThemeResource SystemChromeMediumColor}" />
-        <AcrylicBrush x:Key="NavigationViewTopPaneBackground" BackgroundSource="Backdrop" TintColor="{ThemeResource SystemChromeAltHighColor}" TintOpacity="0.8" TintTransitionDuration="0" FallbackColor="{ThemeResource SystemChromeMediumColor}" />
+        <AcrylicBrush
+            x:Key="NavigationViewDefaultPaneBackground"
+            BackgroundSource="Backdrop"
+            FallbackColor="{ThemeResource SystemChromeMediumColor}"
+            TintColor="{ThemeResource SystemChromeAltHighColor}"
+            TintOpacity="0.8"
+            TintTransitionDuration="0" />
+        <AcrylicBrush
+            x:Key="NavigationViewTopPaneBackground"
+            BackgroundSource="Backdrop"
+            FallbackColor="{ThemeResource SystemChromeMediumColor}"
+            TintColor="{ThemeResource SystemChromeAltHighColor}"
+            TintOpacity="0.8"
+            TintTransitionDuration="0" />
     </Page.Resources>
 
     <Grid Background="{ThemeResource RegionBrush}">
-        <muxc:NavigationView x:Name="SettingsNavView" PaneDisplayMode="Top"
-                             IsBackButtonVisible="Collapsed" IsBackEnabled="False"
-                             IsSettingsVisible="False" ItemInvoked="SettingsNavView_ItemInvoked">
+        <muxc:NavigationView
+            x:Name="SettingsNavView"
+            IsBackButtonVisible="Collapsed"
+            IsBackEnabled="False"
+            IsSettingsVisible="False"
+            ItemInvoked="SettingsNavView_ItemInvoked"
+            PaneDisplayMode="Top">
             <muxc:NavigationView.MenuItems>
-                <muxc:NavigationViewItem x:Uid="General" Content="General" Tag="General" />
-                <muxc:NavigationViewItem x:Uid="Features" Content="Features" Tag="Features" />
-                <muxc:NavigationViewItem x:Uid="Credits" Content="Credits" Tag="Credits" />
-                <muxc:NavigationViewItem x:Uid="OSSLibs" Content="Open Source Libraries" Tag="OSSLibs" />
-                <muxc:NavigationViewItem x:Uid="About" Content="About" Tag="About" />
+                <muxc:NavigationViewItem
+                    x:Uid="General"
+                    Content="General"
+                    Tag="General" />
+                <muxc:NavigationViewItem
+                    x:Uid="Features"
+                    Content="Features"
+                    Tag="Features" />
+                <muxc:NavigationViewItem
+                    x:Uid="Credits"
+                    Content="Credits"
+                    Tag="Credits" />
+                <muxc:NavigationViewItem
+                    x:Uid="OSSLibs"
+                    Content="Open Source Libraries"
+                    Tag="OSSLibs" />
+                <muxc:NavigationViewItem
+                    x:Uid="About"
+                    Content="About"
+                    Tag="About" />
             </muxc:NavigationView.MenuItems>
             <Frame x:Name="SettingsFrame" Navigated="SettingsFrame_Navigated" />
         </muxc:NavigationView>

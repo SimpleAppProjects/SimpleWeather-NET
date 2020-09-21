@@ -2,11 +2,11 @@
     x:Class="SimpleWeather.UWP.Controls.WeatherDetailPanel"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:SimpleWeather.UWP.Controls"
     xmlns:controls="using:SimpleWeather.Controls"
-    xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -19,7 +19,7 @@
                     <SolidColorBrush x:Key="ExtraTextForegroundBrush" Color="{ThemeResource SystemAccentColor}" />
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
-            <!-- Default style for Windows.UI.Xaml.Controls.Primitives.ToggleButton -->
+            <!--  Default style for Windows.UI.Xaml.Controls.Primitives.ToggleButton  -->
             <Style x:Key="DetailPanelToggleButtonStyle" TargetType="ToggleButton">
                 <Setter Property="Background" Value="White" />
                 <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
@@ -36,85 +36,142 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="ToggleButton">
-                            <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" HorizontalAlignment="Stretch">
+                            <Grid
+                                x:Name="RootGrid"
+                                HorizontalAlignment="Stretch"
+                                Background="{TemplateBinding Background}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <Slider
+                                    x:Name="ArrowRotation"
+                                    Maximum="180"
+                                    Minimum="-180"
+                                    Visibility="Collapsed"
+                                    Value="180" />
+
+                                <ContentPresenter
+                                    x:Name="ContentPresenter"
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Stretch"
+                                    VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    AutomationProperties.AccessibilityView="Raw"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    Content="{TemplateBinding Content}"
+                                    ContentTemplate="{TemplateBinding ContentTemplate}"
+                                    ContentTransitions="{TemplateBinding ContentTransitions}" />
+                                <FontIcon
+                                    x:Name="Arrow"
+                                    Grid.Column="1"
+                                    Width="40"
+                                    FontSize="12"
+                                    Foreground="{TemplateBinding Foreground}"
+                                    Glyph="&#xE70D;"
+                                    RenderTransformOrigin="0.5,0.5">
+                                    <FontIcon.RenderTransform>
+                                        <RotateTransform />
+                                    </FontIcon.RenderTransform>
+                                </FontIcon>
                                 <VisualStateManager.VisualStateGroups>
                                     <VisualStateGroup x:Name="CommonStates">
                                         <VisualState x:Name="Normal">
                                             <Storyboard>
                                                 <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
-                                                <DoubleAnimation BeginTime="0:0:0" Duration="0:0:0.1" To="0.0"
-                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                         Storyboard.TargetName="Arrow" />
+                                                <DoubleAnimation
+                                                    BeginTime="0:0:0"
+                                                    Storyboard.TargetName="Arrow"
+                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                                    To="0.0"
+                                                    Duration="0:0:0.1" />
                                             </Storyboard>
                                         </VisualState>
                                         <VisualState x:Name="PointerOver">
                                             <Storyboard>
                                                 <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
-                                                <DoubleAnimation BeginTime="0:0:0" Duration="0:0:0.1" To="0.0"
-                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                         Storyboard.TargetName="Arrow" />
+                                                <DoubleAnimation
+                                                    BeginTime="0:0:0"
+                                                    Storyboard.TargetName="Arrow"
+                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                                    To="0.0"
+                                                    Duration="0:0:0.1" />
                                             </Storyboard>
                                         </VisualState>
                                         <VisualState x:Name="Pressed">
                                             <Storyboard>
-                                                <DoubleAnimation BeginTime="0:0:0" Duration="0:0:0.1" To="0.0"
-                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                         Storyboard.TargetName="Arrow" />
+                                                <DoubleAnimation
+                                                    BeginTime="0:0:0"
+                                                    Storyboard.TargetName="Arrow"
+                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                                    To="0.0"
+                                                    Duration="0:0:0.1" />
                                                 <PointerDownThemeAnimation Storyboard.TargetName="RootGrid" />
                                             </Storyboard>
                                         </VisualState>
                                         <VisualState x:Name="Disabled">
                                             <Storyboard>
-                                                <DoubleAnimation BeginTime="0:0:0" Duration="0:0:0.1" To="0.0"
-                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                         Storyboard.TargetName="Arrow" />
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility"
-                                                                       Storyboard.TargetName="Arrow">
-                                                    <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="Collapsed" />
+                                                <DoubleAnimation
+                                                    BeginTime="0:0:0"
+                                                    Storyboard.TargetName="Arrow"
+                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                                    To="0.0"
+                                                    Duration="0:0:0.1" />
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Visibility">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
                                                 </ObjectAnimationUsingKeyFrames>
                                             </Storyboard>
                                         </VisualState>
                                         <VisualState x:Name="Checked">
                                             <Storyboard>
                                                 <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
-                                                <DoubleAnimation BeginTime="0:0:0" Duration="0:0:0.1" To="{Binding ElementName=ArrowRotation, Path=Value}"
-                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                         Storyboard.TargetName="Arrow" />
+                                                <DoubleAnimation
+                                                    BeginTime="0:0:0"
+                                                    Storyboard.TargetName="Arrow"
+                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                                    To="{Binding ElementName=ArrowRotation, Path=Value}"
+                                                    Duration="0:0:0.1" />
                                             </Storyboard>
                                         </VisualState>
                                         <VisualState x:Name="CheckedPointerOver">
                                             <Storyboard>
                                                 <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
-                                                <DoubleAnimation BeginTime="0:0:0" Duration="0:0:0.1" To="{Binding ElementName=ArrowRotation, Path=Value}"
-                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                         Storyboard.TargetName="Arrow" />
+                                                <DoubleAnimation
+                                                    BeginTime="0:0:0"
+                                                    Storyboard.TargetName="Arrow"
+                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                                    To="{Binding ElementName=ArrowRotation, Path=Value}"
+                                                    Duration="0:0:0.1" />
                                             </Storyboard>
                                         </VisualState>
                                         <VisualState x:Name="CheckedPressed">
                                             <Storyboard>
-                                                <DoubleAnimation BeginTime="0:0:0" Duration="0:0:0.1" To="{Binding ElementName=ArrowRotation, Path=Value}"
-                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                         Storyboard.TargetName="Arrow" />
+                                                <DoubleAnimation
+                                                    BeginTime="0:0:0"
+                                                    Storyboard.TargetName="Arrow"
+                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                                    To="{Binding ElementName=ArrowRotation, Path=Value}"
+                                                    Duration="0:0:0.1" />
                                                 <PointerDownThemeAnimation Storyboard.TargetName="RootGrid" />
                                             </Storyboard>
                                         </VisualState>
                                         <VisualState x:Name="CheckedDisabled">
                                             <Storyboard>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground"
-                                                                       Storyboard.TargetName="Arrow">
-                                                    <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
                                                 </ObjectAnimationUsingKeyFrames>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground"
-                                                                       Storyboard.TargetName="ContentPresenter">
-                                                    <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
                                                 </ObjectAnimationUsingKeyFrames>
 
-                                                <DoubleAnimation BeginTime="0:0:0" Duration="0:0:0.1" To="{Binding ElementName=ArrowRotation, Path=Value}"
-                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                         Storyboard.TargetName="Arrow" />
+                                                <DoubleAnimation
+                                                    BeginTime="0:0:0"
+                                                    Storyboard.TargetName="Arrow"
+                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                                    To="{Binding ElementName=ArrowRotation, Path=Value}"
+                                                    Duration="0:0:0.1" />
                                             </Storyboard>
                                         </VisualState>
                                         <VisualState x:Name="Indeterminate">
@@ -124,15 +181,11 @@
                                         </VisualState>
                                         <VisualState x:Name="IndeterminatePointerOver">
                                             <Storyboard>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground"
-                                                                       Storyboard.TargetName="Arrow">
-                                                    <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="{ThemeResource SystemControlHighlightBaseHighBrush}" />
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseHighBrush}" />
                                                 </ObjectAnimationUsingKeyFrames>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground"
-                                                                       Storyboard.TargetName="ContentPresenter">
-                                                    <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="{ThemeResource SystemControlHighlightBaseHighBrush}" />
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseHighBrush}" />
                                                 </ObjectAnimationUsingKeyFrames>
 
                                                 <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
@@ -140,15 +193,11 @@
                                         </VisualState>
                                         <VisualState x:Name="IndeterminatePressed">
                                             <Storyboard>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground"
-                                                                       Storyboard.TargetName="Arrow">
-                                                    <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="{ThemeResource SystemControlHighlightBaseHighBrush}" />
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseHighBrush}" />
                                                 </ObjectAnimationUsingKeyFrames>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground"
-                                                                       Storyboard.TargetName="ContentPresenter">
-                                                    <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="{ThemeResource SystemControlHighlightBaseHighBrush}" />
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseHighBrush}" />
                                                 </ObjectAnimationUsingKeyFrames>
 
                                                 <PointerDownThemeAnimation Storyboard.TargetName="RootGrid" />
@@ -156,48 +205,16 @@
                                         </VisualState>
                                         <VisualState x:Name="IndeterminateDisabled">
                                             <Storyboard>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground"
-                                                                       Storyboard.TargetName="Arrow">
-                                                    <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
                                                 </ObjectAnimationUsingKeyFrames>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground"
-                                                                       Storyboard.TargetName="ContentPresenter">
-                                                    <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
                                                 </ObjectAnimationUsingKeyFrames>
                                             </Storyboard>
                                         </VisualState>
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
-
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <Slider x:Name="ArrowRotation" Visibility="Collapsed" Value="180" Minimum="-180" Maximum="180" />
-
-                                <ContentPresenter x:Name="ContentPresenter" Grid.Column="0"
-                                                BorderBrush="{TemplateBinding BorderBrush}"
-                                                BorderThickness="{TemplateBinding BorderThickness}"
-                                                Content="{TemplateBinding Content}"
-                                                ContentTransitions="{TemplateBinding ContentTransitions}"
-                                                ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                HorizontalAlignment="Stretch"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                AutomationProperties.AccessibilityView="Raw" />
-                                <FontIcon x:Name="Arrow" Width="40"
-                                      Grid.Column="1"
-                                      Foreground="{TemplateBinding Foreground}"
-                                      RenderTransformOrigin="0.5,0.5"
-                                      FontSize="12"
-                                      Glyph="&#xE70D;">
-                                    <FontIcon.RenderTransform>
-                                        <RotateTransform />
-                                    </FontIcon.RenderTransform>
-                                </FontIcon>
                             </Grid>
                         </ControlTemplate>
                     </Setter.Value>
@@ -212,34 +229,73 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <ToggleButton x:Name="DetailHeader" Background="{ThemeResource RegionBrush}" Style="{StaticResource DetailPanelToggleButtonStyle}" Grid.Row="0"
-                      IsChecked="False" IsEnabled="{x:Bind ViewModel.HasExtras, Mode=OneWay}">
+        <ToggleButton
+            x:Name="DetailHeader"
+            Grid.Row="0"
+            Background="{ThemeResource RegionBrush}"
+            IsChecked="False"
+            IsEnabled="{x:Bind ViewModel.HasExtras, Mode=OneWay}"
+            Style="{StaticResource DetailPanelToggleButtonStyle}">
             <Grid MinHeight="60">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Viewbox Name="IconBox" Height="50" Width="50" Margin="8,0" VerticalAlignment="Center" Grid.Column="0">
-                    <TextBlock x:Name="WeatherIcon" Text="{x:Bind ViewModel.Icon, FallbackValue='&#xf00d;', Mode=OneWay}"
-                               Style="{StaticResource WeatherIcon}" />
+                <Viewbox
+                    Name="IconBox"
+                    Grid.Column="0"
+                    Width="50"
+                    Height="50"
+                    Margin="8,0"
+                    VerticalAlignment="Center">
+                    <TextBlock
+                        x:Name="WeatherIcon"
+                        Style="{StaticResource WeatherIcon}"
+                        Text="{x:Bind ViewModel.Icon, FallbackValue='&#xf00d;', Mode=OneWay}" />
                 </Viewbox>
-                <StackPanel Orientation="Vertical" Grid.Column="1" VerticalAlignment="Center">
-                    <TextBlock x:Name="Date" Text="{x:Bind ViewModel.Date, FallbackValue='Someday XX', Mode=OneWay}" FontWeight="Bold" Padding="2" MaxLines="1"
-                               TextTrimming="CharacterEllipsis" />
-                    <TextBlock x:Name="Condition" Text="{x:Bind ViewModel.Condition, FallbackValue='50° / 44° - Sprinkles early. Mostly cloudy. Mild', Mode=OneWay}"
-                               Padding="2" MaxLines="1"
-                               FontSize="{x:Bind Date.FontSize, Mode=OneWay}" TextTrimming="CharacterEllipsis"
-                               VerticalAlignment="Center" />
-                    <TextBlock x:Name="Extra" Text="{x:Bind ViewModel.ForecastExtra, FallbackValue='&#xf078; 100%&#x2003;&#xf050; 5 mph, WNW', Mode=OneWay}"
-                               Padding="2" MaxLines="1" FontFamily="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons"
-                               FontSize="{x:Bind Date.FontSize, Mode=OneWay}" Foreground="{ThemeResource ExtraTextForegroundBrush}" TextTrimming="CharacterEllipsis"
-                               VerticalAlignment="Center" Visibility="{x:Bind ViewModel.ForecastExtra, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
+                <StackPanel
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Orientation="Vertical">
+                    <TextBlock
+                        x:Name="Date"
+                        Padding="2"
+                        FontWeight="Bold"
+                        MaxLines="1"
+                        Text="{x:Bind ViewModel.Date, FallbackValue='Someday XX', Mode=OneWay}"
+                        TextTrimming="CharacterEllipsis" />
+                    <TextBlock
+                        x:Name="Condition"
+                        Padding="2"
+                        VerticalAlignment="Center"
+                        FontSize="{x:Bind Date.FontSize, Mode=OneWay}"
+                        MaxLines="1"
+                        Text="{x:Bind ViewModel.Condition, FallbackValue='50° / 44° - Sprinkles early. Mostly cloudy. Mild', Mode=OneWay}"
+                        TextTrimming="CharacterEllipsis" />
+                    <TextBlock
+                        x:Name="Extra"
+                        Padding="2"
+                        VerticalAlignment="Center"
+                        FontFamily="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons"
+                        FontSize="{x:Bind Date.FontSize, Mode=OneWay}"
+                        Foreground="{ThemeResource ExtraTextForegroundBrush}"
+                        MaxLines="1"
+                        Text="{x:Bind ViewModel.ForecastExtra, FallbackValue='&#xf078; 100%&#x2003;&#xf050; 5 mph, WNW', Mode=OneWay}"
+                        TextTrimming="CharacterEllipsis"
+                        Visibility="{x:Bind ViewModel.ForecastExtra, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
                 </StackPanel>
             </Grid>
         </ToggleButton>
-        <StackPanel Grid.Row="1" Padding="5" Visibility="{x:Bind DetailHeader.IsChecked, Mode=OneWay}">
+        <StackPanel
+            Grid.Row="1"
+            Padding="5"
+            Visibility="{x:Bind DetailHeader.IsChecked, Mode=OneWay}">
             <StackPanel Padding="10">
-                <TextBlock x:Name="ConditionDescription" FontSize="{x:Bind Date.FontSize, Mode=OneWay}" TextWrapping="WrapWholeWords" HorizontalAlignment="Stretch">
+                <TextBlock
+                    x:Name="ConditionDescription"
+                    HorizontalAlignment="Stretch"
+                    FontSize="{x:Bind Date.FontSize, Mode=OneWay}"
+                    TextWrapping="WrapWholeWords">
                     <Run x:Name="CondDescFirstRun" Text="{x:Bind ViewModel.ConditionLongDesc, TargetNullValue={Binding ViewModel.Condition, Mode=OneWay}, Mode=OneWay}" /><LineBreak />
                 </TextBlock>
                 <ItemsControl ItemsSource="{x:Bind ViewModel.Extras, Mode=OneWay}">
@@ -250,8 +306,16 @@
                                     <ColumnDefinition Width="150" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Foreground="{ThemeResource SystemBaseMediumHighColor}" Text="{x:Bind Label}" FontSize="{Binding ElementName=Date, Path=FontSize}" Grid.Column="0" />
-                                <TextBlock Foreground="{ThemeResource SystemBaseHighColor}" Text="{x:Bind Value}" FontSize="{Binding ElementName=Date, Path=FontSize}" Grid.Column="1" />
+                                <TextBlock
+                                    Grid.Column="0"
+                                    FontSize="{Binding ElementName=Date, Path=FontSize}"
+                                    Foreground="{ThemeResource SystemBaseMediumHighColor}"
+                                    Text="{x:Bind Label}" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    FontSize="{Binding ElementName=Date, Path=FontSize}"
+                                    Foreground="{ThemeResource SystemBaseHighColor}"
+                                    Text="{x:Bind Value}" />
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

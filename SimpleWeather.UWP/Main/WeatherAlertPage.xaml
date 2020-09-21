@@ -3,12 +3,12 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:SimpleWeather.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:helpers="using:SimpleWeather.UWP.Helpers"
     xmlns:local="using:SimpleWeather.UWP.Main"
     xmlns:localcontrols="using:SimpleWeather.UWP.Controls"
-    xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource RegionBrush}">
@@ -16,24 +16,43 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Border Grid.Row="0" BorderBrush="{ThemeResource TextBoxDisabledBorderThemeBrush}" BorderThickness="0,0,0,0.5">
+        <Border
+            Grid.Row="0"
+            BorderBrush="{ThemeResource TextBoxDisabledBorderThemeBrush}"
+            BorderThickness="0,0,0,0.5">
             <Viewbox Height="48" HorizontalAlignment="Left">
-                <TextBlock Text="{x:Bind WeatherView.Location, FallbackValue='New York, NY', Mode=OneWay}"
-                           FontSize="16" Padding="16" />
+                <TextBlock
+                    Padding="16"
+                    FontSize="16"
+                    Text="{x:Bind WeatherView.Location, FallbackValue='New York, NY', Mode=OneWay}" />
             </Viewbox>
         </Border>
 
-        <ScrollViewer HorizontalScrollMode="Disabled" HorizontalScrollBarVisibility="Disabled"
-                      VerticalScrollBarVisibility="Auto" VerticalScrollMode="Enabled"
-                      Margin="10" Grid.Row="1">
-            <ListView x:Name="StackControl" ItemsSource="{x:Bind AlertsView.Alerts, Mode=OneWay}"
-                      SelectionMode="None" IsItemClickEnabled="False"
-                      IsSwipeEnabled="False" AllowDrop="False" CanReorderItems="False" CanDragItems="False"
-                      HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
-                      ContainerContentChanging="StackControl_ContainerContentChanging">
+        <ScrollViewer
+            Grid.Row="1"
+            Margin="10"
+            HorizontalScrollBarVisibility="Disabled"
+            HorizontalScrollMode="Disabled"
+            VerticalScrollBarVisibility="Auto"
+            VerticalScrollMode="Enabled">
+            <ListView
+                x:Name="StackControl"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Stretch"
+                AllowDrop="False"
+                CanDragItems="False"
+                CanReorderItems="False"
+                ContainerContentChanging="StackControl_ContainerContentChanging"
+                IsItemClickEnabled="False"
+                IsSwipeEnabled="False"
+                ItemsSource="{x:Bind AlertsView.Alerts, Mode=OneWay}"
+                SelectionMode="None">
                 <ListView.Header>
-                    <TextBlock x:Uid="NoWeatherAlerts_Prompt" Text="No weather alerts available." Padding="4"
-                               Visibility="{x:Bind AlertsView.Alerts, Converter={StaticResource collectionVisibilityConverter}, ConverterParameter=true, Mode=OneWay}" />
+                    <TextBlock
+                        x:Uid="NoWeatherAlerts_Prompt"
+                        Padding="4"
+                        Text="No weather alerts available."
+                        Visibility="{x:Bind AlertsView.Alerts, Converter={StaticResource collectionVisibilityConverter}, ConverterParameter=true, Mode=OneWay}" />
                 </ListView.Header>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="controls:WeatherAlertViewModel">
@@ -50,7 +69,7 @@
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemContainerStyle>
-                    <Style TargetType="ListViewItem" BasedOn="{StaticResource ListViewItemRevealStyle}">
+                    <Style BasedOn="{StaticResource ListViewItemRevealStyle}" TargetType="ListViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                     </Style>
                 </ItemsControl.ItemContainerStyle>

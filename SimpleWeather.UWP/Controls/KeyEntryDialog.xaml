@@ -2,25 +2,38 @@
     x:Class="SimpleWeather.UWP.Controls.KeyEntryDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:SimpleWeather.UWP.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
     x:Uid="ConfirmDialog"
-    PrimaryButtonText="Ok"
-    SecondaryButtonText="Cancel"
-    SecondaryButtonClick="ContentDialog_SecondaryButtonClick"
     PrimaryButtonStyle="{ThemeResource ButtonRevealStyle}"
-    SecondaryButtonStyle="{ThemeResource ButtonRevealStyle}">
+    PrimaryButtonText="Ok"
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick"
+    SecondaryButtonStyle="{ThemeResource ButtonRevealStyle}"
+    SecondaryButtonText="Cancel"
+    mc:Ignorable="d">
 
     <ContentDialog.Title>
         <TextBlock x:Uid="Message_EnterAPIKey" Text="Please enter an API Key" />
     </ContentDialog.Title>
 
     <StackPanel Orientation="Vertical">
-        <TextBox x:Name="KeyEntry" FontSize="12" x:Uid="KeyEntry" PlaceholderText="API Key" Padding="10" VerticalAlignment="Center"
-                 Margin="0,4" />
-        <TextBox x:Name="KeyEntry_2" FontSize="12" x:Uid="KeyEntry" PlaceholderText="API Key" Padding="10" VerticalAlignment="Center"
-                 Visibility="Collapsed" Margin="0,4" />
+        <TextBox
+            x:Name="KeyEntry"
+            x:Uid="KeyEntry"
+            Margin="0,4"
+            Padding="10"
+            VerticalAlignment="Center"
+            FontSize="12"
+            PlaceholderText="API Key" />
+        <TextBox
+            x:Name="KeyEntry_2"
+            x:Uid="KeyEntry"
+            Margin="0,4"
+            Padding="10"
+            VerticalAlignment="Center"
+            FontSize="12"
+            PlaceholderText="API Key"
+            Visibility="Collapsed" />
     </StackPanel>
 </ContentDialog>

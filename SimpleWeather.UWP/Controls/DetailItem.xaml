@@ -2,13 +2,13 @@
     x:Class="SimpleWeather.UWP.Controls.DetailItem"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:SimpleWeather.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:SimpleWeather.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
     Name="Control"
     d:DesignHeight="175"
-    d:DesignWidth="175">
+    d:DesignWidth="175"
+    mc:Ignorable="d">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -24,28 +24,54 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Border x:Name="ItemBorder" Margin="15" CornerRadius="2" BorderThickness="1" BorderBrush="#40D3D3D3" Background="#B3FFFFFF">
+    <Border
+        x:Name="ItemBorder"
+        Margin="15"
+        Background="#B3FFFFFF"
+        BorderBrush="#40D3D3D3"
+        BorderThickness="1"
+        CornerRadius="2">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <TextBlock Name="DetailLabel" Text="{x:Bind Details.Label, FallbackValue='Label', Mode=OneWay}" Grid.Row="0"
-                       HorizontalAlignment="Center" VerticalAlignment="Center" Padding="8" />
-            <Viewbox Name="WeatherBox" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <TextBlock Style="{StaticResource WeatherIcon}" Text="{x:Bind Details.Icon, FallbackValue='&#xf00d;', Mode=OneWay}"
-                           Foreground="{ThemeResource IconPaintColorBrush}"
-                           RenderTransformOrigin="0.5,0.5" TextLineBounds="Tight" Width="50">
+            <TextBlock
+                Name="DetailLabel"
+                Grid.Row="0"
+                Padding="8"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Text="{x:Bind Details.Label, FallbackValue='Label', Mode=OneWay}" />
+            <Viewbox
+                Name="WeatherBox"
+                Grid.Row="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+                <TextBlock
+                    Width="50"
+                    Foreground="{ThemeResource IconPaintColorBrush}"
+                    RenderTransformOrigin="0.5,0.5"
+                    Style="{StaticResource WeatherIcon}"
+                    Text="{x:Bind Details.Icon, FallbackValue='&#xf00d;', Mode=OneWay}"
+                    TextLineBounds="Tight">
                     <TextBlock.RenderTransform>
                         <RotateTransform Angle="{x:Bind Details.IconRotation, Mode=OneWay}" />
                     </TextBlock.RenderTransform>
                 </TextBlock>
             </Viewbox>
-            <Viewbox HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2"
-                     StretchDirection="DownOnly">
-                <TextBlock Name="DetailValue" Text="{Binding Value, FallbackValue=' 50.00 in', Mode=OneWay}"
-                           Style="{StaticResource WeatherIcon}" TextWrapping="WrapWholeWords" Padding="8" />
+            <Viewbox
+                Grid.Row="2"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                StretchDirection="DownOnly">
+                <TextBlock
+                    Name="DetailValue"
+                    Padding="8"
+                    Style="{StaticResource WeatherIcon}"
+                    Text="{Binding Value, FallbackValue=' 50.00 in', Mode=OneWay}"
+                    TextWrapping="WrapWholeWords" />
             </Viewbox>
         </Grid>
         <VisualStateManager.VisualStateGroups>

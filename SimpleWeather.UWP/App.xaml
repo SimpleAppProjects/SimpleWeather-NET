@@ -2,12 +2,12 @@
     x:Class="SimpleWeather.UWP.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Win1809NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract, 7)"
+    xmlns:Win1809Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
     xmlns:helpers="using:SimpleWeather.UWP.Helpers"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-    xmlns:toolkitConverters="using:Microsoft.Toolkit.Uwp.UI.Converters"
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    xmlns:Win1809Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
-    xmlns:Win1809NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract, 7)"
+    xmlns:toolkitConverters="using:Microsoft.Toolkit.Uwp.UI.Converters"
     RequestedTheme="Dark">
     <Application.Resources>
         <ResourceDictionary>
@@ -19,7 +19,33 @@
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
                     <ResourceDictionary.MergedDictionaries>
-                        <Win1809Present:ColorPaletteResources Accent="#FF4478B8" AltHigh="#FF000000" AltLow="#FF000000" AltMedium="#FF000000" AltMediumHigh="#FF000000" AltMediumLow="#FF000000" BaseHigh="#FFFFFFFF" BaseLow="#FF333333" BaseMedium="#FF9A9A9A" BaseMediumHigh="#FFB4B4B4" BaseMediumLow="#FF676767" ChromeAltLow="#FFB4B4B4" ChromeBlackHigh="#FF000000" ChromeBlackLow="#FFB4B4B4" ChromeBlackMedium="#FF000000" ChromeBlackMediumLow="#FF000000" ChromeDisabledHigh="#FF333333" ChromeDisabledLow="#FF9A9A9A" ChromeGray="#FF808080" ChromeHigh="#FF808080" ChromeLow="#FF151515" ChromeMedium="#FF1D1D1D" ChromeMediumLow="#FF2C2C2C" ChromeWhite="#FFFFFFFF" ListLow="#FF1D1D1D" ListMedium="#FF333333" />
+                        <Win1809Present:ColorPaletteResources
+                            Accent="#FF4478B8"
+                            AltHigh="#FF000000"
+                            AltLow="#FF000000"
+                            AltMedium="#FF000000"
+                            AltMediumHigh="#FF000000"
+                            AltMediumLow="#FF000000"
+                            BaseHigh="#FFFFFFFF"
+                            BaseLow="#FF333333"
+                            BaseMedium="#FF9A9A9A"
+                            BaseMediumHigh="#FFB4B4B4"
+                            BaseMediumLow="#FF676767"
+                            ChromeAltLow="#FFB4B4B4"
+                            ChromeBlackHigh="#FF000000"
+                            ChromeBlackLow="#FFB4B4B4"
+                            ChromeBlackMedium="#FF000000"
+                            ChromeBlackMediumLow="#FF000000"
+                            ChromeDisabledHigh="#FF333333"
+                            ChromeDisabledLow="#FF9A9A9A"
+                            ChromeGray="#FF808080"
+                            ChromeHigh="#FF808080"
+                            ChromeLow="#FF151515"
+                            ChromeMedium="#FF1D1D1D"
+                            ChromeMediumLow="#FF2C2C2C"
+                            ChromeWhite="#FFFFFFFF"
+                            ListLow="#FF1D1D1D"
+                            ListMedium="#FF333333" />
                         <ResourceDictionary>
                             <Style x:Key="HyperlinkButtonStyle" TargetType="HyperlinkButton">
                                 <Setter Property="Foreground" Value="{ThemeResource SimpleBlueLight}" />
@@ -28,7 +54,7 @@
                             </Style>
                             <SolidColorBrush x:Key="SnackbarForegroundBrush" Color="{ThemeResource SimpleBlueLight}" />
                             <SolidColorBrush x:Key="ProgressBarBackgroundBrush" Color="#8AF1F1F1" />
-                            <!-- Compat -->
+                            <!--  Compat  -->
                             <Win1809NotPresent:Color x:Key="SystemAccentColor">#FF4478B8</Win1809NotPresent:Color>
                             <Win1809NotPresent:Color x:Key="SystemAltHighColor">#FF000000</Win1809NotPresent:Color>
                             <Win1809NotPresent:Color x:Key="SystemAltLowColor">#FF000000</Win1809NotPresent:Color>
@@ -59,11 +85,16 @@
                             <Color x:Key="SystemChromeAltHighColor">#FF333333</Color>
                             <Color x:Key="SystemRevealListLowColor">#FF1D1D1D</Color>
                             <Color x:Key="SystemRevealListMediumColor">#FF333333</Color>
-                            <AcrylicBrush x:Key="SystemControlAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintColor="{ThemeResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{ThemeResource SystemChromeMediumColor}" />
-                            <!-- Override system shape defaults -->
+                            <AcrylicBrush
+                                x:Key="SystemControlAcrylicWindowBrush"
+                                BackgroundSource="HostBackdrop"
+                                FallbackColor="{ThemeResource SystemChromeMediumColor}"
+                                TintColor="{ThemeResource SystemChromeAltHighColor}"
+                                TintOpacity="0.8" />
+                            <!--  Override system shape defaults  -->
                             <CornerRadius x:Key="ControlCornerRadius">2,2,2,2</CornerRadius>
                             <CornerRadius x:Key="OverlayCornerRadius">4,4,4,4</CornerRadius>
-                            <!-- Override system borders -->
+                            <!--  Override system borders  -->
                             <Thickness x:Key="MenuBarItemBorderThickness">1,1,1,1</Thickness>
                             <Thickness x:Key="GridViewItemMultiselectBorderThickness">1,1,1,1</Thickness>
                             <Thickness x:Key="CheckBoxBorderThemeThickness">1</Thickness>
@@ -88,7 +119,7 @@
                             <Thickness x:Key="GridViewItemRevealBorderThemeThickness">1,1,1,1</Thickness>
                             <Thickness x:Key="ComboBoxItemRevealBorderThemeThickness">1,1,1,1</Thickness>
                             <x:Double x:Key="PersonPictureEllipseBadgeStrokeThickness">1</x:Double>
-                            <!-- Override system generated accent colors -->
+                            <!--  Override system generated accent colors  -->
                             <Color x:Key="SystemAccentColorDark1">#FF5A89C3</Color>
                             <Color x:Key="SystemAccentColorDark2">#FF709ACF</Color>
                             <Color x:Key="SystemAccentColorDark3">#FF85ACDA</Color>
@@ -102,7 +133,33 @@
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
                     <ResourceDictionary.MergedDictionaries>
-                        <Win1809Present:ColorPaletteResources Accent="#FF0070C0" AltHigh="#FFFFFFFF" AltLow="#FFFFFFFF" AltMedium="#FFFFFFFF" AltMediumHigh="#FFFFFFFF" AltMediumLow="#FFFFFFFF" BaseHigh="#FF000000" BaseLow="#FFCCCCCC" BaseMedium="#FF898989" BaseMediumHigh="#FF5D5D5D" BaseMediumLow="#FF737373" ChromeAltLow="#FF5D5D5D" ChromeBlackHigh="#FF000000" ChromeBlackLow="#FFCCCCCC" ChromeBlackMedium="#FF5D5D5D" ChromeBlackMediumLow="#FF898989" ChromeDisabledHigh="#FFCCCCCC" ChromeDisabledLow="#FF898989" ChromeGray="#FF737373" ChromeHigh="#FFCCCCCC" ChromeLow="#FFECECEC" ChromeMedium="#FFE6E6E6" ChromeMediumLow="#FFECECEC" ChromeWhite="#FFFFFFFF" ListLow="#FFE6E6E6" ListMedium="#FFCCCCCC" />
+                        <Win1809Present:ColorPaletteResources
+                            Accent="#FF0070C0"
+                            AltHigh="#FFFFFFFF"
+                            AltLow="#FFFFFFFF"
+                            AltMedium="#FFFFFFFF"
+                            AltMediumHigh="#FFFFFFFF"
+                            AltMediumLow="#FFFFFFFF"
+                            BaseHigh="#FF000000"
+                            BaseLow="#FFCCCCCC"
+                            BaseMedium="#FF898989"
+                            BaseMediumHigh="#FF5D5D5D"
+                            BaseMediumLow="#FF737373"
+                            ChromeAltLow="#FF5D5D5D"
+                            ChromeBlackHigh="#FF000000"
+                            ChromeBlackLow="#FFCCCCCC"
+                            ChromeBlackMedium="#FF5D5D5D"
+                            ChromeBlackMediumLow="#FF898989"
+                            ChromeDisabledHigh="#FFCCCCCC"
+                            ChromeDisabledLow="#FF898989"
+                            ChromeGray="#FF737373"
+                            ChromeHigh="#FFCCCCCC"
+                            ChromeLow="#FFECECEC"
+                            ChromeMedium="#FFE6E6E6"
+                            ChromeMediumLow="#FFECECEC"
+                            ChromeWhite="#FFFFFFFF"
+                            ListLow="#FFE6E6E6"
+                            ListMedium="#FFCCCCCC" />
                         <ResourceDictionary>
                             <Style x:Key="HyperlinkButtonStyle" TargetType="HyperlinkButton">
                                 <Setter Property="Foreground" Value="{ThemeResource HyperlinkButtonForeground}" />
@@ -111,7 +168,7 @@
                             </Style>
                             <SolidColorBrush x:Key="SnackbarForegroundBrush" Color="{ThemeResource SimpleBlueDark}" />
                             <SolidColorBrush x:Key="ProgressBarBackgroundBrush" Color="#B3616161" />
-                            <!-- Compat -->
+                            <!--  Compat  -->
                             <Win1809NotPresent:Color x:Key="SystemAccentColor">#FF0070C0</Win1809NotPresent:Color>
                             <Win1809NotPresent:Color x:Key="SystemAltHighColor">#FFFFFFFF</Win1809NotPresent:Color>
                             <Win1809NotPresent:Color x:Key="SystemAltLowColor">#FFFFFFFF</Win1809NotPresent:Color>
@@ -142,11 +199,16 @@
                             <Color x:Key="SystemChromeAltHighColor">#FFCCCCCC</Color>
                             <Color x:Key="SystemRevealListLowColor">#FFE6E6E6</Color>
                             <Color x:Key="SystemRevealListMediumColor">#FFCCCCCC</Color>
-                            <AcrylicBrush x:Key="SystemControlAcrylicWindowBrush" BackgroundSource="HostBackdrop" TintColor="{ThemeResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{ThemeResource SystemChromeMediumColor}" />
-                            <!-- Override system shape defaults -->
+                            <AcrylicBrush
+                                x:Key="SystemControlAcrylicWindowBrush"
+                                BackgroundSource="HostBackdrop"
+                                FallbackColor="{ThemeResource SystemChromeMediumColor}"
+                                TintColor="{ThemeResource SystemChromeAltHighColor}"
+                                TintOpacity="0.8" />
+                            <!--  Override system shape defaults  -->
                             <CornerRadius x:Key="ControlCornerRadius">2,2,2,2</CornerRadius>
                             <CornerRadius x:Key="OverlayCornerRadius">4,4,4,4</CornerRadius>
-                            <!-- Override system borders -->
+                            <!--  Override system borders  -->
                             <Thickness x:Key="MenuBarItemBorderThickness">1,1,1,1</Thickness>
                             <Thickness x:Key="GridViewItemMultiselectBorderThickness">1,1,1,1</Thickness>
                             <Thickness x:Key="CheckBoxBorderThemeThickness">1</Thickness>
@@ -171,14 +233,18 @@
                             <Thickness x:Key="GridViewItemRevealBorderThemeThickness">1,1,1,1</Thickness>
                             <Thickness x:Key="ComboBoxItemRevealBorderThemeThickness">1,1,1,1</Thickness>
                             <x:Double x:Key="PersonPictureEllipseBadgeStrokeThickness">1</x:Double>
-                            <!-- Override system generated accent colors -->
+                            <!--  Override system generated accent colors  -->
                             <Color x:Key="SystemAccentColorLight1">#FF1D82CA</Color>
                             <Color x:Key="SystemAccentColorLight2">#FF3A95D4</Color>
                             <Color x:Key="SystemAccentColorLight3">#FF58A7DF</Color>
                             <Color x:Key="SystemAccentColorDark1">#FF0061B0</Color>
                             <Color x:Key="SystemAccentColorDark2">#FF0052A1</Color>
                             <Color x:Key="SystemAccentColorDark3">#FF004491</Color>
-                            <RevealBackgroundBrush x:Key="SystemControlHighlightListLowRevealBackgroundBrush" TargetTheme="Light" Color="{ThemeResource SystemRevealListMediumColor}" FallbackColor="{ StaticResource SystemListMediumColor}" />
+                            <RevealBackgroundBrush
+                                x:Key="SystemControlHighlightListLowRevealBackgroundBrush"
+                                FallbackColor="{StaticResource SystemListMediumColor}"
+                                TargetTheme="Light"
+                                Color="{ThemeResource SystemRevealListMediumColor}" />
                             <Color x:Key="RegionColor">#FFFFFFFF</Color>
                             <SolidColorBrush x:Key="RegionBrush" Color="{StaticResource RegionColor}" />
                         </ResourceDictionary>
@@ -191,7 +257,7 @@
                         <Setter Property="Margin" Value="0" />
                     </Style>
                     <SolidColorBrush x:Key="SnackbarForegroundBrush" Color="{ThemeResource HyperlinkButtonForeground}" />
-                    <!-- Compat -->
+                    <!--  Compat  -->
                     <StaticResource x:Key="RegionColor" ResourceKey="SystemColorWindowColor" />
                     <SolidColorBrush x:Key="RegionBrush" Color="{StaticResource RegionColor}" />
                 </ResourceDictionary>
@@ -202,12 +268,12 @@
                         <Setter Property="Margin" Value="0" />
                     </Style>
                     <SolidColorBrush x:Key="SnackbarForegroundBrush" Color="{ThemeResource SimpleBlueDark}" />
-                    <!-- Compat -->
+                    <!--  Compat  -->
                     <StaticResource x:Key="RegionColor" ResourceKey="SystemColorWindowColor" />
                     <SolidColorBrush x:Key="RegionBrush" Color="{StaticResource RegionColor}" />
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
-            <!-- App Colors -->
+            <!--  App Colors  -->
             <Color x:Key="SimpleBlue">#0070c0</Color>
             <Color x:Key="SimpleBlueDark">#00468f</Color>
             <Color x:Key="SimpleBlueLight">#599ef3</Color>
@@ -216,7 +282,7 @@
             <SolidColorBrush x:Key="SimpleBlueDarkBrush" Color="{StaticResource SimpleBlueDark}" />
             <SolidColorBrush x:Key="SimpleBlueLightBrush" Color="{StaticResource SimpleBlueLight}" />
             <SolidColorBrush x:Key="SimpleBlueMediumBrush" Color="{StaticResource SimpleBlueMedium}" />
-            <!-- App Colors End -->
+            <!--  App Colors End  -->
             <toolkitConverters:BoolNegationConverter x:Key="inverseBoolConverter" />
             <helpers:ColorToSolidColorBrushConverter x:Key="color2SolidColorConverter" />
             <helpers:ColorToSolidColorBrushConverter x:Key="solidColorBrush2ColorConverter" IsInverse="True" />
@@ -224,8 +290,14 @@
             <helpers:BooleanToGridLengthConverter x:Key="inverseBool2GridLengthConverter" IsInverse="True" />
             <toolkitConverters:BoolToVisibilityConverter x:Key="booleanToVisibilityConverter" />
             <toolkitConverters:StringVisibilityConverter x:Key="stringVisibilityConverter" />
-            <toolkitConverters:EmptyCollectionToObjectConverter x:Key="collectionBooleanConverter" EmptyValue="False" NotEmptyValue="True" />
-            <toolkitConverters:EmptyStringToObjectConverter x:Key="stringBooleanConverter" EmptyValue="False" NotEmptyValue="True" />
+            <toolkitConverters:EmptyCollectionToObjectConverter
+                x:Key="collectionBooleanConverter"
+                EmptyValue="False"
+                NotEmptyValue="True" />
+            <toolkitConverters:EmptyStringToObjectConverter
+                x:Key="stringBooleanConverter"
+                EmptyValue="False"
+                NotEmptyValue="True" />
             <toolkitConverters:CollectionVisibilityConverter x:Key="collectionVisibilityConverter" />
             <toolkitConverters:DoubleToVisibilityConverter x:Key="valueVisibilityConverter" GreaterThan="0" />
             <Style x:Key="CommandBarLabel" TargetType="TextBlock">
@@ -251,7 +323,10 @@
                 <Setter Property="HorizontalAlignment" Value="Center" />
                 <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
-            <Style x:Key="SettingTitleStyle" BasedOn="{StaticResource CommandBarLabel}" TargetType="TextBlock">
+            <Style
+                x:Key="SettingTitleStyle"
+                BasedOn="{StaticResource CommandBarLabel}"
+                TargetType="TextBlock">
                 <Setter Property="Padding" Value="0,10" />
                 <Setter Property="Margin" Value="0,5" />
                 <Setter Property="HorizontalAlignment" Value="Left" />
@@ -262,7 +337,10 @@
                 <Setter Property="Padding" Value="0,5" />
                 <Setter Property="FontWeight" Value="SemiBold" />
             </Style>
-            <Style x:Key="AccentButtonRevealStyle" TargetType="Button" BasedOn="{StaticResource ButtonRevealStyle}">
+            <Style
+                x:Key="AccentButtonRevealStyle"
+                BasedOn="{StaticResource ButtonRevealStyle}"
+                TargetType="Button">
                 <Setter Property="Background" Value="{ThemeResource SystemControlHighlightAccentRevealBackgroundBrush}" />
                 <Setter Property="Foreground" Value="{ThemeResource SystemControlBackgroundChromeWhiteBrush}" />
                 <Setter Property="BorderBrush" Value="{ThemeResource ButtonRevealBorderBrush}" />
@@ -278,7 +356,22 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
-                            <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" Win1809Present:CornerRadius="{TemplateBinding CornerRadius}">
+                            <Grid
+                                x:Name="RootGrid"
+                                Win1809Present:CornerRadius="{TemplateBinding CornerRadius}"
+                                Background="{TemplateBinding Background}">
+                                <ContentPresenter
+                                    x:Name="ContentPresenter"
+                                    Padding="{TemplateBinding Padding}"
+                                    HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    Win1809Present:CornerRadius="{TemplateBinding CornerRadius}"
+                                    AutomationProperties.AccessibilityView="Raw"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    Content="{TemplateBinding Content}"
+                                    ContentTemplate="{TemplateBinding ContentTemplate}"
+                                    ContentTransitions="{TemplateBinding ContentTransitions}" />
                                 <VisualStateManager.VisualStateGroups>
                                     <VisualStateGroup x:Name="CommonStates">
                                         <VisualState x:Name="Normal">
@@ -317,7 +410,6 @@
                                         </VisualState>
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
-                                <ContentPresenter x:Name="ContentPresenter" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Win1809Present:CornerRadius="{TemplateBinding CornerRadius}" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Padding="{TemplateBinding Padding}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw" />
                             </Grid>
                         </ControlTemplate>
                     </Setter.Value>
@@ -333,9 +425,19 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="ButtonBase">
-                            <Grid x:Name="RootGrid" Margin="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
-                                <Border x:Name="TextBorder" BorderThickness="2" BorderBrush="{ThemeResource SystemControlMSEdgeNotificationButtonBorderBrush}">
-                                    <ContentPresenter x:Name="Text" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                            <Grid
+                                x:Name="RootGrid"
+                                Margin="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}">
+                                <Border
+                                    x:Name="TextBorder"
+                                    BorderBrush="{ThemeResource SystemControlMSEdgeNotificationButtonBorderBrush}"
+                                    BorderThickness="2">
+                                    <ContentPresenter
+                                        x:Name="Text"
+                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                        Content="{TemplateBinding Content}" />
                                 </Border>
                                 <VisualStateManager.VisualStateGroups>
                                     <VisualStateGroup x:Name="CommonStates">
@@ -382,19 +484,54 @@
             </Style>
             <ControlTemplate x:Key="SnackbarTemplate" TargetType="toolkitControls:InAppNotification">
                 <Grid>
+                    <Grid
+                        x:Name="RootGrid"
+                        MaxWidth="{TemplateBinding MaxWidth}"
+                        Margin="{TemplateBinding Margin}"
+                        Padding="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        RenderTransformOrigin="{TemplateBinding RenderTransformOrigin}"
+                        Visibility="{TemplateBinding Visibility}">
+                        <Grid.RenderTransform>
+                            <CompositeTransform />
+                        </Grid.RenderTransform>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ContentPresenter
+                            HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Center"
+                            TextWrapping="WrapWholeWords" />
+                        <Button
+                            x:Name="PART_DismissButton"
+                            Grid.Column="1"
+                            Margin="0,0,0,0"
+                            AutomationProperties.Name="Dismiss"
+                            Content="&#xE894;"
+                            FontFamily="Segoe MDL2 Assets"
+                            FontSize="16"
+                            Style="{StaticResource DismissTextBlockButtonStyle}">
+                            <Button.RenderTransform>
+                                <TranslateTransform x:Name="DismissButtonTransform" X="18" />
+                            </Button.RenderTransform>
+                        </Button>
+                    </Grid>
                     <VisualStateManager.VisualStateGroups>
                         <VisualStateGroup x:Name="State">
                             <VisualState x:Name="Collapsed">
                                 <Storyboard>
                                     <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)">
                                         <EasingDoubleKeyFrame KeyTime="0" Value="0" />
-                                        <EasingDoubleKeyFrame toolkitControls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}"
-                                                              Value="{Binding HorizontalOffset, RelativeSource={RelativeSource TemplatedParent}}" />
+                                        <EasingDoubleKeyFrame toolkitControls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}" Value="{Binding HorizontalOffset, RelativeSource={RelativeSource TemplatedParent}}" />
                                     </DoubleAnimationUsingKeyFrames>
                                     <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
                                         <EasingDoubleKeyFrame KeyTime="0" Value="0" />
-                                        <EasingDoubleKeyFrame toolkitControls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}"
-                                                              Value="{Binding VerticalOffset, RelativeSource={RelativeSource TemplatedParent}}" />
+                                        <EasingDoubleKeyFrame toolkitControls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}" Value="{Binding VerticalOffset, RelativeSource={RelativeSource TemplatedParent}}" />
                                     </DoubleAnimationUsingKeyFrames>
                                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="(UIElement.Visibility)">
                                         <DiscreteObjectKeyFrame KeyTime="0">
@@ -424,24 +561,12 @@
                             </VisualState>
                         </VisualStateGroup>
                     </VisualStateManager.VisualStateGroups>
-                    <Grid x:Name="RootGrid" RenderTransformOrigin="{TemplateBinding RenderTransformOrigin}" Margin="{TemplateBinding Margin}" Padding="{TemplateBinding Padding}" MaxWidth="{TemplateBinding MaxWidth}" Visibility="{TemplateBinding Visibility}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                        <Grid.RenderTransform>
-                            <CompositeTransform />
-                        </Grid.RenderTransform>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalAlignment}" HorizontalContentAlignment="Stretch" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" VerticalContentAlignment="Center" TextWrapping="WrapWholeWords" />
-                        <Button x:Name="PART_DismissButton" Grid.Column="1" Margin="0,0,0,0" FontSize="16" Style="{StaticResource DismissTextBlockButtonStyle}" Content="&#xE894;" FontFamily="Segoe MDL2 Assets" AutomationProperties.Name="Dismiss">
-                            <Button.RenderTransform>
-                                <TranslateTransform x:Name="DismissButtonTransform" X="18" />
-                            </Button.RenderTransform>
-                        </Button>
-                    </Grid>
                 </Grid>
             </ControlTemplate>
-            <Style x:Key="SnackbarStyle" TargetType="toolkitControls:InAppNotification" BasedOn="{StaticResource MSEdgeNotificationStyle}">
+            <Style
+                x:Key="SnackbarStyle"
+                BasedOn="{StaticResource MSEdgeNotificationStyle}"
+                TargetType="toolkitControls:InAppNotification">
                 <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundChromeMediumBrush}" />
                 <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
                 <Setter Property="BorderBrush" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
@@ -468,82 +593,80 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="toolkitControls:ImageEx">
-                            <Grid Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                                <Image Name="PlaceholderImage"
-                               HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-                               VerticalAlignment="{TemplateBinding VerticalAlignment}"
-                               Opacity="1.0"
-                               Source="{TemplateBinding PlaceholderSource}"
-                               Stretch="{TemplateBinding PlaceholderStretch}" />
-                                <Image Name="Image"
-                               HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-                               VerticalAlignment="{TemplateBinding VerticalAlignment}"
-                               NineGrid="{TemplateBinding NineGrid}"
-                               Opacity="0.0"
-                               Stretch="{TemplateBinding Stretch}" />
-                                <ProgressRing Name="Progress"
-                                      Margin="16"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"
-                                      Background="Transparent"
-                                      Foreground="{TemplateBinding Foreground}"
-                                      Height="36" Width="36"
-                                      IsActive="False"
-                                      Visibility="Collapsed" />
+                            <Grid
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{TemplateBinding CornerRadius}">
+                                <Image
+                                    Name="PlaceholderImage"
+                                    HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                                    Opacity="1.0"
+                                    Source="{TemplateBinding PlaceholderSource}"
+                                    Stretch="{TemplateBinding PlaceholderStretch}" />
+                                <Image
+                                    Name="Image"
+                                    HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                                    NineGrid="{TemplateBinding NineGrid}"
+                                    Opacity="0.0"
+                                    Stretch="{TemplateBinding Stretch}" />
+                                <ProgressRing
+                                    Name="Progress"
+                                    Width="36"
+                                    Height="36"
+                                    Margin="16"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    Foreground="{TemplateBinding Foreground}"
+                                    IsActive="False"
+                                    Visibility="Collapsed" />
                                 <VisualStateManager.VisualStateGroups>
                                     <VisualStateGroup x:Name="CommonStates">
                                         <VisualState x:Name="Failed">
                                             <Storyboard>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Image"
-                                                                       Storyboard.TargetProperty="Opacity">
-                                                    <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="0" />
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Image" Storyboard.TargetProperty="Opacity">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
                                                 </ObjectAnimationUsingKeyFrames>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PlaceholderImage"
-                                                                       Storyboard.TargetProperty="Opacity">
-                                                    <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="1" />
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PlaceholderImage" Storyboard.TargetProperty="Opacity">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="1" />
                                                 </ObjectAnimationUsingKeyFrames>
                                             </Storyboard>
                                         </VisualState>
                                         <VisualState x:Name="Loading">
                                             <Storyboard>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Progress"
-                                                                       Storyboard.TargetProperty="Visibility">
-                                                    <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="Visible" />
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Progress" Storyboard.TargetProperty="Visibility">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="Visible" />
                                                 </ObjectAnimationUsingKeyFrames>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Progress"
-                                                                       Storyboard.TargetProperty="IsActive">
-                                                    <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="True" />
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Progress" Storyboard.TargetProperty="IsActive">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="True" />
                                                 </ObjectAnimationUsingKeyFrames>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Image"
-                                                                       Storyboard.TargetProperty="Opacity">
-                                                    <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="0" />
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Image" Storyboard.TargetProperty="Opacity">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="0" />
                                                 </ObjectAnimationUsingKeyFrames>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PlaceholderImage"
-                                                                       Storyboard.TargetProperty="Opacity">
-                                                    <DiscreteObjectKeyFrame KeyTime="0"
-                                                                    Value="1" />
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PlaceholderImage" Storyboard.TargetProperty="Opacity">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="1" />
                                                 </ObjectAnimationUsingKeyFrames>
                                             </Storyboard>
                                         </VisualState>
                                         <VisualState x:Name="Loaded">
                                             <Storyboard>
-                                                <DoubleAnimation AutoReverse="False"
-                                                         BeginTime="0"
-                                                         Storyboard.TargetName="Image"
-                                                         Storyboard.TargetProperty="Opacity"
-                                                         From="0"
-                                                         To="1" />
-                                                <DoubleAnimation AutoReverse="False"
-                                                         BeginTime="0"
-                                                         Storyboard.TargetName="PlaceholderImage"
-                                                         Storyboard.TargetProperty="Opacity"
-                                                         From="1"
-                                                         To="0" />
+                                                <DoubleAnimation
+                                                    AutoReverse="False"
+                                                    BeginTime="0"
+                                                    Storyboard.TargetName="Image"
+                                                    Storyboard.TargetProperty="Opacity"
+                                                    From="0"
+                                                    To="1" />
+                                                <DoubleAnimation
+                                                    AutoReverse="False"
+                                                    BeginTime="0"
+                                                    Storyboard.TargetName="PlaceholderImage"
+                                                    Storyboard.TargetProperty="Opacity"
+                                                    From="1"
+                                                    To="0" />
                                             </Storyboard>
                                         </VisualState>
                                         <VisualState x:Name="Unloaded" />
@@ -578,17 +701,19 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <ContentPresenter x:Name="HeaderPresenter"
-                                          x:DeferLoadStrategy="Lazy"
-                                          Content="{TemplateBinding Header}"
-                                          ContentTemplate="{TemplateBinding HeaderTemplate}"
-                                          Grid.ColumnSpan="2"
-                                          Style="{ThemeResource SectionLabel}" />
-                                <ContentPresenter x:Name="ContentPresenter"
-                                          Grid.ColumnSpan="2"
-                                          Grid.Row="1"
-                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                <ContentPresenter
+                                    x:Name="HeaderPresenter"
+                                    Grid.ColumnSpan="2"
+                                    x:DeferLoadStrategy="Lazy"
+                                    Content="{TemplateBinding Header}"
+                                    ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                    Style="{ThemeResource SectionLabel}" />
+                                <ContentPresenter
+                                    x:Name="ContentPresenter"
+                                    Grid.Row="1"
+                                    Grid.ColumnSpan="2"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
                                 <VisualStateManager.VisualStateGroups>
                                     <VisualStateGroup x:Name="OrientationStates">
                                         <VisualState x:Name="Vertical" />

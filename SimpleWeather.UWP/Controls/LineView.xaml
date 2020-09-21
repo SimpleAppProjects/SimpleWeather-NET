@@ -2,13 +2,13 @@
     x:Class="SimpleWeather.UWP.Controls.LineView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:SimpleWeather.UWP.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:win2d="using:Microsoft.Graphics.Canvas.UI.Xaml"
-    mc:Ignorable="d"
     d:DesignHeight="200"
-    d:DesignWidth="1000">
+    d:DesignWidth="1000"
+    mc:Ignorable="d">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -33,9 +33,16 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <ScrollViewer x:Name="InternalScrollViewer" VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Disabled"
-                  HorizontalScrollBarVisibility="Hidden" HorizontalScrollMode="Enabled">
-        <win2d:CanvasVirtualControl x:Name="Canvas" Background="Transparent" ClearColor="Transparent"
-                                    RegionsInvalidated="Canvas_RegionsInvalidated" />
+    <ScrollViewer
+        x:Name="InternalScrollViewer"
+        HorizontalScrollBarVisibility="Hidden"
+        HorizontalScrollMode="Enabled"
+        VerticalScrollBarVisibility="Disabled"
+        VerticalScrollMode="Disabled">
+        <win2d:CanvasVirtualControl
+            x:Name="Canvas"
+            Background="Transparent"
+            ClearColor="Transparent"
+            RegionsInvalidated="Canvas_RegionsInvalidated" />
     </ScrollViewer>
 </UserControl>

@@ -316,7 +316,7 @@ namespace SimpleWeather.UWP.Main
             }
             else
             {
-                CommandBarTitle.Text = "SimpleWeather";
+                CommandBarTitle.Text = App.ResLoader.GetString("AppName/Text");
                 CommandBar.Children.Clear();
             }
         }

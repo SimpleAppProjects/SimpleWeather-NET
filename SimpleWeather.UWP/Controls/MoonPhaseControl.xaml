@@ -2,12 +2,12 @@
     x:Class="SimpleWeather.UWP.Controls.MoonPhaseControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:SimpleWeather.UWP.Controls"
-    xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    MinWidth="450">
+    xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    MinWidth="450"
+    mc:Ignorable="d">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -21,11 +21,17 @@
                     <SolidColorBrush x:Key="MoonPhaseBrush" Color="Black" />
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
-            <Style x:Key="DisabledMoonStyle" BasedOn="{StaticResource WeatherIcon}" TargetType="TextBlock">
+            <Style
+                x:Key="DisabledMoonStyle"
+                BasedOn="{StaticResource WeatherIcon}"
+                TargetType="TextBlock">
                 <Setter Property="Opacity" Value="0.5" />
                 <Setter Property="Foreground" Value="{ThemeResource DisabledMoonPhaseBrush}" />
             </Style>
-            <Style x:Key="MoonStyle" BasedOn="{StaticResource WeatherIcon}" TargetType="TextBlock">
+            <Style
+                x:Key="MoonStyle"
+                BasedOn="{StaticResource WeatherIcon}"
+                TargetType="TextBlock">
                 <Setter Property="Opacity" Value="1" />
                 <Setter Property="Foreground" Value="{ThemeResource MoonPhaseBrush}" />
             </Style>
@@ -33,50 +39,79 @@
     </UserControl.Resources>
 
     <StackPanel>
-        <toolkitControls:HeaderedContentControl HorizontalContentAlignment="Stretch"
-                                                Style="{StaticResource SectionLabelStyle}">
+        <toolkitControls:HeaderedContentControl HorizontalContentAlignment="Stretch" Style="{StaticResource SectionLabelStyle}">
             <toolkitControls:HeaderedContentControl.Header>
-                <TextBlock Text="{x:Bind ViewModel.Title, Mode=OneWay, FallbackValue='Moon'}"
-                           FontSize="15" />
+                <TextBlock FontSize="15" Text="{x:Bind ViewModel.Title, Mode=OneWay, FallbackValue='Moon'}" />
             </toolkitControls:HeaderedContentControl.Header>
             <StackPanel Padding="15,0">
-                <StackPanel x:Name="MoonStack" Orientation="Horizontal" Padding="15,0" HorizontalAlignment="Center">
-                    <!-- New Moon -->
-                    <TextBlock Text="&#xf095;" Style="{ThemeResource DisabledMoonStyle}"
-                               FontSize="32" Padding="5" Width="50">
-                    </TextBlock>
-                    <!-- Waxing Crescent -->
-                    <TextBlock Text="&#xf098;" Style="{ThemeResource DisabledMoonStyle}"
-                               FontSize="32" Padding="5" Width="50">
-                    </TextBlock>
-                    <!-- First Qtr -->
-                    <TextBlock Text="&#xf09c;" Style="{ThemeResource DisabledMoonStyle}"
-                               FontSize="32" Padding="5" Width="50">
-                    </TextBlock>
-                    <!-- Waxing Gibbous -->
-                    <TextBlock Text="&#xf09f;" Style="{ThemeResource DisabledMoonStyle}"
-                               FontSize="32" Padding="5" Width="50">
-                    </TextBlock>
-                    <!-- Full Moon -->
-                    <TextBlock Text="&#xf0a3;" Style="{ThemeResource DisabledMoonStyle}"
-                               FontSize="32" Padding="5" Width="50">
-                    </TextBlock>
-                    <!-- Waning Gibbous -->
-                    <TextBlock Text="&#xf0a6;" Style="{ThemeResource DisabledMoonStyle}"
-                               FontSize="32" Padding="5" Width="50">
-                    </TextBlock>
-                    <!-- Third Qtr -->
-                    <TextBlock Text="&#xf0aa;" Style="{ThemeResource DisabledMoonStyle}"
-                               FontSize="32" Padding="5" Width="50">
-                    </TextBlock>
-                    <!-- Waning Crescent -->
-                    <TextBlock Text="&#xf0ad;" Style="{ThemeResource DisabledMoonStyle}"
-                               FontSize="32" Padding="5" Width="50">
-                    </TextBlock>
+                <StackPanel
+                    x:Name="MoonStack"
+                    Padding="15,0"
+                    HorizontalAlignment="Center"
+                    Orientation="Horizontal">
+                    <!--  New Moon  -->
+                    <TextBlock
+                        Width="50"
+                        Padding="5"
+                        FontSize="32"
+                        Style="{ThemeResource DisabledMoonStyle}"
+                        Text="&#xf095;" />
+                    <!--  Waxing Crescent  -->
+                    <TextBlock
+                        Width="50"
+                        Padding="5"
+                        FontSize="32"
+                        Style="{ThemeResource DisabledMoonStyle}"
+                        Text="&#xf098;" />
+                    <!--  First Qtr  -->
+                    <TextBlock
+                        Width="50"
+                        Padding="5"
+                        FontSize="32"
+                        Style="{ThemeResource DisabledMoonStyle}"
+                        Text="&#xf09c;" />
+                    <!--  Waxing Gibbous  -->
+                    <TextBlock
+                        Width="50"
+                        Padding="5"
+                        FontSize="32"
+                        Style="{ThemeResource DisabledMoonStyle}"
+                        Text="&#xf09f;" />
+                    <!--  Full Moon  -->
+                    <TextBlock
+                        Width="50"
+                        Padding="5"
+                        FontSize="32"
+                        Style="{ThemeResource DisabledMoonStyle}"
+                        Text="&#xf0a3;" />
+                    <!--  Waning Gibbous  -->
+                    <TextBlock
+                        Width="50"
+                        Padding="5"
+                        FontSize="32"
+                        Style="{ThemeResource DisabledMoonStyle}"
+                        Text="&#xf0a6;" />
+                    <!--  Third Qtr  -->
+                    <TextBlock
+                        Width="50"
+                        Padding="5"
+                        FontSize="32"
+                        Style="{ThemeResource DisabledMoonStyle}"
+                        Text="&#xf0aa;" />
+                    <!--  Waning Crescent  -->
+                    <TextBlock
+                        Width="50"
+                        Padding="5"
+                        FontSize="32"
+                        Style="{ThemeResource DisabledMoonStyle}"
+                        Text="&#xf0ad;" />
                 </StackPanel>
-                <TextBlock Text="{x:Bind ViewModel.MoonPhase.Value, Mode=OneWay}"
-                           FontSize="18" Padding="5"
-                           VerticalAlignment="Center" HorizontalAlignment="Center" />
+                <TextBlock
+                    Padding="5"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="18"
+                    Text="{x:Bind ViewModel.MoonPhase.Value, Mode=OneWay}" />
             </StackPanel>
         </toolkitControls:HeaderedContentControl>
     </StackPanel>

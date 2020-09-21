@@ -3,13 +3,13 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:SimpleWeather.Controls"
-    xmlns:localcontrols="using:SimpleWeather.UWP.Controls"
-    xmlns:helpers="using:SimpleWeather.UWP.Helpers"
-    xmlns:ui="using:Microsoft.UI.Xaml.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:SimpleWeather.UWP.Helpers"
+    xmlns:localcontrols="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    SizeChanged="StackControl_SizeChanged">
+    xmlns:ui="using:Microsoft.UI.Xaml.Controls"
+    SizeChanged="StackControl_SizeChanged"
+    mc:Ignorable="d">
 
     <helpers:CustomPage.Resources>
         <helpers:LocationTypeConverter x:Key="locTypeConverter" />
@@ -26,20 +26,26 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="GridViewHeaderItem">
-                        <StackPanel Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}">
-                            <ContentPresenter x:Name="ContentPresenter"
-                                              Margin="{TemplateBinding Padding}"
-                                              Content="{TemplateBinding Content}"
-                                              ContentTemplate="{TemplateBinding ContentTemplate}"
-                                              ContentTransitions="{TemplateBinding ContentTransitions}"
-                                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
-                            <Rectangle Stroke="{ThemeResource GridViewHeaderItemDividerStroke}"
-                                       StrokeThickness="0.5"
-                                       Height="1"
-                                       VerticalAlignment="Bottom"
-                                       HorizontalAlignment="Stretch"
-                                       Margin="0,8,0,0" />
+                        <StackPanel
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                            <ContentPresenter
+                                x:Name="ContentPresenter"
+                                Margin="{TemplateBinding Padding}"
+                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                ContentTransitions="{TemplateBinding ContentTransitions}" />
+                            <Rectangle
+                                Height="1"
+                                Margin="0,8,0,0"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Bottom"
+                                Stroke="{ThemeResource GridViewHeaderItemDividerStroke}"
+                                StrokeThickness="0.5" />
                         </StackPanel>
                     </ControlTemplate>
                 </Setter.Value>
@@ -48,16 +54,24 @@
     </helpers:CustomPage.Resources>
 
     <Grid Background="{ThemeResource RegionBrush}">
-        <GridView x:Name="LocationsPanel" SelectionMode="None" IsItemClickEnabled="True"
-                  ItemClick="LocationsPanel_ItemClick" IsSwipeEnabled="False"
-                  HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
-                  ContainerContentChanging="LocationsPanel_ContainerContentChanging">
+        <GridView
+            x:Name="LocationsPanel"
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Stretch"
+            ContainerContentChanging="LocationsPanel_ContainerContentChanging"
+            IsItemClickEnabled="True"
+            IsSwipeEnabled="False"
+            ItemClick="LocationsPanel_ItemClick"
+            SelectionMode="None">
             <ItemsControl.GroupStyle>
-                <GroupStyle HidesIfEmpty="True" HeaderContainerStyle="{ThemeResource LocationsPanelHeaderStyle}">
+                <GroupStyle HeaderContainerStyle="{ThemeResource LocationsPanelHeaderStyle}" HidesIfEmpty="True">
                     <GroupStyle.HeaderTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Path=LocationType, Converter={StaticResource locTypeConverter}}"
-                                       Margin="-8,4" FontWeight="SemiBold" FontSize="16" />
+                            <TextBlock
+                                Margin="-8,4"
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Text="{Binding Path=LocationType, Converter={StaticResource locTypeConverter}}" />
                         </DataTemplate>
                     </GroupStyle.HeaderTemplate>
                 </GroupStyle>
@@ -66,38 +80,58 @@
                 <SolidColorBrush x:Key="GridViewItemCheckBrush" Color="White" />
                 <ui:FontIconSource x:Key="DeleteIcon" Glyph="&#xE107;" />
                 <ui:SwipeItems x:Key="right" Mode="Execute">
-                    <ui:SwipeItem Text="Delete" IconSource="{StaticResource DeleteIcon}" Background="#FFDB4437" Invoked="SwipeItem_Invoked" />
+                    <ui:SwipeItem
+                        Background="#FFDB4437"
+                        IconSource="{StaticResource DeleteIcon}"
+                        Invoked="SwipeItem_Invoked"
+                        Text="Delete" />
                 </ui:SwipeItems>
             </ItemsControl.Resources>
             <ItemsControl.ItemTemplate>
                 <DataTemplate x:DataType="controls:LocationPanelViewModel">
-                    <ui:SwipeControl RightItems="{StaticResource right}" IsEnabled="{x:Bind EditMode, Mode=OneWay}">
+                    <ui:SwipeControl IsEnabled="{x:Bind EditMode, Mode=OneWay}" RightItems="{StaticResource right}">
                         <localcontrols:LocationPanel Holding="LocationPanel_Holding" />
                     </ui:SwipeControl>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <ItemsWrapGrid MaximumRowsOrColumns="4" Orientation="Horizontal" Margin="16,0" />
+                    <ItemsWrapGrid
+                        Margin="16,0"
+                        MaximumRowsOrColumns="4"
+                        Orientation="Horizontal" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemContainerStyle>
-                <Style TargetType="GridViewItem" BasedOn="{StaticResource GridViewItemRevealStyle}">
+                <Style BasedOn="{StaticResource GridViewItemRevealStyle}" TargetType="GridViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                 </Style>
             </ItemsControl.ItemContainerStyle>
             <GridView.Footer>
-                <Button x:Name="AddLocationsButton" HorizontalAlignment="Stretch" Click="AddLocationsButton_Click"
-                        HorizontalContentAlignment="Stretch" Margin="16,0,20,0" Style="{ThemeResource AccentButtonRevealStyle}">
+                <Button
+                    x:Name="AddLocationsButton"
+                    Margin="16,0,20,0"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch"
+                    Click="AddLocationsButton_Click"
+                    Style="{ThemeResource AccentButtonRevealStyle}">
                     <Grid Width="Auto" HorizontalAlignment="Center">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Viewbox Grid.Column="0">
-                            <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" Padding="2.5" />
+                            <TextBlock
+                                Padding="2.5"
+                                FontFamily="Segoe MDL2 Assets"
+                                Text="&#xE710;" />
                         </Viewbox>
-                        <TextBlock x:Uid="Label_AddLocation" Text="Add Location" VerticalAlignment="Center" Padding="5" Grid.Column="1" />
+                        <TextBlock
+                            x:Uid="Label_AddLocation"
+                            Grid.Column="1"
+                            Padding="5"
+                            VerticalAlignment="Center"
+                            Text="Add Location" />
                     </Grid>
                 </Button>
             </GridView.Footer>

@@ -2,12 +2,12 @@
     x:Class="SimpleWeather.UWP.Preferences.Settings_Credits"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:SimpleWeather.UWP.Preferences"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:SimpleWeather.UWP.Preferences"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
     Background="{ThemeResource RegionBrush}"
-    NavigationCacheMode="Enabled">
+    NavigationCacheMode="Enabled"
+    mc:Ignorable="d">
 
     <Page.Resources>
         <ResourceDictionary>
@@ -26,60 +26,88 @@
         </ResourceDictionary>
     </Page.Resources>
 
-    <ScrollViewer HorizontalScrollMode="Disabled" VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto" Padding="16,0">
+    <ScrollViewer
+        Padding="16,0"
+        HorizontalScrollMode="Disabled"
+        VerticalScrollBarVisibility="Auto"
+        VerticalScrollMode="Auto">
         <Grid>
             <StackPanel>
-                <TextBlock x:Uid="Pref_TitleProviders" Text="Weather Providers" Style="{StaticResource SettingTitleStyle}"/>
+                <TextBlock
+                    x:Uid="Pref_TitleProviders"
+                    Style="{StaticResource SettingTitleStyle}"
+                    Text="Weather Providers" />
                 <StackPanel Padding="10">
-                    <TextBlock Text="HERE Weather" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="HERE Weather" />
                     <RichTextBlock Padding="0,10">
                         <Paragraph>
                             The HERE Logo is a trademark or registered trademark of HERE Global B.V.
                         </Paragraph>
                     </RichTextBlock>
-                    <HyperlinkButton NavigateUri="https://here.com/en" Padding="0,10">
-                        <Image Source="{ThemeResource HereImageSrc}" Height="50" HorizontalAlignment="Left" />
+                    <HyperlinkButton Padding="0,10" NavigateUri="https://here.com/en">
+                        <Image
+                            Height="50"
+                            HorizontalAlignment="Left"
+                            Source="{ThemeResource HereImageSrc}" />
                     </HyperlinkButton>
                 </StackPanel>
                 <StackPanel Padding="10">
-                    <TextBlock Text="Yahoo Weather" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Yahoo Weather" />
                     <RichTextBlock Padding="0,10">
                         <Paragraph>
                             YAHOO! is a registered trademark of Yahoo! Inc. both in the United States and internationally.
                         </Paragraph>
                     </RichTextBlock>
-                    <HyperlinkButton NavigateUri="https://www.yahoo.com/?ilc=401" Padding="0,10">
-                        <Image Source="{ThemeResource YahooImageSrc}" Height="50" HorizontalAlignment="Left" />
+                    <HyperlinkButton Padding="0,10" NavigateUri="https://www.yahoo.com/?ilc=401">
+                        <Image
+                            Height="50"
+                            HorizontalAlignment="Left"
+                            Source="{ThemeResource YahooImageSrc}" />
                     </HyperlinkButton>
                 </StackPanel>
                 <StackPanel Padding="10">
-                    <TextBlock Text="MET Norway" Style="{StaticResource SubtitleTextBlockStyle}"/>
-                    <HyperlinkButton NavigateUri="https://www.met.no/en" Padding="0,10">
-                        <Image Source="../Assets/Providers/metno.png" Height="50" HorizontalAlignment="Left" />
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="MET Norway" />
+                    <HyperlinkButton Padding="0,10" NavigateUri="https://www.met.no/en">
+                        <Image
+                            Height="50"
+                            HorizontalAlignment="Left"
+                            Source="../Assets/Providers/metno.png" />
                     </HyperlinkButton>
                 </StackPanel>
                 <StackPanel Padding="10">
-                    <TextBlock Text="U.S. National Weather Service" Style="{StaticResource SubtitleTextBlockStyle}"/>
-                    <HyperlinkButton NavigateUri="http://www.weather.gov" Padding="0,10">
-                        <Image Source="../Assets/Providers/nws.png" Height="50" HorizontalAlignment="Left" />
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="U.S. National Weather Service" />
+                    <HyperlinkButton Padding="0,10" NavigateUri="http://www.weather.gov">
+                        <Image
+                            Height="50"
+                            HorizontalAlignment="Left"
+                            Source="../Assets/Providers/nws.png" />
                     </HyperlinkButton>
                 </StackPanel>
                 <StackPanel Padding="10">
-                    <TextBlock Text="OpenWeatherMap" Style="{StaticResource SubtitleTextBlockStyle}"/>
-                    <HyperlinkButton NavigateUri="http://openweathermap.org/" Padding="0,20">
-                        <Image Source="../Assets/Providers/openweathermap.png" Height="25" HorizontalAlignment="Left" />
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="OpenWeatherMap" />
+                    <HyperlinkButton Padding="0,20" NavigateUri="http://openweathermap.org/">
+                        <Image
+                            Height="25"
+                            HorizontalAlignment="Left"
+                            Source="../Assets/Providers/openweathermap.png" />
                     </HyperlinkButton>
                 </StackPanel>
                 <StackPanel Padding="10">
-                    <TextBlock Text="Bing Maps" Style="{StaticResource SubtitleTextBlockStyle}"/>
-                    <HyperlinkButton NavigateUri="https://www.bing.com/maps" Padding="0,10">
-                        <Image Source="{ThemeResource BingImageSrc}" Height="50" HorizontalAlignment="Left" />
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Bing Maps" />
+                    <HyperlinkButton Padding="0,10" NavigateUri="https://www.bing.com/maps">
+                        <Image
+                            Height="50"
+                            HorizontalAlignment="Left"
+                            Source="{ThemeResource BingImageSrc}" />
                     </HyperlinkButton>
                 </StackPanel>
                 <StackPanel Padding="10">
-                    <TextBlock Text="World Air Quality Index Project" Style="{StaticResource SubtitleTextBlockStyle}"/>
-                    <HyperlinkButton NavigateUri="https://aqicn.org/" Padding="0,10">
-                        <Image Source="../Assets/Providers/waqi.png" Height="50" HorizontalAlignment="Left" />
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="World Air Quality Index Project" />
+                    <HyperlinkButton Padding="0,10" NavigateUri="https://aqicn.org/">
+                        <Image
+                            Height="50"
+                            HorizontalAlignment="Left"
+                            Source="../Assets/Providers/waqi.png" />
                     </HyperlinkButton>
                 </StackPanel>
             </StackPanel>

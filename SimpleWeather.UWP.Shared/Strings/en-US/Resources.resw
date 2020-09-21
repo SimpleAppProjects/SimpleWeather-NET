@@ -126,7 +126,7 @@
   <data name="API_Label.Text" xml:space="preserve">
     <value>Weather Provider</value>
   </data>
-  <data name="AppName" xml:space="preserve">
+  <data name="AppName.Text" xml:space="preserve">
     <value>SimpleWeather</value>
   </data>
   <data name="Credits.Content" xml:space="preserve">
@@ -509,5 +509,20 @@
   </data>
   <data name="Label_Series" xml:space="preserve">
     <value>Series</value>
+  </data>
+  <data name="Attrib_Prefix.Text" xml:space="preserve">
+    <value>Photo by</value>
+  </data>
+  <data name="Label_Back.Label" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="Label_Next.Label" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="WelcomePrompt.Text" xml:space="preserve">
+    <value>Welcome to SimpleWeather</value>
+  </data>
+  <data name="WelcomeSubtitle.Text" xml:space="preserve">
+    <value>Just a simple weather app</value>
   </data>
 </root>

@@ -2,25 +2,46 @@
     x:Class="SimpleWeather.UWP.Setup.SetupWelcomePage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:SimpleWeather.UWP.Setup"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:SimpleWeather.UWP.Setup"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="Transparent">
+    Background="Transparent"
+    mc:Ignorable="d">
 
     <Grid>
-        <RelativePanel VerticalAlignment="Center" HorizontalAlignment="Center">
-            <Viewbox Name="AppLogo" Height="125" Margin="0,25,0,0"
-                 RelativePanel.Above="Spacer" RelativePanel.AlignHorizontalCenterWithPanel="True">
+        <RelativePanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Viewbox
+                Name="AppLogo"
+                Height="125"
+                Margin="0,25,0,0"
+                RelativePanel.Above="Spacer"
+                RelativePanel.AlignHorizontalCenterWithPanel="True">
                 <Image Source="../Assets/AppLogo.png" Stretch="None" />
             </Viewbox>
-            <Rectangle x:Name="Spacer" Height="0" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" />
-            <TextBlock x:Name="WelcomeText" Text="Welcome to SimpleWeather" Padding="4"
-                   FontSize="24" FontWeight="SemiBold" Foreground="#FFFFFFFF"
-                   RelativePanel.Below="AppLogo" RelativePanel.AlignHorizontalCenterWithPanel="True" />
-            <TextBlock x:Name="WelcomeSubText" Text="Just a simple weather app" Padding="4"
-                   FontSize="18" Foreground="#83FFFFFF"
-                   RelativePanel.Below="WelcomeText" RelativePanel.AlignHorizontalCenterWithPanel="True" />
+            <Rectangle
+                x:Name="Spacer"
+                Height="0"
+                RelativePanel.AlignHorizontalCenterWithPanel="True"
+                RelativePanel.AlignVerticalCenterWithPanel="True" />
+            <TextBlock
+                x:Name="WelcomeText"
+                x:Uid="WelcomePrompt"
+                Padding="4"
+                FontSize="24"
+                FontWeight="SemiBold"
+                Foreground="#FFFFFFFF"
+                RelativePanel.AlignHorizontalCenterWithPanel="True"
+                RelativePanel.Below="AppLogo"
+                Text="Welcome to SimpleWeather" />
+            <TextBlock
+                x:Name="WelcomeSubText"
+                x:Uid="WelcomeSubtitle"
+                Padding="4"
+                FontSize="18"
+                Foreground="#83FFFFFF"
+                RelativePanel.AlignHorizontalCenterWithPanel="True"
+                RelativePanel.Below="WelcomeText"
+                Text="Just a simple weather app" />
         </RelativePanel>
     </Grid>
 </Page>
