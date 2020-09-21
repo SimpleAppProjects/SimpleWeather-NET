@@ -129,18 +129,29 @@ namespace SimpleWeather.HERE
 
                                 weather.weather_alerts = new List<WeatherAlert>(numOfAlerts);
 
+                                float lat = weather.location.latitude.Value;
+                                float lon = weather.location.longitude.Value;
+
                                 if (root.nwsAlerts.watch != null)
                                 {
                                     foreach (var watchItem in root.nwsAlerts.watch)
                                     {
-                                        weather.weather_alerts.Add(new WeatherAlert(watchItem));
+                                        // Add watch item if location is within 20km of the center of the alert zone
+                                        if (ConversionMethods.CalculateHaversine(lat, lon, watchItem.latitude, watchItem.longitude) < 20000)
+                                        {
+                                            weather.weather_alerts.Add(new WeatherAlert(watchItem));
+                                        }
                                     }
                                 }
                                 if (root.nwsAlerts.warning != null)
                                 {
                                     foreach (var warningItem in root.nwsAlerts.warning)
                                     {
-                                        weather.weather_alerts.Add(new WeatherAlert(warningItem));
+                                        // Add warning item if location is within 25km of the center of the alert zone
+                                        if (ConversionMethods.CalculateHaversine(lat, lon, warningItem.latitude, warningItem.longitude) < 25000)
+                                        {
+                                            weather.weather_alerts.Add(new WeatherAlert(warningItem));
+                                        }
                                     }
                                 }
                             }
