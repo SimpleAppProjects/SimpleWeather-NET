@@ -129,13 +129,19 @@ namespace SimpleWeather.HERE
 
                                 weather.weather_alerts = new List<WeatherAlert>(numOfAlerts);
 
-                                foreach (var watchItem in root.nwsAlerts.watch)
+                                if (root.nwsAlerts.watch != null)
                                 {
-                                    weather.weather_alerts.Add(new WeatherAlert(watchItem));
+                                    foreach (var watchItem in root.nwsAlerts.watch)
+                                    {
+                                        weather.weather_alerts.Add(new WeatherAlert(watchItem));
+                                    }
                                 }
-                                foreach (var warningItem in root.nwsAlerts.warning)
+                                if (root.nwsAlerts.warning != null)
                                 {
-                                    weather.weather_alerts.Add(new WeatherAlert(warningItem));
+                                    foreach (var warningItem in root.nwsAlerts.warning)
+                                    {
+                                        weather.weather_alerts.Add(new WeatherAlert(warningItem));
+                                    }
                                 }
                             }
                         }
