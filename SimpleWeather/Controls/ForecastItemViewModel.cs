@@ -78,16 +78,16 @@ namespace SimpleWeather.Controls
                 if (forecast.extras.qpf_rain_in.HasValue && forecast.extras.qpf_rain_in >= 0)
                 {
                     DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPRain,
-                        Settings.IsFahrenheit ?
-                        forecast.extras.qpf_rain_in.Value.ToString("0.00", culture) + " in" :
-                        forecast.extras.qpf_rain_mm.Value.ToString("0.00", culture) + " mm"));
+                        String.Format(culture, "{0:0.00} {1}",
+                            Settings.IsFahrenheit ? forecast.extras.qpf_rain_in.Value : forecast.extras.qpf_rain_mm.Value,
+                            WeatherUtils.GetPrecipitationUnit(false))));
                 }
                 if (forecast.extras.qpf_snow_in.HasValue && forecast.extras.qpf_snow_in >= 0)
                 {
                     DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPSnow,
-                        Settings.IsFahrenheit ?
-                        forecast.extras.qpf_snow_in.Value.ToString("0.00", culture) + " in" :
-                        forecast.extras.qpf_snow_cm.Value.ToString("0.00", culture) + " cm"));
+                        String.Format(culture, "{0:0.00} {1}",
+                            Settings.IsFahrenheit ? forecast.extras.qpf_snow_in.Value : forecast.extras.qpf_snow_cm.Value,
+                            WeatherUtils.GetPrecipitationUnit(true))));
                 }
                 if (forecast.extras.cloudiness.HasValue && forecast.extras.cloudiness >= 0)
                     DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPCloudiness, forecast.extras.cloudiness.Value + "%"));
@@ -118,7 +118,7 @@ namespace SimpleWeather.Controls
                 if (forecast.extras.pressure_in.HasValue)
                 {
                     var pressureVal = Settings.IsFahrenheit ? forecast.extras.pressure_in.Value : forecast.extras.pressure_mb.Value;
-                    var pressureUnit = Settings.IsFahrenheit ? "in" : "mb";
+                    var pressureUnit = WeatherUtils.PressureUnit;
 
                     DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.Pressure,
                         String.Format(culture, "{0:0.00} {1}", pressureVal, pressureUnit)));
@@ -128,7 +128,7 @@ namespace SimpleWeather.Controls
                     forecast.extras.wind_degrees.HasValue && forecast.extras.wind_degrees >= 0)
                 {
                     var speedVal = Settings.IsFahrenheit ? Math.Round(forecast.extras.wind_mph.Value) : Math.Round(forecast.extras.wind_kph.Value);
-                    var speedUnit = Settings.IsFahrenheit ? "mph" : "kph";
+                    var speedUnit = WeatherUtils.SpeedUnit;
 
                     WindSpeed = String.Format(culture, "{0} {1}", speedVal, speedUnit);
 
@@ -142,7 +142,7 @@ namespace SimpleWeather.Controls
                 if (forecast.extras.windgust_mph.HasValue && forecast.extras.windgust_kph.HasValue && forecast.extras.windgust_mph >= 0)
                 {
                     var speedVal = Settings.IsFahrenheit ? Math.Round(forecast.extras.windgust_mph.Value) : Math.Round(forecast.extras.windgust_kph.Value);
-                    var speedUnit = Settings.IsFahrenheit ? "mph" : "kph";
+                    var speedUnit = WeatherUtils.SpeedUnit;
 
                     var windGustSpeed = String.Format(culture, "{0} {1}", speedVal, speedUnit);
                     DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.WindGust, windGustSpeed));
@@ -151,7 +151,7 @@ namespace SimpleWeather.Controls
                 if (forecast.extras.visibility_mi.HasValue && forecast.extras.visibility_mi >= 0)
                 {
                     var visibilityVal = Settings.IsFahrenheit ? forecast.extras.visibility_mi.Value : forecast.extras.visibility_km.Value;
-                    var visibilityUnit = Settings.IsFahrenheit ? "mi" : "km";
+                    var visibilityUnit = WeatherUtils.DistanceUnit;
 
                     DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.Visibility,
                            String.Format(culture, "{0:0.00} {1}", visibilityVal, visibilityUnit)));

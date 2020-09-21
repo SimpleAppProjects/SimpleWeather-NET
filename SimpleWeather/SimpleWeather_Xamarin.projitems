@@ -87,8 +87,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\SimpleObservableList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\StringUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.Beaufort.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.Units.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.WindDirection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.Coordinate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.ErrorStatus.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.Images.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IAirQualityProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IAstroDataProvider.cs" />

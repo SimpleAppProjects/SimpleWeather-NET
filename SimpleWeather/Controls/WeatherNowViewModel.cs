@@ -105,12 +105,12 @@ namespace SimpleWeather.Controls
             UpdateView(weather);
         }
 
-        private void Forecasts_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void Forecasts_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             OnPropertyChanged(nameof(Forecasts));
         }
 
-        private void HourlyForecasts_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void HourlyForecasts_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             OnPropertyChanged(nameof(HourlyForecasts));
         }
@@ -209,16 +209,16 @@ namespace SimpleWeather.Controls
                 if (weather.precipitation.qpf_rain_in.HasValue && weather.precipitation.qpf_rain_in >= 0)
                 {
                     WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPRain,
-                        Settings.IsFahrenheit ?
-                        weather.precipitation.qpf_rain_in.Value.ToString("0.00", culture) + " in" :
-                        weather.precipitation.qpf_rain_mm.Value.ToString("0.00", culture) + " mm"));
+                        String.Format(culture, "{0:0.00} {1}",
+                            Settings.IsFahrenheit ? weather.precipitation.qpf_rain_in.Value : weather.precipitation.qpf_rain_mm.Value,
+                            WeatherUtils.GetPrecipitationUnit(false))));
                 }
                 if (weather.precipitation.qpf_snow_in.HasValue && weather.precipitation.qpf_snow_in >= 0)
                 {
                     WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPSnow,
-                        Settings.IsFahrenheit ?
-                        weather.precipitation.qpf_snow_in.Value.ToString("0.00", culture) + " in" :
-                        weather.precipitation.qpf_snow_cm.Value.ToString("0.00", culture) + " cm"));
+                        String.Format(culture, "{0:0.00} {1}",
+                            Settings.IsFahrenheit ? weather.precipitation.qpf_snow_in.Value : weather.precipitation.qpf_snow_cm.Value,
+                            WeatherUtils.GetPrecipitationUnit(true))));
                 }
                 if (weather.precipitation.cloudiness.HasValue && weather.precipitation.cloudiness >= 0)
                     WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPCloudiness, weather.precipitation.cloudiness.Value + "%"));
@@ -228,7 +228,7 @@ namespace SimpleWeather.Controls
             if (weather.atmosphere.pressure_mb.HasValue)
             {
                 var pressureVal = Settings.IsFahrenheit ? weather.atmosphere.pressure_in : weather.atmosphere.pressure_mb;
-                var pressureUnit = Settings.IsFahrenheit ? "in" : "mb";
+                var pressureUnit = WeatherUtils.PressureUnit;
 
                 WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Pressure,
                     String.Format(culture, "{0} {1:0.00} {2}",
@@ -254,7 +254,7 @@ namespace SimpleWeather.Controls
             if (weather.atmosphere.visibility_mi.HasValue && weather.atmosphere.visibility_mi >= 0)
             {
                 var visibilityVal = Settings.IsFahrenheit ? weather.atmosphere.visibility_mi : weather.atmosphere.visibility_km;
-                var visibilityUnit = Settings.IsFahrenheit ? "mi" : "km";
+                var visibilityUnit = WeatherUtils.DistanceUnit;
 
                 WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Visibility,
                     String.Format(culture, "{0:0.00} {1}", visibilityVal, visibilityUnit)));
@@ -275,7 +275,7 @@ namespace SimpleWeather.Controls
                 weather.condition.wind_degrees.HasValue && weather.condition.wind_degrees >= 0)
             {
                 var speedVal = Settings.IsFahrenheit ? Math.Round(weather.condition.wind_mph.Value) : Math.Round(weather.condition.wind_kph.Value);
-                var speedUnit = Settings.IsFahrenheit ? "mph" : "kph";
+                var speedUnit = WeatherUtils.SpeedUnit;
 
                 WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.WindSpeed,
                    String.Format(culture, "{0} {1}, {2}", speedVal, speedUnit, WeatherUtils.GetWindDirection(weather.condition.wind_degrees.Value)),
@@ -285,7 +285,7 @@ namespace SimpleWeather.Controls
             if (weather.condition.windgust_mph.HasValue && (weather.condition.windgust_mph != weather.condition.windgust_kph))
             {
                 var speedVal = Settings.IsFahrenheit ? Math.Round(weather.condition.windgust_mph.Value) : Math.Round(weather.condition.windgust_kph.Value);
-                var speedUnit = Settings.IsFahrenheit ? "mph" : "kph";
+                var speedUnit = WeatherUtils.SpeedUnit;
 
                 WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.WindGust,
                     String.Format(culture, "{0} {1}", speedVal, speedUnit)));
