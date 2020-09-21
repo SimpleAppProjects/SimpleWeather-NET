@@ -108,11 +108,14 @@ namespace SimpleWeather.WeatherData
         {
             return Task.Run(async () =>
             {
-                if (wm.SupportsAlerts && wm.NeedsExternalAlertData)
+                if (wm.SupportsAlerts)
                 {
-                    if (!loadSavedData)
+                    if (wm.NeedsExternalAlertData)
                     {
-                        weatherAlerts = await wm.GetAlerts(location);
+                        if (!loadSavedData)
+                        {
+                            weatherAlerts = await wm.GetAlerts(location);
+                        }
                     }
 
                     if (weatherAlerts == null)
