@@ -166,8 +166,9 @@ namespace SimpleWeather.Utils
         {
             if (!localSettings.Values.ContainsKey(KEY_REFRESHINTERVAL) || localSettings.Values[KEY_REFRESHINTERVAL] == null)
             {
-                SetRefreshInterval(int.Parse(DEFAULT_UPDATE_INTERVAL));
-                return int.Parse(DEFAULT_UPDATE_INTERVAL);
+                var interval = int.Parse(DEFAULT_UPDATE_INTERVAL, CultureInfo.InvariantCulture);
+                SetRefreshInterval(interval);
+                return interval;
             }
             else
                 return (int)localSettings.Values[KEY_REFRESHINTERVAL];
@@ -182,7 +183,7 @@ namespace SimpleWeather.Utils
         {
             if (localSettings.Values.ContainsKey(KEY_UPDATETIME) && localSettings.Values[KEY_UPDATETIME] != null)
             {
-                if (DateTime.TryParse(localSettings.Values[KEY_UPDATETIME] as string, out DateTime result))
+                if (DateTime.TryParse(localSettings.Values[KEY_UPDATETIME] as string, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result))
                 {
                     return result;
                 }

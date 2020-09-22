@@ -35,7 +35,7 @@ namespace SimpleWeather.WeatherData
                 if (DateTimeOffset.TryParseExact(updatetimeblob, DateTimeUtils.DATETIMEOFFSET_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out DateTimeOffset result))
                     return result;
                 else
-                    return new DateTimeOffset(long.Parse(updatetimeblob), TimeSpan.Zero).ToOffset(location.tz_offset);
+                    return new DateTimeOffset(long.Parse(updatetimeblob, CultureInfo.InvariantCulture), TimeSpan.Zero).ToOffset(location.tz_offset);
             }
             set { updatetimeblob = value.ToDateTimeOffsetFormat(); }
         }
@@ -113,7 +113,7 @@ namespace SimpleWeather.WeatherData
                     case nameof(update_time):
                         bool parsed = DateTimeOffset.TryParseExact(reader.ReadString(), DateTimeUtils.DATETIMEOFFSET_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out DateTimeOffset result);
                         if (!parsed) // If we can't parse as DateTimeOffset try DateTime (data could be old)
-                            result = DateTime.Parse(reader.ReadString());
+                            result = DateTime.Parse(reader.ReadString(), CultureInfo.InvariantCulture);
                         else
                         {
                             // DateTimeOffset date stored in SQLite.NET doesn't store offset
@@ -504,15 +504,15 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     case nameof(latitude):
-                        this.latitude = float.Parse(reader.ReadString());
+                        this.latitude = float.Parse(reader.ReadString(), CultureInfo.InvariantCulture);
                         break;
 
                     case nameof(longitude):
-                        this.longitude = float.Parse(reader.ReadString());
+                        this.longitude = float.Parse(reader.ReadString(), CultureInfo.InvariantCulture);
                         break;
 
                     case nameof(tz_offset):
-                        this.tz_offset = TimeSpan.Parse(reader.ReadString());
+                        this.tz_offset = TimeSpan.Parse(reader.ReadString(), CultureInfo.InvariantCulture);
                         break;
 
                     case nameof(tz_short):
@@ -648,22 +648,22 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     case nameof(high_f):
-                        if (float.TryParse(reader.ReadString(), out float highF))
+                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float highF))
                             this.high_f = highF;
                         break;
 
                     case nameof(high_c):
-                        if (float.TryParse(reader.ReadString(), out float highC))
+                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float highC))
                             this.high_c = highC;
                         break;
 
                     case nameof(low_f):
-                        if (float.TryParse(reader.ReadString(), out float lowF))
+                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float lowF))
                             this.low_f = lowF;
                         break;
 
                     case nameof(low_c):
-                        if (float.TryParse(reader.ReadString(), out float lowC))
+                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float lowC))
                             this.low_c = lowC;
                         break;
 
@@ -833,12 +833,12 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     case nameof(high_f):
-                        if (float.TryParse(reader.ReadString(), out float highF))
+                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float highF))
                             this.high_f = highF;
                         break;
 
                     case nameof(high_c):
-                        if (float.TryParse(reader.ReadString(), out float highC))
+                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float highC))
                             this.high_c = highC;
                         break;
 
@@ -1172,17 +1172,17 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     case nameof(humidity):
-                        if (int.TryParse(reader.ReadString(), out int Humidity))
+                        if (int.TryParse(reader.ReadString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int Humidity))
                             this.humidity = Humidity;
                         break;
 
                     case nameof(dewpoint_f):
-                        if (float.TryParse(reader.ReadString(), out float dewpointF))
+                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float dewpointF))
                             this.dewpoint_f = dewpointF;
                         break;
 
                     case nameof(dewpoint_c):
-                        if (float.TryParse(reader.ReadString(), out float dewpointC))
+                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float dewpointC))
                             this.dewpoint_c = dewpointC;
                         break;
 
@@ -1191,12 +1191,12 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     case nameof(pop):
-                        if (int.TryParse(reader.ReadString(), out int POP))
+                        if (int.TryParse(reader.ReadString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int POP))
                             this.pop = POP;
                         break;
 
                     case nameof(cloudiness):
-                        if (int.TryParse(reader.ReadString(), out int Clouds))
+                        if (int.TryParse(reader.ReadString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int Clouds))
                             this.cloudiness = Clouds;
                         break;
 
@@ -1217,12 +1217,12 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     case nameof(pressure_mb):
-                        if (float.TryParse(reader.ReadString(), out float pressureMB))
+                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float pressureMB))
                             this.pressure_mb = pressureMB;
                         break;
 
                     case nameof(pressure_in):
-                        if (float.TryParse(reader.ReadString(), out float pressureIN))
+                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float pressureIN))
                             this.pressure_in = pressureIN;
                         break;
 
@@ -1239,12 +1239,12 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     case nameof(visibility_mi):
-                        if (float.TryParse(reader.ReadString(), out float visibilityMI))
+                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float visibilityMI))
                             this.visibility_mi = visibilityMI;
                         break;
 
                     case nameof(visibility_km):
-                        if (float.TryParse(reader.ReadString(), out float visibilityKM))
+                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float visibilityKM))
                             this.visibility_km = visibilityKM;
                         break;
 
@@ -1788,17 +1788,17 @@ namespace SimpleWeather.WeatherData
                 switch (property)
                 {
                     case nameof(humidity):
-                        if (int.TryParse(reader.ReadString(), out int Humidity))
+                        if (int.TryParse(reader.ReadString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int Humidity))
                             this.humidity = Humidity;
                         break;
 
                     case nameof(pressure_mb):
-                        if (float.TryParse(reader.ReadString(), out float pressureMB))
+                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float pressureMB))
                             this.pressure_mb = pressureMB;
                         break;
 
                     case nameof(pressure_in):
-                        if (float.TryParse(reader.ReadString(), out float pressureIN))
+                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float pressureIN))
                             this.pressure_in = pressureIN;
                         break;
 
@@ -1807,22 +1807,22 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     case nameof(visibility_mi):
-                        if (float.TryParse(reader.ReadString(), out float visibilityMI))
+                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float visibilityMI))
                             this.visibility_mi = visibilityMI;
                         break;
 
                     case nameof(visibility_km):
-                        if (float.TryParse(reader.ReadString(), out float visibilityKM))
+                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float visibilityKM))
                             this.visibility_km = visibilityKM;
                         break;
 
                     case nameof(dewpoint_f):
-                        if (float.TryParse(reader.ReadString(), out float dewpointF))
+                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float dewpointF))
                             this.dewpoint_f = dewpointF;
                         break;
 
                     case nameof(dewpoint_c):
-                        if (float.TryParse(reader.ReadString(), out float dewpointC))
+                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float dewpointC))
                             this.dewpoint_c = dewpointC;
                         break;
 
@@ -2089,12 +2089,12 @@ namespace SimpleWeather.WeatherData
                 switch (property)
                 {
                     case nameof(pop):
-                        if (int.TryParse(reader.ReadString(), out int POP))
+                        if (int.TryParse(reader.ReadString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int POP))
                             this.pop = POP;
                         break;
 
                     case nameof(cloudiness):
-                        if (int.TryParse(reader.ReadString(), out int Clouds))
+                        if (int.TryParse(reader.ReadString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int Clouds))
                             this.cloudiness = Clouds;
                         break;
 
@@ -2602,7 +2602,7 @@ namespace SimpleWeather.WeatherData
                 if (DateTimeOffset.TryParseExact(dateblob, "yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out DateTimeOffset result))
                     return result;
                 else
-                    return DateTimeOffset.Parse(dateblob);
+                    return DateTimeOffset.Parse(dateblob, CultureInfo.InvariantCulture);
             }
             set { dateblob = value.ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture); }
         }

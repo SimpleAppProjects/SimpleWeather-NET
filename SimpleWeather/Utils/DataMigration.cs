@@ -3,6 +3,7 @@ using SimpleWeather.WeatherData;
 using SQLite;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -86,9 +87,9 @@ namespace SimpleWeather.Utils
             return Task.Run(async () =>
             {
                 var PackageVersion = Windows.ApplicationModel.Package.Current.Id.Version;
-                var version = string.Format("{0}{1}{2}{3}",
+                var version = string.Format(CultureInfo.InvariantCulture, "{0}{1}{2}{3}",
                     PackageVersion.Major, PackageVersion.Minor, PackageVersion.Build, PackageVersion.Revision);
-                var CurrentVersionCode = int.Parse(version);
+                var CurrentVersionCode = int.Parse(version, CultureInfo.InvariantCulture);
 
                 if (Settings.WeatherLoaded && Settings.VersionCode < CurrentVersionCode)
                 {

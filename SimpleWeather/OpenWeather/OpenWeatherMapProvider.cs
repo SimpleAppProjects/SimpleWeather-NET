@@ -97,7 +97,7 @@ namespace SimpleWeather.OpenWeather
                 string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
                 string query;
-                if (int.TryParse(location_query, out int id))
+                if (int.TryParse(location_query, NumberStyles.Integer, CultureInfo.InvariantCulture, out int id))
                 {
                     query = string.Format("id={0}", id);
                 }

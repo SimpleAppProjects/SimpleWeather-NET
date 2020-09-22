@@ -116,14 +116,14 @@ namespace SimpleWeather.WeatherData
                     case nameof(Date):
                         bool parsed = DateTimeOffset.TryParseExact(reader.ReadString(), DateTimeUtils.DATETIMEOFFSET_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset result);
                         if (!parsed) // If we can't parse try without format
-                            result = DateTimeOffset.Parse(reader.ReadString());
+                            result = DateTimeOffset.Parse(reader.ReadString(), CultureInfo.InvariantCulture);
                         this.Date = result;
                         break;
 
                     case nameof(ExpiresDate):
                         parsed = DateTimeOffset.TryParseExact(reader.ReadString(), DateTimeUtils.DATETIMEOFFSET_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.None, out result);
                         if (!parsed) // If we can't parse try without format
-                            result = DateTimeOffset.Parse(reader.ReadString());
+                            result = DateTimeOffset.Parse(reader.ReadString(), CultureInfo.InvariantCulture);
                         this.ExpiresDate = result;
                         break;
 

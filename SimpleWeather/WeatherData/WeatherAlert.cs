@@ -288,7 +288,7 @@ namespace SimpleWeather.WeatherData
         public WeatherAlert(Watch alert)
         {
             int type = -1;
-            if (int.TryParse(alert.type, out int parsedType))
+            if (int.TryParse(alert.type, NumberStyles.Integer, CultureInfo.InvariantCulture, out int parsedType))
             {
                 type = parsedType;
             }
@@ -308,7 +308,7 @@ namespace SimpleWeather.WeatherData
         public WeatherAlert(Warning alert)
         {
             int type = -1;
-            if (int.TryParse(alert.type, out int parsedType))
+            if (int.TryParse(alert.type, NumberStyles.Integer, CultureInfo.InvariantCulture, out int parsedType))
             {
                 type = parsedType;
             }
@@ -474,15 +474,15 @@ namespace SimpleWeather.WeatherData
         {
             if (timeSegment.Length > 1)
             {
-                var startDate = DateTimeUtils.GetClosestWeekday((DayOfWeek)(int.Parse(timeSegment[0].day_of_week) - 1));
-                var endDate = DateTimeUtils.GetClosestWeekday((DayOfWeek)(int.Parse(timeSegment.Last().day_of_week) - 1));
+                var startDate = DateTimeUtils.GetClosestWeekday((DayOfWeek)(int.Parse(timeSegment[0].day_of_week, CultureInfo.InvariantCulture) - 1));
+                var endDate = DateTimeUtils.GetClosestWeekday((DayOfWeek)(int.Parse(timeSegment.Last().day_of_week, CultureInfo.InvariantCulture) - 1));
 
                 Date = new DateTimeOffset(startDate.Add(GetTimeFromSegment(timeSegment[0].segment)), TimeSpan.Zero);
                 ExpiresDate = new DateTimeOffset(endDate.Add(GetTimeFromSegment(timeSegment.Last().segment)), TimeSpan.Zero);
             }
             else
             {
-                var today = DateTimeUtils.GetClosestWeekday((DayOfWeek)(int.Parse(timeSegment[0].day_of_week) - 1));
+                var today = DateTimeUtils.GetClosestWeekday((DayOfWeek)(int.Parse(timeSegment[0].day_of_week, CultureInfo.InvariantCulture) - 1));
 
                 switch (timeSegment[0].segment)
                 {

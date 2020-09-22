@@ -176,7 +176,7 @@ namespace SimpleWeather.WeatherYahoo
         {
             bool isNight = false;
 
-            if (int.TryParse(icon, out int code))
+            if (int.TryParse(icon, NumberStyles.Integer, CultureInfo.InvariantCulture, out int code))
             {
                 switch (code)
                 {
@@ -199,7 +199,7 @@ namespace SimpleWeather.WeatherYahoo
         {
             string WeatherIcon = string.Empty;
 
-            if (int.TryParse(icon, out int code))
+            if (int.TryParse(icon, NumberStyles.Integer, CultureInfo.InvariantCulture, out int code))
             {
                 switch (code)
                 {
@@ -349,7 +349,7 @@ namespace SimpleWeather.WeatherYahoo
         {
             try
             {
-                int code = int.Parse(icon);
+                int code = int.Parse(icon, CultureInfo.InvariantCulture);
 
                 switch (code)
                 {
