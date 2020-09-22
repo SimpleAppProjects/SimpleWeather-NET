@@ -428,7 +428,7 @@ namespace SimpleWeather.WeatherData
             if (forecast.visibility.HasValue)
             {
                 extras.visibility_km = forecast.visibility.Value / 1000;
-                extras.visibility_mi = ConversionMethods.KmToMi(forecast.visibility.Value);
+                extras.visibility_mi = ConversionMethods.KmToMi(extras.visibility_km.Value);
             }
             if (forecast.wind_gust.HasValue)
             {
@@ -668,7 +668,7 @@ namespace SimpleWeather.WeatherData
             if (hr_forecast.visibility.HasValue)
             {
                 extras.visibility_km = hr_forecast.visibility.Value / 1000;
-                extras.visibility_mi = ConversionMethods.KmToMi(hr_forecast.visibility.Value);
+                extras.visibility_mi = ConversionMethods.KmToMi(extras.visibility_km.Value);
             }
             if (hr_forecast.rain != null)
             {
