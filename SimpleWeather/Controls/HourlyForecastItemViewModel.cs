@@ -25,7 +25,7 @@ namespace SimpleWeather.Controls
             if (culture.DateTimeFormat.ShortTimePattern.Contains("H"))
             {
                 Date = hrForecast.date.ToString("ddd HH:00", culture);
-                ShortDate = hrForecast.date.ToString("HH", culture);
+                ShortDate = hrForecast.date.ToString("HH:00", culture);
             }
             else
             {

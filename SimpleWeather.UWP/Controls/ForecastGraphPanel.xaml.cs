@@ -194,7 +194,7 @@ namespace SimpleWeather.UWP.Controls
                                         }
                                     }
 
-                                    XLabelData xLabelData = new XLabelData(forecastItemViewModel.Date, forecastItemViewModel.WeatherIcon);
+                                    XLabelData xLabelData = new XLabelData(forecastItemViewModel.ShortDate, forecastItemViewModel.WeatherIcon);
                                     labelData.Add(xLabelData);
                                 }
                                 catch (FormatException ex)
