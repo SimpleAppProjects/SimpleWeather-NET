@@ -224,7 +224,13 @@ namespace SimpleWeather.UWP.Controls
                     var desiredMeasure = new UvMeasure(Orientation, child.DesiredSize.Width, child.DesiredSize.Height);
                     if (desiredMeasure.U == 0)
                     {
-                        return; // if an item is collapsed, avoid adding the spacing
+                        // if an item is collapsed, avoid adding the spacing
+                        if (isLast && rowItems.Count > 0)
+                        {
+                            ArrangeRowItems();
+                            rowItems.Clear();
+                        }
+                        return;
                     }
 
                     if ((desiredMeasure.U + position.U + paddingEnd.U) > parentMeasure.U)
