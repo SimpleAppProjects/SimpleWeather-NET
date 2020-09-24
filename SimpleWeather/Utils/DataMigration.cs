@@ -1,5 +1,7 @@
 ﻿using SimpleWeather.Location;
+#if WINDOWS_UWP && !UNIT_TEST
 using SimpleWeather.UWP.Utils;
+#endif
 using SimpleWeather.WeatherData;
 using SQLite;
 using System;

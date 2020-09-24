@@ -1,4 +1,7 @@
 ﻿using SimpleWeather.Controls;
+#if WINDOWS_UWP && !UNIT_TEST
+using SimpleWeather.UWP.Utils;
+#endif
 using SimpleWeather.WeatherData;
 using SimpleWeather.WeatherData.Images;
 using System;
@@ -142,23 +145,35 @@ namespace SimpleWeather.Utils
 
                 // Check cache for image data
                 var imageHelper = ImageDataHelper.ImageDataHelperImpl;
-                var imageData = await imageHelper.GetCachedImageData(backgroundCode);
-                // Check if cache is available and valid
-                if (imageData?.IsValid() == true)
-                    return new ImageDataViewModel(imageData);
-                else
+#if WINDOWS_UWP && !UNIT_TEST
+                if (!FeatureSettings.IsUpdateAvailable)
                 {
-                    imageData = await imageHelper.GetRemoteImageData(backgroundCode);
+#endif
+                    var imageData = await imageHelper.GetCachedImageData(backgroundCode);
+                    // Check if cache is available and valid
                     if (imageData?.IsValid() == true)
                         return new ImageDataViewModel(imageData);
                     else
                     {
-                        imageData = imageHelper.GetDefaultImageData(backgroundCode, weather);
+                        imageData = await imageHelper.GetRemoteImageData(backgroundCode);
                         if (imageData?.IsValid() == true)
                             return new ImageDataViewModel(imageData);
+                        else
+                        {
+                            imageData = imageHelper.GetDefaultImageData(backgroundCode, weather);
+                            if (imageData?.IsValid() == true)
+                                return new ImageDataViewModel(imageData);
+                        }
                     }
+#if WINDOWS_UWP && !UNIT_TEST
                 }
-
+                else
+                {
+                    var imageData = imageHelper.GetDefaultImageData(backgroundCode, weather);
+                    if (imageData?.IsValid() == true)
+                        return new ImageDataViewModel(imageData);
+                }
+#endif
                 return null;
             });
         }
