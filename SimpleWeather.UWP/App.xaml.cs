@@ -9,6 +9,7 @@ using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.UWP.Helpers;
 using SimpleWeather.UWP.Main;
+using SimpleWeather.UWP.Preferences;
 using SimpleWeather.UWP.Setup;
 using SimpleWeather.UWP.Tiles;
 using SimpleWeather.UWP.WNS;
@@ -299,6 +300,35 @@ namespace SimpleWeather.UWP
                         }
                         break;
 
+                    case "check-updates":
+                        if (Settings.WeatherLoaded && Settings.OnBoardComplete) 
+                        {
+                            // App loaded for first time
+                            if (RootFrame.Content == null)
+                            {
+                                RootFrame.Navigate(typeof(Shell), "suppressNavigate");
+                            }
+
+                            if (Shell.Instance != null)
+                            {
+                                if (Shell.Instance.AppFrame.Content != null && Shell.Instance.AppFrame.SourcePageType.Equals(typeof(WeatherNow)))
+                                {
+                                    Shell.Instance.AppFrame.Navigate(typeof(SettingsPage), "About");
+                                }
+                                else
+                                {
+                                    Shell.Instance.AppFrame.Navigate(typeof(SettingsPage), "About");
+                                    Shell.Instance.AppFrame.BackStack.Clear();
+                                    Shell.Instance.AppFrame.BackStack.Add(new PageStackEntry(typeof(WeatherNow), new WeatherNowArgs()
+                                    {
+                                        IsHome = true
+                                    }, null));
+                                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+                                }
+                            }
+                        }
+                        break;
+
                     default:
                         break;
                 }
@@ -354,6 +384,11 @@ namespace SimpleWeather.UWP
                     new UpdateTask().Run(args.TaskInstance);
                     break;
 
+                case nameof(AppUpdaterTask):
+                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting AppUpdaterTask");
+                    new AppUpdaterTask().Run(args.TaskInstance);
+                    break;
+
                 default:
                     Logger.WriteLine(LoggerLevel.Debug, "App: Unknown task: {0}", args.TaskInstance.Task.Name);
                     break;
@@ -381,6 +416,7 @@ namespace SimpleWeather.UWP
             // App loaded for first time
             await WNSHelper.InitNotificationChannel().ConfigureAwait(true);
             await UpdateTask.RegisterBackgroundTask().ConfigureAwait(true);
+            await AppUpdaterTask.RegisterBackgroundTask().ConfigureAwait(true);
 
             if (!e.PrelaunchActivated)
             {

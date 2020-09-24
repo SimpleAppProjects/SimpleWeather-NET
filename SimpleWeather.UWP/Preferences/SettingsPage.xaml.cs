@@ -54,9 +54,22 @@ namespace SimpleWeather.UWP.Preferences
             base.OnNavigatedTo(e);
             AnalyticsLogger.LogEvent("SettingsPage: OnNavigatedTo");
 
-            // NavView doesn't load any page by default, so load home page.
-            SettingsNavView.SelectedItem = SettingsNavView.MenuItems[0];
-            SettingsNavView_Navigate("General", new Windows.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo());
+            if (e?.Parameter != null)
+            {
+                Type _page = null;
+                var item = _pages.FirstOrDefault(p => p.Tag.Equals(e.Parameter.ToString()));
+                _page = item.Page;
+                if (_page != null)
+                {
+                    SettingsFrame.Navigate(_page, new Windows.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo());
+                }
+            }
+            else
+            {
+                // NavView doesn't load any page by default, so load home page.
+                SettingsNavView.SelectedItem = SettingsNavView.MenuItems[0];
+                SettingsNavView_Navigate("General", new Windows.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo());
+            }
         }
 
         private void SettingsNavView_ItemInvoked(muxc.NavigationView sender, muxc.NavigationViewItemInvokedEventArgs args)

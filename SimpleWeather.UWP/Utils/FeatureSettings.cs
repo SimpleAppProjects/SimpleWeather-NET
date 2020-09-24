@@ -26,6 +26,8 @@ namespace SimpleWeather.UWP.Utils
 
         public static bool LocationPanelBackgroundImage { get { return GetPanelBackgroundImageEnabled(); } set { SetPanelBackgroundImageEnabled(value); } }
 
+        public static bool IsUpdateAvailable { get { return GetUpdateAvailable(); } set { SetUpdateAvailable(value); } }
+
         #region Settings Keys
 
         private const string KEY_BGIMAGE = "key_bgimage";
@@ -41,6 +43,7 @@ namespace SimpleWeather.UWP.Utils
         private const string KEY_LOCPANELBGIMAGE = "key_locpanelbgimage";
         public const string KEY_UPDATED = "key_updated";
 
+        private const string KEY_UPDATEAVAILABLE = "key_updateavailable";
         #endregion Settings Keys
 
         // Shared Settings
@@ -247,6 +250,22 @@ namespace SimpleWeather.UWP.Utils
         {
             featureSettings.Values[KEY_LOCPANELBGIMAGE] = value;
             WasUpdated = true;
+        }
+
+        private static bool GetUpdateAvailable()
+        {
+            if (!featureSettings.Values.ContainsKey(KEY_UPDATEAVAILABLE) || featureSettings.Values[KEY_UPDATEAVAILABLE] == null)
+            {
+                SetUpdateAvailable(false);
+                return false;
+            }
+            else
+                return (bool)featureSettings.Values[KEY_UPDATEAVAILABLE];
+        }
+
+        private static void SetUpdateAvailable(bool value)
+        {
+            featureSettings.Values[KEY_UPDATEAVAILABLE] = value;
         }
     }
 }

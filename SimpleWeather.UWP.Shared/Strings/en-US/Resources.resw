@@ -525,4 +525,22 @@
   <data name="WelcomeSubtitle.Text" xml:space="preserve">
     <value>Just a simple weather app</value>
   </data>
+  <data name="CheckUpdatePrompt.Text" xml:space="preserve">
+    <value>Checking for updates...</value>
+  </data>
+  <data name="InstallErrorPrompt" xml:space="preserve">
+    <value>Unable to install. Click to try again</value>
+  </data>
+  <data name="NoUpdateAvailablePrompt" xml:space="preserve">
+    <value>No updates available</value>
+  </data>
+  <data name="UpdateAvailablePrompt" xml:space="preserve">
+    <value>Update available. Click to install</value>
+  </data>
+  <data name="DownloadingPrompt" xml:space="preserve">
+    <value>Downloading...</value>
+  </data>
+  <data name="InstallingPrompt" xml:space="preserve">
+    <value>Installing...</value>
+  </data>
 </root>

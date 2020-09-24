@@ -1,4 +1,5 @@
 ﻿using SimpleWeather.Location;
+using SimpleWeather.UWP.Utils;
 using SimpleWeather.WeatherData;
 using SQLite;
 using System;
@@ -146,6 +147,9 @@ namespace SimpleWeather.Utils
                     });
                 }
                 Settings.VersionCode = CurrentVersionCode;
+#if WINDOWS_UWP && !UNIT_TEST
+                FeatureSettings.IsUpdateAvailable = false;
+#endif
             });
         }
     }

@@ -5,9 +5,24 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:SimpleWeather.UWP.Preferences"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     Background="{ThemeResource RegionBrush}"
     NavigationCacheMode="Required"
     mc:Ignorable="d">
+
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Dark">
+                    <StaticResource x:Key="ProgressPaintColor" ResourceKey="SimpleBlueLight" />
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Light">
+                    <StaticResource x:Key="ProgressPaintColor" ResourceKey="SimpleBlueDark" />
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+            <SolidColorBrush x:Name="ProgressPaintColorBrush" Color="{ThemeResource ProgressPaintColor}" />
+        </ResourceDictionary>
+    </Page.Resources>
 
     <StackPanel Padding="16">
         <TextBlock
@@ -21,5 +36,46 @@
             Foreground="{ThemeResource SystemBaseMediumHighColor}"
             Style="{StaticResource BodyTextBlockStyle}"
             Text="v0.00" />
+        <StackPanel
+            x:Name="UpdateProgressPanel"
+            MinWidth="250"
+            Margin="0,8,0,8"
+            HorizontalAlignment="Left"
+            Orientation="Vertical">
+            <Button
+                x:Name="CheckUpdateButton"
+                MinWidth="250"
+                IsHitTestVisible="False"
+                Style="{ThemeResource ButtonRevealStyle}">
+                <Button.Content>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <ProgressRing
+                            Grid.Column="0"
+                            Margin="8,0"
+                            IsActive="True" />
+                        <TextBlock
+                            x:Uid="CheckUpdatePrompt"
+                            Grid.Column="1"
+                            Text="Checking for updates..." />
+                    </Grid>
+                </Button.Content>
+            </Button>
+            <Button
+                x:Name="InstallButton"
+                MinWidth="250"
+                Content="Downloading..."
+                Style="{ThemeResource ButtonRevealStyle}"
+                Visibility="Collapsed" />
+            <ProgressBar
+                x:Name="UpdateProgressBar"
+                Margin="0,0,0,0"
+                Foreground="{ThemeResource ProgressPaintColorBrush}"
+                IsIndeterminate="True"
+                Visibility="Collapsed" />
+        </StackPanel>
     </StackPanel>
 </Page>
