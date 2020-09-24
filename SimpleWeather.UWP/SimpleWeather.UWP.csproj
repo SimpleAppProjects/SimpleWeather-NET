@@ -569,16 +569,16 @@
       <Version>1.0.3</Version>
     </PackageReference>
     <PackageReference Include="Google.Apis.Firestore.v1">
-      <Version>1.48.0.2032</Version>
+      <Version>1.49.0.2074</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter">
-      <Version>3.4.0</Version>
+      <Version>3.4.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter.Analytics">
-      <Version>3.4.0</Version>
+      <Version>3.4.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter.Crashes">
-      <Version>3.4.0</Version>
+      <Version>3.4.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Bcl.HashCode">
       <Version>1.1.0</Version>
