@@ -12,6 +12,7 @@ using Google.Apis.Services;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Firestore.v1fix.Data;
 using System.Threading;
+using Firebase.Database.Query;
 
 namespace SimpleWeather.WeatherData.Images
 {
@@ -170,26 +171,13 @@ namespace SimpleWeather.WeatherData.Images
             {
                 try
                 {
-                    var db = await Firebase.FirestoreHelper.GetFirestoreDB();
-                    var request = db.Projects.Databases.Documents.Get(Firebase.FirestoreHelper.GetParentPath() + "/background_images_info/collection_info");
-                    var authLink = await Firebase.FirebaseAuthHelper.GetAuthLink();
-                    request.AddCredential(GoogleCredential.FromAccessToken(authLink.FirebaseToken));
-                    using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                    {
-                        var doc = await request.ExecuteAsync(cts.Token);
+                    var db = await Firebase.FirebaseDatabaseHelper.GetFirebaseDatabase();
+                    var last_updated = await db.Child("background_images_info")
+                        .Child("collection_info")
+                        .Child("last_updated")
+                        .OnceSingleAsync<long>(TimeSpan.FromMilliseconds(Settings.READ_TIMEOUT));
 
-                        if (doc.Fields.TryGetValue("last_updated", out Value value))
-                        {
-                            if (value.IntegerValue.HasValue)
-                            {
-                                return (long)value.IntegerValue;
-                            }
-                            else if (value.DoubleValue.HasValue)
-                            {
-                                return (long)value.DoubleValue.Value;
-                            }
-                        }
-                    }
+                    return last_updated;
                 }
                 catch (Exception e)
                 {

@@ -1,4 +1,5 @@
-﻿using Google.Apis.Auth.OAuth2;
+﻿using Firebase.Database.Query;
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Firestore.v1fix.Data;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
@@ -61,37 +62,49 @@ namespace SimpleWeather.UWP.WNS
 
                 if (!Equals(channel.Uri, oldChannel?.ChannelUri))
                 {
-                    // Write to firestore db
+                    // Write to RealtimeDatabase db
                     var auth = await Firebase.FirebaseAuthHelper.GetAuthLink();
-                    var db = await Firebase.FirestoreHelper.GetFirestoreDB();
-                    var request = db.Projects.Databases.Documents.Patch(new Document()
+                    var db = await Firebase.FirebaseDatabaseHelper.GetFirebaseDatabase();
+
+                    if (oldChannel?.ChannelUri != null)
                     {
-                        Fields = new Dictionary<String, Value>
+                        try
                         {
-                            { "channel_uri", new Value() { StringValue = channel.Uri } },
-                            { "expiration_time", new Value() { IntegerValue = channel.ExpirationTime.ToUnixTimeSeconds() } },
-                            { "package_name", new Value() { StringValue = Windows.ApplicationModel.Package.Current.Id.Name } }
+                            // Delete previous entry if it exists
+                            await db.Child("uwp_users").Child(oldChannel.ChannelUri).DeleteAsync();
+                        } catch (Exception)
+                        {
+                            // ignore if does not exist
                         }
-                    }, Firebase.FirestoreHelper.GetParentPath() + "/uwp_users/" + auth.User.LocalId);
-                    var authLink = await Firebase.FirebaseAuthHelper.GetAuthLink();
-                    request.AddCredential(GoogleCredential.FromAccessToken(authLink.FirebaseToken));
-
-                    using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                    {
-                        var resp = await request.ExecuteAsync(cts.Token);
-
-                        // replace in settings
-                        var newChannel = new WNSChannel()
-                        {
-                            ChannelUri = channel.Uri,
-                            ExpirationTime = channel.ExpirationTime
-                        };
-                        var json = JSONParser.Serializer(newChannel);
-                        WNSSettings.Values[KEY_WNSCHANNEL] = json;
                     }
+
+                    await db.Child("uwp_users")
+                            .Child(auth.User.LocalId)
+                            .PatchAsync(new FirebaseUWPUser()
+                            {
+                                channel_uri = channel.Uri,
+                                expiration_time = channel.ExpirationTime.ToUnixTimeSeconds(),
+                                package_name = Windows.ApplicationModel.Package.Current.Id.Name
+                            });
+
+                    // replace in settings
+                    var newChannel = new WNSChannel()
+                    {
+                        ChannelUri = channel.Uri,
+                        ExpirationTime = channel.ExpirationTime
+                    };
+                    var json = JSONParser.Serializer(newChannel);
+                    WNSSettings.Values[KEY_WNSCHANNEL] = json;
                 }
             });
         }
+    }
+
+    internal class FirebaseUWPUser
+    {
+        public string channel_uri { get; set; }
+        public long expiration_time { get; set; }
+        public string package_name { get; set; }
     }
 
     internal class WNSChannel

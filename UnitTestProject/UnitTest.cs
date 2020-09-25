@@ -182,7 +182,7 @@ namespace UnitTestProject
         }
 
         [TestMethod]
-        public void FirestoreDBTest()
+        public void RealtimeDBTest()
         {
             var updateTime = SimpleWeather.WeatherData.Images.ImageDatabase.GetLastUpdateTime().ConfigureAwait(false).GetAwaiter().GetResult();
             Assert.IsTrue(updateTime != 0);

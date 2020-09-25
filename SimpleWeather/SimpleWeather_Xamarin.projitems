@@ -30,6 +30,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ImageDataViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\BeaufortViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Firebase\FirebaseAuthHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Firebase\FirebaseDatabaseHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Firebase\FirebaseStorageHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Firebase\FirestoreAPI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Firebase\FirestoreHelper.cs" />
