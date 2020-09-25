@@ -258,9 +258,14 @@ namespace SimpleWeather.UWP
                 switch (args["action"])
                 {
                     case "view-alerts":
-                        if (Settings.WeatherLoaded && Settings.OnBoardComplete && args.Contains("data"))
+                        if (Settings.WeatherLoaded && Settings.OnBoardComplete)
                         {
-                            var data = args["data"];
+                            string data = null;
+
+                            if (args.Contains("data"))
+                            {
+                                data = args["data"];
+                            }
 
                             // App loaded for first time
                             if (RootFrame.Content == null)
@@ -270,7 +275,11 @@ namespace SimpleWeather.UWP
 
                             if (Shell.Instance != null)
                             {
-                                var locData = JSONParser.Deserializer<LocationData>(data);
+                                LocationData locData = null;
+                                if (!string.IsNullOrWhiteSpace(data))
+                                {
+                                    locData = JSONParser.Deserializer<LocationData>(data);
+                                }
 
                                 // If we're already on WeatherNow navigate to Alert page
                                 if (Shell.Instance.AppFrame.Content != null && Shell.Instance.AppFrame.SourcePageType.Equals(typeof(WeatherNow)))

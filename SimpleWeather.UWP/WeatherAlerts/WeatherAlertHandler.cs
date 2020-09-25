@@ -35,7 +35,7 @@ namespace SimpleWeather.UWP.WeatherAlerts
 #endif
 
                     // Post any un-notified alerts
-                    WeatherAlertCreator.CreateAlerts(location, unotifiedAlerts);
+                    await WeatherAlertCreator.CreateAlerts(location, unotifiedAlerts);
 
                     // Update all alerts
                     await SetasNotified(location, alerts);

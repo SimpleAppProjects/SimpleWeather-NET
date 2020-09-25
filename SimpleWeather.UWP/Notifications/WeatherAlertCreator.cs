@@ -6,18 +6,37 @@ using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Windows.UI.Notifications;
 
 namespace SimpleWeather.UWP.Notifications
 {
     public static class WeatherAlertCreator
     {
-        private static WeatherManager wm = WeatherManager.GetInstance();
-        private const string Tag = "WeatherAlerts";
+        private const string TAG = "WeatherAlerts";
 
-        public static void CreateAlerts(LocationData location, IEnumerable<WeatherAlert> alerts)
+        private static async Task CreateToastCollection()
         {
-            var toastNotifier = ToastNotificationManager.CreateToastNotifier();
+            string displayName = App.ResLoader.GetString("Nav_WeatherAlerts/Content");
+            var icon = new Uri("ms-appx:///Assets/WeatherIcons/png/ic_error_white.png");
+
+            ToastCollection toastCollection = new ToastCollection(TAG, displayName,
+                new QueryString()
+                {
+                    { "action", "view-alerts" }
+                }.ToString(),
+                icon);
+
+            await ToastNotificationManager.GetDefault()
+                .GetToastCollectionManager()
+                .SaveToastCollectionAsync(toastCollection);
+        }
+
+        public static async Task CreateAlerts(LocationData location, IEnumerable<WeatherAlert> alerts)
+        {
+            await CreateToastCollection().ConfigureAwait(true);
+            var toastNotifier = await ToastNotificationManager.GetDefault()
+                .GetToastNotifierForToastCollectionIdAsync(TAG);
 
             foreach (WeatherAlert alert in alerts)
             {
@@ -66,7 +85,7 @@ namespace SimpleWeather.UWP.Notifications
                 // Create the toast notification
                 var toastNotif = new ToastNotification(toastContent.GetXml())
                 {
-                    Group = Tag,
+                    Group = TAG,
                     Tag = notID,
                     ExpirationTime = alert.ExpiresDate,
                 };
