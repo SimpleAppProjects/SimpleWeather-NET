@@ -452,9 +452,6 @@ namespace SimpleWeather.UWP.Main
                         }
                         else
                         {
-                            // Check pin tile status
-                            CheckTiles();
-
                             Task.Run(async () =>
                             {
                                 // Update weather if needed on resume
@@ -465,6 +462,9 @@ namespace SimpleWeather.UWP.Main
                                 }
                             }).ContinueWith((t2) =>
                             {
+                                // Check pin tile status
+                                CheckTiles();
+
                                 RefreshWeather(false);
                             }, TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(true);
                         }
@@ -487,9 +487,6 @@ namespace SimpleWeather.UWP.Main
         /// <exception cref="InvalidOperationException">Ignore.</exception>
         private void Restore()
         {
-            // Check pin tile status
-            CheckTiles();
-
             Task.Run(async () =>
             {
                 bool forceRefresh = false;
@@ -538,6 +535,9 @@ namespace SimpleWeather.UWP.Main
                 return forceRefresh;
             }).ContinueWith((t) =>
             {
+                // Check pin tile status
+                CheckTiles();
+
                 if (t.IsCompletedSuccessfully)
                 {
                     // Load up weather data
@@ -829,7 +829,8 @@ namespace SimpleWeather.UWP.Main
             // Check if Tile service is available
             if (!DeviceTypeHelper.IsTileSupported() || locationData?.query == null) return;
 
-            var pinBtn = sender as muxc.NavigationViewItem;
+            if (!(sender is muxc.NavigationViewItem pinBtn)) return;
+
             pinBtn.IsEnabled = false;
 
             if (SecondaryTileUtils.Exists(locationData?.query))
@@ -848,7 +849,7 @@ namespace SimpleWeather.UWP.Main
             else
             {
                 // Initialize the tile with required arguments
-                var tileID = DateTime.Now.Ticks.ToString();
+                var tileID = DateTime.Now.Ticks.ToInvariantString();
                 var tile = new SecondaryTile(
                     tileID,
                     "SimpleWeather",
@@ -938,7 +939,7 @@ namespace SimpleWeather.UWP.Main
             WebView webview = null;
 
             // Windows 1803+
-            if (Windows.Foundation.Metadata.ApiInformation.IsEnumNamedValuePresent("Windows.UI.Xaml.Controls.WebViewExecutionMode", "SeparateProcess"))
+            if (ApiInformation.IsEnumNamedValuePresent("Windows.UI.Xaml.Controls.WebViewExecutionMode", "SeparateProcess"))
             {
                 try
                 {
@@ -973,7 +974,7 @@ namespace SimpleWeather.UWP.Main
             webview.IsRightTapEnabled = false;
             webview.IsTapEnabled = false;
 
-            if (Windows.Foundation.Metadata.ApiInformation.IsEventPresent("Windows.UI.Xaml.Controls.WebView", "SeparateProcessLost"))
+            if (ApiInformation.IsEventPresent("Windows.UI.Xaml.Controls.WebView", "SeparateProcessLost"))
             {
                 webview.SeparateProcessLost += (sender, e) =>
                 {
