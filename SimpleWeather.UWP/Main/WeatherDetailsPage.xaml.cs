@@ -148,7 +148,7 @@ namespace SimpleWeather.UWP.Main
                         {
                             ListControl.LayoutUpdated -= layoutUpdateListener;
 
-                            if (ListControl.Items?.Count > 0 && ListControl.Items?.Count >= args.ScrollToPosition)
+                            if (args.ScrollToPosition > 0 && ListControl.Items?.Count > args.ScrollToPosition)
                             {
                                 ListControl.ScrollIntoView(ListControl.Items[args.ScrollToPosition], ScrollIntoViewAlignment.Leading);
                             }
