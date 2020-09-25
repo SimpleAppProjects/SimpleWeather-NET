@@ -4,6 +4,7 @@ using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,7 @@ namespace SimpleWeather.AQICN
 {
     public class AQICNProvider : IAirQualityProvider
     {
-        private const String QUERY_URL = "https://api.waqi.info/feed/geo:{0};{1}/?token={2}";
+        private const String QUERY_URL = "https://api.waqi.info/feed/geo:{0:0.####};{1:0.####}/?token={2}";
         public Task<AirQuality> GetAirQualityData(LocationData location)
         {
             return Task.Run(async () =>
@@ -28,7 +29,7 @@ namespace SimpleWeather.AQICN
                 if (String.IsNullOrWhiteSpace(key))
                     return null;
 
-                Uri queryURL = new Uri(string.Format(QUERY_URL, location.latitude, location.longitude, key));
+                Uri queryURL = new Uri(string.Format(CultureInfo.InvariantCulture, QUERY_URL, location.latitude, location.longitude, key));
 
                 try
                 {

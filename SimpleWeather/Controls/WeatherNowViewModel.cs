@@ -44,7 +44,7 @@ namespace SimpleWeather.Controls
         private Color pendingBackgroundColor = Color.FromArgb(255, 0, 111, 191);
 
         // Radar
-        private const string RadarUriFormat = "https://earth.nullschool.net/#current/wind/surface/level/overlay=precip_3hr/orthographic={1},{0},3000";
+        private const string RadarUriFormat = "https://earth.nullschool.net/#current/wind/surface/level/overlay=precip_3hr/orthographic={1:0.####},{0:0.####},3000";
         private Uri radarURL;
 
         private String weatherCredit;

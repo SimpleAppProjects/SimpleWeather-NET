@@ -127,7 +127,7 @@ namespace SimpleWeather.HERE
 
                 string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
-                string location_query = string.Format("{0},{1}", coord.Latitude.ToString(CultureInfo.InvariantCulture), coord.Longitude.ToString(CultureInfo.InvariantCulture));
+                string location_query = string.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}", coord.Latitude, coord.Longitude);
 
                 Result result = null;
                 WeatherException wEx = null;

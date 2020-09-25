@@ -3,6 +3,7 @@ using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ namespace SimpleWeather.NWS
 {
     public class NWSAlertProvider : IWeatherAlertProvider
     {
-        private const String ALERT_QUERY_URL = "https://api.weather.gov/alerts/active?point={0},{1}";
+        private const String ALERT_QUERY_URL = "https://api.weather.gov/alerts/active?status=actual&message_type=alert&point={0:0.####},{1:0.####}";
 
         public Task<List<WeatherAlert>> GetAlerts(LocationData location)
         {
@@ -24,7 +25,7 @@ namespace SimpleWeather.NWS
 
                 try
                 {
-                    Uri queryURL = new Uri(string.Format(ALERT_QUERY_URL, location.latitude, location.longitude));
+                    Uri queryURL = new Uri(string.Format(CultureInfo.InvariantCulture, ALERT_QUERY_URL, location.latitude, location.longitude));
                     using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
                     {
                         request.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
