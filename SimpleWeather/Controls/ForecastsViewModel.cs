@@ -116,7 +116,7 @@ namespace SimpleWeather.Controls
             }
             else
             {
-                Dispatcher.RunOnUIThread(() =>
+                Dispatcher?.RunOnUIThread(() =>
                 {
                     Forecasts.RefreshAsync();
                 });
@@ -138,7 +138,7 @@ namespace SimpleWeather.Controls
             }
             else
             {
-                Dispatcher.RunOnUIThread(() =>
+                Dispatcher?.RunOnUIThread(() =>
                 {
                     HourlyForecasts.RefreshAsync();
                 });
@@ -188,20 +188,20 @@ namespace SimpleWeather.Controls
                 Forecasts fcasts = null;
                 try
                 {
-                    fcasts = await Settings.GetWeatherForecastData(locationData?.query);
+                    fcasts = await Settings.GetWeatherForecastData(locationData.query);
                 }
                 catch (Exception)
                 {
                     // Unable to get forecasts
                 }
 
-                int totalCount = (int)fcasts?.forecast?.Count;
+                int totalCount = fcasts?.forecast?.Count ?? 0;
                 var models = new List<ForecastItemViewModel>(Math.Min(totalCount, pageSize));
 
                 if (totalCount > 0)
                 {
-                    bool isDayAndNt = fcasts.txt_forecast?.Count == (fcasts.forecast?.Count * 2);
-                    bool addTextFct = isDayAndNt || (fcasts.txt_forecast?.Count == fcasts.forecast?.Count && fcasts.txt_forecast?.Count > 0);
+                    bool isDayAndNt = fcasts?.txt_forecast?.Count == (fcasts?.forecast?.Count * 2);
+                    bool addTextFct = isDayAndNt || (fcasts?.txt_forecast?.Count == fcasts?.forecast?.Count && fcasts?.txt_forecast?.Count > 0);
 
                     int startPosition = pageIndex * pageSize;
 
@@ -248,12 +248,14 @@ namespace SimpleWeather.Controls
                     return new List<HourlyForecastItemViewModel>(0);
 
                 var dateBlob = DateTimeOffset.Now.ToOffset(locationData.tz_offset).Trim(TimeSpan.TicksPerHour).ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture);
-                var result = await Settings.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(locationData?.query, pageIndex, pageSize, dateBlob);
+                var result = await Settings.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(locationData.query, pageIndex, pageSize, dateBlob);
 
-                var models = new List<HourlyForecastItemViewModel>(Math.Min(pageSize, (int)result?.Count));
+                var models = new List<HourlyForecastItemViewModel>();
 
                 if (result?.Count > 0)
                 {
+                    models.EnsureCapacity(Math.Min(pageSize, result.Count));
+
                     foreach (HourlyForecast forecast in result)
                     {
                         models.Add(new HourlyForecastItemViewModel(forecast));
