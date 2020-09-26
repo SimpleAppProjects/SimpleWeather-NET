@@ -77,5 +77,18 @@
                 IsIndeterminate="True"
                 Visibility="Collapsed" />
         </StackPanel>
+        <HyperlinkButton
+            x:Name="ReviewButton"
+            x:Uid="ReviewButton"
+            Click="ReviewButton_Click"
+            Content="Rate and Review"
+            Style="{ThemeResource HyperlinkButtonStyle}" />
+        <HyperlinkButton
+            x:Name="FeedbackButton"
+            x:Uid="FeebackButton"
+            Click="FeedbackButton_Click"
+            Content="Feedback"
+            Style="{ThemeResource HyperlinkButtonStyle}"
+            Visibility="Collapsed" />
     </StackPanel>
 </Page>

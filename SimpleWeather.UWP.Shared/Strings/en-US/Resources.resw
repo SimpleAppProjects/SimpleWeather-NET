@@ -544,4 +544,10 @@
   <data name="InstallingPrompt" xml:space="preserve">
     <value>Installing...</value>
   </data>
+  <data name="FeebackButton.Content" xml:space="preserve">
+    <value>Feedback</value>
+  </data>
+  <data name="ReviewButton.Content" xml:space="preserve">
+    <value>Rate and Review</value>
+  </data>
 </root>

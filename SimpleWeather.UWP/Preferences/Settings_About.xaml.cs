@@ -46,6 +46,11 @@ namespace SimpleWeather.UWP.Preferences
             {
                 UpdateProgressPanel.Visibility = Visibility.Collapsed;
             }
+
+            if (Microsoft.Services.Store.Engagement.StoreServicesFeedbackLauncher.IsSupported())
+            {
+                this.FeedbackButton.Visibility = Visibility.Visible;
+            }
         }
 
         private void SettingsAbout_Resuming(object sender, object e)
@@ -155,6 +160,24 @@ namespace SimpleWeather.UWP.Preferences
         {
             base.OnNavigatedFrom(e);
             Application.Current.Resuming -= SettingsAbout_Resuming;
+        }
+
+        private async void ReviewButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (ApiInformation.IsTypePresent("Windows.Services.Store.StoreContext"))
+            {
+                await context.RequestRateAndReviewAppAsync();
+            }
+            else
+            {
+                await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-windows-store://review/?ProductId=9NKC37BC8SRX"));
+            }
+        }
+
+        private async void FeedbackButton_Click(object sender, RoutedEventArgs e)
+        {
+            var launcher = Microsoft.Services.Store.Engagement.StoreServicesFeedbackLauncher.GetDefault();
+            await launcher.LaunchAsync();
         }
     }
 }
