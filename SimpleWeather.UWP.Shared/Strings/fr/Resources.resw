@@ -128,13 +128,12 @@
   </data>
   <data name="AppName.Text" xml:space="preserve">
     <value>SimpleWeather</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="Credits.Content" xml:space="preserve">
     <value>Crédits</value>
   </data>
   <data name="Error_Location" xml:space="preserve">
-    <value>Impossible d'obtenir la localisation</value>
+    <value>Impossible d&apos;obtenir la localisation</value>
   </data>
   <data name="General.Content" xml:space="preserve">
     <value>Paramètres généraux</value>
@@ -143,7 +142,7 @@
     <value>Clé du fournisseur</value>
   </data>
   <data name="Label_AddLocation.Text" xml:space="preserve">
-    <value>Ajout d'un emplacement</value>
+    <value>Ajout d&apos;un emplacement</value>
   </data>
   <data name="Label_Cancel" xml:space="preserve">
     <value>Annuler</value>
@@ -218,7 +217,7 @@
     <value>Veuillez entrer une clé de fournisseur</value>
   </data>
   <data name="Msg_LocDeniedSettings" xml:space="preserve">
-    <value>L'accès à l'emplacement a été refusé. Veuillez l'activer dans les paramètres.</value>
+    <value>L&apos;accès à l&apos;emplacement a été refusé. Veuillez l&apos;activer dans les paramètres.</value>
   </data>
   <data name="Nav_Locations.Content" xml:space="preserve">
     <value>Emplacements</value>
@@ -308,7 +307,7 @@
     <value>Alertes météo importantes</value>
   </data>
   <data name="DateTime_DayAgo" xml:space="preserve">
-    <value>il y a {0}d</value>
+    <value>il y a {0}j</value>
   </data>
   <data name="DateTime_HrAgo" xml:space="preserve">
     <value>il y a {0}h</value>
@@ -320,7 +319,7 @@
     <value>il y a {0}s</value>
   </data>
   <data name="DateTime_ValidUntil" xml:space="preserve">
-    <value>Valable jusqu'en</value>
+    <value>Valable jusqu&apos;en</value>
   </data>
   <data name="Button_Refresh.Label" xml:space="preserve">
     <value>Rafraîchir</value>
@@ -347,10 +346,10 @@
     <value>Détacher</value>
   </data>
   <data name="RegisterKeyBox.Content" xml:space="preserve">
-    <value>Inscrivez-vous pour obtenir une clé de fournisseur ici</value>
+    <value>Créer un compte pour s&apos;enregistrer pour une clé de fournisseur</value>
   </data>
   <data name="WError_Unknown" xml:space="preserve">
-    <value>Une erreur inconnue s'est produite</value>
+    <value>Une erreur inconnue s&apos;est produite</value>
   </data>
   <data name="ConfirmDialog.PrimaryButtonText" xml:space="preserve">
     <value>OK</value>
@@ -398,7 +397,7 @@
     <value>Thème du système</value>
   </data>
   <data name="Pref_UserTheme.Text" xml:space="preserve">
-    <value>Choisissez un thème</value>
+    <value>Thème</value>
   </data>
   <data name="Setup_PreferencesPrompt.Text" xml:space="preserve">
     <value>Personnalisez vos paramètres ci-dessous</value>
@@ -422,7 +421,7 @@
     <value>Emplacement actuel</value>
   </data>
   <data name="AQI_Label" xml:space="preserve">
-    <value>Indice de la qualité de l'air</value>
+    <value>Indice de la qualité de l&apos;air</value>
   </data>
   <data name="Label_Radar.Header" xml:space="preserve">
     <value>Radar</value>
@@ -446,7 +445,7 @@
     <value>Radar</value>
   </data>
   <data name="NoWeatherAlerts_Prompt.Text" xml:space="preserve">
-    <value>Aucune alerte météo n'est disponible.</value>
+    <value>Aucune alerte météo n&apos;est disponible.</value>
   </data>
   <data name="Pref_UnitCelsius.Content" xml:space="preserve">
     <value>Celsius (métrique)</value>
@@ -464,10 +463,10 @@
     <value>Fonctionnalités</value>
   </data>
   <data name="FeatureOption_AQI.Content" xml:space="preserve">
-    <value>Indice de la qualité de l'air</value>
+    <value>Indice de la qualité de l&apos;air</value>
   </data>
   <data name="FeatureOption_Background.Content" xml:space="preserve">
-    <value>Image d'arrière-plan</value>
+    <value>Image d&apos;arrière-plan</value>
   </data>
   <data name="FeatureOption_Beaufort.Content" xml:space="preserve">
     <value>Beaufort</value>
@@ -482,7 +481,7 @@
     <value>Prévisions heure par heure</value>
   </data>
   <data name="FeatureOption_LocPanelBackground.Content" xml:space="preserve">
-    <value>Image du panneau d'emplacement</value>
+    <value>Image du panneau d&apos;emplacement</value>
   </data>
   <data name="FeatureOption_MoonPhase.Content" xml:space="preserve">
     <value>Phase de lune</value>
@@ -625,5 +624,23 @@
   </data>
   <data name="WelcomeSubtitle.Text" xml:space="preserve">
     <value>Juste une simple application météo</value>
+  </data>
+  <data name="CheckUpdatePrompt.Text" xml:space="preserve">
+    <value>Vérifier les mises à jour...</value>
+  </data>
+  <data name="InstallErrorPrompt" xml:space="preserve">
+    <value>Impossible à installer. Cliquez pour réessayer</value>
+  </data>
+  <data name="NoUpdateAvailablePrompt" xml:space="preserve">
+    <value>Aucune mise à jour disponible</value>
+  </data>
+  <data name="UpdateAvailablePrompt" xml:space="preserve">
+    <value>Mise à jour disponible. Cliquez pour installer</value>
+  </data>
+  <data name="DownloadingPrompt" xml:space="preserve">
+    <value>Téléchargement...</value>
+  </data>
+  <data name="InstallingPrompt" xml:space="preserve">
+    <value>Installation...</value>
   </data>
 </root>

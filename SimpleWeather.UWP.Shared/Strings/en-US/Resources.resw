@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -128,6 +128,7 @@
   </data>
   <data name="AppName.Text" xml:space="preserve">
     <value>SimpleWeather</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="Credits.Content" xml:space="preserve">
     <value>Credits</value>
@@ -346,7 +347,7 @@
     <value>Unpin from Start</value>
   </data>
   <data name="RegisterKeyBox.Content" xml:space="preserve">
-    <value>Register for Provider Key here</value>
+    <value>Create an account to register for a provider key</value>
   </data>
   <data name="WError_Unknown" xml:space="preserve">
     <value>Unknown error occurred</value>
@@ -371,9 +372,6 @@
   </data>
   <data name="Dewpoint_Label" xml:space="preserve">
     <value>Dew Point</value>
-  </data>
-  <data name="MoonPhase_Label" xml:space="preserve">
-    <value>Moon Phase</value>
   </data>
   <data name="Moonrise_Label" xml:space="preserve">
     <value>Moonrise</value>
@@ -400,7 +398,7 @@
     <value>System Theme</value>
   </data>
   <data name="Pref_UserTheme.Text" xml:space="preserve">
-    <value>Choose a theme</value>
+    <value>Theme</value>
   </data>
   <data name="Setup_PreferencesPrompt.Text" xml:space="preserve">
     <value>Customize your settings below</value>
@@ -503,6 +501,9 @@
   </data>
   <data name="Pref_Features_Title.Text" xml:space="preserve">
     <value>Features</value>
+  </data>
+  <data name="MoonPhase_Label" xml:space="preserve">
+    <value>Moon Phase</value>
   </data>
   <data name="WindGust_Label" xml:space="preserve">
     <value>Wind Gust</value>
