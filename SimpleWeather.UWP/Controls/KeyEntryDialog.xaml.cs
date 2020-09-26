@@ -11,19 +11,9 @@ namespace SimpleWeather.UWP.Controls
     {
         public string Key { get; set; }
         public bool CanClose { get; set; }
-        private string CurrentAPI { get; }
-
-        public KeyEntryDialog(String CurrentAPI)
-        {
-            this.CurrentAPI = CurrentAPI;
-            Initialize();
-        }
 
         public KeyEntryDialog()
         {
-            if (String.IsNullOrWhiteSpace(CurrentAPI))
-                CurrentAPI = Settings.API;
-
             Initialize();
         }
 
@@ -32,35 +22,7 @@ namespace SimpleWeather.UWP.Controls
             this.InitializeComponent();
             this.Closing += KeyEntryDialog_Closing;
             KeyEntry.TextChanged += KeyEntry_TextChanged;
-            KeyEntry_2.TextChanged += KeyEntry_TextChanged;
-
-            if (CurrentAPI == WeatherData.WeatherAPI.Here)
-            {
-                Key = Settings.API_KEY;
-
-                string app_id = String.Empty;
-                string app_code = String.Empty;
-
-                if (!String.IsNullOrWhiteSpace(Key))
-                {
-                    var keyArr = Key.Split(';');
-                    if (keyArr.Length > 0)
-                    {
-                        app_id = keyArr[0];
-                        app_code = keyArr[keyArr.Length > 1 ? keyArr.Length - 1 : 0];
-                    }
-                }
-
-                KeyEntry.PlaceholderText = "App ID";
-                KeyEntry_2.PlaceholderText = "App Code";
-
-                KeyEntry.Text = app_id;
-                KeyEntry_2.Text = app_code;
-
-                KeyEntry_2.Visibility = Visibility.Visible;
-            }
-            else
-                KeyEntry.Text = Key = Settings.API_KEY;
+            KeyEntry.Text = Key = Settings.API_KEY;
         }
 
         private void KeyEntryDialog_Closing(ContentDialog sender, ContentDialogClosingEventArgs args)
@@ -77,10 +39,7 @@ namespace SimpleWeather.UWP.Controls
 
         private void KeyEntry_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (CurrentAPI == WeatherData.WeatherAPI.Here)
-                Key = String.Format("{0};{1}", KeyEntry.Text, KeyEntry_2.Text);
-            else
-                Key = KeyEntry.Text;
+            Key = KeyEntry.Text;
         }
     }
 }

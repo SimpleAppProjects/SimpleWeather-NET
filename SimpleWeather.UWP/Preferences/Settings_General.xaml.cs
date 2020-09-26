@@ -272,7 +272,7 @@ namespace SimpleWeather.UWP.Preferences
         {
             AnalyticsLogger.LogEvent("Settings_General: KeyEntry_Tapped");
 
-            var keydialog = new KeyEntryDialog(APIComboBox.SelectedValue.ToString())
+            var keydialog = new KeyEntryDialog()
             {
                 RequestedTheme = Shell.Instance.AppFrame.RequestedTheme
             };

@@ -26,14 +26,5 @@
             VerticalAlignment="Center"
             FontSize="12"
             PlaceholderText="API Key" />
-        <TextBox
-            x:Name="KeyEntry_2"
-            x:Uid="KeyEntry"
-            Margin="0,4"
-            Padding="10"
-            VerticalAlignment="Center"
-            FontSize="12"
-            PlaceholderText="API Key"
-            Visibility="Collapsed" />
     </StackPanel>
 </ContentDialog>
