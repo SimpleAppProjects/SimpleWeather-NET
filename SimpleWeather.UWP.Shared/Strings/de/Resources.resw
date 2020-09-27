@@ -118,221 +118,225 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="About.Content" xml:space="preserve">
-    <value>About</value>
+    <value>Über</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="API_Box.PlaceholderText" xml:space="preserve">
-    <value>Select Weather Provider</value>
+    <value>Wetteranbieter auswählen</value>
   </data>
   <data name="API_Label.Text" xml:space="preserve">
-    <value>Weather Provider</value>
+    <value>Wetteranbieter</value>
   </data>
   <data name="AppName.Text" xml:space="preserve">
     <value>SimpleWeather</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="Credits.Content" xml:space="preserve">
-    <value>Credits</value>
+    <value>Danksagungen</value>
   </data>
   <data name="Error_Location" xml:space="preserve">
-    <value>Unable to get location</value>
+    <value>Standort nicht verfügbar</value>
   </data>
   <data name="General.Content" xml:space="preserve">
-    <value>General</value>
+    <value>Allgemein</value>
   </data>
   <data name="KeyEntry.PlaceholderText" xml:space="preserve">
-    <value>Provider Key</value>
+    <value>Anbieterschlüssel</value>
   </data>
   <data name="Label_AddLocation.Text" xml:space="preserve">
-    <value>Add Location</value>
+    <value>Ort hinzufügen</value>
   </data>
   <data name="Label_Cancel" xml:space="preserve">
-    <value>Cancel</value>
+    <value>Abbruch</value>
   </data>
   <data name="Label_Chance.Text" xml:space="preserve">
-    <value>Chance</value>
+    <value>Wahrscheinlichkeit</value>
   </data>
   <data name="Label_Condition.Text" xml:space="preserve">
-    <value>Condition</value>
+    <value>Bedingung</value>
   </data>
   <data name="Label_Details.Header" xml:space="preserve">
     <value>Details</value>
   </data>
   <data name="Label_Done" xml:space="preserve">
-    <value>Done</value>
+    <value>Erledigt</value>
   </data>
   <data name="Label_Edit" xml:space="preserve">
-    <value>Edit</value>
+    <value>Bearbeiten</value>
   </data>
   <data name="Label_ErrLocationDenied" xml:space="preserve">
-    <value>Location access denied</value>
+    <value>Standortzugriff verweigert</value>
   </data>
   <data name="Label_FeelsLike.Text" xml:space="preserve">
-    <value>Feels Like</value>
+    <value>Gefühlt</value>
   </data>
   <data name="Label_Forecast.Header" xml:space="preserve">
-    <value>Forecast</value>
+    <value>Vorhersage</value>
   </data>
   <data name="Label_GPSFollow.Text" xml:space="preserve">
-    <value>Current Location</value>
+    <value>Standort</value>
   </data>
   <data name="Label_Hourly.Header" xml:space="preserve">
-    <value>Hourly</value>
+    <value>Stündlich</value>
   </data>
   <data name="Label_Humidity.Text" xml:space="preserve">
-    <value>Humidity</value>
+    <value>Luftfeuchtigkeit</value>
   </data>
   <data name="Label_Precipitation.Text" xml:space="preserve">
-    <value>Precipitation</value>
+    <value>Niederschlag</value>
   </data>
   <data name="Label_Pressure.Text" xml:space="preserve">
-    <value>Pressure</value>
+    <value>Luftdruck</value>
   </data>
   <data name="Label_Rain.Text" xml:space="preserve">
-    <value>Rain</value>
+    <value>Regen</value>
   </data>
   <data name="Label_Settings" xml:space="preserve">
-    <value>Settings</value>
+    <value>Einstellungen</value>
   </data>
   <data name="Label_Snow.Text" xml:space="preserve">
-    <value>Snow</value>
+    <value>Schnee</value>
   </data>
   <data name="Label_Sunrise.Text" xml:space="preserve">
-    <value>Sunrise</value>
+    <value>Sonnenaufgang</value>
   </data>
   <data name="Label_Sunriseset.Header" xml:space="preserve">
-    <value>Sunrise / Sunset</value>
+    <value>Sonnenauf- und - untergang</value>
   </data>
   <data name="Label_Sunset.Text" xml:space="preserve">
-    <value>Sunset</value>
+    <value>Sonnenuntergang</value>
   </data>
   <data name="Label_Visibility.Text" xml:space="preserve">
-    <value>Visibility</value>
+    <value>Sichtweite</value>
   </data>
   <data name="Label_Wind.Text" xml:space="preserve">
     <value>Wind</value>
   </data>
   <data name="LocationSearchHint.PlaceholderText" xml:space="preserve">
-    <value>Enter a location</value>
+    <value>Ort eingeben</value>
   </data>
   <data name="Message_EnterAPIKey.Text" xml:space="preserve">
-    <value>Please enter a Provider Key</value>
+    <value>Anbieterschlüssel eingeben</value>
   </data>
   <data name="Msg_LocDeniedSettings" xml:space="preserve">
-    <value>Access to location was denied. Please enable in Settings.</value>
+    <value>Standortdienste in Einstellungen aktivieren</value>
   </data>
   <data name="Nav_Locations.Content" xml:space="preserve">
-    <value>Locations</value>
+    <value>Orte</value>
   </data>
   <data name="Nav_Settings.Content" xml:space="preserve">
-    <value>Settings</value>
+    <value>Einstellungen</value>
   </data>
   <data name="Nav_WeatherNow.Content" xml:space="preserve">
-    <value>Weather</value>
+    <value>Wetter</value>
   </data>
   <data name="OSSLibs.Content" xml:space="preserve">
-    <value>Open Source Libraries</value>
+    <value>Open Source Bibliotheken</value>
   </data>
   <data name="Pref_SummaryFollowGPS.Text" xml:space="preserve">
-    <value>Follow current location via GPS:</value>
+    <value>Standortzugriff per GPS:</value>
   </data>
   <data name="Pref_SummaryUnits.Text" xml:space="preserve">
-    <value>Display units in:</value>
+    <value>Einheiten in:</value>
   </data>
   <data name="Pref_TitleProviders.Text" xml:space="preserve">
-    <value>Weather Providers</value>
+    <value>Wetteranbieter</value>
   </data>
   <data name="WError_InvalidKey" xml:space="preserve">
-    <value>Invalid Provider Key</value>
+    <value>Ungültiger Anbieterschlüssel</value>
   </data>
   <data name="WError_NetworkError" xml:space="preserve">
-    <value>Network Connection Error</value>
+    <value>Netzwerkverbindungsfehler</value>
   </data>
   <data name="WError_NoWeather" xml:space="preserve">
-    <value>Unable to load weather data</value>
+    <value>Laden von Wetterdaten nicht möglich</value>
   </data>
   <data name="WError_QueryNotFound" xml:space="preserve">
-    <value>No cities match your search query</value>
+    <value>Keine passenden Städte gefunden</value>
   </data>
   <data name="Error_NoResults" xml:space="preserve">
-    <value>No results found</value>
+    <value>Keine Ergebnisse gefunden</value>
   </data>
   <data name="KeyEntry.Text" xml:space="preserve">
-    <value>Provider Key</value>
+    <value>Anbieterschlüssel</value>
   </data>
   <data name="Msg_EnterAPIKey" xml:space="preserve">
-    <value>Please enter a Provider Key</value>
+    <value>Anbieterschlüssel eingeben</value>
   </data>
   <data name="Action_Retry" xml:space="preserve">
-    <value>Retry</value>
+    <value>Erneut versuchen</value>
   </data>
   <data name="Pref_GeneralHeader.Text" xml:space="preserve">
-    <value>General Settings</value>
+    <value>Allgemeine Einstellungen</value>
   </data>
   <data name="Pref_Refresh2Hrs.Text" xml:space="preserve">
-    <value>2 hours</value>
+    <value>2 Stunden</value>
   </data>
   <data name="Pref_Refresh12Hrs.Text" xml:space="preserve">
-    <value>12 hours</value>
+    <value>12 Stunden</value>
   </data>
   <data name="Pref_Refresh60Min.Text" xml:space="preserve">
-    <value>1 hour (default)</value>
+    <value>1 Stunde (Standard)</value>
   </data>
   <data name="Pref_SummaryRefresh.Text" xml:space="preserve">
-    <value>Update Frequency</value>
+    <value>Aktualisierungsintervall</value>
   </data>
   <data name="KeyBox.Text" xml:space="preserve">
-    <value>Provider Key</value>
+    <value>Anbieterschlüssel</value>
   </data>
   <data name="Pref_Refresh3Hrs.Text" xml:space="preserve">
-    <value>3 hours</value>
+    <value>3 Stunden</value>
   </data>
   <data name="Pref_Refresh6Hrs.Text" xml:space="preserve">
-    <value>6 hours</value>
+    <value>6 Stunden</value>
   </data>
   <data name="Update_Prefix" xml:space="preserve">
-    <value>Updated on</value>
+    <value>Aktualisiert am</value>
   </data>
   <data name="Update_PrefixDay" xml:space="preserve">
-    <value>Updated at</value>
+    <value>Aktualisiert um</value>
   </data>
   <data name="Credit_Prefix.Text" xml:space="preserve">
-    <value>Data from</value>
+    <value>Daten von</value>
   </data>
   <data name="Label_Cloudiness.Text" xml:space="preserve">
-    <value>Cloudiness</value>
+    <value>Bewölkung</value>
   </data>
   <data name="Pref_WeatherAlerts.Text" xml:space="preserve">
-    <value>Show notifications for weather alerts:</value>
+    <value>Benachrichtigungen für Wetterwarnungen anzeigen:</value>
   </data>
   <data name="Label_WeatherAlerts.Text" xml:space="preserve">
-    <value>Severe Weather Alerts</value>
+    <value>Unwetterwarnungen</value>
   </data>
   <data name="DateTime_DayAgo" xml:space="preserve">
-    <value>{0}d ago</value>
+    <value>vor {0} Tagen</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="DateTime_HrAgo" xml:space="preserve">
-    <value>{0}h ago</value>
+    <value>vor {0} Stunden</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="DateTime_MinAgo" xml:space="preserve">
-    <value>{0}m ago</value>
+    <value>vor {0} Minuten</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="DateTime_SecAgo" xml:space="preserve">
-    <value>{0}s ago</value>
+    <value>vor {0} Sekunden</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="DateTime_ValidUntil" xml:space="preserve">
-    <value>Valid until</value>
+    <value>Gültig bis</value>
   </data>
   <data name="Button_Refresh.Label" xml:space="preserve">
-    <value>Refresh</value>
+    <value>Aktualisieren</value>
   </data>
   <data name="Cloudiness_Label" xml:space="preserve">
-    <value>Cloudiness</value>
+    <value>Bewölkung</value>
   </data>
   <data name="FeelsLike_Label" xml:space="preserve">
-    <value>Feels like</value>
+    <value>Gefühlt</value>
   </data>
   <data name="Precipitation_Label" xml:space="preserve">
-    <value>Precipitation</value>
+    <value>Niederschlag</value>
   </data>
   <data name="Temp_Label" xml:space="preserve">
     <value>Temp</value>
@@ -341,112 +345,114 @@
     <value>Wind</value>
   </data>
   <data name="Label_Pin.Text" xml:space="preserve">
-    <value>Pin to Start</value>
+    <value>Fixieren</value>
+    <comment>Pin</comment>
   </data>
   <data name="Label_Unpin.Text" xml:space="preserve">
-    <value>Unpin from Start</value>
+    <value>Lösen</value>
+    <comment>Unpin</comment>
   </data>
   <data name="RegisterKeyBox.Content" xml:space="preserve">
-    <value>Create an account to register for a provider key</value>
+    <value>Benutzerkonto zum Erhalt eines Anbieterschlüssels erstellen</value>
   </data>
   <data name="WError_Unknown" xml:space="preserve">
-    <value>Unknown error occurred</value>
+    <value>Unbekannter Fehler</value>
   </data>
   <data name="ConfirmDialog.PrimaryButtonText" xml:space="preserve">
     <value>Ok</value>
   </data>
   <data name="ConfirmDialog.SecondaryButtonText" xml:space="preserve">
-    <value>Cancel</value>
+    <value>Abbrechen</value>
   </data>
   <data name="Label_High" xml:space="preserve">
-    <value>High</value>
+    <value>Höchst-</value>
   </data>
   <data name="Label_Low" xml:space="preserve">
-    <value>Low</value>
+    <value>Tiefstwerte</value>
   </data>
   <data name="Pref_PersonalKey.Text" xml:space="preserve">
-    <value>Use personal provider key:</value>
+    <value>Persönlichen Anbieterschlüssel benutzen:</value>
   </data>
   <data name="Beaufort_Label" xml:space="preserve">
     <value>Beaufort</value>
   </data>
   <data name="Dewpoint_Label" xml:space="preserve">
-    <value>Dew Point</value>
+    <value>Taupunkt</value>
   </data>
   <data name="Moonrise_Label" xml:space="preserve">
-    <value>Moonrise</value>
+    <value>Mondaufgang</value>
   </data>
   <data name="Moonset_Label" xml:space="preserve">
-    <value>Moonset</value>
+    <value>Monduntergang</value>
   </data>
   <data name="UV_Label" xml:space="preserve">
-    <value>UV Index</value>
+    <value>UV-Index</value>
   </data>
   <data name="Label_Delete" xml:space="preserve">
-    <value>Delete</value>
+    <value>Löschen</value>
   </data>
   <data name="Label_Temperature.Text" xml:space="preserve">
-    <value>Temperature</value>
+    <value>Temperatur</value>
   </data>
   <data name="Pref_DarkMode.Content" xml:space="preserve">
-    <value>Dark</value>
+    <value>Dunkel</value>
   </data>
   <data name="Pref_LightMode.Content" xml:space="preserve">
-    <value>Light</value>
+    <value>Hell</value>
   </data>
   <data name="Pref_SystemMode.Content" xml:space="preserve">
-    <value>System Theme</value>
+    <value>Systemdesign</value>
   </data>
   <data name="Pref_UserTheme.Text" xml:space="preserve">
-    <value>Theme</value>
+    <value>Design</value>
   </data>
   <data name="Setup_PreferencesPrompt.Text" xml:space="preserve">
-    <value>Customize your settings below</value>
+    <value>Einstellungen anpassen</value>
   </data>
   <data name="Action_Undo" xml:space="preserve">
-    <value>Undo</value>
+    <value>Rückgängig</value>
   </data>
   <data name="Message_LocationRemoved" xml:space="preserve">
-    <value>Location removed</value>
+    <value>Ort entfernt</value>
   </data>
   <data name="Message_NeedFavorite" xml:space="preserve">
-    <value>Must have at least one favorite location</value>
+    <value>Mindestens ein Favorit erforderlich</value>
   </data>
   <data name="Error_WeatherUSOnly" xml:space="preserve">
-    <value>This weather provider only supports locations in the U.S.</value>
+    <value>Dieser Wetteranbieter unterstützt nur Orte in den USA</value>
   </data>
   <data name="Header_FavLocations" xml:space="preserve">
-    <value>Favorite Locations</value>
+    <value>Favoriten</value>
   </data>
   <data name="Header_GPSLocation" xml:space="preserve">
-    <value>Current Location</value>
+    <value>Standort</value>
   </data>
   <data name="AQI_Label" xml:space="preserve">
-    <value>Air Quality Index</value>
+    <value>Luftqualitätsindex</value>
   </data>
   <data name="Label_Radar.Header" xml:space="preserve">
     <value>Radar</value>
   </data>
   <data name="Label_Day" xml:space="preserve">
-    <value>Afternoon</value>
+    <value>Nachmittag</value>
   </data>
   <data name="Label_Eve" xml:space="preserve">
-    <value>Evening</value>
+    <value>Abend</value>
   </data>
   <data name="Label_Morning" xml:space="preserve">
-    <value>Morning</value>
+    <value>Morgen</value>
   </data>
   <data name="Label_Night" xml:space="preserve">
-    <value>Night</value>
+    <value>Nacht</value>
   </data>
   <data name="Nav_WeatherAlerts.Content" xml:space="preserve">
-    <value>Weather Alerts</value>
+    <value>Wetterwarnungen</value>
   </data>
   <data name="Nav_WeatherRadar.Content" xml:space="preserve">
     <value>Radar</value>
   </data>
   <data name="NoWeatherAlerts_Prompt.Text" xml:space="preserve">
-    <value>No weather alerts available.</value>
+    <value>Keine Wetterwarnungen verfügbar</value>
   </data>
   <data name="Pref_UnitCelsius.Content" xml:space="preserve">
     <value>Celsius</value>
@@ -455,99 +461,99 @@
     <value>Fahrenheit</value>
   </data>
   <data name="LocationSearchHint.HeaderText" xml:space="preserve">
-    <value>Add a location</value>
+    <value>Ort hinzufügen</value>
   </data>
   <data name="SetupLocationSearchHint.PlaceholderText" xml:space="preserve">
-    <value>Add a location to start</value>
+    <value>Ort hinzufügen</value>
   </data>
   <data name="Features.Content" xml:space="preserve">
-    <value>Features</value>
+    <value>Funktionen</value>
   </data>
   <data name="FeatureOption_AQI.Content" xml:space="preserve">
-    <value>Air Quality Index</value>
+    <value>Luftqualitätsindex</value>
   </data>
   <data name="FeatureOption_Background.Content" xml:space="preserve">
-    <value>Background Image</value>
+    <value>Hintergrundbild</value>
   </data>
   <data name="FeatureOption_Beaufort.Content" xml:space="preserve">
     <value>Beaufort</value>
   </data>
   <data name="FeatureOption_Details.Content" xml:space="preserve">
-    <value>Weather Details</value>
+    <value>Wetterdetails</value>
   </data>
   <data name="FeatureOption_Forecast.Content" xml:space="preserve">
-    <value>Forecast</value>
+    <value>Vorhersage</value>
   </data>
   <data name="FeatureOption_HrForecast.Content" xml:space="preserve">
-    <value>Hourly Forecast</value>
+    <value>Stündliche Vorhersage</value>
   </data>
   <data name="FeatureOption_LocPanelBackground.Content" xml:space="preserve">
-    <value>Location Panel Image</value>
+    <value>Bild in der Ortsliste</value>
   </data>
   <data name="FeatureOption_MoonPhase.Content" xml:space="preserve">
-    <value>Moon Phase</value>
+    <value>Mondphase</value>
   </data>
   <data name="FeatureOption_Radar.Content" xml:space="preserve">
-    <value>Weather Radar</value>
+    <value>Wetterradar</value>
   </data>
   <data name="FeatureOption_SunPhase.Content" xml:space="preserve">
-    <value>Sun Phase</value>
+    <value>Sonnenphase</value>
   </data>
   <data name="FeatureOption_UV.Content" xml:space="preserve">
     <value>UV</value>
   </data>
   <data name="Pref_Features_Subtitle.Text" xml:space="preserve">
-    <value>Select features to enable/disable:</value>
+    <value>Funktionen auswählen</value>
   </data>
   <data name="Pref_Features_Title.Text" xml:space="preserve">
-    <value>Features</value>
+    <value>Funktionen</value>
   </data>
   <data name="MoonPhase_Label" xml:space="preserve">
-    <value>Moon Phase</value>
+    <value>Mondphase</value>
   </data>
   <data name="WindGust_Label" xml:space="preserve">
-    <value>Wind Gust</value>
+    <value>Windböe</value>
   </data>
   <data name="Label_Series" xml:space="preserve">
-    <value>Series</value>
+    <value>Verlauf</value>
   </data>
   <data name="Attrib_Prefix.Text" xml:space="preserve">
-    <value>Photo by</value>
+    <value>Foto von</value>
   </data>
   <data name="Label_Back.Label" xml:space="preserve">
-    <value>Back</value>
+    <value>Zurück</value>
   </data>
   <data name="Label_Next.Label" xml:space="preserve">
-    <value>Next</value>
+    <value>Vorwärts</value>
   </data>
   <data name="WelcomePrompt.Text" xml:space="preserve">
-    <value>Welcome to SimpleWeather</value>
+    <value>Willkommen zu SimpleWeather</value>
   </data>
   <data name="WelcomeSubtitle.Text" xml:space="preserve">
-    <value>Just a simple weather app</value>
+    <value>Nur eine einfache Wetter-App</value>
   </data>
   <data name="CheckUpdatePrompt.Text" xml:space="preserve">
-    <value>Checking for updates...</value>
+    <value>Prüfung auf Aktualisierungen...</value>
   </data>
   <data name="InstallErrorPrompt" xml:space="preserve">
-    <value>Unable to install. Click to try again</value>
+    <value>Installierung nicht möglich. Klicken für erneuten Versuch</value>
   </data>
   <data name="NoUpdateAvailablePrompt" xml:space="preserve">
-    <value>No updates available</value>
+    <value>Keine Aktualisierungen verfügbar</value>
   </data>
   <data name="UpdateAvailablePrompt" xml:space="preserve">
-    <value>Update available. Click to install</value>
+    <value>Aktualisierung verfügbar. Zum Installieren klicken</value>
   </data>
   <data name="DownloadingPrompt" xml:space="preserve">
-    <value>Downloading...</value>
+    <value>Lädt herunter...</value>
   </data>
   <data name="InstallingPrompt" xml:space="preserve">
-    <value>Installing...</value>
+    <value>Installierung…</value>
   </data>
   <data name="FeebackButton.Content" xml:space="preserve">
     <value>Feedback</value>
   </data>
   <data name="ReviewButton.Content" xml:space="preserve">
-    <value>Rate and Review</value>
+    <value>Bewertung und Überprüfung</value>
   </data>
 </root>

@@ -448,10 +448,10 @@
     <value>Aucune alerte météo n&apos;est disponible.</value>
   </data>
   <data name="Pref_UnitCelsius.Content" xml:space="preserve">
-    <value>Celsius (métrique)</value>
+    <value>Celsius</value>
   </data>
   <data name="Pref_UnitFahrenheit.Content" xml:space="preserve">
-    <value>Fahrenheit (Impérial)</value>
+    <value>Fahrenheit</value>
   </data>
   <data name="LocationSearchHint.HeaderText" xml:space="preserve">
     <value>Ajouter un emplacement</value>
@@ -501,106 +501,6 @@
   <data name="Pref_Features_Title.Text" xml:space="preserve">
     <value>Fonctionnalités</value>
   </data>
-  <data name="unit_mph" xml:space="preserve">
-    <value>mph</value>
-    <comment>Miles per hour</comment>
-  </data>
-  <data name="unit_kph" xml:space="preserve">
-    <value>km/h</value>
-    <comment>Kilometers per hour</comment>
-  </data>
-  <data name="unit_in" xml:space="preserve">
-    <value>in</value>
-    <comment>Inches</comment>
-  </data>
-  <data name="unit_cm" xml:space="preserve">
-    <value>cm</value>
-    <comment>Centimeters</comment>
-  </data>
-  <data name="unit_mm" xml:space="preserve">
-    <value>mm</value>
-    <comment>Millimeters</comment>
-  </data>
-  <data name="unit_inHg" xml:space="preserve">
-    <value>inHg</value>
-    <comment>Pressure: in</comment>
-  </data>
-  <data name="unit_mBar" xml:space="preserve">
-    <value>mb</value>
-    <comment>Pressure: millibar</comment>
-  </data>
-  <data name="unit_miles" xml:space="preserve">
-    <value>mi</value>
-    <comment>Distance: miles</comment>
-  </data>
-  <data name="unit_kilometers" xml:space="preserve">
-    <value>km</value>
-    <comment>Pressure: kilometers</comment>
-  </data>
-  <data name="wind_dir_n" xml:space="preserve">
-    <value>N</value>
-    <comment>North</comment>
-  </data>
-  <data name="wind_dir_nne" xml:space="preserve">
-    <value>NNE</value>
-    <comment>North-North East</comment>
-  </data>
-  <data name="wind_dir_ne" xml:space="preserve">
-    <value>NE</value>
-    <comment>North-East</comment>
-  </data>
-  <data name="wind_dir_ene" xml:space="preserve">
-    <value>ENE</value>
-    <comment>East North-East</comment>
-  </data>
-  <data name="wind_dir_e" xml:space="preserve">
-    <value>E</value>
-    <comment>East</comment>
-  </data>
-  <data name="wind_dir_ese" xml:space="preserve">
-    <value>ESE</value>
-    <comment>East South-East</comment>
-  </data>
-  <data name="wind_dir_se" xml:space="preserve">
-    <value>SE</value>
-    <comment>South-East</comment>
-  </data>
-  <data name="wind_dir_sse" xml:space="preserve">
-    <value>SSE</value>
-    <comment>South South-East</comment>
-  </data>
-  <data name="wind_dir_s" xml:space="preserve">
-    <value>S</value>
-    <comment>South</comment>
-  </data>
-  <data name="wind_dir_ssw" xml:space="preserve">
-    <value>SSO</value>
-    <comment>South South-West</comment>
-  </data>
-  <data name="wind_dir_sw" xml:space="preserve">
-    <value>SO</value>
-    <comment>South-West</comment>
-  </data>
-  <data name="wind_dir_wsw" xml:space="preserve">
-    <value>OSO</value>
-    <comment>West South-West</comment>
-  </data>
-  <data name="wind_dir_w" xml:space="preserve">
-    <value>O</value>
-    <comment>West</comment>
-  </data>
-  <data name="wind_dir_wnw" xml:space="preserve">
-    <value>ONO</value>
-    <comment>West North-West</comment>
-  </data>
-  <data name="wind_dir_nw" xml:space="preserve">
-    <value>NO</value>
-    <comment>North-West</comment>
-  </data>
-  <data name="wind_dir_nnw" xml:space="preserve">
-    <value>NNO</value>
-    <comment>North North-West</comment>
-  </data>
   <data name="MoonPhase_Label" xml:space="preserve">
     <value>Phase de lune</value>
   </data>
@@ -642,5 +542,11 @@
   </data>
   <data name="InstallingPrompt" xml:space="preserve">
     <value>Installation...</value>
+  </data>
+  <data name="FeebackButton.Content" xml:space="preserve">
+    <value>Commentaires</value>
+  </data>
+  <data name="ReviewButton.Content" xml:space="preserve">
+    <value>Évaluer et réviser</value>
   </data>
 </root>
