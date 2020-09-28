@@ -549,4 +549,7 @@
   <data name="ReviewButton.Content" xml:space="preserve">
     <value>Évaluer et réviser</value>
   </data>
+  <data name="TranslateButton.Content" xml:space="preserve">
+    <value>Aider à traduire l&apos;application</value>
+  </data>
 </root>

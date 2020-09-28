@@ -556,4 +556,8 @@
   <data name="ReviewButton.Content" xml:space="preserve">
     <value>Bewertung und Überprüfung</value>
   </data>
+  <data name="TranslateButton.Content" xml:space="preserve">
+    <value>Hilfe bei der Übersetzung der App</value>
+    <comment>Can be changed to &apos;Help us translate the app&apos;</comment>
+  </data>
 </root>
