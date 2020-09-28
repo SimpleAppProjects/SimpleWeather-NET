@@ -41,9 +41,8 @@ namespace SimpleWeather.UWP.BackgroundTasks
                         await WNSWorkerBackgroundTask.RegisterBackgroundTask();
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    Logger.WriteLine(LoggerLevel.Error, ex);
                 }
             }
 
@@ -125,7 +124,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                 // Check firestore timestamp against Settings
                 var updateTime = await ImageDatabase.GetLastUpdateTime();
 
-                if (updateTime != ImageDataHelper.ImageDBUpdateTime)
+                if (updateTime > ImageDataHelper.ImageDBUpdateTime)
                 {
                     Logger.WriteLine(LoggerLevel.Debug, "{0}: Invalidating cache", taskName);
 

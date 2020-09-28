@@ -1,4 +1,5 @@
 ﻿using SimpleWeather.Utils;
+using SimpleWeather.UWP.Utils;
 using SimpleWeather.WeatherData.Images;
 using System;
 using System.Collections.Generic;
@@ -20,12 +21,12 @@ namespace SimpleWeather.UWP.BackgroundTasks
             var deferral = taskInstance?.GetDeferral();
 
             // Check if cache is populated
-            if (!(await ImageDataHelper.ImageDataHelperImpl.IsEmpty()))
+            if (!await ImageDataHelper.ImageDataHelperImpl.IsEmpty() && !FeatureSettings.IsUpdateAvailable)
             {
                 // Check firestore timestamp against Settings
                 var updateTime = await ImageDatabase.GetLastUpdateTime();
 
-                if (updateTime != ImageDataHelper.ImageDBUpdateTime)
+                if (updateTime > ImageDataHelper.ImageDBUpdateTime)
                 {
                     Logger.WriteLine(LoggerLevel.Debug, "{0}: Invalidating cache", taskName);
 

@@ -185,7 +185,7 @@ namespace UnitTestProject
         public void RealtimeDBTest()
         {
             var updateTime = SimpleWeather.WeatherData.Images.ImageDatabase.GetLastUpdateTime().ConfigureAwait(false).GetAwaiter().GetResult();
-            Assert.IsTrue(updateTime != 0);
+            Assert.IsTrue(updateTime > 0);
         }
     }
 }

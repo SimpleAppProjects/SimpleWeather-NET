@@ -145,16 +145,16 @@ namespace SimpleWeather.Utils
 
                 // Check cache for image data
                 var imageHelper = ImageDataHelper.ImageDataHelperImpl;
-#if WINDOWS_UWP && !UNIT_TEST
-                if (!FeatureSettings.IsUpdateAvailable)
+                var imageData = await imageHelper.GetCachedImageData(backgroundCode);
+                // Check if cache is available and valid
+                if (imageData?.IsValid() == true)
+                    return new ImageDataViewModel(imageData);
+                else
                 {
-#endif
-                    var imageData = await imageHelper.GetCachedImageData(backgroundCode);
-                    // Check if cache is available and valid
-                    if (imageData?.IsValid() == true)
-                        return new ImageDataViewModel(imageData);
-                    else
+#if WINDOWS_UWP && !UNIT_TEST
+                    if (!FeatureSettings.IsUpdateAvailable)
                     {
+#endif
                         imageData = await imageHelper.GetRemoteImageData(backgroundCode);
                         if (imageData?.IsValid() == true)
                             return new ImageDataViewModel(imageData);
@@ -164,16 +164,17 @@ namespace SimpleWeather.Utils
                             if (imageData?.IsValid() == true)
                                 return new ImageDataViewModel(imageData);
                         }
-                    }
 #if WINDOWS_UWP && !UNIT_TEST
-                }
-                else
-                {
-                    var imageData = imageHelper.GetDefaultImageData(backgroundCode, weather);
-                    if (imageData?.IsValid() == true)
-                        return new ImageDataViewModel(imageData);
-                }
+                    }
+                    else
+                    {
+                        imageData = imageHelper.GetDefaultImageData(backgroundCode, weather);
+                        if (imageData?.IsValid() == true)
+                            return new ImageDataViewModel(imageData);
+                    }
 #endif
+                }
+
                 return null;
             });
         }
