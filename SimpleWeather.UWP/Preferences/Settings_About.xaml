@@ -78,17 +78,23 @@
                 Visibility="Collapsed" />
         </StackPanel>
         <HyperlinkButton
-            x:Name="ReviewButton"
-            x:Uid="ReviewButton"
-            Click="ReviewButton_Click"
-            Content="Rate and Review"
-            Style="{ThemeResource HyperlinkButtonStyle}" />
-        <HyperlinkButton
             x:Name="FeedbackButton"
             x:Uid="FeebackButton"
             Click="FeedbackButton_Click"
             Content="Feedback"
             Style="{ThemeResource HyperlinkButtonStyle}"
             Visibility="Collapsed" />
+        <HyperlinkButton
+            x:Name="ReviewButton"
+            x:Uid="ReviewButton"
+            Click="ReviewButton_Click"
+            Content="Rate and Review"
+            Style="{ThemeResource HyperlinkButtonStyle}" />
+        <HyperlinkButton
+            x:Name="TranslateButton"
+            x:Uid="TranslateButton"
+            Content="Help translate the app"
+            NavigateUri="https://poeditor.com/join/project?hash=x9AzamDQO8"
+            Style="{ThemeResource HyperlinkButtonStyle}" />
     </StackPanel>
 </Page>
