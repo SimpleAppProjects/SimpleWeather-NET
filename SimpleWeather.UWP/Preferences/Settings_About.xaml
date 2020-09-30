@@ -75,6 +75,8 @@
                 Margin="0,0,0,0"
                 Foreground="{ThemeResource ProgressPaintColorBrush}"
                 IsIndeterminate="True"
+                Maximum="1"
+                Minimum="0"
                 Visibility="Collapsed" />
         </StackPanel>
         <HyperlinkButton

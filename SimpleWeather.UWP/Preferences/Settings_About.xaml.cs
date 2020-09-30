@@ -103,7 +103,7 @@ namespace SimpleWeather.UWP.Preferences
 
         private async void InstallButton_Click(object sender, RoutedEventArgs e)
         {
-            UpdateProgressBar.IsIndeterminate = false;
+            UpdateProgressBar.IsIndeterminate = true;
             UpdateProgressBar.ShowError = false;
             UpdateProgressBar.Value = 0;
             UpdateProgressBar.Visibility = Visibility.Visible;
@@ -120,6 +120,11 @@ namespace SimpleWeather.UWP.Preferences
             {
                 await Dispatcher.RunOnUIThread(() =>
                 {
+                    if (UpdateProgressBar.IsIndeterminate)
+                    {
+                        UpdateProgressBar.IsIndeterminate = false;
+                    }
+
                     UpdateProgressBar.Value = progress.PackageDownloadProgress;
 
                     if (progress.PackageDownloadProgress >= 0.8)
