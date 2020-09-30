@@ -218,7 +218,6 @@ namespace SimpleWeather.UWP.Controls
                 DrawIconLabels = false;
 
             double longestWidth = 0;
-            String longestStr = "";
             bottomTextDescent = 0;
             longestTextWidth = 0;
             foreach (XLabelData labelData in dataLabels)
@@ -232,8 +231,10 @@ namespace SimpleWeather.UWP.Controls
                     }
                     if (longestWidth < txtLayout.LayoutBounds.Width)
                     {
-                        longestWidth = txtLayout.LayoutBounds.Width;
-                        longestStr = s;
+                        using (var textLayout = new CanvasTextLayout(Canvas, s.Substring(0, 1), BottomTextFormat, 0, 0))
+                        {
+                            longestWidth = txtLayout.LayoutBounds.Width + (textLayout.LayoutBounds.Width * 2.25f);
+                        }
                     }
                     if (bottomTextDescent < (Math.Abs(txtLayout.LayoutBounds.Bottom)))
                     {
@@ -244,15 +245,13 @@ namespace SimpleWeather.UWP.Controls
 
             if (longestTextWidth < longestWidth)
             {
-                using (var textLayout = new CanvasTextLayout(Canvas, longestStr.Substring(0, 1), BottomTextFormat, 0, 0))
-                {
-                    longestTextWidth = (float)longestWidth + (float)textLayout.LayoutBounds.Width;
-                }
+                longestTextWidth = (float)longestWidth;
             }
             if (sideLineLength < longestWidth / 2)
             {
                 sideLineLength = (float)longestWidth / 2f;
             }
+
             backgroundGridWidth = longestTextWidth;
 
             RefreshXCoordinateList();
@@ -267,24 +266,57 @@ namespace SimpleWeather.UWP.Controls
                 this.dataLists.AddRange(dataLists);
             }
 
+            float biggestData = 0;
+            float prevLongestTextWidth = longestTextWidth;
+            double longestWidth = 0;
+
             foreach (LineDataSeries series in dataLists)
             {
                 if (series.SeriesData.Count > dataLabels.Count)
                 {
                     throw new Exception("LineView error: SeriesData.Count > dataLabels.Count !!!");
                 }
-            }
-            float biggestData = 0;
-            foreach (LineDataSeries series in dataLists)
-            {
+
                 foreach (YEntryData i in series.SeriesData)
                 {
                     if (biggestData < i.Y)
+                    {
                         biggestData = i.Y;
+                    }
+
+                    // Measure Y label
+                    var s = i.YLabel;
+                    using (var txtLayout = new CanvasTextLayout(Canvas, s, BottomTextFormat, 0, 0))
+                    {
+                        if (longestWidth < txtLayout.LayoutBounds.Width)
+                        {
+                            using (var textLayout = new CanvasTextLayout(Canvas, s.Substring(0, 1), BottomTextFormat, 0, 0))
+                            {
+                                longestWidth = txtLayout.LayoutBounds.Width + (textLayout.LayoutBounds.Width * 2.25f);
+                            }
+                        }
+                    }
+                    if (longestTextWidth < longestWidth)
+                    {
+                        longestTextWidth = (float)longestWidth;
+                    }
+                    if (sideLineLength < longestWidth / 2)
+                    {
+                        sideLineLength = (float)longestWidth / 2f;
+                    }
                 }
                 DataOfAGrid = 1;
                 while (biggestData / 10 > DataOfAGrid)
+                {
                     DataOfAGrid *= 10;
+                }
+            }
+
+            backgroundGridWidth = longestTextWidth;
+
+            if (prevLongestTextWidth != longestTextWidth)
+            {
+                RefreshXCoordinateList();
             }
 
             RefreshAfterDataChanged();
