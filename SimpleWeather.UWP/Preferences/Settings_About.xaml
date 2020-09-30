@@ -84,8 +84,7 @@
             x:Uid="FeebackButton"
             Click="FeedbackButton_Click"
             Content="Feedback"
-            Style="{ThemeResource HyperlinkButtonStyle}"
-            Visibility="Collapsed" />
+            Style="{ThemeResource HyperlinkButtonStyle}" />
         <HyperlinkButton
             x:Name="ReviewButton"
             x:Uid="ReviewButton"

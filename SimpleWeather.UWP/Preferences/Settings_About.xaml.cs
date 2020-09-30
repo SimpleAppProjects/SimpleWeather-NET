@@ -46,11 +46,6 @@ namespace SimpleWeather.UWP.Preferences
             {
                 UpdateProgressPanel.Visibility = Visibility.Collapsed;
             }
-
-            if (Microsoft.Services.Store.Engagement.StoreServicesFeedbackLauncher.IsSupported())
-            {
-                this.FeedbackButton.Visibility = Visibility.Visible;
-            }
         }
 
         private void SettingsAbout_Resuming(object sender, object e)
@@ -181,8 +176,15 @@ namespace SimpleWeather.UWP.Preferences
 
         private async void FeedbackButton_Click(object sender, RoutedEventArgs e)
         {
-            var launcher = Microsoft.Services.Store.Engagement.StoreServicesFeedbackLauncher.GetDefault();
-            await launcher.LaunchAsync();
+            if (Microsoft.Services.Store.Engagement.StoreServicesFeedbackLauncher.IsSupported())
+            {
+                var launcher = Microsoft.Services.Store.Engagement.StoreServicesFeedbackLauncher.GetDefault();
+                await launcher.LaunchAsync();
+            }
+            else
+            {
+                await Windows.System.Launcher.LaunchUriAsync(new Uri("mailto://thewizrd.dev+SimpleWeatherWindows@gmail.com"));
+            }
         }
     }
 }
