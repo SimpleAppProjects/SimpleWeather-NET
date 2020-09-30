@@ -43,9 +43,10 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Resolvers
 
         static GeneratedResolverGetFormatterHelper()
         {
-            lookup = new global::System.Collections.Generic.Dictionary<Type, int>(1)
+            lookup = new global::System.Collections.Generic.Dictionary<Type, int>(2)
             {
-                {typeof(global::SimpleWeather.UWP.WNS.WNSChannel), 0 },
+                {typeof(global::SimpleWeather.UWP.WNS.FirebaseUWPUser), 0 },
+                {typeof(global::SimpleWeather.UWP.WNS.WNSChannel), 1 },
             };
         }
 
@@ -56,7 +57,8 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Resolvers
 
             switch (key)
             {
-                case 0: return new SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.WNS.WNSChannelFormatter();
+                case 0: return new SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.WNS.FirebaseUWPUserFormatter();
+                case 1: return new SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.WNS.WNSChannelFormatter();
                 default: return null;
             }
         }
@@ -78,6 +80,108 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.WNS
 {
     using System;
     using Utf8Json;
+
+
+    internal sealed class FirebaseUWPUserFormatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.UWP.WNS.FirebaseUWPUser>
+    {
+        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
+        readonly byte[][] ____stringByteKeys;
+
+        public FirebaseUWPUserFormatter()
+        {
+            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
+            {
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("channel_uri"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("expiration_time"), 1},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("package_name"), 2},
+            };
+
+            this.____stringByteKeys = new byte[][]
+            {
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("channel_uri"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("expiration_time"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("package_name"),
+                
+            };
+        }
+
+        public void Serialize(ref JsonWriter writer, global::SimpleWeather.UWP.WNS.FirebaseUWPUser value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
+            
+
+            writer.WriteRaw(this.____stringByteKeys[0]);
+            writer.WriteString(value.channel_uri);
+            writer.WriteRaw(this.____stringByteKeys[1]);
+            writer.WriteInt64(value.expiration_time);
+            writer.WriteRaw(this.____stringByteKeys[2]);
+            writer.WriteString(value.package_name);
+            
+            writer.WriteEndObject();
+        }
+
+        public global::SimpleWeather.UWP.WNS.FirebaseUWPUser Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (reader.ReadIsNull())
+            {
+                return null;
+            }
+            
+
+            var __channel_uri__ = default(string);
+            var __channel_uri__b__ = false;
+            var __expiration_time__ = default(long);
+            var __expiration_time__b__ = false;
+            var __package_name__ = default(string);
+            var __package_name__b__ = false;
+
+            var ____count = 0;
+            reader.ReadIsBeginObjectWithVerify();
+            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
+            {
+                var stringKey = reader.ReadPropertyNameSegmentRaw();
+                int key;
+                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
+                {
+                    reader.ReadNextBlock();
+                    goto NEXT_LOOP;
+                }
+
+                switch (key)
+                {
+                    case 0:
+                        __channel_uri__ = reader.ReadString();
+                        __channel_uri__b__ = true;
+                        break;
+                    case 1:
+                        __expiration_time__ = reader.ReadInt64();
+                        __expiration_time__b__ = true;
+                        break;
+                    case 2:
+                        __package_name__ = reader.ReadString();
+                        __package_name__b__ = true;
+                        break;
+                    default:
+                        reader.ReadNextBlock();
+                        break;
+                }
+
+                NEXT_LOOP:
+                continue;
+            }
+
+            var ____result = new global::SimpleWeather.UWP.WNS.FirebaseUWPUser();
+            if(__channel_uri__b__) ____result.channel_uri = __channel_uri__;
+            if(__expiration_time__b__) ____result.expiration_time = __expiration_time__;
+            if(__package_name__b__) ____result.package_name = __package_name__;
+
+            return ____result;
+        }
+    }
 
 
     internal sealed class WNSChannelFormatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.UWP.WNS.WNSChannel>

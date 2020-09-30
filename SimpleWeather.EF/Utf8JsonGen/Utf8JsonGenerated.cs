@@ -43,7 +43,7 @@ namespace SimpleWeather.EF.Utf8JsonGen.Resolvers
 
         static GeneratedResolverGetFormatterHelper()
         {
-            lookup = new global::System.Collections.Generic.Dictionary<Type, int>(24)
+            lookup = new global::System.Collections.Generic.Dictionary<Type, int>(25)
             {
                 {typeof(global::System.Collections.Generic.IList<global::SimpleWeather.WeatherData.Forecast>), 0 },
                 {typeof(global::System.Collections.Generic.IList<global::SimpleWeather.WeatherData.HourlyForecast>), 1 },
@@ -66,9 +66,10 @@ namespace SimpleWeather.EF.Utf8JsonGen.Resolvers
                 {typeof(global::SimpleWeather.WeatherData.Precipitation), 18 },
                 {typeof(global::SimpleWeather.WeatherData.WeatherAlert), 19 },
                 {typeof(global::SimpleWeather.WeatherData.Weather), 20 },
-                {typeof(global::SimpleWeather.WeatherData.Forecasts), 21 },
-                {typeof(global::SimpleWeather.WeatherData.HourlyForecasts), 22 },
-                {typeof(global::SimpleWeather.WeatherData.WeatherAlerts), 23 },
+                {typeof(global::SimpleWeather.WeatherData.BaseForecast), 21 },
+                {typeof(global::SimpleWeather.WeatherData.Forecasts), 22 },
+                {typeof(global::SimpleWeather.WeatherData.HourlyForecasts), 23 },
+                {typeof(global::SimpleWeather.WeatherData.WeatherAlerts), 24 },
             };
         }
 
@@ -100,9 +101,10 @@ namespace SimpleWeather.EF.Utf8JsonGen.Resolvers
                 case 18: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.PrecipitationFormatter();
                 case 19: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.WeatherAlertFormatter();
                 case 20: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.WeatherFormatter();
-                case 21: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.ForecastsFormatter();
-                case 22: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.HourlyForecastsFormatter();
-                case 23: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.WeatherAlertsFormatter();
+                case 21: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.BaseForecastFormatter();
+                case 22: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.ForecastsFormatter();
+                case 23: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.HourlyForecastsFormatter();
+                case 24: return new SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.WeatherAlertsFormatter();
                 default: return null;
             }
         }
@@ -837,10 +839,10 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
             {
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("date"), 0},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("high_f"), 1},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("high_c"), 2},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("low_f"), 3},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("low_c"), 4},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("low_f"), 1},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("low_c"), 2},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("high_f"), 3},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("high_c"), 4},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("condition"), 5},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("icon"), 6},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("extras"), 7},
@@ -849,10 +851,10 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             this.____stringByteKeys = new byte[][]
             {
                 JsonWriter.GetEncodedPropertyNameWithBeginObject("date"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("high_f"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("high_c"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("low_f"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("low_c"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("high_f"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("high_c"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("condition"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("icon"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("extras"),
@@ -872,13 +874,13 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             writer.WriteRaw(this.____stringByteKeys[0]);
             formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.date, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[1]);
-            formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.high_f, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[2]);
-            formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.high_c, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[3]);
             formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.low_f, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[4]);
+            writer.WriteRaw(this.____stringByteKeys[2]);
             formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.low_c, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[3]);
+            formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.high_f, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[4]);
+            formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.high_c, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[5]);
             writer.WriteString(value.condition);
             writer.WriteRaw(this.____stringByteKeys[6]);
@@ -899,14 +901,14 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
 
             var __date__ = default(global::System.DateTime);
             var __date__b__ = false;
-            var __high_f__ = default(float?);
-            var __high_f__b__ = false;
-            var __high_c__ = default(float?);
-            var __high_c__b__ = false;
             var __low_f__ = default(float?);
             var __low_f__b__ = false;
             var __low_c__ = default(float?);
             var __low_c__b__ = false;
+            var __high_f__ = default(float?);
+            var __high_f__b__ = false;
+            var __high_c__ = default(float?);
+            var __high_c__b__ = false;
             var __condition__ = default(string);
             var __condition__b__ = false;
             var __icon__ = default(string);
@@ -933,20 +935,20 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
                         __date__b__ = true;
                         break;
                     case 1:
-                        __high_f__ = formatterResolver.GetFormatterWithVerify<float?>().Deserialize(ref reader, formatterResolver);
-                        __high_f__b__ = true;
-                        break;
-                    case 2:
-                        __high_c__ = formatterResolver.GetFormatterWithVerify<float?>().Deserialize(ref reader, formatterResolver);
-                        __high_c__b__ = true;
-                        break;
-                    case 3:
                         __low_f__ = formatterResolver.GetFormatterWithVerify<float?>().Deserialize(ref reader, formatterResolver);
                         __low_f__b__ = true;
                         break;
-                    case 4:
+                    case 2:
                         __low_c__ = formatterResolver.GetFormatterWithVerify<float?>().Deserialize(ref reader, formatterResolver);
                         __low_c__b__ = true;
+                        break;
+                    case 3:
+                        __high_f__ = formatterResolver.GetFormatterWithVerify<float?>().Deserialize(ref reader, formatterResolver);
+                        __high_f__b__ = true;
+                        break;
+                    case 4:
+                        __high_c__ = formatterResolver.GetFormatterWithVerify<float?>().Deserialize(ref reader, formatterResolver);
+                        __high_c__b__ = true;
                         break;
                     case 5:
                         __condition__ = reader.ReadString();
@@ -971,10 +973,10 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
 
             var ____result = new global::SimpleWeather.WeatherData.Forecast();
             if(__date__b__) ____result.date = __date__;
-            if(__high_f__b__) ____result.high_f = __high_f__;
-            if(__high_c__b__) ____result.high_c = __high_c__;
             if(__low_f__b__) ____result.low_f = __low_f__;
             if(__low_c__b__) ____result.low_c = __low_c__;
+            if(__high_f__b__) ____result.high_f = __high_f__;
+            if(__high_c__b__) ____result.high_c = __high_c__;
             if(__condition__b__) ____result.condition = __condition__;
             if(__icon__b__) ____result.icon = __icon__;
             if(__extras__b__) ____result.extras = __extras__;
@@ -994,26 +996,26 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
             {
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("date"), 0},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("high_f"), 1},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("high_c"), 2},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("condition"), 3},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("icon"), 4},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("wind_degrees"), 5},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("wind_mph"), 6},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("wind_kph"), 7},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("wind_degrees"), 1},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("wind_mph"), 2},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("wind_kph"), 3},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("high_f"), 4},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("high_c"), 5},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("condition"), 6},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("icon"), 7},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("extras"), 8},
             };
 
             this.____stringByteKeys = new byte[][]
             {
                 JsonWriter.GetEncodedPropertyNameWithBeginObject("date"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("wind_degrees"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("wind_mph"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("wind_kph"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("high_f"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("high_c"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("condition"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("icon"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("wind_degrees"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("wind_mph"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("wind_kph"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("extras"),
                 
             };
@@ -1031,19 +1033,19 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             writer.WriteRaw(this.____stringByteKeys[0]);
             formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Serialize(ref writer, value.date, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[1]);
-            formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.high_f, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[2]);
-            formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.high_c, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[3]);
-            writer.WriteString(value.condition);
-            writer.WriteRaw(this.____stringByteKeys[4]);
-            writer.WriteString(value.icon);
-            writer.WriteRaw(this.____stringByteKeys[5]);
             formatterResolver.GetFormatterWithVerify<int?>().Serialize(ref writer, value.wind_degrees, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[6]);
+            writer.WriteRaw(this.____stringByteKeys[2]);
             formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.wind_mph, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[7]);
+            writer.WriteRaw(this.____stringByteKeys[3]);
             formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.wind_kph, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[4]);
+            formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.high_f, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[5]);
+            formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.high_c, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[6]);
+            writer.WriteString(value.condition);
+            writer.WriteRaw(this.____stringByteKeys[7]);
+            writer.WriteString(value.icon);
             writer.WriteRaw(this.____stringByteKeys[8]);
             formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherData.ForecastExtras>().Serialize(ref writer, value.extras, formatterResolver);
             
@@ -1060,6 +1062,12 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
 
             var __date__ = default(global::System.DateTimeOffset);
             var __date__b__ = false;
+            var __wind_degrees__ = default(int?);
+            var __wind_degrees__b__ = false;
+            var __wind_mph__ = default(float?);
+            var __wind_mph__b__ = false;
+            var __wind_kph__ = default(float?);
+            var __wind_kph__b__ = false;
             var __high_f__ = default(float?);
             var __high_f__b__ = false;
             var __high_c__ = default(float?);
@@ -1068,12 +1076,6 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             var __condition__b__ = false;
             var __icon__ = default(string);
             var __icon__b__ = false;
-            var __wind_degrees__ = default(int?);
-            var __wind_degrees__b__ = false;
-            var __wind_mph__ = default(float?);
-            var __wind_mph__b__ = false;
-            var __wind_kph__ = default(float?);
-            var __wind_kph__b__ = false;
             var __extras__ = default(global::SimpleWeather.WeatherData.ForecastExtras);
             var __extras__b__ = false;
 
@@ -1096,32 +1098,32 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
                         __date__b__ = true;
                         break;
                     case 1:
-                        __high_f__ = formatterResolver.GetFormatterWithVerify<float?>().Deserialize(ref reader, formatterResolver);
-                        __high_f__b__ = true;
-                        break;
-                    case 2:
-                        __high_c__ = formatterResolver.GetFormatterWithVerify<float?>().Deserialize(ref reader, formatterResolver);
-                        __high_c__b__ = true;
-                        break;
-                    case 3:
-                        __condition__ = reader.ReadString();
-                        __condition__b__ = true;
-                        break;
-                    case 4:
-                        __icon__ = reader.ReadString();
-                        __icon__b__ = true;
-                        break;
-                    case 5:
                         __wind_degrees__ = formatterResolver.GetFormatterWithVerify<int?>().Deserialize(ref reader, formatterResolver);
                         __wind_degrees__b__ = true;
                         break;
-                    case 6:
+                    case 2:
                         __wind_mph__ = formatterResolver.GetFormatterWithVerify<float?>().Deserialize(ref reader, formatterResolver);
                         __wind_mph__b__ = true;
                         break;
-                    case 7:
+                    case 3:
                         __wind_kph__ = formatterResolver.GetFormatterWithVerify<float?>().Deserialize(ref reader, formatterResolver);
                         __wind_kph__b__ = true;
+                        break;
+                    case 4:
+                        __high_f__ = formatterResolver.GetFormatterWithVerify<float?>().Deserialize(ref reader, formatterResolver);
+                        __high_f__b__ = true;
+                        break;
+                    case 5:
+                        __high_c__ = formatterResolver.GetFormatterWithVerify<float?>().Deserialize(ref reader, formatterResolver);
+                        __high_c__b__ = true;
+                        break;
+                    case 6:
+                        __condition__ = reader.ReadString();
+                        __condition__b__ = true;
+                        break;
+                    case 7:
+                        __icon__ = reader.ReadString();
+                        __icon__b__ = true;
                         break;
                     case 8:
                         __extras__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherData.ForecastExtras>().Deserialize(ref reader, formatterResolver);
@@ -1138,13 +1140,13 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
 
             var ____result = new global::SimpleWeather.WeatherData.HourlyForecast();
             if(__date__b__) ____result.date = __date__;
+            if(__wind_degrees__b__) ____result.wind_degrees = __wind_degrees__;
+            if(__wind_mph__b__) ____result.wind_mph = __wind_mph__;
+            if(__wind_kph__b__) ____result.wind_kph = __wind_kph__;
             if(__high_f__b__) ____result.high_f = __high_f__;
             if(__high_c__b__) ____result.high_c = __high_c__;
             if(__condition__b__) ____result.condition = __condition__;
             if(__icon__b__) ____result.icon = __icon__;
-            if(__wind_degrees__b__) ____result.wind_degrees = __wind_degrees__;
-            if(__wind_mph__b__) ____result.wind_mph = __wind_mph__;
-            if(__wind_kph__b__) ____result.wind_kph = __wind_kph__;
             if(__extras__b__) ____result.extras = __extras__;
 
             return ____result;
@@ -2677,6 +2679,69 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             if(__updatetimeblob__b__) ____result.updatetimeblob = __updatetimeblob__;
 
             return ____result;
+        }
+    }
+
+
+    public sealed class BaseForecastFormatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.WeatherData.BaseForecast>
+    {
+        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
+        readonly byte[][] ____stringByteKeys;
+
+        public BaseForecastFormatter()
+        {
+            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
+            {
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("high_f"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("high_c"), 1},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("condition"), 2},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("icon"), 3},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("extras"), 4},
+            };
+
+            this.____stringByteKeys = new byte[][]
+            {
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("high_f"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("high_c"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("condition"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("icon"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("extras"),
+                
+            };
+        }
+
+        public void Serialize(ref JsonWriter writer, global::SimpleWeather.WeatherData.BaseForecast value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
+            
+
+            writer.WriteRaw(this.____stringByteKeys[0]);
+            formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.high_f, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[1]);
+            formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.high_c, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[2]);
+            writer.WriteString(value.condition);
+            writer.WriteRaw(this.____stringByteKeys[3]);
+            writer.WriteString(value.icon);
+            writer.WriteRaw(this.____stringByteKeys[4]);
+            formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherData.ForecastExtras>().Serialize(ref writer, value.extras, formatterResolver);
+            
+            writer.WriteEndObject();
+        }
+
+        public global::SimpleWeather.WeatherData.BaseForecast Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (reader.ReadIsNull())
+            {
+                return null;
+            }
+            
+            
+	        throw new InvalidOperationException("generated serializer for IInterface does not support deserialize.");
         }
     }
 
