@@ -112,11 +112,11 @@ namespace SimpleWeather.UWP.Controls
             });
         }
 
-        private void CurrentForecastsData_ItemValueChanged(object sender, ObservableItemChangedEventArgs e)
+        private async void CurrentForecastsData_ItemValueChanged(object sender, ObservableItemChangedEventArgs e)
         {
             if (e.NewValue is Forecasts fcasts)
             {
-                RefreshForecasts(fcasts);
+                await RefreshForecasts(fcasts);
             }
         }
 
@@ -143,11 +143,11 @@ namespace SimpleWeather.UWP.Controls
             }).ConfigureAwait(true);
         }
 
-        private void CurrentHrForecastsData_ItemValueChanged(object sender, ObservableItemChangedEventArgs e)
+        private async void CurrentHrForecastsData_ItemValueChanged(object sender, ObservableItemChangedEventArgs e)
         {
             if (e.NewValue is IList<HourlyForecast> hrfcasts)
             {
-                RefreshHourlyForecasts(hrfcasts);
+                await RefreshHourlyForecasts(hrfcasts);
             }
         }
 
