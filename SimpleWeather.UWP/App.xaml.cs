@@ -574,12 +574,27 @@ namespace SimpleWeather.UWP
 
         private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            Logger.WriteLine(LoggerLevel.Fatal, e.Exception, "Unhandled Exception {0}", e.Message);
+            Logger.WriteLine(LoggerLevel.Fatal, e.Exception, "Unhandled Exception: {0}", e.Message);
+
+            // Log inner exceptions
+            if (e.Exception is AggregateException agg)
+            {
+                foreach (Exception inner in agg.InnerExceptions)
+                {
+                    Logger.WriteLine(LoggerLevel.Fatal, inner, "Unhandled Exception: {0}", inner.Message);
+                }
+            }
         }
 
         private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
         {
             Logger.WriteLine(LoggerLevel.Fatal, e.Exception, "Unobserved Task Exception: Observed = {0}", e.Observed);
+            
+            // Log inner exceptions
+            foreach (Exception inner in e.Exception.InnerExceptions)
+            {
+                Logger.WriteLine(LoggerLevel.Fatal, inner, "Unobserved Task Exception: {0}", inner.Message);
+            }
         }
 
         private void DefaultTheme_ColorValuesChanged(UISettings sender, object args)
