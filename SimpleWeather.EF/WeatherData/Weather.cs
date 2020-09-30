@@ -578,18 +578,22 @@ namespace SimpleWeather.WeatherData
         }
     }
 
-    [JsonFormatter(typeof(CustomJsonConverter<Forecast>))]
-    public partial class Forecast : CustomJsonObject
+    public abstract class BaseForecast : CustomJsonObject
     {
-        [JsonFormatter(typeof(DateTimeFormatter), DateTimeUtils.ISO8601_DATETIME_FORMAT)]
-        public DateTime date { get; set; }
         public float? high_f { get; set; }
         public float? high_c { get; set; }
-        public float? low_f { get; set; }
-        public float? low_c { get; set; }
         public string condition { get; set; }
         public string icon { get; set; }
         public ForecastExtras extras { get; set; }
+    }
+
+    [JsonFormatter(typeof(CustomJsonConverter<Forecast>))]
+    public partial class Forecast : BaseForecast
+    {
+        [JsonFormatter(typeof(DateTimeFormatter), DateTimeUtils.ISO8601_DATETIME_FORMAT)]
+        public DateTime date { get; set; }
+        public float? low_f { get; set; }
+        public float? low_c { get; set; }
 
         internal Forecast()
         {
@@ -751,19 +755,14 @@ namespace SimpleWeather.WeatherData
     }
 
     [JsonFormatter(typeof(CustomJsonConverter<HourlyForecast>))]
-    public partial class HourlyForecast : CustomJsonObject
+    public partial class HourlyForecast : BaseForecast
     {
         [DataMember(Name = "date")]
         [JsonFormatter(typeof(DateTimeOffsetFormatter), DateTimeUtils.DATETIMEOFFSET_FORMAT)]
         public DateTimeOffset date { get; set; }
-        public float? high_f { get; set; }
-        public float? high_c { get; set; }
-        public string condition { get; set; }
-        public string icon { get; set; }
         public int? wind_degrees { get; set; }
         public float? wind_mph { get; set; }
         public float? wind_kph { get; set; }
-        public ForecastExtras extras { get; set; }
 
         internal HourlyForecast()
         {

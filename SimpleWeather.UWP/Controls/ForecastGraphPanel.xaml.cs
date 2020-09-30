@@ -64,13 +64,13 @@ namespace SimpleWeather.UWP.Controls
             {
                 SetValue(ForecastsProperty, value);
 
-                _forecasts = value as IEnumerable<BaseForecastItemViewModel>;
+                _forecasts = value as IEnumerable<GraphItemViewModel>;
 
                 UpdateLineView(false);
             }
         }
 
-        private IEnumerable<BaseForecastItemViewModel> _forecasts;
+        private IEnumerable<GraphItemViewModel> _forecasts;
 
         public ScrollViewer ScrollViewer { get { return GraphView?.ScrollViewer; } }
 
@@ -99,8 +99,7 @@ namespace SimpleWeather.UWP.Controls
                 {
                     if (VisualTreeHelper.GetChild(parent, i) is ToggleButton other && !other.Tag.Equals(btn.Tag))
                     {
-                        other.IsChecked = false;
-                        other.IsEnabled = true;
+                        other.Deselect();
                     }
                 }
             }
@@ -121,7 +120,7 @@ namespace SimpleWeather.UWP.Controls
 
             if (_forecasts?.Any() == true && GraphView != null)
             {
-                var forecasts = new List<BaseForecastItemViewModel>(_forecasts);
+                var forecasts = new List<GraphItemViewModel>(_forecasts);
                 var itemCount = Math.Min(forecasts.Count, MAX_FETCH_SIZE);
 
                 switch (SelectedButton?.Tag)
@@ -142,7 +141,7 @@ namespace SimpleWeather.UWP.Controls
                             List<YEntryData> hiTempSeries = new List<YEntryData>(itemCount);
                             List<YEntryData> loTempSeries = null;
 
-                            if (forecasts.FirstOrDefault() is ForecastItemViewModel)
+                            if (forecasts.FirstOrDefault()?.TempEntryData?.Data.LoTempData != null)
                             {
                                 loTempSeries = new List<YEntryData>(itemCount);
                                 GraphView.DrawSeriesLabels = true;
@@ -150,52 +149,49 @@ namespace SimpleWeather.UWP.Controls
 
                             for (int i = 0; i < itemCount; i++)
                             {
-                                var forecastItemViewModel = forecasts[i];
+                                var graphModel = forecasts[i];
                                 try
                                 {
-                                    if (float.TryParse(forecastItemViewModel.HiTemp.RemoveNonDigitChars(), NumberStyles.Float, CultureInfo.InvariantCulture, out float hiTemp))
+                                    if (graphModel?.TempEntryData.Data?.HiTempData != null)
                                     {
-                                        YEntryData hiTempData = new YEntryData(hiTemp, forecastItemViewModel.HiTemp.Trim());
-                                        hiTempSeries.Add(hiTempData);
+                                        hiTempSeries.Add(graphModel.TempEntryData.Data.HiTempData);
                                     }
                                     // For NWS, which contains bi-daily forecasts
                                     else if (i == 0 && i + 1 < itemCount)
                                     {
                                         var nextVM = forecasts[i + 1];
-                                        YEntryData hiTempData = new YEntryData(float.Parse(nextVM.HiTemp.RemoveNonDigitChars(), CultureInfo.InvariantCulture), String.Empty);
-                                        hiTempSeries.Add(hiTempData);
+                                        if (nextVM?.TempEntryData?.Data?.HiTempData != null)
+                                            hiTempSeries.Add(nextVM.TempEntryData.Data.HiTempData);
                                     }
                                     else if (i > 0 && i == itemCount - 1)
                                     {
                                         var prevVM = forecasts[i - 1];
-                                        YEntryData hiTempData = new YEntryData(float.Parse(prevVM.HiTemp.RemoveNonDigitChars(), CultureInfo.InvariantCulture), String.Empty);
-                                        hiTempSeries.Add(hiTempData);
+                                        if (prevVM?.TempEntryData?.Data?.HiTempData != null)
+                                            hiTempSeries.Add(prevVM.TempEntryData.Data.HiTempData);
                                     }
 
-                                    if (loTempSeries != null && forecastItemViewModel is ForecastItemViewModel fVM)
+                                    if (loTempSeries != null)
                                     {
-                                        if (float.TryParse(fVM.LoTemp.RemoveNonDigitChars(), NumberStyles.Float, CultureInfo.InvariantCulture, out float loTemp))
+                                        if (graphModel?.TempEntryData.Data?.LoTempData != null)
                                         {
-                                            YEntryData loTempData = new YEntryData(loTemp, fVM.LoTemp.Trim());
-                                            loTempSeries.Add(loTempData);
+                                            loTempSeries.Add(graphModel.TempEntryData.Data.LoTempData);
                                         }
                                         // For NWS, which contains bi-daily forecasts
                                         else if (i == 0 && i + 1 < itemCount)
                                         {
-                                            var nextVM = forecasts[i + 1] as ForecastItemViewModel;
-                                            YEntryData loTempData = new YEntryData(float.Parse(nextVM.LoTemp.RemoveNonDigitChars(), CultureInfo.InvariantCulture), String.Empty);
-                                            loTempSeries.Add(loTempData);
+                                            var nextVM = forecasts[i + 1];
+                                            if (nextVM?.TempEntryData?.Data?.LoTempData != null)
+                                                loTempSeries.Add(nextVM.TempEntryData.Data.LoTempData);
                                         }
                                         else if (i > 0 && i == itemCount - 1)
                                         {
-                                            var prevVM = forecasts[i - 1] as ForecastItemViewModel;
-                                            YEntryData loTempData = new YEntryData(float.Parse(prevVM.LoTemp.RemoveNonDigitChars(), CultureInfo.InvariantCulture), String.Empty);
-                                            loTempSeries.Add(loTempData);
+                                            var prevVM = forecasts[i - 1];
+                                            if (prevVM?.TempEntryData?.Data?.LoTempData != null)
+                                                loTempSeries.Add(prevVM.TempEntryData.Data.LoTempData);
                                         }
                                     }
 
-                                    XLabelData xLabelData = new XLabelData(forecastItemViewModel.ShortDate, forecastItemViewModel.WeatherIcon);
-                                    labelData.Add(xLabelData);
+                                    labelData.Add(graphModel.TempEntryData.LabelData);
                                 }
                                 catch (FormatException ex)
                                 {
@@ -246,19 +242,11 @@ namespace SimpleWeather.UWP.Controls
 
                             for (int i = 0; i < itemCount; i++)
                             {
-                                var forecastItemViewModel = forecasts[i];
-                                try
+                                var graphModel = forecasts[i];
+                                if (graphModel.WindEntryData != null)
                                 {
-                                    float wind = float.Parse(forecastItemViewModel.WindSpeed.RemoveNonDigitChars(), CultureInfo.InvariantCulture);
-                                    YEntryData windData = new YEntryData(wind, forecastItemViewModel.WindSpeed.Trim());
-
-                                    windDataSeries.Add(windData);
-                                    XLabelData xLabelData = new XLabelData(forecastItemViewModel.Date, WeatherIcons.WIND_DIRECTION, forecastItemViewModel.WindDirection + 180);
-                                    labelData.Add(xLabelData);
-                                }
-                                catch (FormatException ex)
-                                {
-                                    Logger.WriteLine(LoggerLevel.Debug, ex, "WeatherNow: error!!");
+                                    windDataSeries.Add(graphModel.WindEntryData.Data);
+                                    labelData.Add(graphModel.WindEntryData.LabelData);
                                 }
                             }
 
@@ -298,24 +286,11 @@ namespace SimpleWeather.UWP.Controls
 
                             for (int i = 0; i < itemCount; i++)
                             {
-                                var forecastItemViewModel = forecasts[i];
-                                var popModel = forecastItemViewModel.DetailExtras?.FirstOrDefault(f => f.DetailsType == WeatherDetailsType.PoPChance);
-
-                                try
+                                var graphModel = forecasts[i];
+                                if (graphModel.ChanceEntryData != null)
                                 {
-                                    if (popModel != null)
-                                    {
-                                        float pop = float.Parse(popModel.Value.RemoveNonDigitChars(), CultureInfo.InvariantCulture);
-                                        YEntryData popData = new YEntryData(pop, popModel.Value);
-
-                                        popDataSeries.Add(popData);
-                                        XLabelData xLabelData = new XLabelData(forecastItemViewModel.Date, WeatherIcons.RAINDROP, 0);
-                                        labelData.Add(xLabelData);
-                                    }
-                                }
-                                catch (FormatException ex)
-                                {
-                                    Logger.WriteLine(LoggerLevel.Debug, ex, "WeatherNow: error!!");
+                                    popDataSeries.Add(graphModel.ChanceEntryData.Data);
+                                    labelData.Add(graphModel.ChanceEntryData.LabelData);
                                 }
                             }
 
@@ -346,53 +321,89 @@ namespace SimpleWeather.UWP.Controls
 
         private void UpdateToggles()
         {
-            int count = 1;
+            bool isForecast = false, isWind = false, isChance = false;
             var first = _forecasts?.FirstOrDefault();
+
             if (first != null)
             {
-                if (!String.IsNullOrWhiteSpace(first?.WindSpeed))
-                    count++;
-
-                if (first.DetailExtras?.FirstOrDefault(f => f.DetailsType == WeatherDetailsType.PoPChance) != null)
-                    count++;
+                if (first.TempEntryData != null)
+                {
+                    isForecast = true;
+                }
+                if (first.WindEntryData != null)
+                {
+                    isWind = true;
+                }
+                if (first.ChanceEntryData != null)
+                {
+                    isChance = true;
+                }
             }
 
-            switch (count)
+            TempToggleButton.Visibility = isForecast ? Visibility.Visible : Visibility.Collapsed;
+            WindToggleButton.Visibility = isWind ? Visibility.Visible : Visibility.Collapsed;
+            RainToggleButton.Visibility = isChance ? Visibility.Visible : Visibility.Collapsed;
+
+            if (!isForecast || !isWind || !isChance)
             {
-                case 1:
-                default:
-                    TempToggleButton.Visibility = Visibility.Visible;
-                    RainToggleButton.Visibility = Visibility.Collapsed;
-                    WindToggleButton.Visibility = Visibility.Collapsed;
-
-                    TempToggleButton.IsChecked = true;
-                    TempToggleButton.IsEnabled = false;
-                    RainToggleButton.IsChecked = false;
-                    RainToggleButton.IsEnabled = true;
-                    WindToggleButton.IsChecked = false;
-                    WindToggleButton.IsEnabled = true;
-                    break;
-
-                case 2:
-                    if (RainToggleButton.Visibility == Visibility.Visible)
+                if (TempToggleButton.IsChecked == true)
+                {
+                    if (!isForecast)
                     {
-                        RainToggleButton.Visibility = Visibility.Collapsed;
-                        if ((bool)RainToggleButton.IsChecked)
+                        if (isWind)
                         {
-                            RainToggleButton.IsChecked = false;
-                            RainToggleButton.IsEnabled = true;
-                            TempToggleButton.IsChecked = true;
-                            TempToggleButton.IsEnabled = false;
+                            WindToggleButton.Select();
+                        }
+                        else if (isChance)
+                        {
+                            RainToggleButton.Select();
                         }
                     }
-                    break;
-
-                case 3:
-                    TempToggleButton.Visibility = Visibility.Visible;
-                    RainToggleButton.Visibility = Visibility.Visible;
-                    WindToggleButton.Visibility = Visibility.Visible;
-                    break;
+                }
+                else if (WindToggleButton.IsChecked == true)
+                {
+                    if (!isWind)
+                    {
+                        if (isForecast)
+                        {
+                            TempToggleButton.Select();
+                        }
+                        else if (isChance)
+                        {
+                            RainToggleButton.Select();
+                        }
+                    }
+                }
+                else if (RainToggleButton.IsChecked == true)
+                {
+                    if (!isChance)
+                    {
+                        if (isForecast)
+                        {
+                            TempToggleButton.Select();
+                        }
+                        else if (isWind)
+                        {
+                            WindToggleButton.Select();
+                        }
+                    }
+                }
             }
+        }
+    }
+
+    internal static class ToggleButtonExtensions
+    {
+        internal static void Select(this ToggleButton @toggle)
+        {
+            toggle.IsChecked = true;
+            toggle.IsEnabled = false;
+        }
+
+        internal static void Deselect(this ToggleButton @toggle)
+        {
+            toggle.IsChecked = false;
+            toggle.IsEnabled = true;
         }
     }
 }

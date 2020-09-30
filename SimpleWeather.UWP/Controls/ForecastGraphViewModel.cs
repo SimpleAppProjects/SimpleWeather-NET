@@ -24,19 +24,19 @@ namespace SimpleWeather.UWP.Controls
         private LocationData locationData;
         private string tempUnit;
 
-        private SimpleObservableList<ForecastItemViewModel> forecasts;
-        private SimpleObservableList<HourlyForecastItemViewModel> hourlyForecasts;
+        private SimpleObservableList<GraphItemViewModel> forecasts;
+        private SimpleObservableList<GraphItemViewModel> hourlyForecasts;
 
         private ObservableItem<Forecasts> currentForecastsData;
         private ObservableItem<IList<HourlyForecast>> currentHrForecastsData;
 
-        public SimpleObservableList<ForecastItemViewModel> Forecasts
+        public SimpleObservableList<GraphItemViewModel> Forecasts
         {
             get { return forecasts; }
             private set { forecasts = value; OnPropertyChanged(nameof(Forecasts)); }
         }
 
-        public SimpleObservableList<HourlyForecastItemViewModel> HourlyForecasts
+        public SimpleObservableList<GraphItemViewModel> HourlyForecasts
         {
             get { return hourlyForecasts; }
             private set { hourlyForecasts = value; OnPropertyChanged(nameof(HourlyForecasts)); }
@@ -51,8 +51,8 @@ namespace SimpleWeather.UWP.Controls
             currentHrForecastsData = new ObservableItem<IList<HourlyForecast>>();
             currentHrForecastsData.ItemValueChanged += CurrentHrForecastsData_ItemValueChanged;
 
-            Forecasts = new SimpleObservableList<ForecastItemViewModel>();
-            HourlyForecasts = new SimpleObservableList<HourlyForecastItemViewModel>();
+            Forecasts = new SimpleObservableList<GraphItemViewModel>();
+            HourlyForecasts = new SimpleObservableList<GraphItemViewModel>();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -128,25 +128,11 @@ namespace SimpleWeather.UWP.Controls
 
                 if (fcasts?.forecast?.Count > 0)
                 {
-                    bool isDayAndNt = fcasts.txt_forecast?.Count == fcasts.forecast?.Count * 2;
-                    bool addTextFct = isDayAndNt || fcasts.txt_forecast?.Count == fcasts.forecast?.Count;
-
-                    for (int i = 0; i < Math.Min(fcasts.forecast.Count, 24); i++)
+                    for (int i = 0; i < Math.Min(fcasts.forecast.Count, 10); i++)
                     {
-                        ForecastItemViewModel f;
                         var dataItem = fcasts.forecast[i];
 
-                        if (addTextFct)
-                        {
-                            if (isDayAndNt)
-                                f = new ForecastItemViewModel(dataItem, fcasts.txt_forecast[i * 2], fcasts.txt_forecast[(i * 2) + 1]);
-                            else
-                                f = new ForecastItemViewModel(dataItem, fcasts.txt_forecast[i]);
-                        }
-                        else
-                        {
-                            f = new ForecastItemViewModel(dataItem);
-                        }
+                        var f = new GraphItemViewModel(dataItem);
 
                         Forecasts.Add(f);
                     }
@@ -175,7 +161,7 @@ namespace SimpleWeather.UWP.Controls
                 {
                     foreach (var dataItem in hrfcasts)
                     {
-                        HourlyForecasts.Add(new HourlyForecastItemViewModel(dataItem));
+                        HourlyForecasts.Add(new GraphItemViewModel(dataItem));
                     }
                 }
 
