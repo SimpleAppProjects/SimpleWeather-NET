@@ -16,17 +16,18 @@ namespace SimpleWeather.HERE
         public string description { get; set; }
         public int severity { get; set; }
         public string message { get; set; }
-        public County[] county { get; set; }
+        //public County[] county { get; set; }
         //public object[] location { get; set; }
         public string name { get; set; }
         public DateTime validFromTimeLocal { get; set; }
         public DateTime validUntilTimeLocal { get; set; }
         public string country { get; set; }
         public string state { get; set; }
-        public float latitude { get; set; }
-        public float longitude { get; set; }
+        public string latitude { get; set; }
+        public string longitude { get; set; }
     }
 
+    /*
     public class County
     {
         public string value { get; set; }
@@ -35,9 +36,10 @@ namespace SimpleWeather.HERE
         public string state { get; set; }
         public string stateName { get; set; }
         public string name { get; set; }
-        public float latitude { get; set; }
-        public float longitude { get; set; }
+        public string latitude { get; set; }
+        public string longitude { get; set; }
     }
+    */
 
     public class Watch
     {
@@ -52,8 +54,8 @@ namespace SimpleWeather.HERE
         public DateTime validUntilTimeLocal { get; set; }
         public string country { get; set; }
         public string state { get; set; }
-        public float latitude { get; set; }
-        public float longitude { get; set; }
+        public string latitude { get; set; }
+        public string longitude { get; set; }
     }
 
     /*

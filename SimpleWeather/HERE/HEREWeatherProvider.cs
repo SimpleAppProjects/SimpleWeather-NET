@@ -137,7 +137,7 @@ namespace SimpleWeather.HERE
                                     foreach (var watchItem in root.nwsAlerts.watch)
                                     {
                                         // Add watch item if location is within 20km of the center of the alert zone
-                                        if (ConversionMethods.CalculateHaversine(lat, lon, watchItem.latitude, watchItem.longitude) < 20000)
+                                        if (ConversionMethods.CalculateHaversine(lat, lon, double.Parse(watchItem.latitude), double.Parse(watchItem.longitude)) < 20000)
                                         {
                                             weather.weather_alerts.Add(new WeatherAlert(watchItem));
                                         }
@@ -148,7 +148,7 @@ namespace SimpleWeather.HERE
                                     foreach (var warningItem in root.nwsAlerts.warning)
                                     {
                                         // Add warning item if location is within 25km of the center of the alert zone
-                                        if (ConversionMethods.CalculateHaversine(lat, lon, warningItem.latitude, warningItem.longitude) < 25000)
+                                        if (ConversionMethods.CalculateHaversine(lat, lon, double.Parse(warningItem.latitude), double.Parse(warningItem.longitude)) < 25000)
                                         {
                                             weather.weather_alerts.Add(new WeatherAlert(warningItem));
                                         }

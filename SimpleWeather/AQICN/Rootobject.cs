@@ -13,15 +13,18 @@ namespace SimpleWeather.AQICN
     public class Data
     {
         public int aqi { get; set; }
-        public int idx { get; set; }
+        /*
+        public float idx { get; set; }
         public Attribution[] attributions { get; set; }
         public City city { get; set; }
         public string dominentpol { get; set; }
         public Iaqi iaqi { get; set; }
         public Time time { get; set; }
         public Debug debug { get; set; }
+        */
     }
 
+    /*
     public class City
     {
         public float[] geo { get; set; }
@@ -70,12 +73,12 @@ namespace SimpleWeather.AQICN
 
     public class Pm10
     {
-        public int v { get; set; }
+        public float v { get; set; }
     }
 
     public class Pm25
     {
-        public int v { get; set; }
+        public float v { get; set; }
     }
 
     public class So2
@@ -97,7 +100,7 @@ namespace SimpleWeather.AQICN
     {
         public string s { get; set; }
         public string tz { get; set; }
-        public int v { get; set; }
+        public long v { get; set; }
     }
 
     public class Debug
@@ -110,4 +113,5 @@ namespace SimpleWeather.AQICN
         public string url { get; set; }
         public string name { get; set; }
     }
+    */
 }
