@@ -9,6 +9,12 @@ namespace SimpleWeather.Utils
     {
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
+        public SimpleObservableList() : base() { }
+
+        public SimpleObservableList(int capacity) : base(capacity) { }
+
+        public SimpleObservableList(IEnumerable<T> collection) : base(collection) { }
+
         public void NotifyCollectionChanged()
         {
             CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));

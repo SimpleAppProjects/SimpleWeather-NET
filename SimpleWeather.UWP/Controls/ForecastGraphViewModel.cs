@@ -51,8 +51,8 @@ namespace SimpleWeather.UWP.Controls
             currentHrForecastsData = new ObservableItem<IList<HourlyForecast>>();
             currentHrForecastsData.ItemValueChanged += CurrentHrForecastsData_ItemValueChanged;
 
-            Forecasts = new SimpleObservableList<GraphItemViewModel>();
-            HourlyForecasts = new SimpleObservableList<GraphItemViewModel>();
+            Forecasts = new SimpleObservableList<GraphItemViewModel>(10);
+            HourlyForecasts = new SimpleObservableList<GraphItemViewModel>(24);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

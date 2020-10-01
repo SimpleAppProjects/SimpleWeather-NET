@@ -61,27 +61,30 @@ namespace SimpleWeather.UWP.Controls
             }
             TempEntryData = new EntryData<XLabelData, GraphTemperature>(xTemp, tempData);
 
-            // Wind Data
-            if (forecast.extras.wind_mph.HasValue && forecast.extras.wind_mph >= 0 &&
-                    forecast.extras.wind_degrees.HasValue && forecast.extras.wind_degrees >= 0)
+            if (forecast.extras != null)
             {
-                int speedVal = (int)(isFahrenheit ? Math.Round(forecast.extras.wind_mph.Value) : Math.Round(forecast.extras.wind_kph.Value));
-                var speedUnit = WeatherUtils.SpeedUnit;
+                // Wind Data
+                if (forecast.extras.wind_mph.HasValue && forecast.extras.wind_mph >= 0 &&
+                        forecast.extras.wind_degrees.HasValue && forecast.extras.wind_degrees >= 0)
+                {
+                    int speedVal = (int)(isFahrenheit ? Math.Round(forecast.extras.wind_mph.Value) : Math.Round(forecast.extras.wind_kph.Value));
+                    var speedUnit = WeatherUtils.SpeedUnit;
 
-                var windSpeed = string.Format(culture, "{0} {1}", speedVal, speedUnit);
-                int windDirection = forecast.extras.wind_degrees.Value;
+                    var windSpeed = string.Format(culture, "{0} {1}", speedVal, speedUnit);
+                    int windDirection = forecast.extras.wind_degrees.Value;
 
-                var y = new YEntryData(speedVal, windSpeed);
-                var x = new XLabelData(date, WeatherIcons.WIND_DIRECTION, windDirection + 180);
-                WindEntryData = new EntryData<XLabelData, YEntryData>(x, y);
-            }
+                    var y = new YEntryData(speedVal, windSpeed);
+                    var x = new XLabelData(date, WeatherIcons.WIND_DIRECTION, windDirection + 180);
+                    WindEntryData = new EntryData<XLabelData, YEntryData>(x, y);
+                }
 
-            // PoP Chance Data
-            if (forecast.extras.pop.HasValue && forecast.extras.pop >= 0)
-            {
-                var y = new YEntryData(forecast.extras.pop.Value, forecast.extras.pop.Value + "%");
-                var x = new XLabelData(date, WeatherIcons.RAINDROP, 0);
-                ChanceEntryData = new EntryData<XLabelData, YEntryData>(x, y);
+                // PoP Chance Data
+                if (forecast.extras.pop.HasValue && forecast.extras.pop >= 0)
+                {
+                    var y = new YEntryData(forecast.extras.pop.Value, forecast.extras.pop.Value + "%");
+                    var x = new XLabelData(date, WeatherIcons.RAINDROP, 0);
+                    ChanceEntryData = new EntryData<XLabelData, YEntryData>(x, y);
+                }
             }
         }
 
