@@ -1162,7 +1162,7 @@ namespace SimpleWeather.WeatherData
                 feelslike_c = obsCurrentRootObject.windChill.value.GetValueOrDefault(0.00f);
                 feelslike_f = ConversionMethods.CtoF(feelslike_c.Value);
             }
-            else if (temp_f != temp_c)
+            else if (temp_f.HasValue && !Equals(temp_f, temp_c) && wind_mph.HasValue)
             {
                 float humidity = obsCurrentRootObject.relativeHumidity.value.GetValueOrDefault(-1.0f);
                 feelslike_f = WeatherUtils.GetFeelsLikeTemp(temp_f.Value, wind_mph.Value, (int)humidity);
