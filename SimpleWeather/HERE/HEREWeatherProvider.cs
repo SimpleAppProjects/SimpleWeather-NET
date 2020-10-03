@@ -125,7 +125,7 @@ namespace SimpleWeather.HERE
                             }
                             else if (root.nwsAlerts?.watch?.Length > 0 || root.nwsAlerts?.warning?.Length > 0)
                             {
-                                int numOfAlerts = (int)(root.nwsAlerts?.watch?.Length + root.nwsAlerts?.warning?.Length);
+                                int numOfAlerts = (root.nwsAlerts?.watch?.Length ?? 0) + (root.nwsAlerts?.warning?.Length ?? 0);
 
                                 weather.weather_alerts = new List<WeatherAlert>(numOfAlerts);
 
