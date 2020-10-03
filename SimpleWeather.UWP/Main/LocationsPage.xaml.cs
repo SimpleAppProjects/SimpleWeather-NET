@@ -99,44 +99,47 @@ namespace SimpleWeather.UWP.Main
             if (cts?.IsCancellationRequested == true)
                 return;
 
-            switch (wEx.ErrorStatus)
+            Dispatcher.RunOnUIThread(() =>
             {
-                case WeatherUtils.ErrorStatus.NetworkError:
-                case WeatherUtils.ErrorStatus.NoWeather:
-                    // Show error message and prompt to refresh
-                    // Only warn once
-                    if (!ErrorCounter[(int)wEx.ErrorStatus])
-                    {
-                        Snackbar snackbar = Snackbar.Make(wEx.Message, SnackbarDuration.Short);
-                        snackbar.SetAction(App.ResLoader.GetString("Action_Retry"), () =>
+                switch (wEx.ErrorStatus)
+                {
+                    case WeatherUtils.ErrorStatus.NetworkError:
+                    case WeatherUtils.ErrorStatus.NoWeather:
+                        // Show error message and prompt to refresh
+                        // Only warn once
+                        if (!ErrorCounter[(int)wEx.ErrorStatus])
                         {
-                            // Reset counter to allow retry
-                            ErrorCounter[(int)wEx.ErrorStatus] = false;
-                            RefreshLocations();
-                        });
-                        ShowSnackbar(snackbar);
-                        ErrorCounter[(int)wEx.ErrorStatus] = true;
-                    }
-                    break;
+                            Snackbar snackbar = Snackbar.Make(wEx.Message, SnackbarDuration.Short);
+                            snackbar.SetAction(App.ResLoader.GetString("Action_Retry"), () =>
+                            {
+                                // Reset counter to allow retry
+                                ErrorCounter[(int)wEx.ErrorStatus] = false;
+                                RefreshLocations();
+                            });
+                            ShowSnackbar(snackbar);
+                            ErrorCounter[(int)wEx.ErrorStatus] = true;
+                        }
+                        break;
 
-                case WeatherUtils.ErrorStatus.QueryNotFound:
-                    if (!ErrorCounter[(int)wEx.ErrorStatus] && WeatherAPI.NWS.Equals(Settings.API))
-                    {
-                        ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_WeatherUSOnly"), SnackbarDuration.Short));
-                        ErrorCounter[(int)wEx.ErrorStatus] = true;
-                    }
-                    break;
+                    case WeatherUtils.ErrorStatus.QueryNotFound:
+                        if (!ErrorCounter[(int)wEx.ErrorStatus] && WeatherAPI.NWS.Equals(Settings.API))
+                        {
+                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_WeatherUSOnly"), SnackbarDuration.Short));
+                            ErrorCounter[(int)wEx.ErrorStatus] = true;
+                        }
+                        break;
 
-                default:
-                    // Show error message
-                    // Only warn once
-                    if (!ErrorCounter[(int)wEx.ErrorStatus])
-                    {
-                        ShowSnackbar(Snackbar.Make(wEx.Message, SnackbarDuration.Short));
-                        ErrorCounter[(int)wEx.ErrorStatus] = true;
-                    }
-                    break;
-            }
+                    default:
+                        // Show error message
+                        // Only warn once
+                        if (!ErrorCounter[(int)wEx.ErrorStatus])
+                        {
+                            ShowSnackbar(Snackbar.Make(wEx.Message, SnackbarDuration.Short));
+                            ErrorCounter[(int)wEx.ErrorStatus] = true;
+                        }
+                        break;
+                }
+            });
         }
 
         public LocationsPage()
