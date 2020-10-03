@@ -148,10 +148,13 @@ namespace SimpleWeather.Utils
                         { "CurrentVersionCode", CurrentVersionCode.ToString() }
                     });
                 }
-                Settings.VersionCode = CurrentVersionCode;
 #if WINDOWS_UWP && !UNIT_TEST
-                FeatureSettings.IsUpdateAvailable = false;
+                if (Settings.VersionCode < CurrentVersionCode)
+                {
+                    FeatureSettings.IsUpdateAvailable = false;
+                }
 #endif
+                Settings.VersionCode = CurrentVersionCode;
             });
         }
     }
