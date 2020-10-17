@@ -151,7 +151,7 @@ namespace SimpleWeather.WeatherData
             Date = alert.sent;
             ExpiresDate = alert.expires;
 
-            Attribution = "Information provided by the U.S. National Weather Service";
+            Attribution = "U.S. National Weather Service";
         }
 
         // HERE GlobalAlerts
@@ -281,7 +281,7 @@ namespace SimpleWeather.WeatherData
 
             SetDateTimeFromSegment(alert.timeSegment);
 
-            Attribution = "Information provided by HERE Weather";
+            Attribution = "HERE Weather";
         }
 
         // HERE NWS Alerts
@@ -302,7 +302,7 @@ namespace SimpleWeather.WeatherData
             Date = alert.validFromTimeLocal;
             ExpiresDate = alert.validUntilTimeLocal;
 
-            Attribution = "Information provided by HERE Weather";
+            Attribution = "HERE Weather";
         }
 
         public WeatherAlert(Warning alert)
@@ -322,7 +322,7 @@ namespace SimpleWeather.WeatherData
             Date = alert.validFromTimeLocal;
             ExpiresDate = alert.validUntilTimeLocal;
 
-            Attribution = "Information provided by HERE Weather";
+            Attribution = "HERE Weather";
         }
 
         private WeatherAlertType GetAlertType(int type, String alertDescription)
