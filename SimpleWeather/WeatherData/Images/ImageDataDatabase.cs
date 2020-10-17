@@ -153,6 +153,11 @@ namespace SimpleWeather.WeatherData.Images
                         await ImageDatabaseCache.InsertData(img);
                     }
 
+                    if (ImageDataHelper.ImageDBUpdateTime == 0)
+                    {
+                        ImageDataHelper.ImageDBUpdateTime = await ImageDatabase.GetLastUpdateTime();
+                    }
+
                     // Register background task to update
 #if WINDOWS_UWP && !UNIT_TEST
                     await UWP.BackgroundTasks.ImageDatabaseTask.RegisterBackgroundTask();
