@@ -57,17 +57,17 @@ namespace SimpleWeather.UWP.Shared.WeatherData.Images
         {
             return Task.Run(async () =>
             {
-                ImageData newImageData = null;
-
                 // If download has failed recently; don't allow any downloads until specified timespan
                 if ((DateTime.UtcNow - FirebaseStorageHelper.LastDownloadFailTimestamp).TotalHours >= 1)
                 {
+                    StorageFile imageFile = null;
+
                     try
                     {
                         // Download image to local cache folder
                         await CreateDataFolderIfNeeded();
 
-                        StorageFile imageFile = await ImageDataFolder.CreateFileAsync(
+                        imageFile = await ImageDataFolder.CreateFileAsync(
                             String.Format("{0}-{1}", imageData.Condition, Guid.NewGuid().ToString()), CreationCollisionOption.ReplaceExisting);
 
                         var storage = await FirebaseStorageHelper.GetFirebaseStorage();
@@ -96,20 +96,35 @@ namespace SimpleWeather.UWP.Shared.WeatherData.Images
                                 await fStream.FlushAsync();
                             }
                         }
-
-                        newImageData = ImageData.CopyWithNewImageUrl(imageData, imageFile.Path);
-
-                        ImageDataContainer.Values[imageData.Condition] = JSONParser.Serializer(newImageData);
                     }
                     catch (Exception e)
                     {
-                        newImageData = null;
                         Logger.WriteLine(LoggerLevel.Error, e, "ImageDataHelper: error storing image data");
                         FirebaseStorageHelper.LastDownloadFailTimestamp = DateTime.UtcNow;
+
+                        if (imageFile != null)
+                        {
+                            try
+                            {
+                                await imageFile.DeleteAsync(StorageDeleteOption.PermanentDelete);
+                            }
+                            catch (Exception e1)
+                            {
+                                Logger.WriteLine(LoggerLevel.Error, e1);
+                            }
+                        }
+
+                        return null;
                     }
+
+                    ImageData newImageData = ImageData.CopyWithNewImageUrl(imageData, imageFile.Path);
+
+                    ImageDataContainer.Values[imageData.Condition] = JSONParser.Serializer(newImageData);
+
+                    return newImageData;
                 }
 
-                return newImageData;
+                return null;
             });
         }
 

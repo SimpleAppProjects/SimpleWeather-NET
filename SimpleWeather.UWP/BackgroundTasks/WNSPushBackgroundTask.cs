@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using SimpleWeather.Utils;
+using SimpleWeather.UWP.Utils;
 using SimpleWeather.WeatherData.Images;
 using System;
 using System.Collections.Generic;
@@ -119,19 +120,20 @@ namespace SimpleWeather.UWP.BackgroundTasks
             var deferral = taskInstance?.GetDeferral();
 
             // Check if cache is populated
-            if (!(await ImageDataHelper.ImageDataHelperImpl.IsEmpty()))
+            if (!(await ImageDataHelper.ImageDataHelperImpl.IsEmpty()) && !FeatureSettings.IsUpdateAvailable)
             {
-                // Check firestore timestamp against Settings
+                // If so, check if we need to invalidate
                 var updateTime = await ImageDatabase.GetLastUpdateTime();
 
                 if (updateTime > ImageDataHelper.ImageDBUpdateTime)
                 {
                     AnalyticsLogger.LogEvent(taskName + ": Invalidating cache");
 
+                    // if so, invalidate
                     ImageDataHelper.ImageDBUpdateTime = updateTime;
 
                     await ImageDataHelper.ImageDataHelperImpl.ClearCachedImageData();
-                    await ImageDatabase.ImageDatabaseCache.ClearCache();
+                    ImageDataHelper.ShouldInvalidateCache = true;
                 }
             }
 

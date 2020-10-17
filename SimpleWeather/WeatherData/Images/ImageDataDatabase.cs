@@ -2,15 +2,9 @@
 using SimpleWeather.WeatherData.Images.Model;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Windows.Storage;
-
-using Google.Apis.Services;
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Firestore.v1fix.Data;
 using System.Threading;
 using Firebase.Database.Query;
 
@@ -28,6 +22,88 @@ namespace SimpleWeather.WeatherData.Images
 
                 return sImageDBCache;
             }
+        }
+
+        public static Task<List<ImageData>> GetAllImageDataForCondition(String backgroundCode)
+        {
+            return Task.Run(async () =>
+            {
+                List<ImageData> list = null;
+                try
+                {
+                    // Try to retrieve from cache first
+                    if (!ImageDataHelper.ShouldInvalidateCache)
+                    {
+                        list = await ImageDatabaseCache.GetAllImageDataForCondition(backgroundCode);
+                    }
+                }
+                catch (Exception)
+                {
+                    list = null;
+                }
+
+                // If data is missing from cache, get data from server
+                if (list == null || list.Count == 0)
+                {
+                    try
+                    {
+                        var dbSnapshot = await GetSnapshot();
+
+                        list = dbSnapshot.Where(img => img.Condition == backgroundCode)
+                                         .ToList();
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.WriteLine(LoggerLevel.Error, e, "ImageDatabase: error retrieving image data");
+                    }
+                }
+
+                return list;
+            });
+        }
+
+        public static Task<ImageData> GetRandomImageForCondition(String backgroundCode)
+        {
+            return Task.Run(async () =>
+            {
+                ImageData imageData = null;
+                try
+                {
+                    // Try to retrieve from cache first
+                    if (!ImageDataHelper.ShouldInvalidateCache)
+                    {
+                        imageData = await ImageDatabaseCache.GetRandomImageForCondition(backgroundCode);
+                    }
+                }
+                catch (Exception)
+                {
+                    imageData = null;
+                }
+
+                // If data is missing from cache, get data from server
+                if (imageData == null)
+                {
+                    try
+                    {
+                        var dbSnapshot = await GetSnapshot();
+
+                        var rand = new Random();
+
+                        imageData = dbSnapshot.Where(img => img.Condition == backgroundCode)
+                                              .OrderBy(img => rand.Next())
+                                              .Take(1)
+                                              .FirstOrDefault();
+
+                        return imageData;
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.WriteLine(LoggerLevel.Error, e, "ImageDatabase: error retrieving image data");
+                    }
+                }
+
+                return imageData;
+            });
         }
 
         private static Task<List<ImageData>> GetSnapshot()
@@ -107,39 +183,6 @@ namespace SimpleWeather.WeatherData.Images
             });
         }
 
-        public static Task<ImageData> GetRandomImageForCondition(String backgroundCode)
-        {
-            return Task.Run(async () =>
-            {
-                try
-                {
-                    if (!await ImageDatabaseCache.IsEmpty())
-                    {
-                        return await ImageDatabaseCache.GetRandomImageForCondition(backgroundCode);
-                    }
-                    else
-                    {
-                        var rand = new Random();
-
-                        var list = await GetSnapshot();
-
-                        var imageData = list.Where(img => img.Condition == backgroundCode)
-                                            .OrderBy(img => rand.Next())
-                                            .Take(1)
-                                            .FirstOrDefault();
-
-                        return imageData;
-                    }
-                }
-                catch (Exception e)
-                {
-                    Logger.WriteLine(LoggerLevel.Error, e, "ImageDatabase: error retrieving image data");
-                }
-
-                return null;
-            });
-        }
-
         private static Task SaveSnapshot(IEnumerable<ImageData> images)
         {
             return Task.Run(async () =>
@@ -155,6 +198,7 @@ namespace SimpleWeather.WeatherData.Images
                         await ImageDatabaseCache.InsertData(img);
                     }
 
+                    ImageDataHelper.ShouldInvalidateCache = false;
                     if (ImageDataHelper.ImageDBUpdateTime == 0)
                     {
                         ImageDataHelper.ImageDBUpdateTime = await ImageDatabase.GetLastUpdateTime();

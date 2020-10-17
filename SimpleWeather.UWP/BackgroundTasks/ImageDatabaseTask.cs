@@ -23,17 +23,18 @@ namespace SimpleWeather.UWP.BackgroundTasks
             // Check if cache is populated
             if (!await ImageDataHelper.ImageDataHelperImpl.IsEmpty() && !FeatureSettings.IsUpdateAvailable)
             {
-                // Check firestore timestamp against Settings
+                // If so, check if we need to invalidate
                 var updateTime = await ImageDatabase.GetLastUpdateTime();
 
                 if (updateTime > ImageDataHelper.ImageDBUpdateTime)
                 {
                     AnalyticsLogger.LogEvent(taskName + ": Invalidating cache");
 
+                    // if so, invalidate
                     ImageDataHelper.ImageDBUpdateTime = updateTime;
 
                     await ImageDataHelper.ImageDataHelperImpl.ClearCachedImageData();
-                    await ImageDatabase.ImageDatabaseCache.ClearCache();
+                    ImageDataHelper.ShouldInvalidateCache = true;
                 }
             }
 
