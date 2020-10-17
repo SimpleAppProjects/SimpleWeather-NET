@@ -133,6 +133,12 @@ namespace SimpleWeather.UWP.BackgroundTasks
         {
             bool isMandatory = storePackageUpdates.Any(u => u.Mandatory);
 
+            AnalyticsLogger.LogEvent(taskName + ": InstallUpdate",
+                new Dictionary<string, string>()
+                {
+                    { "isMandatory", isMandatory.ToString() }
+                });
+
             // Start the silent installation of the packages. Because the packages have already
             // been downloaded in the previous method, the following line of code just installs
             // the downloaded packages.

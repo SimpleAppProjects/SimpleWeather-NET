@@ -75,6 +75,12 @@ namespace SimpleWeather.UWP.Shared.WeatherData.Images
 
                         var imageDownloadUri = new Uri(await storageRef.GetDownloadUrlAsync());
 
+                        AnalyticsLogger.LogEvent("ImageDataHelperImplUWP: StoreImage",
+                            new Dictionary<string, string>()
+                            {
+                                { "imageData", imageData.ToString() }
+                            });
+
                         using (var fStream = await imageFile.OpenAsync(FileAccessMode.ReadWrite))
                         using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
                         using (var request = new HttpRequestMessage(HttpMethod.Get, imageDownloadUri))

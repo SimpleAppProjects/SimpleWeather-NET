@@ -126,7 +126,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
 
                 if (updateTime > ImageDataHelper.ImageDBUpdateTime)
                 {
-                    Logger.WriteLine(LoggerLevel.Debug, "{0}: Invalidating cache", taskName);
+                    AnalyticsLogger.LogEvent(taskName + ": Invalidating cache");
 
                     ImageDataHelper.ImageDBUpdateTime = updateTime;
 

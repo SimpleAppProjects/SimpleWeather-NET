@@ -144,6 +144,8 @@ namespace SimpleWeather.WeatherData.Images
         {
             return Task.Run(async () =>
             {
+                AnalyticsLogger.LogEvent("ImageDatabase: SaveSnapshot");
+
                 try
                 {
                     await ImageDatabaseCache.ClearCache();

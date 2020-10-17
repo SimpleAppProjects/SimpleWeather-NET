@@ -48,5 +48,14 @@ namespace SimpleWeather.WeatherData.Images.Model
                 SiteName = old.SiteName
             };
         }
+
+        public override string ToString()
+        {
+            return "ImageData{" +
+                "documentId='" + DocumentId + '\'' +
+                ", condition='" + Condition + '\'' +
+                ", imageURL='" + ImageUrl + '\'' +
+                '}';
+        }
     }
 }
