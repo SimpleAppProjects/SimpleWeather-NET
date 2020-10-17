@@ -149,7 +149,8 @@
     <value>Abbruch</value>
   </data>
   <data name="Label_Chance.Text" xml:space="preserve">
-    <value>Wahrscheinlichkeit</value>
+    <value>Niederschlagsgefahr</value>
+    <comment>Chance of Precipitation</comment>
   </data>
   <data name="Label_Condition.Text" xml:space="preserve">
     <value>Bedingung</value>
@@ -555,9 +556,10 @@
   </data>
   <data name="ReviewButton.Content" xml:space="preserve">
     <value>Bewertung und Überprüfung</value>
+    <comment>Bewertung und Beurteilung</comment>
   </data>
   <data name="TranslateButton.Content" xml:space="preserve">
-    <value>Hilfe bei der Übersetzung der App</value>
+    <value>Bei der Übersetzung der Anwendung helfen</value>
     <comment>Can be changed to &apos;Help us translate the app&apos;</comment>
   </data>
 </root>
