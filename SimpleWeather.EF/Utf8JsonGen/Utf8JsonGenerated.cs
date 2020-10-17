@@ -406,9 +406,7 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("name"), 0},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("latitude"), 1},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("longitude"), 2},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("tz_offset"), 3},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("tz_short"), 4},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("tz_long"), 5},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("tz_long"), 3},
             };
 
             this.____stringByteKeys = new byte[][]
@@ -416,8 +414,6 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
                 JsonWriter.GetEncodedPropertyNameWithBeginObject("name"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("latitude"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("longitude"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("tz_offset"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("tz_short"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("tz_long"),
                 
             };
@@ -439,10 +435,6 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             writer.WriteRaw(this.____stringByteKeys[2]);
             formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.longitude, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[3]);
-            formatterResolver.GetFormatterWithVerify<global::System.TimeSpan>().Serialize(ref writer, value.tz_offset, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[4]);
-            writer.WriteString(value.tz_short);
-            writer.WriteRaw(this.____stringByteKeys[5]);
             writer.WriteString(value.tz_long);
             
             writer.WriteEndObject();
@@ -462,10 +454,6 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             var __latitude__b__ = false;
             var __longitude__ = default(float?);
             var __longitude__b__ = false;
-            var __tz_offset__ = default(global::System.TimeSpan);
-            var __tz_offset__b__ = false;
-            var __tz_short__ = default(string);
-            var __tz_short__b__ = false;
             var __tz_long__ = default(string);
             var __tz_long__b__ = false;
 
@@ -496,14 +484,6 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
                         __longitude__b__ = true;
                         break;
                     case 3:
-                        __tz_offset__ = formatterResolver.GetFormatterWithVerify<global::System.TimeSpan>().Deserialize(ref reader, formatterResolver);
-                        __tz_offset__b__ = true;
-                        break;
-                    case 4:
-                        __tz_short__ = reader.ReadString();
-                        __tz_short__b__ = true;
-                        break;
-                    case 5:
                         __tz_long__ = reader.ReadString();
                         __tz_long__b__ = true;
                         break;
@@ -520,8 +500,6 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             if(__name__b__) ____result.name = __name__;
             if(__latitude__b__) ____result.latitude = __latitude__;
             if(__longitude__b__) ____result.longitude = __longitude__;
-            if(__tz_offset__b__) ____result.tz_offset = __tz_offset__;
-            if(__tz_short__b__) ____result.tz_short = __tz_short__;
             if(__tz_long__b__) ____result.tz_long = __tz_long__;
 
             return ____result;

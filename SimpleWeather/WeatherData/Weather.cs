@@ -295,19 +295,7 @@ namespace SimpleWeather.WeatherData
             name = null;
             latitude = (float)location.lat;
             longitude = (float)location._long;
-            var nodaTz = NodaTime.DateTimeZoneProviders.Tzdb.GetZoneOrNull(location.timezone_id);
-            if (nodaTz != null)
-            {
-                var Instant = NodaTime.SystemClock.Instance.GetCurrentInstant();
-                tz_short = nodaTz.GetZoneInterval(Instant).Name;
-                tz_offset = nodaTz.GetUtcOffset(Instant).ToTimeSpan();
-                tz_long = location.timezone_id;
-            }
-            else
-            {
-                tz_offset = TimeSpan.Zero;
-                tz_short = "UTC";
-            }
+            tz_long = location.timezone_id;
         }
 
         public Location(OpenWeather.Rootobject root)
@@ -316,19 +304,7 @@ namespace SimpleWeather.WeatherData
             name = null;
             latitude = root.lat;
             longitude = root.lon;
-            var nodaTz = NodaTime.DateTimeZoneProviders.Tzdb.GetZoneOrNull(root.timezone);
-            if (nodaTz != null)
-            {
-                var Instant = NodaTime.SystemClock.Instance.GetCurrentInstant();
-                tz_short = nodaTz.GetZoneInterval(Instant).Name;
-                tz_offset = nodaTz.GetUtcOffset(Instant).ToTimeSpan();
-                tz_long = root.timezone;
-            }
-            else
-            {
-                tz_offset = TimeSpan.Zero;
-                tz_short = "UTC";
-            }
+            tz_long = root.timezone;
         }
 
         public Location(Metno.Rootobject foreRoot)
@@ -337,8 +313,7 @@ namespace SimpleWeather.WeatherData
             name = null;
             latitude = foreRoot.geometry.coordinates[1];
             longitude = foreRoot.geometry.coordinates[0];
-            tz_offset = TimeSpan.Zero;
-            tz_short = "UTC";
+            tz_long = "UTC";
         }
 
         public Location(HERE.Location location)
@@ -347,27 +322,14 @@ namespace SimpleWeather.WeatherData
             name = null;
             latitude = location.latitude;
             longitude = location.longitude;
-            tz_offset = TimeSpan.Zero;
-            tz_short = "UTC";
+            tz_long = "UTC";
         }
 
         public Location(NWS.PointsRootobject pointsRootobject)
         {
             // Use location name from location provider
             name = null;
-            var nodaTz = NodaTime.DateTimeZoneProviders.Tzdb.GetZoneOrNull(pointsRootobject.timeZone);
-            if (nodaTz != null)
-            {
-                var Instant = NodaTime.SystemClock.Instance.GetCurrentInstant();
-                tz_short = nodaTz.GetZoneInterval(Instant).Name;
-                tz_offset = nodaTz.GetUtcOffset(Instant).ToTimeSpan();
-                tz_long = pointsRootobject.timeZone;
-            }
-            else
-            {
-                tz_offset = TimeSpan.Zero;
-                tz_short = "UTC";
-            }
+            tz_long = pointsRootobject.timeZone;
         }
     }
 

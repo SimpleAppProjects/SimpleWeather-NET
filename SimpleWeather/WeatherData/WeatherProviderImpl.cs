@@ -73,8 +73,6 @@ namespace SimpleWeather.WeatherData
 
                 weather.location.latitude = (float)location.latitude;
                 weather.location.longitude = (float)location.longitude;
-                weather.location.tz_short = location.tz_short;
-                weather.location.tz_offset = location.tz_offset;
 
                 // Additional external data
                 weather.condition.airQuality = await new AQICN.AQICNProvider().GetAirQualityData(location);

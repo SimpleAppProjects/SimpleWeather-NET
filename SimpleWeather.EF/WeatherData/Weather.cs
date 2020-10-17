@@ -9,6 +9,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using Utf8Json;
 using Utf8Json.Formatters;
+using NodaTime;
 
 namespace SimpleWeather.WeatherData
 {
@@ -445,13 +446,47 @@ namespace SimpleWeather.WeatherData
         public string name { get; set; }
         public float? latitude { get; set; }
         public float? longitude { get; set; }
-        public TimeSpan tz_offset { get; set; }
-        public string tz_short { get; set; }
         public string tz_long { get; set; }
+
+        [IgnoreDataMember]
+        [Ignore]
+        public TimeSpan tz_offset
+        {
+            get
+            {
+                if (!String.IsNullOrWhiteSpace(tz_long))
+                {
+                    var nodaTz = DateTimeZoneProviders.Tzdb.GetZoneOrNull(tz_long);
+                    if (nodaTz != null)
+                        return nodaTz.GetUtcOffset(SystemClock.Instance.GetCurrentInstant()).ToTimeSpan();
+                }
+                return TimeSpan.Zero;
+            }
+        }
+
+        [IgnoreDataMember]
+        [Ignore]
+        public string tz_short
+        {
+            get
+            {
+                if (!String.IsNullOrWhiteSpace(tz_long))
+                {
+                    var nodaTz = DateTimeZoneProviders.Tzdb.GetZoneOrNull(tz_long);
+                    if (nodaTz != null)
+                    {
+                        return new ZonedDateTime(SystemClock.Instance.GetCurrentInstant(), nodaTz)
+                            .ToString("%x", CultureUtils.UserCulture);
+                    }
+                }
+                return "UTC";
+            }
+        }
 
         internal Location()
         {
             // Needed for deserialization
+            tz_long = "UTC";
         }
 
         public override bool Equals(object obj)
@@ -460,14 +495,12 @@ namespace SimpleWeather.WeatherData
                    name == location.name &&
                    latitude == location.latitude &&
                    longitude == location.longitude &&
-                   tz_offset.Equals(location.tz_offset) &&
-                   tz_short == location.tz_short &&
                    tz_long == location.tz_long;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(name, latitude, longitude, tz_offset, tz_short, tz_long);
+            return HashCode.Combine(name, latitude, longitude, tz_long);
         }
 
         public override void FromJson(ref JsonReader extReader)
@@ -511,14 +544,6 @@ namespace SimpleWeather.WeatherData
                         this.longitude = float.Parse(reader.ReadString(), CultureInfo.InvariantCulture);
                         break;
 
-                    case nameof(tz_offset):
-                        this.tz_offset = TimeSpan.Parse(reader.ReadString(), CultureInfo.InvariantCulture);
-                        break;
-
-                    case nameof(tz_short):
-                        this.tz_short = reader.ReadString();
-                        break;
-
                     case nameof(tz_long):
                         this.tz_long = reader.ReadString();
                         break;
@@ -552,18 +577,6 @@ namespace SimpleWeather.WeatherData
             // "longitude" : ""
             writer.WritePropertyName(nameof(longitude));
             writer.WriteString(longitude?.ToInvariantString());
-
-            writer.WriteValueSeparator();
-
-            // "tz_offset" : ""
-            writer.WritePropertyName(nameof(tz_offset));
-            writer.WriteString(tz_offset.ToZoneOffsetFormat());
-
-            writer.WriteValueSeparator();
-
-            // "tz_short" : ""
-            writer.WritePropertyName(nameof(tz_short));
-            writer.WriteString(tz_short);
 
             writer.WriteValueSeparator();
 

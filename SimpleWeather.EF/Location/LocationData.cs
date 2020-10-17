@@ -55,7 +55,10 @@ namespace SimpleWeather.Location
                 {
                     var nodaTz = DateTimeZoneProviders.Tzdb.GetZoneOrNull(tz_long);
                     if (nodaTz != null)
-                        return nodaTz.GetZoneInterval(SystemClock.Instance.GetCurrentInstant()).Name;
+                    {
+                        return new ZonedDateTime(SystemClock.Instance.GetCurrentInstant(), nodaTz)
+                            .ToString("%x", CultureUtils.UserCulture);
+                    }
                 }
                 return "UTC";
             }
