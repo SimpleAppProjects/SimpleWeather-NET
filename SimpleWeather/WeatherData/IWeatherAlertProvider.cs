@@ -6,6 +6,6 @@ namespace SimpleWeather.WeatherData
 {
     public interface IWeatherAlertProvider
     {
-        Task<List<WeatherAlert>> GetAlerts(LocationData location);
+        Task<ICollection<WeatherAlert>> GetAlerts(LocationData location);
     }
 }

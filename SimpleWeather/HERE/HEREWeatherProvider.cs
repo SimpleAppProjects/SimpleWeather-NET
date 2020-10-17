@@ -15,7 +15,7 @@ using Windows.Web.Http;
 
 namespace SimpleWeather.HERE
 {
-    public partial class HEREWeatherProvider : WeatherProviderImpl
+    public partial class HEREWeatherProvider : WeatherProviderImpl, IWeatherAlertProvider
     {
         private const String WEATHER_GLOBAL_QUERY_URL = "https://weather.ls.hereapi.com/weather/1.0/report.json?product=alerts&product=forecast_7days_simple" +
             "&product=forecast_hourly&product=forecast_astronomy&product=observation&oneobservation=true&{0}&language={1}&metric=false";
@@ -222,11 +222,11 @@ namespace SimpleWeather.HERE
             return weather;
         }
 
-        public override Task<List<WeatherAlert>> GetAlerts(LocationData location)
+        public override Task<ICollection<WeatherAlert>> GetAlerts(LocationData location)
         {
             return Task.Run(async () =>
             {
-                List<WeatherAlert> alerts = null;
+                ICollection<WeatherAlert> alerts = null;
 
                 var culture = CultureUtils.UserCulture;
 
@@ -265,11 +265,47 @@ namespace SimpleWeather.HERE
                             // Load data
                             Rootobject root = JSONParser.Deserializer<Rootobject>(contentStream);
 
-                            alerts = new List<WeatherAlert>(root.alerts.alerts.Length);
-
-                            foreach (Alert result in root.alerts.alerts)
+                            // Add weather alerts if available
+                            if (root.alerts?.alerts?.Length > 0)
                             {
-                                alerts.Add(new WeatherAlert(result));
+                                alerts = new List<WeatherAlert>(root.alerts.alerts.Length);
+
+                                foreach (Alert result in root.alerts.alerts)
+                                {
+                                    alerts.Add(new WeatherAlert(result));
+                                }
+                            }
+                            else if (root.nwsAlerts?.watch?.Length > 0 || root.nwsAlerts?.warning?.Length > 0)
+                            {
+                                int numOfAlerts = (root.nwsAlerts?.watch?.Length ?? 0) + (root.nwsAlerts?.warning?.Length ?? 0);
+
+                                alerts = new HashSet<WeatherAlert>(numOfAlerts);
+
+                                float lat = (float)location.latitude;
+                                float lon = (float)location.longitude;
+
+                                if (root.nwsAlerts.watch != null)
+                                {
+                                    foreach (var watchItem in root.nwsAlerts.watch)
+                                    {
+                                        // Add watch item if location is within 20km of the center of the alert zone
+                                        if (ConversionMethods.CalculateHaversine(lat, lon, double.Parse(watchItem.latitude), double.Parse(watchItem.longitude)) < 20000)
+                                        {
+                                            alerts.Add(new WeatherAlert(watchItem));
+                                        }
+                                    }
+                                }
+                                if (root.nwsAlerts.warning != null)
+                                {
+                                    foreach (var warningItem in root.nwsAlerts.warning)
+                                    {
+                                        // Add warning item if location is within 25km of the center of the alert zone
+                                        if (ConversionMethods.CalculateHaversine(lat, lon, double.Parse(warningItem.latitude), double.Parse(warningItem.longitude)) < 25000)
+                                        {
+                                            alerts.Add(new WeatherAlert(warningItem));
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

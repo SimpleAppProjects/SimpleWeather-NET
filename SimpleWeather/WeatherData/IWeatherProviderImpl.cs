@@ -25,7 +25,7 @@ namespace SimpleWeather.WeatherData
         Task<Weather> GetWeather(string location_query, string country_code);
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         Task<Weather> GetWeather(LocationData location);
-        Task<List<WeatherAlert>> GetAlerts(LocationData location);
+        Task<ICollection<WeatherAlert>> GetAlerts(LocationData location);
         string GetWeatherIcon(string icon);
         string GetWeatherIcon(bool isNight, string icon);
         string GetWeatherCondition(string icon);

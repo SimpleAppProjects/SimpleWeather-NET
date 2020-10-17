@@ -184,7 +184,7 @@ namespace SimpleWeather.WeatherData
             return WeatherProvider.GetWeather(location);
         }
 
-        public Task<List<WeatherAlert>> GetAlerts(LocationData location)
+        public Task<ICollection<WeatherAlert>> GetAlerts(LocationData location)
         {
             return WeatherProvider.GetAlerts(location);
         }

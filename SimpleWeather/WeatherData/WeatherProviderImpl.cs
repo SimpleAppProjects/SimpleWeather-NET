@@ -81,12 +81,12 @@ namespace SimpleWeather.WeatherData
             });
         }
         // Alerts
-        public virtual Task<List<WeatherAlert>> GetAlerts(LocationData location)
+        public virtual Task<ICollection<WeatherAlert>> GetAlerts(LocationData location)
         {
             if ("US".Equals(location.country_code))
                 return new NWS.NWSAlertProvider().GetAlerts(location);
             else
-                return Task.FromResult<List<WeatherAlert>>(null);
+                return Task.FromResult<ICollection<WeatherAlert>>(null);
         }
 
         // KeyCheck

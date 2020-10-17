@@ -17,9 +17,9 @@ namespace SimpleWeather.NWS
     {
         private const String ALERT_QUERY_URL = "https://api.weather.gov/alerts/active?status=actual&message_type=alert&point={0:0.####},{1:0.####}";
 
-        public Task<List<WeatherAlert>> GetAlerts(LocationData location)
+        public Task<ICollection<WeatherAlert>> GetAlerts(LocationData location)
         {
-            return Task.Run(async () =>
+            return Task.Run<ICollection<WeatherAlert>>(async () =>
             {
                 List<WeatherAlert> alerts = null;
 
