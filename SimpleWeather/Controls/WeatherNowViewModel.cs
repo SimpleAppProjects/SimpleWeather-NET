@@ -152,6 +152,7 @@ namespace SimpleWeather.Controls
         private void RefreshView()
         {
             var culture = CultureUtils.UserCulture;
+            var provider = WeatherManager.GetProvider(weather.source);
 
             tempUnit = Settings.Unit;
 
@@ -171,7 +172,8 @@ namespace SimpleWeather.Controls
             }
             var unitTemp = Settings.IsFahrenheit ? WeatherIcons.FAHRENHEIT : WeatherIcons.CELSIUS;
             CurTemp = tmpCurTemp + unitTemp;
-            CurCondition = (String.IsNullOrWhiteSpace(weather.condition.weather)) ? "--" : weather.condition.weather;
+            var weatherCondition = provider.SupportsWeatherLocale ? weather.condition.weather : provider.GetWeatherCondition(weather.condition.icon);
+            CurCondition = (String.IsNullOrWhiteSpace(weatherCondition)) ? "--" : weatherCondition;
             WeatherIcon = weather.condition.icon;
 
             if (weather.condition.high_f.HasValue && weather.condition.high_f != weather.condition.high_c)

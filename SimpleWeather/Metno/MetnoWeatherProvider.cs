@@ -422,7 +422,7 @@ namespace SimpleWeather.Metno
                     return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_rainshowers");
 
                 default:
-                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_notavailable");
+                    return base.GetWeatherCondition(icon);
             }
         }
         

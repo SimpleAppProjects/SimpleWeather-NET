@@ -26,7 +26,7 @@ namespace SimpleWeather.Controls
             WeatherIcon = forecast.icon;
             Date = forecast.date.ToString("ddd dd", culture);
             ShortDate = forecast.date.ToString("ddd", culture);
-            Condition = forecast.condition;
+            Condition = wm.SupportsWeatherLocale ? forecast.condition : wm.GetWeatherCondition(forecast.icon);
             try
             {
                 if (forecast.high_f.HasValue && forecast.high_c.HasValue)
@@ -111,8 +111,7 @@ namespace SimpleWeather.Controls
                 {
                     UV uv = new UV(forecast.extras.uv_index.Value);
 
-                    DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.UV,
-                           string.Format("{0:0.0}, {1}", uv.index, uv.desc)));
+                    DetailExtras.Add(new DetailItemViewModel(uv));
                 }
 
                 if (forecast.extras.pressure_in.HasValue)

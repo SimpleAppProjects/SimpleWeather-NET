@@ -20,7 +20,7 @@ namespace SimpleWeather.Controls
         {
             if (beaufort != null)
             {
-                Beaufort = (new DetailItemViewModel(beaufort.scale, beaufort.desc));
+                Beaufort = (new DetailItemViewModel(beaufort.scale));
                 Title = Beaufort.Label;
 
                 switch (beaufort.scale)

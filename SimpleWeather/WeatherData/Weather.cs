@@ -1106,10 +1106,10 @@ namespace SimpleWeather.WeatherData
                    .GetWeatherIcon(string.Format("{0}_{1}", observation.daylight, observation.iconName));
 
             if (int.TryParse(forecastItem.beaufortScale, NumberStyles.Integer, CultureInfo.InvariantCulture, out int scale))
-                beaufort = new Beaufort(scale, forecastItem.beaufortDescription);
+                beaufort = new Beaufort(scale);
 
             if (float.TryParse(forecastItem.uvIndex, NumberStyles.Float, CultureInfo.InvariantCulture, out float index))
-                uv = new UV(index, forecastItem.uvDesc);
+                uv = new UV(index);
 
             observation_time = observation.utcTime;
         }
@@ -1461,43 +1461,35 @@ namespace SimpleWeather.WeatherData
             {
                 case "cw_new_moon":
                 default:
-                    this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.NewMoon,
-                            astroData.moonPhaseDesc);
+                    this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.NewMoon);
                     break;
 
                 case "cw_waxing_crescent":
-                    this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.WaxingCrescent,
-                            astroData.moonPhaseDesc);
+                    this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.WaxingCrescent);
                     break;
 
                 case "cw_first_qtr":
-                    this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.FirstQtr,
-                            astroData.moonPhaseDesc);
+                    this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.FirstQtr);
                     break;
 
                 case "cw_waxing_gibbous":
-                    this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.WaxingGibbous,
-                            astroData.moonPhaseDesc);
+                    this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.WaxingGibbous);
                     break;
 
                 case "cw_full_moon":
-                    this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.FullMoon,
-                            astroData.moonPhaseDesc);
+                    this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.FullMoon);
                     break;
 
                 case "cw_waning_gibbous":
-                    this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.WaningGibbous,
-                            astroData.moonPhaseDesc);
+                    this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.WaningGibbous);
                     break;
 
                 case "cw_last_quarter":
-                    this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.LastQtr,
-                            astroData.moonPhaseDesc);
+                    this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.LastQtr);
                     break;
 
                 case "cw_waning_crescent":
-                    this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.WaningCrescent,
-                            astroData.moonPhaseDesc);
+                    this.moonphase = new MoonPhase(MoonPhase.MoonPhaseType.WaningCrescent);
                     break;
             }
         }
@@ -1589,76 +1581,56 @@ namespace SimpleWeather.WeatherData
             {
                 case 0:
                     scale = BeaufortScale.B0;
-                    desc = SimpleLibrary.ResLoader.GetString("/Beaufort/Beaufort_0");
                     break;
 
                 case 1:
                     scale = BeaufortScale.B1;
-                    desc = SimpleLibrary.ResLoader.GetString("/Beaufort/Beaufort_1");
                     break;
 
                 case 2:
                     scale = BeaufortScale.B2;
-                    desc = SimpleLibrary.ResLoader.GetString("/Beaufort/Beaufort_2");
                     break;
 
                 case 3:
                     scale = BeaufortScale.B3;
-                    desc = SimpleLibrary.ResLoader.GetString("/Beaufort/Beaufort_3");
                     break;
 
                 case 4:
                     scale = BeaufortScale.B4;
-                    desc = SimpleLibrary.ResLoader.GetString("/Beaufort/Beaufort_4");
                     break;
 
                 case 5:
                     scale = BeaufortScale.B5;
-                    desc = SimpleLibrary.ResLoader.GetString("/Beaufort/Beaufort_5");
                     break;
 
                 case 6:
                     scale = BeaufortScale.B6;
-                    desc = SimpleLibrary.ResLoader.GetString("/Beaufort/Beaufort_6");
                     break;
 
                 case 7:
                     scale = BeaufortScale.B7;
-                    desc = SimpleLibrary.ResLoader.GetString("/Beaufort/Beaufort_7");
                     break;
 
                 case 8:
                     scale = BeaufortScale.B8;
-                    desc = SimpleLibrary.ResLoader.GetString("/Beaufort/Beaufort_8");
                     break;
 
                 case 9:
                     scale = BeaufortScale.B9;
-                    desc = SimpleLibrary.ResLoader.GetString("/Beaufort/Beaufort_9");
                     break;
 
                 case 10:
                     scale = BeaufortScale.B10;
-                    desc = SimpleLibrary.ResLoader.GetString("/Beaufort/Beaufort_10");
                     break;
 
                 case 11:
                     scale = BeaufortScale.B11;
-                    desc = SimpleLibrary.ResLoader.GetString("/Beaufort/Beaufort_11");
                     break;
 
                 case 12:
                     scale = BeaufortScale.B12;
-                    desc = SimpleLibrary.ResLoader.GetString("/Beaufort/Beaufort_12");
                     break;
             }
-        }
-
-        public Beaufort(int beaufortScale, String description)
-            : this(beaufortScale)
-        {
-            if (!String.IsNullOrWhiteSpace(description))
-                this.desc = description;
         }
     }
 
@@ -1667,48 +1639,6 @@ namespace SimpleWeather.WeatherData
         public MoonPhase(MoonPhaseType moonPhaseType)
         {
             this.phase = moonPhaseType;
-
-            switch (moonPhaseType)
-            {
-                case MoonPhaseType.NewMoon:
-                    desc = SimpleLibrary.ResLoader.GetString("/MoonPhases/MoonPhase_New");
-                    break;
-
-                case MoonPhaseType.WaxingCrescent:
-                    desc = SimpleLibrary.ResLoader.GetString("/MoonPhases/MoonPhase_WaxCrescent");
-                    break;
-
-                case MoonPhaseType.FirstQtr:
-                    desc = SimpleLibrary.ResLoader.GetString("/MoonPhases/MoonPhase_FirstQtr");
-                    break;
-
-                case MoonPhaseType.WaxingGibbous:
-                    desc = SimpleLibrary.ResLoader.GetString("/MoonPhases/MoonPhase_WaxGibbous");
-                    break;
-
-                case MoonPhaseType.FullMoon:
-                    desc = SimpleLibrary.ResLoader.GetString("/MoonPhases/MoonPhase_Full");
-                    break;
-
-                case MoonPhaseType.WaningGibbous:
-                    desc = SimpleLibrary.ResLoader.GetString("/MoonPhases/MoonPhase_WanGibbous");
-                    break;
-
-                case MoonPhaseType.LastQtr:
-                    desc = SimpleLibrary.ResLoader.GetString("/MoonPhases/MoonPhase_LastQtr");
-                    break;
-
-                case MoonPhaseType.WaningCrescent:
-                    desc = SimpleLibrary.ResLoader.GetString("/MoonPhases/MoonPhase_WanCrescent");
-                    break;
-            }
-        }
-
-        public MoonPhase(MoonPhaseType moonPhaseType, String description)
-            : this(moonPhaseType)
-        {
-            if (!String.IsNullOrWhiteSpace(description))
-                this.desc = description;
         }
     }
 
@@ -1717,34 +1647,6 @@ namespace SimpleWeather.WeatherData
         public UV(float index)
         {
             this.index = index;
-
-            if (index >= 0 && index < 3)
-            {
-                desc = SimpleLibrary.ResLoader.GetString("/UVIndex/UV_0");
-            }
-            else if (index >= 3 && index < 6)
-            {
-                desc = SimpleLibrary.ResLoader.GetString("/UVIndex/UV_3");
-            }
-            else if (index >= 6 && index < 8)
-            {
-                desc = SimpleLibrary.ResLoader.GetString("/UVIndex/UV_6");
-            }
-            else if (index >= 8 && index < 11)
-            {
-                desc = SimpleLibrary.ResLoader.GetString("/UVIndex/UV_8");
-            }
-            else if (index >= 11)
-            {
-                desc = SimpleLibrary.ResLoader.GetString("/UVIndex/UV_11");
-            }
-        }
-
-        public UV(float index, String description)
-            : this(index)
-        {
-            if (!String.IsNullOrWhiteSpace(description))
-                this.desc = description;
         }
     }
 

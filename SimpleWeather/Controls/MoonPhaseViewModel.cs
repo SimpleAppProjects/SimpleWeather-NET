@@ -15,9 +15,9 @@ namespace SimpleWeather.Controls
 
         public MoonPhaseViewModel(MoonPhase moonPhase)
         {
-            MoonPhase = new DetailItemViewModel(moonPhase.phase, moonPhase.desc);
-            Title = MoonPhase.Label;
             PhaseType = moonPhase.phase;
+            MoonPhase = new DetailItemViewModel(moonPhase.phase);
+            Title = MoonPhase.Label;
         }
     }
 }

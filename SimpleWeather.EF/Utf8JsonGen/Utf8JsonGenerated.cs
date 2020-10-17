@@ -1266,13 +1266,11 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
             {
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("scale"), 0},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("desc"), 1},
             };
 
             this.____stringByteKeys = new byte[][]
             {
                 JsonWriter.GetEncodedPropertyNameWithBeginObject("scale"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("desc"),
                 
             };
         }
@@ -1288,8 +1286,6 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
 
             writer.WriteRaw(this.____stringByteKeys[0]);
             formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherData.Beaufort.BeaufortScale>().Serialize(ref writer, value.scale, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[1]);
-            writer.WriteString(value.desc);
             
             writer.WriteEndObject();
         }
@@ -1304,8 +1300,6 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
 
             var __scale__ = default(global::SimpleWeather.WeatherData.Beaufort.BeaufortScale);
             var __scale__b__ = false;
-            var __desc__ = default(string);
-            var __desc__b__ = false;
 
             var ____count = 0;
             reader.ReadIsBeginObjectWithVerify();
@@ -1325,10 +1319,6 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
                         __scale__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherData.Beaufort.BeaufortScale>().Deserialize(ref reader, formatterResolver);
                         __scale__b__ = true;
                         break;
-                    case 1:
-                        __desc__ = reader.ReadString();
-                        __desc__b__ = true;
-                        break;
                     default:
                         reader.ReadNextBlock();
                         break;
@@ -1340,7 +1330,6 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
 
             var ____result = new global::SimpleWeather.WeatherData.Beaufort();
             if(__scale__b__) ____result.scale = __scale__;
-            if(__desc__b__) ____result.desc = __desc__;
 
             return ____result;
         }
@@ -1357,13 +1346,11 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
             {
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("index"), 0},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("desc"), 1},
             };
 
             this.____stringByteKeys = new byte[][]
             {
                 JsonWriter.GetEncodedPropertyNameWithBeginObject("index"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("desc"),
                 
             };
         }
@@ -1379,8 +1366,6 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
 
             writer.WriteRaw(this.____stringByteKeys[0]);
             formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.index, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[1]);
-            writer.WriteString(value.desc);
             
             writer.WriteEndObject();
         }
@@ -1395,8 +1380,6 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
 
             var __index__ = default(float?);
             var __index__b__ = false;
-            var __desc__ = default(string);
-            var __desc__b__ = false;
 
             var ____count = 0;
             reader.ReadIsBeginObjectWithVerify();
@@ -1416,10 +1399,6 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
                         __index__ = formatterResolver.GetFormatterWithVerify<float?>().Deserialize(ref reader, formatterResolver);
                         __index__b__ = true;
                         break;
-                    case 1:
-                        __desc__ = reader.ReadString();
-                        __desc__b__ = true;
-                        break;
                     default:
                         reader.ReadNextBlock();
                         break;
@@ -1431,7 +1410,6 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
 
             var ____result = new global::SimpleWeather.WeatherData.UV();
             if(__index__b__) ____result.index = __index__;
-            if(__desc__b__) ____result.desc = __desc__;
 
             return ____result;
         }
@@ -1963,13 +1941,11 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
             {
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("phase"), 0},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("desc"), 1},
             };
 
             this.____stringByteKeys = new byte[][]
             {
                 JsonWriter.GetEncodedPropertyNameWithBeginObject("phase"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("desc"),
                 
             };
         }
@@ -1985,8 +1961,6 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
 
             writer.WriteRaw(this.____stringByteKeys[0]);
             formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherData.MoonPhase.MoonPhaseType>().Serialize(ref writer, value.phase, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[1]);
-            writer.WriteString(value.desc);
             
             writer.WriteEndObject();
         }
@@ -2001,8 +1975,6 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
 
             var __phase__ = default(global::SimpleWeather.WeatherData.MoonPhase.MoonPhaseType);
             var __phase__b__ = false;
-            var __desc__ = default(string);
-            var __desc__b__ = false;
 
             var ____count = 0;
             reader.ReadIsBeginObjectWithVerify();
@@ -2022,10 +1994,6 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
                         __phase__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherData.MoonPhase.MoonPhaseType>().Deserialize(ref reader, formatterResolver);
                         __phase__b__ = true;
                         break;
-                    case 1:
-                        __desc__ = reader.ReadString();
-                        __desc__b__ = true;
-                        break;
                     default:
                         reader.ReadNextBlock();
                         break;
@@ -2037,7 +2005,6 @@ namespace SimpleWeather.EF.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
 
             var ____result = new global::SimpleWeather.WeatherData.MoonPhase();
             if(__phase__b__) ____result.phase = __phase__;
-            if(__desc__b__) ____result.desc = __desc__;
 
             return ____result;
         }

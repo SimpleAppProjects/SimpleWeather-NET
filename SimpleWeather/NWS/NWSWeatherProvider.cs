@@ -520,7 +520,7 @@ namespace SimpleWeather.NWS
             }
             else
             {
-                return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_notavailable");
+                return base.GetWeatherCondition(icon);
             }
         }
         

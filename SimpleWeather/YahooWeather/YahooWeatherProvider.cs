@@ -442,7 +442,7 @@ namespace SimpleWeather.WeatherYahoo
             {
             }
 
-            return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_notavailable");
+            return base.GetWeatherCondition(icon);
         }
 
         // Some conditions can be for any time of day

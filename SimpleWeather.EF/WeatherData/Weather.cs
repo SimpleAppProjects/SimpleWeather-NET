@@ -2189,7 +2189,6 @@ namespace SimpleWeather.WeatherData
         }
 
         public BeaufortScale scale { get; set; }
-        public string desc { get; set; }
 
         internal Beaufort()
         {
@@ -2199,13 +2198,12 @@ namespace SimpleWeather.WeatherData
         public override bool Equals(object obj)
         {
             return obj is Beaufort beaufort &&
-                   scale == beaufort.scale &&
-                   desc == beaufort.desc;
+                   scale == beaufort.scale;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(scale, desc);
+            return HashCode.Combine(scale);
         }
 
         public override void FromJson(ref JsonReader extReader)
@@ -2241,10 +2239,6 @@ namespace SimpleWeather.WeatherData
                         this.scale = (BeaufortScale)reader.ReadInt32();
                         break;
 
-                    case nameof(desc):
-                        this.desc = reader.ReadString();
-                        break;
-
                     default:
                         reader.ReadNextBlock();
                         break;
@@ -2262,12 +2256,6 @@ namespace SimpleWeather.WeatherData
             // "scale" : ""
             writer.WritePropertyName(nameof(scale));
             writer.WriteInt32((int)scale);
-
-            writer.WriteValueSeparator();
-
-            // "desc" : ""
-            writer.WritePropertyName(nameof(desc));
-            writer.WriteString(desc);
 
             // }
             writer.WriteEndObject();
@@ -2292,7 +2280,6 @@ namespace SimpleWeather.WeatherData
         }
 
         public MoonPhaseType phase { get; set; }
-        public string desc { get; set; }
 
         internal MoonPhase()
         {
@@ -2302,13 +2289,12 @@ namespace SimpleWeather.WeatherData
         public override bool Equals(object obj)
         {
             return obj is MoonPhase phase &&
-                   this.phase == phase.phase &&
-                   desc == phase.desc;
+                   this.phase == phase.phase;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(phase, desc);
+            return HashCode.Combine(phase);
         }
 
         public override void FromJson(ref JsonReader extReader)
@@ -2344,10 +2330,6 @@ namespace SimpleWeather.WeatherData
                         this.phase = (MoonPhaseType)reader.ReadInt32();
                         break;
 
-                    case nameof(desc):
-                        this.desc = reader.ReadString();
-                        break;
-
                     default:
                         reader.ReadNextBlock();
                         break;
@@ -2366,12 +2348,6 @@ namespace SimpleWeather.WeatherData
             writer.WritePropertyName(nameof(phase));
             writer.WriteInt32((int)phase);
 
-            writer.WriteValueSeparator();
-
-            // "desc" : ""
-            writer.WritePropertyName(nameof(desc));
-            writer.WriteString(desc);
-
             // }
             writer.WriteEndObject();
 
@@ -2383,7 +2359,6 @@ namespace SimpleWeather.WeatherData
     public partial class UV : CustomJsonObject
     {
         public float? index { get; set; }
-        public string desc { get; set; }
 
         internal UV()
         {
@@ -2393,13 +2368,12 @@ namespace SimpleWeather.WeatherData
         public override bool Equals(object obj)
         {
             return obj is UV uV &&
-                   index == uV.index &&
-                   desc == uV.desc;
+                   index == uV.index;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(index, desc);
+            return HashCode.Combine(index);
         }
 
         public override void FromJson(ref JsonReader extReader)
@@ -2435,10 +2409,6 @@ namespace SimpleWeather.WeatherData
                         this.index = reader.ReadSingle();
                         break;
 
-                    case nameof(desc):
-                        this.desc = reader.ReadString();
-                        break;
-
                     default:
                         reader.ReadNextBlock();
                         break;
@@ -2456,12 +2426,6 @@ namespace SimpleWeather.WeatherData
             // "scale" : ""
             writer.WritePropertyName(nameof(index));
             writer.WriteSingle(index.GetValueOrDefault(-1.0f));
-
-            writer.WriteValueSeparator();
-
-            // "desc" : ""
-            writer.WritePropertyName(nameof(desc));
-            writer.WriteString(desc);
 
             // }
             writer.WriteEndObject();

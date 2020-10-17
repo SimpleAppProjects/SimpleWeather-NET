@@ -118,13 +118,12 @@ namespace SimpleWeather.WeatherData
         /// <returns>A localized weather condition string (if available); returns NULL if provider already supports localized data</returns>
         public virtual string GetWeatherCondition(String icon)
         {
-            /* For reference
             switch (icon)
             {
                 case WeatherIcons.DAY_SUNNY:
                     return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_sunny");
                 case WeatherIcons.NIGHT_CLEAR:
-                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_clearv);
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_clear");
                 case WeatherIcons.DAY_SUNNY_OVERCAST:
                     return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_overcast");
                 case WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY:
@@ -132,6 +131,8 @@ namespace SimpleWeather.WeatherData
                 case WeatherIcons.DAY_CLOUDY:
                 case WeatherIcons.NIGHT_ALT_CLOUDY:
                 case WeatherIcons.CLOUDY:
+                case WeatherIcons.NIGHT_ALT_CLOUDY_HIGH:
+                case WeatherIcons.DAY_CLOUDY_HIGH:
                     return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_cloudy");
                 case WeatherIcons.DAY_SPRINKLE:
                 case WeatherIcons.NIGHT_ALT_SPRINKLE:
@@ -161,6 +162,10 @@ namespace SimpleWeather.WeatherData
                 case WeatherIcons.DAY_SNOW_THUNDERSTORM:
                 case WeatherIcons.NIGHT_ALT_SNOW_THUNDERSTORM:
                     return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_snow_tstorms");
+                case WeatherIcons.HAIL:
+                case WeatherIcons.DAY_HAIL:
+                case WeatherIcons.NIGHT_ALT_HAIL:
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_hail");
                 case WeatherIcons.DAY_RAIN:
                 case WeatherIcons.NIGHT_ALT_RAIN:
                 case WeatherIcons.RAIN:
@@ -180,6 +185,7 @@ namespace SimpleWeather.WeatherData
                     return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_haze");
                 case WeatherIcons.SMOKE:
                     return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_smoky");
+                case WeatherIcons.SANDSTORM:
                 case WeatherIcons.DUST:
                     return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_dust");
                 case WeatherIcons.TORNADO:
@@ -192,15 +198,15 @@ namespace SimpleWeather.WeatherData
                 case WeatherIcons.WINDY:
                 case WeatherIcons.DAY_CLOUDY_WINDY:
                 case WeatherIcons.NIGHT_ALT_CLOUDY_WINDY:
+                case WeatherIcons.DAY_CLOUDY_GUSTS:
+                case WeatherIcons.NIGHT_ALT_CLOUDY_GUSTS:
+                case WeatherIcons.STRONG_WIND:
                     return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_windy");
                 case WeatherIcons.HURRICANE:
                     return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_tropicalstorm");
                 default:
-                    return "";
+                    return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_notavailable");
             }
-            */
-
-            return null;
         }
 
         // Used for current condition

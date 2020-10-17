@@ -33,7 +33,7 @@ namespace SimpleWeather.Controls
                 ShortDate = hrForecast.date.ToString("ht", culture);
             }
 
-            Condition = hrForecast.condition;
+            Condition = wm.SupportsWeatherLocale ? hrForecast.condition : wm.GetWeatherCondition(hrForecast.icon);
             try
             {
                 if (hrForecast.high_f.HasValue && hrForecast.high_c.HasValue)
@@ -113,8 +113,7 @@ namespace SimpleWeather.Controls
                 {
                     UV uv = new UV(hrForecast.extras.uv_index.Value);
 
-                    DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.UV,
-                           string.Format("{0:0.0}, {1}", uv.index, uv.desc)));
+                    DetailExtras.Add(new DetailItemViewModel(uv));
                 }
 
                 if (hrForecast.extras.pressure_in.HasValue)

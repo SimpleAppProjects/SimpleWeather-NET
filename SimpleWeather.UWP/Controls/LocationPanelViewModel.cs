@@ -105,8 +105,26 @@ namespace SimpleWeather.Controls
 
                     LocationName = weather.location.name;
 
-                    // Refresh locale/unit dependent values
-                    RefreshView();
+                    if (weather.precipitation != null)
+                    {
+                        if (weather.precipitation.pop.HasValue)
+                        {
+                            PoP = weather.precipitation.pop.Value + "%";
+                            PoPIcon = WeatherIcons.UMBRELLA;
+                        }
+                        else if (weather.precipitation.cloudiness.HasValue)
+                        {
+                            PoP = weather.precipitation.cloudiness.Value + "%";
+                            PoPIcon = WeatherIcons.CLOUDY;
+                        }
+                    }
+                    else
+                    {
+                        PoP = null;
+                    }
+
+                    WeatherIcon = weather.condition.icon;
+                    WeatherSource = weather.source;
 
                     if (LocationData.query == null)
                     {
@@ -117,6 +135,9 @@ namespace SimpleWeather.Controls
                     }
 
                     IsLoading = false;
+
+                    // Refresh locale/unit dependent values
+                    RefreshView();
                 }
                 else if (!Equals(tempUnit, Settings.Unit))
                 {
@@ -128,6 +149,7 @@ namespace SimpleWeather.Controls
         private void RefreshView()
         {
             var culture = CultureUtils.UserCulture;
+            var provider = WeatherManager.GetProvider(weather.source);
 
             tempUnit = Settings.Unit;
 
@@ -143,7 +165,7 @@ namespace SimpleWeather.Controls
                 CurrTemp = "--";
             }
 
-            CurrWeather = weather.condition.weather;
+            CurrWeather = provider.SupportsWeatherLocale ? weather.condition.weather : provider.GetWeatherCondition(weather.condition.icon);
 
             if (weather.condition.high_f.HasValue && weather.condition.high_f != weather.condition.high_c)
             {
@@ -180,41 +202,27 @@ namespace SimpleWeather.Controls
                 WindSpeed = "--";
                 WindDirection = 0;
             }
-
-            if (weather.precipitation != null)
-            {
-                if (weather.precipitation.pop.HasValue)
-                {
-                    PoP = weather.precipitation.pop.Value + "%";
-                    PoPIcon = WeatherIcons.UMBRELLA;
-                }
-                else if (weather.precipitation.cloudiness.HasValue)
-                {
-                    PoP = weather.precipitation.cloudiness.Value + "%";
-                    PoPIcon = WeatherIcons.CLOUDY;
-                }
-            }
-
-            WeatherIcon = weather.condition.icon;
-            WeatherSource = weather.source;
         }
 
         public Task UpdateBackground()
         {
             return Task.Run(async () =>
             {
-                var imageData = await WeatherUtils.GetImageData(weather);
+                if (weather != null && ImageData == null)
+                {
+                    var imageData = await WeatherUtils.GetImageData(weather);
 
-                if (imageData != null)
-                {
-                    ImageData = imageData;
-                    BackgroundTheme = ColorUtils.IsSuperLight(imageData.Color) ?
-                        ElementTheme.Light : ElementTheme.Dark;
-                }
-                else
-                {
-                    ImageData = null;
-                    BackgroundTheme = ElementTheme.Dark;
+                    if (imageData != null)
+                    {
+                        ImageData = imageData;
+                        BackgroundTheme = ColorUtils.IsSuperLight(imageData.Color) ?
+                            ElementTheme.Light : ElementTheme.Dark;
+                    }
+                    else
+                    {
+                        ImageData = null;
+                        BackgroundTheme = ElementTheme.Dark;
+                    }
                 }
             });
         }
