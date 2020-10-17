@@ -59,43 +59,48 @@ namespace SimpleWeather.UWP.Shared.WeatherData.Images
             {
                 ImageData newImageData = null;
 
-                try
+                // If download has failed recently; don't allow any downloads until specified timespan
+                if ((DateTime.UtcNow - FirebaseStorageHelper.LastDownloadFailTimestamp).TotalHours >= 1)
                 {
-                    // Download image to local cache folder
-                    await CreateDataFolderIfNeeded();
-
-                    StorageFile imageFile = await ImageDataFolder.CreateFileAsync(
-                        String.Format("{0}-{1}", imageData.Condition, Guid.NewGuid().ToString()), CreationCollisionOption.ReplaceExisting);
-
-                    var storage = await FirebaseStorageHelper.GetFirebaseStorage();
-                    var storageRef = storage.GetReferenceFromUrl(imageUri);
-
-                    var imageDownloadUri = new Uri(await storageRef.GetDownloadUrlAsync());
-
-                    using (var fStream = await imageFile.OpenAsync(FileAccessMode.ReadWrite))
-                    using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
-                    using (var request = new HttpRequestMessage(HttpMethod.Get, imageDownloadUri))
+                    try
                     {
-                        // Connect to webstream
-                        var webClient = SimpleLibrary.WebClient;
-                        using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                        // Download image to local cache folder
+                        await CreateDataFolderIfNeeded();
+
+                        StorageFile imageFile = await ImageDataFolder.CreateFileAsync(
+                            String.Format("{0}-{1}", imageData.Condition, Guid.NewGuid().ToString()), CreationCollisionOption.ReplaceExisting);
+
+                        var storage = await FirebaseStorageHelper.GetFirebaseStorage();
+                        var storageRef = storage.GetReferenceFromUrl(imageUri);
+
+                        var imageDownloadUri = new Uri(await storageRef.GetDownloadUrlAsync());
+
+                        using (var fStream = await imageFile.OpenAsync(FileAccessMode.ReadWrite))
+                        using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
+                        using (var request = new HttpRequestMessage(HttpMethod.Get, imageDownloadUri))
                         {
-                            response.EnsureSuccessStatusCode();
+                            // Connect to webstream
+                            var webClient = SimpleLibrary.WebClient;
+                            using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                            {
+                                response.EnsureSuccessStatusCode();
 
-                            // Download content to file
-                            await response.Content.WriteToStreamAsync(fStream);
-                            await fStream.FlushAsync();
+                                // Download content to file
+                                await response.Content.WriteToStreamAsync(fStream);
+                                await fStream.FlushAsync();
+                            }
                         }
+
+                        newImageData = ImageData.CopyWithNewImageUrl(imageData, imageFile.Path);
+
+                        ImageDataContainer.Values[imageData.Condition] = JSONParser.Serializer(newImageData);
                     }
-
-                    newImageData = ImageData.CopyWithNewImageUrl(imageData, imageFile.Path);
-
-                    ImageDataContainer.Values[imageData.Condition] = JSONParser.Serializer(newImageData);
-                }
-                catch (Exception e)
-                {
-                    newImageData = null;
-                    Logger.WriteLine(LoggerLevel.Error, e, "ImageDataHelper: error storing image data");
+                    catch (Exception e)
+                    {
+                        newImageData = null;
+                        Logger.WriteLine(LoggerLevel.Error, e, "ImageDataHelper: error storing image data");
+                        FirebaseStorageHelper.LastDownloadFailTimestamp = DateTime.UtcNow;
+                    }
                 }
 
                 return newImageData;

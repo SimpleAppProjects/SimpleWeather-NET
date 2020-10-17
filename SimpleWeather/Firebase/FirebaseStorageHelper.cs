@@ -1,4 +1,5 @@
 ﻿using Firebase.Storage;
+using NodaTime;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,6 +10,7 @@ namespace SimpleWeather.Firebase
     public static class FirebaseStorageHelper
     {
         private static readonly Uri NetworkRequestUri = new Uri("https://firebasestorage.googleapis.com/v0/b/");
+        public static DateTime LastDownloadFailTimestamp = DateTime.MinValue;
 
         public static Task<FirebaseStorage> GetFirebaseStorage()
         {
@@ -22,7 +24,7 @@ namespace SimpleWeather.Firebase
                         if (auth.IsExpired()) auth = await auth.GetFreshAuthAsync();
                         return auth.FirebaseToken;
                     },
-                    HttpClientTimeout = TimeSpan.FromMilliseconds(Utils.Settings.READ_TIMEOUT)
+                    HttpClientTimeout = TimeSpan.FromMilliseconds(Utils.Settings.READ_TIMEOUT),
                 });
             });
         }
