@@ -127,7 +127,7 @@ namespace SimpleWeather.HERE
                             {
                                 int numOfAlerts = (root.nwsAlerts?.watch?.Length ?? 0) + (root.nwsAlerts?.warning?.Length ?? 0);
 
-                                weather.weather_alerts = new List<WeatherAlert>(numOfAlerts);
+                                weather.weather_alerts = new HashSet<WeatherAlert>(numOfAlerts);
 
                                 float lat = weather.location.latitude.Value;
                                 float lon = weather.location.longitude.Value;

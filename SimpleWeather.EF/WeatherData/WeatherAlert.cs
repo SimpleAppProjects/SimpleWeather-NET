@@ -198,9 +198,9 @@ namespace SimpleWeather.WeatherData
                    Type == alert.Type &&
                    Severity == alert.Severity &&
                    Title == alert.Title &&
-                   Message == alert.Message &&
+                   //Message == alert.Message &&
                    Attribution == alert.Attribution &&
-                   Date.Equals(alert.Date) &&
+                   //Date.Equals(alert.Date) &&
                    ExpiresDate.Equals(alert.ExpiresDate);
         }
 
@@ -210,9 +210,9 @@ namespace SimpleWeather.WeatherData
             hashCode = hashCode * -1521134295 + Type.GetHashCode();
             hashCode = hashCode * -1521134295 + Severity.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Title);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Message);
+            //hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Message);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Attribution);
-            hashCode = hashCode * -1521134295 + EqualityComparer<DateTimeOffset>.Default.GetHashCode(Date);
+            //hashCode = hashCode * -1521134295 + EqualityComparer<DateTimeOffset>.Default.GetHashCode(Date);
             hashCode = hashCode * -1521134295 + EqualityComparer<DateTimeOffset>.Default.GetHashCode(ExpiresDate);
             return hashCode;
         }
