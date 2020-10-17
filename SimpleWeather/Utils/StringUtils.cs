@@ -89,5 +89,85 @@ namespace SimpleWeather.Utils
         {
             return num.ToString(format, CultureInfo.InvariantCulture);
         }
+
+        public static String SubstringByIndex(this String @string, int startIndex, int endIndex)
+        {
+            int subLen = endIndex - startIndex;
+            return new string(@string.ToCharArray(), startIndex, subLen);
+        }
+
+        public static String UnescapeUnicode(this String @string)
+        {
+            if (String.IsNullOrWhiteSpace(@string))
+            {
+                return @string;
+            }
+            else
+            {
+                StringBuilder sb = new StringBuilder();
+
+                int seqEnd = @string.Length;
+                for (int i = 0; i < @string.Length; i++)
+                {
+                    // Uses -2 to ensure there is something after the &#
+                    char c = @string[i];
+                    if (@string[i] == '&' && i < seqEnd - 2 && @string[i + 1] == '#')
+                    {
+                        int start = i + 2;
+                        bool isHex = false;
+
+                        char firstChar = @string[start];
+                        if (firstChar == 'x' || firstChar == 'X')
+                        {
+                            start++;
+                            isHex = true;
+
+                            if (start == seqEnd)
+                            {
+                                sb.Append(@string.Substring(i));
+                                break;
+                            }
+                        }
+
+                        int end = start;
+                        while (end < seqEnd && @string[end] != ';')
+                        {
+                            end++;
+                        }
+
+                        int value;
+                        try
+                        {
+                            var substr = @string.SubstringByIndex(start, end);
+
+                            if (isHex)
+                            {
+                                value = Convert.ToInt32(substr, 16);
+                            }
+                            else
+                            {
+                                value = Convert.ToInt32(substr, 10);
+                            }
+                        }
+                        catch (FormatException)
+                        {
+                            sb.Append(@string.Substring(i));
+                            break;
+                        }
+
+                        var chars = Convert.ToChar(value, CultureInfo.InvariantCulture);
+                        sb.Append(chars);
+
+                        i = end;
+                    }
+                    else
+                    {
+                        sb.Append(@string[i]);
+                    }
+                }
+
+                return sb.ToString();
+            }
+        }
     }
 }

@@ -187,5 +187,13 @@ namespace UnitTestProject
             var updateTime = SimpleWeather.WeatherData.Images.ImageDatabase.GetLastUpdateTime().ConfigureAwait(false).GetAwaiter().GetResult();
             Assert.IsTrue(updateTime > 0);
         }
+
+        [TestMethod]
+        public void UnicodeTest()
+        {
+            var str = "Siln&#253; morsk&#253; pr&#237;liv o&#269;ak.";
+            var uncoded = str.UnescapeUnicode();
+            Assert.AreNotEqual(str, uncoded);
+        }
     }
 }

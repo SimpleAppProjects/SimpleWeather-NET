@@ -276,8 +276,8 @@ namespace SimpleWeather.WeatherData
                     break;
             }
 
-            Title = alert.description;
-            Message = alert.description;
+            // NOTE: Alert description may be encoded; unescape encoded characters
+            Title = Message = alert.description?.UnescapeUnicode();
 
             SetDateTimeFromSegment(alert.timeSegment);
 
