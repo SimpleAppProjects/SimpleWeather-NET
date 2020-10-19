@@ -313,7 +313,7 @@ namespace SimpleWeather.WeatherData
             name = null;
             latitude = foreRoot.geometry.coordinates[1];
             longitude = foreRoot.geometry.coordinates[0];
-            tz_long = "UTC";
+            tz_long = null;
         }
 
         public Location(HERE.Location location)
@@ -322,7 +322,7 @@ namespace SimpleWeather.WeatherData
             name = null;
             latitude = location.latitude;
             longitude = location.longitude;
-            tz_long = "UTC";
+            tz_long = null;
         }
 
         public Location(NWS.PointsRootobject pointsRootobject)
