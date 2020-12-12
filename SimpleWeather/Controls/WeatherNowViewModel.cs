@@ -40,8 +40,8 @@ namespace SimpleWeather.Controls
 
         // Background
         private ImageDataViewModel imageData;
-        private Color defaultColor = Color.FromArgb(255, 0, 111, 191); // SimpleBlue;
-        private Color pendingBackgroundColor = Color.FromArgb(255, 0, 111, 191);
+        private Color defaultColor = Color.FromArgb(0xFF, 0, 0x70, 0xC0); // SimpleBlue;
+        private Color pendingBackgroundColor = Color.FromArgb(0xFF, 0, 0x70, 0xC0);
 
         // Radar
         private const string RadarUriFormat = "https://earth.nullschool.net/#current/wind/surface/level/overlay=precip_3hr/orthographic={1:0.####},{0:0.####},3000";

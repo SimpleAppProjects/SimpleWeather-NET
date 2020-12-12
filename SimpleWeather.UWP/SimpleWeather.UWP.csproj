@@ -278,12 +278,18 @@
     </Compile>
     <Compile Include="Controls\ForecastGraphViewModel.cs" />
     <Compile Include="Controls\GraphItemViewModel.cs" />
+    <Compile Include="Controls\Graphs\IGraph.cs" />
+    <Compile Include="Controls\Graphs\ItemSizeChangedEventArgs.cs" />
+    <Compile Include="Controls\Graphs\RangeBarGraphView.xaml.cs">
+      <DependentUpon>RangeBarGraphView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GraphTemperature.cs" />
     <Compile Include="Controls\MoonPhaseControl.xaml.cs">
       <DependentUpon>MoonPhaseControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Snackbar\ISnackbarManager.cs" />
-    <Compile Include="Controls\LineDataSeries.cs" />
-    <Compile Include="Controls\LineView.xaml.cs">
+    <Compile Include="Controls\Graphs\LineDataSeries.cs" />
+    <Compile Include="Controls\Graphs\LineView.xaml.cs">
       <DependentUpon>LineView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ProgressAutoSuggestBox.cs" />
@@ -440,6 +446,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\Graphs\RangeBarGraphView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\KeyEntryDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -448,7 +458,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\LineView.xaml">
+    <Page Include="Controls\Graphs\LineView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -656,6 +666,7 @@
       <Name>Timber</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="..\SimpleWeather.UWP.Shared\SimpleWeather.UWP.Shared.projitems" Label="Shared" />
   <Import Project="..\SimpleWeather\SimpleWeather_Xamarin.projitems" Label="Shared" />
   <Import Project="..\SimpleWeather.EF\SimpleWeather.EF.projitems" Label="Shared" />

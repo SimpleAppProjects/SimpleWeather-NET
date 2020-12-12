@@ -18,115 +18,6 @@
     <Page.Resources>
         <ResourceDictionary>
             <Style
-                x:Key="ArrowButton"
-                BasedOn="{StaticResource ButtonRevealStyle}"
-                TargetType="Button">
-                <Setter Property="Background" Value="{ThemeResource SystemControlTransparentRevealBackgroundBrush}" />
-                <Setter Property="Padding" Value="8,4,8,4" />
-                <Setter Property="Margin" Value="4" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Grid
-                                x:Name="RootGrid"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}">
-                                <Viewbox x:Name="ContentViewbox">
-                                    <ContentPresenter
-                                        x:Name="ContentPresenter"
-                                        Padding="{TemplateBinding Padding}"
-                                        HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                        VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                        AutomationProperties.AccessibilityView="Raw"
-                                        Content="{TemplateBinding Content}"
-                                        ContentTemplate="{TemplateBinding ContentTemplate}"
-                                        ContentTransitions="{TemplateBinding ContentTransitions}" />
-                                </Viewbox>
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup x:Name="CommonStates">
-                                        <VisualState x:Name="Normal">
-                                            <Storyboard>
-                                                <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="PointerOver">
-                                            <VisualState.Setters>
-                                                <Setter Target="RootGrid.(RevealBrush.State)" Value="PointerOver" />
-                                                <Setter Target="RootGrid.Background" Value="{ThemeResource ButtonRevealBackgroundPointerOver}" />
-                                                <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ButtonRevealBorderBrushPointerOver}" />
-                                                <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ButtonForegroundPointerOver}" />
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="Pressed">
-                                            <VisualState.Setters>
-                                                <Setter Target="RootGrid.(RevealBrush.State)" Value="Pressed" />
-                                                <Setter Target="RootGrid.Background" Value="{ThemeResource ButtonRevealBackgroundPressed}" />
-                                                <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ButtonRevealBorderBrushPressed}" />
-                                                <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ButtonForegroundPressed}" />
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="Disabled">
-                                            <VisualState.Setters>
-                                                <Setter Target="RootGrid.Background" Value="{ThemeResource SystemControlTransparentBrush}" />
-                                                <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource SystemControlTransparentBrush}" />
-                                                <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ButtonForegroundDisabled}" />
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                    <VisualStateGroup x:Name="WidthStates">
-                                        <VisualState x:Name="Large">
-                                            <VisualState.StateTriggers>
-                                                <AdaptiveTrigger MinWindowWidth="1007" />
-                                            </VisualState.StateTriggers>
-                                            <VisualState.Setters>
-                                                <Setter Target="RootGrid.Width" Value="40" />
-                                                <Setter Target="RootGrid.Height" Value="40" />
-                                                <Setter Target="ContentViewbox.Margin" Value="5" />
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="Mobile">
-                                            <VisualState.StateTriggers>
-                                                <AdaptiveTrigger MinWindowWidth="0" />
-                                            </VisualState.StateTriggers>
-                                            <VisualState.Setters>
-                                                <Setter Target="RootGrid.Width" Value="30" />
-                                                <Setter Target="RootGrid.Height" Value="30" />
-                                                <Setter Target="ContentViewbox.Margin" Value="0" />
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <Style
-                x:Key="LeftArrowButton"
-                BasedOn="{StaticResource ArrowButton}"
-                TargetType="Button">
-                <Setter Property="ContentTemplate">
-                    <Setter.Value>
-                        <DataTemplate>
-                            <FontIcon Glyph="&#xE76B;" />
-                        </DataTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <Style
-                x:Key="RightArrowButton"
-                BasedOn="{StaticResource ArrowButton}"
-                TargetType="Button">
-                <Setter Property="ContentTemplate">
-                    <Setter.Value>
-                        <DataTemplate>
-                            <FontIcon Glyph="&#xE76C;" />
-                        </DataTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <Style
                 x:Key="AlertButtonRevealStyle"
                 BasedOn="{StaticResource AccentButtonRevealStyle}"
                 TargetType="Button">
@@ -476,30 +367,11 @@
                             VerticalContentAlignment="Stretch"
                             Header="Forecast"
                             Style="{ThemeResource SectionLabelStyle}">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <Button
-                                    x:Name="LeftButton"
-                                    Grid.Column="0"
-                                    Click="LeftButton_Click"
-                                    IsEnabled="{x:Bind helpers:ScrollViewerHelper.CanScrollToStart(ForecastGraphPanel.ScrollViewer.HorizontalOffset), Mode=OneWay}"
-                                    Style="{ThemeResource LeftArrowButton}" />
-                                <Button
-                                    x:Name="RightButton"
-                                    Grid.Column="2"
-                                    Click="RightButton_Click"
-                                    IsEnabled="{x:Bind helpers:ScrollViewerHelper.CanScrollToEnd(ForecastGraphPanel.ScrollViewer.HorizontalOffset, ForecastGraphPanel.ScrollViewer.ViewportWidth, ForecastGraphPanel.ScrollViewer.ExtentWidth), Mode=OneWay}"
-                                    Style="{ThemeResource RightArrowButton}" />
-                                <localcontrols:ForecastGraphPanel
-                                    x:Name="ForecastGraphPanel"
-                                    Grid.Column="1"
-                                    Forecasts="{x:Bind ForecastView.Forecasts, Mode=OneWay}"
-                                    GraphViewTapped="LineView_Tapped" />
-                            </Grid>
+                            <localcontrols:ForecastGraphPanel
+                                x:Name="ForecastGraphPanel"
+                                Grid.Column="1"
+                                Forecasts="{x:Bind ForecastView.Forecasts, Mode=OneWay}"
+                                GraphViewTapped="LineView_Tapped" />
                         </toolkitControls:HeaderedContentControl>
                     </StackPanel>
                     <StackPanel
@@ -515,30 +387,11 @@
                             VerticalContentAlignment="Stretch"
                             Header="Hourly"
                             Style="{ThemeResource SectionLabelStyle}">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <Button
-                                    x:Name="HourlyLeftButton"
-                                    Grid.Column="0"
-                                    Click="LeftButton_Click"
-                                    IsEnabled="{x:Bind helpers:ScrollViewerHelper.CanScrollToStart(HourlyGraphPanel.ScrollViewer.HorizontalOffset), Mode=OneWay}"
-                                    Style="{ThemeResource LeftArrowButton}" />
-                                <Button
-                                    x:Name="HourlyRightButton"
-                                    Grid.Column="2"
-                                    Click="RightButton_Click"
-                                    IsEnabled="{x:Bind helpers:ScrollViewerHelper.CanScrollToEnd(HourlyGraphPanel.ScrollViewer.HorizontalOffset, HourlyGraphPanel.ScrollViewer.ViewportWidth, HourlyGraphPanel.ScrollViewer.ExtentWidth), Mode=OneWay}"
-                                    Style="{ThemeResource RightArrowButton}" />
-                                <localcontrols:ForecastGraphPanel
-                                    x:Name="HourlyGraphPanel"
-                                    Grid.Column="1"
-                                    Forecasts="{x:Bind ForecastView.HourlyForecasts, Mode=OneWay}"
-                                    GraphViewTapped="LineView_Tapped" />
-                            </Grid>
+                            <localcontrols:ForecastGraphPanel
+                                x:Name="HourlyGraphPanel"
+                                Grid.Column="1"
+                                Forecasts="{x:Bind ForecastView.HourlyForecasts, Mode=OneWay}"
+                                GraphViewTapped="LineView_Tapped" />
                         </toolkitControls:HeaderedContentControl>
                     </StackPanel>
                     <StackPanel
@@ -619,7 +472,7 @@
                             Style="{ThemeResource SectionLabelStyle}">
                             <localcontrols:SunPhasePanel
                                 x:Name="SunPhasePanel"
-                                Height="250"
+                                Height="275"
                                 MaxWidth="640"
                                 Margin="0,0,0,0" />
                         </toolkitControls:HeaderedContentControl>

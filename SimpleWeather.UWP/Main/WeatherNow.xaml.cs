@@ -5,6 +5,7 @@ using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.UWP.Controls;
+using SimpleWeather.UWP.Controls.Graphs;
 using SimpleWeather.UWP.Helpers;
 using SimpleWeather.UWP.Shared.Helpers;
 using SimpleWeather.UWP.Tiles;
@@ -732,34 +733,6 @@ namespace SimpleWeather.UWP.Main
             }
         }
 
-        private void LeftButton_Click(object sender, RoutedEventArgs e)
-        {
-            var controlName = (sender as FrameworkElement)?.Name;
-
-            if ((bool)controlName?.Contains("Hourly"))
-            {
-                ScrollViewerHelper.ScrollLeft(HourlyGraphPanel?.ScrollViewer);
-            }
-            else
-            {
-                ScrollViewerHelper.ScrollLeft(ForecastGraphPanel?.ScrollViewer);
-            }
-        }
-
-        private void RightButton_Click(object sender, RoutedEventArgs e)
-        {
-            var controlName = (sender as FrameworkElement)?.Name;
-
-            if ((bool)controlName?.Contains("Hourly"))
-            {
-                ScrollViewerHelper.ScrollRight(HourlyGraphPanel?.ScrollViewer);
-            }
-            else
-            {
-                ScrollViewerHelper.ScrollRight(ForecastGraphPanel?.ScrollViewer);
-            }
-        }
-
         private void GotoAlertsPage()
         {
             AnalyticsLogger.LogEvent("WeatherNow: GotoAlertsPage");
@@ -901,19 +874,21 @@ namespace SimpleWeather.UWP.Main
 
         private void LineView_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            AnalyticsLogger.LogEvent("WeatherNow: LineView_Tapped");
+            AnalyticsLogger.LogEvent("WeatherNow: GraphView_Tapped");
 
-            var control = sender as LineView;
-            FrameworkElement controlParent = null;
-
-            try
+            if (sender is IGraph control)
             {
-                controlParent = VisualTreeHelperExtensions.GetParent<ForecastGraphPanel>(control);
-            }
-            catch (Exception) { }
+                FrameworkElement controlParent = null;
 
-            GotoDetailsPage((bool)controlParent?.Name.StartsWith("Hourly"),
-                control.GetItemPositionFromPoint((float)(e.GetPosition(control).X + control?.ScrollViewer?.HorizontalOffset)));
+                try
+                {
+                    controlParent = VisualTreeHelperExtensions.GetParent<ForecastGraphPanel>(control.GetControl());
+                }
+                catch (Exception) { }
+
+                GotoDetailsPage((bool)controlParent?.Name.StartsWith("Hourly"),
+                    control.GetItemPositionFromPoint((float)(e.GetPosition(control.GetControl()).X + control.GetScrollViewer().HorizontalOffset)));
+            }
         }
 
         private void NavigateToRadarURL()

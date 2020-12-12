@@ -1,5 +1,7 @@
 ﻿using SimpleWeather.Controls;
 using SimpleWeather.Utils;
+using SimpleWeather.UWP.Controls.Graphs;
+using SimpleWeather.UWP.Helpers;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
@@ -29,27 +31,79 @@ namespace SimpleWeather.UWP.Controls
         {
             add
             {
-                GraphView.Tapped += value;
+                LineGraphView.Tapped += value;
+                BarChartView.Tapped += value;
             }
             remove
             {
-                GraphView.Tapped -= value;
+                LineGraphView.Tapped -= value;
+                BarChartView.Tapped -= value;
             }
         }
 
-        //
-        // Summary:
-        //     Occurs when manipulations such as scrolling and zooming have caused the view
-        //     to change.
-        public event EventHandler<ScrollViewerViewChangedEventArgs> ViewChanged
+        private void GraphView_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
-            add
+            if (sender is ScrollViewer scroller)
             {
-                ScrollViewer.ViewChanged += value;
+                UpdateScrollButtons(scroller);
             }
-            remove
+        }
+
+        private void GraphView_ItemWidthChanged(object sender, ItemSizeChangedEventArgs e)
+        {
+            if (sender is IGraph graph && graph.GetControl().Visibility == Visibility.Visible)
             {
-                ScrollViewer.ViewChanged -= value;
+                UpdateScrollButtons(graph.GetScrollViewer());
+            }
+        }
+
+        private void UpdateScrollButtons(ScrollViewer scroller)
+        {
+            CanScrollToStart = ScrollViewerHelper.CanScrollToStart(scroller);
+            CanScrollToEnd = ScrollViewerHelper.CanScrollToEnd(scroller);
+        }
+
+        public static readonly DependencyProperty CanScrollToStartProperty =
+            DependencyProperty.Register("CanScrollToStart", typeof(bool),
+            typeof(ForecastGraphPanel), new PropertyMetadata(false));
+
+        public static readonly DependencyProperty CanScrollToEndProperty =
+            DependencyProperty.Register("CanScrollToEnd", typeof(bool),
+            typeof(ForecastGraphPanel), new PropertyMetadata(false));
+
+        public bool CanScrollToStart
+        {
+            get { return (bool)GetValue(CanScrollToStartProperty); }
+            set { SetValue(CanScrollToStartProperty, value); }
+        }
+
+        public bool CanScrollToEnd
+        {
+            get { return (bool)GetValue(CanScrollToEndProperty); }
+            set { SetValue(CanScrollToEndProperty, value); }
+        }
+
+        private void LeftButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (LineGraphView.Visibility == Visibility.Visible)
+            {
+                ScrollViewerHelper.ScrollLeft(LineGraphView.ScrollViewer);
+            }
+            if (BarChartView.Visibility == Visibility.Visible)
+            {
+                ScrollViewerHelper.ScrollLeft(BarChartView.ScrollViewer);
+            }
+        }
+
+        private void RightButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (LineGraphView.Visibility == Visibility.Visible)
+            {
+                ScrollViewerHelper.ScrollRight(LineGraphView.ScrollViewer);
+            }
+            if (BarChartView.Visibility == Visibility.Visible)
+            {
+                ScrollViewerHelper.ScrollRight(BarChartView.ScrollViewer);
             }
         }
 
@@ -66,13 +120,11 @@ namespace SimpleWeather.UWP.Controls
 
                 _forecasts = value as IEnumerable<GraphItemViewModel>;
 
-                UpdateLineView(false);
+                UpdateView(false);
             }
         }
 
         private IEnumerable<GraphItemViewModel> _forecasts;
-
-        public ScrollViewer ScrollViewer { get { return GraphView?.ScrollViewer; } }
 
         private ToggleButton SelectedButton { get; set; }
 
@@ -82,6 +134,7 @@ namespace SimpleWeather.UWP.Controls
         {
             this.InitializeComponent();
             TempToggleButton.IsChecked = true;
+            TempToggleButton.IsEnabled = false;
             TempToggleButton.Checked += ToggleButton_Checked;
             WindToggleButton.Checked += ToggleButton_Checked;
             RainToggleButton.Checked += ToggleButton_Checked;
@@ -104,218 +157,250 @@ namespace SimpleWeather.UWP.Controls
                 }
             }
 
-            // Update line view
-            UpdateLineView(true);
+            // Update view
+            UpdateView(true);
         }
 
-        private void GraphLineView_Loaded(object sender, RoutedEventArgs e)
+        private void GraphView_Loaded(object sender, RoutedEventArgs e)
         {
-            UpdateLineView(true);
+            UpdateView(true);
         }
 
-        private void UpdateLineView(bool resetOffset)
+        private void ShowBarChart(bool show)
+        {
+            LineGraphView.Visibility = !show ? Visibility.Visible : Visibility.Collapsed;
+            BarChartView.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void UpdateView(bool resetOffset)
         {
             UpdateToggles();
-            GraphView?.ResetData();
+            LineGraphView?.ResetData();
+            BarChartView?.ResetData();
 
-            if (_forecasts?.Any() == true && GraphView != null)
+            switch (SelectedButton?.Tag)
+            {
+                case "Temp":
+                default:
+                    UpdateForecastGraph();
+                    break;
+                case "Wind":
+                    UpdateWindForecastGraph();
+                    break;
+                case "Rain":
+                    UpdatePrecipitationGraph();
+                    break;
+            }
+
+            if (resetOffset)
+            {
+                LineGraphView.ScrollViewer.ChangeView(0, null, null);
+                BarChartView.ScrollViewer.ChangeView(0, null, null);
+            }
+        }
+
+        private void UpdateForecastGraph()
+        {
+            if (_forecasts?.Any() == true)
             {
                 var forecasts = new List<GraphItemViewModel>(_forecasts);
                 var itemCount = Math.Min(forecasts.Count, MAX_FETCH_SIZE);
 
-                switch (SelectedButton?.Tag)
+                bool loTempDataPresent = false;
+
+                if (forecasts.FirstOrDefault() is GraphItemViewModel first && first.TempEntryData?.Data?.LoTempData != null)
                 {
-                    case "Temp":
-                    default:
-                        {
-                            GraphView.DrawGridLines = false;
-                            GraphView.DrawDotLine = false;
-                            GraphView.DrawDataLabels = true;
-                            GraphView.DrawIconLabels = true;
-                            GraphView.DrawGraphBackground = true;
-                            GraphView.DrawDotPoints = false;
-                            GraphView.DrawSeriesLabels = false;
-
-                            List<XLabelData> labelData = new List<XLabelData>(itemCount);
-                            List<LineDataSeries> tempDataSeries = new List<LineDataSeries>(2);
-                            List<YEntryData> hiTempSeries = new List<YEntryData>(itemCount);
-                            List<YEntryData> loTempSeries = null;
-
-                            if (forecasts.FirstOrDefault()?.TempEntryData?.Data.LoTempData != null)
-                            {
-                                loTempSeries = new List<YEntryData>(itemCount);
-                                GraphView.DrawSeriesLabels = true;
-                            }
-
-                            for (int i = 0; i < itemCount; i++)
-                            {
-                                var graphModel = forecasts[i];
-                                try
-                                {
-                                    if (graphModel?.TempEntryData.Data?.HiTempData != null)
-                                    {
-                                        hiTempSeries.Add(graphModel.TempEntryData.Data.HiTempData);
-                                    }
-                                    // For NWS, which contains bi-daily forecasts
-                                    else if (i == 0 && i + 1 < itemCount)
-                                    {
-                                        var nextVM = forecasts[i + 1];
-                                        if (nextVM?.TempEntryData?.Data?.HiTempData != null)
-                                            hiTempSeries.Add(nextVM.TempEntryData.Data.HiTempData);
-                                    }
-                                    else if (i > 0 && i == itemCount - 1)
-                                    {
-                                        var prevVM = forecasts[i - 1];
-                                        if (prevVM?.TempEntryData?.Data?.HiTempData != null)
-                                            hiTempSeries.Add(prevVM.TempEntryData.Data.HiTempData);
-                                    }
-
-                                    if (loTempSeries != null)
-                                    {
-                                        if (graphModel?.TempEntryData.Data?.LoTempData != null)
-                                        {
-                                            loTempSeries.Add(graphModel.TempEntryData.Data.LoTempData);
-                                        }
-                                        // For NWS, which contains bi-daily forecasts
-                                        else if (i == 0 && i + 1 < itemCount)
-                                        {
-                                            var nextVM = forecasts[i + 1];
-                                            if (nextVM?.TempEntryData?.Data?.LoTempData != null)
-                                                loTempSeries.Add(nextVM.TempEntryData.Data.LoTempData);
-                                        }
-                                        else if (i > 0 && i == itemCount - 1)
-                                        {
-                                            var prevVM = forecasts[i - 1];
-                                            if (prevVM?.TempEntryData?.Data?.LoTempData != null)
-                                                loTempSeries.Add(prevVM.TempEntryData.Data.LoTempData);
-                                        }
-                                    }
-
-                                    labelData.Add(graphModel.TempEntryData.LabelData);
-                                }
-                                catch (FormatException ex)
-                                {
-                                    Logger.WriteLine(LoggerLevel.Debug, ex, "WeatherNow: error!!");
-                                }
-                            }
-
-                            if (hiTempSeries?.Count > 0)
-                            {
-                                var hiTempSeriesLabel = App.ResLoader.GetString("Label_High");
-                                tempDataSeries.Add(new LineDataSeries(hiTempSeriesLabel, hiTempSeries));
-                            }
-
-                            if (loTempSeries?.Count > 0)
-                            {
-                                var loTempSeriesLabel = App.ResLoader.GetString("Label_Low");
-                                tempDataSeries.Add(new LineDataSeries(loTempSeriesLabel, loTempSeries));
-                            }
-
-                            Task.Run(async () =>
-                            {
-                                while (GraphView == null || await Dispatcher.RunOnUIThread(() => (bool)!GraphView?.ReadyToDraw))
-                                {
-                                    await Task.Delay(1);
-                                }
-
-                                await Dispatcher.RunOnUIThread(() =>
-                                {
-                                    GraphView.SetData(labelData, tempDataSeries);
-                                });
-                            });
-                        }
-                        break;
-
-                    case "Wind":
-                        {
-                            GraphView.DrawGridLines = false;
-                            GraphView.DrawDotLine = false;
-                            GraphView.DrawDataLabels = true;
-                            GraphView.DrawIconLabels = false;
-                            GraphView.DrawGraphBackground = true;
-                            GraphView.DrawDotPoints = false;
-                            GraphView.DrawSeriesLabels = false;
-
-                            List<XLabelData> labelData = new List<XLabelData>(itemCount);
-                            List<LineDataSeries> windDataList = new List<LineDataSeries>(1);
-                            List<YEntryData> windDataSeries = new List<YEntryData>(itemCount);
-
-                            for (int i = 0; i < itemCount; i++)
-                            {
-                                var graphModel = forecasts[i];
-                                if (graphModel.WindEntryData != null)
-                                {
-                                    windDataSeries.Add(graphModel.WindEntryData.Data);
-                                    labelData.Add(graphModel.WindEntryData.LabelData);
-                                }
-                            }
-
-                            if (windDataSeries?.Count > 0)
-                            {
-                                windDataList.Add(new LineDataSeries(windDataSeries));
-                            }
-
-                            Task.Run(async () =>
-                            {
-                                while (GraphView == null || await Dispatcher.RunOnUIThread(() => (bool)!GraphView?.ReadyToDraw))
-                                {
-                                    await Task.Delay(1);
-                                }
-
-                                await Dispatcher.RunOnUIThread(() =>
-                                {
-                                    GraphView.SetData(labelData, windDataList);
-                                });
-                            });
-                        }
-                        break;
-
-                    case "Rain":
-                        {
-                            GraphView.DrawGridLines = false;
-                            GraphView.DrawDotLine = false;
-                            GraphView.DrawDataLabels = true;
-                            GraphView.DrawIconLabels = false;
-                            GraphView.DrawGraphBackground = true;
-                            GraphView.DrawDotPoints = false;
-                            GraphView.DrawSeriesLabels = false;
-
-                            List<XLabelData> labelData = new List<XLabelData>(itemCount);
-                            List<LineDataSeries> popDataList = new List<LineDataSeries>(1);
-                            List<YEntryData> popDataSeries = new List<YEntryData>(itemCount);
-
-                            for (int i = 0; i < itemCount; i++)
-                            {
-                                var graphModel = forecasts[i];
-                                if (graphModel.ChanceEntryData != null)
-                                {
-                                    popDataSeries.Add(graphModel.ChanceEntryData.Data);
-                                    labelData.Add(graphModel.ChanceEntryData.LabelData);
-                                }
-                            }
-
-                            if (popDataSeries?.Count > 0)
-                            {
-                                popDataList.Add(new LineDataSeries(popDataSeries));
-                            }
-
-                            Task.Run(async () =>
-                            {
-                                while (GraphView == null || await Dispatcher.RunOnUIThread(() => (bool)!GraphView?.ReadyToDraw))
-                                {
-                                    await Task.Delay(1);
-                                }
-
-                                await Dispatcher.RunOnUIThread(() =>
-                                {
-                                    GraphView.SetData(labelData, popDataList);
-                                });
-                            });
-                        }
-                        break;
+                    loTempDataPresent = true;
                 }
 
-                if (resetOffset) ScrollViewer?.ChangeView(0, null, null);
+                if (loTempDataPresent)
+                {
+                    ShowBarChart(true);
+                    BarChartView.DrawDataLabels = true;
+                    BarChartView.DrawIconLabels = true;
+
+                    List<XLabelData> labelDataSet = new List<XLabelData>(itemCount);
+                    List<GraphTemperature> tempDataSet = new List<GraphTemperature>(itemCount);
+
+                    for (int i = 0; i < itemCount; i++)
+                    {
+                        var graphModel = forecasts[i];
+
+                        labelDataSet.Add(graphModel.TempEntryData.LabelData);
+                        tempDataSet.Add(graphModel.TempEntryData.Data);
+                    }
+
+                    Task.Run(async () =>
+                    {
+                        while (BarChartView == null || await Dispatcher.RunOnUIThread(() => (bool)!BarChartView?.ReadyToDraw))
+                        {
+                            await Task.Delay(1);
+                        }
+
+                        await Dispatcher.RunOnUIThread(() =>
+                        {
+                            BarChartView.SetData(labelDataSet, tempDataSet);
+                        });
+                    });
+                }
+                else
+                {
+                    ShowBarChart(false);
+                    LineGraphView.DrawGridLines = false;
+                    LineGraphView.DrawDotLine = false;
+                    LineGraphView.DrawDataLabels = true;
+                    LineGraphView.DrawIconLabels = true;
+                    LineGraphView.DrawGraphBackground = true;
+                    LineGraphView.DrawDotPoints = false;
+                    LineGraphView.DrawSeriesLabels = false;
+
+                    List<XLabelData> labelDataset = new List<XLabelData>(itemCount);
+                    List<YEntryData> hiTempDataset = new List<YEntryData>(itemCount);
+                    List<LineDataSeries> tempDataSeries = new List<LineDataSeries>(1);
+
+                    for (int i = 0; i < itemCount; i++)
+                    {
+                        var graphModel = forecasts[i];
+
+                        if (graphModel?.TempEntryData.Data?.HiTempData != null)
+                        {
+                            hiTempDataset.Add(graphModel.TempEntryData.Data.HiTempData);
+                        }
+                        // For NWS, which contains bi-daily forecasts
+                        else if (i == 0 && i + 1 < itemCount)
+                        {
+                            var nextVM = forecasts[i + 1];
+                            if (nextVM?.TempEntryData?.Data?.HiTempData != null)
+                                hiTempDataset.Add(nextVM.TempEntryData.Data.HiTempData);
+                        }
+                        else if (i > 0 && i == itemCount - 1)
+                        {
+                            var prevVM = forecasts[i - 1];
+                            if (prevVM?.TempEntryData?.Data?.HiTempData != null)
+                                hiTempDataset.Add(prevVM.TempEntryData.Data.HiTempData);
+                        }
+                        labelDataset.Add(graphModel.TempEntryData.LabelData);
+                    }
+
+                    if (hiTempDataset?.Count > 0)
+                    {
+                        var hiTempSeriesLabel = App.ResLoader.GetString("Label_High");
+                        tempDataSeries.Add(new LineDataSeries(hiTempSeriesLabel, hiTempDataset));
+                    }
+
+                    Task.Run(async () =>
+                    {
+                        while (LineGraphView == null || await Dispatcher.RunOnUIThread(() => (bool)!LineGraphView?.ReadyToDraw))
+                        {
+                            await Task.Delay(1);
+                        }
+
+                        await Dispatcher.RunOnUIThread(() =>
+                        {
+                            LineGraphView.SetData(labelDataset, tempDataSeries);
+                        });
+                    });
+                }
+            }
+        }
+
+        private void UpdateWindForecastGraph()
+        {
+            if (_forecasts?.Any() == true && LineGraphView != null)
+            {
+                var forecasts = new List<GraphItemViewModel>(_forecasts);
+                var itemCount = Math.Min(forecasts.Count, MAX_FETCH_SIZE);
+
+                ShowBarChart(false);
+                LineGraphView.DrawGridLines = false;
+                LineGraphView.DrawDotLine = false;
+                LineGraphView.DrawDataLabels = true;
+                LineGraphView.DrawIconLabels = true;
+                LineGraphView.DrawGraphBackground = true;
+                LineGraphView.DrawDotPoints = false;
+                LineGraphView.DrawSeriesLabels = false;
+
+                List<XLabelData> labelData = new List<XLabelData>(itemCount);
+                List<LineDataSeries> windDataList = new List<LineDataSeries>(1);
+                List<YEntryData> windDataSeries = new List<YEntryData>(itemCount);
+
+                for (int i = 0; i < itemCount; i++)
+                {
+                    var graphModel = forecasts[i];
+                    if (graphModel.WindEntryData != null)
+                    {
+                        windDataSeries.Add(graphModel.WindEntryData.Data);
+                        labelData.Add(graphModel.WindEntryData.LabelData);
+                    }
+                }
+
+                if (windDataSeries?.Count > 0)
+                {
+                    windDataList.Add(new LineDataSeries(windDataSeries));
+                }
+
+                Task.Run(async () =>
+                {
+                    while (LineGraphView == null || await Dispatcher.RunOnUIThread(() => (bool)!LineGraphView?.ReadyToDraw))
+                    {
+                        await Task.Delay(1);
+                    }
+
+                    await Dispatcher.RunOnUIThread(() =>
+                    {
+                        LineGraphView.SetData(labelData, windDataList);
+                    });
+                });
+            }
+        }
+
+        private void UpdatePrecipitationGraph()
+        {
+            if (_forecasts?.Any() == true && LineGraphView != null)
+            {
+                var forecasts = new List<GraphItemViewModel>(_forecasts);
+                var itemCount = Math.Min(forecasts.Count, MAX_FETCH_SIZE);
+
+                ShowBarChart(false);
+                LineGraphView.DrawGridLines = false;
+                LineGraphView.DrawDotLine = false;
+                LineGraphView.DrawDataLabels = true;
+                LineGraphView.DrawIconLabels = true;
+                LineGraphView.DrawGraphBackground = true;
+                LineGraphView.DrawDotPoints = false;
+                LineGraphView.DrawSeriesLabels = false;
+
+                List<XLabelData> labelData = new List<XLabelData>(itemCount);
+                List<LineDataSeries> popDataList = new List<LineDataSeries>(1);
+                List<YEntryData> popDataSeries = new List<YEntryData>(itemCount);
+
+                for (int i = 0; i < itemCount; i++)
+                {
+                    var graphModel = forecasts[i];
+                    if (graphModel.ChanceEntryData != null)
+                    {
+                        popDataSeries.Add(graphModel.ChanceEntryData.Data);
+                        labelData.Add(graphModel.ChanceEntryData.LabelData);
+                    }
+                }
+
+                if (popDataSeries?.Count > 0)
+                {
+                    popDataList.Add(new LineDataSeries(popDataSeries));
+                }
+
+                Task.Run(async () =>
+                {
+                    while (LineGraphView == null || await Dispatcher.RunOnUIThread(() => (bool)!LineGraphView?.ReadyToDraw))
+                    {
+                        await Task.Delay(1);
+                    }
+
+                    await Dispatcher.RunOnUIThread(() =>
+                    {
+                        LineGraphView.SetData(labelData, popDataList);
+                    });
+                });
             }
         }
 

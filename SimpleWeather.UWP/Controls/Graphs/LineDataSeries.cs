@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using Windows.UI;
 
-namespace SimpleWeather.UWP.Controls
+namespace SimpleWeather.UWP.Controls.Graphs
 {
     public class LineDataSeries
     {
+        private readonly Color[] DefaultColors = { Color.FromArgb(0xFF, 0, 0x70, 0xC0), Colors.LightSeaGreen, Colors.YellowGreen };
+
         public String SeriesLabel { get; set; }
         public List<YEntryData> SeriesData { get; private set; }
+        public List<Color> SeriesColors { get; private set; }
 
         public LineDataSeries(List<YEntryData> seriesData)
         {
@@ -17,6 +22,7 @@ namespace SimpleWeather.UWP.Controls
             }
             SeriesData = seriesData;
             SeriesLabel = null;
+            SeriesColors = DefaultColors.ToList();
         }
 
         public LineDataSeries(String seriesLabel, List<YEntryData> seriesData)
@@ -27,6 +33,17 @@ namespace SimpleWeather.UWP.Controls
             }
             SeriesData = seriesData;
             SeriesLabel = seriesLabel;
+            SeriesColors = DefaultColors.ToList();
+        }
+
+        public Color GetColor(int idx)
+        {
+            return SeriesColors[idx % SeriesColors.Count];
+        }
+
+        public void SetSeriesColors (params Color[] colors)
+        {
+            SeriesColors = new List<Color>(colors);
         }
 
         public override bool Equals(object obj)

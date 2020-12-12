@@ -5,6 +5,8 @@
     xmlns:Win1809Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:controls="using:SimpleWeather.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:graphs="using:SimpleWeather.UWP.Controls.Graphs"
+    xmlns:helpers="using:SimpleWeather.UWP.Helpers"
     xmlns:local="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
@@ -164,127 +166,269 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style
+            x:Key="ArrowButton"
+            BasedOn="{StaticResource ButtonRevealStyle}"
+            TargetType="Button">
+            <Setter Property="Background" Value="{ThemeResource SystemControlTransparentRevealBackgroundBrush}" />
+            <Setter Property="Padding" Value="8,4,8,4" />
+            <Setter Property="Margin" Value="4" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid
+                            x:Name="RootGrid"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                            <Viewbox x:Name="ContentViewbox">
+                                <ContentPresenter
+                                    x:Name="ContentPresenter"
+                                    Padding="{TemplateBinding Padding}"
+                                    HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    AutomationProperties.AccessibilityView="Raw"
+                                    Content="{TemplateBinding Content}"
+                                    ContentTemplate="{TemplateBinding ContentTemplate}"
+                                    ContentTransitions="{TemplateBinding ContentTransitions}" />
+                            </Viewbox>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal">
+                                        <Storyboard>
+                                            <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="PointerOver">
+                                        <VisualState.Setters>
+                                            <Setter Target="RootGrid.(RevealBrush.State)" Value="PointerOver" />
+                                            <Setter Target="RootGrid.Background" Value="{ThemeResource ButtonRevealBackgroundPointerOver}" />
+                                            <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ButtonRevealBorderBrushPointerOver}" />
+                                            <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ButtonForegroundPointerOver}" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <VisualState.Setters>
+                                            <Setter Target="RootGrid.(RevealBrush.State)" Value="Pressed" />
+                                            <Setter Target="RootGrid.Background" Value="{ThemeResource ButtonRevealBackgroundPressed}" />
+                                            <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ButtonRevealBorderBrushPressed}" />
+                                            <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ButtonForegroundPressed}" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Disabled">
+                                        <VisualState.Setters>
+                                            <Setter Target="RootGrid.Background" Value="{ThemeResource SystemControlTransparentBrush}" />
+                                            <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource SystemControlTransparentBrush}" />
+                                            <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ButtonForegroundDisabled}" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                                <VisualStateGroup x:Name="WidthStates">
+                                    <VisualState x:Name="Large">
+                                        <VisualState.StateTriggers>
+                                            <AdaptiveTrigger MinWindowWidth="1007" />
+                                        </VisualState.StateTriggers>
+                                        <VisualState.Setters>
+                                            <Setter Target="RootGrid.Width" Value="40" />
+                                            <Setter Target="RootGrid.Height" Value="40" />
+                                            <Setter Target="ContentViewbox.Margin" Value="5" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Mobile">
+                                        <VisualState.StateTriggers>
+                                            <AdaptiveTrigger MinWindowWidth="0" />
+                                        </VisualState.StateTriggers>
+                                        <VisualState.Setters>
+                                            <Setter Target="RootGrid.Width" Value="30" />
+                                            <Setter Target="RootGrid.Height" Value="30" />
+                                            <Setter Target="ContentViewbox.Margin" Value="0" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style
+            x:Key="LeftArrowButton"
+            BasedOn="{StaticResource ArrowButton}"
+            TargetType="Button">
+            <Setter Property="ContentTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <FontIcon Glyph="&#xE76B;" />
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style
+            x:Key="RightArrowButton"
+            BasedOn="{StaticResource ArrowButton}"
+            TargetType="Button">
+            <Setter Property="ContentTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <FontIcon Glyph="&#xE76C;" />
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
 
-    <StackPanel Orientation="Vertical">
-        <StackPanel
-            Margin="0,20"
-            HorizontalAlignment="Right"
-            Orientation="Horizontal">
-            <ToggleButton
-                x:Name="TempToggleButton"
-                Margin="5,0"
-                Padding="4"
-                Style="{ThemeResource ToggleButtonNoDisableRevealStyle}"
-                Tag="Temp">
-                <ToggleButton.Content>
-                    <StackPanel Orientation="Horizontal">
-                        <FontIcon
-                            Margin="4,0"
-                            VerticalAlignment="Center"
-                            FontFamily="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons"
-                            FontSize="15"
-                            Glyph="&#xf055;"
-                            Style="{StaticResource WeatherFontIcon}" />
-                        <TextBlock
-                            x:Name="Label"
-                            x:Uid="Label_Temperature"
-                            Margin="4,0,0,0"
-                            VerticalAlignment="Center"
-                            FontSize="14"
-                            Text="Temperature"
-                            TextLineBounds="Tight" />
-                    </StackPanel>
-                </ToggleButton.Content>
-            </ToggleButton>
-            <ToggleButton
-                x:Name="WindToggleButton"
-                Margin="5,0"
-                Padding="4"
-                Style="{ThemeResource ToggleButtonNoDisableRevealStyle}"
-                Tag="Wind">
-                <ToggleButton.Content>
-                    <StackPanel Orientation="Horizontal">
-                        <FontIcon
-                            Margin="4,0"
-                            FontFamily="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons"
-                            FontSize="15"
-                            Glyph="&#xf050;"
-                            Style="{StaticResource WeatherFontIcon}" />
-                        <TextBlock
-                            x:Uid="Label_Wind"
-                            Margin="4,0,0,0"
-                            VerticalAlignment="Center"
-                            FontSize="14"
-                            Text="Wind"
-                            TextLineBounds="Tight"
-                            Visibility="{Binding ElementName=Label, Path=Visibility, Mode=OneWay}" />
-                    </StackPanel>
-                </ToggleButton.Content>
-            </ToggleButton>
-            <ToggleButton
-                x:Name="RainToggleButton"
-                Margin="5,0"
-                Padding="4"
-                Style="{ThemeResource ToggleButtonNoDisableRevealStyle}"
-                Tag="Rain">
-                <ToggleButton.Content>
-                    <StackPanel Orientation="Horizontal">
-                        <FontIcon
-                            Margin="4,0"
-                            FontFamily="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons"
-                            FontSize="15"
-                            Glyph="&#xf078;"
-                            Style="{StaticResource WeatherFontIcon}" />
-                        <TextBlock
-                            x:Uid="Label_Precipitation"
-                            Margin="4,0,0,0"
-                            VerticalAlignment="Center"
-                            FontSize="14"
-                            Text="Precipitation"
-                            TextLineBounds="Tight"
-                            Visibility="{Binding ElementName=Label, Path=Visibility, Mode=OneWay}" />
-                    </StackPanel>
-                </ToggleButton.Content>
-            </ToggleButton>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Button
+            x:Name="LeftButton"
+            Grid.Column="0"
+            Click="LeftButton_Click"
+            IsEnabled="{x:Bind CanScrollToStart, Mode=OneWay}"
+            Style="{ThemeResource LeftArrowButton}" />
+        <Button
+            x:Name="RightButton"
+            Grid.Column="2"
+            Click="RightButton_Click"
+            IsEnabled="{x:Bind CanScrollToEnd, Mode=OneWay}"
+            Style="{ThemeResource RightArrowButton}" />
+        <StackPanel Grid.Column="1" Orientation="Vertical">
+            <StackPanel
+                Margin="0,20"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+                <ToggleButton
+                    x:Name="TempToggleButton"
+                    Margin="5,0"
+                    Padding="4"
+                    Style="{ThemeResource ToggleButtonNoDisableRevealStyle}"
+                    Tag="Temp">
+                    <ToggleButton.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <FontIcon
+                                Margin="4,0"
+                                VerticalAlignment="Center"
+                                FontFamily="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons"
+                                FontSize="15"
+                                Glyph="&#xf055;"
+                                Style="{StaticResource WeatherFontIcon}" />
+                            <TextBlock
+                                x:Name="Label"
+                                x:Uid="Label_Temperature"
+                                Margin="4,0,0,0"
+                                VerticalAlignment="Center"
+                                FontSize="14"
+                                Text="Temperature"
+                                TextLineBounds="Tight" />
+                        </StackPanel>
+                    </ToggleButton.Content>
+                </ToggleButton>
+                <ToggleButton
+                    x:Name="WindToggleButton"
+                    Margin="5,0"
+                    Padding="4"
+                    Style="{ThemeResource ToggleButtonNoDisableRevealStyle}"
+                    Tag="Wind">
+                    <ToggleButton.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <FontIcon
+                                Margin="4,0"
+                                FontFamily="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons"
+                                FontSize="15"
+                                Glyph="&#xf050;"
+                                Style="{StaticResource WeatherFontIcon}" />
+                            <TextBlock
+                                x:Uid="Label_Wind"
+                                Margin="4,0,0,0"
+                                VerticalAlignment="Center"
+                                FontSize="14"
+                                Text="Wind"
+                                TextLineBounds="Tight"
+                                Visibility="{Binding ElementName=Label, Path=Visibility, Mode=OneWay}" />
+                        </StackPanel>
+                    </ToggleButton.Content>
+                </ToggleButton>
+                <ToggleButton
+                    x:Name="RainToggleButton"
+                    Margin="5,0"
+                    Padding="4"
+                    Style="{ThemeResource ToggleButtonNoDisableRevealStyle}"
+                    Tag="Rain">
+                    <ToggleButton.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <FontIcon
+                                Margin="4,0"
+                                FontFamily="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons"
+                                FontSize="15"
+                                Glyph="&#xf078;"
+                                Style="{StaticResource WeatherFontIcon}" />
+                            <TextBlock
+                                x:Uid="Label_Precipitation"
+                                Margin="4,0,0,0"
+                                VerticalAlignment="Center"
+                                FontSize="14"
+                                Text="Precipitation"
+                                TextLineBounds="Tight"
+                                Visibility="{Binding ElementName=Label, Path=Visibility, Mode=OneWay}" />
+                        </StackPanel>
+                    </ToggleButton.Content>
+                </ToggleButton>
+            </StackPanel>
+            <Grid HorizontalAlignment="Stretch">
+                <graphs:LineView
+                    x:Name="LineGraphView"
+                    Height="275"
+                    DrawDataLabels="True"
+                    DrawDotLine="True"
+                    DrawDotPoints="True"
+                    DrawGraphBackground="True"
+                    DrawGridLines="True"
+                    DrawIconLabels="True"
+                    ItemWidthChanged="GraphView_ItemWidthChanged"
+                    Loaded="GraphView_Loaded"
+                    ViewChanged="GraphView_ViewChanged"
+                    Visibility="Visible" />
+                <graphs:RangeBarGraphView
+                    x:Name="BarChartView"
+                    Height="275"
+                    DrawDataLabels="True"
+                    DrawIconLabels="True"
+                    ItemWidthChanged="GraphView_ItemWidthChanged"
+                    Loaded="GraphView_Loaded"
+                    ViewChanged="GraphView_ViewChanged"
+                    Visibility="Collapsed" />
+            </Grid>
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="WidthStates">
+                    <VisualState x:Name="Large">
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger MinWindowWidth="1007" />
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter Target="Label.Visibility" Value="Visible" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Medium">
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger MinWindowWidth="641" />
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter Target="Label.Visibility" Value="Visible" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Mobile">
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger MinWindowWidth="0" />
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter Target="Label.Visibility" Value="Collapsed" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
         </StackPanel>
-        <local:LineView
-            x:Name="GraphView"
-            Height="250"
-            DrawDataLabels="True"
-            DrawDotLine="True"
-            DrawDotPoints="True"
-            DrawGraphBackground="True"
-            DrawGridLines="True"
-            DrawIconLabels="True"
-            Loaded="GraphLineView_Loaded" />
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="WidthStates">
-                <VisualState x:Name="Large">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="1007" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="Label.Visibility" Value="Visible" />
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="Medium">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="641" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="Label.Visibility" Value="Visible" />
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="Mobile">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="0" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="Label.Visibility" Value="Collapsed" />
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
-    </StackPanel>
+    </Grid>
 </UserControl>

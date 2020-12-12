@@ -15,17 +15,17 @@ using Windows.UI.Xaml.Controls;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace SimpleWeather.UWP.Controls
+namespace SimpleWeather.UWP.Controls.Graphs
 {
     /*
      *  Multi-series line graph
-     *  Based on Android implementation of LineView: https://github.com/bryan2894-playgrnd/SimpleWeather-Android
+     *  Based on Android implementation of LineView: https://github.com/SimpleAppProjects/SimpleWeather-Android
      *  Which is:
      *  Based on LineView from http://www.androidtrainee.com/draw-android-line-chart-with-animation/
      *  Graph background (under line) based on - https://github.com/jjoe64/GraphView (LineGraphSeries)
      */
 
-    public sealed partial class LineView : UserControl, IDisposable
+    public sealed partial class LineView : UserControl, IDisposable, IGraph
     {
         //
         // Summary:
@@ -82,19 +82,13 @@ namespace SimpleWeather.UWP.Controls
         private readonly float bottomTextTopMargin;
         private readonly float DOT_INNER_CIR_RADIUS;
         private readonly float DOT_OUTER_CIR_RADIUS;
-        private readonly float MIN_TOP_LINE_LENGTH;
-        private readonly float LEGEND_MARGIN_HEIGHT;
 
-        private float topLineLength;
-        private float sideLineLength;
+        private float sideLineLength = 0f;
         private float backgroundGridWidth;
         private float longestTextWidth;
 
         private Color BackgroundLineColor => BackgroundLineColorBrush.Color;
         private Color BottomTextColor => BottomTextColorBrush.Color;
-        private Color LineColor => LineColorBrush.Color;
-        private Color smallCirColor => SmallCirColorBrush.Color;
-        private Color[] colorArray = { Color.FromArgb(0xFF, 0x00, 0x70, 0xc0), Colors.LightSeaGreen, Colors.YellowGreen };
 
         public bool DrawGridLines { get; set; }
         public bool DrawDotLine { get; set; }
@@ -105,9 +99,10 @@ namespace SimpleWeather.UWP.Controls
         public bool DrawSeriesLabels { get; set; }
 
         private const float BottomTextSize = 12;
-        private CanvasTextFormat BottomTextFormat;
+        private readonly CanvasTextFormat BottomTextFormat;
 
-        private CanvasTextFormat IconFormat;
+        private readonly CanvasTextFormat IconFormat;
+        private double IconHeight = 0;
 
         public bool ReadyToDraw => Canvas.ReadyToDraw;
 
@@ -136,26 +131,32 @@ namespace SimpleWeather.UWP.Controls
                 WordWrapping = CanvasWordWrapping.NoWrap
             };
 
+            Canvas.CreateResources += (s, e) => 
+            {
+                // Calculate icon height
+                using (var textLayout = new CanvasTextLayout(s, "'", IconFormat, 0, 0))
+                {
+                    IconHeight = textLayout.LayoutBounds.Height;
+                }
+            };
+
             iconBottomMargin = Canvas.ConvertDipsToPixels(2, CanvasDpiRounding.Floor);
             bottomTextTopMargin = Canvas.ConvertDipsToPixels(6, CanvasDpiRounding.Floor);
             DOT_INNER_CIR_RADIUS = Canvas.ConvertDipsToPixels(2, CanvasDpiRounding.Floor);
             DOT_OUTER_CIR_RADIUS = Canvas.ConvertDipsToPixels(5, CanvasDpiRounding.Floor);
-            MIN_TOP_LINE_LENGTH = Canvas.ConvertDipsToPixels(12, CanvasDpiRounding.Floor);
-            LEGEND_MARGIN_HEIGHT = Canvas.ConvertDipsToPixels(20, CanvasDpiRounding.Floor);
 
-            topLineLength = MIN_TOP_LINE_LENGTH;
-            sideLineLength = Canvas.ConvertDipsToPixels(45, CanvasDpiRounding.Floor) / 3 * 2;
             backgroundGridWidth = Canvas.ConvertDipsToPixels(45, CanvasDpiRounding.Floor);
         }
 
-        private int ADJ
+        private float GraphTop
         {
             get
             {
-                int adj = 1;
-                if (DrawIconLabels) adj = 2; // Make space for icon labels
+                double graphTop = Padding.Top;
+                if (DrawSeriesLabels) graphTop += LegendHeight;
+                graphTop += bottomTextTopMargin + bottomTextHeight * 2f + bottomTextDescent * 2f;
 
-                return adj;
+                return (float)graphTop;
             }
         }
 
@@ -163,11 +164,29 @@ namespace SimpleWeather.UWP.Controls
         {
             get
             {
-                float height = ViewHeight - bottomTextTopMargin * ADJ - bottomTextHeight * ADJ - bottomTextDescent - topLineLength;
-                if (DrawIconLabels) height -= iconBottomMargin;
+                float graphHeight = ViewHeight - bottomTextTopMargin - bottomTextHeight - bottomTextDescent;
+                if (DrawIconLabels) graphHeight -= (float)IconHeight;
 
-                return height;
+                return graphHeight;
             }
+        }
+
+        private float LegendHeight
+        {
+            get
+            {
+                return bottomTextTopMargin + bottomTextHeight * 2f + bottomTextDescent * 2f;
+            }
+        }
+
+        public FrameworkElement GetControl()
+        {
+            return this;
+        }
+
+        public ScrollViewer GetScrollViewer()
+        {
+            return ScrollViewer;
         }
 
         public void ResetData()
@@ -179,7 +198,6 @@ namespace SimpleWeather.UWP.Controls
             this.drawDotLists.Clear();
             bottomTextDescent = 0;
             longestTextWidth = 0;
-            DrawIconLabels = false;
             RefreshAfterDataChanged();
             InvalidateMeasure();
         }
@@ -211,11 +229,6 @@ namespace SimpleWeather.UWP.Controls
             {
                 this.dataLabels.AddRange(dataLabels);
             }
-
-            if (!DrawIconLabels && dataLabels != null && dataLabels.Count > 0 && !String.IsNullOrEmpty(dataLabels[0].XIcon))
-                DrawIconLabels = true;
-            else if (DrawIconLabels && (dataLabels == null || dataLabels.Count <= 0))
-                DrawIconLabels = false;
 
             double longestWidth = 0;
             bottomTextDescent = 0;
@@ -330,8 +343,8 @@ namespace SimpleWeather.UWP.Controls
 
             if (GetPreferredWidth() < ScrollViewer.Width)
             {
-                int freeSpace = (int)(ScrollViewer.Width - GetPreferredWidth());
-                int additionalSpace = freeSpace / HorizontalGridNum;
+                float freeSpace = (float)(ScrollViewer.Width - GetPreferredWidth());
+                float additionalSpace = freeSpace / HorizontalGridNum;
                 backgroundGridWidth += additionalSpace;
             }
             RefreshXCoordinateList();
@@ -339,17 +352,15 @@ namespace SimpleWeather.UWP.Controls
 
         private void RefreshAfterDataChanged()
         {
-            float verticalGridNum = VerticalGridNum;
-            RefreshTopLineLength(verticalGridNum);
             RefreshYCoordinateList();
             RefreshDrawDotList();
         }
 
-        private float VerticalGridNum
+        private int VerticalGridNum
         {
             get
             {
-                float verticalGridNum = 4; // int MIN_VERTICAL_GRID_NUM = 4;
+                int verticalGridNum = 4; // int MIN_VERTICAL_GRID_NUM = 4;
                 if (dataLists != null && dataLists.Count != 0)
                 {
                     foreach (LineDataSeries series in dataLists)
@@ -358,7 +369,7 @@ namespace SimpleWeather.UWP.Controls
                         {
                             if (verticalGridNum < (entry.Y + 1))
                             {
-                                verticalGridNum = entry.Y + 1;
+                                verticalGridNum = (int)Math.Ceiling(entry.Y) + 1;
                             }
                         }
                     }
@@ -394,10 +405,16 @@ namespace SimpleWeather.UWP.Controls
         private void RefreshYCoordinateList()
         {
             yCoordinateList.Clear();
-            yCoordinateList.EnsureCapacity((int)Math.Ceiling(VerticalGridNum));
+            yCoordinateList.EnsureCapacity(VerticalGridNum);
             for (int i = 0; i < (VerticalGridNum + 1); i++)
             {
-                yCoordinateList.Add(topLineLength + ((GraphHeight) * i / (VerticalGridNum)));
+                /*
+                 * Scaling formula
+                 *
+                 * ((value - minValue) / (maxValue - minValue)) * (scaleMax - scaleMin) + scaleMin
+                 * minValue = 0; maxValue = verticalGridNum; value = i
+                 */
+                yCoordinateList.Add(((float)i / (VerticalGridNum)) * (GraphHeight - GraphTop) + GraphTop);
             }
         }
 
@@ -433,6 +450,10 @@ namespace SimpleWeather.UWP.Controls
                     if (minValue > kMin)
                         minValue = kMin;
                 }
+
+                float graphHeight = GraphHeight;
+                float graphTop = GraphTop;
+
                 for (int k = 0; k < dataLists.Count; k++)
                 {
                     int drawDotSize = drawDotLists[k].Count;
@@ -445,25 +466,32 @@ namespace SimpleWeather.UWP.Controls
                     for (int i = 0; i < dataLists[k].SeriesData.Count; i++)
                     {
                         float x = xCoordinateList[i];
-                        // Make space for y data labels
                         float y;
                         if (maxValue == minValue)
                         {
-                            y = topLineLength + (GraphHeight) / 2f;
+                            if (maxValue == 0)
+                            {
+                                y = graphHeight;
+                            }
+                            else if (maxValue == 100)
+                            {
+                                y = graphTop;
+                            }
+                            else
+                            {
+                                y = graphHeight / 2f;
+                            }
                         }
                         else
                         {
-                            y = topLineLength + (GraphHeight) * (maxValue - dataLists[k].SeriesData[i].Y) / (maxValue - minValue);
+                            /*
+                             * Scaling formula
+                             *
+                             * ((value - minValue) / (maxValue - minValue)) * (scaleMax - scaleMin) + scaleMin
+                             * graphTop is scaleMax & graphHeight is scaleMin due to View coordinate system
+                             */
+                            y = ((dataLists[k].SeriesData[i].Y - minValue) / (maxValue - minValue)) * (graphTop - graphHeight) + graphHeight;
                         }
-
-                        // Make space for each series if necessary
-                        y += (topLineLength * k * 1.25f);
-                        if (y >= GraphHeight)
-                        {
-                            y = GraphHeight;
-                        }
-
-                        if (DrawSeriesLabels) y += LEGEND_MARGIN_HEIGHT;
 
                         if (i > drawDotSize - 1)
                         {
@@ -481,21 +509,6 @@ namespace SimpleWeather.UWP.Controls
                         drawDotLists[k].RemoveAt(drawDotLists[k].Count - 1);
                     }
                 }
-            }
-        }
-
-        private void RefreshTopLineLength(float verticalGridNum)
-        {
-            float labelsize = bottomTextHeight * 2 + bottomTextTopMargin;
-
-            if (DrawDataLabels && (GraphHeight) /
-                    (verticalGridNum + 2) < labelsize)
-            {
-                topLineLength = labelsize + 2;
-            }
-            else
-            {
-                topLineLength = MIN_TOP_LINE_LENGTH;
             }
         }
 
@@ -522,7 +535,11 @@ namespace SimpleWeather.UWP.Controls
                 {
                     for (int k = 0; k < drawDotLists.Count; k++)
                     {
-                        Color bigCirColor = colorArray[k % 3];
+                        var series = dataLists[k];
+                        var color = series.GetColor(k);
+
+                        var bigCirColor = color;
+                        var smallCirColor = ColorUtils.SetAlphaComponent(color, 0x99);
 
                         foreach (Dot dot in drawDotLists[k])
                         {
@@ -540,87 +557,60 @@ namespace SimpleWeather.UWP.Controls
 
         private void DrawLines(Rect region, CanvasDrawingSession drawingSession)
         {
-            float lineStrokeWidth = drawingSession.ConvertDipsToPixels(2, CanvasDpiRounding.Floor);
-            Rect drawingRect;
-
-            for (int k = 0; k < drawDotLists.Count; k++)
+            if (!drawDotLists.Any())
             {
-                var BackgroundPath = new CanvasPathBuilder(drawingSession);
+                float graphHeight = GraphHeight;
+                float lineStrokeWidth = drawingSession.ConvertDipsToPixels(2, CanvasDpiRounding.Floor);
+                Rect drawingRect;
 
-                float firstX = -1;
-                float firstY = -1;
-                // needed to end the path for background
-                float lastUsedEndY = 0;
-
-                Color bgColor = colorArray[k % 3];
-                bgColor.A = 0x50;
-
-                for (int i = 0; i < drawDotLists[k].Count - 1; i++)
+                for (int k = 0; k < drawDotLists.Count; k++)
                 {
-                    Dot dot = drawDotLists[k][i];
-                    Dot nextDot = drawDotLists[k][i + 1];
-                    YEntryData entry = dataLists[k].SeriesData[i];
-                    YEntryData nextEntry = dataLists[k].SeriesData[i + 1];
+                    var series = dataLists[k];
+                    ICollection<TextEntry> textEntries = new LinkedList<TextEntry>();
 
-                    float startX = dot.X;
-                    float startY = dot.Y;
-                    float endX = nextDot.X;
-                    float endY = nextDot.Y;
+                    var BackgroundPath = new CanvasPathBuilder(drawingSession);
 
-                    drawingRect = new Rect((float)region.Left, dot.Y, dot.X, dot.Y);
-                    if (firstX == -1 && !RectHelper.Intersect(region, drawingRect).IsEmpty)
+                    float firstX = -1;
+                    // needed to end the path for background
+                    Dot currentDot = null;
+
+                    var lineColor = series.GetColor(k);
+                    var backgroundColor = ColorUtils.SetAlphaComponent(series.GetColor(k), 0x99);
+
+                    if (DrawGraphBackground)
+                        BackgroundPath.BeginFigure((float)region.Left, graphHeight);
+
+                    for (int i = 0; i < drawDotLists[k].Count - 1; i++)
                     {
-                        drawingSession.DrawLine((float)region.Left, dot.Y, dot.X, dot.Y, LineColor, lineStrokeWidth);
-                    }
+                        Dot dot = drawDotLists[k][i];
+                        Dot nextDot = drawDotLists[k][i + 1];
+                        YEntryData entry = dataLists[k].SeriesData[i];
+                        YEntryData nextEntry = dataLists[k].SeriesData[i + 1];
 
-                    drawingRect = new Rect(dot.X, dot.Y, nextDot.X, nextDot.Y);
-                    if (!RectHelper.Intersect(region, drawingRect).IsEmpty)
-                    {
-                        drawingSession.DrawLine(dot.X, dot.Y, nextDot.X, nextDot.Y, LineColor, lineStrokeWidth);
-                    }
+                        float startX = dot.X;
+                        float startY = dot.Y;
+                        float endX = nextDot.X;
+                        float endY = nextDot.Y;
 
-                    // Draw top label
-                    if (DrawDataLabels)
-                    {
-                        float x = sideLineLength + backgroundGridWidth * i;
-                        float y = dot.Y - bottomTextHeight;
-
-                        using (var txtLayout = new CanvasTextLayout(drawingSession, entry.YLabel, BottomTextFormat, 0, 0))
+                        drawingRect = new Rect((float)region.Left, dot.Y, dot.X, dot.Y);
+                        if (firstX == -1 && !RectHelper.Intersect(region, drawingRect).IsEmpty)
                         {
-                            Rect txtRect = RectHelper.FromPoints(
-                                new Point(x - txtLayout.LayoutBounds.Width / 2, y - txtLayout.LayoutBounds.Height / 2),
-                                new Point(x + txtLayout.LayoutBounds.Width / 2, y + txtLayout.LayoutBounds.Height / 2));
-
-                            if (!RectHelper.Intersect(region, txtRect).IsEmpty)
-                                drawingSession.DrawTextLayout(txtLayout, x, y - (float)txtLayout.LayoutBounds.Height, BottomTextColor);
+                            drawingSession.DrawLine((float)region.Left, dot.Y, dot.X, dot.Y, lineColor, lineStrokeWidth);
                         }
-                    }
 
-                    if (firstX == -1)
-                    {
-                        firstX = (float)region.Left;
-                        firstY = startY;
-                        if (DrawGraphBackground)
-                            BackgroundPath.BeginFigure(firstX, firstY);
-                    }
+                        drawingRect = new Rect(dot.X, dot.Y, nextDot.X, nextDot.Y);
+                        if (!RectHelper.Intersect(region, drawingRect).IsEmpty)
+                        {
+                            drawingSession.DrawLine(dot.X, dot.Y, nextDot.X, nextDot.Y, lineColor, lineStrokeWidth);
+                        }
 
-                    drawingRect = new Rect(startX, startY, endX, endY);
-                    if (DrawGraphBackground && !RectHelper.Intersect(region, drawingRect).IsEmpty)
-                    {
-                        BackgroundPath.AddLine(startX, startY);
-                        BackgroundPath.AddLine(endX, endY);
-                    }
-
-                    // Draw last items
-                    if (i + 1 == drawDotLists[k].Count - 1)
-                    {
                         if (DrawDataLabels)
                         {
                             // Draw top label
-                            float x = sideLineLength + backgroundGridWidth * (i + 1);
-                            float y = nextDot.Y - bottomTextHeight;
+                            float x = sideLineLength + backgroundGridWidth * i;
+                            float y = dot.Y - bottomTextHeight;
 
-                            using (var txtLayout = new CanvasTextLayout(drawingSession, nextEntry.YLabel, BottomTextFormat, 0, 0))
+                            using (var txtLayout = new CanvasTextLayout(drawingSession, entry.YLabel, BottomTextFormat, 0, 0))
                             {
                                 Rect txtRect = RectHelper.FromPoints(
                                     new Point(x - txtLayout.LayoutBounds.Width / 2, y - txtLayout.LayoutBounds.Height / 2),
@@ -628,50 +618,81 @@ namespace SimpleWeather.UWP.Controls
 
                                 if (!RectHelper.Intersect(region, txtRect).IsEmpty)
                                 {
-                                    drawingSession.DrawTextLayout(txtLayout, x, y - (float)txtLayout.LayoutBounds.Height, BottomTextColor);
+                                    textEntries.Add(new TextEntry(entry.YLabel, x, y));
                                 }
                             }
                         }
 
-                        drawingRect = new Rect(nextDot.X, nextDot.Y, region.Right, nextDot.Y);
-                        if (!RectHelper.Intersect(region, drawingRect).IsEmpty)
+                        if (firstX == -1)
                         {
-                            drawingSession.DrawLine(nextDot.X, nextDot.Y, (float)region.Right, nextDot.Y, LineColor, lineStrokeWidth);
+                            firstX = (float)region.Left;
+                            if (DrawGraphBackground)
+                                BackgroundPath.AddLine(firstX, startY);
                         }
 
-                        drawingRect = new Rect(endX, endY, region.Right, endY);
-                        if (!RectHelper.Intersect(region, drawingRect).IsEmpty)
+                        if (DrawGraphBackground)
                         {
-                            BackgroundPath.AddLine(endX, endY);
-                            BackgroundPath.AddLine((float)region.Right, endY);
+                            BackgroundPath.AddLine(firstX, startY);
+                        }
+
+                        currentDot = dot;
+
+                        // Draw last items
+                        if (i + 1 == drawDotLists[k].Count - 1)
+                        {
+                            if (DrawDataLabels)
+                            {
+                                // Draw top label
+                                float x = sideLineLength + backgroundGridWidth * (i + 1);
+                                float y = nextDot.Y - bottomTextHeight;
+
+                                using (var txtLayout = new CanvasTextLayout(drawingSession, nextEntry.YLabel, BottomTextFormat, 0, 0))
+                                {
+                                    Rect txtRect = RectHelper.FromPoints(
+                                        new Point(x - txtLayout.LayoutBounds.Width / 2, y - txtLayout.LayoutBounds.Height / 2),
+                                        new Point(x + txtLayout.LayoutBounds.Width / 2, y + txtLayout.LayoutBounds.Height / 2));
+
+                                    if (!RectHelper.Intersect(region, txtRect).IsEmpty)
+                                    {
+                                        textEntries.Add(new TextEntry(nextEntry.YLabel, x, y));
+                                    }
+                                }
+                            }
+
+                            drawingRect = new Rect(nextDot.X, nextDot.Y, region.Right, nextDot.Y);
+                            if (!RectHelper.Intersect(region, drawingRect).IsEmpty)
+                            {
+                                drawingSession.DrawLine(nextDot.X, nextDot.Y, (float)region.Right, nextDot.Y, lineColor, lineStrokeWidth);
+                            }
+
+                            currentDot = nextDot;
+
+                            if (!RectHelper.Intersect(region, drawingRect).IsEmpty)
+                            {
+                                BackgroundPath.AddLine(endX, endY);
+                            }
                         }
                     }
 
-                    lastUsedEndY = endY;
-                }
-
-                if (DrawGraphBackground && firstX != -1)
-                {
-                    // end / close path
-                    if (lastUsedEndY != GraphHeight + topLineLength)
+                    if (DrawGraphBackground)
                     {
-                        // dont draw line to same point, otherwise the path is completely broken
-                        BackgroundPath.AddLine(ViewWidth, GraphHeight + topLineLength);
-                    }
-                    BackgroundPath.AddLine(firstX, GraphHeight + topLineLength);
-                    if (firstY != GraphHeight + topLineLength)
-                    {
-                        // dont draw line to same point, otherwise the path is completely broken
-                        BackgroundPath.AddLine(firstX, firstY);
+                        if (currentDot != null)
+                        {
+                            BackgroundPath.AddLine((float)region.Right, currentDot.Y);
+                        }
+                        if (firstX != -1)
+                        {
+                            BackgroundPath.AddLine((float)region.Right, graphHeight);
+                        }
+
+                        BackgroundPath.EndFigure(CanvasFigureLoop.Closed);
+                        var line = CanvasGeometry.CreatePath(BackgroundPath);
+                        drawingSession.FillGeometry(line, backgroundColor);
+                        line.Dispose();
                     }
 
-                    BackgroundPath.EndFigure(CanvasFigureLoop.Open);
-                    var line = CanvasGeometry.CreatePath(BackgroundPath);
-                    drawingSession.FillGeometry(line, bgColor);
-                    line.Dispose();
+                    BackgroundPath.Dispose();
                 }
-
-                BackgroundPath.Dispose();
             }
         }
 
@@ -685,8 +706,8 @@ namespace SimpleWeather.UWP.Controls
                 for (int i = 0; i < xCoordinateList.Count; i++)
                 {
                     float x = xCoordinateList[i];
-                    float y1 = 0;
-                    float y2 = GraphHeight + topLineLength;
+                    float y1 = GraphTop;
+                    float y2 = GraphHeight;
 
                     if (!RectHelper.Intersect(region, RectHelper.FromPoints(new Point(x, y1), new Point(x, y2))).IsEmpty)
                         drawingSession.DrawLine(x, y1, x, y2, BackgroundLineColor);
@@ -694,7 +715,7 @@ namespace SimpleWeather.UWP.Controls
 
                 if (!DrawDotLine)
                 {
-                    // Draw solid lines
+                    // Draw horizontal lines
                     for (int i = 0; i < yCoordinateList.Count; i++)
                     {
                         if ((yCoordinateList.Count - 1 - i) % DataOfAGrid == 0)
@@ -759,8 +780,8 @@ namespace SimpleWeather.UWP.Controls
                         using (var iconTxtLayout = new CanvasTextLayout(drawingSession, icon, IconFormat, 0, 0))
                         {
                             Rect iconRect = RectHelper.FromPoints(
-                                new Point(x - iconTxtLayout.LayoutBounds.Width / 2, y - bottomTextHeight - iconBottomMargin * 2f - iconTxtLayout.LayoutBounds.Height / 2),
-                                new Point(x + iconTxtLayout.LayoutBounds.Width / 2, y - bottomTextHeight - iconBottomMargin * 2f + iconTxtLayout.LayoutBounds.Height / 2));
+                                new Point(x - iconTxtLayout.LayoutBounds.Width / 2, y - bottomTextHeight - iconBottomMargin - iconTxtLayout.LayoutBounds.Height / 2),
+                                new Point(x + iconTxtLayout.LayoutBounds.Width / 2, y - bottomTextHeight - iconBottomMargin + iconTxtLayout.LayoutBounds.Height / 2));
 
                             if (!RectHelper.Intersect(region, iconRect).IsEmpty)
                             {
@@ -839,11 +860,12 @@ namespace SimpleWeather.UWP.Controls
 
                 for (int i = 0; i < seriesSize; i++)
                 {
-                    Color seriesColor = colorArray[i % 3];
-                    String title = dataLists[i].SeriesLabel;
+                    var series = dataLists[i];
+                    var seriesColor = series.GetColor(i);
+                    var title = series.SeriesLabel;
                     if (String.IsNullOrWhiteSpace(title))
                     {
-                        title = "Series " + i;
+                        title = String.Format("{0} {1}", App.ResLoader.GetString("Label_Series"), i);
                     }
 
                     using (var txtLayout = new CanvasTextLayout(drawingSession, title, BottomTextFormat, 0, 0))
@@ -907,20 +929,20 @@ namespace SimpleWeather.UWP.Controls
             return 0;
         }
 
-        private int GetPreferredWidth()
+        private float GetPreferredWidth()
         {
-            return (int)((backgroundGridWidth * HorizontalGridNum) + (sideLineLength * 2));
+            return (backgroundGridWidth * HorizontalGridNum) + (sideLineLength * 2);
         }
 
         protected override Size MeasureOverride(Size availableSize)
         {
             Size size = base.MeasureOverride(availableSize);
 
-            ScrollViewer.Height = availableSize.Height;
-            ScrollViewer.Width = availableSize.Width;
+            ScrollViewer.Height = double.IsInfinity(availableSize.Height) ? double.NaN : availableSize.Height;
+            ScrollViewer.Width = double.IsInfinity(availableSize.Width) ? double.NaN : availableSize.Width;
             RefreshGridWidth();
 
-            Canvas.Width = Math.Max(GetPreferredWidth(), availableSize.Width);
+            Canvas.Width = Math.Max(GetPreferredWidth(), ScrollViewer.Width);
             Canvas.Height = availableSize.Height;
 
             ViewHeight = (float)Canvas.Height;
@@ -954,15 +976,24 @@ namespace SimpleWeather.UWP.Controls
             }
         }
 
+        internal class TextEntry
+        {
+            public string Text { get; set; }
+            public float X { get; set; }
+            public float Y { get; set; }
+
+            public TextEntry(string text, float x, float y)
+            {
+                this.Text = text;
+                this.X = x;
+                this.Y = y;
+            }
+        }
+
         public void Dispose()
         {
             BottomTextFormat?.Dispose();
             IconFormat?.Dispose();
         }
-    }
-
-    internal class ItemSizeChangedEventArgs : RoutedEventArgs
-    {
-        public System.Drawing.Size NewSize { get; set; }
     }
 }

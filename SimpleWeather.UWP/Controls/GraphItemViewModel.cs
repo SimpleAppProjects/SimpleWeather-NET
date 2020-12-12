@@ -1,4 +1,5 @@
 ﻿using SimpleWeather.Utils;
+using SimpleWeather.UWP.Controls.Graphs;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace SimpleWeather.UWP.Controls
             var culture = CultureUtils.UserCulture;
 
             string date;
-            var tempData = new GraphTemperature();
+            var tempData = new GraphTemperature(isFahrenheit);
 
             if (forecast is Forecast fcast)
             {
@@ -98,14 +99,6 @@ namespace SimpleWeather.UWP.Controls
                 LabelData = x;
                 Data = y;
             }
-        }
-
-        public class GraphTemperature
-        {
-            public YEntryData HiTempData { get; set; }
-            public YEntryData LoTempData { get; set; }
-
-            internal GraphTemperature() { }
         }
     }
 }
