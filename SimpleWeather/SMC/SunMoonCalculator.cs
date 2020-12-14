@@ -1,0 +1,1364 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SimpleWeather.SMC
+{
+    /**
+ * A very simple yet accurate Sun/Moon calculator without using JPARSEC library.
+ *
+ * @author T. Alonso Albi - OAN (Spain), email t.alonso@oan.es
+ * @version May 25, 2017 (fixed nutation correction and moon age, better accuracy in Moon)
+ */
+    public class SunMoonCalculator
+    {
+
+        /**
+         * Radians to degrees.
+         */
+        public const double RAD_TO_DEG = 180.0 / Math.PI;
+
+        /**
+         * Degrees to radians.
+         */
+        public const double DEG_TO_RAD = 1.0 / RAD_TO_DEG;
+
+        /* Arcseconds to radians */
+        public const double ARCSEC_TO_RAD = (DEG_TO_RAD / 3600.0);
+
+        /**
+         * Astronomical Unit in km. As defined by JPL.
+         */
+        public const double AU = 149597870.691;
+
+        /**
+         * Earth equatorial radius in km. IERS 2003 Conventions.
+         */
+        public const double EARTH_RADIUS = 6378.1366;
+
+        /**
+         * Two times Pi.
+         */
+        public const double TWO_PI = 2.0 * Math.PI;
+
+        /**
+         * Pi divided by two.
+         */
+        public const double PI_OVER_TWO = Math.PI / 2.0;
+
+        /**
+         * Julian century conversion constant = 100 * days per year.
+         */
+        public const double JULIAN_DAYS_PER_CENTURY = 36525.0;
+
+        /**
+         * Seconds in one day.
+         */
+        public const double SECONDS_PER_DAY = 86400;
+
+        /**
+         * Light time in days for 1 AU. DE405 definition.
+         */
+        public const double LIGHT_TIME_DAYS_PER_AU = 0.00577551833109;
+
+        /**
+         * Our default epoch. The Julian Day which represents noon on 2000-01-01.
+         */
+        public const double J2000 = 2451545.0;
+
+        /**
+         * The set of twilights to calculate (types of rise/set events).
+         */
+        public enum TWILIGHT
+        {
+            /**
+             * Event ID for calculation of rising and setting times for astronomical
+             * twilight. In this case, the calculated time will be the time when the
+             * center of the object is at -18 degrees of geometrical elevation below the
+             * astronomical horizon. At this time astronomical observations are possible
+             * because the sky is dark enough.
+             */
+            ASTRONOMICAL,
+            /**
+             * Event ID for calculation of rising and setting times for nautical
+             * twilight. In this case, the calculated time will be the time when the
+             * center of the object is at -12 degrees of geometric elevation below the
+             * astronomical horizon.
+             */
+            NAUTICAL,
+            /**
+             * Event ID for calculation of rising and setting times for civil twilight.
+             * In this case, the calculated time will be the time when the center of the
+             * object is at -6 degrees of geometric elevation below the astronomical
+             * horizon.
+             */
+            CIVIL,
+            /**
+             * The standard value of 34' for the refraction at the local horizon.
+             */
+            HORIZON_34arcmin
+        }
+
+        /**
+         * The set of events to calculate (rise/set/transit events).
+         */
+        public enum EVENT
+        {
+            /**
+             * Rise.
+             */
+            RISE,
+            /**
+             * Set.
+             */
+            SET,
+            /**
+             * Transit.
+             */
+            TRANSIT
+        }
+
+        /**
+         * The set of phases to compute the moon phases.
+         */
+        public sealed class MOONPHASE
+        {
+            /**
+             * New Moon phase.
+             */
+            public static MOONPHASE NEW_MOON = new MOONPHASE("New Moon:        ", 0);
+            /**
+             * Crescent quarter phase.
+             */
+            public static MOONPHASE CRESCENT_QUARTERNEW_MOON = new MOONPHASE("Crescent quarter:", 0.25);
+            /**
+             * Full Moon phase.
+             */
+            public static MOONPHASE FULL_MOONNEW_MOON = new MOONPHASE("Full Moon:       ", 0.5);
+            /**
+             * Descent quarter phase.
+             */
+            public static MOONPHASE DESCENT_QUARTERNEW_MOON = new MOONPHASE("Descent quarter: ", 0.75);
+
+            public static List<MOONPHASE> VALUES = new List<MOONPHASE>
+            {
+                NEW_MOON, CRESCENT_QUARTERNEW_MOON, FULL_MOONNEW_MOON, DESCENT_QUARTERNEW_MOON
+            };
+
+            /**
+             * Phase name.
+             */
+            public String phaseName { get; }
+            /**
+             * Phase value.
+             */
+            public double phase { get; }
+
+            private MOONPHASE(String name, double ph)
+            {
+                phaseName = name;
+                phase = ph;
+            }
+        }
+
+        /**
+         * The set of bodies to compute ephemerides.
+         */
+        public sealed class BODY
+        {
+            public static BODY MERCURY = new BODY(0, 2439.7);
+            public static BODY VENUS = new BODY(1, 6051.8);
+            public static BODY MARS = new BODY(3, 3396.19);
+            public static BODY JUPITER = new BODY(4, 71492);
+            public static BODY SATURN = new BODY(5, 60268);
+            public static BODY URANUS = new BODY(6, 25559);
+            public static BODY NEPTUNE = new BODY(7, 24764);
+            public static BODY Moon = new BODY(-2, 1737.4);
+            public static BODY Sun = new BODY(-1, 696000);
+            public static BODY EMB = new BODY(2, 0);
+
+            /**
+             * Equatorial radius in km.
+             */
+            public double eqRadius { get; }
+            /**
+             * Body index for computing the position.
+             */
+            public int index { get; }
+
+            private BODY(int i, double r)
+            {
+                index = i;
+                eqRadius = r;
+            }
+        }
+
+        /**
+         * Input values and nutation/obliquity parameters only calculated once.
+         */
+        protected double jd_UT = 0;
+        protected double t = 0;
+        private double obsLon = 0, obsLat = 0, obsAlt = 0;
+        private double TTminusUT = 0;
+        private TWILIGHT twilight = TWILIGHT.HORIZON_34arcmin;
+        private double nutLon = 0, nutObl = 0;
+        protected double meanObliquity = 0;
+
+        private double lst = 0;
+
+        /**
+         * Class to hold the results of ephemerides.
+         *
+         * @author T. Alonso Albi - OAN (Spain)
+         */
+        public class Ephemeris
+        {
+            internal Ephemeris(double azi, double alt, double rise2, double set2,
+                              double transit2, double transit_alt, double ra, double dec,
+                              double dist, double eclLon, double eclLat, double angR)
+            {
+                azimuth = azi;
+                elevation = alt;
+                rise = rise2;
+                set = set2;
+                transit = transit2;
+                transitElevation = transit_alt;
+                rightAscension = ra;
+                declination = dec;
+                distance = dist;
+                illuminationPhase = 100;
+                eclipticLongitude = eclLon;
+                eclipticLatitude = eclLat;
+                angularRadius = angR;
+            }
+
+            /**
+             * Values for azimuth, elevation, rise, set, and transit for the Sun. Angles in radians, rise ...
+             * as Julian days in UT. Distance in AU.
+             */
+            public double azimuth, elevation, rise, set, transit, transitElevation, distance, rightAscension,
+                    declination, illuminationPhase, eclipticLongitude, eclipticLatitude, angularRadius;
+        }
+
+        /**
+         * Ephemeris for the Sun and Moon bodies.
+         */
+        public Ephemeris sun, moon;
+
+        /**
+         * Moon's age in days as an independent variable.
+         */
+        public double moonAge;
+
+
+        /**
+         * Main constructor for Sun/Moon calculations. Time should be given in
+         * Universal Time (UT), observer angles in radians.
+         *
+         * @param year   The year.
+         * @param month  The month.
+         * @param day    The day.
+         * @param h      The hour.
+         * @param m      Minute.
+         * @param s      Second.
+         * @param obsLon Longitude for the observer.
+         * @param obsLat Latitude for the observer.
+         * @param obsAlt Altitude of the observer in m.
+         * @throws Exception If the date does not exists.
+         */
+        /// <exception cref="Exception"></exception>
+        public SunMoonCalculator(int year, int month, int day, int h, int m, int s,
+                                 double obsLon, double obsLat, int obsAlt)
+        {
+            double jd = toJulianDay(year, month, day, h, m, s);
+
+            TTminusUT = 0;
+            if (year > -600 && year < 2200)
+            {
+                double x = year + (month - 1 + day / 30.0) / 12.0;
+                double x2 = x * x, x3 = x2 * x, x4 = x3 * x;
+                if (year < 1600)
+                {
+                    TTminusUT = 10535.328003 - 9.9952386275 * x + 0.00306730763 * x2 - 7.7634069836E-6 * x3 + 3.1331045394E-9 * x4 +
+                            8.2255308544E-12 * x2 * x3 - 7.4861647156E-15 * x4 * x2 + 1.936246155E-18 * x4 * x3 - 8.4892249378E-23 * x4 * x4;
+                }
+                else
+                {
+                    TTminusUT = -1027175.34776 + 2523.2566254 * x - 1.8856868491 * x2 + 5.8692462279E-5 * x3 + 3.3379295816E-7 * x4 +
+                            1.7758961671E-10 * x2 * x3 - 2.7889902806E-13 * x2 * x4 + 1.0224295822E-16 * x3 * x4 - 1.2528102371E-20 * x4 * x4;
+                }
+            }
+            this.obsLon = obsLon;
+            this.obsLat = obsLat;
+            this.obsAlt = obsAlt;
+            setUTDate(jd);
+        }
+
+        /**
+         * Sets the rise/set times to return. Default is for the local horizon.
+         *
+         * @param t The Twilight.
+         */
+        public void setTwilight(TWILIGHT t)
+        {
+            this.twilight = t;
+        }
+
+        /**
+         * Sets the UT date from the provided Julian day and computes the nutation, obliquity, and
+         * sidereal time. TT minuts UT1 is not updated since it changes very slowly with time.
+         * Use this only to update the computation time for the same year as the one used when the
+         * instance was created.
+         *
+         * @param jd The new Julian day in UT.
+         */
+        protected void setUTDate(double jd)
+        {
+            this.jd_UT = jd;
+            this.t = (jd + TTminusUT / SECONDS_PER_DAY - J2000) / JULIAN_DAYS_PER_CENTURY;
+
+            // Compute nutation
+            double M1 = (124.90 - 1934.134 * t + 0.002063 * t * t) * DEG_TO_RAD;
+            double M2 = (201.11 + 72001.5377 * t + 0.00057 * t * t) * DEG_TO_RAD;
+            nutLon = (-0.0047785 * Math.Sin(M1) - 0.0003667 * Math.Sin(M2)) * DEG_TO_RAD;
+            nutObl = (0.002558 * Math.Cos(M1) - 0.00015339 * Math.Cos(M2)) * DEG_TO_RAD;
+
+            // Compute mean obliquity
+            double t2 = this.t / 100.0;
+            double tmp = t2 * (27.87 + t2 * (5.79 + t2 * 2.45));
+            tmp = t2 * (-249.67 + t2 * (-39.05 + t2 * (7.12 + tmp)));
+            tmp = t2 * (-1.55 + t2 * (1999.25 + t2 * (-51.38 + tmp)));
+            tmp = (t2 * (-4680.93 + tmp)) / 3600.0;
+            meanObliquity = (23.4392911111111 + tmp) * DEG_TO_RAD;
+
+            // Obtain local apparent sidereal time
+            double jd0 = Math.Floor(jd_UT - 0.5) + 0.5;
+            double T0 = (jd0 - J2000) / JULIAN_DAYS_PER_CENTURY;
+            double secs = (jd_UT - jd0) * SECONDS_PER_DAY;
+            double gmst = (((((-6.2e-6 * T0) + 9.3104e-2) * T0) + 8640184.812866) * T0) + 24110.54841;
+            double msday = 1.0 + (((((-1.86e-5 * T0) + 0.186208) * T0) + 8640184.812866) / (SECONDS_PER_DAY * JULIAN_DAYS_PER_CENTURY));
+            gmst = (gmst + msday * secs) * (15.0 / 3600.0) * DEG_TO_RAD;
+            lst = normalizeRadians(gmst + obsLon + nutLon * Math.Cos(meanObliquity + nutObl));
+        }
+
+        /**
+         * Calculates everything for the Sun and the Moon.
+         */
+        public void calcSunAndMoon()
+        {
+            double jd = this.jd_UT;
+
+            // First the Sun
+            sun = doCalc(getSun());
+
+            int niter = 15; // Number of iterations to get accurate rise/set/transit times
+            sun.rise = obtainAccurateRiseSetTransit(sun.rise, EVENT.RISE, niter, true);
+            sun.set = obtainAccurateRiseSetTransit(sun.set, EVENT.SET, niter, true);
+            sun.transit = obtainAccurateRiseSetTransit(sun.transit, EVENT.TRANSIT, niter, true);
+            if (sun.transit == -1)
+            {
+                sun.transitElevation = 0;
+            }
+            else
+            {
+                // Update Sun's maximum elevation
+                setUTDate(sun.transit);
+                sun.transitElevation = doCalc(getSun()).transitElevation;
+            }
+
+            // Now Moon
+            setUTDate(jd);
+            moon = doCalc(getMoon());
+            double ma = moonAge;
+
+            //niter = 15; // Number of iterations to get accurate rise/set/transit times
+            moon.rise = obtainAccurateRiseSetTransit(moon.rise, EVENT.RISE, niter, false);
+            moon.set = obtainAccurateRiseSetTransit(moon.set, EVENT.SET, niter, false);
+            moon.transit = obtainAccurateRiseSetTransit(moon.transit, EVENT.TRANSIT, niter, false);
+            if (moon.transit == -1)
+            {
+                moon.transitElevation = 0;
+            }
+            else
+            {
+                // Update Moon's maximum elevation
+                setUTDate(moon.transit);
+                moon.transitElevation = doCalc(getMoon()).transitElevation;
+            }
+
+            setUTDate(jd);
+            moonAge = ma;
+
+            // Compute illumination phase percentage for the Moon
+            getIlluminationPhase(moon);
+        }
+
+        // Sun data from the expansion "Planetary Programs
+        // and Tables" by Pierre Bretagnon and Jean-Louis
+        // Simon, Willman-Bell, 1986
+        private static double[][] sun_elements = {
+    new double[] { 403406.0, 0.0, 4.721964, 1.621043 },
+            new double[] { 195207.0, -97597.0, 5.937458, 62830.348067 },
+            new double[] { 119433.0, -59715.0, 1.115589, 62830.821524 },
+            new double[] { 112392.0, -56188.0, 5.781616, 62829.634302 },
+            new double[] { 3891.0, -1556.0, 5.5474, 125660.5691 },
+            new double[] { 2819.0, -1126.0, 1.512, 125660.9845 },
+            new double[] { 1721.0, -861.0, 4.1897, 62832.4766 },
+            new double[] { 0.0, 941.0, 1.163, .813 },
+            new double[] { 660.0, -264.0, 5.415, 125659.31 },
+            new double[] { 350.0, -163.0, 4.315, 57533.85 },
+            new double[] { 334.0, 0.0, 4.553, -33.931 },
+            new double[] { 314.0, 309.0, 5.198, 777137.715 },
+            new double[] { 268.0, -158.0, 5.989, 78604.191 },
+            new double[] { 242.0, 0.0, 2.911, 5.412 },
+            new double[] { 234.0, -54.0, 1.423, 39302.098 },
+            new double[] { 158.0, 0.0, .061, -34.861 },
+            new double[] { 132.0, -93.0, 2.317, 115067.698 },
+            new double[] { 129.0, -20.0, 3.193, 15774.337 },
+            new double[] { 114.0, 0.0, 2.828, 5296.67 },
+            new double[] { 99.0, -47.0, .52, 58849.27 },
+            new double[] { 93.0, 0.0, 4.65, 5296.11 },
+            new double[] { 86.0, 0.0, 4.35, -3980.7 },
+            new double[] { 78.0, -33.0, 2.75, 52237.69 },
+            new double[] { 72.0, -32.0, 4.5, 55076.47 },
+            new double[] { 68.0, 0.0, 3.23, 261.08 },
+            new double[] { 64.0, -10.0, 1.22, 15773.85 },
+            new double[] { 46.0, -16.0, .14, 188491.03 },
+            new double[] { 38.0, 0.0, 3.44, -7756.55 },
+            new double[] { 37.0, 0.0, 4.37, 264.89 },
+            new double[] { 32.0, -24.0, 1.14, 117906.27 },
+            new double[] { 29.0, -13.0, 2.84, 55075.75 },
+            new double[] { 28.0, 0.0, 5.96, -7961.39 },
+            new double[] { 27.0, -9.0, 5.09, 188489.81 },
+            new double[] { 27.0, 0.0, 1.72, 2132.19 },
+            new double[] { 25.0, -17.0, 2.56, 109771.03 },
+            new double[] { 24.0, -11.0, 1.92, 54868.56 },
+            new double[] { 21.0, 0.0, .09, 25443.93 },
+            new double[] { 21.0, 31.0, 5.98, -55731.43 },
+            new double[] { 20.0, -10.0, 4.03, 60697.74 },
+            new double[] { 18.0, 0.0, 4.27, 2132.79 },
+            new double[] { 17.0, -12.0, .79, 109771.63 },
+            new double[] { 14.0, 0.0, 4.24, -7752.82 },
+            new double[] { 13.0, -5.0, 2.01, 188491.91 },
+            new double[] { 13.0, 0.0, 2.65, 207.81 },
+            new double[] { 13.0, 0.0, 4.98, 29424.63 },
+            new double[] { 12.0, 0.0, .93, -7.99 },
+            new double[] { 10.0, 0.0, 2.21, 46941.14 },
+            new double[] { 10.0, 0.0, 3.59, -68.29 },
+            new double[] { 10.0, 0.0, 1.5, 21463.25 },
+            new double[] { 10.0, -9.0, 2.55, 157208.4 }
+    };
+
+        protected double[] getSun()
+        {
+            double L = 0.0, R = 0.0, t2 = t * 0.01;
+            double Lp = 0.0, deltat = 0.5, t2p = (t + deltat / JULIAN_DAYS_PER_CENTURY) * 0.01;
+            for (int i = 0; i < sun_elements.Length; i++)
+            {
+                double v = sun_elements[i][2] + sun_elements[i][3] * t2;
+                double u = normalizeRadians(v);
+                L = L + sun_elements[i][0] * Math.Sin(u);
+                R = R + sun_elements[i][1] * Math.Cos(u);
+
+                double vp = sun_elements[i][2] + sun_elements[i][3] * t2p;
+                double up = normalizeRadians(vp);
+                Lp = Lp + sun_elements[i][0] * Math.Sin(up);
+            }
+
+            double lon = normalizeRadians(4.9353929 + normalizeRadians(62833.196168 * t2) + L / 10000000.0) * RAD_TO_DEG;
+            double sdistance = 1.0001026 + R / 10000000.0;
+
+            // Now subtract aberration
+            double dlon = ((Lp - L) / 10000000.0 + 62833.196168 * (t2p - t2)) / deltat;
+            double aberration = dlon * sdistance * LIGHT_TIME_DAYS_PER_AU;
+            lon -= aberration * RAD_TO_DEG;
+
+            double slongitude = lon * DEG_TO_RAD; // apparent longitude (error<0.001 deg)
+            double slatitude = 0; // Sun's ecliptic latitude is always negligible
+
+            return new double[] { slongitude, slatitude, sdistance, Math.Atan(BODY.Sun.eqRadius / (AU * sdistance)) };
+        }
+
+        protected double[] getMoon()
+        {
+            // Implementation following P. Duffet's MOON program
+            double td = t + 1, td2 = t * t;
+            double qd = td * JULIAN_DAYS_PER_CENTURY * 360.0;
+
+            double M1 = qd / 2.732158213E1, M2 = qd / 3.652596407E2, M3 = qd / 2.755455094E1;
+            double M4 = qd / 2.953058868E1, M5 = qd / 2.721222039E1, M6 = qd / 6.798363307E3;
+
+            double l = normalizeRadians((2.70434164E2 + M1 - (1.133E-3 - 1.9E-6 * td) * td2) * DEG_TO_RAD);
+            double sanomaly = normalizeRadians((3.58475833E2 + M2 - (1.5E-4 + 3.3E-6 * td) * td2) * DEG_TO_RAD);
+            double anomaly = normalizeRadians((2.96104608E2 + M3 + (9.192E-3 + 1.44E-5 * td) * td2) * DEG_TO_RAD);
+            double phase = normalizeRadians((3.50737486E2 + M4 - (1.436E-3 - 1.9E-6 * td) * td2) * DEG_TO_RAD);
+            double node = normalizeRadians((11.250889 + M5 - (3.211E-3 + 3E-7 * td) * td2) * DEG_TO_RAD);
+            double NA = normalizeRadians((2.59183275E2 - M6 + (2.078E-3 + 2.2E-6 * td) * td2) * DEG_TO_RAD);
+            double A = DEG_TO_RAD * (51.2 + 20.2 * td);
+            double S1 = Math.Sin(A), S2 = Math.Sin(NA);
+            double B = 346.56 + (132.87 - 9.1731E-3 * td) * td;
+            double S3 = 3.964E-3 * Math.Sin(DEG_TO_RAD * B);
+            double C = NA + DEG_TO_RAD * (275.05 - 2.3 * td);
+            double S4 = Math.Sin(C);
+            l = l * RAD_TO_DEG + (2.33E-4 * S1 + S3 + 1.964E-3 * S2);
+            sanomaly = sanomaly - (1.778E-3 * S1) * DEG_TO_RAD;
+            anomaly = anomaly + (8.17E-4 * S1 + S3 + 2.541E-3 * S2) * DEG_TO_RAD;
+            node = node + (S3 - 2.4691E-2 * S2 - 4.328E-3 * S4) * DEG_TO_RAD;
+            phase = phase + (2.011E-3 * S1 + S3 + 1.964E-3 * S2) * DEG_TO_RAD;
+            double E = 1 - (2.495E-3 + 7.52E-6 * td) * td, E2 = E * E;
+
+            // Now longitude, with the three main correcting terms of evection,
+            // variation, and equation of year, plus other terms (error<0.01 deg)
+            l += 6.28875 * Math.Sin(anomaly) + 1.274018 * Math.Sin(2 * phase - anomaly) + .658309 * Math.Sin(2 * phase);
+            l += 0.213616 * Math.Sin(2 * anomaly) - E * .185596 * Math.Sin(sanomaly) - 0.114336 * Math.Sin(2 * node);
+            l += .058793 * Math.Sin(2 * phase - 2 * anomaly) + .057212 * E * Math.Sin(2 * phase - anomaly - sanomaly) + .05332 * Math.Sin(2 * phase + anomaly);
+            l += .045874 * E * Math.Sin(2 * phase - sanomaly) + .041024 * E * Math.Sin(anomaly - sanomaly) - .034718 * Math.Sin(phase) - E * .030465 * Math.Sin(sanomaly + anomaly);
+            l += .015326 * Math.Sin(2 * (phase - node)) - .012528 * Math.Sin(2 * node + anomaly) - .01098 * Math.Sin(2 * node - anomaly) + .010674 * Math.Sin(4 * phase - anomaly);
+            l += .010034 * Math.Sin(3 * anomaly) + .008548 * Math.Sin(4 * phase - 2 * anomaly);
+            l += -E * .00791 * Math.Sin(sanomaly - anomaly + 2 * phase) - E * .006783 * Math.Sin(2 * phase + sanomaly) + .005162 * Math.Sin(anomaly - phase) + E * .005 * Math.Sin(sanomaly + phase);
+            l += .003862 * Math.Sin(4 * phase) + E * .004049 * Math.Sin(anomaly - sanomaly + 2 * phase) + .003996 * Math.Sin(2 * (anomaly + phase)) + .003665 * Math.Sin(2 * phase - 3 * anomaly);
+            l += E * 2.695E-3 * Math.Sin(2 * anomaly - sanomaly) + 2.602E-3 * Math.Sin(anomaly - 2 * (node + phase));
+            l += E * 2.396E-3 * Math.Sin(2 * (phase - anomaly) - sanomaly) - 2.349E-3 * Math.Sin(anomaly + phase);
+            l += E * E * 2.249E-3 * Math.Sin(2 * (phase - sanomaly)) - E * 2.125E-3 * Math.Sin(2 * anomaly + sanomaly);
+            l += -E * E * 2.079E-3 * Math.Sin(2 * sanomaly) + E * E * 2.059E-3 * Math.Sin(2 * (phase - sanomaly) - anomaly);
+            l += -1.773E-3 * Math.Sin(anomaly + 2 * (phase - node)) - 1.595E-3 * Math.Sin(2 * (node + phase));
+            l += E * 1.22E-3 * Math.Sin(4 * phase - sanomaly - anomaly) - 1.11E-3 * Math.Sin(2 * (anomaly + node));
+            l += 8.92E-4 * Math.Sin(anomaly - 3 * phase) - E * 8.11E-4 * Math.Sin(sanomaly + anomaly + 2 * phase);
+            l += E * 7.61E-4 * Math.Sin(4 * phase - sanomaly - 2 * anomaly);
+            l += E2 * 7.04E-4 * Math.Sin(anomaly - 2 * (sanomaly + phase));
+            l += E * 6.93E-4 * Math.Sin(sanomaly - 2 * (anomaly - phase));
+            l += E * 5.98E-4 * Math.Sin(2 * (phase - node) - sanomaly);
+            l += 5.5E-4 * Math.Sin(anomaly + 4 * phase) + 5.38E-4 * Math.Sin(4 * anomaly);
+            l += E * 5.21E-4 * Math.Sin(4 * phase - sanomaly) + 4.86E-4 * Math.Sin(2 * anomaly - phase);
+            l += E2 * 7.17E-4 * Math.Sin(anomaly - 2 * sanomaly);
+
+            double longitude = l * DEG_TO_RAD;
+
+            double Psin = 29.530588853;
+            if (sun != null)
+            {
+                // Get Moon age, more accurate than 'phase' but we need the Sun position
+                moonAge = normalizeRadians(longitude - sun.eclipticLongitude) * Psin / TWO_PI;
+            }
+            else
+            {
+                // Use the phase variable as estimate, less accurate but this is used only when we don't need an accurate value
+                moonAge = phase * Psin / TWO_PI;
+            }
+
+            // Now Moon parallax
+            double p = .950724 + .051818 * Math.Cos(anomaly) + .009531 * Math.Cos(2 * phase - anomaly);
+            p += .007843 * Math.Cos(2 * phase) + .002824 * Math.Cos(2 * anomaly);
+            p += 0.000857 * Math.Cos(2 * phase + anomaly) + E * .000533 * Math.Cos(2 * phase - sanomaly);
+            p += E * .000401 * Math.Cos(2 * phase - anomaly - sanomaly) + E * .00032 * Math.Cos(anomaly - sanomaly) - .000271 * Math.Cos(phase);
+            p += -E * .000264 * Math.Cos(sanomaly + anomaly) - .000198 * Math.Cos(2 * node - anomaly);
+            p += 1.73E-4 * Math.Cos(3 * anomaly) + 1.67E-4 * Math.Cos(4 * phase - anomaly);
+            p += -E * 1.11E-4 * Math.Cos(sanomaly) + 1.03E-4 * Math.Cos(4 * phase - 2 * anomaly);
+            p += -8.4E-5 * Math.Cos(2 * anomaly - 2 * phase) - E * 8.3E-5 * Math.Cos(2 * phase + sanomaly);
+            p += 7.9E-5 * Math.Cos(2 * phase + 2 * anomaly) + 7.2E-5 * Math.Cos(4 * phase);
+            p += E * 6.4E-5 * Math.Cos(2 * phase - sanomaly + anomaly)
+                    - E * 6.3E-5 * Math.Cos(2 * phase + sanomaly - anomaly);
+            p += E * 4.1E-5 * Math.Cos(sanomaly + phase) + E * 3.5E-5 * Math.Cos(2 * anomaly - sanomaly);
+            p += -3.3E-5 * Math.Cos(3 * anomaly - 2 * phase) - 3E-5 * Math.Cos(anomaly + phase);
+            p += -2.9E-5 * Math.Cos(2 * (node - phase)) - E * 2.9E-5 * Math.Cos(2 * anomaly + sanomaly);
+            p += E2 * 2.6E-5 * Math.Cos(2 * (phase - sanomaly)) - 2.3E-5 * Math.Cos(2 * (node - phase) + anomaly);
+            p += E * 1.9E-5 * Math.Cos(4 * phase - sanomaly - anomaly);
+
+            // So Moon distance in Earth radii is, more or less,
+            double distance = 1.0 / Math.Sin(p * DEG_TO_RAD);
+
+            // Ecliptic latitude with nodal phase (error<0.01 deg)
+            l = 5.128189 * Math.Sin(node) + 0.280606 * Math.Sin(node + anomaly) + 0.277693 * Math.Sin(anomaly - node);
+            l += .173238 * Math.Sin(2 * phase - node) + .055413 * Math.Sin(2 * phase + node - anomaly);
+            l += .046272 * Math.Sin(2 * phase - node - anomaly) + .032573 * Math.Sin(2 * phase + node);
+            l += .017198 * Math.Sin(2 * anomaly + node) + .009267 * Math.Sin(2 * phase + anomaly - node);
+            l += .008823 * Math.Sin(2 * anomaly - node) + E * .008247 * Math.Sin(2 * phase - sanomaly - node) + .004323 * Math.Sin(2 * (phase - anomaly) - node);
+            l += .0042 * Math.Sin(2 * phase + node + anomaly) + E * .003372 * Math.Sin(node - sanomaly - 2 * phase);
+            l += E * 2.472E-3 * Math.Sin(2 * phase + node - sanomaly - anomaly);
+            l += E * 2.222E-3 * Math.Sin(2 * phase + node - sanomaly);
+            l += E * 2.072E-3 * Math.Sin(2 * phase - node - sanomaly - anomaly);
+            l += E * 1.877E-3 * Math.Sin(node - sanomaly + anomaly) + 1.828E-3 * Math.Sin(4 * phase - node - anomaly);
+            l += -E * 1.803E-3 * Math.Sin(node + sanomaly) - 1.75E-3 * Math.Sin(3 * node);
+            l += E * 1.57E-3 * Math.Sin(anomaly - sanomaly - node) - 1.487E-3 * Math.Sin(node + phase);
+            l += -E * 1.481E-3 * Math.Sin(node + sanomaly + anomaly) + E * 1.417E-3 * Math.Sin(node - sanomaly - anomaly);
+            l += E * 1.35E-3 * Math.Sin(node - sanomaly) + 1.33E-3 * Math.Sin(node - phase);
+            l += 1.106E-3 * Math.Sin(node + 3 * anomaly) + 1.02E-3 * Math.Sin(4 * phase - node);
+            l += 8.33E-4 * Math.Sin(node + 4 * phase - anomaly) + 7.81E-4 * Math.Sin(anomaly - 3 * node);
+            l += 6.7E-4 * Math.Sin(node + 4 * phase - 2 * anomaly) + 6.06E-4 * Math.Sin(2 * phase - 3 * node);
+            l += 5.97E-4 * Math.Sin(2 * (phase + anomaly) - node);
+            l += E * 4.92E-4 * Math.Sin(2 * phase + anomaly - sanomaly - node)
+                    + 4.5E-4 * Math.Sin(2 * (anomaly - phase) - node);
+            l += 4.39E-4 * Math.Sin(3 * anomaly - node) + 4.23E-4 * Math.Sin(node + 2 * (phase + anomaly));
+            l += 4.22E-4 * Math.Sin(2 * phase - node - 3 * anomaly)
+                    - E * 3.67E-4 * Math.Sin(sanomaly + node + 2 * phase - anomaly);
+            l += -E * 3.53E-4 * Math.Sin(sanomaly + node + 2 * phase) + 3.31E-4 * Math.Sin(node + 4 * phase);
+            l += E * 3.17E-4 * Math.Sin(2 * phase + node - sanomaly + anomaly);
+            l += E2 * 3.06E-4 * Math.Sin(2 * (phase - sanomaly) - node) - 2.83E-4 * Math.Sin(anomaly + 3 * node);
+            double W1 = 4.664E-4 * Math.Cos(NA);
+            double W2 = 7.54E-5 * Math.Cos(C);
+
+            double latitude = l * DEG_TO_RAD * (1.0 - W1 - W2);
+
+            return new double[] { longitude, latitude, distance * EARTH_RADIUS / AU, Math.Atan(BODY.Moon.eqRadius / (distance * EARTH_RADIUS)) };
+        }
+
+        /**
+         * Compute the topocentric position of the body.
+         *
+         * @param pos Values for the ecliptic longitude, latitude, distance and so on from previous methods for the specific body.
+         * @return The ephemeris object with the output position
+         */
+        protected Ephemeris doCalc(double[] pos)
+        {
+            return doCalc(pos, false);
+        }
+
+        /**
+         * Compute the position of the body.
+         *
+         * @param pos        Values for the ecliptic longitude, latitude, distance and so on from previous methods for the specific body.
+         * @param geocentric True to return geocentric position. Set this to false generally.
+         * @return The ephemeris object with the output position
+         */
+        protected Ephemeris doCalc(double[] pos, bool geocentric)
+        {
+            // Correct for nutation in longitude and obliquity
+            pos[0] = pos[0] + nutLon;
+            pos[1] = pos[1] + nutObl;
+
+            // Ecliptic to equatorial coordinates
+            double cl = Math.Cos(pos[1]);
+            double x = pos[2] * Math.Cos(pos[0]) * cl;
+            double y = pos[2] * Math.Sin(pos[0]) * cl;
+            double z = pos[2] * Math.Sin(pos[1]);
+            double sinEcl = Math.Sin(meanObliquity), cosEcl = Math.Cos(meanObliquity);
+            double tmp = y * cosEcl - z * sinEcl;
+            z = y * sinEcl + z * cosEcl;
+            y = tmp;
+
+            // Obtain topocentric rectangular coordinates
+            double xtopo = x, ytopo = y, ztopo = z;
+            if (!geocentric)
+            {
+                double geocLat = (obsLat - .1925 * Math.Sin(2 * obsLat) * DEG_TO_RAD);
+                double gsinLat = Math.Sin(geocLat);
+                double gcosLat = Math.Cos(geocLat);
+                double geocR = 1.0 - Math.Pow(Math.Sin(obsLat), 2) / 298.257;
+                double radiusAU = (geocR * EARTH_RADIUS + obsAlt * 0.001) / AU;
+                double[] correction = new double[]{
+                    radiusAU * gcosLat * Math.Cos(lst),
+                    radiusAU * gcosLat * Math.Sin(lst),
+                    radiusAU * gsinLat};
+                xtopo -= correction[0];
+                ytopo -= correction[1];
+                ztopo -= correction[2];
+            }
+
+            // Obtain topocentric equatorial coordinates
+            double ra = 0.0;
+            double dec = PI_OVER_TWO;
+            if (ztopo < 0.0) dec = -dec;
+            if (ytopo != 0.0 || xtopo != 0.0)
+            {
+                ra = Math.Atan2(ytopo, xtopo);
+                dec = Math.Atan2(ztopo / Hypotenuse(xtopo, ytopo), 1.0);
+            }
+            double dist = Math.Sqrt(xtopo * xtopo + ytopo * ytopo + ztopo * ztopo);
+
+            // Hour angle
+            double angh = lst - ra;
+
+            // Obtain azimuth and geometric alt
+            double sinLat = Math.Sin(obsLat);
+            double cosLat = Math.Cos(obsLat);
+            double sinDec = Math.Sin(dec), cosDec = Math.Cos(dec);
+            double h = sinLat * sinDec + cosLat * cosDec * Math.Cos(angh);
+            double alt = Math.Asin(h);
+            double azy = Math.Sin(angh);
+            double azx = Math.Cos(angh) * sinLat - sinDec * cosLat / cosDec;
+            double azi = Math.PI + Math.Atan2(azy, azx); // 0 = north
+
+            if (geocentric)
+                return new Ephemeris(azi, alt, -1, -1, -1, -1, normalizeRadians(ra), dec, dist,
+                        pos[0], pos[1], pos[3]);
+
+            // Get apparent elevation
+            alt = refraction(alt);
+
+            switch (twilight)
+            {
+                case TWILIGHT.HORIZON_34arcmin:
+                    // Rise, set, transit times, taking into account Sun/Moon angular radius (pos[3]).
+                    // The 34' factor is the standard refraction at horizon.
+                    // Removing angular radius will do calculations for the center of the disk instead
+                    // of the upper limb.
+                    tmp = -(34.0 / 60.0) * DEG_TO_RAD - pos[3];
+                    break;
+                case TWILIGHT.CIVIL:
+                    tmp = -6 * DEG_TO_RAD;
+                    break;
+                case TWILIGHT.NAUTICAL:
+                    tmp = -12 * DEG_TO_RAD;
+                    break;
+                case TWILIGHT.ASTRONOMICAL:
+                    tmp = -18 * DEG_TO_RAD;
+                    break;
+            }
+
+            // Compute cosine of hour angle
+            tmp = (Math.Sin(tmp) - sinLat * sinDec) / (cosLat * cosDec);
+            /** Length of a sidereal day in days according to IERS Conventions. */
+            double siderealDayLength = 1.00273781191135448;
+            double celestialHoursToEarthTime = 1.0 / (siderealDayLength * TWO_PI);
+
+            // Make calculations for the meridian
+            double transit_time1 = celestialHoursToEarthTime * normalizeRadians(ra - lst);
+            double transit_time2 = celestialHoursToEarthTime * (normalizeRadians(ra - lst) - TWO_PI);
+            double transit_alt = Math.Asin(sinDec * sinLat + cosDec * cosLat);
+            transit_alt = refraction(transit_alt);
+
+            // Obtain the current event in time
+            double transit_time = transit_time1;
+            double jdToday = Math.Floor(jd_UT - 0.5) + 0.5;
+            double transitToday2 = Math.Floor(jd_UT + transit_time2 - 0.5) + 0.5;
+            // Obtain the transit time. Preference should be given to the closest event
+            // in time to the current calculation time
+            if (jdToday == transitToday2 && Math.Abs(transit_time2) < Math.Abs(transit_time1))
+                transit_time = transit_time2;
+            double transit = jd_UT + transit_time;
+
+            // Make calculations for rise and set
+            double rise = -1, set = -1;
+            if (Math.Abs(tmp) <= 1.0)
+            {
+                double ang_hor = Math.Abs(Math.Acos(tmp));
+                double rise_time1 = celestialHoursToEarthTime * normalizeRadians(ra - ang_hor - lst);
+                double set_time1 = celestialHoursToEarthTime * normalizeRadians(ra + ang_hor - lst);
+                double rise_time2 = celestialHoursToEarthTime * (normalizeRadians(ra - ang_hor - lst) - TWO_PI);
+                double set_time2 = celestialHoursToEarthTime * (normalizeRadians(ra + ang_hor - lst) - TWO_PI);
+
+                // Obtain the current events in time. Preference should be given to the closest event
+                // in time to the current calculation time (so that iteration in other method will converge)
+                double rise_time = rise_time1;
+                double riseToday2 = Math.Floor(jd_UT + rise_time2 - 0.5) + 0.5;
+                if (jdToday == riseToday2 && Math.Abs(rise_time2) < Math.Abs(rise_time1))
+                    rise_time = rise_time2;
+
+                double set_time = set_time1;
+                double setToday2 = Math.Floor(jd_UT + set_time2 - 0.5) + 0.5;
+                if (jdToday == setToday2 && Math.Abs(set_time2) < Math.Abs(set_time1))
+                    set_time = set_time2;
+                rise = jd_UT + rise_time;
+                set = jd_UT + set_time;
+            }
+
+            Ephemeris @out = new Ephemeris(azi, alt, rise, set, transit, transit_alt,
+                    normalizeRadians(ra), dec, dist, pos[0], pos[1], pos[3]);
+            return @out;
+        }
+
+        /**
+         * Corrects geometric elevation for refraction if it is greater than -3 degrees.
+         *
+         * @param alt Geometric elevation in radians.
+         * @return Apparent elevation.
+         */
+        private double refraction(double alt)
+        {
+            if (alt <= -3 * DEG_TO_RAD) return alt;
+
+            double altIn = alt;
+            int niter = 0;
+            do
+            {
+                double altOut = computeGeometricElevation(alt);
+                alt = altIn - (altOut - alt);
+                niter++;
+            } while (niter < 3);
+
+            return alt;
+        }
+
+        /**
+         * Compute geometric elevation from apparent elevation. Note ephemerides
+         * calculates geometric elevation, so an inversion is required, something
+         * achieved in method {@linkplain #refraction(double)} by iteration.
+         *
+         * @param alt Apparent elevation in radians.
+         * @return Geometric elevation in radians.
+         */
+        private double computeGeometricElevation(double alt)
+        {
+            double Ps = 1010; // Pressure in mb
+            double Ts = 10 + 273.15; // Temperature in K
+            double altDeg = alt * RAD_TO_DEG;
+
+            // Bennet 1982 formulae for optical wavelengths, do the job but not accurate close to horizon
+            // Yan 1996 formulae would be better but with much more lines of code
+            double r = DEG_TO_RAD * Math.Abs(Math.Tan(PI_OVER_TWO - (altDeg + 7.31 / (altDeg + 4.4)) * DEG_TO_RAD)) / 60.0;
+            double refr = r * (0.28 * Ps / Ts);
+            return Math.Min(alt - refr, PI_OVER_TWO);
+
+            /*
+            // Bennet formulae adapted to radio wavelenths. Use this for position in radio wavelengths
+            // Reference for some values: http://icts-yebes.oan.es/reports/doc/IT-OAN-2003-2.pdf (Yebes 40m radiotelescope)
+            double Hs = 20; // Humidity %
+            // Water vapor saturation pressure following Crane (1976), as in the ALMA memorandum
+            double esat = 6.105 * Math.exp(25.22 * (Ts - 273.15) / Ts) + Math.Pow(Ts / 273.15, -5.31);
+            double Pw = Hs * esat / 100.0;
+
+            double R0 = (16.01 / Ts) * (Ps - 0.072 * Pw + 4831 * Pw / Ts) * ARCSEC_TO_RAD;
+            double refr = R0 * Math.Abs(Math.Tan(PI_OVER_TWO - (altDeg + 5.9 / (altDeg + 2.5)) * DEG_TO_RAD));
+            return Math.Min(alt - refr, PI_OVER_TWO);
+            */
+        }
+
+        /**
+         * Sets the illumination phase field for the provided body.
+         * Sun position must be computed before calling this method.
+         *
+         * @param body The ephemeris object for this body.
+         */
+        protected void getIlluminationPhase(Ephemeris body)
+        {
+            double dlon = body.rightAscension - sun.rightAscension;
+            double cosElong = (Math.Sin(sun.declination) * Math.Sin(body.declination) +
+                    Math.Cos(sun.declination) * Math.Cos(body.declination) * Math.Cos(dlon));
+
+            double RE = sun.distance;
+            double RO = body.distance;
+            // Use elongation cosine as trick to solve the rectangle and get RP (distance body - sun)
+            double RP = Math.Sqrt(-(cosElong * 2.0 * RE * RO - RE * RE - RO * RO));
+
+            double DPH = ((RP * RP + RO * RO - RE * RE) / (2.0 * RP * RO));
+            body.illuminationPhase = 100 * (1.0 + DPH) * 0.5;
+        }
+
+        /**
+         * Transforms a common date into a Julian day number (counting days from Jan 1, 4713 B.C. at noon).
+         * Dates before October, 15, 1582 are assumed to be in the Julian calendar, after that the Gregorian one is used.
+         *
+         * @param year  Year.
+         * @param month Month.
+         * @param day   Day.
+         * @param h     Hour.
+         * @param m     Minute.
+         * @param s     Second.
+         * @return Julian day number.
+         * @throws Exception For an inexistent date.
+         */
+        /// <exception cref="Exception"></exception>
+        protected double toJulianDay(int year, int month, int day, int h, int m, int s)
+        {
+            // The conversion formulas are from Meeus, chapter 7.
+            bool julian = false; // Use Gregorian calendar
+            if (year < 1582 || (year == 1582 && month <= 10) || (year == 1582 && month == 10 && day < 15))
+                julian = true;
+            int D = day;
+            int M = month;
+            int Y = year;
+            if (M < 3)
+            {
+                Y--;
+                M += 12;
+            }
+            int A = Y / 100;
+            int B = julian ? 0 : 2 - A + A / 4;
+
+            double dayFraction = (h + (m + (s / 60.0)) / 60.0) / 24.0;
+            double jd = dayFraction + (int)(365.25D * (Y + 4716)) + (int)(30.6001 * (M + 1)) + D + B - 1524.5;
+
+            if (jd < 2299160.0 && jd >= 2299150.0)
+                throw new Exception("invalid julian day " + jd + ". This date does not exist.");
+
+            return jd;
+        }
+
+        /**
+         * Transforms a Julian day (rise/set/transit fields) to a common date.
+         *
+         * @param jd The Julian day.
+         * @return A set of integers: year, month, day, hour, minute, second.
+         * @throws Exception If the input date does not exists.
+         */
+        /// <exception cref="Exception"></exception>
+        protected static int[] getDate(double jd)
+        {
+            if (jd < 2299160.0 && jd >= 2299150.0)
+                throw new Exception("invalid julian day " + jd + ". This date does not exist.");
+
+            // The conversion formulas are from Meeus,
+            // Chapter 7.
+            double Z = Math.Floor(jd + 0.5);
+            double F = jd + 0.5 - Z;
+            double A = Z;
+            if (Z >= 2299161D)
+            {
+                int a = (int)((Z - 1867216.25) / 36524.25);
+                A += 1 + a - a / 4;
+            }
+            double B = A + 1524;
+            int C = (int)((B - 122.1) / 365.25);
+            int D = (int)(C * 365.25);
+            int E = (int)((B - D) / 30.6001);
+
+            double exactDay = F + B - D - (int)(30.6001 * E);
+            int day = (int)exactDay;
+            int month = (E < 14) ? E - 1 : E - 13;
+            int year = C - 4715;
+            if (month > 2) year--;
+            double h = ((exactDay - day) * SECONDS_PER_DAY) / 3600.0;
+
+            int hour = (int)h;
+            double m = (h - hour) * 60.0;
+            int minute = (int)m;
+            int second = (int)((m - minute) * 60.0);
+
+            return new int[] { year, month, day, hour, minute, second };
+        }
+
+        /**
+         * Returns a date as a string.
+         *
+         * @param jd The Julian day.
+         * @return The String.
+         * @throws Exception If the date does not exists.
+         */
+        /// <exception cref="Exception"></exception>
+        public static String getDateAsString(double jd)
+        {
+            if (jd == -1) return "NO RISE/SET/TRANSIT FOR THIS OBSERVER/DATE";
+
+            int[] date = getDate(jd);
+            String zyr = "", zmo = "", zh = "", zm = "", zs = "";
+            if (date[1] < 10) zyr = "0";
+            if (date[2] < 10) zmo = "0";
+            if (date[3] < 10) zh = "0";
+            if (date[4] < 10) zm = "0";
+            if (date[5] < 10) zs = "0";
+            return date[0] + "/" + zyr + date[1] + "/" + zmo + date[2] + " " + zh + date[3] + ":" + zm + date[4] + ":" + zs + date[5] + " UT";
+        }
+
+        /**
+         * Reduce an angle in radians to the range (0 - 2 Pi).
+         *
+         * @param r Value in radians.
+         * @return The reduced radians value.
+         */
+        protected static double normalizeRadians(double r)
+        {
+            if (r < 0 && r >= -TWO_PI) return r + TWO_PI;
+            if (r >= TWO_PI && r < 2 * TWO_PI) return r - TWO_PI;
+            if (r >= 0 && r < TWO_PI) return r;
+
+            r -= TWO_PI * Math.Floor(r / TWO_PI);
+            if (r < 0.0) r += TWO_PI;
+
+            return r;
+        }
+
+        /**
+         * Computes an accurate rise/set/transit time for a moving object.
+         *
+         * @param riseSetJD Start date for the event.
+         * @param index     Event identifier.
+         * @param niter     Maximum number of iterations.
+         * @param sun       True for the Sun.
+         * @return The Julian day in UT for the event, 1s accuracy.
+         */
+        private double obtainAccurateRiseSetTransit(double riseSetJD, EVENT index, int niter, bool sun)
+        {
+            double step = -1;
+            for (int i = 0; i < niter; i++)
+            {
+                if (riseSetJD == -1) return riseSetJD; // -1 means no rise/set from that location
+                setUTDate(riseSetJD);
+                Ephemeris @out = null;
+                if (sun)
+                {
+                    @out = doCalc(getSun());
+                }
+                else
+                {
+                    @out = doCalc(getMoon());
+                }
+
+                double val = @out.rise;
+                if (index == EVENT.SET) val = @out.set;
+                if (index == EVENT.TRANSIT) val = @out.transit;
+                step = Math.Abs(riseSetJD - val);
+                riseSetJD = val;
+                if (step <= 1.0 / SECONDS_PER_DAY) break; // convergency reached
+            }
+            if (step > 1.0 / SECONDS_PER_DAY)
+                return -1; // did not converge => without rise/set/transit in this date
+            return riseSetJD;
+        }
+
+
+        // ************
+
+
+        /**
+         * Returns the instant of a given moon phase.
+         *
+         * @param phase The phase.
+         * @return The instant of that phase, accuracy around 1 minute or better.
+         */
+        public double getMoonPhaseTime(MOONPHASE phase)
+        {
+            double accuracy = 10 / (30 * SECONDS_PER_DAY); // 10s / lunar cycle length in s => 10s accuracy
+            double refPhase = phase.phase;
+            double oldJD = jd_UT, oldMoonAge = moonAge;
+            while (true)
+            {
+                double age = normalizeRadians((getMoon()[0] - getSun()[0])) / TWO_PI - refPhase;
+                if (age < 0) age += 1;
+                if (age < accuracy || age > 1 - accuracy) break;
+                if (age < 0.5)
+                {
+                    jd_UT -= age;
+                }
+                else
+                {
+                    jd_UT += 1 - age;
+                }
+                setUTDate(jd_UT);
+            }
+            double @out = jd_UT;
+            setUTDate(oldJD);
+            moonAge = oldMoonAge;
+            return @out;
+        }
+
+        /**
+         * Returns the dates of the official (geocentric) Spring and Autumn equinoxes.
+         *
+         * @return Dates of equinoxes, accuracy around 1 minute.
+         * @throws Exception If an error occurs.
+         */
+        /// <exception cref="Exception"></exception>
+        public double[] getEquinoxes()
+        {
+            double jdOld = jd_UT;
+            double[] @out = new double[2];
+
+            double prec = 1.0 / 86400.0; // Output precision 1s, accuracy around 1 minute
+            int year = getDate(jd_UT)[0];
+
+            for (int i = 0; i < 2; i++)
+            {
+                int month = 3, day = 18;
+                if (i == 1) month = 9;
+                double jd = toJulianDay(year, month, day, 0, 0, 0);
+                setUTDate(jd);
+                double min = -1, minT = -1;
+                double stepDays = 0.25, lastDec = -1;
+                while (true)
+                {
+                    double decAbs = Math.Abs(doCalc(getSun(), true).declination);
+                    if (decAbs < min || min == -1)
+                    {
+                        min = decAbs;
+                        minT = jd;
+                    }
+                    if (decAbs > lastDec && lastDec >= 0)
+                    {
+                        if (Math.Abs(stepDays) < prec)
+                        {
+                            @out[i] = minT;
+                            break;
+                        }
+                        stepDays = -stepDays / 2;
+                    }
+                    lastDec = decAbs;
+                    jd += stepDays;
+                    setUTDate(jd);
+                }
+            }
+            setUTDate(jdOld);
+            return @out;
+        }
+
+        /**
+         * Returns the dates of the official (geocentric) Summer and Winter solstices.
+         *
+         * @return Dates of solstices, accuracy around 1 minute.
+         * @throws Exception If an error occurs.
+         */
+        /// <exception cref="Exception"></exception>
+        public double[] getSolstices()
+        {
+            double jdOld = jd_UT;
+            double[] @out = new double[2];
+
+            double prec = 1.0 / 86400.0; // Output precision 1s, accuracy around 1 minute
+            int year = getDate(jd_UT)[0];
+
+            for (int i = 0; i < 2; i++)
+            {
+                int month = 6, day = 18;
+                if (i == 1) month = 12;
+                double jd = toJulianDay(year, month, day, 0, 0, 0);
+                setUTDate(jd);
+                double max = -1, maxT = -1;
+                double stepDays = 0.25, lastDec = -1;
+                while (true)
+                {
+                    double decAbs = Math.Abs(doCalc(getSun(), true).declination);
+                    if (decAbs > max || max == -1)
+                    {
+                        max = decAbs;
+                        maxT = jd;
+                    }
+                    if (decAbs < lastDec && lastDec >= 0)
+                    {
+                        if (Math.Abs(stepDays) < prec)
+                        {
+                            @out[i] = maxT;
+                            break;
+                        }
+                        stepDays = -stepDays / 2;
+                    }
+                    lastDec = decAbs;
+                    jd += stepDays;
+                    setUTDate(jd);
+                }
+            }
+            setUTDate(jdOld);
+            return @out;
+        }
+
+        /**
+         * Returns the maximum/minimum elevation time for the Sun or the Moon.
+         *
+         * @param forSun   True for the Sun, false for the Moon.
+         * @param inferior True to get the minimum elevation time.
+         * @return The Julian day of the culmination instant, which is
+         * only slightly different than the transit.
+         */
+        public double getCulminationTime(bool forSun, bool inferior)
+        {
+            double jdOld = jd_UT;
+            double jd = forSun ? sun.transit : moon.transit;
+            if (inferior) jd += 0.5 * (jd > jdOld ? -1 : 1);
+            double startPrecSec = 20.0 / SECONDS_PER_DAY, endPrecSec = 0.25 / SECONDS_PER_DAY;
+            setUTDate(jd);
+            Ephemeris ephem = forSun ? doCalc(getSun()) : doCalc(getMoon());
+            double refAlt = ephem.elevation;
+
+            while (Math.Abs(startPrecSec) > endPrecSec)
+            {
+                jd += startPrecSec;
+                setUTDate(jd);
+                ephem = forSun ? doCalc(getSun()) : doCalc(getMoon());
+                if (ephem.elevation < refAlt && !inferior) startPrecSec *= -0.25;
+                if (ephem.elevation > refAlt && inferior) startPrecSec *= -0.25;
+                refAlt = ephem.elevation;
+            }
+
+            setUTDate(jdOld);
+            return jd;
+        }
+
+        /**
+         * Returns the instant when the Sun or the Moon reaches a given azimuth.
+         *
+         * @param forSun  True for the Sun, false for the Moon.
+         * @param azimuth The azimuth value to search for.
+         * @return The Julian day of the azimuth instant.
+         */
+        public double getAzimuthTime(bool forSun, double azimuth)
+        {
+            double jdOld = jd_UT;
+            double jd = forSun ? sun.transit : moon.transit;
+            double startPrecSec = 500.0 / SECONDS_PER_DAY, endPrecSec = 0.25 / SECONDS_PER_DAY;
+            setUTDate(jd);
+            Ephemeris ephem = forSun ? doCalc(getSun()) : doCalc(getMoon());
+            double refDif = Math.Abs(ephem.azimuth - azimuth);
+
+            while (Math.Abs(startPrecSec) > endPrecSec)
+            {
+                jd += startPrecSec;
+                setUTDate(jd);
+                ephem = forSun ? doCalc(getSun()) : doCalc(getMoon());
+                double dif = Math.Abs(ephem.azimuth - azimuth);
+                if (dif == 0) break;
+                if (dif > refDif) startPrecSec *= -0.25;
+                refDif = dif;
+            }
+
+            setUTDate(jdOld);
+            return jd;
+        }
+
+        /**
+         * Returns the orientation angles of the lunar disk figure. Illumination fraction
+         * is returned in the main program. Simplification of the method presented by
+         * Eckhardt, D. H., "Theory of the Libration of the Moon", Moon and planets 25, 3
+         * (1981), without the physical librations of the Moon. Accuracy around 0.5 deg
+         * for each value.
+         * Moon and Sun positions must be computed before calling this method.
+         *
+         * @return Optical libration in longitude, latitude, position angle of
+         * axis, bright limb angle, and paralactic angle.
+         */
+        public double[] getMoonDiskOrientationAngles()
+        {
+            double moonLon = moon.eclipticLongitude, moonLat = moon.eclipticLatitude,
+                    moonRA = moon.rightAscension, moonDEC = moon.declination;
+            double sunRA = sun.rightAscension, sunDEC = sun.declination;
+
+            // Obliquity of ecliptic
+            double eps = meanObliquity + nutObl;
+            // Moon's argument of latitude
+            double F = (93.2720993 + 483202.0175273 * t - 0.0034029 * t * t - t * t * t / 3526000.0 + t * t * t * t / 863310000.0) * DEG_TO_RAD;
+            // Moon's inclination
+            double I = 1.54242 * DEG_TO_RAD;
+            // Moon's mean ascending node longitude
+            double omega = (125.0445550 - 1934.1361849 * t + 0.0020762 * t * t + t * t * t / 467410.0 - t * t * t * t / 18999000.0) * DEG_TO_RAD;
+
+            double cosI = Math.Cos(I), sinI = Math.Sin(I);
+            double cosMoonLat = Math.Cos(moonLat), sinMoonLat = Math.Sin(moonLat);
+            double cosMoonDec = Math.Cos(moonDEC), sinMoonDec = Math.Sin(moonDEC);
+
+            // Obtain optical librations lp and bp
+            double W = moonLon - omega;
+            double sinA = Math.Sin(W) * cosMoonLat * cosI - sinMoonLat * sinI;
+            double cosA = Math.Cos(W) * cosMoonLat;
+            double A = Math.Atan2(sinA, cosA);
+            double lp = normalizeRadians(A - F);
+            double sinbp = -Math.Sin(W) * cosMoonLat * sinI - sinMoonLat * cosI;
+            double bp = Math.Asin(sinbp);
+
+            // Obtain position angle of axis p
+            double x = sinI * Math.Sin(omega);
+            double y = sinI * Math.Cos(omega) * Math.Cos(eps) - cosI * Math.Sin(eps);
+            double w = Math.Atan2(x, y);
+            double sinp = Hypotenuse(x, y) * Math.Cos(moonRA - w) / Math.Cos(bp);
+            double p = Math.Asin(sinp);
+
+            // Compute bright limb angle bl
+            double bl = (Math.PI + Math.Atan2(Math.Cos(sunDEC) * Math.Sin(moonRA - sunRA), Math.Cos(sunDEC) *
+                    sinMoonDec * Math.Cos(moonRA - sunRA) - Math.Sin(sunDEC) * cosMoonDec));
+
+            // Paralactic angle par
+            y = Math.Sin(lst - moonRA);
+            x = Math.Tan(obsLat) * cosMoonDec - sinMoonDec * Math.Cos(lst - moonRA);
+            double par = 0.0;
+            if (x != 0.0)
+            {
+                par = Math.Atan2(y, x);
+            }
+            else
+            {
+                par = (y / Math.Abs(y)) * PI_OVER_TWO;
+            }
+            return new double[] { lp, bp, p, bl, par };
+        }
+
+
+        /**
+         * Main test program.
+         *
+         * @param args Not used.
+         */
+        public static void TEST()
+        {
+            Console.WriteLine("SunMoonCalculator test run");
+
+            try
+            {
+                int year = 2020, month = 6, day = 9, h = 18, m = 0, s = 0;
+                double obsLon = -4 * DEG_TO_RAD, obsLat = 40 * DEG_TO_RAD;
+                int obsAlt = 0; // Altitude in meters
+                                //double obsLon = 25.7813 * DEG_TO_RAD, obsLat = 71.1696 * DEG_TO_RAD;
+
+                //int year = 2019, month = 4, day = 1, h = 6-3, m = 28, s = 52; // in UT !!!
+                //double obsLon = 40.64941 * DEG_TO_RAD, obsLat = 54.68653 * DEG_TO_RAD; // lon is negative to the west
+                SunMoonCalculator smc = new SunMoonCalculator(year, month, day, h, m, s, obsLon, obsLat, obsAlt);
+
+                smc.calcSunAndMoon();
+
+                String degSymbol = "\u00b0";
+                Console.WriteLine("Sun");
+                Console.WriteLine(" Az:       " + (float)(smc.sun.azimuth * RAD_TO_DEG) + degSymbol);
+                Console.WriteLine(" El:       " + (float)(smc.sun.elevation * RAD_TO_DEG) + degSymbol);
+                Console.WriteLine(" Dist:     " + (float)(smc.sun.distance) + " AU");
+                Console.WriteLine(" RA:       " + (float)(smc.sun.rightAscension * RAD_TO_DEG) + degSymbol);
+                Console.WriteLine(" DEC:      " + (float)(smc.sun.declination * RAD_TO_DEG) + degSymbol);
+                Console.WriteLine(" Ill:      " + (float)(smc.sun.illuminationPhase) + "%");
+                Console.WriteLine(" ang.R:    " + (float)(smc.sun.angularRadius * RAD_TO_DEG) + degSymbol);
+                Console.WriteLine(" Rise:     " + SunMoonCalculator.getDateAsString(smc.sun.rise));
+                Console.WriteLine(" Set:      " + SunMoonCalculator.getDateAsString(smc.sun.set));
+                Console.WriteLine(" Transit:  " + SunMoonCalculator.getDateAsString(smc.sun.transit) + " (elev. " + (float)(smc.sun.transitElevation * RAD_TO_DEG) + degSymbol + ")");
+                Console.WriteLine(" Az=+angR: " + SunMoonCalculator.getDateAsString(smc.getAzimuthTime(true, Math.PI + smc.sun.angularRadius)));
+                Console.WriteLine(" Max Elev: " + SunMoonCalculator.getDateAsString(smc.getCulminationTime(true, false)));
+                Console.WriteLine(" Az=0:     " + SunMoonCalculator.getDateAsString(smc.getAzimuthTime(true, 0)));
+                Console.WriteLine(" Min Elev: " + SunMoonCalculator.getDateAsString(smc.getCulminationTime(true, true)));
+                Console.WriteLine("Moon");
+                Console.WriteLine(" Az:       " + (float)(smc.moon.azimuth * RAD_TO_DEG) + degSymbol);
+                Console.WriteLine(" El:       " + (float)(smc.moon.elevation * RAD_TO_DEG) + degSymbol);
+                Console.WriteLine(" Dist:     " + (float)(smc.moon.distance * AU) + " km");
+                Console.WriteLine(" RA:       " + (float)(smc.moon.rightAscension * RAD_TO_DEG) + degSymbol);
+                Console.WriteLine(" DEC:      " + (float)(smc.moon.declination * RAD_TO_DEG) + degSymbol);
+                Console.WriteLine(" Ill:      " + (float)(smc.moon.illuminationPhase) + "%");
+                Console.WriteLine(" ang.R:    " + (float)(smc.moon.angularRadius * RAD_TO_DEG) + degSymbol);
+                Console.WriteLine(" Age:      " + (float)(smc.moonAge) + " days");
+                Console.WriteLine(" Rise:     " + SunMoonCalculator.getDateAsString(smc.moon.rise));
+                Console.WriteLine(" Set:      " + SunMoonCalculator.getDateAsString(smc.moon.set));
+                Console.WriteLine(" Transit:  " + SunMoonCalculator.getDateAsString(smc.moon.transit) + " (elev. " + (float)(smc.moon.transitElevation * RAD_TO_DEG) + degSymbol + ")");
+                Console.WriteLine(" Az=+angR: " + SunMoonCalculator.getDateAsString(smc.getAzimuthTime(false, Math.PI + smc.moon.angularRadius)));
+                Console.WriteLine(" Max Elev: " + SunMoonCalculator.getDateAsString(smc.getCulminationTime(false, false)));
+                Console.WriteLine(" Az=0:     " + SunMoonCalculator.getDateAsString(smc.getAzimuthTime(false, 0)));
+                Console.WriteLine(" Min Elev: " + SunMoonCalculator.getDateAsString(smc.getCulminationTime(false, true)));
+
+                smc.setTwilight(TWILIGHT.ASTRONOMICAL);
+                smc.calcSunAndMoon();
+
+                Console.WriteLine("");
+                Console.WriteLine("Astronomical twilights:");
+                Console.WriteLine("Sun");
+                Console.WriteLine(" Rise:     " + SunMoonCalculator.getDateAsString(smc.sun.rise));
+                Console.WriteLine(" Set:      " + SunMoonCalculator.getDateAsString(smc.sun.set));
+                Console.WriteLine("Moon");
+                Console.WriteLine(" Rise:     " + SunMoonCalculator.getDateAsString(smc.moon.rise));
+                Console.WriteLine(" Set:      " + SunMoonCalculator.getDateAsString(smc.moon.set));
+
+                Console.WriteLine("");
+                Console.WriteLine("Closest Moon phases:");
+                for (int i = 0; i < MOONPHASE.VALUES.Count; i++)
+                {
+                    MOONPHASE mp = MOONPHASE.VALUES[i];
+                    Console.WriteLine(" " + mp.phaseName + "  " + SunMoonCalculator.getDateAsString(smc.getMoonPhaseTime(mp)));
+                }
+
+                double[] equinox = smc.getEquinoxes();
+                double[] solstices = smc.getSolstices();
+                Console.WriteLine("");
+                Console.WriteLine("Equinoxes and solstices:");
+                Console.WriteLine(" Spring equinox:    " + SunMoonCalculator.getDateAsString(equinox[0]));
+                Console.WriteLine(" Autumn equinox:    " + SunMoonCalculator.getDateAsString(equinox[1]));
+                Console.WriteLine(" Summer solstice:   " + SunMoonCalculator.getDateAsString(solstices[0]));
+                Console.WriteLine(" Winter solstice:   " + SunMoonCalculator.getDateAsString(solstices[1]));
+
+                // Expected accuracy over 1800 - 2200:
+                // - Sun: 0.001 deg in RA/DEC, 0.003 deg or 10 arcsec in Az/El.
+                //        <1s in rise/set/transit times. 1 min in Equinoxes/Solstices
+                //        Can be used over 6 millenia around year 2000 with a similar accuracy.
+                // - Mon: 0.005 deg or better. 30 km in distance
+                //        2s or better in rise/set/transit times. 1 minute in lunar phases.
+                //        Can be used between 1000 A.D. - 3000 A.D. with an accuracy around 0.1 deg.
+            }
+            catch (Exception exc)
+            {
+                Console.WriteLine(exc);
+            }
+        }
+
+        private static double Hypotenuse(double a, double b)
+        {
+            return Math.Sqrt(Math.Pow(a, 2) + Math.Pow(b, 2));
+        }
+    }
+}

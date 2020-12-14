@@ -1,4 +1,5 @@
 ﻿using SimpleWeather.Location;
+using SimpleWeather.SMC;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
@@ -265,7 +266,10 @@ namespace SimpleWeather.NWS
             weather.update_time = weather.update_time.ToOffset(offset);
 
             // NWS does not provide astrodata; calculate this ourselves (using their calculator)
-            weather.astronomy = await new SolCalcAstroProvider().GetAstronomyData(location, weather.update_time);
+            var solCalcData = await new SolCalcAstroProvider().GetAstronomyData(location, weather.update_time);
+            weather.astronomy = await new SunMoonCalcProvider().GetAstronomyData(location, weather.update_time);
+            weather.astronomy.sunrise = solCalcData.sunrise;
+            weather.astronomy.sunset = solCalcData.sunset;
 
             return weather;
         }

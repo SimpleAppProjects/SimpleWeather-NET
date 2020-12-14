@@ -1,5 +1,6 @@
 ﻿using SimpleWeather.Keys;
 using SimpleWeather.Location;
+using SimpleWeather.SMC;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
@@ -176,6 +177,12 @@ namespace SimpleWeather.OpenWeather
             }
             weather.astronomy.sunrise = weather.astronomy.sunrise.Add(offset);
             weather.astronomy.sunset = weather.astronomy.sunset.Add(offset);
+
+            var old = weather.astronomy;
+            var newAstro = await new SunMoonCalcProvider().GetAstronomyData(location, weather.update_time);
+            newAstro.sunrise = old.sunrise;
+            newAstro.sunset = old.sunset;
+            weather.astronomy = newAstro;
 
             return weather;
         }

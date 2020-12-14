@@ -63,6 +63,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\OpenWeatherMapProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SimpleLibrary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NWS\SolCalcAstroProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SMC\SunMoonCalcProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SMC\SunMoonCalculator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SQLiteNet\SQLiteNetPCLExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TZDB\ITimeZoneProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TZDB\TimeZoneProvider.cs" />
@@ -115,8 +117,5 @@
     <Compile Include="$(MSBuildThisFileDirectory)YahooWeather\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Keys\YahooKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)YahooWeather\YahooWeatherProvider.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)SMC\" />
   </ItemGroup>
 </Project>

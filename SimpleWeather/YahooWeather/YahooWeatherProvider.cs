@@ -1,4 +1,5 @@
 ﻿using SimpleWeather.Location;
+using SimpleWeather.SMC;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
@@ -158,6 +159,12 @@ namespace SimpleWeather.WeatherYahoo
             var weather = await base.GetWeather(location);
 
             weather.update_time = weather.update_time.ToOffset(location.tz_offset);
+
+            var old = weather.astronomy;
+            var newAstro = await new SunMoonCalcProvider().GetAstronomyData(location, weather.update_time);
+            newAstro.sunrise = old.sunrise;
+            newAstro.sunset = old.sunset;
+            weather.astronomy = newAstro;
 
             return weather;
         }

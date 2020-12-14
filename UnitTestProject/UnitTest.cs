@@ -6,6 +6,7 @@ using SimpleWeather.HERE;
 using SimpleWeather.Keys;
 using SimpleWeather.Location;
 using SimpleWeather.NWS;
+using SimpleWeather.SMC;
 using SimpleWeather.TZDB;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
@@ -194,6 +195,31 @@ namespace UnitTestProject
             var str = "Siln&#253; morsk&#253; pr&#237;liv o&#269;ak.";
             var uncoded = str.UnescapeUnicode();
             Assert.AreNotEqual(str, uncoded);
+        }
+
+        [TestMethod]
+        public void SimpleAstroTest()
+        {
+            var date = DateTimeOffset.Now;
+            var tz_long = "America/Los_Angeles";
+            var locationData = new LocationData()
+            {
+                latitude = 47.6721646,
+                longitude = -122.1706614,
+                tz_long = tz_long
+            };
+            SimpleWeather.WeatherData.Astronomy astro = new SunMoonCalcProvider().GetAstronomyData(locationData, date).ConfigureAwait(false).GetAwaiter().GetResult();
+
+            Console.WriteLine("SMC");
+            Console.WriteLine(String.Format(
+                "Sunrise: {0}; Sunset: {1}; Moonrise: {2}; Moonset: {3}",
+                astro.sunrise, astro.sunset, astro.moonrise, astro.moonset));
+            if (astro.moonphase != null)
+            {
+                Console.WriteLine(String.Format("Moonphase: {0}", astro.moonphase.phase));
+            }
+
+            Assert.IsTrue(astro.sunrise != DateTime.MinValue && astro.sunset != DateTime.MinValue && astro.moonrise != DateTime.MinValue && astro.moonset != DateTime.MinValue);
         }
     }
 }
