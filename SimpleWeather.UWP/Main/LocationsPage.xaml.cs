@@ -439,7 +439,7 @@ namespace SimpleWeather.UWP.Main
                 // Reload if panel queries dont match
                 if (Settings.FollowGPS)
                 {
-                    if (!reload && (gpsPanelViewModel != null && locations[0]?.query != gpsPanelViewModel?.LocationData?.query))
+                    if (!reload && (gpsPanelViewModel != null && !Equals(locations[0]?.query, gpsPanelViewModel?.LocationData?.query)))
                         reload = true;
                 }
 

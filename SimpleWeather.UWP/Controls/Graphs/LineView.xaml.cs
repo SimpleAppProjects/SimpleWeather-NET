@@ -607,7 +607,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
                         if (DrawDataLabels)
                         {
                             // Draw top label
-                            float x = sideLineLength + backgroundGridWidth * i;
+                            float x = dot.X;
                             float y = dot.Y - bottomTextHeight;
 
                             using (var txtLayout = new CanvasTextLayout(drawingSession, entry.YLabel, BottomTextFormat, 0, 0))
@@ -643,7 +643,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
                             if (DrawDataLabels)
                             {
                                 // Draw top label
-                                float x = sideLineLength + backgroundGridWidth * (i + 1);
+                                float x = nextDot.X;
                                 float y = nextDot.Y - bottomTextHeight;
 
                                 using (var txtLayout = new CanvasTextLayout(drawingSession, nextEntry.YLabel, BottomTextFormat, 0, 0))
@@ -756,7 +756,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
             {
                 for (int i = 0; i < dataLabels.Count; i++)
                 {
-                    float x = sideLineLength + backgroundGridWidth * i;
+                    float x = xCoordinateList[i];
                     float y = ViewHeight - bottomTextDescent;
                     XLabelData xData = dataLabels[i];
 
