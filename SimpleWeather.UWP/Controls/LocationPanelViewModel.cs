@@ -77,7 +77,7 @@ namespace SimpleWeather.Controls
 
         private readonly WeatherManager wm;
         private Weather weather;
-        private string tempUnit;
+        private string unitCode;
 
         public LocationPanelViewModel()
         {
@@ -139,7 +139,7 @@ namespace SimpleWeather.Controls
                     // Refresh locale/unit dependent values
                     RefreshView();
                 }
-                else if (!Equals(tempUnit, Settings.Unit))
+                else if (!Equals(unitCode, Settings.UnitString))
                 {
                     RefreshView();
                 }
@@ -148,15 +148,16 @@ namespace SimpleWeather.Controls
 
         private void RefreshView()
         {
+            var isFahrenheit = Units.FAHRENHEIT.Equals(Settings.TemperatureUnit);
             var culture = CultureUtils.UserCulture;
             var provider = WeatherManager.GetProvider(weather.source);
 
-            tempUnit = Settings.Unit;
+            unitCode = Settings.TemperatureUnit;
 
             if (weather.condition.temp_f.HasValue && weather.condition.temp_f != weather.condition.temp_c)
             {
-                var temp = Settings.IsFahrenheit ? Math.Round(weather.condition.temp_f.Value) : Math.Round(weather.condition.temp_c.Value);
-                var unitTemp = Settings.IsFahrenheit ? WeatherIcons.FAHRENHEIT : WeatherIcons.CELSIUS;
+                var temp = isFahrenheit ? Math.Round(weather.condition.temp_f.Value) : Math.Round(weather.condition.temp_c.Value);
+                var unitTemp = isFahrenheit ? WeatherIcons.FAHRENHEIT : WeatherIcons.CELSIUS;
 
                 CurrTemp = String.Format(culture, "{0}{1}", temp, unitTemp);
             }
@@ -169,7 +170,7 @@ namespace SimpleWeather.Controls
 
             if (weather.condition.high_f.HasValue && weather.condition.high_f != weather.condition.high_c)
             {
-                var temp = Settings.IsFahrenheit ? Math.Round(weather.condition.high_f.Value) : Math.Round(weather.condition.high_c.Value);
+                var temp = isFahrenheit ? Math.Round(weather.condition.high_f.Value) : Math.Round(weather.condition.high_c.Value);
                 HiTemp = String.Format(culture, "{0}°", temp);
             }
             else
@@ -179,7 +180,7 @@ namespace SimpleWeather.Controls
 
             if (weather.condition.low_f.HasValue && weather.condition.low_f != weather.condition.low_c)
             {
-                var temp = Settings.IsFahrenheit ? Math.Round(weather.condition.low_f.Value) : Math.Round(weather.condition.low_c.Value);
+                var temp = isFahrenheit ? Math.Round(weather.condition.low_f.Value) : Math.Round(weather.condition.low_c.Value);
                 LoTemp = String.Format(culture, "{0}°", temp);
             }
             else
@@ -191,8 +192,26 @@ namespace SimpleWeather.Controls
             if (weather.condition.wind_mph.HasValue && weather.condition.wind_mph >= 0 &&
                 weather.condition.wind_degrees.HasValue && weather.condition.wind_degrees >= 0)
             {
-                var speedVal = Settings.IsFahrenheit ? Math.Round(weather.condition.wind_mph.Value) : Math.Round(weather.condition.wind_kph.Value);
-                var speedUnit = WeatherUtils.SpeedUnit;
+                string unit = Settings.SpeedUnit;
+                int speedVal;
+                string speedUnit;
+
+                switch (unit)
+                {
+                    case Units.MILES_PER_HOUR:
+                    default:
+                        speedVal = (int)Math.Round(weather.condition.wind_mph.Value);
+                        speedUnit = SimpleLibrary.ResLoader.GetString("/Units/unit_mph");
+                        break;
+                    case Units.KILOMETERS_PER_HOUR:
+                        speedVal = (int)Math.Round(weather.condition.wind_kph.Value);
+                        speedUnit = SimpleLibrary.ResLoader.GetString("/Units/unit_kph");
+                        break;
+                    case Units.METERS_PER_SECOND:
+                        speedVal = (int)Math.Round(ConversionMethods.KphToMSec(weather.condition.wind_kph.Value));
+                        speedUnit = SimpleLibrary.ResLoader.GetString("/Units/unit_msec");
+                        break;
+                }
 
                 WindSpeed = String.Format(culture, "{0} {1}", speedVal, speedUnit);
                 WindDirection = weather.condition.wind_degrees.Value + 180;

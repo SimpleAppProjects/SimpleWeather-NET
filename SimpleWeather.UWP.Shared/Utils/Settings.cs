@@ -52,24 +52,84 @@ namespace SimpleWeather.Utils
             localSettings.CreateContainer("version", ApplicationDataCreateDisposition.Always);
         }
 
+        // Units
         private static string GetTempUnit()
         {
-            if (!localSettings.Values.ContainsKey(KEY_UNITS) || localSettings.Values[KEY_UNITS] == null)
+            if (localSettings.Values.TryGetValue(KEY_TEMPUNIT, out object value))
             {
-                return Fahrenheit;
+                return value.ToString();
             }
-            else if (localSettings.Values[KEY_UNITS].Equals(Celsius))
-                return Celsius;
+            else if (localSettings.Values.TryGetValue(KEY_UNITS, out value))
+            {
+                return value.ToString();
+            }
 
-            return Fahrenheit;
+            return Units.FAHRENHEIT;
         }
 
         private static void SetTempUnit(string value)
         {
-            if (value == Celsius)
-                localSettings.Values[KEY_UNITS] = Celsius;
-            else
-                localSettings.Values[KEY_UNITS] = Fahrenheit;
+            localSettings.Values[KEY_TEMPUNIT] = value;
+        }
+
+        private static string GetSpeedUnit()
+        {
+            if (localSettings.Values.TryGetValue(KEY_SPEEDUNIT, out object value))
+            {
+                return value.ToString();
+            }
+
+            return Units.MILES_PER_HOUR;
+        }
+
+        private static void SetSpeedUnit(string value)
+        {
+            localSettings.Values[KEY_SPEEDUNIT] = value;
+        }
+
+        private static string GetPressureUnit()
+        {
+            if (localSettings.Values.TryGetValue(KEY_PRESSUREUNIT, out object value))
+            {
+                return value.ToString();
+            }
+
+            return Units.INHG;
+        }
+
+        private static void SetPressureUnit(string value)
+        {
+            localSettings.Values[KEY_PRESSUREUNIT] = value;
+        }
+
+        private static string GetDistanceUnit()
+        {
+            if (localSettings.Values.TryGetValue(KEY_DISTANCEUNIT, out object value))
+            {
+                return value.ToString();
+            }
+
+            return Units.MILES;
+        }
+
+        private static void SetDistanceUnit(string value)
+        {
+            localSettings.Values[KEY_DISTANCEUNIT] = value;
+        }
+
+        private static string GetPrecipitationUnit()
+        {
+            if (localSettings.Values.TryGetValue(KEY_PRECIPITATIONUNIT, out object value))
+            {
+                return value.ToString();
+            }
+
+            return Units.INCHES;
+        }
+
+        private static void SetPrecipitationUnit(string value)
+        {
+            localSettings.Values[KEY_PRECIPITATIONUNIT] = value;
         }
 
         private static bool IsWeatherLoaded()

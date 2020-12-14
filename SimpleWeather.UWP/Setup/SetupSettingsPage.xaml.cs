@@ -78,16 +78,16 @@ namespace SimpleWeather.UWP.Setup
 
         private void Fahrenheit_Checked(object sender, RoutedEventArgs e)
         {
-            if (CoreApplication.Properties.ContainsKey(Settings.KEY_UNITS))
-                CoreApplication.Properties.Remove(Settings.KEY_UNITS);
-            CoreApplication.Properties.Add(Settings.KEY_UNITS, Settings.Fahrenheit);
+            if (CoreApplication.Properties.ContainsKey(Settings.KEY_TEMPUNIT))
+                CoreApplication.Properties.Remove(Settings.KEY_TEMPUNIT);
+            CoreApplication.Properties.Add(Settings.KEY_TEMPUNIT, Units.FAHRENHEIT);
         }
 
         private void Celsius_Checked(object sender, RoutedEventArgs e)
         {
-            if (CoreApplication.Properties.ContainsKey(Settings.KEY_UNITS))
-                CoreApplication.Properties.Remove(Settings.KEY_UNITS);
-            CoreApplication.Properties.Add(Settings.KEY_UNITS, Settings.Celsius);
+            if (CoreApplication.Properties.ContainsKey(Settings.KEY_TEMPUNIT))
+                CoreApplication.Properties.Remove(Settings.KEY_TEMPUNIT);
+            CoreApplication.Properties.Add(Settings.KEY_TEMPUNIT, Units.CELSIUS);
         }
 
         public bool CanContinue()

@@ -37,13 +37,13 @@
                         x:Name="Fahrenheit"
                         x:Uid="Pref_UnitFahrenheit"
                         Margin="0,0,10,0"
-                        Content="Fahrenheit (Imperial)"
+                        Content="Fahrenheit"
                         GroupName="Unit" />
                     <RadioButton
                         x:Name="Celsius"
                         x:Uid="Pref_UnitCelsius"
                         Margin="10,0,0,0"
-                        Content="Celsius (Metric)"
+                        Content="Celsius"
                         GroupName="Unit" />
                 </StackPanel>
                 <ComboBox

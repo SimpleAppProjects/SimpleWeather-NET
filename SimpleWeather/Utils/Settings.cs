@@ -6,6 +6,7 @@ using SQLiteNetExtensions.Extensions.TextBlob;
 using SQLiteNetExtensionsAsync.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -17,11 +18,9 @@ namespace SimpleWeather.Utils
         // Settings Members
         public static bool WeatherLoaded { get { return IsWeatherLoaded(); } set { SetWeatherLoaded(value); } }
         public static bool OnBoardComplete { get { return IsOnBoardingComplete(); } set { SetOnBoardingComplete(value); } }
-        public static string Unit { get { return GetTempUnit(); } set { SetTempUnit(value); } }
         public static string API { get { return GetAPI(); } set { SetAPI(value); } }
         public static string API_KEY { get { return GetAPIKEY(); } set { SetAPIKEY(value); } }
         public static bool KeyVerified { get { return IsKeyVerified(); } set { SetKeyVerified(value); } }
-        public static bool IsFahrenheit { get { return Unit == Fahrenheit; } }
         public static bool FollowGPS { get { return UseFollowGPS(); } set { SetFollowGPS(value); } }
         private static string LastGPSLocation { get { return GetLastGPSLocation(); } set { SetLastGPSLocation(value); } }
         public static DateTime UpdateTime { get { return GetUpdateTime(); } set { SetUpdateTime(value); } }
@@ -29,6 +28,23 @@ namespace SimpleWeather.Utils
         public static bool ShowAlerts { get { return UseAlerts(); } set { SetAlerts(value); } }
         public static bool UsePersonalKey { get { return IsPersonalKey(); } set { SetPersonalKey(value); } }
         public static int VersionCode { get { return GetVersionCode(); } set { SetVersionCode(value); } }
+
+        // Units
+        public static string TemperatureUnit { get { return GetTempUnit(); } set { SetTempUnit(value); } }
+        public static string SpeedUnit { get { return GetSpeedUnit(); } set { SetSpeedUnit(value); } }
+        public static string PressureUnit { get { return GetPressureUnit(); } set { SetPressureUnit(value); } }
+        public static string DistanceUnit { get { return GetDistanceUnit(); } set { SetDistanceUnit(value); } }
+        public static string PrecipitationUnit { get { return GetPrecipitationUnit(); } set { SetPrecipitationUnit(value); } }
+        public static string UnitString { get { return string.Format(CultureInfo.InvariantCulture, "{0};{1};{2};{3};{4}", TemperatureUnit, SpeedUnit, PressureUnit, DistanceUnit, PrecipitationUnit); } }
+        public static void SetDefaultUnits(string unit)
+        {
+            bool isFahrenheit = Units.FAHRENHEIT.Equals(unit, StringComparison.InvariantCulture);
+            TemperatureUnit = unit;
+            SpeedUnit = isFahrenheit ? Units.MILES_PER_HOUR : Units.KILOMETERS_PER_HOUR;
+            PressureUnit = isFahrenheit ? Units.INHG : Units.MILLIBAR;
+            DistanceUnit = isFahrenheit ? Units.MILES : Units.KILOMETERS;
+            PrecipitationUnit = isFahrenheit ? Units.INCHES : Units.MILLIMETERS;
+        }
 
         // Database
         internal static int DBVersion { get { return GetDBVersion(); } set { SetDBVersion(value); } }
@@ -42,8 +58,6 @@ namespace SimpleWeather.Utils
         public const int MAX_LOCATIONS = 16;
 
         // Units
-        public const string Fahrenheit = "F";
-        public const string Celsius = "C";
         private const string DEFAULT_UPDATE_INTERVAL = "60"; // 60 minutes (1hr)
         public const int DefaultInterval = 120;
         public const int READ_TIMEOUT = 10000; // 10s
@@ -52,8 +66,8 @@ namespace SimpleWeather.Utils
         private const string KEY_API = "API";
         private const string KEY_APIKEY = "API_KEY";
         private const string KEY_APIKEY_VERIFIED = "API_KEY_VERIFIED";
-        public const string KEY_USECELSIUS = "key_usecelsius";
-        public const string KEY_UNITS = "Units";
+        private const string KEY_USECELSIUS = "key_usecelsius";
+        private const string KEY_UNITS = "Units";
         private const string KEY_WEATHERLOADED = "weatherLoaded";
         private const string KEY_FOLLOWGPS = "key_followgps";
         private const string KEY_LASTGPSLOCATION = "key_lastgpslocation";
@@ -65,6 +79,11 @@ namespace SimpleWeather.Utils
         private const string KEY_CURRENTVERSION = "key_currentversion";
         private const string KEY_ONBOARDINGCOMPLETE = "key_onboardcomplete";
         private const string KEY_USERTHEME = "key_usertheme";
+        public const string KEY_TEMPUNIT = "key_tempunit";
+        public const string KEY_SPEEDUNIT = "key_speedunit";
+        public const string KEY_DISTANCEUNIT = "key_distanceunit";
+        public const string KEY_PRECIPITATIONUNIT = "key_precipitationunit";
+        public const string KEY_PRESSUREUNIT = "key_pressureunit";
 
         // Weather Data
         private static LocationData lastGPSLocData = new LocationData();

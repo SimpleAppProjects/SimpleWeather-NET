@@ -153,4 +153,8 @@
     <value>km</value>
     <comment>Pressure: kilometers</comment>
   </data>
+  <data name="unit_msec" xml:space="preserve">
+    <value>m/s</value>
+    <comment>Meters per second</comment>
+  </data>
 </root>

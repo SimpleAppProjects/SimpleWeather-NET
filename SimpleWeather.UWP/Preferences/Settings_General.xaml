@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:SimpleWeather.UWP.Preferences"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     Background="{ThemeResource RegionBrush}"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
@@ -22,55 +23,11 @@
                     Style="{StaticResource SettingTitleStyle}"
                     Text="General Settings" />
                 <TextBlock
-                    x:Uid="Pref_SummaryUnits"
-                    Style="{StaticResource PrefTitleStyle}"
-                    Text="Display units in:" />
-                <StackPanel Padding="10,5" Orientation="Horizontal">
-                    <RadioButton
-                        x:Name="Fahrenheit"
-                        x:Uid="Pref_UnitFahrenheit"
-                        Margin="0,0,10,0"
-                        Content="Fahrenheit (Imperial)"
-                        GroupName="Unit" />
-                    <RadioButton
-                        x:Name="Celsius"
-                        x:Uid="Pref_UnitCelsius"
-                        Margin="10,0,0,0"
-                        Content="Celsius (Metric)"
-                        GroupName="Unit" />
-                </StackPanel>
-                <Rectangle
-                    Height="1"
-                    Margin="0,7.5"
-                    Fill="LightGray" />
-                <TextBlock
                     x:Uid="Pref_SummaryFollowGPS"
                     Style="{StaticResource PrefTitleStyle}"
                     Text="Follow current location via GPS" />
                 <StackPanel Padding="10,5" Orientation="Horizontal">
                     <ToggleSwitch x:Name="FollowGPS" />
-                </StackPanel>
-                <Rectangle
-                    Height="1"
-                    Margin="0,7.5"
-                    Fill="LightGray" />
-                <TextBlock
-                    x:Uid="Pref_UserTheme"
-                    Style="{StaticResource PrefTitleStyle}"
-                    Text="Choose a theme" />
-                <StackPanel Padding="10,5" Orientation="Horizontal">
-                    <RadioButton
-                        x:Name="LightMode"
-                        x:Uid="Pref_LightMode"
-                        Content="Light" />
-                    <RadioButton
-                        x:Name="DarkMode"
-                        x:Uid="Pref_DarkMode"
-                        Content="Dark" />
-                    <RadioButton
-                        x:Name="SystemMode"
-                        x:Uid="Pref_SystemMode"
-                        Content="System Theme" />
                 </StackPanel>
                 <Rectangle
                     Height="1"
@@ -94,6 +51,28 @@
                             Text="Update Frequency" />
                     </ComboBox.Header>
                 </ComboBox>
+                <Rectangle
+                    Height="1"
+                    Margin="0,7.5"
+                    Fill="LightGray" />
+                <TextBlock
+                    x:Uid="Pref_UserTheme"
+                    Style="{StaticResource PrefTitleStyle}"
+                    Text="Choose a theme" />
+                <StackPanel Padding="10,5" Orientation="Horizontal">
+                    <RadioButton
+                        x:Name="LightMode"
+                        x:Uid="Pref_LightMode"
+                        Content="Light" />
+                    <RadioButton
+                        x:Name="DarkMode"
+                        x:Uid="Pref_DarkMode"
+                        Content="Dark" />
+                    <RadioButton
+                        x:Name="SystemMode"
+                        x:Uid="Pref_SystemMode"
+                        Content="System Theme" />
+                </StackPanel>
                 <Rectangle
                     Height="1"
                     Margin="0,7.5"

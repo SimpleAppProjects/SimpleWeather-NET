@@ -47,8 +47,6 @@ namespace SimpleWeather.UWP.Preferences
             RestoreSettings();
 
             // Event Listeners
-            Fahrenheit.Checked += Fahrenheit_Checked;
-            Celsius.Checked += Celsius_Checked;
             FollowGPS.Toggled += FollowGPS_Toggled;
             AlertSwitch.Toggled += AlertSwitch_Toggled;
             APIComboBox.SelectionChanged += APIComboBox_SelectionChanged;
@@ -87,10 +85,6 @@ namespace SimpleWeather.UWP.Preferences
 
         private void RestoreSettings()
         {
-            // Temperature
-            Fahrenheit.IsChecked = Settings.IsFahrenheit;
-            Celsius.IsChecked = !Settings.IsFahrenheit;
-
             // Location
             FollowGPS.IsOn = Settings.FollowGPS;
 
@@ -465,22 +459,6 @@ namespace SimpleWeather.UWP.Preferences
 
             // Re-register background task
             Task.Run(WeatherUpdateBackgroundTask.RegisterBackgroundTask);
-        }
-
-        private void Fahrenheit_Checked(object sender, RoutedEventArgs e)
-        {
-            AnalyticsLogger.LogEvent("Settings_General: Fahrenheit_Checked");
-
-            Settings.Unit = Settings.Fahrenheit;
-            RequestAppTrigger = true;
-        }
-
-        private void Celsius_Checked(object sender, RoutedEventArgs e)
-        {
-            AnalyticsLogger.LogEvent("Settings_General: Celsius_Checked");
-
-            Settings.Unit = Settings.Celsius;
-            RequestAppTrigger = true;
         }
 
         private async void FollowGPS_Toggled(object sender, RoutedEventArgs e)

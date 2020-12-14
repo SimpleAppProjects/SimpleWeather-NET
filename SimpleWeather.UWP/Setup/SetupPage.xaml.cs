@@ -93,23 +93,20 @@ namespace SimpleWeather.UWP.Setup
             if (AppFrame.SourcePageType == Pages.Last())
             {
                 // Retrieve setiings
-                if (CoreApplication.Properties.ContainsKey(Settings.KEY_USEALERTS))
+                if (CoreApplication.Properties.TryGetValue(Settings.KEY_USEALERTS, out object alertsValue))
                 {
-                    CoreApplication.Properties.TryGetValue(Settings.KEY_USEALERTS, out object value);
-                    Settings.ShowAlerts = (bool)value;
+                    Settings.ShowAlerts = (bool)alertsValue;
                     CoreApplication.Properties.Remove(Settings.KEY_USEALERTS);
                 }
-                if (CoreApplication.Properties.ContainsKey(Settings.KEY_REFRESHINTERVAL))
+                if (CoreApplication.Properties.TryGetValue(Settings.KEY_REFRESHINTERVAL, out object refreshValue))
                 {
-                    CoreApplication.Properties.TryGetValue(Settings.KEY_REFRESHINTERVAL, out object value);
-                    Settings.RefreshInterval = (int)value;
+                    Settings.RefreshInterval = (int)refreshValue;
                     CoreApplication.Properties.Remove(Settings.KEY_REFRESHINTERVAL);
                 }
-                if (CoreApplication.Properties.ContainsKey(Settings.KEY_UNITS))
+                if (CoreApplication.Properties.TryGetValue(Settings.KEY_TEMPUNIT, out object tempValue))
                 {
-                    CoreApplication.Properties.TryGetValue(Settings.KEY_UNITS, out object value);
-                    Settings.Unit = (string)value;
-                    CoreApplication.Properties.Remove(Settings.KEY_UNITS);
+                    Settings.SetDefaultUnits((string)tempValue);
+                    CoreApplication.Properties.Remove(Settings.KEY_TEMPUNIT);
                 }
 
                 Settings.OnBoardComplete = true;

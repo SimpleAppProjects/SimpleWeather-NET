@@ -23,7 +23,7 @@ namespace SimpleWeather.Controls
         private CoreDispatcher Dispatcher;
 
         private LocationData locationData;
-        private string tempUnit;
+        private string unitCode;
 
         private IncrementalLoadingCollection<ForecastSource, ForecastItemViewModel> forecasts;
         private IncrementalLoadingCollection<HourlyForecastSource, HourlyForecastItemViewModel> hourlyForecasts;
@@ -66,7 +66,7 @@ namespace SimpleWeather.Controls
                     // Clone location data
                     this.locationData = new LocationData(new LocationQueryViewModel(location));
 
-                    this.tempUnit = Settings.Unit;
+                    this.unitCode = Settings.UnitString;
 
                     // Update forecasts from database
                     ResetForecasts();
@@ -74,9 +74,9 @@ namespace SimpleWeather.Controls
 
                     Settings.GetWeatherDBConnection().GetConnection().TableChanged += ForecastsViewModel_TableChanged;
                 }
-                else if (!Equals(tempUnit, Settings.Unit))
+                else if (!Equals(unitCode, Settings.UnitString))
                 {
-                    this.tempUnit = Settings.Unit;
+                    this.unitCode = Settings.UnitString;
 
                     RefreshForecasts();
                     RefreshHourlyForecasts();

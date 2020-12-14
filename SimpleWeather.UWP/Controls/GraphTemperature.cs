@@ -7,11 +7,5 @@ namespace SimpleWeather.UWP.Controls
     {
         public YEntryData HiTempData { get; set; }
         public YEntryData LoTempData { get; set; }
-        public string TempUnit { get; }
-
-        internal GraphTemperature(bool IsFahrenheit)
-        {
-            TempUnit = IsFahrenheit ? Settings.Fahrenheit : Settings.Celsius;
-        }
     }
 }

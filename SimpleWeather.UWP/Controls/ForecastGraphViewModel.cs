@@ -22,7 +22,7 @@ namespace SimpleWeather.UWP.Controls
         private CoreDispatcher Dispatcher;
 
         private LocationData locationData;
-        private string tempUnit;
+        private string unitCode;
 
         private SimpleObservableList<GraphItemViewModel> forecasts;
         private SimpleObservableList<GraphItemViewModel> hourlyForecasts;
@@ -76,7 +76,7 @@ namespace SimpleWeather.UWP.Controls
                     // Clone location data
                     this.locationData = new LocationData(new LocationQueryViewModel(location));
 
-                    this.tempUnit = Settings.Unit;
+                    this.unitCode = Settings.UnitString;
 
                     currentForecastsData.SetValue(await Settings.GetWeatherForecastData(location.query));
 
@@ -85,9 +85,9 @@ namespace SimpleWeather.UWP.Controls
 
                     Settings.GetWeatherDBConnection().GetConnection().TableChanged += ForecastGraphViewModel_TableChanged;
                 }
-                else if (!Equals(tempUnit, Settings.Unit))
+                else if (!Equals(unitCode, Settings.UnitString))
                 {
-                    this.tempUnit = Settings.Unit;
+                    this.unitCode = Settings.UnitString;
 
                     RefreshForecasts(currentForecastsData.GetValue());
                     RefreshHourlyForecasts(currentHrForecastsData.GetValue());

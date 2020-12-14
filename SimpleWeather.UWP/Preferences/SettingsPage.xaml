@@ -41,6 +41,10 @@
                     Content="General"
                     Tag="General" />
                 <muxc:NavigationViewItem
+                    x:Uid="Pref_TitleUnits"
+                    Content="Units"
+                    Tag="Units" />
+                <muxc:NavigationViewItem
                     x:Uid="Features"
                     Content="Features"
                     Tag="Features" />

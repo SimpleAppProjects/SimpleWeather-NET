@@ -24,6 +24,7 @@ namespace SimpleWeather.UWP.Preferences
         private readonly List<(string Tag, Type Page)> _pages = new List<(string Tag, Type Page)>
         {
             ("General", typeof(Settings_General)),
+            ("Units", typeof(Settings_Units)),
             ("Features", typeof(Settings_Features)),
             ("Credits", typeof(Settings_Credits)),
             ("OSSLibs", typeof(Settings_OSSLibs)),

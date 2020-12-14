@@ -17,11 +17,11 @@ namespace SimpleWeather.UWP.Controls
 
         public GraphItemViewModel(BaseForecast forecast)
         {
-            bool isFahrenheit = Settings.IsFahrenheit;
+            var isFahrenheit = Units.FAHRENHEIT.Equals(Settings.TemperatureUnit);
             var culture = CultureUtils.UserCulture;
 
             string date;
-            var tempData = new GraphTemperature(isFahrenheit);
+            var tempData = new GraphTemperature();
 
             if (forecast is Forecast fcast)
             {
@@ -68,8 +68,26 @@ namespace SimpleWeather.UWP.Controls
                 if (forecast.extras.wind_mph.HasValue && forecast.extras.wind_mph >= 0 &&
                         forecast.extras.wind_degrees.HasValue && forecast.extras.wind_degrees >= 0)
                 {
-                    int speedVal = (int)(isFahrenheit ? Math.Round(forecast.extras.wind_mph.Value) : Math.Round(forecast.extras.wind_kph.Value));
-                    var speedUnit = WeatherUtils.SpeedUnit;
+                    string unit = Settings.SpeedUnit;
+                    int speedVal;
+                    string speedUnit;
+
+                    switch (unit)
+                    {
+                        case Units.MILES_PER_HOUR:
+                        default:
+                            speedVal = (int)Math.Round(forecast.extras.wind_mph.Value);
+                            speedUnit = SimpleLibrary.ResLoader.GetString("/Units/unit_mph");
+                            break;
+                        case Units.KILOMETERS_PER_HOUR:
+                            speedVal = (int)Math.Round(forecast.extras.wind_kph.Value);
+                            speedUnit = SimpleLibrary.ResLoader.GetString("/Units/unit_kph");
+                            break;
+                        case Units.METERS_PER_SECOND:
+                            speedVal = (int)Math.Round(ConversionMethods.KphToMSec(forecast.extras.wind_kph.Value));
+                            speedUnit = SimpleLibrary.ResLoader.GetString("/Units/unit_msec");
+                            break;
+                    }
 
                     var windSpeed = string.Format(culture, "{0} {1}", speedVal, speedUnit);
                     int windDirection = forecast.extras.wind_degrees.Value;

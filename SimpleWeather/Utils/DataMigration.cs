@@ -140,6 +140,19 @@ namespace SimpleWeather.Utils
                             }
                         }
                     }
+                    // v4.2.0+ (Units)
+                    if (Settings.VersionCode < 4201)
+                    {
+                        string tempUnit = Settings.TemperatureUnit;
+                        if (Units.CELSIUS.Equals(tempUnit))
+                        {
+                            Settings.SetDefaultUnits(Units.CELSIUS);
+                        }
+                        else
+                        {
+                            Settings.SetDefaultUnits(Units.FAHRENHEIT);
+                        }
+                    }
                     AnalyticsLogger.LogEvent("App upgrading", new Dictionary<string, string>()
                     {
                         { "API", Settings.API },

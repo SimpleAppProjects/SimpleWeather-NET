@@ -331,6 +331,9 @@
     <Compile Include="Main\WeatherRadarPage.xaml.cs">
       <DependentUpon>WeatherRadarPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Preferences\Settings_Units.xaml.cs">
+      <DependentUpon>Settings_Units.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Preferences\Settings_Features.xaml.cs">
       <DependentUpon>Settings_Features.xaml</DependentUpon>
     </Compile>
@@ -513,6 +516,10 @@
     <Page Include="Preferences\Settings_Credits.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Preferences\Settings_Units.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Preferences\Settings_Features.xaml">
       <SubType>Designer</SubType>

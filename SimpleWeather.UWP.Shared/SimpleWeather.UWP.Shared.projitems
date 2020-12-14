@@ -42,5 +42,12 @@
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\fr\UVIndex.resw" />
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\fr\WeatherConditions.resw" />
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\fr\WindDirection.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\sk\AQIndex.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\sk\Beaufort.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\sk\MoonPhases.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\sk\Resources.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\sk\UVIndex.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\sk\WeatherConditions.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\sk\WindDirection.resw" />
   </ItemGroup>
 </Project>

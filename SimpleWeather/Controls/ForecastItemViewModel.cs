@@ -22,6 +22,7 @@ namespace SimpleWeather.Controls
             }
 
             var culture = CultureUtils.UserCulture;
+            var isFahrenheit = Units.FAHRENHEIT.Equals(Settings.TemperatureUnit);
 
             WeatherIcon = forecast.icon;
             Date = forecast.date.ToString("ddd dd", culture);
@@ -31,7 +32,7 @@ namespace SimpleWeather.Controls
             {
                 if (forecast.high_f.HasValue && forecast.high_c.HasValue)
                 {
-                    var value = Settings.IsFahrenheit ? Math.Round(forecast.high_f.Value) : Math.Round(forecast.high_c.Value);
+                    var value = isFahrenheit ? Math.Round(forecast.high_f.Value) : Math.Round(forecast.high_c.Value);
                     HiTemp = String.Format(culture, "{0}°", value);
                 }
                 else
@@ -48,7 +49,7 @@ namespace SimpleWeather.Controls
             {
                 if (forecast.low_f.HasValue && forecast.low_c.HasValue)
                 {
-                    var value = Settings.IsFahrenheit ? Math.Round(forecast.low_f.Value) : Math.Round(forecast.low_c.Value);
+                    var value = isFahrenheit ? Math.Round(forecast.low_f.Value) : Math.Round(forecast.low_c.Value);
                     LoTemp = String.Format(culture, "{0}°", value);
                 }
                 else
@@ -67,7 +68,7 @@ namespace SimpleWeather.Controls
             {
                 if (forecast.extras.feelslike_f.HasValue && (forecast.extras.feelslike_f != forecast.extras.feelslike_c))
                 {
-                    var value = Settings.IsFahrenheit ? Math.Round(forecast.extras.feelslike_f.Value) : Math.Round(forecast.extras.feelslike_c.Value);
+                    var value = isFahrenheit ? Math.Round(forecast.extras.feelslike_f.Value) : Math.Round(forecast.extras.feelslike_c.Value);
 
                     DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.FeelsLike,
                            String.Format(culture, "{0}°", value)));
@@ -77,17 +78,47 @@ namespace SimpleWeather.Controls
                     DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPChance, forecast.extras.pop.Value + "%"));
                 if (forecast.extras.qpf_rain_in.HasValue && forecast.extras.qpf_rain_in >= 0)
                 {
+                    string unit = Settings.PrecipitationUnit;
+                    float precipValue;
+                    string precipUnit;
+
+                    switch (unit)
+                    {
+                        case Units.INCHES:
+                        default:
+                            precipValue = forecast.extras.qpf_rain_in.Value;
+                            precipUnit = SimpleLibrary.ResLoader.GetString("/Units/unit_in");
+                            break;
+                        case Units.MILLIMETERS:
+                            precipValue = forecast.extras.qpf_rain_mm.Value;
+                            precipUnit = SimpleLibrary.ResLoader.GetString("/Units/unit_mm");
+                            break;
+                    }
+
                     DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPRain,
-                        String.Format(culture, "{0:0.00} {1}",
-                            Settings.IsFahrenheit ? forecast.extras.qpf_rain_in.Value : forecast.extras.qpf_rain_mm.Value,
-                            WeatherUtils.GetPrecipitationUnit(false))));
+                        String.Format(culture, "{0:0.##} {1}", precipValue, precipUnit)));
                 }
                 if (forecast.extras.qpf_snow_in.HasValue && forecast.extras.qpf_snow_in >= 0)
                 {
+                    string unit = Settings.PrecipitationUnit;
+                    float precipValue;
+                    string precipUnit;
+
+                    switch (unit)
+                    {
+                        case Units.INCHES:
+                        default:
+                            precipValue = forecast.extras.qpf_snow_in.Value;
+                            precipUnit = SimpleLibrary.ResLoader.GetString("/Units/unit_in");
+                            break;
+                        case Units.MILLIMETERS:
+                            precipValue = forecast.extras.qpf_snow_cm.Value * 10;
+                            precipUnit = SimpleLibrary.ResLoader.GetString("/Units/unit_mm");
+                            break;
+                    }
+
                     DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPSnow,
-                        String.Format(culture, "{0:0.00} {1}",
-                            Settings.IsFahrenheit ? forecast.extras.qpf_snow_in.Value : forecast.extras.qpf_snow_cm.Value,
-                            WeatherUtils.GetPrecipitationUnit(true))));
+                        String.Format(culture, "{0:0.##} {1}", precipValue, precipUnit)));
                 }
                 if (forecast.extras.cloudiness.HasValue && forecast.extras.cloudiness >= 0)
                     DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPCloudiness, forecast.extras.cloudiness.Value + "%"));
@@ -102,7 +133,7 @@ namespace SimpleWeather.Controls
                 {
                     DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.Dewpoint,
                         String.Format(culture, "{0}°",
-                        Settings.IsFahrenheit ?
+                        isFahrenheit ?
                                 Math.Round(forecast.extras.dewpoint_f.Value) :
                                 Math.Round(forecast.extras.dewpoint_c.Value))));
                 }
@@ -116,18 +147,50 @@ namespace SimpleWeather.Controls
 
                 if (forecast.extras.pressure_in.HasValue)
                 {
-                    var pressureVal = Settings.IsFahrenheit ? forecast.extras.pressure_in.Value : forecast.extras.pressure_mb.Value;
-                    var pressureUnit = WeatherUtils.PressureUnit;
+                    string unit = Settings.PressureUnit;
+                    float pressureVal;
+                    string pressureUnit;
+
+                    switch (unit)
+                    {
+                        case Units.INHG:
+                        default:
+                            pressureVal = forecast.extras.pressure_in.Value;
+                            pressureUnit = SimpleLibrary.ResLoader.GetString("/Units/unit_inHg");
+                            break;
+                        case Units.MILLIBAR:
+                            pressureVal = forecast.extras.pressure_mb.Value;
+                            pressureUnit = SimpleLibrary.ResLoader.GetString("/Units/unit_mBar");
+                            break;
+                    }
 
                     DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.Pressure,
-                        String.Format(culture, "{0:0.00} {1}", pressureVal, pressureUnit)));
+                        String.Format(culture, "{0:0.##} {1}", pressureVal, pressureUnit)));
                 }
 
                 if (forecast.extras.wind_mph.HasValue && forecast.extras.wind_mph >= 0 &&
                     forecast.extras.wind_degrees.HasValue && forecast.extras.wind_degrees >= 0)
                 {
-                    var speedVal = Settings.IsFahrenheit ? Math.Round(forecast.extras.wind_mph.Value) : Math.Round(forecast.extras.wind_kph.Value);
-                    var speedUnit = WeatherUtils.SpeedUnit;
+                    string unit = Settings.SpeedUnit;
+                    int speedVal;
+                    string speedUnit;
+
+                    switch (unit)
+                    {
+                        case Units.MILES_PER_HOUR:
+                        default:
+                            speedVal = (int)Math.Round(forecast.extras.wind_mph.Value);
+                            speedUnit = SimpleLibrary.ResLoader.GetString("/Units/unit_mph");
+                            break;
+                        case Units.KILOMETERS_PER_HOUR:
+                            speedVal = (int)Math.Round(forecast.extras.wind_kph.Value);
+                            speedUnit = SimpleLibrary.ResLoader.GetString("/Units/unit_kph");
+                            break;
+                        case Units.METERS_PER_SECOND:
+                            speedVal = (int)Math.Round(ConversionMethods.KphToMSec(forecast.extras.wind_kph.Value));
+                            speedUnit = SimpleLibrary.ResLoader.GetString("/Units/unit_msec");
+                            break;
+                    }
 
                     WindSpeed = String.Format(culture, "{0} {1}", speedVal, speedUnit);
 
@@ -140,8 +203,26 @@ namespace SimpleWeather.Controls
 
                 if (forecast.extras.windgust_mph.HasValue && forecast.extras.windgust_kph.HasValue && forecast.extras.windgust_mph >= 0)
                 {
-                    var speedVal = Settings.IsFahrenheit ? Math.Round(forecast.extras.windgust_mph.Value) : Math.Round(forecast.extras.windgust_kph.Value);
-                    var speedUnit = WeatherUtils.SpeedUnit;
+                    string unit = Settings.SpeedUnit;
+                    int speedVal;
+                    string speedUnit;
+
+                    switch (unit)
+                    {
+                        case Units.MILES_PER_HOUR:
+                        default:
+                            speedVal = (int)Math.Round(forecast.extras.windgust_mph.Value);
+                            speedUnit = SimpleLibrary.ResLoader.GetString("/Units/unit_mph");
+                            break;
+                        case Units.KILOMETERS_PER_HOUR:
+                            speedVal = (int)Math.Round(forecast.extras.windgust_kph.Value);
+                            speedUnit = SimpleLibrary.ResLoader.GetString("/Units/unit_kph");
+                            break;
+                        case Units.METERS_PER_SECOND:
+                            speedVal = (int)Math.Round(ConversionMethods.KphToMSec(forecast.extras.windgust_kph.Value));
+                            speedUnit = SimpleLibrary.ResLoader.GetString("/Units/unit_msec");
+                            break;
+                    }
 
                     var windGustSpeed = String.Format(culture, "{0} {1}", speedVal, speedUnit);
                     DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.WindGust, windGustSpeed));
@@ -149,11 +230,25 @@ namespace SimpleWeather.Controls
 
                 if (forecast.extras.visibility_mi.HasValue && forecast.extras.visibility_mi >= 0)
                 {
-                    var visibilityVal = Settings.IsFahrenheit ? forecast.extras.visibility_mi.Value : forecast.extras.visibility_km.Value;
-                    var visibilityUnit = WeatherUtils.DistanceUnit;
+                    string unit = Settings.DistanceUnit;
+                    int visibilityVal;
+                    string visibilityUnit;
+
+                    switch (unit)
+                    {
+                        case Units.MILES:
+                        default:
+                            visibilityVal = (int)Math.Round(forecast.extras.visibility_mi.Value);
+                            visibilityUnit = SimpleLibrary.ResLoader.GetString("/Units/unit_miles");
+                            break;
+                        case Units.KILOMETERS:
+                            visibilityVal = (int)Math.Round(forecast.extras.visibility_km.Value);
+                            visibilityUnit = SimpleLibrary.ResLoader.GetString("/Units/unit_kilometers");
+                            break;
+                    }
 
                     DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.Visibility,
-                           String.Format(culture, "{0:0.00} {1}", visibilityVal, visibilityUnit)));
+                           String.Format(culture, "{0:0.##} {1}", visibilityVal, visibilityUnit)));
                 }
             }
 
@@ -165,14 +260,14 @@ namespace SimpleWeather.Controls
                     StringBuilder sb = new StringBuilder();
 
                     TextForecast fctDay = txtForecasts[0];
-                    sb.Append(Settings.IsFahrenheit ? fctDay.fcttext : fctDay.fcttext_metric);
+                    sb.Append(isFahrenheit ? fctDay.fcttext : fctDay.fcttext_metric);
 
                     if (dayAndNt)
                     {
                         sb.Append(Environment.NewLine).Append(Environment.NewLine);
 
                         TextForecast fctNt = txtForecasts[1];
-                        sb.Append(Settings.IsFahrenheit ? fctNt.fcttext : fctNt.fcttext_metric);
+                        sb.Append(isFahrenheit ? fctNt.fcttext : fctNt.fcttext_metric);
                     }
 
                     ConditionLong = sb.ToString();
