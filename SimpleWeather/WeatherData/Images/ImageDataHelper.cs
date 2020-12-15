@@ -8,11 +8,6 @@ using Windows.Storage;
 
 namespace SimpleWeather.WeatherData.Images
 {
-    // TODO:
-    // Make this a singleton class
-    // Have UWP extend this and create its own implementation
-    // Move platform specific code to its own implementation
-    // Ex: caching image data and default data from assets
     public static partial class ImageDataHelper
     {
         private static ImageDataHelperImpl sImageDataHelperImpl;

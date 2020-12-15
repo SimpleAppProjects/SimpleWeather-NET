@@ -50,11 +50,6 @@ namespace SimpleWeather.Controls
 
             if (Attribution != null)
             {
-                // TODO: this is temporary; will be removed next release
-                if (Attribution.Contains("Information provided by "))
-                {
-                    Attribution = Attribution.Replace("Information provided by ", "");
-                }
                 Attribution = String.Format("{0} {1}", SimpleLibrary.ResLoader.GetString("Credit_Prefix/Text"), Attribution);
             }
         }

@@ -105,7 +105,6 @@ namespace SimpleWeather.UWP.BackgroundTasks
 
         private void OnCanceled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason)
         {
-            // TODO: Add code to notify the background task that it is cancelled.
             try
             {
                 cts?.Cancel();

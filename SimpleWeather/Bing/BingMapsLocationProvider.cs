@@ -38,7 +38,6 @@ namespace SimpleWeather.Bing
 
                 var culture = CultureUtils.UserCulture;
 
-                // TODO: NOTE: Decide if we will allow users to provide their own keys for loc providers
                 string key = GetAPIKey();
 
                 WeatherException wEx = null;
