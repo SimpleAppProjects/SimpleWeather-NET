@@ -65,10 +65,28 @@ namespace SimpleWeather.Utils
                 _long = double.Parse(coord[1]);
             }
 
+            public void SetCoordinate(double latitude, double longitude)
+            {
+                lat = latitude;
+                _long = longitude;
+            }
+
             public override string ToString()
             {
                 return string.Format(CultureInfo.InvariantCulture, "{0},{1}",
                     lat.ToString(CultureInfo.InvariantCulture), _long.ToString(CultureInfo.InvariantCulture));
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is Coordinate coordinate &&
+                       lat == coordinate.lat &&
+                       _long == coordinate._long;
+            }
+
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(lat, _long);
             }
         }
     }

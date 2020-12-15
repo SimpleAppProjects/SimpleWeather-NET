@@ -480,8 +480,7 @@
                     <StackPanel
                         x:Name="RadarContainer"
                         Margin="0,0,0,25"
-                        x:Load="{x:Bind uwpUtils:FeatureSettings.WeatherRadar, Mode=OneWay}"
-                        Visibility="{x:Bind WeatherView.RadarURL, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}">
+                        x:Load="{x:Bind uwpUtils:FeatureSettings.WeatherRadar, Mode=OneWay}">
                         <Border Style="{ThemeResource Divider}" />
                         <toolkitControls:HeaderedContentControl
                             x:Uid="Label_Radar"
@@ -503,12 +502,6 @@
                                     Loaded="RadarWebView_Loaded" />
                             </Grid>
                         </toolkitControls:HeaderedContentControl>
-                        <TextBlock
-                            Padding="5"
-                            HorizontalAlignment="Center"
-                            FontSize="12"><Span>
-                                <Run x:Uid="Credit_Prefix" Text="Data from" /><Run Text=" EarthWindMap Project" /></Span>
-                        </TextBlock>
                     </StackPanel>
                     <Border Style="{ThemeResource Divider}" />
                     <TextBlock

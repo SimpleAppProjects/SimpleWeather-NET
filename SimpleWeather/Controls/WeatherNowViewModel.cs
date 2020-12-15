@@ -44,8 +44,7 @@ namespace SimpleWeather.Controls
         private Color pendingBackgroundColor = Color.FromArgb(0xFF, 0, 0x70, 0xC0);
 
         // Radar
-        private const string RadarUriFormat = "https://earth.nullschool.net/#current/wind/surface/level/overlay=precip_3hr/orthographic={1:0.####},{0:0.####},3000";
-        private Uri radarURL;
+        private WeatherUtils.Coordinate locationCoord;
 
         private String weatherCredit;
         private String weatherSource;
@@ -83,7 +82,7 @@ namespace SimpleWeather.Controls
         public AirQualityViewModel AirQuality { get => airQuality; private set { if (!Equals(airQuality, value)) { airQuality = value; OnPropertyChanged(nameof(AirQuality)); } } }
         public ImageDataViewModel ImageData { get => imageData; private set { if (!Equals(imageData, value)) { imageData = value; OnPropertyChanged(nameof(ImageData)); } } }
         public Color PendingBackgroundColor { get => pendingBackgroundColor; private set { if (!Equals(pendingBackgroundColor, value)) { pendingBackgroundColor = value; OnPropertyChanged(nameof(PendingBackgroundColor)); } } }
-        public Uri RadarURL { get => radarURL; private set { if (!Equals(radarURL?.ToString(), value?.ToString())) { radarURL = value; OnPropertyChanged(nameof(RadarURL)); } } }
+        public WeatherUtils.Coordinate LocationCoord { get => locationCoord; private set { if (!Equals(locationCoord, value)) { locationCoord = value; OnPropertyChanged(nameof(LocationCoord)); } } }
         public string WeatherCredit { get => weatherCredit; private set { if (!Equals(weatherCredit, value)) { weatherCredit = value; OnPropertyChanged(nameof(WeatherCredit)); } } }
         public string WeatherSource { get => weatherSource; private set { if (!Equals(weatherSource, value)) { weatherSource = value; OnPropertyChanged(nameof(WeatherSource)); } } }
         public string WeatherLocale { get => weatherLocale; private set { if (!Equals(weatherLocale, value)) { weatherLocale = value; OnPropertyChanged(nameof(WeatherLocale)); } } }
@@ -98,6 +97,7 @@ namespace SimpleWeather.Controls
         {
             wm = WeatherManager.GetInstance();
             WeatherDetails = new SimpleObservableList<DetailItemViewModel>();
+            LocationCoord = new WeatherUtils.Coordinate(0, 0);
         }
 
         public WeatherNowViewModel(Weather weather) : this()
@@ -132,9 +132,13 @@ namespace SimpleWeather.Controls
 
                     // Additional Details
                     if (weather?.location?.latitude.HasValue == true && weather?.location?.longitude.HasValue == true)
-                        RadarURL = new Uri(String.Format(CultureInfo.InvariantCulture, RadarUriFormat, weather.location.latitude, weather.location.longitude));
+                    {
+                        LocationCoord.SetCoordinate(weather.location.latitude.Value, weather.location.longitude.Value);
+                    }
                     else
-                        RadarURL = null;
+                    {
+                        LocationCoord.SetCoordinate(0, 0);
+                    }
 
                     // Language
                     WeatherLocale = weather?.locale;

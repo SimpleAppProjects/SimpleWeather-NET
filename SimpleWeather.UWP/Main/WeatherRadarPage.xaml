@@ -12,10 +12,6 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource RegionBrush}">
-        <Border x:Name="RadarWebViewContainer" />
-        <ProgressRing
-            x:Name="LoadingRing"
-            Foreground="{ThemeResource SystemControlForegroundAccentBrush}"
-            Visibility="Collapsed" />
+        <Border x:Name="RadarWebViewContainer" Loaded="RadarWebViewContainer_Loaded" />
     </Grid>
 </helpers:CustomPage>

@@ -1,0 +1,49 @@
+﻿using SimpleWeather.Keys;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Windows.Devices.Geolocation;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Maps;
+
+namespace SimpleWeather.UWP.Radar
+{
+    public class OWMRadarViewProvider : MapTileRadarViewProvider
+    {
+        private MapTileSource TileSource;
+
+        public OWMRadarViewProvider(Border container) : base(container)
+        {
+        }
+
+        public override void UpdateMap(MapControl mapControl)
+        {
+            if (TileSource == null)
+            {
+                var dataSrc = new HttpMapTileDataSource()
+                {
+                    AllowCaching = true
+                };
+                dataSrc.UriRequested += CachingHttpMapTileDataSource_UriRequested;
+                TileSource = new MapTileSource(dataSrc);
+                mapControl.TileSources.Add(TileSource);
+            }
+        }
+
+        private void CachingHttpMapTileDataSource_UriRequested(HttpMapTileDataSource sender, MapTileUriRequestedEventArgs args)
+        {
+            // Get the custom Uri.
+            args.Request.Uri = GetTileUri(args.X, args.Y, args.ZoomLevel);
+        }
+
+        private Uri GetTileUri(int x, int y, int zoom)
+        {
+            return new Uri(String.Format(CultureInfo.InvariantCulture,
+                "https://tile.openweathermap.org/map/precipitation_new/{0}/{1}/{2}.png?appid={3}",
+                zoom, x, y, APIKeys.GetOWMKey()));
+        }
+    }
+}

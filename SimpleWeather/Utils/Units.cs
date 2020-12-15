@@ -50,47 +50,6 @@ namespace SimpleWeather.Utils
             Millimeters
         }
 
-        public static string GetStringValue(this TemperatureUnits @enum)
-        {
-            return GetStringValue((Enum)@enum);
-        }
-
-        public static string GetStringValue(this SpeedUnits @enum)
-        {
-            return GetStringValue((Enum)@enum);
-        }
-
-        public static string GetStringValue(this PressureUnits @enum)
-        {
-            return GetStringValue((Enum)@enum);
-        }
-
-        public static string GetStringValue(this DistanceUnits @enum)
-        {
-            return GetStringValue((Enum)@enum);
-        }
-
-        public static string GetStringValue(this PrecipitationUnits @enum)
-        {
-            return GetStringValue((Enum)@enum);
-        }
-
-        private static string GetStringValue(Enum @enum)
-        {
-            string value = null;
-
-            Type type = @enum.GetType();
-            var fi = type.GetRuntimeField(@enum.ToString());
-            var attrs = fi.GetCustomAttributes(typeof(StringValueAttribute), false) as StringValueAttribute[];
-
-            if (attrs?.Length > 0)
-            {
-                value = attrs[0].Value;
-            }
-
-            return value;
-        }
-
         public const string FAHRENHEIT = "F";
         public const string CELSIUS = "C";
         public const string MILES_PER_HOUR = "MPH";

@@ -3,6 +3,7 @@ using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.UWP.Controls;
 using SimpleWeather.UWP.Helpers;
 using SimpleWeather.UWP.Main;
+using SimpleWeather.UWP.Radar;
 using SimpleWeather.UWP.Tiles;
 using SimpleWeather.WeatherData;
 using System;
@@ -51,6 +52,7 @@ namespace SimpleWeather.UWP.Preferences
             AlertSwitch.Toggled += AlertSwitch_Toggled;
             APIComboBox.SelectionChanged += APIComboBox_SelectionChanged;
             RefreshComboBox.SelectionChanged += RefreshComboBox_SelectionChanged;
+            RadarComboBox.SelectionChanged += RadarComboBox_SelectionChanged;
             PersonalKeySwitch.Toggled += PersonalKeySwitch_Toggled;
             LightMode.Checked += LightMode_Checked;
             DarkMode.Checked += DarkMode_Checked;
@@ -173,6 +175,12 @@ namespace SimpleWeather.UWP.Preferences
             // Alerts
             AlertSwitch.IsEnabled = wm.SupportsAlerts;
             AlertSwitch.IsOn = Settings.ShowAlerts;
+
+            // Radar
+            RadarComboBox.ItemsSource = RadarProvider.RadarAPIProviders;
+            RadarComboBox.DisplayMemberPath = "Display";
+            RadarComboBox.SelectedValuePath = "Value";
+            RadarComboBox.SelectedValue = RadarProvider.GetRadarProvider();
 
             // Theme
             UserThemeMode userTheme = Settings.UserTheme;
@@ -439,6 +447,16 @@ namespace SimpleWeather.UWP.Preferences
         private void KeyEntry_GotFocus(object sender, RoutedEventArgs e)
         {
             KeyBorder.BorderBrush = new SolidColorBrush(Colors.DarkGray);
+        }
+
+        private void RadarComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox box = sender as ComboBox;
+            string RadarAPI = box.SelectedValue.ToString();
+            var radarProviderValues = Enum.GetValues(typeof(RadarProvider.RadarProviders));
+            RadarProvider.RadarAPIProvider = radarProviderValues
+                .Cast<RadarProvider.RadarProviders>()
+                .FirstOrDefault(@enum => Equals(@enum.GetStringValue(), RadarAPI));
         }
 
         private void RefreshComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

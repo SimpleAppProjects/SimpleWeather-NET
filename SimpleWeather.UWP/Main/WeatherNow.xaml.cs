@@ -7,6 +7,7 @@ using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.UWP.Controls;
 using SimpleWeather.UWP.Controls.Graphs;
 using SimpleWeather.UWP.Helpers;
+using SimpleWeather.UWP.Radar;
 using SimpleWeather.UWP.Shared.Helpers;
 using SimpleWeather.UWP.Tiles;
 using SimpleWeather.UWP.Utils;
@@ -42,8 +43,9 @@ namespace SimpleWeather.UWP.Main
     /// </summary>
     public sealed partial class WeatherNow : CustomPage, IDisposable, IWeatherErrorListener
     {
-        private WeatherManager wm;
+        private readonly WeatherManager wm;
         private WeatherDataLoader wLoader = null;
+        private RadarViewProvider radarViewProvider;
 
         private WeatherNowArgs args;
 
@@ -77,6 +79,7 @@ namespace SimpleWeather.UWP.Main
                 }).ContinueWith((t) =>
                 {
                     LoadingRing.IsActive = false;
+                    radarViewProvider?.UpdateCoordinates(WeatherView.LocationCoord, true);
                 }, TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(true);
 
                 ForecastView.UpdateForecasts(locationData);
@@ -195,8 +198,8 @@ namespace SimpleWeather.UWP.Main
                     ResizeAlertPanel();
                     break;
 
-                case "RadarURL":
-                    NavigateToRadarURL();
+                case "LocationCoord":
+                    radarViewProvider?.UpdateCoordinates(WeatherView.LocationCoord, true);
                     break;
             }
         }
@@ -891,102 +894,23 @@ namespace SimpleWeather.UWP.Main
             }
         }
 
-        private void NavigateToRadarURL()
-        {
-            if (WeatherView?.RadarURL == null) return;
-
-            var webview = RadarWebViewContainer?.Child as WebView;
-
-            if (webview == null && RadarWebViewContainer == null) return;
-            else if (RadarWebViewContainer != null && webview == null)
-            {
-                webview = CreateWebView();
-                RadarWebViewContainer.Child = webview;
-            }
-
-            webview.NavigationStarting -= RadarWebView_NavigationStarting;
-            webview.Navigate(WeatherView.RadarURL);
-            webview.NavigationStarting += RadarWebView_NavigationStarting;
-        }
-
-        private WebView CreateWebView()
-        {
-            WebView webview = null;
-
-            // Windows 1803+
-            if (ApiInformation.IsEnumNamedValuePresent("Windows.UI.Xaml.Controls.WebViewExecutionMode", "SeparateProcess"))
-            {
-                try
-                {
-                    // NOTE: Potential managed code exception; don't know why
-                    webview = new WebView(WebViewExecutionMode.SeparateProcess);
-                }
-                catch (Exception e)
-                {
-                    webview = null;
-                }
-            }
-
-            if (webview == null)
-                webview = new WebView(WebViewExecutionMode.SeparateThread);
-
-            webview.NavigationCompleted += async (s, args) =>
-            {
-                var disableInteractions = new string[] { "var style = document.createElement('style'); style.innerHTML = '* { pointer-events: none !important; overscroll-behavior: none !important; overflow: hidden !important; } body { pointer-events: all !important; overscroll-behavior: none !important; overflow: hidden !important; }'; document.head.appendChild(style);" };
-                try
-                {
-                    await s.InvokeScriptAsync("eval", disableInteractions);
-                }
-                catch (Exception e)
-                {
-                    //Logger.WriteLine(LoggerLevel.Error, e);
-                }
-            };
-
-            webview.IsHitTestVisible = false;
-            webview.IsDoubleTapEnabled = false;
-            webview.IsHoldingEnabled = false;
-            webview.IsRightTapEnabled = false;
-            webview.IsTapEnabled = false;
-
-            if (ApiInformation.IsEventPresent("Windows.UI.Xaml.Controls.WebView", "SeparateProcessLost"))
-            {
-                webview.SeparateProcessLost += (sender, e) =>
-                {
-                    if (RadarWebViewContainer == null) return;
-                    var newWebView = CreateWebView();
-                    RadarWebViewContainer.Child = newWebView;
-                    NavigateToRadarURL();
-                };
-            }
-
-            return webview;
-        }
-
-        private void RadarWebView_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
-        {
-            // Cancel all navigation
-            args.Cancel = true;
-        }
-
         private void RadarWebView_Loaded(object sender, RoutedEventArgs e)
         {
             AsyncTask.Run(async () =>
             {
                 await Dispatcher.AwaitableRunAsync(() =>
                 {
-                    NavigateToRadarURL();
+                    radarViewProvider = RadarProvider.GetRadarViewProvider(RadarWebViewContainer);
+                    radarViewProvider.EnableInteractions(false);
+                    radarViewProvider.UpdateCoordinates(WeatherView.LocationCoord, true);
                 }, CoreDispatcherPriority.Low).ConfigureAwait(true);
             }, 1000);
         }
 
         private void RadarWebView_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            if (WeatherView?.RadarURL != null)
-            {
-                AnalyticsLogger.LogEvent("WeatherNow: RadarWebView_Tapped");
-                Frame.Navigate(typeof(WeatherRadarPage), WeatherView?.RadarURL, new DrillInNavigationTransitionInfo());
-            }
+            AnalyticsLogger.LogEvent("WeatherNow: RadarWebView_Tapped");
+            Frame.Navigate(typeof(WeatherRadarPage), WeatherView?.LocationCoord, new DrillInNavigationTransitionInfo());
         }
 
         private void BackgroundOverlay_ImageExOpened(object sender, Microsoft.Toolkit.Uwp.UI.Controls.ImageExOpenedEventArgs e)

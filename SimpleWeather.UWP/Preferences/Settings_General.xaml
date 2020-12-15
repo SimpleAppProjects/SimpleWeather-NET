@@ -147,6 +147,19 @@
                         Style="{ThemeResource HyperlinkButtonStyle}"
                         Visibility="{x:Bind KeyEntry.Visibility, Mode=OneWay}" />
                 </StackPanel>
+                <ComboBox
+                    x:Name="RadarComboBox"
+                    x:Uid="Label_Radar"
+                    MinWidth="260"
+                    Margin="0,10"
+                    HorizontalAlignment="Left"
+                    Header="Radar">
+                    <ComboBox.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock Style="{StaticResource PrefTitleStyle}" Text="{Binding}" />
+                        </DataTemplate>
+                    </ComboBox.HeaderTemplate>
+                </ComboBox>
             </StackPanel>
         </ScrollViewer>
     </Grid>

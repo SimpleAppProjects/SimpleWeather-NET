@@ -292,7 +292,7 @@ namespace SimpleWeather.UWP.Main
                     }
                     else if (Type.Equals(_page, typeof(WeatherRadarPage)))
                     {
-                        parameter = wnowPage?.WeatherView?.RadarURL;
+                        parameter = wnowPage?.WeatherView?.LocationCoord;
                     }
                 }
 
