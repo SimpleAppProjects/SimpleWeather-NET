@@ -38,24 +38,29 @@ namespace SimpleWeather.UWP.Radar
                     AllowCaching = true
                 };
                 dataSrc.UriRequested += CachingHttpMapTileDataSource_UriRequested;
-                TileSource = new MapTileSource(dataSrc) 
+                TileSource = new MapTileSource(dataSrc);
+                if (IsAnimationAvailable)
                 {
-                    FrameCount = AvailableTimestamps.Count,
-                    FrameDuration = TimeSpan.FromMilliseconds(500),
-                    AutoPlay = false
+                    TileSource.FrameCount = AvailableTimestamps.Count;
+                    TileSource.FrameDuration = TimeSpan.FromMilliseconds(500);
+                    TileSource.AutoPlay = false;
+
+                    RadarMapContainer.OnPlayAnimation += RadarMapContainer_OnPlayAnimation;
+                    RadarMapContainer.OnPauseAnimation += RadarMapContainer_OnPauseAnimation;
                 };
                 mapControl.TileSources.Add(TileSource);
-                RadarMapContainer.OnPlayAnimation += RadarMapContainer_OnPlayAnimation;
-                RadarMapContainer.OnPauseAnimation += RadarMapContainer_OnPauseAnimation;
             }
 
             await RefreshTimestamps().ContinueWith((t) => 
             {
-                TileSource.FrameCount = AvailableTimestamps.Count;
-                RadarMapContainer.UpdateSeekbarRange(0, TileSource.FrameCount - 1);
-                AnimationTimer?.Stop();
-                TileSource?.Stop();
-                AnimationPosition = 0;
+                if (IsAnimationAvailable)
+                {
+                    TileSource.FrameCount = InteractionsEnabled() ? AvailableTimestamps.Count : 1;
+                    RadarMapContainer.UpdateSeekbarRange(0, TileSource.FrameCount - 1);
+                    AnimationTimer?.Stop();
+                    TileSource?.Stop();
+                    AnimationPosition = 0;
+                }
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
@@ -120,13 +125,20 @@ namespace SimpleWeather.UWP.Radar
             var currentTimeStamp = 0L;
             if (AvailableTimestamps?.Count > 0 && args.FrameIndex < AvailableTimestamps.Count)
             {
-                currentTimeStamp = AvailableTimestamps[args.FrameIndex];
+                if (InteractionsEnabled() && IsAnimationAvailable)
+                {
+                    currentTimeStamp = AvailableTimestamps[args.FrameIndex];
+                }
+                else
+                {
+                    currentTimeStamp = AvailableTimestamps.LastOrDefault();
+                }
             }
 
             // Get the custom Uri.
             if (currentTimeStamp > 0)
             {
-                args.Request.Uri = new Uri(URLTemplate.Replace("{timestamp}", AvailableTimestamps[args.FrameIndex].ToInvariantString()));
+                args.Request.Uri = new Uri(URLTemplate.Replace("{timestamp}", currentTimeStamp.ToInvariantString()));
             }
             else
             {

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 using Windows.Foundation;
+using Windows.Foundation.Metadata;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Maps;
 
@@ -19,8 +20,11 @@ namespace SimpleWeather.UWP.Radar
         private MapIcon locationMarkerIcon;
         protected RadarToolbar RadarMapContainer { get; private set; }
 
+        protected bool IsAnimationAvailable { get; }
+
         public MapTileRadarViewProvider(Border container) : base(container)
         {
+            IsAnimationAvailable = ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7);
         }
 
         public override void UpdateCoordinates(WeatherUtils.Coordinate coordinates, bool updateView = false)
@@ -81,7 +85,7 @@ namespace SimpleWeather.UWP.Radar
 
             mapControl.PanInteractionMode = InteractionsEnabled() ? MapPanInteractionMode.Auto : MapPanInteractionMode.Disabled;
 
-            RadarMapContainer.ToolbarVisibility = InteractionsEnabled() ? Windows.UI.Xaml.Visibility.Visible : Windows.UI.Xaml.Visibility.Collapsed;
+            RadarMapContainer.ToolbarVisibility = InteractionsEnabled() && IsAnimationAvailable ? Windows.UI.Xaml.Visibility.Visible : Windows.UI.Xaml.Visibility.Collapsed;
 
             UpdateMap(mapControl);
         }
