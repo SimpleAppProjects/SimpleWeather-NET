@@ -557,7 +557,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
 
         private void DrawLines(Rect region, CanvasDrawingSession drawingSession)
         {
-            if (!drawDotLists.Any())
+            if (drawDotLists.Any())
             {
                 float graphHeight = GraphHeight;
                 float lineStrokeWidth = drawingSession.ConvertDipsToPixels(2, CanvasDpiRounding.Floor);
@@ -610,16 +610,19 @@ namespace SimpleWeather.UWP.Controls.Graphs
                             float x = dot.X;
                             float y = dot.Y - bottomTextHeight;
 
-                            using (var txtLayout = new CanvasTextLayout(drawingSession, entry.YLabel, BottomTextFormat, 0, 0))
-                            {
-                                Rect txtRect = RectHelper.FromPoints(
-                                    new Point(x - txtLayout.LayoutBounds.Width / 2, y - txtLayout.LayoutBounds.Height / 2),
-                                    new Point(x + txtLayout.LayoutBounds.Width / 2, y + txtLayout.LayoutBounds.Height / 2));
+                            var txtLayout = new CanvasTextLayout(drawingSession, entry.YLabel, BottomTextFormat, 0, 0);
 
-                                if (!RectHelper.Intersect(region, txtRect).IsEmpty)
-                                {
-                                    textEntries.Add(new TextEntry(entry.YLabel, x, y));
-                                }
+                            Rect txtRect = RectHelper.FromPoints(
+                                new Point(x - txtLayout.LayoutBounds.Width / 2, y - txtLayout.LayoutBounds.Height / 2),
+                                new Point(x + txtLayout.LayoutBounds.Width / 2, y + txtLayout.LayoutBounds.Height / 2));
+
+                            if (!RectHelper.Intersect(region, txtRect).IsEmpty)
+                            {
+                                textEntries.Add(new TextEntry(txtLayout, x, y - (float)txtLayout.LayoutBounds.Height));
+                            }
+                            else
+                            {
+                                txtLayout.Dispose();
                             }
                         }
 
@@ -632,7 +635,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
 
                         if (DrawGraphBackground)
                         {
-                            BackgroundPath.AddLine(firstX, startY);
+                            BackgroundPath.AddLine(startX, startY);
                         }
 
                         currentDot = dot;
@@ -646,16 +649,19 @@ namespace SimpleWeather.UWP.Controls.Graphs
                                 float x = nextDot.X;
                                 float y = nextDot.Y - bottomTextHeight;
 
-                                using (var txtLayout = new CanvasTextLayout(drawingSession, nextEntry.YLabel, BottomTextFormat, 0, 0))
-                                {
-                                    Rect txtRect = RectHelper.FromPoints(
-                                        new Point(x - txtLayout.LayoutBounds.Width / 2, y - txtLayout.LayoutBounds.Height / 2),
-                                        new Point(x + txtLayout.LayoutBounds.Width / 2, y + txtLayout.LayoutBounds.Height / 2));
+                                var txtLayout = new CanvasTextLayout(drawingSession, nextEntry.YLabel, BottomTextFormat, 0, 0);
 
-                                    if (!RectHelper.Intersect(region, txtRect).IsEmpty)
-                                    {
-                                        textEntries.Add(new TextEntry(nextEntry.YLabel, x, y));
-                                    }
+                                Rect txtRect = RectHelper.FromPoints(
+                                    new Point(x - txtLayout.LayoutBounds.Width / 2, y - txtLayout.LayoutBounds.Height / 2),
+                                    new Point(x + txtLayout.LayoutBounds.Width / 2, y + txtLayout.LayoutBounds.Height / 2));
+
+                                if (!RectHelper.Intersect(region, txtRect).IsEmpty)
+                                {
+                                    textEntries.Add(new TextEntry(txtLayout, x, y - (float)txtLayout.LayoutBounds.Height));
+                                }
+                                else
+                                {
+                                    txtLayout.Dispose();
                                 }
                             }
 
@@ -690,8 +696,16 @@ namespace SimpleWeather.UWP.Controls.Graphs
                         drawingSession.FillGeometry(line, backgroundColor);
                         line.Dispose();
                     }
+                    BackgroundPath?.Dispose();
 
-                    BackgroundPath.Dispose();
+                    if (DrawDataLabels)
+                    {
+                        foreach (var entry in textEntries)
+                        {
+                            drawingSession.DrawTextLayout(entry.TextLayout, entry.X, entry.Y, BottomTextColor);
+                            entry.TextLayout.Dispose();
+                        }
+                    }
                 }
             }
         }
@@ -953,6 +967,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
             Canvas.Invalidate();
 
             // Post the event to the dispatcher to allow the method to complete first
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
                 ItemWidthChanged?.Invoke(this, new ItemSizeChangedEventArgs()
@@ -960,6 +975,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
                     NewSize = new System.Drawing.Size(xCoordinateList.Count > 0 ? (int) xCoordinateList.Last() : 0, (int)Canvas.Height)
                 });
             });
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
             return size;
         }
@@ -978,13 +994,13 @@ namespace SimpleWeather.UWP.Controls.Graphs
 
         internal class TextEntry
         {
-            public string Text { get; set; }
+            public CanvasTextLayout TextLayout { get; set; }
             public float X { get; set; }
             public float Y { get; set; }
 
-            public TextEntry(string text, float x, float y)
+            public TextEntry(CanvasTextLayout text, float x, float y)
             {
-                this.Text = text;
+                this.TextLayout = text;
                 this.X = x;
                 this.Y = y;
             }

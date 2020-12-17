@@ -10,6 +10,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -285,7 +286,9 @@ namespace SimpleWeather.UWP.Controls
                     if (hiTempDataset?.Count > 0)
                     {
                         var hiTempSeriesLabel = App.ResLoader.GetString("Label_High");
-                        tempDataSeries.Add(new LineDataSeries(hiTempSeriesLabel, hiTempDataset));
+                        var series = new LineDataSeries(hiTempSeriesLabel, hiTempDataset);
+                        series.SetSeriesColors(Colors.OrangeRed);
+                        tempDataSeries.Add(series);
                     }
 
                     Task.Run(async () =>
@@ -336,7 +339,9 @@ namespace SimpleWeather.UWP.Controls
 
                 if (windDataSeries?.Count > 0)
                 {
-                    windDataList.Add(new LineDataSeries(windDataSeries));
+                    var series = new LineDataSeries(windDataSeries);
+                    series.SetSeriesColors(Colors.SeaGreen);
+                    windDataList.Add(series);
                 }
 
                 Task.Run(async () =>
@@ -386,7 +391,9 @@ namespace SimpleWeather.UWP.Controls
 
                 if (popDataSeries?.Count > 0)
                 {
-                    popDataList.Add(new LineDataSeries(popDataSeries));
+                    var series = new LineDataSeries(popDataSeries);
+                    series.SetSeriesColors(Color.FromArgb(0xFF, 0, 0x70, 0xC0)); // SimpleBlue
+                    popDataList.Add(series);
                 }
 
                 Task.Run(async () =>
