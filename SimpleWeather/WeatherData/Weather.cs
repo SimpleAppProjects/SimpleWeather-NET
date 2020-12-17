@@ -67,7 +67,7 @@ namespace SimpleWeather.WeatherData
             atmosphere = new Atmosphere(root.current);
             astronomy = new Astronomy(root.current);
             precipitation = new Precipitation(root.current);
-            ttl = 120;
+            ttl = 180;
 
             query = string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}", location.latitude, location.longitude);
 
