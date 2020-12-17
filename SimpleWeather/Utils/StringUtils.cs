@@ -39,6 +39,22 @@ namespace SimpleWeather.Utils
                 return Regex.Replace(@string, "[^\\d.-]", "").Trim();
         }
 
+        public static String RemoveDigitChars(this String @string)
+        {
+            if (String.IsNullOrWhiteSpace(@string))
+                return "";
+            else
+                return Regex.Replace(@string, "[0-9]", "").Trim();
+        }
+
+        public static bool ContainsDigits(this String @string)
+        {
+            if (String.IsNullOrWhiteSpace(@string))
+                return false;
+            else
+                return Regex.IsMatch(@string, ".*[0-9].*");
+        }
+
         public static String Ellipsize(this String @string, int maxLength)
         {
             if (@string.Length > maxLength)

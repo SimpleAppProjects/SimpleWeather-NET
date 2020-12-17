@@ -132,9 +132,11 @@ namespace SimpleWeather.UWP.Controls
                     {
                         var dataItem = fcasts.forecast[i];
 
-                        var f = new GraphItemViewModel(dataItem);
-
-                        Forecasts.Add(f);
+                        if ((bool)dataItem?.high_f.HasValue && (bool)dataItem?.low_f.HasValue)
+                        {
+                            var f = new GraphItemViewModel(dataItem);
+                            Forecasts.Add(f);
+                        }
                     }
 
                     OnPropertyChanged(nameof(Forecasts));
