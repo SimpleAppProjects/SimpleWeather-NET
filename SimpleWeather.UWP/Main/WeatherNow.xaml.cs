@@ -711,11 +711,14 @@ namespace SimpleWeather.UWP.Main
                         .Unwrap()
                         .ContinueWith((t) =>
                         {
-                            AlertsView.UpdateAlerts(locationData);
+                            if (locationData != null)
+                            {
+                                AlertsView.UpdateAlerts(locationData);
+                            }
 
                             if (t.IsCompletedSuccessfully)
                             {
-                                if (wm.SupportsAlerts)
+                                if (wm.SupportsAlerts && locationData != null)
                                 {
                                     if (t.Result?.Any() == true)
                                     {
