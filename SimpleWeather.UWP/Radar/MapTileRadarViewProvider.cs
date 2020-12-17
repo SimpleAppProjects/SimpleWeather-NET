@@ -17,6 +17,7 @@ namespace SimpleWeather.UWP.Radar
         private MapControl mapControl;
         private WeatherUtils.Coordinate locationCoords;
         private MapIcon locationMarkerIcon;
+        protected RadarToolbar RadarMapContainer { get; private set; }
 
         public MapTileRadarViewProvider(Border container) : base(container)
         {
@@ -30,10 +31,11 @@ namespace SimpleWeather.UWP.Radar
 
         public override void UpdateRadarView()
         {
-            if (mapControl == null)
+            if (mapControl == null || RadarMapContainer == null)
             {
                 mapControl = CreateMapControl();
-                RadarContainer.Child = mapControl;
+                RadarContainer.Child = (RadarMapContainer = new RadarToolbar());
+                RadarMapContainer.MapContainerChild = mapControl;
             }
 
             switch (RadarContainer.ActualTheme)
@@ -79,6 +81,8 @@ namespace SimpleWeather.UWP.Radar
 
             mapControl.PanInteractionMode = InteractionsEnabled() ? MapPanInteractionMode.Auto : MapPanInteractionMode.Disabled;
 
+            RadarMapContainer.ToolbarVisibility = InteractionsEnabled() ? Windows.UI.Xaml.Visibility.Visible : Windows.UI.Xaml.Visibility.Collapsed;
+
             UpdateMap(mapControl);
         }
 
@@ -87,19 +91,7 @@ namespace SimpleWeather.UWP.Radar
         public override void OnDestroyView()
         {
             RadarContainer.Child = null;
-
-            try
-            {
-                mapControl.TileSources.Clear();
-                mapControl.Layers.Clear();
-            }
-            catch (Exception) 
-            { 
-            }
-            finally
-            {
-                mapControl = null;
-            }
+            mapControl = null;
         }
 
         private MapControl CreateMapControl()

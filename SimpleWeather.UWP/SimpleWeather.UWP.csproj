@@ -341,6 +341,9 @@
     <Compile Include="Radar\MapTileRadarViewProvider.cs" />
     <Compile Include="Radar\OWMRadarViewProvider.cs" />
     <Compile Include="Radar\RadarProvider.cs" />
+    <Compile Include="Radar\RadarToolbar.xaml.cs">
+      <DependentUpon>RadarToolbar.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Radar\RadarViewProvider.cs" />
     <Compile Include="Radar\RainViewerViewProvider.cs" />
     <Compile Include="Tiles\SecondaryTileUtils.cs" />
@@ -536,6 +539,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Preferences\Settings_OSSLibs.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Radar\RadarToolbar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
