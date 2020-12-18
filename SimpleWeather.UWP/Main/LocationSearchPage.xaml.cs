@@ -229,11 +229,7 @@ namespace SimpleWeather.UWP.Main
 
                 ctsToken.ThrowIfCancellationRequested();
 
-                String country_code = query_vm?.LocationCountry;
-                if (!String.IsNullOrWhiteSpace(country_code))
-                    country_code = country_code.ToLower();
-
-                if (WeatherAPI.NWS.Equals(Settings.API) && !("usa".Equals(country_code) || "us".Equals(country_code)))
+                if (WeatherAPI.NWS.Equals(Settings.API) && !LocationUtils.IsUS(query_vm?.LocationCountry))
                 {
                     throw new CustomException(App.ResLoader.GetString("Error_WeatherUSOnly"));
                 }

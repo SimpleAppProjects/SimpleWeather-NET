@@ -356,6 +356,12 @@ namespace SimpleWeather.Controls
             }
         }
 
+        public void UpdateWeatherSource(string API)
+        {
+            WeatherSource = API;
+            UpdateLocationQuery();
+        }
+
         public override bool Equals(object obj)
         {
             var model = obj as LocationQueryViewModel;

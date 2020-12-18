@@ -83,7 +83,7 @@ namespace SimpleWeather.WeatherData
         // Alerts
         public virtual Task<ICollection<WeatherAlert>> GetAlerts(LocationData location)
         {
-            if ("US".Equals(location.country_code))
+            if (LocationUtils.IsUS(location.country_code))
                 return new NWS.NWSAlertProvider().GetAlerts(location);
             else
                 return Task.FromResult<ICollection<WeatherAlert>>(null);

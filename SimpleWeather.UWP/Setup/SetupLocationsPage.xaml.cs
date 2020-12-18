@@ -25,7 +25,7 @@ namespace SimpleWeather.UWP.Setup
     {
         private CancellationTokenSource cts = new CancellationTokenSource();
 
-        private WeatherManager wm;
+        private readonly WeatherManager wm;
         private Geoposition geoPos = null;
 
         public ObservableCollection<LocationQueryViewModel> LocationQuerys { get; set; }
@@ -284,11 +284,7 @@ namespace SimpleWeather.UWP.Setup
 
                 ctsToken.ThrowIfCancellationRequested();
 
-                String country_code = query_vm?.LocationCountry;
-                if (!String.IsNullOrWhiteSpace(country_code))
-                    country_code = country_code.ToLower();
-
-                if (WeatherAPI.NWS.Equals(Settings.API) && !("usa".Equals(country_code) || "us".Equals(country_code)))
+                if (WeatherAPI.NWS.Equals(Settings.API) && !LocationUtils.IsUS(query_vm?.LocationCountry))
                 {
                     throw new CustomException(App.ResLoader.GetString("Error_WeatherUSOnly"));
                 }
@@ -455,13 +451,30 @@ namespace SimpleWeather.UWP.Setup
                         throw new CustomException(App.ResLoader.GetString("Error_Location"));
                     }
 
+                    bool isUS = LocationUtils.IsUS(view.LocationCountry);
+
+                    if (!Settings.WeatherLoaded)
+                    {
+                        // Default US location to NWS
+                        if (isUS)
+                        {
+                            Settings.API = WeatherAPI.NWS;
+                        }
+                        else
+                        {
+                            Settings.API = WeatherAPI.Here;
+                        }
+                        wm.UpdateAPI();
+                    }
+
+                    if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.API_KEY) && wm.KeyRequired)
+                    {
+                        throw new CustomException(App.ResLoader.GetString("WError_InvalidKey"));
+                    }
+
                     ctsToken.ThrowIfCancellationRequested();
 
-                    String country_code = view?.LocationCountry;
-                    if (!String.IsNullOrWhiteSpace(country_code))
-                        country_code = country_code.ToLower();
-
-                    if (WeatherAPI.NWS.Equals(Settings.API) && !("usa".Equals(country_code) || "us".Equals(country_code)))
+                    if (WeatherAPI.NWS.Equals(Settings.API) && !isUS)
                     {
                         throw new CustomException(App.ResLoader.GetString("Error_WeatherUSOnly"));
                     }

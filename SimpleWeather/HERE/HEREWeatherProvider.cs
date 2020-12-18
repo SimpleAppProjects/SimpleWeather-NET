@@ -60,7 +60,7 @@ namespace SimpleWeather.HERE
 
                 OAuthRequest authRequest = new OAuthRequest(APIKeys.GetHERECliID(), APIKeys.GetHERECliSecr());
                 Uri queryURL;
-                if ("US".Equals(country_code, StringComparison.InvariantCultureIgnoreCase) || "CA".Equals(country_code, StringComparison.InvariantCultureIgnoreCase))
+                if (LocationUtils.IsUSorCanada(country_code))
                 {
                     queryURL = new Uri(String.Format(WEATHER_US_CA_QUERY_URL, location_query, locale));
                 }
@@ -236,7 +236,7 @@ namespace SimpleWeather.HERE
                 {
                     OAuthRequest authRequest = new OAuthRequest(APIKeys.GetHERECliID(), APIKeys.GetHERECliSecr());
                     Uri queryURL;
-                    if ("US".Equals(location.country_code, StringComparison.InvariantCultureIgnoreCase) || "CA".Equals(location.country_code, StringComparison.InvariantCultureIgnoreCase))
+                    if (LocationUtils.IsUSorCanada(location.country_code))
                     {
                         queryURL = new Uri(String.Format(ALERTS_US_CA_QUERY_URL, location.query, locale));
                     }

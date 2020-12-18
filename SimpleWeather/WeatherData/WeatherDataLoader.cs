@@ -151,7 +151,7 @@ namespace SimpleWeather.WeatherData
                 {
                     request.ThrowIfCancellationRequested();
 
-                    if (WeatherAPI.NWS.Equals(Settings.API) && !"US".Equals(location.country_code))
+                    if (WeatherAPI.NWS.Equals(Settings.API) && !LocationUtils.IsUS(location.country_code))
                     {
                         // If location data hasn't been updated, try loading weather from the previous provider
                         if (!String.IsNullOrWhiteSpace(location.weatherSource) &&
@@ -280,7 +280,7 @@ namespace SimpleWeather.WeatherData
                         if ((weather != null && weather.source != Settings.API)
                             || (weather == null && location != null && location.weatherSource != Settings.API))
                         {
-                            if (!WeatherAPI.NWS.Equals(location.weatherSource) || "US".Equals(location.country_code))
+                            if (!WeatherAPI.NWS.Equals(location.weatherSource) || LocationUtils.IsUS(location.country_code))
                             {
                                 // Update location query and source for new API
                                 string oldKey = location.query;
@@ -480,7 +480,7 @@ namespace SimpleWeather.WeatherData
             bool isInvalid = weather == null || !weather.IsValid();
             if (!isInvalid && !String.Equals(weather.source, API))
             {
-                if (!WeatherAPI.NWS.Equals(API) || "US".Equals(location.country_code))
+                if (!WeatherAPI.NWS.Equals(API) || LocationUtils.IsUS(location.country_code))
                     isInvalid = true;
             }
 

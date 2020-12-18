@@ -84,6 +84,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\DBMigrations\Migration.5_6.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\DBUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\FileUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\LocationUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\OAuthUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\ObservableItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Settings.cs" />
