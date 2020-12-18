@@ -21,10 +21,10 @@ namespace SimpleWeather.HERE
     {
         private const string AUTOCOMPLETE_QUERY_URL = "https://autocomplete.geocoder.ls.hereapi.com/6.2/suggest.json?query={0}&language={1}&maxresults=10";
         private const string GEOLOCATION_QUERY_URL = "https://reverse.geocoder.ls.hereapi.com/6.2/reversegeocode.json?" +
-            "prox={0},150&mode=retrieveAddresses&maxresults=1&additionaldata=Country2,true&gen=9&jsonattributes=1" +
+            "prox={0},150&mode=retrieveAreas&maxresults=1&additionaldata=Country2,true&gen=9&jsonattributes=1" +
             "&locationattributes=adminInfo,timeZone,-mapView,-mapReference&language={1}";
         private const string GEOCODER_QUERY_API = "https://geocoder.ls.hereapi.com/6.2/geocode.json" +
-            "?locationid={0}&mode=retrieveAddresses&maxresults=1&additionaldata=Country2,true&gen=9&jsonattributes=1" +
+            "?locationid={0}&mode=retrieveAreas&maxresults=1&additionaldata=Country2,true&gen=9&jsonattributes=1" +
             "&locationattributes=adminInfo,timeZone,-mapView,-mapReference&language={1}";
 
         public override string LocationAPI => WeatherAPI.Here;

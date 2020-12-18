@@ -41,35 +41,66 @@ namespace SimpleWeather.Controls
 
         public bool IsEmpty => String.IsNullOrEmpty(LocationCountry) && String.IsNullOrEmpty(LocationQuery);
 
+        /* HERE Autocomplete */
         public LocationQueryViewModel(HERE.Suggestion location, String weatherAPI)
         {
             SetLocation(location, weatherAPI);
         }
 
+        /* HERE Autocomplete */
         public void SetLocation(HERE.Suggestion location, String weatherAPI)
         {
             if (location?.address == null)
                 return;
 
-            string town, region;
+            string town, region, country;
 
             // Try to get district name or fallback to city name
-            if (!String.IsNullOrEmpty(location.address.district))
-                town = location.address.district;
-            else
+            town = location.address.district;
+
+            if (String.IsNullOrEmpty(town))
                 town = location.address.city;
 
             // Try to get district name or fallback to city name
-            if (!String.IsNullOrEmpty(location.address.state))
-                region = location.address.state;
-            else
-                region = location.address.country;
+            region = location.address.state;
 
-            if (!String.IsNullOrEmpty(location.address.county)
-                    && !(location.address.county.Equals(region) || location.address.county.Equals(town)))
+            if (String.IsNullOrEmpty(location.address.state) && !Equals(town, location.address.county))
+                region = location.address.county;
+
+            country = location.address.country;
+
+            if (!String.IsNullOrWhiteSpace(town) && !String.IsNullOrWhiteSpace(region) &&
+                !String.IsNullOrEmpty(location.address.county)
+                && !(Equals(location.address.county, region) || 
+                Equals(location.address.county, town)))
+            {
                 LocationName = string.Format("{0}, {1}, {2}", town, location.address.county, region);
+            }
+            else if (!String.IsNullOrWhiteSpace(town) && !String.IsNullOrWhiteSpace(region))
+            {
+                if (Equals(town, region))
+                {
+                    LocationName = string.Format("{0}, {1}", town, country);
+                }
+                else
+                {
+                    LocationName = string.Format("{0}, {1}", town, region);
+                }
+            }
             else
-                LocationName = string.Format("{0}, {1}", town, region);
+            {
+                if (String.IsNullOrWhiteSpace(town) || String.IsNullOrWhiteSpace(region))
+                {
+                    if (String.IsNullOrWhiteSpace(town))
+                    {
+                        LocationName = string.Format("{0}, {1}", region, country);
+                    }
+                    else
+                    {
+                        LocationName = string.Format("{0}, {1}", town, country);
+                    }
+                }
+            }
 
             LocationCountry = location.countryCode;
             LocationQuery = location.locationId;
@@ -83,54 +114,97 @@ namespace SimpleWeather.Controls
             WeatherSource = weatherAPI;
         }
 
+        /* HERE Geocoder */
         public LocationQueryViewModel(HERE.Result location, String weatherAPI)
         {
             SetLocation(location, weatherAPI);
         }
 
+        /* HERE Geocoder */
         public void SetLocation(HERE.Result location, String weatherAPI)
         {
             if (location?.location?.address == null)
                 return;
 
-            string country = null, town = null, region = null;
+            string country = null, countryCode = null, town = null, region = null;
 
             if (location.location.address.additionalData != null)
             {
                 foreach (HERE.Additionaldata item in location.location.address.additionalData)
                 {
                     if ("Country2".Equals(item.key))
+                        countryCode = item.value;
+                    else if ("CountryName".Equals(item.key))
                         country = item.value;
-                    else if ("StateName".Equals(item.key))
-                        region = item.value;
 
-                    if (country != null && region != null)
+                    if (countryCode != null && country != null)
                         break;
                 }
             }
 
             // Try to get district name or fallback to city name
-            if (!String.IsNullOrEmpty(location.location.address.district))
-                town = location.location.address.district;
-            else
+            town = location.location.address.district;
+
+            if (String.IsNullOrEmpty(town))
                 town = location.location.address.city;
 
-            if (String.IsNullOrEmpty(region))
-                region = location.location.address.state;
+            region = location.location.address.state;
 
-            if (String.IsNullOrEmpty(region))
+            if (String.IsNullOrEmpty(region) && !Equals(town, location.location.address.county))
                 region = location.location.address.county;
 
             if (String.IsNullOrEmpty(country))
-                region = location.location.address.country;
+                country = location.location.address.country;
 
-            if (!String.IsNullOrEmpty(location.location.address.county)
-                    && !(location.location.address.county.Equals(region) || location.location.address.county.Equals(town)))
+            if (String.IsNullOrEmpty(countryCode))
+                countryCode = location.location.address.country;
+
+            if (!String.IsNullOrWhiteSpace(town) && !String.IsNullOrWhiteSpace(region) &&
+                !String.IsNullOrEmpty(location.location.address.county)
+                && !(Equals(location.location.address.county, region) ||
+                Equals(location.location.address.county, town)))
+            {
                 LocationName = string.Format("{0}, {1}, {2}", town, location.location.address.county, region);
+            }
+            else if (!String.IsNullOrWhiteSpace(town) && !String.IsNullOrWhiteSpace(region))
+            {
+                if (Equals(town, region))
+                {
+                    LocationName = string.Format("{0}, {1}", town, country);
+                }
+                else
+                {
+                    LocationName = string.Format("{0}, {1}", town, region);
+                }
+            }
             else
-                LocationName = string.Format("{0}, {1}", town, region);
+            {
+                if (String.IsNullOrWhiteSpace(town) || String.IsNullOrWhiteSpace(region))
+                {
+                    if (!String.IsNullOrWhiteSpace(location.location.address.label))
+                    {
+                        LocationName = location.location.address.label;
 
-            LocationCountry = country;
+                        if ((bool)LocationName?.Contains(", " + country))
+                        {
+                            LocationName = LocationName.Replace(", " + country, "");
+                        }
+                    }
+                    else
+                    {
+                        if (String.IsNullOrWhiteSpace(town))
+                        {
+                            LocationName = string.Format("{0}, {1}", region, country);
+                        }
+                        else
+                        {
+                            LocationName = string.Format("{0}, {1}", town, country);
+                        }
+                    }
+                }
+            }
+
+            LocationCountry = countryCode;
 
             LocationLat = location.location.displayPosition.latitude;
             LocationLong = location.location.displayPosition.longitude;
@@ -143,11 +217,13 @@ namespace SimpleWeather.Controls
             UpdateLocationQuery();
         }
 
+        /* Bing AutoComplete */
         public LocationQueryViewModel(Bing.Address address, String weatherAPI)
         {
             SetLocation(address, weatherAPI);
         }
 
+        /* Bing AutoComplete */
         public void SetLocation(Bing.Address address, String weatherAPI)
         {
             if (address == null)
@@ -206,11 +282,13 @@ namespace SimpleWeather.Controls
             WeatherSource = weatherAPI;
         }
 
+        /* Bing Geocoder */
         public LocationQueryViewModel(Windows.Services.Maps.MapLocation result, String weatherAPI)
         {
             SetLocation(result, weatherAPI);
         }
 
+        /* Bing Geocoder */
         private void SetLocation(Windows.Services.Maps.MapLocation result, String weatherAPI)
         {
             if (result?.Address == null)
