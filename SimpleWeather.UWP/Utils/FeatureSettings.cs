@@ -25,6 +25,7 @@ namespace SimpleWeather.UWP.Utils
         public static bool ExtraDetailsEnabled => UV || Beaufort || AQIndex || MoonPhase;
 
         public static bool LocationPanelBackgroundImage { get { return GetPanelBackgroundImageEnabled(); } set { SetPanelBackgroundImageEnabled(value); } }
+        public static bool TileBackgroundImage { get { return GetTileBackgroundImageEnabled(); } set { SetTileBackgroundImageEnabled(value); } }
 
         public static bool IsUpdateAvailable { get { return GetUpdateAvailable(); } set { SetUpdateAvailable(value); } }
 
@@ -41,6 +42,7 @@ namespace SimpleWeather.UWP.Utils
         private const string KEY_SUNPHASE = "key_sunphase";
         private const string KEY_RADAR = "key_radar";
         private const string KEY_LOCPANELBGIMAGE = "key_locpanelbgimage";
+        private const string KEY_TILEBGIMAGE = "key_tilebgimage";
         public const string KEY_UPDATED = "key_updated";
 
         private const string KEY_UPDATEAVAILABLE = "key_updateavailable";
@@ -67,13 +69,12 @@ namespace SimpleWeather.UWP.Utils
 
         private static bool GetBackgroundImageEnabled()
         {
-            if (!featureSettings.Values.ContainsKey(KEY_BGIMAGE) || featureSettings.Values[KEY_BGIMAGE] == null)
+            if (featureSettings.Values.TryGetValue(KEY_BGIMAGE, out object value))
             {
-                SetBackgroundImageEnabled(true);
-                return true;
+                return (bool)value;
             }
-            else
-                return (bool)featureSettings.Values[KEY_BGIMAGE];
+
+            return true;
         }
 
         private static void SetBackgroundImageEnabled(bool value)
@@ -84,13 +85,12 @@ namespace SimpleWeather.UWP.Utils
 
         private static bool GetForecastEnabled()
         {
-            if (!featureSettings.Values.ContainsKey(KEY_FORECAST) || featureSettings.Values[KEY_FORECAST] == null)
+            if (featureSettings.Values.TryGetValue(KEY_FORECAST, out object value))
             {
-                SetForecastEnabled(true);
-                return true;
+                return (bool)value;
             }
-            else
-                return (bool)featureSettings.Values[KEY_FORECAST];
+
+            return true;
         }
 
         private static void SetForecastEnabled(bool value)
@@ -101,13 +101,12 @@ namespace SimpleWeather.UWP.Utils
 
         private static bool GetHourlyForecastEnabled()
         {
-            if (!featureSettings.Values.ContainsKey(KEY_HRFORECAST) || featureSettings.Values[KEY_HRFORECAST] == null)
+            if (featureSettings.Values.TryGetValue(KEY_HRFORECAST, out object value))
             {
-                SetHourlyForecastEnabled(true);
-                return true;
+                return (bool)value;
             }
-            else
-                return (bool)featureSettings.Values[KEY_HRFORECAST];
+
+            return true;
         }
 
         private static void SetHourlyForecastEnabled(bool value)
@@ -118,13 +117,12 @@ namespace SimpleWeather.UWP.Utils
 
         private static bool GetWeatherDetailsEnabled()
         {
-            if (!featureSettings.Values.ContainsKey(KEY_WEATHERDETAILS) || featureSettings.Values[KEY_WEATHERDETAILS] == null)
+            if (featureSettings.Values.TryGetValue(KEY_WEATHERDETAILS, out object value))
             {
-                SetWeatherDetailsEnabled(true);
-                return true;
+                return (bool)value;
             }
-            else
-                return (bool)featureSettings.Values[KEY_WEATHERDETAILS];
+
+            return true;
         }
 
         private static void SetWeatherDetailsEnabled(bool value)
@@ -135,13 +133,12 @@ namespace SimpleWeather.UWP.Utils
 
         private static bool GetUVEnabled()
         {
-            if (!featureSettings.Values.ContainsKey(KEY_UVINDEX) || featureSettings.Values[KEY_UVINDEX] == null)
+            if (featureSettings.Values.TryGetValue(KEY_UVINDEX, out object value))
             {
-                SetUVEnabled(true);
-                return true;
+                return (bool)value;
             }
-            else
-                return (bool)featureSettings.Values[KEY_UVINDEX];
+
+            return true;
         }
 
         private static void SetUVEnabled(bool value)
@@ -152,13 +149,12 @@ namespace SimpleWeather.UWP.Utils
 
         private static bool GetBeaufortEnabled()
         {
-            if (!featureSettings.Values.ContainsKey(KEY_BEAUFORT) || featureSettings.Values[KEY_BEAUFORT] == null)
+            if (featureSettings.Values.TryGetValue(KEY_BEAUFORT, out object value))
             {
-                SetBeaufortEnabled(true);
-                return true;
+                return (bool)value;
             }
-            else
-                return (bool)featureSettings.Values[KEY_BEAUFORT];
+
+            return true;
         }
 
         private static void SetBeaufortEnabled(bool value)
@@ -169,13 +165,12 @@ namespace SimpleWeather.UWP.Utils
 
         private static bool GetAQIEnabled()
         {
-            if (!featureSettings.Values.ContainsKey(KEY_AQINDEX) || featureSettings.Values[KEY_AQINDEX] == null)
+            if (featureSettings.Values.TryGetValue(KEY_AQINDEX, out object value))
             {
-                SetAQIEnabled(true);
-                return true;
+                return (bool)value;
             }
-            else
-                return (bool)featureSettings.Values[KEY_AQINDEX];
+
+            return true;
         }
 
         private static void SetAQIEnabled(bool value)
@@ -186,13 +181,12 @@ namespace SimpleWeather.UWP.Utils
 
         private static bool GetMoonPhaseEnabled()
         {
-            if (!featureSettings.Values.ContainsKey(KEY_MOONPHASE) || featureSettings.Values[KEY_MOONPHASE] == null)
+            if (featureSettings.Values.TryGetValue(KEY_MOONPHASE, out object value))
             {
-                SetMoonPhaseEnabled(true);
-                return true;
+                return (bool)value;
             }
-            else
-                return (bool)featureSettings.Values[KEY_MOONPHASE];
+
+            return true;
         }
 
         private static void SetMoonPhaseEnabled(bool value)
@@ -203,13 +197,12 @@ namespace SimpleWeather.UWP.Utils
 
         private static bool GetSunPhaseEnabled()
         {
-            if (!featureSettings.Values.ContainsKey(KEY_SUNPHASE) || featureSettings.Values[KEY_SUNPHASE] == null)
+            if (featureSettings.Values.TryGetValue(KEY_SUNPHASE, out object value))
             {
-                SetSunPhaseEnabled(true);
-                return true;
+                return (bool)value;
             }
-            else
-                return (bool)featureSettings.Values[KEY_SUNPHASE];
+
+            return true;
         }
 
         private static void SetSunPhaseEnabled(bool value)
@@ -220,13 +213,12 @@ namespace SimpleWeather.UWP.Utils
 
         private static bool GetRadarEnabled()
         {
-            if (!featureSettings.Values.ContainsKey(KEY_RADAR) || featureSettings.Values[KEY_RADAR] == null)
+            if (featureSettings.Values.TryGetValue(KEY_RADAR, out object value))
             {
-                SetRadarEnabled(true);
-                return true;
+                return (bool)value;
             }
-            else
-                return (bool)featureSettings.Values[KEY_RADAR];
+
+            return true;
         }
 
         private static void SetRadarEnabled(bool value)
@@ -237,13 +229,12 @@ namespace SimpleWeather.UWP.Utils
 
         private static bool GetPanelBackgroundImageEnabled()
         {
-            if (!featureSettings.Values.ContainsKey(KEY_LOCPANELBGIMAGE) || featureSettings.Values[KEY_LOCPANELBGIMAGE] == null)
+            if (featureSettings.Values.TryGetValue(KEY_LOCPANELBGIMAGE, out object value))
             {
-                SetPanelBackgroundImageEnabled(true);
-                return true;
+                return (bool)value;
             }
-            else
-                return (bool)featureSettings.Values[KEY_LOCPANELBGIMAGE];
+
+            return true;
         }
 
         private static void SetPanelBackgroundImageEnabled(bool value)
@@ -252,15 +243,30 @@ namespace SimpleWeather.UWP.Utils
             WasUpdated = true;
         }
 
+        private static bool GetTileBackgroundImageEnabled()
+        {
+            if (featureSettings.Values.TryGetValue(KEY_TILEBGIMAGE, out object value))
+            {
+                return (bool)value;
+            }
+
+            return true;
+        }
+
+        private static void SetTileBackgroundImageEnabled(bool value)
+        {
+            featureSettings.Values[KEY_TILEBGIMAGE] = value;
+            Task.Run(BackgroundTasks.WeatherUpdateBackgroundTask.RequestAppTrigger);
+        }
+
         private static bool GetUpdateAvailable()
         {
-            if (!featureSettings.Values.ContainsKey(KEY_UPDATEAVAILABLE) || featureSettings.Values[KEY_UPDATEAVAILABLE] == null)
+            if (featureSettings.Values.TryGetValue(KEY_UPDATEAVAILABLE, out object value))
             {
-                SetUpdateAvailable(false);
-                return false;
+                return (bool)value;
             }
-            else
-                return (bool)featureSettings.Values[KEY_UPDATEAVAILABLE];
+
+            return false;
         }
 
         private static void SetUpdateAvailable(bool value)

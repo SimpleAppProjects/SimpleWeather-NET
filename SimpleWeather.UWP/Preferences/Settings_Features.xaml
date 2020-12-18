@@ -73,6 +73,10 @@
                     x:Uid="FeatureOption_LocPanelBackground"
                     Content="Location Panel Image"
                     IsChecked="{x:Bind uwpUtils:FeatureSettings.LocationPanelBackgroundImage, Mode=TwoWay}" />
+                <CheckBox
+                    x:Uid="FeatureOption_TileBackground"
+                    Content="Tile Background Image"
+                    IsChecked="{x:Bind uwpUtils:FeatureSettings.TileBackgroundImage, Mode=TwoWay}" />
             </StackPanel>
         </ScrollViewer>
     </Grid>

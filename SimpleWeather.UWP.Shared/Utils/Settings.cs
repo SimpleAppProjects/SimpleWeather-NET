@@ -164,13 +164,12 @@ namespace SimpleWeather.Utils
 
         private static string GetAPI()
         {
-            if (!localSettings.Values.ContainsKey(KEY_API) || localSettings.Values[KEY_API] == null)
+            if (localSettings.Values.TryGetValue(KEY_API, out object value))
             {
-                SetAPI(WeatherAPI.Here);
-                return WeatherAPI.Here;
+                return value.ToString();
             }
-            else
-                return (string)localSettings.Values[KEY_API];
+
+            return WeatherAPI.Here;
         }
 
         private static void SetAPI(string value)
@@ -180,12 +179,12 @@ namespace SimpleWeather.Utils
 
         private static string GetAPIKEY()
         {
-            if (!localSettings.Values.ContainsKey(KEY_APIKEY) || localSettings.Values[KEY_APIKEY] == null)
+            if (localSettings.Values.TryGetValue(KEY_APIKEY, out object value))
             {
-                return String.Empty;
+                return value.ToString();
             }
-            else
-                return (string)localSettings.Values[KEY_APIKEY];
+
+            return String.Empty;
         }
 
         private static void SetAPIKEY(string API_KEY)
@@ -195,13 +194,12 @@ namespace SimpleWeather.Utils
 
         private static bool UseFollowGPS()
         {
-            if (!localSettings.Values.ContainsKey(KEY_FOLLOWGPS) || localSettings.Values[KEY_FOLLOWGPS] == null)
+            if (localSettings.Values.TryGetValue(KEY_FOLLOWGPS, out object value))
             {
-                SetFollowGPS(false);
-                return false;
+                return (bool)value;
             }
-            else
-                return (bool)localSettings.Values[KEY_FOLLOWGPS];
+
+            return false;
         }
 
         private static void SetFollowGPS(bool value)
@@ -211,10 +209,12 @@ namespace SimpleWeather.Utils
 
         private static string GetLastGPSLocation()
         {
-            if (!localSettings.Values.ContainsKey(KEY_LASTGPSLOCATION) || localSettings.Values[KEY_LASTGPSLOCATION] == null)
-                return null;
-            else
-                return (string)localSettings.Values[KEY_LASTGPSLOCATION];
+            if (localSettings.Values.TryGetValue(KEY_LASTGPSLOCATION, out object value))
+            {
+                return value.ToString();
+            }
+
+            return null;
         }
 
         private static void SetLastGPSLocation(string value)
@@ -224,14 +224,14 @@ namespace SimpleWeather.Utils
 
         private static int GetRefreshInterval()
         {
-            if (!localSettings.Values.ContainsKey(KEY_REFRESHINTERVAL) || localSettings.Values[KEY_REFRESHINTERVAL] == null)
+            if (localSettings.Values.TryGetValue(KEY_REFRESHINTERVAL, out object value))
             {
-                var interval = int.Parse(DEFAULT_UPDATE_INTERVAL, CultureInfo.InvariantCulture);
-                SetRefreshInterval(interval);
-                return interval;
+                return (int)value;
             }
-            else
-                return (int)localSettings.Values[KEY_REFRESHINTERVAL];
+
+            var interval = int.Parse(DEFAULT_UPDATE_INTERVAL, CultureInfo.InvariantCulture);
+            SetRefreshInterval(interval);
+            return interval;
         }
 
         private static void SetRefreshInterval(int value)
@@ -241,9 +241,9 @@ namespace SimpleWeather.Utils
 
         private static DateTime GetUpdateTime()
         {
-            if (localSettings.Values.ContainsKey(KEY_UPDATETIME) && localSettings.Values[KEY_UPDATETIME] != null)
+            if (localSettings.Values.TryGetValue(KEY_UPDATETIME, out object value))
             {
-                if (DateTime.TryParse(localSettings.Values[KEY_UPDATETIME] as string, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result))
+                if (DateTime.TryParse(value.ToString(), CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result))
                 {
                     return result;
                 }
@@ -259,13 +259,13 @@ namespace SimpleWeather.Utils
 
         private static int GetDBVersion()
         {
-            if (!localSettings.Values.ContainsKey(KEY_DBVERSION) || localSettings.Values[KEY_DBVERSION] == null)
+            if (localSettings.Values.TryGetValue(KEY_DBVERSION, out object value))
             {
-                SetDBVersion(0);
-                return 0;
+                return (int)value;
             }
-            else
-                return (int)localSettings.Values[KEY_DBVERSION];
+
+            SetDBVersion(0);
+            return 0;
         }
 
         private static void SetDBVersion(int value)
@@ -275,13 +275,12 @@ namespace SimpleWeather.Utils
 
         private static bool UseAlerts()
         {
-            if (!localSettings.Values.ContainsKey(KEY_USEALERTS) || localSettings.Values[KEY_USEALERTS] == null)
+            if (localSettings.Values.TryGetValue(KEY_USEALERTS, out object value))
             {
-                SetAlerts(false);
-                return false;
+                return (bool)value;
             }
-            else
-                return (bool)localSettings.Values[KEY_USEALERTS];
+
+            return false;
         }
 
         private static void SetAlerts(bool value)
@@ -344,13 +343,12 @@ namespace SimpleWeather.Utils
         {
             LoadIfNeeded();
 
-            if (!localSettings.Values.ContainsKey(KEY_ONBOARDINGCOMPLETE) || localSettings.Values[KEY_ONBOARDINGCOMPLETE] == null)
+            if (localSettings.Values.TryGetValue(KEY_ONBOARDINGCOMPLETE, out object value))
             {
-                SetOnBoardingComplete(false);
-                return false;
+                return (bool)value;
             }
-            else
-                return (bool)localSettings.Values[KEY_ONBOARDINGCOMPLETE];
+
+            return false;
         }
 
         private static void SetOnBoardingComplete(bool value)
@@ -360,13 +358,12 @@ namespace SimpleWeather.Utils
 
         private static UserThemeMode GetUserTheme()
         {
-            if (!localSettings.Values.ContainsKey(KEY_USERTHEME) || localSettings.Values[KEY_USERTHEME] == null)
+            if (localSettings.Values.TryGetValue(KEY_USERTHEME, out object value))
             {
-                SetUserTheme(UserThemeMode.System);
-                return UserThemeMode.System;
+                return (UserThemeMode)value;
             }
-            else
-                return (UserThemeMode)localSettings.Values[KEY_USERTHEME];
+
+            return UserThemeMode.System;
         }
 
         private static void SetUserTheme(UserThemeMode value)

@@ -3,6 +3,7 @@ using SimpleWeather.Controls;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Shared.Helpers;
+using SimpleWeather.UWP.Utils;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
@@ -31,7 +32,7 @@ namespace SimpleWeather.UWP.Tiles
         private static void SetContentBackground(TileBindingContentAdaptive content, WeatherNowViewModel weather)
         {
             // Background URI
-            if (weather.ImageData?.ImageUri != null)
+            if (FeatureSettings.TileBackgroundImage && weather.ImageData?.ImageUri != null)
             {
                 content.BackgroundImage = new TileBackgroundImage()
                 {
