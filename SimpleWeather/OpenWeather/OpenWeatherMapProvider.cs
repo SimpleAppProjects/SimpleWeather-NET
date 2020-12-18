@@ -17,8 +17,9 @@ namespace SimpleWeather.OpenWeather
     public partial class OpenWeatherMapProvider : WeatherProviderImpl
     {
         private const String BASE_URL = "https://api.openweathermap.org/data/2.5/";
-        private const String KEYCHECK_QUERY_URL = BASE_URL + "forecast?appid=";
-        private const String WEATHER_QUERY_URL = BASE_URL + "onecall?{0}&exclude=minutely&appid={1}&lang={2}";
+        private const String KEYCHECK_QUERY_URL = BASE_URL + "forecast?appid={0}";
+        private const String CURRENT_QUERY_URL = BASE_URL + "weather?{0}&appid={1}&lang={2}";
+        private const String FORECAST_QUERY_URL = BASE_URL + "forecast?{0}&appid={1}&lang={2}";
 
         public OpenWeatherMapProvider() : base()
         {
@@ -44,7 +45,7 @@ namespace SimpleWeather.OpenWeather
                     if (String.IsNullOrWhiteSpace(key))
                         throw (wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey));
 
-                    Uri queryURL = new Uri(String.Format("{0}{1}", KEYCHECK_QUERY_URL, key));
+                    Uri queryURL = new Uri(String.Format(KEYCHECK_QUERY_URL, key));
 
                     // Connect to webstream
                     var webClient = SimpleLibrary.WebClient;
@@ -111,21 +112,26 @@ namespace SimpleWeather.OpenWeather
 
                 try
                 {
-                    Uri weatherURL = new Uri(string.Format(WEATHER_QUERY_URL, query, key, locale));
+                    Uri currentURL = new Uri(string.Format(CURRENT_QUERY_URL, query, key, locale));
+                    Uri forecastURL = new Uri(string.Format(FORECAST_QUERY_URL, query, key, locale));
 
                     // Get response
                     var webClient = SimpleLibrary.WebClient;
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                    using (var response = await webClient.GetAsync(weatherURL).AsTask(cts.Token))
+                    using (var currentResponse = await webClient.GetAsync(currentURL).AsTask(cts.Token))
+                    using (var forecastResponse = await webClient.GetAsync(forecastURL).AsTask(cts.Token))
                     {
-                        response.EnsureSuccessStatusCode();
+                        currentResponse.EnsureSuccessStatusCode();
+                        forecastResponse.EnsureSuccessStatusCode();
 
-                        Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                        Stream currentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await currentResponse.Content.ReadAsInputStreamAsync());
+                        Stream forecastStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await forecastResponse.Content.ReadAsInputStreamAsync());
 
                         // Load weather
-                        Rootobject root = JSONParser.Deserializer<Rootobject>(contentStream);
+                        CurrentRootobject currRoot = JSONParser.Deserializer<CurrentRootobject>(currentStream);
+                        ForecastRootobject foreRoot = JSONParser.Deserializer<ForecastRootobject>(forecastStream);
 
-                        weather = new WeatherData.Weather(root);
+                        weather = new WeatherData.Weather(currRoot, foreRoot);
                     }
                 }
                 catch (Exception ex)
@@ -167,6 +173,7 @@ namespace SimpleWeather.OpenWeather
             // OWM reports datetime in UTC; add location tz_offset
             var offset = location.tz_offset;
             weather.update_time = weather.update_time.ToOffset(offset);
+            weather.condition.observation_time = weather.condition.observation_time.ToOffset(offset);
             foreach (HourlyForecast hr_forecast in weather.hr_forecast)
             {
                 hr_forecast.date = hr_forecast.date.ToOffset(offset);

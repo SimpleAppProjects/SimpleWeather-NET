@@ -2,36 +2,58 @@
 
 namespace SimpleWeather.OpenWeather
 {
-    public class Rootobject
+    public class CurrentRootobject
     {
-        public float lat { get; set; }
-        public float lon { get; set; }
-        public string timezone { get; set; }
-        public int timezone_offset { get; set; }
-        public Current current { get; set; }
-        public Hourly[] hourly { get; set; }
-        public Daily[] daily { get; set; }
-    }
-
-    public class Current
-    {
-        public long dt { get; set; }
-        public long sunrise { get; set; }
-        public long sunset { get; set; }
-        public float temp { get; set; }
-        public float feels_like { get; set; }
-        public float pressure { get; set; }
-        public int humidity { get; set; }
-        public float dew_point { get; set; }
-        public int clouds { get; set; }
-        public float uvi { get; set; }
+        public Coord coord { get; set; }
+        public Weather[] weather { get; set; }
+        public string _base { get; set; }
+        public Main main { get; set; }
         public int visibility { get; set; }
-        public float wind_speed { get; set; }
-        public float? wind_gust { get; set; }
-        public int wind_deg { get; set; }
+        public Wind wind { get; set; }
+        public Clouds clouds { get; set; }
         public Rain rain { get; set; }
         public Snow snow { get; set; }
-        public Weather[] weather { get; set; }
+        public long dt { get; set; }
+        public CurrentSys sys { get; set; }
+        public int id { get; set; }
+        public string name { get; set; }
+    }
+
+    public class Coord
+    {
+        public float lon { get; set; }
+        public float lat { get; set; }
+    }
+
+    public class Wind
+    {
+        public float speed { get; set; }
+        public float deg { get; set; }
+        public float? gust { get; set; }
+    }
+
+    public class Clouds
+    {
+        public int all { get; set; }
+    }
+
+    public class Rain
+    {
+        public float? _1h { get; set; }
+        public float? _3h { get; set; }
+    }
+
+    public class Snow
+    {
+        public float? _1h { get; set; }
+        public float? _3h { get; set; }
+    }
+
+    public class CurrentSys
+    {
+        public string country { get; set; }
+        public long? sunrise { get; set; }
+        public long? sunset { get; set; }
     }
 
     public class Weather
@@ -42,72 +64,57 @@ namespace SimpleWeather.OpenWeather
         public string icon { get; set; }
     }
 
-    public class Hourly
+    public class ForecastRootobject // Forecast / Daily
+    {
+        public List[] list { get; set; }
+        public City city { get; set; }
+    }
+
+    public class City
+    {
+        public int id { get; set; }
+        public string name { get; set; }
+        public Coord coord { get; set; }
+        public string country { get; set; }
+        public int? sunrise { get; set; }
+        public int? sunset { get; set; }
+    }
+
+    public class List
     {
         public long dt { get; set; }
-        public float temp { get; set; }
-        public float feels_like { get; set; }
-        public float pressure { get; set; }
-        public int humidity { get; set; }
-        public float dew_point { get; set; }
-        public int clouds { get; set; }
-        public float? pop { get; set; }
+        public Main main { get; set; }
+        public Weather[] weather { get; set; }
+        public Clouds clouds { get; set; }
+        public Wind wind { get; set; }
         public int? visibility { get; set; }
-        public float wind_speed { get; set; }
-        public float? wind_gust { get; set; }
-        public int wind_deg { get; set; }
+        public float? pop { get; set; }
+        public ForecastSys sys { get; set; }
+        public string dt_txt { get; set; }
         public Rain rain { get; set; }
         public Snow snow { get; set; }
-        public Weather[] weather { get; set; }
     }
 
-    public class Rain
+    public class ForecastSys
     {
-        public float _1h { get; set; }
+        public string pod { get; set; }
     }
 
-    public class Snow
+    public class Main
     {
-        public float _1h { get; set; }
-    }
-
-    public class Daily
-    {
-        public long dt { get; set; }
-        public long sunrise { get; set; }
-        public long sunset { get; set; }
-        public Temp temp { get; set; }
-        public Feels_Like feels_like { get; set; }
+        public float temp { get; set; }
+        public float? feels_like { get; set; }
+        public float temp_min { get; set; }
+        public float temp_max { get; set; }
         public float pressure { get; set; }
         public int humidity { get; set; }
-        public float dew_point { get; set; }
-        public float wind_speed { get; set; }
-        public float? wind_gust { get; set; }
-        public int wind_deg { get; set; }
-        public int clouds { get; set; }
-        public float? pop { get; set; }
-        public float uvi { get; set; }
-        public int? visibility { get; set; }
-        public float? rain { get; set; }
-        public float? snow { get; set; }
-        public Weather[] weather { get; set; }
+        public float? sea_level { get; set; }
+        public float? grnd_level { get; set; }
     }
 
-    public class Temp
+    public class Rootobject
     {
-        public float morn { get; set; }
-        public float day { get; set; }
-        public float eve { get; set; }
-        public float night { get; set; }
-        public float min { get; set; }
-        public float max { get; set; }
-    }
-
-    public class Feels_Like
-    {
-        public float morn { get; set; }
-        public float day { get; set; }
-        public float eve { get; set; }
-        public float night { get; set; }
+        public int cod { get; set; }
+        public string message { get; set; }
     }
 }

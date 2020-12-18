@@ -59,8 +59,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)NWS\NWSAlertProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Keys\OWMKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NWS\Weather.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\Weather.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\OneCallResponse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\OpenWeatherMapProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SimpleLibrary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NWS\SolCalcAstroProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SMC\SunMoonCalcProvider.cs" />
