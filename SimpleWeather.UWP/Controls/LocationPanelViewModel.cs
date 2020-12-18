@@ -218,7 +218,7 @@ namespace SimpleWeather.Controls
             }
             else
             {
-                WindSpeed = "--";
+                WindSpeed = null;
                 WindDirection = 0;
             }
         }
