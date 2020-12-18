@@ -448,12 +448,6 @@
   <data name="NoWeatherAlerts_Prompt.Text" xml:space="preserve">
     <value>Nie sú dostupné žiadne meteovýstrahy.</value>
   </data>
-  <data name="Pref_UnitCelsius.Content" xml:space="preserve">
-    <value>Celzia</value>
-  </data>
-  <data name="Pref_UnitFahrenheit.Content" xml:space="preserve">
-    <value>Fahrenheit</value>
-  </data>
   <data name="LocationSearchHint.HeaderText" xml:space="preserve">
     <value>Pridať lokalitu</value>
   </data>
@@ -552,5 +546,20 @@
   </data>
   <data name="TranslateButton.Content" xml:space="preserve">
     <value>Pomôcť s prekladom aplikácie</value>
+  </data>
+  <data name="pref_title_resetunits" xml:space="preserve">
+    <value>Obnovte pôvodné hodnoty jednotiek</value>
+  </data>
+  <data name="default_units_imperial" xml:space="preserve">
+    <value>°F, mph, in, inHg, mi</value>
+  </data>
+  <data name="default_units_metric" xml:space="preserve">
+    <value>°C, km/h, mm, mb, km</value>
+  </data>
+  <data name="Label_Speed.Text" xml:space="preserve">
+    <value>Rýchlosť</value>
+  </data>
+  <data name="Label_Distance.Text" xml:space="preserve">
+    <value>Vzdialenosť</value>
   </data>
 </root>
