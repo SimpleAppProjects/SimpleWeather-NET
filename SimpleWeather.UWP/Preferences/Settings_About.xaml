@@ -21,6 +21,69 @@
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
             <SolidColorBrush x:Name="ProgressPaintColorBrush" Color="{ThemeResource ProgressPaintColor}" />
+            <Style
+                x:Key="FeedbackHyperlinkButton"
+                BasedOn="{StaticResource HyperlinkButtonStyle}"
+                TargetType="HyperlinkButton">
+                <Setter Property="Padding" Value="0,8" />
+                <Setter Property="ContentTemplate">
+                    <Setter.Value>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <FontIcon
+                                    Margin="5,0"
+                                    FontFamily="Segoe MDL2 Assets"
+                                    Glyph="&#xE939;" />
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    Text="{Binding}"
+                                    TextDecorations="Underline" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style
+                x:Key="RateHyperlinkButton"
+                BasedOn="{StaticResource HyperlinkButtonStyle}"
+                TargetType="HyperlinkButton">
+                <Setter Property="Padding" Value="0,8" />
+                <Setter Property="ContentTemplate">
+                    <Setter.Value>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <SymbolIcon Margin="5,0" Symbol="SolidStar" />
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    Text="{Binding}"
+                                    TextDecorations="Underline" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style
+                x:Key="TranslateHyperlinkButton"
+                BasedOn="{StaticResource HyperlinkButtonStyle}"
+                TargetType="HyperlinkButton">
+                <Setter Property="Padding" Value="0,8" />
+                <Setter Property="ContentTemplate">
+                    <Setter.Value>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <FontIcon
+                                    Margin="5,0"
+                                    FontFamily="Segoe MDL2 Assets"
+                                    Glyph="&#xF2B7;" />
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    Text="{Binding}"
+                                    TextDecorations="Underline" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </Page.Resources>
 
@@ -84,18 +147,18 @@
             x:Uid="FeebackButton"
             Click="FeedbackButton_Click"
             Content="Feedback"
-            Style="{ThemeResource HyperlinkButtonStyle}" />
+            Style="{ThemeResource FeedbackHyperlinkButton}" />
         <HyperlinkButton
             x:Name="ReviewButton"
             x:Uid="ReviewButton"
             Click="ReviewButton_Click"
             Content="Rate and Review"
-            Style="{ThemeResource HyperlinkButtonStyle}" />
+            Style="{ThemeResource RateHyperlinkButton}" />
         <HyperlinkButton
             x:Name="TranslateButton"
             x:Uid="TranslateButton"
             Content="Help translate the app"
             NavigateUri="https://poeditor.com/join/project?hash=x9AzamDQO8"
-            Style="{ThemeResource HyperlinkButtonStyle}" />
+            Style="{ThemeResource TranslateHyperlinkButton}" />
     </StackPanel>
 </Page>
