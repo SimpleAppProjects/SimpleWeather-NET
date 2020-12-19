@@ -1,4 +1,5 @@
 ﻿using SimpleWeather.Utils;
+using SimpleWeather.UWP.Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -176,7 +177,8 @@ namespace SimpleWeather.UWP.Preferences
 
         private async void FeedbackButton_Click(object sender, RoutedEventArgs e)
         {
-            if (Microsoft.Services.Store.Engagement.StoreServicesFeedbackLauncher.IsSupported())
+            var deviceType = DeviceTypeHelper.DeviceType;
+            if ((deviceType == DeviceTypeHelper.DeviceTypes.Desktop || deviceType == DeviceTypeHelper.DeviceTypes.Mobile) && Microsoft.Services.Store.Engagement.StoreServicesFeedbackLauncher.IsSupported())
             {
                 var launcher = Microsoft.Services.Store.Engagement.StoreServicesFeedbackLauncher.GetDefault();
                 await launcher.LaunchAsync();
