@@ -13469,8 +13469,9 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("snow"), 8},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("dt"), 9},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("sys"), 10},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("id"), 11},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("name"), 12},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("timezone"), 11},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("id"), 12},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("name"), 13},
             };
 
             this.____stringByteKeys = new byte[][]
@@ -13486,6 +13487,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("snow"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("dt"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("sys"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("timezone"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("id"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("name"),
                 
@@ -13524,8 +13526,10 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather
             writer.WriteRaw(this.____stringByteKeys[10]);
             formatterResolver.GetFormatterWithVerify<global::SimpleWeather.OpenWeather.CurrentSys>().Serialize(ref writer, value.sys, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[11]);
-            writer.WriteInt32(value.id);
+            writer.WriteInt32(value.timezone);
             writer.WriteRaw(this.____stringByteKeys[12]);
+            writer.WriteInt32(value.id);
+            writer.WriteRaw(this.____stringByteKeys[13]);
             writer.WriteString(value.name);
             
             writer.WriteEndObject();
@@ -13561,6 +13565,8 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather
             var __dt__b__ = false;
             var __sys__ = default(global::SimpleWeather.OpenWeather.CurrentSys);
             var __sys__b__ = false;
+            var __timezone__ = default(int);
+            var __timezone__b__ = false;
             var __id__ = default(int);
             var __id__b__ = false;
             var __name__ = default(string);
@@ -13625,10 +13631,14 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather
                         __sys__b__ = true;
                         break;
                     case 11:
+                        __timezone__ = reader.ReadInt32();
+                        __timezone__b__ = true;
+                        break;
+                    case 12:
                         __id__ = reader.ReadInt32();
                         __id__b__ = true;
                         break;
-                    case 12:
+                    case 13:
                         __name__ = reader.ReadString();
                         __name__b__ = true;
                         break;
@@ -13653,6 +13663,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather
             if(__snow__b__) ____result.snow = __snow__;
             if(__dt__b__) ____result.dt = __dt__;
             if(__sys__b__) ____result.sys = __sys__;
+            if(__timezone__b__) ____result.timezone = __timezone__;
             if(__id__b__) ____result.id = __id__;
             if(__name__b__) ____result.name = __name__;
 

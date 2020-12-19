@@ -59,7 +59,7 @@ namespace SimpleWeather.WeatherData
             // Store potential min/max values
             float dayMax = float.NaN;
             float dayMin = float.NaN;
-            int lastDay = 0;
+            int lastDay = -1;
 
             for (int i = 0; i < foreRoot.list.Length; i++)
             {
@@ -77,27 +77,30 @@ namespace SimpleWeather.WeatherData
                     dayMin = min;
                 }
 
-                // Get every 8th item for daily forecast
-                if (i % 8 == 0)
+                // Add mid-day forecast
+                var currHour = hr_forecast[i].date.AddSeconds(currRoot.timezone).Hour;
+                if (currHour >= 11 && currHour <= 13)
                 {
-                    lastDay = i / 8;
-
-                    forecast.Insert(i / 8, new Forecast(foreRoot.list[i]));
+                    forecast.Add(new Forecast(foreRoot.list[i]));
+                    lastDay = forecast.Count - 1;
                 }
 
                 // This is possibly the last forecast for the day (3-hrly forecast)
                 // Set the min / max temp here and reset
-                if (hr_forecast[i].date.Hour >= 21)
+                if (currHour >= 21)
                 {
-                    if (!float.IsNaN(dayMax))
+                    if (lastDay >= 0)
                     {
-                        forecast[lastDay].high_f = ConversionMethods.KtoF(dayMax);
-                        forecast[lastDay].high_c = ConversionMethods.KtoC(dayMax);
-                    }
-                    if (!float.IsNaN(dayMin))
-                    {
-                        forecast[lastDay].low_f = ConversionMethods.KtoF(dayMin);
-                        forecast[lastDay].low_c = ConversionMethods.KtoC(dayMin);
+                        if (!float.IsNaN(dayMax))
+                        {
+                            forecast[lastDay].high_f = ConversionMethods.KtoF(dayMax);
+                            forecast[lastDay].high_c = ConversionMethods.KtoC(dayMax);
+                        }
+                        if (!float.IsNaN(dayMin))
+                        {
+                            forecast[lastDay].low_f = ConversionMethods.KtoF(dayMin);
+                            forecast[lastDay].low_c = ConversionMethods.KtoC(dayMin);
+                        }
                     }
 
                     dayMax = float.NaN;

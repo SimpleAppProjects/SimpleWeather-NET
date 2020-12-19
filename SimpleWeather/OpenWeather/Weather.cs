@@ -15,6 +15,7 @@ namespace SimpleWeather.OpenWeather
         public Snow snow { get; set; }
         public long dt { get; set; }
         public CurrentSys sys { get; set; }
+        public int timezone { get; set; }
         public int id { get; set; }
         public string name { get; set; }
     }
