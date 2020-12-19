@@ -19,6 +19,8 @@ namespace SimpleWeather.AQICN
     public class AQICNProvider : IAirQualityProvider
     {
         private const String QUERY_URL = "https://api.waqi.info/feed/geo:{0:0.####};{1:0.####}/?token={2}";
+        private const int MAX_ATTEMPTS = 2;
+
         public Task<AirQuality> GetAirQualityData(LocationData location)
         {
             return Task.Run(async () =>
@@ -29,25 +31,40 @@ namespace SimpleWeather.AQICN
                 if (String.IsNullOrWhiteSpace(key))
                     return null;
 
-                Uri queryURL = new Uri(string.Format(CultureInfo.InvariantCulture, QUERY_URL, location.latitude, location.longitude, key));
-
                 try
                 {
-                    // Connect to webstream
-                    HttpClient webClient = SimpleLibrary.WebClient;
-                    var request = new HttpRequestMessage(HttpMethod.Get, queryURL);
+                    Uri queryURL = new Uri(string.Format(CultureInfo.InvariantCulture, QUERY_URL, location.latitude, location.longitude, key));
 
-                    using (request)
-                    using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                    using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                    for (int i = 0; i < MAX_ATTEMPTS; i++)
                     {
-                        response.EnsureSuccessStatusCode();
-                        Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                        // Connect to webstream
+                        HttpClient webClient = SimpleLibrary.WebClient;
+                        var request = new HttpRequestMessage(HttpMethod.Get, queryURL);
 
-                        // Load data
-                        var root = JSONParser.Deserializer<Rootobject>(contentStream);
+                        using (request)
+                        using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                        using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                        {
+                            if (response.StatusCode == HttpStatusCode.BadRequest)
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                response.EnsureSuccessStatusCode();
+                                Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
-                        aqiData = new AirQuality(root);
+                                // Load data
+                                var root = JSONParser.Deserializer<Rootobject>(contentStream);
+
+                                aqiData = new AirQuality(root);
+                            }
+                        }
+
+                        if (i < MAX_ATTEMPTS - 1 && aqiData == null)
+                        {
+                            await Task.Delay(1000);
+                        }
                     }
                 }
                 catch (Exception ex)
