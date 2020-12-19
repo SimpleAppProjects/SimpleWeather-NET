@@ -562,4 +562,7 @@
   <data name="Label_Distance.Text" xml:space="preserve">
     <value>Distance</value>
   </data>
+  <data name="FeatureOption_TileBackground.Content" xml:space="preserve">
+    <value>Image d&apos;arrière-plan de vignette</value>
+  </data>
 </root>

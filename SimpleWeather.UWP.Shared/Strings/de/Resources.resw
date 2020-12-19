@@ -571,4 +571,7 @@
   <data name="Label_Distance.Text" xml:space="preserve">
     <value>Entfernung</value>
   </data>
+  <data name="FeatureOption_TileBackground.Content" xml:space="preserve">
+    <value>Kachel-Hintergrundbild</value>
+  </data>
 </root>

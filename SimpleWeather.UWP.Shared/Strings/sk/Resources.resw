@@ -562,4 +562,7 @@
   <data name="Label_Distance.Text" xml:space="preserve">
     <value>Vzdialenosť</value>
   </data>
+  <data name="FeatureOption_TileBackground.Content" xml:space="preserve">
+    <value>Obrázok na pozadí miniatúry</value>
+  </data>
 </root>
