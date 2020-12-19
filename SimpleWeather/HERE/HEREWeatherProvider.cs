@@ -213,6 +213,7 @@ namespace SimpleWeather.HERE
 
             // Update tz for weather properties
             weather.update_time = weather.update_time.ToOffset(offset);
+            weather.condition.observation_time = weather.condition.observation_time.ToOffset(location.tz_offset);
 
             foreach (WeatherData.Forecast forecast in weather.forecast)
             {

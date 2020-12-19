@@ -144,8 +144,6 @@ namespace SimpleWeather.WeatherData
                 atmosphere.dewpoint_f = (float)Math.Round(ConversionMethods.CtoF(atmosphere.dewpoint_c.Value));
             }
 
-            condition.observation_time = update_time;
-
             source = WeatherAPI.OpenWeatherMap;
         }
 
@@ -1229,7 +1227,7 @@ namespace SimpleWeather.WeatherData
             if (current.wind.gust.HasValue)
             {
                 windgust_mph = ConversionMethods.MSecToMph(current.wind.gust.Value);
-                windgust_kph = ConversionMethods.MSecToMph(current.wind.gust.Value);
+                windgust_kph = ConversionMethods.MSecToKph(current.wind.gust.Value);
             }
 
             string ico = current.weather[0].icon;
@@ -1261,7 +1259,7 @@ namespace SimpleWeather.WeatherData
             if (current.wind_gust.HasValue)
             {
                 windgust_mph = ConversionMethods.MSecToMph(current.wind_gust.Value);
-                windgust_kph = ConversionMethods.MSecToMph(current.wind_gust.Value);
+                windgust_kph = ConversionMethods.MSecToKph(current.wind_gust.Value);
             }
 
             string ico = current.weather[0].icon;

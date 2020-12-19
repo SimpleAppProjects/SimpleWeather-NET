@@ -159,9 +159,10 @@ namespace SimpleWeather.WeatherYahoo
             var weather = await base.GetWeather(location);
 
             weather.update_time = weather.update_time.ToOffset(location.tz_offset);
+            weather.condition.observation_time = weather.condition.observation_time.ToOffset(location.tz_offset);
 
             var old = weather.astronomy;
-            var newAstro = await new SunMoonCalcProvider().GetAstronomyData(location, weather.update_time);
+            var newAstro = await new SunMoonCalcProvider().GetAstronomyData(location, weather.condition.observation_time);
             newAstro.sunrise = old.sunrise;
             newAstro.sunset = old.sunset;
             weather.astronomy = newAstro;

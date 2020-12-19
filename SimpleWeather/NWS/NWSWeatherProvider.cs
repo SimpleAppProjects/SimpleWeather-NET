@@ -264,10 +264,11 @@ namespace SimpleWeather.NWS
 
             var offset = location.tz_offset;
             weather.update_time = weather.update_time.ToOffset(offset);
+            weather.condition.observation_time = weather.condition.observation_time.ToOffset(location.tz_offset);
 
             // NWS does not provide astrodata; calculate this ourselves (using their calculator)
-            var solCalcData = await new SolCalcAstroProvider().GetAstronomyData(location, weather.update_time);
-            weather.astronomy = await new SunMoonCalcProvider().GetAstronomyData(location, weather.update_time);
+            var solCalcData = await new SolCalcAstroProvider().GetAstronomyData(location, weather.condition.observation_time);
+            weather.astronomy = await new SunMoonCalcProvider().GetAstronomyData(location, weather.condition.observation_time);
             weather.astronomy.sunrise = solCalcData.sunrise;
             weather.astronomy.sunset = solCalcData.sunset;
 
