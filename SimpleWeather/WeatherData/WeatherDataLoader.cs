@@ -280,7 +280,7 @@ namespace SimpleWeather.WeatherData
                         if ((weather != null && weather.source != Settings.API)
                             || (weather == null && location != null && location.weatherSource != Settings.API))
                         {
-                            if (!WeatherAPI.NWS.Equals(location.weatherSource) || LocationUtils.IsUS(location.country_code))
+                            if (!WeatherAPI.NWS.Equals(Settings.API) || LocationUtils.IsUS(location.country_code))
                             {
                                 // Update location query and source for new API
                                 string oldKey = location.query;
