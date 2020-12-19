@@ -41,6 +41,13 @@ namespace SimpleWeather.WeatherData
                 condition.low_c = forecast[0].low_c;
             }
 
+            if (!atmosphere.dewpoint_c.HasValue && condition.temp_c.HasValue && atmosphere.humidity.HasValue &&
+                condition.temp_c > 0 && condition.temp_c < 60 && atmosphere.humidity > 1)
+            {
+                atmosphere.dewpoint_c = (float)Math.Round(WeatherUtils.CalculateDewpointC(condition.temp_c.Value, atmosphere.humidity.Value));
+                atmosphere.dewpoint_f = (float)Math.Round(ConversionMethods.CtoF(atmosphere.dewpoint_c.Value));
+            }
+
             condition.observation_time = update_time;
 
             source = WeatherAPI.Yahoo;
@@ -128,6 +135,13 @@ namespace SimpleWeather.WeatherData
                 condition.high_c = forecast[0].high_c.Value;
                 condition.low_f = forecast[0].low_f.Value;
                 condition.low_c = forecast[0].low_c.Value;
+            }
+
+            if (!atmosphere.dewpoint_c.HasValue && condition.temp_c.HasValue && atmosphere.humidity.HasValue &&
+                condition.temp_c > 0 && condition.temp_c < 60 && atmosphere.humidity > 1)
+            {
+                atmosphere.dewpoint_c = (float)Math.Round(WeatherUtils.CalculateDewpointC(condition.temp_c.Value, atmosphere.humidity.Value));
+                atmosphere.dewpoint_f = (float)Math.Round(ConversionMethods.CtoF(atmosphere.dewpoint_c.Value));
             }
 
             condition.observation_time = update_time;
@@ -484,6 +498,12 @@ namespace SimpleWeather.WeatherData
                 wind_mph = (float)Math.Round(ConversionMethods.MSecToMph(forecast.wind.speed)),
                 wind_kph = (float)Math.Round(ConversionMethods.MSecToKph(forecast.wind.speed)),
             };
+            if (ConversionMethods.KtoC(forecast.main.temp) is float temp_c &&
+                temp_c > 0 && temp_c < 60 && forecast.main.humidity > 1)
+            {
+                extras.dewpoint_c = (float)Math.Round(WeatherUtils.CalculateDewpointC(ConversionMethods.KtoC(forecast.main.temp), forecast.main.humidity));
+                extras.dewpoint_f = (float)Math.Round(ConversionMethods.CtoF(extras.dewpoint_c.Value));
+            }
             if (forecast.main.feels_like.HasValue)
             {
                 extras.feelslike_f = ConversionMethods.KtoF(forecast.main.feels_like.Value);
@@ -774,6 +794,11 @@ namespace SimpleWeather.WeatherData
                 wind_mph = wind_mph,
                 wind_kph = wind_kph
             };
+            if (high_c.Value > 0 && high_c.Value < 60 && hr_forecast.main.humidity > 1)
+            {
+                extras.dewpoint_c = (float)Math.Round(WeatherUtils.CalculateDewpointC(high_c.Value, hr_forecast.main.humidity));
+                extras.dewpoint_f = (float)Math.Round(ConversionMethods.CtoF(extras.dewpoint_c.Value));
+            }
             if (hr_forecast.main.feels_like.HasValue)
             {
                 extras.feelslike_f = ConversionMethods.KtoF(hr_forecast.main.feels_like.Value);
@@ -1451,7 +1476,7 @@ namespace SimpleWeather.WeatherData
 
         public Atmosphere(Metno.Timesery time)
         {
-            humidity = (int?)Math.Round(time.data.instant.details.relative_humidity.Value);
+            humidity = (int)Math.Round(time.data.instant.details.relative_humidity.Value);
             pressure_mb = time.data.instant.details.air_pressure_at_sea_level.Value;
             pressure_in = ConversionMethods.MBToInHg(time.data.instant.details.air_pressure_at_sea_level.Value);
             pressure_trend = String.Empty;
