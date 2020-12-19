@@ -122,12 +122,12 @@ namespace UnitTestProject
         }
 
         [TestMethod]
-        public async void GetNWSAlerts()
+        public void GetNWSAlerts()
         {
-            var location = await WeatherManager.GetProvider(WeatherAPI.OpenWeatherMap)
-                .GetLocation(new WeatherUtils.Coordinate(47.6721646, -122.1706614));
+            var location = WeatherManager.GetProvider(WeatherAPI.NWS)
+                .GetLocation(new WeatherUtils.Coordinate(47.6721646, -122.1706614)).ConfigureAwait(false).GetAwaiter().GetResult();
             var locData = new LocationData(location);
-            var alerts = await new NWSAlertProvider().GetAlerts(locData);
+            var alerts = new NWSAlertProvider().GetAlerts(locData).ConfigureAwait(false).GetAwaiter().GetResult();
             Assert.IsNotNull(alerts);
         }
 
@@ -136,6 +136,7 @@ namespace UnitTestProject
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.NWS);
             var weather = GetWeather(provider).ConfigureAwait(false).GetAwaiter().GetResult();
+            Assert.IsTrue(weather?.forecast?.Count > 0 && weather?.hr_forecast?.Count > 0);
             Assert.IsTrue(weather?.IsValid() == true);
             Assert.IsTrue(SerializerTest(weather).ConfigureAwait(false).GetAwaiter().GetResult());
             //SerializerSpeedTest(weather);

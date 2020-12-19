@@ -18,6 +18,7 @@ namespace SimpleWeather.NWS
     public partial class NWSWeatherProvider : WeatherProviderImpl
     {
         private const string POINTS_QUERY_URL = "https://api.weather.gov/points/{0}";
+        private const int MAX_ATTEMPTS = 2;
 
         public NWSWeatherProvider() : base()
         {
@@ -123,23 +124,42 @@ namespace SimpleWeather.NWS
                 {
                     Uri weatherURL = new Uri(url + "?units=us");
 
-                    using (var request = new HttpRequestMessage(HttpMethod.Get, weatherURL))
+                    for (int i = 0; i < MAX_ATTEMPTS; i++)
                     {
-                        request.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
-
-                        // Get response
-                        var webClient = SimpleLibrary.WebClient;
-                        using (var cts = new CancellationTokenSource((int)(Settings.READ_TIMEOUT * 1.5f)))
-                        using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                        using (var request = new HttpRequestMessage(HttpMethod.Get, weatherURL))
                         {
-                            // Check for errors
-                            CheckForErrors(response.StatusCode);
-                            response.EnsureSuccessStatusCode();
+                            request.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
 
-                            Stream stream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                            try
+                            {
+                                // Get response
+                                var webClient = SimpleLibrary.WebClient;
+                                using (var cts = new CancellationTokenSource((int)(Settings.READ_TIMEOUT * 1.5f)))
+                                using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                                {
+                                    if (response.StatusCode == HttpStatusCode.BadRequest)
+                                    {
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        // Check for errors
+                                        CheckForErrors(response.StatusCode);
+                                        response.EnsureSuccessStatusCode();
 
-                            // Load point json data
-                            root = JSONParser.Deserializer<ForecastRootobject>(stream);
+                                        Stream stream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+
+                                        // Load point json data
+                                        root = JSONParser.Deserializer<ForecastRootobject>(stream);
+                                    }
+                                }
+                            }
+                            catch { }
+                        }
+
+                        if (i < MAX_ATTEMPTS - 1 && root == null)
+                        {
+                            await Task.Delay(1000);
                         }
                     }
                 }
@@ -169,23 +189,42 @@ namespace SimpleWeather.NWS
                 {
                     Uri weatherURL = new Uri(url);
 
-                    using (var request = new HttpRequestMessage(HttpMethod.Get, weatherURL))
+                    for (int i = 0; i < MAX_ATTEMPTS; i++)
                     {
-                        request.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
-
-                        // Get response
-                        var webClient = SimpleLibrary.WebClient;
-                        using (var cts = new CancellationTokenSource((int)(Settings.READ_TIMEOUT * 1.5f)))
-                        using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                        using (var request = new HttpRequestMessage(HttpMethod.Get, weatherURL))
                         {
-                            // Check for errors
-                            CheckForErrors(response.StatusCode);
-                            response.EnsureSuccessStatusCode();
+                            request.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
 
-                            Stream stream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                            try
+                            {
+                                // Get response
+                                var webClient = SimpleLibrary.WebClient;
+                                using (var cts = new CancellationTokenSource((int)(Settings.READ_TIMEOUT * 1.5f)))
+                                using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                                {
+                                    if (response.StatusCode == HttpStatusCode.BadRequest)
+                                    {
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        // Check for errors
+                                        CheckForErrors(response.StatusCode);
+                                        response.EnsureSuccessStatusCode();
 
-                            // Load point json data
-                            root = JSONParser.Deserializer<ObservationsStationsRootobject>(stream);
+                                        Stream stream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+
+                                        // Load point json data
+                                        root = JSONParser.Deserializer<ObservationsStationsRootobject>(stream);
+                                    }
+                                }
+                            }
+                            catch { }
+                        }
+
+                        if (i < MAX_ATTEMPTS - 1 && root == null)
+                        {
+                            await Task.Delay(1000);
                         }
                     }
                 }
@@ -210,23 +249,42 @@ namespace SimpleWeather.NWS
                 {
                     Uri weatherURL = new Uri(url + "/observations/latest?require_qc=true");
 
-                    using (var request = new HttpRequestMessage(HttpMethod.Get, weatherURL))
+                    for (int i = 0; i < MAX_ATTEMPTS; i++)
                     {
-                        request.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
-
-                        // Get response
-                        var webClient = SimpleLibrary.WebClient;
-                        using (var cts = new CancellationTokenSource((int)(Settings.READ_TIMEOUT * 1.5f)))
-                        using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                        using (var request = new HttpRequestMessage(HttpMethod.Get, weatherURL))
                         {
-                            // Check for errors
-                            CheckForErrors(response.StatusCode);
-                            response.EnsureSuccessStatusCode();
+                            request.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
 
-                            Stream stream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                            try
+                            {
+                                // Get response
+                                var webClient = SimpleLibrary.WebClient;
+                                using (var cts = new CancellationTokenSource((int)(Settings.READ_TIMEOUT * 1.5f)))
+                                using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                                {
+                                    if (response.StatusCode == HttpStatusCode.BadRequest)
+                                    {
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        // Check for errors
+                                        CheckForErrors(response.StatusCode);
+                                        response.EnsureSuccessStatusCode();
 
-                            // Load point json data
-                            root = JSONParser.Deserializer<ObservationsCurrentRootobject>(stream);
+                                        Stream stream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+
+                                        // Load point json data
+                                        root = JSONParser.Deserializer<ObservationsCurrentRootobject>(stream);
+                                    }
+                                }
+                            }
+                            catch { }
+                        }
+
+                        if (i < MAX_ATTEMPTS - 1 && root == null)
+                        {
+                            await Task.Delay(1000);
                         }
                     }
                 }
@@ -528,7 +586,7 @@ namespace SimpleWeather.NWS
                 return base.GetWeatherCondition(icon);
             }
         }
-        
+
         // Some conditions can be for any time of day
         // So use sunrise/set data as fallback
         public override bool IsNight(Weather weather)
