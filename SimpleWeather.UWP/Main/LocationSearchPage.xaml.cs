@@ -227,12 +227,12 @@ namespace SimpleWeather.UWP.Main
                     throw new CustomException(App.ResLoader.GetString("Error_Location"));
                 }
 
-                ctsToken.ThrowIfCancellationRequested();
-
-                if (WeatherAPI.NWS.Equals(Settings.API) && !LocationUtils.IsUS(query_vm?.LocationCountry))
+                if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.API_KEY) && wm.KeyRequired)
                 {
-                    throw new CustomException(App.ResLoader.GetString("Error_WeatherUSOnly"));
+                    throw new CustomException(App.ResLoader.GetString("WError_InvalidKey"));
                 }
+
+                ctsToken.ThrowIfCancellationRequested();
 
                 // Need to get FULL location data for HERE API
                 // Data provided is incomplete
@@ -249,6 +249,34 @@ namespace SimpleWeather.UWP.Main
                 {
                     query_vm = await AsyncTask.RunAsync(
                         new Bing.BingMapsLocationProvider().GetLocationFromAddress(query_vm.LocationQuery, query_vm.WeatherSource));
+                }
+
+                if (query_vm == null)
+                {
+                    throw new OperationCanceledException();
+                }
+
+                bool isUS = LocationUtils.IsUS(query_vm.LocationCountry);
+
+                if (!Settings.WeatherLoaded)
+                {
+                    // Default US location to NWS
+                    if (isUS)
+                    {
+                        Settings.API = WeatherAPI.NWS;
+                        query_vm.UpdateWeatherSource(WeatherAPI.NWS);
+                    }
+                    else
+                    {
+                        Settings.API = WeatherAPI.Here;
+                        query_vm.UpdateWeatherSource(WeatherAPI.Here);
+                    }
+                    wm.UpdateAPI();
+                }
+
+                if (WeatherAPI.NWS.Equals(Settings.API) && !isUS)
+                {
+                    throw new CustomException(App.ResLoader.GetString("Error_WeatherUSOnly"));
                 }
 
                 // Check if location already exists
