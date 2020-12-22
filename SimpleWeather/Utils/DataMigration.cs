@@ -153,6 +153,19 @@ namespace SimpleWeather.Utils
                             Settings.SetDefaultUnits(Units.FAHRENHEIT);
                         }
                     }
+                    // v4.3.3 (OWM)
+                    // Temporarily disable OWM for now; we're going over the quota
+                    if (Settings.VersionCode < 4330)
+                    {
+                        if (WeatherAPI.OpenWeatherMap.Equals(Settings.API) && Settings.UsePersonalKey)
+                        {
+                            Settings.API = WeatherAPI.MetNo;
+                            var wm = WeatherManager.GetInstance();
+                            wm.UpdateAPI();
+                            Settings.UsePersonalKey = false;
+                            Settings.KeyVerified = true;
+                        }
+                    }
                     AnalyticsLogger.LogEvent("App upgrading", new Dictionary<string, string>()
                     {
                         { "API", Settings.API },

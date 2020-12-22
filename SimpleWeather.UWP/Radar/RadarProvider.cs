@@ -26,8 +26,10 @@ namespace SimpleWeather.UWP.Radar
             EarthWindMap,
             [StringValue(RAINVIEWER)]
             RainViewer,
+            /*
             [StringValue(OPENWEATHERMAP)]
             OpenWeatherMap
+            */
         }
 
         public const string EARTHWINDMAP_DEFAULT_URL = "https://earth.nullschool.net/#current/wind/surface/level/overlay=precip_3hr";
@@ -39,8 +41,10 @@ namespace SimpleWeather.UWP.Radar
                     "https://earth.nullschool.net/", "https://earth.nullschool.net/"),
             new ProviderEntry("RainViewer", RAINVIEWER,
                     "https://www.rainviewer.com/", "https://www.rainviewer.com/api.html"),
+            /*
             new ProviderEntry("OpenWeatherMap", OPENWEATHERMAP,
                     "http://www.openweathermap.org", "https://home.openweathermap.org/users/sign_up")
+            */
         };
 
         public static RadarProviders RadarAPIProvider { 
@@ -58,8 +62,10 @@ namespace SimpleWeather.UWP.Radar
             {
                 case RadarProviders.RainViewer:
                     return new RainViewerViewProvider(radarContainer);
+                    /*
                 case RadarProviders.OpenWeatherMap:
                     return new OWMRadarViewProvider(radarContainer);
+                    */
                 default:
                 case RadarProviders.EarthWindMap:
                     return new EarthWindMapViewProvider(radarContainer);
