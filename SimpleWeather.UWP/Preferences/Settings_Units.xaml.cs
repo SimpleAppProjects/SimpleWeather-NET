@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using muxc = Microsoft.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -88,9 +89,11 @@ namespace SimpleWeather.UWP.Preferences
             TemperatureUnits.MaxColumns = Math.Max(tempValues.Length, 1);
             TemperatureUnits.SelectionChanged += (s, e) =>
             {
-                var item = e.AddedItems[0] as RadioButton;
-                Settings.TemperatureUnit = ((Units.TemperatureUnits)item.CommandParameter).GetStringValue();
-                RequestAppTrigger = true;
+                if (s is muxc.RadioButtons rbs && rbs.SelectedItem is RadioButton item)
+                {
+                    Settings.TemperatureUnit = ((Units.TemperatureUnits)item.CommandParameter).GetStringValue();
+                    RequestAppTrigger = true;
+                }
             };
 
             var speedValues = Enum.GetValues(typeof(Units.SpeedUnits));
@@ -129,9 +132,11 @@ namespace SimpleWeather.UWP.Preferences
             SpeedUnits.MaxColumns = Math.Max(speedValues.Length, 1);
             SpeedUnits.SelectionChanged += (s, e) =>
             {
-                var item = e.AddedItems[0] as RadioButton;
-                Settings.SpeedUnit = ((Units.SpeedUnits)item.CommandParameter).GetStringValue();
-                RequestAppTrigger = true;
+                if (s is muxc.RadioButtons rbs && rbs.SelectedItem is RadioButton item)
+                {
+                    Settings.SpeedUnit = ((Units.SpeedUnits)item.CommandParameter).GetStringValue();
+                    RequestAppTrigger = true;
+                }
             };
 
             var distanceValues = Enum.GetValues(typeof(Units.DistanceUnits));
@@ -162,9 +167,11 @@ namespace SimpleWeather.UWP.Preferences
             DistanceUnits.MaxColumns = Math.Max(distanceValues.Length, 1);
             DistanceUnits.SelectionChanged += (s, e) =>
             {
-                var item = e.AddedItems[0] as RadioButton;
-                Settings.DistanceUnit = ((Units.DistanceUnits)item.CommandParameter).GetStringValue();
-                RequestAppTrigger = true;
+                if (s is muxc.RadioButtons rbs && rbs.SelectedItem is RadioButton item)
+                {
+                    Settings.DistanceUnit = ((Units.DistanceUnits)item.CommandParameter).GetStringValue();
+                    RequestAppTrigger = true;
+                }
             };
 
             var precipitationValues = Enum.GetValues(typeof(Units.PrecipitationUnits));
@@ -195,9 +202,11 @@ namespace SimpleWeather.UWP.Preferences
             PrecipitationUnits.MaxColumns = Math.Max(precipitationValues.Length, 1);
             PrecipitationUnits.SelectionChanged += (s, e) =>
             {
-                var item = e.AddedItems[0] as RadioButton;
-                Settings.PrecipitationUnit = ((Units.PrecipitationUnits)item.CommandParameter).GetStringValue();
-                RequestAppTrigger = true;
+                if (s is muxc.RadioButtons rbs && rbs.SelectedItem is RadioButton item)
+                {
+                    Settings.PrecipitationUnit = ((Units.PrecipitationUnits)item.CommandParameter).GetStringValue();
+                    RequestAppTrigger = true;
+                }
             };
 
             var pressureValues = Enum.GetValues(typeof(Units.PressureUnits));
@@ -228,9 +237,11 @@ namespace SimpleWeather.UWP.Preferences
             PressureUnits.MaxColumns = Math.Max(pressureValues.Length, 1);
             PressureUnits.SelectionChanged += (s, e) =>
             {
-                var item = e.AddedItems[0] as RadioButton;
-                Settings.PressureUnit = ((Units.PressureUnits)item.CommandParameter).GetStringValue();
-                RequestAppTrigger = true;
+                if (s is muxc.RadioButtons rbs && rbs.SelectedItem is RadioButton item)
+                {
+                    Settings.PressureUnit = ((Units.PressureUnits)item.CommandParameter).GetStringValue();
+                    RequestAppTrigger = true;
+                }
             };
 
             ResetTitle.Text = App.ResLoader.GetString("pref_title_resetunits");
