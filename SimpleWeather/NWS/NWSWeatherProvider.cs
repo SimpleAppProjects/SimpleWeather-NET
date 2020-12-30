@@ -22,7 +22,7 @@ namespace SimpleWeather.NWS
 
         public NWSWeatherProvider() : base()
         {
-            LocationProvider = new HERE.HERELocationProvider();
+            LocationProvider = new Bing.BingMapsLocationProvider();
         }
 
         public override string WeatherAPI => WeatherData.WeatherAPI.NWS;
