@@ -27,7 +27,9 @@ namespace SimpleWeather.Bing
 
         public override bool KeyRequired => false;
 
-        public override bool SupportsWeatherLocale => true;
+        public override bool SupportsLocale => true;
+
+        public override bool NeedsLocationFromName => true;
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string location_query, string weatherAPI)
@@ -179,8 +181,13 @@ namespace SimpleWeather.Bing
             });
         }
 
+        public override Task<LocationQueryViewModel> GetLocationFromID(LocationQueryViewModel model)
+        {
+            return Task.FromResult<LocationQueryViewModel>(null);
+        }
+
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public Task<LocationQueryViewModel> GetLocationFromAddress(string address, string weatherAPI)
+        public override Task<LocationQueryViewModel> GetLocationFromName(LocationQueryViewModel model)
         {
             return Task.Run(async () =>
             {
@@ -208,7 +215,7 @@ namespace SimpleWeather.Bing
                     {
                         // Geocode the specified address, using the specified reference point
                         // as a query hint. Return no more than a single result.
-                        MapLocationFinderResult mapResult = await MapLocationFinder.FindLocationsAsync(address, hintPoint, 1).AsTask(cts.Token);
+                        MapLocationFinderResult mapResult = await MapLocationFinder.FindLocationsAsync(model.LocationQuery, hintPoint, 1).AsTask(cts.Token);
 
                         switch (mapResult.Status)
                         {
@@ -250,7 +257,7 @@ namespace SimpleWeather.Bing
                     throw wEx;
 
                 if (result != null && !String.IsNullOrWhiteSpace(result.DisplayName))
-                    location = new LocationQueryViewModel(result, weatherAPI);
+                    location = new LocationQueryViewModel(result, model.WeatherSource);
                 else
                     location = new LocationQueryViewModel();
 

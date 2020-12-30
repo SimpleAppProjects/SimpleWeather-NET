@@ -31,7 +31,9 @@ namespace SimpleWeather.HERE
 
         public override bool KeyRequired => false;
 
-        public override bool SupportsWeatherLocale => true;
+        public override bool SupportsLocale => true;
+
+        public override bool NeedsLocationFromID => true;
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string location_query, string weatherAPI)
@@ -186,7 +188,7 @@ namespace SimpleWeather.HERE
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public Task<LocationQueryViewModel> GetLocationFromLocID(string locationID, string weatherAPI)
+        public override Task<LocationQueryViewModel> GetLocationFromID(LocationQueryViewModel model)
         {
             return Task.Run(async () =>
             {
@@ -201,7 +203,7 @@ namespace SimpleWeather.HERE
 
                 try
                 {
-                    Uri queryURL = new Uri(String.Format(GEOCODER_QUERY_API, locationID, locale));
+                    Uri queryURL = new Uri(String.Format(GEOCODER_QUERY_API, model.LocationQuery, locale));
 
                     using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
                     {
@@ -244,12 +246,17 @@ namespace SimpleWeather.HERE
                     throw wEx;
 
                 if (result != null && !String.IsNullOrWhiteSpace(result.location.locationId))
-                    location = new LocationQueryViewModel(result, weatherAPI);
+                    location = new LocationQueryViewModel(result, model.WeatherSource);
                 else
                     location = new LocationQueryViewModel();
 
                 return location;
             });
+        }
+
+        public override Task<LocationQueryViewModel> GetLocationFromName(LocationQueryViewModel model)
+        {
+            return Task.FromResult<LocationQueryViewModel>(null);
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>

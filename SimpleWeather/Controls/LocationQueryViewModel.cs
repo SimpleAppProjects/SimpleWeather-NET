@@ -1,4 +1,5 @@
-﻿using SimpleWeather.WeatherData;
+﻿using SimpleWeather.Utils;
+using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -335,6 +336,33 @@ namespace SimpleWeather.Controls
             LocationTZLong = null;
 
             LocationSource = WeatherAPI.BingMaps;
+            WeatherSource = weatherAPI;
+
+            UpdateLocationQuery();
+        }
+
+        /* WeatherAPI AutoComplete Query */
+        public LocationQueryViewModel(WeatherApi.LocationItem result, String weatherAPI)
+        {
+            SetLocation(result, weatherAPI);
+        }
+
+        /* WeatherAPI AutoComplete Query */
+        private void SetLocation(WeatherApi.LocationItem result, String weatherAPI)
+        {
+            if (result == null)
+                return;
+
+            LocationName = result.name;
+            LocationCountry = result.country;
+            LocationQuery = result.id.ToInvariantString();
+
+            LocationLat = result.lat;
+            LocationLong = result.lon;
+
+            LocationTZLong = null;
+
+            LocationSource = WeatherAPI.WeatherApi;
             WeatherSource = weatherAPI;
 
             UpdateLocationQuery();

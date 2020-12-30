@@ -236,19 +236,22 @@ namespace SimpleWeather.UWP.Main
 
                 // Need to get FULL location data for HERE API
                 // Data provided is incomplete
-                if (WeatherAPI.Here.Equals(query_vm.LocationSource)
-                        && query_vm.LocationLat == -1 && query_vm.LocationLong == -1
-                        && query_vm.LocationTZLong == null)
+                if (query_vm.LocationLat == -1 && query_vm.LocationLong == -1
+                        && query_vm.LocationTZLong == null
+                        && wm.LocationProvider.NeedsLocationFromID)
                 {
                     query_vm = await AsyncTask.RunAsync(
-                        new HERE.HERELocationProvider().GetLocationFromLocID(query_vm.LocationQuery, query_vm.WeatherSource));
+                        wm.LocationProvider.GetLocationFromID(query_vm));
                 }
-                else if (WeatherAPI.BingMaps.Equals(query_vm.LocationSource)
-                        && query_vm.LocationLat == -1 && query_vm.LocationLong == -1
-                        && query_vm.LocationTZLong == null)
+                else if (wm.LocationProvider.NeedsLocationFromName)
                 {
                     query_vm = await AsyncTask.RunAsync(
-                        new Bing.BingMapsLocationProvider().GetLocationFromAddress(query_vm.LocationQuery, query_vm.WeatherSource));
+                        wm.LocationProvider.GetLocationFromName(query_vm));
+                }
+                else if (wm.LocationProvider.NeedsLocationFromGeocoder)
+                {
+                    query_vm = await AsyncTask.RunAsync(
+                        wm.LocationProvider.GetLocation(new WeatherUtils.Coordinate(query_vm.LocationLat, query_vm.LocationLong), query_vm.WeatherSource));
                 }
 
                 if (query_vm == null)

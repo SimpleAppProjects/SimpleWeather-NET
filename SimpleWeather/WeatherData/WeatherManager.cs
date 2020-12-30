@@ -22,8 +22,11 @@ namespace SimpleWeather.WeatherData
         public const string OpenWeatherMap = "OpenWeather";
         public const string MetNo = "Metno";
         public const string Here = "Here";
-        public const string BingMaps = "Bing";
         public const string NWS = "NWS";
+
+        // Location APIs
+        public const string BingMaps = "Bing";
+        public const string WeatherApi = "weatherapi";
 
         public static readonly IReadOnlyList<ProviderEntry> APIs = new List<ProviderEntry>(5)
         {
@@ -44,7 +47,9 @@ namespace SimpleWeather.WeatherData
                 new ProviderEntry("HERE Maps", Here,
                         "https://www.here.com/en", "https://developer.here.com/"),
                 new ProviderEntry("Bing Maps", BingMaps,
-                        "https://bing.com/maps", "https://bing.com/maps")
+                        "https://bing.com/maps", "https://bing.com/maps"),
+                new ProviderEntry("WeatherAPI.com", WeatherApi,
+                    "https://weatherapi.com", "https://weatherapi.com/api")
         };
     }
 

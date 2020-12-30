@@ -48,6 +48,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)HERE\HEREWeatherProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HERE\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Keys\TimeZoneAPI.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Keys\WeatherApiKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Location\ILocationProviderImpl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Location\LocationData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Location\LocationProviderImpl.cs" />
@@ -100,6 +101,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.ErrorStatus.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.Images.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WeatherApi\WeatherApiLocationProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WeatherApi\LocationItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IAirQualityProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\IAstroDataProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\Images\ImageDataDatabase.cs" />
