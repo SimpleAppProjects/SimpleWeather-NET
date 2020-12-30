@@ -18,7 +18,7 @@ namespace SimpleWeather.UWP.Radar
     {
         private const string URLTemplate = "https://tilecache.rainviewer.com/v2/radar/{timestamp}/256/{zoomlevel}/{x}/{y}/1/1_1.png";
 
-        private List<long> AvailableTimestamps;
+        private List<long?> AvailableTimestamps;
         private MapTileSource TileSource;
 
         private DispatcherTimer AnimationTimer;
@@ -26,7 +26,7 @@ namespace SimpleWeather.UWP.Radar
 
         public RainViewerViewProvider(Border container) : base(container)
         {
-            AvailableTimestamps = new List<long>();
+            AvailableTimestamps = new List<long?>();
         }
 
         public override async void UpdateMap(MapControl mapControl)
@@ -90,7 +90,7 @@ namespace SimpleWeather.UWP.Radar
                             if (TileSource.AnimationState == MapTileAnimationState.Stopped)
                             {
                                 TileSource?.Play();
-                                RadarMapContainer.UpdateTimestamp(AnimationPosition = 0, AvailableTimestamps[0]);
+                                RadarMapContainer.UpdateTimestamp(AnimationPosition = 0, AvailableTimestamps[0].GetValueOrDefault());
                             }
                             else
                             {
@@ -99,11 +99,11 @@ namespace SimpleWeather.UWP.Radar
                                 {
                                     TileSource?.Stop();
                                     AnimationPosition = -1;
-                                    RadarMapContainer.UpdateTimestamp(0, AvailableTimestamps[0]);
+                                    RadarMapContainer.UpdateTimestamp(0, AvailableTimestamps[0].GetValueOrDefault());
                                 }
                                 else
                                 {
-                                    RadarMapContainer.UpdateTimestamp(AnimationPosition, AvailableTimestamps[AnimationPosition]);
+                                    RadarMapContainer.UpdateTimestamp(AnimationPosition, AvailableTimestamps[AnimationPosition].GetValueOrDefault());
                                 }
                             }
                         }
@@ -127,11 +127,11 @@ namespace SimpleWeather.UWP.Radar
             {
                 if (InteractionsEnabled() && IsAnimationAvailable)
                 {
-                    currentTimeStamp = AvailableTimestamps[args.FrameIndex];
+                    currentTimeStamp = AvailableTimestamps[args.FrameIndex].GetValueOrDefault();
                 }
                 else
                 {
-                    currentTimeStamp = AvailableTimestamps.LastOrDefault();
+                    currentTimeStamp = AvailableTimestamps.LastOrDefault().GetValueOrDefault();
                 }
             }
 
@@ -155,10 +155,15 @@ namespace SimpleWeather.UWP.Radar
                 using (var response = await HttpClient.GetAsync(new Uri("https://api.rainviewer.com/public/maps.json")))
                 {
                     var stream = await response.Content.ReadAsInputStreamAsync();
-                    var root = JSONParser.Deserializer<List<long>>(stream.AsStreamForRead());
+                    var root = JSONParser.Deserializer<List<long?>>(stream.AsStreamForRead());
 
                     AvailableTimestamps.Clear();
-                    AvailableTimestamps.AddRange(root);
+                    
+                    if (root?.Count > 0)
+                    {
+                        root.RemoveAll(t => !t.HasValue);
+                        AvailableTimestamps.AddRange(root);
+                    }
                 }
             }
             catch (Exception ex)
