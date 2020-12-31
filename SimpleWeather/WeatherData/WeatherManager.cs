@@ -32,8 +32,10 @@ namespace SimpleWeather.WeatherData
 
         public static readonly IReadOnlyList<ProviderEntry> APIs = new List<ProviderEntry>(5)
         {
+            /*
             new ProviderEntry("HERE Weather", Here,
                 "https://www.here.com/en", "https://developer.here.com/?create=Freemium-Basic&keepState=true&step=account"),
+            */
             new ProviderEntry("Yahoo Weather", Yahoo,
                 "https://www.yahoo.com/weather?ilc=401", "https://www.yahoo.com/weather?ilc=401"),
             new ProviderEntry("MET Norway", MetNo,
