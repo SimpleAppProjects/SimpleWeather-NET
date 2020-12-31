@@ -44,7 +44,7 @@
                 Grid.Column="1"
                 Padding="5"
                 FontSize="12"
-                Text="{x:Bind LocationCountry, Mode=OneWay}"
+                Text="{x:Bind LocationRegionText, Mode=OneWay}"
                 TextAlignment="Left" />
         </Grid>
     </DataTemplate>

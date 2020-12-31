@@ -14,7 +14,7 @@ namespace SimpleWeather.Utils
             }
             else
             {
-                return countryCode.Equals("us", StringComparison.InvariantCultureIgnoreCase) || countryCode.Equals("usa", StringComparison.InvariantCultureIgnoreCase);
+                return countryCode.Equals("us", StringComparison.InvariantCultureIgnoreCase) || countryCode.Equals("usa", StringComparison.InvariantCultureIgnoreCase) || countryCode.Contains("united states", StringComparison.InvariantCultureIgnoreCase);
             }
         }
 
@@ -26,7 +26,7 @@ namespace SimpleWeather.Utils
             }
             else
             {
-                return countryCode.Equals("US", StringComparison.InvariantCultureIgnoreCase) || countryCode.Equals("CA", StringComparison.InvariantCultureIgnoreCase);
+                return IsUS(countryCode) || countryCode.Equals("CA", StringComparison.InvariantCultureIgnoreCase) || countryCode.Contains("canada", StringComparison.InvariantCultureIgnoreCase);
             }
         }
     }

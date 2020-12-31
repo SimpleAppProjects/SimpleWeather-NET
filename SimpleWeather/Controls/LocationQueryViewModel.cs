@@ -10,6 +10,7 @@ namespace SimpleWeather.Controls
     public class LocationQueryViewModel
     {
         public string LocationName { get; set; }
+        public string LocationRegion { get; set; }
         public string LocationCountry { get; set; }
         public string LocationQuery { get; set; }
 
@@ -20,6 +21,21 @@ namespace SimpleWeather.Controls
 
         public string LocationSource { get; set; }
         public string WeatherSource { get; set; }
+
+        public string LocationRegionText
+        {
+            get
+            {
+                if (String.IsNullOrWhiteSpace(LocationRegion))
+                {
+                    return LocationCountry;
+                }
+                else
+                {
+                    return LocationRegion + ", " + LocationCountry;
+                }
+            }
+        }
 
         public LocationQueryViewModel()
         {
@@ -353,7 +369,20 @@ namespace SimpleWeather.Controls
             if (result == null)
                 return;
 
-            LocationName = result.name;
+            bool isUSorCA = LocationUtils.IsUSorCanada(result.country);
+
+            string name = result.name;
+            if (isUSorCA)
+            {
+                name = name.ReplaceFirst(string.Format(", {0}", result.country), "");
+            }
+            else
+            {
+                name = name.ReplaceFirst(string.Format(", {0}, {1}", result.region, result.country), string.Format(", {0}", result.country));
+                LocationRegion = result.region;
+            }
+
+            LocationName = name;
             LocationCountry = result.country;
             LocationQuery = result.id.ToInvariantString();
 
@@ -391,8 +420,8 @@ namespace SimpleWeather.Controls
             var model = obj as LocationQueryViewModel;
             return model != null &&
                    LocationName == model.LocationName &&
-                   LocationCountry == model.LocationCountry/* &&
-                   LocationQuery == model.LocationQuery*/;
+                   LocationCountry == model.LocationCountry &&
+                   LocationRegion == model.LocationRegion;
         }
 
         public override int GetHashCode()
@@ -400,7 +429,7 @@ namespace SimpleWeather.Controls
             var hashCode = 879653843;
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(LocationName);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(LocationCountry);
-            //hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(LocationQuery);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(LocationRegion);
             return hashCode;
         }
     }
