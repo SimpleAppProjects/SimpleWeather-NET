@@ -5,6 +5,7 @@ using SimpleWeather.Metno;
 using SimpleWeather.NWS;
 using SimpleWeather.OpenWeather;
 using SimpleWeather.Utils;
+using SimpleWeather.WeatherUnlocked;
 using SimpleWeather.WeatherYahoo;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,7 @@ namespace SimpleWeather.WeatherData
         public const string MetNo = "Metno";
         public const string Here = "Here";
         public const string NWS = "NWS";
+        public const string WeatherUnlocked = "wunlocked";
 
         // Location APIs
         public const string BingMaps = "Bing";
@@ -40,6 +42,8 @@ namespace SimpleWeather.WeatherData
                 "https://www.weather.gov", "https://www.weather.gov"),
             new ProviderEntry("OpenWeatherMap", OpenWeatherMap,
                 "http://www.openweathermap.org", "https://home.openweathermap.org/users/sign_up"),
+            new ProviderEntry("WeatherUnlocked", WeatherUnlocked,
+                    "https://developer.weatherunlocked.com/", "https://developer.weatherunlocked.com/")
         };
 
         public static readonly IReadOnlyList<ProviderEntry> LocationAPIs = new List<ProviderEntry>(2)
@@ -87,14 +91,14 @@ namespace SimpleWeather.WeatherData
 
             switch (API)
             {
+#if !DEBUG
+                default:
+#endif
                 case WeatherData.WeatherAPI.Yahoo:
                     providerImpl = new YahooWeatherProvider();
                     break;
 
                 case WeatherData.WeatherAPI.Here:
-#if !DEBUG
-                default:
-#endif
                     providerImpl = new HEREWeatherProvider();
                     break;
 
@@ -108,6 +112,10 @@ namespace SimpleWeather.WeatherData
 
                 case WeatherData.WeatherAPI.NWS:
                     providerImpl = new NWSWeatherProvider();
+                    break;
+
+                case WeatherData.WeatherAPI.WeatherUnlocked:
+                    providerImpl = new WeatherUnlockedProvider();
                     break;
             }
 

@@ -261,6 +261,7 @@ API_KEY.txt
 /SimpleWeather/Keys/FirebaseConfig.cs
 /SimpleWeather/Keys/TimeZoneAPI.cs
 /SimpleWeather/Keys/WeatherApiKey.cs
+/SimpleWeather/Keys/WUnlockedKey.cs
 /SimpleWeather/Keys/YahooKey.cs.bak
 /SimpleWeather/Keys/OWMKey.cs.bak
 /SimpleWeather/Keys/HEREWeatherKey.cs.bak
@@ -270,6 +271,7 @@ API_KEY.txt
 /SimpleWeather/Keys/FirebaseConfig.cs.bak
 /SimpleWeather/Keys/TimeZoneAPI.cs.bak
 /SimpleWeather/Keys/WeatherApiKey.cs.bak
+/SimpleWeather/Keys/WUnlockedKey.cs.bak
 /Utf8Json.UniversalCodeGenerator
 /GenerateUtf8JsonResolvers.bat
 /TranslationImport

@@ -49,6 +49,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)HERE\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Keys\TimeZoneAPI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Keys\WeatherApiKey.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Keys\WUnlockedKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Location\ILocationProviderImpl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Location\LocationData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Location\LocationProviderImpl.cs" />
@@ -122,6 +123,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\WeatherProviderImpl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\WeatherRequest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherData\WeatherResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WeatherUnlocked\Current.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WeatherUnlocked\Forecast.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WeatherUnlocked\WeatherUnlockedProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)YahooWeather\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Keys\YahooKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)YahooWeather\YahooWeatherProvider.cs" />
