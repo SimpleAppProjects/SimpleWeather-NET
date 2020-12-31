@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SimpleWeather.AQICN;
 using SimpleWeather.HERE;
 using SimpleWeather.Keys;
 using SimpleWeather.Location;
@@ -9,6 +11,7 @@ using SimpleWeather.NWS;
 using SimpleWeather.SMC;
 using SimpleWeather.TZDB;
 using SimpleWeather.Utils;
+using SimpleWeather.WeatherApi;
 using SimpleWeather.WeatherData;
 
 namespace UnitTestProject
@@ -153,6 +156,16 @@ namespace UnitTestProject
         }
 
         [TestMethod]
+        public void GetWUnlockedWeather()
+        {
+            var provider = WeatherManager.GetProvider(WeatherAPI.WeatherUnlocked);
+            var weather = GetWeather(provider).ConfigureAwait(false).GetAwaiter().GetResult();
+            Assert.IsTrue(weather?.IsValid() == true);
+            Assert.IsTrue(SerializerTest(weather).ConfigureAwait(false).GetAwaiter().GetResult());
+            //SerializerSpeedTest(weather);
+        }
+
+        [TestMethod]
         public void GetHEREOAuthToken()
         {
             var token = HEREOAuthUtils.GetBearerToken(true).ConfigureAwait(false).GetAwaiter().GetResult();
@@ -165,6 +178,20 @@ namespace UnitTestProject
             var tz = new TimeZoneProvider().GetTimeZone(0, 0).ConfigureAwait(false).GetAwaiter().GetResult();
             Debug.WriteLine("TZTest: tz = " + tz);
             Assert.IsTrue(!String.IsNullOrWhiteSpace(tz));
+        }
+
+        [TestMethod]
+        public void GetAQIData()
+        {
+            var tz_long = "America/Los_Angeles";
+            var aqi = new AQICNProvider().GetAirQualityData(
+                new LocationData()
+                {
+                    latitude = 47.6721646,
+                    longitude = -122.1706614,
+                    tz_long = tz_long
+                }).ConfigureAwait(false).GetAwaiter().GetResult();
+            Assert.IsNotNull(aqi);
         }
 
         [TestMethod]
@@ -221,6 +248,20 @@ namespace UnitTestProject
             }
 
             Assert.IsTrue(astro.sunrise != DateTime.MinValue && astro.sunset != DateTime.MinValue && astro.moonrise != DateTime.MinValue && astro.moonset != DateTime.MinValue);
+        }
+
+        [TestMethod]
+        public void WeatherAPILocationTest()
+        {
+            var locationProvider = new WeatherApiLocationProvider();
+            var locations = locationProvider.GetLocations("Redmond, WA", null).ConfigureAwait(false).GetAwaiter().GetResult();
+            Assert.IsTrue(locations?.Count > 0);
+
+            var queryVM = locations.FirstOrDefault(l => l != null && l.LocationName.StartsWith("Redmond, "));
+            Assert.IsNotNull(queryVM);
+
+            var nameModel = locationProvider.GetLocationFromName(queryVM).ConfigureAwait(false).GetAwaiter().GetResult();
+            Assert.IsNotNull(nameModel);
         }
     }
 }
