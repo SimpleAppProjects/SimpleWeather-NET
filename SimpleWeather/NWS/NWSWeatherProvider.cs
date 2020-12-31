@@ -283,6 +283,22 @@ namespace SimpleWeather.NWS
             weather.astronomy.sunrise = solCalcData.sunrise;
             weather.astronomy.sunset = solCalcData.sunset;
 
+            // Update icons
+            var now = DateTimeOffset.UtcNow.ToOffset(offset).TimeOfDay;
+            var sunrise = weather.astronomy.sunrise.TimeOfDay;
+            var sunset = weather.astronomy.sunset.TimeOfDay;
+
+            weather.condition.icon = GetWeatherIcon(now < sunrise || now > sunset, weather.condition.icon);
+
+            foreach (HourlyForecast hr_forecast in weather.hr_forecast)
+            {
+                var hrf_date = hr_forecast.date.ToOffset(offset);
+                hr_forecast.date = hrf_date;
+
+                var hrf_localTime = hrf_date.LocalDateTime.TimeOfDay;
+                hr_forecast.icon = GetWeatherIcon(hrf_localTime < sunrise || hrf_localTime > sunset, hr_forecast.icon);
+            }
+
             return weather;
         }
 
@@ -300,8 +316,7 @@ namespace SimpleWeather.NWS
 
         public override string GetWeatherIcon(string icon)
         {
-            // Example: https://api.weather.gov/icons/land/day/tsra_hi,20?size=medium
-            return GetWeatherIcon(icon.Contains("/night/"), icon);
+            return GetWeatherIcon(false, icon);
         }
 
         public override string GetWeatherIcon(bool isNight, string icon)

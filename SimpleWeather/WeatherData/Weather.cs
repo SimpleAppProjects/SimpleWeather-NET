@@ -742,7 +742,7 @@ namespace SimpleWeather.WeatherData
             {
                 condition = provider.GetWeatherCondition(forecastItem.icon);
             }
-            icon = provider.GetWeatherIcon(forecastItem.icon);
+            icon = provider.GetWeatherIcon(!forecastItem.IsDaytime, forecastItem.icon);
 
             extras = new ForecastExtras();
             if (int.TryParse(forecastItem.pop, out int pop))
@@ -780,7 +780,7 @@ namespace SimpleWeather.WeatherData
             {
                 condition = provider.GetWeatherCondition(forecastItem.icon);
             }
-            icon = provider.GetWeatherIcon(forecastItem.icon);
+            icon = provider.GetWeatherIcon(false, forecastItem.icon);
 
             extras = new ForecastExtras();
             if (int.TryParse(forecastItem.pop, out int pop))
@@ -1093,7 +1093,7 @@ namespace SimpleWeather.WeatherData
             {
                 condition = provider.GetWeatherCondition(forecastItem.iconLink);
             }
-            icon = provider.GetWeatherIcon(forecastItem.iconLink);
+            icon = forecastItem.iconLink;
 
             // Extras
             extras = new ForecastExtras();
@@ -1437,7 +1437,7 @@ namespace SimpleWeather.WeatherData
             {
                 weather = provider.GetWeatherCondition(forecastResponse.currentobservation.Weatherimage);
             }
-            icon = provider.GetWeatherIcon(forecastResponse.currentobservation.Weatherimage);
+            icon = forecastResponse.currentobservation.Weatherimage;
 
             if (float.TryParse(forecastResponse.currentobservation.Temp, out float temp))
             {
