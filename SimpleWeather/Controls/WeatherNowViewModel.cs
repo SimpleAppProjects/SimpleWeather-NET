@@ -400,6 +400,15 @@ namespace SimpleWeather.Controls
                 Sunrise = weather.astronomy.sunrise.ToString("t", CultureInfo.InvariantCulture);
                 Sunset = weather.astronomy.sunset.ToString("t", CultureInfo.InvariantCulture);
 
+                if (weather.astronomy.sunrise.CompareTo(DateTime.MinValue) > 0
+                        && weather.astronomy.sunset.CompareTo(DateTime.MinValue) > 0)
+                {
+                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Sunrise,
+                           weather.astronomy.sunrise.ToString("t", culture)));
+                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Sunset,
+                           weather.astronomy.sunset.ToString("t", culture)));
+                }
+
                 if (weather.astronomy.moonrise != null && weather.astronomy.moonset != null
                         && weather.astronomy.moonrise.CompareTo(DateTime.MinValue) > 0
                         && weather.astronomy.moonset.CompareTo(DateTime.MinValue) > 0)
