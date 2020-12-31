@@ -326,6 +326,9 @@ namespace SimpleWeather.NWS
             // Example: https://api.weather.gov/icons/land/day/tsra_hi,20?size=medium
             string WeatherIcon = string.Empty;
 
+            if (icon == null)
+                return WeatherIcons.NA;
+
             if (icon.Contains("fog"))
             {
                 if (isNight)

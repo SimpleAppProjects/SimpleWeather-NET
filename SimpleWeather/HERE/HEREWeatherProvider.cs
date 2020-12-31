@@ -344,6 +344,9 @@ namespace SimpleWeather.HERE
         {
             bool isNight = false;
 
+            if (icon == null)
+                return WeatherIcons.NA;
+
             if (icon.StartsWith("N_", StringComparison.Ordinal) || icon.Contains("night_"))
                 isNight = true;
 
@@ -353,6 +356,9 @@ namespace SimpleWeather.HERE
         public override string GetWeatherIcon(bool isNight, string icon)
         {
             string WeatherIcon = string.Empty;
+
+            if (icon == null)
+                return WeatherIcons.NA;
 
             if (icon.Contains("mostly_sunny") || icon.Contains("mostly_clear") || icon.Contains("partly_cloudy")
                     || icon.Contains("passing_clounds") || icon.Contains("more_sun_than_clouds") || icon.Contains("scattered_clouds")

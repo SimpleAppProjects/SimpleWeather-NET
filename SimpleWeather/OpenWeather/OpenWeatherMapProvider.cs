@@ -320,6 +320,9 @@ namespace SimpleWeather.OpenWeather
         {
             bool isNight = false;
 
+            if (icon == null)
+                return WeatherIcons.NA;
+
             if (icon.EndsWith("n"))
                 isNight = true;
 
@@ -329,6 +332,9 @@ namespace SimpleWeather.OpenWeather
         public override string GetWeatherIcon(bool isNight, string icon)
         {
             string WeatherIcon = string.Empty;
+
+            if (icon == null)
+                return WeatherIcons.NA;
 
             switch (icon.Substring(0, 3))
             {
