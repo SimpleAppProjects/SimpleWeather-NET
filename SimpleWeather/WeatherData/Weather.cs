@@ -1250,7 +1250,7 @@ namespace SimpleWeather.WeatherData
             }
             else
             {
-                timeObj = TimeSpan.ParseExact(time.ToInvariantString(), "Hmm", CultureInfo.InvariantCulture);
+                timeObj = TimeSpan.ParseExact(time.ToInvariantString("0000"), "%hmm", CultureInfo.InvariantCulture);
             }
             this.date = new DateTimeOffset(dateObj, TimeSpan.Zero).Add(timeObj);
 
