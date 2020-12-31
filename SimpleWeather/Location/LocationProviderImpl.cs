@@ -1,4 +1,5 @@
 ﻿using SimpleWeather.Controls;
+using SimpleWeather.Keys;
 using SimpleWeather.Utils;
 using System;
 using System.Collections.ObjectModel;
@@ -40,14 +41,12 @@ namespace SimpleWeather.Location
 
                 var culture = CultureUtils.UserCulture;
 
-                string key = GetAPIKey();
-
                 MapLocation result = null;
                 WeatherException wEx = null;
 
                 try
                 {
-                    MapService.ServiceToken = key;
+                    MapService.ServiceToken = APIKeys.GetBingMapsKey();
                     // The nearby location to use as a query hint.
                     BasicGeoposition queryHint = new BasicGeoposition
                     {
@@ -60,7 +59,7 @@ namespace SimpleWeather.Location
                     {
                         // Geocode the specified address, using the specified reference point
                         // as a query hint. Return no more than a single result.
-                        MapLocationFinderResult mapResult = await MapLocationFinder.FindLocationsAsync(model.LocationQuery, hintPoint, 1).AsTask(cts.Token);
+                        MapLocationFinderResult mapResult = await MapLocationFinder.FindLocationsAsync(model.LocationName, hintPoint, 1).AsTask(cts.Token);
 
                         switch (mapResult.Status)
                         {
