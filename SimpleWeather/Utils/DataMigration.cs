@@ -166,6 +166,27 @@ namespace SimpleWeather.Utils
                             Settings.KeyVerified = true;
                         }
                     }
+                    if (Settings.VersionCode < 4340)
+                    {
+                        if (WeatherAPI.Here.Equals(Settings.API))
+                        {
+                            Settings.API = WeatherAPI.Yahoo;
+                            var wm = WeatherManager.GetInstance();
+                            wm.UpdateAPI();
+                            Settings.UsePersonalKey = false;
+                            Settings.KeyVerified = true;
+                        }
+
+                        await DBUtils.UpdateLocationKey(locationDB);
+
+                        var locData = await Settings.GetLastGPSLocData();
+                        if (locData?.IsValid() == true)
+                        {
+                            locData.query = WeatherManager.GetProvider(locData.weatherSource)
+                                .UpdateLocationQuery(locData);
+                            Settings.SaveLastGPSLocData(locData);
+                        }
+                    }
                     AnalyticsLogger.LogEvent("App upgrading", new Dictionary<string, string>()
                     {
                         { "API", Settings.API },

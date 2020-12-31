@@ -45,5 +45,22 @@ namespace SimpleWeather.Utils
                 return false;
             }
         }
+
+        public static Task UpdateLocationKey(SQLiteAsyncConnection locationDB)
+        {
+            return Task.Run(async () => 
+            {
+                foreach (LocationData location in await locationDB.Table<LocationData>().ToListAsync()
+                        .ConfigureAwait(false))
+                {
+                    var oldKey = location.query;
+
+                    location.query = WeatherManager.GetProvider(location.weatherSource)
+                        .UpdateLocationQuery(location);
+
+                    await Settings.UpdateLocationWithKey(location, oldKey).ConfigureAwait(false);
+                }
+            });
+        }
     }
 }
