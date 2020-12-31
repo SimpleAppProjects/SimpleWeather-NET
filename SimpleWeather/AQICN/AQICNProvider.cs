@@ -41,6 +41,8 @@ namespace SimpleWeather.AQICN
                         HttpClient webClient = SimpleLibrary.WebClient;
                         var request = new HttpRequestMessage(HttpMethod.Get, queryURL);
 
+                        request.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
+
                         using (request)
                         using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                         using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))

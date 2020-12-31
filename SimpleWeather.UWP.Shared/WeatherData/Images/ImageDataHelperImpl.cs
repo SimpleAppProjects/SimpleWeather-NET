@@ -85,6 +85,8 @@ namespace SimpleWeather.UWP.Shared.WeatherData.Images
                         using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
                         using (var request = new HttpRequestMessage(HttpMethod.Get, imageDownloadUri))
                         {
+                            request.Headers.CacheControl.MaxAge = TimeSpan.FromMinutes(15);
+
                             // Connect to webstream
                             var webClient = SimpleLibrary.WebClient;
                             using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))

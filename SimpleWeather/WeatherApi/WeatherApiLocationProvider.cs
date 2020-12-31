@@ -51,6 +51,8 @@ namespace SimpleWeather.WeatherApi
 
                     using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
                     {
+                        request.Headers.CacheControl.MaxAge = TimeSpan.FromDays(1);
+
                         // Connect to webstream
                         var webClient = SimpleLibrary.WebClient;
                         using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
@@ -134,6 +136,8 @@ namespace SimpleWeather.WeatherApi
 
                     using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
                     {
+                        request.Headers.CacheControl.MaxAge = TimeSpan.FromDays(1);
+
                         // Connect to webstream
                         var webClient = SimpleLibrary.WebClient;
                         using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))

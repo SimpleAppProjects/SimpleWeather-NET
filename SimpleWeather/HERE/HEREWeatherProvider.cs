@@ -80,6 +80,8 @@ namespace SimpleWeather.HERE
                         else
                             throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
 
+                        request.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
+
                         // Connect to webstream
                         var webClient = SimpleLibrary.WebClient;
                         using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))

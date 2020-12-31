@@ -63,6 +63,8 @@ namespace SimpleWeather.HERE
                         else
                             throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
 
+                        request.Headers.CacheControl.MaxAge = TimeSpan.FromDays(1);
+
                         // Connect to webstream
                         var webClient = SimpleLibrary.WebClient;
                         using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
@@ -147,6 +149,8 @@ namespace SimpleWeather.HERE
                         else
                             throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
 
+                        request.Headers.CacheControl.MaxAge = TimeSpan.FromDays(1);
+
                         // Connect to webstream
                         var webClient = SimpleLibrary.WebClient;
                         using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
@@ -213,6 +217,8 @@ namespace SimpleWeather.HERE
                             request.Headers.Add("Authorization", token);
                         else
                             throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+
+                        request.Headers.CacheControl.MaxAge = TimeSpan.FromDays(1);
 
                         // Connect to webstream
                         var webClient = SimpleLibrary.WebClient;

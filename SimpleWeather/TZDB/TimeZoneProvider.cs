@@ -43,6 +43,7 @@ namespace SimpleWeather.TZDB
                     {
                         // Add headers to request
                         request.Headers.Authorization = new HttpCredentialsHeaderValue("Bearer", userToken);
+                        request.Headers.CacheControl.MaxAge = TimeSpan.FromDays(1);
 
                         // Connect to webstream
                         var webClient = SimpleLibrary.WebClient;

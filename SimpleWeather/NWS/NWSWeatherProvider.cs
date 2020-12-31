@@ -65,6 +65,9 @@ namespace SimpleWeather.NWS
                         observationRequest.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
                         hrForecastRequest.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
 
+                        observationRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
+                        hrForecastRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
+
                         // Get response
                         var webClient = SimpleLibrary.WebClient;
                         using (var cts = new CancellationTokenSource((int)(Settings.READ_TIMEOUT * 1.5f)))

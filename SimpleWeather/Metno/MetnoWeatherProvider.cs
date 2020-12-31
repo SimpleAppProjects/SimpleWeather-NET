@@ -63,6 +63,9 @@ namespace SimpleWeather.Metno
                         forecastRequest.Headers.AcceptEncoding.Add(new HttpContentCodingWithQualityHeaderValue("gzip"));
                         astronomyRequest.Headers.AcceptEncoding.Add(new HttpContentCodingWithQualityHeaderValue("gzip"));
 
+                        forecastRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
+                        astronomyRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(3);
+
                         // Get response
                         var webClient = SimpleLibrary.WebClient;
                         using (var ctsF = new CancellationTokenSource(Settings.READ_TIMEOUT))

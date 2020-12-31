@@ -53,35 +53,39 @@ namespace SimpleWeather.Bing
                     // Connect to webstream
                     var webClient = SimpleLibrary.WebClient;
                     using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
-                    using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                    using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                     {
-                        response.EnsureSuccessStatusCode();
-                        Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                        request.Headers.CacheControl.MaxAge = TimeSpan.FromDays(1);
 
-                        // Load data
-                        var locationSet = new HashSet<LocationQueryViewModel>();
-                        AC_Rootobject root = JSONParser.Deserializer<AC_Rootobject>(contentStream);
-
-                        foreach (Value result in root.resourceSets[0].resources[0].value)
+                        using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                        using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                         {
-                            // Filter: only store city results
-                            bool added = false;
-                            if (!String.IsNullOrWhiteSpace(result.address.locality))
-                                added = locationSet.Add(new LocationQueryViewModel(result.address, weatherAPI));
-                            else
-                                continue;
+                            response.EnsureSuccessStatusCode();
+                            Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
-                            // Limit amount of results
-                            if (added)
+                            // Load data
+                            var locationSet = new HashSet<LocationQueryViewModel>();
+                            AC_Rootobject root = JSONParser.Deserializer<AC_Rootobject>(contentStream);
+
+                            foreach (Value result in root.resourceSets[0].resources[0].value)
                             {
-                                maxResults--;
-                                if (maxResults <= 0)
-                                    break;
-                            }
-                        }
+                                // Filter: only store city results
+                                bool added = false;
+                                if (!String.IsNullOrWhiteSpace(result.address.locality))
+                                    added = locationSet.Add(new LocationQueryViewModel(result.address, weatherAPI));
+                                else
+                                    continue;
 
-                        locations = new ObservableCollection<LocationQueryViewModel>(locationSet);
+                                // Limit amount of results
+                                if (added)
+                                {
+                                    maxResults--;
+                                    if (maxResults <= 0)
+                                        break;
+                                }
+                            }
+
+                            locations = new ObservableCollection<LocationQueryViewModel>(locationSet);
+                        }
                     }
                 }
                 catch (Exception ex)

@@ -115,23 +115,31 @@ namespace SimpleWeather.OpenWeather
                     Uri currentURL = new Uri(string.Format(CURRENT_QUERY_URL, query, key, locale));
                     Uri forecastURL = new Uri(string.Format(FORECAST_QUERY_URL, query, key, locale));
 
-                    // Get response
-                    var webClient = SimpleLibrary.WebClient;
-                    using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                    using (var currentResponse = await webClient.GetAsync(currentURL).AsTask(cts.Token))
-                    using (var forecastResponse = await webClient.GetAsync(forecastURL).AsTask(cts.Token))
+                    using (var currentRequest = new HttpRequestMessage(HttpMethod.Get, currentURL))
+                    using (var forecastRequest = new HttpRequestMessage(HttpMethod.Get, forecastURL))
                     {
-                        currentResponse.EnsureSuccessStatusCode();
-                        forecastResponse.EnsureSuccessStatusCode();
+                        currentRequest.Headers.CacheControl.MaxAge = TimeSpan.FromMinutes(15);
+                        forecastRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
 
-                        Stream currentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await currentResponse.Content.ReadAsInputStreamAsync());
-                        Stream forecastStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await forecastResponse.Content.ReadAsInputStreamAsync());
+                        // Get response
+                        var webClient = SimpleLibrary.WebClient;
+                        using (var ctsC = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                        using (var currentResponse = await webClient.SendRequestAsync(currentRequest).AsTask(ctsC.Token))
+                        using (var ctsF = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                        using (var forecastResponse = await webClient.SendRequestAsync(forecastRequest).AsTask(ctsF.Token))
+                        {
+                            currentResponse.EnsureSuccessStatusCode();
+                            forecastResponse.EnsureSuccessStatusCode();
 
-                        // Load weather
-                        CurrentRootobject currRoot = JSONParser.Deserializer<CurrentRootobject>(currentStream);
-                        ForecastRootobject foreRoot = JSONParser.Deserializer<ForecastRootobject>(forecastStream);
+                            Stream currentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await currentResponse.Content.ReadAsInputStreamAsync());
+                            Stream forecastStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await forecastResponse.Content.ReadAsInputStreamAsync());
 
-                        weather = new WeatherData.Weather(currRoot, foreRoot);
+                            // Load weather
+                            CurrentRootobject currRoot = JSONParser.Deserializer<CurrentRootobject>(currentStream);
+                            ForecastRootobject foreRoot = JSONParser.Deserializer<ForecastRootobject>(forecastStream);
+
+                            weather = new WeatherData.Weather(currRoot, foreRoot);
+                        }
                     }
                 }
                 catch (Exception ex)

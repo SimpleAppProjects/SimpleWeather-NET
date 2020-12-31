@@ -58,6 +58,8 @@ namespace SimpleWeather.WeatherYahoo
                         request.Headers.Add("X-Yahoo-App-Id", APIKeys.GetYahooAppID());
                         request.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/json"));
 
+                        request.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
+
                         // Get response
                         var webClient = SimpleLibrary.WebClient;
                         using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
