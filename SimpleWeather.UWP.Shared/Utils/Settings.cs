@@ -169,7 +169,7 @@ namespace SimpleWeather.Utils
                 return value.ToString();
             }
 
-            return WeatherAPI.Here;
+            return WeatherAPI.Yahoo;
         }
 
         private static void SetAPI(string value)

@@ -326,8 +326,8 @@ namespace SimpleWeather.UWP.Setup
                     }
                     else
                     {
-                        Settings.API = WeatherAPI.Here;
-                        query_vm.UpdateWeatherSource(WeatherAPI.Here);
+                        Settings.API = WeatherAPI.Yahoo;
+                        query_vm.UpdateWeatherSource(WeatherAPI.Yahoo);
                     }
                     wm.UpdateAPI();
                 }
@@ -418,10 +418,7 @@ namespace SimpleWeather.UWP.Setup
             // Sizing
             ResizeControls();
 
-            // Set HERE as default API
-            Settings.API = WeatherAPI.Here;
-            wm.UpdateAPI();
-
+            // Verify provider key
             if (wm.KeyRequired && String.IsNullOrWhiteSpace(wm.GetAPIKey()))
             {
                 // If (internal) key doesn't exist, fallback to Yahoo
@@ -494,8 +491,8 @@ namespace SimpleWeather.UWP.Setup
                         }
                         else
                         {
-                            Settings.API = WeatherAPI.Here;
-                            view.UpdateWeatherSource(WeatherAPI.Here);
+                            Settings.API = WeatherAPI.Yahoo;
+                            view.UpdateWeatherSource(WeatherAPI.Yahoo);
                         }
                         wm.UpdateAPI();
                     }

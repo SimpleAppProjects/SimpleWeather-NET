@@ -242,8 +242,8 @@ namespace SimpleWeather.UWP.Preferences
             if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.API_KEY) && WeatherManager.IsKeyRequired(APIComboBox.SelectedValue.ToString()))
             {
                 // Fallback to supported weather provider
-                APIComboBox.SelectedValue = WeatherAPI.Here;
-                Settings.API = WeatherAPI.Here;
+                APIComboBox.SelectedValue = WeatherAPI.Yahoo;
+                Settings.API = WeatherAPI.Yahoo;
                 wm.UpdateAPI();
 
                 if (wm.KeyRequired && String.IsNullOrWhiteSpace(wm.GetAPIKey()))
