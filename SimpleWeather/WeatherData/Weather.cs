@@ -328,10 +328,9 @@ namespace SimpleWeather.WeatherData
             source = WeatherAPI.Here;
         }
 
-        public Weather(NWS.PointsRootobject pointsRootobject, NWS.ForecastRootobject forecastRootobject,
-            NWS.ForecastRootobject hourlyForecastRootobject, NWS.ObservationsCurrentRootobject obsCurrentRootObject)
+        public Weather(NWS.Observation.ForecastRootobject forecastResponse, NWS.Hourly.HourlyForecastResponse hourlyForecastResponse)
         {
-            location = new Location(pointsRootobject);
+            location = new Location(forecastResponse);
             var now = DateTimeOffset.UtcNow;
             update_time = now;
 
@@ -339,41 +338,80 @@ namespace SimpleWeather.WeatherData
             forecast = new List<Forecast>(8);
             txt_forecast = new List<TextForecast>(16);
 
-            for (int i = 0; i < forecastRootobject?.periods?.Length; i++)
             {
-                NWS.Period forecastItem = forecastRootobject.periods[i];
-
-                if ((forecast.Count == 0 && !forecastItem.isDaytime) ||
-                    (forecast.Count == forecastRootobject.periods.Length - 1 && forecastItem.isDaytime))
+                int periodsSize = forecastResponse.time.startValidTime.Length;
+                for (int i = 0; i < periodsSize; i++)
                 {
-                    forecast.Add(new Forecast(forecastItem));
-                    txt_forecast.Add(new TextForecast(forecastItem));
-                }
-                else if (forecastItem.isDaytime && (i + 1) < forecastRootobject.periods.Length)
-                {
-                    NWS.Period ntForecastItem = forecastRootobject.periods[i + 1];
+                    NWS.Observation.PeriodsItem forecastItem = new NWS.Observation.PeriodsItem(
+                            forecastResponse.time.startPeriodName[i],
+                            forecastResponse.time.startValidTime[i],
+                            forecastResponse.time.tempLabel[i],
+                            forecastResponse.data.temperature[i],
+                            forecastResponse.data.pop[i],
+                            forecastResponse.data.weather[i],
+                            forecastResponse.data.iconLink[i],
+                            forecastResponse.data.text[i]
+                        );
 
-                    forecast.Add(new Forecast(forecastItem, ntForecastItem));
-                    txt_forecast.Add(new TextForecast(forecastItem, ntForecastItem));
+                    if ((!forecast.Any() && !forecastItem.IsDaytime) || (forecast.Count == periodsSize - 1 && forecastItem.IsDaytime))
+                    {
+                        forecast.Add(new Forecast(forecastItem));
+                        txt_forecast.Add(new TextForecast(forecastItem));
+                    }
+                    else if (forecastItem.IsDaytime && (i + 1) < periodsSize)
+                    {
+                        NWS.Observation.PeriodsItem nightForecastItem = new NWS.Observation.PeriodsItem(
+                            forecastResponse.time.startPeriodName[i + 1],
+                            forecastResponse.time.startValidTime[i + 1],
+                            forecastResponse.time.tempLabel[i + 1],
+                            forecastResponse.data.temperature[i + 1],
+                            forecastResponse.data.pop[i + 1],
+                            forecastResponse.data.weather[i + 1],
+                            forecastResponse.data.iconLink[i + 1],
+                            forecastResponse.data.text[i + 1]
+                        );
 
-                    i++;
+                        forecast.Add(new Forecast(forecastItem, nightForecastItem));
+                        txt_forecast.Add(new TextForecast(forecastItem, nightForecastItem));
+
+                        i++;
+                    }
                 }
             }
-            if (hourlyForecastRootobject != null)
-            {
-                hr_forecast = new List<HourlyForecast>(hourlyForecastRootobject.periods.Length);
-                foreach (NWS.Period period in hourlyForecastRootobject.periods)
-                {
-                    if (period.startTime.UtcDateTime < now.UtcDateTime.Trim(TimeSpan.TicksPerHour))
-                        continue;
 
-                    hr_forecast.Add(new HourlyForecast(period));
+            {
+                hr_forecast = new List<HourlyForecast>(144);
+                foreach (NWS.Hourly.PeriodsItem period in hourlyForecastResponse.periodsItems)
+                {
+                    int periodsSize = period.unixtime.Count;
+                    for (int i = 0; i < periodsSize; i++)
+                    {
+                        if (DateTimeOffset.FromUnixTimeSeconds(long.Parse(period.unixtime[i])) < now.UtcDateTime.Trim(TimeSpan.TicksPerHour))
+                            continue;
+
+                        NWS.Hourly.PeriodItem forecastItem = new NWS.Hourly.PeriodItem(
+                                period.unixtime[i],
+                                period.windChill[i],
+                                period.windSpeed[i],
+                                period.cloudAmount[i],
+                                period.pop[i],
+                                period.relativeHumidity[i],
+                                period.windGust[i],
+                                period.temperature[i],
+                                period.windDirection[i],
+                                period.iconLink[i],
+                                period.weather[i]
+                            );
+
+                        hr_forecast.Add(new HourlyForecast(forecastItem));
+                    }
                 }
             }
-            condition = new Condition(obsCurrentRootObject);
-            atmosphere = new Atmosphere(obsCurrentRootObject);
+
+            condition = new Condition(forecastResponse);
+            atmosphere = new Atmosphere(forecastResponse);
             //astronomy = new Astronomy(obsCurrentRootObject);
-            precipitation = new Precipitation(obsCurrentRootObject);
+            precipitation = new Precipitation(forecastResponse);
             ttl = 180;
 
             if (!condition.high_f.HasValue && forecast.Count > 0)
@@ -441,11 +479,13 @@ namespace SimpleWeather.WeatherData
             tz_long = null;
         }
 
-        public Location(NWS.PointsRootobject pointsRootobject)
+        public Location(NWS.Observation.ForecastRootobject forecastResponse)
         {
             // Use location name from location provider
             name = null;
-            tz_long = pointsRootobject.timeZone;
+            latitude = float.Parse(forecastResponse.location.latitude);
+            longitude = float.Parse(forecastResponse.location.longitude);
+            tz_long = null;
         }
     }
 
@@ -674,21 +714,24 @@ namespace SimpleWeather.WeatherData
             }
         }
 
-        public Forecast(NWS.Period forecastItem)
+        public Forecast(NWS.Observation.PeriodsItem forecastItem)
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.NWS);
             var culture = CultureUtils.UserCulture;
 
             date = forecastItem.startTime.DateTime;
-            if (forecastItem.isDaytime)
+            if (float.TryParse(forecastItem.temperature, out float temp))
             {
-                high_f = forecastItem.temperature;
-                high_c = ConversionMethods.FtoC(forecastItem.temperature);
-            }
-            else
-            {
-                low_f = forecastItem.temperature;
-                low_c = ConversionMethods.FtoC(forecastItem.temperature);
+                if (forecastItem.IsDaytime)
+                {
+                    high_f = temp;
+                    high_c = ConversionMethods.FtoC(temp);
+                }
+                else
+                {
+                    low_f = temp;
+                    low_c = ConversionMethods.FtoC(temp);
+                }
             }
 
             if (culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) || culture.Equals(CultureInfo.InvariantCulture))
@@ -701,32 +744,33 @@ namespace SimpleWeather.WeatherData
             }
             icon = provider.GetWeatherIcon(forecastItem.icon);
 
-            if (forecastItem.windSpeed != null && forecastItem.windDirection != null)
+            extras = new ForecastExtras();
+            if (int.TryParse(forecastItem.pop, out int pop))
             {
-                var speeds = forecastItem.windSpeed.Replace(" mph", String.Empty).Split(" to ");
-                var maxWindSpeed = speeds.LastOrDefault();
-                if (!String.IsNullOrWhiteSpace(maxWindSpeed) && int.TryParse(maxWindSpeed, NumberStyles.Integer, CultureInfo.InvariantCulture, out int windSpeed))
-                {
-                    extras = new ForecastExtras()
-                    {
-                        wind_degrees = WeatherUtils.GetWindDirection(forecastItem.windDirection),
-                        wind_mph = windSpeed,
-                        wind_kph = ConversionMethods.MphToKph(windSpeed)
-                    };
-                }
+                extras.pop = pop;
+            }
+            else
+            {
+                extras.pop = 0;
             }
         }
 
-        public Forecast(NWS.Period forecastItem, NWS.Period ntForecastItem)
+        public Forecast(NWS.Observation.PeriodsItem forecastItem, NWS.Observation.PeriodsItem nightForecastItem)
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.NWS);
             var culture = CultureUtils.UserCulture;
 
             date = forecastItem.startTime.DateTime;
-            high_f = forecastItem.temperature;
-            high_c = ConversionMethods.FtoC(forecastItem.temperature);
-            low_f = ntForecastItem.temperature;
-            low_c = ConversionMethods.FtoC(ntForecastItem.temperature);
+            if (float.TryParse(forecastItem.temperature, out float hiTemp))
+            {
+                high_f = hiTemp;
+                high_c = ConversionMethods.FtoC(hiTemp);
+            }
+            if (float.TryParse(nightForecastItem.temperature, out float loTemp))
+            {
+                low_f = loTemp;
+                low_c = ConversionMethods.FtoC(loTemp);
+            }
 
             if (culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) || culture.Equals(CultureInfo.InvariantCulture))
             {
@@ -738,21 +782,14 @@ namespace SimpleWeather.WeatherData
             }
             icon = provider.GetWeatherIcon(forecastItem.icon);
 
-            if (forecastItem.windSpeed != null && forecastItem.windDirection != null)
+            extras = new ForecastExtras();
+            if (int.TryParse(forecastItem.pop, out int pop))
             {
-                // windSpeed is reported usually as, for ex., '7 to 10 mph'
-                // Format and split text into min and max
-                var speeds = forecastItem.windSpeed.Replace(" mph", String.Empty).Split(" to ");
-                var maxWindSpeed = speeds.LastOrDefault();
-                if (!String.IsNullOrWhiteSpace(maxWindSpeed) && int.TryParse(maxWindSpeed, NumberStyles.Integer, CultureInfo.InvariantCulture, out int windSpeed))
-                {
-                    extras = new ForecastExtras()
-                    {
-                        wind_degrees = WeatherUtils.GetWindDirection(forecastItem.windDirection),
-                        wind_mph = windSpeed,
-                        wind_kph = ConversionMethods.MphToKph(windSpeed)
-                    };
-                }
+                extras.pop = pop;
+            }
+            else
+            {
+                extras.pop = 0;
             }
         }
     }
@@ -1035,46 +1072,64 @@ namespace SimpleWeather.WeatherData
             extras.wind_kph = wind_kph;
         }
 
-        public HourlyForecast(NWS.Period forecastItem)
+        public HourlyForecast(NWS.Hourly.PeriodItem forecastItem)
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.NWS);
             var culture = CultureUtils.UserCulture;
 
-            date = forecastItem.startTime;
-            high_f = forecastItem.temperature;
-            high_c = ConversionMethods.FtoC(forecastItem.temperature);
+            date = DateTimeOffset.FromUnixTimeSeconds(long.Parse(forecastItem.unixTime));
+
+            if (float.TryParse(forecastItem.temperature, out float temp))
+            {
+                high_f = temp;
+                high_c = ConversionMethods.FtoC(temp);
+            }
 
             if (culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) || culture.Equals(CultureInfo.InvariantCulture))
             {
-                condition = forecastItem.shortForecast;
+                condition = forecastItem.weather;
             }
             else
             {
-                condition = provider.GetWeatherCondition(forecastItem.icon);
+                condition = provider.GetWeatherCondition(forecastItem.iconLink);
             }
-            icon = provider.GetWeatherIcon(forecastItem.icon);
+            icon = provider.GetWeatherIcon(forecastItem.iconLink);
 
-            if (forecastItem.windSpeed != null && forecastItem.windDirection != null)
+            // Extras
+            extras = new ForecastExtras();
+
+            if (float.TryParse(forecastItem.windSpeed, out float windSpeed) &&
+                int.TryParse(forecastItem.windDirection, out int windDir))
             {
-                wind_degrees = WeatherUtils.GetWindDirection(forecastItem.windDirection);
+                wind_degrees = windDir;
+                wind_mph = windSpeed;
+                wind_kph = ConversionMethods.MphToKph(windSpeed);
 
-                // windSpeed is reported usually as, for ex., '7 to 10 mph'
-                // Format and split text into min and max
-                var speeds = forecastItem.windSpeed.Replace(" mph", String.Empty).Split(" to ");
-                var maxWindSpeed = speeds.LastOrDefault();
-                if (!String.IsNullOrWhiteSpace(maxWindSpeed) && int.TryParse(maxWindSpeed, NumberStyles.Integer, CultureInfo.InvariantCulture, out int windSpeed))
-                {
-                    wind_mph = windSpeed;
-                    wind_kph = ConversionMethods.MphToKph(windSpeed);
+                extras.wind_degrees = wind_degrees;
+                extras.wind_mph = wind_mph;
+                extras.wind_kph = wind_kph;
+            }
 
-                    // Extras
-                    extras = new ForecastExtras()
-                    {
-                        wind_degrees = this.wind_degrees,
-                        wind_mph = this.wind_mph,
-                        wind_kph = this.wind_kph
-                    };
-                }
+            if (float.TryParse(forecastItem.windChill, out float windChill))
+            {
+                extras.feelslike_f = windChill;
+                extras.feelslike_c = ConversionMethods.FtoC(windChill);
+            }
+
+            if (int.TryParse(forecastItem.cloudAmount, out int cloudiness))
+            {
+                extras.cloudiness = cloudiness;
+            }
+
+            if (int.TryParse(forecastItem.pop, out int pop))
+            {
+                extras.pop = pop;
+            }
+
+            if (float.TryParse(forecastItem.windGust, out float windGust))
+            {
+                extras.windgust_mph = windGust;
+                extras.windgust_kph = ConversionMethods.MphToKph(windGust);
             }
         }
     }
@@ -1160,7 +1215,7 @@ namespace SimpleWeather.WeatherData
             fcttext_metric = fcttext;
         }
 
-        public TextForecast(NWS.Period forecastItem)
+        public TextForecast(NWS.Observation.PeriodsItem forecastItem)
         {
             date = forecastItem.startTime;
             fcttext = String.Format(CultureInfo.InvariantCulture,
@@ -1168,7 +1223,7 @@ namespace SimpleWeather.WeatherData
             fcttext_metric = fcttext;
         }
 
-        public TextForecast(NWS.Period forecastItem, NWS.Period ntForecastItem)
+        public TextForecast(NWS.Observation.PeriodsItem forecastItem, NWS.Observation.PeriodsItem ntForecastItem)
         {
             date = forecastItem.startTime;
             fcttext = String.Format(CultureInfo.InvariantCulture,
@@ -1369,59 +1424,56 @@ namespace SimpleWeather.WeatherData
             observation_time = observation.utcTime;
         }
 
-        public Condition(NWS.ObservationsCurrentRootobject obsCurrentRootObject)
+        public Condition(NWS.Observation.ForecastRootobject forecastResponse)
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.NWS);
             var culture = CultureUtils.UserCulture;
 
             if (culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) || culture.Equals(CultureInfo.InvariantCulture))
             {
-                weather = obsCurrentRootObject.textDescription;
+                weather = forecastResponse.currentobservation.Weather;
             }
             else
             {
-                weather = provider.GetWeatherCondition(obsCurrentRootObject.icon);
+                weather = provider.GetWeatherCondition(forecastResponse.currentobservation.Weatherimage);
             }
-            icon = provider.GetWeatherIcon(obsCurrentRootObject.icon);
+            icon = provider.GetWeatherIcon(forecastResponse.currentobservation.Weatherimage);
 
-            if (obsCurrentRootObject.temperature.value.HasValue)
+            if (float.TryParse(forecastResponse.currentobservation.Temp, out float temp))
             {
-                temp_c = obsCurrentRootObject.temperature.value.GetValueOrDefault(0.00f);
-                temp_f = ConversionMethods.CtoF(temp_c.Value);
-            }
-
-            if (obsCurrentRootObject.windDirection.value.HasValue)
-            {
-                wind_degrees = (int)obsCurrentRootObject.windDirection.value.GetValueOrDefault(0);
+                temp_f = temp;
+                temp_c = ConversionMethods.FtoC(temp);
             }
 
-            if (obsCurrentRootObject.windSpeed.value.HasValue)
+            if (int.TryParse(forecastResponse.currentobservation.Windd, out int windDir))
             {
-                wind_kph = obsCurrentRootObject.windSpeed.value.GetValueOrDefault(0.00f);
-                wind_mph = ConversionMethods.KphToMph(wind_kph.Value);
+                wind_degrees = windDir;
             }
 
-            if (obsCurrentRootObject.windGust.value.HasValue)
+            if (float.TryParse(forecastResponse.currentobservation.Winds, out float windSpeed))
             {
-                windgust_kph = obsCurrentRootObject.windGust.value;
-                windgust_mph = ConversionMethods.KphToMph(windgust_kph.Value);
+                wind_mph = windSpeed;
+                wind_kph = ConversionMethods.MphToKph(windSpeed);
             }
 
-            if (obsCurrentRootObject.heatIndex.value.HasValue)
+            if (float.TryParse(forecastResponse.currentobservation.Gust, out float windGust))
             {
-                feelslike_c = obsCurrentRootObject.heatIndex.value.GetValueOrDefault(0.00f);
-                feelslike_f = ConversionMethods.CtoF(feelslike_c.Value);
+                windgust_mph = windGust;
+                windgust_kph = ConversionMethods.MphToKph(windGust);
             }
-            else if (obsCurrentRootObject.windChill.value.HasValue)
+
+            if (float.TryParse(forecastResponse.currentobservation.WindChill, out float windChill))
             {
-                feelslike_c = obsCurrentRootObject.windChill.value.GetValueOrDefault(0.00f);
-                feelslike_f = ConversionMethods.CtoF(feelslike_c.Value);
+                feelslike_f = windChill;
+                feelslike_c = ConversionMethods.FtoC(windChill);
             }
             else if (temp_f.HasValue && !Equals(temp_f, temp_c) && wind_mph.HasValue)
             {
-                float humidity = obsCurrentRootObject.relativeHumidity.value.GetValueOrDefault(-1.0f);
-                feelslike_f = WeatherUtils.GetFeelsLikeTemp(temp_f.Value, wind_mph.Value, (int)humidity);
-                feelslike_c = ConversionMethods.FtoC(feelslike_f.Value);
+                if (float.TryParse(forecastResponse.currentobservation.Relh, out float humidity) && humidity >= 0)
+                {
+                    feelslike_f = WeatherUtils.GetFeelsLikeTemp(temp_f.Value, wind_mph.Value, (int)Math.Round(humidity));
+                    feelslike_c = ConversionMethods.FtoC(feelslike_f.Value);
+                }
             }
 
             if (wind_mph.HasValue)
@@ -1429,7 +1481,7 @@ namespace SimpleWeather.WeatherData
                 beaufort = new Beaufort((int)WeatherUtils.GetBeaufortScale((int)Math.Round(wind_mph.Value)));
             }
 
-            observation_time = obsCurrentRootObject.timestamp;
+            observation_time = forecastResponse.creationDate;
         }
     }
 
@@ -1520,31 +1572,30 @@ namespace SimpleWeather.WeatherData
             }
         }
 
-        public Atmosphere(NWS.ObservationsCurrentRootobject obsCurrentRootObject)
+        public Atmosphere(NWS.Observation.ForecastRootobject forecastResponse)
         {
-            if (obsCurrentRootObject.relativeHumidity.value.HasValue)
+            if (int.TryParse(forecastResponse.currentobservation.Relh, out int relh))
             {
-                humidity = (int)Math.Round(obsCurrentRootObject.relativeHumidity.value.GetValueOrDefault(0.00f));
+                humidity = relh;
             }
 
-            if (obsCurrentRootObject.barometricPressure.value.HasValue)
+            if (float.TryParse(forecastResponse.currentobservation.SLP, out float pressure))
             {
-                var pressure_pa = obsCurrentRootObject.barometricPressure.value.GetValueOrDefault(0.00f);
-                pressure_in = ConversionMethods.PaToInHg(pressure_pa);
-                pressure_mb = ConversionMethods.PaToMB(pressure_pa);
+                pressure_in = pressure;
+                pressure_mb = ConversionMethods.InHgToMB(pressure);
             }
             pressure_trend = String.Empty;
 
-            if (obsCurrentRootObject.visibility.value.HasValue)
+            if (float.TryParse(forecastResponse.currentobservation.Visibility, out float visibility))
             {
-                visibility_km = obsCurrentRootObject.visibility.value.GetValueOrDefault(0.00f) / 1000;
-                visibility_mi = ConversionMethods.KmToMi(obsCurrentRootObject.visibility.value.GetValueOrDefault(0.00f) / 1000);
+                visibility_mi = visibility;
+                visibility_km = ConversionMethods.MiToKm(visibility);
             }
 
-            if (obsCurrentRootObject.dewpoint.value.HasValue)
+            if (float.TryParse(forecastResponse.currentobservation.Dewp, out float dewp))
             {
-                dewpoint_c = obsCurrentRootObject.dewpoint.value.GetValueOrDefault(0.00f);
-                dewpoint_f = ConversionMethods.CtoF(obsCurrentRootObject.dewpoint.value.GetValueOrDefault(0.00f));
+                dewpoint_f = dewp;
+                dewpoint_c = ConversionMethods.FtoC(dewp);
             }
         }
     }
@@ -1889,20 +1940,8 @@ namespace SimpleWeather.WeatherData
             }
         }
 
-        public Precipitation(NWS.ObservationsCurrentRootobject obsCurrentRootObject)
+        public Precipitation(NWS.Observation.ForecastRootobject forecastResponse)
         {
-            if (obsCurrentRootObject.precipitationLastHour.value.HasValue)
-            {
-                // "unit:m"
-                qpf_rain_mm = obsCurrentRootObject.precipitationLastHour.value.GetValueOrDefault(0.00f) * 1000;
-                qpf_rain_in = ConversionMethods.MMToIn(qpf_rain_mm.Value);
-            }
-            else if (obsCurrentRootObject.precipitationLast3Hours.value.HasValue)
-            {
-                // "unit:m"
-                qpf_rain_mm = obsCurrentRootObject.precipitationLast3Hours.value.GetValueOrDefault(0.00f) * 1000;
-                qpf_rain_in = ConversionMethods.MMToIn(qpf_rain_mm.Value);
-            }
             // The rest DNE
         }
     }

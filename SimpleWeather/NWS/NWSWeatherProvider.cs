@@ -1,10 +1,15 @@
-﻿using SimpleWeather.Location;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using SimpleWeather.Location;
+using SimpleWeather.NWS.Hourly;
 using SimpleWeather.SMC;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
@@ -17,8 +22,8 @@ namespace SimpleWeather.NWS
 {
     public partial class NWSWeatherProvider : WeatherProviderImpl
     {
-        private const string POINTS_QUERY_URL = "https://api.weather.gov/points/{0}";
-        private const int MAX_ATTEMPTS = 2;
+        private const string FORECAST_QUERY_URL = "https://forecast.weather.gov/MapClick.php?{0}&FcstType=json";
+        private const string HRFORECAST_QUERY_URL = "https://forecast.weather.gov/MapClick.php?{0}&FcstType=digitalJSON";
 
         public NWSWeatherProvider() : base()
         {
@@ -51,37 +56,41 @@ namespace SimpleWeather.NWS
 
                 try
                 {
-                    Uri pointsURL = new Uri(string.Format(POINTS_QUERY_URL, location_query));
+                    Uri observationURL = new Uri(string.Format(FORECAST_QUERY_URL, location_query));
+                    Uri hrlyForecastURL = new Uri(string.Format(HRFORECAST_QUERY_URL, location_query));
 
-                    using (var pointsRequest = new HttpRequestMessage(HttpMethod.Get, pointsURL))
+                    using (var observationRequest = new HttpRequestMessage(HttpMethod.Get, observationURL))
+                    using (var hrForecastRequest = new HttpRequestMessage(HttpMethod.Get, hrlyForecastURL))
                     {
-                        pointsRequest.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
+                        observationRequest.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
+                        hrForecastRequest.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
 
                         // Get response
                         var webClient = SimpleLibrary.WebClient;
                         using (var cts = new CancellationTokenSource((int)(Settings.READ_TIMEOUT * 1.5f)))
-                        using (var pointsResponse = await webClient.SendRequestAsync(pointsRequest).AsTask(cts.Token))
+                        using (var observationResponse = await webClient.SendRequestAsync(observationRequest).AsTask(cts.Token))
                         {
                             // Check for errors
-                            CheckForErrors(pointsResponse.StatusCode);
+                            CheckForErrors(observationResponse.StatusCode);
 
-                            Stream stream = WindowsRuntimeStreamExtensions.AsStreamForRead(await pointsResponse.Content.ReadAsInputStreamAsync());
+                            Stream observationStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await observationResponse.Content.ReadAsInputStreamAsync());
 
                             // Load point json data
-                            PointsRootobject pointsRootobject = JSONParser.Deserializer<PointsRootobject>(stream);
+                            Observation.ForecastRootobject observationData = JSONParser.Deserializer<Observation.ForecastRootobject>(observationStream);
 
-                            string forecastURL = pointsRootobject.forecast;
-                            string forecastHourlyUrl = pointsRootobject.forecastHourly;
-                            string observationStationsUrl = pointsRootobject.observationStations;
+                            using (var cts2 = new CancellationTokenSource((int)(Settings.READ_TIMEOUT * 1.5f)))
+                            using (var forecastResponse = await webClient.SendRequestAsync(hrForecastRequest).AsTask(cts.Token))
+                            {
+                                // Check for errors
+                                CheckForErrors(forecastResponse.StatusCode);
 
-                            ForecastRootobject forecastRootobject = await GetForecastResponse(forecastURL);
-                            ForecastRootobject hourlyForecastRootobject = await GetForecastResponse(forecastHourlyUrl);
-                            ObservationsStationsRootobject stationsRootobject = await GetObservationStationsResponse(observationStationsUrl);
+                                Stream forecastStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await forecastResponse.Content.ReadAsInputStreamAsync());
 
-                            string stationUrl = stationsRootobject.observationStations[0];
-                            ObservationsCurrentRootobject obsCurrentRootObject = await GetObservationCurrentResponse(stationUrl);
+                                // Load point json data
+                                Hourly.HourlyForecastResponse forecastData = await CreateHourlyForecastResponse(forecastStream);
 
-                            weather = new Weather(pointsRootobject, forecastRootobject, hourlyForecastRootobject, obsCurrentRootObject);
+                                weather = new Weather(observationData, forecastData);
+                            }
                         }
                     }
                 }
@@ -113,189 +122,133 @@ namespace SimpleWeather.NWS
             });
         }
 
-        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        private Task<ForecastRootobject> GetForecastResponse(string url)
+        private async Task<HourlyForecastResponse> CreateHourlyForecastResponse(Stream forecastStream)
         {
-            return Task.Run(async () =>
+            var forecastData = new HourlyForecastResponse();
+            var forecastObj = await JObject.LoadAsync(new JsonTextReader(new StreamReader(forecastStream)));
+
+            if (forecastObj.HasValues)
             {
-                ForecastRootobject root = null;
+                var fcastRoot = forecastObj.Root.ToObject<JObject>();
 
-                try
+                forecastData.creationDate = fcastRoot.Property("creationDate").ToObject<string>();
+                forecastData.location = new Hourly.Location();
+
+                var location = fcastRoot.Property("location").ToObject<JObject>();
+                forecastData.location.latitude = location.Property("latitude").ToObject<double>();
+                forecastData.location.longitude = location.Property("longitude").ToObject<double>();
+
+                var periodNameList = fcastRoot.Property("PeriodNameList").ToObject<JObject>();
+                SortedSet<string> sortedKeys = new SortedSet<string>(periodNameList.Properties().Select(p => p.Name));
+
+                forecastData.periodsItems = new List<PeriodsItem>(sortedKeys.Count);
+
+                foreach (var periodNumber in sortedKeys)
                 {
-                    Uri weatherURL = new Uri(url + "?units=us");
+                    var periodName = periodNameList.Value<string>(periodNumber);
 
-                    for (int i = 0; i < MAX_ATTEMPTS; i++)
+                    if (!fcastRoot.ContainsKey(periodName))
+                        continue;
+
+                    var item = new PeriodsItem();
+
+                    var periodObj = fcastRoot.Property(periodName).ToObject<JObject>();
+                    var unixTimeArr = periodObj.Property("unixtime").ToObject<JArray>();
+                    var windChillArr = periodObj.Property("windChill").ToObject<JArray>();
+                    var windSpeedArr = periodObj.Property("windSpeed").ToObject<JArray>();
+                    var cloudAmtArr = periodObj.Property("cloudAmount").ToObject<JArray>();
+                    var popArr = periodObj.Property("pop").ToObject<JArray>();
+                    var humidityArr = periodObj.Property("relativeHumidity").ToObject<JArray>();
+                    var windGustArr = periodObj.Property("windGust").ToObject<JArray>();
+                    var tempArr = periodObj.Property("temperature").ToObject<JArray>();
+                    var windDirArr = periodObj.Property("windDirection").ToObject<JArray>();
+                    var iconArr = periodObj.Property("iconLink").ToObject<JArray>();
+                    var conditionTxtArr = periodObj.Property("weather").ToObject<JArray>();
+
+                    item.periodName = periodObj.Property("periodName").ToObject<string>();
+
+                    item.unixtime = new List<string>(unixTimeArr.Count);
+                    foreach (var jsonElement in unixTimeArr.Children<JValue>())
                     {
-                        using (var request = new HttpRequestMessage(HttpMethod.Get, weatherURL))
-                        {
-                            request.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
-
-                            try
-                            {
-                                // Get response
-                                var webClient = SimpleLibrary.WebClient;
-                                using (var cts = new CancellationTokenSource((int)(Settings.READ_TIMEOUT * 1.5f)))
-                                using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
-                                {
-                                    if (response.StatusCode == HttpStatusCode.BadRequest)
-                                    {
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        // Check for errors
-                                        CheckForErrors(response.StatusCode);
-                                        response.EnsureSuccessStatusCode();
-
-                                        Stream stream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-
-                                        // Load point json data
-                                        root = JSONParser.Deserializer<ForecastRootobject>(stream);
-                                    }
-                                }
-                            }
-                            catch { }
-                        }
-
-                        if (i < MAX_ATTEMPTS - 1 && root == null)
-                        {
-                            await Task.Delay(1000);
-                        }
+                        String time = jsonElement.Value?.ToString();
+                        item.unixtime.Add(time);
                     }
-                }
-                catch (WeatherException)
-                {
-                    // Allow continuing w/o the data
-                    root = null;
-                }
-                catch (Exception ex)
-                {
-                    root = null;
-                    throw ex;
-                }
 
-                return root;
-            });
-        }
-
-        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public Task<ObservationsStationsRootobject> GetObservationStationsResponse(string url)
-        {
-            return Task.Run(async () =>
-            {
-                ObservationsStationsRootobject root = null;
-
-                try
-                {
-                    Uri weatherURL = new Uri(url);
-
-                    for (int i = 0; i < MAX_ATTEMPTS; i++)
+                    item.windChill = new List<string>(windChillArr.Count);
+                    foreach (var jsonElement in windChillArr.Children<JValue>())
                     {
-                        using (var request = new HttpRequestMessage(HttpMethod.Get, weatherURL))
-                        {
-                            request.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
-
-                            try
-                            {
-                                // Get response
-                                var webClient = SimpleLibrary.WebClient;
-                                using (var cts = new CancellationTokenSource((int)(Settings.READ_TIMEOUT * 1.5f)))
-                                using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
-                                {
-                                    if (response.StatusCode == HttpStatusCode.BadRequest)
-                                    {
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        // Check for errors
-                                        CheckForErrors(response.StatusCode);
-                                        response.EnsureSuccessStatusCode();
-
-                                        Stream stream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-
-                                        // Load point json data
-                                        root = JSONParser.Deserializer<ObservationsStationsRootobject>(stream);
-                                    }
-                                }
-                            }
-                            catch { }
-                        }
-
-                        if (i < MAX_ATTEMPTS - 1 && root == null)
-                        {
-                            await Task.Delay(1000);
-                        }
+                        String windChill = jsonElement.Value?.ToString();
+                        item.windChill.Add(windChill);
                     }
-                }
-                catch (Exception ex)
-                {
-                    root = null;
-                    throw ex;
-                }
 
-                return root;
-            });
-        }
-
-        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public Task<ObservationsCurrentRootobject> GetObservationCurrentResponse(string url)
-        {
-            return Task.Run(async () =>
-            {
-                ObservationsCurrentRootobject root = null;
-
-                try
-                {
-                    Uri weatherURL = new Uri(url + "/observations/latest?require_qc=true");
-
-                    for (int i = 0; i < MAX_ATTEMPTS; i++)
+                    item.windSpeed = new List<string>(windSpeedArr.Count);
+                    foreach (var jsonElement in windSpeedArr.Children<JValue>())
                     {
-                        using (var request = new HttpRequestMessage(HttpMethod.Get, weatherURL))
-                        {
-                            request.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
-
-                            try
-                            {
-                                // Get response
-                                var webClient = SimpleLibrary.WebClient;
-                                using (var cts = new CancellationTokenSource((int)(Settings.READ_TIMEOUT * 1.5f)))
-                                using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
-                                {
-                                    if (response.StatusCode == HttpStatusCode.BadRequest)
-                                    {
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        // Check for errors
-                                        CheckForErrors(response.StatusCode);
-                                        response.EnsureSuccessStatusCode();
-
-                                        Stream stream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-
-                                        // Load point json data
-                                        root = JSONParser.Deserializer<ObservationsCurrentRootobject>(stream);
-                                    }
-                                }
-                            }
-                            catch { }
-                        }
-
-                        if (i < MAX_ATTEMPTS - 1 && root == null)
-                        {
-                            await Task.Delay(1000);
-                        }
+                        String windSpeed = jsonElement.Value?.ToString();
+                        item.windSpeed.Add(windSpeed);
                     }
-                }
-                catch (Exception ex)
-                {
-                    root = null;
-                    throw ex;
-                }
 
-                return root;
-            });
+                    item.cloudAmount = new List<string>(cloudAmtArr.Count);
+                    foreach (var jsonElement in cloudAmtArr.Children<JValue>())
+                    {
+                        String cloudAmt = jsonElement.Value?.ToString();
+                        item.cloudAmount.Add(cloudAmt);
+                    }
+
+                    item.pop = new List<string>(popArr.Count);
+                    foreach (var jsonElement in popArr.Children<JValue>())
+                    {
+                        String pop = jsonElement.Value?.ToString();
+                        item.pop.Add(pop);
+                    }
+
+                    item.relativeHumidity = new List<string>(humidityArr.Count);
+                    foreach (var jsonElement in humidityArr.Children<JValue>())
+                    {
+                        String humidity = jsonElement.Value?.ToString();
+                        item.relativeHumidity.Add(humidity);
+                    }
+
+                    item.windGust = new List<string>(windGustArr.Count);
+                    foreach (var jsonElement in windGustArr.Children<JValue>())
+                    {
+                        String windGust = jsonElement.Value?.ToString();
+                        item.windGust.Add(windGust);
+                    }
+
+                    item.temperature = new List<string>(tempArr.Count);
+                    foreach (var jsonElement in tempArr.Children<JValue>())
+                    {
+                        String temp = jsonElement.Value?.ToString();
+                        item.temperature.Add(temp);
+                    }
+
+                    item.windDirection = new List<string>(windDirArr.Count);
+                    foreach (var jsonElement in windDirArr.Children<JValue>())
+                    {
+                        String windDir = jsonElement.Value?.ToString();
+                        item.windDirection.Add(windDir);
+                    }
+
+                    item.iconLink = new List<string>(iconArr.Count);
+                    foreach (var jsonElement in iconArr.Children<JValue>())
+                    {
+                        String icon = jsonElement.Value?.ToString();
+                        item.iconLink.Add(icon);
+                    }
+
+                    item.weather = new List<string>(conditionTxtArr.Count);
+                    foreach (var jsonElement in conditionTxtArr.Children<JValue>())
+                    {
+                        String condition = jsonElement.Value?.ToString();
+                        item.weather.Add(condition);
+                    }
+
+                    forecastData.periodsItems.Add(item);
+                }
+            }
+
+            return forecastData;
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
@@ -335,13 +288,13 @@ namespace SimpleWeather.NWS
 
         public override string UpdateLocationQuery(Weather weather)
         {
-            var str = string.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}", weather.location.latitude, weather.location.longitude);
+            var str = string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}", weather.location.latitude, weather.location.longitude);
             return str;
         }
 
         public override string UpdateLocationQuery(LocationData location)
         {
-            var str = string.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}", location.latitude, location.longitude);
+            var str = string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}", location.latitude, location.longitude);
             return str;
         }
 

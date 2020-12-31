@@ -56,10 +56,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Metno\MetnoWeatherProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Metno\Weather.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NWS\Alert.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NWS\HourlyForecastResponse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NWS\NWSWeatherProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NWS\NWSAlertProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Keys\OWMKey.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)NWS\Weather.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NWS\Forecast.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NWS\PeriodsItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\OneCallResponse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\OpenWeatherMapProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\Weather.cs" />
