@@ -63,9 +63,9 @@ namespace SimpleWeather.WeatherApi
 
                             // Load data
                             var locationSet = new HashSet<LocationQueryViewModel>();
-                            Rootobject root = JSONParser.Deserializer<Rootobject>(contentStream);
+                            LocationItem[] root = JSONParser.Deserializer<LocationItem[]>(contentStream);
 
-                            foreach (LocationItem result in root.LocationItems)
+                            foreach (LocationItem result in root)
                             {
                                 // Filter: only store city results
                                 bool added = locationSet.Add(new LocationQueryViewModel(result, weatherAPI));
@@ -108,6 +108,7 @@ namespace SimpleWeather.WeatherApi
             return Task.FromResult<LocationQueryViewModel>(null);
         }
 
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override Task<LocationQueryViewModel> GetLocationFromName(LocationQueryViewModel model)
         {
             return base.GetLocationFromName(model);
@@ -147,9 +148,9 @@ namespace SimpleWeather.WeatherApi
                             Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
                             // Load data
-                            Rootobject root = JSONParser.Deserializer<Rootobject>(contentStream);
+                            LocationItem[] root = JSONParser.Deserializer<LocationItem[]>(contentStream);
 
-                            foreach (LocationItem item in root.LocationItems)
+                            foreach (LocationItem item in root)
                             {
                                 if (Math.Abs(ConversionMethods.CalculateHaversine(coord.Latitude, coord.Longitude, item.lat, item.lon)) <= 1000)
                                 {
@@ -160,7 +161,7 @@ namespace SimpleWeather.WeatherApi
                             
                             if (result == null)
                             {
-                                result = root.LocationItems[0];
+                                result = root[0];
                             }
                         }
                     }
