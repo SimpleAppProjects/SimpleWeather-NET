@@ -17,7 +17,7 @@ namespace SimpleWeather.WeatherData
         public abstract string WeatherAPI { get; }
         public abstract bool SupportsWeatherLocale { get; }
         public abstract bool KeyRequired { get; }
-        public abstract bool SupportsAlerts { get; }
+        public virtual bool SupportsAlerts => true;
         public abstract bool NeedsExternalAlertData { get; }
 
         // Methods

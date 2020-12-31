@@ -29,7 +29,6 @@ namespace SimpleWeather.OpenWeather
         public override string WeatherAPI => WeatherData.WeatherAPI.OpenWeatherMap;
         public override bool SupportsWeatherLocale => true;
         public override bool KeyRequired => true;
-        public override bool SupportsAlerts => true;
         public override bool NeedsExternalAlertData => true;
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>

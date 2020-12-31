@@ -33,7 +33,6 @@ namespace SimpleWeather.NWS
         public override string WeatherAPI => WeatherData.WeatherAPI.NWS;
         public override bool SupportsWeatherLocale => false;
         public override bool KeyRequired => false;
-        public override bool SupportsAlerts => true;
         public override bool NeedsExternalAlertData => true;
 
         public override Task<bool> IsKeyValid(string key)

@@ -28,7 +28,6 @@ namespace SimpleWeather.WeatherUnlocked
         public override string WeatherAPI => WeatherData.WeatherAPI.WeatherUnlocked;
         public override bool SupportsWeatherLocale => true;
         public override bool KeyRequired => false;
-        public override bool SupportsAlerts => true;
         public override bool NeedsExternalAlertData => true;
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>

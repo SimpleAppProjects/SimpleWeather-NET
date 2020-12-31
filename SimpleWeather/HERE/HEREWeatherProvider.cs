@@ -32,7 +32,6 @@ namespace SimpleWeather.HERE
         public override string WeatherAPI => WeatherData.WeatherAPI.Here;
         public override bool SupportsWeatherLocale => true;
         public override bool KeyRequired => false;
-        public override bool SupportsAlerts => true;
         public override bool NeedsExternalAlertData => false;
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
