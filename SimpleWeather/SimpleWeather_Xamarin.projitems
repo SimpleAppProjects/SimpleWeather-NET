@@ -66,6 +66,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\OneCallResponse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\OpenWeatherMapProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OpenWeather\Weather.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RemoteConfig\RemoteConfig.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RemoteConfig\Utf8JsonGen\Utf8JsonGenerated.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RemoteConfig\WeatherProviderConfig.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SimpleLibrary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NWS\SolCalcAstroProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SMC\SunMoonCalcProvider.cs" />

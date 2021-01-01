@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\DeviceTypeHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\StringExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\UserThemeMode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RemoteConfig\RemoteConfig.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\FileUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Settings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.IconResources.cs" />
@@ -29,6 +30,7 @@
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\de\WindDirection.resw" />
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en\AQIndex.resw" />
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en\Beaufort.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en\Config.resw" />
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en\MoonPhases.resw" />
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en\Resources.resw" />
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en\Units.resw" />

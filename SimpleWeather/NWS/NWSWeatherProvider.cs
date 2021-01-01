@@ -27,7 +27,11 @@ namespace SimpleWeather.NWS
 
         public NWSWeatherProvider() : base()
         {
-            LocationProvider = new Bing.BingMapsLocationProvider();
+            LocationProvider = RemoteConfig.RemoteConfig.GetLocationProvider(WeatherAPI);
+            if (LocationProvider == null)
+            {
+                LocationProvider = new Bing.BingMapsLocationProvider();
+            }
         }
 
         public override string WeatherAPI => WeatherData.WeatherAPI.NWS;
@@ -69,8 +73,8 @@ namespace SimpleWeather.NWS
 
                         // Get response
                         var webClient = SimpleLibrary.WebClient;
-                        using (var cts = new CancellationTokenSource((int)(Settings.READ_TIMEOUT * 1.5f)))
-                        using (var observationResponse = await webClient.SendRequestAsync(observationRequest).AsTask(cts.Token))
+                        using (var ctsO = new CancellationTokenSource((int)(Settings.READ_TIMEOUT * 1.5f)))
+                        using (var observationResponse = await webClient.SendRequestAsync(observationRequest).AsTask(ctsO.Token))
                         {
                             // Check for errors
                             CheckForErrors(observationResponse.StatusCode);
@@ -80,8 +84,8 @@ namespace SimpleWeather.NWS
                             // Load point json data
                             Observation.ForecastRootobject observationData = JSONParser.Deserializer<Observation.ForecastRootobject>(observationStream);
 
-                            using (var cts2 = new CancellationTokenSource((int)(Settings.READ_TIMEOUT * 1.5f)))
-                            using (var forecastResponse = await webClient.SendRequestAsync(hrForecastRequest).AsTask(cts.Token))
+                            using (var ctsF = new CancellationTokenSource((int)(Settings.READ_TIMEOUT * 1.5f)))
+                            using (var forecastResponse = await webClient.SendRequestAsync(hrForecastRequest).AsTask(ctsF.Token))
                             {
                                 // Check for errors
                                 CheckForErrors(forecastResponse.StatusCode);
@@ -133,15 +137,15 @@ namespace SimpleWeather.NWS
             {
                 var fcastRoot = forecastObj.Root.ToObject<JObject>();
 
-                forecastData.creationDate = fcastRoot.Property("creationDate").ToObject<string>();
+                forecastData.creationDate = fcastRoot.Property("creationDate").Value.ToObject<string>();
                 forecastData.location = new Hourly.Location();
 
-                var location = fcastRoot.Property("location").ToObject<JObject>();
-                forecastData.location.latitude = location.Property("latitude").ToObject<double>();
-                forecastData.location.longitude = location.Property("longitude").ToObject<double>();
+                var location = fcastRoot.Property("location").Value.ToObject<JObject>();
+                forecastData.location.latitude = location.Property("latitude").Value.ToObject<double>();
+                forecastData.location.longitude = location.Property("longitude").Value.ToObject<double>();
 
-                var periodNameList = fcastRoot.Property("PeriodNameList").ToObject<JObject>();
-                SortedSet<string> sortedKeys = new SortedSet<string>(periodNameList.Properties().Select(p => p.Name));
+                var periodNameList = fcastRoot.Property("PeriodNameList").Value.ToObject<JObject>();
+                SortedSet<string> sortedKeys = new SortedSet<string>(periodNameList.Properties().Select(p => p.Name), new StrNumComparator());
 
                 forecastData.periodsItems = new List<PeriodsItem>(sortedKeys.Count);
 
@@ -154,20 +158,20 @@ namespace SimpleWeather.NWS
 
                     var item = new PeriodsItem();
 
-                    var periodObj = fcastRoot.Property(periodName).ToObject<JObject>();
-                    var unixTimeArr = periodObj.Property("unixtime").ToObject<JArray>();
-                    var windChillArr = periodObj.Property("windChill").ToObject<JArray>();
-                    var windSpeedArr = periodObj.Property("windSpeed").ToObject<JArray>();
-                    var cloudAmtArr = periodObj.Property("cloudAmount").ToObject<JArray>();
-                    var popArr = periodObj.Property("pop").ToObject<JArray>();
-                    var humidityArr = periodObj.Property("relativeHumidity").ToObject<JArray>();
-                    var windGustArr = periodObj.Property("windGust").ToObject<JArray>();
-                    var tempArr = periodObj.Property("temperature").ToObject<JArray>();
-                    var windDirArr = periodObj.Property("windDirection").ToObject<JArray>();
-                    var iconArr = periodObj.Property("iconLink").ToObject<JArray>();
-                    var conditionTxtArr = periodObj.Property("weather").ToObject<JArray>();
+                    var periodObj = fcastRoot.Property(periodName).Value.ToObject<JObject>();
+                    var unixTimeArr = periodObj.Property("unixtime").Value.ToObject<JArray>();
+                    var windChillArr = periodObj.Property("windChill").Value.ToObject<JArray>();
+                    var windSpeedArr = periodObj.Property("windSpeed").Value.ToObject<JArray>();
+                    var cloudAmtArr = periodObj.Property("cloudAmount").Value.ToObject<JArray>();
+                    var popArr = periodObj.Property("pop").Value.ToObject<JArray>();
+                    var humidityArr = periodObj.Property("relativeHumidity").Value.ToObject<JArray>();
+                    var windGustArr = periodObj.Property("windGust").Value.ToObject<JArray>();
+                    var tempArr = periodObj.Property("temperature").Value.ToObject<JArray>();
+                    var windDirArr = periodObj.Property("windDirection").Value.ToObject<JArray>();
+                    var iconArr = periodObj.Property("iconLink").Value.ToObject<JArray>();
+                    var conditionTxtArr = periodObj.Property("weather").Value.ToObject<JArray>();
 
-                    item.periodName = periodObj.Property("periodName").ToObject<string>();
+                    item.periodName = periodObj.Property("periodName").Value.ToObject<string>();
 
                     item.unixtime = new List<string>(unixTimeArr.Count);
                     foreach (var jsonElement in unixTimeArr.Children<JValue>())
@@ -251,6 +255,21 @@ namespace SimpleWeather.NWS
             }
 
             return forecastData;
+        }
+
+        private class StrNumComparator : IComparer<string>
+        {
+            public int Compare(string x, string y)
+            {
+                if (int.TryParse(x, out int numX) && int.TryParse(y, out int numY))
+                {
+                    return numX.CompareTo(numY);
+                }
+                else
+                {
+                    return StringComparer.OrdinalIgnoreCase.Compare(x, y);
+                }
+            }
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>

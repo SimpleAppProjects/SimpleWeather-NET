@@ -23,7 +23,11 @@ namespace SimpleWeather.Metno
 
         public MetnoWeatherProvider() : base()
         {
-            LocationProvider = new Bing.BingMapsLocationProvider();
+            LocationProvider = RemoteConfig.RemoteConfig.GetLocationProvider(WeatherAPI);
+            if (LocationProvider == null)
+            {
+                LocationProvider = new Bing.BingMapsLocationProvider();
+            }
         }
 
         public override string WeatherAPI => WeatherData.WeatherAPI.MetNo;

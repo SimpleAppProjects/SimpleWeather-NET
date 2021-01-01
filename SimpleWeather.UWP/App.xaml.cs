@@ -398,6 +398,11 @@ namespace SimpleWeather.UWP
                     new AppUpdaterTask().Run(args.TaskInstance);
                     break;
 
+                case nameof(RemoteConfigUpdateTask):
+                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting RemoteConfigUpdateTask");
+                    new RemoteConfigUpdateTask().Run(args.TaskInstance);
+                    break;
+
                 default:
                     Logger.WriteLine(LoggerLevel.Debug, "App: Unknown task: {0}", args.TaskInstance.Task.Name);
                     break;
@@ -426,6 +431,7 @@ namespace SimpleWeather.UWP
             await WNSHelper.InitNotificationChannel().ConfigureAwait(true);
             await UpdateTask.RegisterBackgroundTask().ConfigureAwait(true);
             await AppUpdaterTask.RegisterBackgroundTask().ConfigureAwait(true);
+            await RemoteConfigUpdateTask.RegisterBackgroundTask().ConfigureAwait(true);
 
             if (!e.PrelaunchActivated)
             {

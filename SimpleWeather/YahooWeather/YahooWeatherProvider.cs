@@ -19,7 +19,11 @@ namespace SimpleWeather.WeatherYahoo
         private const String QUERY_URL = "https://weather-ydn-yql.media.yahoo.com/forecastrss?{0}&format=json&u=f";
         public YahooWeatherProvider() : base()
         {
-            LocationProvider = new Bing.BingMapsLocationProvider();
+            LocationProvider = RemoteConfig.RemoteConfig.GetLocationProvider(WeatherAPI);
+            if (LocationProvider == null)
+            {
+                LocationProvider = new Bing.BingMapsLocationProvider();
+            }
         }
 
         public override string WeatherAPI => WeatherData.WeatherAPI.Yahoo;

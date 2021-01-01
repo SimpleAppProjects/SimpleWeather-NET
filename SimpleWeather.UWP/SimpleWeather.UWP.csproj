@@ -261,6 +261,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="BackgroundTasks\AppUpdaterTask.cs" />
+    <Compile Include="BackgroundTasks\RemoteConfigUpdateTask.cs" />
     <Compile Include="BackgroundTasks\ImageDatabaseTask.cs" />
     <Compile Include="BackgroundTasks\UpdateTask.cs" />
     <Compile Include="BackgroundTasks\WNSPushBackgroundTask.cs" />

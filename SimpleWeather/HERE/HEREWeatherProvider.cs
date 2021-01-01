@@ -26,7 +26,11 @@ namespace SimpleWeather.HERE
 
         public HEREWeatherProvider() : base()
         {
-            LocationProvider = new HERELocationProvider();
+            LocationProvider = RemoteConfig.RemoteConfig.GetLocationProvider(WeatherAPI);
+            if (LocationProvider == null)
+            {
+                LocationProvider = new HERELocationProvider();
+            }
         }
 
         public override string WeatherAPI => WeatherData.WeatherAPI.Here;
