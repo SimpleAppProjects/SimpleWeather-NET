@@ -51,7 +51,7 @@ namespace SimpleWeather.UWP.Radar
             get 
             {
                 var value = GetRadarProvider();
-                return Enum.GetValues(typeof(RadarProviders)).Cast<RadarProviders>().First(@enum => Equals(value, @enum.GetStringValue()));
+                return Enum.GetValues(typeof(RadarProviders)).Cast<RadarProviders>().FirstOrDefault(@enum => Equals(value, @enum.GetStringValue()));
             }
             set { SetRadarProvider(value); }
         }

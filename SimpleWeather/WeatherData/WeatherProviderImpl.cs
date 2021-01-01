@@ -52,7 +52,7 @@ namespace SimpleWeather.WeatherData
                     {
                         location.tz_long = weather.location.tz_long;
                     }
-                    else if (location.longitude != 0 && location.latitude != 0)
+                    else if (location.latitude != 0 && location.longitude != 0)
                     {
                         String tzId = await AsyncTask.RunAsync(TZDB.TZDBCache.GetTimeZone(location.latitude, location.longitude));
                         if (!String.IsNullOrWhiteSpace(tzId))

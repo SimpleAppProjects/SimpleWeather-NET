@@ -178,14 +178,7 @@ namespace SimpleWeather.Utils
                         }
 
                         await DBUtils.UpdateLocationKey(locationDB);
-
-                        var locData = await Settings.GetLastGPSLocData();
-                        if (locData?.IsValid() == true)
-                        {
-                            locData.query = WeatherManager.GetProvider(locData.weatherSource)
-                                .UpdateLocationQuery(locData);
-                            Settings.SaveLastGPSLocData(locData);
-                        }
+                        Settings.SaveLastGPSLocData(new LocationData());
                     }
                     AnalyticsLogger.LogEvent("App upgrading", new Dictionary<string, string>()
                     {

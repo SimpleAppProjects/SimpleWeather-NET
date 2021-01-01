@@ -539,7 +539,15 @@ namespace SimpleWeather.UWP.Main
                                     return null;
 
                                 if (String.IsNullOrEmpty(locView.LocationQuery))
+                                {
                                     locView = new LocationQueryViewModel();
+                                }
+                                else if (String.IsNullOrEmpty(locView.LocationTZLong) && locView.LocationLat != 0 && locView.LocationLong != 0)
+                                {
+                                    String tzId = await TZDB.TZDBCache.GetTimeZone(locView.LocationLat, locView.LocationLong);
+                                    if (!String.IsNullOrWhiteSpace(tzId))
+                                        locView.LocationTZLong = tzId;
+                                }
                             }
                             catch (WeatherException)
                             {

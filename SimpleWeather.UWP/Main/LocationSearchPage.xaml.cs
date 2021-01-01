@@ -258,6 +258,12 @@ namespace SimpleWeather.UWP.Main
                 {
                     throw new OperationCanceledException();
                 }
+                else if (String.IsNullOrEmpty(query_vm.LocationTZLong) && query_vm.LocationLat != 0 && query_vm.LocationLong != 0)
+                {
+                    String tzId = await TZDB.TZDBCache.GetTimeZone(query_vm.LocationLat, query_vm.LocationLong);
+                    if (!String.IsNullOrWhiteSpace(tzId))
+                        query_vm.LocationTZLong = tzId;
+                }
 
                 bool isUS = LocationUtils.IsUS(query_vm.LocationCountry);
 

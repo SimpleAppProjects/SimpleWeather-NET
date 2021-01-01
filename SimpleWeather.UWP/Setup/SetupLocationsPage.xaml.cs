@@ -313,6 +313,12 @@ namespace SimpleWeather.UWP.Setup
                 {
                     throw new OperationCanceledException();
                 }
+                else if (String.IsNullOrEmpty(query_vm.LocationTZLong) && query_vm.LocationLat != 0 && query_vm.LocationLong != 0)
+                {
+                    String tzId = await TZDB.TZDBCache.GetTimeZone(query_vm.LocationLat, query_vm.LocationLong);
+                    if (!String.IsNullOrWhiteSpace(tzId))
+                        query_vm.LocationTZLong = tzId;
+                }
 
                 bool isUS = LocationUtils.IsUS(query_vm.LocationCountry);
 
@@ -477,6 +483,12 @@ namespace SimpleWeather.UWP.Setup
                     {
                         // Stop since there is no valid query
                         throw new CustomException(App.ResLoader.GetString("Error_Location"));
+                    }
+                    else if (String.IsNullOrEmpty(view.LocationTZLong) && view.LocationLat != 0 && view.LocationLong != 0)
+                    {
+                        String tzId = await TZDB.TZDBCache.GetTimeZone(view.LocationLat, view.LocationLong);
+                        if (!String.IsNullOrWhiteSpace(tzId))
+                            view.LocationTZLong = tzId;
                     }
 
                     bool isUS = LocationUtils.IsUS(view.LocationCountry);

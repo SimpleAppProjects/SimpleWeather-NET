@@ -615,7 +615,15 @@ namespace SimpleWeather.UWP.Main
                                 view = await wm.GetLocation(newGeoPos);
 
                                 if (String.IsNullOrEmpty(view.LocationQuery))
+                                {
                                     view = new LocationQueryViewModel();
+                                }
+                                else if (String.IsNullOrEmpty(view.LocationTZLong) && view.LocationLat != 0 && view.LocationLong != 0)
+                                {
+                                    String tzId = await TZDB.TZDBCache.GetTimeZone(view.LocationLat, view.LocationLong);
+                                    if (!String.IsNullOrWhiteSpace(tzId))
+                                        view.LocationTZLong = tzId;
+                                }
                             }
                             catch (WeatherException ex)
                             {
