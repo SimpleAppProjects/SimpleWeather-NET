@@ -46,10 +46,10 @@ namespace SimpleWeather.UWP.Tiles
         {
             return Task.Run(async () =>
             {
-                string oldId = tileIdContainer.Values[oldQuery]?.ToString();
-
-                if (oldId != null)
+                if (tileIdContainer.Values.ContainsKey(oldQuery))
                 {
+                    string oldId = tileIdContainer.Values[oldQuery]?.ToString();
+
                     tileIdContainer.Values.Remove(oldQuery);
 
                     if (!string.IsNullOrWhiteSpace(tileIdContainer.Values[newQuery]?.ToString()))

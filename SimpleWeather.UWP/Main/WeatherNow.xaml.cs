@@ -646,16 +646,16 @@ namespace SimpleWeather.UWP.Main
                             return false;
 
                         // Save oldkey
-                        string oldkey = lastGPSLocData.query;
+                        string oldKey = lastGPSLocData?.query;
 
                         // Save location as last known
                         lastGPSLocData.SetData(view, newGeoPos);
                         Settings.SaveLastGPSLocData(lastGPSLocData);
 
                         // Update tile id for location
-                        if (oldkey != null && SecondaryTileUtils.Exists(oldkey))
+                        if (oldKey != null && SecondaryTileUtils.Exists(oldKey))
                         {
-                            await SecondaryTileUtils.UpdateTileId(oldkey, lastGPSLocData.query).ConfigureAwait(false);
+                            await SecondaryTileUtils.UpdateTileId(oldKey, lastGPSLocData.query).ConfigureAwait(false);
                         }
 
                         locationData = lastGPSLocData;

@@ -59,6 +59,14 @@ namespace SimpleWeather.Utils
                         .UpdateLocationQuery(location);
 
                     await Settings.UpdateLocationWithKey(location, oldKey).ConfigureAwait(false);
+
+#if WINDOWS_UWP && !UNIT_TEST
+                    // Update tile id for location
+                    if (oldKey != null && UWP.Tiles.SecondaryTileUtils.Exists(oldKey))
+                    {
+                        await UWP.Tiles.SecondaryTileUtils.UpdateTileId(oldKey, location.query).ConfigureAwait(false);
+                    }
+#endif
                 }
             });
         }

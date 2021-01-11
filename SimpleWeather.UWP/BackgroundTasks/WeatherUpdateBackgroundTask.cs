@@ -336,16 +336,16 @@ namespace SimpleWeather.UWP.BackgroundTasks
                         if (cts.IsCancellationRequested) return locationChanged;
 
                         // Save oldkey
-                        string oldkey = lastGPSLocData.query;
+                        string oldKey = lastGPSLocData.query;
 
                         // Save location as last known
                         lastGPSLocData.SetData(view, newGeoPos);
                         Settings.SaveLastGPSLocData(lastGPSLocData);
 
                         // Update tile id for location
-                        if (oldkey != null && SecondaryTileUtils.Exists(oldkey))
+                        if (oldKey != null && SecondaryTileUtils.Exists(oldKey))
                         {
-                            await AsyncTask.RunAsync(SecondaryTileUtils.UpdateTileId(oldkey, lastGPSLocData.query));
+                            await AsyncTask.RunAsync(SecondaryTileUtils.UpdateTileId(oldKey, lastGPSLocData.query));
                         }
 
                         locationChanged = true;
