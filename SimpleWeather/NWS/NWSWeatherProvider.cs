@@ -137,7 +137,7 @@ namespace SimpleWeather.NWS
             {
                 var fcastRoot = forecastObj.Root.ToObject<JObject>();
 
-                forecastData.creationDate = fcastRoot.Property("creationDate").Value.ToObject<string>();
+                forecastData.creationDate = fcastRoot.Property("creationDate").Value.ToObject<DateTimeOffset>();
                 forecastData.location = new Hourly.Location();
 
                 var location = fcastRoot.Property("location").Value.ToObject<JObject>();
@@ -159,6 +159,7 @@ namespace SimpleWeather.NWS
                     var item = new PeriodsItem();
 
                     var periodObj = fcastRoot.Property(periodName).Value.ToObject<JObject>();
+                    var timeArr = periodObj.Property("time").Value.ToObject<JArray>();
                     var unixTimeArr = periodObj.Property("unixtime").Value.ToObject<JArray>();
                     var windChillArr = periodObj.Property("windChill").Value.ToObject<JArray>();
                     var windSpeedArr = periodObj.Property("windSpeed").Value.ToObject<JArray>();
@@ -172,6 +173,13 @@ namespace SimpleWeather.NWS
                     var conditionTxtArr = periodObj.Property("weather").Value.ToObject<JArray>();
 
                     item.periodName = periodObj.Property("periodName").Value.ToObject<string>();
+
+                    item.time = new List<string>(timeArr.Count);
+                    foreach (var jsonElement in timeArr.Children<JValue>())
+                    {
+                        String time = jsonElement.Value?.ToString();
+                        item.time.Add(time);
+                    }
 
                     item.unixtime = new List<string>(unixTimeArr.Count);
                     foreach (var jsonElement in unixTimeArr.Children<JValue>())

@@ -11642,23 +11642,25 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.Hourly
         {
             this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
             {
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("unixtime"), 0},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("windChill"), 1},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("windGust"), 2},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("periodName"), 3},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("pop"), 4},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("iconLink"), 5},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("relativeHumidity"), 6},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("temperature"), 7},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("weather"), 8},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("windDirection"), 9},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("windSpeed"), 10},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("cloudAmount"), 11},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("time"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("unixtime"), 1},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("windChill"), 2},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("windGust"), 3},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("periodName"), 4},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("pop"), 5},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("iconLink"), 6},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("relativeHumidity"), 7},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("temperature"), 8},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("weather"), 9},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("windDirection"), 10},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("windSpeed"), 11},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("cloudAmount"), 12},
             };
 
             this.____stringByteKeys = new byte[][]
             {
-                JsonWriter.GetEncodedPropertyNameWithBeginObject("unixtime"),
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("time"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("unixtime"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("windChill"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("windGust"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("periodName"),
@@ -11684,28 +11686,30 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.Hourly
             
 
             writer.WriteRaw(this.____stringByteKeys[0]);
-            formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Serialize(ref writer, value.unixtime, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Serialize(ref writer, value.time, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[1]);
-            formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Serialize(ref writer, value.windChill, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Serialize(ref writer, value.unixtime, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[2]);
-            formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Serialize(ref writer, value.windGust, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Serialize(ref writer, value.windChill, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[3]);
-            writer.WriteString(value.periodName);
+            formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Serialize(ref writer, value.windGust, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[4]);
-            formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Serialize(ref writer, value.pop, formatterResolver);
+            writer.WriteString(value.periodName);
             writer.WriteRaw(this.____stringByteKeys[5]);
-            formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Serialize(ref writer, value.iconLink, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Serialize(ref writer, value.pop, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[6]);
-            formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Serialize(ref writer, value.relativeHumidity, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Serialize(ref writer, value.iconLink, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[7]);
-            formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Serialize(ref writer, value.temperature, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Serialize(ref writer, value.relativeHumidity, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[8]);
-            formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Serialize(ref writer, value.weather, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Serialize(ref writer, value.temperature, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[9]);
-            formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Serialize(ref writer, value.windDirection, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Serialize(ref writer, value.weather, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[10]);
-            formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Serialize(ref writer, value.windSpeed, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Serialize(ref writer, value.windDirection, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[11]);
+            formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Serialize(ref writer, value.windSpeed, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[12]);
             formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Serialize(ref writer, value.cloudAmount, formatterResolver);
             
             writer.WriteEndObject();
@@ -11719,6 +11723,8 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.Hourly
             }
             
 
+            var __time__ = default(global::System.Collections.Generic.List<string>);
+            var __time__b__ = false;
             var __unixtime__ = default(global::System.Collections.Generic.List<string>);
             var __unixtime__b__ = false;
             var __windChill__ = default(global::System.Collections.Generic.List<string>);
@@ -11759,50 +11765,54 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.Hourly
                 switch (key)
                 {
                     case 0:
+                        __time__ = formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Deserialize(ref reader, formatterResolver);
+                        __time__b__ = true;
+                        break;
+                    case 1:
                         __unixtime__ = formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Deserialize(ref reader, formatterResolver);
                         __unixtime__b__ = true;
                         break;
-                    case 1:
+                    case 2:
                         __windChill__ = formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Deserialize(ref reader, formatterResolver);
                         __windChill__b__ = true;
                         break;
-                    case 2:
+                    case 3:
                         __windGust__ = formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Deserialize(ref reader, formatterResolver);
                         __windGust__b__ = true;
                         break;
-                    case 3:
+                    case 4:
                         __periodName__ = reader.ReadString();
                         __periodName__b__ = true;
                         break;
-                    case 4:
+                    case 5:
                         __pop__ = formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Deserialize(ref reader, formatterResolver);
                         __pop__b__ = true;
                         break;
-                    case 5:
+                    case 6:
                         __iconLink__ = formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Deserialize(ref reader, formatterResolver);
                         __iconLink__b__ = true;
                         break;
-                    case 6:
+                    case 7:
                         __relativeHumidity__ = formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Deserialize(ref reader, formatterResolver);
                         __relativeHumidity__b__ = true;
                         break;
-                    case 7:
+                    case 8:
                         __temperature__ = formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Deserialize(ref reader, formatterResolver);
                         __temperature__b__ = true;
                         break;
-                    case 8:
+                    case 9:
                         __weather__ = formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Deserialize(ref reader, formatterResolver);
                         __weather__b__ = true;
                         break;
-                    case 9:
+                    case 10:
                         __windDirection__ = formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Deserialize(ref reader, formatterResolver);
                         __windDirection__b__ = true;
                         break;
-                    case 10:
+                    case 11:
                         __windSpeed__ = formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Deserialize(ref reader, formatterResolver);
                         __windSpeed__b__ = true;
                         break;
-                    case 11:
+                    case 12:
                         __cloudAmount__ = formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<string>>().Deserialize(ref reader, formatterResolver);
                         __cloudAmount__b__ = true;
                         break;
@@ -11816,6 +11826,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.Hourly
             }
 
             var ____result = new global::SimpleWeather.NWS.Hourly.PeriodsItem();
+            if(__time__b__) ____result.time = __time__;
             if(__unixtime__b__) ____result.unixtime = __unixtime__;
             if(__windChill__b__) ____result.windChill = __windChill__;
             if(__windGust__b__) ____result.windGust = __windGust__;
@@ -11867,7 +11878,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.Hourly
             
 
             writer.WriteRaw(this.____stringByteKeys[0]);
-            writer.WriteString(value.creationDate);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Serialize(ref writer, value.creationDate, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[1]);
             formatterResolver.GetFormatterWithVerify<global::SimpleWeather.NWS.Hourly.Location>().Serialize(ref writer, value.location, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[2]);
@@ -11884,7 +11895,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.Hourly
             }
             
 
-            var __creationDate__ = default(string);
+            var __creationDate__ = default(global::System.DateTimeOffset);
             var __creationDate__b__ = false;
             var __location__ = default(global::SimpleWeather.NWS.Hourly.Location);
             var __location__b__ = false;
@@ -11906,7 +11917,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.Hourly
                 switch (key)
                 {
                     case 0:
-                        __creationDate__ = reader.ReadString();
+                        __creationDate__ = formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Deserialize(ref reader, formatterResolver);
                         __creationDate__b__ = true;
                         break;
                     case 1:

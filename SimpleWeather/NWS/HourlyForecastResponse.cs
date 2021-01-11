@@ -6,7 +6,7 @@ namespace SimpleWeather.NWS.Hourly
 {
     public class HourlyForecastResponse
     {
-        public string creationDate { get; set; }
+        public DateTimeOffset creationDate { get; set; }
         public Location location { get; set; }
         public List<PeriodsItem> periodsItems { get; set; }
     }
@@ -51,6 +51,7 @@ namespace SimpleWeather.NWS.Hourly
 
     public class PeriodsItem
     {
+        public List<string> time { get; set; }
         public List<string> unixtime { get; set; }
         public List<string> windChill { get; set; }
         public List<string> windGust { get; set; }

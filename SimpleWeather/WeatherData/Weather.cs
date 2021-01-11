@@ -380,13 +380,34 @@ namespace SimpleWeather.WeatherData
             }
 
             {
+                bool adjustDate = false;
+                var creationDate = hourlyForecastResponse.creationDate;
                 hr_forecast = new List<HourlyForecast>(144);
                 foreach (NWS.Hourly.PeriodsItem period in hourlyForecastResponse.periodsItems)
                 {
                     int periodsSize = period.unixtime.Count;
                     for (int i = 0; i < periodsSize; i++)
                     {
-                        if (DateTimeOffset.FromUnixTimeSeconds(long.Parse(period.unixtime[i])) < now.UtcDateTime.Trim(TimeSpan.TicksPerHour))
+                        var date = DateTimeOffset.FromUnixTimeSeconds(long.Parse(period.unixtime[i]));
+
+                        // BUG: NWS MapClick API
+                        // The epoch time sometimes is a day ahead
+                        // If this is the case, adjust all dates accordingly
+                        if (i == 0 && Equals("Tonight", period.periodName) && Equals("6 pm", period.time[i]))
+                        {
+                            var hrDate = date.ToOffset(creationDate.Offset);
+                            if (creationDate.AddDays(1).Trim(TimeSpan.TicksPerDay).Equals(hrDate.Trim(TimeSpan.TicksPerDay)))
+                            {
+                                adjustDate = true;
+                            }
+                        }
+
+                        if (adjustDate)
+                        {
+                            date = date.AddDays(-1);
+                        }
+
+                        if (date.UtcDateTime < now.UtcDateTime.Trim(TimeSpan.TicksPerHour))
                             continue;
 
                         NWS.Hourly.PeriodItem forecastItem = new NWS.Hourly.PeriodItem(
@@ -403,7 +424,7 @@ namespace SimpleWeather.WeatherData
                                 period.weather[i]
                             );
 
-                        hr_forecast.Add(new HourlyForecast(forecastItem));
+                        hr_forecast.Add(new HourlyForecast(forecastItem, adjustDate));
                     }
                 }
             }
@@ -1177,12 +1198,16 @@ namespace SimpleWeather.WeatherData
             extras.wind_kph = wind_kph;
         }
 
-        public HourlyForecast(NWS.Hourly.PeriodItem forecastItem)
+        public HourlyForecast(NWS.Hourly.PeriodItem forecastItem, bool adjustDate = false)
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.NWS);
             var culture = CultureUtils.UserCulture;
 
             date = DateTimeOffset.FromUnixTimeSeconds(long.Parse(forecastItem.unixTime));
+            if (adjustDate) 
+            {
+                date = date.AddDays(-1);
+            }
 
             if (float.TryParse(forecastItem.temperature, out float temp))
             {
