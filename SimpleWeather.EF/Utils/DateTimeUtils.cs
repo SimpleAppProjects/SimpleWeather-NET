@@ -95,7 +95,7 @@ namespace SimpleWeather.Utils
         /// <param name="roundTicks">The ticks to round DateTime object to. (ex. TimeSpan.TicksPerMinute)</param>
         public static DateTimeOffset Trim(this DateTimeOffset date, long roundTicks)
         {
-            return new DateTimeOffset(new DateTime(date.UtcDateTime.Ticks - date.UtcDateTime.Ticks % roundTicks, DateTimeKind.Utc)).ToOffset(date.Offset);
+            return new DateTimeOffset(date.DateTime.Trim(roundTicks), date.Offset);
         }
     }
 }
