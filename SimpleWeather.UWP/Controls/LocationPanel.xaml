@@ -142,6 +142,7 @@
                 FontWeight="Medium"
                 HorizontalTextAlignment="Right"
                 Style="{ThemeResource WeatherIcon}"
+                TextAlignment="Right"
                 Visibility="{x:Bind ViewModel.HiTemp, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
                 <Span><Run Text="{x:Bind ViewModel.HiTemp, Mode=OneWay, FallbackValue='80°', TargetNullValue='--'}" /><Run Text=" &#xf058;" /></Span>
                 <LineBreak /><Span><Run Text="{x:Bind ViewModel.LoTemp, Mode=OneWay, FallbackValue='65°', TargetNullValue='--'}" /><Run Text=" &#xf044;" /></Span>
