@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:utils="using:SimpleWeather.Utils"
     MinWidth="340"
     mc:Ignorable="d">
 
@@ -30,18 +31,16 @@
                 <TextBlock FontSize="15" Text="{x:Bind ViewModel.Beaufort.Label, Mode=OneWay, FallbackValue='Beaufort'}" />
             </toolkitControls:HeaderedContentControl.Header>
             <RelativePanel>
-                <TextBlock
+                <BitmapIcon
                     x:Name="BeaufortIcon"
-                    Width="75"
-                    Padding="5"
+                    Width="55"
+                    Margin="20,10"
                     VerticalAlignment="Center"
-                    FontSize="32"
                     Foreground="{ThemeResource BeaufortPaintColorBrush}"
                     RelativePanel.Above="BeaufortProgressBar"
                     RelativePanel.AlignLeftWithPanel="True"
                     RelativePanel.AlignTopWithPanel="True"
-                    Style="{StaticResource WeatherIcon}"
-                    Text="{x:Bind ViewModel.Beaufort.Icon, Mode=OneWay, FallbackValue='&#xf0c2;'}" />
+                    UriSource="{x:Bind utils:WeatherUtils.GetWeatherIconURI(ViewModel.Beaufort.Icon), Mode=OneWay}" />
                 <TextBlock
                     x:Name="BeaufortDescription"
                     Padding="5"

@@ -308,13 +308,13 @@
                     Tag="Temp">
                     <ToggleButton.Content>
                         <StackPanel Orientation="Horizontal">
-                            <FontIcon
-                                Margin="4,0"
+                            <BitmapIcon
+                                Width="24"
+                                Height="24"
+                                Margin="0,0"
+                                HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                FontFamily="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons"
-                                FontSize="15"
-                                Glyph="&#xf055;"
-                                Style="{StaticResource WeatherFontIcon}" />
+                                UriSource="/Assets/WeatherIcons/png/wi-thermometer.png" />
                             <TextBlock
                                 x:Name="Label"
                                 x:Uid="Label_Temperature"
@@ -334,12 +334,13 @@
                     Tag="Wind">
                     <ToggleButton.Content>
                         <StackPanel Orientation="Horizontal">
-                            <FontIcon
+                            <BitmapIcon
+                                Width="24"
+                                Height="24"
                                 Margin="4,0"
-                                FontFamily="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons"
-                                FontSize="15"
-                                Glyph="&#xf050;"
-                                Style="{StaticResource WeatherFontIcon}" />
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                UriSource="/Assets/WeatherIcons/png/wi-strong-wind.png" />
                             <TextBlock
                                 x:Uid="Label_Wind"
                                 Margin="4,0,0,0"
@@ -359,12 +360,13 @@
                     Tag="Rain">
                     <ToggleButton.Content>
                         <StackPanel Orientation="Horizontal">
-                            <FontIcon
+                            <BitmapIcon
+                                Width="18"
+                                Height="24"
                                 Margin="4,0"
-                                FontFamily="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons"
-                                FontSize="15"
-                                Glyph="&#xf078;"
-                                Style="{StaticResource WeatherFontIcon}" />
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                UriSource="/Assets/WeatherIcons/png/wi-raindrop.png" />
                             <TextBlock
                                 x:Uid="Label_Precipitation"
                                 Margin="4,0,0,0"

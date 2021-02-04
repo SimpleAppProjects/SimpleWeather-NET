@@ -13,6 +13,7 @@
     xmlns:toolkitConverters="using:Microsoft.Toolkit.Uwp.UI.Converters"
     xmlns:utils="using:SimpleWeather.Utils"
     xmlns:uwpUtils="using:SimpleWeather.UWP.Utils"
+    xmlns:win2d="using:Microsoft.Graphics.Canvas.UI.Xaml"
     mc:Ignorable="d">
 
     <Page.Resources>
@@ -275,19 +276,13 @@
                         Click="AlertButton_Click"
                         Loaded="DeferedControl_Loaded"
                         Style="{ThemeResource AlertButtonRevealStyle}" />
-                    <Viewbox
+                    <BitmapIcon
                         x:Name="WeatherBox"
                         Grid.Row="3"
                         MaxHeight="155"
                         HorizontalAlignment="Center"
-                        VerticalAlignment="Bottom">
-                        <toolkitControls:DropShadowPanel BlurRadius="2.0" ShadowOpacity="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Converter={StaticResource boolToBinaryValueConverter}}">
-                            <TextBlock
-                                x:Name="WeatherIcon"
-                                Style="{ThemeResource WeatherIcon}"
-                                Text="{x:Bind WeatherView.WeatherIcon, FallbackValue='&#xf00d;', Mode=OneWay}" />
-                        </toolkitControls:DropShadowPanel>
-                    </Viewbox>
+                        VerticalAlignment="Bottom"
+                        UriSource="{x:Bind utils:WeatherUtils.GetWeatherIconURI(WeatherView.WeatherIcon), Mode=OneWay}" />
                     <toolkitControls:DropShadowPanel
                         Grid.Row="4"
                         HorizontalAlignment="Center"
@@ -311,24 +306,33 @@
                             Name="CurTemp"
                             FontSize="24"
                             FontWeight="Medium"
-                            Style="{ThemeResource WeatherIcon}"
-                            Text="{x:Bind WeatherView.CurTemp, FallbackValue='70&#xF045;', Mode=OneWay}" />
+                            Text="{x:Bind WeatherView.CurTemp, FallbackValue='70°F', Mode=OneWay}" />
                     </toolkitControls:DropShadowPanel>
-                    <toolkitControls:DropShadowPanel
+                    <StackPanel
                         Grid.Row="6"
-                        Margin="5,0,0,10"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Top"
-                        BlurRadius="15.0"
-                        ShadowOpacity="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Converter={StaticResource boolToBinaryValueConverter}}">
-                        <TextBlock
-                            FontSize="24"
-                            FontWeight="Medium"
-                            Style="{ThemeResource WeatherIcon}"
-                            Visibility="{x:Bind WeatherView.ShowHiLo, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
-                            <Span><Run Text="{x:Bind WeatherView.HiTemp, Mode=OneWay, TargetNullValue='--'}" /><Run Text=" &#xf058;" /><Run Text=" | " /><Run Text="{x:Bind WeatherView.LoTemp, Mode=OneWay, TargetNullValue='--'}" /><Run Text=" &#xf044;" /></Span>
-                        </TextBlock>
-                    </toolkitControls:DropShadowPanel>
+                        Orientation="Horizontal">
+                        <toolkitControls:DropShadowPanel BlurRadius="15.0" ShadowOpacity="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Converter={StaticResource boolToBinaryValueConverter}}">
+                            <TextBlock
+                                FontSize="24"
+                                FontWeight="Medium"
+                                Text="{x:Bind WeatherView.HiTemp, Mode=OneWay, TargetNullValue='--'}" />
+                        </toolkitControls:DropShadowPanel>
+                        <toolkitControls:DropShadowPanel BlurRadius="15.0" ShadowOpacity="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Converter={StaticResource boolToBinaryValueConverter}}">
+                            <TextBlock
+                                Padding="8,0"
+                                FontSize="24"
+                                FontWeight="Medium"
+                                Text="|" />
+                        </toolkitControls:DropShadowPanel>
+                        <toolkitControls:DropShadowPanel BlurRadius="15.0" ShadowOpacity="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Converter={StaticResource boolToBinaryValueConverter}}">
+                            <TextBlock
+                                FontSize="24"
+                                FontWeight="Medium"
+                                Text="{x:Bind WeatherView.LoTemp, Mode=OneWay, TargetNullValue='--'}" />
+                        </toolkitControls:DropShadowPanel>
+                    </StackPanel>
                     <HyperlinkButton
                         x:Name="Attribution"
                         Grid.Row="7"

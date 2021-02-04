@@ -58,7 +58,9 @@ namespace SimpleWeather.UWP.Controls
             public string Icon { get; set; }
             public string Condition { get; set; }
             public string ConditionLongDesc { get; set; }
-            public string ForecastExtra { get; set; }
+            public string PoPChance { get; set; }
+            public string Cloudiness { get; set; }
+            public string WindSpeed { get; set; }
             public ObservableCollection<DetailItemViewModel> Extras { get; set; }
             public bool HasExtras { get { return Extras?.Count > 0 || !String.IsNullOrWhiteSpace(ConditionLongDesc); } }
 
@@ -75,26 +77,28 @@ namespace SimpleWeather.UWP.Controls
                 ConditionLongDesc = forecastViewModel.ConditionLong;
                 Extras = new ObservableCollection<DetailItemViewModel>();
 
-                StringBuilder sb = new StringBuilder();
+                PoPChance = Cloudiness = WindSpeed = null;
+
                 foreach (DetailItemViewModel detailItem in forecastViewModel.DetailExtras)
                 {
-                    if (detailItem.DetailsType == WeatherDetailsType.PoPChance ||
-                        detailItem.DetailsType == WeatherDetailsType.PoPCloudiness ||
-                        detailItem.DetailsType == WeatherDetailsType.WindSpeed)
+                    if (detailItem.DetailsType == WeatherDetailsType.PoPChance)
                     {
-                        if (sb.Length > 0)
-                            sb.Append("\u2003");
-
-                        if (detailItem.DetailsType == WeatherDetailsType.WindSpeed)
-                            sb.AppendFormat(CultureInfo.InvariantCulture, "{0} {1}", WeatherIcons.STRONG_WIND, detailItem.Value);
-                        else
-                            sb.AppendFormat(CultureInfo.InvariantCulture, "{0} {1}", detailItem.Icon, detailItem.Value);
+                        PoPChance = detailItem.Value;
+                        continue;
+                    }
+                    else if (detailItem.DetailsType == WeatherDetailsType.PoPCloudiness)
+                    {
+                        Cloudiness = detailItem.Value;
+                        continue;
+                    }
+                    else if (detailItem.DetailsType == WeatherDetailsType.WindSpeed)
+                    {
+                        WindSpeed = detailItem.Value;
                         continue;
                     }
 
                     Extras.Add(detailItem);
                 }
-                ForecastExtra = sb.Length > 0 ? sb.ToString() : null;
             }
 
             public void SetForecast(HourlyForecastItemViewModel hrforecastViewModel)
@@ -103,28 +107,29 @@ namespace SimpleWeather.UWP.Controls
                 Icon = hrforecastViewModel.WeatherIcon;
                 Condition = String.Format(CultureInfo.InvariantCulture, "{0} - {1}",
                     hrforecastViewModel.HiTemp, hrforecastViewModel.Condition);
-                Extras = new ObservableCollection<DetailItemViewModel>();
 
-                StringBuilder sb = new StringBuilder();
+                PoPChance = Cloudiness = WindSpeed = null;
+
                 foreach (DetailItemViewModel detailItem in hrforecastViewModel.DetailExtras)
                 {
-                    if (detailItem.DetailsType == WeatherDetailsType.PoPChance ||
-                        detailItem.DetailsType == WeatherDetailsType.PoPCloudiness ||
-                        detailItem.DetailsType == WeatherDetailsType.WindSpeed)
+                    if (detailItem.DetailsType == WeatherDetailsType.PoPChance)
                     {
-                        if (sb.Length > 0)
-                            sb.Append("\u2003");
-
-                        if (detailItem.DetailsType == WeatherDetailsType.WindSpeed)
-                            sb.AppendFormat(CultureInfo.InvariantCulture, "{0} {1}", WeatherIcons.STRONG_WIND, detailItem.Value);
-                        else
-                            sb.AppendFormat(CultureInfo.InvariantCulture, "{0} {1}", detailItem.Icon, detailItem.Value);
+                        PoPChance = detailItem.Value;
+                        continue;
+                    }
+                    else if (detailItem.DetailsType == WeatherDetailsType.PoPCloudiness)
+                    {
+                        Cloudiness = detailItem.Value;
+                        continue;
+                    }
+                    else if (detailItem.DetailsType == WeatherDetailsType.WindSpeed)
+                    {
+                        WindSpeed = detailItem.Value;
                         continue;
                     }
 
                     Extras.Add(detailItem);
                 }
-                ForecastExtra = sb.Length > 0 ? sb.ToString() : null;
             }
         }
     }

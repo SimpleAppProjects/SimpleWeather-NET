@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:SimpleWeather.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:utils="using:SimpleWeather.Utils"
     Name="Control"
     d:DesignHeight="175"
     d:DesignWidth="175"
@@ -47,19 +48,18 @@
             <Viewbox
                 Name="WeatherBox"
                 Grid.Row="1"
+                Margin="10"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center">
-                <TextBlock
+                <BitmapIcon
                     Width="50"
                     Foreground="{ThemeResource IconPaintColorBrush}"
                     RenderTransformOrigin="0.5,0.5"
-                    Style="{StaticResource WeatherIcon}"
-                    Text="{x:Bind Details.Icon, FallbackValue='&#xf00d;', Mode=OneWay}"
-                    TextLineBounds="Tight">
-                    <TextBlock.RenderTransform>
+                    UriSource="{x:Bind utils:WeatherUtils.GetWeatherIconURI(Details.Icon), Mode=OneWay}">
+                    <BitmapIcon.RenderTransform>
                         <RotateTransform Angle="{x:Bind Details.IconRotation, Mode=OneWay}" />
-                    </TextBlock.RenderTransform>
-                </TextBlock>
+                    </BitmapIcon.RenderTransform>
+                </BitmapIcon>
             </Viewbox>
             <Viewbox
                 Grid.Row="2"
@@ -69,8 +69,7 @@
                 <TextBlock
                     Name="DetailValue"
                     Padding="8"
-                    Style="{StaticResource WeatherIcon}"
-                    Text="{Binding Value, FallbackValue=' 50.00 in', Mode=OneWay}"
+                    Text="{Binding Value, FallbackValue='50.00 in', Mode=OneWay}"
                     TextWrapping="WrapWholeWords" />
             </Viewbox>
         </Grid>

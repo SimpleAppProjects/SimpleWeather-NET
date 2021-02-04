@@ -7,6 +7,7 @@
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:toolkitConverters="using:Microsoft.Toolkit.Uwp.UI.Converters"
+    xmlns:utils="using:SimpleWeather.Utils"
     xmlns:uwpUtils="using:SimpleWeather.UWP.Utils"
     d:DataContext="{x:Bind ViewModel}"
     d:DesignHeight="120"
@@ -110,8 +111,7 @@
                     Padding="5,0"
                     FontSize="36"
                     FontWeight="Medium"
-                    Style="{StaticResource WeatherIcon}"
-                    Text="{x:Bind ViewModel.CurrTemp, FallbackValue='70°', Mode=OneWay}" />
+                    Text="{x:Bind ViewModel.CurrTemp, FallbackValue='70°F', Mode=OneWay}" />
             </toolkitControls:DropShadowPanel>
             <toolkitControls:DropShadowPanel
                 BlurRadius="15.0"
@@ -127,27 +127,58 @@
                     TextTrimming="CharacterEllipsis" />
             </toolkitControls:DropShadowPanel>
         </StackPanel>
-        <toolkitControls:DropShadowPanel
+        <StackPanel
             Grid.Row="1"
             Grid.Column="1"
             Margin="10,0"
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
-            BlurRadius="15.0"
-            ShadowOpacity="{ThemeResource DropShadowOpacity}"
-            Color="{ThemeResource DropShadowColorBrush}">
-            <TextBlock
-                x:Name="HiLoTemp"
-                FontSize="20"
-                FontWeight="Medium"
-                HorizontalTextAlignment="Right"
-                Style="{ThemeResource WeatherIcon}"
-                TextAlignment="Right"
-                Visibility="{x:Bind ViewModel.HiTemp, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
-                <Span><Run Text="{x:Bind ViewModel.HiTemp, Mode=OneWay, FallbackValue='80°', TargetNullValue='--'}" /><Run Text=" &#xf058;" /></Span>
-                <LineBreak /><Span><Run Text="{x:Bind ViewModel.LoTemp, Mode=OneWay, FallbackValue='65°', TargetNullValue='--'}" /><Run Text=" &#xf044;" /></Span>
-            </TextBlock>
-        </toolkitControls:DropShadowPanel>
+            Orientation="Vertical">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <toolkitControls:DropShadowPanel
+                    BlurRadius="15.0"
+                    ShadowOpacity="{ThemeResource DropShadowOpacity}"
+                    Color="{ThemeResource DropShadowColorBrush}">
+                    <TextBlock
+                        x:Name="HiTemp"
+                        FontSize="20"
+                        FontWeight="Medium"
+                        HorizontalTextAlignment="Right"
+                        Text="{x:Bind ViewModel.HiTemp, Mode=OneWay, FallbackValue='80°', TargetNullValue='--'}"
+                        TextAlignment="Right" />
+                </toolkitControls:DropShadowPanel>
+                <BitmapIcon
+                    Grid.Column="1"
+                    Width="20"
+                    UriSource="/Assets/WeatherIcons/png/wi-direction-up.png" />
+            </Grid>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <toolkitControls:DropShadowPanel
+                    BlurRadius="15.0"
+                    ShadowOpacity="{ThemeResource DropShadowOpacity}"
+                    Color="{ThemeResource DropShadowColorBrush}">
+                    <TextBlock
+                        x:Name="LoTemp"
+                        FontSize="20"
+                        FontWeight="Medium"
+                        HorizontalTextAlignment="Right"
+                        Text="{x:Bind ViewModel.LoTemp, Mode=OneWay, FallbackValue='80°', TargetNullValue='--'}"
+                        TextAlignment="Right" />
+                </toolkitControls:DropShadowPanel>
+                <BitmapIcon
+                    Grid.Column="1"
+                    Width="20"
+                    UriSource="/Assets/WeatherIcons/png/wi-direction-down.png" />
+            </Grid>
+        </StackPanel>
         <StackPanel
             Grid.Row="1"
             Grid.Column="2"
@@ -164,12 +195,7 @@
                     BlurRadius="15.0"
                     ShadowOpacity="{ThemeResource DropShadowOpacity}"
                     Color="{ThemeResource DropShadowColorBrush}">
-                    <TextBlock
-                        Width="35"
-                        FontSize="20"
-                        FontWeight="Medium"
-                        Style="{ThemeResource WeatherIcon}"
-                        Text="{x:Bind ViewModel.PoPIcon, Mode=OneWay, FallbackValue='&#xf084;'}" />
+                    <BitmapIcon Width="35" UriSource="{x:Bind utils:WeatherUtils.GetWeatherIconURI(ViewModel.PoPIcon), Mode=OneWay}" />
                 </toolkitControls:DropShadowPanel>
                 <toolkitControls:DropShadowPanel
                     BlurRadius="15.0"
@@ -180,11 +206,7 @@
                         Padding="5,0"
                         FontSize="20"
                         FontWeight="Medium"
-                        Style="{ThemeResource WeatherIcon}">
-                        <Span>
-                            <Run Text="{x:Bind ViewModel.PoP, FallbackValue='70%', TargetNullValue='--', Mode=OneWay}" />
-                        </Span>
-                    </TextBlock>
+                        Text="{x:Bind ViewModel.PoP, FallbackValue='70%', TargetNullValue='--', Mode=OneWay}" />
                 </toolkitControls:DropShadowPanel>
             </StackPanel>
             <StackPanel
@@ -197,17 +219,14 @@
                     BlurRadius="15.0"
                     ShadowOpacity="{ThemeResource DropShadowOpacity}"
                     Color="{ThemeResource DropShadowColorBrush}">
-                    <TextBlock
+                    <BitmapIcon
                         Width="35"
-                        FontSize="18"
-                        FontWeight="Medium"
                         RenderTransformOrigin="0.5,0.5"
-                        Style="{ThemeResource WeatherIcon}"
-                        Text="&#xf058;">
-                        <TextBlock.RenderTransform>
+                        UriSource="/Assets/WeatherIcons/png/wi-wind-direction.png">
+                        <BitmapIcon.RenderTransform>
                             <RotateTransform Angle="{x:Bind ViewModel.WindDirection, Mode=OneWay, FallbackValue='90'}" />
-                        </TextBlock.RenderTransform>
-                    </TextBlock>
+                        </BitmapIcon.RenderTransform>
+                    </BitmapIcon>
                 </toolkitControls:DropShadowPanel>
                 <toolkitControls:DropShadowPanel
                     BlurRadius="15.0"
@@ -218,7 +237,6 @@
                         Padding="5,0"
                         FontSize="20"
                         FontWeight="Medium"
-                        Style="{ThemeResource WeatherIcon}"
                         Text="{x:Bind ViewModel.WindSpeed, Mode=OneWay, FallbackValue='7 mph'}" />
                 </toolkitControls:DropShadowPanel>
             </StackPanel>

@@ -117,7 +117,7 @@
                     Content="Weather"
                     Tag="WeatherNow">
                     <muxc:NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xf002;" Style="{ThemeResource WeatherFontIcon}" />
+                        <BitmapIcon Margin="-12" UriSource="/Assets/WeatherIcons/png/wi-day-cloudy.png" />
                     </muxc:NavigationViewItem.Icon>
                 </muxc:NavigationViewItem>
                 <muxc:NavigationViewItem

@@ -7,6 +7,7 @@
     xmlns:local="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:utils="using:SimpleWeather.Utils"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -248,10 +249,7 @@
                     Height="50"
                     Margin="8,0"
                     VerticalAlignment="Center">
-                    <TextBlock
-                        x:Name="WeatherIcon"
-                        Style="{StaticResource WeatherIcon}"
-                        Text="{x:Bind ViewModel.Icon, FallbackValue='&#xf00d;', Mode=OneWay}" />
+                    <BitmapIcon x:Name="WeatherIcon" UriSource="{x:Bind utils:WeatherUtils.GetWeatherIconURI(ViewModel.Icon), Mode=OneWay}" />
                 </Viewbox>
                 <StackPanel
                     Grid.Column="1"
@@ -272,17 +270,79 @@
                         MaxLines="1"
                         Text="{x:Bind ViewModel.Condition, FallbackValue='50° / 44° - Sprinkles early. Mostly cloudy. Mild', Mode=OneWay}"
                         TextTrimming="CharacterEllipsis" />
-                    <TextBlock
-                        x:Name="Extra"
-                        Padding="2"
-                        VerticalAlignment="Center"
-                        FontFamily="/Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons"
-                        FontSize="{x:Bind Date.FontSize, Mode=OneWay}"
-                        Foreground="{ThemeResource ExtraTextForegroundBrush}"
-                        MaxLines="1"
-                        Text="{x:Bind ViewModel.ForecastExtra, FallbackValue='&#xf078; 100%&#x2003;&#xf050; 5 mph, WNW', Mode=OneWay}"
-                        TextTrimming="CharacterEllipsis"
-                        Visibility="{x:Bind ViewModel.ForecastExtra, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
+                    <StackPanel x:Name="Extras" Orientation="Horizontal">
+                        <TextBlock
+                            Padding="2"
+                            VerticalAlignment="Center"
+                            FontSize="{x:Bind Date.FontSize, Mode=OneWay}"
+                            Foreground="{ThemeResource ExtraTextForegroundBrush}"
+                            MaxLines="1"
+                            Text="{x:Bind ViewModel.PoPChance, FallbackValue='100%', Mode=OneWay}"
+                            TextTrimming="CharacterEllipsis"
+                            Visibility="{x:Bind ViewModel.PoPChance, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
+                            <TextBlock.DataContext>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <BitmapIcon
+                                            Grid.Column="0"
+                                            Width="25"
+                                            Height="25"
+                                            Foreground="White"
+                                            UriSource="/Assets/WeatherIcons/png/wi-raindrop.png" />
+                                        <TextBlock Grid.Column="1" Text="{Binding}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </TextBlock.DataContext>
+                        </TextBlock>
+                        <TextBlock
+                            Padding="2"
+                            VerticalAlignment="Center"
+                            FontSize="{x:Bind Date.FontSize, Mode=OneWay}"
+                            Foreground="{ThemeResource ExtraTextForegroundBrush}"
+                            MaxLines="1"
+                            Text="{x:Bind ViewModel.Cloudiness, FallbackValue='80%', Mode=OneWay}"
+                            TextTrimming="CharacterEllipsis"
+                            Visibility="{x:Bind ViewModel.Cloudiness, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
+                            <TextBlock.DataContext>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <BitmapIcon Grid.Column="0" UriSource="/Assets/WeatherIcons/png/wi-cloudy.png" />
+                                        <TextBlock Grid.Column="1" Text="{Binding}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </TextBlock.DataContext>
+                        </TextBlock>
+                        <TextBlock
+                            Padding="2"
+                            VerticalAlignment="Center"
+                            FontSize="{x:Bind Date.FontSize, Mode=OneWay}"
+                            Foreground="{ThemeResource ExtraTextForegroundBrush}"
+                            MaxLines="1"
+                            Text="{x:Bind ViewModel.WindSpeed, FallbackValue='7 mph, SSE', Mode=OneWay}"
+                            TextTrimming="CharacterEllipsis"
+                            Visibility="{x:Bind ViewModel.WindSpeed, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
+                            <TextBlock.DataContext>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <BitmapIcon Grid.Column="0" UriSource="/Assets/WeatherIcons/png/wi-strong-wind.png" />
+                                        <TextBlock Grid.Column="1" Text="{Binding}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </TextBlock.DataContext>
+                        </TextBlock>
+                    </StackPanel>
                 </StackPanel>
             </Grid>
         </ToggleButton>

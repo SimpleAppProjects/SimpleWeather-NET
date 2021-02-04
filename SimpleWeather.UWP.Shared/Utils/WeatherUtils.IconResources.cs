@@ -7,9 +7,9 @@ namespace SimpleWeather.Utils
 {
     public static partial class WeatherUtils
     {
-        public static String GetWeatherIconURI(string icon)
+        public static Uri GetWeatherIconURI(string icon)
         {
-            return GetWeatherIconURI(icon, true);
+            return new Uri(GetWeatherIconURI(icon, true));
         }
 
         public static String GetWeatherIconURI(string icon, bool isAbsoluteUri)
@@ -19,299 +19,488 @@ namespace SimpleWeather.Utils
 
             switch (icon)
             {
+                // Day
                 case WeatherIcons.DAY_SUNNY:
-                    fileIcon = "day_sunny.png";
+                    fileIcon = "wi-day-sunny.png";
                     break;
 
                 case WeatherIcons.DAY_CLOUDY:
-                    fileIcon = "day_cloudy.png";
+                    fileIcon = "wi-day-cloudy.png";
                     break;
 
                 case WeatherIcons.DAY_CLOUDY_GUSTS:
-                    fileIcon = "day_cloudy_gusts.png";
+                    fileIcon = "wi-day-cloudy-gusts.png";
                     break;
 
                 case WeatherIcons.DAY_CLOUDY_WINDY:
-                    fileIcon = "day_cloudy_windy.png";
+                    fileIcon = "wi-day-cloudy-windy.png";
                     break;
 
                 case WeatherIcons.DAY_FOG:
-                    fileIcon = "day_fog.png";
+                    fileIcon = "wi-day-fog.png";
                     break;
 
                 case WeatherIcons.DAY_HAIL:
-                    fileIcon = "day_hail.png";
+                    fileIcon = "wi-day-hail.png";
                     break;
 
                 case WeatherIcons.DAY_HAZE:
-                    fileIcon = "day_haze.png";
+                    fileIcon = "wi-day-haze.png";
                     break;
 
                 case WeatherIcons.DAY_LIGHTNING:
-                    fileIcon = "day_lightning.png";
+                    fileIcon = "wi-day-lightning.png";
                     break;
 
                 case WeatherIcons.DAY_RAIN:
-                    fileIcon = "day_rain.png";
+                    fileIcon = "wi-day-rain.png";
                     break;
 
                 case WeatherIcons.DAY_RAIN_MIX:
-                    fileIcon = "day_rain_mix.png";
+                    fileIcon = "wi-day-rain-mix.png";
                     break;
 
                 case WeatherIcons.DAY_RAIN_WIND:
-                    fileIcon = "day_rain_wind.png";
+                    fileIcon = "wi-day-rain-wind.png";
                     break;
 
                 case WeatherIcons.DAY_SHOWERS:
-                    fileIcon = "day_showers.png";
+                    fileIcon = "wi-day-showers.png";
                     break;
 
                 case WeatherIcons.DAY_SLEET:
-                    fileIcon = "day_sleet.png";
+                    fileIcon = "wi-day-sleet.png";
                     break;
 
                 case WeatherIcons.DAY_SLEET_STORM:
-                    fileIcon = "day_sleet_storm.png";
+                    fileIcon = "wi-day-sleet-storm.png";
                     break;
 
                 case WeatherIcons.DAY_SNOW:
-                    fileIcon = "day_snow.png";
+                    fileIcon = "wi-day-snow.png";
                     break;
 
                 case WeatherIcons.DAY_SNOW_THUNDERSTORM:
-                    fileIcon = "day_snow_thunderstorm.png";
+                    fileIcon = "wi-day-snow-thunderstorm.png";
                     break;
 
                 case WeatherIcons.DAY_SNOW_WIND:
-                    fileIcon = "day_snow_wind.png";
+                    fileIcon = "wi-day-snow-wind.png";
                     break;
 
                 case WeatherIcons.DAY_SPRINKLE:
-                    fileIcon = "day_sprinkle.png";
+                    fileIcon = "wi-day-sprinkle.png";
                     break;
 
                 case WeatherIcons.DAY_STORM_SHOWERS:
-                    fileIcon = "day_storm_showers.png";
+                    fileIcon = "wi-day-storm-showers.png";
                     break;
 
                 case WeatherIcons.DAY_SUNNY_OVERCAST:
-                    fileIcon = "day_sunny_overcast.png";
+                    fileIcon = "wi-day-sunny-overcast.png";
                     break;
 
                 case WeatherIcons.DAY_THUNDERSTORM:
-                    fileIcon = "day_thunderstorm.png";
+                    fileIcon = "wi-day-thunderstorm.png";
                     break;
 
                 case WeatherIcons.DAY_WINDY:
-                    fileIcon = "day_windy.png";
+                    fileIcon = "wi-day-windy.png";
                     break;
 
                 case WeatherIcons.DAY_HOT:
-                    fileIcon = "hot.png";
+                    fileIcon = "wi-hot.png";
                     break;
 
                 case WeatherIcons.DAY_CLOUDY_HIGH:
-                    fileIcon = "day_cloudy_high.png";
+                    fileIcon = "wi-day-cloudy-high.png";
                     break;
 
                 case WeatherIcons.DAY_LIGHT_WIND:
-                    fileIcon = "day_light_wind.png";
+                    fileIcon = "wi-day-light-wind.png";
                     break;
 
+                // Night
                 case WeatherIcons.NIGHT_CLEAR:
-                    fileIcon = "night_clear.png";
+                    fileIcon = "wi-night-clear.png";
                     break;
 
                 case WeatherIcons.NIGHT_ALT_CLOUDY:
-                    fileIcon = "night_alt_cloudy.png";
+                    fileIcon = "wi-night-alt-cloudy.png";
                     break;
 
                 case WeatherIcons.NIGHT_ALT_CLOUDY_GUSTS:
-                    fileIcon = "night_alt_cloudy_gusts.png";
+                    fileIcon = "wi-night-alt-cloudy-gusts.png";
                     break;
 
                 case WeatherIcons.NIGHT_ALT_CLOUDY_WINDY:
-                    fileIcon = "night_alt_cloudy_windy.png";
+                    fileIcon = "wi-night-alt-cloudy-windy.png";
                     break;
 
                 case WeatherIcons.NIGHT_ALT_HAIL:
-                    fileIcon = "night_alt_hail.png";
+                    fileIcon = "wi-night-alt-hail.png";
                     break;
 
                 case WeatherIcons.NIGHT_ALT_LIGHTNING:
-                    fileIcon = "night_alt_lightning.png";
+                    fileIcon = "wi-night-alt-lightning.png";
                     break;
 
                 case WeatherIcons.NIGHT_ALT_RAIN:
-                    fileIcon = "night_alt_rain.png";
+                    fileIcon = "wi-night-alt-rain.png";
                     break;
 
                 case WeatherIcons.NIGHT_ALT_RAIN_MIX:
-                    fileIcon = "night_alt_rain_mix.png";
+                    fileIcon = "wi-night-alt-rain-mix.png";
                     break;
 
                 case WeatherIcons.NIGHT_ALT_RAIN_WIND:
-                    fileIcon = "night_alt_rain_wind.png";
+                    fileIcon = "wi-night-alt-rain-wind.png";
                     break;
 
                 case WeatherIcons.NIGHT_ALT_SHOWERS:
-                    fileIcon = "night_alt_showers.png";
+                    fileIcon = "wi-night-alt-showers.png";
                     break;
 
                 case WeatherIcons.NIGHT_ALT_SLEET:
-                    fileIcon = "night_alt_sleet.png";
+                    fileIcon = "wi-night-alt-sleet.png";
                     break;
 
                 case WeatherIcons.NIGHT_ALT_SLEET_STORM:
-                    fileIcon = "night_alt_sleet_storm.png";
+                    fileIcon = "wi-night-alt-sleet-storm.png";
                     break;
 
                 case WeatherIcons.NIGHT_ALT_SNOW:
-                    fileIcon = "night_alt_snow.png";
+                    fileIcon = "wi-night-alt-snow.png";
                     break;
 
                 case WeatherIcons.NIGHT_ALT_SNOW_THUNDERSTORM:
-                    fileIcon = "night_alt_snow_thunderstorm.png";
+                    fileIcon = "wi-night-alt-snow-thunderstorm.png";
                     break;
 
                 case WeatherIcons.NIGHT_ALT_SNOW_WIND:
-                    fileIcon = "night_alt_snow_wind.png";
+                    fileIcon = "wi-night-alt-snow-wind.png";
                     break;
 
                 case WeatherIcons.NIGHT_ALT_SPRINKLE:
-                    fileIcon = "night_alt_sprinkle.png";
+                    fileIcon = "wi-night-alt-sprinkle.png";
                     break;
 
                 case WeatherIcons.NIGHT_ALT_STORM_SHOWERS:
-                    fileIcon = "night_alt_storm_showers.png";
+                    fileIcon = "wi-night-alt-storm-showers.png";
                     break;
 
                 case WeatherIcons.NIGHT_ALT_THUNDERSTORM:
-                    fileIcon = "night_alt_thunderstorm.png";
+                    fileIcon = "wi-night-alt-thunderstorm.png";
                     break;
 
                 case WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY:
-                    fileIcon = "night_alt_partly_cloudy.png";
+                    fileIcon = "wi-night-alt-partly-cloudy.png";
                     break;
 
                 case WeatherIcons.NIGHT_ALT_CLOUDY_HIGH:
-                    fileIcon = "night_alt_cloudy_high.png";
+                    fileIcon = "wi-night-alt-cloudy-high.png";
                     break;
 
                 case WeatherIcons.NIGHT_FOG:
-                    fileIcon = "night_fog.png";
+                    fileIcon = "wi-night-fog.png";
                     break;
 
+                // Neutral
                 case WeatherIcons.CLOUD:
-                    fileIcon = "cloud.png";
+                    fileIcon = "wi-cloud.png";
                     break;
 
                 case WeatherIcons.CLOUDY:
-                    fileIcon = "cloudy.png";
+                    fileIcon = "wi-cloudy.png";
                     break;
 
                 case WeatherIcons.CLOUDY_GUSTS:
-                    fileIcon = "cloudy_gusts.png";
+                    fileIcon = "wi-cloudy-gusts.png";
                     break;
 
                 case WeatherIcons.CLOUDY_WINDY:
-                    fileIcon = "cloudy_windy.png";
+                    fileIcon = "wi-cloudy-windy.png";
                     break;
 
                 case WeatherIcons.FOG:
-                    fileIcon = "fog.png";
+                    fileIcon = "wi-fog.png";
                     break;
 
                 case WeatherIcons.HAIL:
-                    fileIcon = "hail.png";
+                    fileIcon = "wi-hail.png";
                     break;
 
                 case WeatherIcons.RAIN:
-                    fileIcon = "rain.png";
+                    fileIcon = "wi-rain.png";
                     break;
 
                 case WeatherIcons.RAIN_MIX:
-                    fileIcon = "rain_mix.png";
+                    fileIcon = "wi-rain-mix.png";
                     break;
 
                 case WeatherIcons.RAIN_WIND:
-                    fileIcon = "rain_wind.png";
+                    fileIcon = "wi-rain-wind.png";
                     break;
 
                 case WeatherIcons.SHOWERS:
-                    fileIcon = "showers.png";
+                    fileIcon = "wi-showers.png";
                     break;
 
                 case WeatherIcons.SLEET:
-                    fileIcon = "sleet.png";
+                    fileIcon = "wi-sleet.png";
                     break;
 
                 case WeatherIcons.SNOW:
-                    fileIcon = "snow.png";
+                    fileIcon = "wi-snow.png";
                     break;
 
                 case WeatherIcons.SPRINKLE:
-                    fileIcon = "sprinkle.png";
+                    fileIcon = "wi-sprinkle.png";
                     break;
 
                 case WeatherIcons.STORM_SHOWERS:
-                    fileIcon = "storm_showers.png";
+                    fileIcon = "wi-storm-showers.png";
                     break;
 
                 case WeatherIcons.THUNDERSTORM:
-                    fileIcon = "thunderstorm.png";
+                    fileIcon = "wi-thunderstorm.png";
                     break;
 
                 case WeatherIcons.SNOW_WIND:
-                    fileIcon = "snow_wind.png";
+                    fileIcon = "wi-snow-wind.png";
                     break;
 
                 case WeatherIcons.SMOG:
-                    fileIcon = "smog.png";
+                    fileIcon = "wi-smog.png";
                     break;
 
                 case WeatherIcons.SMOKE:
-                    fileIcon = "smoke.png";
+                    fileIcon = "wi-smoke.png";
                     break;
 
                 case WeatherIcons.LIGHTNING:
-                    fileIcon = "lightning.png";
+                    fileIcon = "wi-lightning.png";
                     break;
 
                 case WeatherIcons.DUST:
-                    fileIcon = "dust.png";
+                    fileIcon = "wi-dust.png";
                     break;
 
                 case WeatherIcons.SNOWFLAKE_COLD:
-                    fileIcon = "snowflake_cold.png";
+                    fileIcon = "wi-snowflake-cold.png";
                     break;
 
                 case WeatherIcons.WINDY:
-                    fileIcon = "windy.png";
+                    fileIcon = "wi-windy.png";
                     break;
 
                 case WeatherIcons.STRONG_WIND:
-                    fileIcon = "strong_wind.png";
+                    fileIcon = "wi-strong-wind.png";
                     break;
 
                 case WeatherIcons.SANDSTORM:
-                    fileIcon = "sandstorm.png";
+                    fileIcon = "wi-sandstorm.png";
                     break;
 
                 case WeatherIcons.HURRICANE:
-                    fileIcon = "hurricane.png";
+                    fileIcon = "wi-hurricane.png";
                     break;
 
                 case WeatherIcons.TORNADO:
-                    fileIcon = "tornado.png";
+                    fileIcon = "wi-tornado.png";
+                    break;
+
+                case WeatherIcons.FIRE:
+                    fileIcon = "wi-fire.png";
+                    break;
+
+                case WeatherIcons.FLOOD:
+                    fileIcon = "wi-flood.png";
+                    break;
+
+                case WeatherIcons.VOLCANO:
+                    fileIcon = "wi-volcano.png";
+                    break;
+
+                case WeatherIcons.BAROMETER:
+                    fileIcon = "wi-barometer.png";
+                    break;
+
+                case WeatherIcons.HUMIDITY:
+                    fileIcon = "wi-humidity.png";
+                    break;
+
+                case WeatherIcons.MOONRISE:
+                    fileIcon = "wi-moonrise.png";
+                    break;
+
+                case WeatherIcons.MOONSET:
+                    fileIcon = "wi-moonset.png";
+                    break;
+
+                case WeatherIcons.RAINDROP:
+                    fileIcon = "wi-raindrop.png";
+                    break;
+
+                case WeatherIcons.RAINDROPS:
+                    fileIcon = "wi-raindrops.png";
+                    break;
+
+                case WeatherIcons.SUNRISE:
+                    fileIcon = "wi-sunrise.png";
+                    break;
+
+                case WeatherIcons.SUNSET:
+                    fileIcon = "wi-sunset.png";
+                    break;
+
+                case WeatherIcons.THERMOMETER:
+                    fileIcon = "wi-thermometer.png";
+                    break;
+
+                case WeatherIcons.UMBRELLA:
+                    fileIcon = "wi-umbrella.png";
+                    break;
+
+                case WeatherIcons.WIND_DIRECTION:
+                    fileIcon = "wi-wind-direction.png";
+                    break;
+
+                // Beaufort
+                case WeatherIcons.WIND_BEAUFORT_0:
+                    fileIcon = "wi-wind-beaufort-0.png";
+                    break;
+
+                case WeatherIcons.WIND_BEAUFORT_1:
+                    fileIcon = "wi-wind-beaufort-1.png";
+                    break;
+
+                case WeatherIcons.WIND_BEAUFORT_2:
+                    fileIcon = "wi-wind-beaufort-2.png";
+                    break;
+
+                case WeatherIcons.WIND_BEAUFORT_3:
+                    fileIcon = "wi-wind-beaufort-3.png";
+                    break;
+
+                case WeatherIcons.WIND_BEAUFORT_4:
+                    fileIcon = "wi-wind-beaufort-4.png";
+                    break;
+
+                case WeatherIcons.WIND_BEAUFORT_5:
+                    fileIcon = "wi-wind-beaufort-5.png";
+                    break;
+
+                case WeatherIcons.WIND_BEAUFORT_6:
+                    fileIcon = "wi-wind-beaufort-6.png";
+                    break;
+
+                case WeatherIcons.WIND_BEAUFORT_7:
+                    fileIcon = "wi-wind-beaufort-7.png";
+                    break;
+
+                case WeatherIcons.WIND_BEAUFORT_8:
+                    fileIcon = "wi-wind-beaufort-8.png";
+                    break;
+
+                case WeatherIcons.WIND_BEAUFORT_9:
+                    fileIcon = "wi-wind-beaufort-9.png";
+                    break;
+
+                case WeatherIcons.WIND_BEAUFORT_10:
+                    fileIcon = "wi-wind-beaufort-10.png";
+                    break;
+
+                case WeatherIcons.WIND_BEAUFORT_11:
+                    fileIcon = "wi-wind-beaufort-11.png";
+                    break;
+
+                case WeatherIcons.WIND_BEAUFORT_12:
+                    fileIcon = "wi-wind-beaufort-12.png";
+                    break;
+
+                // Moon Phase
+                case WeatherIcons.MOON_NEW:
+                    fileIcon = "wi-moon-new.png";
+                    break;
+
+                case WeatherIcons.MOON_WAXING_CRESCENT_3:
+                    fileIcon = "wi-moon-waxing-crescent-3.png";
+                    break;
+
+                case WeatherIcons.MOON_FIRST_QUARTER:
+                    fileIcon = "wi-moon-first-quarter.png";
+                    break;
+
+                case WeatherIcons.MOON_WAXING_GIBBOUS_3:
+                    fileIcon = "wi-moon-waxing-gibbous-3.png";
+                    break;
+
+                case WeatherIcons.MOON_FULL:
+                    fileIcon = "wi-moon-full.png";
+                    break;
+
+                case WeatherIcons.MOON_WANING_GIBBOUS_3:
+                    fileIcon = "wi-moon-waning-gibbous-3.png";
+                    break;
+
+                case WeatherIcons.MOON_THIRD_QUARTER:
+                    fileIcon = "wi-moon-third-quarter.png";
+                    break;
+
+                case WeatherIcons.MOON_WANING_CRESCENT_3:
+                    fileIcon = "wi-moon-waning-crescent-3.png";
+                    break;
+
+                case WeatherIcons.MOON_ALT_NEW:
+                    fileIcon = "wi-moon-alt-new.png";
+                    break;
+
+                case WeatherIcons.MOON_ALT_WAXING_CRESCENT_3:
+                    fileIcon = "wi-moon-alt-waxing-crescent-3.png";
+                    break;
+
+                case WeatherIcons.MOON_ALT_FIRST_QUARTER:
+                    fileIcon = "wi-moon-alt-first-quarter.png";
+                    break;
+
+                case WeatherIcons.MOON_ALT_WAXING_GIBBOUS_3:
+                    fileIcon = "wi-moon-alt-waxing-gibbous-3.png";
+                    break;
+
+                case WeatherIcons.MOON_ALT_FULL:
+                    fileIcon = "wi-moon-alt-full.png";
+                    break;
+
+                case WeatherIcons.MOON_ALT_WANING_GIBBOUS_3:
+                    fileIcon = "wi-moon-alt-waning-gibbous-3.png";
+                    break;
+
+                case WeatherIcons.MOON_ALT_THIRD_QUARTER:
+                    fileIcon = "wi-moon-alt-third-quarter.png";
+                    break;
+
+                case WeatherIcons.MOON_ALT_WANING_CRESCENT_3:
+                    fileIcon = "wi-moon-alt-waning-crescent-3.png";
+                    break;
+
+                case WeatherIcons.FAHRENHEIT:
+                    fileIcon = "wi-fahrenheit.png";
+                    break;
+
+                case WeatherIcons.CELSIUS:
+                    fileIcon = "wi-celsius.png";
+                    break;
+
+                case WeatherIcons.NA:
+                    fileIcon = "wi-na.png";
                     break;
             }
 
             if (String.IsNullOrWhiteSpace(fileIcon))
             {
                 // Not Available
-                fileIcon = "na.png";
+                fileIcon = "wi-na.png";
             }
 
             if (isAbsoluteUri)

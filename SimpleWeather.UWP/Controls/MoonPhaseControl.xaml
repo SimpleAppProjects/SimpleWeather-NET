@@ -5,7 +5,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:weatherdata="using:SimpleWeather.WeatherData"
     MinWidth="450"
     mc:Ignorable="d">
 
@@ -21,18 +23,18 @@
                     <SolidColorBrush x:Key="MoonPhaseBrush" Color="Black" />
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
-            <Style
-                x:Key="DisabledMoonStyle"
-                BasedOn="{StaticResource WeatherIcon}"
-                TargetType="TextBlock">
+            <Style x:Key="DisabledMoonStyle" TargetType="BitmapIcon">
                 <Setter Property="Opacity" Value="0.5" />
+                <Setter Property="Margin" Value="5" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="VerticalAlignment" Value="Center" />
                 <Setter Property="Foreground" Value="{ThemeResource DisabledMoonPhaseBrush}" />
             </Style>
-            <Style
-                x:Key="MoonStyle"
-                BasedOn="{StaticResource WeatherIcon}"
-                TargetType="TextBlock">
+            <Style x:Key="MoonStyle" TargetType="BitmapIcon">
                 <Setter Property="Opacity" Value="1" />
+                <Setter Property="Margin" Value="5" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="VerticalAlignment" Value="Center" />
                 <Setter Property="Foreground" Value="{ThemeResource MoonPhaseBrush}" />
             </Style>
         </ResourceDictionary>
@@ -50,61 +52,61 @@
                     HorizontalAlignment="Center"
                     Orientation="Horizontal">
                     <!--  New Moon  -->
-                    <TextBlock
-                        Width="50"
-                        Padding="5"
-                        FontSize="32"
+                    <BitmapIcon
+                        Width="40"
+                        Height="40"
                         Style="{ThemeResource DisabledMoonStyle}"
-                        Text="&#xf095;" />
+                        Tag="{x:Bind weatherdata:WeatherIcons.MOON_NEW}"
+                        UriSource="/Assets/WeatherIcons/png/wi-moon-new.png" />
                     <!--  Waxing Crescent  -->
-                    <TextBlock
-                        Width="50"
-                        Padding="5"
-                        FontSize="32"
+                    <BitmapIcon
+                        Width="40"
+                        Height="40"
                         Style="{ThemeResource DisabledMoonStyle}"
-                        Text="&#xf098;" />
+                        Tag="{x:Bind weatherdata:WeatherIcons.MOON_WAXING_CRESCENT_3}"
+                        UriSource="/Assets/WeatherIcons/png/wi-moon-waxing-crescent-3.png" />
                     <!--  First Qtr  -->
-                    <TextBlock
-                        Width="50"
-                        Padding="5"
-                        FontSize="32"
+                    <BitmapIcon
+                        Width="40"
+                        Height="40"
                         Style="{ThemeResource DisabledMoonStyle}"
-                        Text="&#xf09c;" />
+                        Tag="{x:Bind weatherdata:WeatherIcons.MOON_FIRST_QUARTER}"
+                        UriSource="/Assets/WeatherIcons/png/wi-moon-first-quarter.png" />
                     <!--  Waxing Gibbous  -->
-                    <TextBlock
-                        Width="50"
-                        Padding="5"
-                        FontSize="32"
+                    <BitmapIcon
+                        Width="40"
+                        Height="40"
                         Style="{ThemeResource DisabledMoonStyle}"
-                        Text="&#xf09f;" />
+                        Tag="{x:Bind weatherdata:WeatherIcons.MOON_WAXING_GIBBOUS_3}"
+                        UriSource="/Assets/WeatherIcons/png/wi-moon-waxing-gibbous-3.png" />
                     <!--  Full Moon  -->
-                    <TextBlock
-                        Width="50"
-                        Padding="5"
-                        FontSize="32"
+                    <BitmapIcon
+                        Width="40"
+                        Height="40"
                         Style="{ThemeResource DisabledMoonStyle}"
-                        Text="&#xf0a3;" />
+                        Tag="{x:Bind weatherdata:WeatherIcons.MOON_FULL}"
+                        UriSource="/Assets/WeatherIcons/png/wi-moon-full.png" />
                     <!--  Waning Gibbous  -->
-                    <TextBlock
-                        Width="50"
-                        Padding="5"
-                        FontSize="32"
+                    <BitmapIcon
+                        Width="40"
+                        Height="40"
                         Style="{ThemeResource DisabledMoonStyle}"
-                        Text="&#xf0a6;" />
+                        Tag="{x:Bind weatherdata:WeatherIcons.MOON_WANING_GIBBOUS_3}"
+                        UriSource="/Assets/WeatherIcons/png/wi-moon-waning-gibbous-3.png" />
                     <!--  Third Qtr  -->
-                    <TextBlock
-                        Width="50"
-                        Padding="5"
-                        FontSize="32"
+                    <BitmapIcon
+                        Width="40"
+                        Height="40"
                         Style="{ThemeResource DisabledMoonStyle}"
-                        Text="&#xf0aa;" />
+                        Tag="{x:Bind weatherdata:WeatherIcons.MOON_THIRD_QUARTER}"
+                        UriSource="/Assets/WeatherIcons/png/wi-moon-third-quarter.png" />
                     <!--  Waning Crescent  -->
-                    <TextBlock
-                        Width="50"
-                        Padding="5"
-                        FontSize="32"
+                    <BitmapIcon
+                        Width="40"
+                        Height="40"
                         Style="{ThemeResource DisabledMoonStyle}"
-                        Text="&#xf0ad;" />
+                        Tag="{x:Bind weatherdata:WeatherIcons.MOON_WANING_CRESCENT_3}"
+                        UriSource="/Assets/WeatherIcons/png/wi-moon-waning-crescent-3.png" />
                 </StackPanel>
                 <TextBlock
                     Padding="5"
