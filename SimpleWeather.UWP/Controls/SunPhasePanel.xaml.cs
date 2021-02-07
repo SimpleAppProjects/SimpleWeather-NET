@@ -1,4 +1,5 @@
 ﻿using Microsoft.Graphics.Canvas;
+using Microsoft.Graphics.Canvas.Effects;
 using Microsoft.Graphics.Canvas.Geometry;
 using Microsoft.Graphics.Canvas.Text;
 using Microsoft.Graphics.Canvas.UI;
@@ -42,6 +43,9 @@ namespace SimpleWeather.UWP.Controls
 
         private const float BottomTextSize = 12;
         private CanvasTextFormat BottomTextFormat;
+
+        private float IconSize;
+        private CanvasBitmap SunIcon;
 
         public bool ReadyToDraw => Canvas.ReadyToDraw;
 
@@ -140,9 +144,10 @@ namespace SimpleWeather.UWP.Controls
             sunsetX = ViewWidth - sideLineLength;
         }
 
-        private void Canvas_CreateResources(CanvasVirtualControl sender, CanvasCreateResourcesEventArgs args)
+        private async void Canvas_CreateResources(CanvasVirtualControl sender, CanvasCreateResourcesEventArgs args)
         {
-            SetSunriseSetTimes(sunrise, sunset);
+            IconSize = sender.ConvertDipsToPixels(24, CanvasDpiRounding.Floor);
+            SunIcon = await CanvasBitmap.LoadAsync(sender, WeatherUtils.GetWeatherIconURI(WeatherIcons.DAY_SUNNY));
         }
 
         private void Canvas_RegionsInvalidated(CanvasVirtualControl sender, CanvasRegionsInvalidatedEventArgs args)
@@ -183,16 +188,7 @@ namespace SimpleWeather.UWP.Controls
                 DashOffset = 1,
                 LineJoin = CanvasLineJoin.Round
             })
-            using (var iconTxtFormat = new CanvasTextFormat()
             {
-                FontFamily = "ms-appx:///Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons",
-                FontSize = 18,
-                HorizontalAlignment = CanvasHorizontalAlignment.Left
-            })
-            using (var iconLayout = new CanvasTextLayout(drawingSession, WeatherIcons.DAY_SUNNY, iconTxtFormat, 0, 0))
-            {
-                var iconBounds = iconLayout.LayoutBounds;
-
                 /*
                     Point on circle (width = height = r)
                     x(t) = r cos(t) + j
@@ -299,10 +295,11 @@ namespace SimpleWeather.UWP.Controls
 
                     if (isDay)
                     {
-                        if (!RectHelper.Intersect(region, iconLayout.DrawBounds).IsEmpty)
+                        drawingSession.DrawImage(new TintEffect() 
                         {
-                            drawingSession.DrawTextLayout(iconLayout, (float)(x - iconBounds.Width / 2), (float)(y - iconBounds.Height / 2), PaintColor);
-                        }
+                            Source = SunIcon,
+                            Color = PaintColor
+                        }, new Rect(x - IconSize / 2, y - IconSize / 2, IconSize, IconSize), SunIcon.Bounds);
                     }
                 }
             }

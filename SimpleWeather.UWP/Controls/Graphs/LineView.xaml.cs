@@ -1,13 +1,17 @@
 ﻿using Microsoft.Graphics.Canvas;
+using Microsoft.Graphics.Canvas.Effects;
 using Microsoft.Graphics.Canvas.Geometry;
 using Microsoft.Graphics.Canvas.Text;
+using Microsoft.Graphics.Canvas.UI;
 using Microsoft.Graphics.Canvas.UI.Xaml;
 using SimpleWeather.Utils;
+using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Numerics;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Xaml;
@@ -101,8 +105,8 @@ namespace SimpleWeather.UWP.Controls.Graphs
         private const float BottomTextSize = 12;
         private readonly CanvasTextFormat BottomTextFormat;
 
-        private readonly CanvasTextFormat IconFormat;
-        private double IconHeight = 0;
+        private double IconHeight;
+        private Dictionary<String, CanvasBitmap> IconCache;
 
         public bool ReadyToDraw => Canvas.ReadyToDraw;
 
@@ -121,23 +125,6 @@ namespace SimpleWeather.UWP.Controls.Graphs
                 FontSize = BottomTextSize,
                 HorizontalAlignment = CanvasHorizontalAlignment.Center,
                 WordWrapping = CanvasWordWrapping.NoWrap
-            };
-
-            IconFormat = new CanvasTextFormat
-            {
-                FontFamily = "ms-appx:///Assets/WeatherIcons/weathericons-regular-webfont.ttf#Weather Icons",
-                FontSize = 24,
-                HorizontalAlignment = CanvasHorizontalAlignment.Center,
-                WordWrapping = CanvasWordWrapping.NoWrap
-            };
-
-            Canvas.CreateResources += (s, e) => 
-            {
-                // Calculate icon height
-                using (var textLayout = new CanvasTextLayout(s, "'", IconFormat, 0, 0))
-                {
-                    IconHeight = textLayout.LayoutBounds.Height;
-                }
             };
 
             iconBottomMargin = Canvas.ConvertDipsToPixels(2, CanvasDpiRounding.Floor);
@@ -512,6 +499,30 @@ namespace SimpleWeather.UWP.Controls.Graphs
             }
         }
 
+        private void Canvas_CreateResources(CanvasVirtualControl sender, CanvasCreateResourcesEventArgs args)
+        {
+            // Calculate icon height
+            IconHeight = sender.ConvertDipsToPixels(30, CanvasDpiRounding.Floor);
+
+            IconCache = new Dictionary<string, CanvasBitmap>();
+
+            // Initialize common icons
+            CanvasBitmap.LoadAsync(sender, WeatherUtils.GetWeatherIconURI(WeatherIcons.RAINDROP)).AsTask().ContinueWith((t) =>
+            {
+                if (t.IsCompletedSuccessfully)
+                {
+                    IconCache.TryAdd(WeatherIcons.RAINDROP, t.Result);
+                }
+            });
+            CanvasBitmap.LoadAsync(sender, WeatherUtils.GetWeatherIconURI(WeatherIcons.WIND_DIRECTION)).AsTask().ContinueWith((t) =>
+            {
+                if (t.IsCompletedSuccessfully)
+                {
+                    IconCache.TryAdd(WeatherIcons.WIND_DIRECTION, t.Result);
+                }
+            });
+        }
+
         private void Canvas_RegionsInvalidated(CanvasVirtualControl sender, CanvasRegionsInvalidatedEventArgs args)
         {
             // Draw the effect to whatever regions of the CanvasVirtualControl have been invalidated.
@@ -789,33 +800,55 @@ namespace SimpleWeather.UWP.Controls.Graphs
                     if (DrawIconLabels && !String.IsNullOrWhiteSpace(xData.XIcon))
                     {
                         int rotation = xData.XIconRotation;
-                        string icon = xData.XIcon;
 
-                        using (var iconTxtLayout = new CanvasTextLayout(drawingSession, icon, IconFormat, 0, 0))
+                        Rect iconRect = RectHelper.FromPoints(
+                            new Point(x - IconHeight / 2, y - bottomTextHeight - iconBottomMargin - IconHeight / 2),
+                            new Point(x + IconHeight / 2, y - bottomTextHeight - iconBottomMargin + IconHeight / 2));
+
+                        if (!RectHelper.Intersect(region, iconRect).IsEmpty)
                         {
-                            Rect iconRect = RectHelper.FromPoints(
-                                new Point(x - iconTxtLayout.LayoutBounds.Width / 2, y - bottomTextHeight - iconBottomMargin - iconTxtLayout.LayoutBounds.Height / 2),
-                                new Point(x + iconTxtLayout.LayoutBounds.Width / 2, y - bottomTextHeight - iconBottomMargin + iconTxtLayout.LayoutBounds.Height / 2));
+                            CanvasBitmap icon = IconCache.GetValueOrDefault(xData.XIcon, null);
 
-                            if (!RectHelper.Intersect(region, iconRect).IsEmpty)
+                            if (icon == null)
                             {
-                                var prevTransform = drawingSession.Transform;
-
-                                var radAngle = ConversionMethods.ToRadians(rotation);
-                                var rotTransform = Matrix3x2.CreateRotation(radAngle,
-                                    new Vector2(0, (float)iconTxtLayout.LayoutBounds.Height / 2f));
-                                var translTransform = Matrix3x2.CreateTranslation(new Vector2(x, y - (float)(iconTxtLayout.LayoutBounds.Height / 2) - bottomTextHeight - iconBottomMargin * 2f));
-
-                                drawingSession.Transform = Matrix3x2.Multiply(rotTransform, translTransform);
-
-                                drawingSession.DrawTextLayout(iconTxtLayout, 0, 0, BottomTextColor);
-
-                                drawingSession.Transform = prevTransform;
+                                var task = CanvasBitmap.LoadAsync(Canvas, WeatherUtils.GetWeatherIconURI(xData.XIcon)).AsTask();
+                                task.ContinueWith((t) =>
+                                {
+                                    if (t.IsCompletedSuccessfully)
+                                    {
+                                        IconCache.TryAdd(xData.XIcon, t.Result);
+                                        Dispatcher.RunOnUIThread(() => Canvas.Invalidate(iconRect));
+                                    }
+                                });
+                                continue;
                             }
+
+                            DrawIcon(region, drawingSession, icon, x, y, rotation);
                         }
                     }
                 }
+                // END_LOOP
             }
+        }
+
+        private void DrawIcon(Rect region, CanvasDrawingSession drawingSession, CanvasBitmap icon, float x, float y, int rotation = 0)
+        {
+            var prevTransform = drawingSession.Transform;
+
+            var radAngle = ConversionMethods.ToRadians(rotation);
+            var rotTransform = Matrix3x2.CreateRotation(radAngle,
+                new Vector2((float)IconHeight / 2f, (float)IconHeight / 2f));
+            var translTransform = Matrix3x2.CreateTranslation(new Vector2(x - (float)(IconHeight / 2), y - (float)(IconHeight / 2) - bottomTextHeight - iconBottomMargin * 2f));
+
+            drawingSession.Transform = Matrix3x2.Multiply(rotTransform, translTransform);
+
+            drawingSession.DrawImage(new TintEffect() 
+            { 
+                Source = icon,
+                Color = BottomTextColor
+            }, new Rect(0, 0, IconHeight, IconHeight), icon.Bounds);
+
+            drawingSession.Transform = prevTransform;
         }
 
         private void DrawSeriesLegend(Rect region, CanvasDrawingSession drawingSession)
@@ -1009,7 +1042,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
         public void Dispose()
         {
             BottomTextFormat?.Dispose();
-            IconFormat?.Dispose();
+            IconCache?.Clear();
         }
     }
 }
