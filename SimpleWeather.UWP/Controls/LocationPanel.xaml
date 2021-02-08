@@ -135,7 +135,7 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
             Orientation="Vertical">
-            <Grid>
+            <Grid HorizontalAlignment="Right">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition />
@@ -146,6 +146,7 @@
                     Color="{ThemeResource DropShadowColorBrush}">
                     <TextBlock
                         x:Name="HiTemp"
+                        HorizontalAlignment="Right"
                         FontSize="20"
                         FontWeight="Medium"
                         HorizontalTextAlignment="Right"
@@ -168,6 +169,7 @@
                     Color="{ThemeResource DropShadowColorBrush}">
                     <TextBlock
                         x:Name="LoTemp"
+                        HorizontalAlignment="Right"
                         FontSize="20"
                         FontWeight="Medium"
                         HorizontalTextAlignment="Right"
@@ -192,12 +194,7 @@
                 VerticalAlignment="Center"
                 Orientation="Horizontal"
                 Visibility="{x:Bind ViewModel.PoP, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
-                <toolkitControls:DropShadowPanel
-                    BlurRadius="15.0"
-                    ShadowOpacity="{ThemeResource DropShadowOpacity}"
-                    Color="{ThemeResource DropShadowColorBrush}">
-                    <BitmapIcon Width="35" UriSource="{x:Bind utils:WeatherUtils.GetWeatherIconURI(ViewModel.PoPIcon), Mode=OneWay}" />
-                </toolkitControls:DropShadowPanel>
+                <BitmapIcon Width="25" UriSource="{x:Bind utils:WeatherUtils.GetWeatherIconURI(ViewModel.PoPIcon), Mode=OneWay}" />
                 <toolkitControls:DropShadowPanel
                     BlurRadius="15.0"
                     ShadowOpacity="{ThemeResource DropShadowOpacity}"
@@ -205,6 +202,7 @@
                     <TextBlock
                         x:Name="PoPCondition"
                         Padding="5,0"
+                        VerticalAlignment="Center"
                         FontSize="20"
                         FontWeight="Medium"
                         Text="{x:Bind ViewModel.PoP, FallbackValue='70%', TargetNullValue='&#x2022;', Mode=OneWay}" />
@@ -216,19 +214,14 @@
                 VerticalAlignment="Center"
                 Orientation="Horizontal"
                 Visibility="{x:Bind ViewModel.WindSpeed, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
-                <toolkitControls:DropShadowPanel
-                    BlurRadius="15.0"
-                    ShadowOpacity="{ThemeResource DropShadowOpacity}"
-                    Color="{ThemeResource DropShadowColorBrush}">
-                    <BitmapIcon
-                        Width="35"
-                        RenderTransformOrigin="0.5,0.5"
-                        UriSource="/Assets/WeatherIcons/png/wi-wind-direction.png">
-                        <BitmapIcon.RenderTransform>
-                            <RotateTransform Angle="{x:Bind ViewModel.WindDirection, Mode=OneWay, FallbackValue='90'}" />
-                        </BitmapIcon.RenderTransform>
-                    </BitmapIcon>
-                </toolkitControls:DropShadowPanel>
+                <BitmapIcon
+                    Width="25"
+                    RenderTransformOrigin="0.5,0.5"
+                    UriSource="/Assets/WeatherIcons/png/wi-wind-direction.png">
+                    <BitmapIcon.RenderTransform>
+                        <RotateTransform Angle="{x:Bind ViewModel.WindDirection, Mode=OneWay, FallbackValue='90'}" />
+                    </BitmapIcon.RenderTransform>
+                </BitmapIcon>
                 <toolkitControls:DropShadowPanel
                     BlurRadius="15.0"
                     ShadowOpacity="{ThemeResource DropShadowOpacity}"
@@ -236,6 +229,7 @@
                     <TextBlock
                         x:Name="WindCondition"
                         Padding="5,0"
+                        VerticalAlignment="Center"
                         FontSize="20"
                         FontWeight="Medium"
                         Text="{x:Bind ViewModel.WindSpeed, Mode=OneWay, FallbackValue='7 mph'}" />
@@ -252,10 +246,11 @@
                         <Setter Target="LocationName.FontSize" Value="14" />
                         <Setter Target="CurrentTemp.FontSize" Value="32" />
                         <Setter Target="CurWeather.FontSize" Value="14" />
-                        <Setter Target="HiLoTemp.FontSize" Value="18" />
+                        <Setter Target="HiTemp.FontSize" Value="18" />
+                        <Setter Target="LoTemp.FontSize" Value="18" />
                         <Setter Target="PoPCondition.FontSize" Value="16" />
                         <Setter Target="WindCondition.FontSize" Value="16" />
-                        <Setter Target="MainGrid.Height" Value="110" />
+                        <Setter Target="MainGrid.Height" Value="115" />
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Desktop">
@@ -266,10 +261,11 @@
                         <Setter Target="LocationName.FontSize" Value="15" />
                         <Setter Target="CurrentTemp.FontSize" Value="32" />
                         <Setter Target="CurWeather.FontSize" Value="16" />
-                        <Setter Target="HiLoTemp.FontSize" Value="18" />
+                        <Setter Target="HiTemp.FontSize" Value="18" />
+                        <Setter Target="LoTemp.FontSize" Value="18" />
                         <Setter Target="PoPCondition.FontSize" Value="16" />
                         <Setter Target="WindCondition.FontSize" Value="16" />
-                        <Setter Target="MainGrid.Height" Value="130" />
+                        <Setter Target="MainGrid.Height" Value="135" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>

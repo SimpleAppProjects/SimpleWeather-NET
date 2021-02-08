@@ -156,9 +156,9 @@ namespace SimpleWeather.Controls
             if (weather.condition.temp_f.HasValue && weather.condition.temp_f != weather.condition.temp_c)
             {
                 var temp = isFahrenheit ? Math.Round(weather.condition.temp_f.Value) : Math.Round(weather.condition.temp_c.Value);
-                var unitTemp = isFahrenheit ? WeatherIcons.FAHRENHEIT : WeatherIcons.CELSIUS;
+                var unitTemp = isFahrenheit ? Units.FAHRENHEIT : Units.CELSIUS;
 
-                CurrTemp = String.Format(culture, "{0}{1}", temp, unitTemp);
+                CurrTemp = String.Format(culture, "{0}°{1}", temp, unitTemp);
             }
             else
             {
