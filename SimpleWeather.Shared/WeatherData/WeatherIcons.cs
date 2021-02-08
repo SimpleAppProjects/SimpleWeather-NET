@@ -139,5 +139,8 @@ namespace SimpleWeather.WeatherData
 
         // N/A
         public const String NA = "\uf07b";
+
+        public const String PLACEHOLDER = "\u2022";
+        public const String EM_DASH = "\u2014";
     }
 }

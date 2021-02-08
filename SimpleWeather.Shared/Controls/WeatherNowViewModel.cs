@@ -198,12 +198,12 @@ namespace SimpleWeather.Controls
             }
             else
             {
-                tmpCurTemp = "--";
+                tmpCurTemp = WeatherIcons.PLACEHOLDER;
             }
             var unitTemp = isFahrenheit ? Units.FAHRENHEIT : Units.CELSIUS;
             CurTemp = String.Format(culture, "{0}°{1}", tmpCurTemp, unitTemp);
             var weatherCondition = provider.SupportsWeatherLocale ? weather.condition.weather : provider.GetWeatherCondition(weather.condition.icon);
-            CurCondition = (String.IsNullOrWhiteSpace(weatherCondition)) ? "--" : weatherCondition;
+            CurCondition = (String.IsNullOrWhiteSpace(weatherCondition)) ? WeatherIcons.EM_DASH : weatherCondition;
             WeatherIcon = weather.condition.icon;
 
             if (weather.condition.high_f.HasValue && weather.condition.high_f != weather.condition.high_c)

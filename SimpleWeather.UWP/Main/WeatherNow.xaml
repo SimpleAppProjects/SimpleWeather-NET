@@ -317,7 +317,7 @@
                             <TextBlock
                                 FontSize="24"
                                 FontWeight="Medium"
-                                Text="{x:Bind WeatherView.HiTemp, Mode=OneWay, TargetNullValue='--'}" />
+                                Text="{x:Bind WeatherView.HiTemp, Mode=OneWay, TargetNullValue='&#x2022;'}" />
                         </toolkitControls:DropShadowPanel>
                         <toolkitControls:DropShadowPanel BlurRadius="15.0" ShadowOpacity="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Converter={StaticResource boolToBinaryValueConverter}}">
                             <TextBlock
@@ -330,7 +330,7 @@
                             <TextBlock
                                 FontSize="24"
                                 FontWeight="Medium"
-                                Text="{x:Bind WeatherView.LoTemp, Mode=OneWay, TargetNullValue='--'}" />
+                                Text="{x:Bind WeatherView.LoTemp, Mode=OneWay, TargetNullValue='&#x2022;'}" />
                         </toolkitControls:DropShadowPanel>
                     </StackPanel>
                     <HyperlinkButton

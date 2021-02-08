@@ -9,6 +9,7 @@
     xmlns:toolkitConverters="using:Microsoft.Toolkit.Uwp.UI.Converters"
     xmlns:utils="using:SimpleWeather.Utils"
     xmlns:uwpUtils="using:SimpleWeather.UWP.Utils"
+    xmlns:weatherData="using:SimpleWeather.WeatherData"
     d:DataContext="{x:Bind ViewModel}"
     d:DesignHeight="120"
     d:DesignWidth="720"
@@ -148,7 +149,7 @@
                         FontSize="20"
                         FontWeight="Medium"
                         HorizontalTextAlignment="Right"
-                        Text="{x:Bind ViewModel.HiTemp, Mode=OneWay, FallbackValue='80°', TargetNullValue='--'}"
+                        Text="{x:Bind ViewModel.HiTemp, Mode=OneWay, FallbackValue='80°', TargetNullValue='&#x2022;'}"
                         TextAlignment="Right" />
                 </toolkitControls:DropShadowPanel>
                 <BitmapIcon
@@ -170,7 +171,7 @@
                         FontSize="20"
                         FontWeight="Medium"
                         HorizontalTextAlignment="Right"
-                        Text="{x:Bind ViewModel.LoTemp, Mode=OneWay, FallbackValue='80°', TargetNullValue='--'}"
+                        Text="{x:Bind ViewModel.LoTemp, Mode=OneWay, FallbackValue='80°', TargetNullValue='&#x2022;'}"
                         TextAlignment="Right" />
                 </toolkitControls:DropShadowPanel>
                 <BitmapIcon
@@ -206,7 +207,7 @@
                         Padding="5,0"
                         FontSize="20"
                         FontWeight="Medium"
-                        Text="{x:Bind ViewModel.PoP, FallbackValue='70%', TargetNullValue='--', Mode=OneWay}" />
+                        Text="{x:Bind ViewModel.PoP, FallbackValue='70%', TargetNullValue='&#x2022;', Mode=OneWay}" />
                 </toolkitControls:DropShadowPanel>
             </StackPanel>
             <StackPanel

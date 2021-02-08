@@ -162,7 +162,7 @@ namespace SimpleWeather.Controls
             }
             else
             {
-                CurrTemp = "--";
+                CurrTemp = WeatherIcons.PLACEHOLDER;
             }
 
             CurrWeather = provider.SupportsWeatherLocale ? weather.condition.weather : provider.GetWeatherCondition(weather.condition.icon);
@@ -174,7 +174,7 @@ namespace SimpleWeather.Controls
             }
             else
             {
-                HiTemp = "--";
+                HiTemp = WeatherIcons.PLACEHOLDER;
             }
 
             if (weather.condition.low_f.HasValue && weather.condition.low_f != weather.condition.low_c)
@@ -184,7 +184,7 @@ namespace SimpleWeather.Controls
             }
             else
             {
-                LoTemp = "--";
+                LoTemp = WeatherIcons.PLACEHOLDER;
             }
 
             // Wind

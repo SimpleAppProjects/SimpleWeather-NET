@@ -44,12 +44,12 @@ namespace SimpleWeather.Controls
                 }
                 else
                 {
-                    HiTemp = "--";
+                    HiTemp = WeatherIcons.PLACEHOLDER;
                 }
             }
             catch (FormatException ex)
             {
-                HiTemp = "--";
+                HiTemp = WeatherIcons.PLACEHOLDER;
                 Logger.WriteLine(LoggerLevel.Error, "Invalid number format", ex);
             }
 
