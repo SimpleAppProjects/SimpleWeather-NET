@@ -143,7 +143,7 @@ namespace SimpleWeather.UWP.Main
             cts = new CancellationTokenSource();
 
             wm = WeatherManager.GetInstance();
-            WeatherView = new WeatherNowViewModel();
+            WeatherView = new WeatherNowViewModel(Dispatcher);
             WeatherView.PropertyChanged += WeatherView_PropertyChanged;
             ForecastView = new ForecastGraphViewModel(Dispatcher);
             AlertsView = new WeatherAlertsViewModel(Dispatcher);
@@ -283,7 +283,7 @@ namespace SimpleWeather.UWP.Main
 
             if (ConditionPanel != null)
             {
-                if (!FeatureSettings.BackgroundImage)
+                if (!UWP.Utils.FeatureSettings.BackgroundImage)
                 {
                     ConditionPanel.Height = double.NaN;
                 }
@@ -363,12 +363,12 @@ namespace SimpleWeather.UWP.Main
             // NOTE: ChangeView does not work here for some reason
             MainViewer?.ScrollToVerticalOffset(0);
 
-            if (FeatureSettings.WasUpdated)
+            if (UWP.Utils.FeatureSettings.WasUpdated)
             {
                 // Force binding update for FeatureSettings
                 this.Bindings.Update();
 
-                FeatureSettings.WasUpdated = false;
+                UWP.Utils.FeatureSettings.WasUpdated = false;
             }
 
             args = e?.Parameter as WeatherNowArgs;

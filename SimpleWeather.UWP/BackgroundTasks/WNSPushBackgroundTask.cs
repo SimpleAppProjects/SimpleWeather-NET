@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Utils;
 using SimpleWeather.WeatherData.Images;
 using System;
 using System.Collections.Generic;

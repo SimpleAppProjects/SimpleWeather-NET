@@ -73,7 +73,7 @@ namespace SimpleWeather.UWP.Controls
 
         public static Task<Snackbar> MakeAsync(CoreDispatcher dispatcher, String message, SnackbarDuration duration)
         {
-            return AsyncTask.RunOnUIThread(dispatcher, () =>
+            return DispatcherExtensions.RunOnUIThread(dispatcher, () =>
             {
                 Snackbar snackbar = new Snackbar()
                 {

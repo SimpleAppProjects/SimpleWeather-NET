@@ -32,7 +32,7 @@ namespace SimpleWeather.UWP.Tiles
         private static void SetContentBackground(TileBindingContentAdaptive content, WeatherNowViewModel weather)
         {
             // Background URI
-            if (FeatureSettings.TileBackgroundImage && weather.ImageData?.ImageUri != null)
+            if (UWP.Utils.FeatureSettings.TileBackgroundImage && weather.ImageData?.ImageUri != null)
             {
                 content.BackgroundImage = new TileBackgroundImage()
                 {

@@ -138,29 +138,8 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="FirebaseAuthentication.net">
-      <Version>3.5.0</Version>
-    </PackageReference>
-    <PackageReference Include="FirebaseDatabase.net">
-      <Version>4.0.5</Version>
-    </PackageReference>
-    <PackageReference Include="FirebaseStorage.net">
-      <Version>1.0.3</Version>
-    </PackageReference>
-    <PackageReference Include="Google.Apis.Firestore.v1">
-      <Version>1.49.0.2122</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Bcl.HashCode">
-      <Version>1.1.1</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.11</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Toolkit.Parsers">
-      <Version>6.1.1</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Toolkit.Uwp.UI">
-      <Version>6.1.1</Version>
     </PackageReference>
     <PackageReference Include="MSTest.TestAdapter">
       <Version>2.1.2</Version>
@@ -171,29 +150,12 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk">
       <Version>16.8.3</Version>
     </PackageReference>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>12.0.3</Version>
-    </PackageReference>
-    <PackageReference Include="NodaTime">
-      <Version>3.0.5</Version>
-    </PackageReference>
-    <PackageReference Include="sqlite-net-pcl">
-      <Version>1.7.335</Version>
-    </PackageReference>
-    <PackageReference Include="SQLiteNetExtensions">
-      <Version>2.1.0</Version>
-    </PackageReference>
-    <PackageReference Include="SQLiteNetExtensions.Async">
-      <Version>2.1.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Text.Json">
-      <Version>5.0.1</Version>
-    </PackageReference>
-    <PackageReference Include="Utf8Json">
-      <Version>1.3.7</Version>
-    </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SimpleWeather.Shared\SimpleWeather.Shared.csproj">
+      <Project>{a92be3f1-3252-4650-a17e-498b223bd039}</Project>
+      <Name>SimpleWeather.Shared</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Timber\Timber.csproj">
       <Project>{479286ce-e244-4d81-a8f4-a5982af86af9}</Project>
       <Name>Timber</Name>
@@ -208,8 +170,6 @@
     <Content Include="Assets\Wide310x150Logo.png" />
   </ItemGroup>
   <Import Project="..\SimpleWeather.UWP.Shared\SimpleWeather.UWP.Shared.projitems" Label="Shared" />
-  <Import Project="..\SimpleWeather\SimpleWeather_Xamarin.projitems" Label="Shared" />
-  <Import Project="..\SimpleWeather.EF\SimpleWeather.EF.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

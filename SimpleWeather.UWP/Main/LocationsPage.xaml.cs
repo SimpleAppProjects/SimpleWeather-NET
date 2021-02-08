@@ -348,7 +348,7 @@ namespace SimpleWeather.UWP.Main
 
                     foreach (LocationData location in locations)
                     {
-                        var panel = new LocationPanelViewModel()
+                        var panel = new LocationPanelViewModel(Dispatcher)
                         {
                             // Save index to tag (to easily retreive)
                             LocationData = location

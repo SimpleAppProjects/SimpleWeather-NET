@@ -5,6 +5,7 @@ using Microsoft.Graphics.Canvas.Text;
 using Microsoft.Graphics.Canvas.UI;
 using Microsoft.Graphics.Canvas.UI.Xaml;
 using SimpleWeather.Utils;
+using SimpleWeather.UWP.Utils;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;

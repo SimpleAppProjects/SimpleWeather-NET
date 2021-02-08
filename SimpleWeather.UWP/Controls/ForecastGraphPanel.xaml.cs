@@ -2,6 +2,7 @@
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls.Graphs;
 using SimpleWeather.UWP.Helpers;
+using SimpleWeather.UWP.Utils;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;

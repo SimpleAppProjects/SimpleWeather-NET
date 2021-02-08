@@ -111,7 +111,7 @@ namespace SimpleWeather.UWP.Main
                     if (location == null)
                         location = await Settings.GetHomeData();
                     if (WeatherView == null)
-                        WeatherView = new WeatherNowViewModel();
+                        WeatherView = new WeatherNowViewModel(Dispatcher);
                     if (ForecastsView == null)
                         ForecastsView = new ForecastsViewModel(Dispatcher);
 

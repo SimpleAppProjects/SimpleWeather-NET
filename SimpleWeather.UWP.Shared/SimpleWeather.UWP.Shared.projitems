@@ -9,18 +9,6 @@
     <Import_RootNamespace>SimpleWeather.UWP.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Helpers\DeviceTypeHelper.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Helpers\StringExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Helpers\UserThemeMode.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)RemoteConfig\RemoteConfig.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utils\FileUtils.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utils\Settings.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utils\WeatherUtils.IconResources.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)WeatherData\Images\ImageDataDatabase.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)WeatherData\Images\ImageDataHelperImpl.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)WeatherData\WeatherProviderImpl.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\de\AQIndex.resw" />
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\de\Beaufort.resw" />
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\de\MoonPhases.resw" />

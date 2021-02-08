@@ -1,7 +1,6 @@
 ﻿using Microsoft.QueryStringDotNET;
 using Microsoft.Toolkit.Uwp.Notifications;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Utils;
 using SimpleWeather.UWP.WNS;
 using System;
 using System.Collections.Generic;

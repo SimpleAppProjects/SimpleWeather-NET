@@ -27,8 +27,6 @@ namespace SimpleWeather.UWP.Utils
         public static bool LocationPanelBackgroundImage { get { return GetPanelBackgroundImageEnabled(); } set { SetPanelBackgroundImageEnabled(value); } }
         public static bool TileBackgroundImage { get { return GetTileBackgroundImageEnabled(); } set { SetTileBackgroundImageEnabled(value); } }
 
-        public static bool IsUpdateAvailable { get { return GetUpdateAvailable(); } set { SetUpdateAvailable(value); } }
-
         #region Settings Keys
 
         private const string KEY_BGIMAGE = "key_bgimage";
@@ -45,7 +43,6 @@ namespace SimpleWeather.UWP.Utils
         private const string KEY_TILEBGIMAGE = "key_tilebgimage";
         public const string KEY_UPDATED = "key_updated";
 
-        private const string KEY_UPDATEAVAILABLE = "key_updateavailable";
         #endregion Settings Keys
 
         // Shared Settings
@@ -257,21 +254,6 @@ namespace SimpleWeather.UWP.Utils
         {
             featureSettings.Values[KEY_TILEBGIMAGE] = value;
             Task.Run(BackgroundTasks.WeatherUpdateBackgroundTask.RequestAppTrigger);
-        }
-
-        private static bool GetUpdateAvailable()
-        {
-            if (featureSettings.Values.TryGetValue(KEY_UPDATEAVAILABLE, out object value))
-            {
-                return (bool)value;
-            }
-
-            return false;
-        }
-
-        private static void SetUpdateAvailable(bool value)
-        {
-            featureSettings.Values[KEY_UPDATEAVAILABLE] = value;
         }
     }
 }

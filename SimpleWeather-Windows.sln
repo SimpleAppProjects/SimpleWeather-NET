@@ -5,13 +5,9 @@ VisualStudioVersion = 16.0.29509.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleWeather.UWP", "SimpleWeather.UWP\SimpleWeather.UWP.csproj", "{552847DD-608D-4DA9-9CED-0C8416049742}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SimpleWeather", "SimpleWeather\SimpleWeather.shproj", "{3633F453-ECBB-41D1-A87D-2CC3BDD74221}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EditManifest", "EditManifest\EditManifest.csproj", "{94F8637B-52B8-429B-A5CA-043CFF4DD201}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestProject", "UnitTestProject\UnitTestProject.csproj", "{0CC8F69F-EEBC-40B4-9E7C-C2974A00764D}"
-EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SimpleWeather.EF", "SimpleWeather.EF\SimpleWeather.EF.shproj", "{CF5E4A00-D354-4243-972F-EB956BAA42CA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Timber", "Timber\Timber.csproj", "{479286CE-E244-4D81-A8F4-A5982AF86AF9}"
 EndProject
@@ -23,17 +19,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestProject.Appium", "U
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationImport", "TranslationImport\TranslationImport.csproj", "{A0DCF997-9EFE-48E7-B881-01543DFE31F7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleWeather.Shared", "SimpleWeather.Shared\SimpleWeather.Shared.csproj", "{A92BE3F1-3252-4650-A17E-498B223BD039}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		SimpleWeather.EF\SimpleWeather.EF.projitems*{0cc8f69f-eebc-40b4-9e7c-c2974a00764d}*SharedItemsImports = 4
 		SimpleWeather.UWP.Shared\SimpleWeather.UWP.Shared.projitems*{0cc8f69f-eebc-40b4-9e7c-c2974a00764d}*SharedItemsImports = 4
-		SimpleWeather\SimpleWeather_Xamarin.projitems*{0cc8f69f-eebc-40b4-9e7c-c2974a00764d}*SharedItemsImports = 4
-		SimpleWeather\SimpleWeather_Xamarin.projitems*{3633f453-ecbb-41d1-a87d-2cc3bdd74221}*SharedItemsImports = 13
-		SimpleWeather.EF\SimpleWeather.EF.projitems*{552847dd-608d-4da9-9ced-0c8416049742}*SharedItemsImports = 4
 		SimpleWeather.UWP.Shared\SimpleWeather.UWP.Shared.projitems*{552847dd-608d-4da9-9ced-0c8416049742}*SharedItemsImports = 4
-		SimpleWeather\SimpleWeather_Xamarin.projitems*{552847dd-608d-4da9-9ced-0c8416049742}*SharedItemsImports = 4
 		SimpleWeather.UWP.Shared\SimpleWeather.UWP.Shared.projitems*{71735c8a-0b72-4cc7-8118-e53723d416c1}*SharedItemsImports = 13
-		SimpleWeather.EF\SimpleWeather.EF.projitems*{cf5e4a00-d354-4243-972f-eb956baa42ca}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -250,6 +242,34 @@ Global
 		{A0DCF997-9EFE-48E7-B881-01543DFE31F7}.Release|x64.Build.0 = Release|Any CPU
 		{A0DCF997-9EFE-48E7-B881-01543DFE31F7}.Release|x86.ActiveCfg = Release|Any CPU
 		{A0DCF997-9EFE-48E7-B881-01543DFE31F7}.Release|x86.Build.0 = Release|Any CPU
+		{A92BE3F1-3252-4650-A17E-498B223BD039}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A92BE3F1-3252-4650-A17E-498B223BD039}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A92BE3F1-3252-4650-A17E-498B223BD039}.Debug|ARM.ActiveCfg = Debug|ARM
+		{A92BE3F1-3252-4650-A17E-498B223BD039}.Debug|ARM.Build.0 = Debug|ARM
+		{A92BE3F1-3252-4650-A17E-498B223BD039}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{A92BE3F1-3252-4650-A17E-498B223BD039}.Debug|ARM64.Build.0 = Debug|ARM64
+		{A92BE3F1-3252-4650-A17E-498B223BD039}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{A92BE3F1-3252-4650-A17E-498B223BD039}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{A92BE3F1-3252-4650-A17E-498B223BD039}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{A92BE3F1-3252-4650-A17E-498B223BD039}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{A92BE3F1-3252-4650-A17E-498B223BD039}.Debug|x64.ActiveCfg = Debug|x64
+		{A92BE3F1-3252-4650-A17E-498B223BD039}.Debug|x64.Build.0 = Debug|x64
+		{A92BE3F1-3252-4650-A17E-498B223BD039}.Debug|x86.ActiveCfg = Debug|x86
+		{A92BE3F1-3252-4650-A17E-498B223BD039}.Debug|x86.Build.0 = Debug|x86
+		{A92BE3F1-3252-4650-A17E-498B223BD039}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A92BE3F1-3252-4650-A17E-498B223BD039}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A92BE3F1-3252-4650-A17E-498B223BD039}.Release|ARM.ActiveCfg = Release|ARM
+		{A92BE3F1-3252-4650-A17E-498B223BD039}.Release|ARM.Build.0 = Release|ARM
+		{A92BE3F1-3252-4650-A17E-498B223BD039}.Release|ARM64.ActiveCfg = Release|ARM64
+		{A92BE3F1-3252-4650-A17E-498B223BD039}.Release|ARM64.Build.0 = Release|ARM64
+		{A92BE3F1-3252-4650-A17E-498B223BD039}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{A92BE3F1-3252-4650-A17E-498B223BD039}.Release|iPhone.Build.0 = Release|Any CPU
+		{A92BE3F1-3252-4650-A17E-498B223BD039}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{A92BE3F1-3252-4650-A17E-498B223BD039}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{A92BE3F1-3252-4650-A17E-498B223BD039}.Release|x64.ActiveCfg = Release|x64
+		{A92BE3F1-3252-4650-A17E-498B223BD039}.Release|x64.Build.0 = Release|x64
+		{A92BE3F1-3252-4650-A17E-498B223BD039}.Release|x86.ActiveCfg = Release|x86
+		{A92BE3F1-3252-4650-A17E-498B223BD039}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

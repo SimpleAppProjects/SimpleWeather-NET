@@ -12,6 +12,7 @@ using SimpleWeather.UWP.Main;
 using SimpleWeather.UWP.Preferences;
 using SimpleWeather.UWP.Setup;
 using SimpleWeather.UWP.Tiles;
+using SimpleWeather.UWP.Utils;
 using SimpleWeather.UWP.WNS;
 using System;
 using System.Collections.Generic;
@@ -111,6 +112,12 @@ namespace SimpleWeather.UWP
             // under a memory target to maintain priority to keep running.
             // Subscribe to the event that informs the app of this change.
             MemoryManager.AppMemoryUsageIncreased += MemoryManager_AppMemoryUsageIncreased;
+
+            // Initialize depencies for library
+            SimpleLibrary.OnCommonActionChanged += App_OnCommonActionChanged;
+            Utf8Json.Resolvers.CompositeResolver.RegisterAndSetAsDefault(
+                JSONParser.Resolver, UWP.Utf8JsonGen.Resolvers.GeneratedResolver.Instance
+                );
 
             AppCenter.LogLevel = LogLevel.Verbose;
             AppCenter.Start(APIKeys.GetAppCenterSecret(), typeof(Analytics), typeof(Crashes));
@@ -613,7 +620,7 @@ namespace SimpleWeather.UWP
             try
             {
                 // NOTE: Run on UI Thread since this may be called off the main thread
-                await AsyncTask.TryRunOnUIThread(() =>
+                await DispatcherExtensions.TryRunOnUIThread(() =>
                 {
                     var uiTheme = UISettings.GetColorValue(UIColorType.Background).ToString();
                     IsSystemDarkTheme = uiTheme == "#FF000000";

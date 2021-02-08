@@ -327,11 +327,6 @@ namespace SimpleWeather.UWP.Main
                 await Settings.SaveWeatherForecasts(location, weather.hr_forecast == null ? null :
                     weather.hr_forecast.Select(f => new HourlyForecasts(weather.query, f)));
 
-                var panelView = new LocationPanelViewModel(weather)
-                {
-                    LocationData = location
-                };
-
                 return true;
             }).ContinueWith((t) =>
             {
