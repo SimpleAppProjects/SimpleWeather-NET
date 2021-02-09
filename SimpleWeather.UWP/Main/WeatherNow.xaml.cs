@@ -226,32 +226,6 @@ namespace SimpleWeather.UWP.Main
             }
         }
 
-        private void MainViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
-        {
-            if (sender is ScrollViewer viewer && BackgroundOverlay != null && GradientOverlay != null)
-            {
-                // Default adj = 1.25f
-                float adj = 1.25f;
-                double backAlpha = ConditionPanel.ActualHeight > 0 ?
-                    1 - (1 * adj * viewer.VerticalOffset / ConditionPanel.ActualHeight) : 1;
-                double gradAlpha = ConditionPanel.ActualHeight > 0 ?
-                    1 - (1 * adj * viewer.VerticalOffset / ConditionPanel.ActualHeight) : 1;
-                BackgroundOverlay.Opacity = Math.Max(backAlpha, (float)0x25 / 0xFF); // 0x25
-                GradientOverlay.Opacity = Math.Max(gradAlpha, 0);
-            }
-        }
-
-        private void MainGrid_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            AnalyticsLogger.LogEvent("WeatherNow: MainGrid_SizeChanged");
-            AdjustViewLayout();
-        }
-
-        private void DeferedControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            AdjustViewLayout();
-        }
-
         private void ResizeAlertPanel()
         {
             double w = this.ActualWidth;
@@ -265,6 +239,17 @@ namespace SimpleWeather.UWP.Main
                 AlertButton.MaxWidth = w * (0.75);
             else
                 AlertButton.MaxWidth = w * (0.50);
+        }
+
+        private void MainGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            AnalyticsLogger.LogEvent("WeatherNow: MainGrid_SizeChanged");
+            AdjustViewLayout();
+        }
+
+        private void DeferedControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            AdjustViewLayout();
         }
 
         private void AdjustViewLayout()
@@ -281,63 +266,9 @@ namespace SimpleWeather.UWP.Main
 
             ResizeAlertPanel();
 
-            if (ConditionPanel != null)
+            if (BackgroundOverlay != null)
             {
-                if (!UWP.Utils.FeatureSettings.BackgroundImage)
-                {
-                    ConditionPanel.Height = double.NaN;
-                }
-                else
-                {
-                    ConditionPanel.Height = h;
-                }
-
-                ConditionPanel.MaxWidth = 1280;
-            }
-
-            if (Bounds.Height >= 691)
-            {
-                if (WeatherBox != null) WeatherBox.Height = WeatherBox.Width = 155;
-                if (SunPhasePanel != null) SunPhasePanel.Height = 250;
-            }
-            else if (Bounds.Height >= 641)
-            {
-                if (WeatherBox != null) WeatherBox.Height = WeatherBox.Width = 130;
-                if (SunPhasePanel != null) SunPhasePanel.Height = 250;
-            }
-            else if (Bounds.Height >= 481)
-            {
-                if (WeatherBox != null) WeatherBox.Height = WeatherBox.Width = 100;
-                if (SunPhasePanel != null) SunPhasePanel.Height = 180;
-            }
-            else if (Bounds.Height >= 361)
-            {
-                if (WeatherBox != null) WeatherBox.Height = WeatherBox.Width = 75;
-                if (SunPhasePanel != null) SunPhasePanel.Height = 180;
-            }
-            else
-            {
-                if (WeatherBox != null) WeatherBox.Height = WeatherBox.Width = 50;
-                if (SunPhasePanel != null) SunPhasePanel.Height = 180;
-            }
-
-            if (Bounds.Width >= 1007)
-            {
-                if (Location != null) Location.FontSize = 32;
-                if (CurTemp != null) CurTemp.FontSize = 32;
-                if (CurCondition != null) CurCondition.FontSize = 32;
-            }
-            else if (Bounds.Width >= 641)
-            {
-                if (Location != null) Location.FontSize = 28;
-                if (CurTemp != null) CurTemp.FontSize = 28;
-                if (CurCondition != null) CurCondition.FontSize = 28;
-            }
-            else
-            {
-                if (Location != null) Location.FontSize = 24;
-                if (CurTemp != null) CurTemp.FontSize = 24;
-                if (CurCondition != null) CurCondition.FontSize = 24;
+                BackgroundOverlay.MaxHeight = h;
             }
         }
 
@@ -922,22 +853,6 @@ namespace SimpleWeather.UWP.Main
         {
             AnalyticsLogger.LogEvent("WeatherNow: RadarWebView_Tapped");
             Frame.Navigate(typeof(WeatherRadarPage), WeatherView?.LocationCoord, new DrillInNavigationTransitionInfo());
-        }
-
-        private void BackgroundOverlay_ImageExOpened(object sender, Microsoft.Toolkit.Uwp.UI.Controls.ImageExOpenedEventArgs e)
-        {
-            var image = VisualTreeHelperExtensions.FindChild<Image>(sender as FrameworkElement, "Image");
-            if (image != null)
-            {
-                if (image.ActualHeight / 3 < 500)
-                {
-                    ParllxView.VerticalShift = Math.Min(image.ActualHeight / 3, 100);
-                }
-                else
-                {
-                    ParllxView.VerticalShift = Math.Min(image.ActualHeight / 3, 500);
-                }
-            }
         }
     }
 }
