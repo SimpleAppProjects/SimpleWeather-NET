@@ -13,14 +13,14 @@
         <ResourceDictionary>
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
-                    <x:String x:Key="HereImageSrc">../Assets/Providers/here_dark.png</x:String>
-                    <x:String x:Key="YahooImageSrc">../Assets/Providers/yahoo_dark.png</x:String>
-                    <x:String x:Key="BingImageSrc">../Assets/Providers/bingmaps_dark.png</x:String>
+                    <x:String x:Key="HereImageSrc">ms-appx:///SimpleWeather.Shared/Assets/Providers/here_dark.png</x:String>
+                    <x:String x:Key="YahooImageSrc">ms-appx:///SimpleWeather.Shared/Assets/Providers/yahoo_dark.png</x:String>
+                    <x:String x:Key="BingImageSrc">ms-appx:///SimpleWeather.Shared/Assets/Providers/bingmaps_dark.png</x:String>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
-                    <x:String x:Key="HereImageSrc">../Assets/Providers/here.png</x:String>
-                    <x:String x:Key="YahooImageSrc">../Assets/Providers/yahoo.png</x:String>
-                    <x:String x:Key="BingImageSrc">../Assets/Providers/bingmaps.png</x:String>
+                    <x:String x:Key="HereImageSrc">ms-appx:///SimpleWeather.Shared/Assets/Providers/here.png</x:String>
+                    <x:String x:Key="YahooImageSrc">ms-appx:///SimpleWeather.Shared/Assets/Providers/yahoo.png</x:String>
+                    <x:String x:Key="BingImageSrc">ms-appx:///SimpleWeather.Shared/Assets/Providers/bingmaps.png</x:String>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
         </ResourceDictionary>
@@ -71,7 +71,7 @@
                         <Image
                             Height="50"
                             HorizontalAlignment="Left"
-                            Source="../Assets/Providers/metno.png" />
+                            Source="ms-appx:///SimpleWeather.Shared/Assets/Providers/metno.png" />
                     </HyperlinkButton>
                 </StackPanel>
                 <StackPanel Padding="10">
@@ -80,7 +80,7 @@
                         <Image
                             Height="50"
                             HorizontalAlignment="Left"
-                            Source="../Assets/Providers/nws.png" />
+                            Source="ms-appx:///SimpleWeather.Shared/Assets/Providers/nws.png" />
                     </HyperlinkButton>
                 </StackPanel>
                 <StackPanel Padding="10">
@@ -89,7 +89,7 @@
                         <Image
                             Height="25"
                             HorizontalAlignment="Left"
-                            Source="../Assets/Providers/openweathermap.png" />
+                            Source="ms-appx:///SimpleWeather.Shared/Assets/Providers/openweathermap.png" />
                     </HyperlinkButton>
                 </StackPanel>
                 <StackPanel Padding="10">
@@ -107,7 +107,7 @@
                         <Image
                             Height="50"
                             HorizontalAlignment="Left"
-                            Source="../Assets/Providers/waqi.png" />
+                            Source="ms-appx:///SimpleWeather.Shared/Assets/Providers/waqi.png" />
                     </HyperlinkButton>
                 </StackPanel>
             </StackPanel>

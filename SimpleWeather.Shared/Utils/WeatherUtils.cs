@@ -155,5 +155,7 @@ namespace SimpleWeather.Utils
 
             return color;
         }
+
+        ////
     }
 }

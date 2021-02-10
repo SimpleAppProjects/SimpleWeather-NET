@@ -292,7 +292,7 @@
                                             Width="25"
                                             Height="25"
                                             Foreground="White"
-                                            UriSource="/Assets/WeatherIcons/png/wi-raindrop.png" />
+                                            UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/wi-raindrop.png" />
                                         <TextBlock Grid.Column="1" Text="{Binding}" />
                                     </Grid>
                                 </DataTemplate>
@@ -314,7 +314,7 @@
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <BitmapIcon Grid.Column="0" UriSource="/Assets/WeatherIcons/png/wi-cloudy.png" />
+                                        <BitmapIcon Grid.Column="0" UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/wi-cloudy.png" />
                                         <TextBlock Grid.Column="1" Text="{Binding}" />
                                     </Grid>
                                 </DataTemplate>
@@ -336,7 +336,7 @@
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <BitmapIcon Grid.Column="0" UriSource="/Assets/WeatherIcons/png/wi-strong-wind.png" />
+                                        <BitmapIcon Grid.Column="0" UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/wi-strong-wind.png" />
                                         <TextBlock Grid.Column="1" Text="{Binding}" />
                                     </Grid>
                                 </DataTemplate>

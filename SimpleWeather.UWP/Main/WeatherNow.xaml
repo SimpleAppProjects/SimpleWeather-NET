@@ -320,7 +320,7 @@
                             <BitmapIcon
                                 Width="25"
                                 Foreground="OrangeRed"
-                                UriSource="/Assets/WeatherIcons/png/wi-direction-up.png" />
+                                UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/wi-direction-up.png" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <toolkitControls:DropShadowPanel
@@ -333,7 +333,7 @@
                             <BitmapIcon
                                 Width="25"
                                 Foreground="DeepSkyBlue"
-                                UriSource="/Assets/WeatherIcons/png/wi-direction-down.png" />
+                                UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/wi-direction-down.png" />
                         </StackPanel>
                     </StackPanel>
                     <BitmapIcon

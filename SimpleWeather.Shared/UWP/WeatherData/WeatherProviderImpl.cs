@@ -21,7 +21,7 @@ namespace SimpleWeather.WeatherData
                 case WeatherIcons.DAY_SHOWERS:
                 case WeatherIcons.DAY_SLEET:
                 case WeatherIcons.DAY_SPRINKLE:
-                    imgURI = ("ms-appx:///Assets/Backgrounds/RainyDay.jpg");
+                    imgURI = ("ms-appx:///SimpleWeather.Shared/Assets/Backgrounds/RainyDay.jpg");
                     break;
 
                 case WeatherIcons.NIGHT_ALT_HAIL:
@@ -37,19 +37,19 @@ namespace SimpleWeather.WeatherData
                 case WeatherIcons.SHOWERS:
                 case WeatherIcons.SLEET:
                 case WeatherIcons.SPRINKLE:
-                    imgURI = ("ms-appx:///Assets/Backgrounds/RainyNight.jpg");
+                    imgURI = ("ms-appx:///SimpleWeather.Shared/Assets/Backgrounds/RainyNight.jpg");
                     break;
                 // Tornado / Hurricane / Thunderstorm / Tropical Storm
                 case WeatherIcons.DAY_LIGHTNING:
                 case WeatherIcons.DAY_THUNDERSTORM:
-                    imgURI = ("ms-appx:///Assets/Backgrounds/Thunderstorm-Day.jpg");
+                    imgURI = ("ms-appx:///SimpleWeather.Shared/Assets/Backgrounds/Thunderstorm-Day.jpg");
                     break;
 
                 case WeatherIcons.NIGHT_ALT_LIGHTNING:
                 case WeatherIcons.NIGHT_ALT_THUNDERSTORM:
                 case WeatherIcons.LIGHTNING:
                 case WeatherIcons.THUNDERSTORM:
-                    imgURI = ("ms-appx:///Assets/Backgrounds/Thunderstorm-Night.jpg");
+                    imgURI = ("ms-appx:///SimpleWeather.Shared/Assets/Backgrounds/Thunderstorm-Night.jpg");
                     break;
 
                 case WeatherIcons.DAY_STORM_SHOWERS:
@@ -60,12 +60,12 @@ namespace SimpleWeather.WeatherData
                 case WeatherIcons.HAIL:
                 case WeatherIcons.HURRICANE:
                 case WeatherIcons.TORNADO:
-                    imgURI = ("ms-appx:///Assets/Backgrounds/StormySky.jpg");
+                    imgURI = ("ms-appx:///SimpleWeather.Shared/Assets/Backgrounds/StormySky.jpg");
                     break;
                 // Dust
                 case WeatherIcons.DUST:
                 case WeatherIcons.SANDSTORM:
-                    imgURI = ("ms-appx:///Assets/Backgrounds/Dust.jpg");
+                    imgURI = ("ms-appx:///SimpleWeather.Shared/Assets/Backgrounds/Dust.jpg");
                     break;
                 // Foggy / Haze
                 case WeatherIcons.DAY_FOG:
@@ -74,7 +74,7 @@ namespace SimpleWeather.WeatherData
                 case WeatherIcons.NIGHT_FOG:
                 case WeatherIcons.SMOG:
                 case WeatherIcons.SMOKE:
-                    imgURI = ("ms-appx:///Assets/Backgrounds/FoggySky.jpg");
+                    imgURI = ("ms-appx:///SimpleWeather.Shared/Assets/Backgrounds/FoggySky.jpg");
                     break;
                 // Snow / Snow Showers/Storm
                 case WeatherIcons.DAY_SNOW:
@@ -82,13 +82,13 @@ namespace SimpleWeather.WeatherData
                 case WeatherIcons.NIGHT_ALT_SNOW:
                 case WeatherIcons.NIGHT_ALT_SNOW_THUNDERSTORM:
                 case WeatherIcons.SNOW:
-                    imgURI = ("ms-appx:///Assets/Backgrounds/Snow.jpg");
+                    imgURI = ("ms-appx:///SimpleWeather.Shared/Assets/Backgrounds/Snow.jpg");
                     break;
 
                 case WeatherIcons.SNOW_WIND:
                 case WeatherIcons.DAY_SNOW_WIND:
                 case WeatherIcons.NIGHT_ALT_SNOW_WIND:
-                    imgURI = ("ms-appx:///Assets/Backgrounds/Snow-Windy.jpg");
+                    imgURI = ("ms-appx:///SimpleWeather.Shared/Assets/Backgrounds/Snow-Windy.jpg");
                     break;
                 /* Ambigious weather conditions */
                 // (Mostly) Cloudy
@@ -105,17 +105,17 @@ namespace SimpleWeather.WeatherData
                 case WeatherIcons.NIGHT_ALT_CLOUDY_HIGH:
                 case WeatherIcons.NIGHT_ALT_CLOUDY_WINDY:
                     if (IsNight(weather))
-                        imgURI = ("ms-appx:///Assets/Backgrounds/MostlyCloudy-Night.jpg");
+                        imgURI = ("ms-appx:///SimpleWeather.Shared/Assets/Backgrounds/MostlyCloudy-Night.jpg");
                     else
-                        imgURI = ("ms-appx:///Assets/Backgrounds/MostlyCloudy-Day.jpg");
+                        imgURI = ("ms-appx:///SimpleWeather.Shared/Assets/Backgrounds/MostlyCloudy-Day.jpg");
                     break;
                 // Partly Cloudy
                 case WeatherIcons.DAY_SUNNY_OVERCAST:
                 case WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY:
                     if (IsNight(weather))
-                        imgURI = ("ms-appx:///Assets/Backgrounds/PartlyCloudy-Night.jpg");
+                        imgURI = ("ms-appx:///SimpleWeather.Shared/Assets/Backgrounds/PartlyCloudy-Night.jpg");
                     else
-                        imgURI = ("ms-appx:///Assets/Backgrounds/PartlyCloudy-Day.jpg");
+                        imgURI = ("ms-appx:///SimpleWeather.Shared/Assets/Backgrounds/PartlyCloudy-Day.jpg");
                     break;
 
                 case WeatherIcons.DAY_SUNNY:
@@ -128,9 +128,9 @@ namespace SimpleWeather.WeatherData
                 default:
                     // Set background based using sunset/rise times
                     if (IsNight(weather))
-                        imgURI = ("ms-appx:///Assets/Backgrounds/NightSky.jpg");
+                        imgURI = ("ms-appx:///SimpleWeather.Shared/Assets/Backgrounds/NightSky.jpg");
                     else
-                        imgURI = ("ms-appx:///Assets/Backgrounds/DaySky.jpg");
+                        imgURI = ("ms-appx:///SimpleWeather.Shared/Assets/Backgrounds/DaySky.jpg");
                     break;
             }
 
@@ -139,9 +139,9 @@ namespace SimpleWeather.WeatherData
             {
                 // Set background based using sunset/rise times
                 if (IsNight(weather))
-                    imgURI = ("ms-appx:///Assets/Backgrounds/NightSky.jpg");
+                    imgURI = ("ms-appx:///SimpleWeather.Shared/Assets/Backgrounds/NightSky.jpg");
                 else
-                    imgURI = ("ms-appx:///Assets/Backgrounds/DaySky.jpg");
+                    imgURI = ("ms-appx:///SimpleWeather.Shared/Assets/Backgrounds/DaySky.jpg");
             }
 
             return imgURI;

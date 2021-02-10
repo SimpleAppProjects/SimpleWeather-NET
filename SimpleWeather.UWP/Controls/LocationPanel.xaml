@@ -156,7 +156,7 @@
                 <BitmapIcon
                     Grid.Column="1"
                     Width="20"
-                    UriSource="/Assets/WeatherIcons/png/wi-direction-up.png" />
+                    UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/wi-direction-up.png" />
             </Grid>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -179,7 +179,7 @@
                 <BitmapIcon
                     Grid.Column="1"
                     Width="20"
-                    UriSource="/Assets/WeatherIcons/png/wi-direction-down.png" />
+                    UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/wi-direction-down.png" />
             </Grid>
         </StackPanel>
         <StackPanel
@@ -217,7 +217,7 @@
                 <BitmapIcon
                     Width="25"
                     RenderTransformOrigin="0.5,0.5"
-                    UriSource="/Assets/WeatherIcons/png/wi-wind-direction.png">
+                    UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/wi-wind-direction.png">
                     <BitmapIcon.RenderTransform>
                         <RotateTransform Angle="{x:Bind ViewModel.WindDirection, Mode=OneWay, FallbackValue='90'}" />
                     </BitmapIcon.RenderTransform>

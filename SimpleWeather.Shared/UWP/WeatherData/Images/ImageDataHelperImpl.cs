@@ -162,30 +162,30 @@ namespace SimpleWeather.UWP.Shared.WeatherData.Images
             {
                 case WeatherBackground.SNOW:
                 case WeatherBackground.SNOW_WINDY:
-                    imageData.ImageUrl = "ms-appx:///Assets/Backgrounds/snow.jpg";
+                    imageData.ImageUrl = "ms-appx:///SimpleWeather.Shared/Assets/Backgrounds/snow.jpg";
                     imageData.HexColor = "#ffb8d0f0";
                     break;
                 case WeatherBackground.RAIN:
                 case WeatherBackground.RAIN_NIGHT:
-                    imageData.ImageUrl = "ms-appx:///Assets/Backgrounds/rain.jpg";
+                    imageData.ImageUrl = "ms-appx:///SimpleWeather.Shared/Assets/Backgrounds/rain.jpg";
                     imageData.HexColor = "#ff102030";
                     break;
 
                 case WeatherBackground.TSTORMS_DAY:
                 case WeatherBackground.TSTORMS_NIGHT:
                 case WeatherBackground.STORMS:
-                    imageData.ImageUrl = "ms-appx:///Assets/Backgrounds/storms.jpg";
+                    imageData.ImageUrl = "ms-appx:///SimpleWeather.Shared/Assets/Backgrounds/storms.jpg";
                     imageData.HexColor = "#ff182830";
                     break;
                 default:
                     if (wm.IsNight(weather))
                     {
-                        imageData.ImageUrl = "ms-appx:///Assets/Backgrounds/night.jpg";
+                        imageData.ImageUrl = "ms-appx:///SimpleWeather.Shared/Assets/Backgrounds/night.jpg";
                         imageData.HexColor = "#ff182020";
                     }
                     else
                     {
-                        imageData.ImageUrl = "ms-appx:///Assets/Backgrounds/day.jpg";
+                        imageData.ImageUrl = "ms-appx:///SimpleWeather.Shared/Assets/Backgrounds/day.jpg";
                         imageData.HexColor = "#ff88b0c8";
                     }
                     break;

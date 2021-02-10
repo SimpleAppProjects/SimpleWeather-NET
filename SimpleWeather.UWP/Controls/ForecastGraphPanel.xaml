@@ -314,7 +314,7 @@
                                 Margin="0,0"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                UriSource="/Assets/WeatherIcons/png/wi-thermometer.png" />
+                                UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/wi-thermometer.png" />
                             <TextBlock
                                 x:Name="Label"
                                 x:Uid="Label_Temperature"
@@ -340,7 +340,7 @@
                                 Margin="4,0"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                UriSource="/Assets/WeatherIcons/png/wi-strong-wind.png" />
+                                UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/wi-strong-wind.png" />
                             <TextBlock
                                 x:Uid="Label_Wind"
                                 Margin="4,0,0,0"
@@ -366,7 +366,7 @@
                                 Margin="4,0"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                UriSource="/Assets/WeatherIcons/png/wi-raindrop.png" />
+                                UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/wi-raindrop.png" />
                             <TextBlock
                                 x:Uid="Label_Precipitation"
                                 Margin="4,0,0,0"

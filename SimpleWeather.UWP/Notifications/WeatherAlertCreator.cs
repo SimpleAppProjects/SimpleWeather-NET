@@ -18,7 +18,7 @@ namespace SimpleWeather.UWP.Notifications
         private static async Task CreateToastCollection()
         {
             string displayName = App.ResLoader.GetString("Nav_WeatherAlerts/Content");
-            var icon = new Uri("ms-appx:///Assets/WeatherIcons/png/ic_error_white.png");
+            var icon = new Uri("ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/ic_error_white.png");
 
             ToastCollection toastCollection = new ToastCollection(TAG, displayName,
                 new QueryString()
@@ -49,6 +49,7 @@ namespace SimpleWeather.UWP.Notifications
                 {
                     Visual = new ToastVisual()
                     {
+                        BaseUri = new Uri("SimpleWeather.Shared/Assets/WeatherIcons/png/", UriKind.Relative),
                         BindingGeneric = new ToastBindingGeneric()
                         {
                             Children =
@@ -64,7 +65,7 @@ namespace SimpleWeather.UWP.Notifications
                             },
                             AppLogoOverride = new ToastGenericAppLogo()
                             {
-                                Source = GetAssetFromAlertType(alertVM.AlertType)
+                                Source = WeatherUtils.GetAssetFromAlertType(alertVM.AlertType, false)
                             },
                             Attribution = new ToastGenericAttributionText()
                             {
@@ -93,67 +94,6 @@ namespace SimpleWeather.UWP.Notifications
                 // And send the notification
                 toastNotifier.Show(toastNotif);
             }
-        }
-
-        private static string GetAssetFromAlertType(WeatherAlertType type)
-        {
-            string baseuri = "ms-appx:///Assets/WeatherIcons/png/";
-            string fileIcon = string.Empty;
-
-            switch (type)
-            {
-                case WeatherAlertType.DenseFog:
-                    fileIcon = "fog.png";
-                    break;
-
-                case WeatherAlertType.Fire:
-                    fileIcon = "fire.png";
-                    break;
-
-                case WeatherAlertType.FloodWarning:
-                case WeatherAlertType.FloodWatch:
-                    fileIcon = "flood.png";
-                    break;
-
-                case WeatherAlertType.Heat:
-                    fileIcon = "hot.png";
-                    break;
-
-                case WeatherAlertType.HighWind:
-                    fileIcon = "strong_wind.png";
-                    break;
-
-                case WeatherAlertType.HurricaneLocalStatement:
-                case WeatherAlertType.HurricaneWindWarning:
-                    fileIcon = "hurricane.png";
-                    break;
-
-                case WeatherAlertType.SevereThunderstormWarning:
-                case WeatherAlertType.SevereThunderstormWatch:
-                    fileIcon = "thunderstorm.png";
-                    break;
-
-                case WeatherAlertType.TornadoWarning:
-                case WeatherAlertType.TornadoWatch:
-                    fileIcon = "tornado.png";
-                    break;
-
-                case WeatherAlertType.Volcano:
-                    fileIcon = "volcano.png";
-                    break;
-
-                case WeatherAlertType.WinterWeather:
-                    fileIcon = "snowflake_cold.png";
-                    break;
-
-                case WeatherAlertType.SevereWeather:
-                case WeatherAlertType.SpecialWeatherAlert:
-                default:
-                    fileIcon = "ic_error_white.png";
-                    break;
-            }
-
-            return baseuri + fileIcon;
         }
     }
 }

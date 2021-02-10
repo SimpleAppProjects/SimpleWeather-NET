@@ -57,56 +57,56 @@
                         Height="40"
                         Style="{ThemeResource DisabledMoonStyle}"
                         Tag="{x:Bind weatherdata:WeatherIcons.MOON_NEW}"
-                        UriSource="/Assets/WeatherIcons/png/wi-moon-new.png" />
+                        UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/wi-moon-new.png" />
                     <!--  Waxing Crescent  -->
                     <BitmapIcon
                         Width="40"
                         Height="40"
                         Style="{ThemeResource DisabledMoonStyle}"
                         Tag="{x:Bind weatherdata:WeatherIcons.MOON_WAXING_CRESCENT_3}"
-                        UriSource="/Assets/WeatherIcons/png/wi-moon-waxing-crescent-3.png" />
+                        UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/wi-moon-waxing-crescent-3.png" />
                     <!--  First Qtr  -->
                     <BitmapIcon
                         Width="40"
                         Height="40"
                         Style="{ThemeResource DisabledMoonStyle}"
                         Tag="{x:Bind weatherdata:WeatherIcons.MOON_FIRST_QUARTER}"
-                        UriSource="/Assets/WeatherIcons/png/wi-moon-first-quarter.png" />
+                        UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/wi-moon-first-quarter.png" />
                     <!--  Waxing Gibbous  -->
                     <BitmapIcon
                         Width="40"
                         Height="40"
                         Style="{ThemeResource DisabledMoonStyle}"
                         Tag="{x:Bind weatherdata:WeatherIcons.MOON_WAXING_GIBBOUS_3}"
-                        UriSource="/Assets/WeatherIcons/png/wi-moon-waxing-gibbous-3.png" />
+                        UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/wi-moon-waxing-gibbous-3.png" />
                     <!--  Full Moon  -->
                     <BitmapIcon
                         Width="40"
                         Height="40"
                         Style="{ThemeResource DisabledMoonStyle}"
                         Tag="{x:Bind weatherdata:WeatherIcons.MOON_FULL}"
-                        UriSource="/Assets/WeatherIcons/png/wi-moon-full.png" />
+                        UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/wi-moon-full.png" />
                     <!--  Waning Gibbous  -->
                     <BitmapIcon
                         Width="40"
                         Height="40"
                         Style="{ThemeResource DisabledMoonStyle}"
                         Tag="{x:Bind weatherdata:WeatherIcons.MOON_WANING_GIBBOUS_3}"
-                        UriSource="/Assets/WeatherIcons/png/wi-moon-waning-gibbous-3.png" />
+                        UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/wi-moon-waning-gibbous-3.png" />
                     <!--  Third Qtr  -->
                     <BitmapIcon
                         Width="40"
                         Height="40"
                         Style="{ThemeResource DisabledMoonStyle}"
                         Tag="{x:Bind weatherdata:WeatherIcons.MOON_THIRD_QUARTER}"
-                        UriSource="/Assets/WeatherIcons/png/wi-moon-third-quarter.png" />
+                        UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/wi-moon-third-quarter.png" />
                     <!--  Waning Crescent  -->
                     <BitmapIcon
                         Width="40"
                         Height="40"
                         Style="{ThemeResource DisabledMoonStyle}"
                         Tag="{x:Bind weatherdata:WeatherIcons.MOON_WANING_CRESCENT_3}"
-                        UriSource="/Assets/WeatherIcons/png/wi-moon-waning-crescent-3.png" />
+                        UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/wi-moon-waning-crescent-3.png" />
                 </StackPanel>
                 <TextBlock
                     Padding="5"

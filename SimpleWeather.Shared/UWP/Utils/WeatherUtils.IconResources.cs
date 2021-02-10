@@ -15,7 +15,7 @@ namespace SimpleWeather.Utils
 
         public static String GetWeatherIconURI(string icon, bool isAbsoluteUri)
         {
-            string baseuri = "ms-appx:///Assets/WeatherIcons/png/";
+            string baseuri = "ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/";
             string fileIcon = string.Empty;
 
             switch (icon)

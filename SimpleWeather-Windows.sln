@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationImport", "Transl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleWeather.Shared", "SimpleWeather.Shared\SimpleWeather.Shared.csproj", "{A92BE3F1-3252-4650-A17E-498B223BD039}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleWeather.UWP.Extras", "SimpleWeather.UWP.Extras\SimpleWeather.UWP.Extras.csproj", "{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		SimpleWeather.UWP.Shared\SimpleWeather.UWP.Shared.projitems*{0cc8f69f-eebc-40b4-9e7c-c2974a00764d}*SharedItemsImports = 4
@@ -240,6 +242,36 @@ Global
 		{A92BE3F1-3252-4650-A17E-498B223BD039}.Release|x64.Build.0 = Release|x64
 		{A92BE3F1-3252-4650-A17E-498B223BD039}.Release|x86.ActiveCfg = Release|x86
 		{A92BE3F1-3252-4650-A17E-498B223BD039}.Release|x86.Build.0 = Release|x86
+		{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}.Debug|ARM.ActiveCfg = Debug|ARM
+		{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}.Debug|ARM.Build.0 = Debug|ARM
+		{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}.Debug|ARM.Deploy.0 = Debug|ARM
+		{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}.Debug|ARM64.Build.0 = Debug|ARM64
+		{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}.Debug|ARM64.Deploy.0 = Debug|ARM64
+		{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}.Debug|iPhone.ActiveCfg = Debug|x86
+		{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}.Debug|iPhoneSimulator.ActiveCfg = Debug|x86
+		{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}.Debug|x64.ActiveCfg = Debug|x64
+		{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}.Debug|x64.Build.0 = Debug|x64
+		{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}.Debug|x64.Deploy.0 = Debug|x64
+		{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}.Debug|x86.ActiveCfg = Debug|x86
+		{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}.Debug|x86.Build.0 = Debug|x86
+		{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}.Debug|x86.Deploy.0 = Debug|x86
+		{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}.Release|Any CPU.ActiveCfg = Release|x86
+		{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}.Release|ARM.ActiveCfg = Release|ARM
+		{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}.Release|ARM.Build.0 = Release|ARM
+		{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}.Release|ARM.Deploy.0 = Release|ARM
+		{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}.Release|ARM64.ActiveCfg = Release|ARM64
+		{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}.Release|ARM64.Build.0 = Release|ARM64
+		{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}.Release|ARM64.Deploy.0 = Release|ARM64
+		{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}.Release|iPhone.ActiveCfg = Release|x86
+		{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}.Release|iPhoneSimulator.ActiveCfg = Release|x86
+		{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}.Release|x64.ActiveCfg = Release|x64
+		{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}.Release|x64.Build.0 = Release|x64
+		{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}.Release|x64.Deploy.0 = Release|x64
+		{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}.Release|x86.ActiveCfg = Release|x86
+		{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}.Release|x86.Build.0 = Release|x86
+		{C3F399CA-8BEC-4085-A35F-FE56440BA5F8}.Release|x86.Deploy.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -248,3 +280,4 @@ Global
 		SolutionGuid = {4A2283E1-635B-4980-A603-0389637BE725}
 	EndGlobalSection
 EndGlobal
+}

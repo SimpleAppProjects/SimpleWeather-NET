@@ -55,7 +55,7 @@ namespace SimpleWeather.UWP.Radar
             {
                 if (IsAnimationAvailable)
                 {
-                    TileSource.FrameCount = InteractionsEnabled() ? AvailableTimestamps.Count : 1;
+                    TileSource.FrameCount = InteractionsEnabled() && AvailableTimestamps.Count > 0 ? AvailableTimestamps.Count : 1;
                     RadarMapContainer.UpdateSeekbarRange(0, TileSource.FrameCount - 1);
                     AnimationTimer?.Stop();
                     TileSource?.Stop();

@@ -1,0 +1,2 @@
+﻿[OptionalProjects]
+"..\SimpleWeather.UWP.Extras\SimpleWeather.UWP.Extras.SimpleWeather.UWP.Extras.csproj"

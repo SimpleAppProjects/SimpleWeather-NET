@@ -801,7 +801,7 @@ namespace SimpleWeather.UWP.Tiles
                 {
                     Visual = new TileVisual()
                     {
-                        BaseUri = new Uri("Assets/WeatherIcons/png/", UriKind.Relative),
+                        BaseUri = new Uri("SimpleWeather.Shared/Assets/WeatherIcons/png/", UriKind.Relative),
                         DisplayName = weather.Location?.Ellipsize(40),
                         TileSmall = new TileBinding()
                         {
@@ -835,7 +835,7 @@ namespace SimpleWeather.UWP.Tiles
                 {
                     Visual = new TileVisual()
                     {
-                        BaseUri = new Uri("Assets/WeatherIcons/png/", UriKind.Relative),
+                        BaseUri = new Uri("SimpleWeather.Shared/Assets/WeatherIcons/png/", UriKind.Relative),
                         DisplayName = weather.Location?.Ellipsize(40),
                         TileSmall = new TileBinding()
                         {
@@ -870,7 +870,7 @@ namespace SimpleWeather.UWP.Tiles
             {
                 Visual = new TileVisual()
                 {
-                    BaseUri = new Uri("Assets/WeatherIcons/png/", UriKind.Relative),
+                    BaseUri = new Uri("SimpleWeather.Shared/Assets/WeatherIcons/png/", UriKind.Relative),
                     DisplayName = weather.Location?.Ellipsize(40),
                     TileSmall = new TileBinding()
                     {
