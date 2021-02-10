@@ -162,6 +162,8 @@
                 x:Key="boolToBinaryValueConverter"
                 FalseValue="0"
                 TrueValue="1" />
+            <helpers:TempToColorTempConverter x:Key="tempToColorTempConverter" />
+            <SolidColorBrush x:Key="ProgressBarBrush" Color="{ThemeResource ForegroundColor}" />
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
                     <Style
@@ -170,14 +172,14 @@
                         TargetType="HyperlinkButton">
                         <Setter Property="Foreground" Value="White" />
                     </Style>
-                    <SolidColorBrush x:Key="ProgressBarBrush" Color="White" />
+                    <Color x:Key="ForegroundColor">White</Color>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
                     <Style
                         x:Key="AttributionStyle"
                         BasedOn="{StaticResource HyperlinkButtonStyle}"
                         TargetType="HyperlinkButton" />
-                    <SolidColorBrush x:Key="ProgressBarBrush" Color="Black" />
+                    <Color x:Key="ForegroundColor">Black</Color>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
         </ResourceDictionary>
@@ -286,7 +288,11 @@
                             FontSize="84"
                             FontWeight="Light"
                             Text="{Binding CurTemp, FallbackValue='70°F', Mode=OneWay}"
-                            TextLineBounds="Tight" />
+                            TextLineBounds="Tight">
+                            <TextBlock.Foreground>
+                                <SolidColorBrush Color="{Binding CurTemp, Mode=OneWay, Converter={StaticResource tempToColorTempConverter}, ConverterParameter={ThemeResource ForegroundColor}}" />
+                            </TextBlock.Foreground>
+                        </TextBlock>
                     </toolkitControls:DropShadowPanel>
                     <StackPanel
                         x:Name="HiLoPanel"

@@ -2,6 +2,7 @@
 using System;
 using System.Globalization;
 using Windows.System.UserProfile;
+using Windows.UI;
 using static SimpleWeather.WeatherData.Beaufort;
 
 namespace SimpleWeather.Utils
@@ -124,6 +125,35 @@ namespace SimpleWeather.Utils
         public static float CalculateDewpointC(float temp_c, int humidity)
         {
             return 243.04f * (MathF.Log(humidity / 100f) + ((17.625f * temp_c) / (243.04f + temp_c))) / (17.625f - MathF.Log(humidity / 100f) - ((17.625f * temp_c) / (243.04f + temp_c)));
+        }
+
+        public static Color GetColorFromTempF(float temp_f)
+        {
+            return GetColorFromTempF(temp_f, Color.FromArgb(0xff, 0x00, 0x70, 0xc0));
+        }
+
+        public static Color GetColorFromTempF(float temp_f, Color defaultColor)
+        {
+            Color color;
+
+            if (temp_f <= 47.5)
+            {
+                color = Colors.LightSkyBlue;
+            }
+            else if (temp_f >= 85)
+            {
+                color = Colors.Red;
+            }
+            else if (temp_f >= 70)
+            {
+                color = Colors.Orange;
+            }
+            else
+            {
+                color = defaultColor;
+            }
+
+            return color;
         }
     }
 }
