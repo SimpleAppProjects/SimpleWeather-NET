@@ -87,7 +87,7 @@ namespace SimpleWeather.HERE
                         request.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
 
                         // Connect to webstream
-                        var webClient = SimpleLibrary.WebClient;
+                        var webClient = SimpleLibrary.GetInstance().WebClient;
                         using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                         using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                         {
@@ -262,7 +262,7 @@ namespace SimpleWeather.HERE
                             throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
 
                         // Connect to webstream
-                        var webClient = SimpleLibrary.WebClient;
+                        var webClient = SimpleLibrary.GetInstance().WebClient;
                         using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                         using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                         {

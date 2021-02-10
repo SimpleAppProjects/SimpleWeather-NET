@@ -148,7 +148,7 @@ namespace SimpleWeather.UWP.Radar
 
         private async Task RefreshTimestamps()
         {
-            var HttpClient = SimpleLibrary.WebClient;
+            var HttpClient = SimpleLibrary.GetInstance().WebClient;
 
             try
             {

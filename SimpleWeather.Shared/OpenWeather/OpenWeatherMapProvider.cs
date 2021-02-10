@@ -52,7 +52,7 @@ namespace SimpleWeather.OpenWeather
                     Uri queryURL = new Uri(String.Format(KEYCHECK_QUERY_URL, key));
 
                     // Connect to webstream
-                    var webClient = SimpleLibrary.WebClient;
+                    var webClient = SimpleLibrary.GetInstance().WebClient;
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     using (var response = await webClient.GetAsync(queryURL).AsTask(cts.Token))
                     {
@@ -126,7 +126,7 @@ namespace SimpleWeather.OpenWeather
                         forecastRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
 
                         // Get response
-                        var webClient = SimpleLibrary.WebClient;
+                        var webClient = SimpleLibrary.GetInstance().WebClient;
                         using (var ctsC = new CancellationTokenSource(Settings.READ_TIMEOUT))
                         using (var currentResponse = await webClient.SendRequestAsync(currentRequest).AsTask(ctsC.Token))
                         using (var ctsF = new CancellationTokenSource(Settings.READ_TIMEOUT))

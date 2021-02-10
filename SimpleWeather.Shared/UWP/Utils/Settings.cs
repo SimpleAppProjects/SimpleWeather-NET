@@ -380,7 +380,7 @@ namespace SimpleWeather.Utils
                 return value.ToString();
             }
 
-            return WeatherIconsSource.WeatherIconsEF;
+            return WeatherIconsProvider.KEY;
         }
 
         private static void SetIconsProvider(string value)

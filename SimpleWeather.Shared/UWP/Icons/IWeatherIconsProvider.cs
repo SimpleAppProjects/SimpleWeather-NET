@@ -8,7 +8,7 @@ namespace SimpleWeather.Icons
 {
     public partial interface IWeatherIconsProvider
     {
-        // Method to get icon resource
-        // ex.) int GetWeatherIconResource(String icon);
+        Uri GetWeatherIconURI(string icon);
+        String GetWeatherIconURI(string icon, bool isAbsoluteUri);
     }
 }

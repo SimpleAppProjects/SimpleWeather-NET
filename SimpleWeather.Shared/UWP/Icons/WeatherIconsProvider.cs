@@ -7,14 +7,14 @@ using System.Text;
 
 namespace SimpleWeather.Icons
 {
-    public partial class WeatherIconsProvider : IWeatherIconsProvider
+    public partial class WeatherIconsProvider : WeatherIconProvider
     {
-        public Uri GetWeatherIconURI(string icon)
+        public override Uri GetWeatherIconURI(string icon)
         {
             return new Uri(GetWeatherIconURI(icon, true));
         }
 
-        public String GetWeatherIconURI(string icon, bool isAbsoluteUri)
+        public override String GetWeatherIconURI(string icon, bool isAbsoluteUri)
         {
             string baseuri = "ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/";
             string fileIcon = string.Empty;

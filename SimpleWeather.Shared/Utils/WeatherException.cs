@@ -24,24 +24,24 @@ namespace SimpleWeather.Utils
                 switch (ErrorStatus)
                 {
                     case WeatherUtils.ErrorStatus.NoWeather:
-                        errorMsg = SimpleLibrary.ResLoader.GetString("WError_NoWeather");
+                        errorMsg = SimpleLibrary.GetInstance().ResLoader.GetString("WError_NoWeather");
                         break;
 
                     case WeatherUtils.ErrorStatus.NetworkError:
-                        errorMsg = SimpleLibrary.ResLoader.GetString("WError_NetworkError");
+                        errorMsg = SimpleLibrary.GetInstance().ResLoader.GetString("WError_NetworkError");
                         break;
 
                     case WeatherUtils.ErrorStatus.InvalidAPIKey:
-                        errorMsg = SimpleLibrary.ResLoader.GetString("WError_InvalidKey");
+                        errorMsg = SimpleLibrary.GetInstance().ResLoader.GetString("WError_InvalidKey");
                         break;
 
                     case WeatherUtils.ErrorStatus.QueryNotFound:
-                        errorMsg = SimpleLibrary.ResLoader.GetString("WError_QueryNotFound");
+                        errorMsg = SimpleLibrary.GetInstance().ResLoader.GetString("WError_QueryNotFound");
                         break;
 
                     case WeatherUtils.ErrorStatus.Unknown:
                     default:
-                        errorMsg = SimpleLibrary.ResLoader.GetString("WError_Unknown");
+                        errorMsg = SimpleLibrary.GetInstance().ResLoader.GetString("WError_Unknown");
                         break;
                 }
 

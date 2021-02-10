@@ -26,23 +26,23 @@ namespace SimpleWeather.Controls
             TimeSpan sincePost = (DateTimeOffset.Now - WeatherAlert.Date);
 
             if (sincePost.TotalDays >= 1)
-                PostDate = string.Format(SimpleLibrary.ResLoader.GetString("DateTime_DayAgo"),
+                PostDate = string.Format(SimpleLibrary.GetInstance().ResLoader.GetString("DateTime_DayAgo"),
                     (int)Math.Floor(sincePost.TotalDays));
             else if (sincePost.TotalHours >= 1)
-                PostDate = string.Format(SimpleLibrary.ResLoader.GetString("DateTime_HrAgo"),
+                PostDate = string.Format(SimpleLibrary.GetInstance().ResLoader.GetString("DateTime_HrAgo"),
                     (int)Math.Floor(sincePost.TotalHours));
             else if (sincePost.TotalMinutes >= 1)
-                PostDate = string.Format(SimpleLibrary.ResLoader.GetString("DateTime_MinAgo"),
+                PostDate = string.Format(SimpleLibrary.GetInstance().ResLoader.GetString("DateTime_MinAgo"),
                     (int)Math.Floor(sincePost.TotalMinutes));
             else
-                PostDate = string.Format(SimpleLibrary.ResLoader.GetString("DateTime_SecAgo"),
+                PostDate = string.Format(SimpleLibrary.GetInstance().ResLoader.GetString("DateTime_SecAgo"),
                     (int)Math.Floor(sincePost.TotalSeconds));
 
             var culture = CultureUtils.UserCulture;
 
             // Format: Monday, June 15, 2009 1:45 PM
             ExpireDate = string.Format("{0} {1} {2:zzz}",
-                SimpleLibrary.ResLoader.GetString("DateTime_ValidUntil"),
+                SimpleLibrary.GetInstance().ResLoader.GetString("DateTime_ValidUntil"),
                 WeatherAlert.ExpiresDate.ToString("f", culture),
                 WeatherAlert.ExpiresDate);
 
@@ -50,7 +50,7 @@ namespace SimpleWeather.Controls
 
             if (Attribution != null)
             {
-                Attribution = String.Format("{0} {1}", SimpleLibrary.ResLoader.GetString("Credit_Prefix/Text"), Attribution);
+                Attribution = String.Format("{0} {1}", SimpleLibrary.GetInstance().ResLoader.GetString("Credit_Prefix/Text"), Attribution);
             }
         }
     }

@@ -38,7 +38,7 @@ namespace SimpleWeather.AQICN
                     for (int i = 0; i < MAX_ATTEMPTS; i++)
                     {
                         // Connect to webstream
-                        HttpClient webClient = SimpleLibrary.WebClient;
+                        HttpClient webClient = SimpleLibrary.GetInstance().WebClient;
                         var request = new HttpRequestMessage(HttpMethod.Get, queryURL);
 
                         request.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);

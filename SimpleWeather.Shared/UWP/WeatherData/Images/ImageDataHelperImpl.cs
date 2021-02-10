@@ -89,7 +89,7 @@ namespace SimpleWeather.UWP.Shared.WeatherData.Images
                             request.Headers.CacheControl.MaxAge = TimeSpan.FromMinutes(15);
 
                             // Connect to webstream
-                            var webClient = SimpleLibrary.WebClient;
+                            var webClient = SimpleLibrary.GetInstance().WebClient;
                             using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                             {
                                 response.EnsureSuccessStatusCode();

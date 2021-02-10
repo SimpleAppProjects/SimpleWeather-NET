@@ -158,9 +158,9 @@
     <Compile Include="HERE\NWSAlerts.cs" />
     <Compile Include="HERE\Weather.cs" />
     <Compile Include="Icons\IWeatherIconsProvider.cs" />
+    <Compile Include="Icons\WeatherIconProvider.cs" />
     <Compile Include="Icons\WeatherIconsManager.cs" />
     <Compile Include="Icons\WeatherIconsProvider.cs" />
-    <Compile Include="Icons\WeatherIconsSource.cs" />
     <Compile Include="Keys\AppCenterKey.cs" />
     <Compile Include="Keys\AQICNKey.cs" />
     <Compile Include="Keys\BingMapsKey.cs" />
@@ -244,6 +244,7 @@
     <Compile Include="Utils\WeatherUtils.WindDirection.cs" />
     <Compile Include="UWP\Helpers\UserThemeMode.cs" />
     <Compile Include="UWP\Icons\IWeatherIconsProvider.cs" />
+    <Compile Include="UWP\Icons\WeatherIconProvider.cs" />
     <Compile Include="UWP\Icons\WeatherIconsManager.cs" />
     <Compile Include="UWP\RemoteConfig\RemoteConfig.cs" />
     <Compile Include="UWP\Utils\DispatcherExtensions.cs" />

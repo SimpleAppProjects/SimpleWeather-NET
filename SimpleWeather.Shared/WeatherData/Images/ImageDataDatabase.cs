@@ -206,7 +206,7 @@ namespace SimpleWeather.WeatherData.Images
 
                     // Register background task to update
 #if WINDOWS_UWP && !UNIT_TEST
-                    SimpleLibrary.RequestAction(CommonActions.ACTION_IMAGES_UPDATETASK);
+                    SimpleLibrary.GetInstance().RequestAction(CommonActions.ACTION_IMAGES_UPDATETASK);
 #endif
                 }
                 catch (Exception e)

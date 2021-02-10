@@ -78,15 +78,15 @@ namespace SimpleWeather.UWP.Controls
                         case Units.MILES_PER_HOUR:
                         default:
                             speedVal = (int)Math.Round(forecast.extras.wind_mph.Value);
-                            speedUnit = SimpleLibrary.ResLoader.GetString("/Units/unit_mph");
+                            speedUnit = SimpleLibrary.GetInstance().ResLoader.GetString("/Units/unit_mph");
                             break;
                         case Units.KILOMETERS_PER_HOUR:
                             speedVal = (int)Math.Round(forecast.extras.wind_kph.Value);
-                            speedUnit = SimpleLibrary.ResLoader.GetString("/Units/unit_kph");
+                            speedUnit = SimpleLibrary.GetInstance().ResLoader.GetString("/Units/unit_kph");
                             break;
                         case Units.METERS_PER_SECOND:
                             speedVal = (int)Math.Round(ConversionMethods.KphToMSec(forecast.extras.wind_kph.Value));
-                            speedUnit = SimpleLibrary.ResLoader.GetString("/Units/unit_msec");
+                            speedUnit = SimpleLibrary.GetInstance().ResLoader.GetString("/Units/unit_msec");
                             break;
                     }
 

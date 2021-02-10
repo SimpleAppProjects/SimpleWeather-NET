@@ -17,7 +17,7 @@ namespace SimpleWeather.RemoteConfig
 
         private static String GetConfigString(String weatherAPI)
         {
-            return RemoteConfigContainer.Values[weatherAPI]?.ToString() ?? SimpleLibrary.ResLoader.GetString("/Config/" + weatherAPI);
+            return RemoteConfigContainer.Values[weatherAPI]?.ToString() ?? SimpleLibrary.GetInstance().ResLoader.GetString("/Config/" + weatherAPI);
         }
 
         public static void SetConfigString(String key, String value)

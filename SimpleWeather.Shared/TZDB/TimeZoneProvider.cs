@@ -46,7 +46,7 @@ namespace SimpleWeather.TZDB
                         request.Headers.CacheControl.MaxAge = TimeSpan.FromDays(1);
 
                         // Connect to webstream
-                        var webClient = SimpleLibrary.WebClient;
+                        var webClient = SimpleLibrary.GetInstance().WebClient;
                         using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                         using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                         {

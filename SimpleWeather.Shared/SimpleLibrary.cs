@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Resources;
@@ -14,41 +17,47 @@ namespace SimpleWeather
     {
         private ResourceLoader ResourceLoader;
         private HttpClient HttpWebClient;
+        private OrderedDictionary IconProviders;
 
-        public static event CommonActionChangedEventHandler OnCommonActionChanged;
+        public event CommonActionChangedEventHandler OnCommonActionChanged;
 
         private static SimpleLibrary sSimpleLib;
 
         private SimpleLibrary()
         {
             ResourceLoader = GetResourceLoader();
+            IconProviders = new OrderedDictionary();
+
+            // Register default icon provider
+            RegisterIconProvider(new Icons.WeatherIconsProvider());
         }
 
-        public static ResourceLoader ResLoader
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public static SimpleLibrary GetInstance()
+        {
+            if (sSimpleLib == null)
+                sSimpleLib = new SimpleLibrary();
+
+            return sSimpleLib;
+        }
+
+        public ResourceLoader ResLoader
         {
             get
             {
-                Init();
                 return sSimpleLib.ResourceLoader;
             }
         }
 
-        public static HttpClient WebClient
+        public HttpClient WebClient
         {
             get
             {
-                Init();
                 return sSimpleLib.GetHttpClient();
             }
         }
 
-        private static void Init()
-        {
-            if (sSimpleLib == null)
-                sSimpleLib = new SimpleLibrary();
-        }
-
-        public static void RequestAction(string Action, IDictionary<String, String> Bundle = null)
+        public void RequestAction(string Action, IDictionary<String, String> Bundle = null)
         {
             OnCommonActionChanged?.Invoke(null, 
                 new CommonActionChangedEventArgs(Action, Bundle));
@@ -86,6 +95,26 @@ namespace SimpleWeather
             }
 
             return HttpWebClient;
+        }
+
+        public void RegisterIconProvider(Icons.WeatherIconProvider provider)
+        {
+            IconProviders.Add(provider.Key, provider);
+        }
+
+        public Icons.WeatherIconProvider GetIconProvider(string key)
+        {
+            Icons.WeatherIconProvider provider = IconProviders[key] as Icons.WeatherIconProvider;
+            if (provider == null)
+            {
+                RegisterIconProvider(provider = new Icons.WeatherIconsProvider());
+            }
+            return provider;
+        }
+
+        public OrderedDictionary GetIconProviders()
+        {
+            return IconProviders.AsReadOnly();
         }
 
         public void Dispose()

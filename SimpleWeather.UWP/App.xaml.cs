@@ -114,7 +114,7 @@ namespace SimpleWeather.UWP
             MemoryManager.AppMemoryUsageIncreased += MemoryManager_AppMemoryUsageIncreased;
 
             // Initialize depencies for library
-            SimpleLibrary.OnCommonActionChanged += App_OnCommonActionChanged;
+            SimpleLibrary.GetInstance().OnCommonActionChanged += App_OnCommonActionChanged;
             Utf8Json.Resolvers.CompositeResolver.RegisterAndSetAsDefault(
                 JSONParser.Resolver, UWP.Utf8JsonGen.Resolvers.GeneratedResolver.Instance
                 );

@@ -150,7 +150,7 @@ namespace SimpleWeather.UWP.Controls
         private async void Canvas_CreateResources(CanvasVirtualControl sender, CanvasCreateResourcesEventArgs args)
         {
             IconSize = sender.ConvertDipsToPixels(24, CanvasDpiRounding.Floor);
-            SunIcon = await CanvasBitmap.LoadAsync(sender, wim.GetWeatherIconURI(WeatherIcons.DAY_SUNNY));
+            SunIcon = await CanvasBitmap.LoadAsync(sender, new Uri("ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/wi-day-sunny.png"));
         }
 
         private void Canvas_RegionsInvalidated(CanvasVirtualControl sender, CanvasRegionsInvalidatedEventArgs args)

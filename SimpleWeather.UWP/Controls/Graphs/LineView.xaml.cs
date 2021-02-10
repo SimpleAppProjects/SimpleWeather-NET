@@ -846,11 +846,21 @@ namespace SimpleWeather.UWP.Controls.Graphs
 
             drawingSession.Transform = Matrix3x2.Multiply(rotTransform, translTransform);
 
-            drawingSession.DrawImage(new TintEffect() 
-            { 
-                Source = icon,
-                Color = BottomTextColor
-            }, new Rect(0, 0, IconHeight, IconHeight), icon.Bounds);
+            ICanvasImage finalIcon;
+            if (!wim.IsFontIcon)
+            {
+                finalIcon = new TintEffect()
+                {
+                    Source = icon,
+                    Color = BottomTextColor
+                };
+            }
+            else
+            {
+                finalIcon = icon;
+            }
+
+            drawingSession.DrawImage(finalIcon, new Rect(0, 0, IconHeight, IconHeight), icon.Bounds);
 
             drawingSession.Transform = prevTransform;
         }

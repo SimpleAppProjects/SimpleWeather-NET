@@ -51,7 +51,7 @@ namespace SimpleWeather.Bing
                     Uri queryURL = new Uri(String.Format(AUTOCOMPLETE_QUERY_URL, location_query, key, culture.Name));
 
                     // Connect to webstream
-                    var webClient = SimpleLibrary.WebClient;
+                    var webClient = SimpleLibrary.GetInstance().WebClient;
                     using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
                     {
                         request.Headers.CacheControl.MaxAge = TimeSpan.FromDays(1);

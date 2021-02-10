@@ -38,16 +38,12 @@ namespace SimpleWeather.Icons
 
         private static IWeatherIconsProvider GetProvider(string iconsSource)
         {
-            IWeatherIconsProvider iconsProvider = null;
+            return SimpleLibrary.GetInstance().GetIconProvider(iconsSource);
+        }
 
-            switch (iconsSource)
-            {
-                default:
-                    iconsProvider = new WeatherIconsProvider();
-                    break;
-            }
-
-            return iconsProvider;
+        public bool IsFontIcon
+        {
+            get { return sIconsProvider.IsFontIcon; }
         }
     }
 }

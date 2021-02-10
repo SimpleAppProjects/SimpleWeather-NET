@@ -163,6 +163,7 @@
                 FalseValue="0"
                 TrueValue="1" />
             <helpers:TempToColorTempConverter x:Key="tempToColorTempConverter" />
+            <helpers:IconForegroundConverter x:Key="iconForegroundConverter" />
             <SolidColorBrush x:Key="ProgressBarBrush" Color="{ThemeResource ForegroundColor}" />
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
@@ -345,7 +346,11 @@
                         RelativePanel.AlignBottomWithPanel="True"
                         RelativePanel.AlignRightWithPanel="True"
                         RelativePanel.AlignTopWithPanel="True"
-                        UriSource="{x:Bind wim.GetWeatherIconURI(WeatherView.WeatherIcon), Mode=OneWay}" />
+                        UriSource="{x:Bind wim.GetWeatherIconURI(WeatherView.WeatherIcon), Mode=OneWay}">
+                        <BitmapIcon.Foreground>
+                            <SolidColorBrush Color="{Binding ElementName=WeatherBox, Path=UriSource, Mode=OneWay, Converter={StaticResource iconForegroundConverter}, ConverterParameter={ThemeResource ForegroundColor}}" />
+                        </BitmapIcon.Foreground>
+                    </BitmapIcon>
                     <toolkitControls:DropShadowPanel
                         x:Name="CurConditionPanel"
                         HorizontalAlignment="Center"

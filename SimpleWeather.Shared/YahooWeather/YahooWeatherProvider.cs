@@ -66,7 +66,7 @@ namespace SimpleWeather.WeatherYahoo
                         request.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
 
                         // Get response
-                        var webClient = SimpleLibrary.WebClient;
+                        var webClient = SimpleLibrary.GetInstance().WebClient;
                         using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                         using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                         {
@@ -369,88 +369,88 @@ namespace SimpleWeather.WeatherYahoo
                 switch (code)
                 {
                     case 0: // Tornado
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_tornado");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_tornado");
                     case 37: // isolated thunderstorms
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_isotstorms");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_isotstorms");
                     case 39: // scattered showers (day)
                     case 45: // scattered showers (night)
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_scatteredshowers");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_scatteredshowers");
                     case 38: // Scattered Thunderstorms/showers
                     case 47: // scattered thundershowers
                     case 4: // Scattered Thunderstorms
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_scatteredtstorms");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_scatteredtstorms");
                     case 1: // Tropical Storm
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_tropicalstorm");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_tropicalstorm");
                     case 2: // Hurricane
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_hurricane");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_hurricane");
                     case 3: // severe thunderstorms
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_severetstorms");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_severetstorms");
                     case 5: // Mixed Rain/Snow
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_rainandsnow");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_rainandsnow");
                     case 6: // Mixed Rain/Sleet
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_rainandsleet");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_rainandsleet");
                     case 7: // Mixed Snow/Sleet
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_snowandsleet");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_snowandsleet");
                     case 18: // Sleet
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_sleet");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_sleet");
                     case 17: // Hail
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_hail");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_hail");
                     case 35: // Mixed Rain/Hail
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_rainandhail");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_rainandhail");
                     case 8: // Freezing Drizzle
                     case 10: // Freezing Rain
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_freezingrain");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_freezingrain");
                     case 9: // Drizzle
                     case 12: // rain
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_rain");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_rain");
                     case 11: // Showers
                     case 40: // Scattered Showers
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_rainshowers");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_rainshowers");
                     case 13: // Snow Flurries
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_snowflurries");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_snowflurries");
                     case 16: // Snow
                     case 46: // Snow Showers
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_snow");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_snow");
                     case 14: // Light Snow Showers
                     case 42: // Scattered Snow Showers
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_lightsnowshowers");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_lightsnowshowers");
                     case 15: // Blowing Snow
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_blowingsnow");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_blowingsnow");
                     case 41: // Heavy Snow
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_heavysnow");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_heavysnow");
                     case 43: // blizzard
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_blizzard");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_blizzard");
                     case 19: // Dust
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_dust");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_dust");
                     case 20: // Foggy
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_foggy");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_foggy");
                     case 21: // Haze
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_haze");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_haze");
                     case 22: // Smoky
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_smoky");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_smoky");
                     case 23: // Blustery
                     case 24: // Windy
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_windy");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_windy");
                     case 25: // Cold
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_cold");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_cold");
                     case 26: // Cloudy
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_cloudy");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_cloudy");
                     case 27: // Mostly Cloudy (Night)
                     case 28: // Mostly Cloudy (Day)
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_mostlycloudy");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_mostlycloudy");
                     case 29: // Partly Cloudy (Night)
                     case 30: // Partly Cloudy (Day)
                     case 44: // Partly Cloudy
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_partlycloudy");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_partlycloudy");
                     case 31: // Clear (Night)
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_clear");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_clear");
                     case 32: // Sunny
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_sunny");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_sunny");
                     case 33: // Fair (Night)
                     case 34: // Fair (Day)
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_fair");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_fair");
                     case 36: // HOT
-                        return SimpleLibrary.ResLoader.GetString("/WeatherConditions/weather_hot");
+                        return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_hot");
                 }
             }
             catch (FormatException)

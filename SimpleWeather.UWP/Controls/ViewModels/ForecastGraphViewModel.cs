@@ -24,6 +24,7 @@ namespace SimpleWeather.UWP.Controls
 
         private LocationData locationData;
         private string unitCode;
+        private string iconProvider;
 
         private SimpleObservableList<GraphItemViewModel> forecasts;
         private SimpleObservableList<GraphItemViewModel> hourlyForecasts;
@@ -78,6 +79,7 @@ namespace SimpleWeather.UWP.Controls
                     this.locationData = new LocationData(new LocationQueryViewModel(location));
 
                     this.unitCode = Settings.UnitString;
+                    this.iconProvider = Settings.IconProvider;
 
                     currentForecastsData.SetValue(await Settings.GetWeatherForecastData(location.query));
 
@@ -86,9 +88,10 @@ namespace SimpleWeather.UWP.Controls
 
                     Settings.RegisterWeatherDBChangedEvent(ForecastGraphViewModel_TableChanged);
                 }
-                else if (!Equals(unitCode, Settings.UnitString))
+                else if (!Equals(unitCode, Settings.UnitString) || !Equals(iconProvider, Settings.IconProvider))
                 {
                     this.unitCode = Settings.UnitString;
+                    this.iconProvider = Settings.IconProvider;
 
                     RefreshForecasts(currentForecastsData.GetValue());
                     RefreshHourlyForecasts(currentHrForecastsData.GetValue());

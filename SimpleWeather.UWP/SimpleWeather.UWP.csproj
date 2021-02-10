@@ -220,6 +220,7 @@
       <DependentUpon>BeaufortControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\BindingExtensions.cs" />
+    <Compile Include="Helpers\IconForegroundConverter.cs" />
     <Compile Include="Helpers\TempToColorTempConverter.cs" />
     <Compile Include="Helpers\DeviceTypeHelper.cs" />
     <Compile Include="Helpers\LocationTypeConverter.cs" />

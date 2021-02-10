@@ -39,7 +39,7 @@ namespace SimpleWeather.Controls
 
         public LocationQueryViewModel()
         {
-            LocationName = SimpleLibrary.ResLoader.GetString("Error_NoResults");
+            LocationName = SimpleLibrary.GetInstance().ResLoader.GetString("Error_NoResults");
             LocationCountry = string.Empty;
             LocationQuery = string.Empty;
         }
