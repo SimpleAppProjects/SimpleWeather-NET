@@ -10,6 +10,7 @@ using SimpleWeather.WeatherYahoo;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.UI;
 
@@ -71,6 +72,7 @@ namespace SimpleWeather.WeatherData
             UpdateAPI();
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public static WeatherManager GetInstance()
         {
             if (Instance == null)

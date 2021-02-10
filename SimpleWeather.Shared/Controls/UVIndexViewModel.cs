@@ -1,4 +1,5 @@
-﻿using SimpleWeather.WeatherData;
+﻿using SimpleWeather.Icons;
+using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.Text;

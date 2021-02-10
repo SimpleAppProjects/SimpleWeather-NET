@@ -1,5 +1,6 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
 using SimpleWeather.Controls;
+using SimpleWeather.Icons;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Shared.Helpers;
@@ -20,6 +21,8 @@ namespace SimpleWeather.UWP.Tiles
         private const int MEDIUM_FORECAST_LENGTH = 3;
         private const int WIDE_FORECAST_LENGTH = 3;
         private const int LARGE_FORECAST_LENGTH = 5;
+
+        private static readonly WeatherIconsManager wim = WeatherIconsManager.GetInstance();
 
         public enum ForecastTileType
         {
@@ -107,7 +110,7 @@ namespace SimpleWeather.UWP.Tiles
                             new AdaptiveImage()
                             {
                                 HintRemoveMargin = true,
-                                Source = WeatherUtils.GetWeatherIconURI(forecast.WeatherIcon, false)
+                                Source = wim.GetWeatherIconURI(forecast.WeatherIcon, false)
                             },
                         }
                     };
@@ -169,7 +172,7 @@ namespace SimpleWeather.UWP.Tiles
                             new AdaptiveImage()
                             {
                                 HintRemoveMargin = true,
-                                Source = WeatherUtils.GetWeatherIconURI(forecast.WeatherIcon, false)
+                                Source = wim.GetWeatherIconURI(forecast.WeatherIcon, false)
                             }
                         }
                     };
@@ -221,7 +224,7 @@ namespace SimpleWeather.UWP.Tiles
                             {
                                 new AdaptiveImage()
                                 {
-                                    Source = WeatherUtils.GetWeatherIconURI(weather.WeatherIcon, false)
+                                    Source = wim.GetWeatherIconURI(weather.WeatherIcon, false)
                                 }
                             }
                         },
@@ -276,7 +279,7 @@ namespace SimpleWeather.UWP.Tiles
                             new AdaptiveImage()
                             {
                                 HintRemoveMargin = true,
-                                Source = WeatherUtils.GetWeatherIconURI(forecast.WeatherIcon, false)
+                                Source = wim.GetWeatherIconURI(forecast.WeatherIcon, false)
                             },
                             new AdaptiveText()
                             {
@@ -370,7 +373,7 @@ namespace SimpleWeather.UWP.Tiles
                             new AdaptiveImage()
                             {
                                 HintRemoveMargin = true,
-                                Source = WeatherUtils.GetWeatherIconURI(hrforecast.WeatherIcon, false)
+                                Source = wim.GetWeatherIconURI(hrforecast.WeatherIcon, false)
                             },
                         }
                     };
@@ -425,7 +428,7 @@ namespace SimpleWeather.UWP.Tiles
                             new AdaptiveImage()
                             {
                                 HintRemoveMargin = true,
-                                Source = WeatherUtils.GetWeatherIconURI(hrforecast.WeatherIcon, false)
+                                Source = wim.GetWeatherIconURI(hrforecast.WeatherIcon, false)
                             },
                             new AdaptiveText()
                             {
@@ -463,7 +466,7 @@ namespace SimpleWeather.UWP.Tiles
                             {
                                 new AdaptiveImage()
                                 {
-                                    Source = WeatherUtils.GetWeatherIconURI(weather.WeatherIcon, false)
+                                    Source = wim.GetWeatherIconURI(weather.WeatherIcon, false)
                                 }
                             }
                         },
@@ -523,7 +526,7 @@ namespace SimpleWeather.UWP.Tiles
                             new AdaptiveImage()
                             {
                                 HintRemoveMargin = true,
-                                Source = WeatherUtils.GetWeatherIconURI(hrforecast.WeatherIcon, false)
+                                Source = wim.GetWeatherIconURI(hrforecast.WeatherIcon, false)
                             },
                             new AdaptiveText()
                             {
@@ -604,7 +607,7 @@ namespace SimpleWeather.UWP.Tiles
                                 new AdaptiveImage()
                                 {
                                     HintRemoveMargin = true,
-                                    Source = WeatherUtils.GetWeatherIconURI(weather.WeatherIcon, false)
+                                    Source = wim.GetWeatherIconURI(weather.WeatherIcon, false)
                                 },
                                 new AdaptiveText()
                                 {
@@ -641,7 +644,7 @@ namespace SimpleWeather.UWP.Tiles
                         new AdaptiveImage()
                         {
                             HintRemoveMargin = true,
-                            Source = WeatherUtils.GetWeatherIconURI(weather.WeatherIcon, false)
+                            Source = wim.GetWeatherIconURI(weather.WeatherIcon, false)
                         }
                     },
                     HintTextStacking = AdaptiveSubgroupTextStacking.Center
@@ -693,7 +696,7 @@ namespace SimpleWeather.UWP.Tiles
                             {
                                 new AdaptiveImage()
                                 {
-                                    Source = WeatherUtils.GetWeatherIconURI(weather.WeatherIcon, false)
+                                    Source = wim.GetWeatherIconURI(weather.WeatherIcon, false)
                                 }
                             }
                         },
@@ -755,7 +758,7 @@ namespace SimpleWeather.UWP.Tiles
                             new AdaptiveImage()
                             {
                                 HintRemoveMargin = true,
-                                Source = WeatherUtils.GetWeatherIconURI(forecast.WeatherIcon, false)
+                                Source = wim.GetWeatherIconURI(forecast.WeatherIcon, false)
                             },
                             new AdaptiveText()
                             {

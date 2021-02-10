@@ -1,19 +1,20 @@
 ﻿#if WINDOWS_UWP
+using SimpleWeather.Icons;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SimpleWeather.Utils
+namespace SimpleWeather.Icons
 {
-    public static partial class WeatherUtils
+    public partial class WeatherIconsProvider : IWeatherIconsProvider
     {
-        public static Uri GetWeatherIconURI(string icon)
+        public Uri GetWeatherIconURI(string icon)
         {
             return new Uri(GetWeatherIconURI(icon, true));
         }
 
-        public static String GetWeatherIconURI(string icon, bool isAbsoluteUri)
+        public String GetWeatherIconURI(string icon, bool isAbsoluteUri)
         {
             string baseuri = "ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/";
             string fileIcon = string.Empty;

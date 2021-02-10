@@ -249,7 +249,7 @@
                     Height="50"
                     Margin="8,0"
                     VerticalAlignment="Center">
-                    <BitmapIcon x:Name="WeatherIcon" UriSource="{x:Bind utils:WeatherUtils.GetWeatherIconURI(ViewModel.Icon), Mode=OneWay}" />
+                    <BitmapIcon x:Name="WeatherIcon" UriSource="{x:Bind wim.GetWeatherIconURI(ViewModel.Icon), Mode=OneWay}" />
                 </Viewbox>
                 <StackPanel
                     Grid.Column="1"

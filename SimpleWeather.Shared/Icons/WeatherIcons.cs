@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SimpleWeather.WeatherData
+namespace SimpleWeather.Icons
 {
     public static class WeatherIcons
     {

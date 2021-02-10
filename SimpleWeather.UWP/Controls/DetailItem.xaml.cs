@@ -1,4 +1,5 @@
 ﻿using SimpleWeather.Controls;
+using SimpleWeather.Icons;
 using SimpleWeather.Utils;
 using Windows.UI;
 using Windows.UI.Xaml;
@@ -11,6 +12,8 @@ namespace SimpleWeather.UWP.Controls
 {
     public sealed partial class DetailItem : UserControl
     {
+        private readonly WeatherIconsManager wim = WeatherIconsManager.GetInstance();
+
         public DetailItemViewModel Details
         {
             get { return (this.DataContext as DetailItemViewModel); }

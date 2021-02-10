@@ -4,6 +4,7 @@ using Microsoft.Graphics.Canvas.Geometry;
 using Microsoft.Graphics.Canvas.Text;
 using Microsoft.Graphics.Canvas.UI;
 using Microsoft.Graphics.Canvas.UI.Xaml;
+using SimpleWeather.Icons;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
@@ -52,6 +53,8 @@ namespace SimpleWeather.UWP.Controls
         private Color PaintColor => PaintColorBrush.Color;
         private Color PhaseArcColor => PhaseArcColorBrush.Color;
         private Color BottomTextColor => BottomTextColorBrush.Color;
+
+        private readonly WeatherIconsManager wim = WeatherIconsManager.GetInstance();
 
         public SunPhasePanel()
         {
@@ -147,7 +150,7 @@ namespace SimpleWeather.UWP.Controls
         private async void Canvas_CreateResources(CanvasVirtualControl sender, CanvasCreateResourcesEventArgs args)
         {
             IconSize = sender.ConvertDipsToPixels(24, CanvasDpiRounding.Floor);
-            SunIcon = await CanvasBitmap.LoadAsync(sender, WeatherUtils.GetWeatherIconURI(WeatherIcons.DAY_SUNNY));
+            SunIcon = await CanvasBitmap.LoadAsync(sender, wim.GetWeatherIconURI(WeatherIcons.DAY_SUNNY));
         }
 
         private void Canvas_RegionsInvalidated(CanvasVirtualControl sender, CanvasRegionsInvalidatedEventArgs args)

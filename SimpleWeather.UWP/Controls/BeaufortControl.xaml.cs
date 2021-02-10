@@ -1,4 +1,5 @@
 ﻿using SimpleWeather.Controls;
+using SimpleWeather.Icons;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,6 +25,8 @@ namespace SimpleWeather.UWP.Controls
         {
             get { return (this.DataContext as BeaufortViewModel); }
         }
+
+        private readonly WeatherIconsManager wim = WeatherIconsManager.GetInstance();
 
         public BeaufortControl()
         {

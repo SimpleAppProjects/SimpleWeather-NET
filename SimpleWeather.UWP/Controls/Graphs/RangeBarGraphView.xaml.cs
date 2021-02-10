@@ -5,6 +5,7 @@ using Microsoft.Graphics.Canvas.Geometry;
 using Microsoft.Graphics.Canvas.Text;
 using Microsoft.Graphics.Canvas.UI;
 using Microsoft.Graphics.Canvas.UI.Xaml;
+using SimpleWeather.Icons;
 using SimpleWeather.Utils;
 using System;
 using System.Collections.Generic;
@@ -94,6 +95,8 @@ namespace SimpleWeather.UWP.Controls.Graphs
         private readonly CanvasStrokeStyle LineStrokeStyle;
 
         public bool ReadyToDraw => Canvas.ReadyToDraw;
+
+        private readonly WeatherIconsManager wim = WeatherIconsManager.GetInstance();
 
         public RangeBarGraphView()
         {
@@ -419,7 +422,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
 
                             if (icon == null)
                             {
-                                var task = CanvasBitmap.LoadAsync(Canvas, WeatherUtils.GetWeatherIconURI(xData.XIcon)).AsTask();
+                                var task = CanvasBitmap.LoadAsync(Canvas, wim.GetWeatherIconURI(xData.XIcon)).AsTask();
                                 task.ContinueWith((t) =>
                                 {
                                     if (t.IsCompletedSuccessfully)

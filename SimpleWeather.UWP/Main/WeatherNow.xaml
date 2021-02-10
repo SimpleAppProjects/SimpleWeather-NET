@@ -345,7 +345,7 @@
                         RelativePanel.AlignBottomWithPanel="True"
                         RelativePanel.AlignRightWithPanel="True"
                         RelativePanel.AlignTopWithPanel="True"
-                        UriSource="{x:Bind utils:WeatherUtils.GetWeatherIconURI(WeatherView.WeatherIcon), Mode=OneWay}" />
+                        UriSource="{x:Bind wim.GetWeatherIconURI(WeatherView.WeatherIcon), Mode=OneWay}" />
                     <toolkitControls:DropShadowPanel
                         x:Name="CurConditionPanel"
                         HorizontalAlignment="Center"

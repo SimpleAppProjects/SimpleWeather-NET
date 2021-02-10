@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    xmlns:utils="using:SimpleWeather.Utils"
+    xmlns:wicons="using:SimpleWeather.Icons"
     MinWidth="340"
     mc:Ignorable="d">
 
@@ -40,7 +40,7 @@
                     RelativePanel.Above="BeaufortProgressBar"
                     RelativePanel.AlignLeftWithPanel="True"
                     RelativePanel.AlignTopWithPanel="True"
-                    UriSource="{x:Bind utils:WeatherUtils.GetWeatherIconURI(ViewModel.Beaufort.Icon), Mode=OneWay}" />
+                    UriSource="{x:Bind wim.GetWeatherIconURI(ViewModel.Beaufort.Icon), Mode=OneWay}" />
                 <TextBlock
                     x:Name="BeaufortDescription"
                     Padding="5"

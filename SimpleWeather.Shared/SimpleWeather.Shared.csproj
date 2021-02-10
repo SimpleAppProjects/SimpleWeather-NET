@@ -157,6 +157,10 @@
     <Compile Include="HERE\HEREWeatherProvider.cs" />
     <Compile Include="HERE\NWSAlerts.cs" />
     <Compile Include="HERE\Weather.cs" />
+    <Compile Include="Icons\IWeatherIconsProvider.cs" />
+    <Compile Include="Icons\WeatherIconsManager.cs" />
+    <Compile Include="Icons\WeatherIconsProvider.cs" />
+    <Compile Include="Icons\WeatherIconsSource.cs" />
     <Compile Include="Keys\AppCenterKey.cs" />
     <Compile Include="Keys\AQICNKey.cs" />
     <Compile Include="Keys\BingMapsKey.cs" />
@@ -239,12 +243,14 @@
     <Compile Include="Utils\WeatherUtils.Images.cs" />
     <Compile Include="Utils\WeatherUtils.WindDirection.cs" />
     <Compile Include="UWP\Helpers\UserThemeMode.cs" />
+    <Compile Include="UWP\Icons\IWeatherIconsProvider.cs" />
+    <Compile Include="UWP\Icons\WeatherIconsManager.cs" />
     <Compile Include="UWP\RemoteConfig\RemoteConfig.cs" />
     <Compile Include="UWP\Utils\DispatcherExtensions.cs" />
     <Compile Include="UWP\Utils\FeatureSettings.cs" />
     <Compile Include="UWP\Utils\FileUtils.cs" />
     <Compile Include="UWP\Utils\Settings.cs" />
-    <Compile Include="UWP\Utils\WeatherUtils.IconResources.cs" />
+    <Compile Include="UWP\Icons\WeatherIconsProvider.cs" />
     <Compile Include="UWP\WeatherData\Images\ImageDataDatabase.cs" />
     <Compile Include="UWP\WeatherData\Images\ImageDataHelperImpl.cs" />
     <Compile Include="UWP\WeatherData\WeatherProviderImpl.cs" />
@@ -262,7 +268,7 @@
     <Compile Include="WeatherData\WeatherAlert.cs" />
     <Compile Include="WeatherData\WeatherBackground.cs" />
     <Compile Include="WeatherData\WeatherDataLoader.cs" />
-    <Compile Include="WeatherData\WeatherIcons.cs" />
+    <Compile Include="Icons\WeatherIcons.cs" />
     <Compile Include="WeatherData\WeatherManager.cs" />
     <Compile Include="WeatherData\WeatherProviderImpl.cs" />
     <Compile Include="WeatherData\WeatherRequest.cs" />
@@ -489,6 +495,7 @@
     <Content Include="Assets\WeatherIcons\png\wi-wind-direction.png" />
     <Content Include="Assets\WeatherIcons\png\wi-windy.png" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

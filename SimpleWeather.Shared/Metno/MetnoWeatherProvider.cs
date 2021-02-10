@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using SimpleWeather.Icons;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;

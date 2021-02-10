@@ -1,4 +1,5 @@
 ﻿using SimpleWeather.Controls;
+using SimpleWeather.Icons;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using System;

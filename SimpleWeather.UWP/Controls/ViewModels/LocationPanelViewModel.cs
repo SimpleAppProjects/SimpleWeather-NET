@@ -1,4 +1,5 @@
-﻿using SimpleWeather.Location;
+﻿using SimpleWeather.Icons;
+using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Utils;
 using SimpleWeather.WeatherData;

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Toolkit.Uwp.Helpers;
 using SimpleWeather.AQICN;
 using SimpleWeather.Controls;
+using SimpleWeather.Icons;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
@@ -43,7 +44,9 @@ namespace SimpleWeather.UWP.Main
     /// </summary>
     public sealed partial class WeatherNow : CustomPage, IDisposable, IWeatherErrorListener
     {
-        private readonly WeatherManager wm;
+        private readonly WeatherManager wm = WeatherManager.GetInstance();
+        private readonly WeatherIconsManager wim = WeatherIconsManager.GetInstance();
+
         private WeatherDataLoader wLoader = null;
         private RadarViewProvider radarViewProvider;
 
@@ -142,7 +145,6 @@ namespace SimpleWeather.UWP.Main
             Application.Current.Resuming += WeatherNow_Resuming;
             cts = new CancellationTokenSource();
 
-            wm = WeatherManager.GetInstance();
             WeatherView = new WeatherNowViewModel(Dispatcher);
             WeatherView.PropertyChanged += WeatherView_PropertyChanged;
             ForecastView = new ForecastGraphViewModel(Dispatcher);

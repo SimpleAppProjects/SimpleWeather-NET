@@ -28,6 +28,7 @@ namespace SimpleWeather.Utils
         public static bool ShowAlerts { get { return UseAlerts(); } set { SetAlerts(value); } }
         public static bool UsePersonalKey { get { return IsPersonalKey(); } set { SetPersonalKey(value); } }
         public static int VersionCode { get { return GetVersionCode(); } set { SetVersionCode(value); } }
+        public static string IconProvider { get { return GetIconsProvider(); } set { SetIconsProvider(value); } }
 
         // Units
         public static string TemperatureUnit { get { return GetTempUnit(); } set { SetTempUnit(value); } }
@@ -84,6 +85,7 @@ namespace SimpleWeather.Utils
         public const string KEY_DISTANCEUNIT = "key_distanceunit";
         public const string KEY_PRECIPITATIONUNIT = "key_precipitationunit";
         public const string KEY_PRESSUREUNIT = "key_pressureunit";
+        public const string KEY_ICONSSOURCE = "key_iconssource";
 
         // Weather Data
         private static LocationData lastGPSLocData;

@@ -194,7 +194,7 @@
                 VerticalAlignment="Center"
                 Orientation="Horizontal"
                 Visibility="{x:Bind ViewModel.PoP, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
-                <BitmapIcon Width="25" UriSource="{x:Bind utils:WeatherUtils.GetWeatherIconURI(ViewModel.PoPIcon), Mode=OneWay}" />
+                <BitmapIcon Width="25" UriSource="{x:Bind wim.GetWeatherIconURI(ViewModel.PoPIcon), Mode=OneWay}" />
                 <toolkitControls:DropShadowPanel
                     BlurRadius="15.0"
                     ShadowOpacity="{ThemeResource DropShadowOpacity}"

@@ -1,4 +1,5 @@
 ﻿#if WINDOWS_UWP
+using SimpleWeather.Icons;
 using SimpleWeather.UWP.Helpers;
 using SimpleWeather.WeatherData;
 using SQLite;
@@ -370,6 +371,21 @@ namespace SimpleWeather.Utils
         private static void SetUserTheme(UserThemeMode value)
         {
             localSettings.Values[KEY_USERTHEME] = (int)value;
+        }
+
+        private static string GetIconsProvider()
+        {
+            if (localSettings.Values.TryGetValue(KEY_ICONSSOURCE, out object value))
+            {
+                return value.ToString();
+            }
+
+            return WeatherIconsSource.WeatherIconsEF;
+        }
+
+        private static void SetIconsProvider(string value)
+        {
+            localSettings.Values[KEY_ICONSSOURCE] = value;
         }
     }
 }

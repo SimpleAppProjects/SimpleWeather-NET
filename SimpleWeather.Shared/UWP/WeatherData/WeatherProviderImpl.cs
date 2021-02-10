@@ -1,4 +1,5 @@
 ﻿#if WINDOWS_UWP
+using SimpleWeather.Icons;
 using System;
 
 namespace SimpleWeather.WeatherData
