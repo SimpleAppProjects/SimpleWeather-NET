@@ -99,6 +99,8 @@ namespace SimpleWeather.Icons
         public const String THERMOMETER = "\uf055";
         public const String UMBRELLA = "\uf084";
         public const String WIND_DIRECTION = "\uf0b1";
+        public const String DIRECTION_UP = "\uf058";
+        public const String DIRECTION_DOWN = "\uf044";
 
         // Beaufort
         public const String WIND_BEAUFORT_0 = "\uf0b7";

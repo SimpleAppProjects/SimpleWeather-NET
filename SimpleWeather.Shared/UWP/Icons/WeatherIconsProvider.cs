@@ -368,6 +368,14 @@ namespace SimpleWeather.Icons
                     fileIcon = "wi-wind-direction.png";
                     break;
 
+                case WeatherIcons.DIRECTION_UP:
+                    fileIcon = "wi-direction-up.png";
+                    break;
+
+                case WeatherIcons.DIRECTION_DOWN:
+                    fileIcon = "wi-direction-down.png";
+                    break;
+
                 // Beaufort
                 case WeatherIcons.WIND_BEAUFORT_0:
                     fileIcon = "wi-wind-beaufort-0.png";
