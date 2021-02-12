@@ -5,6 +5,7 @@ using Microsoft.QueryStringDotNET;
 using SimpleWeather.Controls;
 using SimpleWeather.Keys;
 using SimpleWeather.Location;
+using SimpleWeather.Shared.Extras;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.UWP.Helpers;
@@ -118,6 +119,7 @@ namespace SimpleWeather.UWP
             Utf8Json.Resolvers.CompositeResolver.RegisterAndSetAsDefault(
                 JSONParser.Resolver, UWP.Utf8JsonGen.Resolvers.GeneratedResolver.Instance
                 );
+            ExtrasLibrary.Init();
 
             AppCenter.LogLevel = LogLevel.Verbose;
             AppCenter.Start(APIKeys.GetAppCenterSecret(), typeof(Analytics), typeof(Crashes));

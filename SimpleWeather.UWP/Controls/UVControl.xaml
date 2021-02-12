@@ -39,7 +39,8 @@
                     RelativePanel.Above="UVProgressBar"
                     RelativePanel.AlignLeftWithPanel="True"
                     RelativePanel.AlignTopWithPanel="True"
-                    UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/wi-day-sunny.png" />
+                    ShowAsMonochrome="True"
+                    UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-day-sunny.png" />
                 <TextBlock
                     x:Name="UVDescription"
                     Padding="5"

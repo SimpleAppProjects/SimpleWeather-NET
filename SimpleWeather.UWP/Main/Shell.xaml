@@ -117,7 +117,11 @@
                     Content="Weather"
                     Tag="WeatherNow">
                     <muxc:NavigationViewItem.Icon>
-                        <BitmapIcon Margin="-12" UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/wi-day-cloudy.png" />
+                        <BitmapIcon
+                            Margin="-12"
+                            Foreground="{ThemeResource SystemControlPageTextBaseHighBrush}"
+                            ShowAsMonochrome="True"
+                            UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-day-cloudy.png" />
                     </muxc:NavigationViewItem.Icon>
                 </muxc:NavigationViewItem>
                 <muxc:NavigationViewItem

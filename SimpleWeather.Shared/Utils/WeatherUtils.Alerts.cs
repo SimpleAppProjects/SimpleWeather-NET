@@ -11,71 +11,71 @@ namespace SimpleWeather.Utils
     {
         public static string GetAssetFromAlertType(WeatherData.WeatherAlertType type, bool isAbsoluteUri = true)
         {
-            string baseuri = "ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/";
+            string baseuri = "ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/";
             string fileIcon = string.Empty;
 
             switch (type)
             {
                 case WeatherData.WeatherAlertType.DenseFog:
-                    fileIcon = "fog.png";
+                    fileIcon = "wi-fog.png";
                     break;
                 case WeatherData.WeatherAlertType.Fire:
-                    fileIcon = "fire.png";
+                    fileIcon = "wi-fire.png";
                     break;
                 case WeatherData.WeatherAlertType.FloodWarning:
                 case WeatherData.WeatherAlertType.FloodWatch:
-                    fileIcon = "flood.png";
+                    fileIcon = "wi-flood.png";
                     break;
                 case WeatherData.WeatherAlertType.Heat:
-                    fileIcon = "hot.png";
+                    fileIcon = "wi-hot.png";
                     break;
                 case WeatherData.WeatherAlertType.HighWind:
-                    fileIcon = "strong_wind.png";
+                    fileIcon = "wi-strong-wind.png";
                     break;
                 case WeatherData.WeatherAlertType.HurricaneLocalStatement:
                 case WeatherData.WeatherAlertType.HurricaneWindWarning:
-                    fileIcon = "hurricane.png";
+                    fileIcon = "wi-hurricane.png";
                     break;
                 case WeatherData.WeatherAlertType.SevereThunderstormWarning:
                 case WeatherData.WeatherAlertType.SevereThunderstormWatch:
-                    fileIcon = "thunderstorm.png";
+                    fileIcon = "wi-thunderstorm.png";
                     break;
                 case WeatherData.WeatherAlertType.TornadoWarning:
                 case WeatherData.WeatherAlertType.TornadoWatch:
-                    fileIcon = "tornado.png";
+                    fileIcon = "wi-tornado.png";
                     break;
                 case WeatherData.WeatherAlertType.Volcano:
-                    fileIcon = "volcano.png";
+                    fileIcon = "wi-volcano.png";
                     break;
                 case WeatherData.WeatherAlertType.WinterWeather:
-                    fileIcon = "snowflake_cold.png";
+                    fileIcon = "wi-snowflake-cold.png";
                     break;
                 case WeatherData.WeatherAlertType.DenseSmoke:
-                    fileIcon = "smoke.png";
+                    fileIcon = "wi-smoke.png";
                     break;
                 case WeatherData.WeatherAlertType.DustAdvisory:
-                    fileIcon = "dust.png";
+                    fileIcon = "wi-dust.png";
                     break;
                 case WeatherData.WeatherAlertType.EarthquakeWarning:
-                    fileIcon = "earthquake.png";
+                    fileIcon = "wi-earthquake.png";
                     break;
                 case WeatherData.WeatherAlertType.GaleWarning:
-                    fileIcon = "gale_warning.png";
+                    fileIcon = "wi-gale-warning.png";
                     break;
                 case WeatherData.WeatherAlertType.SmallCraft:
-                    fileIcon = "small_craft_advisory.png";
+                    fileIcon = "wi-small-craft-advisory.png";
                     break;
                 case WeatherData.WeatherAlertType.StormWarning:
-                    fileIcon = "storm_warning.png";
+                    fileIcon = "wi-storm-warning.png";
                     break;
                 case WeatherData.WeatherAlertType.TsunamiWarning:
                 case WeatherData.WeatherAlertType.TsunamiWatch:
-                    fileIcon = "tsunami.png";
+                    fileIcon = "wi-tsunami.png";
                     break;
                 case WeatherData.WeatherAlertType.SevereWeather:
                 case WeatherData.WeatherAlertType.SpecialWeatherAlert:
                 default:
-                    fileIcon = "ic_error_white.png";
+                    fileIcon = "ic_error.png";
                     break;
             }
 

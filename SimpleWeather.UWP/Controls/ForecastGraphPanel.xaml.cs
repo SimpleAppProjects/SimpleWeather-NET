@@ -168,6 +168,12 @@ namespace SimpleWeather.UWP.Controls
             UpdateView(true);
         }
 
+        public void ClearIconCache()
+        {
+            LineGraphView.ClearIconCache();
+            BarChartView.ClearIconCache();
+        }
+
         private void ShowBarChart(bool show)
         {
             LineGraphView.Visibility = !show ? Visibility.Visible : Visibility.Collapsed;

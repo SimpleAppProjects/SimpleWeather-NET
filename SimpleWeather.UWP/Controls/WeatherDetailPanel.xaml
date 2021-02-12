@@ -17,13 +17,17 @@
                 <ResourceDictionary x:Key="Dark">
                     <SolidColorBrush x:Key="ExtraTextForegroundBrush" Color="{ThemeResource SimpleBlueLight}" />
                     <Color x:Key="ForegroundColor">White</Color>
+                    <x:Boolean x:Key="IsLightValue">false</x:Boolean>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
                     <SolidColorBrush x:Key="ExtraTextForegroundBrush" Color="{ThemeResource SystemAccentColor}" />
                     <Color x:Key="ForegroundColor">Black</Color>
+                    <x:Boolean x:Key="IsLightValue">true</x:Boolean>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
-            <helpers:IconForegroundConverter x:Key="iconForegroundConverter" />
+            <helpers:ObjectContainer x:Key="IsLight" Value="{ThemeResource IsLightValue}" />
+            <helpers:IconForegroundConverter x:Key="iconForegroundConverter" ConverterParameter="{ThemeResource ForegroundColor}" />
+            <helpers:IconThemeConverter x:Key="iconThemeConverter" ConverterParameter="{ThemeResource IsLight}" />
             <!--  Default style for Windows.UI.Xaml.Controls.Primitives.ToggleButton  -->
             <Style x:Key="DetailPanelToggleButtonStyle" TargetType="ToggleButton">
                 <Setter Property="Background" Value="White" />
@@ -253,11 +257,11 @@
                     Height="50"
                     Margin="8,0"
                     VerticalAlignment="Center">
-                    <BitmapIcon x:Name="WeatherIcon" UriSource="{x:Bind wim.GetWeatherIconURI(ViewModel.Icon), Mode=OneWay}">
-                        <BitmapIcon.Foreground>
-                            <SolidColorBrush Color="{Binding ElementName=WeatherIcon, Path=UriSource, Mode=OneWay, Converter={StaticResource iconForegroundConverter}, ConverterParameter={ThemeResource ForegroundColor}}" />
-                        </BitmapIcon.Foreground>
-                    </BitmapIcon>
+                    <BitmapIcon
+                        x:Name="WeatherIcon"
+                        Foreground="{Binding ElementName=WeatherIcon, Path=UriSource, Mode=OneWay, Converter={StaticResource iconForegroundConverter}}"
+                        ShowAsMonochrome="False"
+                        UriSource="{x:Bind ViewModel.Icon, Mode=OneWay, Converter={StaticResource iconThemeConverter}}" />
                 </Viewbox>
                 <StackPanel
                     Grid.Column="1"
@@ -300,7 +304,8 @@
                                             Width="25"
                                             Height="25"
                                             Foreground="White"
-                                            UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/wi-raindrop.png" />
+                                            ShowAsMonochrome="True"
+                                            UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-raindrop.png" />
                                         <TextBlock Grid.Column="1" Text="{Binding}" />
                                     </Grid>
                                 </DataTemplate>
@@ -322,7 +327,10 @@
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <BitmapIcon Grid.Column="0" UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/wi-cloudy.png" />
+                                        <BitmapIcon
+                                            Grid.Column="0"
+                                            ShowAsMonochrome="True"
+                                            UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-cloudy.png" />
                                         <TextBlock Grid.Column="1" Text="{Binding}" />
                                     </Grid>
                                 </DataTemplate>
@@ -344,7 +352,10 @@
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <BitmapIcon Grid.Column="0" UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/wi-strong-wind.png" />
+                                        <BitmapIcon
+                                            Grid.Column="0"
+                                            ShowAsMonochrome="True"
+                                            UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-strong-wind.png" />
                                         <TextBlock Grid.Column="1" Text="{Binding}" />
                                     </Grid>
                                 </DataTemplate>

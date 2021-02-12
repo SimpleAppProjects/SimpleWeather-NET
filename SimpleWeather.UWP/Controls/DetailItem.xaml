@@ -17,13 +17,17 @@
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
                     <StaticResource x:Key="IconPaintColor" ResourceKey="SimpleBlueLight" />
+                    <x:Boolean x:Key="IsLightValue">false</x:Boolean>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
                     <StaticResource x:Key="IconPaintColor" ResourceKey="SimpleBlueDark" />
+                    <x:Boolean x:Key="IsLightValue">true</x:Boolean>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
+            <helpers:ObjectContainer x:Key="IsLight" Value="{ThemeResource IsLightValue}" />
             <SolidColorBrush x:Name="IconPaintColorBrush" Color="{ThemeResource IconPaintColor}" />
-            <helpers:IconForegroundConverter x:Key="iconForegroundConverter" />
+            <helpers:IconForegroundConverter x:Key="iconForegroundConverter" ConverterParameter="{ThemeResource IconPaintColor}" />
+            <helpers:IconThemeConverter x:Key="iconThemeConverter" ConverterParameter="{ThemeResource IsLight}" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -56,11 +60,10 @@
                 <BitmapIcon
                     x:Name="DetailIcon"
                     Width="50"
+                    Foreground="{ThemeResource IconPaintColorBrush}"
                     RenderTransformOrigin="0.5,0.5"
-                    UriSource="{x:Bind wim.GetWeatherIconURI(Details.Icon), Mode=OneWay}">
-                    <BitmapIcon.Foreground>
-                        <SolidColorBrush Color="{Binding ElementName=DetailIcon, Path=UriSource, Mode=OneWay, Converter={StaticResource iconForegroundConverter}, ConverterParameter={ThemeResource IconPaintColor}}" />
-                    </BitmapIcon.Foreground>
+                    ShowAsMonochrome="True"
+                    UriSource="{x:Bind Details.Icon, Converter={StaticResource iconThemeConverter}, Mode=OneWay}">
                     <BitmapIcon.RenderTransform>
                         <RotateTransform Angle="{x:Bind Details.IconRotation, Mode=OneWay}" />
                     </BitmapIcon.RenderTransform>

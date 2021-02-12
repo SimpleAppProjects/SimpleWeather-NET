@@ -29,7 +29,8 @@
                     <Color x:Key="DropShadowColorBrush">Gray</Color>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
-            <helpers:IconForegroundConverter x:Key="iconForegroundConverter" />
+            <helpers:IconForegroundConverter x:Key="iconForegroundConverter" ConverterParameter="#FFFFFF" />
+            <helpers:IconThemeConverter x:Key="iconThemeConverter" ConverterParameter="false" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -158,7 +159,8 @@
                 <BitmapIcon
                     Grid.Column="1"
                     Width="20"
-                    UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/wi-direction-up.png" />
+                    ShowAsMonochrome="True"
+                    UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-direction-up.png" />
             </Grid>
             <Grid HorizontalAlignment="Right" Visibility="{x:Bind ViewModel.LoTemp, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
                 <Grid.ColumnDefinitions>
@@ -181,7 +183,8 @@
                 <BitmapIcon
                     Grid.Column="1"
                     Width="20"
-                    UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/wi-direction-down.png" />
+                    ShowAsMonochrome="True"
+                    UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-direction-down.png" />
             </Grid>
         </StackPanel>
         <StackPanel
@@ -196,11 +199,11 @@
                 VerticalAlignment="Center"
                 Orientation="Horizontal"
                 Visibility="{x:Bind ViewModel.PoP, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
-                <BitmapIcon Width="25" UriSource="{x:Bind wim.GetWeatherIconURI(ViewModel.PoPIcon), Mode=OneWay}">
-                    <BitmapIcon.Foreground>
-                        <SolidColorBrush Color="{x:Bind ViewModel.PoP, Mode=OneWay, Converter={StaticResource iconForegroundConverter}, ConverterParameter='#FFF'}" />
-                    </BitmapIcon.Foreground>
-                </BitmapIcon>
+                <BitmapIcon
+                    Width="25"
+                    Foreground="{x:Bind ViewModel.PoP, Mode=OneWay, Converter={StaticResource iconForegroundConverter}}"
+                    ShowAsMonochrome="False"
+                    UriSource="{x:Bind ViewModel.PoPIcon, Mode=OneWay, Converter={StaticResource iconThemeConverter}}" />
                 <toolkitControls:DropShadowPanel
                     BlurRadius="15.0"
                     ShadowOpacity="{ThemeResource DropShadowOpacity}"
@@ -222,11 +225,10 @@
                 Visibility="{x:Bind ViewModel.WindSpeed, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
                 <BitmapIcon
                     Width="25"
+                    Foreground="{x:Bind ViewModel.WindDirection, Mode=OneWay, Converter={StaticResource iconForegroundConverter}}"
                     RenderTransformOrigin="0.5,0.5"
-                    UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/wi-wind-direction.png">
-                    <BitmapIcon.Foreground>
-                        <SolidColorBrush Color="{x:Bind ViewModel.WindDirection, Mode=OneWay, Converter={StaticResource iconForegroundConverter}, ConverterParameter='#FFF'}" />
-                    </BitmapIcon.Foreground>
+                    ShowAsMonochrome="False"
+                    UriSource="{x:Bind ViewModel.WindIcon, Mode=OneWay, Converter={StaticResource iconThemeConverter}}">
                     <BitmapIcon.RenderTransform>
                         <RotateTransform Angle="{x:Bind ViewModel.WindDirection, Mode=OneWay, FallbackValue='90'}" />
                     </BitmapIcon.RenderTransform>

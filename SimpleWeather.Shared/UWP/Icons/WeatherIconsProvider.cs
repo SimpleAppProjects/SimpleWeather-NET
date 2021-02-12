@@ -14,9 +14,9 @@ namespace SimpleWeather.Icons
             return new Uri(GetWeatherIconURI(icon, true));
         }
 
-        public override String GetWeatherIconURI(string icon, bool isAbsoluteUri)
+        public override String GetWeatherIconURI(string icon, bool isAbsoluteUri, bool isLight = false)
         {
-            string baseuri = "ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/";
+            string baseuri = WeatherIconsManager.GetBaseUri(isLight);
             string fileIcon = string.Empty;
 
             switch (icon)

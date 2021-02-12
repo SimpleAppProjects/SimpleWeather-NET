@@ -17,13 +17,17 @@
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
                     <Color x:Key="BeaufortPaintColor">DodgerBlue</Color>
+                    <x:Boolean x:Key="IsLightValue">false</x:Boolean>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
                     <Color x:Key="BeaufortPaintColor">Purple</Color>
+                    <x:Boolean x:Key="IsLightValue">true</x:Boolean>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
+            <helpers:ObjectContainer x:Name="IsLight" Value="{ThemeResource IsLightValue}" />
             <SolidColorBrush x:Name="BeaufortPaintColorBrush" Color="{ThemeResource BeaufortPaintColor}" />
-            <helpers:IconForegroundConverter x:Key="iconForegroundConverter" />
+            <helpers:IconForegroundConverter x:Key="iconForegroundConverter" ConverterParameter="{ThemeResource BeaufortPaintColor}" />
+            <helpers:IconThemeConverter x:Key="iconThemeConverter" ConverterParameter="{ThemeResource IsLight}" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -38,14 +42,12 @@
                     Width="55"
                     Margin="20,10"
                     VerticalAlignment="Center"
+                    Foreground="{ThemeResource BeaufortPaintColorBrush}"
                     RelativePanel.Above="BeaufortProgressBar"
                     RelativePanel.AlignLeftWithPanel="True"
                     RelativePanel.AlignTopWithPanel="True"
-                    UriSource="{x:Bind wim.GetWeatherIconURI(ViewModel.Beaufort.Icon), Mode=OneWay}">
-                    <BitmapIcon.Foreground>
-                        <SolidColorBrush Color="{Binding ElementName=BeaufortIcon, Path=UriSource, Mode=OneWay, Converter={StaticResource iconForegroundConverter}, ConverterParameter={ThemeResource BeaufortPaintColor}}" />
-                    </BitmapIcon.Foreground>
-                </BitmapIcon>
+                    ShowAsMonochrome="True"
+                    UriSource="{x:Bind ViewModel.Beaufort.Icon, Converter={StaticResource iconThemeConverter}, Mode=OneWay}" />
                 <TextBlock
                     x:Name="BeaufortDescription"
                     Padding="5"

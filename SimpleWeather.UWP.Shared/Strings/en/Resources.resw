@@ -566,4 +566,7 @@
   <data name="FeatureOption_TileBackground.Content" xml:space="preserve">
     <value>Tile Background Image</value>
   </data>
+  <data name="Pref_TitleIcons.Content" xml:space="preserve">
+    <value>Icons</value>
+  </data>
 </root>

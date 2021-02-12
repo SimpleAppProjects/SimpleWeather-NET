@@ -277,4 +277,4 @@ API_KEY.txt
 /TranslationImport
 /ImportTranslations.bat
 listingData-*.csv
-/SimpleWeather.UWP.Extras
+/SimpleWeather.Shared.Extras

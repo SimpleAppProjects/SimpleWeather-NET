@@ -287,7 +287,7 @@
                     Margin="2,0,0,0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
-                    Source="{x:Bind AlertIconSrc, TargetNullValue='/Assets/WeatherIcons/png/ic_error_white.png', Mode=OneWay}" />
+                    Source="{x:Bind AlertIconSrc, TargetNullValue='ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/ic_error_white.png', Mode=OneWay}" />
                 <TextBlock
                     x:Name="Title"
                     Grid.Column="1"

@@ -27,6 +27,7 @@ namespace SimpleWeather.Controls
         private string popIcon;
         private int windDir;
         private string windSpeed;
+        private string windIcon;
         private bool editMode;
         private ImageDataViewModel imageData;
         private ElementTheme backgroundTheme = ElementTheme.Dark;
@@ -59,6 +60,7 @@ namespace SimpleWeather.Controls
         public string WeatherIcon { get => weatherIcon; set { if (!Equals(weatherIcon, value)) { weatherIcon = value; OnPropertyChanged(nameof(WeatherIcon)); } } }
         public string WindSpeed { get => windSpeed; set { if (!Equals(windSpeed, value)) { windSpeed = value; OnPropertyChanged(nameof(WindSpeed)); } } }
         public int WindDirection { get => windDir; set { if (!Equals(windDir, value)) { windDir = value; OnPropertyChanged(nameof(WindDirection)); } } }
+        public string WindIcon { get => windIcon; set { if (!Equals(windIcon, value)) { windIcon = value; OnPropertyChanged(nameof(WindIcon)); } } }
         public bool EditMode { get => editMode; set { if (!Equals(editMode, value)) { editMode = value; OnPropertyChanged(nameof(EditMode)); } } }
         public ImageDataViewModel ImageData { get => imageData; set { if (!Equals(imageData, value)) { imageData = value; OnPropertyChanged(nameof(ImageData)); } } }
         public ElementTheme BackgroundTheme { get => backgroundTheme; set { if (!Equals(backgroundTheme, value)) { backgroundTheme = value; OnPropertyChanged(nameof(BackgroundTheme)); } } }
@@ -122,6 +124,8 @@ namespace SimpleWeather.Controls
                     {
                         PoP = null;
                     }
+
+                    WindIcon = WeatherIcons.WIND_DIRECTION;
 
                     WeatherIcon = weather.condition.icon;
                     WeatherSource = weather.source;

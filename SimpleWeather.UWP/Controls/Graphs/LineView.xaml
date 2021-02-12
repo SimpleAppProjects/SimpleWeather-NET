@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:SimpleWeather.UWP.Helpers"
     xmlns:local="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:win2d="using:Microsoft.Graphics.Canvas.UI.Xaml"
@@ -18,14 +19,17 @@
                     <Color x:Key="LineViewBottomTextColor">White</Color>
                     <Color x:Key="LineViewLineColor">#80808080</Color>
                     <Color x:Key="LineViewSmallCirColor">#80808080</Color>
+                    <x:Boolean x:Key="IsLightValue">false</x:Boolean>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
                     <Color x:Key="LineViewBackgroundLineColor">#80FFFFFF</Color>
                     <Color x:Key="LineViewBottomTextColor">Black</Color>
                     <Color x:Key="LineViewLineColor">#80808080</Color>
                     <Color x:Key="LineViewSmallCirColor">#80808080</Color>
+                    <x:Boolean x:Key="IsLightValue">true</x:Boolean>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
+            <helpers:ObjectContainer x:Name="IsLight" Value="{ThemeResource IsLightValue}" />
             <SolidColorBrush x:Name="BackgroundLineColorBrush" Color="{ThemeResource LineViewBackgroundLineColor}" />
             <SolidColorBrush x:Name="BottomTextColorBrush" Color="{ThemeResource LineViewBottomTextColor}" />
             <SolidColorBrush x:Name="LineColorBrush" Color="{ThemeResource LineViewLineColor}" />

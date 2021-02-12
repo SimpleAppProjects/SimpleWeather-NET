@@ -220,7 +220,9 @@
       <DependentUpon>BeaufortControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\BindingExtensions.cs" />
+    <Compile Include="Helpers\IconThemeConverter.cs" />
     <Compile Include="Helpers\IconForegroundConverter.cs" />
+    <Compile Include="Helpers\ObjectContainer.cs" />
     <Compile Include="Helpers\TempToColorTempConverter.cs" />
     <Compile Include="Helpers\DeviceTypeHelper.cs" />
     <Compile Include="Helpers\LocationTypeConverter.cs" />
@@ -236,6 +238,12 @@
     <Compile Include="Main\Args.cs" />
     <Compile Include="Main\WeatherRadarPage.xaml.cs">
       <DependentUpon>WeatherRadarPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Preferences\IconRadioPreference.xaml.cs">
+      <DependentUpon>IconRadioPreference.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Preferences\Settings_Icons.xaml.cs">
+      <DependentUpon>Settings_Icons.xaml</DependentUpon>
     </Compile>
     <Compile Include="Preferences\Settings_Units.xaml.cs">
       <DependentUpon>Settings_Units.xaml</DependentUpon>
@@ -425,6 +433,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Preferences\IconRadioPreference.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Preferences\Settings_About.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -432,6 +444,10 @@
     <Page Include="Preferences\Settings_Credits.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Preferences\Settings_Icons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Preferences\Settings_Units.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -573,9 +589,7 @@
       <Name>Timber</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Assets\Icons\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="..\SimpleWeather.UWP.Shared\SimpleWeather.UWP.Shared.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

@@ -5,34 +5,46 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media;
 
 namespace SimpleWeather.UWP.Helpers
 {
-    public class IconForegroundConverter : IValueConverter
+    public class IconForegroundConverter : DependencyObject, IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, string language)
+        public object ConverterParameter
+        {
+            get { return (object)GetValue(ConverterParameterProperty); }
+            set { SetValue(ConverterParameterProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ConverterParameter.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ConverterParameterProperty =
+            DependencyProperty.Register("ConverterParameter", typeof(object), typeof(IconForegroundConverter), new PropertyMetadata(null));
+
+        public object Convert(object value, Type targetType, object p_, string l_)
         {
             var wim = WeatherIconsManager.GetInstance();
 
             if (wim.IsFontIcon)
             {
-                if (parameter is Color paramColor)
+                if (ConverterParameter is Color paramColor)
                 {
-                    return paramColor;
+                    return new SolidColorBrush(paramColor);
                 }
                 else
                 {
-                    return Colors.White;
+                    return new SolidColorBrush(Colors.White);
                 }
             }
             else
             {
-                return Colors.Transparent;
+                return null;
             }
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        public object ConvertBack(object value, Type targetType, object p_, string l_)
         {
             throw new NotImplementedException();
         }

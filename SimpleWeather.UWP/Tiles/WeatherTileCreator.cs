@@ -123,7 +123,7 @@ namespace SimpleWeather.UWP.Tiles
                             new AdaptiveText()
                             {
                                 Text = forecast.HiTemp,
-                                HintStyle = AdaptiveTextStyle.Caption,
+                                //HintStyle = AdaptiveTextStyle.Caption,
                                 HintAlign = AdaptiveTextAlign.Center
                             }
                         }
@@ -185,7 +185,7 @@ namespace SimpleWeather.UWP.Tiles
                             new AdaptiveText()
                             {
                                 Text = forecast.HiTemp,
-                                HintStyle = AdaptiveTextStyle.Caption,
+                                //HintStyle = AdaptiveTextStyle.Caption,
                                 HintAlign = AdaptiveTextAlign.Center
                             },
                             new AdaptiveText()
@@ -236,12 +236,12 @@ namespace SimpleWeather.UWP.Tiles
                                 new AdaptiveText()
                                 {
                                     Text = weather.CurCondition?.Ellipsize(30),
-                                    HintStyle = AdaptiveTextStyle.Caption
+                                    //HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
                                 {
                                     Text = string.Format("{0}: {1}", App.ResLoader.GetString("Temp_Label"), weather.CurTemp.RemoveNonDigitChars() + "°"),
-                                    HintStyle = AdaptiveTextStyle.Caption
+                                    //HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
                                 {
@@ -386,7 +386,7 @@ namespace SimpleWeather.UWP.Tiles
                             new AdaptiveText()
                             {
                                 Text = hrforecast.HiTemp,
-                                HintStyle = AdaptiveTextStyle.Caption,
+                                //HintStyle = AdaptiveTextStyle.Caption,
                                 HintAlign = AdaptiveTextAlign.Center
                             }
                         }
@@ -478,12 +478,12 @@ namespace SimpleWeather.UWP.Tiles
                                 new AdaptiveText()
                                 {
                                     Text = weather.CurCondition?.Ellipsize(30),
-                                    HintStyle = AdaptiveTextStyle.Caption
+                                    //HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
                                 {
                                     Text = string.Format("{0}: {1}", App.ResLoader.GetString("Temp_Label"), weather.CurTemp.RemoveNonDigitChars() + "°"),
-                                    HintStyle = AdaptiveTextStyle.Caption
+                                    //HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
                                 {
@@ -657,12 +657,12 @@ namespace SimpleWeather.UWP.Tiles
                         new AdaptiveText()
                         {
                             Text = weather.CurCondition?.Ellipsize(30),
-                            HintStyle = AdaptiveTextStyle.Caption
+                            //HintStyle = AdaptiveTextStyle.Caption
                         },
                         new AdaptiveText()
                         {
                             Text = string.Format("{0}: {1}", App.ResLoader.GetString("Temp_Label"), weather.CurTemp.RemoveNonDigitChars() + "°"),
-                            HintStyle = AdaptiveTextStyle.Caption
+                            //HintStyle = AdaptiveTextStyle.Caption
                         },
                         new AdaptiveText()
                         {
@@ -708,12 +708,12 @@ namespace SimpleWeather.UWP.Tiles
                                 new AdaptiveText()
                                 {
                                     Text = weather.CurCondition?.Ellipsize(30),
-                                    HintStyle = AdaptiveTextStyle.Caption
+                                    //HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
                                 {
                                     Text = string.Format("{0}: {1}", App.ResLoader.GetString("Temp_Label"), weather.CurTemp.RemoveNonDigitChars() + "°"),
-                                    HintStyle = AdaptiveTextStyle.Caption
+                                    //HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
                                 {
@@ -804,7 +804,7 @@ namespace SimpleWeather.UWP.Tiles
                 {
                     Visual = new TileVisual()
                     {
-                        BaseUri = new Uri("SimpleWeather.Shared/Assets/WeatherIcons/png/", UriKind.Relative),
+                        BaseUri = new Uri(WeatherIconsManager.GetBaseUri(), UriKind.Absolute),
                         DisplayName = weather.Location?.Ellipsize(40),
                         TileSmall = new TileBinding()
                         {
@@ -838,7 +838,7 @@ namespace SimpleWeather.UWP.Tiles
                 {
                     Visual = new TileVisual()
                     {
-                        BaseUri = new Uri("SimpleWeather.Shared/Assets/WeatherIcons/png/", UriKind.Relative),
+                        BaseUri = new Uri(WeatherIconsManager.GetBaseUri(), UriKind.Absolute),
                         DisplayName = weather.Location?.Ellipsize(40),
                         TileSmall = new TileBinding()
                         {
@@ -873,7 +873,7 @@ namespace SimpleWeather.UWP.Tiles
             {
                 Visual = new TileVisual()
                 {
-                    BaseUri = new Uri("SimpleWeather.Shared/Assets/WeatherIcons/png/", UriKind.Relative),
+                    BaseUri = new Uri(WeatherIconsManager.GetBaseUri(), UriKind.Absolute),
                     DisplayName = weather.Location?.Ellipsize(40),
                     TileSmall = new TileBinding()
                     {
@@ -898,7 +898,7 @@ namespace SimpleWeather.UWP.Tiles
                         Content = GenerateCondition(weather, forecasts, ForecastTileType.Large),
                     },
                     LockDetailedStatus1 = weather.Location?.Ellipsize(40),
-                    LockDetailedStatus2 = String.Format("{0} - {1}", weather.CurTemp?.RemoveNonDigitChars() + "°", weather.CurCondition?.Ellipsize(33)),
+                    LockDetailedStatus2 = String.Format("{0} - {1}", (weather.CurTemp?.RemoveNonDigitChars() ?? WeatherIcons.PLACEHOLDER) + "°", weather.CurCondition?.Ellipsize(33)),
                     LockDetailedStatus3 = String.Format("{0} | {1}", weather.HiTemp ?? WeatherIcons.PLACEHOLDER, weather.LoTemp ?? WeatherIcons.PLACEHOLDER)
                 }
             };

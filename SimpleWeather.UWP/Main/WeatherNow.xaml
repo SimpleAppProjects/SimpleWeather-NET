@@ -163,8 +163,14 @@
                 FalseValue="0"
                 TrueValue="1" />
             <helpers:TempToColorTempConverter x:Key="tempToColorTempConverter" />
-            <helpers:IconForegroundConverter x:Key="iconForegroundConverter" />
+            <helpers:IconForegroundConverter x:Key="iconForegroundConverter" ConverterParameter="{ThemeResource ForegroundColor}" />
+            <helpers:IconThemeConverter x:Key="iconThemeConverter" ConverterParameter="{ThemeResource IsLight}" />
+            <helpers:IconThemeConverter
+                x:Key="weatherIconThemeConverter"
+                ConverterParameter="{ThemeResource IsLight}"
+                ForceDarkTheme="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay}" />
             <SolidColorBrush x:Key="ProgressBarBrush" Color="{ThemeResource ForegroundColor}" />
+            <helpers:ObjectContainer x:Key="IsLight" Value="{ThemeResource IsLightValue}" />
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
                     <Style
@@ -174,6 +180,7 @@
                         <Setter Property="Foreground" Value="White" />
                     </Style>
                     <Color x:Key="ForegroundColor">White</Color>
+                    <x:Boolean x:Key="IsLightValue">false</x:Boolean>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
                     <Style
@@ -181,6 +188,7 @@
                         BasedOn="{StaticResource HyperlinkButtonStyle}"
                         TargetType="HyperlinkButton" />
                     <Color x:Key="ForegroundColor">Black</Color>
+                    <x:Boolean x:Key="IsLightValue">true</x:Boolean>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
         </ResourceDictionary>
@@ -215,12 +223,15 @@
                     IsCacheEnabled="True"
                     Source="{x:Bind WeatherView.ImageData.ImageUri, Mode=OneWay}"
                     Stretch="UniformToFill"
-                    Style="{StaticResource ImageExProgressStyle}" />
+                    Style="{StaticResource ImageExProgressStyle}"
+                    Visibility="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay, Converter={StaticResource booleanToVisibilityConverter}}" />
                 <Grid
                     x:Name="GradientOverlay"
                     Grid.Row="0"
                     Grid.RowSpan="6"
-                    Height="{Binding ElementName=BackgroundOverlay, Path=Height, Mode=OneWay}">
+                    Height="{Binding ElementName=BackgroundOverlay, Path=Height, Mode=OneWay}"
+                    x:Load="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay}"
+                    Visibility="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay, Converter={StaticResource booleanToVisibilityConverter}}">
                     <Grid.Background>
                         <LinearGradientBrush SpreadMethod="Pad" StartPoint="0.5,0" EndPoint="0.5,1">
                             <LinearGradientBrush.GradientStops>
@@ -302,11 +313,10 @@
                         VerticalAlignment="Center"
                         Orientation="Vertical"
                         RelativePanel.AlignBottomWith="CurTempPanel"
-                        RelativePanel.AlignRightWithPanel="True"
                         RelativePanel.AlignTopWith="CurTempPanel"
                         RelativePanel.AlignVerticalCenterWith="CurTempPanel"
                         RelativePanel.RightOf="CurTempPanel">
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                             <toolkitControls:DropShadowPanel
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
@@ -316,14 +326,14 @@
                                     Height="32"
                                     VerticalAlignment="Top"
                                     FontSize="24"
-                                    Text="{Binding HiTemp, Mode=OneWay, FallbackValue='75°', TargetNullValue='&#x2022;'}" />
+                                    Text="{Binding HiTemp, Mode=OneWay, FallbackValue='70°', TargetNullValue='&#x2022;'}" />
                             </toolkitControls:DropShadowPanel>
                             <BitmapIcon
                                 Width="25"
                                 Foreground="OrangeRed"
-                                UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/wi-direction-up.png" />
+                                UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-direction-up.png" />
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                             <toolkitControls:DropShadowPanel
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
@@ -334,7 +344,7 @@
                             <BitmapIcon
                                 Width="25"
                                 Foreground="DeepSkyBlue"
-                                UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/wi-direction-down.png" />
+                                UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-direction-down.png" />
                         </StackPanel>
                     </StackPanel>
                     <BitmapIcon
@@ -343,14 +353,12 @@
                         Height="96"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
+                        Foreground="{Binding ElementName=WeatherBox, Path=UriSource, Mode=OneWay, Converter={StaticResource iconForegroundConverter}}"
                         RelativePanel.AlignBottomWithPanel="True"
                         RelativePanel.AlignRightWithPanel="True"
                         RelativePanel.AlignTopWithPanel="True"
-                        UriSource="{x:Bind wim.GetWeatherIconURI(WeatherView.WeatherIcon), Mode=OneWay}">
-                        <BitmapIcon.Foreground>
-                            <SolidColorBrush Color="{Binding ElementName=WeatherBox, Path=UriSource, Mode=OneWay, Converter={StaticResource iconForegroundConverter}, ConverterParameter={ThemeResource ForegroundColor}}" />
-                        </BitmapIcon.Foreground>
-                    </BitmapIcon>
+                        ShowAsMonochrome="False"
+                        UriSource="{x:Bind WeatherView.WeatherIcon, Mode=OneWay, Converter={StaticResource weatherIconThemeConverter}}" />
                     <toolkitControls:DropShadowPanel
                         x:Name="CurConditionPanel"
                         HorizontalAlignment="Center"

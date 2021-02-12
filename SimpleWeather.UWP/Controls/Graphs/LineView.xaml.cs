@@ -31,7 +31,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
      *  Graph background (under line) based on - https://github.com/jjoe64/GraphView (LineGraphSeries)
      */
 
-    public sealed partial class LineView : UserControl, IDisposable, IGraph
+    public sealed partial class LineView : UserControl, IDisposable, IGraph, IIconCacheGraph
     {
         //
         // Summary:
@@ -503,6 +503,16 @@ namespace SimpleWeather.UWP.Controls.Graphs
             }
         }
 
+        private string GetThemeSuffix(bool isLight)
+        {
+            return isLight ? "_light" : "_dark";
+        }
+
+        public void ClearIconCache()
+        {
+            IconCache.Clear();
+        }
+
         private void Canvas_CreateResources(CanvasVirtualControl sender, CanvasCreateResourcesEventArgs args)
         {
             // Calculate icon height
@@ -513,16 +523,16 @@ namespace SimpleWeather.UWP.Controls.Graphs
             // Initialize common icons
             CanvasBitmap.LoadAsync(sender, wim.GetWeatherIconURI(WeatherIcons.RAINDROP)).AsTask().ContinueWith((t) =>
             {
-                if (t.IsCompletedSuccessfully)
+                if (t.IsCompletedSuccessfully && t.Result != null)
                 {
-                    IconCache.TryAdd(WeatherIcons.RAINDROP, t.Result);
+                    IconCache.TryAdd(WeatherIcons.RAINDROP + GetThemeSuffix(false), t.Result);
                 }
             });
             CanvasBitmap.LoadAsync(sender, wim.GetWeatherIconURI(WeatherIcons.WIND_DIRECTION)).AsTask().ContinueWith((t) =>
             {
-                if (t.IsCompletedSuccessfully)
+                if (t.IsCompletedSuccessfully && t.Result != null)
                 {
-                    IconCache.TryAdd(WeatherIcons.WIND_DIRECTION, t.Result);
+                    IconCache.TryAdd(WeatherIcons.WIND_DIRECTION + GetThemeSuffix(false), t.Result);
                 }
             });
         }
@@ -811,16 +821,28 @@ namespace SimpleWeather.UWP.Controls.Graphs
 
                         if (!RectHelper.Intersect(region, iconRect).IsEmpty)
                         {
-                            CanvasBitmap icon = IconCache.GetValueOrDefault(xData.XIcon, null);
+                            var isLightObj = this.Resources["IsLight"] as Helpers.ObjectContainer;
+                            bool isLight = false;
+
+                            if (isLightObj?.Value is Color paramColor)
+                            {
+                                isLight = paramColor == Colors.Black;
+                            }
+                            else if (isLightObj?.Value is bool)
+                            {
+                                isLight = (bool)isLightObj.Value;
+                            }
+
+                            CanvasBitmap icon = IconCache.GetValueOrDefault(xData.XIcon + GetThemeSuffix(isLight), null);
 
                             if (icon == null)
                             {
-                                var task = CanvasBitmap.LoadAsync(Canvas, wim.GetWeatherIconURI(xData.XIcon)).AsTask();
+                                var task = CanvasBitmap.LoadAsync(Canvas, new Uri(wim.GetWeatherIconURI(xData.XIcon, true, isLight))).AsTask();
                                 task.ContinueWith((t) =>
                                 {
-                                    if (t.IsCompletedSuccessfully)
+                                    if (t.IsCompletedSuccessfully && t.Result != null)
                                     {
-                                        IconCache.TryAdd(xData.XIcon, t.Result);
+                                        IconCache.TryAdd(xData.XIcon + GetThemeSuffix(isLight), t.Result);
                                         Dispatcher.RunOnUIThread(() => Canvas.Invalidate(iconRect));
                                     }
                                 });
@@ -847,7 +869,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
             drawingSession.Transform = Matrix3x2.Multiply(rotTransform, translTransform);
 
             ICanvasImage finalIcon;
-            if (!wim.IsFontIcon)
+            if (wim.IsFontIcon)
             {
                 finalIcon = new TintEffect()
                 {

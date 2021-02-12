@@ -8,6 +8,11 @@ using Windows.UI.Xaml.Controls;
 
 namespace SimpleWeather.UWP.Controls.Graphs
 {
+    public interface IIconCacheGraph
+    {
+        void ClearIconCache();
+    }
+
     public interface IGraph
     {
         int GetItemPositionFromPoint(float xCoordinate);
