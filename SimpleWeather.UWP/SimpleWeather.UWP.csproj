@@ -295,6 +295,7 @@
     </Compile>
     <Compile Include="Utf8JsonGen\Utf8JsonGenerated.cs" />
     <Compile Include="Utils\FeatureSettings.cs" />
+    <Compile Include="Utils\FeatureSettings.SettingsChangedEvent.cs" />
     <Compile Include="WeatherAlerts\WeatherAlertHandler.cs" />
     <Compile Include="BackgroundTasks\WeatherUpdateBackgroundTask.cs" />
     <Compile Include="Controls\KeyEntryDialog.xaml.cs">

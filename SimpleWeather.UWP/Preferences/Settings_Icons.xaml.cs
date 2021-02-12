@@ -110,8 +110,6 @@ namespace SimpleWeather.UWP.Preferences
             if (success)
             {
                 await WeatherUpdateBackgroundTask.RequestAppTrigger();
-                WeatherIconsManager.IconProviderChanged = true;
-
                 // Refresh page
                 this.Frame.Navigate(this.GetType());
             }

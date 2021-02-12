@@ -14,7 +14,7 @@ namespace SimpleWeather.Utils
 {
     public static partial class Settings
     {
-        public static UserThemeMode UserTheme { get { return GetUserTheme(); } set { SetUserTheme(value); } }
+        public static UserThemeMode UserTheme { get { return GetUserTheme(); } set { SetUserTheme(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_USERTHEME, NewValue = value }); } }
 
         // Shared Settings
         private static ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;

@@ -229,6 +229,7 @@
     <Compile Include="Utils\OAuthUtils.cs" />
     <Compile Include="Utils\ObservableItem.cs" />
     <Compile Include="Utils\Settings.cs" />
+    <Compile Include="Utils\Settings.SettingsChangedEvent.cs" />
     <Compile Include="Utils\SimpleObservableList.cs" />
     <Compile Include="Utils\StringExtensions.cs" />
     <Compile Include="Utils\StringUtils.cs" />

@@ -10,32 +10,33 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using static SimpleWeather.Utils.SettingsChangedEventArgs;
 
 namespace SimpleWeather.Utils
 {
     public static partial class Settings
     {
         // Settings Members
-        public static bool WeatherLoaded { get { return IsWeatherLoaded(); } set { SetWeatherLoaded(value); } }
-        public static bool OnBoardComplete { get { return IsOnBoardingComplete(); } set { SetOnBoardingComplete(value); } }
-        public static string API { get { return GetAPI(); } set { SetAPI(value); } }
-        public static string API_KEY { get { return GetAPIKEY(); } set { SetAPIKEY(value); } }
-        public static bool KeyVerified { get { return IsKeyVerified(); } set { SetKeyVerified(value); } }
-        public static bool FollowGPS { get { return UseFollowGPS(); } set { SetFollowGPS(value); } }
+        public static bool WeatherLoaded { get { return IsWeatherLoaded(); } set { SetWeatherLoaded(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_WEATHERLOADED, NewValue = value }); } }
+        public static bool OnBoardComplete { get { return IsOnBoardingComplete(); } set { SetOnBoardingComplete(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_ONBOARDINGCOMPLETE, NewValue = value }); } }
+        public static string API { get { return GetAPI(); } set { SetAPI(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_API, NewValue = value }); } }
+        public static string API_KEY { get { return GetAPIKEY(); } set { SetAPIKEY(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_APIKEY, NewValue = value }); } }
+        public static bool KeyVerified { get { return IsKeyVerified(); } set { SetKeyVerified(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_APIKEY_VERIFIED, NewValue = value }); } }
+        public static bool FollowGPS { get { return UseFollowGPS(); } set { SetFollowGPS(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_FOLLOWGPS, NewValue = value }); } }
         private static string LastGPSLocation { get { return GetLastGPSLocation(); } set { SetLastGPSLocation(value); } }
-        public static DateTime UpdateTime { get { return GetUpdateTime(); } set { SetUpdateTime(value); } }
-        public static int RefreshInterval { get { return GetRefreshInterval(); } set { SetRefreshInterval(value); } }
-        public static bool ShowAlerts { get { return UseAlerts(); } set { SetAlerts(value); } }
-        public static bool UsePersonalKey { get { return IsPersonalKey(); } set { SetPersonalKey(value); } }
+        public static DateTime UpdateTime { get { return GetUpdateTime(); } set { SetUpdateTime(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_UPDATETIME, NewValue = value }); } }
+        public static int RefreshInterval { get { return GetRefreshInterval(); } set { SetRefreshInterval(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_REFRESHINTERVAL, NewValue = value }); } }
+        public static bool ShowAlerts { get { return UseAlerts(); } set { SetAlerts(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_USEALERTS, NewValue = value }); } }
+        public static bool UsePersonalKey { get { return IsPersonalKey(); } set { SetPersonalKey(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_USEPERSONALKEY, NewValue = value }); } }
         public static int VersionCode { get { return GetVersionCode(); } set { SetVersionCode(value); } }
-        public static string IconProvider { get { return GetIconsProvider(); } set { SetIconsProvider(value); } }
+        public static string IconProvider { get { return GetIconsProvider(); } set { SetIconsProvider(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_ICONSSOURCE, NewValue = value }); } }
 
         // Units
-        public static string TemperatureUnit { get { return GetTempUnit(); } set { SetTempUnit(value); } }
-        public static string SpeedUnit { get { return GetSpeedUnit(); } set { SetSpeedUnit(value); } }
-        public static string PressureUnit { get { return GetPressureUnit(); } set { SetPressureUnit(value); } }
-        public static string DistanceUnit { get { return GetDistanceUnit(); } set { SetDistanceUnit(value); } }
-        public static string PrecipitationUnit { get { return GetPrecipitationUnit(); } set { SetPrecipitationUnit(value); } }
+        public static string TemperatureUnit { get { return GetTempUnit(); } set { SetTempUnit(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_TEMPUNIT, NewValue = value }); } }
+        public static string SpeedUnit { get { return GetSpeedUnit(); } set { SetSpeedUnit(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_SPEEDUNIT, NewValue = value }); } }
+        public static string PressureUnit { get { return GetPressureUnit(); } set { SetPressureUnit(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_PRESSUREUNIT, NewValue = value }); } }
+        public static string DistanceUnit { get { return GetDistanceUnit(); } set { SetDistanceUnit(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_DISTANCEUNIT, NewValue = value }); } }
+        public static string PrecipitationUnit { get { return GetPrecipitationUnit(); } set { SetPrecipitationUnit(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_PRECIPITATIONUNIT, NewValue = value }); } }
         public static string UnitString { get { return string.Format(CultureInfo.InvariantCulture, "{0};{1};{2};{3};{4}", TemperatureUnit, SpeedUnit, PressureUnit, DistanceUnit, PrecipitationUnit); } }
         public static void SetDefaultUnits(string unit)
         {
@@ -79,13 +80,15 @@ namespace SimpleWeather.Utils
         private const string KEY_USEPERSONALKEY = "key_usepersonalkey";
         private const string KEY_CURRENTVERSION = "key_currentversion";
         private const string KEY_ONBOARDINGCOMPLETE = "key_onboardcomplete";
-        private const string KEY_USERTHEME = "key_usertheme";
+        public const string KEY_USERTHEME = "key_usertheme";
         public const string KEY_TEMPUNIT = "key_tempunit";
         public const string KEY_SPEEDUNIT = "key_speedunit";
         public const string KEY_DISTANCEUNIT = "key_distanceunit";
         public const string KEY_PRECIPITATIONUNIT = "key_precipitationunit";
         public const string KEY_PRESSUREUNIT = "key_pressureunit";
         public const string KEY_ICONSSOURCE = "key_iconssource";
+
+        public static event SettingsChangedEventHandler OnSettingsChanged;
 
         // Weather Data
         private static LocationData lastGPSLocData;

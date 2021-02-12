@@ -370,7 +370,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
 
         public void ClearIconCache()
         {
-            IconCache.Clear();
+            IconCache?.Clear();
         }
 
         private void Canvas_CreateResources(CanvasVirtualControl sender, CanvasCreateResourcesEventArgs args)

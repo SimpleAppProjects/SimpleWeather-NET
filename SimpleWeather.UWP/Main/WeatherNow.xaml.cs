@@ -62,6 +62,9 @@ namespace SimpleWeather.UWP.Main
         private Geolocator geolocal = null;
         private Geoposition geoPos = null;
 
+        private bool UpdateBindings = false;
+        private bool ClearGraphIconCache = false;
+
         public void Dispose()
         {
             cts?.Dispose();
@@ -174,6 +177,29 @@ namespace SimpleWeather.UWP.Main
             GetPinBtn().Tapped += PinButton_Click;
 
             AnalyticsLogger.LogEvent("WeatherNow");
+
+            Utils.FeatureSettings.OnFeatureSettingsChanged += FeatureSettings_OnFeatureSettingsChanged;
+            Settings.OnSettingsChanged += Settings_OnSettingsChanged;
+        }
+
+        private void Settings_OnSettingsChanged(SettingsChangedEventArgs e)
+        {
+            if (e.Key == Settings.KEY_ICONSSOURCE)
+            {
+                // When page is loaded again from cache, clear icon cache
+                ClearGraphIconCache = true;
+                UpdateBindings = true;
+            }
+            else if (e.Key == Settings.KEY_USERTHEME)
+            {
+                UpdateBindings = true;
+            }
+        }
+
+        private void FeatureSettings_OnFeatureSettingsChanged(FeatureSettingsChangedEventArgs e)
+        {
+            // When page is loaded again from cache, update bindings
+            UpdateBindings = true;
         }
 
         private async void WeatherView_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -296,15 +322,20 @@ namespace SimpleWeather.UWP.Main
             // NOTE: ChangeView does not work here for some reason
             MainViewer?.ScrollToVerticalOffset(0);
 
-            if (UWP.Utils.FeatureSettings.WasUpdated)
-            {
-                // Force binding update for FeatureSettings
-                this.Bindings.Update();
+            args = e?.Parameter as WeatherNowArgs;
 
-                UWP.Utils.FeatureSettings.WasUpdated = false;
+            if (ClearGraphIconCache)
+            {
+                ForecastGraphPanel.ClearIconCache();
+                HourlyGraphPanel.ClearIconCache();
+                ClearGraphIconCache = false;
             }
 
-            args = e?.Parameter as WeatherNowArgs;
+            if (UpdateBindings)
+            {
+                this.Bindings.Update();
+                UpdateBindings = false;
+            }
 
             Resume();
         }

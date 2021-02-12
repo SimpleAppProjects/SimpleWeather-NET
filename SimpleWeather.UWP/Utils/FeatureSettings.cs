@@ -1,31 +1,33 @@
-﻿using System;
+﻿using SimpleWeather.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.Storage;
+using static SimpleWeather.UWP.Utils.FeatureSettingsChangedEventArgs;
 
 namespace SimpleWeather.UWP.Utils
 {
     public static class FeatureSettings
     {
-        public static bool BackgroundImage { get { return GetBackgroundImageEnabled(); } set { SetBackgroundImageEnabled(value); } }
-        public static bool Forecast { get { return GetForecastEnabled(); } set { SetForecastEnabled(value); } }
-        public static bool HourlyForecast { get { return GetHourlyForecastEnabled(); } set { SetHourlyForecastEnabled(value); } }
-        public static bool WeatherDetails { get { return GetWeatherDetailsEnabled(); } set { SetWeatherDetailsEnabled(value); } }
-        public static bool UV { get { return GetUVEnabled(); } set { SetUVEnabled(value); } }
-        public static bool Beaufort { get { return GetBeaufortEnabled(); } set { SetBeaufortEnabled(value); } }
-        public static bool AQIndex { get { return GetAQIEnabled(); } set { SetAQIEnabled(value); } }
-        public static bool MoonPhase { get { return GetMoonPhaseEnabled(); } set { SetMoonPhaseEnabled(value); } }
-        public static bool SunPhase { get { return GetSunPhaseEnabled(); } set { SetSunPhaseEnabled(value); } }
-        public static bool WeatherRadar { get { return GetRadarEnabled(); } set { SetRadarEnabled(value); } }
+        public static bool BackgroundImage { get { return GetBackgroundImageEnabled(); } set { SetBackgroundImageEnabled(value); OnFeatureSettingsChanged?.Invoke(new FeatureSettingsChangedEventArgs { Key = KEY_BGIMAGE, NewValue = value }); } }
+        public static bool Forecast { get { return GetForecastEnabled(); } set { SetForecastEnabled(value); OnFeatureSettingsChanged?.Invoke(new FeatureSettingsChangedEventArgs { Key = KEY_FORECAST, NewValue = value }); } }
+        public static bool HourlyForecast { get { return GetHourlyForecastEnabled(); } set { SetHourlyForecastEnabled(value); OnFeatureSettingsChanged?.Invoke(new FeatureSettingsChangedEventArgs { Key = KEY_HRFORECAST, NewValue = value }); } }
+        public static bool WeatherDetails { get { return GetWeatherDetailsEnabled(); } set { SetWeatherDetailsEnabled(value); OnFeatureSettingsChanged?.Invoke(new FeatureSettingsChangedEventArgs { Key = KEY_WEATHERDETAILS, NewValue = value }); } }
+        public static bool UV { get { return GetUVEnabled(); } set { SetUVEnabled(value); OnFeatureSettingsChanged?.Invoke(new FeatureSettingsChangedEventArgs { Key = KEY_UVINDEX, NewValue = value }); } }
+        public static bool Beaufort { get { return GetBeaufortEnabled(); } set { SetBeaufortEnabled(value); OnFeatureSettingsChanged?.Invoke(new FeatureSettingsChangedEventArgs { Key = KEY_BEAUFORT, NewValue = value }); } }
+        public static bool AQIndex { get { return GetAQIEnabled(); } set { SetAQIEnabled(value); OnFeatureSettingsChanged?.Invoke(new FeatureSettingsChangedEventArgs { Key = KEY_AQINDEX, NewValue = value }); } }
+        public static bool MoonPhase { get { return GetMoonPhaseEnabled(); } set { SetMoonPhaseEnabled(value); OnFeatureSettingsChanged?.Invoke(new FeatureSettingsChangedEventArgs { Key = KEY_MOONPHASE, NewValue = value }); } }
+        public static bool SunPhase { get { return GetSunPhaseEnabled(); } set { SetSunPhaseEnabled(value); OnFeatureSettingsChanged?.Invoke(new FeatureSettingsChangedEventArgs { Key = KEY_SUNPHASE, NewValue = value }); } }
+        public static bool WeatherRadar { get { return GetRadarEnabled(); } set { SetRadarEnabled(value); OnFeatureSettingsChanged?.Invoke(new FeatureSettingsChangedEventArgs { Key = KEY_RADAR, NewValue = value }); } }
 
         public static bool DetailsEnabled => WeatherDetails || ExtraDetailsEnabled;
         public static bool ExtraDetailsEnabled => UV || Beaufort || AQIndex || MoonPhase;
 
-        public static bool LocationPanelBackgroundImage { get { return GetPanelBackgroundImageEnabled(); } set { SetPanelBackgroundImageEnabled(value); } }
-        public static bool TileBackgroundImage { get { return GetTileBackgroundImageEnabled(); } set { SetTileBackgroundImageEnabled(value); } }
+        public static bool LocationPanelBackgroundImage { get { return GetPanelBackgroundImageEnabled(); } set { SetPanelBackgroundImageEnabled(value); OnFeatureSettingsChanged?.Invoke(new FeatureSettingsChangedEventArgs { Key = KEY_LOCPANELBGIMAGE, NewValue = value }); } }
+        public static bool TileBackgroundImage { get { return GetTileBackgroundImageEnabled(); } set { SetTileBackgroundImageEnabled(value); OnFeatureSettingsChanged?.Invoke(new FeatureSettingsChangedEventArgs { Key = KEY_TILEBGIMAGE, NewValue = value }); } }
 
         #region Settings Keys
 
@@ -41,28 +43,16 @@ namespace SimpleWeather.UWP.Utils
         private const string KEY_RADAR = "key_radar";
         private const string KEY_LOCPANELBGIMAGE = "key_locpanelbgimage";
         private const string KEY_TILEBGIMAGE = "key_tilebgimage";
-        public const string KEY_UPDATED = "key_updated";
 
         #endregion Settings Keys
+
+        public static event FeatureSettingsChangedEventHandler OnFeatureSettingsChanged;
 
         // Shared Settings
         private static readonly ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
         private static readonly ApplicationDataContainer featureSettings =
             localSettings.CreateContainer("features", ApplicationDataCreateDisposition.Always);
-
-        public static bool WasUpdated
-        {
-            get
-            {
-                return CoreApplication.Properties.ContainsKey(KEY_UPDATED) && CoreApplication.Properties[KEY_UPDATED] is bool updated && updated;
-            }
-
-            set
-            {
-                CoreApplication.Properties[KEY_UPDATED] = value;
-            }
-        }
 
         private static bool GetBackgroundImageEnabled()
         {
@@ -77,7 +67,6 @@ namespace SimpleWeather.UWP.Utils
         private static void SetBackgroundImageEnabled(bool value)
         {
             featureSettings.Values[KEY_BGIMAGE] = value;
-            WasUpdated = true;
         }
 
         private static bool GetForecastEnabled()
@@ -93,7 +82,6 @@ namespace SimpleWeather.UWP.Utils
         private static void SetForecastEnabled(bool value)
         {
             featureSettings.Values[KEY_FORECAST] = value;
-            WasUpdated = true;
         }
 
         private static bool GetHourlyForecastEnabled()
@@ -109,7 +97,6 @@ namespace SimpleWeather.UWP.Utils
         private static void SetHourlyForecastEnabled(bool value)
         {
             featureSettings.Values[KEY_HRFORECAST] = value;
-            WasUpdated = true;
         }
 
         private static bool GetWeatherDetailsEnabled()
@@ -125,7 +112,6 @@ namespace SimpleWeather.UWP.Utils
         private static void SetWeatherDetailsEnabled(bool value)
         {
             featureSettings.Values[KEY_WEATHERDETAILS] = value;
-            WasUpdated = true;
         }
 
         private static bool GetUVEnabled()
@@ -141,7 +127,6 @@ namespace SimpleWeather.UWP.Utils
         private static void SetUVEnabled(bool value)
         {
             featureSettings.Values[KEY_UVINDEX] = value;
-            WasUpdated = true;
         }
 
         private static bool GetBeaufortEnabled()
@@ -157,7 +142,6 @@ namespace SimpleWeather.UWP.Utils
         private static void SetBeaufortEnabled(bool value)
         {
             featureSettings.Values[KEY_BEAUFORT] = value;
-            WasUpdated = true;
         }
 
         private static bool GetAQIEnabled()
@@ -173,7 +157,6 @@ namespace SimpleWeather.UWP.Utils
         private static void SetAQIEnabled(bool value)
         {
             featureSettings.Values[KEY_AQINDEX] = value;
-            WasUpdated = true;
         }
 
         private static bool GetMoonPhaseEnabled()
@@ -189,7 +172,6 @@ namespace SimpleWeather.UWP.Utils
         private static void SetMoonPhaseEnabled(bool value)
         {
             featureSettings.Values[KEY_MOONPHASE] = value;
-            WasUpdated = true;
         }
 
         private static bool GetSunPhaseEnabled()
@@ -205,7 +187,6 @@ namespace SimpleWeather.UWP.Utils
         private static void SetSunPhaseEnabled(bool value)
         {
             featureSettings.Values[KEY_SUNPHASE] = value;
-            WasUpdated = true;
         }
 
         private static bool GetRadarEnabled()
@@ -221,7 +202,6 @@ namespace SimpleWeather.UWP.Utils
         private static void SetRadarEnabled(bool value)
         {
             featureSettings.Values[KEY_RADAR] = value;
-            WasUpdated = true;
         }
 
         private static bool GetPanelBackgroundImageEnabled()
@@ -237,7 +217,6 @@ namespace SimpleWeather.UWP.Utils
         private static void SetPanelBackgroundImageEnabled(bool value)
         {
             featureSettings.Values[KEY_LOCPANELBGIMAGE] = value;
-            WasUpdated = true;
         }
 
         private static bool GetTileBackgroundImageEnabled()
