@@ -282,85 +282,76 @@
                         MaxLines="1"
                         Text="{x:Bind ViewModel.Condition, FallbackValue='50° / 44° - Sprinkles early. Mostly cloudy. Mild', Mode=OneWay}"
                         TextTrimming="CharacterEllipsis" />
-                    <StackPanel x:Name="Extras" Orientation="Horizontal">
-                        <TextBlock
-                            Padding="2"
+                    <StackPanel
+                        x:Name="Extras"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                        <StackPanel
+                            Padding="5,0"
                             VerticalAlignment="Center"
-                            FontSize="{x:Bind Date.FontSize, Mode=OneWay}"
-                            Foreground="{ThemeResource ExtraTextForegroundBrush}"
-                            MaxLines="1"
-                            Text="{x:Bind ViewModel.PoPChance, FallbackValue='100%', Mode=OneWay}"
-                            TextTrimming="CharacterEllipsis"
+                            Orientation="Horizontal"
                             Visibility="{x:Bind ViewModel.PoPChance, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
-                            <TextBlock.DataContext>
-                                <DataTemplate>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
-                                        <BitmapIcon
-                                            Grid.Column="0"
-                                            Width="25"
-                                            Height="25"
-                                            Foreground="White"
-                                            ShowAsMonochrome="True"
-                                            UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-raindrop.png" />
-                                        <TextBlock Grid.Column="1" Text="{Binding}" />
-                                    </Grid>
-                                </DataTemplate>
-                            </TextBlock.DataContext>
-                        </TextBlock>
-                        <TextBlock
-                            Padding="2"
+                            <BitmapIcon
+                                Width="20"
+                                Height="20"
+                                Margin="0,0,2.5,0"
+                                VerticalAlignment="Center"
+                                Foreground="{ThemeResource ExtraTextForegroundBrush}"
+                                ShowAsMonochrome="True"
+                                UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-raindrop.png" />
+                            <TextBlock
+                                Padding="2"
+                                VerticalAlignment="Center"
+                                FontSize="{x:Bind Date.FontSize, Mode=OneWay}"
+                                Foreground="{ThemeResource ExtraTextForegroundBrush}"
+                                MaxLines="1"
+                                Text="{x:Bind ViewModel.PoPChance, FallbackValue='100%', Mode=OneWay}"
+                                TextTrimming="CharacterEllipsis" />
+                        </StackPanel>
+                        <StackPanel
+                            Padding="5,0"
                             VerticalAlignment="Center"
-                            FontSize="{x:Bind Date.FontSize, Mode=OneWay}"
-                            Foreground="{ThemeResource ExtraTextForegroundBrush}"
-                            MaxLines="1"
-                            Text="{x:Bind ViewModel.Cloudiness, FallbackValue='80%', Mode=OneWay}"
-                            TextTrimming="CharacterEllipsis"
+                            Orientation="Horizontal"
                             Visibility="{x:Bind ViewModel.Cloudiness, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
-                            <TextBlock.DataContext>
-                                <DataTemplate>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
-                                        <BitmapIcon
-                                            Grid.Column="0"
-                                            ShowAsMonochrome="True"
-                                            UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-cloudy.png" />
-                                        <TextBlock Grid.Column="1" Text="{Binding}" />
-                                    </Grid>
-                                </DataTemplate>
-                            </TextBlock.DataContext>
-                        </TextBlock>
-                        <TextBlock
-                            Padding="2"
+                            <BitmapIcon
+                                Width="20"
+                                Height="20"
+                                Margin="0,0,2.5,0"
+                                VerticalAlignment="Center"
+                                Foreground="{ThemeResource ExtraTextForegroundBrush}"
+                                ShowAsMonochrome="True"
+                                UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-cloudy.png" />
+                            <TextBlock
+                                Padding="2"
+                                VerticalAlignment="Center"
+                                FontSize="{x:Bind Date.FontSize, Mode=OneWay}"
+                                Foreground="{ThemeResource ExtraTextForegroundBrush}"
+                                MaxLines="1"
+                                Text="{x:Bind ViewModel.Cloudiness, FallbackValue='80%', Mode=OneWay}"
+                                TextTrimming="CharacterEllipsis" />
+                        </StackPanel>
+                        <StackPanel
+                            Padding="5,0"
                             VerticalAlignment="Center"
-                            FontSize="{x:Bind Date.FontSize, Mode=OneWay}"
-                            Foreground="{ThemeResource ExtraTextForegroundBrush}"
-                            MaxLines="1"
-                            Text="{x:Bind ViewModel.WindSpeed, FallbackValue='7 mph, SSE', Mode=OneWay}"
-                            TextTrimming="CharacterEllipsis"
+                            Orientation="Horizontal"
                             Visibility="{x:Bind ViewModel.WindSpeed, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
-                            <TextBlock.DataContext>
-                                <DataTemplate>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
-                                        <BitmapIcon
-                                            Grid.Column="0"
-                                            ShowAsMonochrome="True"
-                                            UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-strong-wind.png" />
-                                        <TextBlock Grid.Column="1" Text="{Binding}" />
-                                    </Grid>
-                                </DataTemplate>
-                            </TextBlock.DataContext>
-                        </TextBlock>
+                            <BitmapIcon
+                                Width="20"
+                                Height="20"
+                                Margin="0,0,2.5,0"
+                                VerticalAlignment="Center"
+                                Foreground="{ThemeResource ExtraTextForegroundBrush}"
+                                ShowAsMonochrome="True"
+                                UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-strong-wind.png" />
+                            <TextBlock
+                                Padding="2"
+                                VerticalAlignment="Center"
+                                FontSize="{x:Bind Date.FontSize, Mode=OneWay}"
+                                Foreground="{ThemeResource ExtraTextForegroundBrush}"
+                                MaxLines="1"
+                                Text="{x:Bind ViewModel.WindSpeed, FallbackValue='7 mph, SSE', Mode=OneWay}"
+                                TextTrimming="CharacterEllipsis" />
+                        </StackPanel>
                     </StackPanel>
                 </StackPanel>
             </Grid>

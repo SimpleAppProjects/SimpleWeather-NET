@@ -27,7 +27,7 @@ namespace SimpleWeather.UWP.Controls
             {
                 if (args.NewValue is HourlyForecastItemViewModel)
                     ViewModel.SetForecast(args.NewValue as HourlyForecastItemViewModel);
-                else if (this.DataContext is ForecastItemViewModel)
+                else if (args.NewValue is ForecastItemViewModel)
                     ViewModel.SetForecast(args.NewValue as ForecastItemViewModel);
 
                 this.Bindings.Update();
@@ -110,6 +110,7 @@ namespace SimpleWeather.UWP.Controls
                 Icon = hrforecastViewModel.WeatherIcon;
                 Condition = String.Format(CultureInfo.InvariantCulture, "{0} - {1}",
                     hrforecastViewModel.HiTemp, hrforecastViewModel.Condition);
+                Extras = new ObservableCollection<DetailItemViewModel>();
 
                 PoPChance = Cloudiness = WindSpeed = null;
 
