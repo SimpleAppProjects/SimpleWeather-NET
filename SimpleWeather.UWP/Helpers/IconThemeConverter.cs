@@ -53,6 +53,10 @@ namespace SimpleWeather.UWP.Helpers
                 {
                     return new Uri(wim.GetWeatherIconURI(icon, true, isLight));
                 }
+                else if (ConverterParameter is SolidColorBrush paramColorBrush)
+                {
+                    return new Uri(wim.GetWeatherIconURI(icon, true, paramColorBrush.Color == Colors.Black));
+                }
                 else if (ConverterParameter is Color paramColor)
                 {
                     return new Uri(wim.GetWeatherIconURI(icon, true, paramColor == Colors.Black));

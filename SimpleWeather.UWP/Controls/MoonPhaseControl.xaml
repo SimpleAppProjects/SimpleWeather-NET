@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:SimpleWeather.UWP.Helpers"
     xmlns:local="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
@@ -37,6 +38,7 @@
                 <Setter Property="VerticalAlignment" Value="Center" />
                 <Setter Property="Foreground" Value="{ThemeResource MoonPhaseBrush}" />
             </Style>
+            <helpers:IconThemeConverter x:Key="iconThemeConverter" ConverterParameter="{ThemeResource MoonPhaseBrush}" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -58,7 +60,7 @@
                         ShowAsMonochrome="True"
                         Style="{ThemeResource DisabledMoonStyle}"
                         Tag="{x:Bind wicons:WeatherIcons.MOON_NEW}"
-                        UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-moon-new.png" />
+                        UriSource="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Tag, Converter={StaticResource iconThemeConverter}}" />
                     <!--  Waxing Crescent  -->
                     <BitmapIcon
                         Width="40"
@@ -66,7 +68,7 @@
                         ShowAsMonochrome="True"
                         Style="{ThemeResource DisabledMoonStyle}"
                         Tag="{x:Bind wicons:WeatherIcons.MOON_WAXING_CRESCENT_3}"
-                        UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-moon-waxing-crescent-3.png" />
+                        UriSource="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Tag, Converter={StaticResource iconThemeConverter}}" />
                     <!--  First Qtr  -->
                     <BitmapIcon
                         Width="40"
@@ -74,7 +76,7 @@
                         ShowAsMonochrome="True"
                         Style="{ThemeResource DisabledMoonStyle}"
                         Tag="{x:Bind wicons:WeatherIcons.MOON_FIRST_QUARTER}"
-                        UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-moon-first-quarter.png" />
+                        UriSource="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Tag, Converter={StaticResource iconThemeConverter}}" />
                     <!--  Waxing Gibbous  -->
                     <BitmapIcon
                         Width="40"
@@ -82,7 +84,7 @@
                         ShowAsMonochrome="True"
                         Style="{ThemeResource DisabledMoonStyle}"
                         Tag="{x:Bind wicons:WeatherIcons.MOON_WAXING_GIBBOUS_3}"
-                        UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-moon-waxing-gibbous-3.png" />
+                        UriSource="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Tag, Converter={StaticResource iconThemeConverter}}" />
                     <!--  Full Moon  -->
                     <BitmapIcon
                         Width="40"
@@ -90,7 +92,7 @@
                         ShowAsMonochrome="True"
                         Style="{ThemeResource DisabledMoonStyle}"
                         Tag="{x:Bind wicons:WeatherIcons.MOON_FULL}"
-                        UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-moon-full.png" />
+                        UriSource="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Tag, Converter={StaticResource iconThemeConverter}}" />
                     <!--  Waning Gibbous  -->
                     <BitmapIcon
                         Width="40"
@@ -98,7 +100,7 @@
                         ShowAsMonochrome="True"
                         Style="{ThemeResource DisabledMoonStyle}"
                         Tag="{x:Bind wicons:WeatherIcons.MOON_WANING_GIBBOUS_3}"
-                        UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-moon-waning-gibbous-3.png" />
+                        UriSource="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Tag, Converter={StaticResource iconThemeConverter}}" />
                     <!--  Third Qtr  -->
                     <BitmapIcon
                         Width="40"
@@ -106,7 +108,7 @@
                         ShowAsMonochrome="True"
                         Style="{ThemeResource DisabledMoonStyle}"
                         Tag="{x:Bind wicons:WeatherIcons.MOON_THIRD_QUARTER}"
-                        UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-moon-third-quarter.png" />
+                        UriSource="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Tag, Converter={StaticResource iconThemeConverter}}" />
                     <!--  Waning Crescent  -->
                     <BitmapIcon
                         Width="40"
@@ -114,7 +116,7 @@
                         ShowAsMonochrome="True"
                         Style="{ThemeResource DisabledMoonStyle}"
                         Tag="{x:Bind wicons:WeatherIcons.MOON_WANING_CRESCENT_3}"
-                        UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-moon-waning-crescent-3.png" />
+                        UriSource="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Tag, Converter={StaticResource iconThemeConverter}}" />
                 </StackPanel>
                 <TextBlock
                     Padding="5"
