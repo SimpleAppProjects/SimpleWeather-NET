@@ -107,7 +107,15 @@ namespace SimpleWeather
             Icons.WeatherIconProvider provider = IconProviders[key] as Icons.WeatherIconProvider;
             if (provider == null)
             {
-                RegisterIconProvider(provider = new Icons.WeatherIconsProvider());
+                // Can't find the provider for this key; fallback to default/first available
+                if (IconProviders.Count > 0)
+                {
+                    provider = IconProviders[0] as Icons.WeatherIconProvider;
+                }
+                else
+                {
+                    RegisterIconProvider(provider = new Icons.WeatherIconsProvider());
+                }
             }
             return provider;
         }
