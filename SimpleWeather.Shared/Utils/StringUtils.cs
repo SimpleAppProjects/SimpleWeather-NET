@@ -195,5 +195,10 @@ namespace SimpleWeather.Utils
             }
             return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
         }
+
+        public static bool Matches(this string text, string pattern)
+        {
+            return Regex.IsMatch(text, pattern, RegexOptions.CultureInvariant);
+        }
     }
 }
