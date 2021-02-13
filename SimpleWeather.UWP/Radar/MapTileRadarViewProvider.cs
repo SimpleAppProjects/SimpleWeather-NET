@@ -95,6 +95,7 @@ namespace SimpleWeather.UWP.Radar
         public override void OnDestroyView()
         {
             RadarContainer.Child = null;
+            mapControl?.TileSources.Clear();
             mapControl = null;
         }
 

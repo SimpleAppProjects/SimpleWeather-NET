@@ -38,7 +38,7 @@ namespace SimpleWeather.UWP.Main
         {
             base.OnNavigatedTo(e);
 
-            LocationCoords = e?.Parameter as WeatherUtils.Coordinate;
+            LocationCoords = e?.Parameter as WeatherUtils.Coordinate ?? new WeatherUtils.Coordinate(0, 0);
             radarViewProvider?.UpdateCoordinates(LocationCoords, true);
         }
 
