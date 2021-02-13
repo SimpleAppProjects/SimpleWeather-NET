@@ -280,14 +280,15 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <toolkitControls:ImageEx
+                <BitmapIcon
                     x:Name="AlertIcon"
                     Grid.Column="0"
                     Width="25"
                     Margin="2,0,0,0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
-                    Source="{x:Bind AlertIconSrc, TargetNullValue='ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/ic_error_white.png', Mode=OneWay}" />
+                    Foreground="White"
+                    UriSource="{x:Bind AlertIconSrc, TargetNullValue='ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/ic_error.png', Mode=OneWay}" />
                 <TextBlock
                     x:Name="Title"
                     Grid.Column="1"
