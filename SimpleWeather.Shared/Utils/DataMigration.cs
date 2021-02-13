@@ -93,50 +93,6 @@ namespace SimpleWeather.Utils
 
                 if (Settings.WeatherLoaded && Settings.VersionCode < CurrentVersionCode)
                 {
-                    // v1.3.7 - Yahoo (YQL) is no longer in service
-                    // Update location data from HERE Geocoder service
-                    if (WeatherAPI.Here.Equals(Settings.API) && Settings.VersionCode < 1370)
-                    {
-                        await DBMigrations.SetLocationData(locationDB, WeatherAPI.Here);
-                        Settings.SaveLastGPSLocData(new LocationData());
-                    }
-                    // v1.3.8+ - Yahoo API is back in service (but updated)
-                    // Update location data from current geocoder service
-                    if (WeatherAPI.Yahoo.Equals(Settings.API) && Settings.VersionCode < 1380)
-                    {
-                        await DBMigrations.SetLocationData(locationDB, WeatherAPI.Yahoo);
-                        Settings.SaveLastGPSLocData(new LocationData());
-                    }
-                    if (Settings.VersionCode < 1390)
-                    {
-                        // v1.3.8+ - Added onboarding wizard
-                        Settings.OnBoardComplete = true;
-                        // v1.3.8+
-                        // The current WeatherUnderground API is no longer in service
-                        // Disable this provider and migrate to HERE
-                        if (WeatherAPI.WeatherUnderground.Equals(Settings.API))
-                        {
-                            // Set default API to HERE
-                            Settings.API = WeatherAPI.Here;
-                            var wm = WeatherManager.GetInstance();
-                            wm.UpdateAPI();
-
-                            if (wm.KeyRequired && String.IsNullOrWhiteSpace(wm.GetAPIKey()))
-                            {
-                                // If (internal) key doesn't exist, fallback to Yahoo
-                                Settings.API = WeatherAPI.Yahoo;
-                                wm.UpdateAPI();
-                                Settings.UsePersonalKey = true;
-                                Settings.KeyVerified = false;
-                            }
-                            else
-                            {
-                                // If key exists, go ahead
-                                Settings.UsePersonalKey = false;
-                                Settings.KeyVerified = true;
-                            }
-                        }
-                    }
                     // v4.2.0+ (Units)
                     if (Settings.VersionCode < 4201)
                     {
