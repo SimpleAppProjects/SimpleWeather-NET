@@ -260,6 +260,7 @@
     </Compile>
     <Compile Include="Radar\RadarViewProvider.cs" />
     <Compile Include="Radar\RainViewer\RainViewerViewProvider.cs" />
+    <Compile Include="Radar\RainViewer\WeatherMapsResponse.cs" />
     <Compile Include="Tiles\SecondaryTileUtils.cs" />
     <Compile Include="Helpers\StringBooleanConverter.cs" />
     <Compile Include="Helpers\IPageVerification.cs" />
