@@ -397,9 +397,16 @@ namespace SimpleWeather.NWS
             {
                 WeatherIcon = WeatherIcons.DUST;
             }
-            else if (icon.Contains("tropical_storm") || icon.Contains("tsra") || icon.Contains("hurricane"))
+            else if (icon.Contains("tropical_storm") || icon.Contains("hurricane"))
             {
                 WeatherIcon = WeatherIcons.HURRICANE;
+            }
+            else if (icon.Contains("tsra"))
+            {
+                if (isNight)
+                    WeatherIcon = WeatherIcons.NIGHT_ALT_THUNDERSTORM;
+                else
+                    WeatherIcon = WeatherIcons.DAY_THUNDERSTORM;
             }
             else if (icon.Contains("tornado"))
             {
@@ -518,9 +525,13 @@ namespace SimpleWeather.NWS
             {
                 return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_dust");
             }
-            else if (icon.Contains("tropical_storm") || icon.Contains("tsra"))
+            else if (icon.Contains("tropical_storm"))
             {
                 return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_tropicalstorm");
+            }
+            else if (icon.Contains("tsra"))
+            {
+                return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_tstorms");
             }
             else if (icon.Contains("hurricane"))
             {
@@ -545,6 +556,10 @@ namespace SimpleWeather.NWS
             else if (icon.Contains("rain_snow"))
             {
                 return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_rainandsnow");
+            }
+            else if (icon.Contains("snow_sleet"))
+            {
+                return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_snowandsleet");
             }
             else if (icon.Contains("sleet"))
             {
