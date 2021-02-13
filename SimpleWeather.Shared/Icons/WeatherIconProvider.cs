@@ -10,6 +10,8 @@ namespace SimpleWeather.Icons
     {
         public abstract string Key { get; }
         public abstract string DisplayName { get; }
+        public abstract string AuthorName { get; }
+        public abstract Uri AttributionLink { get; }
         public abstract bool IsFontIcon { get; }
     }
 }

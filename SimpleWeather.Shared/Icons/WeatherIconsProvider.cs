@@ -14,6 +14,10 @@ namespace SimpleWeather.Icons
 
         public override string DisplayName => "Weather Icons";
 
+        public override string AuthorName => "Erik Flowers";
+
+        public override Uri AttributionLink => new Uri("https://erikflowers.github.io/weather-icons/");
+
         public override bool IsFontIcon => true;
     }
 }

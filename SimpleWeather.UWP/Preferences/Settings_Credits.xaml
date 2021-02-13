@@ -110,6 +110,14 @@
                             Source="ms-appx:///SimpleWeather.Shared/Assets/Providers/waqi.png" />
                     </HyperlinkButton>
                 </StackPanel>
+                <ContentPresenter x:Uid="Pref_TitleIcons" Content="Icons">
+                    <ContentPresenter.ContentTemplate>
+                        <DataTemplate>
+                            <TextBlock Style="{ThemeResource SettingTitleStyle}" Text="{Binding}" />
+                        </DataTemplate>
+                    </ContentPresenter.ContentTemplate>
+                </ContentPresenter>
+                <StackPanel x:Name="IconCreditsContainer" Orientation="Vertical" />
             </StackPanel>
         </Grid>
     </ScrollViewer>
