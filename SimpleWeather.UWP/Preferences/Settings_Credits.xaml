@@ -110,6 +110,17 @@
                             Source="ms-appx:///SimpleWeather.Shared/Assets/Providers/waqi.png" />
                     </HyperlinkButton>
                 </StackPanel>
+                <StackPanel Padding="10">
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="WeatherUnlocked" />
+                    <HyperlinkButton Padding="0,10" NavigateUri="https://developer.weatherunlocked.com/">
+                        <BitmapIcon
+                            Height="50"
+                            HorizontalAlignment="Left"
+                            Foreground="{ThemeResource ApplicationForegroundThemeBrush}"
+                            ShowAsMonochrome="True"
+                            UriSource="ms-appx:///SimpleWeather.Shared/Assets/Providers/wunlocked.png" />
+                    </HyperlinkButton>
+                </StackPanel>
                 <ContentPresenter x:Uid="Pref_TitleIcons" Content="Icons">
                     <ContentPresenter.ContentTemplate>
                         <DataTemplate>
@@ -117,7 +128,10 @@
                         </DataTemplate>
                     </ContentPresenter.ContentTemplate>
                 </ContentPresenter>
-                <StackPanel x:Name="IconCreditsContainer" Orientation="Vertical" />
+                <StackPanel
+                    x:Name="IconCreditsContainer"
+                    HorizontalAlignment="Left"
+                    Orientation="Vertical" />
             </StackPanel>
         </Grid>
     </ScrollViewer>

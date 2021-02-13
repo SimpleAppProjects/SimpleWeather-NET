@@ -31,7 +31,8 @@ namespace SimpleWeather.UWP.Preferences
                 var textBlock = new RichTextBlock()
                 {
                     FontSize = 16,
-                    Padding = new Windows.UI.Xaml.Thickness(0, 10, 0, 10)
+                    Padding = new Windows.UI.Xaml.Thickness(0, 10, 0, 10),
+                    HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Left
                 };
 
                 var title = new Paragraph();
@@ -39,7 +40,7 @@ namespace SimpleWeather.UWP.Preferences
                 {
                     Text = provider.DisplayName
                 });
-                var subtitle = new Paragraph() { FontSize = 14 };
+                var subtitle = new Paragraph() { FontSize = 13 };
                 if (provider.AttributionLink != null)
                 {
                     var link = new Hyperlink()
