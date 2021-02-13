@@ -170,7 +170,7 @@ namespace SimpleWeather.Metno
                 var hrf_date = hr_forecast.date.ToOffset(offset);
                 hr_forecast.date = hrf_date;
 
-                var hrf_localTime = hrf_date.LocalDateTime.TimeOfDay;
+                var hrf_localTime = hrf_date.DateTime.TimeOfDay;
                 hr_forecast.condition = GetWeatherCondition(hr_forecast.icon);
                 hr_forecast.icon = GetWeatherIcon(hrf_localTime < sunrise || hrf_localTime > sunset, hr_forecast.icon);
             }
