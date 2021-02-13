@@ -1,6 +1,8 @@
 ﻿using Microsoft.Toolkit.Parsers.Core;
 using SimpleWeather.Controls;
 using SimpleWeather.Utils;
+using SimpleWeather.UWP.Radar.NullSchool;
+using SimpleWeather.UWP.Radar.RainViewer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,9 +33,6 @@ namespace SimpleWeather.UWP.Radar
             OpenWeatherMap
             */
         }
-
-        public const string EARTHWINDMAP_DEFAULT_URL = "https://earth.nullschool.net/#current/wind/surface/level/overlay=precip_3hr";
-        public const string EARTHWINDMAP_URL_FORMAT = EARTHWINDMAP_DEFAULT_URL + "/orthographic={0:0.####},{1:0.####},3000";
 
         public static readonly IReadOnlyList<ProviderEntry> RadarAPIProviders = new List<ProviderEntry>
         {

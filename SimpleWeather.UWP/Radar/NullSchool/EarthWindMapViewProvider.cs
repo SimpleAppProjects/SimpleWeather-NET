@@ -7,17 +7,20 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
 
-namespace SimpleWeather.UWP.Radar
+namespace SimpleWeather.UWP.Radar.NullSchool
 {
     public class EarthWindMapViewProvider : RadarViewProvider
     {
+        public const string EARTHWINDMAP_DEFAULT_URL = "https://earth.nullschool.net/#current/wind/surface/level/overlay=precip_3hr";
+        public const string EARTHWINDMAP_URL_FORMAT = EARTHWINDMAP_DEFAULT_URL + "/orthographic={0:0.####},{1:0.####},3000";
+
         private Uri RadarURL;
 
         public EarthWindMapViewProvider(Border container) : base(container) { }
 
         public override void UpdateCoordinates(WeatherUtils.Coordinate coordinates, bool updateView = false)
         {
-            RadarURL = new Uri(String.Format(CultureInfo.InvariantCulture, RadarProvider.EARTHWINDMAP_URL_FORMAT, coordinates.Longitude, coordinates.Latitude));
+            RadarURL = new Uri(string.Format(CultureInfo.InvariantCulture, EARTHWINDMAP_URL_FORMAT, coordinates.Longitude, coordinates.Latitude));
             if (updateView) UpdateRadarView();
         }
 
@@ -27,7 +30,7 @@ namespace SimpleWeather.UWP.Radar
 
             if (webview == null)
             {
-                RadarContainer.Child = (webview = CreateWebView());
+                RadarContainer.Child = webview = CreateWebView();
             }
 
             webview.NavigationStarting -= RadarWebView_NavigationStarting;
@@ -109,7 +112,7 @@ namespace SimpleWeather.UWP.Radar
             }
 
             webview.NavigationCompleted += Webview_NavigationCompleted;
-            
+
             return webview;
         }
 

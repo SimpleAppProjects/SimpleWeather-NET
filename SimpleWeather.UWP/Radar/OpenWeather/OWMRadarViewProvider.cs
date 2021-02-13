@@ -9,7 +9,7 @@ using Windows.Devices.Geolocation;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Maps;
 
-namespace SimpleWeather.UWP.Radar
+namespace SimpleWeather.UWP.Radar.OpenWeather
 {
     public class OWMRadarViewProvider : MapTileRadarViewProvider
     {
@@ -41,7 +41,7 @@ namespace SimpleWeather.UWP.Radar
 
         private Uri GetTileUri(int x, int y, int zoom)
         {
-            return new Uri(String.Format(CultureInfo.InvariantCulture,
+            return new Uri(string.Format(CultureInfo.InvariantCulture,
                 "https://tile.openweathermap.org/map/precipitation_new/{0}/{1}/{2}.png?appid={3}",
                 zoom, x, y, APIKeys.GetOWMKey()));
         }

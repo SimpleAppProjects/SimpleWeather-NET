@@ -12,7 +12,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Maps;
 
-namespace SimpleWeather.UWP.Radar
+namespace SimpleWeather.UWP.Radar.RainViewer
 {
     public class RainViewerViewProvider : MapTileRadarViewProvider
     {
@@ -51,7 +51,7 @@ namespace SimpleWeather.UWP.Radar
                 mapControl.TileSources.Add(TileSource);
             }
 
-            await RefreshTimestamps().ContinueWith((t) => 
+            await RefreshTimestamps().ContinueWith((t) =>
             {
                 if (IsAnimationAvailable)
                 {
@@ -158,7 +158,7 @@ namespace SimpleWeather.UWP.Radar
                     var root = JSONParser.Deserializer<List<long?>>(stream.AsStreamForRead());
 
                     AvailableTimestamps.Clear();
-                    
+
                     if (root?.Count > 0)
                     {
                         root.RemoveAll(t => !t.HasValue);
