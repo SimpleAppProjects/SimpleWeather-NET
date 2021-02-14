@@ -119,9 +119,9 @@ namespace SimpleWeather.Utils
                             Settings.KeyVerified = true;
                         }
                     }
-                    if (Settings.VersionCode < 4340)
+                    if (Settings.VersionCode < 5000)
                     {
-                        if (WeatherAPI.Here.Equals(Settings.API))
+                        if (WeatherAPI.Here.Equals(Settings.API) || WeatherAPI.Yahoo.Equals(Settings.API))
                         {
                             Settings.API = WeatherAPI.WeatherUnlocked;
                             var wm = WeatherManager.GetInstance();
