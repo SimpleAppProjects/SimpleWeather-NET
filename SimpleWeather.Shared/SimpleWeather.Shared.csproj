@@ -278,8 +278,6 @@
     <Compile Include="WeatherUnlocked\Current.cs" />
     <Compile Include="WeatherUnlocked\Forecast.cs" />
     <Compile Include="WeatherUnlocked\WeatherUnlockedProvider.cs" />
-    <Compile Include="YahooWeather\Weather.cs" />
-    <Compile Include="YahooWeather\YahooWeatherProvider.cs" />
     <EmbeddedResource Include="Properties\SimpleWeather.Shared.rd.xml" />
   </ItemGroup>
   <ItemGroup>

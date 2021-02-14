@@ -6,7 +6,6 @@ using SimpleWeather.NWS;
 using SimpleWeather.OpenWeather;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherUnlocked;
-using SimpleWeather.WeatherYahoo;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

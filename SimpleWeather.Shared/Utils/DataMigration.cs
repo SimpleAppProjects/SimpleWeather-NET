@@ -123,7 +123,7 @@ namespace SimpleWeather.Utils
                     {
                         if (WeatherAPI.Here.Equals(Settings.API))
                         {
-                            Settings.API = WeatherAPI.Yahoo;
+                            Settings.API = WeatherAPI.WeatherUnlocked;
                             var wm = WeatherManager.GetInstance();
                             wm.UpdateAPI();
                             Settings.UsePersonalKey = false;

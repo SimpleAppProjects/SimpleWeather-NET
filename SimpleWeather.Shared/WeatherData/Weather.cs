@@ -11,47 +11,6 @@ namespace SimpleWeather.WeatherData
 {
     public partial class Weather
     {
-        public Weather(WeatherYahoo.Rootobject root)
-        {
-            location = new Location(root.location);
-            update_time = ConversionMethods.ToEpochDateTime(root.current_observation.pubDate);
-            forecast = new List<Forecast>(root.forecasts.Length);
-            for (int i = 0; i < root.forecasts.Length; i++)
-            {
-                forecast.Add(new Forecast(root.forecasts[i]));
-            }
-            condition = new Condition(root.current_observation);
-            atmosphere = new Atmosphere(root.current_observation.atmosphere);
-            astronomy = new Astronomy(root.current_observation.astronomy);
-            ttl = 120;
-
-            // Set feelslike temp
-            if (condition.temp_f.HasValue && condition.temp_f > 80 && atmosphere.humidity.HasValue)
-            {
-                condition.feelslike_f = WeatherUtils.CalculateHeatIndex(condition.temp_f.Value, atmosphere.humidity.Value);
-                condition.feelslike_c = ConversionMethods.FtoC(condition.feelslike_f.Value);
-            }
-
-            if ((!condition.high_f.HasValue || !condition.low_f.HasValue) && forecast.Count > 0)
-            {
-                condition.high_f = forecast[0].high_f;
-                condition.high_c = forecast[0].high_c;
-                condition.low_f = forecast[0].low_f;
-                condition.low_c = forecast[0].low_c;
-            }
-
-            if (!atmosphere.dewpoint_c.HasValue && condition.temp_c.HasValue && atmosphere.humidity.HasValue &&
-                condition.temp_c > 0 && condition.temp_c < 60 && atmosphere.humidity > 1)
-            {
-                atmosphere.dewpoint_c = (float)Math.Round(WeatherUtils.CalculateDewpointC(condition.temp_c.Value, atmosphere.humidity.Value));
-                atmosphere.dewpoint_f = (float)Math.Round(ConversionMethods.CtoF(atmosphere.dewpoint_c.Value));
-            }
-
-            condition.observation_time = update_time;
-
-            source = WeatherAPI.Yahoo;
-        }
-
         public Weather(OpenWeather.CurrentRootobject currRoot, OpenWeather.ForecastRootobject foreRoot)
         {
             location = new Location(foreRoot);
@@ -511,15 +470,6 @@ namespace SimpleWeather.WeatherData
 
     public partial class Location
     {
-        public Location(WeatherYahoo.Location location)
-        {
-            // Use location name from location provider
-            name = null;
-            latitude = (float)location.lat;
-            longitude = (float)location._long;
-            tz_long = location.timezone_id;
-        }
-
         public Location(OpenWeather.ForecastRootobject root)
         {
             // Use location name from location provider
@@ -580,28 +530,6 @@ namespace SimpleWeather.WeatherData
 
     public partial class Forecast
     {
-        public Forecast(WeatherYahoo.Forecast forecast)
-        {
-            var provider = WeatherManager.GetProvider(WeatherAPI.Yahoo);
-            var culture = CultureUtils.UserCulture;
-
-            if (culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) || culture.Equals(CultureInfo.InvariantCulture))
-            {
-                condition = forecast.text;
-            }
-            else
-            {
-                condition = provider.GetWeatherCondition(forecast.code.ToInvariantString());
-            }
-            icon = provider.GetWeatherIcon(forecast.code.ToInvariantString());
-
-            date = ConversionMethods.ToEpochDateTime(forecast.date);
-            high_f = forecast.high;
-            high_c = ConversionMethods.FtoC(forecast.high);
-            low_f = forecast.low;
-            low_c = ConversionMethods.FtoC(forecast.low);
-        }
-
         public Forecast(OpenWeather.List forecast)
         {
             date = DateTimeOffset.FromUnixTimeSeconds(forecast.dt).DateTime;
@@ -1421,32 +1349,6 @@ namespace SimpleWeather.WeatherData
 
     public partial class Condition
     {
-        public Condition(WeatherYahoo.Current_Observation observation)
-        {
-            var provider = WeatherManager.GetProvider(WeatherAPI.Yahoo);
-            var culture = CultureUtils.UserCulture;
-
-            if (culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) || culture.Equals(CultureInfo.InvariantCulture))
-            {
-                weather = observation.condition.text;
-            }
-            else
-            {
-                weather = provider.GetWeatherCondition(observation.condition.code.ToInvariantString());
-            }
-            icon = provider.GetWeatherIcon(observation.condition.code.ToInvariantString());
-
-            temp_f = observation.condition.temperature;
-            temp_c = ConversionMethods.FtoC(observation.condition.temperature);
-            wind_degrees = observation.wind.direction;
-            wind_mph = observation.wind.speed;
-            wind_kph = ConversionMethods.MphToKph(observation.wind.speed);
-            feelslike_f = observation.wind.chill;
-            feelslike_c = ConversionMethods.FtoC(observation.wind.chill);
-
-            beaufort = new Beaufort((int)WeatherUtils.GetBeaufortScale((int)Math.Round(observation.wind.speed)));
-        }
-
         public Condition(OpenWeather.CurrentRootobject current)
         {
             weather = current.weather[0].description.ToUpperCase();
@@ -1689,16 +1591,6 @@ namespace SimpleWeather.WeatherData
 
     public partial class Atmosphere
     {
-        public Atmosphere(WeatherYahoo.Atmosphere atmosphere)
-        {
-            humidity = atmosphere.humidity;
-            pressure_in = atmosphere.pressure;
-            pressure_mb = ConversionMethods.InHgToMB(atmosphere.pressure);
-            pressure_trend = atmosphere.rising.ToInvariantString();
-            visibility_mi = atmosphere.visibility;
-            visibility_km = ConversionMethods.MiToKm(atmosphere.visibility);
-        }
-
         public Atmosphere(OpenWeather.CurrentRootobject root)
         {
             humidity = root.main.humidity;
@@ -1814,32 +1706,6 @@ namespace SimpleWeather.WeatherData
 
     public partial class Astronomy
     {
-        public Astronomy(WeatherYahoo.Astronomy astronomy)
-        {
-            if (DateTime.TryParse(astronomy.sunrise, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime sunrise))
-                this.sunrise = sunrise;
-            if (DateTime.TryParse(astronomy.sunset, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime sunset))
-                this.sunset = sunset;
-
-            // If the sun won't set/rise, set time to the future
-            if (sunrise == null)
-            {
-                sunrise = DateTime.Now.Date.AddYears(1).AddTicks(-1);
-            }
-            if (sunset == null)
-            {
-                sunset = DateTime.Now.Date.AddYears(1).AddTicks(-1);
-            }
-            if (moonrise == null)
-            {
-                moonrise = DateTime.MinValue;
-            }
-            if (moonset == null)
-            {
-                moonset = DateTime.MinValue;
-            }
-        }
-
         public Astronomy(OpenWeather.CurrentRootobject root)
         {
             try

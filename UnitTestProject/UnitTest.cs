@@ -105,16 +105,6 @@ namespace UnitTestProject
         }
 
         [TestMethod]
-        public void GetYahooWeather()
-        {
-            var provider = WeatherManager.GetProvider(WeatherAPI.Yahoo);
-            var weather = GetWeather(provider).ConfigureAwait(false).GetAwaiter().GetResult();
-            Assert.IsTrue(weather?.IsValid() == true);
-            Assert.IsTrue(SerializerTest(weather).ConfigureAwait(false).GetAwaiter().GetResult());
-            //SerializerSpeedTest(weather);
-        }
-
-        [TestMethod]
         public void GetMetNoWeather()
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.MetNo);
