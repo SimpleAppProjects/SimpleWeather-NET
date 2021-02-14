@@ -242,25 +242,14 @@ namespace SimpleWeather.UWP.Preferences
             if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.API_KEY) && WeatherManager.IsKeyRequired(APIComboBox.SelectedValue.ToString()))
             {
                 // Fallback to supported weather provider
-                APIComboBox.SelectedValue = WeatherAPI.WeatherUnlocked;
-                Settings.API = WeatherAPI.WeatherUnlocked;
+                string API = RemoteConfig.RemoteConfig.GetDefaultWeatherProvider();
+                APIComboBox.SelectedValue = API;
+                Settings.API = API;
                 wm.UpdateAPI();
 
-                if (wm.KeyRequired && String.IsNullOrWhiteSpace(wm.GetAPIKey()))
-                {
-                    // If (internal) key doesn't exist, fallback to WeatherUnlocked
-                    APIComboBox.SelectedValue = WeatherAPI.WeatherUnlocked;
-                    Settings.API = WeatherAPI.WeatherUnlocked;
-                    wm.UpdateAPI();
-                    Settings.UsePersonalKey = true;
-                    Settings.KeyVerified = false;
-                }
-                else
-                {
-                    // If key exists, go ahead
-                    Settings.UsePersonalKey = false;
-                    Settings.KeyVerified = true;
-                }
+                // If key exists, go ahead
+                Settings.UsePersonalKey = false;
+                Settings.KeyVerified = true;
             }
         }
 

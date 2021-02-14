@@ -423,22 +423,6 @@ namespace SimpleWeather.UWP.Setup
         {
             // Sizing
             ResizeControls();
-
-            // Verify provider key
-            if (wm.KeyRequired && String.IsNullOrWhiteSpace(wm.GetAPIKey()))
-            {
-                // If (internal) key doesn't exist, fallback to WeatherUnlocked
-                Settings.API = WeatherAPI.WeatherUnlocked;
-                wm.UpdateAPI();
-                Settings.UsePersonalKey = true;
-                Settings.KeyVerified = false;
-            }
-            else
-            {
-                // If key exists, go ahead
-                Settings.UsePersonalKey = false;
-                Settings.KeyVerified = true;
-            }
         }
 
         private void GPS_Click(object sender, RoutedEventArgs e)
