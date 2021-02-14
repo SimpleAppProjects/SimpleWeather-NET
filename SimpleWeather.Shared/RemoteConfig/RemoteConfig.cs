@@ -79,7 +79,7 @@ namespace SimpleWeather.RemoteConfig
 
         public static string GetDefaultWeatherProvider()
         {
-            return GetConfigString(DEFAULT_WEATHERPROVIDER_KEY) ?? WeatherAPI.Yahoo;
+            return GetConfigString(DEFAULT_WEATHERPROVIDER_KEY) ?? WeatherAPI.WeatherUnlocked;
         }
     }
 }

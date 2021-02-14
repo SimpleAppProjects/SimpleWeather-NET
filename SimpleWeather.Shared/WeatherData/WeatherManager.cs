@@ -37,8 +37,10 @@ namespace SimpleWeather.WeatherData
             new ProviderEntry("HERE Weather", Here,
                 "https://www.here.com/en", "https://developer.here.com/?create=Freemium-Basic&keepState=true&step=account"),
             */
+            /*
             new ProviderEntry("Yahoo Weather", Yahoo,
                 "https://www.yahoo.com/weather?ilc=401", "https://www.yahoo.com/weather?ilc=401"),
+            */
             new ProviderEntry("MET Norway", MetNo,
                 "https://www.met.no/en", "https://www.met.no/en"),
             new ProviderEntry("U.S. National Weather Service (NOAA)", NWS,
@@ -51,8 +53,10 @@ namespace SimpleWeather.WeatherData
 
         public static readonly IReadOnlyList<ProviderEntry> LocationAPIs = new List<ProviderEntry>(2)
         {
+            /*
                 new ProviderEntry("HERE Maps", Here,
                         "https://www.here.com/en", "https://developer.here.com/"),
+            */
                 new ProviderEntry("Bing Maps", BingMaps,
                         "https://bing.com/maps", "https://bing.com/maps"),
                 new ProviderEntry("WeatherAPI.com", WeatherApi,
@@ -95,13 +99,6 @@ namespace SimpleWeather.WeatherData
 
             switch (API)
             {
-#if !DEBUG
-                default:
-#endif
-                case WeatherData.WeatherAPI.Yahoo:
-                    providerImpl = new YahooWeatherProvider();
-                    break;
-
                 case WeatherData.WeatherAPI.Here:
                     providerImpl = new HEREWeatherProvider();
                     break;
@@ -118,6 +115,9 @@ namespace SimpleWeather.WeatherData
                     providerImpl = new NWSWeatherProvider();
                     break;
 
+#if !DEBUG
+                default:
+#endif
                 case WeatherData.WeatherAPI.WeatherUnlocked:
                     providerImpl = new WeatherUnlockedProvider();
                     break;

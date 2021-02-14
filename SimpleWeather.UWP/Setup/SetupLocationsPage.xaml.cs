@@ -332,8 +332,8 @@ namespace SimpleWeather.UWP.Setup
                     }
                     else
                     {
-                        Settings.API = WeatherAPI.Yahoo;
-                        query_vm.UpdateWeatherSource(WeatherAPI.Yahoo);
+                        Settings.API = WeatherAPI.WeatherUnlocked;
+                        query_vm.UpdateWeatherSource(WeatherAPI.WeatherUnlocked);
                     }
                     wm.UpdateAPI();
                 }
@@ -427,8 +427,8 @@ namespace SimpleWeather.UWP.Setup
             // Verify provider key
             if (wm.KeyRequired && String.IsNullOrWhiteSpace(wm.GetAPIKey()))
             {
-                // If (internal) key doesn't exist, fallback to Yahoo
-                Settings.API = WeatherAPI.Yahoo;
+                // If (internal) key doesn't exist, fallback to WeatherUnlocked
+                Settings.API = WeatherAPI.WeatherUnlocked;
                 wm.UpdateAPI();
                 Settings.UsePersonalKey = true;
                 Settings.KeyVerified = false;
@@ -503,8 +503,8 @@ namespace SimpleWeather.UWP.Setup
                         }
                         else
                         {
-                            Settings.API = WeatherAPI.Yahoo;
-                            view.UpdateWeatherSource(WeatherAPI.Yahoo);
+                            Settings.API = WeatherAPI.WeatherUnlocked;
+                            view.UpdateWeatherSource(WeatherAPI.WeatherUnlocked);
                         }
                         wm.UpdateAPI();
                     }

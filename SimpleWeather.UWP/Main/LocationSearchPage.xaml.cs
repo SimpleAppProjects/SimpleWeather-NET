@@ -277,8 +277,8 @@ namespace SimpleWeather.UWP.Main
                     }
                     else
                     {
-                        Settings.API = WeatherAPI.Yahoo;
-                        query_vm.UpdateWeatherSource(WeatherAPI.Yahoo);
+                        Settings.API = WeatherAPI.WeatherUnlocked;
+                        query_vm.UpdateWeatherSource(WeatherAPI.WeatherUnlocked);
                     }
                     wm.UpdateAPI();
                 }

@@ -242,15 +242,15 @@ namespace SimpleWeather.UWP.Preferences
             if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.API_KEY) && WeatherManager.IsKeyRequired(APIComboBox.SelectedValue.ToString()))
             {
                 // Fallback to supported weather provider
-                APIComboBox.SelectedValue = WeatherAPI.Yahoo;
-                Settings.API = WeatherAPI.Yahoo;
+                APIComboBox.SelectedValue = WeatherAPI.WeatherUnlocked;
+                Settings.API = WeatherAPI.WeatherUnlocked;
                 wm.UpdateAPI();
 
                 if (wm.KeyRequired && String.IsNullOrWhiteSpace(wm.GetAPIKey()))
                 {
-                    // If (internal) key doesn't exist, fallback to Yahoo
-                    APIComboBox.SelectedValue = WeatherAPI.Yahoo;
-                    Settings.API = WeatherAPI.Yahoo;
+                    // If (internal) key doesn't exist, fallback to WeatherUnlocked
+                    APIComboBox.SelectedValue = WeatherAPI.WeatherUnlocked;
+                    Settings.API = WeatherAPI.WeatherUnlocked;
                     wm.UpdateAPI();
                     Settings.UsePersonalKey = true;
                     Settings.KeyVerified = false;
