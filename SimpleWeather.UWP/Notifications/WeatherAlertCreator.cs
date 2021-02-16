@@ -49,7 +49,7 @@ namespace SimpleWeather.UWP.Notifications
                 {
                     Visual = new ToastVisual()
                     {
-                        BaseUri = new Uri("ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/", UriKind.Relative),
+                        BaseUri = new Uri("ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/", UriKind.Absolute),
                         BindingGeneric = new ToastBindingGeneric()
                         {
                             Children =

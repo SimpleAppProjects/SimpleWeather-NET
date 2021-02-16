@@ -16,7 +16,7 @@ namespace SimpleWeather.UWP.Controls
         }
 
         public Color AlertHeaderColor { get; set; }
-        public String AlertIconSrc { get; set; }
+        public Uri AlertIconSrc { get; set; }
 
         public WeatherAlertPanel()
         {
@@ -26,7 +26,7 @@ namespace SimpleWeather.UWP.Controls
                 if (WeatherAlert != null)
                 {
                     AlertHeaderColor = WeatherUtils.GetColorFromAlertSeverity(WeatherAlert.AlertSeverity);
-                    AlertIconSrc = WeatherUtils.GetAssetFromAlertType(WeatherAlert.AlertType);
+                    AlertIconSrc = new Uri(WeatherUtils.GetAssetFromAlertType(WeatherAlert.AlertType));
                 }
 
                 this.Bindings.Update();

@@ -13,63 +13,53 @@ using System.Text;
 using System.Threading.Tasks;
 #if WINDOWS_UWP
 using Windows.UI.Core;
+using Windows.UI.Xaml;
 #endif
 
 namespace SimpleWeather.Controls
 {
-    public class WeatherAlertsViewModel : INotifyPropertyChanged, IDisposable
-    {
+    public class WeatherAlertsViewModel :
 #if WINDOWS_UWP
-        private CoreDispatcher Dispatcher;
+        DependencyObject, INotifyPropertyChanged,
 #endif
-
+        IDisposable
+    {
         private String locationKey;
 
-        private List<WeatherAlertViewModel> alerts;
         private ObservableItem<ICollection<WeatherAlert>> currentAlertsData;
 
-        public List<WeatherAlertViewModel> Alerts
+#if WINDOWS_UWP
+        public SimpleObservableList<WeatherAlertViewModel> Alerts
         {
-            get { return alerts; }
-            private set { alerts = value; OnPropertyChanged(nameof(Alerts)); }
+            get { return (SimpleObservableList<WeatherAlertViewModel>)GetValue(AlertsProperty); }
+            set { SetValue(AlertsProperty, value); }
         }
 
-#if WINDOWS_UWP
-        public WeatherAlertsViewModel(CoreDispatcher dispatcher)
-        {
-            Dispatcher = dispatcher;
-            Initialize();
-        }
+        // Using a DependencyProperty as the backing store for Alerts.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty AlertsProperty =
+            DependencyProperty.Register("Alerts", typeof(SimpleObservableList<WeatherAlertViewModel>), typeof(WeatherAlertsViewModel), new PropertyMetadata(null));
+#else
+        public List<WeatherAlertViewModel> Alerts { get; set; }
 #endif
 
         public WeatherAlertsViewModel()
         {
-            Initialize();
-        }
-
-        private void Initialize()
-        {
-            Alerts = new List<WeatherAlertViewModel>();
+            Alerts = new SimpleObservableList<WeatherAlertViewModel>();
             currentAlertsData = new ObservableItem<ICollection<WeatherAlert>>();
             currentAlertsData.ItemValueChanged += CurrentAlertsData_ItemValueChanged;
         }
 
+#if WINDOWS_UWP
         public event PropertyChangedEventHandler PropertyChanged;
         // Create the OnPropertyChanged method to raise the event
         protected async void OnPropertyChanged(string name)
         {
-#if WINDOWS_UWP
-            if (Dispatcher != null)
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                {
-#endif
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-#if WINDOWS_UWP
-                }).AsTask().ConfigureAwait(true);
-            }
-#endif
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            }).AsTask().ConfigureAwait(true);
         }
+#endif
 
         public Task UpdateAlerts(LocationData location)
         {
@@ -135,8 +125,9 @@ namespace SimpleWeather.Controls
                     }
                 }
 
-                OnPropertyChanged(nameof(Alerts));
+                Alerts.NotifyCollectionChanged();
 #if WINDOWS_UWP
+                OnPropertyChanged(nameof(Alerts));
             }).AsTask().ConfigureAwait(true);
 #else
             }).ConfigureAwait(true);
@@ -160,7 +151,6 @@ namespace SimpleWeather.Controls
             {
                 // free managed resources
                 Settings.GetWeatherDBConnection().GetConnection().TableChanged -= WeatherAlertsViewModel_TableChanged;
-                Dispatcher = null;
             }
 
             isDisposed = true;
