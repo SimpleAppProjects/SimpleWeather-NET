@@ -15,45 +15,34 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Core;
+using Windows.UI.Xaml;
 
 namespace SimpleWeather.UWP.Controls
 {
-    public class ForecastsViewModel : INotifyPropertyChanged, IDisposable
+    public class ForecastsListViewModel : DependencyObject, IDisposable
     {
-        private CoreDispatcher Dispatcher;
-
         private LocationData locationData;
         private string unitCode;
 
-        private IncrementalLoadingCollection<ForecastSource, ForecastItemViewModel> forecasts;
-        private IncrementalLoadingCollection<HourlyForecastSource, HourlyForecastItemViewModel> hourlyForecasts;
-
         public IncrementalLoadingCollection<ForecastSource, ForecastItemViewModel> Forecasts
         {
-            get { return forecasts; }
-            private set { forecasts = value; OnPropertyChanged(nameof(Forecasts)); }
+            get { return (IncrementalLoadingCollection<ForecastSource, ForecastItemViewModel>)GetValue(ForecastsProperty); }
+            set { SetValue(ForecastsProperty, value); }
         }
+
+        // Using a DependencyProperty as the backing store for Forecasts.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ForecastsProperty =
+            DependencyProperty.Register("Forecasts", typeof(IncrementalLoadingCollection<ForecastSource, ForecastItemViewModel>), typeof(ForecastsListViewModel), new PropertyMetadata(null));
 
         public IncrementalLoadingCollection<HourlyForecastSource, HourlyForecastItemViewModel> HourlyForecasts
         {
-            get { return hourlyForecasts; }
-            private set { hourlyForecasts = value; OnPropertyChanged(nameof(HourlyForecasts)); }
+            get { return (IncrementalLoadingCollection<HourlyForecastSource, HourlyForecastItemViewModel>)GetValue(HourlyForecastsProperty); }
+            set { SetValue(HourlyForecastsProperty, value); }
         }
 
-        public ForecastsViewModel(CoreDispatcher dispatcher)
-        {
-            Dispatcher = dispatcher;
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        // Create the OnPropertyChanged method to raise the event
-        protected async void OnPropertyChanged(string name)
-        {
-            await Dispatcher.RunOnUIThread(() =>
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-            }).ConfigureAwait(true);
-        }
+        // Using a DependencyProperty as the backing store for HourlyForecasts.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty HourlyForecastsProperty =
+            DependencyProperty.Register("HourlyForecasts", typeof(IncrementalLoadingCollection<HourlyForecastSource, HourlyForecastItemViewModel>), typeof(ForecastsListViewModel), new PropertyMetadata(null));
 
         public Task UpdateForecasts(LocationData location)
         {
@@ -103,46 +92,48 @@ namespace SimpleWeather.UWP.Controls
 
         private void ResetForecasts()
         {
-            Forecasts = new IncrementalLoadingCollection<ForecastSource, ForecastItemViewModel>(new ForecastSource(locationData), 7);
-            OnPropertyChanged(nameof(Forecasts));
+            Dispatcher.RunOnUIThread(() =>
+            {
+                Forecasts = new IncrementalLoadingCollection<ForecastSource, ForecastItemViewModel>(new ForecastSource(locationData), 7);
+            });
         }
 
         public void RefreshForecasts()
         {
-            if (Forecasts == null)
+            Dispatcher.RunOnUIThread(() =>
             {
-                Forecasts = new IncrementalLoadingCollection<ForecastSource, ForecastItemViewModel>(new ForecastSource(locationData), 7);
-                OnPropertyChanged(nameof(Forecasts));
-            }
-            else
-            {
-                Dispatcher?.RunOnUIThread(() =>
+                if (Forecasts == null)
+                {
+                    Forecasts = new IncrementalLoadingCollection<ForecastSource, ForecastItemViewModel>(new ForecastSource(locationData), 7);
+                }
+                else
                 {
                     Forecasts.RefreshAsync();
-                });
-            }
+                }
+            });
         }
 
         private void ResetHourlyForecasts()
         {
-            HourlyForecasts = new IncrementalLoadingCollection<HourlyForecastSource, HourlyForecastItemViewModel>(new HourlyForecastSource(locationData), 24);
-            OnPropertyChanged(nameof(HourlyForecasts));
+            Dispatcher.RunOnUIThread(() =>
+            {
+                HourlyForecasts = new IncrementalLoadingCollection<HourlyForecastSource, HourlyForecastItemViewModel>(new HourlyForecastSource(locationData), 24);
+            });
         }
 
         public void RefreshHourlyForecasts()
         {
-            if (HourlyForecasts == null)
+            Dispatcher.RunOnUIThread(() =>
             {
-                HourlyForecasts = new IncrementalLoadingCollection<HourlyForecastSource, HourlyForecastItemViewModel>(new HourlyForecastSource(locationData), 24);
-                OnPropertyChanged(nameof(HourlyForecasts));
-            }
-            else
-            {
-                Dispatcher?.RunOnUIThread(() =>
+                if (HourlyForecasts == null)
+                {
+                    HourlyForecasts = new IncrementalLoadingCollection<HourlyForecastSource, HourlyForecastItemViewModel>(new HourlyForecastSource(locationData), 24);
+                }
+                else
                 {
                     HourlyForecasts.RefreshAsync();
-                });
-            }
+                }
+            });
         }
 
         private bool isDisposed;
@@ -162,7 +153,6 @@ namespace SimpleWeather.UWP.Controls
             {
                 // free managed resources
                 Settings.UnregisterWeatherDBChangedEvent(ForecastsViewModel_TableChanged);
-                Dispatcher = null;
             }
 
             isDisposed = true;

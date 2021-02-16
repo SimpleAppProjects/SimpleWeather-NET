@@ -175,12 +175,24 @@
       <DependentUpon>DetailItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ExtendingWrapPanel.cs" />
-    <Compile Include="Controls\ForecastGraphPanel.xaml.cs">
+    <Compile Include="Controls\Graphs\RangeBarGraphPanel.xaml.cs">
+      <DependentUpon>RangeBarGraphPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Graphs\ForecastGraphPanel.xaml.cs">
       <DependentUpon>ForecastGraphPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\HourlyForecastItem.xaml.cs">
+      <DependentUpon>HourlyForecastItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\HourlyForecastItemPanel.xaml.cs">
+      <DependentUpon>HourlyForecastItemPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ViewModels\HourlyForecastNowViewModel.cs" />
+    <Compile Include="Controls\ViewModels\ChartsViewModel.cs" />
+    <Compile Include="Controls\ViewModels\ForecastsNowViewModel.cs" />
+    <Compile Include="Controls\ViewModels\ForecastsListViewModel.cs" />
+    <Compile Include="Controls\ViewModels\RangeBarGraphViewModel.cs" />
     <Compile Include="Controls\ViewModels\ForecastGraphViewModel.cs" />
-    <Compile Include="Controls\ViewModels\ForecastsViewModel.cs" />
-    <Compile Include="Controls\ViewModels\GraphItemViewModel.cs" />
     <Compile Include="Controls\Graphs\IGraph.cs" />
     <Compile Include="Controls\Graphs\ItemSizeChangedEventArgs.cs" />
     <Compile Include="Controls\Graphs\RangeBarGraphView.xaml.cs">
@@ -236,6 +248,9 @@
     <Compile Include="Helpers\VisualTreeHelperExtensions.cs" />
     <Compile Include="Main\LocationPanelAdapter.cs" />
     <Compile Include="Main\Args.cs" />
+    <Compile Include="Main\WeatherChartsPage.xaml.cs">
+      <DependentUpon>WeatherChartsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Main\WeatherRadarPage.xaml.cs">
       <DependentUpon>WeatherRadarPage.xaml</DependentUpon>
     </Compile>
@@ -371,13 +386,25 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\ForecastGraphPanel.xaml">
+    <Page Include="Controls\Graphs\RangeBarGraphPanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Graphs\ForecastGraphPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Graphs\RangeBarGraphView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\HourlyForecastItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\HourlyForecastItemPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\KeyEntryDialog.xaml">
       <SubType>Designer</SubType>
@@ -430,6 +457,10 @@
     <Page Include="Main\LocationsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Main\WeatherChartsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Main\WeatherRadarPage.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -6,13 +6,18 @@ using SimpleWeather.UWP.Helpers;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Windows.UI.Core;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -22,34 +27,30 @@ namespace SimpleWeather.UWP.Main
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class WeatherDetailsPage : CustomPage, IBackRequestedPage, IWeatherErrorListener
+    public sealed partial class WeatherChartsPage : CustomPage, IBackRequestedPage, IWeatherErrorListener
     {
         private LocationData location { get; set; }
         public WeatherNowViewModel WeatherView { get; set; }
-        public ForecastsListViewModel ForecastsView { get; set; }
-        public bool IsHourly { get; set; }
+        public ChartsViewModel ChartsView { get; set; }
 
-        public static readonly DependencyProperty ForecastsProperty =
-            DependencyProperty.Register("Forecasts", typeof(object),
-            typeof(WeatherDetailsPage), new PropertyMetadata(null));
-
-        public object Forecasts
+        public List<ForecastGraphViewModel> GraphModels
         {
-            get { return GetValue(ForecastsProperty); }
-            set
-            {
-                SetValue(ForecastsProperty, value);
-            }
+            get { return (List<ForecastGraphViewModel>)GetValue(GraphModelsProperty); }
+            set { SetValue(GraphModelsProperty, value); }
         }
 
-        public WeatherDetailsPage()
+        // Using a DependencyProperty as the backing store for GraphModels.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty GraphModelsProperty =
+            DependencyProperty.Register("GraphModels", typeof(List<ForecastGraphViewModel>), typeof(WeatherChartsPage), new PropertyMetadata(null));
+
+        public WeatherChartsPage()
         {
             this.InitializeComponent();
             NavigationCacheMode = NavigationCacheMode.Disabled;
 
             // CommandBar
             CommandBarLabel = App.ResLoader.GetString("Label_Forecast/Header");
-            AnalyticsLogger.LogEvent("WeatherDetailsPage");
+            AnalyticsLogger.LogEvent("WeatherChartsPage");
         }
 
         public void OnWeatherError(WeatherException wEx)
@@ -101,41 +102,29 @@ namespace SimpleWeather.UWP.Main
         {
             base.OnNavigatedTo(e);
 
-            if (e?.Parameter is DetailsPageArgs args)
+            if (e?.Parameter is WeatherPageArgs args)
             {
                 location = args.Location;
                 WeatherView = args.WeatherNowView;
-                IsHourly = args.IsHourly;
 
                 if (WeatherView == null)
                     WeatherView = new WeatherNowViewModel(Dispatcher);
-                if (ForecastsView == null)
-                    ForecastsView = new ForecastsListViewModel();
+                if (ChartsView == null)
+                    ChartsView = new ChartsViewModel();
 
                 Task.Run(async () =>
                 {
                     if (location == null)
                         location = await Settings.GetHomeData();
 
-                    await ForecastsView.UpdateForecasts(location);
+                    await ChartsView.UpdateForecasts(location);
                 }).ContinueWith((t) =>
                 {
-                    if (IsHourly)
+                    SetBinding(GraphModelsProperty, new Binding()
                     {
-                        SetBinding(ForecastsProperty, new Binding()
-                        {
-                            Mode = BindingMode.OneWay,
-                            Source = ForecastsView.HourlyForecasts
-                        });
-                    }
-                    else
-                    {
-                        SetBinding(ForecastsProperty, new Binding()
-                        {
-                            Mode = BindingMode.OneWay,
-                            Source = ForecastsView.Forecasts
-                        });
-                    }
+                        Mode = BindingMode.OneWay,
+                        Source = ChartsView.GraphModels
+                    });
 
                     if (WeatherView?.IsValid == false)
                     {
@@ -149,45 +138,7 @@ namespace SimpleWeather.UWP.Main
                                     WeatherView.UpdateView(t2.Result);
                                 });
                     }
-
-                    // Scroll item into view
-                    void contentChangedListener(ListViewBase sender, ContainerContentChangingEventArgs cccEvArgs)
-                    {
-                        ListControl.ContainerContentChanging -= contentChangedListener;
-
-                        void layoutUpdateListener(object s, object layoutEvArgs)
-                        {
-                            ListControl.LayoutUpdated -= layoutUpdateListener;
-
-                            if (args.ScrollToPosition > 0 && ListControl.Items?.Count > args.ScrollToPosition)
-                            {
-                                ListControl.ScrollIntoView(ListControl.Items[args.ScrollToPosition], ScrollIntoViewAlignment.Leading);
-                            }
-                        };
-
-                        ListControl.LayoutUpdated += layoutUpdateListener;
-                    };
-                    ListControl.ContainerContentChanging += contentChangedListener;
                 }, TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(true);
-            }
-        }
-
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            base.OnNavigatedFrom(e);
-        }
-
-        private void ListControl_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
-        {
-            if (args.Item is BaseForecastItemViewModel)
-            {
-                var container = args.ItemContainer;
-                var headerToggle = VisualTreeHelperExtensions.FindChild<ToggleButton>(container, "DetailHeader");
-
-                if (headerToggle != null)
-                {
-                    headerToggle.IsChecked = false;
-                }
             }
         }
     }

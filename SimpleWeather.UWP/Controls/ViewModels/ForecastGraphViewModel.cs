@@ -1,202 +1,286 @@
-﻿using SimpleWeather.Controls;
-using SimpleWeather.Location;
+﻿using SimpleWeather.Icons;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Utils;
+using SimpleWeather.UWP.Controls.Graphs;
 using SimpleWeather.WeatherData;
-using SQLite;
-using SQLiteNetExtensions.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Core;
+using Windows.UI;
+using Windows.UI.Xaml;
 
 namespace SimpleWeather.UWP.Controls
 {
-    public class ForecastGraphViewModel : INotifyPropertyChanged, IDisposable
+    public enum ForecastGraphType
     {
-        private CoreDispatcher Dispatcher;
+        //Temperature,
+        Precipitation,
+        Wind,
+        Humidity,
+        UVIndex,
+        Rain,
+        Snow
+    }
 
-        private LocationData locationData;
-        private string unitCode;
-        private string iconProvider;
-
-        private SimpleObservableList<GraphItemViewModel> forecasts;
-        private SimpleObservableList<GraphItemViewModel> hourlyForecasts;
-
-        private ObservableItem<Forecasts> currentForecastsData;
-        private ObservableItem<IList<HourlyForecast>> currentHrForecastsData;
-
-        public SimpleObservableList<GraphItemViewModel> Forecasts
+    public class ForecastGraphViewModel : DependencyObject
+    {
+        public List<XLabelData> LabelData
         {
-            get { return forecasts; }
-            private set { forecasts = value; OnPropertyChanged(nameof(Forecasts)); }
+            get { return (List<XLabelData>)GetValue(LabelDataProperty); }
+            set { SetValue(LabelDataProperty, value); }
         }
 
-        public SimpleObservableList<GraphItemViewModel> HourlyForecasts
+        // Using a DependencyProperty as the backing store for LabelData.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty LabelDataProperty =
+            DependencyProperty.Register("LabelData", typeof(List<XLabelData>), typeof(ForecastGraphViewModel), new PropertyMetadata(null));
+
+        public List<LineDataSeries> SeriesData
         {
-            get { return hourlyForecasts; }
-            private set { hourlyForecasts = value; OnPropertyChanged(nameof(HourlyForecasts)); }
+            get { return (List<LineDataSeries>)GetValue(SeriesDataProperty); }
+            set { SetValue(SeriesDataProperty, value); }
         }
 
-        public ForecastGraphViewModel(CoreDispatcher dispatcher)
+        // Using a DependencyProperty as the backing store for SeriesData.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SeriesDataProperty =
+            DependencyProperty.Register("SeriesData", typeof(List<LineDataSeries>), typeof(ForecastGraphViewModel), new PropertyMetadata(null));
+
+        public string GraphLabel
         {
-            Dispatcher = dispatcher;
-
-            currentForecastsData = new ObservableItem<Forecasts>();
-            currentForecastsData.ItemValueChanged += CurrentForecastsData_ItemValueChanged;
-            currentHrForecastsData = new ObservableItem<IList<HourlyForecast>>();
-            currentHrForecastsData.ItemValueChanged += CurrentHrForecastsData_ItemValueChanged;
-
-            Forecasts = new SimpleObservableList<GraphItemViewModel>(10);
-            HourlyForecasts = new SimpleObservableList<GraphItemViewModel>(24);
+            get { return (string)GetValue(GraphLabelProperty); }
+            set { SetValue(GraphLabelProperty, value); }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        // Create the OnPropertyChanged method to raise the event
-        protected async void OnPropertyChanged(string name)
+        // Using a DependencyProperty as the backing store for GraphLabel.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty GraphLabelProperty =
+            DependencyProperty.Register("GraphLabel", typeof(string), typeof(ForecastGraphViewModel), new PropertyMetadata(null));
+
+        public ForecastGraphViewModel()
         {
-            await Dispatcher.RunOnUIThread(() =>
+
+        }
+
+        public void AddForecastData<T>(T forecast, ForecastGraphType graphType) where T : BaseForecast
+        {
+            var culture = CultureUtils.UserCulture;
+
+            if (LabelData == null)
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-            }).ConfigureAwait(true);
-        }
+                LabelData = new List<XLabelData>();
+            }
 
-        public Task UpdateForecasts(LocationData location)
-        {
-            return Task.Run(async () =>
+            if (SeriesData == null)
             {
-                if (this.locationData == null || !Equals(this.locationData?.query, location?.query))
-                {
-                    Settings.UnregisterWeatherDBChangedEvent(ForecastGraphViewModel_TableChanged);
-
-                    // Clone location data
-                    this.locationData = new LocationData(new LocationQueryViewModel(location));
-
-                    this.unitCode = Settings.UnitString;
-                    this.iconProvider = Settings.IconProvider;
-
-                    currentForecastsData.SetValue(await Settings.GetWeatherForecastData(location.query));
-
-                    var dateBlob = DateTimeOffset.Now.ToOffset(location.tz_offset).Trim(TimeSpan.TicksPerHour).ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture);
-                    currentHrForecastsData.SetValue(await Settings.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(location.query, 0, 24, dateBlob));
-
-                    Settings.RegisterWeatherDBChangedEvent(ForecastGraphViewModel_TableChanged);
-                }
-                else if (!Equals(unitCode, Settings.UnitString) || !Equals(iconProvider, Settings.IconProvider))
-                {
-                    this.unitCode = Settings.UnitString;
-                    this.iconProvider = Settings.IconProvider;
-
-                    RefreshForecasts(currentForecastsData.GetValue());
-                    RefreshHourlyForecasts(currentHrForecastsData.GetValue());
-                }
-            });
-        }
-
-        private void ForecastGraphViewModel_TableChanged(object sender, NotifyTableChangedEventArgs e)
-        {
-            if (locationData == null) return;
-
-            Task.Run(async () =>
+                var yEntryData = new List<YEntryData>();
+                AddEntryData(forecast, LabelData, yEntryData, graphType);
+                SeriesData = CreateSeriesData(yEntryData, graphType);
+            }
+            else
             {
-                if (e?.Table?.TableName == WeatherData.Forecasts.TABLE_NAME)
-                {
-                    currentForecastsData.SetValue(await Settings.GetWeatherForecastData(locationData.query));
-                }
-                if (e?.Table?.TableName == WeatherData.HourlyForecasts.TABLE_NAME)
-                {
-                    currentHrForecastsData.SetValue(await Settings.GetHourlyWeatherForecastDataByPageIndexByLimit(locationData.query, 0, 24));
-                }
-            });
-        }
-
-        private async void CurrentForecastsData_ItemValueChanged(object sender, ObservableItemChangedEventArgs e)
-        {
-            if (e.NewValue is Forecasts fcasts)
-            {
-                await RefreshForecasts(fcasts);
+                AddEntryData(forecast, LabelData, SeriesData.First().SeriesData, graphType);
             }
         }
 
-        private ConfiguredTaskAwaitable RefreshForecasts(Forecasts fcasts)
+        public void SetForecastData<T>(IList<T> forecasts, ForecastGraphType graphType) where T : BaseForecast
         {
-            return Dispatcher.RunOnUIThread(() =>
+            var isFahrenheit = Units.FAHRENHEIT.Equals(Settings.TemperatureUnit);
+            var culture = CultureUtils.UserCulture;
+
+            var xData = new List<XLabelData>(forecasts.Count);
+            var yData = new List<YEntryData>(forecasts.Count);
+
+            foreach (var forecast in forecasts)
             {
-                Forecasts.Clear();
+                AddEntryData(forecast, xData, yData, graphType);
+            }
+            LabelData = xData;
+            SeriesData = CreateSeriesData(yData, graphType);
+        }
 
-                if (fcasts?.forecast?.Count > 0)
+        private void AddEntryData<T>(T forecast, IList<XLabelData> xData, IList<YEntryData> yData, ForecastGraphType graphType) where T : BaseForecast
+        {
+            var isFahrenheit = Units.FAHRENHEIT.Equals(Settings.TemperatureUnit);
+            var culture = CultureUtils.UserCulture;
+
+            string date;
+            if (forecast is Forecast fcast)
+            {
+                date = fcast.date.ToString("ddd dd", culture);
+            }
+            else if (forecast is HourlyForecast hrfcast)
+            {
+                if (culture.DateTimeFormat.ShortTimePattern.Contains("H"))
                 {
-                    for (int i = 0; i < Math.Min(fcasts.forecast.Count, 10); i++)
-                    {
-                        var dataItem = fcasts.forecast[i];
+                    date = hrfcast.date.ToString("ddd HH:00", culture);
+                }
+                else
+                {
+                    date = hrfcast.date.ToString("ddd h tt", culture);
+                }
+            }
+            else
+            {
+                date = string.Empty;
+            }
 
-                        if ((bool)dataItem?.high_f.HasValue && (bool)dataItem?.low_f.HasValue)
+            xData.Add(new XLabelData(date));
+
+            switch (graphType)
+            {
+                /*
+                case ForecastGraphType.Temperature:
+                    if (forecast.high_f.HasValue && forecast.high_c.HasValue)
+                    {
+                        int value = (int)(isFahrenheit ? Math.Round(forecast.high_f.Value) : Math.Round(forecast.high_c.Value));
+                        var hiTemp = string.Format(culture, "{0}°", value);
+                        yData.Add(new YEntryData(value, hiTemp));
+                    }
+                    break;
+                */
+                default:
+                case ForecastGraphType.Precipitation:
+                    if (forecast.extras?.pop.HasValue == true && forecast.extras.pop >= 0)
+                    {
+                        yData.Add(new YEntryData(forecast.extras.pop.Value, forecast.extras.pop.Value + "%"));
+                    }
+                    break;
+                case ForecastGraphType.Wind:
+                    if (forecast.extras?.wind_mph.HasValue == true && forecast.extras.wind_mph >= 0)
+                    {
+                        string unit = Settings.SpeedUnit;
+                        int speedVal;
+                        string speedUnit;
+
+                        switch (unit)
                         {
-                            var f = new GraphItemViewModel(dataItem);
-                            Forecasts.Add(f);
+                            case Units.MILES_PER_HOUR:
+                            default:
+                                speedVal = (int)Math.Round(forecast.extras.wind_mph.Value);
+                                speedUnit = SimpleLibrary.GetInstance().ResLoader.GetString("/Units/unit_mph");
+                                break;
+                            case Units.KILOMETERS_PER_HOUR:
+                                speedVal = (int)Math.Round(forecast.extras.wind_kph.Value);
+                                speedUnit = SimpleLibrary.GetInstance().ResLoader.GetString("/Units/unit_kph");
+                                break;
+                            case Units.METERS_PER_SECOND:
+                                speedVal = (int)Math.Round(ConversionMethods.KphToMSec(forecast.extras.wind_kph.Value));
+                                speedUnit = SimpleLibrary.GetInstance().ResLoader.GetString("/Units/unit_msec");
+                                break;
                         }
+
+                        var windSpeed = string.Format(culture, "{0} {1}", speedVal, speedUnit);
+
+                        yData.Add(new YEntryData(speedVal, windSpeed));
                     }
-
-                    OnPropertyChanged(nameof(Forecasts));
-                    Forecasts.NotifyCollectionChanged();
-                }
-            }).ConfigureAwait(true);
-        }
-
-        private async void CurrentHrForecastsData_ItemValueChanged(object sender, ObservableItemChangedEventArgs e)
-        {
-            if (e.NewValue is IList<HourlyForecast> hrfcasts)
-            {
-                await RefreshHourlyForecasts(hrfcasts);
-            }
-        }
-
-        private ConfiguredTaskAwaitable RefreshHourlyForecasts(IList<HourlyForecast> hrfcasts)
-        {
-            return Dispatcher.RunOnUIThread(() =>
-            {
-                HourlyForecasts.Clear();
-
-                if (hrfcasts?.Count > 0)
-                {
-                    foreach (var dataItem in hrfcasts)
+                    break;
+                case ForecastGraphType.Rain:
+                    if (forecast.extras?.qpf_rain_in.HasValue == true && forecast.extras?.qpf_rain_mm.HasValue == true)
                     {
-                        HourlyForecasts.Add(new GraphItemViewModel(dataItem));
+                        string unit = Settings.PrecipitationUnit;
+                        float precipValue;
+                        string precipUnit;
+
+                        switch (unit)
+                        {
+                            case Units.INCHES:
+                            default:
+                                precipValue = forecast.extras.qpf_rain_in.Value;
+                                precipUnit = SimpleLibrary.GetInstance().ResLoader.GetString("/Units/unit_in");
+                                break;
+                            case Units.MILLIMETERS:
+                                precipValue = forecast.extras.qpf_rain_mm.Value;
+                                precipUnit = SimpleLibrary.GetInstance().ResLoader.GetString("/Units/unit_mm");
+                                break;
+                        }
+
+                        yData.Add(new YEntryData(precipValue, String.Format(culture, "{0:0.##} {1}", precipValue, precipUnit)));
                     }
-                }
+                    break;
+                case ForecastGraphType.Snow:
+                    if (forecast.extras?.qpf_snow_in.HasValue == true && forecast.extras?.qpf_snow_cm.HasValue == true)
+                    {
+                        string unit = Settings.PrecipitationUnit;
+                        float precipValue;
+                        string precipUnit;
 
-                OnPropertyChanged(nameof(HourlyForecasts));
-                HourlyForecasts.NotifyCollectionChanged();
-            }).ConfigureAwait(true);
+                        switch (unit)
+                        {
+                            case Units.INCHES:
+                            default:
+                                precipValue = forecast.extras.qpf_snow_in.Value;
+                                precipUnit = SimpleLibrary.GetInstance().ResLoader.GetString("/Units/unit_in");
+                                break;
+                            case Units.MILLIMETERS:
+                                precipValue = forecast.extras.qpf_snow_cm.Value * 10;
+                                precipUnit = SimpleLibrary.GetInstance().ResLoader.GetString("/Units/unit_mm");
+                                break;
+                        }
+
+                        yData.Add(new YEntryData(precipValue, String.Format(culture, "{0:0.##} {1}", precipValue, precipUnit)));
+                    }
+                    break;
+                case ForecastGraphType.UVIndex:
+                    if (forecast.extras?.uv_index.HasValue == true)
+                    {
+                        yData.Add(new YEntryData(forecast.extras.uv_index.Value, String.Format(culture, "{0:0.#}", forecast.extras.uv_index.Value)));
+                    }
+                    break;
+                case ForecastGraphType.Humidity:
+                    if (forecast.extras?.humidity.HasValue == true)
+                    {
+                        yData.Add(new YEntryData(forecast.extras.humidity.Value, String.Format(culture, "{0}%", forecast.extras.humidity.Value)));
+                    }
+                    break;
+            }
         }
 
-        private bool isDisposed;
-        // Dispose() calls Dispose(true)
-        public void Dispose()
+        private List<LineDataSeries> CreateSeriesData(List<YEntryData> yData, ForecastGraphType graphType)
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+            LineDataSeries series;
 
-        // The bulk of the clean-up code is implemented in Dispose(bool)
-        protected virtual void Dispose(bool disposing)
-        {
-            if (isDisposed) return;
-
-            if (disposing)
+            switch (graphType)
             {
-                // free managed resources
-                Settings.UnregisterWeatherDBChangedEvent(ForecastGraphViewModel_TableChanged);
-                Dispatcher = null;
+                /*
+                case ForecastGraphType.Temperature:
+                    GraphLabel = App.ResLoader.GetString("Label_Temperature/Text");
+                    series = new LineDataSeries(yData);
+                    series.SetSeriesColors(Colors.OrangeRed);
+                    break;
+                */
+                default:
+                case ForecastGraphType.Precipitation:
+                    GraphLabel = App.ResLoader.GetString("Label_Precipitation/Text");
+                    series = new LineDataSeries(yData);
+                    series.SetSeriesColors(Color.FromArgb(0xFF, 0, 0x70, 0xC0));
+                    break;
+                case ForecastGraphType.Wind:
+                    GraphLabel = App.ResLoader.GetString("Label_Wind/Text");
+                    series = new LineDataSeries(yData);
+                    series.SetSeriesColors(Colors.SeaGreen);
+                    break;
+                case ForecastGraphType.Rain:
+                    GraphLabel = App.ResLoader.GetString("Label_Rain/Text");
+                    series = new LineDataSeries(yData);
+                    series.SetSeriesColors(Colors.DeepSkyBlue);
+                    break;
+                case ForecastGraphType.Snow:
+                    GraphLabel = App.ResLoader.GetString("Label_Snow/Text");
+                    series = new LineDataSeries(yData);
+                    series.SetSeriesColors(Colors.SkyBlue);
+                    break;
+                case ForecastGraphType.UVIndex:
+                    GraphLabel = App.ResLoader.GetString("UV_Label");
+                    series = new LineDataSeries(yData);
+                    series.SetSeriesColors(Colors.Orange);
+                    break;
+                case ForecastGraphType.Humidity:
+                    GraphLabel = App.ResLoader.GetString("Label_Humidity/Text");
+                    series = new LineDataSeries(yData);
+                    series.SetSeriesColors(Colors.MediumPurple);
+                    break;
             }
 
-            isDisposed = true;
+            return new List<LineDataSeries>(1) { series };
         }
     }
 }

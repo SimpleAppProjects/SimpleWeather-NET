@@ -192,6 +192,10 @@ namespace SimpleWeather.UWP.Controls.Graphs
             RefreshAfterDataChanged();
             InvalidateMeasure();
         }
+        public void SetData(List<XLabelData> dataLabels, LineDataSeries dataList)
+        {
+            SetData(dataLabels, new List<LineDataSeries>(1) { dataList });
+        }
 
         public void SetData(List<XLabelData> dataLabels, List<LineDataSeries> dataLists)
         {

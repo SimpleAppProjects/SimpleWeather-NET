@@ -54,13 +54,23 @@ namespace SimpleWeather.UWP.Main
 
         internal LocationData locationData = null;
         internal WeatherNowViewModel WeatherView { get; private set; }
-        internal ForecastGraphViewModel ForecastView { get; private set; }
+        internal ForecastsNowViewModel ForecastView { get; private set; }
         internal WeatherAlertsViewModel AlertsView { get; private set; }
 
         private CancellationTokenSource cts;
 
         private Geolocator geolocal = null;
         private Geoposition geoPos = null;
+
+        public double ControlShadowOpacity
+        {
+            get { return (double)GetValue(ControlShadowOpacityProperty); }
+            set { SetValue(ControlShadowOpacityProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ControlShadowOpacity.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ControlShadowOpacityProperty =
+            DependencyProperty.Register("ControlShadowOpacity", typeof(double), typeof(WeatherNow), new PropertyMetadata(0d));
 
         private bool UpdateBindings = false;
         private bool ClearGraphIconCache = false;
@@ -150,8 +160,8 @@ namespace SimpleWeather.UWP.Main
 
             WeatherView = new WeatherNowViewModel(Dispatcher);
             WeatherView.PropertyChanged += WeatherView_PropertyChanged;
-            ForecastView = new ForecastGraphViewModel(Dispatcher);
-            AlertsView = new WeatherAlertsViewModel(Dispatcher);
+            ForecastView = new ForecastsNowViewModel();
+            AlertsView = new WeatherAlertsViewModel();
 
             geolocal = new Geolocator() { DesiredAccuracyInMeters = 5000, ReportInterval = 900000, MovementThreshold = 1600 };
 
@@ -327,7 +337,6 @@ namespace SimpleWeather.UWP.Main
             if (ClearGraphIconCache)
             {
                 ForecastGraphPanel.ClearIconCache();
-                HourlyGraphPanel.ClearIconCache();
                 ClearGraphIconCache = false;
             }
 
@@ -850,23 +859,23 @@ namespace SimpleWeather.UWP.Main
                 }, new DrillInNavigationTransitionInfo());
         }
 
-        private void LineView_Tapped(object sender, TappedRoutedEventArgs e)
+        private void ForecastGraphPanel_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            AnalyticsLogger.LogEvent("WeatherNow: GraphView_Tapped");
+            AnalyticsLogger.LogEvent("WeatherNow: ForecastGraphPanel_Tapped");
 
             if (sender is IGraph control)
             {
                 FrameworkElement controlParent = null;
 
-                try
-                {
-                    controlParent = VisualTreeHelperExtensions.GetParent<ForecastGraphPanel>(control.GetControl());
-                }
-                catch (Exception) { }
-
-                GotoDetailsPage((bool)controlParent?.Name.StartsWith("Hourly"),
+                GotoDetailsPage(false,
                     control.GetItemPositionFromPoint((float)(e.GetPosition(control.GetControl()).X + control.GetScrollViewer().HorizontalOffset)));
             }
+        }
+
+        private void HourlyForecastControl_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            AnalyticsLogger.LogEvent("WeatherNow: GraphView_Tapped");
+            GotoDetailsPage(true, HourlyForecastControl.GetItemPosition(e.ClickedItem));
         }
 
         private void RadarWebView_Loaded(object sender, RoutedEventArgs e)
@@ -886,6 +895,30 @@ namespace SimpleWeather.UWP.Main
         {
             AnalyticsLogger.LogEvent("WeatherNow: RadarWebView_Tapped");
             Frame.Navigate(typeof(WeatherRadarPage), WeatherView?.LocationCoord, new DrillInNavigationTransitionInfo());
+        }
+
+        private void BackgroundOverlay_ImageExOpened(object sender, Microsoft.Toolkit.Uwp.UI.Controls.ImageExOpenedEventArgs e)
+        {
+            GradientOverlay.Visibility = Visibility.Visible;
+            Location.RequestedTheme = UpdateDate.RequestedTheme = ConditionPanel.RequestedTheme = ElementTheme.Dark;
+            ControlShadowOpacity = 1;
+        }
+
+        private void BackgroundOverlay_ImageExFailed(object sender, Microsoft.Toolkit.Uwp.UI.Controls.ImageExFailedEventArgs e)
+        {
+            GradientOverlay.Visibility = Visibility.Collapsed;
+            Location.RequestedTheme = UpdateDate.RequestedTheme = ConditionPanel.RequestedTheme = ElementTheme.Default;
+            ControlShadowOpacity = 0;
+        }
+
+        private void ForecastGraphPanel_GraphViewTapped(object sender, TappedRoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(WeatherChartsPage),
+                new WeatherPageArgs()
+                {
+                    Location = locationData,
+                    WeatherNowView = WeatherView
+                }, new DrillInNavigationTransitionInfo());
         }
     }
 }
