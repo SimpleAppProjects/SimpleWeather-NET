@@ -15,6 +15,7 @@ namespace SimpleWeather.UWP.Utils
         public static bool BackgroundImage { get { return GetBackgroundImageEnabled(); } set { SetBackgroundImageEnabled(value); OnFeatureSettingsChanged?.Invoke(new FeatureSettingsChangedEventArgs { Key = KEY_BGIMAGE, NewValue = value }); } }
         public static bool Forecast { get { return GetForecastEnabled(); } set { SetForecastEnabled(value); OnFeatureSettingsChanged?.Invoke(new FeatureSettingsChangedEventArgs { Key = KEY_FORECAST, NewValue = value }); } }
         public static bool HourlyForecast { get { return GetHourlyForecastEnabled(); } set { SetHourlyForecastEnabled(value); OnFeatureSettingsChanged?.Invoke(new FeatureSettingsChangedEventArgs { Key = KEY_HRFORECAST, NewValue = value }); } }
+        public static bool Charts { get { return GetChartsEnabled(); } set { SetChartsEnabled(value); OnFeatureSettingsChanged?.Invoke(new FeatureSettingsChangedEventArgs { Key = KEY_CHARTS, NewValue = value }); } }
         public static bool WeatherDetails { get { return GetWeatherDetailsEnabled(); } set { SetWeatherDetailsEnabled(value); OnFeatureSettingsChanged?.Invoke(new FeatureSettingsChangedEventArgs { Key = KEY_WEATHERDETAILS, NewValue = value }); } }
         public static bool UV { get { return GetUVEnabled(); } set { SetUVEnabled(value); OnFeatureSettingsChanged?.Invoke(new FeatureSettingsChangedEventArgs { Key = KEY_UVINDEX, NewValue = value }); } }
         public static bool Beaufort { get { return GetBeaufortEnabled(); } set { SetBeaufortEnabled(value); OnFeatureSettingsChanged?.Invoke(new FeatureSettingsChangedEventArgs { Key = KEY_BEAUFORT, NewValue = value }); } }
@@ -34,6 +35,7 @@ namespace SimpleWeather.UWP.Utils
         private const string KEY_BGIMAGE = "key_bgimage";
         private const string KEY_FORECAST = "key_forecast";
         private const string KEY_HRFORECAST = "key_hrforecast";
+        private const string KEY_CHARTS = "key_charts";
         private const string KEY_WEATHERDETAILS = "key_weatherdetails";
         private const string KEY_UVINDEX = "key_uvindex";
         private const string KEY_BEAUFORT = "key_beaufort";
@@ -97,6 +99,21 @@ namespace SimpleWeather.UWP.Utils
         private static void SetHourlyForecastEnabled(bool value)
         {
             featureSettings.Values[KEY_HRFORECAST] = value;
+        }
+
+        private static bool GetChartsEnabled()
+        {
+            if (featureSettings.Values.TryGetValue(KEY_CHARTS, out object value))
+            {
+                return (bool)value;
+            }
+
+            return true;
+        }
+
+        private static void SetChartsEnabled(bool value)
+        {
+            featureSettings.Values[KEY_CHARTS] = value;
         }
 
         private static bool GetWeatherDetailsEnabled()

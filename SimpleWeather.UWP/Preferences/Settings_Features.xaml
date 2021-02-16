@@ -42,6 +42,10 @@
                     Content="Hourly Forecast"
                     IsChecked="{x:Bind uwpUtils:FeatureSettings.HourlyForecast, Mode=TwoWay}" />
                 <CheckBox
+                    x:Uid="FeatureOption_Charts"
+                    Content="Charts"
+                    IsChecked="{x:Bind uwpUtils:FeatureSettings.Charts, Mode=TwoWay}" />
+                <CheckBox
                     x:Uid="FeatureOption_Details"
                     Content="Weather Details"
                     IsChecked="{x:Bind uwpUtils:FeatureSettings.WeatherDetails, Mode=TwoWay}" />

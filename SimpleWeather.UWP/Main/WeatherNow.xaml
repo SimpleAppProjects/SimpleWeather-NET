@@ -447,15 +447,19 @@
                                 ForecastData="{x:Bind ForecastView.HourlyForecastData, Mode=OneWay}"
                                 ItemClick="HourlyForecastControl_ItemClick" />
                         </toolkitControls:HeaderedContentControl>
-                        <toolkitControls:HeaderedContentControl
-                            x:Name="PrecipitationGraphPanel"
-                            x:Load="{x:Bind ForecastView.PrecipitationGraphData, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
-                            Visibility="{x:Bind ForecastView.PrecipitationGraphData, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
+                    </StackPanel>
+                    <StackPanel
+                        x:Name="PrecipitationPanel"
+                        Margin="0,0,0,25"
+                        x:Load="{x:Bind uwpUtils:FeatureSettings.Charts, Mode=OneWay}"
+                        Visibility="{x:Bind ForecastView.PrecipitationGraphData, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
+                        <Border Style="{ThemeResource Divider}" />
+                        <toolkitControls:HeaderedContentControl>
                             <toolkitControls:HeaderedContentControl.Header>
                                 <TextBlock
                                     x:Uid="Label_Precipitation"
                                     Padding="15,10"
-                                    FontSize="16"
+                                    FontSize="18"
                                     FontWeight="SemiBold"
                                     Text="Precipitation" />
                             </toolkitControls:HeaderedContentControl.Header>
