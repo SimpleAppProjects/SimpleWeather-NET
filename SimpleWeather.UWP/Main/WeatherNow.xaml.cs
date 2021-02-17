@@ -625,12 +625,6 @@ namespace SimpleWeather.UWP.Main
                         lastGPSLocData.SetData(view, newGeoPos);
                         Settings.SaveLastGPSLocData(lastGPSLocData);
 
-                        // Update tile id for location
-                        if (oldKey != null && SecondaryTileUtils.Exists(oldKey))
-                        {
-                            await SecondaryTileUtils.UpdateTileId(oldKey, lastGPSLocData.query).ConfigureAwait(false);
-                        }
-
                         locationData = lastGPSLocData;
                         geoPos = newGeoPos;
                         locationChanged = true;
@@ -755,7 +749,8 @@ namespace SimpleWeather.UWP.Main
                 pinBtn.IsEnabled = false;
 
                 // Check if your app is currently pinned
-                bool isPinned = SecondaryTileUtils.Exists(locationData?.query);
+                var query = locationData?.locationType == LocationType.GPS ? Constants.KEY_GPS : locationData?.query;
+                bool isPinned = SecondaryTileUtils.Exists(query);
 
                 SetPinButton(isPinned);
                 pinBtn.Visibility = Visibility.Visible;
@@ -787,19 +782,21 @@ namespace SimpleWeather.UWP.Main
             AnalyticsLogger.LogEvent("WeatherNow: PinButton_Click");
 
             // Check if Tile service is available
-            if (!DeviceTypeHelper.IsTileSupported() || locationData?.query == null) return;
+            if (!DeviceTypeHelper.IsTileSupported() || locationData?.IsValid() == false) return;
 
             if (!(sender is muxc.NavigationViewItem pinBtn)) return;
 
             pinBtn.IsEnabled = false;
 
-            if (SecondaryTileUtils.Exists(locationData?.query))
+            var query = locationData?.locationType == LocationType.GPS ? Constants.KEY_GPS : locationData?.query;
+
+            if (SecondaryTileUtils.Exists(query))
             {
                 bool deleted = await new SecondaryTile(
-                    SecondaryTileUtils.GetTileId(locationData.query)).RequestDeleteAsync().AsTask().ConfigureAwait(true);
+                    SecondaryTileUtils.GetTileId(query)).RequestDeleteAsync().AsTask().ConfigureAwait(true);
                 if (deleted)
                 {
-                    SecondaryTileUtils.RemoveTileId(locationData.query);
+                    SecondaryTileUtils.RemoveTileId(query);
                 }
 
                 SetPinButton(!deleted);
@@ -813,7 +810,7 @@ namespace SimpleWeather.UWP.Main
                 var tile = new SecondaryTile(
                     tileID,
                     "SimpleWeather",
-                    "action=view-weather&query=" + locationData.query,
+                    "action=view-weather&query=" + query,
                     new Uri("ms-appx:///Assets/Square150x150Logo.png"),
                     TileSize.Default);
 
@@ -836,7 +833,7 @@ namespace SimpleWeather.UWP.Main
                 if (isPinned)
                 {
                     // Update tile with notifications
-                    SecondaryTileUtils.AddTileId(locationData.query, tileID);
+                    SecondaryTileUtils.AddTileId(query, tileID);
                     await WeatherTileCreator.TileUpdater(locationData).ConfigureAwait(true);
                     await tile.UpdateAsync().AsTask().ConfigureAwait(true);
                 }
@@ -865,8 +862,6 @@ namespace SimpleWeather.UWP.Main
 
             if (sender is IGraph control)
             {
-                FrameworkElement controlParent = null;
-
                 GotoDetailsPage(false,
                     control.GetItemPositionFromPoint((float)(e.GetPosition(control.GetControl()).X + control.GetScrollViewer().HorizontalOffset)));
             }

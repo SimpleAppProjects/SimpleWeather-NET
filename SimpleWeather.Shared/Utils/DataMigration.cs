@@ -119,7 +119,7 @@ namespace SimpleWeather.Utils
                             Settings.KeyVerified = true;
                         }
                     }
-                    if (Settings.VersionCode < 5000)
+                    if (Settings.VersionCode < 5010)
                     {
                         if (WeatherAPI.Here.Equals(Settings.API) || WeatherAPI.Yahoo.Equals(Settings.API))
                         {
@@ -131,7 +131,29 @@ namespace SimpleWeather.Utils
                         }
 
                         await DBUtils.UpdateLocationKey(locationDB);
-                        Settings.SaveLastGPSLocData(new LocationData());
+                        if (Settings.lastGPSLocData is LocationData locData && locData.IsValid())
+                        {
+                            var oldKey = locData.query;
+
+                            locData.query = WeatherManager.GetProvider(locData.weatherSource)
+                                .UpdateLocationQuery(locData);
+                            Settings.SaveLastGPSLocData(locData);
+
+#if WINDOWS_UWP && !UNIT_TEST
+                            // Update tile id for location
+                            SimpleLibrary.GetInstance().RequestAction(
+                                CommonActions.ACTION_WEATHER_UPDATETILELOCATION,
+                                new Dictionary<string, string>
+                                {
+                                        { Constants.TILEKEY_OLDKEY, oldKey },
+                                        { Constants.TILEKEY_LOCATION, Constants.KEY_GPS },
+                                });
+#endif
+                        }
+                        else
+                        {
+                            Settings.SaveLastGPSLocData(new LocationData());
+                        }
                     }
                     AnalyticsLogger.LogEvent("App upgrading", new Dictionary<string, string>()
                     {

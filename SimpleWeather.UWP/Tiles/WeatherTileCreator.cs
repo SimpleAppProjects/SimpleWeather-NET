@@ -998,7 +998,7 @@ namespace SimpleWeather.UWP.Tiles
                     await weather.UpdateBackground();
 
                 // And send the notification to the tile
-                if (Equals(await Settings.GetHomeData(), location))
+                if (location.locationType == LocationType.GPS || Equals(await Settings.GetHomeData(), location))
                 {
                     // Update both primary and secondary tile if it exists
                     var appTileUpdater = TileUpdateManager.CreateTileUpdaterForApplication();
@@ -1008,10 +1008,12 @@ namespace SimpleWeather.UWP.Tiles
                     {
                         UpdateContent(appTileUpdater, location, weather).Wait();
                     }
-                    if (SecondaryTileUtils.Exists(location.query))
+
+                    var query = location.locationType == LocationType.GPS ? Constants.KEY_GPS : location.query;
+                    if (SecondaryTileUtils.Exists(query))
                     {
                         var tileUpdater = TileUpdateManager.CreateTileUpdaterForSecondaryTile(
-                                SecondaryTileUtils.GetTileId(location.query));
+                                SecondaryTileUtils.GetTileId(query));
                         lock (tileUpdater)
                         {
                             UpdateContent(tileUpdater, location, weather).Wait();

@@ -531,17 +531,16 @@ namespace SimpleWeather.UWP.Preferences
                     if (gpsLoc?.query == null)
                         Settings.SaveLastGPSLocData(prevLoc);
                     else
-                        await SecondaryTileUtils.UpdateTileId(prevLoc.query, gpsLoc.query);
+                        SecondaryTileUtils.UpdateTileId(prevLoc.query, Constants.KEY_GPS);
                 }
             }
             else
             {
-                var prevLoc = await Settings.GetLastGPSLocData();
-                if (prevLoc?.query != null && SecondaryTileUtils.Exists(prevLoc.query))
+                if (SecondaryTileUtils.Exists(Constants.KEY_GPS))
                 {
                     var favLoc = (await Settings.GetFavorites()).FirstOrDefault();
-                    if (favLoc?.query != null)
-                        await SecondaryTileUtils.UpdateTileId(prevLoc.query, favLoc.query);
+                    if (favLoc?.IsValid() == true)
+                        SecondaryTileUtils.UpdateTileId(Constants.KEY_GPS, favLoc.query);
                 }
             }
 

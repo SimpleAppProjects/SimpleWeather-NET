@@ -42,27 +42,16 @@ namespace SimpleWeather.UWP.Tiles
             }
         }
 
-        public static Task UpdateTileId(string oldQuery, string newQuery)
+        public static void UpdateTileId(string oldQuery, string newQuery)
         {
-            return Task.Run(async () =>
+            if (tileIdContainer.Values.ContainsKey(oldQuery))
             {
-                if (tileIdContainer.Values.ContainsKey(oldQuery))
-                {
-                    string oldId = tileIdContainer.Values[oldQuery]?.ToString();
+                string oldId = tileIdContainer.Values[oldQuery]?.ToString();
 
-                    tileIdContainer.Values.Remove(oldQuery);
+                tileIdContainer.Values.Remove(oldQuery);
 
-                    if (!string.IsNullOrWhiteSpace(tileIdContainer.Values[newQuery]?.ToString()))
-                    {
-                        if (SecondaryTile.Exists(tileIdContainer.Values[newQuery]?.ToString()))
-                        {
-                            await new SecondaryTile(tileIdContainer.Values[newQuery]?.ToString()).RequestDeleteAsync();
-                        }
-                    }
-
-                    tileIdContainer.Values[newQuery] = oldId;
-                }
-            });
+                tileIdContainer.Values[newQuery] = oldId;
+            }
         }
 
         public static void AddTileId(string query, string id)

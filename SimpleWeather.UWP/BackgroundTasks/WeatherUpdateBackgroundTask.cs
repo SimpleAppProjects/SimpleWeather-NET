@@ -63,9 +63,19 @@ namespace SimpleWeather.UWP.BackgroundTasks
                         {
                             Logger.WriteLine(LoggerLevel.Debug, "WeatherUpdateBackgroundTask: Updating secondary tile...");
 
-                            var locations = await Settings.GetLocationData();
-                            var location = locations.FirstOrDefault(
-                                loc => loc.query != null && loc.query.Equals(SecondaryTileUtils.GetQueryFromId(tile.TileId)));
+                            Location.LocationData location = null;
+                            var tileQuery = SecondaryTileUtils.GetQueryFromId(tile.TileId);
+
+                            if (tileQuery == Constants.KEY_GPS)
+                            {
+                                // Skip; this was already updated above
+                                continue;
+                            }
+                            else
+                            {
+                                var locations = await Settings.GetLocationData();
+                                location = locations.FirstOrDefault(loc => loc.query != null && loc.query.Equals(tileQuery));
+                            }
 
                             Logger.WriteLine(LoggerLevel.Debug, "Location = " + location?.ToString());
                             Logger.WriteLine(LoggerLevel.Debug, "TileID = " + tile.TileId);
@@ -340,12 +350,6 @@ namespace SimpleWeather.UWP.BackgroundTasks
                         // Save location as last known
                         lastGPSLocData.SetData(view, newGeoPos);
                         Settings.SaveLastGPSLocData(lastGPSLocData);
-
-                        // Update tile id for location
-                        if (oldKey != null && SecondaryTileUtils.Exists(oldKey))
-                        {
-                            await AsyncTask.RunAsync(SecondaryTileUtils.UpdateTileId(oldKey, lastGPSLocData.query));
-                        }
 
                         locationChanged = true;
                     }

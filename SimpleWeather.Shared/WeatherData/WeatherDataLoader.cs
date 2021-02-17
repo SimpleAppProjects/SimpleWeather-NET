@@ -290,20 +290,23 @@ namespace SimpleWeather.WeatherData
 
                                 // Update database as well
                                 if (location.locationType == LocationType.GPS)
+                                {
                                     Settings.SaveLastGPSLocData(location);
+                                }
                                 else
+                                {
                                     await Settings.UpdateLocationWithKey(location, oldKey);
-
 #if WINDOWS_UWP && !UNIT_TEST
-                                // Update tile id for location
-                                SimpleLibrary.GetInstance().RequestAction(
-                                    CommonActions.ACTION_WEATHER_UPDATETILELOCATION,
-                                    new Dictionary<string, string> 
-                                    {
-                                        { Constants.TILEKEY_OLDKEY, oldKey },
-                                        { Constants.TILEKEY_LOCATION, location.query },
-                                    });
+                                    // Update tile id for location
+                                    SimpleLibrary.GetInstance().RequestAction(
+                                        CommonActions.ACTION_WEATHER_UPDATETILELOCATION,
+                                        new Dictionary<string, string>
+                                        {
+                                            { Constants.TILEKEY_OLDKEY, oldKey },
+                                            { Constants.TILEKEY_LOCATION, location.query },
+                                        });
 #endif
+                                }
                             }
                         }
                     }

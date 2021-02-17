@@ -21,7 +21,7 @@ namespace SimpleWeather.UWP
 
                     if (SecondaryTileUtils.Exists(oldKey))
                     {
-                        await SecondaryTileUtils.UpdateTileId(oldKey, locationQuery);
+                        SecondaryTileUtils.UpdateTileId(oldKey, locationQuery);
                     }
                 }
             }

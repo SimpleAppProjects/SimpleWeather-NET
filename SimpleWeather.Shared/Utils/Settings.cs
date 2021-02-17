@@ -91,7 +91,7 @@ namespace SimpleWeather.Utils
         public static event SettingsChangedEventHandler OnSettingsChanged;
 
         // Weather Data
-        private static LocationData lastGPSLocData;
+        internal static LocationData lastGPSLocData;
         private static bool loaded = false;
 
         static Settings()
