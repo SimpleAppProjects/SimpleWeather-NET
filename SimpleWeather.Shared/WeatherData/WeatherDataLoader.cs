@@ -394,7 +394,15 @@ namespace SimpleWeather.WeatherData
                     var durationMins = weather?.condition?.observation_time == null ? 61 : (now - weather.condition.observation_time).TotalMinutes;
                     if (durationMins > 60)
                     {
-                        var hrf = await Settings.GetFirstHourlyWeatherForecastDataByDate(location.query, now.Trim(TimeSpan.TicksPerHour).ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture));
+                        var interval = WeatherManager.GetProvider(weather.source).HourlyForecastInterval;
+
+                        var nowHour = now.Trim(TimeSpan.TicksPerHour);
+                        var hrf = await Settings.GetFirstHourlyWeatherForecastDataByDate(location.query, nowHour.ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture));
+                        if (hrf == null || ((hrf.date - now) is TimeSpan dur && dur.TotalHours > interval * 0.5d))
+                        {
+                            var prevHrf = await Settings.GetFirstHourlyWeatherForecastDataByDate(location.query, nowHour.AddHours(-interval).Trim(TimeSpan.TicksPerHour).ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture));
+                            if (prevHrf != null) hrf = prevHrf;
+                        }
 
                         if (hrf != null)
                         {

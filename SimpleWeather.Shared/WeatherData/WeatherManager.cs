@@ -155,6 +155,8 @@ namespace SimpleWeather.WeatherData
 
         public bool NeedsExternalAlertData => WeatherProvider.NeedsExternalAlertData;
 
+        public int HourlyForecastInterval => WeatherProvider.HourlyForecastInterval;
+
         public Task UpdateLocationData(LocationData location)
         {
             return WeatherProvider.UpdateLocationData(location);

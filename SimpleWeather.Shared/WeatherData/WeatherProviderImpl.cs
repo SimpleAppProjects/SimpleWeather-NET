@@ -21,6 +21,8 @@ namespace SimpleWeather.WeatherData
         public virtual bool SupportsAlerts => true;
         public abstract bool NeedsExternalAlertData { get; }
 
+        public virtual int HourlyForecastInterval => 1;
+
         // Methods
         // AutoCompleteQuery
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>

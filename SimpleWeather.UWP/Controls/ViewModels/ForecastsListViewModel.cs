@@ -237,7 +237,8 @@ namespace SimpleWeather.UWP.Controls
                 if (locationData?.query == null)
                     return new List<HourlyForecastItemViewModel>(0);
 
-                var dateBlob = DateTimeOffset.Now.ToOffset(locationData.tz_offset).Trim(TimeSpan.TicksPerHour).ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture);
+                var hrInterval = WeatherManager.GetInstance().HourlyForecastInterval;
+                var dateBlob = DateTimeOffset.Now.ToOffset(locationData.tz_offset).Trim(TimeSpan.TicksPerHour).AddHours(-(hrInterval * 0.5d)).ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture);
                 var result = await Settings.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(locationData.query, pageIndex, pageSize, dateBlob);
 
                 var models = new List<HourlyForecastItemViewModel>();

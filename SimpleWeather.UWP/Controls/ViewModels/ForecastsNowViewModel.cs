@@ -82,7 +82,8 @@ namespace SimpleWeather.UWP.Controls
 
                     currentForecastsData.SetValue(await Settings.GetWeatherForecastData(location.query));
 
-                    var dateBlob = DateTimeOffset.Now.ToOffset(location.tz_offset).Trim(TimeSpan.TicksPerHour).ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture);
+                    var hrInterval = WeatherManager.GetInstance().HourlyForecastInterval;
+                    var dateBlob = DateTimeOffset.Now.ToOffset(location.tz_offset).Trim(TimeSpan.TicksPerHour).AddHours(-(hrInterval * 0.5d)).ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture);
                     currentHrForecastsData.SetValue(await Settings.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(location.query, 0, 12, dateBlob));
 
                     Settings.RegisterWeatherDBChangedEvent(ForecastGraphViewModel_TableChanged);

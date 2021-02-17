@@ -17,6 +17,8 @@ namespace SimpleWeather.WeatherData
         bool SupportsAlerts { get; }
         bool NeedsExternalAlertData { get; }
 
+        int HourlyForecastInterval { get; }
+
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string ac_query);
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>

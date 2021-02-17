@@ -36,6 +36,8 @@ namespace SimpleWeather.OpenWeather
         public override bool KeyRequired => true;
         public override bool NeedsExternalAlertData => true;
 
+        public override int HourlyForecastInterval => 3;
+
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override Task<bool> IsKeyValid(string key)
         {
