@@ -194,11 +194,8 @@ namespace SimpleWeather.HERE
             });
         }
 
-        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override async Task<Weather> GetWeather(LocationData location)
+        protected override async Task UpdateWeatherData(LocationData location, Weather weather)
         {
-            var weather = await base.GetWeather(location);
-
             var offset = location.tz_offset;
 
             if (weather.weather_alerts?.Any() == true)
@@ -225,8 +222,6 @@ namespace SimpleWeather.HERE
             {
                 forecast.date = forecast.date.Add(offset);
             }
-
-            return weather;
         }
 
         public override Task<ICollection<WeatherAlert>> GetAlerts(LocationData location)

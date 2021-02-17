@@ -16,16 +16,16 @@ using Windows.Web.Http.Headers;
 
 namespace SimpleWeather.AQICN
 {
-    public class AQICNProvider : IAirQualityProvider
+    public sealed class AQICNProvider
     {
         private const String QUERY_URL = "https://api.waqi.info/feed/geo:{0:0.####};{1:0.####}/?token={2}";
         private const int MAX_ATTEMPTS = 2;
 
-        public Task<AirQuality> GetAirQualityData(LocationData location)
+        public Task<AQICNData> GetAirQualityData(LocationData location)
         {
             return Task.Run(async () =>
             {
-                AirQuality aqiData = null;
+                AQICNData aqiData = null;
 
                 string key = APIKeys.GetAQICNKey();
                 if (String.IsNullOrWhiteSpace(key))
@@ -59,7 +59,7 @@ namespace SimpleWeather.AQICN
                                 // Load data
                                 var root = JSONParser.Deserializer<Rootobject>(contentStream);
 
-                                aqiData = new AirQuality(root);
+                                aqiData = new AQICNData(root);
                             }
                         }
 

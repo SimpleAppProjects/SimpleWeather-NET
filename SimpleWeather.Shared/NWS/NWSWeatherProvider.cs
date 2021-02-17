@@ -298,11 +298,8 @@ namespace SimpleWeather.NWS
             }
         }
 
-        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override async Task<Weather> GetWeather(LocationData location)
+        protected override async Task UpdateWeatherData(LocationData location, Weather weather)
         {
-            var weather = await base.GetWeather(location);
-
             var offset = location.tz_offset;
             weather.update_time = weather.update_time.ToOffset(offset);
             weather.condition.observation_time = weather.condition.observation_time.ToOffset(location.tz_offset);
@@ -328,8 +325,6 @@ namespace SimpleWeather.NWS
                 var hrf_localTime = hrf_date.DateTime.TimeOfDay;
                 hr_forecast.icon = GetWeatherIcon(hrf_localTime < sunrise || hrf_localTime > sunset, hr_forecast.icon);
             }
-
-            return weather;
         }
 
         public override string UpdateLocationQuery(Weather weather)

@@ -120,6 +120,7 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AQICN\AQICNData.cs" />
     <Compile Include="AQICN\AQICNProvider.cs" />
     <Compile Include="AQICN\Rootobject.cs" />
     <Compile Include="Bing\AutoCompleteQuery.cs" />

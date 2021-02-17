@@ -131,11 +131,8 @@ namespace SimpleWeather.WeatherUnlocked
             });
         }
 
-        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override async Task<WeatherData.Weather> GetWeather(LocationData location)
+        protected override async Task UpdateWeatherData(LocationData location, Weather weather)
         {
-            var weather = await base.GetWeather(location);
-
             // OWM reports datetime in UTC; add location tz_offset
             var offset = location.tz_offset;
             weather.update_time = weather.update_time.ToOffset(offset);
@@ -158,8 +155,6 @@ namespace SimpleWeather.WeatherUnlocked
                 var hrf_localTime = hrf_date.DateTime.TimeOfDay;
                 hr_forecast.icon = GetWeatherIcon(hrf_localTime < sunrise || hrf_localTime > sunset, hr_forecast.icon);
             }
-
-            return weather;
         }
 
         public override string UpdateLocationQuery(WeatherData.Weather weather)

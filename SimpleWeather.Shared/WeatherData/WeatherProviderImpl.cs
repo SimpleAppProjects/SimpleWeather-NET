@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.UI;
 
@@ -77,12 +78,66 @@ namespace SimpleWeather.WeatherData
                 weather.location.latitude = (float)location.latitude;
                 weather.location.longitude = (float)location.longitude;
 
+                // Provider-specific updates/fixes
+                await UpdateWeatherData(location, weather);
+
                 // Additional external data
-                weather.condition.airQuality = await new AQICN.AQICNProvider().GetAirQualityData(location);
+                await UpdateAQIData(location, weather);
 
                 return weather;
             });
         }
+
+        /// <summary>
+        /// Providers weather provider specific updates to the weather object; For example, location tz offset
+        /// fixes, etc.
+        /// </summary>
+        /// <param name="location">Location data</param>
+        /// <param name="weather">The weather data to update</param>
+        /// <returns></returns>
+        protected abstract Task UpdateWeatherData(LocationData location, Weather weather);
+
+        private async Task UpdateAQIData(LocationData location, Weather weather)
+        {
+            var aqicnData = await new AQICN.AQICNProvider().GetAirQualityData(location);
+            weather.condition.airQuality = aqicnData;
+
+            try
+            {
+                if (aqicnData.uvi_forecast?.Count > 0)
+                {
+                    for (int i = 0; i < aqicnData.uvi_forecast.Count; i++)
+                    {
+                        var uviData = aqicnData.uvi_forecast[i];
+                        var date = DateTime.ParseExact(uviData.day, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+
+                        if (i == 0 && weather.condition.uv == null)
+                        {
+                            if (date.Equals(weather.condition.observation_time.Date))
+                            {
+                                weather.condition.uv = new UV(uviData.avg);
+                            }
+                        }
+
+                        var forecastObj = weather.forecast.FirstOrDefault(f => f.date.Date.Equals(date));
+                        if (forecastObj != null && forecastObj.extras?.uv_index == null)
+                        {
+                            if (forecastObj.extras == null)
+                            {
+                                forecastObj.extras = new ForecastExtras();
+                            }
+
+                            forecastObj.extras.uv_index = uviData.max;
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine(LoggerLevel.Error, e, "Error parsing AQI data");
+            }
+        }
+
         // Alerts
         public virtual Task<ICollection<WeatherAlert>> GetAlerts(LocationData location)
         {
