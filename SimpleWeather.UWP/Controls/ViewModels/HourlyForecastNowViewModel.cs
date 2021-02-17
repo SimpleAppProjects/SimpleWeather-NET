@@ -79,7 +79,7 @@ namespace SimpleWeather.UWP.Controls
                         break;
                 }
 
-                WindDirection = forecast.wind_degrees.GetValueOrDefault(0);
+                WindDirection = forecast.wind_degrees.GetValueOrDefault(0) + 180;
 
                 WindSpeed = String.Format(culture, "{0} {1}", speedVal, speedUnit);
             }

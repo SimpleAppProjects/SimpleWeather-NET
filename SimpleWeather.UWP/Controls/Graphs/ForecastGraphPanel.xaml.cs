@@ -96,7 +96,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
         public ForecastGraphViewModel GraphData
         {
             get { return (ForecastGraphViewModel)GetValue(GraphDataProperty); }
-            set { SetValue(GraphDataProperty, value); }
+            set { SetValue(GraphDataProperty, value); UpdateView(false); }
         }
 
         // Using a DependencyProperty as the backing store for GraphData.  This enables animation, styling, binding, etc...
