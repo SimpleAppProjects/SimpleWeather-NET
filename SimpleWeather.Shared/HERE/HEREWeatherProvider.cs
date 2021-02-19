@@ -30,7 +30,7 @@ namespace SimpleWeather.HERE
             LocationProvider = RemoteConfig.RemoteConfig.GetLocationProvider(WeatherAPI);
             if (LocationProvider == null)
             {
-                LocationProvider = new HERELocationProvider();
+                LocationProvider = new Bing.BingMapsLocationProvider();
             }
         }
 

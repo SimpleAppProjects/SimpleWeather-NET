@@ -1,4 +1,5 @@
-﻿using SimpleWeather.Controls;
+﻿#if false
+using SimpleWeather.Controls;
 using SimpleWeather.Keys;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
@@ -277,3 +278,4 @@ namespace SimpleWeather.HERE
         }
     }
 }
+#endif

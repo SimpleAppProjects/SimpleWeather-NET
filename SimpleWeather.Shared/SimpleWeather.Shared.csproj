@@ -171,7 +171,6 @@
     <Compile Include="Keys\TimeZoneAPI.cs" />
     <Compile Include="Keys\WeatherApiKey.cs" />
     <Compile Include="Keys\WUnlockedKey.cs" />
-    <Compile Include="Keys\YahooKey.cs" />
     <Compile Include="Location\ILocationProviderImpl.cs" />
     <Compile Include="Location\LocationData.cs" />
     <Compile Include="Location\LocationProviderImpl.cs" />
@@ -865,7 +864,6 @@
     <None Include="Keys\TimeZoneAPI.cs.bak" />
     <None Include="Keys\WeatherApiKey.cs.bak" />
     <None Include="Keys\WUnlockedKey.cs.bak" />
-    <None Include="Keys\YahooKey.cs.bak" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Timber\Timber.csproj">

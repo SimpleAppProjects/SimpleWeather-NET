@@ -21,8 +21,10 @@ namespace SimpleWeather.RemoteConfig
             {
                 switch (config.locSource)
                 {
+#if false
                     case WeatherAPI.Here:
                         return new HERE.HERELocationProvider();
+#endif
                     case WeatherAPI.BingMaps:
                         return new Bing.BingMapsLocationProvider();
                     case WeatherAPI.WeatherApi:
