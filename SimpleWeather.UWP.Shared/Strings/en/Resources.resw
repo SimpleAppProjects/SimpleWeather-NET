@@ -572,4 +572,34 @@
   <data name="FeatureOption_Charts.Content" xml:space="preserve">
     <value>Charts</value>
   </data>
+  <data name="Label_Purchase.Content" xml:space="preserve">
+    <value>Purchase</value>
+  </data>
+  <data name="Manage_Sub.Text" xml:space="preserve">
+    <value>Manage your subscription at:</value>
+  </data>
+  <data name="Message_Sub_Active.Text" xml:space="preserve">
+    <value>Premium is active</value>
+  </data>
+  <data name="message_sub_alreadypurchased" xml:space="preserve">
+    <value>Subscription already purchased</value>
+  </data>
+  <data name="Message_Sub_ThanksForSupport.Text" xml:space="preserve">
+    <value>Thank you for your support!</value>
+  </data>
+  <data name="Premium_Addon_Icons.Text" xml:space="preserve">
+    <value>Additional Icon Sets</value>
+  </data>
+  <data name="Premium_Addon_Radar.Text" xml:space="preserve">
+    <value>Radar Forecast</value>
+  </data>
+  <data name="Premium_Addon_SupportDev.Text" xml:space="preserve">
+    <value>Support app development</value>
+  </data>
+  <data name="Premium_Addon_WProviders.Text" xml:space="preserve">
+    <value>Additional Weather Providers</value>
+  </data>
+  <data name="Premium_Prompt.Text" xml:space="preserve">
+    <value>Help support the app by getting premium!</value>
+  </data>
 </root>

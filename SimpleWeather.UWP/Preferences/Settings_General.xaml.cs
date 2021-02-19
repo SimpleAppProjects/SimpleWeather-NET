@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Devices.Geolocation;
 using Windows.UI;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -331,6 +332,17 @@ namespace SimpleWeather.UWP.Preferences
         {
             ComboBox box = sender as ComboBox;
             string API = box.SelectedValue.ToString();
+
+            if (API == WeatherAPI.Here && !Extras.ExtrasLibrary.IsEnabled())
+            {
+                var prevItem = e.RemovedItems?.FirstOrDefault() as SimpleWeather.Controls.ProviderEntry;
+                // Revert value
+                box.SelectedValue = prevItem.Value;
+                // show premium popup
+                Frame.Navigate(typeof(Extras.Store.PremiumPage));
+                return;
+            }
+
             var selectedWProv = WeatherManager.GetProvider(API);
 
             if (selectedWProv.KeyRequired)

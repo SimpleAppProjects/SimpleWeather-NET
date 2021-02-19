@@ -85,7 +85,8 @@ namespace SimpleWeather.UWP.Radar
 
             mapControl.PanInteractionMode = InteractionsEnabled() ? MapPanInteractionMode.Auto : MapPanInteractionMode.Disabled;
 
-            RadarMapContainer.ToolbarVisibility = InteractionsEnabled() && IsAnimationAvailable ? Windows.UI.Xaml.Visibility.Visible : Windows.UI.Xaml.Visibility.Collapsed;
+            RadarMapContainer.ToolbarVisibility = 
+                InteractionsEnabled() && IsAnimationAvailable && Extras.ExtrasLibrary.IsEnabled() ? Windows.UI.Xaml.Visibility.Visible : Windows.UI.Xaml.Visibility.Collapsed;
 
             UpdateMap(mapControl);
         }

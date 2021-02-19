@@ -99,7 +99,8 @@ namespace SimpleWeather
 
         public void RegisterIconProvider(Icons.WeatherIconProvider provider)
         {
-            IconProviders.Add(provider.Key, provider);
+            if (!IconProviders.Contains(provider.Key))
+                IconProviders.Add(provider.Key, provider);
         }
 
         public Icons.WeatherIconProvider GetIconProvider(string key)
@@ -123,6 +124,26 @@ namespace SimpleWeather
         public OrderedDictionary GetIconProviders()
         {
             return IconProviders.AsReadOnly();
+        }
+
+        public void ResetIconProviders()
+        {
+            Icons.WeatherIconProvider defaultProvider = null;
+            if (IconProviders.Contains(Icons.WeatherIconsProvider.KEY))
+            {
+                defaultProvider = IconProviders[Icons.WeatherIconsProvider.KEY] as Icons.WeatherIconProvider;
+            }
+
+            IconProviders.Clear();
+            
+            if (defaultProvider != null)
+            {
+                IconProviders.Add(Icons.WeatherIconsProvider.KEY, defaultProvider);
+            }
+            else
+            {
+                RegisterIconProvider(new Icons.WeatherIconsProvider());
+            }
         }
 
         public void Dispose()

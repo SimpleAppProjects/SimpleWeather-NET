@@ -624,6 +624,7 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="..\SimpleWeather.UWP.Shared\SimpleWeather.UWP.Shared.projitems" Label="Shared" />
+  <Import Project="..\SimpleWeather.Shared.Extras\SimpleWeather.Shared.Extras.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

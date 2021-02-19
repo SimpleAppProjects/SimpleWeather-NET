@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Windows.Foundation.Metadata;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -39,6 +40,17 @@ namespace SimpleWeather.UWP.Preferences
             // CommandBar
             CommandBarLabel = App.ResLoader.GetString("Nav_Settings/Content");
             AnalyticsLogger.LogEvent("SettingsPage");
+
+            if (ApiInformation.IsTypePresent("Windows.Services.Store.StoreContext"))
+            {
+                _pages.Add(("Premium", typeof(Extras.Store.PremiumPage)));
+                SettingsNavView.MenuItems.Insert(SettingsNavView.MenuItems.Count - 1, new muxc.NavigationViewItem()
+                {
+                    Icon = new SymbolIcon(Symbol.SolidStar),
+                    Content = "Premium",
+                    Tag = "Premium"
+                });
+            }
         }
 
         public Task<bool> OnBackRequested()

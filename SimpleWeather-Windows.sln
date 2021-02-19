@@ -24,9 +24,9 @@ EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		SimpleWeather.UWP.Shared\SimpleWeather.UWP.Shared.projitems*{0cc8f69f-eebc-40b4-9e7c-c2974a00764d}*SharedItemsImports = 4
+		SimpleWeather.Shared.Extras\SimpleWeather.Shared.Extras.projitems*{552847dd-608d-4da9-9ced-0c8416049742}*SharedItemsImports = 4
 		SimpleWeather.UWP.Shared\SimpleWeather.UWP.Shared.projitems*{552847dd-608d-4da9-9ced-0c8416049742}*SharedItemsImports = 4
 		SimpleWeather.UWP.Shared\SimpleWeather.UWP.Shared.projitems*{71735c8a-0b72-4cc7-8118-e53723d416c1}*SharedItemsImports = 13
-		SimpleWeather.Shared.Extras\SimpleWeather.Shared.Extras.projitems*{a92be3f1-3252-4650-a17e-498b223bd039}*SharedItemsImports = 4
 		SimpleWeather.Shared.Extras\SimpleWeather.Shared.Extras.projitems*{d1b93caa-3f28-4514-97a8-68ac45f52681}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

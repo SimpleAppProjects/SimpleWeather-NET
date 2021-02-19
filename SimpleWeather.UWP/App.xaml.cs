@@ -5,7 +5,6 @@ using Microsoft.QueryStringDotNET;
 using SimpleWeather.Controls;
 using SimpleWeather.Keys;
 using SimpleWeather.Location;
-using SimpleWeather.Shared.Extras;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.UWP.Helpers;
@@ -119,7 +118,6 @@ namespace SimpleWeather.UWP
             Utf8Json.Resolvers.CompositeResolver.RegisterAndSetAsDefault(
                 JSONParser.Resolver, UWP.Utf8JsonGen.Resolvers.GeneratedResolver.Instance
                 );
-            ExtrasLibrary.Init();
 
             AppCenter.LogLevel = LogLevel.Verbose;
             AppCenter.Start(APIKeys.GetAppCenterSecret(), typeof(Analytics), typeof(Crashes));
@@ -546,6 +544,8 @@ namespace SimpleWeather.UWP
                 };
             }
 
+            InitializeExtras();
+
             Initialized = true;
         }
 
@@ -559,7 +559,30 @@ namespace SimpleWeather.UWP
             // Load data if needed
             Settings.LoadIfNeeded();
 
+            InitializeExtras();
+
             Initialized = true;
+        }
+
+        private async void InitializeExtras()
+        {
+            try
+            {
+                if (await Extras.Store.WindowsStoreManager.CheckIfUserHasActiveSubscriptionAsync())
+                {
+                    // Enable extras
+                    Extras.ExtrasLibrary.EnableExtras();
+                }
+                else
+                {
+                    // Disable extras
+                    Extras.ExtrasLibrary.DisableExtras();
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine(LoggerLevel.Error, e);
+            }
         }
 
         /// <summary>

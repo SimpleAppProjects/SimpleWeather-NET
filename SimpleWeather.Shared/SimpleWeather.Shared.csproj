@@ -1002,7 +1002,6 @@
     <Content Include="Assets\WeatherIcons\dark\wi-windy.png" />
   </ItemGroup>
   <ItemGroup />
-  <Import Project="..\SimpleWeather.Shared.Extras\SimpleWeather.Shared.Extras.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
