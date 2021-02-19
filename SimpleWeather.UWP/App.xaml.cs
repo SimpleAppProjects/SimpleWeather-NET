@@ -118,6 +118,7 @@ namespace SimpleWeather.UWP
             Utf8Json.Resolvers.CompositeResolver.RegisterAndSetAsDefault(
                 JSONParser.Resolver, UWP.Utf8JsonGen.Resolvers.GeneratedResolver.Instance
                 );
+            Extras.ExtrasLibrary.Init();
 
             AppCenter.LogLevel = LogLevel.Verbose;
             AppCenter.Start(APIKeys.GetAppCenterSecret(), typeof(Analytics), typeof(Crashes));

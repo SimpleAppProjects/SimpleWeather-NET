@@ -85,6 +85,11 @@ namespace SimpleWeather.UWP.Preferences
             {
                 return false;
             }
+            if (key != Icons.WeatherIconsProvider.KEY && !Extras.ExtrasLibrary.IsEnabled())
+            {
+                Frame.Navigate(typeof(Extras.Store.PremiumPage));
+                return false;
+            }
             Settings.IconProvider = key;
             WeatherIconsManager.GetInstance().UpdateIconProvider();
             return true;
