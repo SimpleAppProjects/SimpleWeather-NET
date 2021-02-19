@@ -99,6 +99,8 @@ namespace SimpleWeather.UWP.Preferences
 
         private async void InstallButton_Click(object sender, RoutedEventArgs e)
         {
+            CheckUpdateButton.IsEnabled = false;
+
             UpdateProgressBar.IsIndeterminate = true;
             UpdateProgressBar.ShowError = false;
             UpdateProgressBar.Value = 0;
@@ -151,8 +153,10 @@ namespace SimpleWeather.UWP.Preferences
                 case StorePackageUpdateState.OtherError:
                     InstallButton.Content = App.ResLoader.GetString("InstallErrorPrompt");
                     UpdateProgressBar.ShowError = true;
+                    CheckUpdateButton.IsEnabled = true;
                     return;
                 default:
+                    CheckUpdateButton.IsEnabled = true;
                     break;
             }
         }
