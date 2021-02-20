@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SimpleWeather.AQICN;
+using SimpleWeather.Firebase;
 using SimpleWeather.HERE;
 using SimpleWeather.Keys;
 using SimpleWeather.Location;
@@ -205,6 +206,13 @@ namespace UnitTestProject
         {
             var updateTime = SimpleWeather.WeatherData.Images.ImageDatabase.GetLastUpdateTime().ConfigureAwait(false).GetAwaiter().GetResult();
             Assert.IsTrue(updateTime > 0);
+        }
+
+        [TestMethod]
+        public void FirestoreAPITest()
+        {
+            var storage = SimpleWeather.Firebase.FirebaseStorageHelper.GetFirebaseStorage().ConfigureAwait(false).GetAwaiter().GetResult();
+            var storageRef = storage.GetReferenceFromUrl(new Uri(""));
         }
 
         [TestMethod]
