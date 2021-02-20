@@ -566,4 +566,10 @@
   <data name="FeatureOption_TileBackground.Content" xml:space="preserve">
     <value>Obraz tła miniatury</value>
   </data>
+  <data name="Pref_TitleIcons.Content" xml:space="preserve">
+    <value>Ikony</value>
+  </data>
+  <data name="FeatureOption_Charts.Content" xml:space="preserve">
+    <value>Wykresy</value>
+  </data>
 </root>

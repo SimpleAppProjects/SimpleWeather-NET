@@ -574,4 +574,10 @@
   <data name="FeatureOption_TileBackground.Content" xml:space="preserve">
     <value>Kachel-Hintergrundbild</value>
   </data>
+  <data name="Pref_TitleIcons.Content" xml:space="preserve">
+    <value>Icons</value>
+  </data>
+  <data name="FeatureOption_Charts.Content" xml:space="preserve">
+    <value>Diagramme</value>
+  </data>
 </root>

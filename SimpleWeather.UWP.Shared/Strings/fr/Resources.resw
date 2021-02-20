@@ -565,4 +565,10 @@
   <data name="FeatureOption_TileBackground.Content" xml:space="preserve">
     <value>Image d&apos;arrière-plan de vignette</value>
   </data>
+  <data name="Pref_TitleIcons.Content" xml:space="preserve">
+    <value>Icônes</value>
+  </data>
+  <data name="FeatureOption_Charts.Content" xml:space="preserve">
+    <value>Graphiques</value>
+  </data>
 </root>
