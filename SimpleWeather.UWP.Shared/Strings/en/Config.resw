@@ -118,48 +118,41 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="default_weather_provider" xml:space="preserve">
-    <value>Yahoo</value>
+    <value>wunlocked</value>
   </data>
   <data name="Here" xml:space="preserve">
     <value>{
-        "enabled": false,
-        "locSource": "Here",
-        "newWeatherSource": "Yahoo"
-    }</value>
+        "enabled": true,
+        "locSource": "Bing",
+        "newWeatherSource": ""
+}</value>
   </data>
   <data name="Metno" xml:space="preserve">
     <value>{
         "enabled": true,
         "locSource": "Bing",
         "newWeatherSource": ""
-    }</value>
+}</value>
   </data>
   <data name="NWS" xml:space="preserve">
     <value>{
         "enabled": true,
         "locSource": "Bing",
         "newWeatherSource": ""
-    }</value>
+}</value>
   </data>
   <data name="OpenWeather" xml:space="preserve">
     <value>{
         "enabled": true,
         "locSource": "Bing",
         "newWeatherSource": ""
-    }</value>
+}</value>
   </data>
   <data name="wunlocked" xml:space="preserve">
     <value>{
         "enabled": true,
         "locSource": "Bing",
         "newWeatherSource": ""
-    }</value>
-  </data>
-  <data name="Yahoo" xml:space="preserve">
-    <value>{
-        "enabled": true,
-        "locSource": "Bing",
-        "newWeatherSource": ""
-    }</value>
+}</value>
   </data>
 </root>

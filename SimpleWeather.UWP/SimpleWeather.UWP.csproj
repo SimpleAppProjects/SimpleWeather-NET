@@ -19,7 +19,7 @@
     <PackageCertificateKeyFile>SimpleWeather.UWP_StoreKey.pfx</PackageCertificateKeyFile>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>x64</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
     <PackageCertificateThumbprint>
     </PackageCertificateThumbprint>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
@@ -30,7 +30,7 @@
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <GenerateTestArtifacts>False</GenerateTestArtifacts>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
-    <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
+    <AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -630,7 +630,7 @@
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>"$(SolutionDir)KeyCheck.exe" "$(SolutionDir)SimpleWeather.Shared\Keys\AppCenterKey.cs" "$(SolutionDir)SimpleWeather.Shared\Keys\BingMapsKey.cs" "$(SolutionDir)SimpleWeather.Shared\Keys\HEREWeatherKey.cs" "$(SolutionDir)SimpleWeather.Shared\Keys\YahooKey.cs" "$(SolutionDir)SimpleWeather.Shared\Keys\AQICNKey.cs" "$(SolutionDir)SimpleWeather.Shared\Keys\FirebaseConfig.cs"
+    <PreBuildEvent>"$(SolutionDir)KeyCheck.exe" "$(SolutionDir)SimpleWeather.Shared\Keys\AppCenterKey.cs" "$(SolutionDir)SimpleWeather.Shared\Keys\AQICNKey.cs" "$(SolutionDir)SimpleWeather.Shared\Keys\BingMapsKey.cs" "$(SolutionDir)SimpleWeather.Shared\Keys\FirebaseConfig.cs" "$(SolutionDir)SimpleWeather.Shared\Keys\HEREWeatherKey.cs" "$(SolutionDir)SimpleWeather.Shared\Keys\OWMKey.cs" "$(SolutionDir)SimpleWeather.Shared\Keys\TimeZoneAPI.cs" "$(SolutionDir)SimpleWeather.Shared\Keys\WeatherApiKey.cs" "$(SolutionDir)SimpleWeather.Shared\Keys\WUnlockedKey.cs"
 
 if errorlevel 1 goto Error
 
