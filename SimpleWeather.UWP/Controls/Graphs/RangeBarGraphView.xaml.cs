@@ -90,6 +90,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
 
         private double IconHeight;
         private Dictionary<String, CanvasBitmap> IconCache;
+        private readonly object iconCacheLock = new object();
 
         private readonly float LineStrokeWidth;
         private readonly CanvasStrokeStyle LineStrokeStyle;
@@ -449,7 +450,10 @@ namespace SimpleWeather.UWP.Controls.Graphs
                                 {
                                     if (t.IsCompletedSuccessfully)
                                     {
-                                        IconCache.TryAdd(xData.XIcon + GetThemeSuffix(isLight), t.Result);
+                                        lock (iconCacheLock)
+                                        {
+                                            IconCache.TryAdd(xData.XIcon + GetThemeSuffix(isLight), t.Result);
+                                        }
                                         Dispatcher.RunOnUIThread(() => Canvas.Invalidate(iconRect));
                                     }
                                 });

@@ -109,6 +109,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
 
         private double IconHeight;
         private Dictionary<String, CanvasBitmap> IconCache;
+        private readonly object iconCacheLock = new object();
 
         public bool ReadyToDraw => Canvas.ReadyToDraw;
 
@@ -537,14 +538,20 @@ namespace SimpleWeather.UWP.Controls.Graphs
             {
                 if (t.IsCompletedSuccessfully && t.Result != null)
                 {
-                    IconCache.TryAdd(WeatherIcons.RAINDROP + GetThemeSuffix(false), t.Result);
+                    lock (iconCacheLock)
+                    {
+                        IconCache.TryAdd(WeatherIcons.RAINDROP + GetThemeSuffix(false), t.Result);
+                    }
                 }
             });
             CanvasBitmap.LoadAsync(sender, wim.GetWeatherIconURI(WeatherIcons.WIND_DIRECTION)).AsTask().ContinueWith((t) =>
             {
                 if (t.IsCompletedSuccessfully && t.Result != null)
                 {
-                    IconCache.TryAdd(WeatherIcons.WIND_DIRECTION + GetThemeSuffix(false), t.Result);
+                    lock (iconCacheLock)
+                    {
+                        IconCache.TryAdd(WeatherIcons.WIND_DIRECTION + GetThemeSuffix(false), t.Result);
+                    }
                 }
             });
         }
@@ -854,7 +861,10 @@ namespace SimpleWeather.UWP.Controls.Graphs
                                 {
                                     if (t.IsCompletedSuccessfully && t.Result != null)
                                     {
-                                        IconCache.TryAdd(xData.XIcon + GetThemeSuffix(isLight), t.Result);
+                                        lock (iconCacheLock)
+                                        {
+                                            IconCache.TryAdd(xData.XIcon + GetThemeSuffix(isLight), t.Result);
+                                        }
                                         Dispatcher.RunOnUIThread(() => Canvas.Invalidate(iconRect));
                                     }
                                 });
