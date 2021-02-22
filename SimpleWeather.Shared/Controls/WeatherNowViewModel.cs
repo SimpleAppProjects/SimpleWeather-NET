@@ -474,7 +474,7 @@ namespace SimpleWeather.Controls
 
             string creditPrefix = SimpleLibrary.GetInstance().ResLoader.GetString("Credit_Prefix/Text");
             WeatherCredit = String.Format("{0} {1}",
-                creditPrefix, WeatherAPI.APIs.First(WApi => Equals(WeatherSource, WApi.Value)));
+                creditPrefix, WeatherAPI.APIs.FirstOrDefault(WApi => Equals(WeatherSource, WApi.Value))?.ToString() ?? WeatherIcons.EM_DASH);
         }
 
         public Task UpdateBackground()
