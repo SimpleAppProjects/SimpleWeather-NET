@@ -14,6 +14,9 @@ namespace SimpleWeather.UWP.Controls.Graphs
         public List<YEntryData> SeriesData { get; private set; }
         public List<Color> SeriesColors { get; private set; }
 
+        public float? SeriesMin { get; set; }
+        public float? SeriesMax { get; set; }
+
         public LineDataSeries(List<YEntryData> seriesData)
         {
             if (seriesData == null || seriesData.Count <= 0)
@@ -44,6 +47,12 @@ namespace SimpleWeather.UWP.Controls.Graphs
         public void SetSeriesColors (params Color[] colors)
         {
             SeriesColors = new List<Color>(colors);
+        }
+
+        public void SetSeriesMinMax(float? seriesMin, float? seriesMax)
+        {
+            SeriesMin = seriesMin;
+            SeriesMax = seriesMax;
         }
 
         public override bool Equals(object obj)

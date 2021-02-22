@@ -432,12 +432,20 @@ namespace SimpleWeather.UWP.Controls.Graphs
                     float kMax = 0;
                     float kMin = 0;
 
-                    foreach (var seriesData in dataLists[k].SeriesData)
+                    if (!dataLists[k].SeriesMin.HasValue && !dataLists[k].SeriesMax.HasValue)
                     {
-                        if (kMax < seriesData.Y)
-                            kMax = seriesData.Y;
-                        if (kMin > seriesData.Y)
-                            kMin = seriesData.Y;
+                        foreach (var seriesData in dataLists[k].SeriesData)
+                        {
+                            if (kMax < seriesData.Y)
+                                kMax = seriesData.Y;
+                            if (kMin > seriesData.Y)
+                                kMin = seriesData.Y;
+                        }
+                    }
+                    else
+                    {
+                        kMax = dataLists[k].SeriesMax.Value;
+                        kMin = dataLists[k].SeriesMin.Value;
                     }
 
                     if (maxValue < kMax)

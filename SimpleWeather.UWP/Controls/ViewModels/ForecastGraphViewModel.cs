@@ -252,6 +252,7 @@ namespace SimpleWeather.UWP.Controls
                     GraphLabel = App.ResLoader.GetString("Label_Precipitation/Text");
                     series = new LineDataSeries(yData);
                     series.SetSeriesColors(Color.FromArgb(0xFF, 0, 0x70, 0xC0));
+                    series.SetSeriesMinMax(0f, 100f);
                     break;
                 case ForecastGraphType.Wind:
                     GraphLabel = App.ResLoader.GetString("Label_Wind/Text");
@@ -272,11 +273,13 @@ namespace SimpleWeather.UWP.Controls
                     GraphLabel = App.ResLoader.GetString("UV_Label");
                     series = new LineDataSeries(yData);
                     series.SetSeriesColors(Colors.Orange);
+                    series.SetSeriesMinMax(0f, 12f);
                     break;
                 case ForecastGraphType.Humidity:
                     GraphLabel = App.ResLoader.GetString("Label_Humidity/Text");
                     series = new LineDataSeries(yData);
                     series.SetSeriesColors(Colors.MediumPurple);
+                    series.SetSeriesMinMax(0f, 100f);
                     break;
             }
 
