@@ -260,24 +260,28 @@ namespace SimpleWeather.Controls
             else
                 region = address.adminDistrict2;
 
-            if (String.IsNullOrEmpty(region) || town.Equals(region))
+            if (String.IsNullOrEmpty(region) || Equals(town, region))
             {
                 region = address.countryRegion;
             }
 
-            if (!region.Equals(address.countryRegion))
+            if (!Equals(region, address.countryRegion))
             {
-                if (!String.IsNullOrEmpty(address.adminDistrict2)
-                        && !(address.adminDistrict2.Equals(region) || address.adminDistrict2.Equals(town)))
+                if (!String.IsNullOrEmpty(address.adminDistrict2) &&
+                    !(address.adminDistrict2.Equals(region) || address.adminDistrict2.Equals(town)))
                     LocationName = string.Format("{0}, {1}, {2}", town, address.adminDistrict2, region);
                 else
                     LocationName = string.Format("{0}, {1}", town, region);
             }
-            else if (!String.IsNullOrEmpty(address.adminDistrict2)
-                    && !(address.adminDistrict2.Equals(region) || address.adminDistrict2.Equals(town)))
+            else if (!String.IsNullOrEmpty(address.adminDistrict2) &&
+                !(address.adminDistrict2.Equals(region) || address.adminDistrict2.Equals(town)))
+            {
                 LocationName = string.Format("{0}, {1}, {2}", town, address.adminDistrict2, region);
+            }
             else
+            {
                 LocationName = string.Format("{0}, {1}", town, region);
+            }
 
             LocationCountry = address.countryRegionIso2;
 
@@ -325,24 +329,28 @@ namespace SimpleWeather.Controls
             else
                 region = result.Address.Country;
 
-            if (String.IsNullOrEmpty(region) || town.Equals(region))
+            if (String.IsNullOrEmpty(region) || Equals(town, region))
             {
                 region = result.Address.Country;
             }
 
-            if (!region.Equals(result.Address.Country))
+            if (!Equals(region, result.Address.Country))
             {
-                if (!String.IsNullOrEmpty(result.Address.Region)
-                        && !(result.Address.Region.Equals(region) || result.Address.Region.Equals(town)))
+                if (!String.IsNullOrEmpty(result.Address.Region) &&
+                    !(result.Address.Region.Equals(region) || result.Address.Region.Equals(town)))
                     LocationName = string.Format("{0}, {1}, {2}", town, region, result.Address.Region);
                 else
                     LocationName = string.Format("{0}, {1}", town, region);
             }
-            else if (!String.IsNullOrEmpty(result.Address.Region)
-                    && !(result.Address.Region.Equals(region) || result.Address.Region.Equals(town)))
+            else if (!String.IsNullOrEmpty(result.Address.Region) && 
+                !(result.Address.Region.Equals(region) || result.Address.Region.Equals(town)))
+            {
                 LocationName = string.Format("{0}, {1}, {2}", town, result.Address.Region, region);
+            }
             else
+            {
                 LocationName = string.Format("{0}, {1}", town, region);
+            }
 
             LocationCountry = result.Address.CountryCode;
 
