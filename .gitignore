@@ -272,9 +272,9 @@ API_KEY.txt
 /SimpleWeather.Shared/Keys/TimeZoneAPI.cs.bak
 /SimpleWeather.Shared/Keys/WeatherApiKey.cs.bak
 /SimpleWeather.Shared/Keys/WUnlockedKey.cs.bak
+/SimpleWeather.Shared/Keys/Keys.7z
 /Utf8Json.UniversalCodeGenerator
-/GenerateUtf8JsonResolvers.bat*
+/*.bat*
 /TranslationImport
-/ImportTranslations.bat
 listingData-*.csv
 /SimpleWeather.Shared.Extras
