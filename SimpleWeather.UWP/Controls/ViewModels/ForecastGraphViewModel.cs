@@ -62,8 +62,6 @@ namespace SimpleWeather.UWP.Controls
 
         public void AddForecastData<T>(T forecast, ForecastGraphType graphType) where T : BaseForecast
         {
-            var culture = CultureUtils.UserCulture;
-
             if (LabelData == null)
             {
                 LabelData = new List<XLabelData>();
@@ -83,9 +81,6 @@ namespace SimpleWeather.UWP.Controls
 
         public void SetForecastData<T>(IList<T> forecasts, ForecastGraphType graphType) where T : BaseForecast
         {
-            var isFahrenheit = Units.FAHRENHEIT.Equals(Settings.TemperatureUnit);
-            var culture = CultureUtils.UserCulture;
-
             var xData = new List<XLabelData>(forecasts.Count);
             var yData = new List<YEntryData>(forecasts.Count);
 
@@ -237,6 +232,9 @@ namespace SimpleWeather.UWP.Controls
         private List<LineDataSeries> CreateSeriesData(List<YEntryData> yData, ForecastGraphType graphType)
         {
             LineDataSeries series;
+
+            if (yData?.Count <= 0)
+                return null;
 
             switch (graphType)
             {
