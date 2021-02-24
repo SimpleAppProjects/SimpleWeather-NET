@@ -111,11 +111,32 @@ namespace SimpleWeather.WeatherData
                         var uviData = aqicnData.uvi_forecast[i];
                         var date = DateTime.ParseExact(uviData.day, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
 
-                        if (i == 0 && weather.condition.uv == null)
+                        if (weather.condition.uv == null && date.Equals(weather.condition.observation_time.Date))
                         {
-                            if (date.Equals(weather.condition.observation_time.Date))
+                            if (weather.astronomy.sunrise != null && weather.astronomy.sunset != null)
                             {
-                                weather.condition.uv = new UV(uviData.avg);
+                                var obsLocalTime = weather.condition.observation_time.DateTime.TimeOfDay;
+                                // if before sunrise or after sunset, uv min
+                                if (obsLocalTime < weather.astronomy.sunrise.TimeOfDay || obsLocalTime > weather.astronomy.sunset.TimeOfDay)
+                                {
+                                    weather.condition.uv = new UV(uviData.min);
+                                }
+                                else
+                                {
+                                    var totalSunlightTime = weather.astronomy.sunset - weather.astronomy.sunrise;
+                                    var solarNoon = weather.astronomy.sunrise + (totalSunlightTime / 2);
+
+                                    // If +/- 2hrs within solar noon, UV max
+                                    if (Math.Abs((obsLocalTime - solarNoon.TimeOfDay).TotalHours) <= 2)
+                                    {
+                                        weather.condition.uv = new UV(uviData.max);
+                                    }
+                                    // else uv avg
+                                    else
+                                    {
+                                        weather.condition.uv = new UV(uviData.avg);
+                                    }
+                                }
                             }
                         }
 
