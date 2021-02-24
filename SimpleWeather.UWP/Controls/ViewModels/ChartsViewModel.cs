@@ -201,32 +201,32 @@ namespace SimpleWeather.UWP.Controls
             }
 
             /*
-            if (tempData != null)
+            if (tempData?.SeriesData?.Count > 0)
             {
                 data.Add(tempData);
             }
             */
-            if (popData != null)
+            if (popData?.SeriesData?.Count > 0)
             {
                 data.Add(popData);
             }
-            if (windData != null)
+            if (windData?.SeriesData?.Count > 0)
             {
                 data.Add(windData);
             }
-            if (humidityData != null)
+            if (humidityData?.SeriesData?.Count > 0)
             {
                 data.Add(humidityData);
             }
-            if (uviData != null)
+            if (uviData?.SeriesData?.Count > 0)
             {
                 data.Add(uviData);
             }
-            if (rainData != null)
+            if (rainData?.SeriesData?.Count > 0)
             {
                 data.Add(rainData);
             }
-            if (snowData != null)
+            if (snowData?.SeriesData?.Count > 0)
             {
                 data.Add(snowData);
             }

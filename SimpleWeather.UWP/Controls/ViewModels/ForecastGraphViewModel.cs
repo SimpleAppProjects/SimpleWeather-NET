@@ -233,9 +233,6 @@ namespace SimpleWeather.UWP.Controls
         {
             LineDataSeries series;
 
-            if (yData?.Count <= 0)
-                return null;
-
             switch (graphType)
             {
                 /*

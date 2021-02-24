@@ -19,24 +19,14 @@ namespace SimpleWeather.UWP.Controls.Graphs
 
         public LineDataSeries(List<YEntryData> seriesData)
         {
-            if (seriesData == null || seriesData.Count <= 0)
-            {
-                throw new ArgumentException("Series data cannot be empty or null", nameof(seriesData));
-            }
-            SeriesData = seriesData;
+            SeriesData = seriesData ?? new List<YEntryData>();
             SeriesLabel = null;
             SeriesColors = DefaultColors.ToList();
         }
 
-        public LineDataSeries(String seriesLabel, List<YEntryData> seriesData)
+        public LineDataSeries(String seriesLabel, List<YEntryData> seriesData) : this(seriesData)
         {
-            if (seriesData == null || seriesData.Count <= 0)
-            {
-                throw new ArgumentException("Series data cannot be empty or null", nameof(seriesData));
-            }
-            SeriesData = seriesData;
             SeriesLabel = seriesLabel;
-            SeriesColors = DefaultColors.ToList();
         }
 
         public Color GetColor(int idx)

@@ -281,11 +281,6 @@ namespace SimpleWeather.UWP.Controls.Graphs
 
             foreach (LineDataSeries series in dataLists)
             {
-                if (series.SeriesData.Count > dataLabels.Count)
-                {
-                    throw new Exception("LineView error: SeriesData.Count > dataLabels.Count !!!");
-                }
-
                 foreach (YEntryData i in series.SeriesData)
                 {
                     if (biggestData < i.Y)
