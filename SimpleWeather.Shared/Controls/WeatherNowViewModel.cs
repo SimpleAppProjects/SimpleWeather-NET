@@ -144,7 +144,7 @@ namespace SimpleWeather.Controls
 
         public void UpdateView(Weather weather)
         {
-            if ((bool)weather?.IsValid())
+            if (weather?.IsValid() == true)
             {
                 if (!Equals(this.weather, weather))
                 {

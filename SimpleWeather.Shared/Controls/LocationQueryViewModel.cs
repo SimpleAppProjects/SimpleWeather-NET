@@ -202,7 +202,7 @@ namespace SimpleWeather.Controls
                     {
                         LocationName = location.location.address.label;
 
-                        if ((bool)LocationName?.Contains(", " + country))
+                        if (LocationName?.Contains(", " + country) == true)
                         {
                             LocationName = LocationName.Replace(", " + country, "");
                         }
