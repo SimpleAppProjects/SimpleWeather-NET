@@ -24,6 +24,18 @@ namespace SimpleWeather.UWP.BackgroundTasks
                 // Run update logic
                 Logger.WriteLine(LoggerLevel.Debug, "{0}: running update task", taskName);
                 Settings.LoadIfNeeded();
+
+                if (Settings.WeatherLoaded)
+                {
+                    // Check if WidgetTask is registered
+                    // If not register
+                    await WeatherTileUpdaterTask.RegisterBackgroundTask(false);
+
+                    // Check if WeatherTask is registered
+                    // If not register
+                    await WeatherUpdateBackgroundTask.RegisterBackgroundTask(false);
+                }
+
                 await WNSHelper.InitNotificationChannel();
             });
 

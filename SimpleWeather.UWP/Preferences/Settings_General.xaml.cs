@@ -513,7 +513,7 @@ namespace SimpleWeather.UWP.Preferences
             }
 
             // Re-register background task
-            Task.Run(WeatherUpdateBackgroundTask.RegisterBackgroundTask);
+            Task.Run(async () => await WeatherUpdateBackgroundTask.RegisterBackgroundTask());
         }
 
         private async void FollowGPS_Toggled(object sender, RoutedEventArgs e)

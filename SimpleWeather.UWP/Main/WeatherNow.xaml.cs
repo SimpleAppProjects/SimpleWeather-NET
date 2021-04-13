@@ -106,11 +106,11 @@ namespace SimpleWeather.UWP.Main
                     bool isHome = Equals(location, await Settings.GetHomeData());
                     if (isHome && (TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval))
                     {
-                        WeatherUpdateBackgroundTask.RequestAppTrigger();
+                        await WeatherUpdateBackgroundTask.RequestAppTrigger();
                     }
                     else if (isHome || SecondaryTileUtils.Exists(location?.query))
                     {
-                        WeatherTileCreator.TileUpdater(location);
+                        await WeatherTileCreator.TileUpdater(location);
                     }
                 });
             }

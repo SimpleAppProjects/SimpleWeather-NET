@@ -968,7 +968,7 @@ namespace SimpleWeather.UWP.Tiles
                     var wloader = new WeatherDataLoader(location);
                     var weather = await AsyncTask.RunAsync(wloader.LoadWeatherData(
                                 new WeatherRequest.Builder()
-                                    .ForceRefresh(false)
+                                    .ForceLoadSavedData()
                                     .LoadForecasts()
                                     .Build()));
 

@@ -176,7 +176,11 @@ namespace SimpleWeather.UWP.Main
             }
 
             // Setup background task
-            Task.Run(WeatherUpdateBackgroundTask.RegisterBackgroundTask);
+            Task.Run(async () => 
+            {
+                await WeatherTileUpdaterTask.RegisterBackgroundTask(false);
+                await WeatherUpdateBackgroundTask.RegisterBackgroundTask(false);
+            });
         }
 
         private void AppFrame_Navigated(object sender, NavigationEventArgs e)

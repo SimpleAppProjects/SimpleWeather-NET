@@ -229,7 +229,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
             {
                 // Register a task for each trigger
                 var taskBuilder = new BackgroundTaskBuilder() { Name = taskName };
-                taskBuilder.SetTrigger(new TimeTrigger(1440, false));
+                taskBuilder.SetTrigger(new TimeTrigger(1440, false)); // Daily
                 taskBuilder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
                 taskBuilder.AddCondition(new SystemCondition(SystemConditionType.BackgroundWorkCostNotHigh));
 
