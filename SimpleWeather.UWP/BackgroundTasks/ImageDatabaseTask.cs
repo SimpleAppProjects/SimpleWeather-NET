@@ -19,23 +19,26 @@ namespace SimpleWeather.UWP.BackgroundTasks
             // while asynchronous code is still running.
             var deferral = taskInstance?.GetDeferral();
 
-            // Check if cache is populated
-            if (!await ImageDataHelper.ImageDataHelperImpl.IsEmpty() && !FeatureSettings.IsUpdateAvailable)
+            await Task.Run(async () =>
             {
-                // If so, check if we need to invalidate
-                var updateTime = await ImageDatabase.GetLastUpdateTime();
-
-                if (updateTime > ImageDataHelper.ImageDBUpdateTime)
+                // Check if cache is populated
+                if (!await ImageDataHelper.ImageDataHelperImpl.IsEmpty() && !FeatureSettings.IsUpdateAvailable)
                 {
-                    AnalyticsLogger.LogEvent(taskName + ": Invalidating cache");
+                    // If so, check if we need to invalidate
+                    var updateTime = await ImageDatabase.GetLastUpdateTime();
 
-                    // if so, invalidate
-                    ImageDataHelper.ImageDBUpdateTime = updateTime;
+                    if (updateTime > ImageDataHelper.ImageDBUpdateTime)
+                    {
+                        AnalyticsLogger.LogEvent(taskName + ": Invalidating cache");
 
-                    await ImageDataHelper.ImageDataHelperImpl.ClearCachedImageData();
-                    ImageDataHelper.ShouldInvalidateCache = true;
+                        // if so, invalidate
+                        ImageDataHelper.ImageDBUpdateTime = updateTime;
+
+                        await ImageDataHelper.ImageDataHelperImpl.ClearCachedImageData();
+                        ImageDataHelper.ShouldInvalidateCache = true;
+                    }
                 }
-            }
+            });
 
             deferral?.Complete();
         }

@@ -21,23 +21,26 @@ namespace SimpleWeather.UWP.BackgroundTasks
             // while asynchronous code is still running.
             var deferral = taskInstance?.GetDeferral();
 
-            // Update config
-            try
+            await Task.Run(async () =>
             {
-                var db = await Firebase.FirebaseDatabaseHelper.GetFirebaseDatabase();
-                var uwpConfig = await db.Child("uwp_remote_config").OnceAsync<object>();
-                if (uwpConfig?.Count > 0)
+                // Update config
+                try
                 {
-                    foreach (var prop in uwpConfig)
+                    var db = await Firebase.FirebaseDatabaseHelper.GetFirebaseDatabase();
+                    var uwpConfig = await db.Child("uwp_remote_config").OnceAsync<object>();
+                    if (uwpConfig?.Count > 0)
                     {
-                        RemoteConfig.RemoteConfig.SetConfigString(prop.Key, prop.Object.ToString());
+                        foreach (var prop in uwpConfig)
+                        {
+                            RemoteConfig.RemoteConfig.SetConfigString(prop.Key, prop.Object.ToString());
+                        }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteLine(LoggerLevel.Error, ex);
-            }
+                catch (Exception ex)
+                {
+                    Logger.WriteLine(LoggerLevel.Error, ex);
+                }
+            });
 
             deferral?.Complete();
         }

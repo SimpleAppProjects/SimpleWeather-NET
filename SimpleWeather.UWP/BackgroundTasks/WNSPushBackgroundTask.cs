@@ -25,25 +25,28 @@ namespace SimpleWeather.UWP.BackgroundTasks
             // We received a push notification
             if (taskInstance.TriggerDetails is RawNotification rawNotification)
             {
-                try
+                await Task.Run(async () =>
                 {
-                    Logger.WriteLine(LoggerLevel.Debug, "{0}: received WNS push notification", taskName);
-
-                    var payload = JObject.Parse(rawNotification.Content);
-                    var invalidate = payload.Value<bool>("invalidate");
-                    var date = payload.Value<long>("date");
-
-                    if (invalidate)
+                    try
                     {
-                        Logger.WriteLine(LoggerLevel.Debug, "{0}: Enqueuing invalidation task", taskName);
+                        Logger.WriteLine(LoggerLevel.Debug, "{0}: received WNS push notification", taskName);
 
-                        ImageDataHelper.ImageDBUpdateTime = date;
-                        await WNSWorkerBackgroundTask.RegisterBackgroundTask();
+                        var payload = JObject.Parse(rawNotification.Content);
+                        var invalidate = payload.Value<bool>("invalidate");
+                        var date = payload.Value<long>("date");
+
+                        if (invalidate)
+                        {
+                            Logger.WriteLine(LoggerLevel.Debug, "{0}: Enqueuing invalidation task", taskName);
+
+                            ImageDataHelper.ImageDBUpdateTime = date;
+                            await WNSWorkerBackgroundTask.RegisterBackgroundTask();
+                        }
                     }
-                }
-                catch (Exception)
-                {
-                }
+                    catch (Exception)
+                    {
+                    }
+                });
             }
 
             // Inform the system that the task is finished.
@@ -118,23 +121,26 @@ namespace SimpleWeather.UWP.BackgroundTasks
             // while asynchronous code is still running.
             var deferral = taskInstance?.GetDeferral();
 
-            // Check if cache is populated
-            if (!(await ImageDataHelper.ImageDataHelperImpl.IsEmpty()) && !FeatureSettings.IsUpdateAvailable)
+            await Task.Run(async () =>
             {
-                // If so, check if we need to invalidate
-                var updateTime = await ImageDatabase.GetLastUpdateTime();
-
-                if (updateTime > ImageDataHelper.ImageDBUpdateTime)
+                // Check if cache is populated
+                if (!(await ImageDataHelper.ImageDataHelperImpl.IsEmpty()) && !FeatureSettings.IsUpdateAvailable)
                 {
-                    AnalyticsLogger.LogEvent(taskName + ": Invalidating cache");
+                    // If so, check if we need to invalidate
+                    var updateTime = await ImageDatabase.GetLastUpdateTime();
 
-                    // if so, invalidate
-                    ImageDataHelper.ImageDBUpdateTime = updateTime;
+                    if (updateTime > ImageDataHelper.ImageDBUpdateTime)
+                    {
+                        AnalyticsLogger.LogEvent(taskName + ": Invalidating cache");
 
-                    await ImageDataHelper.ImageDataHelperImpl.ClearCachedImageData();
-                    ImageDataHelper.ShouldInvalidateCache = true;
+                        // if so, invalidate
+                        ImageDataHelper.ImageDBUpdateTime = updateTime;
+
+                        await ImageDataHelper.ImageDataHelperImpl.ClearCachedImageData();
+                        ImageDataHelper.ShouldInvalidateCache = true;
+                    }
                 }
-            }
+            });
 
             deferral?.Complete();
         }

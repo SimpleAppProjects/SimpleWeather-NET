@@ -27,10 +27,13 @@ namespace SimpleWeather.UWP.BackgroundTasks
             // while asynchronous code is still running.
             var deferral = taskInstance?.GetDeferral();
 
-            // Run update logic
-            Logger.WriteLine(LoggerLevel.Debug, "{0}: running app update check task", taskName);
+            await Task.Run(async () =>
+            {
+                // Run update logic
+                Logger.WriteLine(LoggerLevel.Debug, "{0}: running app update check task", taskName);
 
-            await CheckForUpdates();
+                await CheckForUpdates();
+            });
 
             // Inform the system that the task is finished.
             deferral.Complete();

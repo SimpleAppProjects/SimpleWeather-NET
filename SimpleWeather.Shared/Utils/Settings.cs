@@ -168,6 +168,14 @@ namespace SimpleWeather.Utils
             }
         }
 
+        public static Task LoadIfNeededAsync()
+        {
+            return Task.Run(() =>
+            {
+                LoadIfNeeded();
+            });
+        }
+
         internal static void CreateDatabase()
         {
             var locDBConn = locationDB.GetConnection();

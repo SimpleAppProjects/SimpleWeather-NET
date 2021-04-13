@@ -27,7 +27,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
             wm = WeatherManager.GetInstance();
         }
 
-        public void Run(IBackgroundTaskInstance taskInstance)
+        public async void Run(IBackgroundTaskInstance taskInstance)
         {
             // Get a deferral, to prevent the task from closing prematurely
             // while asynchronous code is still running.
@@ -35,7 +35,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
 
             taskInstance.Canceled += OnCanceled;
 
-            Task.Run(async () =>
+            await Task.Run(async () =>
             {
                 try
                 {
@@ -104,13 +104,12 @@ namespace SimpleWeather.UWP.BackgroundTasks
                 {
                     Logger.WriteLine(LoggerLevel.Error, ex, "{0}: exception occurred...", taskName);
                 }
-            }).ContinueWith((t) =>
-            {
-                // Inform the system that the task is finished.
-                deferral.Complete();
-
-                cts.Dispose();
             });
+
+            // Inform the system that the task is finished.
+            deferral.Complete();
+
+            cts.Dispose();
         }
 
         private void OnCanceled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason)

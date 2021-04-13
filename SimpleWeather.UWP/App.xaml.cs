@@ -102,6 +102,7 @@ namespace SimpleWeather.UWP
             this.Suspending += OnSuspending;
             this.EnteredBackground += OnEnteredBackground;
             this.LeavingBackground += OnLeavingBackground;
+
             // During the transition from foreground to background the
             // memory limit allowed for the application changes. The application
             // has a short time to respond by bringing its memory usage
@@ -545,6 +546,9 @@ namespace SimpleWeather.UWP
                 };
             }
 
+            // Load data if needed
+            Settings.LoadIfNeededAsync();
+
             InitializeExtras();
 
             Initialized = true;
@@ -558,7 +562,7 @@ namespace SimpleWeather.UWP
                 ResLoader = ResourceLoader.GetForViewIndependentUse();
 
             // Load data if needed
-            Settings.LoadIfNeeded();
+            Settings.LoadIfNeededAsync();
 
             InitializeExtras();
 
