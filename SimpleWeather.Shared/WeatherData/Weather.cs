@@ -513,8 +513,22 @@ namespace SimpleWeather.WeatherData
         {
             // Use location name from location provider
             name = null;
-            latitude = float.Parse(forecastResponse.location.latitude);
-            longitude = float.Parse(forecastResponse.location.longitude);
+            if (float.TryParse(forecastResponse.location.latitude, out float result_lat))
+            {
+                latitude = result_lat;
+            }
+            else
+            {
+                latitude = null;
+            }
+            if (float.TryParse(forecastResponse.location.longitude, out float result_lon))
+            {
+                longitude = result_lon;
+            }
+            else
+            {
+                longitude = null;
+            }
             tz_long = null;
         }
 

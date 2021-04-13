@@ -162,16 +162,16 @@ namespace SimpleWeather.NWS
                     var periodObj = fcastRoot.Property(periodName).Value.ToObject<JObject>();
                     var timeArr = periodObj.Property("time").Value.ToObject<JArray>();
                     var unixTimeArr = periodObj.Property("unixtime").Value.ToObject<JArray>();
-                    var windChillArr = periodObj.Property("windChill").Value.ToObject<JArray>();
-                    var windSpeedArr = periodObj.Property("windSpeed").Value.ToObject<JArray>();
-                    var cloudAmtArr = periodObj.Property("cloudAmount").Value.ToObject<JArray>();
-                    var popArr = periodObj.Property("pop").Value.ToObject<JArray>();
-                    var humidityArr = periodObj.Property("relativeHumidity").Value.ToObject<JArray>();
-                    var windGustArr = periodObj.Property("windGust").Value.ToObject<JArray>();
-                    var tempArr = periodObj.Property("temperature").Value.ToObject<JArray>();
-                    var windDirArr = periodObj.Property("windDirection").Value.ToObject<JArray>();
-                    var iconArr = periodObj.Property("iconLink").Value.ToObject<JArray>();
-                    var conditionTxtArr = periodObj.Property("weather").Value.ToObject<JArray>();
+                    var windChillArr = periodObj.Property("windChill")?.Value?.ToObject<JArray>();
+                    var windSpeedArr = periodObj.Property("windSpeed")?.Value?.ToObject<JArray>();
+                    var cloudAmtArr = periodObj.Property("cloudAmount")?.Value?.ToObject<JArray>();
+                    var popArr = periodObj.Property("pop")?.Value?.ToObject<JArray>();
+                    var humidityArr = periodObj.Property("relativeHumidity")?.Value?.ToObject<JArray>();
+                    var windGustArr = periodObj.Property("windGust")?.Value?.ToObject<JArray>();
+                    var tempArr = periodObj.Property("temperature")?.Value?.ToObject<JArray>();
+                    var windDirArr = periodObj.Property("windDirection")?.Value?.ToObject<JArray>();
+                    var iconArr = periodObj.Property("iconLink")?.Value?.ToObject<JArray>();
+                    var conditionTxtArr = periodObj.Property("weather")?.Value?.ToObject<JArray>();
 
                     item.periodName = periodObj.Property("periodName").Value.ToObject<string>();
 
@@ -189,74 +189,104 @@ namespace SimpleWeather.NWS
                         item.unixtime.Add(time);
                     }
 
-                    item.windChill = new List<string>(windChillArr.Count);
-                    foreach (var jsonElement in windChillArr.Children<JValue>())
+                    if (windChillArr != null)
                     {
-                        String windChill = jsonElement.Value?.ToString();
-                        item.windChill.Add(windChill);
+                        item.windChill = new List<string>(windChillArr.Count);
+                        foreach (var jsonElement in windChillArr.Children<JValue>())
+                        {
+                            String windChill = jsonElement.Value?.ToString();
+                            item.windChill.Add(windChill);
+                        }
                     }
 
-                    item.windSpeed = new List<string>(windSpeedArr.Count);
-                    foreach (var jsonElement in windSpeedArr.Children<JValue>())
+                    if (windSpeedArr != null)
                     {
-                        String windSpeed = jsonElement.Value?.ToString();
-                        item.windSpeed.Add(windSpeed);
+                        item.windSpeed = new List<string>(windSpeedArr.Count);
+                        foreach (var jsonElement in windSpeedArr.Children<JValue>())
+                        {
+                            String windSpeed = jsonElement.Value?.ToString();
+                            item.windSpeed.Add(windSpeed);
+                        }
                     }
 
-                    item.cloudAmount = new List<string>(cloudAmtArr.Count);
-                    foreach (var jsonElement in cloudAmtArr.Children<JValue>())
+                    if (cloudAmtArr != null)
                     {
-                        String cloudAmt = jsonElement.Value?.ToString();
-                        item.cloudAmount.Add(cloudAmt);
+                        item.cloudAmount = new List<string>(cloudAmtArr.Count);
+                        foreach (var jsonElement in cloudAmtArr.Children<JValue>())
+                        {
+                            String cloudAmt = jsonElement.Value?.ToString();
+                            item.cloudAmount.Add(cloudAmt);
+                        }
                     }
 
-                    item.pop = new List<string>(popArr.Count);
-                    foreach (var jsonElement in popArr.Children<JValue>())
+                    if (popArr != null)
                     {
-                        String pop = jsonElement.Value?.ToString();
-                        item.pop.Add(pop);
+                        item.pop = new List<string>(popArr.Count);
+                        foreach (var jsonElement in popArr.Children<JValue>())
+                        {
+                            String pop = jsonElement.Value?.ToString();
+                            item.pop.Add(pop);
+                        }
                     }
 
-                    item.relativeHumidity = new List<string>(humidityArr.Count);
-                    foreach (var jsonElement in humidityArr.Children<JValue>())
+                    if (humidityArr != null)
                     {
-                        String humidity = jsonElement.Value?.ToString();
-                        item.relativeHumidity.Add(humidity);
+                        item.relativeHumidity = new List<string>(humidityArr.Count);
+                        foreach (var jsonElement in humidityArr.Children<JValue>())
+                        {
+                            String humidity = jsonElement.Value?.ToString();
+                            item.relativeHumidity.Add(humidity);
+                        }
                     }
 
-                    item.windGust = new List<string>(windGustArr.Count);
-                    foreach (var jsonElement in windGustArr.Children<JValue>())
+                    if (windGustArr != null)
                     {
-                        String windGust = jsonElement.Value?.ToString();
-                        item.windGust.Add(windGust);
+                        item.windGust = new List<string>(windGustArr.Count);
+                        foreach (var jsonElement in windGustArr.Children<JValue>())
+                        {
+                            String windGust = jsonElement.Value?.ToString();
+                            item.windGust.Add(windGust);
+                        }
                     }
 
-                    item.temperature = new List<string>(tempArr.Count);
-                    foreach (var jsonElement in tempArr.Children<JValue>())
+                    if (tempArr != null)
                     {
-                        String temp = jsonElement.Value?.ToString();
-                        item.temperature.Add(temp);
+                        item.temperature = new List<string>(tempArr.Count);
+                        foreach (var jsonElement in tempArr.Children<JValue>())
+                        {
+                            String temp = jsonElement.Value?.ToString();
+                            item.temperature.Add(temp);
+                        }
                     }
 
-                    item.windDirection = new List<string>(windDirArr.Count);
-                    foreach (var jsonElement in windDirArr.Children<JValue>())
+                    if (windDirArr != null)
                     {
-                        String windDir = jsonElement.Value?.ToString();
-                        item.windDirection.Add(windDir);
+                        item.windDirection = new List<string>(windDirArr.Count);
+                        foreach (var jsonElement in windDirArr.Children<JValue>())
+                        {
+                            String windDir = jsonElement.Value?.ToString();
+                            item.windDirection.Add(windDir);
+                        }
                     }
 
-                    item.iconLink = new List<string>(iconArr.Count);
-                    foreach (var jsonElement in iconArr.Children<JValue>())
+                    if (iconArr != null)
                     {
-                        String icon = jsonElement.Value?.ToString();
-                        item.iconLink.Add(icon);
+                        item.iconLink = new List<string>(iconArr.Count);
+                        foreach (var jsonElement in iconArr.Children<JValue>())
+                        {
+                            String icon = jsonElement.Value?.ToString();
+                            item.iconLink.Add(icon);
+                        }
                     }
 
-                    item.weather = new List<string>(conditionTxtArr.Count);
-                    foreach (var jsonElement in conditionTxtArr.Children<JValue>())
+                    if (conditionTxtArr != null)
                     {
-                        String condition = jsonElement.Value?.ToString();
-                        item.weather.Add(condition);
+                        item.weather = new List<string>(conditionTxtArr.Count);
+                        foreach (var jsonElement in conditionTxtArr.Children<JValue>())
+                        {
+                            String condition = jsonElement.Value?.ToString();
+                            item.weather.Add(condition);
+                        }
                     }
 
                     forecastData.periodsItems.Add(item);
