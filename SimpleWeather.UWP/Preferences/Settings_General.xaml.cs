@@ -41,6 +41,25 @@ namespace SimpleWeather.UWP.Preferences
 
         private SnackbarManager SnackMgr;
 
+        private readonly IReadOnlyList<SimpleWeather.Controls.ComboBoxItem> RefreshOptions = new List<SimpleWeather.Controls.ComboBoxItem>
+        {
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh60Min/Text"), "60"),
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh2Hrs/Text"), "120"),
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh3Hrs/Text"), "180"),
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh6Hrs/Text"), "360"),
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh12Hrs/Text"), "720"),
+        };
+
+        private readonly IReadOnlyList<SimpleWeather.Controls.ComboBoxItem> PremiumRefreshOptions = new List<SimpleWeather.Controls.ComboBoxItem>
+        {
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh30Min/Text"), "30"),
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh60Min/Text"), "60"),
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh2Hrs/Text"), "120"),
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh3Hrs/Text"), "180"),
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh6Hrs/Text"), "360"),
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh12Hrs/Text"), "720"),
+        };
+
         public Settings_General()
         {
             this.InitializeComponent();
@@ -100,6 +119,18 @@ namespace SimpleWeather.UWP.Preferences
 
             APIComboBox.SelectedValue = Settings.API;
 
+            // Refresh interval
+            if (Extras.ExtrasLibrary.IsEnabled())
+            {
+                RefreshComboBox.ItemsSource = PremiumRefreshOptions;
+            }
+            else
+            {
+                RefreshComboBox.ItemsSource = RefreshOptions;
+            }
+            RefreshComboBox.DisplayMemberPath = "Display";
+            RefreshComboBox.SelectedValuePath = "Value";
+
             if (wm.KeyRequired)
             {
                 if (!String.IsNullOrWhiteSpace(Settings.API_KEY) && !Settings.KeyVerified)
@@ -147,25 +178,32 @@ namespace SimpleWeather.UWP.Preferences
             // Update Interval
             switch (Settings.RefreshInterval)
             {
+                case 30:
+                    RefreshComboBox.SelectedValue = "30";
+                    break;
+
                 case 60:
-                default:
-                    RefreshComboBox.SelectedIndex = 0;
+                    RefreshComboBox.SelectedValue = "60";
                     break;
 
                 case 120:
-                    RefreshComboBox.SelectedIndex = 1;
+                    RefreshComboBox.SelectedValue = "120";
                     break;
 
                 case 180:
-                    RefreshComboBox.SelectedIndex = 2;
+                    RefreshComboBox.SelectedValue = "180";
                     break;
 
                 case 360:
-                    RefreshComboBox.SelectedIndex = 3;
+                    RefreshComboBox.SelectedValue = "360";
                     break;
 
                 case 720:
-                    RefreshComboBox.SelectedIndex = 4;
+                    RefreshComboBox.SelectedValue = "720";
+                    break;
+
+                default:
+                    RefreshComboBox.SelectedValue = Settings.DefaultInterval.ToInvariantString();
                     break;
             }
 
@@ -463,18 +501,16 @@ namespace SimpleWeather.UWP.Preferences
         private void RefreshComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBox box = sender as ComboBox;
-            int index = box.SelectedIndex;
+            object value = box.SelectedValue;
 
-            if (index == 0)
-                Settings.RefreshInterval = 60; // 1 hr
-            else if (index == 1)
-                Settings.RefreshInterval = 120; // 2 hr
-            else if (index == 2)
-                Settings.RefreshInterval = 180; // 3 hr
-            else if (index == 3)
-                Settings.RefreshInterval = 360; // 6 hr
-            else if (index == 4)
-                Settings.RefreshInterval = 720; // 12 hr
+            if (int.TryParse(value?.ToString(), out int interval))
+            {
+                Settings.RefreshInterval = interval;
+            }
+            else
+            {
+                Settings.RefreshInterval = Settings.DefaultInterval;
+            }
 
             // Re-register background task
             Task.Run(WeatherUpdateBackgroundTask.RegisterBackgroundTask);
