@@ -500,7 +500,16 @@ namespace SimpleWeather.WeatherData
             if (_override || isInvalid) return !isInvalid;
 
             // Weather data expiration
-            int ttl = Math.Max(weather.ttl, Settings.RefreshInterval);
+            int ttl;
+            // TODO: make this a premium feature
+            if (WeatherAPI.Here.Equals(wm.WeatherAPI))
+            {
+                ttl = Settings.RefreshInterval;
+            }
+            else
+            {
+                ttl = Math.Max(weather.ttl, Settings.RefreshInterval);
+            }
 
             // Check file age
             DateTimeOffset updateTime = weather.update_time;
