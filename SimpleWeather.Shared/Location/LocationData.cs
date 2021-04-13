@@ -12,7 +12,20 @@ namespace SimpleWeather.Location
     {
         public LocationData()
         {
-            weatherSource = Settings.API;
+            if (Settings.IsLoaded())
+            {
+                weatherSource = Settings.API;
+            }
+        }
+
+        public LocationData(WeatherData.Weather weather)
+        {
+            query = weather.query;
+            name = weather.location.name;
+            latitude = weather.location.latitude.GetValueOrDefault();
+            longitude = weather.location.longitude.GetValueOrDefault();
+            tz_long = weather.location.tz_long;
+            weatherSource = weather.source;
         }
 
         public LocationData(Controls.LocationQueryViewModel query_vm)

@@ -91,13 +91,12 @@ namespace SimpleWeather.Utils
         public static event SettingsChangedEventHandler OnSettingsChanged;
 
         // Weather Data
-        internal static LocationData lastGPSLocData;
+        internal static LocationData lastGPSLocData = null;
         private static bool loaded = false;
 
         static Settings()
         {
             Init();
-            lastGPSLocData = new LocationData();
         }
 
         internal static SQLiteAsyncConnection GetWeatherDBConnection() => weatherDB;
@@ -154,6 +153,12 @@ namespace SimpleWeather.Utils
             }
         }
 
+        public static bool IsLoaded()
+        {
+            return loaded;
+        }
+
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public static void LoadIfNeeded()
         {
             if (!loaded)

@@ -130,12 +130,9 @@ namespace SimpleWeather.Controls
                     WeatherIcon = weather.condition.icon;
                     WeatherSource = weather.source;
 
-                    if (LocationData.query == null)
+                    if (LocationData?.query == null)
                     {
-                        LocationData.query = weather.query;
-                        LocationData.latitude = weather.location.latitude.GetValueOrDefault(0.0f);
-                        LocationData.longitude = weather.location.longitude.GetValueOrDefault(0.0f);
-                        LocationData.weatherSource = weather.source;
+                        LocationData = new LocationData(weather);
                     }
 
                     IsLoading = false;
