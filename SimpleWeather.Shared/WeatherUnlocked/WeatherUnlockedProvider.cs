@@ -77,7 +77,7 @@ namespace SimpleWeather.WeatherUnlocked
                         forecastRequest.Headers.Accept.Add(new Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue("application/json"));
 
                         currentRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
-                        forecastRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
+                        forecastRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(3);
 
                         // Get response
                         var webClient = SimpleLibrary.GetInstance().WebClient;

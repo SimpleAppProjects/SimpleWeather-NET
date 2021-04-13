@@ -124,8 +124,8 @@ namespace SimpleWeather.OpenWeather
                     using (var currentRequest = new HttpRequestMessage(HttpMethod.Get, currentURL))
                     using (var forecastRequest = new HttpRequestMessage(HttpMethod.Get, forecastURL))
                     {
-                        currentRequest.Headers.CacheControl.MaxAge = TimeSpan.FromMinutes(15);
-                        forecastRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
+                        currentRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
+                        forecastRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(3);
 
                         // Get response
                         var webClient = SimpleLibrary.GetInstance().WebClient;

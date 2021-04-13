@@ -70,7 +70,7 @@ namespace SimpleWeather.NWS
                         hrForecastRequest.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
 
                         observationRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
-                        hrForecastRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
+                        hrForecastRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(3);
 
                         // Get response
                         var webClient = SimpleLibrary.GetInstance().WebClient;

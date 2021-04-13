@@ -265,6 +265,9 @@ namespace SimpleWeather.HERE
                         else
                             throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
 
+                        // Updates 4x per day
+                        request.Headers.CacheControl.MaxAge = TimeSpan.FromHours(6);
+
                         // Connect to webstream
                         var webClient = SimpleLibrary.GetInstance().WebClient;
                         using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
