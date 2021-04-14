@@ -955,87 +955,80 @@ namespace SimpleWeather.UWP.Tiles
             return result;
         }
 
-        public static Task TileUpdater(LocationData location)
+        public static async Task TileUpdater(LocationData location)
         {
             // Check if Tile service is available
             if (!DeviceTypeHelper.IsTileSupported())
-                return Task.CompletedTask;
+                return;
 
-            return Task.Run(async () =>
+            try
             {
-                try
-                {
-                    var wloader = new WeatherDataLoader(location);
-                    var weather = await AsyncTask.RunAsync(wloader.LoadWeatherData(
-                                new WeatherRequest.Builder()
-                                    .ForceLoadSavedData()
-                                    .LoadForecasts()
-                                    .Build()));
+                var wloader = new WeatherDataLoader(location);
+                var weather = await AsyncTask.RunAsync(wloader.LoadWeatherData(
+                            new WeatherRequest.Builder()
+                                .ForceLoadSavedData()
+                                .LoadForecasts()
+                                .Build()));
 
-                    if (weather != null)
-                    {
-                        var weatherView = new WeatherNowViewModel(weather);
-                        await weatherView.UpdateBackground();
-                        TileUpdater(location, weatherView);
-                    }
-                }
-                catch (WeatherException wEx)
+                if (weather != null)
                 {
-                    Logger.WriteLine(LoggerLevel.Error, wEx);
+                    var weatherView = new WeatherNowViewModel(weather);
+                    await TileUpdater(location, weatherView);
                 }
-            });
+            }
+            catch (WeatherException wEx)
+            {
+                Logger.WriteLine(LoggerLevel.Error, wEx);
+            }
         }
 
-        public static Task TileUpdater(LocationData location, WeatherNowViewModel weather)
+        public static async Task TileUpdater(LocationData location, WeatherNowViewModel weather)
         {
             // Check if Tile service is available
             if (!DeviceTypeHelper.IsTileSupported())
-                return Task.CompletedTask;
+                return;
 
-            return Task.Run(async () =>
+            if (weather.ImageData == null)
+                await weather.UpdateBackground();
+
+            // And send the notification to the tile
+            if (location.locationType == LocationType.GPS || Equals(await Settings.GetHomeData(), location))
             {
-                if (weather.ImageData == null)
-                    await weather.UpdateBackground();
-
-                // And send the notification to the tile
-                if (location.locationType == LocationType.GPS || Equals(await Settings.GetHomeData(), location))
+                // Update both primary and secondary tile if it exists
+                var appTileUpdater = TileUpdateManager.CreateTileUpdaterForApplication();
+                // Lock instance to avoid rare concurrency issue
+                // (when BGTask is running and tile is updated via WeatherNowPage)
+                lock (appTileUpdater)
                 {
-                    // Update both primary and secondary tile if it exists
-                    var appTileUpdater = TileUpdateManager.CreateTileUpdaterForApplication();
+                    UpdateContent(appTileUpdater, location, weather).Wait();
+                }
+
+                var query = location.locationType == LocationType.GPS ? Constants.KEY_GPS : location.query;
+                if (SecondaryTileUtils.Exists(query))
+                {
+                    var tileUpdater = TileUpdateManager.CreateTileUpdaterForSecondaryTile(
+                            SecondaryTileUtils.GetTileId(query));
+                    lock (tileUpdater)
+                    {
+                        UpdateContent(tileUpdater, location, weather).Wait();
+                    }
+                }
+            }
+            else
+            {
+                // Update secondary tile
+                if (SecondaryTileUtils.Exists(location.query))
+                {
+                    var tileUpdater = TileUpdateManager.CreateTileUpdaterForSecondaryTile(
+                            SecondaryTileUtils.GetTileId(location.query));
                     // Lock instance to avoid rare concurrency issue
                     // (when BGTask is running and tile is updated via WeatherNowPage)
-                    lock (appTileUpdater)
+                    lock (tileUpdater)
                     {
-                        UpdateContent(appTileUpdater, location, weather).Wait();
-                    }
-
-                    var query = location.locationType == LocationType.GPS ? Constants.KEY_GPS : location.query;
-                    if (SecondaryTileUtils.Exists(query))
-                    {
-                        var tileUpdater = TileUpdateManager.CreateTileUpdaterForSecondaryTile(
-                                SecondaryTileUtils.GetTileId(query));
-                        lock (tileUpdater)
-                        {
-                            UpdateContent(tileUpdater, location, weather).Wait();
-                        }
+                        UpdateContent(tileUpdater, location, weather).Wait();
                     }
                 }
-                else
-                {
-                    // Update secondary tile
-                    if (SecondaryTileUtils.Exists(location.query))
-                    {
-                        var tileUpdater = TileUpdateManager.CreateTileUpdaterForSecondaryTile(
-                                SecondaryTileUtils.GetTileId(location.query));
-                        // Lock instance to avoid rare concurrency issue
-                        // (when BGTask is running and tile is updated via WeatherNowPage)
-                        lock (tileUpdater)
-                        {
-                            UpdateContent(tileUpdater, location, weather).Wait();
-                        }
-                    }
-                }
-            });
+            }
         }
     }
 }

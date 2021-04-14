@@ -51,82 +51,79 @@ namespace SimpleWeather.NWS
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override Task<Weather> GetWeather(string location_query, string country_code)
+        public override async Task<Weather> GetWeather(string location_query, string country_code)
         {
-            return Task.Run(async () =>
+            Weather weather = null;
+            WeatherException wEx = null;
+
+            try
             {
-                Weather weather = null;
-                WeatherException wEx = null;
+                Uri observationURL = new Uri(string.Format(FORECAST_QUERY_URL, location_query));
+                Uri hrlyForecastURL = new Uri(string.Format(HRFORECAST_QUERY_URL, location_query));
 
-                try
+                using (var observationRequest = new HttpRequestMessage(HttpMethod.Get, observationURL))
+                using (var hrForecastRequest = new HttpRequestMessage(HttpMethod.Get, hrlyForecastURL))
                 {
-                    Uri observationURL = new Uri(string.Format(FORECAST_QUERY_URL, location_query));
-                    Uri hrlyForecastURL = new Uri(string.Format(HRFORECAST_QUERY_URL, location_query));
+                    observationRequest.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
+                    hrForecastRequest.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
 
-                    using (var observationRequest = new HttpRequestMessage(HttpMethod.Get, observationURL))
-                    using (var hrForecastRequest = new HttpRequestMessage(HttpMethod.Get, hrlyForecastURL))
+                    observationRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
+                    hrForecastRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(3);
+
+                    // Get response
+                    var webClient = SimpleLibrary.GetInstance().WebClient;
+                    using (var ctsO = new CancellationTokenSource((int)(Settings.READ_TIMEOUT * 1.5f)))
+                    using (var observationResponse = await webClient.SendRequestAsync(observationRequest).AsTask(ctsO.Token))
                     {
-                        observationRequest.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
-                        hrForecastRequest.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
+                        // Check for errors
+                        CheckForErrors(observationResponse.StatusCode);
 
-                        observationRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
-                        hrForecastRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(3);
+                        Stream observationStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await observationResponse.Content.ReadAsInputStreamAsync());
 
-                        // Get response
-                        var webClient = SimpleLibrary.GetInstance().WebClient;
-                        using (var ctsO = new CancellationTokenSource((int)(Settings.READ_TIMEOUT * 1.5f)))
-                        using (var observationResponse = await webClient.SendRequestAsync(observationRequest).AsTask(ctsO.Token))
+                        // Load point json data
+                        Observation.ForecastRootobject observationData = await JSONParser.DeserializerAsync<Observation.ForecastRootobject>(observationStream);
+
+                        using (var ctsF = new CancellationTokenSource((int)(Settings.READ_TIMEOUT * 1.5f)))
+                        using (var forecastResponse = await webClient.SendRequestAsync(hrForecastRequest).AsTask(ctsF.Token))
                         {
                             // Check for errors
-                            CheckForErrors(observationResponse.StatusCode);
+                            CheckForErrors(forecastResponse.StatusCode);
 
-                            Stream observationStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await observationResponse.Content.ReadAsInputStreamAsync());
+                            Stream forecastStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await forecastResponse.Content.ReadAsInputStreamAsync());
 
                             // Load point json data
-                            Observation.ForecastRootobject observationData = JSONParser.Deserializer<Observation.ForecastRootobject>(observationStream);
+                            Hourly.HourlyForecastResponse forecastData = await CreateHourlyForecastResponse(forecastStream);
 
-                            using (var ctsF = new CancellationTokenSource((int)(Settings.READ_TIMEOUT * 1.5f)))
-                            using (var forecastResponse = await webClient.SendRequestAsync(hrForecastRequest).AsTask(ctsF.Token))
-                            {
-                                // Check for errors
-                                CheckForErrors(forecastResponse.StatusCode);
-
-                                Stream forecastStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await forecastResponse.Content.ReadAsInputStreamAsync());
-
-                                // Load point json data
-                                Hourly.HourlyForecastResponse forecastData = await CreateHourlyForecastResponse(forecastStream);
-
-                                weather = new Weather(observationData, forecastData);
-                            }
+                            weather = new Weather(observationData, forecastData);
                         }
                     }
                 }
-                catch (Exception ex)
+            }
+            catch (Exception ex)
+            {
+                weather = null;
+
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
-                    weather = null;
-
-                    if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
-                    {
-                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                    }
-
-                    Logger.WriteLine(LoggerLevel.Error, ex, "NWSWeatherProvider: error getting weather data");
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                 }
 
-                if (wEx == null && (weather == null || !weather.IsValid()))
-                {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
-                }
-                else if (weather != null)
-                {
-                    weather.query = location_query;
-                }
+                Logger.WriteLine(LoggerLevel.Error, ex, "NWSWeatherProvider: error getting weather data");
+            }
 
-                if (wEx != null)
-                    throw wEx;
+            if (wEx == null && (weather == null || !weather.IsValid()))
+            {
+                wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
+            }
+            else if (weather != null)
+            {
+                weather.query = location_query;
+            }
 
-                return weather;
-            });
+            if (wEx != null)
+                throw wEx;
+
+            return weather;
         }
 
         private async Task<HourlyForecastResponse> CreateHourlyForecastResponse(Stream forecastStream)

@@ -156,7 +156,7 @@ namespace SimpleWeather.UWP.Radar.RainViewer
                 using (var response = await HttpClient.GetAsync(new Uri(MapsURL)))
                 {
                     var stream = await response.Content.ReadAsInputStreamAsync();
-                    var root = JSONParser.Deserializer<Rootobject>(stream.AsStreamForRead());
+                    var root = await JSONParser.DeserializerAsync<Rootobject>(stream.AsStreamForRead());
 
                     AvailableRadarFrames.Clear();
 

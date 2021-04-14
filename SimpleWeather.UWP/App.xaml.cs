@@ -423,7 +423,7 @@ namespace SimpleWeather.UWP
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
         /// <param name="e">Details about the launch request and process.</param>
-        protected override async void OnLaunched(LaunchActivatedEventArgs e)
+        protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
             base.OnLaunched(e);
             Initialize(e);
@@ -437,10 +437,14 @@ namespace SimpleWeather.UWP
             Logger.WriteLine(LoggerLevel.Info, "Started logger...");
 
             // App loaded for first time
-            await WNSHelper.InitNotificationChannel().ConfigureAwait(true);
-            await UpdateTask.RegisterBackgroundTask().ConfigureAwait(true);
-            await AppUpdaterTask.RegisterBackgroundTask().ConfigureAwait(true);
-            await RemoteConfigUpdateTask.RegisterBackgroundTask().ConfigureAwait(true);
+            Task.Run(async () =>
+            {
+                // Register background tasks
+                await WNSHelper.InitNotificationChannel();
+                await UpdateTask.RegisterBackgroundTask();
+                await AppUpdaterTask.RegisterBackgroundTask();
+                await RemoteConfigUpdateTask.RegisterBackgroundTask();
+            });
 
             if (!e.PrelaunchActivated)
             {
@@ -547,7 +551,7 @@ namespace SimpleWeather.UWP
             }
 
             // Load data if needed
-            Settings.LoadIfNeededAsync();
+            Task.Run(Settings.LoadIfNeededAsync);
 
             InitializeExtras();
 
@@ -562,7 +566,7 @@ namespace SimpleWeather.UWP
                 ResLoader = ResourceLoader.GetForViewIndependentUse();
 
             // Load data if needed
-            Settings.LoadIfNeededAsync();
+            Task.Run(Settings.LoadIfNeededAsync);
 
             InitializeExtras();
 

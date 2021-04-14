@@ -32,157 +32,151 @@ namespace SimpleWeather.Bing
         public override bool NeedsLocationFromName => true;
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string location_query, string weatherAPI)
+        public override async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string location_query, string weatherAPI)
         {
-            return Task.Run(async () =>
+            ObservableCollection<LocationQueryViewModel> locations = null;
+
+            var culture = CultureUtils.UserCulture;
+
+            string key = GetAPIKey();
+
+            WeatherException wEx = null;
+            // Limit amount of results shown
+            int maxResults = 10;
+
+            try
             {
-                ObservableCollection<LocationQueryViewModel> locations = null;
+                Uri queryURL = new Uri(String.Format(AUTOCOMPLETE_QUERY_URL, location_query, key, culture.Name));
 
-                var culture = CultureUtils.UserCulture;
-
-                string key = GetAPIKey();
-
-                WeatherException wEx = null;
-                // Limit amount of results shown
-                int maxResults = 10;
-
-                try
+                // Connect to webstream
+                var webClient = SimpleLibrary.GetInstance().WebClient;
+                using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
                 {
-                    Uri queryURL = new Uri(String.Format(AUTOCOMPLETE_QUERY_URL, location_query, key, culture.Name));
+                    request.Headers.CacheControl.MaxAge = TimeSpan.FromDays(1);
 
-                    // Connect to webstream
-                    var webClient = SimpleLibrary.GetInstance().WebClient;
-                    using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
+                    using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                    using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                     {
-                        request.Headers.CacheControl.MaxAge = TimeSpan.FromDays(1);
+                        response.EnsureSuccessStatusCode();
+                        Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
-                        using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                        using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                        // Load data
+                        var locationSet = new HashSet<LocationQueryViewModel>();
+                        AC_Rootobject root = await JSONParser.DeserializerAsync<AC_Rootobject>(contentStream);
+
+                        foreach (Value result in root.resourceSets[0].resources[0].value)
                         {
-                            response.EnsureSuccessStatusCode();
-                            Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                            // Filter: only store city results
+                            bool added = false;
+                            if (!String.IsNullOrWhiteSpace(result.address.locality))
+                                added = locationSet.Add(new LocationQueryViewModel(result.address, weatherAPI));
+                            else
+                                continue;
 
-                            // Load data
-                            var locationSet = new HashSet<LocationQueryViewModel>();
-                            AC_Rootobject root = JSONParser.Deserializer<AC_Rootobject>(contentStream);
-
-                            foreach (Value result in root.resourceSets[0].resources[0].value)
+                            // Limit amount of results
+                            if (added)
                             {
-                                // Filter: only store city results
-                                bool added = false;
-                                if (!String.IsNullOrWhiteSpace(result.address.locality))
-                                    added = locationSet.Add(new LocationQueryViewModel(result.address, weatherAPI));
-                                else
-                                    continue;
-
-                                // Limit amount of results
-                                if (added)
-                                {
-                                    maxResults--;
-                                    if (maxResults <= 0)
-                                        break;
-                                }
+                                maxResults--;
+                                if (maxResults <= 0)
+                                    break;
                             }
-
-                            locations = new ObservableCollection<LocationQueryViewModel>(locationSet);
                         }
+
+                        locations = new ObservableCollection<LocationQueryViewModel>(locationSet);
                     }
                 }
-                catch (Exception ex)
+            }
+            catch (Exception ex)
+            {
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
-                    if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
-                    {
-                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                    }
-                    Logger.WriteLine(LoggerLevel.Error, ex, "BingMapsLocationProvider: error getting locations");
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                 }
+                Logger.WriteLine(LoggerLevel.Error, ex, "BingMapsLocationProvider: error getting locations");
+            }
 
-                if (wEx != null)
-                    throw wEx;
+            if (wEx != null)
+                throw wEx;
 
-                if (locations == null || locations.Count == 0)
-                    locations = new ObservableCollection<LocationQueryViewModel>() { new LocationQueryViewModel() };
+            if (locations == null || locations.Count == 0)
+                locations = new ObservableCollection<LocationQueryViewModel>() { new LocationQueryViewModel() };
 
-                return locations;
-            });
+            return locations;
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coord, string weatherAPI)
+        public override async Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coord, string weatherAPI)
         {
-            return Task.Run(async () =>
+            LocationQueryViewModel location = null;
+
+            var culture = CultureUtils.UserCulture;
+
+            string key = GetAPIKey();
+
+            MapLocation result = null;
+            WeatherException wEx = null;
+
+            try
             {
-                LocationQueryViewModel location = null;
-
-                var culture = CultureUtils.UserCulture;
-
-                string key = GetAPIKey();
-
-                MapLocation result = null;
-                WeatherException wEx = null;
-
-                try
+                MapService.ServiceToken = key;
+                // The nearby location to use as a query hint.
+                BasicGeoposition geoPoint = new BasicGeoposition
                 {
-                    MapService.ServiceToken = key;
-                    // The nearby location to use as a query hint.
-                    BasicGeoposition geoPoint = new BasicGeoposition
+                    Latitude = coord.Latitude,
+                    Longitude = coord.Longitude
+                };
+                Geopoint pointToReverseGeocode = new Geopoint(geoPoint);
+
+                using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                {
+                    // Geocode the specified address, using the specified reference point
+                    // as a query hint. Return no more than a single result.
+                    MapLocationFinderResult mapResult = await MapLocationFinder.FindLocationsAtAsync(pointToReverseGeocode, MapLocationDesiredAccuracy.High).AsTask(cts.Token);
+
+                    switch (mapResult.Status)
                     {
-                        Latitude = coord.Latitude,
-                        Longitude = coord.Longitude
-                    };
-                    Geopoint pointToReverseGeocode = new Geopoint(geoPoint);
+                        case MapLocationFinderStatus.Success:
+                            result = mapResult.Locations[0];
+                            break;
 
-                    using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                    {
-                        // Geocode the specified address, using the specified reference point
-                        // as a query hint. Return no more than a single result.
-                        MapLocationFinderResult mapResult = await MapLocationFinder.FindLocationsAtAsync(pointToReverseGeocode, MapLocationDesiredAccuracy.High).AsTask(cts.Token);
+                        case MapLocationFinderStatus.UnknownError:
+                        case MapLocationFinderStatus.IndexFailure:
+                            wEx = new WeatherException(WeatherUtils.ErrorStatus.Unknown);
+                            break;
 
-                        switch (mapResult.Status)
-                        {
-                            case MapLocationFinderStatus.Success:
-                                result = mapResult.Locations[0];
-                                break;
+                        case MapLocationFinderStatus.InvalidCredentials:
+                            wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
+                            break;
 
-                            case MapLocationFinderStatus.UnknownError:
-                            case MapLocationFinderStatus.IndexFailure:
-                                wEx = new WeatherException(WeatherUtils.ErrorStatus.Unknown);
-                                break;
+                        case MapLocationFinderStatus.BadLocation:
+                        case MapLocationFinderStatus.NotSupported:
+                            wEx = new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
+                            break;
 
-                            case MapLocationFinderStatus.InvalidCredentials:
-                                wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
-                                break;
-
-                            case MapLocationFinderStatus.BadLocation:
-                            case MapLocationFinderStatus.NotSupported:
-                                wEx = new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
-                                break;
-
-                            case MapLocationFinderStatus.NetworkFailure:
-                                wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                                break;
-                        }
+                        case MapLocationFinderStatus.NetworkFailure:
+                            wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                            break;
                     }
                 }
-                catch (Exception ex)
+            }
+            catch (Exception ex)
+            {
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
-                    if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
-                    {
-                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                    }
-                    Logger.WriteLine(LoggerLevel.Error, ex, "BingMapsLocationProvider: error getting location");
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                 }
+                Logger.WriteLine(LoggerLevel.Error, ex, "BingMapsLocationProvider: error getting location");
+            }
 
-                if (wEx != null)
-                    throw wEx;
+            if (wEx != null)
+                throw wEx;
 
-                if (result != null && !String.IsNullOrWhiteSpace(result.DisplayName))
-                    location = new LocationQueryViewModel(result, weatherAPI);
-                else
-                    location = new LocationQueryViewModel();
+            if (result != null && !String.IsNullOrWhiteSpace(result.DisplayName))
+                location = new LocationQueryViewModel(result, weatherAPI);
+            else
+                location = new LocationQueryViewModel();
 
-                return location;
-            });
+            return location;
         }
 
         public override Task<LocationQueryViewModel> GetLocationFromID(LocationQueryViewModel model)
@@ -191,135 +185,129 @@ namespace SimpleWeather.Bing
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override Task<LocationQueryViewModel> GetLocationFromName(LocationQueryViewModel model)
+        public override async Task<LocationQueryViewModel> GetLocationFromName(LocationQueryViewModel model)
         {
-            return Task.Run(async () =>
+            LocationQueryViewModel location = null;
+
+            var culture = CultureUtils.UserCulture;
+
+            string key = GetAPIKey();
+
+            MapLocation result = null;
+            WeatherException wEx = null;
+
+            try
             {
-                LocationQueryViewModel location = null;
-
-                var culture = CultureUtils.UserCulture;
-
-                string key = GetAPIKey();
-
-                MapLocation result = null;
-                WeatherException wEx = null;
-
-                try
-                {
-                    MapService.ServiceToken = key;
-                    // The nearby location to use as a query hint.
-                    BasicGeoposition queryHint = new BasicGeoposition
-                    {
-                        Latitude = 0,
-                        Longitude = 0
-                    };
-                    Geopoint hintPoint = new Geopoint(queryHint);
-
-                    using(var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                    {
-                        // Geocode the specified address, using the specified reference point
-                        // as a query hint. Return no more than a single result.
-                        MapLocationFinderResult mapResult = await MapLocationFinder.FindLocationsAsync(model.LocationQuery, hintPoint, 1).AsTask(cts.Token);
-
-                        switch (mapResult.Status)
-                        {
-                            case MapLocationFinderStatus.Success:
-                                result = mapResult.Locations[0];
-                                break;
-
-                            case MapLocationFinderStatus.UnknownError:
-                            case MapLocationFinderStatus.IndexFailure:
-                                wEx = new WeatherException(WeatherUtils.ErrorStatus.Unknown);
-                                break;
-
-                            case MapLocationFinderStatus.InvalidCredentials:
-                                wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
-                                break;
-
-                            case MapLocationFinderStatus.BadLocation:
-                            case MapLocationFinderStatus.NotSupported:
-                                wEx = new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
-                                break;
-
-                            case MapLocationFinderStatus.NetworkFailure:
-                                wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                                break;
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    result = null;
-                    if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
-                    {
-                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                    }
-                    Logger.WriteLine(LoggerLevel.Error, ex, "BingMapsLocationProvider: error getting location");
-                }
-
-                if (wEx != null)
-                    throw wEx;
-
-                if (result != null && !String.IsNullOrWhiteSpace(result.DisplayName))
-                    location = new LocationQueryViewModel(result, model.WeatherSource);
-                else
-                    location = new LocationQueryViewModel();
-
-                return location;
-            });
-        }
-
-        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override Task<bool> IsKeyValid(string key)
-        {
-            return Task.Run(async () =>
-            {
-                bool isValid = false;
-                WeatherException wEx = null;
-
                 MapService.ServiceToken = key;
                 // The nearby location to use as a query hint.
-                BasicGeoposition geoPoint = new BasicGeoposition
+                BasicGeoposition queryHint = new BasicGeoposition
                 {
                     Latitude = 0,
                     Longitude = 0
                 };
-                Geopoint pointToReverseGeocode = new Geopoint(geoPoint);
+                Geopoint hintPoint = new Geopoint(queryHint);
 
-                // Geocode the specified address, using the specified reference point
-                // as a query hint. Return no more than a single result.
-                MapLocationFinderResult mapResult = await MapLocationFinder.FindLocationsAtAsync(pointToReverseGeocode, MapLocationDesiredAccuracy.Low);
-
-                switch (mapResult.Status)
+                using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                 {
-                    case MapLocationFinderStatus.UnknownError:
-                    case MapLocationFinderStatus.IndexFailure:
-                        wEx = new WeatherException(WeatherUtils.ErrorStatus.Unknown);
-                        isValid = false;
-                        break;
+                    // Geocode the specified address, using the specified reference point
+                    // as a query hint. Return no more than a single result.
+                    MapLocationFinderResult mapResult = await MapLocationFinder.FindLocationsAsync(model.LocationQuery, hintPoint, 1).AsTask(cts.Token);
 
-                    case MapLocationFinderStatus.InvalidCredentials:
-                        wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
-                        isValid = false;
-                        break;
+                    switch (mapResult.Status)
+                    {
+                        case MapLocationFinderStatus.Success:
+                            result = mapResult.Locations[0];
+                            break;
 
-                    case MapLocationFinderStatus.NetworkFailure:
-                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                        isValid = false;
-                        break;
+                        case MapLocationFinderStatus.UnknownError:
+                        case MapLocationFinderStatus.IndexFailure:
+                            wEx = new WeatherException(WeatherUtils.ErrorStatus.Unknown);
+                            break;
 
-                    case MapLocationFinderStatus.Success:
-                    case MapLocationFinderStatus.NotSupported:
-                    case MapLocationFinderStatus.BadLocation:
-                        isValid = true;
-                        break;
+                        case MapLocationFinderStatus.InvalidCredentials:
+                            wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
+                            break;
+
+                        case MapLocationFinderStatus.BadLocation:
+                        case MapLocationFinderStatus.NotSupported:
+                            wEx = new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
+                            break;
+
+                        case MapLocationFinderStatus.NetworkFailure:
+                            wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                            break;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                result = null;
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                }
+                Logger.WriteLine(LoggerLevel.Error, ex, "BingMapsLocationProvider: error getting location");
+            }
 
-                if (wEx != null)
-                    throw wEx;
+            if (wEx != null)
+                throw wEx;
 
-                return isValid;
-            });
+            if (result != null && !String.IsNullOrWhiteSpace(result.DisplayName))
+                location = new LocationQueryViewModel(result, model.WeatherSource);
+            else
+                location = new LocationQueryViewModel();
+
+            return location;
+        }
+
+        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
+        public override async Task<bool> IsKeyValid(string key)
+        {
+            bool isValid = false;
+            WeatherException wEx = null;
+
+            MapService.ServiceToken = key;
+            // The nearby location to use as a query hint.
+            BasicGeoposition geoPoint = new BasicGeoposition
+            {
+                Latitude = 0,
+                Longitude = 0
+            };
+            Geopoint pointToReverseGeocode = new Geopoint(geoPoint);
+
+            // Geocode the specified address, using the specified reference point
+            // as a query hint. Return no more than a single result.
+            MapLocationFinderResult mapResult = await MapLocationFinder.FindLocationsAtAsync(pointToReverseGeocode, MapLocationDesiredAccuracy.Low);
+
+            switch (mapResult.Status)
+            {
+                case MapLocationFinderStatus.UnknownError:
+                case MapLocationFinderStatus.IndexFailure:
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.Unknown);
+                    isValid = false;
+                    break;
+
+                case MapLocationFinderStatus.InvalidCredentials:
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
+                    isValid = false;
+                    break;
+
+                case MapLocationFinderStatus.NetworkFailure:
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    isValid = false;
+                    break;
+
+                case MapLocationFinderStatus.Success:
+                case MapLocationFinderStatus.NotSupported:
+                case MapLocationFinderStatus.BadLocation:
+                    isValid = true;
+                    break;
+            }
+
+            if (wEx != null)
+                throw wEx;
+
+            return isValid;
         }
 
         public override String GetAPIKey()

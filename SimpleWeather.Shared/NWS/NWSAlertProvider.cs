@@ -18,69 +18,66 @@ namespace SimpleWeather.NWS
         private const String ALERT_QUERY_URL = "https://api.weather.gov/alerts/active?status=actual&message_type=alert&point={0:0.####},{1:0.####}";
         private const int MAX_ATTEMPTS = 2;
 
-        public Task<ICollection<WeatherAlert>> GetAlerts(LocationData location)
+        public async Task<ICollection<WeatherAlert>> GetAlerts(LocationData location)
         {
-            return Task.Run<ICollection<WeatherAlert>>(async () =>
+            List<WeatherAlert> alerts = null;
+
+            try
             {
-                List<WeatherAlert> alerts = null;
+                Uri queryURL = new Uri(string.Format(CultureInfo.InvariantCulture, ALERT_QUERY_URL, location.latitude, location.longitude));
 
-                try
+                for (int i = 0; i < MAX_ATTEMPTS; i++)
                 {
-                    Uri queryURL = new Uri(string.Format(CultureInfo.InvariantCulture, ALERT_QUERY_URL, location.latitude, location.longitude));
-
-                    for (int i = 0; i < MAX_ATTEMPTS; i++)
+                    using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
                     {
-                        using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
+                        request.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
+
+                        try
                         {
-                            request.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
-
-                            try
+                            // Connect to webstream
+                            var webClient = SimpleLibrary.GetInstance().WebClient;
+                            using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                            using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                             {
-                                // Connect to webstream
-                                var webClient = SimpleLibrary.GetInstance().WebClient;
-                                using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                                using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                                if (response.StatusCode == HttpStatusCode.BadRequest)
                                 {
-                                    if (response.StatusCode == HttpStatusCode.BadRequest)
+                                    break;
+                                }
+                                else
+                                {
+                                    response.EnsureSuccessStatusCode();
+                                    Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+
+                                    // Load data
+                                    var root = await JSONParser.DeserializerAsync<AlertRootobject>(contentStream);
+
+                                    alerts = new List<WeatherAlert>(root.graph.Length);
+
+                                    foreach (AlertGraph result in root.graph)
                                     {
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        response.EnsureSuccessStatusCode();
-                                        Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-
-                                        // Load data
-                                        var root = JSONParser.Deserializer<AlertRootobject>(contentStream);
-
-                                        alerts = new List<WeatherAlert>(root.graph.Length);
-
-                                        foreach (AlertGraph result in root.graph)
-                                        {
-                                            alerts.Add(new WeatherAlert(result));
-                                        }
+                                        alerts.Add(new WeatherAlert(result));
                                     }
                                 }
                             }
-                            catch { }
                         }
+                        catch { }
+                    }
 
-                        if (i < MAX_ATTEMPTS - 1 && alerts == null)
-                        {
-                            await Task.Delay(1000);
-                        }
+                    if (i < MAX_ATTEMPTS - 1 && alerts == null)
+                    {
+                        await Task.Delay(1000);
                     }
                 }
-                catch (Exception ex)
-                {
-                    Logger.WriteLine(LoggerLevel.Error, ex, "NWSAlertProvider: error getting weather alert data");
-                }
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLine(LoggerLevel.Error, ex, "NWSAlertProvider: error getting weather alert data");
+            }
 
-                if (alerts == null)
-                    alerts = new List<WeatherAlert>();
+            if (alerts == null)
+                alerts = new List<WeatherAlert>();
 
-                return alerts;
-            });
+            return alerts;
         }
     }
 }

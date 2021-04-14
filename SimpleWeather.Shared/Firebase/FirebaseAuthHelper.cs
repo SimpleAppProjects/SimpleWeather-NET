@@ -17,30 +17,27 @@ namespace SimpleWeather.Firebase
         private static ApplicationDataContainer FirebaseContainer = ApplicationData.Current.LocalSettings.
             CreateContainer(FirebaseContainerKey, ApplicationDataCreateDisposition.Always);
 
-        public static Task<FirebaseAuthLink> GetAuthLink()
+        public static async Task<FirebaseAuthLink> GetAuthLink()
         {
-            return Task.Run(async () =>
+            // specify your app’s client key when creating the auth provider
+            var config = new FirebaseConfig(Keys.FirebaseConfig.GetGoogleAPIKey());
+            using (var ap = new FirebaseAuthProvider(config))
             {
-                // specify your app’s client key when creating the auth provider
-                var config = new FirebaseConfig(Keys.FirebaseConfig.GetGoogleAPIKey());
-                using (var ap = new FirebaseAuthProvider(config))
+                var token = await GetTokenFromStorage();
+                if (token != null)
                 {
-                    var token = await GetTokenFromStorage();
-                    if (token != null)
+                    var authLink = await new FirebaseAuthLink(ap, token).GetFreshAuthAsync();
+                    if (!authLink.IsExpired() && authLink.FirebaseToken != null)
                     {
-                        var authLink = await new FirebaseAuthLink(ap, token).GetFreshAuthAsync();
-                        if (!authLink.IsExpired() && authLink.FirebaseToken != null)
-                        {
-                            return authLink;
-                        }
+                        return authLink;
                     }
-
-                    // sign in anonymously
-                    var authTokenLink = await ap.SignInAnonymouslyAsync();
-                    StoreToken(authTokenLink);
-                    return authTokenLink;
                 }
-            });
+
+                // sign in anonymously
+                var authTokenLink = await ap.SignInAnonymouslyAsync();
+                StoreToken(authTokenLink);
+                return authTokenLink;
+            }
         }
 
         private static async Task<FirebaseAuth> GetTokenFromStorage()

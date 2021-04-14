@@ -17,17 +17,14 @@ namespace SimpleWeather.NWS
             return GetAstronomyData(location, DateTimeOffset.UtcNow);
         }
 
-        public Task<Astronomy> GetAstronomyData(LocationData location, DateTimeOffset date)
+        public async Task<Astronomy> GetAstronomyData(LocationData location, DateTimeOffset date)
         {
-            return Task.Run(() =>
+            var astroData = GetSunriseSetTimeUTC(date, location.latitude, location.longitude);
+            return new Astronomy()
             {
-                var astroData = GetSunriseSetTimeUTC(date, location.latitude, location.longitude);
-                return new Astronomy()
-                {
-                    sunrise = astroData.sunriseUTC.Add(location.tz_offset),
-                    sunset = astroData.sunsetUTC.Add(location.tz_offset)
-                };
-            });
+                sunrise = astroData.sunriseUTC.Add(location.tz_offset),
+                sunset = astroData.sunsetUTC.Add(location.tz_offset)
+            };
         }
 
         internal class AstroData

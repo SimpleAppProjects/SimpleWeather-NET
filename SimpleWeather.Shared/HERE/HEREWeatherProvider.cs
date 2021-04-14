@@ -51,147 +51,144 @@ namespace SimpleWeather.HERE
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override Task<Weather> GetWeather(string location_query, string country_code)
+        public override async Task<Weather> GetWeather(string location_query, string country_code)
         {
-            return Task.Run(async () =>
+            Weather weather = null;
+            WeatherException wEx = null;
+
+            var culture = CultureUtils.UserCulture;
+
+            string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
+
+            OAuthRequest authRequest = new OAuthRequest(APIKeys.GetHERECliID(), APIKeys.GetHERECliSecr());
+            Uri queryURL;
+            if (LocationUtils.IsUSorCanada(country_code))
             {
-                Weather weather = null;
-                WeatherException wEx = null;
+                queryURL = new Uri(String.Format(WEATHER_US_CA_QUERY_URL, location_query, locale));
+            }
+            else
+            {
+                queryURL = new Uri(String.Format(WEATHER_GLOBAL_QUERY_URL, location_query, locale));
+            }
 
-                var culture = CultureUtils.UserCulture;
-
-                string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
-
-                OAuthRequest authRequest = new OAuthRequest(APIKeys.GetHERECliID(), APIKeys.GetHERECliSecr());
-                Uri queryURL;
-                if (LocationUtils.IsUSorCanada(country_code))
+            try
+            {
+                using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
                 {
-                    queryURL = new Uri(String.Format(WEATHER_US_CA_QUERY_URL, location_query, locale));
-                }
-                else
-                {
-                    queryURL = new Uri(String.Format(WEATHER_GLOBAL_QUERY_URL, location_query, locale));
-                }
+                    // Add headers to request
+                    var token = await HEREOAuthUtils.GetBearerToken();
+                    if (!String.IsNullOrWhiteSpace(token))
+                        request.Headers.Add("Authorization", token);
+                    else
+                        throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
 
-                try
-                {
-                    using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
+                    request.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
+
+                    // Connect to webstream
+                    var webClient = SimpleLibrary.GetInstance().WebClient;
+                    using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                    using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                     {
-                        // Add headers to request
-                        var token = await HEREOAuthUtils.GetBearerToken();
-                        if (!String.IsNullOrWhiteSpace(token))
-                            request.Headers.Add("Authorization", token);
-                        else
-                            throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                        response.EnsureSuccessStatusCode();
+                        Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                        // Reset exception
+                        wEx = null;
 
-                        request.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
+                        // Load weather
+                        Rootobject root = await JSONParser.DeserializerAsync<Rootobject>(contentStream);
 
-                        // Connect to webstream
-                        var webClient = SimpleLibrary.GetInstance().WebClient;
-                        using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                        using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                        // Check for errors
+                        if (root.Type != null)
                         {
-                            response.EnsureSuccessStatusCode();
-                            Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-                            // Reset exception
-                            wEx = null;
-
-                            // Load weather
-                            Rootobject root = JSONParser.Deserializer<Rootobject>(contentStream);
-
-                            // Check for errors
-                            if (root.Type != null)
+                            switch (root.Type)
                             {
-                                switch (root.Type)
-                                {
-                                    case "Invalid Request":
-                                        wEx = new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
-                                        break;
+                                case "Invalid Request":
+                                    wEx = new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
+                                    break;
 
-                                    case "Unauthorized":
-                                        wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
-                                        break;
+                                case "Unauthorized":
+                                    wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
+                                    break;
 
-                                    default:
-                                        break;
-                                }
+                                default:
+                                    break;
                             }
+                        }
 
-                            weather = new Weather(root);
+                        weather = new Weather(root);
 
-                            // Add weather alerts if available
-                            if (root.alerts?.alerts?.Length > 0)
+                        // Add weather alerts if available
+                        if (root.alerts?.alerts?.Length > 0)
+                        {
+                            weather.weather_alerts = new List<WeatherAlert>(root.alerts.alerts.Length);
+
+                            foreach (Alert result in root.alerts.alerts)
                             {
-                                weather.weather_alerts = new List<WeatherAlert>(root.alerts.alerts.Length);
-
-                                foreach (Alert result in root.alerts.alerts)
-                                {
-                                    weather.weather_alerts.Add(new WeatherAlert(result));
-                                }
+                                weather.weather_alerts.Add(new WeatherAlert(result));
                             }
-                            else if (root.nwsAlerts?.watch?.Length > 0 || root.nwsAlerts?.warning?.Length > 0)
+                        }
+                        else if (root.nwsAlerts?.watch?.Length > 0 || root.nwsAlerts?.warning?.Length > 0)
+                        {
+                            int numOfAlerts = (root.nwsAlerts?.watch?.Length ?? 0) + (root.nwsAlerts?.warning?.Length ?? 0);
+
+                            weather.weather_alerts = new HashSet<WeatherAlert>(numOfAlerts);
+
+                            float lat = weather.location.latitude.Value;
+                            float lon = weather.location.longitude.Value;
+
+                            if (root.nwsAlerts.watch != null)
                             {
-                                int numOfAlerts = (root.nwsAlerts?.watch?.Length ?? 0) + (root.nwsAlerts?.warning?.Length ?? 0);
-
-                                weather.weather_alerts = new HashSet<WeatherAlert>(numOfAlerts);
-
-                                float lat = weather.location.latitude.Value;
-                                float lon = weather.location.longitude.Value;
-
-                                if (root.nwsAlerts.watch != null)
+                                foreach (var watchItem in root.nwsAlerts.watch)
                                 {
-                                    foreach (var watchItem in root.nwsAlerts.watch)
+                                    // Add watch item if location is within 20km of the center of the alert zone
+                                    if (ConversionMethods.CalculateHaversine(lat, lon, double.Parse(watchItem.latitude), double.Parse(watchItem.longitude)) < 20000)
                                     {
-                                        // Add watch item if location is within 20km of the center of the alert zone
-                                        if (ConversionMethods.CalculateHaversine(lat, lon, double.Parse(watchItem.latitude), double.Parse(watchItem.longitude)) < 20000)
-                                        {
-                                            weather.weather_alerts.Add(new WeatherAlert(watchItem));
-                                        }
+                                        weather.weather_alerts.Add(new WeatherAlert(watchItem));
                                     }
                                 }
-                                if (root.nwsAlerts.warning != null)
+                            }
+                            if (root.nwsAlerts.warning != null)
+                            {
+                                foreach (var warningItem in root.nwsAlerts.warning)
                                 {
-                                    foreach (var warningItem in root.nwsAlerts.warning)
+                                    // Add warning item if location is within 25km of the center of the alert zone
+                                    if (ConversionMethods.CalculateHaversine(lat, lon, double.Parse(warningItem.latitude), double.Parse(warningItem.longitude)) < 25000)
                                     {
-                                        // Add warning item if location is within 25km of the center of the alert zone
-                                        if (ConversionMethods.CalculateHaversine(lat, lon, double.Parse(warningItem.latitude), double.Parse(warningItem.longitude)) < 25000)
-                                        {
-                                            weather.weather_alerts.Add(new WeatherAlert(warningItem));
-                                        }
+                                        weather.weather_alerts.Add(new WeatherAlert(warningItem));
                                     }
                                 }
                             }
                         }
                     }
                 }
-                catch (Exception ex)
+            }
+            catch (Exception ex)
+            {
+                weather = null;
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
-                    weather = null;
-                    if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
-                    {
-                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                    }
-
-                    Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting weather data");
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                 }
 
-                if (wEx == null && (weather == null || !weather.IsValid()))
-                {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
-                }
-                else if (weather != null)
-                {
-                    if (SupportsWeatherLocale)
-                        weather.locale = locale;
+                Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting weather data");
+            }
 
-                    weather.query = location_query;
-                }
+            if (wEx == null && (weather == null || !weather.IsValid()))
+            {
+                wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
+            }
+            else if (weather != null)
+            {
+                if (SupportsWeatherLocale)
+                    weather.locale = locale;
 
-                if (wEx != null)
-                    throw wEx;
+                weather.query = location_query;
+            }
 
-                return weather;
-            });
+            if (wEx != null)
+                throw wEx;
+
+            return weather;
         }
 
         protected override async Task UpdateWeatherData(LocationData location, Weather weather)
@@ -233,108 +230,105 @@ namespace SimpleWeather.HERE
             }
         }
 
-        public override Task<ICollection<WeatherAlert>> GetAlerts(LocationData location)
+        public override async Task<ICollection<WeatherAlert>> GetAlerts(LocationData location)
         {
-            return Task.Run(async () =>
+            ICollection<WeatherAlert> alerts = null;
+
+            var culture = CultureUtils.UserCulture;
+
+            string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
+
+            try
             {
-                ICollection<WeatherAlert> alerts = null;
-
-                var culture = CultureUtils.UserCulture;
-
-                string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
-
-                try
+                OAuthRequest authRequest = new OAuthRequest(APIKeys.GetHERECliID(), APIKeys.GetHERECliSecr());
+                Uri queryURL;
+                if (LocationUtils.IsUSorCanada(location.country_code))
                 {
-                    OAuthRequest authRequest = new OAuthRequest(APIKeys.GetHERECliID(), APIKeys.GetHERECliSecr());
-                    Uri queryURL;
-                    if (LocationUtils.IsUSorCanada(location.country_code))
-                    {
-                        queryURL = new Uri(String.Format(ALERTS_US_CA_QUERY_URL, location.query, locale));
-                    }
+                    queryURL = new Uri(String.Format(ALERTS_US_CA_QUERY_URL, location.query, locale));
+                }
+                else
+                {
+                    queryURL = new Uri(String.Format(ALERTS_GLOBAL_QUERY_URL, location.query, locale));
+                }
+
+                using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
+                {
+                    // Add headers to request
+                    var token = await HEREOAuthUtils.GetBearerToken();
+                    if (!String.IsNullOrWhiteSpace(token))
+                        request.Headers.Add("Authorization", token);
                     else
+                        throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+
+                    // Updates 4x per day
+                    request.Headers.CacheControl.MaxAge = TimeSpan.FromHours(6);
+
+                    // Connect to webstream
+                    var webClient = SimpleLibrary.GetInstance().WebClient;
+                    using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                    using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                     {
-                        queryURL = new Uri(String.Format(ALERTS_GLOBAL_QUERY_URL, location.query, locale));
-                    }
+                        response.EnsureSuccessStatusCode();
+                        Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
-                    using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
-                    {
-                        // Add headers to request
-                        var token = await HEREOAuthUtils.GetBearerToken();
-                        if (!String.IsNullOrWhiteSpace(token))
-                            request.Headers.Add("Authorization", token);
-                        else
-                            throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                        // Load data
+                        Rootobject root = await JSONParser.DeserializerAsync<Rootobject>(contentStream);
 
-                        // Updates 4x per day
-                        request.Headers.CacheControl.MaxAge = TimeSpan.FromHours(6);
-
-                        // Connect to webstream
-                        var webClient = SimpleLibrary.GetInstance().WebClient;
-                        using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                        using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                        // Add weather alerts if available
+                        if (root.alerts?.alerts?.Length > 0)
                         {
-                            response.EnsureSuccessStatusCode();
-                            Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                            alerts = new List<WeatherAlert>(root.alerts.alerts.Length);
 
-                            // Load data
-                            Rootobject root = JSONParser.Deserializer<Rootobject>(contentStream);
-
-                            // Add weather alerts if available
-                            if (root.alerts?.alerts?.Length > 0)
+                            foreach (Alert result in root.alerts.alerts)
                             {
-                                alerts = new List<WeatherAlert>(root.alerts.alerts.Length);
-
-                                foreach (Alert result in root.alerts.alerts)
-                                {
-                                    alerts.Add(new WeatherAlert(result));
-                                }
+                                alerts.Add(new WeatherAlert(result));
                             }
-                            else if (root.nwsAlerts?.watch?.Length > 0 || root.nwsAlerts?.warning?.Length > 0)
+                        }
+                        else if (root.nwsAlerts?.watch?.Length > 0 || root.nwsAlerts?.warning?.Length > 0)
+                        {
+                            int numOfAlerts = (root.nwsAlerts?.watch?.Length ?? 0) + (root.nwsAlerts?.warning?.Length ?? 0);
+
+                            alerts = new HashSet<WeatherAlert>(numOfAlerts);
+
+                            float lat = (float)location.latitude;
+                            float lon = (float)location.longitude;
+
+                            if (root.nwsAlerts.watch != null)
                             {
-                                int numOfAlerts = (root.nwsAlerts?.watch?.Length ?? 0) + (root.nwsAlerts?.warning?.Length ?? 0);
-
-                                alerts = new HashSet<WeatherAlert>(numOfAlerts);
-
-                                float lat = (float)location.latitude;
-                                float lon = (float)location.longitude;
-
-                                if (root.nwsAlerts.watch != null)
+                                foreach (var watchItem in root.nwsAlerts.watch)
                                 {
-                                    foreach (var watchItem in root.nwsAlerts.watch)
+                                    // Add watch item if location is within 20km of the center of the alert zone
+                                    if (ConversionMethods.CalculateHaversine(lat, lon, double.Parse(watchItem.latitude), double.Parse(watchItem.longitude)) < 20000)
                                     {
-                                        // Add watch item if location is within 20km of the center of the alert zone
-                                        if (ConversionMethods.CalculateHaversine(lat, lon, double.Parse(watchItem.latitude), double.Parse(watchItem.longitude)) < 20000)
-                                        {
-                                            alerts.Add(new WeatherAlert(watchItem));
-                                        }
+                                        alerts.Add(new WeatherAlert(watchItem));
                                     }
                                 }
-                                if (root.nwsAlerts.warning != null)
+                            }
+                            if (root.nwsAlerts.warning != null)
+                            {
+                                foreach (var warningItem in root.nwsAlerts.warning)
                                 {
-                                    foreach (var warningItem in root.nwsAlerts.warning)
+                                    // Add warning item if location is within 25km of the center of the alert zone
+                                    if (ConversionMethods.CalculateHaversine(lat, lon, double.Parse(warningItem.latitude), double.Parse(warningItem.longitude)) < 25000)
                                     {
-                                        // Add warning item if location is within 25km of the center of the alert zone
-                                        if (ConversionMethods.CalculateHaversine(lat, lon, double.Parse(warningItem.latitude), double.Parse(warningItem.longitude)) < 25000)
-                                        {
-                                            alerts.Add(new WeatherAlert(warningItem));
-                                        }
+                                        alerts.Add(new WeatherAlert(warningItem));
                                     }
                                 }
                             }
                         }
                     }
                 }
-                catch (Exception ex)
-                {
-                    alerts = new List<WeatherAlert>();
-                    Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting weather alert data");
-                }
+            }
+            catch (Exception ex)
+            {
+                alerts = new List<WeatherAlert>();
+                Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting weather alert data");
+            }
 
-                if (alerts == null)
-                    alerts = new List<WeatherAlert>();
+            if (alerts == null)
+                alerts = new List<WeatherAlert>();
 
-                return alerts;
-            });
+            return alerts;
         }
 
         public override string UpdateLocationQuery(Weather weather)

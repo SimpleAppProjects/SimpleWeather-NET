@@ -27,7 +27,7 @@ namespace SimpleWeather.UWP.WNS
         {
             try
             {
-                using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                using (var cts = new CancellationTokenSource(30000))
                 {
                     var channel = await PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync().AsTask(cts.Token);
 
@@ -44,59 +44,57 @@ namespace SimpleWeather.UWP.WNS
             }
         }
 
-        public static Task UpdateChannelUri(PushNotificationChannel channel)
+        private static async Task UpdateChannelUri(PushNotificationChannel channel)
         {
-            return Task.Run(async () =>
+            // Check if channel id differs from uri in settings
+            // if different
+            //      Write channel URI to Firestore DB
+            //      On success Write/Replace channel uri in settings
+            //      obj { channelURI: "", expirationDate: "" }
+            // else continue
+            WNSChannel oldChannel = null;
+            if (WNSSettings.Values.ContainsKey(KEY_WNSCHANNEL))
             {
-                // Check if channel id differs from uri in settings
-                // if different
-                //      Write channel URI to Firestore DB
-                //      On success Write/Replace channel uri in settings
-                //      obj { channelURI: "", expirationDate: "" }
-                // else continue
-                WNSChannel oldChannel = null;
-                if (WNSSettings.Values.ContainsKey(KEY_WNSCHANNEL))
-                {
-                    oldChannel = JSONParser.Deserializer<WNSChannel>(WNSSettings.Values[KEY_WNSCHANNEL]?.ToString());
-                }
+                oldChannel = JSONParser.Deserializer<WNSChannel>(WNSSettings.Values[KEY_WNSCHANNEL]?.ToString());
+            }
 
-                if (!Equals(channel.Uri, oldChannel?.ChannelUri))
-                {
-                    // Write to RealtimeDatabase db
-                    var auth = await Firebase.FirebaseAuthHelper.GetAuthLink();
-                    var db = await Firebase.FirebaseDatabaseHelper.GetFirebaseDatabase();
+            if (!Equals(channel.Uri, oldChannel?.ChannelUri))
+            {
+                // Write to RealtimeDatabase db
+                var auth = await Firebase.FirebaseAuthHelper.GetAuthLink();
+                var db = await Firebase.FirebaseDatabaseHelper.GetFirebaseDatabase();
 
-                    if (oldChannel?.ChannelUri != null)
+                if (oldChannel?.ChannelUri != null)
+                {
+                    try
                     {
-                        try
-                        {
-                            // Delete previous entry if it exists
-                            await db.Child("uwp_users").Child(oldChannel.ChannelUri).DeleteAsync();
-                        } catch (Exception)
-                        {
-                            // ignore if does not exist
-                        }
+                        // Delete previous entry if it exists
+                        await db.Child("uwp_users").Child(oldChannel.ChannelUri).DeleteAsync();
                     }
-
-                    await db.Child("uwp_users")
-                            .Child(auth.User.LocalId)
-                            .PatchAsync(new FirebaseUWPUser()
-                            {
-                                channel_uri = channel.Uri,
-                                expiration_time = channel.ExpirationTime.ToUnixTimeSeconds(),
-                                package_name = Windows.ApplicationModel.Package.Current.Id.Name
-                            });
-
-                    // replace in settings
-                    var newChannel = new WNSChannel()
+                    catch (Exception)
                     {
-                        ChannelUri = channel.Uri,
-                        ExpirationTime = channel.ExpirationTime
-                    };
-                    var json = JSONParser.Serializer(newChannel);
-                    WNSSettings.Values[KEY_WNSCHANNEL] = json;
+                        // ignore if does not exist
+                    }
                 }
-            });
+
+                await db.Child("uwp_users")
+                        .Child(auth.User.LocalId)
+                        .PatchAsync(new FirebaseUWPUser()
+                        {
+                            channel_uri = channel.Uri,
+                            expiration_time = channel.ExpirationTime.ToUnixTimeSeconds(),
+                            package_name = Windows.ApplicationModel.Package.Current.Id.Name
+                        });
+
+                // replace in settings
+                var newChannel = new WNSChannel()
+                {
+                    ChannelUri = channel.Uri,
+                    ExpirationTime = channel.ExpirationTime
+                };
+                var json = await JSONParser.SerializerAsync(newChannel);
+                WNSSettings.Values[KEY_WNSCHANNEL] = json;
+            }
         }
     }
 

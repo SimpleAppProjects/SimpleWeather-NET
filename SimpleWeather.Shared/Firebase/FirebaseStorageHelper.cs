@@ -12,20 +12,17 @@ namespace SimpleWeather.Firebase
         private static readonly Uri NetworkRequestUri = new Uri("https://firebasestorage.googleapis.com/v0/b/");
         public static DateTime LastDownloadFailTimestamp = DateTime.MinValue;
 
-        public static Task<FirebaseStorage> GetFirebaseStorage()
+        public static async Task<FirebaseStorage> GetFirebaseStorage()
         {
-            return Task.Run(async () =>
+            var auth = await FirebaseAuthHelper.GetAuthLink();
+            return new FirebaseStorage(Keys.FirebaseConfig.GetGoogleStorageBucket(), new FirebaseStorageOptions()
             {
-                var auth = await FirebaseAuthHelper.GetAuthLink();
-                return new FirebaseStorage(Keys.FirebaseConfig.GetGoogleStorageBucket(), new FirebaseStorageOptions()
+                AuthTokenAsyncFactory = async () =>
                 {
-                    AuthTokenAsyncFactory = async () =>
-                    {
-                        if (auth.IsExpired()) auth = await auth.GetFreshAuthAsync();
-                        return auth.FirebaseToken;
-                    },
-                    HttpClientTimeout = TimeSpan.FromMilliseconds(Utils.Settings.READ_TIMEOUT),
-                });
+                    if (auth.IsExpired()) auth = await auth.GetFreshAuthAsync();
+                    return auth.FirebaseToken;
+                },
+                HttpClientTimeout = TimeSpan.FromMilliseconds(Utils.Settings.READ_TIMEOUT),
             });
         }
 

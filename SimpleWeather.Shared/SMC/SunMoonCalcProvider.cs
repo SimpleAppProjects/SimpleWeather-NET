@@ -18,42 +18,39 @@ namespace SimpleWeather.SMC
             return GetAstronomyData(location, DateTimeOffset.UtcNow);
         }
 
-        public Task<Astronomy> GetAstronomyData(LocationData location, DateTimeOffset date)
+        public async Task<Astronomy> GetAstronomyData(LocationData location, DateTimeOffset date)
         {
-            return Task.Run(() =>
+            Astronomy astroData = new Astronomy();
+
+            try
             {
-                Astronomy astroData = new Astronomy();
+                var utc = date.UtcDateTime;
 
-                try
-                {
-                    var utc = date.UtcDateTime;
+                var smc = new SunMoonCalculator(utc.Year, utc.Month, utc.Day,
+                    utc.Hour, utc.Minute, utc.Second,
+                    location.longitude * SunMoonCalculator.DEG_TO_RAD, location.latitude * SunMoonCalculator.DEG_TO_RAD, 0);
 
-                    var smc = new SunMoonCalculator(utc.Year, utc.Month, utc.Day,
-                        utc.Hour, utc.Minute, utc.Second,
-                        location.longitude * SunMoonCalculator.DEG_TO_RAD, location.latitude * SunMoonCalculator.DEG_TO_RAD, 0);
+                smc.calcSunAndMoon();
 
-                    smc.calcSunAndMoon();
+                var sunrise = DateTime.ParseExact(SunMoonCalculator.getDateAsString(smc.sun.rise), DATE_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                var sunset = DateTime.ParseExact(SunMoonCalculator.getDateAsString(smc.sun.set), DATE_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                var moonrise = DateTime.ParseExact(SunMoonCalculator.getDateAsString(smc.moon.rise), DATE_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                var moonset = DateTime.ParseExact(SunMoonCalculator.getDateAsString(smc.moon.set), DATE_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
 
-                    var sunrise = DateTime.ParseExact(SunMoonCalculator.getDateAsString(smc.sun.rise), DATE_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-                    var sunset = DateTime.ParseExact(SunMoonCalculator.getDateAsString(smc.sun.set), DATE_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-                    var moonrise = DateTime.ParseExact(SunMoonCalculator.getDateAsString(smc.moon.rise), DATE_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-                    var moonset = DateTime.ParseExact(SunMoonCalculator.getDateAsString(smc.moon.set), DATE_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                astroData.sunrise = sunrise.Add(location.tz_offset);
+                astroData.sunset = sunset.Add(location.tz_offset);
+                astroData.moonrise = moonrise.Add(location.tz_offset);
+                astroData.moonset = moonset.Add(location.tz_offset);
 
-                    astroData.sunrise = sunrise.Add(location.tz_offset);
-                    astroData.sunset = sunset.Add(location.tz_offset);
-                    astroData.moonrise = moonrise.Add(location.tz_offset);
-                    astroData.moonset = moonset.Add(location.tz_offset);
+                var moonPhaseType = GetMoonPhase(smc.moonAge);
+                astroData.moonphase = new MoonPhase(moonPhaseType);
+            }
+            catch (Exception)
+            {
+                throw new WeatherException(WeatherUtils.ErrorStatus.Unknown);
+            }
 
-                    var moonPhaseType = GetMoonPhase(smc.moonAge);
-                    astroData.moonphase = new MoonPhase(moonPhaseType);
-                }
-                catch (Exception)
-                {
-                    throw new WeatherException(WeatherUtils.ErrorStatus.Unknown);
-                }
-
-                return astroData;
-            });
+            return astroData;
         }
 
         // Based on calculations from: https://github.com/mourner/suncalc

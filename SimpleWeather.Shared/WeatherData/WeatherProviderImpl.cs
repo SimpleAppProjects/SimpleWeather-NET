@@ -41,51 +41,48 @@ namespace SimpleWeather.WeatherData
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public abstract Task<Weather> GetWeather(String location_query, String country_code);
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public virtual Task<Weather> GetWeather(LocationData location)
+        public virtual async Task<Weather> GetWeather(LocationData location)
         {
-            return Task.Run(async () =>
+            if (location == null || location.query == null)
+                throw new WeatherException(WeatherUtils.ErrorStatus.Unknown);
+
+            var weather = await AsyncTask.RunAsync(GetWeather(location.query, location.country_code));
+
+            if (String.IsNullOrWhiteSpace(location.tz_long))
             {
-                if (location == null || location.query == null)
-                    throw new WeatherException(WeatherUtils.ErrorStatus.Unknown);
-
-                var weather = await AsyncTask.RunAsync(GetWeather(location.query, location.country_code));
-
-                if (String.IsNullOrWhiteSpace(location.tz_long))
+                if (!String.IsNullOrWhiteSpace(weather.location.tz_long))
                 {
-                    if (!String.IsNullOrWhiteSpace(weather.location.tz_long))
-                    {
-                        location.tz_long = weather.location.tz_long;
-                    }
-                    else if (location.latitude != 0 && location.longitude != 0)
-                    {
-                        String tzId = await AsyncTask.RunAsync(TZDB.TZDBCache.GetTimeZone(location.latitude, location.longitude));
-                        if (!String.IsNullOrWhiteSpace(tzId))
-                            location.tz_long = tzId;
-                    }
-
-#if !UNIT_TEST
-                    // Update DB here or somewhere else
-                    await Settings.UpdateLocation(location);
-#endif
+                    location.tz_long = weather.location.tz_long;
+                }
+                else if (location.latitude != 0 && location.longitude != 0)
+                {
+                    String tzId = await AsyncTask.RunAsync(TZDB.TZDBCache.GetTimeZone(location.latitude, location.longitude));
+                    if (!String.IsNullOrWhiteSpace(tzId))
+                        location.tz_long = tzId;
                 }
 
-                if (String.IsNullOrWhiteSpace(weather.location.tz_long))
-                    weather.location.tz_long = location.tz_long;
+#if !UNIT_TEST
+                // Update DB here or somewhere else
+                await Settings.UpdateLocation(location);
+#endif
+            }
 
-                if (String.IsNullOrWhiteSpace(weather.location.name))
-                    weather.location.name = location.name;
+            if (String.IsNullOrWhiteSpace(weather.location.tz_long))
+                weather.location.tz_long = location.tz_long;
 
-                weather.location.latitude = (float)location.latitude;
-                weather.location.longitude = (float)location.longitude;
+            if (String.IsNullOrWhiteSpace(weather.location.name))
+                weather.location.name = location.name;
 
-                // Provider-specific updates/fixes
-                await UpdateWeatherData(location, weather);
+            weather.location.latitude = (float)location.latitude;
+            weather.location.longitude = (float)location.longitude;
 
-                // Additional external data
-                await UpdateAQIData(location, weather);
+            // Provider-specific updates/fixes
+            await UpdateWeatherData(location, weather);
 
-                return weather;
-            });
+            // Additional external data
+            await UpdateAQIData(location, weather);
+
+            return weather;
         }
 
         /// <summary>

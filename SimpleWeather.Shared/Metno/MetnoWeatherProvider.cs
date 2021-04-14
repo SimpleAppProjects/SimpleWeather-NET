@@ -47,81 +47,78 @@ namespace SimpleWeather.Metno
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override Task<Weather> GetWeather(string location_query, string country_code)
+        public override async Task<Weather> GetWeather(string location_query, string country_code)
         {
-            return Task.Run(async () =>
+            Weather weather = null;
+            WeatherException wEx = null;
+
+            try
             {
-                Weather weather = null;
-                WeatherException wEx = null;
+                Uri forecastURL = new Uri(string.Format(FORECAST_QUERY_URL, location_query));
+                string date = DateTime.Now.ToString("yyyy-MM-dd");
+                Uri sunrisesetURL = new Uri(string.Format(ASTRONOMY_QUERY_URL, location_query, date));
 
-                try
+                using (var forecastRequest = new HttpRequestMessage(HttpMethod.Get, forecastURL))
+                using (var astronomyRequest = new HttpRequestMessage(HttpMethod.Get, sunrisesetURL))
                 {
-                    Uri forecastURL = new Uri(string.Format(FORECAST_QUERY_URL, location_query));
-                    string date = DateTime.Now.ToString("yyyy-MM-dd");
-                    Uri sunrisesetURL = new Uri(string.Format(ASTRONOMY_QUERY_URL, location_query, date));
+                    // Add headers
+                    forecastRequest.Headers.AcceptEncoding.Add(new HttpContentCodingWithQualityHeaderValue("gzip"));
+                    astronomyRequest.Headers.AcceptEncoding.Add(new HttpContentCodingWithQualityHeaderValue("gzip"));
 
-                    using (var forecastRequest = new HttpRequestMessage(HttpMethod.Get, forecastURL))
-                    using (var astronomyRequest = new HttpRequestMessage(HttpMethod.Get, sunrisesetURL))
+                    forecastRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
+                    astronomyRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(3);
+
+                    // Get response
+                    var webClient = SimpleLibrary.GetInstance().WebClient;
+                    using (var ctsF = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                    using (var forecastResponse = await webClient.SendRequestAsync(forecastRequest).AsTask(ctsF.Token))
                     {
-                        // Add headers
-                        forecastRequest.Headers.AcceptEncoding.Add(new HttpContentCodingWithQualityHeaderValue("gzip"));
-                        astronomyRequest.Headers.AcceptEncoding.Add(new HttpContentCodingWithQualityHeaderValue("gzip"));
-
-                        forecastRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
-                        astronomyRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(3);
-
-                        // Get response
-                        var webClient = SimpleLibrary.GetInstance().WebClient;
-                        using (var ctsF = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                        using (var forecastResponse = await webClient.SendRequestAsync(forecastRequest).AsTask(ctsF.Token))
+                        forecastResponse.EnsureSuccessStatusCode();
+                        using (var ctsA = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                        using (var sunrisesetResponse = await webClient.SendRequestAsync(astronomyRequest).AsTask(ctsA.Token))
                         {
-                            forecastResponse.EnsureSuccessStatusCode();
-                            using (var ctsA = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                            using (var sunrisesetResponse = await webClient.SendRequestAsync(astronomyRequest).AsTask(ctsA.Token))
-                            {
-                                sunrisesetResponse.EnsureSuccessStatusCode();
+                            sunrisesetResponse.EnsureSuccessStatusCode();
 
-                                Stream forecastStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await forecastResponse.Content.ReadAsInputStreamAsync());
-                                Stream sunrisesetStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await sunrisesetResponse.Content.ReadAsInputStreamAsync());
+                            Stream forecastStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await forecastResponse.Content.ReadAsInputStreamAsync());
+                            Stream sunrisesetStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await sunrisesetResponse.Content.ReadAsInputStreamAsync());
 
-                                // Reset exception
-                                wEx = null;
+                            // Reset exception
+                            wEx = null;
 
-                                // Load weather
-                                Rootobject foreRoot = JSONParser.Deserializer<Rootobject>(forecastStream);
-                                AstroRootobject astroRoot = JSONParser.Deserializer<AstroRootobject>(sunrisesetStream);
+                            // Load weather
+                            Rootobject foreRoot = await JSONParser.DeserializerAsync<Rootobject>(forecastStream);
+                            AstroRootobject astroRoot = await JSONParser.DeserializerAsync<AstroRootobject>(sunrisesetStream);
 
-                                weather = new Weather(foreRoot, astroRoot);
-                            }
+                            weather = new Weather(foreRoot, astroRoot);
                         }
                     }
                 }
-                catch (Exception ex)
+            }
+            catch (Exception ex)
+            {
+                weather = null;
+
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
-                    weather = null;
-
-                    if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
-                    {
-                        wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
-                    }
-
-                    Logger.WriteLine(LoggerLevel.Error, ex, "MetnoWeatherProvider: error getting weather data");
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                 }
 
-                if (wEx == null && (weather == null || !weather.IsValid()))
-                {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
-                }
-                else if (weather != null)
-                {
-                    weather.query = location_query;
-                }
+                Logger.WriteLine(LoggerLevel.Error, ex, "MetnoWeatherProvider: error getting weather data");
+            }
 
-                if (wEx != null)
-                    throw wEx;
+            if (wEx == null && (weather == null || !weather.IsValid()))
+            {
+                wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
+            }
+            else if (weather != null)
+            {
+                weather.query = location_query;
+            }
 
-                return weather;
-            });
+            if (wEx != null)
+                throw wEx;
+
+            return weather;
         }
 
         protected override async Task UpdateWeatherData(LocationData location, Weather weather)

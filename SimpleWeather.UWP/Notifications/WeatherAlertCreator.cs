@@ -76,7 +76,7 @@ namespace SimpleWeather.UWP.Notifications
                     Launch = new QueryString()
                     {
                         { "action", "view-alerts" },
-                        { "data", JSONParser.Serializer(location) },
+                        { "data", await JSONParser.SerializerAsync(location) },
                     }.ToString()
                 };
 

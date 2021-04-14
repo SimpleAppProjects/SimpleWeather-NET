@@ -9,19 +9,16 @@ namespace SimpleWeather.Firebase
 {
     public static class FirestoreHelper
     {
-        public static Task<FirestoreService> GetFirestoreDB()
+        public static async Task<FirestoreService> GetFirestoreDB()
         {
-            return Task.Run(async () =>
+            var auth = await FirebaseAuthHelper.GetAuthLink();
+            var service = new FirestoreService(new BaseClientService.Initializer()
             {
-                var auth = await FirebaseAuthHelper.GetAuthLink();
-                var service = new FirestoreService(new BaseClientService.Initializer()
-                {
-                    ApplicationName = "SimpleWeather",
-                    ApiKey = Keys.FirebaseConfig.GetGoogleAPIKey()
-                });
-
-                return service;
+                ApplicationName = "SimpleWeather",
+                ApiKey = Keys.FirebaseConfig.GetGoogleAPIKey()
             });
+
+            return service;
         }
 
         public static String GetParentPath()

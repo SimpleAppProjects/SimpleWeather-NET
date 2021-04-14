@@ -19,79 +19,76 @@ namespace SimpleWeather.HERE
         public const string HERE_OAUTH_URL = "https://account.api.here.com/oauth2/token";
         private const string KEY_TOKEN = "token";
 
-        public static Task<String> GetBearerToken(bool forceRefresh = false)
+        public static async Task<String> GetBearerToken(bool forceRefresh = false)
         {
-            return Task.Run(async () =>
+            if (!forceRefresh)
             {
-                if (!forceRefresh)
-                {
-                    var token = await GetTokenFromStorage();
-                    if (!String.IsNullOrWhiteSpace(token))
-                        return token;
-                    else
-                        forceRefresh = true;
-                }
+                var token = await GetTokenFromStorage();
+                if (!String.IsNullOrWhiteSpace(token))
+                    return token;
+                else
+                    forceRefresh = true;
+            }
 
-                if (forceRefresh)
+            if (forceRefresh)
+            {
+                try
                 {
-                    try
+                    var oAuthRequest = new OAuthRequest(APIKeys.GetHERECliID(), APIKeys.GetHERECliSecr(), OAuthSignatureMethod.HMAC_SHA256, HTTPRequestType.POST);
+
+                    using (HttpClient webClient = new HttpClient())
+                    using (var request = new HttpRequestMessage(HttpMethod.Post, HERE_OAUTH_URL))
                     {
-                        var oAuthRequest = new OAuthRequest(APIKeys.GetHERECliID(), APIKeys.GetHERECliSecr(), OAuthSignatureMethod.HMAC_SHA256, HTTPRequestType.POST);
-
-                        using (HttpClient webClient = new HttpClient())
-                        using (var request = new HttpRequestMessage(HttpMethod.Post, HERE_OAUTH_URL))
+                        // Add headers to request
+                        var authHeader = oAuthRequest.GetAuthorizationHeader(request.RequestUri, true);
+                        request.Headers.Add("Authorization", authHeader);
+                        request.Headers.CacheControl = new CacheControlHeaderValue()
                         {
-                            // Add headers to request
-                            var authHeader = oAuthRequest.GetAuthorizationHeader(request.RequestUri, true);
-                            request.Headers.Add("Authorization", authHeader);
-                            request.Headers.CacheControl = new CacheControlHeaderValue()
-                            {
-                                NoCache = true
-                            };
+                            NoCache = true
+                        };
 
-                            // Connect to webstream
-                            var contentList = new List<KeyValuePair<string, string>>(1)
+                        // Connect to webstream
+                        var contentList = new List<KeyValuePair<string, string>>(1)
                             {
                                 new KeyValuePair<string, string>("grant_type", "client_credentials")
                             };
-                            request.Content = new FormUrlEncodedContent(contentList);
+                        request.Content = new FormUrlEncodedContent(contentList);
 
-                            using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                            using (var response = await webClient.SendAsync(request, cts.Token))
+                        using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                        using (var response = await webClient.SendAsync(request, cts.Token))
+                        {
+                            response.EnsureSuccessStatusCode();
+                            Stream contentStream = await response.Content.ReadAsStreamAsync();
+
+                            var date = response.Headers.Date.GetValueOrDefault(DateTimeOffset.UtcNow);
+
+                            var tokenRoot = await JSONParser.DeserializerAsync<TokenRootobject>(contentStream);
+
+                            if (tokenRoot != null)
                             {
-                                response.EnsureSuccessStatusCode();
-                                Stream contentStream = await response.Content.ReadAsStreamAsync();
+                                var tokenStr = String.Format(CultureInfo.InvariantCulture, "Bearer {0}", tokenRoot.access_token);
 
-                                var date = response.Headers.Date.GetValueOrDefault(DateTimeOffset.UtcNow);
-
-                                var tokenRoot = JSONParser.Deserializer<TokenRootobject>(contentStream);
-
-                                if (tokenRoot != null)
+                                // Store token for future operations
+                                var token = new Token()
                                 {
-                                    var tokenStr = String.Format(CultureInfo.InvariantCulture, "Bearer {0}", tokenRoot.access_token);
+                                    expiration_date = date.UtcDateTime.AddSeconds(tokenRoot.expires_in),
+                                    access_token = tokenStr
+                                };
 
-                                    // Store token for future operations
-                                    var token = new Token()
-                                    {
-                                        expiration_date = date.UtcDateTime.AddSeconds(tokenRoot.expires_in),
-                                        access_token = tokenStr
-                                    };
+                                StoreToken(token);
 
-                                    StoreToken(token);
-
-                                    return tokenStr;
-                                }
+                                return tokenStr;
                             }
                         }
                     }
-                    catch (Exception e)
-                    {
-                        Logger.WriteLine(LoggerLevel.Error, e, "HEREOAuthUtils: Error retrieving token");
-                    }
                 }
+                catch (Exception e)
+                {
+                    Logger.WriteLine(LoggerLevel.Error, e, "HEREOAuthUtils: Error retrieving token");
+                }
+            }
 
-                return null;
-            });
+            return null;
         }
 
         private static async Task<String> GetTokenFromStorage()

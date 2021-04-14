@@ -266,8 +266,8 @@ namespace SimpleWeather.Utils
                 return (int)value;
             }
 
-            SetDBVersion(0);
-            return 0;
+            SetDBVersion(CurrentDBVersion);
+            return CurrentDBVersion;
         }
 
         private static void SetDBVersion(int value)

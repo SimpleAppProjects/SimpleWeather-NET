@@ -24,219 +24,204 @@ namespace SimpleWeather.WeatherData.Images
             }
         }
 
-        public static Task<List<ImageData>> GetAllImageDataForCondition(String backgroundCode)
+        public static async Task<List<ImageData>> GetAllImageDataForCondition(String backgroundCode)
         {
-            return Task.Run(async () =>
+            List<ImageData> list = null;
+            try
             {
-                List<ImageData> list = null;
+                // Try to retrieve from cache first
+                if (!ImageDataHelper.ShouldInvalidateCache)
+                {
+                    list = await ImageDatabaseCache.GetAllImageDataForCondition(backgroundCode);
+                }
+            }
+            catch (Exception)
+            {
+                list = null;
+            }
+
+            // If data is missing from cache, get data from server
+            if (list == null || list.Count == 0)
+            {
                 try
                 {
-                    // Try to retrieve from cache first
-                    if (!ImageDataHelper.ShouldInvalidateCache)
-                    {
-                        list = await ImageDatabaseCache.GetAllImageDataForCondition(backgroundCode);
-                    }
-                }
-                catch (Exception)
-                {
-                    list = null;
-                }
+                    var dbSnapshot = await GetSnapshot();
 
-                // If data is missing from cache, get data from server
-                if (list == null || list.Count == 0)
-                {
-                    try
-                    {
-                        var dbSnapshot = await GetSnapshot();
-
-                        list = dbSnapshot.Where(img => img.Condition == backgroundCode)
-                                         .ToList();
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WriteLine(LoggerLevel.Error, e, "ImageDatabase: error retrieving image data");
-                    }
-                }
-
-                return list;
-            });
-        }
-
-        public static Task<ImageData> GetRandomImageForCondition(String backgroundCode)
-        {
-            return Task.Run(async () =>
-            {
-                ImageData imageData = null;
-                try
-                {
-                    // Try to retrieve from cache first
-                    if (!ImageDataHelper.ShouldInvalidateCache)
-                    {
-                        imageData = await ImageDatabaseCache.GetRandomImageForCondition(backgroundCode);
-                    }
-                }
-                catch (Exception)
-                {
-                    imageData = null;
-                }
-
-                // If data is missing from cache, get data from server
-                if (imageData == null)
-                {
-                    try
-                    {
-                        var dbSnapshot = await GetSnapshot();
-
-                        var rand = new Random();
-
-                        imageData = dbSnapshot.Where(img => img.Condition == backgroundCode)
-                                              .OrderBy(img => rand.Next())
-                                              .Take(1)
-                                              .FirstOrDefault();
-
-                        return imageData;
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WriteLine(LoggerLevel.Error, e, "ImageDatabase: error retrieving image data");
-                    }
-                }
-
-                return imageData;
-            });
-        }
-
-        private static Task<List<ImageData>> GetSnapshot()
-        {
-            return Task.Run(async () =>
-            {
-                var list = new List<ImageData>();
-
-                try
-                {
-                    var db = await Firebase.FirestoreHelper.GetFirestoreDB();
-                    string pageToken = null;
-
-                    do
-                    {
-                        var request = db.Projects.Databases.Documents.List(Firebase.FirestoreHelper.GetParentPath(), "background_images");
-                        var authLink = await Firebase.FirebaseAuthHelper.GetAuthLink();
-                        request.AddCredential(GoogleCredential.FromAccessToken(authLink.FirebaseToken));
-                        request.PageToken = pageToken;
-
-                        using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                        {
-                            var resp = await request.ExecuteAsync(cts.Token);
-                            var docs = resp.Documents;
-                            list.EnsureCapacity(docs.Count);
-                            foreach (var doc in docs)
-                            {
-                                var imgData = new ImageData();
-                                foreach (var field in doc.Fields)
-                                {
-                                    switch (field.Key)
-                                    {
-                                        case "artistName":
-                                            imgData.ArtistName = field.Value.StringValue;
-                                            break;
-
-                                        case "color":
-                                            imgData.HexColor = field.Value.StringValue;
-                                            break;
-
-                                        case "condition":
-                                            imgData.Condition = field.Value.StringValue;
-                                            break;
-
-                                        case "imageURL":
-                                            imgData.ImageUrl = field.Value.StringValue;
-                                            break;
-
-                                        case "location":
-                                            imgData.Location = field.Value.StringValue;
-                                            break;
-
-                                        case "originalLink":
-                                            imgData.OriginalLink = field.Value.StringValue;
-                                            break;
-
-                                        case "siteName":
-                                            imgData.SiteName = field.Value.StringValue;
-                                            break;
-                                    }
-                                }
-                                list.Add(imgData);
-                            }
-                            pageToken = resp.NextPageToken;
-                        }
-                    }
-                    while (pageToken != null);
-
-                    await SaveSnapshot(list);
+                    list = dbSnapshot.Where(img => img.Condition == backgroundCode)
+                                     .ToList();
                 }
                 catch (Exception e)
                 {
                     Logger.WriteLine(LoggerLevel.Error, e, "ImageDatabase: error retrieving image data");
                 }
+            }
 
-                return list;
-            });
+            return list;
         }
 
-        private static Task SaveSnapshot(IEnumerable<ImageData> images)
+        public static async Task<ImageData> GetRandomImageForCondition(String backgroundCode)
         {
-            return Task.Run(async () =>
+            ImageData imageData = null;
+            try
             {
-                AnalyticsLogger.LogEvent("ImageDatabase: SaveSnapshot");
+                // Try to retrieve from cache first
+                if (!ImageDataHelper.ShouldInvalidateCache)
+                {
+                    imageData = await ImageDatabaseCache.GetRandomImageForCondition(backgroundCode);
+                }
+            }
+            catch (Exception)
+            {
+                imageData = null;
+            }
 
+            // If data is missing from cache, get data from server
+            if (imageData == null)
+            {
                 try
                 {
-                    await ImageDatabaseCache.ClearCache();
+                    var dbSnapshot = await GetSnapshot();
 
-                    foreach (var img in images)
+                    var rand = new Random();
+
+                    imageData = dbSnapshot.Where(img => img.Condition == backgroundCode)
+                                          .OrderBy(img => rand.Next())
+                                          .Take(1)
+                                          .FirstOrDefault();
+
+                    return imageData;
+                }
+                catch (Exception e)
+                {
+                    Logger.WriteLine(LoggerLevel.Error, e, "ImageDatabase: error retrieving image data");
+                }
+            }
+
+            return imageData;
+        }
+
+        private static async Task<List<ImageData>> GetSnapshot()
+        {
+            var list = new List<ImageData>();
+
+            try
+            {
+                var db = await Firebase.FirestoreHelper.GetFirestoreDB();
+                string pageToken = null;
+
+                do
+                {
+                    var request = db.Projects.Databases.Documents.List(Firebase.FirestoreHelper.GetParentPath(), "background_images");
+                    var authLink = await Firebase.FirebaseAuthHelper.GetAuthLink();
+                    request.AddCredential(GoogleCredential.FromAccessToken(authLink.FirebaseToken));
+                    request.PageToken = pageToken;
+
+                    using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     {
-                        await ImageDatabaseCache.InsertData(img);
-                    }
+                        var resp = await request.ExecuteAsync(cts.Token);
+                        var docs = resp.Documents;
+                        list.EnsureCapacity(docs.Count);
+                        foreach (var doc in docs)
+                        {
+                            var imgData = new ImageData();
+                            foreach (var field in doc.Fields)
+                            {
+                                switch (field.Key)
+                                {
+                                    case "artistName":
+                                        imgData.ArtistName = field.Value.StringValue;
+                                        break;
 
-                    ImageDataHelper.ShouldInvalidateCache = false;
-                    if (ImageDataHelper.ImageDBUpdateTime == 0)
-                    {
-                        ImageDataHelper.ImageDBUpdateTime = await ImageDatabase.GetLastUpdateTime();
-                    }
+                                    case "color":
+                                        imgData.HexColor = field.Value.StringValue;
+                                        break;
 
-                    // Register background task to update
+                                    case "condition":
+                                        imgData.Condition = field.Value.StringValue;
+                                        break;
+
+                                    case "imageURL":
+                                        imgData.ImageUrl = field.Value.StringValue;
+                                        break;
+
+                                    case "location":
+                                        imgData.Location = field.Value.StringValue;
+                                        break;
+
+                                    case "originalLink":
+                                        imgData.OriginalLink = field.Value.StringValue;
+                                        break;
+
+                                    case "siteName":
+                                        imgData.SiteName = field.Value.StringValue;
+                                        break;
+                                }
+                            }
+                            list.Add(imgData);
+                        }
+                        pageToken = resp.NextPageToken;
+                    }
+                }
+                while (pageToken != null);
+
+                await SaveSnapshot(list);
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine(LoggerLevel.Error, e, "ImageDatabase: error retrieving image data");
+            }
+
+            return list;
+        }
+
+        private static async Task SaveSnapshot(IEnumerable<ImageData> images)
+        {
+            AnalyticsLogger.LogEvent("ImageDatabase: SaveSnapshot");
+
+            try
+            {
+                await ImageDatabaseCache.ClearCache();
+
+                foreach (var img in images)
+                {
+                    await ImageDatabaseCache.InsertData(img);
+                }
+
+                ImageDataHelper.ShouldInvalidateCache = false;
+                if (ImageDataHelper.ImageDBUpdateTime == 0)
+                {
+                    ImageDataHelper.ImageDBUpdateTime = await ImageDatabase.GetLastUpdateTime();
+                }
+
+                // Register background task to update
 #if WINDOWS_UWP && !UNIT_TEST
-                    SimpleLibrary.GetInstance().RequestAction(CommonActions.ACTION_IMAGES_UPDATETASK);
+                SimpleLibrary.GetInstance().RequestAction(CommonActions.ACTION_IMAGES_UPDATETASK);
 #endif
-                }
-                catch (Exception e)
-                {
-                    Logger.WriteLine(LoggerLevel.Error, e, "ImageDatabase: error saving snapshot");
-                }
-            });
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine(LoggerLevel.Error, e, "ImageDatabase: error saving snapshot");
+            }
         }
 
-        public static Task<long> GetLastUpdateTime()
+        public static async Task<long> GetLastUpdateTime()
         {
-            return Task.Run(async () =>
+            try
             {
-                try
-                {
-                    var db = await Firebase.FirebaseDatabaseHelper.GetFirebaseDatabase();
-                    var last_updated = await db.Child("background_images_info")
-                        .Child("collection_info")
-                        .Child("last_updated")
-                        .OnceSingleAsync<long>(TimeSpan.FromMilliseconds(Settings.READ_TIMEOUT));
+                var db = await Firebase.FirebaseDatabaseHelper.GetFirebaseDatabase();
+                var last_updated = await db.Child("background_images_info")
+                    .Child("collection_info")
+                    .Child("last_updated")
+                    .OnceSingleAsync<long>(TimeSpan.FromMilliseconds(Settings.READ_TIMEOUT));
 
-                    return last_updated;
-                }
-                catch (Exception e)
-                {
-                    Logger.WriteLine(LoggerLevel.Error, e, "ImageDatabase: error querying update time");
-                }
+                return last_updated;
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine(LoggerLevel.Error, e, "ImageDatabase: error querying update time");
+            }
 
-                return 0L;
-            });
+            return 0L;
         }
     }
 
@@ -257,13 +242,10 @@ namespace SimpleWeather.WeatherData.Images
             _lock.Dispose();
         }
 
-        public Task<bool> IsEmpty()
+        public async Task<bool> IsEmpty()
         {
-            return Task.Run(async () =>
-            {
-                int count = await dbConnection.Table<ImageData>().CountAsync();
-                return count == 0;
-            });
+            int count = await dbConnection.Table<ImageData>().CountAsync();
+            return count == 0;
         }
 
         // Select

@@ -8,19 +8,16 @@ namespace SimpleWeather.Firebase
 {
     public static class FirebaseDatabaseHelper
     {
-        public static Task<FirebaseClient> GetFirebaseDatabase()
+        public static async Task<FirebaseClient> GetFirebaseDatabase()
         {
-            return Task.Run(async () =>
+            var auth = await FirebaseAuthHelper.GetAuthLink();
+            return new FirebaseClient(Keys.FirebaseConfig.GetFirebaseDatabaseUrl(), new FirebaseOptions()
             {
-                var auth = await FirebaseAuthHelper.GetAuthLink();
-                return new FirebaseClient(Keys.FirebaseConfig.GetFirebaseDatabaseUrl(), new FirebaseOptions()
+                AuthTokenAsyncFactory = async () =>
                 {
-                    AuthTokenAsyncFactory = async () =>
-                    {
-                        if (auth.IsExpired()) auth = await auth.GetFreshAuthAsync();
-                        return auth.FirebaseToken;
-                    }
-                });
+                    if (auth.IsExpired()) auth = await auth.GetFreshAuthAsync();
+                    return auth.FirebaseToken;
+                }
             });
         }
     }

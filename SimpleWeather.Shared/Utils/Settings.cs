@@ -158,22 +158,22 @@ namespace SimpleWeather.Utils
             return loaded;
         }
 
-        [MethodImpl(MethodImplOptions.Synchronized)]
-        public static void LoadIfNeeded()
+        public static async Task LoadIfNeededAsync()
         {
             if (!loaded)
             {
-                Load();
+                await Load();
                 loaded = true;
             }
         }
 
-        public static Task LoadIfNeededAsync()
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public static void LoadIfNeeded()
         {
-            return Task.Run(() =>
+            Task.Run(async () =>
             {
-                LoadIfNeeded();
-            });
+                await LoadIfNeededAsync();
+            }).Wait();
         }
 
         internal static void CreateDatabase()
@@ -220,50 +220,45 @@ namespace SimpleWeather.Utils
             Settings.GetWeatherDBConnection().GetConnection().TableChanged -= eventHandler;
         }
 
-        /// <summary>
-        /// Load
-        /// </summary>
-        /// <exception cref="ObjectDisposedException"></exception>
-        /// <exception cref="AggregateException"></exception>
-        private static void Load()
+        private static async Task Load()
         {
-            Task.Run(async () =>
+            // Create DB tables
+            TextBlobOperations.SetTextSerializer(new DBTextBlobSerializer());
+            CreateDatabase();
+
+            // Migrate old data if available
+            await DataMigrations.PerformDBMigrations(locationDB, weatherDB);
+
+            if (!String.IsNullOrWhiteSpace(LastGPSLocation))
             {
-                // Create DB tables
-                TextBlobOperations.SetTextSerializer(new DBTextBlobSerializer());
-                CreateDatabase();
-
-                // Migrate old data if available
-                await DataMigrations.PerformDBMigrations(locationDB, weatherDB);
-
-                if (!String.IsNullOrWhiteSpace(LastGPSLocation))
+                try
                 {
-                    try
+                    var jsonTextReader = new Utf8Json.JsonReader(System.Text.Encoding.UTF8.GetBytes(LastGPSLocation));
+                    lastGPSLocData = new LocationData();
+                    await Task.Run(() =>
                     {
-                        var jsonTextReader = new Utf8Json.JsonReader(System.Text.Encoding.UTF8.GetBytes(LastGPSLocation));
-                        lastGPSLocData = new LocationData();
                         lastGPSLocData.FromJson(ref jsonTextReader);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.WriteLine(LoggerLevel.Error, ex, "SimpleWeather: Settings.Load(): LastGPSLocation");
-                    }
-                    finally
-                    {
-                        if (lastGPSLocData == null || !lastGPSLocData.IsValid())
-                            lastGPSLocData = new LocationData();
-                    }
+                    });
                 }
+                catch (Exception ex)
+                {
+                    Logger.WriteLine(LoggerLevel.Error, ex, "SimpleWeather: Settings.Load(): LastGPSLocation");
+                }
+                finally
+                {
+                    if (lastGPSLocData == null || !lastGPSLocData.IsValid())
+                        lastGPSLocData = new LocationData();
+                }
+            }
 
-                await DataMigrations.PerformVersionMigrations(weatherDB, locationDB);
-            }).Wait();
+            await DataMigrations.PerformVersionMigrations(weatherDB, locationDB);
         }
 
         public static Task<LocationData> GetFirstFavorite()
         {
             return Task.Run<LocationData>(async () =>
             {
-                LoadIfNeeded();
+                await LoadIfNeededAsync();
 
                 var query = await locationDB.QueryAsync<LocationData>(
                     "select locations.* from locations INNER JOIN favorites on locations.query = favorites.query ORDER by favorites.position LIMIT 1");
@@ -275,7 +270,7 @@ namespace SimpleWeather.Utils
         {
             return Task.Run<IEnumerable<LocationData>>(async () =>
             {
-                LoadIfNeeded();
+                await LoadIfNeededAsync();
 
                 var query = await locationDB.QueryAsync<LocationData>(
                     "select locations.* from locations INNER JOIN favorites on locations.query = favorites.query ORDER by favorites.position");
@@ -287,7 +282,7 @@ namespace SimpleWeather.Utils
         {
             return Task.Run<IEnumerable<LocationData>>(async () =>
             {
-                LoadIfNeeded();
+                await LoadIfNeededAsync();
                 return await locationDB.Table<LocationData>().ToListAsync();
             });
         }
@@ -296,7 +291,7 @@ namespace SimpleWeather.Utils
         {
             return Task.Run(async () =>
             {
-                LoadIfNeeded();
+                await LoadIfNeededAsync();
                 return await locationDB.FindAsync<LocationData>(key);
             });
         }
@@ -305,7 +300,7 @@ namespace SimpleWeather.Utils
         {
             return Task.Run(async () =>
             {
-                LoadIfNeeded();
+                await LoadIfNeededAsync();
                 return await weatherDB.FindWithChildrenAsync<Weather>(key);
             });
         }
@@ -314,7 +309,7 @@ namespace SimpleWeather.Utils
         {
             return Task.Run(async () =>
             {
-                LoadIfNeeded();
+                await LoadIfNeededAsync();
                 var culture = System.Globalization.CultureInfo.InvariantCulture;
                 var escapedQuery = String.Format(culture, "\\\"latitude\\\":\\\"{0}\\\",\\\"longitude\\\":\\\"{1}\\\"",
                         location.latitude.ToString(culture), location.longitude.ToString(culture));
@@ -333,7 +328,7 @@ namespace SimpleWeather.Utils
         {
             return Task.Run(async () =>
             {
-                LoadIfNeeded();
+                await LoadIfNeededAsync();
 
                 ICollection<WeatherAlert> alerts = null;
 
@@ -362,7 +357,7 @@ namespace SimpleWeather.Utils
         {
             return Task.Run(async () =>
             {
-                LoadIfNeeded();
+                await LoadIfNeededAsync();
                 return await weatherDB.FindWithChildrenAsync<Forecasts>(key);
             });
         }
@@ -371,7 +366,7 @@ namespace SimpleWeather.Utils
         {
             return Task.Run<IList<HourlyForecast>>(async () =>
             {
-                LoadIfNeeded();
+                await LoadIfNeededAsync();
 
                 var list = await weatherDB.Table<HourlyForecasts>()
                                           .Where(hrf => hrf.query == key && hrf.hrforecastblob != null)
@@ -390,7 +385,7 @@ namespace SimpleWeather.Utils
         {
             return Task.Run<IList<HourlyForecast>>(async () =>
             {
-                LoadIfNeeded();
+                await LoadIfNeededAsync();
 
                 var list = await weatherDB.QueryAsync<HourlyForecasts>(
                     "SELECT * FROM " + HourlyForecasts.TABLE_NAME + " WHERE `query` = ? AND `hrforecastblob` IS NOT NULL AND `dateblob` >= ? ORDER BY `dateblob`",
@@ -409,7 +404,7 @@ namespace SimpleWeather.Utils
         {
             return Task.Run<IList<HourlyForecast>>(async () =>
             {
-                LoadIfNeeded();
+                await LoadIfNeededAsync();
 
                 var list = await weatherDB.Table<HourlyForecasts>()
                                           .Where(hrf => hrf.query == key && hrf.hrforecastblob != null)
@@ -431,7 +426,7 @@ namespace SimpleWeather.Utils
         {
             return Task.Run<IList<HourlyForecast>>(async () =>
             {
-                LoadIfNeeded();
+                await LoadIfNeededAsync();
 
                 var list = await weatherDB.QueryAsync<HourlyForecasts>(
                     "SELECT * FROM " + HourlyForecasts.TABLE_NAME + " WHERE `query` = ? AND `hrforecastblob` IS NOT NULL AND `dateblob` >= ? ORDER BY `dateblob` LIMIT ? OFFSET ?",
@@ -450,7 +445,7 @@ namespace SimpleWeather.Utils
         {
             return Task.Run<HourlyForecast>(async () =>
             {
-                LoadIfNeeded();
+                await LoadIfNeededAsync();
 
                 var data = await weatherDB.FindWithQueryAsync<HourlyForecasts>(
                     "SELECT * FROM " + HourlyForecasts.TABLE_NAME + " WHERE `query` = ? AND `dateblob` >= ? ORDER BY `dateblob` LIMIT 1",
@@ -469,7 +464,7 @@ namespace SimpleWeather.Utils
         {
             return Task.Run(async () =>
             {
-                LoadIfNeeded();
+                await LoadIfNeededAsync();
 
                 if (lastGPSLocData != null && lastGPSLocData.locationType != LocationType.GPS)
                     lastGPSLocData.locationType = LocationType.GPS;

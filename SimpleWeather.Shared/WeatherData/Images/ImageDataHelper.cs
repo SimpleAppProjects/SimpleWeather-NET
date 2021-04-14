@@ -70,43 +70,37 @@ namespace SimpleWeather.WeatherData.Images
     {
         public abstract Task<ImageData> GetCachedImageData(String backgroundCode);
 
-        public Task<ImageData> GetRemoteImageData(String backgroundCode)
+        public async Task<ImageData> GetRemoteImageData(String backgroundCode)
         {
-            return Task.Run(async () =>
+            var imageData = await ImageDatabase.GetRandomImageForCondition(backgroundCode);
+
+            if (imageData?.IsValid() == true)
             {
-                var imageData = await ImageDatabase.GetRandomImageForCondition(backgroundCode);
+                var cachedImage = await CacheImage(imageData);
+                return cachedImage;
+            }
 
-                if (imageData?.IsValid() == true)
-                {
-                    var cachedImage = await CacheImage(imageData);
-                    return cachedImage;
-                }
-
-                return null;
-            });
+            return null;
         }
 
-        public Task<ImageData> CacheImage(ImageData imageData)
+        public async Task<ImageData> CacheImage(ImageData imageData)
         {
-            return Task.Run(async () =>
+            if (imageData?.IsValid() == true)
             {
-                if (imageData?.IsValid() == true)
+                // Check if image url is valid
+                Uri imageUri = new Uri(imageData.ImageUrl);
+                if (imageUri.IsWellFormedOriginalString() &&
+                    (imageUri.Scheme.Equals("gs") || imageUri.Scheme.Equals("https") || imageUri.Scheme.Equals("http")))
                 {
-                    // Check if image url is valid
-                    Uri imageUri = new Uri(imageData.ImageUrl);
-                    if (imageUri.IsWellFormedOriginalString() &&
-                        (imageUri.Scheme.Equals("gs") || imageUri.Scheme.Equals("https") || imageUri.Scheme.Equals("http")))
-                    {
-                        // Download image to storage
-                        // and image metadata to settings
-                        var cachedImage = await StoreImage(imageUri, imageData);
-                        return cachedImage;
-                    }
+                    // Download image to storage
+                    // and image metadata to settings
+                    var cachedImage = await StoreImage(imageUri, imageData);
+                    return cachedImage;
                 }
+            }
 
-                // Invalid image uri
-                return null;
-            });
+            // Invalid image uri
+            return null;
         }
 
         protected abstract Task<ImageData> StoreImage(Uri imageUri, ImageData imageData);

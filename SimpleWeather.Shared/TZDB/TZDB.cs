@@ -21,60 +21,57 @@ namespace SimpleWeather.TZDB
     {
         private static SQLiteAsyncConnection tzDB;
 
-        public static Task<string> GetTimeZone(double latitude, double longitude)
+        public static async Task<string> GetTimeZone(double latitude, double longitude)
         {
-            return Task.Run(async () =>
+            if (latitude != 0 && longitude != 0)
             {
-                if (latitude != 0 && longitude != 0)
+                AnalyticsLogger.LogEvent("TZDBCache: querying");
+
+                // Initialize db if it hasn't been already
+                if (tzDB == null)
                 {
-                    AnalyticsLogger.LogEvent("TZDBCache: querying");
+                    tzDB = new SQLiteAsyncConnection(Settings.GetTZDBConnectionString(), SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.FullMutex);
+                    var conn = tzDB.GetConnection();
+                    var _lock = conn.Lock();
+                    conn.BusyTimeout = TimeSpan.FromSeconds(5);
+                    conn.EnableWriteAheadLogging();
+                    _lock.Dispose();
 
-                    // Initialize db if it hasn't been already
-                    if (tzDB == null)
-                    {
-                        tzDB = new SQLiteAsyncConnection(Settings.GetTZDBConnectionString(), SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.FullMutex);
-                        var conn = tzDB.GetConnection();
-                        var _lock = conn.Lock();
-                        conn.BusyTimeout = TimeSpan.FromSeconds(5);
-                        conn.EnableWriteAheadLogging();
-                        _lock.Dispose();
-
-                        await tzDB.CreateTableAsync<TZDB>();
-                    }
-
-                    // Search db if result already exists
-                    var dbResult = await tzDB.ExecuteScalarAsync<string>(
-                        "select tz_long from tzdb where latitude = ? AND longitude = ?",
-                        latitude, longitude);
-
-                    if (!String.IsNullOrWhiteSpace(dbResult))
-                        return dbResult;
-
-                    // Search tz lookup
-                    var result = await new TimeZoneProvider().GetTimeZone(latitude, longitude);
-
-                    if (!String.IsNullOrWhiteSpace(result))
-                    {
-                        // Cache result
-                        AsyncTask.Run(async () =>
-                        {
-                            await tzDB.InsertOrReplaceAsync(new TZDB()
-                            {
-                                latitude = latitude,
-                                longitude = longitude,
-                                tz_long = result
-                            });
-
-                            // Run GC since tz lookup takes up a good chunk of memory
-                            GC.Collect();
-                        });
-
-                        return result;
-                    }
+                    await tzDB.CreateTableAsync<TZDB>();
                 }
 
-                return "UTC";
-            });
+                // Search db if result already exists
+                var dbResult = await tzDB.ExecuteScalarAsync<string>(
+                    "select tz_long from tzdb where latitude = ? AND longitude = ?",
+                    latitude, longitude);
+
+                if (!String.IsNullOrWhiteSpace(dbResult))
+                    return dbResult;
+
+                // Search tz lookup
+                var result = await new TimeZoneProvider().GetTimeZone(latitude, longitude);
+
+                if (!String.IsNullOrWhiteSpace(result))
+                {
+                    // Cache result
+                    AsyncTask.Run(async () =>
+                    {
+                        await tzDB.InsertOrReplaceAsync(new TZDB()
+                        {
+                            latitude = latitude,
+                            longitude = longitude,
+                            tz_long = result
+                        });
+
+                        // Run GC since tz lookup takes up a good chunk of memory
+                        GC.Collect();
+                    });
+
+                    return result;
+                }
+            }
+
+            return "UTC";
         }
     }
 }

@@ -22,52 +22,49 @@ namespace SimpleWeather.TZDB
 
     public class TimeZoneProvider : ITimeZoneProvider
     {
-        public Task<string> GetTimeZone(double latitude, double longitude)
+        public async Task<string> GetTimeZone(double latitude, double longitude)
         {
-            return Task.Run(async () =>
+            String tzLong = null;
+
+            try
             {
-                String tzLong = null;
+                // Get Firebase token
+                var authLink = await Firebase.FirebaseAuthHelper.GetAuthLink();
+                string userToken = authLink.FirebaseToken;
+                string tzAPI = APIKeys.GetTimeZoneAPI();
+                if (String.IsNullOrWhiteSpace(tzAPI) || String.IsNullOrWhiteSpace(userToken))
+                    return null;
 
-                try
+                Uri queryURL = new Uri(string.Format(CultureInfo.InvariantCulture, "{0}?lat={1}&lon={2}", tzAPI, latitude, longitude));
+
+                using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
                 {
-                    // Get Firebase token
-                    var authLink = await Firebase.FirebaseAuthHelper.GetAuthLink();
-                    string userToken = authLink.FirebaseToken;
-                    string tzAPI = APIKeys.GetTimeZoneAPI();
-                    if (String.IsNullOrWhiteSpace(tzAPI) || String.IsNullOrWhiteSpace(userToken))
-                        return null;
+                    // Add headers to request
+                    request.Headers.Authorization = new HttpCredentialsHeaderValue("Bearer", userToken);
+                    request.Headers.CacheControl.MaxAge = TimeSpan.FromDays(1);
 
-                    Uri queryURL = new Uri(string.Format(CultureInfo.InvariantCulture, "{0}?lat={1}&lon={2}", tzAPI, latitude, longitude));
-
-                    using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
+                    // Connect to webstream
+                    var webClient = SimpleLibrary.GetInstance().WebClient;
+                    using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                    using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                     {
-                        // Add headers to request
-                        request.Headers.Authorization = new HttpCredentialsHeaderValue("Bearer", userToken);
-                        request.Headers.CacheControl.MaxAge = TimeSpan.FromDays(1);
+                        response.EnsureSuccessStatusCode();
+                        Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
-                        // Connect to webstream
-                        var webClient = SimpleLibrary.GetInstance().WebClient;
-                        using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                        using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
-                        {
-                            response.EnsureSuccessStatusCode();
-                            Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                        // Load weather
+                        var root = await JsonSerializer.DeserializeAsync<TimeZoneData>(contentStream);
 
-                            // Load weather
-                            var root = await JsonSerializer.DeserializeAsync<TimeZoneData>(contentStream);
-
-                            tzLong = root.TZLong;
-                        }
+                        tzLong = root.TZLong;
                     }
                 }
-                catch (Exception ex)
-                {
-                    tzLong = null;
-                    Logger.WriteLine(LoggerLevel.Error, ex, "TimeZoneProvider: error getting time zone data");
-                }
+            }
+            catch (Exception ex)
+            {
+                tzLong = null;
+                Logger.WriteLine(LoggerLevel.Error, ex, "TimeZoneProvider: error getting time zone data");
+            }
 
-                return tzLong;
-            });
+            return tzLong;
         }
     }
 }
