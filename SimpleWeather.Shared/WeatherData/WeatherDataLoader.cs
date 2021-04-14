@@ -378,7 +378,7 @@ namespace SimpleWeather.WeatherData
 
                     var nowHour = now.Trim(TimeSpan.TicksPerHour);
                     var hrf = await Settings.GetFirstHourlyWeatherForecastDataByDate(location.query, nowHour.ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture)).ConfigureAwait(false);
-                    if (hrf == null || ((hrf.date - now) is TimeSpan dur && dur.TotalHours > interval * 0.5d))
+                    if (hrf == null || ((hrf.date - now) is TimeSpan dur && dur.TotalHours > (long)(interval * 0.5)))
                     {
                         var prevHrf = await Settings.GetFirstHourlyWeatherForecastDataByDate(location.query, nowHour.AddHours(-interval).Trim(TimeSpan.TicksPerHour).ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture)).ConfigureAwait(false);
                         if (prevHrf != null) hrf = prevHrf;

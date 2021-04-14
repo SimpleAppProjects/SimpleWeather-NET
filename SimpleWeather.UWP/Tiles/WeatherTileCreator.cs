@@ -929,9 +929,9 @@ namespace SimpleWeather.UWP.Tiles
 
             if (forecasts?.forecast?.Count > 0)
             {
-                foreach (var fcast in forecasts?.forecast)
+                for (int i = 0; i < Math.Min(LARGE_FORECAST_LENGTH, forecasts.forecast.Count); i++)
                 {
-                    result.Add(new ForecastItemViewModel(fcast));
+                    result.Add(new ForecastItemViewModel(forecasts.forecast[i]));
                 }
             }
 
@@ -940,15 +940,21 @@ namespace SimpleWeather.UWP.Tiles
 
         private static async Task<List<HourlyForecastItemViewModel>> GetHourlyForecasts(LocationData location)
         {
-            var dateBlob = DateTimeOffset.Now.ToOffset(location.tz_offset).Trim(TimeSpan.TicksPerHour).ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture);
+            var now = DateTimeOffset.Now.ToOffset(location.tz_offset);
+            var hrInterval = WeatherManager.GetInstance().HourlyForecastInterval;
+            var dateBlob = now.AddHours(-(long)(hrInterval * 0.5d)).Trim(TimeSpan.TicksPerHour).ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture);
             var forecasts = await Settings.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(location.query, 0, LARGE_FORECAST_LENGTH, dateBlob);
             var result = new List<HourlyForecastItemViewModel>(LARGE_FORECAST_LENGTH);
 
             if (forecasts?.Count > 0)
             {
+                var count = 0;
                 foreach (var fcast in forecasts)
                 {
                     result.Add(new HourlyForecastItemViewModel(fcast));
+                    count++;
+
+                    if (count >= LARGE_FORECAST_LENGTH) break;
                 }
             }
 
@@ -967,7 +973,6 @@ namespace SimpleWeather.UWP.Tiles
                 var weather = await AsyncTask.RunAsync(wloader.LoadWeatherData(
                             new WeatherRequest.Builder()
                                 .ForceLoadSavedData()
-                                .LoadForecasts()
                                 .Build()));
 
                 if (weather != null)
