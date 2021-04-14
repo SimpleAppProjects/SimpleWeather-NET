@@ -43,10 +43,22 @@ namespace SimpleWeather.UWP.BackgroundTasks
             deferral.Complete();
         }
 
-        public static async Task RegisterBackgroundTask()
+        public static async Task RegisterBackgroundTask(bool reregister = false)
         {
-            // Unregister any previous exising background task
-            UnregisterBackgroundTask();
+            var taskRegistration = GetTaskRegistration();
+
+            if (taskRegistration != null)
+            {
+                if (reregister)
+                {
+                    // Unregister any previous exising background task
+                    taskRegistration.Unregister(true);
+                }
+                else
+                {
+                    return;
+                }
+            }
 
             // Request access
             var backgroundAccessStatus = BackgroundAccessStatus.Unspecified;
@@ -98,6 +110,19 @@ namespace SimpleWeather.UWP.BackgroundTasks
                     task.Value.Unregister(true);
                 }
             }
+        }
+
+        private static IBackgroundTaskRegistration GetTaskRegistration()
+        {
+            foreach (var task in BackgroundTaskRegistration.AllTasks)
+            {
+                if (task.Value.Name == taskName)
+                {
+                    return task.Value;
+                }
+            }
+
+            return null;
         }
     }
 }
