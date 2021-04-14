@@ -143,7 +143,7 @@
     <value>Jakość powietrza jest dopuszczalna</value>
   </data>
   <data name="aqi_desc_101_150" xml:space="preserve">
-    <value>Osób wrażliwych mogą wystąpić negatywne skutki dla zdrowia. Większość populacji może nie odczuwać negatywnych objawów.</value>
+    <value>U osób wrażliwych mogą wystąpić negatywne skutki dla zdrowia. Większość populacji może nie odczuwać negatywnych objawów.</value>
   </data>
   <data name="aqi_desc_151_200" xml:space="preserve">
     <value>Niezdrowe - Każdy może zacząć doświadczać negatywnych skutków zdrowotnych; U osób wrażliwych mogą wystąpić poważniejsze skutki zdrowotne.</value>

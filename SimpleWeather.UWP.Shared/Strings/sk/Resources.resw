@@ -573,4 +573,7 @@
     <value>Grafy</value>
     <comment>Fuzzy</comment>
   </data>
+  <data name="Pref_Refresh30Min.Text" xml:space="preserve">
+    <value>30 minút</value>
+  </data>
 </root>

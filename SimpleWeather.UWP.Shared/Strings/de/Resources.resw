@@ -580,4 +580,7 @@
   <data name="FeatureOption_Charts.Content" xml:space="preserve">
     <value>Diagramme</value>
   </data>
+  <data name="Pref_Refresh30Min.Text" xml:space="preserve">
+    <value>30 Minuten</value>
+  </data>
 </root>

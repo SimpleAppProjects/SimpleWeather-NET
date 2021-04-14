@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="About.Content" xml:space="preserve">
-    <value>O</value>
+    <value>O aplikacji</value>
   </data>
   <data name="API_Box.PlaceholderText" xml:space="preserve">
     <value>Wybierz dostawcę pogody</value>
@@ -308,16 +308,16 @@
     <value>Ostrzeżenia meteorologiczne</value>
   </data>
   <data name="DateTime_DayAgo" xml:space="preserve">
-    <value>{0}d temu</value>
+    <value>{0} dn. temu</value>
   </data>
   <data name="DateTime_HrAgo" xml:space="preserve">
-    <value>{0}h temu</value>
+    <value>{0} godz. temu</value>
   </data>
   <data name="DateTime_MinAgo" xml:space="preserve">
-    <value>{0}m temu</value>
+    <value>{0} min. temu</value>
   </data>
   <data name="DateTime_SecAgo" xml:space="preserve">
-    <value>{0}s temu</value>
+    <value>{0} sek. temu</value>
   </data>
   <data name="DateTime_ValidUntil" xml:space="preserve">
     <value>Ważne do</value>
@@ -571,5 +571,8 @@
   </data>
   <data name="FeatureOption_Charts.Content" xml:space="preserve">
     <value>Wykresy</value>
+  </data>
+  <data name="Pref_Refresh30Min.Text" xml:space="preserve">
+    <value>30 minut</value>
   </data>
 </root>
