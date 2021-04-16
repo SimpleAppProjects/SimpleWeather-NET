@@ -50,13 +50,6 @@
                     x:Name="RefreshComboBox"
                     MinWidth="260"
                     Margin="0,10">
-                    <ComboBox.Items>
-                        <TextBlock x:Uid="Pref_Refresh60Min" Text="1 hour" />
-                        <TextBlock x:Uid="Pref_Refresh2Hrs" Text="2 hours" />
-                        <TextBlock x:Uid="Pref_Refresh3Hrs" Text="3 hours" />
-                        <TextBlock x:Uid="Pref_Refresh6Hrs" Text="6 hours" />
-                        <TextBlock x:Uid="Pref_Refresh12Hrs" Text="12 hours" />
-                    </ComboBox.Items>
                     <ComboBox.Header>
                         <TextBlock x:Uid="Pref_SummaryRefresh" Text="Update Frequency" />
                     </ComboBox.Header>

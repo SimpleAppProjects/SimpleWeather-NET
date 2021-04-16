@@ -1,6 +1,9 @@
 ﻿using SimpleWeather.Utils;
 using SimpleWeather.UWP.Helpers;
 using SimpleWeather.WeatherData;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -14,7 +17,26 @@ namespace SimpleWeather.UWP.Setup
     /// </summary>
     public sealed partial class SetupSettingsPage : Page, IPageVerification
     {
-        private WeatherManager wm;
+        private readonly WeatherManager wm;
+
+        private readonly IReadOnlyList<SimpleWeather.Controls.ComboBoxItem> RefreshOptions = new List<SimpleWeather.Controls.ComboBoxItem>
+        {
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh60Min/Text"), "60"),
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh2Hrs/Text"), "120"),
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh3Hrs/Text"), "180"),
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh6Hrs/Text"), "360"),
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh12Hrs/Text"), "720"),
+        };
+
+        private readonly IReadOnlyList<SimpleWeather.Controls.ComboBoxItem> PremiumRefreshOptions = new List<SimpleWeather.Controls.ComboBoxItem>
+        {
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh30Min/Text"), "30"),
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh60Min/Text"), "60"),
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh2Hrs/Text"), "120"),
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh3Hrs/Text"), "180"),
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh6Hrs/Text"), "360"),
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh12Hrs/Text"), "720"),
+        };
 
         public SetupSettingsPage()
         {
@@ -33,8 +55,18 @@ namespace SimpleWeather.UWP.Setup
 
             wm.UpdateAPI();
 
-            // Update Interval
-            RefreshComboBox.SelectedIndex = 0; // 1hr
+            // Refresh interval
+            if (Extras.ExtrasLibrary.IsEnabled())
+            {
+                RefreshComboBox.ItemsSource = PremiumRefreshOptions;
+            }
+            else
+            {
+                RefreshComboBox.ItemsSource = RefreshOptions;
+            }
+            RefreshComboBox.DisplayMemberPath = "Display";
+            RefreshComboBox.SelectedValuePath = "Value";
+            RefreshComboBox.SelectedValue = Settings.DefaultInterval.ToInvariantString();
 
             // Alerts
             AlertSwitch.IsEnabled = wm.SupportsAlerts;
@@ -57,19 +89,12 @@ namespace SimpleWeather.UWP.Setup
         private void RefreshComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBox box = sender as ComboBox;
-            int index = box.SelectedIndex;
-            int interval = 60;
+            object value = box.SelectedValue;
 
-            if (index == 0)
-                interval = 60; // 1 hr
-            else if (index == 1)
-                interval = 120; // 2 hr
-            else if (index == 2)
-                interval = 180; // 3 hr
-            else if (index == 3)
-                interval = 360; // 6 hr
-            else if (index == 4)
-                interval = 720; // 12 hr
+            if (!int.TryParse(value?.ToString(), out int interval))
+            {
+                interval = Settings.DefaultInterval;
+            }
 
             if (CoreApplication.Properties.ContainsKey(Settings.KEY_REFRESHINTERVAL))
                 CoreApplication.Properties.Remove(Settings.KEY_REFRESHINTERVAL);
