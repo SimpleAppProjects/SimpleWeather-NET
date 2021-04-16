@@ -80,7 +80,7 @@ namespace SimpleWeather.UWP.Main
             cts?.Dispose();
         }
 
-        public void OnWeatherLoaded(LocationData location, Weather weather)
+        public void OnWeatherLoaded(Weather weather)
         {
             if (cts?.IsCancellationRequested == true)
                 return;
@@ -92,27 +92,32 @@ namespace SimpleWeather.UWP.Main
                 Task.Run(async () =>
                 {
                     await WeatherView.UpdateBackground();
-                }).ContinueWith((t) =>
-                {
-                    LoadingRing.IsActive = false;
-                    radarViewProvider?.UpdateCoordinates(WeatherView.LocationCoord, true);
-                }, TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(true);
 
-                ForecastView.UpdateForecasts(locationData);
-
-                Task.Run(async () =>
-                {
-                    // Update home tile if it hasn't been already
-                    bool isHome = Equals(location, await Settings.GetHomeData());
-                    if (isHome && (TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval))
+                    Dispatcher.LaunchOnUIThread(() => 
                     {
-                        await WeatherUpdateBackgroundTask.RequestAppTrigger();
-                    }
-                    else if (isHome || SecondaryTileUtils.Exists(location?.query))
-                    {
-                        await WeatherTileCreator.TileUpdater(location);
-                    }
+                        LoadingRing.IsActive = false;
+                        radarViewProvider?.UpdateCoordinates(WeatherView.LocationCoord, true);
+                    });
                 });
+
+                if (locationData != null)
+                {
+                    ForecastView.UpdateForecasts(locationData);
+
+                    Task.Run(async () =>
+                    {
+                        // Update home tile if it hasn't been already
+                        bool isHome = Equals(locationData, await Settings.GetHomeData());
+                        if (isHome && (TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval))
+                        {
+                            await WeatherUpdateBackgroundTask.RequestAppTrigger();
+                        }
+                        else if (isHome || SecondaryTileUtils.Exists(locationData?.query))
+                        {
+                            await WeatherTileCreator.TileUpdater(locationData);
+                        }
+                    });
+                }
             }
         }
 
@@ -121,7 +126,7 @@ namespace SimpleWeather.UWP.Main
             if (cts?.IsCancellationRequested == true)
                 return;
 
-            Dispatcher.RunOnUIThread(() =>
+            Dispatcher.LaunchOnUIThread(() =>
             {
                 switch (wEx.ErrorStatus)
                 {
@@ -220,12 +225,12 @@ namespace SimpleWeather.UWP.Main
                 case "Sunset":
                     if (!String.IsNullOrWhiteSpace(WeatherView.Sunrise) && !String.IsNullOrWhiteSpace(WeatherView.Sunset))
                     {
-                        while (SunPhasePanel == null || (bool)!SunPhasePanel?.ReadyToDraw)
+                        while (SunPhasePanel == null || !SunPhasePanel.ReadyToDraw)
                         {
                             await Task.Delay(1).ConfigureAwait(true);
                         }
 
-                        SunPhasePanel?.SetSunriseSetTimes(
+                        SunPhasePanel.SetSunriseSetTimes(
                             DateTime.Parse(WeatherView.Sunrise, CultureInfo.InvariantCulture).TimeOfDay,
                             DateTime.Parse(WeatherView.Sunset, CultureInfo.InvariantCulture).TimeOfDay,
                             locationData?.tz_offset);
@@ -293,7 +298,6 @@ namespace SimpleWeather.UWP.Main
         private void AdjustViewLayout()
         {
             if (Window.Current == null) return;
-            var Bounds = Window.Current.Bounds;
 
             if (MainViewer == null) return;
 
@@ -403,12 +407,9 @@ namespace SimpleWeather.UWP.Main
         {
             Task.Run(async () =>
             {
-                return await VerifyLocationData();
-            }).ContinueWith((t) =>
-            {
-                if (t.IsCompletedSuccessfully)
+                try
                 {
-                    var locationChanged = t.Result;
+                    var locationChanged = await VerifyLocationData();
 
                     // New page instance -> loaded = true
                     // Navigating back to existing page instance => loaded = false
@@ -422,39 +423,35 @@ namespace SimpleWeather.UWP.Main
                         var culture = CultureUtils.UserCulture;
                         var locale = wm.LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
-                        if (!String.Equals(WeatherView.WeatherSource, Settings.API) ||
-                            wm.SupportsWeatherLocale && !String.Equals(WeatherView.WeatherLocale, locale))
+                        if (!String.Equals(WeatherView.WeatherSource, Settings.API)
+                                || wm.SupportsWeatherLocale && !String.Equals(WeatherView.WeatherLocale, locale))
                         {
                             Restore();
                         }
                         else
                         {
-                            Task.Run(async () =>
+                            // Update weather if needed on resume
+                            if (Settings.FollowGPS && await UpdateLocation())
                             {
-                                // Update weather if needed on resume
-                                if (Settings.FollowGPS && await UpdateLocation())
-                                {
-                                    // Setup loader from updated location
-                                    wLoader = new WeatherDataLoader(locationData);
-                                }
-                            }).ContinueWith((t2) =>
+                                // Setup loader from updated location
+                                wLoader = new WeatherDataLoader(locationData);
+                            }
+
+                            RefreshWeather(false);
+
+                            await Dispatcher.RunOnUIThread(() =>
                             {
                                 // Check pin tile status
                                 CheckTiles();
-
-                                RefreshWeather(false);
-                            }, TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(true);
+                            });
                         }
                     }
                 }
-
-                if (t.IsFaulted)
+                catch (Exception ex)
                 {
-                    var ex = t.Exception.GetBaseException();
-
                     Logger.WriteLine(LoggerLevel.Error, ex);
                 }
-            }, TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(true);
+            });
         }
 
         /// <summary>
@@ -471,7 +468,7 @@ namespace SimpleWeather.UWP.Main
                 // GPS Follow location
                 if (Settings.FollowGPS && (locationData == null || locationData.locationType == LocationType.GPS))
                 {
-                    LocationData locData = await Settings.GetLastGPSLocData();
+                    var locData = await Settings.GetLastGPSLocData();
 
                     if (locData == null)
                     {
@@ -504,142 +501,140 @@ namespace SimpleWeather.UWP.Main
                     locationData = await Settings.GetHomeData();
                 }
 
-                cts?.Token.ThrowIfCancellationRequested();
-
                 if (locationData != null)
                     wLoader = new WeatherDataLoader(locationData);
 
                 return forceRefresh;
             }).ContinueWith((t) =>
             {
-                // Check pin tile status
-                CheckTiles();
+                Dispatcher.LaunchOnUIThread(() =>
+                {
+                    // Check pin tile status
+                    CheckTiles();
+                });
 
                 if (t.IsCompletedSuccessfully)
                 {
                     // Load up weather data
                     RefreshWeather(t.Result);
                 }
-            }, TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(true);
+            });
         }
 
-        private Task<bool> UpdateLocation()
+        private async Task<bool> UpdateLocation()
         {
-            return Task.Run(async () =>
+            bool locationChanged = false;
+
+            if (Settings.FollowGPS && (locationData == null || locationData.locationType == LocationType.GPS))
             {
-                bool locationChanged = false;
+                Geoposition newGeoPos = null;
+                var geoStatus = GeolocationAccessStatus.Unspecified;
 
-                if (Settings.FollowGPS && (locationData == null || locationData.locationType == LocationType.GPS))
+                try
                 {
-                    Geoposition newGeoPos = null;
-                    var geoStatus = GeolocationAccessStatus.Unspecified;
+                    geoStatus = await Geolocator.RequestAccessAsync();
+                }
+                catch (Exception)
+                {
+                    // Access denied
+                }
 
-                    try
+                try
+                {
+                    // Fallback to coarse (less accurate) location
+                    geolocal.AllowFallbackToConsentlessPositions();
+                    newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10));
+                }
+                catch (Exception ex)
+                {
+                    Logger.WriteLine(LoggerLevel.Error, ex, "Error retrieving location");
+                }
+
+                if (cts?.IsCancellationRequested == true)
+                    return false;
+
+                // Access to location granted
+                if (newGeoPos != null)
+                {
+                    LocationData lastGPSLocData = await Settings.GetLastGPSLocData().ConfigureAwait(false);
+
+                    // Check previous location difference
+                    if (lastGPSLocData.query != null
+                        && geoPos != null && ConversionMethods.CalculateGeopositionDistance(geoPos, newGeoPos) < geolocal.MovementThreshold)
                     {
-                        geoStatus = await Geolocator.RequestAccessAsync();
-                    }
-                    catch (Exception)
-                    {
-                        // Access denied
+                        return false;
                     }
 
-                    try
+                    if (lastGPSLocData.query != null
+                        && Math.Abs(ConversionMethods.CalculateHaversine(lastGPSLocData.latitude, lastGPSLocData.longitude,
+                        newGeoPos.Coordinate.Point.Position.Latitude, newGeoPos.Coordinate.Point.Position.Longitude)) < geolocal.MovementThreshold)
                     {
-                        // Fallback to coarse (less accurate) location
-                        geolocal.AllowFallbackToConsentlessPositions();
-                        newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10));
+                        return false;
                     }
-                    catch (Exception ex)
+
+                    LocationQueryViewModel view = null;
+
+                    if (cts?.IsCancellationRequested == true)
+                        return false;
+
+                    await Task.Run(async () =>
                     {
-                        Logger.WriteLine(LoggerLevel.Error, ex, "Error retrieving location");
+                        try
+                        {
+                            view = await wm.GetLocation(newGeoPos).ConfigureAwait(false);
+
+                            if (String.IsNullOrEmpty(view.LocationQuery))
+                            {
+                                view = new LocationQueryViewModel();
+                            }
+                            else if (String.IsNullOrEmpty(view.LocationTZLong) && view.LocationLat != 0 && view.LocationLong != 0)
+                            {
+                                String tzId = await TZDB.TZDBCache.GetTimeZone(view.LocationLat, view.LocationLong);
+                                if (!String.IsNullOrWhiteSpace(tzId))
+                                    view.LocationTZLong = tzId;
+                            }
+                        }
+                        catch (WeatherException ex)
+                        {
+                            view = new LocationQueryViewModel();
+
+                            await Dispatcher.RunOnUIThread(() =>
+                            {
+                                ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
+                            }).ConfigureAwait(false);
+                        }
+                    }).ConfigureAwait(false);
+
+                    if (String.IsNullOrWhiteSpace(view.LocationQuery))
+                    {
+                        // Stop since there is no valid query
+                        return false;
                     }
 
                     if (cts?.IsCancellationRequested == true)
                         return false;
 
-                    // Access to location granted
-                    if (newGeoPos != null)
-                    {
-                        LocationData lastGPSLocData = await Settings.GetLastGPSLocData().ConfigureAwait(false);
+                    // Save oldkey
+                    string oldKey = lastGPSLocData?.query;
 
-                        // Check previous location difference
-                        if (lastGPSLocData.query != null
-                            && geoPos != null && ConversionMethods.CalculateGeopositionDistance(geoPos, newGeoPos) < geolocal.MovementThreshold)
-                        {
-                            return false;
-                        }
+                    // Save location as last known
+                    lastGPSLocData.SetData(view, newGeoPos);
+                    Settings.SaveLastGPSLocData(lastGPSLocData);
 
-                        if (lastGPSLocData.query != null
-                            && Math.Abs(ConversionMethods.CalculateHaversine(lastGPSLocData.latitude, lastGPSLocData.longitude,
-                            newGeoPos.Coordinate.Point.Position.Latitude, newGeoPos.Coordinate.Point.Position.Longitude)) < geolocal.MovementThreshold)
-                        {
-                            return false;
-                        }
-
-                        LocationQueryViewModel view = null;
-
-                        if (cts?.IsCancellationRequested == true)
-                            return false;
-
-                        await Task.Run(async () =>
-                        {
-                            try
-                            {
-                                view = await wm.GetLocation(newGeoPos);
-
-                                if (String.IsNullOrEmpty(view.LocationQuery))
-                                {
-                                    view = new LocationQueryViewModel();
-                                }
-                                else if (String.IsNullOrEmpty(view.LocationTZLong) && view.LocationLat != 0 && view.LocationLong != 0)
-                                {
-                                    String tzId = await TZDB.TZDBCache.GetTimeZone(view.LocationLat, view.LocationLong);
-                                    if (!String.IsNullOrWhiteSpace(tzId))
-                                        view.LocationTZLong = tzId;
-                                }
-                            }
-                            catch (WeatherException ex)
-                            {
-                                view = new LocationQueryViewModel();
-
-                                await Dispatcher.RunOnUIThread(() =>
-                                {
-                                    ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
-                                }).ConfigureAwait(false);
-                            }
-                        });
-
-                        if (String.IsNullOrWhiteSpace(view.LocationQuery))
-                        {
-                            // Stop since there is no valid query
-                            return false;
-                        }
-
-                        if (cts?.IsCancellationRequested == true)
-                            return false;
-
-                        // Save oldkey
-                        string oldKey = lastGPSLocData?.query;
-
-                        // Save location as last known
-                        lastGPSLocData.SetData(view, newGeoPos);
-                        Settings.SaveLastGPSLocData(lastGPSLocData);
-
-                        locationData = lastGPSLocData;
-                        geoPos = newGeoPos;
-                        locationChanged = true;
-                    }
+                    locationData = lastGPSLocData;
+                    geoPos = newGeoPos;
+                    locationChanged = true;
                 }
+            }
 
-                return locationChanged;
-            });
+            return locationChanged;
         }
 
         private async void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             AnalyticsLogger.LogEvent("WeatherNow: RefreshButton_Click");
 
-            if (Settings.FollowGPS && await UpdateLocation().ConfigureAwait(true))
+            if (Settings.FollowGPS && await UpdateLocation())
                 // Setup loader from updated location
                 wLoader = new WeatherDataLoader(locationData);
 
@@ -655,62 +650,72 @@ namespace SimpleWeather.UWP.Main
         {
             if (cts?.IsCancellationRequested == false)
             {
-                LoadingRing.IsActive = true;
-
-                if (wLoader == null && locationData != null)
+                Dispatcher.LaunchOnUIThread(() =>
                 {
-                    wLoader = new WeatherDataLoader(locationData);
-                }
+                    LoadingRing.IsActive = true;
 
-                wLoader?.LoadWeatherResult(new WeatherRequest.Builder()
-                        .ForceRefresh(forceRefresh)
-                        .SetErrorListener(this)
-                        .Build())
-                        .ContinueWith((t) =>
-                        {
-                            if (t.IsCompletedSuccessfully)
-                            {
-                                Dispatcher.RunOnUIThread(() =>
-                                {
-                                    OnWeatherLoaded(locationData, t.Result.Weather);
-                                    if (AlertButton != null)
-                                        AlertButton.Visibility = Visibility.Collapsed;
-                                });
-                                return wLoader.LoadWeatherAlerts(t.Result.IsSavedData);
-                            }
-                            else
-                            {
-                                return Task.FromCanceled<ICollection<WeatherAlert>>(new CancellationToken(true));
-                            }
-                        })
-                        .Unwrap()
-                        .ContinueWith((t) =>
-                        {
-                            if (locationData != null)
-                            {
-                                AlertsView.UpdateAlerts(locationData);
-                            }
+                    if (wLoader == null && locationData != null)
+                    {
+                        wLoader = new WeatherDataLoader(locationData);
+                    }
 
-                            if (t.IsCompletedSuccessfully)
+                    wLoader?.LoadWeatherResult(new WeatherRequest.Builder()
+                            .ForceRefresh(forceRefresh)
+                            .SetErrorListener(this)
+                            .Build())
+                            .ContinueWith((t) =>
                             {
-                                if (wm.SupportsAlerts && locationData != null)
+                                if (t.IsCompletedSuccessfully)
                                 {
-                                    if (t.Result?.Any() == true)
+                                    Dispatcher.RunOnUIThread(() =>
                                     {
+                                        OnWeatherLoaded(t.Result.Weather);
                                         if (AlertButton != null)
-                                            AlertButton.Visibility = Visibility.Visible;
-
-                                        // Alerts are posted to the user here. Set them as notified.
-#if DEBUG
-                                        WeatherAlertHandler.PostAlerts(locationData, t.Result)
-                                        .ConfigureAwait(false);
-#endif
-                                        WeatherAlertHandler.SetasNotified(locationData, t.Result);
-                                    }
+                                            AlertButton.Visibility = Visibility.Collapsed;
+                                    });
+                                    return wLoader.LoadWeatherAlerts(t.Result.IsSavedData);
                                 }
-                            }
-                        }, TaskScheduler.FromCurrentSynchronizationContext())
-                        .ConfigureAwait(true);
+                                else
+                                {
+                                    return Task.FromCanceled<ICollection<WeatherAlert>>(new CancellationToken(true));
+                                }
+                            })
+                            .Unwrap()
+                            .ContinueWith((t) =>
+                            {
+                                Dispatcher.LaunchOnUIThread(async () =>
+                                {
+                                    if (locationData != null)
+                                    {
+                                        await AlertsView.UpdateAlerts(locationData);
+                                    }
+
+                                    if (t.IsCompletedSuccessfully)
+                                    {
+                                        if (wm.SupportsAlerts && locationData != null)
+                                        {
+                                            if (t.Result?.Any() == true)
+                                            {
+                                                if (AlertButton != null)
+                                                    AlertButton.Visibility = Visibility.Visible;
+
+                                                _ = Task.Run(async () =>
+                                                {
+                                                    // Alerts are posted to the user here. Set them as notified.
+#if DEBUG
+                                                    await WeatherAlertHandler.PostAlerts(locationData, t.Result)
+                                                            .ConfigureAwait(false);
+#endif
+                                                    await WeatherAlertHandler.SetasNotified(locationData, t.Result)
+                                                            .ConfigureAwait(false);
+
+                                                });
+                                            }
+                                        }
+                                    }
+                                });
+                            });
+                });
             }
         }
 

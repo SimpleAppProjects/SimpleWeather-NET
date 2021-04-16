@@ -36,6 +36,11 @@ namespace SimpleWeather.Utils
             }
         }
 
+        public static void LaunchOnUIThread(this CoreDispatcher Dispatcher, Action action)
+        {
+            Dispatcher.AwaitableRunAsync(action);
+        }
+
         private static CoreDispatcher CoreDispatcher = null;
 
         private static CoreDispatcher GetDispatcher()

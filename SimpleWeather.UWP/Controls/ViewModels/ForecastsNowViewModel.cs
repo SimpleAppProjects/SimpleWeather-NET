@@ -66,37 +66,34 @@ namespace SimpleWeather.UWP.Controls
             currentHrForecastsData.ItemValueChanged += CurrentHrForecastsData_ItemValueChanged;
         }
 
-        public Task UpdateForecasts(LocationData location)
+        public async Task UpdateForecasts(LocationData location)
         {
-            return Task.Run(async () =>
+            if (this.locationData == null || !Equals(this.locationData?.query, location?.query))
             {
-                if (this.locationData == null || !Equals(this.locationData?.query, location?.query))
-                {
-                    Settings.UnregisterWeatherDBChangedEvent(ForecastGraphViewModel_TableChanged);
+                Settings.UnregisterWeatherDBChangedEvent(ForecastGraphViewModel_TableChanged);
 
-                    // Clone location data
-                    this.locationData = new LocationData(new LocationQueryViewModel(location));
+                // Clone location data
+                this.locationData = new LocationData(new LocationQueryViewModel(location));
 
-                    this.unitCode = Settings.UnitString;
-                    this.iconProvider = Settings.IconProvider;
+                this.unitCode = Settings.UnitString;
+                this.iconProvider = Settings.IconProvider;
 
-                    currentForecastsData.SetValue(await Settings.GetWeatherForecastData(location.query));
+                currentForecastsData.SetValue(await Settings.GetWeatherForecastData(location.query));
 
-                    var hrInterval = WeatherManager.GetInstance().HourlyForecastInterval;
-                    var dateBlob = DateTimeOffset.Now.ToOffset(location.tz_offset).Trim(TimeSpan.TicksPerHour).AddHours(-(hrInterval * 0.5d)).ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture);
-                    currentHrForecastsData.SetValue(await Settings.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(location.query, 0, 12, dateBlob));
+                var hrInterval = WeatherManager.GetInstance().HourlyForecastInterval;
+                var dateBlob = DateTimeOffset.Now.ToOffset(location.tz_offset).Trim(TimeSpan.TicksPerHour).AddHours(-(hrInterval * 0.5d)).ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture);
+                currentHrForecastsData.SetValue(await Settings.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(location.query, 0, 12, dateBlob));
 
-                    Settings.RegisterWeatherDBChangedEvent(ForecastGraphViewModel_TableChanged);
-                }
-                else if (!Equals(unitCode, Settings.UnitString) || !Equals(iconProvider, Settings.IconProvider))
-                {
-                    this.unitCode = Settings.UnitString;
-                    this.iconProvider = Settings.IconProvider;
+                Settings.RegisterWeatherDBChangedEvent(ForecastGraphViewModel_TableChanged);
+            }
+            else if (!Equals(unitCode, Settings.UnitString) || !Equals(iconProvider, Settings.IconProvider))
+            {
+                this.unitCode = Settings.UnitString;
+                this.iconProvider = Settings.IconProvider;
 
-                    RefreshForecasts(currentForecastsData.GetValue());
-                    RefreshHourlyForecasts(currentHrForecastsData.GetValue());
-                }
-            });
+                RefreshForecasts(currentForecastsData.GetValue());
+                RefreshHourlyForecasts(currentHrForecastsData.GetValue());
+            }
         }
 
         private void ForecastGraphViewModel_TableChanged(object sender, NotifyTableChangedEventArgs e)
@@ -124,12 +121,12 @@ namespace SimpleWeather.UWP.Controls
             }
         }
 
-        private ConfiguredTaskAwaitable RefreshForecasts(Forecasts fcasts)
+        private Task RefreshForecasts(Forecasts fcasts)
         {
             return Dispatcher.RunOnUIThread(() =>
             {
                 ForecastGraphData = fcasts?.forecast?.Count > 0 ? new RangeBarGraphViewModel(fcasts.forecast) : null;
-            }).ConfigureAwait(true);
+            });
         }
 
         private async void CurrentHrForecastsData_ItemValueChanged(object sender, ObservableItemChangedEventArgs e)
@@ -140,7 +137,7 @@ namespace SimpleWeather.UWP.Controls
             }
         }
 
-        private ConfiguredTaskAwaitable RefreshHourlyForecasts(IList<HourlyForecast> hrfcasts)
+        private Task RefreshHourlyForecasts(IList<HourlyForecast> hrfcasts)
         {
             return Dispatcher.RunOnUIThread(() =>
             {
@@ -156,7 +153,7 @@ namespace SimpleWeather.UWP.Controls
                 {
                     PrecipitationGraphData = null;
                 }
-            }).ConfigureAwait(true);
+            });
         }
 
         private bool isDisposed;

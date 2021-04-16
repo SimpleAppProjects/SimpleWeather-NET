@@ -52,7 +52,9 @@ namespace SimpleWeather.UWP.Radar.RainViewer
                 mapControl.TileSources.Add(TileSource);
             }
 
-            await GetRadarFrames().ContinueWith((t) =>
+            await GetRadarFrames();
+
+            await mapControl.Dispatcher.RunOnUIThread(() =>
             {
                 if (IsAnimationAvailable)
                 {
@@ -62,7 +64,7 @@ namespace SimpleWeather.UWP.Radar.RainViewer
                     TileSource?.Stop();
                     AnimationPosition = 0;
                 }
-            }, TaskScheduler.FromCurrentSynchronizationContext());
+            });
         }
 
         public override void OnDestroyView()
@@ -84,7 +86,7 @@ namespace SimpleWeather.UWP.Radar.RainViewer
                 AnimationTimer.Tick += (s, ev) =>
                 {
                     // Update toolbar
-                    RadarMapContainer.Dispatcher.RunOnUIThread(() =>
+                    RadarMapContainer.Dispatcher.LaunchOnUIThread(() =>
                     {
                         if (TileSource.FrameCount > 0)
                         {

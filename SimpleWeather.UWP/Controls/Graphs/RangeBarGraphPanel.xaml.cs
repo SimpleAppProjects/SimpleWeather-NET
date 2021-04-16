@@ -134,25 +134,19 @@ namespace SimpleWeather.UWP.Controls.Graphs
             }
         }
 
-        private void UpdateForecastGraph()
+        private async void UpdateForecastGraph()
         {
             if (ForecastData != null)
             {
                 BarChartView.DrawDataLabels = true;
                 BarChartView.DrawIconLabels = true;
 
-                Task.Run(async () =>
+                while (BarChartView == null || !BarChartView.ReadyToDraw)
                 {
-                    while (BarChartView == null || await Dispatcher.RunOnUIThread(() => (bool)!BarChartView?.ReadyToDraw))
-                    {
-                        await Task.Delay(1);
-                    }
+                    await Task.Delay(1).ConfigureAwait(true);
+                }
 
-                    await Dispatcher.RunOnUIThread(() =>
-                    {
-                        BarChartView.SetData(ForecastData.LabelData, ForecastData.TempData);
-                    });
-                });
+                BarChartView.SetData(ForecastData.LabelData, ForecastData.TempData);
             }
         }
     }

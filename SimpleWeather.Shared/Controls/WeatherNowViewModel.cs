@@ -477,25 +477,22 @@ namespace SimpleWeather.Controls
                 creditPrefix, WeatherAPI.APIs.FirstOrDefault(WApi => Equals(WeatherSource, WApi.Value))?.ToString() ?? WeatherIcons.EM_DASH);
         }
 
-        public Task UpdateBackground()
+        public async Task UpdateBackground()
         {
-            return Task.Run(async () =>
+            if (weather == null) return;
+
+            var imageData = await WeatherUtils.GetImageData(weather);
+
+            if (imageData != null)
             {
-                if (weather == null) return;
-
-                var imageData = await WeatherUtils.GetImageData(weather);
-
-                if (imageData != null)
-                {
-                    ImageData = imageData;
-                    PendingBackgroundColor = imageData.Color;
-                }
-                else
-                {
-                    ImageData = null;
-                    PendingBackgroundColor = defaultColor;
-                }
-            });
+                ImageData = imageData;
+                PendingBackgroundColor = imageData.Color;
+            }
+            else
+            {
+                ImageData = null;
+                PendingBackgroundColor = defaultColor;
+            }
         }
 
         public bool IsValid => weather != null && weather.IsValid();

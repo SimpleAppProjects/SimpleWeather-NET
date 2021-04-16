@@ -61,29 +61,26 @@ namespace SimpleWeather.Controls
         }
 #endif
 
-        public Task UpdateAlerts(LocationData location)
+        public async Task UpdateAlerts(LocationData location)
         {
-            return Task.Run(async () =>
+            if (!Equals(this.locationKey, location?.query))
             {
-                if (!Equals(this.locationKey, location?.query))
-                {
-                    Settings.GetWeatherDBConnection().GetConnection().TableChanged -= WeatherAlertsViewModel_TableChanged;
+                Settings.GetWeatherDBConnection().GetConnection().TableChanged -= WeatherAlertsViewModel_TableChanged;
 
-                    this.locationKey = location?.query;
+                this.locationKey = location?.query;
 
-                    // Update alerts from database
-                    currentAlertsData.SetValue(await Settings.GetWeatherAlertData(locationKey));
+                // Update alerts from database
+                currentAlertsData.SetValue(await Task.Run(async () => await Settings.GetWeatherAlertData(locationKey)).ConfigureAwait(true));
 
-                    Settings.GetWeatherDBConnection().GetConnection().TableChanged += WeatherAlertsViewModel_TableChanged;
-                }
-            });
+                Settings.GetWeatherDBConnection().GetConnection().TableChanged += WeatherAlertsViewModel_TableChanged;
+            }
         }
 
-        private void WeatherAlertsViewModel_TableChanged(object sender, SQLite.NotifyTableChangedEventArgs e)
+        private async void WeatherAlertsViewModel_TableChanged(object sender, SQLite.NotifyTableChangedEventArgs e)
         {
             if (locationKey == null) return;
 
-            Task.Run(async () =>
+            await Task.Run(async () =>
             {
                 if (e?.Table?.TableName == WeatherData.WeatherAlerts.TABLE_NAME)
                 {
@@ -100,7 +97,7 @@ namespace SimpleWeather.Controls
             }
         }
 
-        public ConfiguredTaskAwaitable RefreshAlerts(ICollection<WeatherAlert> alertData)
+        private ConfiguredTaskAwaitable RefreshAlerts(ICollection<WeatherAlert> alertData)
         {
 #if WINDOWS_UWP
             return Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>

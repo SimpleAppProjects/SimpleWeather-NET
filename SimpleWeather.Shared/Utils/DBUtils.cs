@@ -46,36 +46,33 @@ namespace SimpleWeather.Utils
             }
         }
 
-        public static Task UpdateLocationKey(SQLiteAsyncConnection locationDB)
+        public static async Task UpdateLocationKey(SQLiteAsyncConnection locationDB)
         {
-            return Task.Run(async () => 
-            {
-                foreach (LocationData location in await locationDB.Table<LocationData>().ToListAsync()
+            foreach (LocationData location in await locationDB.Table<LocationData>().ToListAsync()
                         .ConfigureAwait(false))
-                {
-                    var oldKey = location.query;
+            {
+                var oldKey = location.query;
 
-                    location.query = WeatherManager.GetProvider(location.weatherSource)
-                        .UpdateLocationQuery(location);
+                location.query = WeatherManager.GetProvider(location.weatherSource)
+                    .UpdateLocationQuery(location);
 
-                    await Settings.UpdateLocationWithKey(location, oldKey).ConfigureAwait(false);
+                await Settings.UpdateLocationWithKey(location, oldKey).ConfigureAwait(false);
 
 #if WINDOWS_UWP && !UNIT_TEST
+                // Update tile id for location
+                if (oldKey != null)
+                {
                     // Update tile id for location
-                    if (oldKey != null)
-                    {
-                        // Update tile id for location
-                        SimpleLibrary.GetInstance().RequestAction(
-                            CommonActions.ACTION_WEATHER_UPDATETILELOCATION,
-                            new Dictionary<string, string>
-                            {
+                    SimpleLibrary.GetInstance().RequestAction(
+                        CommonActions.ACTION_WEATHER_UPDATETILELOCATION,
+                        new Dictionary<string, string>
+                        {
                                         { Constants.TILEKEY_OLDKEY, oldKey },
                                         { Constants.TILEKEY_LOCATION, location.query },
-                            });
-                    }
-#endif
+                        });
                 }
-            });
+#endif
+            }
         }
     }
 }

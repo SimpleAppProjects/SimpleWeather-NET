@@ -54,6 +54,14 @@ namespace SimpleWeather.UWP.Main
 
         private DispatcherTimer timer;
 
+        private void RefreshSuggestionList(AutoSuggestBox sender)
+        {
+            // Refresh list
+            sender.ItemsSource = null;
+            sender.ItemsSource = LocationQuerys;
+            sender.IsSuggestionListOpen = true;
+        }
+
         private void EnableControls(bool enable)
         {
             if (LoadingRing != null)
@@ -69,17 +77,12 @@ namespace SimpleWeather.UWP.Main
         private void Location_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
             // user is typing: reset already started timer (if existing)
-            if (timer != null && timer.IsEnabled)
+            if (timer?.IsEnabled == true)
                 timer.Stop();
 
             if (String.IsNullOrWhiteSpace(sender.Text))
             {
-                // Cancel pending searches
-                cts?.Cancel();
-                cts = new CancellationTokenSource();
-                // Hide flyout if query is empty or null
-                LocationQuerys.Clear();
-                sender.IsSuggestionListOpen = false;
+                FetchLocations(sender, args);
             }
             else
             {
@@ -89,67 +92,68 @@ namespace SimpleWeather.UWP.Main
                 };
                 timer.Tick += (t, e) =>
                 {
-                    if (!String.IsNullOrWhiteSpace(sender.Text) && args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
-                    {
-                        String query = sender.Text;
-
-                        // Cancel pending searches
-                        cts?.Cancel();
-                        cts = new CancellationTokenSource();
-                        var ctsToken = cts.Token;
-
-                        Task.Run(async () =>
-                        {
-                            ctsToken.ThrowIfCancellationRequested();
-
-                            ObservableCollection<LocationQueryViewModel> results = await wm.GetLocations(query);
-
-                            ctsToken.ThrowIfCancellationRequested();
-
-                            return results;
-                        }).ContinueWith((task) =>
-                        {
-                            ObservableCollection<LocationQueryViewModel> results;
-
-                            if (task.IsFaulted)
-                            {
-                                var ex = task.Exception.GetBaseException();
-
-                                if (ex is WeatherException)
-                                {
-                                    ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
-                                }
-                            }
-
-                            if (task.Result != null)
-                            {
-                                results = task.Result;
-                            }
-                            else
-                            {
-                                results = new ObservableCollection<LocationQueryViewModel>() { new LocationQueryViewModel() };
-                            }
-
-                            // Refresh list
-                            LocationQuerys = results;
-                            sender.ItemsSource = null;
-                            sender.ItemsSource = LocationQuerys;
-                            sender.IsSuggestionListOpen = true;
-                            timer.Stop();
-                        }, TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(true);
-                    }
-                    else if (String.IsNullOrWhiteSpace(sender.Text))
-                    {
-                        // Cancel pending searches
-                        cts?.Cancel();
-                        cts = new CancellationTokenSource();
-                        // Hide flyout if query is empty or null
-                        LocationQuerys.Clear();
-                        sender.IsSuggestionListOpen = false;
-                        timer.Stop();
-                    }
+                    timer?.Stop();
+                    FetchLocations(sender, args);
                 };
                 timer.Start();
+            }
+        }
+
+        private void FetchLocations(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        {
+            // Cancel pending searches
+            cts?.Cancel();
+
+            if (!String.IsNullOrWhiteSpace(sender.Text) && args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+            {
+                String query = sender.Text;
+
+                cts = new CancellationTokenSource();
+                var ctsToken = cts.Token;
+
+                Task.Run(async () =>
+                {
+                    try
+                    {
+                        ctsToken.ThrowIfCancellationRequested();
+
+                        var results = await wm.GetLocations(query);
+
+                        ctsToken.ThrowIfCancellationRequested();
+
+                        await Dispatcher.RunOnUIThread(() =>
+                        {
+                            // Refresh list
+                            LocationQuerys = results;
+                            RefreshSuggestionList(sender);
+                            timer?.Stop();
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        if (ex is WeatherException)
+                        {
+                            ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
+                        }
+
+                        await Dispatcher.RunOnUIThread(() =>
+                        {
+                            LocationQuerys = new ObservableCollection<LocationQueryViewModel>() { new LocationQueryViewModel() };
+                            RefreshSuggestionList(sender);
+                            timer?.Stop();
+                        });
+                    }
+                }, ctsToken);
+            }
+            else if (String.IsNullOrWhiteSpace(sender.Text))
+            {
+                // Cancel pending searches
+                cts?.Cancel();
+                cts = new CancellationTokenSource();
+                // Hide flyout if query is empty or null
+                LocationQuerys.Clear();
+                sender.IsSuggestionListOpen = false;
+                timer?.Stop();
             }
         }
 
@@ -167,11 +171,16 @@ namespace SimpleWeather.UWP.Main
         }
 
         /// <summary>
-        /// Location_QuerySubmitted
+        /// Event is triggered when user selects an item from suggestion list or when query icon is pressed
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
+        /// <param name="sender">AutoSuggestBox instance where event was triggered</param>
+        /// <param name="args">Event args</param>
         /// <exception cref="ObjectDisposedException">Ignore.</exception>
+        /// <exception cref="InvalidOperationException">Ignore.</exception>
+        /// <exception cref="AggregateException">Ignore.</exception>
+        /// <exception cref="TaskCanceledException">Ignore.</exception>
+        /// <exception cref="WeatherException">Ignore.</exception>
+        /// <exception cref="CustomException">Ignore.</exception>
         private void Location_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
             EnableControls(false);
@@ -198,10 +207,14 @@ namespace SimpleWeather.UWP.Main
                 }
                 else if (!String.IsNullOrEmpty(queryText))
                 {
+                    // Use args.QueryText to determine what to do.
                     query_vm = await Task.Run(async () =>
                     {
                         ObservableCollection<LocationQueryViewModel> results;
-                        results = await AsyncTask.RunAsync(wm.GetLocations(queryText));
+                        results = await Task.Run(async () =>
+                        {
+                            return await wm.GetLocations(queryText);
+                        }).ConfigureAwait(false);
 
                         var result = results.FirstOrDefault();
 
@@ -213,7 +226,7 @@ namespace SimpleWeather.UWP.Main
                         {
                             return new LocationQueryViewModel();
                         }
-                    }, ctsToken).ConfigureAwait(true);
+                    }, ctsToken).ConfigureAwait(false);
                 }
                 else if (String.IsNullOrWhiteSpace(queryText))
                 {
@@ -240,18 +253,24 @@ namespace SimpleWeather.UWP.Main
                         && query_vm.LocationTZLong == null
                         && wm.LocationProvider.NeedsLocationFromID)
                 {
-                    query_vm = await AsyncTask.RunAsync(
-                        wm.LocationProvider.GetLocationFromID(query_vm));
+                    query_vm = await Task.Run(async () =>
+                    {
+                        return await wm.LocationProvider.GetLocationFromID(query_vm).ConfigureAwait(false);
+                    }, ctsToken).ConfigureAwait(false);
                 }
                 else if (wm.LocationProvider.NeedsLocationFromName)
                 {
-                    query_vm = await AsyncTask.RunAsync(
-                        wm.LocationProvider.GetLocationFromName(query_vm));
+                    query_vm = await Task.Run(async () =>
+                    {
+                        return await wm.LocationProvider.GetLocationFromName(query_vm).ConfigureAwait(false);
+                    }, ctsToken).ConfigureAwait(false);
                 }
                 else if (wm.LocationProvider.NeedsLocationFromGeocoder)
                 {
-                    query_vm = await AsyncTask.RunAsync(
-                        wm.LocationProvider.GetLocation(new WeatherUtils.Coordinate(query_vm.LocationLat, query_vm.LocationLong), query_vm.WeatherSource));
+                    query_vm = await Task.Run(async () =>
+                    {
+                        return await wm.LocationProvider.GetLocation(new WeatherUtils.Coordinate(query_vm.LocationLat, query_vm.LocationLong), query_vm.WeatherSource).ConfigureAwait(false);
+                    }, ctsToken).ConfigureAwait(false);
                 }
 
                 if (query_vm == null)
@@ -260,7 +279,10 @@ namespace SimpleWeather.UWP.Main
                 }
                 else if (String.IsNullOrEmpty(query_vm.LocationTZLong) && query_vm.LocationLat != 0 && query_vm.LocationLong != 0)
                 {
-                    String tzId = await TZDB.TZDBCache.GetTimeZone(query_vm.LocationLat, query_vm.LocationLong);
+                    String tzId = await Task.Run(async () =>
+                    {
+                        return await TZDB.TZDBCache.GetTimeZone(query_vm.LocationLat, query_vm.LocationLong).ConfigureAwait(false);
+                    }, ctsToken).ConfigureAwait(false);
                     if (!String.IsNullOrWhiteSpace(tzId))
                         query_vm.LocationTZLong = tzId;
                 }
@@ -319,41 +341,47 @@ namespace SimpleWeather.UWP.Main
                 }
 
                 // Save data
-                await Settings.AddLocation(location);
+                await Settings.AddLocation(location).ConfigureAwait(false);
                 if (wm.SupportsAlerts && weather.weather_alerts != null)
-                    await Settings.SaveWeatherAlerts(location, weather.weather_alerts);
-                await Settings.SaveWeatherData(weather);
-                await Settings.SaveWeatherForecasts(new Forecasts(weather.query, weather.forecast, weather.txt_forecast));
+                    await Settings.SaveWeatherAlerts(location, weather.weather_alerts).ConfigureAwait(false);
+                await Settings.SaveWeatherData(weather).ConfigureAwait(false);
+                await Settings.SaveWeatherForecasts(new Forecasts(weather.query, weather.forecast, weather.txt_forecast)).ConfigureAwait(false);
                 await Settings.SaveWeatherForecasts(location, weather.hr_forecast == null ? null :
-                    weather.hr_forecast.Select(f => new HourlyForecasts(weather.query, f)));
+                    weather.hr_forecast.Select(f => new HourlyForecasts(weather.query, f))).ConfigureAwait(false);
 
                 return true;
-            }).ContinueWith((t) =>
+            }, ctsToken).ContinueWith(async (t) =>
             {
-                // Restore controls
-                EnableControls(true);
-
                 if (t.IsFaulted)
                 {
                     var ex = t.Exception.GetBaseException();
 
-                    if (ex is WeatherException || ex is CustomException)
+                    await Dispatcher.RunOnUIThread(() =>
                     {
-                        ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
-                    }
-                    else
-                    {
-                        ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_Location"), SnackbarDuration.Short));
-                    }
+                        if (ex is WeatherException || ex is CustomException)
+                        {
+                            ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
+                        }
+                        else
+                        {
+                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_Location"), SnackbarDuration.Short));
+                        }
+
+                        // Restore controls
+                        EnableControls(true);
+                    });
                 }
                 else if (t.IsCompletedSuccessfully && t.Result)
                 {
-                    if (Frame.CanGoBack)
-                        Frame.GoBack();
-                    else
-                        Frame.Navigate(typeof(LocationsPage));
+                    await Dispatcher.RunOnUIThread(() =>
+                    {
+                        if (Frame.CanGoBack)
+                            Frame.GoBack();
+                        else
+                            Frame.Navigate(typeof(LocationsPage));
+                    });
                 }
-            }, TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(true);
+            });
         }
     }
 }

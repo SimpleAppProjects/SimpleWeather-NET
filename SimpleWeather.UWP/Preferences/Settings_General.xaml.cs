@@ -35,7 +35,7 @@ namespace SimpleWeather.UWP.Preferences
     /// </summary>
     public sealed partial class Settings_General : Page, IBackRequestedPage, ISnackbarManager, IFrameContentPage
     {
-        private WeatherManager wm;
+        private readonly WeatherManager wm;
 
         private bool RequestAppTrigger = false;
 
@@ -270,7 +270,7 @@ namespace SimpleWeather.UWP.Preferences
                 // Trigger background task if necessary
                 if (RequestAppTrigger)
                 {
-                    Task.Run(async () => await WeatherUpdateBackgroundTask.RequestAppTrigger());
+                    Task.Run(WeatherUpdateBackgroundTask.RequestAppTrigger);
                     RequestAppTrigger = false;
                 }
             }

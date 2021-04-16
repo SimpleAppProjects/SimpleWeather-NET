@@ -36,7 +36,7 @@ namespace SimpleWeather.UWP.Main
 
         public void OnWeatherError(WeatherException wEx)
         {
-            Dispatcher.RunOnUIThread(() =>
+            Dispatcher.LaunchOnUIThread(() =>
             {
                 switch (wEx.ErrorStatus)
                 {
@@ -97,14 +97,17 @@ namespace SimpleWeather.UWP.Main
                         .ForceLoadSavedData()
                         .SetErrorListener(this)
                         .Build())
-                        .ContinueWith((t) =>
+                        .ContinueWith(async (t) =>
                         {
                             if (t.IsCompletedSuccessfully)
                             {
-                                WeatherView.UpdateView(t.Result);
-                                AlertsView?.UpdateAlerts(location);
+                                await Dispatcher.RunOnUIThread(() =>
+                                {
+                                    WeatherView.UpdateView(t.Result);
+                                    AlertsView?.UpdateAlerts(location);
+                                });
                             }
-                        }, TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(true);
+                        });
             }
 
             AlertsView?.UpdateAlerts(location);

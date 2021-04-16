@@ -55,7 +55,7 @@ namespace SimpleWeather.UWP.Main
 
         public void OnWeatherError(WeatherException wEx)
         {
-            Dispatcher.RunOnUIThread(() =>
+            Dispatcher.LaunchOnUIThread(() =>
             {
                 switch (wEx.ErrorStatus)
                 {
@@ -118,27 +118,30 @@ namespace SimpleWeather.UWP.Main
                         location = await Settings.GetHomeData();
 
                     await ChartsView.UpdateForecasts(location);
-                }).ContinueWith((t) =>
+                }).ContinueWith(async (t) =>
                 {
-                    SetBinding(GraphModelsProperty, new Binding()
+                    await Dispatcher.RunOnUIThread(() =>
                     {
-                        Mode = BindingMode.OneWay,
-                        Source = ChartsView.GraphModels
-                    });
+                        SetBinding(GraphModelsProperty, new Binding()
+                        {
+                            Mode = BindingMode.OneWay,
+                            Source = ChartsView.GraphModels
+                        });
 
-                    if (WeatherView?.IsValid == false)
-                    {
-                        new WeatherDataLoader(location)
-                            .LoadWeatherData(new WeatherRequest.Builder()
-                                .ForceLoadSavedData()
-                                .SetErrorListener(this)
-                                .Build())
-                                .ContinueWith((t2) =>
-                                {
-                                    WeatherView.UpdateView(t2.Result);
-                                });
-                    }
-                }, TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(true);
+                        if (WeatherView?.IsValid == false)
+                        {
+                            new WeatherDataLoader(location)
+                                .LoadWeatherData(new WeatherRequest.Builder()
+                                    .ForceLoadSavedData()
+                                    .SetErrorListener(this)
+                                    .Build())
+                                    .ContinueWith((t2) =>
+                                    {
+                                        WeatherView.UpdateView(t2.Result);
+                                    });
+                        }
+                    });
+                });
             }
         }
     }

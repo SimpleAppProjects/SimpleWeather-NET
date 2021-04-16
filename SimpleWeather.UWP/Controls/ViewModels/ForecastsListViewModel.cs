@@ -44,33 +44,30 @@ namespace SimpleWeather.UWP.Controls
         public static readonly DependencyProperty HourlyForecastsProperty =
             DependencyProperty.Register("HourlyForecasts", typeof(IncrementalLoadingCollection<HourlyForecastSource, HourlyForecastItemViewModel>), typeof(ForecastsListViewModel), new PropertyMetadata(null));
 
-        public Task UpdateForecasts(LocationData location)
+        public void UpdateForecasts(LocationData location)
         {
-            return Task.Run(() =>
+            if (this.locationData == null || !Equals(this.locationData?.query, location?.query))
             {
-                if (this.locationData == null || !Equals(this.locationData?.query, location?.query))
-                {
-                    Settings.UnregisterWeatherDBChangedEvent(ForecastsViewModel_TableChanged);
+                Settings.UnregisterWeatherDBChangedEvent(ForecastsViewModel_TableChanged);
 
-                    // Clone location data
-                    this.locationData = new LocationData(new LocationQueryViewModel(location));
+                // Clone location data
+                this.locationData = new LocationData(new LocationQueryViewModel(location));
 
-                    this.unitCode = Settings.UnitString;
+                this.unitCode = Settings.UnitString;
 
-                    // Update forecasts from database
-                    ResetForecasts();
-                    ResetHourlyForecasts();
+                // Update forecasts from database
+                ResetForecasts();
+                ResetHourlyForecasts();
 
-                    Settings.RegisterWeatherDBChangedEvent(ForecastsViewModel_TableChanged);
-                }
-                else if (!Equals(unitCode, Settings.UnitString))
-                {
-                    this.unitCode = Settings.UnitString;
+                Settings.RegisterWeatherDBChangedEvent(ForecastsViewModel_TableChanged);
+            }
+            else if (!Equals(unitCode, Settings.UnitString))
+            {
+                this.unitCode = Settings.UnitString;
 
-                    RefreshForecasts();
-                    RefreshHourlyForecasts();
-                }
-            });
+                RefreshForecasts();
+                RefreshHourlyForecasts();
+            }
         }
 
         private void ForecastsViewModel_TableChanged(object sender, SQLite.NotifyTableChangedEventArgs e)

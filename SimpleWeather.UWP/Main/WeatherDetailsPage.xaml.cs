@@ -54,7 +54,7 @@ namespace SimpleWeather.UWP.Main
 
         public void OnWeatherError(WeatherException wEx)
         {
-            Dispatcher.RunOnUIThread(() =>
+            Dispatcher.LaunchOnUIThread(() =>
             {
                 switch (wEx.ErrorStatus)
                 {
@@ -117,58 +117,61 @@ namespace SimpleWeather.UWP.Main
                     if (location == null)
                         location = await Settings.GetHomeData();
 
-                    await ForecastsView.UpdateForecasts(location);
-                }).ContinueWith((t) =>
+                    ForecastsView.UpdateForecasts(location);
+                }).ContinueWith(async (t) =>
                 {
-                    if (IsHourly)
+                    await Dispatcher.RunOnUIThread(() =>
                     {
-                        SetBinding(ForecastsProperty, new Binding()
+                        if (IsHourly)
                         {
-                            Mode = BindingMode.OneWay,
-                            Source = ForecastsView.HourlyForecasts
-                        });
-                    }
-                    else
-                    {
-                        SetBinding(ForecastsProperty, new Binding()
-                        {
-                            Mode = BindingMode.OneWay,
-                            Source = ForecastsView.Forecasts
-                        });
-                    }
-
-                    if (WeatherView?.IsValid == false)
-                    {
-                        new WeatherDataLoader(location)
-                            .LoadWeatherData(new WeatherRequest.Builder()
-                                .ForceLoadSavedData()
-                                .SetErrorListener(this)
-                                .Build())
-                                .ContinueWith((t2) =>
-                                {
-                                    WeatherView.UpdateView(t2.Result);
-                                });
-                    }
-
-                    // Scroll item into view
-                    void contentChangedListener(ListViewBase sender, ContainerContentChangingEventArgs cccEvArgs)
-                    {
-                        ListControl.ContainerContentChanging -= contentChangedListener;
-
-                        void layoutUpdateListener(object s, object layoutEvArgs)
-                        {
-                            ListControl.LayoutUpdated -= layoutUpdateListener;
-
-                            if (args.ScrollToPosition > 0 && ListControl.Items?.Count > args.ScrollToPosition)
+                            SetBinding(ForecastsProperty, new Binding()
                             {
-                                ListControl.ScrollIntoView(ListControl.Items[args.ScrollToPosition], ScrollIntoViewAlignment.Leading);
-                            }
-                        };
+                                Mode = BindingMode.OneWay,
+                                Source = ForecastsView.HourlyForecasts
+                            });
+                        }
+                        else
+                        {
+                            SetBinding(ForecastsProperty, new Binding()
+                            {
+                                Mode = BindingMode.OneWay,
+                                Source = ForecastsView.Forecasts
+                            });
+                        }
 
-                        ListControl.LayoutUpdated += layoutUpdateListener;
-                    };
-                    ListControl.ContainerContentChanging += contentChangedListener;
-                }, TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(true);
+                        if (WeatherView?.IsValid == false)
+                        {
+                            new WeatherDataLoader(location)
+                                .LoadWeatherData(new WeatherRequest.Builder()
+                                    .ForceLoadSavedData()
+                                    .SetErrorListener(this)
+                                    .Build())
+                                    .ContinueWith((t2) =>
+                                    {
+                                        WeatherView.UpdateView(t2.Result);
+                                    });
+                        }
+
+                        // Scroll item into view
+                        void contentChangedListener(ListViewBase sender, ContainerContentChangingEventArgs cccEvArgs)
+                        {
+                            ListControl.ContainerContentChanging -= contentChangedListener;
+
+                            void layoutUpdateListener(object s, object layoutEvArgs)
+                            {
+                                ListControl.LayoutUpdated -= layoutUpdateListener;
+
+                                if (args.ScrollToPosition > 0 && ListControl.Items?.Count > args.ScrollToPosition)
+                                {
+                                    ListControl.ScrollIntoView(ListControl.Items[args.ScrollToPosition], ScrollIntoViewAlignment.Leading);
+                                }
+                            };
+
+                            ListControl.LayoutUpdated += layoutUpdateListener;
+                        };
+                        ListControl.ContainerContentChanging += contentChangedListener;
+                    });
+                });
             }
         }
 

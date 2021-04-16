@@ -130,7 +130,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
             }
         }
 
-        private void UpdateGraph()
+        private async void UpdateGraph()
         {
             if (GraphData != null)
             {
@@ -142,18 +142,12 @@ namespace SimpleWeather.UWP.Controls.Graphs
                 LineGraphView.DrawDotPoints = false;
                 LineGraphView.DrawSeriesLabels = false;
 
-                Task.Run(async () =>
+                while (LineGraphView == null || !LineGraphView.ReadyToDraw)
                 {
-                    while (LineGraphView == null || await Dispatcher.RunOnUIThread(() => (bool)!LineGraphView?.ReadyToDraw))
-                    {
-                        await Task.Delay(1);
-                    }
+                    await Task.Delay(1).ConfigureAwait(true);
+                }
 
-                    await Dispatcher.RunOnUIThread(() =>
-                    {
-                        LineGraphView.SetData(GraphData.LabelData, GraphData.SeriesData);
-                    });
-                });
+                LineGraphView.SetData(GraphData.LabelData, GraphData.SeriesData);
             }
         }
     }

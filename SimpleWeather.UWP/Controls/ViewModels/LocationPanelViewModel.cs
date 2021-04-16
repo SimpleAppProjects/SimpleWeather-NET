@@ -224,27 +224,24 @@ namespace SimpleWeather.Controls
             }
         }
 
-        public Task UpdateBackground()
+        public async Task UpdateBackground()
         {
-            return Task.Run(async () =>
+            if (weather != null && ImageData == null)
             {
-                if (weather != null && ImageData == null)
-                {
-                    var imageData = await WeatherUtils.GetImageData(weather);
+                var imageData = await WeatherUtils.GetImageData(weather);
 
-                    if (imageData != null)
-                    {
-                        ImageData = imageData;
-                        BackgroundTheme = ColorUtils.IsSuperLight(imageData.Color) ?
-                            ElementTheme.Light : ElementTheme.Dark;
-                    }
-                    else
-                    {
-                        ImageData = null;
-                        BackgroundTheme = ElementTheme.Dark;
-                    }
+                if (imageData != null)
+                {
+                    ImageData = imageData;
+                    BackgroundTheme = ColorUtils.IsSuperLight(imageData.Color) ?
+                        ElementTheme.Light : ElementTheme.Dark;
                 }
-            });
+                else
+                {
+                    ImageData = null;
+                    BackgroundTheme = ElementTheme.Dark;
+                }
+            }
         }
     }
 }
