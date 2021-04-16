@@ -422,19 +422,25 @@
                         FontSize="11"
                         FontWeight="Medium"
                         NavigateUri="{x:Bind WeatherView.ImageData.OriginalLink, Mode=OneWay}"
-                        RelativePanel.AlignBottomWithPanel="True"
+                        RelativePanel.Above="BottomSpacer"
                         RelativePanel.AlignRightWithPanel="True"
                         RequestedTheme="Dark"
-                        Style="{ThemeResource AttributionStyle}"
-                        Visibility="{x:Bind WeatherView.ImageData.OriginalLink, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}">
+                        Style="{ThemeResource AttributionStyle}">
                         <HyperlinkButton.Content>
-                            <toolkitControls:DropShadowPanel BlurRadius="15.0" ShadowOpacity="1">
+                            <toolkitControls:DropShadowPanel
+                                BlurRadius="15.0"
+                                ShadowOpacity="1"
+                                Visibility="{x:Bind WeatherView.ImageData.OriginalLink, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}">
                                 <TextBlock>
                                     <Span><Run x:Uid="Attrib_Prefix" Text="Photo by" /><Run Text=" " /><Run d:Text="David" Text="{x:Bind WeatherView.ImageData.ArtistName, Mode=OneWay}" /><Run Text=" (" /><Run d:Text="Unsplash" Text="{x:Bind WeatherView.ImageData.SiteName, Mode=OneWay}" /><Run Text=")" /></Span>
                                 </TextBlock>
                             </toolkitControls:DropShadowPanel>
                         </HyperlinkButton.Content>
                     </HyperlinkButton>
+                    <Rectangle
+                        x:Name="BottomSpacer"
+                        Height="5"
+                        RelativePanel.AlignBottomWithPanel="True" />
                 </RelativePanel>
                 <StackPanel
                     Grid.Row="5"
