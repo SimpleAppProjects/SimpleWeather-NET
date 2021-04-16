@@ -13,8 +13,8 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
-                <ResourceDictionary Source="ms-appx:///Microsoft.Toolkit.Uwp.UI.Controls/InAppNotification/Styles/MSEdgeNotificationStyle.xaml" />
-                <ResourceDictionary Source="ms-appx:///Microsoft.Toolkit.Uwp.UI.Controls/InAppNotification/Styles/VSCodeNotificationStyle.xaml" />
+                <ResourceDictionary Source="ms-appx:///Microsoft.Toolkit.Uwp.UI.Controls.Core/InAppNotification/Styles/MSEdgeNotificationStyle.xaml" />
+                <ResourceDictionary Source="ms-appx:///Microsoft.Toolkit.Uwp.UI.Controls.Core/InAppNotification/Styles/VSCodeNotificationStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">

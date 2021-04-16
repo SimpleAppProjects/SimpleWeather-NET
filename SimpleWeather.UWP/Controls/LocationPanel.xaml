@@ -55,7 +55,6 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             x:Load="{x:Bind uwpUtils:FeatureSettings.LocationPanelBackgroundImage, Mode=OneWay}"
-            CachingStrategy="Custom"
             DecodePixelWidth="720"
             Foreground="White"
             IsCacheEnabled="True"

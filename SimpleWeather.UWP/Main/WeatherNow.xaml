@@ -252,7 +252,6 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     x:Load="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay}"
-                    CachingStrategy="Custom"
                     Foreground="White"
                     ImageExFailed="BackgroundOverlay_ImageExFailed"
                     ImageExOpened="BackgroundOverlay_ImageExOpened"
