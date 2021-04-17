@@ -256,6 +256,7 @@
     <Compile Include="UWP\WeatherData\Images\ImageDataDatabase.cs" />
     <Compile Include="UWP\WeatherData\Images\ImageDataHelperImpl.cs" />
     <Compile Include="UWP\WeatherData\WeatherProviderImpl.cs" />
+    <Compile Include="ComponentModel\IViewModel.cs" />
     <Compile Include="WeatherApi\LocationItem.cs" />
     <Compile Include="WeatherApi\WeatherApiLocationProvider.cs" />
     <Compile Include="WeatherData\IAirQualityProvider.cs" />

@@ -1,4 +1,6 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI.Xaml.Controls;
+using SimpleWeather.ComponentModel;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.UWP.Controls;
@@ -46,10 +48,54 @@ namespace SimpleWeather.UWP.Main
             ("SettingsPage", typeof(SettingsPage)),
         };
 
+        /// <summary>
+        /// Gets the <see cref="IServiceProvider"/> instance to resolve application services.
+        /// </summary>
+        public IServiceProvider Services { get; }
+
+        private const string DefaultKey = "SimpleWeather.UWP.Main.Shell.DefaultKey";
+
+        private readonly Dictionary<string, IViewModel> ViewModelStore = new Dictionary<string, IViewModel>();
+
+        /// <summary>
+        /// Configures the services for the application.
+        /// </summary>
+        private static IServiceProvider ConfigureServices()
+        {
+            var services = new ServiceCollection();
+
+            services.AddSingleton<CoreDispatcher>(Shell.Instance.Dispatcher);
+
+            return services.BuildServiceProvider();
+        }
+
+        public T GetViewModel<T>() where T : IViewModel
+        {
+            return GetViewModel<T>(DefaultKey + ":" + typeof(T).FullName);
+        }
+
+        private T GetViewModel<T>(string key) where T : IViewModel
+        {
+            if (ViewModelStore.TryGetValue(key, out IViewModel viewModel) && viewModel is T)
+            {
+                return (T)viewModel;
+            }
+
+            viewModel = ActivatorUtilities.CreateInstance<T>(Services);
+            if (ViewModelStore.ContainsKey(key))
+            {
+                ViewModelStore.Remove(key, out IViewModel oldViewModel);
+                // TODO: cleanup
+            }
+            ViewModelStore.Add(key, viewModel);
+            return (T)viewModel;
+        }
+
         public Shell()
         {
             Instance = this;
             this.InitializeComponent();
+            Services = ConfigureServices();
 
             AnalyticsLogger.LogEvent("Shell");
 
@@ -290,8 +336,7 @@ namespace SimpleWeather.UWP.Main
                     {
                         parameter = new WeatherPageArgs()
                         {
-                            Location = wnowPage?.locationData,
-                            WeatherNowView = wnowPage?.WeatherView
+                            Location = wnowPage?.locationData
                         };
                     }
                     else if (Type.Equals(_page, typeof(WeatherRadarPage)))

@@ -1,9 +1,11 @@
-﻿using SimpleWeather.Icons;
+﻿using SimpleWeather.ComponentModel;
+using SimpleWeather.Icons;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls.Graphs;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,7 +25,7 @@ namespace SimpleWeather.UWP.Controls
         Snow
     }
 
-    public class ForecastGraphViewModel : DependencyObject
+    public class ForecastGraphViewModel : DependencyObject, IViewModel
     {
         public List<XLabelData> LabelData
         {
@@ -55,9 +57,14 @@ namespace SimpleWeather.UWP.Controls
         public static readonly DependencyProperty GraphLabelProperty =
             DependencyProperty.Register("GraphLabel", typeof(string), typeof(ForecastGraphViewModel), new PropertyMetadata(null));
 
-        public ForecastGraphViewModel()
+        public event PropertyChangedEventHandler PropertyChanged;
+        // Create the OnPropertyChanged method to raise the event
+        protected async void OnPropertyChanged(string name)
         {
-
+            await Dispatcher.RunOnUIThread(() =>
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            });
         }
 
         public void AddForecastData<T>(T forecast, ForecastGraphType graphType) where T : BaseForecast

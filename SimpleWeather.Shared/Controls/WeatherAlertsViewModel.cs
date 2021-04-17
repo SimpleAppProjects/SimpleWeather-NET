@@ -1,4 +1,5 @@
 ﻿using SimpleWeather.Controls;
+using SimpleWeather.ComponentModel;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
@@ -20,9 +21,9 @@ namespace SimpleWeather.Controls
 {
     public class WeatherAlertsViewModel :
 #if WINDOWS_UWP
-        DependencyObject, INotifyPropertyChanged,
+        DependencyObject,
 #endif
-        IDisposable
+        IViewModel, IDisposable
     {
         private String locationKey;
 
@@ -49,38 +50,43 @@ namespace SimpleWeather.Controls
             currentAlertsData.ItemValueChanged += CurrentAlertsData_ItemValueChanged;
         }
 
-#if WINDOWS_UWP
         public event PropertyChangedEventHandler PropertyChanged;
         // Create the OnPropertyChanged method to raise the event
-        protected async void OnPropertyChanged(string name)
+        protected void OnPropertyChanged(string name)
         {
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+#if WINDOWS_UWP
+            Dispatcher.LaunchOnUIThread(() =>
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-            }).AsTask().ConfigureAwait(true);
-        }
 #endif
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+#if WINDOWS_UWP
+            });
+#endif
+        }
 
-        public async Task UpdateAlerts(LocationData location)
+        public void UpdateAlerts(LocationData location)
         {
             if (!Equals(this.locationKey, location?.query))
             {
-                Settings.GetWeatherDBConnection().GetConnection().TableChanged -= WeatherAlertsViewModel_TableChanged;
+                Task.Run(async () =>
+                {
+                    Settings.GetWeatherDBConnection().GetConnection().TableChanged -= WeatherAlertsViewModel_TableChanged;
 
-                this.locationKey = location?.query;
+                    this.locationKey = location?.query;
 
-                // Update alerts from database
-                currentAlertsData.SetValue(await Task.Run(async () => await Settings.GetWeatherAlertData(locationKey)).ConfigureAwait(true));
+                    // Update alerts from database
+                    currentAlertsData.SetValue(await Settings.GetWeatherAlertData(locationKey));
 
-                Settings.GetWeatherDBConnection().GetConnection().TableChanged += WeatherAlertsViewModel_TableChanged;
+                    Settings.GetWeatherDBConnection().GetConnection().TableChanged += WeatherAlertsViewModel_TableChanged;
+                });
             }
         }
 
-        private async void WeatherAlertsViewModel_TableChanged(object sender, SQLite.NotifyTableChangedEventArgs e)
+        private void WeatherAlertsViewModel_TableChanged(object sender, SQLite.NotifyTableChangedEventArgs e)
         {
             if (locationKey == null) return;
 
-            await Task.Run(async () =>
+            Task.Run(async () =>
             {
                 if (e?.Table?.TableName == WeatherData.WeatherAlerts.TABLE_NAME)
                 {
@@ -89,21 +95,18 @@ namespace SimpleWeather.Controls
             });
         }
 
-        private async void CurrentAlertsData_ItemValueChanged(object sender, ObservableItemChangedEventArgs e)
+        private void CurrentAlertsData_ItemValueChanged(object sender, ObservableItemChangedEventArgs e)
         {
             if (e.NewValue is ICollection<WeatherAlert> alertData)
             {
-                await RefreshAlerts(alertData);
+                RefreshAlerts(alertData);
             }
         }
 
-        private ConfiguredTaskAwaitable RefreshAlerts(ICollection<WeatherAlert> alertData)
+        private void RefreshAlerts(ICollection<WeatherAlert> alertData)
         {
 #if WINDOWS_UWP
-            return Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-#else
-            return Task.Run(() =>
+            Dispatcher.LaunchOnUIThread(() =>
             {
 #endif
                 Alerts.Clear();
@@ -123,11 +126,9 @@ namespace SimpleWeather.Controls
                 }
 
                 Alerts.NotifyCollectionChanged();
-#if WINDOWS_UWP
                 OnPropertyChanged(nameof(Alerts));
-            }).AsTask().ConfigureAwait(true);
-#else
-            }).ConfigureAwait(true);
+#if WINDOWS_UWP
+            });
 #endif
         }
 

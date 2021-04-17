@@ -1,6 +1,7 @@
 ﻿using Microsoft.Toolkit.Collections;
 using Microsoft.Toolkit.Uwp;
 using SimpleWeather.Controls;
+using SimpleWeather.ComponentModel;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
@@ -19,7 +20,7 @@ using Windows.UI.Xaml;
 
 namespace SimpleWeather.UWP.Controls
 {
-    public class ForecastsListViewModel : DependencyObject, IDisposable
+    public class ForecastsListViewModel : DependencyObject, IViewModel, IDisposable
     {
         private LocationData locationData;
         private string unitCode;
@@ -43,6 +44,16 @@ namespace SimpleWeather.UWP.Controls
         // Using a DependencyProperty as the backing store for HourlyForecasts.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty HourlyForecastsProperty =
             DependencyProperty.Register("HourlyForecasts", typeof(IncrementalLoadingCollection<HourlyForecastSource, HourlyForecastItemViewModel>), typeof(ForecastsListViewModel), new PropertyMetadata(null));
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        // Create the OnPropertyChanged method to raise the event
+        protected async void OnPropertyChanged(string name)
+        {
+            await Dispatcher.RunOnUIThread(() =>
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            });
+        }
 
         public void UpdateForecasts(LocationData location)
         {

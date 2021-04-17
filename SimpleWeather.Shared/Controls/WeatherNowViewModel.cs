@@ -1,4 +1,5 @@
-﻿using SimpleWeather.Icons;
+﻿using SimpleWeather.ComponentModel;
+using SimpleWeather.Icons;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
@@ -18,7 +19,7 @@ using Windows.UI.Xaml;
 
 namespace SimpleWeather.Controls
 {
-    public class WeatherNowViewModel : INotifyPropertyChanged
+    public class WeatherNowViewModel : IViewModel
     {
         #region DependencyProperties
 
@@ -56,18 +57,15 @@ namespace SimpleWeather.Controls
 
         public event PropertyChangedEventHandler PropertyChanged;
         // Create the OnPropertyChanged method to raise the event
-        protected async void OnPropertyChanged(string name)
+        protected void OnPropertyChanged(string name)
         {
 #if WINDOWS_UWP
-            if (Dispatcher != null)
+            Dispatcher?.LaunchOnUIThread(() =>
             {
-                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                {
 #endif
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 #if WINDOWS_UWP
-                }).AsTask().ConfigureAwait(true);
-            }
+            });
 #endif
         }
 

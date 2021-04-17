@@ -79,16 +79,13 @@ namespace SimpleWeather.UWP.Main
             if (e?.Parameter is WeatherPageArgs args)
             {
                 location = args.Location;
-                WeatherView = args.WeatherNowView;
-                AlertsView = args.AlertsView;
             }
 
             if (location == null)
                 location = await Settings.GetHomeData().ConfigureAwait(true);
-            if (WeatherView == null)
-                WeatherView = new WeatherNowViewModel(Dispatcher);
-            if (AlertsView == null)
-                AlertsView = new WeatherAlertsViewModel();
+
+            WeatherView = Shell.Instance.GetViewModel<WeatherNowViewModel>();
+            AlertsView = Shell.Instance.GetViewModel<WeatherAlertsViewModel>();
 
             if (WeatherView?.IsValid != true)
             {

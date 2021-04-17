@@ -36,7 +36,7 @@
             IsItemClickEnabled="False"
             IsMultiSelectCheckBoxEnabled="False"
             IsSwipeEnabled="False"
-            ItemsSource="{x:Bind GraphModels, Mode=OneWay}"
+            ItemsSource="{x:Bind ChartsView.GraphModels, Mode=OneWay}"
             SelectionMode="None">
             <ItemsControl.ItemTemplate>
                 <DataTemplate x:DataType="controls:ForecastGraphViewModel">

@@ -33,16 +33,6 @@ namespace SimpleWeather.UWP.Main
         public WeatherNowViewModel WeatherView { get; set; }
         public ChartsViewModel ChartsView { get; set; }
 
-        public List<ForecastGraphViewModel> GraphModels
-        {
-            get { return (List<ForecastGraphViewModel>)GetValue(GraphModelsProperty); }
-            set { SetValue(GraphModelsProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for GraphModels.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty GraphModelsProperty =
-            DependencyProperty.Register("GraphModels", typeof(List<ForecastGraphViewModel>), typeof(WeatherChartsPage), new PropertyMetadata(null));
-
         public WeatherChartsPage()
         {
             this.InitializeComponent();
@@ -105,10 +95,9 @@ namespace SimpleWeather.UWP.Main
             if (e?.Parameter is WeatherPageArgs args)
             {
                 location = args.Location;
-                WeatherView = args.WeatherNowView;
 
-                if (WeatherView == null)
-                    WeatherView = new WeatherNowViewModel(Dispatcher);
+                WeatherView = Shell.Instance.GetViewModel<WeatherNowViewModel>();
+
                 if (ChartsView == null)
                     ChartsView = new ChartsViewModel();
 
@@ -122,12 +111,6 @@ namespace SimpleWeather.UWP.Main
                 {
                     await Dispatcher.RunOnUIThread(() =>
                     {
-                        SetBinding(GraphModelsProperty, new Binding()
-                        {
-                            Mode = BindingMode.OneWay,
-                            Source = ChartsView.GraphModels
-                        });
-
                         if (WeatherView?.IsValid == false)
                         {
                             new WeatherDataLoader(location)

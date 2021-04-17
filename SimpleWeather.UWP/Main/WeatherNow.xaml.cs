@@ -163,10 +163,10 @@ namespace SimpleWeather.UWP.Main
             Application.Current.Resuming += WeatherNow_Resuming;
             cts = new CancellationTokenSource();
 
-            WeatherView = new WeatherNowViewModel(Dispatcher);
+            WeatherView = Shell.Instance.GetViewModel<WeatherNowViewModel>();
             WeatherView.PropertyChanged += WeatherView_PropertyChanged;
-            ForecastView = new ForecastsNowViewModel();
-            AlertsView = new WeatherAlertsViewModel();
+            ForecastView = Shell.Instance.GetViewModel<ForecastsNowViewModel>();
+            AlertsView = Shell.Instance.GetViewModel<WeatherAlertsViewModel>();
 
             geolocal = new Geolocator() { DesiredAccuracyInMeters = 5000, ReportInterval = 900000, MovementThreshold = 1600 };
 
@@ -732,8 +732,7 @@ namespace SimpleWeather.UWP.Main
 
             Frame.Navigate(typeof(WeatherAlertPage), new WeatherPageArgs()
             {
-                Location = locationData,
-                WeatherNowView = WeatherView
+                Location = locationData
             }, transition);
         }
 
@@ -855,7 +854,6 @@ namespace SimpleWeather.UWP.Main
                 new DetailsPageArgs()
                 {
                     Location = locationData,
-                    WeatherNowView = WeatherView,
                     IsHourly = IsHourly,
                     ScrollToPosition = Position
                 }, new DrillInNavigationTransitionInfo());
@@ -916,8 +914,7 @@ namespace SimpleWeather.UWP.Main
             Frame.Navigate(typeof(WeatherChartsPage),
                 new WeatherPageArgs()
                 {
-                    Location = locationData,
-                    WeatherNowView = WeatherView
+                    Location = locationData
                 }, new DrillInNavigationTransitionInfo());
         }
     }

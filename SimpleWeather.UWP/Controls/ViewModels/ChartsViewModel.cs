@@ -1,4 +1,5 @@
 ﻿using SimpleWeather.Controls;
+using SimpleWeather.ComponentModel;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls.Graphs;
@@ -20,7 +21,7 @@ using Windows.UI.Xaml;
 
 namespace SimpleWeather.UWP.Controls
 {
-    public class ChartsViewModel : DependencyObject, IDisposable
+    public class ChartsViewModel : DependencyObject, IViewModel, IDisposable
     {
         private LocationData locationData;
         private string unitCode;
@@ -42,6 +43,16 @@ namespace SimpleWeather.UWP.Controls
         {
             currentHrForecastsData = new ObservableItem<IList<HourlyForecast>>();
             currentHrForecastsData.ItemValueChanged += CurrentHrForecastsData_ItemValueChanged;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        // Create the OnPropertyChanged method to raise the event
+        protected async void OnPropertyChanged(string name)
+        {
+            await Dispatcher.RunOnUIThread(() =>
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            });
         }
 
         public void UpdateForecasts(LocationData location)

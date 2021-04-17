@@ -11,8 +11,6 @@ namespace SimpleWeather.UWP.Main
     internal class WeatherPageArgs
     {
         public LocationData Location { get; set; }
-        public WeatherNowViewModel WeatherNowView { get; set; }
-        public WeatherAlertsViewModel AlertsView { get; set; }
     }
 
     internal class DetailsPageArgs : WeatherPageArgs

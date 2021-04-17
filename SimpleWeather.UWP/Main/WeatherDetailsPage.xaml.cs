@@ -104,11 +104,10 @@ namespace SimpleWeather.UWP.Main
             if (e?.Parameter is DetailsPageArgs args)
             {
                 location = args.Location;
-                WeatherView = args.WeatherNowView;
                 IsHourly = args.IsHourly;
 
-                if (WeatherView == null)
-                    WeatherView = new WeatherNowViewModel(Dispatcher);
+                WeatherView = Shell.Instance.GetViewModel<WeatherNowViewModel>();
+
                 if (ForecastsView == null)
                     ForecastsView = new ForecastsListViewModel();
 

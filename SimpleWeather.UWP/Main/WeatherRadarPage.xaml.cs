@@ -22,7 +22,7 @@ namespace SimpleWeather.UWP.Main
     public sealed partial class WeatherRadarPage : CustomPage
     {
         private RadarViewProvider radarViewProvider;
-        private WeatherUtils.Coordinate LocationCoords;
+        private WeatherNowViewModel WeatherView;
 
         public WeatherRadarPage()
         {
@@ -38,8 +38,8 @@ namespace SimpleWeather.UWP.Main
         {
             base.OnNavigatedTo(e);
 
-            LocationCoords = e?.Parameter as WeatherUtils.Coordinate ?? new WeatherUtils.Coordinate(0, 0);
-            radarViewProvider?.UpdateCoordinates(LocationCoords, true);
+            WeatherView = Shell.Instance.GetViewModel<WeatherNowViewModel>();
+            radarViewProvider?.UpdateCoordinates(WeatherView.LocationCoord, true);
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -53,9 +53,9 @@ namespace SimpleWeather.UWP.Main
         {
             radarViewProvider = RadarProvider.GetRadarViewProvider(RadarWebViewContainer);
             radarViewProvider.EnableInteractions(true);
-            if (LocationCoords != null)
+            if (WeatherView.LocationCoord != null)
             {
-                radarViewProvider.UpdateCoordinates(LocationCoords, true);
+                radarViewProvider.UpdateCoordinates(WeatherView.LocationCoord, true);
             }
         }
     }
