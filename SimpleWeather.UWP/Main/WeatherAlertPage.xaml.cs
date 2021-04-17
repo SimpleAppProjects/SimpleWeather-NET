@@ -72,6 +72,11 @@ namespace SimpleWeather.UWP.Main
             return Task.FromResult(false);
         }
 
+        /// <summary>
+        /// OnNavigatedTo
+        /// </summary>
+        /// <param name="e"></param>
+        /// <exception cref="WeatherException">Ignore.</exception>
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
@@ -89,22 +94,22 @@ namespace SimpleWeather.UWP.Main
 
             if (WeatherView?.IsValid != true)
             {
-                new WeatherDataLoader(location)
+                _ = Task.Run(() => new WeatherDataLoader(location)
                     .LoadWeatherData(new WeatherRequest.Builder()
                         .ForceLoadSavedData()
                         .SetErrorListener(this)
                         .Build())
-                        .ContinueWith(async (t) =>
+                        .ContinueWith((t) =>
                         {
                             if (t.IsCompletedSuccessfully)
                             {
-                                await Dispatcher.RunOnUIThread(() =>
+                                Dispatcher.LaunchOnUIThread(() =>
                                 {
                                     WeatherView.UpdateView(t.Result);
                                     AlertsView?.UpdateAlerts(location);
                                 });
                             }
-                        });
+                        }));
             }
 
             AlertsView?.UpdateAlerts(location);

@@ -453,16 +453,13 @@ namespace SimpleWeather.Controls
             }
 
 #if WINDOWS_UWP
-            if (Dispatcher != null)
+            Dispatcher?.LaunchOnUIThread(() =>
             {
-                Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                {
 #endif
-                    OnPropertyChanged(nameof(WeatherDetails));
-                    WeatherDetails.NotifyCollectionChanged();
+                OnPropertyChanged(nameof(WeatherDetails));
+                WeatherDetails.NotifyCollectionChanged();
 #if WINDOWS_UWP
-                });
-            }
+            });
 #endif
 
             // Additional Details

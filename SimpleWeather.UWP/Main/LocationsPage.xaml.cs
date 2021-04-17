@@ -315,6 +315,7 @@ namespace SimpleWeather.UWP.Main
         /// </summary>
         /// <exception cref="ObjectDisposedException">Ignore.</exception>
         /// <exception cref="InvalidOperationException">Ignore.</exception>
+        /// <exception cref="WeatherException">Ignore.</exception>
         private void LoadLocations()
         {
             Task.Run(async () =>
@@ -344,18 +345,18 @@ namespace SimpleWeather.UWP.Main
 
                 foreach (LocationData location in locations)
                 {
-                    var panel = new LocationPanelViewModel(Dispatcher)
-                    {
-                        // Save index to tag (to easily retreive)
-                        LocationData = location
-                    };
-
                     await Dispatcher.RunOnUIThread(() =>
                     {
+                        var panel = new LocationPanelViewModel()
+                        {
+                            // Save index to tag (to easily retreive)
+                            LocationData = location
+                        };
+
                         PanelAdapter.Add(panel);
                     });
 
-                    new WeatherDataLoader(location)
+                    _ = Task.Run(() => new WeatherDataLoader(location)
                                 .LoadWeatherData(new WeatherRequest.Builder()
                                     .ForceRefresh(false)
                                     .SetErrorListener(this)
@@ -364,12 +365,9 @@ namespace SimpleWeather.UWP.Main
                                 {
                                     if (t.IsCompletedSuccessfully)
                                     {
-                                        Task.Run(() => 
-                                        {
-                                            OnWeatherLoaded(location, t.Result);
-                                        });
+                                        OnWeatherLoaded(location, t.Result);
                                     }
-                                });
+                                }));
                 }
 
                 await Dispatcher.RunOnUIThread(() =>
@@ -415,6 +413,7 @@ namespace SimpleWeather.UWP.Main
         /// </summary>
         /// <exception cref="ObjectDisposedException">Ignore.</exception>
         /// <exception cref="InvalidOperationException">Ignore.</exception>
+        /// <exception cref="WeatherException">Ignore.</exception>
         private void RefreshLocations()
         {
             Task.Run(async () =>
@@ -472,7 +471,7 @@ namespace SimpleWeather.UWP.Main
 
                     foreach (var view in dataset)
                     {
-                        new WeatherDataLoader(view.LocationData)
+                        _ = Task.Run(() => new WeatherDataLoader(view.LocationData)
                             .LoadWeatherData(new WeatherRequest.Builder()
                                     .ForceRefresh(false)
                                     .SetErrorListener(this)
@@ -481,12 +480,9 @@ namespace SimpleWeather.UWP.Main
                                     {
                                         if (t.IsCompletedSuccessfully)
                                         {
-                                            Task.Run(() =>
-                                            {
-                                                OnWeatherLoaded(view.LocationData, t.Result);
-                                            });
+                                            OnWeatherLoaded(view.LocationData, t.Result);
                                         }
-                                    });
+                                    }));
                     }
                 }
             });
@@ -500,6 +496,11 @@ namespace SimpleWeather.UWP.Main
             }
         }
 
+        /// <summary>
+        /// UpdateLocation
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="WeatherException">Ignore.</exception>
         private async Task<LocationData> UpdateLocation()
         {
             LocationData locationData = null;

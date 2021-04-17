@@ -49,7 +49,7 @@ namespace SimpleWeather.Firebase
                 {
                     try
                     {
-                        return JsonConvert.DeserializeObject<FirebaseAuth>(tokenJSON);
+                        return await Task.Run(() => JsonConvert.DeserializeObject<FirebaseAuth>(tokenJSON));
                     }
                     catch (Exception) { }
                 }

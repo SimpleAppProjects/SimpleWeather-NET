@@ -107,23 +107,22 @@ namespace SimpleWeather.UWP.Main
                         location = await Settings.GetHomeData();
 
                     ChartsView.UpdateForecasts(location);
-                }).ContinueWith(async (t) =>
-                {
-                    await Dispatcher.RunOnUIThread(() =>
+
+                    if (WeatherView?.IsValid == false)
                     {
-                        if (WeatherView?.IsValid == false)
-                        {
-                            new WeatherDataLoader(location)
-                                .LoadWeatherData(new WeatherRequest.Builder()
-                                    .ForceLoadSavedData()
-                                    .SetErrorListener(this)
-                                    .Build())
-                                    .ContinueWith((t2) =>
+                        _ = new WeatherDataLoader(location)
+                            .LoadWeatherData(new WeatherRequest.Builder()
+                                .ForceLoadSavedData()
+                                .SetErrorListener(this)
+                                .Build())
+                                .ContinueWith((t2) =>
+                                {
+                                    Dispatcher.LaunchOnUIThread(() =>
                                     {
                                         WeatherView.UpdateView(t2.Result);
                                     });
-                        }
-                    });
+                                });
+                    }
                 });
             }
         }

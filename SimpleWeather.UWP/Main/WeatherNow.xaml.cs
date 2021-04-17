@@ -659,7 +659,7 @@ namespace SimpleWeather.UWP.Main
                         wLoader = new WeatherDataLoader(locationData);
                     }
 
-                    wLoader?.LoadWeatherResult(new WeatherRequest.Builder()
+                    Task.Run(() => wLoader?.LoadWeatherResult(new WeatherRequest.Builder()
                             .ForceRefresh(forceRefresh)
                             .SetErrorListener(this)
                             .Build())
@@ -683,11 +683,11 @@ namespace SimpleWeather.UWP.Main
                             .Unwrap()
                             .ContinueWith((t) =>
                             {
-                                Dispatcher.LaunchOnUIThread(async () =>
+                                Dispatcher.LaunchOnUIThread(() =>
                                 {
                                     if (locationData != null)
                                     {
-                                        await AlertsView.UpdateAlerts(locationData);
+                                        AlertsView.UpdateAlerts(locationData);
                                     }
 
                                     if (t.IsCompletedSuccessfully)
@@ -714,7 +714,7 @@ namespace SimpleWeather.UWP.Main
                                         }
                                     }
                                 });
-                            });
+                            }));
                 });
             }
         }

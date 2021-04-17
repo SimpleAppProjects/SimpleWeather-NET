@@ -47,9 +47,9 @@ namespace SimpleWeather.UWP.Controls
 
         public event PropertyChangedEventHandler PropertyChanged;
         // Create the OnPropertyChanged method to raise the event
-        protected async void OnPropertyChanged(string name)
+        protected void OnPropertyChanged(string name)
         {
-            await Dispatcher.RunOnUIThread(() =>
+            Dispatcher.LaunchOnUIThread(() =>
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
             });

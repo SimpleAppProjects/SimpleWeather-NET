@@ -117,9 +117,8 @@ namespace SimpleWeather.UWP.Main
                         location = await Settings.GetHomeData();
 
                     ForecastsView.UpdateForecasts(location);
-                }).ContinueWith(async (t) =>
-                {
-                    await Dispatcher.RunOnUIThread(() =>
+
+                    Dispatcher.LaunchOnUIThread(() =>
                     {
                         if (IsHourly)
                         {
@@ -140,15 +139,18 @@ namespace SimpleWeather.UWP.Main
 
                         if (WeatherView?.IsValid == false)
                         {
-                            new WeatherDataLoader(location)
+                            Task.Run(() => new WeatherDataLoader(location)
                                 .LoadWeatherData(new WeatherRequest.Builder()
                                     .ForceLoadSavedData()
                                     .SetErrorListener(this)
                                     .Build())
                                     .ContinueWith((t2) =>
                                     {
-                                        WeatherView.UpdateView(t2.Result);
-                                    });
+                                        Dispatcher.LaunchOnUIThread(() =>
+                                        {
+                                            WeatherView.UpdateView(t2.Result);
+                                        });
+                                    }));
                         }
 
                         // Scroll item into view

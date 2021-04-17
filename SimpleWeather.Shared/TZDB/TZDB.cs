@@ -54,7 +54,7 @@ namespace SimpleWeather.TZDB
                 if (!String.IsNullOrWhiteSpace(result))
                 {
                     // Cache result
-                    AsyncTask.Run(async () =>
+                    _ = Task.Run(async () =>
                     {
                         await tzDB.InsertOrReplaceAsync(new TZDB()
                         {
