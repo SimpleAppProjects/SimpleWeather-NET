@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Timber = TimberLog.Timber;
 using TimberLog;
+using System.Threading.Tasks;
 #if WINDOWS_UWP
 using Windows.Storage;
 #endif
@@ -64,7 +65,7 @@ namespace SimpleWeather.Utils
         private static void CleanupLogs()
         {
 #if WINDOWS_UWP && !UNIT_TEST
-            AsyncTask.Run(async () =>
+            Task.Run(async () =>
             {
                 await FileUtils.DeleteDirectory(System.IO.Path.Combine(ApplicationData.Current.LocalFolder.Path, "logs"));
             });

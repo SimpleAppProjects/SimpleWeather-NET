@@ -46,7 +46,7 @@ namespace SimpleWeather.WeatherData
             if (location == null || location.query == null)
                 throw new WeatherException(WeatherUtils.ErrorStatus.Unknown);
 
-            var weather = await AsyncTask.RunAsync(GetWeather(location.query, location.country_code));
+            var weather = await GetWeather(location.query, location.country_code);
 
             if (String.IsNullOrWhiteSpace(location.tz_long))
             {
@@ -56,7 +56,7 @@ namespace SimpleWeather.WeatherData
                 }
                 else if (location.latitude != 0 && location.longitude != 0)
                 {
-                    String tzId = await AsyncTask.RunAsync(TZDB.TZDBCache.GetTimeZone(location.latitude, location.longitude));
+                    String tzId = await TZDB.TZDBCache.GetTimeZone(location.latitude, location.longitude);
                     if (!String.IsNullOrWhiteSpace(tzId))
                         location.tz_long = tzId;
                 }

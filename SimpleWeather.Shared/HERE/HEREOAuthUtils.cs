@@ -121,7 +121,7 @@ namespace SimpleWeather.HERE
             ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
             var HERESettingsContainer = localSettings.CreateContainer(WeatherAPI.Here, ApplicationDataCreateDisposition.Always);
 
-            AsyncTask.Run(() =>
+            Task.Run(() =>
             {
                 HERESettingsContainer.Values[KEY_TOKEN] = JSONParser.Serializer(token);
             });

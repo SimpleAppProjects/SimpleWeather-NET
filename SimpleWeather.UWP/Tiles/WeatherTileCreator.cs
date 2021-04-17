@@ -970,10 +970,10 @@ namespace SimpleWeather.UWP.Tiles
             try
             {
                 var wloader = new WeatherDataLoader(location);
-                var weather = await AsyncTask.RunAsync(wloader.LoadWeatherData(
+                var weather = await wloader.LoadWeatherData(
                             new WeatherRequest.Builder()
                                 .ForceLoadSavedData()
-                                .Build()));
+                                .Build());
 
                 if (weather != null)
                 {

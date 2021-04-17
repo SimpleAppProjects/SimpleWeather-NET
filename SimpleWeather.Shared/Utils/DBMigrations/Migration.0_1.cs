@@ -88,7 +88,7 @@ namespace SimpleWeather.Utils
 
                     // Add data
                     var list = oldWeather.Values.Cast<Weather>();
-                    await AsyncTask.RunAsync(weatherDB.InsertOrReplaceAllWithChildrenAsync(list));
+                    await weatherDB.InsertOrReplaceAllWithChildrenAsync(list);
 
                     // Delete old files
                     await dataFile.DeleteAsync();

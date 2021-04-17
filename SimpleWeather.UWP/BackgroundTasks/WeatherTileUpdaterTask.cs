@@ -58,7 +58,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
         {
             Logger.WriteLine(LoggerLevel.Debug, "{0}: Updating primary tile...", taskName);
 
-            await AsyncTask.RunAsync(WeatherTileCreator.TileUpdater(await Settings.GetHomeData()));
+            await WeatherTileCreator.TileUpdater(await Settings.GetHomeData());
 
             // Update secondary tiles
             var tiles = await SecondaryTile.FindAllAsync();
@@ -88,7 +88,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                     Logger.WriteLine(LoggerLevel.Debug, "TileID = " + tile.TileId);
 
                     if (location != null)
-                        await AsyncTask.RunAsync(WeatherTileCreator.TileUpdater(location));
+                        await WeatherTileCreator.TileUpdater(location);
                 }
             }
         }

@@ -337,7 +337,7 @@ namespace SimpleWeather.UWP.Main
                 }
                 else if (wm.SupportsAlerts && wm.NeedsExternalAlertData)
                 {
-                    weather.weather_alerts = await AsyncTask.RunAsync(wm.GetAlerts(location));
+                    weather.weather_alerts = await wm.GetAlerts(location);
                 }
 
                 // Save data

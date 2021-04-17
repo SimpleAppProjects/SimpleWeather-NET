@@ -885,8 +885,8 @@ namespace SimpleWeather.UWP.Main
                     radarViewProvider = RadarProvider.GetRadarViewProvider(RadarWebViewContainer);
                     radarViewProvider.EnableInteractions(false);
                     radarViewProvider.UpdateCoordinates(WeatherView.LocationCoord, true);
-                }, CoreDispatcherPriority.Low).ConfigureAwait(true);
-            }, 1000);
+                }, CoreDispatcherPriority.Low);
+            }, 1000, cts.Token);
         }
 
         private void RadarWebView_Tapped(object sender, TappedRoutedEventArgs e)
