@@ -412,6 +412,11 @@ namespace SimpleWeather.UWP
                     new RemoteConfigUpdateTask().Run(args.TaskInstance);
                     break;
 
+                case nameof(WeatherTileUpdaterTask):
+                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting WeatherTileUpdaterTask");
+                    new WeatherTileUpdaterTask().Run(args.TaskInstance);
+                    break;
+
                 default:
                     Logger.WriteLine(LoggerLevel.Debug, "App: Unknown task: {0}", args.TaskInstance.Task.Name);
                     break;
