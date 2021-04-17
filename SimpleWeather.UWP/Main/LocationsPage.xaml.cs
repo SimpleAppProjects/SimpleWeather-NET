@@ -53,7 +53,7 @@ namespace SimpleWeather.UWP.Main
             cts?.Dispose();
         }
 
-        private async Task OnWeatherLoaded(LocationData location, Weather weather)
+        private void OnWeatherLoaded(LocationData location, Weather weather)
         {
             var dataSet = PanelAdapter.GetDataset();
 
@@ -364,9 +364,9 @@ namespace SimpleWeather.UWP.Main
                                 {
                                     if (t.IsCompletedSuccessfully)
                                     {
-                                        Task.Run(async () => 
+                                        Task.Run(() => 
                                         {
-                                            await OnWeatherLoaded(location, t.Result);
+                                            OnWeatherLoaded(location, t.Result);
                                         });
                                     }
                                 });
@@ -481,9 +481,9 @@ namespace SimpleWeather.UWP.Main
                                     {
                                         if (t.IsCompletedSuccessfully)
                                         {
-                                            Task.Run(async () =>
+                                            Task.Run(() =>
                                             {
-                                                await OnWeatherLoaded(view.LocationData, t.Result);
+                                                OnWeatherLoaded(view.LocationData, t.Result);
                                             });
                                         }
                                     });

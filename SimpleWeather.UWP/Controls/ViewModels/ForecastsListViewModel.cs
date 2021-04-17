@@ -89,7 +89,7 @@ namespace SimpleWeather.UWP.Controls
 
         private void ResetForecasts()
         {
-            Dispatcher.RunOnUIThread(() =>
+            Dispatcher.LaunchOnUIThread(() =>
             {
                 Forecasts = new IncrementalLoadingCollection<ForecastSource, ForecastItemViewModel>(new ForecastSource(locationData), 7);
             });
@@ -97,7 +97,7 @@ namespace SimpleWeather.UWP.Controls
 
         public void RefreshForecasts()
         {
-            Dispatcher.RunOnUIThread(() =>
+            Dispatcher.LaunchOnUIThread(() =>
             {
                 if (Forecasts == null)
                 {
@@ -112,7 +112,7 @@ namespace SimpleWeather.UWP.Controls
 
         private void ResetHourlyForecasts()
         {
-            Dispatcher.RunOnUIThread(() =>
+            Dispatcher.LaunchOnUIThread(() =>
             {
                 HourlyForecasts = new IncrementalLoadingCollection<HourlyForecastSource, HourlyForecastItemViewModel>(new HourlyForecastSource(locationData), 24);
             });
@@ -120,7 +120,7 @@ namespace SimpleWeather.UWP.Controls
 
         public void RefreshHourlyForecasts()
         {
-            Dispatcher.RunOnUIThread(() =>
+            Dispatcher.LaunchOnUIThread(() =>
             {
                 if (HourlyForecasts == null)
                 {

@@ -66,25 +66,28 @@ namespace SimpleWeather.UWP.Controls
             currentHrForecastsData.ItemValueChanged += CurrentHrForecastsData_ItemValueChanged;
         }
 
-        public async Task UpdateForecasts(LocationData location)
+        public void UpdateForecasts(LocationData location)
         {
             if (this.locationData == null || !Equals(this.locationData?.query, location?.query))
             {
-                Settings.UnregisterWeatherDBChangedEvent(ForecastGraphViewModel_TableChanged);
+                Task.Run(async () =>
+                {
+                    Settings.UnregisterWeatherDBChangedEvent(ForecastGraphViewModel_TableChanged);
 
-                // Clone location data
-                this.locationData = new LocationData(new LocationQueryViewModel(location));
+                    // Clone location data
+                    this.locationData = new LocationData(new LocationQueryViewModel(location));
 
-                this.unitCode = Settings.UnitString;
-                this.iconProvider = Settings.IconProvider;
+                    this.unitCode = Settings.UnitString;
+                    this.iconProvider = Settings.IconProvider;
 
-                currentForecastsData.SetValue(await Settings.GetWeatherForecastData(location.query));
+                    currentForecastsData.SetValue(await Settings.GetWeatherForecastData(location.query));
 
-                var hrInterval = WeatherManager.GetInstance().HourlyForecastInterval;
-                var dateBlob = DateTimeOffset.Now.ToOffset(location.tz_offset).Trim(TimeSpan.TicksPerHour).AddHours(-(hrInterval * 0.5d)).ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture);
-                currentHrForecastsData.SetValue(await Settings.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(location.query, 0, 12, dateBlob));
+                    var hrInterval = WeatherManager.GetInstance().HourlyForecastInterval;
+                    var dateBlob = DateTimeOffset.Now.ToOffset(location.tz_offset).Trim(TimeSpan.TicksPerHour).AddHours(-(hrInterval * 0.5d)).ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture);
+                    currentHrForecastsData.SetValue(await Settings.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(location.query, 0, 12, dateBlob));
 
-                Settings.RegisterWeatherDBChangedEvent(ForecastGraphViewModel_TableChanged);
+                    Settings.RegisterWeatherDBChangedEvent(ForecastGraphViewModel_TableChanged);
+                });
             }
             else if (!Equals(unitCode, Settings.UnitString) || !Equals(iconProvider, Settings.IconProvider))
             {
@@ -113,33 +116,33 @@ namespace SimpleWeather.UWP.Controls
             });
         }
 
-        private async void CurrentForecastsData_ItemValueChanged(object sender, ObservableItemChangedEventArgs e)
+        private void CurrentForecastsData_ItemValueChanged(object sender, ObservableItemChangedEventArgs e)
         {
             if (e.NewValue is Forecasts fcasts)
             {
-                await RefreshForecasts(fcasts);
+                RefreshForecasts(fcasts);
             }
         }
 
-        private Task RefreshForecasts(Forecasts fcasts)
+        private void RefreshForecasts(Forecasts fcasts)
         {
-            return Dispatcher.RunOnUIThread(() =>
+            Dispatcher.LaunchOnUIThread(() =>
             {
                 ForecastGraphData = fcasts?.forecast?.Count > 0 ? new RangeBarGraphViewModel(fcasts.forecast) : null;
             });
         }
 
-        private async void CurrentHrForecastsData_ItemValueChanged(object sender, ObservableItemChangedEventArgs e)
+        private void CurrentHrForecastsData_ItemValueChanged(object sender, ObservableItemChangedEventArgs e)
         {
             if (e.NewValue is IList<HourlyForecast> hrfcasts)
             {
-                await RefreshHourlyForecasts(hrfcasts);
+                RefreshHourlyForecasts(hrfcasts);
             }
         }
 
-        private Task RefreshHourlyForecasts(IList<HourlyForecast> hrfcasts)
+        private void RefreshHourlyForecasts(IList<HourlyForecast> hrfcasts)
         {
-            return Dispatcher.RunOnUIThread(() =>
+            Dispatcher.LaunchOnUIThread(() =>
             {
                 HourlyForecastData = hrfcasts?.Select(hrf => new HourlyForecastNowViewModel(hrf)).ToList();
 

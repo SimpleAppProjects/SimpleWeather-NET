@@ -117,7 +117,7 @@ namespace SimpleWeather.UWP.Main
                     if (location == null)
                         location = await Settings.GetHomeData();
 
-                    await ChartsView.UpdateForecasts(location);
+                    ChartsView.UpdateForecasts(location);
                 }).ContinueWith(async (t) =>
                 {
                     await Dispatcher.RunOnUIThread(() =>
