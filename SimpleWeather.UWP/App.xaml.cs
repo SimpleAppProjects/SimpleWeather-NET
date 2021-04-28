@@ -244,10 +244,10 @@ namespace SimpleWeather.UWP
             GC.Collect();
         }
 
-        protected override void OnActivated(IActivatedEventArgs e)
+        protected override async void OnActivated(IActivatedEventArgs e)
         {
             base.OnActivated(e);
-            Initialize(e);
+            await Initialize(e);
 
             // Handle toast activation
             if (e is ToastNotificationActivatedEventArgs)
@@ -287,7 +287,7 @@ namespace SimpleWeather.UWP
                                 LocationData locData = null;
                                 if (!string.IsNullOrWhiteSpace(data))
                                 {
-                                    locData = JSONParser.Deserializer<LocationData>(data);
+                                    locData = await JSONParser.DeserializerAsync<LocationData>(data);
                                 }
 
                                 // If we're already on WeatherNow navigate to Alert page
@@ -310,7 +310,7 @@ namespace SimpleWeather.UWP
                                     Shell.Instance.AppFrame.BackStack.Add(new PageStackEntry(typeof(WeatherNow), new WeatherNowArgs()
                                     {
                                         Location = locData,
-                                        IsHome = Object.Equals(locData, Settings.GetHomeData().Result)
+                                        IsHome = Object.Equals(locData, await Settings.GetHomeData())
                                     }, null));
                                     SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
                                 }
@@ -364,10 +364,10 @@ namespace SimpleWeather.UWP
         /// Event fired when a Background Task is activated (in Single Process Model)
         /// </summary>
         /// <param name="args">Arguments that describe the BackgroundTask activated</param>
-        protected override void OnBackgroundActivated(BackgroundActivatedEventArgs args)
+        protected override async void OnBackgroundActivated(BackgroundActivatedEventArgs args)
         {
             base.OnBackgroundActivated(args);
-            Initialize(args);
+            await Initialize(args);
 
             AnalyticsLogger.LogEvent("App: Background Activated",
                 new Dictionary<string, string>()
@@ -428,10 +428,10 @@ namespace SimpleWeather.UWP
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
         /// <param name="e">Details about the launch request and process.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
             base.OnLaunched(e);
-            Initialize(e);
+            await Initialize(e);
 
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
@@ -442,7 +442,7 @@ namespace SimpleWeather.UWP
             Logger.WriteLine(LoggerLevel.Info, "Started logger...");
 
             // App loaded for first time
-            Task.Run(async () =>
+            _ = Task.Run(async () =>
             {
                 // Register background tasks
                 await WNSHelper.InitNotificationChannel();
@@ -518,7 +518,7 @@ namespace SimpleWeather.UWP
             UISettings.ColorValuesChanged -= DefaultTheme_ColorValuesChanged;
         }
 
-        private void Initialize(IActivatedEventArgs e)
+        private async Task Initialize(IActivatedEventArgs e)
         {
             RootFrame = Window.Current?.Content as Frame;
 
@@ -556,14 +556,14 @@ namespace SimpleWeather.UWP
             }
 
             // Load data if needed
-            Task.Run(Settings.LoadIfNeededAsync);
+            _ = Task.Run(Settings.LoadIfNeededAsync);
 
-            InitializeExtras();
+            await InitializeExtras();
 
             Initialized = true;
         }
 
-        private void Initialize(IBackgroundActivatedEventArgs _)
+        private async Task Initialize(IBackgroundActivatedEventArgs e)
         {
             if (Initialized) return;
 
@@ -571,14 +571,14 @@ namespace SimpleWeather.UWP
                 ResLoader = ResourceLoader.GetForViewIndependentUse();
 
             // Load data if needed
-            Task.Run(Settings.LoadIfNeededAsync);
+            _ = Task.Run(Settings.LoadIfNeededAsync);
 
-            InitializeExtras();
+            await InitializeExtras();
 
             Initialized = true;
         }
 
-        private async void InitializeExtras()
+        private async Task InitializeExtras()
         {
             try
             {

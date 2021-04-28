@@ -838,8 +838,11 @@ namespace SimpleWeather.UWP.Main
                 {
                     // Update tile with notifications
                     SecondaryTileUtils.AddTileId(query, tileID);
-                    await WeatherTileCreator.TileUpdater(locationData).ConfigureAwait(true);
-                    await tile.UpdateAsync().AsTask().ConfigureAwait(true);
+                    await Task.Run(async () =>
+                    {
+                        await WeatherTileCreator.TileUpdater(locationData);
+                        await tile.UpdateAsync();
+                    });
                 }
 
                 SetPinButton(isPinned);

@@ -8,6 +8,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Windows.Storage;
 
 namespace SimpleWeather.Utils
@@ -343,8 +344,6 @@ namespace SimpleWeather.Utils
 
         private static bool IsOnBoardingComplete()
         {
-            LoadIfNeeded();
-
             if (localSettings.Values.TryGetValue(KEY_ONBOARDINGCOMPLETE, out object value))
             {
                 return (bool)value;
