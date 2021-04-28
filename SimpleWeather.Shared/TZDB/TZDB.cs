@@ -62,9 +62,6 @@ namespace SimpleWeather.TZDB
                             longitude = longitude,
                             tz_long = result
                         });
-
-                        // Run GC since tz lookup takes up a good chunk of memory
-                        GC.Collect();
                     });
 
                     return result;

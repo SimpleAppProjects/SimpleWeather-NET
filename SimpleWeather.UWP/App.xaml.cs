@@ -241,7 +241,7 @@ namespace SimpleWeather.UWP
             }
 
             // Run the GC to collect released resources.
-            GC.Collect();
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Default, false);
         }
 
         protected override async void OnActivated(IActivatedEventArgs e)
