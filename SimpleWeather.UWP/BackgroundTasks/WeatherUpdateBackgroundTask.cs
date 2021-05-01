@@ -340,7 +340,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                     if (cts.IsCancellationRequested) return locationChanged;
 
                     // Check previous location difference
-                    if (lastGPSLocData.query != null
+                    if (lastGPSLocData?.query != null
                         && Math.Abs(ConversionMethods.CalculateHaversine(lastGPSLocData.latitude, lastGPSLocData.longitude,
                         newGeoPos.Coordinate.Point.Position.Latitude, newGeoPos.Coordinate.Point.Position.Longitude)) < geolocal.MovementThreshold)
                     {
@@ -380,11 +380,8 @@ namespace SimpleWeather.UWP.BackgroundTasks
 
                     if (cts.IsCancellationRequested) return locationChanged;
 
-                    // Save oldkey
-                    string oldKey = lastGPSLocData.query;
-
                     // Save location as last known
-                    lastGPSLocData.SetData(view, newGeoPos);
+                    lastGPSLocData = new Location.LocationData(view, newGeoPos);
                     Settings.SaveLastGPSLocData(lastGPSLocData);
 
                     locationChanged = true;

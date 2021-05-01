@@ -591,13 +591,13 @@ namespace SimpleWeather.UWP.Main
             AnalyticsLogger.LogEvent("LocationsPage: LocationsPanel_ItemClick");
             if (e.ClickedItem is LocationPanelViewModel panel)
             {
-                this.Frame.Navigate(typeof(WeatherNow), new WeatherNowArgs()
-                {
-                    IsHome = Object.Equals(panel.LocationData, await Settings.GetHomeData().ConfigureAwait(true)),
-                    Location = panel.LocationData
-                });
                 try
                 {
+                    this.Frame.Navigate(typeof(WeatherNow), new WeatherNowArgs()
+                    {
+                        IsHome = Equals(panel.LocationData, await Settings.GetHomeData()),
+                        Location = panel.LocationData
+                    });
                     // Remove all from backstack except home
                     this.Frame.BackStack.Clear();
                     SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;

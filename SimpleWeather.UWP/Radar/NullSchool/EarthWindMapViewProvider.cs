@@ -91,7 +91,7 @@ namespace SimpleWeather.UWP.Radar.NullSchool
                     // NOTE: Potential managed code exception; don't know why
                     webview = new WebView(WebViewExecutionMode.SeparateProcess);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     webview = null;
                 }

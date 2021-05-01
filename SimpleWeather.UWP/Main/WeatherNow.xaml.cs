@@ -53,9 +53,9 @@ namespace SimpleWeather.UWP.Main
         private WeatherNowArgs args;
 
         internal LocationData locationData = null;
-        internal WeatherNowViewModel WeatherView { get; private set; }
-        internal ForecastsNowViewModel ForecastView { get; private set; }
-        internal WeatherAlertsViewModel AlertsView { get; private set; }
+        private WeatherNowViewModel WeatherView { get; set; }
+        private ForecastsNowViewModel ForecastView { get; set; }
+        private WeatherAlertsViewModel AlertsView { get; set; }
 
         private CancellationTokenSource cts;
 
@@ -559,13 +559,13 @@ namespace SimpleWeather.UWP.Main
                     LocationData lastGPSLocData = await Settings.GetLastGPSLocData().ConfigureAwait(false);
 
                     // Check previous location difference
-                    if (lastGPSLocData.query != null
+                    if (lastGPSLocData?.query != null
                         && geoPos != null && ConversionMethods.CalculateGeopositionDistance(geoPos, newGeoPos) < geolocal.MovementThreshold)
                     {
                         return false;
                     }
 
-                    if (lastGPSLocData.query != null
+                    if (lastGPSLocData?.query != null
                         && Math.Abs(ConversionMethods.CalculateHaversine(lastGPSLocData.latitude, lastGPSLocData.longitude,
                         newGeoPos.Coordinate.Point.Position.Latitude, newGeoPos.Coordinate.Point.Position.Longitude)) < geolocal.MovementThreshold)
                     {
@@ -614,11 +614,8 @@ namespace SimpleWeather.UWP.Main
                     if (cts?.IsCancellationRequested == true)
                         return false;
 
-                    // Save oldkey
-                    string oldKey = lastGPSLocData?.query;
-
                     // Save location as last known
-                    lastGPSLocData.SetData(view, newGeoPos);
+                    lastGPSLocData = new LocationData(view, newGeoPos);
                     Settings.SaveLastGPSLocData(lastGPSLocData);
 
                     locationData = lastGPSLocData;
@@ -804,10 +801,8 @@ namespace SimpleWeather.UWP.Main
                 }
 
                 SetPinButton(!deleted);
-
-                pinBtn.IsEnabled = true;
             }
-            else
+            else if (!string.IsNullOrWhiteSpace(query))
             {
                 // Initialize the tile with required arguments
                 var tileID = DateTime.Now.Ticks.ToInvariantString();
@@ -846,9 +841,9 @@ namespace SimpleWeather.UWP.Main
                 }
 
                 SetPinButton(isPinned);
-
-                pinBtn.IsEnabled = true;
             }
+
+            pinBtn.IsEnabled = true;
         }
 
         private void GotoDetailsPage(bool IsHourly, int Position)

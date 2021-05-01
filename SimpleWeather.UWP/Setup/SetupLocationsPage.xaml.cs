@@ -335,21 +335,18 @@ namespace SimpleWeather.UWP.Setup
 
                 bool isUS = LocationUtils.IsUS(query_vm.LocationCountry);
 
-                if (!Settings.WeatherLoaded)
+                // Default US location to NWS
+                if (isUS)
                 {
-                    // Default US location to NWS
-                    if (isUS)
-                    {
-                        Settings.API = WeatherAPI.NWS;
-                        query_vm.UpdateWeatherSource(WeatherAPI.NWS);
-                    }
-                    else
-                    {
-                        Settings.API = WeatherAPI.WeatherUnlocked;
-                        query_vm.UpdateWeatherSource(WeatherAPI.WeatherUnlocked);
-                    }
-                    wm.UpdateAPI();
+                    Settings.API = WeatherAPI.NWS;
+                    query_vm.UpdateWeatherSource(WeatherAPI.NWS);
                 }
+                else
+                {
+                    Settings.API = WeatherAPI.WeatherUnlocked;
+                    query_vm.UpdateWeatherSource(WeatherAPI.WeatherUnlocked);
+                }
+                wm.UpdateAPI();
 
                 if (WeatherAPI.NWS.Equals(Settings.API) && !isUS)
                 {
