@@ -20,6 +20,8 @@ namespace SimpleWeather.UWP.Controls
 {
     public sealed partial class SunPhasePanel : UserControl, IDisposable
     {
+        private const string SunIconUri = "ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-day-sunny.png";
+
         private float ViewHeight;
         private float ViewWidth;
         private float bottomTextHeight = 0;
@@ -147,10 +149,16 @@ namespace SimpleWeather.UWP.Controls
             sunsetX = ViewWidth - sideLineLength;
         }
 
-        private async void Canvas_CreateResources(CanvasVirtualControl sender, CanvasCreateResourcesEventArgs args)
+        private void Canvas_CreateResources(CanvasVirtualControl sender, CanvasCreateResourcesEventArgs args)
         {
             IconSize = sender.ConvertDipsToPixels(24, CanvasDpiRounding.Floor);
-            SunIcon = await CanvasBitmap.LoadAsync(sender, new Uri("ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-day-sunny.png"));
+            CanvasBitmap.LoadAsync(sender, new Uri(SunIconUri)).AsTask().ContinueWith((t) =>
+            {
+                if (t.IsCompletedSuccessfully && t.Result != null)
+                {
+                    SunIcon = t.Result;
+                }
+            });
         }
 
         private void Canvas_RegionsInvalidated(CanvasVirtualControl sender, CanvasRegionsInvalidatedEventArgs args)
@@ -298,11 +306,27 @@ namespace SimpleWeather.UWP.Controls
 
                     if (isDay)
                     {
+                        var iconRect = new Rect(x - IconSize / 2, y - IconSize / 2, IconSize, IconSize);
+
+                        if (SunIcon == null)
+                        {
+                            CanvasBitmap.LoadAsync(Canvas, new Uri(SunIconUri)).AsTask().ContinueWith((t) =>
+                            {
+                                if (t.IsCompletedSuccessfully && t.Result != null)
+                                {
+                                    SunIcon = t.Result;
+                                    Dispatcher.RunOnUIThread(() => Canvas.Invalidate(iconRect));
+                                }
+                            });
+
+                            return;
+                        }
+
                         drawingSession.DrawImage(new TintEffect() 
                         {
                             Source = SunIcon,
                             Color = PaintColor
-                        }, new Rect(x - IconSize / 2, y - IconSize / 2, IconSize, IconSize), SunIcon.Bounds);
+                        }, iconRect, SunIcon.Bounds);
                     }
                 }
             }
