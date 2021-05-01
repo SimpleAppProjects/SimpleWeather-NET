@@ -100,28 +100,8 @@ namespace SimpleWeather.UWP.Main
             AnalyticsLogger.LogEvent("Shell");
 
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-            SystemNavigationManager.GetForCurrentView().BackRequested += Shell_BackRequested;
 
-            AppFrame.Navigated += AppFrame_Navigated;
             AppFrame.CacheSize = 1;
-
-            // Add keyboard accelerators for backwards navigation.
-            var goBack = new KeyboardAccelerator { Key = Windows.System.VirtualKey.GoBack };
-            goBack.Invoked += BackInvoked;
-            this.KeyboardAccelerators.Add(goBack);
-            if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.UIElement", "KeyboardAcceleratorPlacementMode"))
-            {
-                this.KeyboardAcceleratorPlacementMode = KeyboardAcceleratorPlacementMode.Hidden;
-            }
-
-            // ALT routes here
-            var altLeft = new KeyboardAccelerator
-            {
-                Key = Windows.System.VirtualKey.Left,
-                Modifiers = Windows.System.VirtualKeyModifiers.Menu
-            };
-            altLeft.Invoked += BackInvoked;
-            this.KeyboardAccelerators.Add(altLeft);
 
             UISettings = new UISettings();
             UISettings.ColorValuesChanged += UISettings_ColorValuesChanged;
@@ -229,67 +209,38 @@ namespace SimpleWeather.UWP.Main
             });
         }
 
-        private void AppFrame_Navigated(object sender, NavigationEventArgs e)
+        private void FrameContent_NavigationFailed(object sender, NavigationFailedEventArgs e)
         {
-            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
-                AppFrame.CanGoBack ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
-
-            if (e.SourcePageType == typeof(SettingsPage))
+            if (e.Exception != null)
             {
-                // SettingsItem is not part of NavView.MenuItems, and doesn't have a Tag.
-                NavView.SelectedItem = (muxc.NavigationViewItem)NavView.SettingsItem;
+                Logger.WriteLine(LoggerLevel.Error, e.Exception, "Failed to load page {0}", e.SourcePageType.FullName);
             }
-            else if (e.SourcePageType != null)
+        }
+
+        private void NavView_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Add handler for ContentFrame navigation.
+            AppFrame.Navigated += On_Navigated;
+
+            // Add keyboard accelerators for backwards navigation.
+            var goBack = new KeyboardAccelerator { Key = Windows.System.VirtualKey.GoBack };
+            goBack.Invoked += BackInvoked;
+            this.KeyboardAccelerators.Add(goBack);
+            if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.UIElement", "KeyboardAcceleratorPlacementMode"))
             {
-                var item = _pages.FirstOrDefault(p => p.Page == e.SourcePageType);
-
-                NavView.SelectedItem = NavView.MenuItems
-                    .OfType<muxc.NavigationViewItem>()
-                    .FirstOrDefault(n => n.Tag.Equals(item.Tag));
+                this.KeyboardAcceleratorPlacementMode = KeyboardAcceleratorPlacementMode.Hidden;
             }
 
-            UpdateCommandBar();
-        }
+            // ALT routes here
+            var altLeft = new KeyboardAccelerator
+            {
+                Key = Windows.System.VirtualKey.Left,
+                Modifiers = Windows.System.VirtualKeyModifiers.Menu
+            };
+            altLeft.Invoked += BackInvoked;
+            this.KeyboardAccelerators.Add(altLeft);
 
-        private async void Shell_BackRequested(object sender, BackRequestedEventArgs e)
-        {
-            await On_BackRequested().ConfigureAwait(true);
-            e.Handled = true;
-        }
-
-        private async void NavView_BackRequested(muxc.NavigationView sender, muxc.NavigationViewBackRequestedEventArgs args)
-        {
-            await On_BackRequested().ConfigureAwait(true);
-        }
-
-        private async void BackInvoked(KeyboardAccelerator sender,
-                         KeyboardAcceleratorInvokedEventArgs args)
-        {
-            await On_BackRequested().ConfigureAwait(true);
-            args.Handled = true;
-        }
-
-        private async Task<bool> On_BackRequested()
-        {
-            if (!AppFrame.CanGoBack)
-                return false;
-
-            // Navigate back if possible, and if the event has not
-            // already been handled.
-            bool PageRequestedToStay = AppFrame.Content is IBackRequestedPage backPage &&
-                await backPage.OnBackRequested().ConfigureAwait(true);
-
-            if (PageRequestedToStay)
-                return false;
-
-            // Don't go back if the nav pane is overlayed.
-            if (NavView.IsPaneOpen &&
-                (NavView.DisplayMode == muxc.NavigationViewDisplayMode.Compact ||
-                 NavView.DisplayMode == muxc.NavigationViewDisplayMode.Minimal))
-                return false;
-
-            AppFrame.GoBack();
-            return true;
+            SystemNavigationManager.GetForCurrentView().BackRequested += Shell_BackRequested;
         }
 
         private void NavView_ItemInvoked(muxc.NavigationView sender, muxc.NavigationViewItemInvokedEventArgs args)
@@ -339,14 +290,77 @@ namespace SimpleWeather.UWP.Main
                             Location = wnowPage?.locationData
                         };
                     }
-                    else if (Type.Equals(_page, typeof(WeatherRadarPage)))
-                    {
-                        parameter = wnowPage?.WeatherView?.LocationCoord;
-                    }
                 }
 
                 AppFrame.Navigate(_page, parameter, transitionInfo);
             }
+        }
+
+        private async void Shell_BackRequested(object sender, BackRequestedEventArgs e)
+        {
+            if (!e.Handled)
+            {
+                e.Handled = await TryGoBack().ConfigureAwait(true);
+            }
+        }
+
+        private async void NavView_BackRequested(muxc.NavigationView sender, muxc.NavigationViewBackRequestedEventArgs args)
+        {
+            await TryGoBack().ConfigureAwait(true);
+        }
+
+        private async void BackInvoked(KeyboardAccelerator sender,
+                         KeyboardAcceleratorInvokedEventArgs args)
+        {
+            if (!args.Handled)
+            {
+                args.Handled = await TryGoBack().ConfigureAwait(true);
+            }
+        }
+
+        private async Task<bool> TryGoBack()
+        {
+            if (AppFrame?.CanGoBack == false)
+                return false;
+
+            // Navigate back if possible, and if the event has not
+            // already been handled.
+            bool PageRequestedToStay = AppFrame.Content is IBackRequestedPage backPage &&
+                await backPage.OnBackRequested().ConfigureAwait(true);
+
+            if (PageRequestedToStay)
+                return false;
+
+            // Don't go back if the nav pane is overlayed.
+            if (NavView.IsPaneOpen &&
+                (NavView.DisplayMode == muxc.NavigationViewDisplayMode.Compact ||
+                 NavView.DisplayMode == muxc.NavigationViewDisplayMode.Minimal))
+                return false;
+
+            AppFrame.GoBack();
+            return true;
+        }
+
+        private void On_Navigated(object sender, NavigationEventArgs e)
+        {
+            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
+                AppFrame.CanGoBack ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
+
+            if (AppFrame.SourcePageType == typeof(SettingsPage))
+            {
+                // SettingsItem is not part of NavView.MenuItems, and doesn't have a Tag.
+                NavView.SelectedItem = (muxc.NavigationViewItem)NavView.SettingsItem;
+            }
+            else if (AppFrame.SourcePageType != null)
+            {
+                var item = _pages.FirstOrDefault(p => p.Page == e.SourcePageType);
+
+                NavView.SelectedItem = NavView.MenuItems
+                    .OfType<muxc.NavigationViewItem>()
+                    .FirstOrDefault(n => n.Tag.Equals(item.Tag));
+            }
+
+            UpdateCommandBar();
         }
 
         public void RequestCommandBarUpdate()

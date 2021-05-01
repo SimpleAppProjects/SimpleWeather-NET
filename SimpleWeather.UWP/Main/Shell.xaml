@@ -110,6 +110,7 @@
             IsPaneToggleButtonVisible="False"
             IsSettingsVisible="True"
             ItemInvoked="NavView_ItemInvoked"
+            Loaded="NavView_Loaded"
             PaneDisplayMode="Auto">
             <muxc:NavigationView.MenuItems>
                 <muxc:NavigationViewItem
@@ -150,7 +151,7 @@
                 </muxc:NavigationViewItem>
             </muxc:NavigationView.MenuItems>
 
-            <Frame x:Name="FrameContent" />
+            <Frame x:Name="FrameContent" NavigationFailed="FrameContent_NavigationFailed" />
         </muxc:NavigationView>
     </Grid>
 </Page>
