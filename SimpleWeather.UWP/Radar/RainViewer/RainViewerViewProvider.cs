@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 using Windows.UI.Xaml;
@@ -14,7 +15,7 @@ using Windows.UI.Xaml.Controls.Maps;
 
 namespace SimpleWeather.UWP.Radar.RainViewer
 {
-    public class RainViewerViewProvider : MapTileRadarViewProvider
+    public class RainViewerViewProvider : MapTileRadarViewProvider, IDisposable
     {
         private const string MapsURL = "https://api.rainviewer.com/public/weather-maps.json";
         private const string URLTemplate = "{host}{path}/256/{zoomlevel}/{x}/{y}/1/1_1.png";
@@ -24,10 +25,13 @@ namespace SimpleWeather.UWP.Radar.RainViewer
 
         private DispatcherTimer AnimationTimer;
         private int AnimationPosition = 0;
+        private CancellationTokenSource cts;
+        private bool disposedValue;
 
         public RainViewerViewProvider(Border container) : base(container)
         {
             AvailableRadarFrames = new List<RadarFrame>();
+            cts = new CancellationTokenSource();
         }
 
         public override async void UpdateMap(MapControl mapControl)
@@ -158,7 +162,8 @@ namespace SimpleWeather.UWP.Radar.RainViewer
 
             try
             {
-                using (var response = await HttpClient.GetAsync(new Uri(MapsURL)))
+                RefreshToken();
+                using (var response = await HttpClient.GetAsync(new Uri(MapsURL)).AsTask(cts.Token))
                 {
                     var stream = await response.Content.ReadAsInputStreamAsync();
                     var root = await JSONParser.DeserializerAsync<Rootobject>(stream.AsStreamForRead());
@@ -185,10 +190,40 @@ namespace SimpleWeather.UWP.Radar.RainViewer
                     }
                 }
             }
+            catch (OperationCanceledException)
+            {
+                // ignore.
+            }
             catch (Exception ex)
             {
                 Logger.WriteLine(LoggerLevel.Error, ex);
             }
+        }
+
+        private void RefreshToken()
+        {
+            cts?.Cancel();
+            cts = new CancellationTokenSource();
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    cts?.Dispose();
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 
