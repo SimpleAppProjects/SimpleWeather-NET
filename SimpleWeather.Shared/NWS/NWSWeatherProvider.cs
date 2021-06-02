@@ -195,6 +195,10 @@ namespace SimpleWeather.NWS
                             item.windChill.Add(windChill);
                         }
                     }
+                    else
+                    {
+                        item.windChill = Enumerable.Repeat<string>(null, unixTimeArr.Count).ToList();
+                    }
 
                     if (windSpeedArr != null)
                     {
@@ -204,6 +208,10 @@ namespace SimpleWeather.NWS
                             String windSpeed = jsonElement.Value?.ToString();
                             item.windSpeed.Add(windSpeed);
                         }
+                    }
+                    else
+                    {
+                        item.windSpeed = Enumerable.Repeat<string>(null, unixTimeArr.Count).ToList();
                     }
 
                     if (cloudAmtArr != null)
@@ -215,6 +223,10 @@ namespace SimpleWeather.NWS
                             item.cloudAmount.Add(cloudAmt);
                         }
                     }
+                    else
+                    {
+                        item.cloudAmount = Enumerable.Repeat<string>(null, unixTimeArr.Count).ToList();
+                    }
 
                     if (popArr != null)
                     {
@@ -224,6 +236,10 @@ namespace SimpleWeather.NWS
                             String pop = jsonElement.Value?.ToString();
                             item.pop.Add(pop);
                         }
+                    }
+                    else
+                    {
+                        item.pop = Enumerable.Repeat<string>(null, unixTimeArr.Count).ToList();
                     }
 
                     if (humidityArr != null)
@@ -235,6 +251,10 @@ namespace SimpleWeather.NWS
                             item.relativeHumidity.Add(humidity);
                         }
                     }
+                    else
+                    {
+                        item.relativeHumidity = Enumerable.Repeat<string>(null, unixTimeArr.Count).ToList();
+                    }
 
                     if (windGustArr != null)
                     {
@@ -244,6 +264,10 @@ namespace SimpleWeather.NWS
                             String windGust = jsonElement.Value?.ToString();
                             item.windGust.Add(windGust);
                         }
+                    }
+                    else
+                    {
+                        item.windGust = Enumerable.Repeat<string>(null, unixTimeArr.Count).ToList();
                     }
 
                     if (tempArr != null)
@@ -255,6 +279,10 @@ namespace SimpleWeather.NWS
                             item.temperature.Add(temp);
                         }
                     }
+                    else
+                    {
+                        item.temperature = Enumerable.Repeat<string>(null, unixTimeArr.Count).ToList();
+                    }
 
                     if (windDirArr != null)
                     {
@@ -264,6 +292,10 @@ namespace SimpleWeather.NWS
                             String windDir = jsonElement.Value?.ToString();
                             item.windDirection.Add(windDir);
                         }
+                    }
+                    else
+                    {
+                        item.windDirection = Enumerable.Repeat<string>(null, unixTimeArr.Count).ToList();
                     }
 
                     if (iconArr != null)
@@ -275,6 +307,10 @@ namespace SimpleWeather.NWS
                             item.iconLink.Add(icon);
                         }
                     }
+                    else
+                    {
+                        item.iconLink = Enumerable.Repeat<string>(null, unixTimeArr.Count).ToList();
+                    }
 
                     if (conditionTxtArr != null)
                     {
@@ -284,6 +320,10 @@ namespace SimpleWeather.NWS
                             String condition = jsonElement.Value?.ToString();
                             item.weather.Add(condition);
                         }
+                    }
+                    else
+                    {
+                        item.weather = Enumerable.Repeat<string>(null, unixTimeArr.Count).ToList();
                     }
 
                     forecastData.periodsItems.Add(item);
@@ -322,12 +362,16 @@ namespace SimpleWeather.NWS
                 // 404 (Not found - Invalid query)
                 case HttpStatusCode.NotFound:
                     throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
+                // 500 (Internal Error)
+                case HttpStatusCode.InternalServerError:
+                    throw new WeatherException(WeatherUtils.ErrorStatus.Unknown);
             }
         }
 
         protected override async Task UpdateWeatherData(LocationData location, Weather weather)
         {
             var offset = location.tz_offset;
+
             weather.update_time = weather.update_time.ToOffset(offset);
             weather.condition.observation_time = weather.condition.observation_time.ToOffset(location.tz_offset);
 
