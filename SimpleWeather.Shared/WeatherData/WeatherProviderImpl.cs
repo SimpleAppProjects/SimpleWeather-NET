@@ -101,7 +101,7 @@ namespace SimpleWeather.WeatherData
 
             try
             {
-                if (aqicnData.uvi_forecast?.Count > 0)
+                if (aqicnData?.uvi_forecast?.Count > 0)
                 {
                     for (int i = 0; i < aqicnData.uvi_forecast.Count; i++)
                     {
