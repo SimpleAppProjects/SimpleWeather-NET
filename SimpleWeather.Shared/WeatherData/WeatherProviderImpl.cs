@@ -20,7 +20,7 @@ namespace SimpleWeather.WeatherData
         public abstract bool SupportsWeatherLocale { get; }
         public abstract bool KeyRequired { get; }
         public virtual bool SupportsAlerts => true;
-        public abstract bool NeedsExternalAlertData { get; }
+        public virtual bool NeedsExternalAlertData => true;
 
         public virtual int HourlyForecastInterval => 1;
 

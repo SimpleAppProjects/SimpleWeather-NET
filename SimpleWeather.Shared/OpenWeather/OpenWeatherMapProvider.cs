@@ -34,7 +34,6 @@ namespace SimpleWeather.OpenWeather
         public override string WeatherAPI => WeatherData.WeatherAPI.OpenWeatherMap;
         public override bool SupportsWeatherLocale => true;
         public override bool KeyRequired => true;
-        public override bool NeedsExternalAlertData => true;
 
         public override int HourlyForecastInterval => 3;
 

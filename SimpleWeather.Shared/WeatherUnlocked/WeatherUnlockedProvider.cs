@@ -29,7 +29,6 @@ namespace SimpleWeather.WeatherUnlocked
         public override string WeatherAPI => WeatherData.WeatherAPI.WeatherUnlocked;
         public override bool SupportsWeatherLocale => true;
         public override bool KeyRequired => false;
-        public override bool NeedsExternalAlertData => true;
 
         public override int HourlyForecastInterval => 3;
 

@@ -60,7 +60,6 @@ namespace SimpleWeather.HERE
 
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
-            OAuthRequest authRequest = new OAuthRequest(APIKeys.GetHERECliID(), APIKeys.GetHERECliSecr());
             Uri queryURL;
             if (LocationUtils.IsUSorCanada(country_code))
             {
@@ -240,7 +239,6 @@ namespace SimpleWeather.HERE
 
             try
             {
-                OAuthRequest authRequest = new OAuthRequest(APIKeys.GetHERECliID(), APIKeys.GetHERECliSecr());
                 Uri queryURL;
                 if (LocationUtils.IsUSorCanada(location.country_code))
                 {

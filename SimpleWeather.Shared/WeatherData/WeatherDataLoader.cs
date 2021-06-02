@@ -130,6 +130,7 @@ namespace SimpleWeather.WeatherData
         {
             WeatherException wEx = null;
             bool loadedSavedData = false;
+            bool loadedSavedAlertData = false;
 
             // Try to get weather from provider API
             try
@@ -166,13 +167,17 @@ namespace SimpleWeather.WeatherData
                 weather = null;
             }
 
-            if (request.LoadAlerts && weather != null && wm.SupportsAlerts && wm.NeedsExternalAlertData)
+            if (request.LoadAlerts && weather != null && wm.SupportsAlerts)
             {
-                weather.weather_alerts = await wm.GetAlerts(location).ConfigureAwait(false);
+                if (wm.NeedsExternalAlertData)
+                {
+                    weather.weather_alerts = await wm.GetAlerts(location).ConfigureAwait(false);
+                }
 
                 if (weather.weather_alerts == null)
                 {
-                    weather.weather_alerts = await Settings.GetWeatherAlertData(location.query).ConfigureAwait(false);
+                    weatherAlerts = weather.weather_alerts = await Settings.GetWeatherAlertData(location.query).ConfigureAwait(false);
+                    loadedSavedAlertData = true;
                 }
             }
 
@@ -182,6 +187,7 @@ namespace SimpleWeather.WeatherData
                 if (weather == null)
                 {
                     loadedSavedData = await LoadSavedWeatherData(request, true).ConfigureAwait(false);
+                    loadedSavedAlertData = loadedSavedData;
                 }
                 else if (weather != null)
                 {
@@ -207,13 +213,19 @@ namespace SimpleWeather.WeatherData
                         await Settings.UpdateLocation(location).ConfigureAwait(false);
                     }
 
-                    await SaveWeatherData().ConfigureAwait(false);
-                    await SaveWeatherForecasts().ConfigureAwait(false);
+                    if (!loadedSavedData)
+                    {
+                        await SaveWeatherData().ConfigureAwait(false);
+                        await SaveWeatherForecasts().ConfigureAwait(false);
+                    }
 
-                    if ((request.LoadAlerts || weather.weather_alerts != null) && wm.SupportsAlerts && !wm.NeedsExternalAlertData)
+                    if ((request.LoadAlerts || weather.weather_alerts != null) && wm.SupportsAlerts)
                     {
                         weatherAlerts = weather.weather_alerts;
-                        await SaveWeatherAlerts().ConfigureAwait(false);
+                        if (!loadedSavedAlertData)
+                        {
+                            await SaveWeatherAlerts().ConfigureAwait(false);
+                        }
                     }
                 }
             }
