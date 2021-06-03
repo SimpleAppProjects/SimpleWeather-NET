@@ -28,8 +28,8 @@ namespace SimpleWeather
             ResourceLoader = GetResourceLoader();
             IconProviders = new OrderedDictionary();
 
-            // Register default icon provider
-            RegisterIconProvider(new Icons.WeatherIconsProvider());
+            // Register default icon providers
+            ResetIconProviders();
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
@@ -128,21 +128,10 @@ namespace SimpleWeather
 
         public void ResetIconProviders()
         {
-            Icons.WeatherIconProvider defaultProvider = null;
-            if (IconProviders.Contains(Icons.WeatherIconsProvider.KEY))
-            {
-                defaultProvider = IconProviders[Icons.WeatherIconsProvider.KEY] as Icons.WeatherIconProvider;
-            }
-
             IconProviders.Clear();
-            
-            if (defaultProvider != null)
+            foreach (var provider in Icons.WeatherIconsManager.DefaultIcons)
             {
-                IconProviders.Add(Icons.WeatherIconsProvider.KEY, defaultProvider);
-            }
-            else
-            {
-                RegisterIconProvider(new Icons.WeatherIconsProvider());
+                IconProviders.Add(provider.Key, provider.Value);
             }
         }
 

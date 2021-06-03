@@ -159,9 +159,11 @@
     <Compile Include="HERE\NWSAlerts.cs" />
     <Compile Include="HERE\Weather.cs" />
     <Compile Include="Icons\IWeatherIconsProvider.cs" />
+    <Compile Include="Icons\WeatherIconicProvider.cs" />
     <Compile Include="Icons\WeatherIconProvider.cs" />
     <Compile Include="Icons\WeatherIconsManager.cs" />
     <Compile Include="Icons\WeatherIconsProvider.cs" />
+    <Compile Include="Icons\WUndergroundIconsProvider.cs" />
     <Compile Include="Keys\AppCenterKey.cs" />
     <Compile Include="Keys\AQICNKey.cs" />
     <Compile Include="Keys\BingMapsKey.cs" />

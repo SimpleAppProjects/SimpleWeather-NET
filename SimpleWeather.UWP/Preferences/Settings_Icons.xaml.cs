@@ -85,7 +85,7 @@ namespace SimpleWeather.UWP.Preferences
             {
                 return false;
             }
-            if (key != Icons.WeatherIconsProvider.KEY && !Extras.ExtrasLibrary.IsEnabled())
+            if (!WeatherIconsManager.DefaultIcons.ContainsKey(key) && !Extras.ExtrasLibrary.IsEnabled())
             {
                 Frame.Navigate(typeof(Extras.Store.PremiumPage));
                 return false;

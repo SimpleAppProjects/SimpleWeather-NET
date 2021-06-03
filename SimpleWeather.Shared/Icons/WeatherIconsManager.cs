@@ -13,6 +13,22 @@ namespace SimpleWeather.Icons
         private static WeatherIconsManager sInstance;
         private static IWeatherIconsProvider sIconsProvider;
 
+        public static IReadOnlyDictionary<string, WeatherIconProvider> DefaultIcons;
+
+        static WeatherIconsManager()
+        {
+            var defaultIcons = new Dictionary<string, WeatherIconProvider>(3);
+            AddIconProvider(defaultIcons, new WeatherIconsProvider());
+            AddIconProvider(defaultIcons, new WUndergroundIconsProvider());
+            AddIconProvider(defaultIcons, new WeatherIconicProvider());
+            DefaultIcons = defaultIcons;
+        }
+
+        private static void AddIconProvider(IDictionary<string, WeatherIconProvider> map, WeatherIconProvider provider)
+        {
+            map.TryAdd(provider.Key, provider);
+        }
+
         // Prevent instance from being created outside of this class
         private WeatherIconsManager()
         {
