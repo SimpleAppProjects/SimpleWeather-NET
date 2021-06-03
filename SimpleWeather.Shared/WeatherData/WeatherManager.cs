@@ -1,6 +1,7 @@
 ﻿using SimpleWeather.Controls;
 using SimpleWeather.HERE;
 using SimpleWeather.Location;
+using SimpleWeather.MeteoFrance;
 using SimpleWeather.Metno;
 using SimpleWeather.NWS;
 using SimpleWeather.OpenWeather;
@@ -25,11 +26,21 @@ namespace SimpleWeather.WeatherData
         public const string Here = "Here";
         public const string NWS = "NWS";
         public const string WeatherUnlocked = "wunlocked";
+        public const string MeteoFrance = "meteofrance";
 
         // Location APIs
         public const string BingMaps = "Bing";
         public const string WeatherApi = "weatherapi";
 
+        /*
+         * Note to self: Common steps to adding a new weather provider
+         * 1) Implement WeatherProviderImpl class
+         * 2) Add constructor for Weather data objects
+         * 3) Update LocationQueryViewModel (if needed)
+         * 4) Add API to provider list below
+         * 5) Add API to WeatherManager
+         * 6) Add to remote_config_defaults
+         */
         public static readonly IReadOnlyList<ProviderEntry> APIs = new List<ProviderEntry>(5)
         {
             new ProviderEntry("HERE Weather", Here,
@@ -41,7 +52,9 @@ namespace SimpleWeather.WeatherData
             new ProviderEntry("OpenWeatherMap", OpenWeatherMap,
                 "http://www.openweathermap.org", "https://home.openweathermap.org/users/sign_up"),
             new ProviderEntry("WeatherUnlocked", WeatherUnlocked,
-                    "https://developer.weatherunlocked.com/", "https://developer.weatherunlocked.com/")
+                    "https://developer.weatherunlocked.com/", "https://developer.weatherunlocked.com/"),
+            new ProviderEntry("Meteo France", MeteoFrance,
+                    "https://meteofrance.com/", "https://meteofrance.com/")
         };
 
         public static readonly IReadOnlyList<ProviderEntry> LocationAPIs = new List<ProviderEntry>(2)
@@ -102,6 +115,10 @@ namespace SimpleWeather.WeatherData
 
                 case WeatherData.WeatherAPI.NWS:
                     providerImpl = new NWSWeatherProvider();
+                    break;
+
+                case WeatherData.WeatherAPI.MeteoFrance:
+                    providerImpl = new MeteoFranceProvider();
                     break;
 
 #if !DEBUG

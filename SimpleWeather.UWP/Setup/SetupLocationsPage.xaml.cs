@@ -333,22 +333,13 @@ namespace SimpleWeather.UWP.Setup
                         query_vm.LocationTZLong = tzId;
                 }
 
-                bool isUS = LocationUtils.IsUS(query_vm.LocationCountry);
-
-                // Default US location to NWS
-                if (isUS)
-                {
-                    Settings.API = WeatherAPI.NWS;
-                    query_vm.UpdateWeatherSource(WeatherAPI.NWS);
-                }
-                else
-                {
-                    Settings.API = WeatherAPI.WeatherUnlocked;
-                    query_vm.UpdateWeatherSource(WeatherAPI.WeatherUnlocked);
-                }
+                // Set default provider based on location
+                var provider = RemoteConfig.RemoteConfig.GetDefaultWeatherProvider(query_vm.LocationCountry);
+                Settings.API = provider;
+                query_vm.UpdateWeatherSource(provider);
                 wm.UpdateAPI();
 
-                if (WeatherAPI.NWS.Equals(Settings.API) && !isUS)
+                if (WeatherAPI.NWS.Equals(Settings.API) && !LocationUtils.IsUS(query_vm.LocationCountry))
                 {
                     throw new CustomException(App.ResLoader.GetString("Error_WeatherUSOnly"));
                 }
@@ -505,23 +496,11 @@ namespace SimpleWeather.UWP.Setup
                             view.LocationTZLong = tzId;
                     }
 
-                    bool isUS = LocationUtils.IsUS(view.LocationCountry);
-
-                    if (!Settings.WeatherLoaded)
-                    {
-                        // Default US location to NWS
-                        if (isUS)
-                        {
-                            Settings.API = WeatherAPI.NWS;
-                            view.UpdateWeatherSource(WeatherAPI.NWS);
-                        }
-                        else
-                        {
-                            Settings.API = WeatherAPI.WeatherUnlocked;
-                            view.UpdateWeatherSource(WeatherAPI.WeatherUnlocked);
-                        }
-                        wm.UpdateAPI();
-                    }
+                    // Set default provider based on location
+                    var provider = RemoteConfig.RemoteConfig.GetDefaultWeatherProvider(view.LocationCountry);
+                    Settings.API = provider;
+                    view.UpdateWeatherSource(provider);
+                    wm.UpdateAPI();
 
                     if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.API_KEY) && wm.KeyRequired)
                     {
@@ -530,7 +509,7 @@ namespace SimpleWeather.UWP.Setup
 
                     ctsToken.ThrowIfCancellationRequested();
 
-                    if (WeatherAPI.NWS.Equals(Settings.API) && !isUS)
+                    if (WeatherAPI.NWS.Equals(Settings.API) && !LocationUtils.IsUS(view.LocationCountry))
                     {
                         throw new CustomException(App.ResLoader.GetString("Error_WeatherUSOnly"));
                     }

@@ -172,10 +172,15 @@
     <Compile Include="Keys\OWMKey.cs" />
     <Compile Include="Keys\TimeZoneAPI.cs" />
     <Compile Include="Keys\WeatherApiKey.cs" />
+    <Compile Include="Keys\MeteoFranceKey.cs" />
     <Compile Include="Keys\WUnlockedKey.cs" />
     <Compile Include="Location\ILocationProviderImpl.cs" />
     <Compile Include="Location\LocationData.cs" />
     <Compile Include="Location\LocationProviderImpl.cs" />
+    <Compile Include="MeteoFrance\AlertsRootobject.cs" />
+    <Compile Include="MeteoFrance\CurrentsRootobject.cs" />
+    <Compile Include="MeteoFrance\ForecastRootobject.cs" />
+    <Compile Include="MeteoFrance\MeteoFranceProvider.cs" />
     <Compile Include="Metno\Astrodata.cs" />
     <Compile Include="Metno\MetnoWeatherProvider.cs" />
     <Compile Include="Metno\Weather.cs" />
@@ -866,6 +871,7 @@
     <None Include="Keys\BingMapsKey.cs.bak" />
     <None Include="Keys\FirebaseConfig.cs.bak" />
     <None Include="Keys\HEREWeatherKey.cs.bak" />
+    <None Include="Keys\MeteoFranceKey.cs.bak" />
     <None Include="Keys\OWMKey.cs.bak" />
     <None Include="Keys\TimeZoneAPI.cs.bak" />
     <None Include="Keys\WeatherApiKey.cs.bak" />

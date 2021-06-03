@@ -29,5 +29,17 @@ namespace SimpleWeather.Utils
                 return IsUS(countryCode) || countryCode.Equals("CA", StringComparison.InvariantCultureIgnoreCase) || countryCode.Contains("canada", StringComparison.InvariantCultureIgnoreCase);
             }
         }
+
+        public static bool IsFrance(string countryCode)
+        {
+            if (string.IsNullOrWhiteSpace(countryCode))
+            {
+                return false;
+            }
+            else
+            {
+                return countryCode.Equals("fr", StringComparison.InvariantCultureIgnoreCase) || countryCode.Equals("france", StringComparison.InvariantCultureIgnoreCase);
+            }
+        }
     }
 }

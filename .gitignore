@@ -262,6 +262,7 @@ API_KEY.txt
 /SimpleWeather.Shared/Keys/TimeZoneAPI.cs
 /SimpleWeather.Shared/Keys/WeatherApiKey.cs
 /SimpleWeather.Shared/Keys/WUnlockedKey.cs
+/SimpleWeather.Shared/Keys/MeteoFranceKey.cs
 /SimpleWeather.Shared/Keys/YahooKey.cs.bak
 /SimpleWeather.Shared/Keys/OWMKey.cs.bak
 /SimpleWeather.Shared/Keys/HEREWeatherKey.cs.bak
@@ -272,6 +273,7 @@ API_KEY.txt
 /SimpleWeather.Shared/Keys/TimeZoneAPI.cs.bak
 /SimpleWeather.Shared/Keys/WeatherApiKey.cs.bak
 /SimpleWeather.Shared/Keys/WUnlockedKey.cs.bak
+/SimpleWeather.Shared/Keys/MeteoFranceKey.cs.bak
 /SimpleWeather.Shared/Keys/Keys.7z
 /Utf8Json.UniversalCodeGenerator
 /*.bat*

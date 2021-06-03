@@ -127,6 +127,13 @@
         "newWeatherSource": ""
 }</value>
   </data>
+  <data name="meteofrance" xml:space="preserve">
+    <value>{
+        "enabled": true,
+        "locSource": "Bing",
+        "newWeatherSource": ""
+}</value>
+  </data>
   <data name="Metno" xml:space="preserve">
     <value>{
         "enabled": true,

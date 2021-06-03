@@ -26,15 +26,21 @@ namespace UnitTestProject
             Settings.LoadIfNeeded();
         }
 
+        private Task<Weather> GetWeather(WeatherProviderImpl providerImpl)
+        {
+            /* Redmond, WA */
+            return GetWeather(providerImpl, new WeatherUtils.Coordinate(47.6721646, -122.1706614));
+        }
+
         /// <summary>
         /// GetWeather
         /// </summary>
         /// <param name="providerImpl"></param>
         /// <returns></returns>
         /// <exception cref="WeatherException">Ignore.</exception>
-        private async Task<Weather> GetWeather(WeatherProviderImpl providerImpl)
+        private async Task<Weather> GetWeather(WeatherProviderImpl providerImpl, WeatherUtils.Coordinate coordinate)
         {
-            var location = await providerImpl.GetLocation(new WeatherUtils.Coordinate(47.6721646, -122.1706614));
+            var location = await providerImpl.GetLocation(coordinate);
             var locData = new LocationData(location);
             return await providerImpl.GetWeather(locData);
         }
@@ -260,6 +266,15 @@ namespace UnitTestProject
 
             var nameModel = locationProvider.GetLocationFromName(queryVM).ConfigureAwait(false).GetAwaiter().GetResult();
             Assert.IsNotNull(nameModel);
+        }
+
+        [TestMethod]
+        public void GetMeteoFranceWeather()
+        {
+            var provider = WeatherManager.GetProvider(WeatherAPI.MeteoFrance);
+            var weather = GetWeather(provider, new WeatherUtils.Coordinate(48.85, 2.34)).ConfigureAwait(false).GetAwaiter().GetResult();
+            Assert.IsTrue(weather?.IsValid() == true);
+            Assert.IsTrue(SerializerTest(weather).ConfigureAwait(false).GetAwaiter().GetResult());
         }
     }
 }

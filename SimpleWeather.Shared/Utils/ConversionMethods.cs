@@ -101,11 +101,6 @@ namespace SimpleWeather.Utils
             return (input * (9f / 5)) - 459.67f;
         }
 
-        public static DateTime ToEpochDateTime(long epochSeconds)
-        {
-            return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(epochSeconds);
-        }
-
         public static double ToRadians(double angle)
         {
             return Math.PI * angle / 180.0;

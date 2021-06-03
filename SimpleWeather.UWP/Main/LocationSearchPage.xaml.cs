@@ -287,25 +287,16 @@ namespace SimpleWeather.UWP.Main
                         query_vm.LocationTZLong = tzId;
                 }
 
-                bool isUS = LocationUtils.IsUS(query_vm.LocationCountry);
-
                 if (!Settings.WeatherLoaded)
                 {
-                    // Default US location to NWS
-                    if (isUS)
-                    {
-                        Settings.API = WeatherAPI.NWS;
-                        query_vm.UpdateWeatherSource(WeatherAPI.NWS);
-                    }
-                    else
-                    {
-                        Settings.API = WeatherAPI.WeatherUnlocked;
-                        query_vm.UpdateWeatherSource(WeatherAPI.WeatherUnlocked);
-                    }
+                    // Set default provider based on location
+                    var provider = RemoteConfig.RemoteConfig.GetDefaultWeatherProvider(query_vm.LocationCountry);
+                    Settings.API = provider;
+                    query_vm.UpdateWeatherSource(provider);
                     wm.UpdateAPI();
                 }
 
-                if (WeatherAPI.NWS.Equals(Settings.API) && !isUS)
+                if (WeatherAPI.NWS.Equals(Settings.API) && !LocationUtils.IsUS(query_vm.LocationCountry))
                 {
                     throw new CustomException(App.ResLoader.GetString("Error_WeatherUSOnly"));
                 }
