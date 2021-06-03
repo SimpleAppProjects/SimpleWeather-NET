@@ -2,7 +2,9 @@
 using SimpleWeather.Controls;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Radar.NullSchool;
+using SimpleWeather.UWP.Radar.OpenWeather;
 using SimpleWeather.UWP.Radar.RainViewer;
+using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,23 +30,32 @@ namespace SimpleWeather.UWP.Radar
             EarthWindMap,
             [StringValue(RAINVIEWER)]
             RainViewer,
-            /*
             [StringValue(OPENWEATHERMAP)]
             OpenWeatherMap
-            */
         }
 
-        public static readonly IReadOnlyList<ProviderEntry> RadarAPIProviders = new List<ProviderEntry>
+        private static readonly IReadOnlyList<ProviderEntry> RadarAPIProviders = new List<ProviderEntry>
         {
             new ProviderEntry("EarthWindMap Project", EARTHWINDMAP,
                     "https://earth.nullschool.net/", "https://earth.nullschool.net/"),
             new ProviderEntry("RainViewer", RAINVIEWER,
                     "https://www.rainviewer.com/", "https://www.rainviewer.com/api.html"),
-            /*
             new ProviderEntry("OpenWeatherMap", OPENWEATHERMAP,
                     "http://www.openweathermap.org", "https://home.openweathermap.org/users/sign_up")
-            */
         };
+
+        public static IEnumerable<ProviderEntry> GetRadarProviders()
+        {
+            var owm = WeatherManager.GetProvider(WeatherAPI.OpenWeatherMap);
+            if (Settings.API != owm.WeatherAPI && owm.GetAPIKey() == null)
+            {
+                return RadarAPIProviders.Where(p => p.Value != WeatherAPI.OpenWeatherMap);
+            }
+            else
+            {
+                return RadarAPIProviders;
+            }
+        }
 
         public static RadarProviders RadarAPIProvider { 
             get 
@@ -61,10 +72,8 @@ namespace SimpleWeather.UWP.Radar
             {
                 case RadarProviders.RainViewer:
                     return new RainViewerViewProvider(radarContainer);
-                    /*
                 case RadarProviders.OpenWeatherMap:
                     return new OWMRadarViewProvider(radarContainer);
-                    */
                 default:
                 case RadarProviders.EarthWindMap:
                     return new EarthWindMapViewProvider(radarContainer);
@@ -73,12 +82,28 @@ namespace SimpleWeather.UWP.Radar
 
         public static string GetRadarProvider()
         {
+            string provider;
+
             if (localSettings.Values.TryGetValue(KEY_RADARPROVIDER, out object value))
             {
-                return value.ToString();
+                provider = value.ToString();
+            }
+            else
+            {
+                provider = EARTHWINDMAP;
             }
 
-            return EARTHWINDMAP;
+            if (provider == WeatherAPI.OpenWeatherMap)
+            {
+                var owm = WeatherManager.GetProvider(WeatherAPI.OpenWeatherMap);
+                // Fallback to default since API KEY is unavailable
+                if ((Settings.API != owm.WeatherAPI && owm.GetAPIKey() == null) || Settings.API_KEY == null)
+                {
+                    return EARTHWINDMAP;
+                }
+            }
+
+            return provider;
         }
 
         private static void SetRadarProvider(RadarProviders value)

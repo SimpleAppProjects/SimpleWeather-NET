@@ -216,7 +216,7 @@ namespace SimpleWeather.UWP.Preferences
             AlertSwitch.IsOn = Settings.ShowAlerts;
 
             // Radar
-            RadarComboBox.ItemsSource = RadarProvider.RadarAPIProviders;
+            RadarComboBox.ItemsSource = RadarProvider.GetRadarProviders();
             RadarComboBox.DisplayMemberPath = "Display";
             RadarComboBox.SelectedValuePath = "Value";
             RadarComboBox.SelectedValue = RadarProvider.GetRadarProvider();
