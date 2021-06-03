@@ -61,8 +61,13 @@ namespace SimpleWeather.Metno
                 using (var astronomyRequest = new HttpRequestMessage(HttpMethod.Get, sunrisesetURL))
                 {
                     // Add headers
+                    var version = string.Format("v{0}.{1}.{2}",
+                        Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
+
                     forecastRequest.Headers.AcceptEncoding.Add(new HttpContentCodingWithQualityHeaderValue("gzip"));
+                    forecastRequest.Headers.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
                     astronomyRequest.Headers.AcceptEncoding.Add(new HttpContentCodingWithQualityHeaderValue("gzip"));
+                    astronomyRequest.Headers.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
 
                     forecastRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
                     astronomyRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(3);

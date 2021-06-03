@@ -63,8 +63,13 @@ namespace SimpleWeather.NWS
                 using (var observationRequest = new HttpRequestMessage(HttpMethod.Get, observationURL))
                 using (var hrForecastRequest = new HttpRequestMessage(HttpMethod.Get, hrlyForecastURL))
                 {
+                    var version = string.Format("v{0}.{1}.{2}",
+                        Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
+
                     observationRequest.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
+                    observationRequest.Headers.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
                     hrForecastRequest.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
+                    hrForecastRequest.Headers.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
 
                     observationRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
                     hrForecastRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(3);

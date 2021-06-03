@@ -32,6 +32,11 @@ namespace SimpleWeather.NWS
                     {
                         request.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
 
+                        var version = string.Format("v{0}.{1}.{2}",
+                            Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
+
+                        request.Headers.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
+
                         try
                         {
                             // Connect to webstream

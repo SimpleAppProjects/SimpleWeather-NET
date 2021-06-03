@@ -87,11 +87,6 @@ namespace SimpleWeather
                     AllowUI = false
                 };
                 HttpWebClient = new HttpClient(handler);
-
-                var version = string.Format("v{0}.{1}.{2}",
-                    Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
-
-                HttpWebClient.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
             }
 
             return HttpWebClient;

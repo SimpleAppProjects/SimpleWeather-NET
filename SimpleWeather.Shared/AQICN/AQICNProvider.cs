@@ -39,6 +39,10 @@ namespace SimpleWeather.AQICN
                     HttpClient webClient = SimpleLibrary.GetInstance().WebClient;
                     var request = new HttpRequestMessage(HttpMethod.Get, queryURL);
 
+                    var version = string.Format("v{0}.{1}.{2}",
+                        Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
+
+                    request.Headers.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
                     request.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
 
                     using (request)
