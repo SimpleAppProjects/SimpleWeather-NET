@@ -164,12 +164,31 @@ namespace SimpleWeather.UWP.Shared.WeatherData.Images
                     imageData.ImageUrl = "ms-appx:///SimpleWeather.Shared/Assets/Backgrounds/rain.jpg";
                     imageData.HexColor = "#ff102030";
                     break;
-
                 case WeatherBackground.TSTORMS_DAY:
                 case WeatherBackground.TSTORMS_NIGHT:
                 case WeatherBackground.STORMS:
                     imageData.ImageUrl = "ms-appx:///SimpleWeather.Shared/Assets/Backgrounds/storms.jpg";
                     imageData.HexColor = "#ff182830";
+                    break;
+                case WeatherBackground.FOG:
+                    imageData.ImageUrl = "ms-appx:///SimpleWeather.Shared/Assets/Backgrounds/fog.jpg";
+                    imageData.HexColor = "#ff808080";
+                    break;
+                case WeatherBackground.PARTLYCLOUDY_DAY:
+                    imageData.ImageUrl = "ms-appx:///SimpleWeather.Shared/Assets/Backgrounds/day-partlycloudy.jpg";
+                    imageData.HexColor = "#ff88b0c8";
+                    break;
+                case WeatherBackground.PARTLYCLOUDY_NIGHT:
+                    imageData.ImageUrl = "ms-appx:///SimpleWeather.Shared/Assets/Backgrounds/night-partlycloudy.jpg";
+                    imageData.HexColor = "#ff182020";
+                    break;
+                case WeatherBackground.MOSTLYCLOUDY_DAY:
+                    imageData.ImageUrl = "ms-appx:///SimpleWeather.Shared/Assets/Backgrounds/day-cloudy.jpg";
+                    imageData.HexColor = "#ff88b0c8";
+                    break;
+                case WeatherBackground.MOSTLYCLOUDY_NIGHT:
+                    imageData.ImageUrl = "ms-appx:///SimpleWeather.Shared/Assets/Backgrounds/night-cloudy.jpg";
+                    imageData.HexColor = "#ff182020";
                     break;
                 default:
                     if (wm.IsNight(weather))

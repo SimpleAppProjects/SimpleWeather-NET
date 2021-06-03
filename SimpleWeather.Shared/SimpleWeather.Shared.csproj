@@ -335,7 +335,12 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Backgrounds\day-cloudy.jpg" />
+    <Content Include="Assets\Backgrounds\day-partlycloudy.jpg" />
     <Content Include="Assets\Backgrounds\day.jpg" />
+    <Content Include="Assets\Backgrounds\fog.jpg" />
+    <Content Include="Assets\Backgrounds\night-cloudy.jpg" />
+    <Content Include="Assets\Backgrounds\night-partlycloudy.jpg" />
     <Content Include="Assets\Backgrounds\night.jpg" />
     <Content Include="Assets\Backgrounds\rain.jpg" />
     <Content Include="Assets\Backgrounds\snow.jpg" />
