@@ -1,4 +1,5 @@
 ﻿using SimpleWeather.Utils;
+using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -467,6 +468,62 @@ namespace SimpleWeather.WeatherData
                 qpf_snow_in = ConversionMethods.MMToIn(current.snow._1h);
                 qpf_snow_cm = current.snow._1h / 10;
             }
+        }
+    }
+}
+
+namespace SimpleWeather.OpenWeather.OneCall
+{
+    public partial class OWMOneCallWeatherProvider
+    {
+        private AirQuality CreateAirQuality(AirPollutionRootobject root)
+        {
+            var data = root.list[0];
+
+            var aqiData = new List<int>(6);
+
+            // Convert
+            if (data.components.co.HasValue)
+                aqiData.Add(AirQualityUtils.AQICO(AirQualityUtils.CO_ugm3_TO_ppm(data.components.co.Value)));
+            else
+                aqiData.Add(-1);
+
+            if (data.components.no2.HasValue)
+                aqiData.Add(AirQualityUtils.AQINO2(AirQualityUtils.NO2_ugm3_to_ppb(data.components.no2.Value)));
+            else
+                aqiData.Add(-1);
+
+            if (data.components.o3.HasValue)
+                aqiData.Add(AirQualityUtils.AQIO3(AirQualityUtils.O3_ugm3_to_ppb(data.components.o3.Value)));
+            else
+                aqiData.Add(-1);
+
+            if (data.components.so2.HasValue)
+                aqiData.Add(AirQualityUtils.AQISO2(AirQualityUtils.SO2_ugm3_to_ppb(data.components.so2.Value)));
+            else
+                aqiData.Add(-1);
+
+            if (data.components.pm2_5.HasValue)
+                aqiData.Add(AirQualityUtils.AQIPM2_5(data.components.pm2_5.Value));
+            else
+                aqiData.Add(-1);
+
+            if (data.components.pm10.HasValue)
+                aqiData.Add(AirQualityUtils.AQIPM10(data.components.pm10.Value));
+            else
+                aqiData.Add(-1);
+
+            var idx = aqiData.Max();
+
+            if (idx >= 0)
+            {
+                return new AirQuality()
+                {
+                    index = idx
+                };
+            }
+
+            return null;
         }
     }
 }

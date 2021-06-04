@@ -242,10 +242,7 @@ namespace SimpleWeather.OpenWeather.OneCall
                         // Load weather
                         var root = await JSONParser.DeserializerAsync<AirPollutionRootobject>(stream);
 
-                        aqiData = new AirQuality()
-                        {
-                            index = root.list[0].main.aqi
-                        };
+                        aqiData = CreateAirQuality(root);
                     }
                 }
             }
