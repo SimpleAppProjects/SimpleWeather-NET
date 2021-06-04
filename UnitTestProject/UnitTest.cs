@@ -294,5 +294,14 @@ namespace UnitTestProject
             Assert.IsTrue(weather?.IsValid() == true);
             Assert.IsTrue(SerializerTest(weather).ConfigureAwait(false).GetAwaiter().GetResult());
         }
+
+        [TestMethod]
+        public void GetWeatherApiWeather()
+        {
+            var provider = WeatherManager.GetProvider(WeatherAPI.WeatherApi);
+            var weather = GetWeather(provider).ConfigureAwait(false).GetAwaiter().GetResult();
+            Assert.IsTrue(weather?.IsValid() == true);
+            Assert.IsTrue(SerializerTest(weather).ConfigureAwait(false).GetAwaiter().GetResult());
+        }
     }
 }

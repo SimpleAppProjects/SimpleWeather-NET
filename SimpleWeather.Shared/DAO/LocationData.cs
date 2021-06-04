@@ -35,13 +35,7 @@ namespace SimpleWeather.Location
         {
             get
             {
-                if (!String.IsNullOrWhiteSpace(tz_long))
-                {
-                    var nodaTz = DateTimeZoneProviders.Tzdb.GetZoneOrNull(tz_long);
-                    if (nodaTz != null)
-                        return nodaTz.GetUtcOffset(SystemClock.Instance.GetCurrentInstant()).ToTimeSpan();
-                }
-                return TimeSpan.Zero;
+                return DateTimeUtils.TzidToOffset(tz_long);
             }
         }
 
@@ -51,16 +45,7 @@ namespace SimpleWeather.Location
         {
             get
             {
-                if (!String.IsNullOrWhiteSpace(tz_long))
-                {
-                    var nodaTz = DateTimeZoneProviders.Tzdb.GetZoneOrNull(tz_long);
-                    if (nodaTz != null)
-                    {
-                        return new ZonedDateTime(SystemClock.Instance.GetCurrentInstant(), nodaTz)
-                            .ToString("%x", CultureUtils.UserCulture);
-                    }
-                }
-                return "UTC";
+                return DateTimeUtils.TzidToTzShortAbbreviation(tz_long);
             }
         }
 

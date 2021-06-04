@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="default_weather_provider" xml:space="preserve">
-    <value>wunlocked</value>
+    <value>weatherapi</value>
   </data>
   <data name="Here" xml:space="preserve">
     <value>{
@@ -149,6 +149,13 @@
 }</value>
   </data>
   <data name="OpenWeather" xml:space="preserve">
+    <value>{
+        "enabled": true,
+        "locSource": "Bing",
+        "newWeatherSource": ""
+}</value>
+  </data>
+  <data name="weatherapi" xml:space="preserve">
     <value>{
         "enabled": true,
         "locSource": "Bing",

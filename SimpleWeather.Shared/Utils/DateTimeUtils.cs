@@ -97,5 +97,30 @@ namespace SimpleWeather.Utils
         {
             return new DateTimeOffset(date.DateTime.Trim(roundTicks), date.Offset);
         }
+
+        public static TimeSpan TzidToOffset(string tz_id)
+        {
+            if (!String.IsNullOrWhiteSpace(tz_id))
+            {
+                var nodaTz = NodaTime.DateTimeZoneProviders.Tzdb.GetZoneOrNull(tz_id);
+                if (nodaTz != null)
+                    return nodaTz.GetUtcOffset(NodaTime.SystemClock.Instance.GetCurrentInstant()).ToTimeSpan();
+            }
+            return TimeSpan.Zero;
+        }
+
+        public static string TzidToTzShortAbbreviation(string tz_id)
+        {
+            if (!String.IsNullOrWhiteSpace(tz_id))
+            {
+                var nodaTz = NodaTime.DateTimeZoneProviders.Tzdb.GetZoneOrNull(tz_id);
+                if (nodaTz != null)
+                {
+                    return new NodaTime.ZonedDateTime(NodaTime.SystemClock.Instance.GetCurrentInstant(), nodaTz)
+                        .ToString("%x", CultureUtils.UserCulture);
+                }
+            }
+            return "UTC";
+        }
     }
 }

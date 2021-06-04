@@ -81,7 +81,7 @@ namespace SimpleWeather.RemoteConfig
 
         public static string GetDefaultWeatherProvider()
         {
-            return GetConfigString(DEFAULT_WEATHERPROVIDER_KEY) ?? WeatherAPI.WeatherUnlocked;
+            return GetConfigString(DEFAULT_WEATHERPROVIDER_KEY) ?? WeatherAPI.WeatherApi;
         }
 
         public static string GetDefaultWeatherProvider(string countryCode)

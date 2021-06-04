@@ -7,6 +7,7 @@ using SimpleWeather.NWS;
 using SimpleWeather.OpenWeather;
 using SimpleWeather.OpenWeather.OneCall;
 using SimpleWeather.Utils;
+using SimpleWeather.WeatherApi;
 using SimpleWeather.WeatherUnlocked;
 using System;
 using System.Collections.Generic;
@@ -52,6 +53,9 @@ namespace SimpleWeather.WeatherData
                 "https://www.weather.gov", "https://www.weather.gov"),
             new ProviderEntry("OpenWeatherMap", OpenWeatherMap,
                 "http://www.openweathermap.org", "https://home.openweathermap.org/users/sign_up"),
+            new ProviderEntry(
+                    "WeatherAPI.com", WeatherApi,
+                    "https://weatherapi.com", "https://weatherapi.com/api"),
             new ProviderEntry("WeatherUnlocked", WeatherUnlocked,
                     "https://developer.weatherunlocked.com/", "https://developer.weatherunlocked.com/"),
             new ProviderEntry("Meteo France", MeteoFrance,
@@ -125,6 +129,10 @@ namespace SimpleWeather.WeatherData
                     providerImpl = new NWSWeatherProvider();
                     break;
 
+                case WeatherData.WeatherAPI.WeatherUnlocked:
+                    providerImpl = new WeatherUnlockedProvider();
+                    break;
+
                 case WeatherData.WeatherAPI.MeteoFrance:
                     providerImpl = new MeteoFranceProvider();
                     break;
@@ -132,8 +140,8 @@ namespace SimpleWeather.WeatherData
 #if !DEBUG
                 default:
 #endif
-                case WeatherData.WeatherAPI.WeatherUnlocked:
-                    providerImpl = new WeatherUnlockedProvider();
+                case WeatherData.WeatherAPI.WeatherApi:
+                    providerImpl = new WeatherApiProvider();
                     break;
             }
 

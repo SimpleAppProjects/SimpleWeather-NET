@@ -64,7 +64,7 @@ namespace SimpleWeather.Controls
             {
                 LocationQuery = String.Format(CultureInfo.InvariantCulture, "latitude={0:0.####}&longitude={1:0.####}", LocationLat, LocationLong);
             }
-            else if (WeatherAPI.WeatherUnlocked.Equals(WeatherSource))
+            else if (WeatherAPI.WeatherUnlocked.Equals(WeatherSource) || WeatherAPI.WeatherApi.Equals(WeatherSource))
             {
                 LocationQuery = String.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}", LocationLat, LocationLong);
             }
