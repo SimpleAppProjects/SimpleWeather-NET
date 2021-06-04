@@ -201,6 +201,8 @@
     <Compile Include="NWS\WeatherAlerts.cs" />
     <Compile Include="NWS\WeatherData.cs" />
     <Compile Include="OpenWeather\OneCall\OneCallResponse.cs" />
+    <Compile Include="OpenWeather\OneCall\OWMOneCallWeatherProvider.cs" />
+    <Compile Include="OpenWeather\OneCall\WeatherAlerts.cs" />
     <Compile Include="OpenWeather\OneCall\WeatherData.cs" />
     <Compile Include="OpenWeather\OpenWeatherMapProvider.cs" />
     <Compile Include="OpenWeather\Weather.cs" />

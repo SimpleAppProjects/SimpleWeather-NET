@@ -1,5 +1,4 @@
-﻿#if false
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace SimpleWeather.OpenWeather.OneCall
 {
@@ -12,6 +11,7 @@ namespace SimpleWeather.OpenWeather.OneCall
         public Current current { get; set; }
         public Hourly[] hourly { get; set; }
         public Daily[] daily { get; set; }
+        public Alert[] alerts { get; set; }
     }
 
     public class Current
@@ -53,6 +53,7 @@ namespace SimpleWeather.OpenWeather.OneCall
         public float dew_point { get; set; }
         public int clouds { get; set; }
         public float? pop { get; set; }
+        public float? uvi { get; set; }
         public int? visibility { get; set; }
         public float wind_speed { get; set; }
         public float? wind_gust { get; set; }
@@ -77,6 +78,9 @@ namespace SimpleWeather.OpenWeather.OneCall
         public long dt { get; set; }
         public long sunrise { get; set; }
         public long sunset { get; set; }
+        public long? moonrise { get; set; }
+        public long? moonset { get; set; }
+        public float? moon_phase { get; set; }
         public Temp temp { get; set; }
         public Feels_Like feels_like { get; set; }
         public float pressure { get; set; }
@@ -111,5 +115,13 @@ namespace SimpleWeather.OpenWeather.OneCall
         public float eve { get; set; }
         public float night { get; set; }
     }
+
+    public class Alert
+    {
+        public string sender_name { get; set; }
+        public string _event { get; set; }
+        public long start { get; set; }
+        public long end { get; set; }
+        public string description { get; set; }
+    }
 }
-#endif

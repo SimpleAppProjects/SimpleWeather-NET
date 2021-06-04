@@ -324,6 +324,7 @@ namespace SimpleWeather.Utils
         private static void SetPersonalKey(bool value)
         {
             localSettings.Containers[WeatherAPI.WeatherUnderground].Values[KEY_USEPERSONALKEY] = value;
+            WeatherManager.GetInstance().UpdateAPI();
         }
 
         private static int GetVersionCode()

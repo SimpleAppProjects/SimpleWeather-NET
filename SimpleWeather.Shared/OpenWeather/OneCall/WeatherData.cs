@@ -11,27 +11,26 @@ namespace SimpleWeather.WeatherData
 {
     public partial class Weather
     {
-#if false
-        public Weather(OpenWeather.Rootobject root)
+        public Weather(OpenWeather.OneCall.Rootobject root)
         {
             location = new Location(root);
             update_time = DateTimeOffset.FromUnixTimeSeconds(root.current.dt);
 
             forecast = new List<Forecast>(root.daily.Length);
             txt_forecast = new List<TextForecast>(root.daily.Length);
-            foreach (OpenWeather.Daily daily in root.daily)
+            foreach (var daily in root.daily)
             {
                 forecast.Add(new Forecast(daily));
                 txt_forecast.Add(new TextForecast(daily));
             }
             hr_forecast = new List<HourlyForecast>(root.hourly.Length);
-            foreach (OpenWeather.Hourly hourly in root.hourly)
+            foreach (var hourly in root.hourly)
             {
                 hr_forecast.Add(new HourlyForecast(hourly));
             }
+
             condition = new Condition(root.current);
             atmosphere = new Atmosphere(root.current);
-            astronomy = new Astronomy(root.current);
             precipitation = new Precipitation(root.current);
             ttl = 180;
 
@@ -45,16 +44,36 @@ namespace SimpleWeather.WeatherData
                 condition.low_c = forecast[0].low_c.Value;
             }
 
+            condition.observation_time = update_time;
+
+            var firstDate = DateTimeOffset.FromUnixTimeSeconds(root.daily[0].dt).DateTime;
+            if (firstDate.Date == condition.observation_time.Date)
+            {
+                astronomy = new Astronomy(root.daily[0]);
+            }
+            else
+            {
+                astronomy = new Astronomy(root.current);
+            }
+
+            if (root.alerts?.Length > 0)
+            {
+                weather_alerts = new List<WeatherAlert>(root.alerts.Length);
+
+                foreach (var alert in root.alerts)
+                {
+                    weather_alerts.Add(new WeatherAlert(alert));
+                }
+            }
+
             source = WeatherAPI.OpenWeatherMap;
         }
-#endif
     }
 
     public partial class Location
     {
         /* OpenWeather OneCall */
-#if false
-        public Location(OpenWeather.Rootobject root)
+        public Location(OpenWeather.OneCall.Rootobject root)
         {
             // Use location name from location provider
             name = null;
@@ -62,14 +81,12 @@ namespace SimpleWeather.WeatherData
             longitude = root.lon;
             tz_long = root.timezone;
         }
-#endif
     }
 
     public partial class Forecast
     {
         /* OpenWeather OneCall */
-#if false
-        public Forecast(OpenWeather.Daily forecast)
+        public Forecast(OpenWeather.OneCall.Daily forecast)
         {
             date = DateTimeOffset.FromUnixTimeSeconds(forecast.dt).DateTime;
             high_f = ConversionMethods.KtoF(forecast.temp.max);
@@ -97,7 +114,7 @@ namespace SimpleWeather.WeatherData
             };
             if (forecast.pop.HasValue)
             {
-                extras.pop = (int?)Math.Round(forecast.pop.Value * 100);
+                extras.pop = (int)Math.Round(forecast.pop.Value * 100);
             }
             if (forecast.visibility.HasValue)
             {
@@ -120,14 +137,12 @@ namespace SimpleWeather.WeatherData
                 extras.qpf_snow_in = ConversionMethods.MMToIn(forecast.snow.Value);
             }
         }
-#endif
     }
 
     public partial class HourlyForecast
     {
         /* OpenWeather OneCall */
-#if false
-        public HourlyForecast(OpenWeather.Hourly hr_forecast)
+        public HourlyForecast(OpenWeather.OneCall.Hourly hr_forecast)
         {
             date = DateTimeOffset.FromUnixTimeSeconds(hr_forecast.dt);
             high_f = ConversionMethods.KtoF(hr_forecast.temp);
@@ -188,15 +203,16 @@ namespace SimpleWeather.WeatherData
                 extras.qpf_snow_cm = hr_forecast.snow._1h / 10;
                 extras.qpf_rain_in = ConversionMethods.MMToIn(hr_forecast.snow._1h);
             }
+            if (hr_forecast.uvi.HasValue)
+            {
+                extras.uv_index = hr_forecast.uvi;
+            }
         }
-#endif
     }
 
     public partial class TextForecast
     {
-        /* OpenWeather OneCall */
-#if false
-        public TextForecast(OpenWeather.Daily forecast)
+        public TextForecast(OpenWeather.OneCall.Daily forecast)
         {
             date = DateTimeOffset.FromUnixTimeSeconds(forecast.dt).DateTime;
 
@@ -262,14 +278,11 @@ namespace SimpleWeather.WeatherData
 
             fcttext_metric = sb_metric.ToString();
         }
-#endif
     }
 
     public partial class Condition
     {
-        /* OpenWeather OneCall */
-#if false
-        public Condition(OpenWeather.Current current)
+        public Condition(OpenWeather.OneCall.Current current)
         {
             weather = current.weather[0].description.ToUpperCase();
             temp_f = ConversionMethods.KtoF(current.temp);
@@ -299,14 +312,11 @@ namespace SimpleWeather.WeatherData
 
             observation_time = DateTimeOffset.FromUnixTimeSeconds(current.dt);
         }
-#endif
     }
 
     public partial class Atmosphere
     {
-        /* OpenWeather OneCall */
-#if false
-        public Atmosphere(OpenWeather.Current current)
+        public Atmosphere(OpenWeather.OneCall.Current current)
         {
             humidity = current.humidity;
             // 1hPa = 1mbar
@@ -318,14 +328,11 @@ namespace SimpleWeather.WeatherData
             dewpoint_f = ConversionMethods.KtoF(current.dew_point);
             dewpoint_c = ConversionMethods.KtoC(current.dew_point);
         }
-#endif
     }
 
     public partial class Astronomy
     {
-        /* OpenWeather OneCall */
-#if false
-        public Astronomy(OpenWeather.Current current)
+        public Astronomy(OpenWeather.OneCall.Current current)
         {
             try
             {
@@ -356,14 +363,97 @@ namespace SimpleWeather.WeatherData
                 moonset = DateTime.MinValue;
             }
         }
-#endif
+
+        public Astronomy(OpenWeather.OneCall.Daily day)
+        {
+            try
+            {
+                sunrise = DateTimeOffset.FromUnixTimeSeconds(day.sunrise).UtcDateTime;
+            }
+            catch (Exception) { }
+            try
+            {
+                sunset = DateTimeOffset.FromUnixTimeSeconds(day.sunset).UtcDateTime;
+            }
+            catch (Exception) { }
+            try
+            {
+                moonrise = DateTimeOffset.FromUnixTimeSeconds(day.moonrise.Value).UtcDateTime;
+            }
+            catch (Exception) { }
+            try
+            {
+                moonset = DateTimeOffset.FromUnixTimeSeconds(day.moonset.Value).UtcDateTime;
+            }
+            catch (Exception) { }
+            try
+            {
+                MoonPhase.MoonPhaseType moonPhaseType;
+
+                if (day.moon_phase == 0f || day.moon_phase == 1f)
+                {
+                    moonPhaseType = MoonPhase.MoonPhaseType.NewMoon;
+                }
+                else if (day.moon_phase == 0.25f)
+                {
+                    moonPhaseType = MoonPhase.MoonPhaseType.FirstQtr;
+                }
+                else if (day.moon_phase == 0.5f)
+                {
+                    moonPhaseType = MoonPhase.MoonPhaseType.FullMoon;
+                }
+                else if (day.moon_phase == 0.75f)
+                {
+                    moonPhaseType = MoonPhase.MoonPhaseType.LastQtr;
+                }
+                else if (day.moon_phase > 0f && day.moon_phase < 0.25f)
+                {
+                    moonPhaseType = MoonPhase.MoonPhaseType.WaxingCrescent;
+                }
+                else if (day.moon_phase > 0.25f && day.moon_phase < 0.5f)
+                {
+                    moonPhaseType = MoonPhase.MoonPhaseType.WaxingGibbous;
+                }
+                else if (day.moon_phase > 0.5f && day.moon_phase < 0.75f)
+                {
+                    moonPhaseType = MoonPhase.MoonPhaseType.WaningGibbous;
+                }
+                else if (day.moon_phase > 0.75f && day.moon_phase < 1f)
+                {
+                    moonPhaseType = MoonPhase.MoonPhaseType.WaningCrescent;
+                }
+                else
+                {
+                    moonPhaseType = MoonPhase.MoonPhaseType.NewMoon;
+                }
+
+                moonphase = new MoonPhase(moonPhaseType);
+            }
+            catch (Exception) { }
+
+            // If the sun won't set/rise, set time to the future
+            if (sunrise == null)
+            {
+                sunrise = DateTime.Now.Date.AddYears(1).AddTicks(-1);
+            }
+            if (sunset == null)
+            {
+                sunset = DateTime.Now.Date.AddYears(1).AddTicks(-1);
+            }
+            if (moonrise == null)
+            {
+                moonrise = DateTime.MinValue;
+            }
+            if (moonset == null)
+            {
+                moonset = DateTime.MinValue;
+            }
+        }
     }
 
     public partial class Precipitation
     {
-        /* OpenWeather OneCall */
-#if false
-        public Precipitation(OpenWeather.Current current)
+        public Precipitation(OpenWeather.OneCall.Current current)
         {
             // Use cloudiness value here
             cloudiness = current.clouds;
@@ -378,6 +468,5 @@ namespace SimpleWeather.WeatherData
                 qpf_snow_cm = current.snow._1h / 10;
             }
         }
-#endif
     }
 }

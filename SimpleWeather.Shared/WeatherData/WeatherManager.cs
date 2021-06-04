@@ -5,6 +5,7 @@ using SimpleWeather.MeteoFrance;
 using SimpleWeather.Metno;
 using SimpleWeather.NWS;
 using SimpleWeather.OpenWeather;
+using SimpleWeather.OpenWeather.OneCall;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherUnlocked;
 using System;
@@ -106,7 +107,14 @@ namespace SimpleWeather.WeatherData
                     break;
 
                 case WeatherData.WeatherAPI.OpenWeatherMap:
-                    providerImpl = new OpenWeatherMapProvider();
+                    if (Settings.UsePersonalKey)
+                    {
+                        providerImpl = new OWMOneCallWeatherProvider();
+                    }
+                    else
+                    {
+                        providerImpl = new OpenWeatherMapProvider();
+                    }
                     break;
 
                 case WeatherData.WeatherAPI.MetNo:

@@ -153,6 +153,24 @@ namespace UnitTestProject
         }
 
         [TestMethod]
+        public void GetOWMOneCallWeather()
+        {
+            Settings.UsePersonalKey = true;
+
+            var provider = WeatherManager.GetProvider(WeatherAPI.OpenWeatherMap);
+
+            Settings.API_KEY = provider.GetAPIKey();
+
+            var weather = GetWeather(provider).ConfigureAwait(false).GetAwaiter().GetResult();
+            Assert.IsTrue(weather?.IsValid() == true);
+            Assert.IsTrue(SerializerTest(weather).ConfigureAwait(false).GetAwaiter().GetResult());
+            //SerializerSpeedTest(weather);
+
+            Settings.API_KEY = null;
+            Settings.UsePersonalKey = false;
+        }
+
+        [TestMethod]
         public void GetWUnlockedWeather()
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.WeatherUnlocked);
